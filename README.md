@@ -186,7 +186,7 @@ It will automatically open the default browser with your local developer portal 
 
 ### Step 5: Edit through the visual editor
 
-You can customize your portal, author content, organize the structure of the website, and style its appearance through the built-in visual editor. [The official Paperbits documentation](https://paperbits.io/wiki/getting-started) describes how to do it.
+You can customize your portal, author content, organize the structure of the website, and style its appearance through the built-in visual editor. If you have troubles figuring out the visual editor, this video might be helpful: https://youtu.be/Uz6kuI7JnkM
 
 Every change will be automatically saved in your API Management instance in real-time. The next versions of the portal will feature *undo* functionality to allow you to revert accidental changes.
 
