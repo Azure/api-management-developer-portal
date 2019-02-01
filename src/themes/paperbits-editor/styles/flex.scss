@@ -1,0 +1,27 @@
+.flex-container-row {
+    flex-direction: row;
+}
+
+.flex-container-column {
+    flex-direction: column;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+}
+
+.flex-item {
+    flex: 0 1 auto;
+    align-self: auto;
+
+    &.flex-item-grow {
+        flex: 1 1 auto;
+    }
+}
+
+.expand {
+    width: 100%;
+}

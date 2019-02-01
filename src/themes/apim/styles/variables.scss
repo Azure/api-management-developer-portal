@@ -1,0 +1,38 @@
+/* Breakpoints */
+$breakpoint-xs: 0;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+$grid-breakpoints: ( xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px ) !default;
+
+$font-size-base: calc(14px + .2vw);
+$font-size-h6: $font-size-base;
+$font-size-h5: calc(8px + 1vw);
+$font-size-h4: calc(10px + 1vw);
+$font-size-h3: calc(12px + 1vw);
+$font-size-h2: calc(14px + 1vw);
+$font-size-h1: calc(32px + 1vw);
+
+$green: #a2b747;
+$orange: #f79740;
+$blue: #5CC6D0;
+
+$link-color: $blue;
+$link-hover-color: $green;
+$link-active-color: $green;
+
+$font-family-base: Segoe UI;
+$font-family-script: JollyGoodSans-Basic, Tahoma, Geneva, Verdana, sans-serif;
+
+$list-group-link-color: #555 !default;
+
+$z-index-tooltips: 8900;
+$z-index-alerts: 9000;
+$z-index-dropdowns: 9100;
+$badge-background-color: #e1e1e1;
+$list-item-selected: #def0fe;
+$tag-background-color: #797878;
+
+$icon-font-path: "fonts/"

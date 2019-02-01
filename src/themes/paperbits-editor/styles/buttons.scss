@@ -1,0 +1,44 @@
+﻿@import "variables.scss";
+@import "mixins.scss";
+
+.btn {
+    border: none;
+    background: none;
+    color: $color-base;
+    font-family: $font-family-base;
+    font-size: $font-size-base;
+    line-height: $workshop-button-height;
+    min-width: $workshop-button-height;
+    text-decoration: none;
+    text-align: center;
+    vertical-align: middle;
+    @include no-select;
+
+    &:focus,
+    &:hover {
+        @include selection();
+        outline: none;
+        color: $color-base;
+        cursor: pointer;
+    }
+}
+
+.btn-link {
+    color: #99C248;
+    text-decoration: none;
+}
+
+.btn-danger,
+.btn-danger:hover,
+.btn-danger:active {
+    background: $color-danger;
+    color: #fff;
+}
+
+.btn-group {
+    padding-top: $workshop-padding;
+
+    .btn {
+        margin-right: 15px;
+    }
+}

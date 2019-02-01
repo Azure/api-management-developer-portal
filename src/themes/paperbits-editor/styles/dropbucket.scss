@@ -1,0 +1,43 @@
+﻿@import "variables.scss";
+@import "toolboxes.scss";
+@import "animation.scss";
+@import "buttons.scss";
+
+dropbucket {
+    right: 20px;
+    bottom: 20px;
+    position: fixed;
+    z-index: $z-index-base;
+
+    .droppedcontent {
+        @include surface();
+        @include animation-fadein();
+        position: relative;
+        border-radius: $toolbox-border-radius;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .droppedcontent-details {
+        @include text-overflow();
+    }
+
+    .droppedcontent-preview {
+        width: 280px;
+        height: 150px;
+        background-image: data-uri("../svgs/icons-unknown.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        display: block;
+        margin: 10px 0;
+    }
+
+    .list-item {
+        position: relative;
+    }
+
+    .btn {
+        height: 100%;
+    }
+}

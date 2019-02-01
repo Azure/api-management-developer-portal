@@ -1,0 +1,24 @@
+$.ajax({
+    type: "{{method}}",
+    url: "{{requestUrl}}",
+
+    {% if request.headers.size > 0 -%}
+    // Request headers
+    beforeSend: function(xhrObj) {
+        {% for header in request.headers -%}
+        xhrObj.setRequestHeader("{{header.name}}", "{{header.value}}");
+        {% endfor -%}
+    },
+    {% endif -%}
+    {% if request.body -%}
+
+    // Request body
+    data: "{{ request.body | replace:'"','\"' }}",
+    {% endif -%}
+})
+.done(function (data) {
+    alert("success");
+})
+.fail(function () {
+    alert("error");
+});

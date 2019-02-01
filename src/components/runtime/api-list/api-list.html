@@ -1,0 +1,45 @@
+<template id="treeview">
+    <ul class="list-group">
+        <!-- ko foreach: { data: nodes, as: 'node' } -->
+        <li class="list-group-item" role="listitem" data-bind="css: node.level">
+            <div class="list-group-item-container" data-bind="css: { expanded: node.expanded, active: node.isSelected, 'has-active-child': node.hasActiveChild }">
+                <div [attr.name]="node.label" class="list-group-item-heading flex-container">
+                    <!-- ko if: node.hasChildren() -->
+                    <button class="toggle" aria-label="Expand" data-bind="css: { active: node.expanded }, click: node.toggle">
+                        <i class="icon icon-chevron-down"></i>
+                    </button>
+                    <!-- /ko -->
+
+                    <div class="list-group-item-label flex-item flex-grow">
+                        <a href="#" class="text-truncate" [attr.title]="node.label" data-bind="click: node.select, attr: { href: node.id }"
+                            [traceClick]="'API list > API'">
+                            <span data-bind="text: node.label"></span>
+                            <span data-bind="if: node.data && node.data.properties && node.data.type === 'soap'"
+                                class="badge badge-soap">
+                                SOAP
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- ko if: node.hasChildren() && node.expanded -->
+            <!-- ko template: { name: 'treeview', data: { nodes: node.nodes } } -->
+            <!-- /ko -->
+            <!-- /ko -->
+        </li>
+        <!-- /ko -->
+    </ul>
+</template>
+
+<searchbox [placeholder]="'Search APIs'" [tags]="tags" (onSearch)="searchApis($event)"></searchbox>
+
+<!-- <p id="apiSearchResult" class="hide-text" role="region" aria-live="assertive" aria-label="Search result">
+    Number of APIs found - {{nodes.length}}
+</p> -->
+
+<!-- ko template: { name: 'treeview', data: { nodes: $component.nodes } } -->
+<!-- /ko -->
+
+<div class="list-placeholder list-group-placeholder" data-bind="if: $component.nodes().length === 0">
+    No APIs to display.
+</div>

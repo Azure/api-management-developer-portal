@@ -1,0 +1,9 @@
+﻿.youtube-player {
+    display: block;
+    width: 100%;
+    
+    iframe {
+        width: 100%;
+        pointer-events: none;
+    }
+}

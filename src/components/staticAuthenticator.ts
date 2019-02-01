@@ -1,0 +1,31 @@
+import { IAuthenticator } from "./../services/IAuthenticator";
+
+export class StaticAuthenticator implements IAuthenticator {
+    private accessToken: string;
+    private currentUserId: string;
+
+    public getAccessToken(): string {
+        return this.accessToken;
+    }
+
+    public setAccessToken(token: string) {
+        this.accessToken = `${token}`;
+    }
+
+    public getUser(): string {
+        return this.currentUserId;
+    }
+
+    public setUser(userId: string): void {
+        this.currentUserId = userId;
+    }
+
+    public clear(): void {
+        this.accessToken = undefined;
+        this.currentUserId = undefined;
+    }
+
+    public isUserLoggedIn(): boolean {
+        return !!this.getAccessToken() && !!this.getUser();
+    }
+}

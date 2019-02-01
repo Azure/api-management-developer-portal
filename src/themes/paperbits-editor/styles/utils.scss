@@ -1,0 +1,32 @@
+@import "variables.scss";
+
+.text-center {
+    text-align: center;
+}
+
+.d-none {
+    display: none !important;
+}
+
+.d-xl-inline-block {
+    @media (min-width: $breakpoint-xl) {
+        display: inline-block !important;
+    }
+}
+
+.d-lg-inline-block {
+    @media (min-width: $breakpoint-lg) {
+        display: inline-block !important;
+    }
+}
+.d-md-inline-block {
+    @media (min-width: $breakpoint-md) {
+        display: inline-block !important;
+    }
+}
+
+.d-sm-inline-block {
+    @media (min-width: $breakpoint-sm) {
+        display: inline-block !important;
+    }
+}

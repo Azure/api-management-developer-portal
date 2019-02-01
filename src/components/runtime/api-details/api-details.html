@@ -1,0 +1,43 @@
+
+
+<div class="fit flex flex-row">
+    <!-- ko ifnot: working -->
+    <div class="flex-item flex-grow animation-fade-in">
+        <div class="fit scrollable">
+            <div class="panel">
+                <!-- ko if: api() -->
+
+                <!-- ko with: api() -->
+                <h1>
+                    <span data-bind="text: name"></span>
+                    <span data-bind="text: apiVersion"></span>
+                </h1>
+
+                <!-- ko if: description  -->
+                <p data-bind="text: description"></p>
+                <!-- /ko -->
+                
+                <!-- /ko -->
+
+                <!-- ko foreach: { data: operations, as: 'operation' } -->
+                <operation-details params="{ operation: operation }"></operation-details>
+                <!-- /ko -->
+
+                <schema-details params="{ api: api }"></schema-details>
+
+                <!-- /ko -->
+
+                <!-- ko ifnot: api() -->
+                <p>No API selected</p>
+                <!-- /ko -->
+            </div>
+        </div>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: $component.selectedOperation -->
+    <div class="flex-item flex-grow detachable animation-fade-in">
+        <operation-console class="fit scrollable flex flex-column" params="{ api: $component.api, operation: $component.selectedOperation }"></operation-console>
+    </div>
+    <!-- /ko -->
+</div> 

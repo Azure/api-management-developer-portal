@@ -1,0 +1,33 @@
+@import "variables.scss";
+
+.text-justify {
+    text-align: justify;
+}
+
+@media (min-width: $breakpoint-sm) {
+    .text-sm-justify {
+        text-align: justify;
+    }
+}
+
+@media (min-width: $breakpoint-md) {
+    .text-md-justify {
+        text-align: justify;
+    }
+}
+
+@media (min-width: $breakpoint-lg) {
+    .text-lg-justify {
+        text-align: justify;
+    }
+}
+
+@media (min-width: $breakpoint-xl) {
+    .text-xl-justify {
+        text-align: justify;
+    }
+}
+
+.text-word-break {
+    word-break: break-word;
+}

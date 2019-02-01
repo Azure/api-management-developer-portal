@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": [
+            "dom",
+            "es2015",
+            "es2016"
+        ],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "declaration": false,
+        "noImplicitAny": false,
+        "noStrictGenericChecks": true,
+        "removeComments": true,
+        "noLib": false,
+        "skipLibCheck": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "allowUnreachableCode": true,
+        "listFiles": false,
+        "sourceMap": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "exclude": [
+        "./node_modules"
+    ]
+}

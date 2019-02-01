@@ -1,0 +1,42 @@
+
+<article data-bind="with: operation()">
+    <h2 id="find-pet-by-id" data-bind="click: $parents[2].openConsole">
+        <span data-bind="text: name"></span>
+    </h2>
+
+    <!-- ko if: description  -->
+    <p class="text-word-break" data-bind="text: description"></p>
+    <!-- /ko -->
+    <span data-bind="text: urlTemplate, attr: { 'data-method': method }"></span>
+    <!-- <span class="text-attention">{petId}</span> -->
+
+    <!-- ko if: templateParameters && templateParameters.length > 0 -->
+    <div class="panel panel-table">
+        <h3>Parameters</h3>
+        <ul class="list-group">
+            <li class="list-group-item" data-bind="foreach: { data: templateParameters, as: 'parameter' }">
+                <div class="row flex flex-row">
+                    <div class="col-md-3 text-attention" data-bind="text: parameter.name"></div>
+                    <div class="col-md-7" data-bind="text: parameter.description"></div>
+                    <div class="col-md-2 text-mute" data-bind="text: parameter.type"></div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: request && request.headers && request.headers.length > 0 -->
+    <div class="panel panel-table">
+        <h3>Headers</h3>
+        <ul class="list-group">
+            <li class="list-group-item" data-bind="foreach: { data: request.headers, as: 'parameter' }">
+                <div class="row flex flex-row">
+                    <div class="col-md-3 text-attention" data-bind="text: parameter.name"></div>
+                    <div class="col-md-7" data-bind="text: parameter.description"></div>
+                    <div class="col-md-2 text-mute" data-bind="text: parameter.type"></div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!-- /ko -->
+</article>

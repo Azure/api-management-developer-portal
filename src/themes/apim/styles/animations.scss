@@ -1,0 +1,94 @@
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@mixin animation-fadein($timeframe: .5s) {
+    opacity: 0;
+    animation: fade-in $timeframe linear forwards;
+}
+
+.animation-fade-in {
+    @include animation-fadein();
+}
+
+
+@mixin animation-slideleft {
+    animation-name: slideleft;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    visibility: visible !important;
+}
+
+@keyframes slideleft {
+    0% {
+        transform: translateX(150%);
+    }
+    50% {
+        transform: translateX(-8%);
+    }
+    65% {
+        transform: translateX(4%);
+    }
+    80% {
+        transform: translateX(-4%);
+    }
+    95% {
+        transform: translateX(2%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+.animation-slide-left {
+    @include animation-slideleft;
+}
+
+
+@keyframes shake {
+    0% {
+        transform: translate(2px, 1px) rotate(0deg);
+    }
+    10% {
+        transform: translate(-1px, -2px) rotate(-1deg);
+    }
+    20% {
+        transform: translate(-3px, 0px) rotate(1deg);
+    }
+    30% {
+        transform: translate(0px, 2px) rotate(0deg);
+    }
+    40% {
+        transform: translate(1px, -1px) rotate(1deg);
+    }
+    50% {
+        transform: translate(-1px, 2px) rotate(-1deg);
+    }
+    60% {
+        transform: translate(-3px, 1px) rotate(0deg);
+    }
+    70% {
+        transform: translate(2px, 1px) rotate(-1deg);
+    }
+    80% {
+        transform: translate(-1px, -1px) rotate(1deg);
+    }
+    90% {
+        transform: translate(2px, 2px) rotate(0deg);
+    }
+    100% {
+        transform: translate(1px, -2px) rotate(-1deg);
+    }
+}
+
+.animation-shake {
+    animation-name: shake;
+    animation-duration: 0.8s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
