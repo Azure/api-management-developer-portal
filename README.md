@@ -120,14 +120,33 @@ The developer portal requires API Management's REST API to manage the content, a
 
 1. Replace `<service>` in `"managementApiUrl": "https://<service>.management.azure-api.net"` with the name of your API Management instance.
 
-#### Storage Account - Static website
+#### Storage Account
 
-You need to configure the *Static website* feature in your Storage Account by providing routes to the index and error pages.
+Configure the *Static website* feature in your Storage Account by providing routes to the index and error pages:
 
 1. Navigate to your Storage Account in the Azure portal and click on *Static website* from the menu on the left.
 1. In the field *Index document name* type *index.html*.
 1. In the field *Error document path* type *404/index.html*.
 1. Click *Save*.
+
+Enable CORS:
+
+1. Navigate to your Storage Account in the Azure portal and click on *CORS* from the menu on the left.
+1. Set:
+    - *Allowed origins* to **\***
+    - *Allowed headers* to **\***
+    - *Exposed headers* to **\***
+    - *Max age* to **0**
+1. Select all the HTTP verbs in the *Allowed methods* column.
+1. Click *Save*.
+
+Create the media container:
+
+1. Navigate to your Storage Account in the Azure portal and click on *Storage Explorer* from the menu on the left.
+1. Right click on *Blob containers* and select *Create blob container*.
+1. Type in the name you specified in the `config.publish.json` in the `blobStorageContainer` field (default: `media`).
+1. Leave the access level as *Private*.
+1. Click *OK*.
 
 ### Step 3: Provision the default template
 
