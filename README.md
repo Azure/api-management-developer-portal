@@ -64,7 +64,7 @@ To set up a local development environment, you need to have:
 From your console window, clone apim-dev-portal repository from GitHub and install npm packages:
 
 ```sh
-git clone git@github.com:Azure/api-management-developer-portal.git
+git clone https://github.com/Azure/api-management-developer-portal.git
 cd api-management-developer-portal
 npm install
 ```
