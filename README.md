@@ -71,7 +71,7 @@ npm install
 
 ### Step 2: Configure
 
-The developer portal requires API Management's REST API to manage the content, a blob storage to host uploaded files (e.g., images), and a blob storage to publish the website through.
+The developer portal requires API Management's REST API to manage the content and a blob storage to host uploaded files (e.g., images).
 
 #### `./src/config.design.json` file
 
@@ -80,7 +80,7 @@ The developer portal requires API Management's REST API to manage the content, a
    "managementApiUrl": "https://<service>.management.azure-api.net",
    "managementApiVersion": "2018-06-01-preview",
    "managementApiAccessToken": "SharedAccessSignature ...",
-   "blobStorageContainer": "<container>",
+   "blobStorageContainer": "media",
    "blobStorageUrl": "https://<account>.blob.core.windows.net?st=...",
    "environment": "development"
 }
@@ -88,7 +88,7 @@ The developer portal requires API Management's REST API to manage the content, a
 
 1. Replace `<service>` in `"managementApiUrl": "https://<service>.management.azure-api.net"` with the name of your API Management instance.
 1. [Enable the direct REST API access](https://docs.microsoft.com/en-us/rest/api/apimanagement/apimanagementrest/azure-api-management-rest-api-authentication#ManuallyCreateToken) to your API Management instance. Copy the generated token and place it in the `"managementApiAccessToken": "SharedAccessSignature ..."` parameter.
-1. In `"blobStorageContainer": "<container>"` specify the container you would like media files for local development to be uploaded to.
+1. `"blobStorageContainer"` specifies the container your media files will be uploaded to during local development. You can keep the default value, or adjust it.
 1. Navigate to your Storage Account in the Azure portal. Choose the *Shared access signature* section and generate a blob service SAS URL. Paste this URL in `"blobStorageUrl": "https://<account>.blob.core.windows.net?st=..."`.
 
 #### `./src/config.publish.json` file
@@ -107,6 +107,7 @@ The developer portal requires API Management's REST API to manage the content, a
 1. Replace `<service>` in `"managementApiUrl": "https://<service>.management.azure-api.net"` with the name of your API Management instance.
 1. Copy the `"managementApiAccessToken": "SharedAccessSignature ..."` parameter from the previous configuration file.
 1. Provide the connection string to your Storage Account in the `"blobStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=..."` parameter. You can find it the *Access keys* section of your Storage Account in the Azure portal. This storage account will host your portal.
+1. `"blobStorageContainer"` should have the same value as in the `./src/config.design.json` file.
 
 #### `./src/config.runtime.json` file
 
