@@ -1,0 +1,43 @@
+.thumbnail {
+    width: 120px;
+    height: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-position: center;
+    position: relative;
+    margin: 5px;
+    float: left;
+    text-align: center;
+
+    & div {
+        width: 50px;
+        height: 50px;
+        top: 25%;
+        left: 25%;
+    }
+
+    &:before {
+        opacity: 0;
+        transition: opacity .6s;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        content: attr(title);
+        position: absolute;
+        background-color: #000;
+        color: #fff;
+        line-height: normal;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 5px;
+    }
+
+    &:hover {
+        &:before {
+            opacity: .7;
+        }
+    }
+}

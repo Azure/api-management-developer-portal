@@ -1,0 +1,8 @@
+{{method}} {{requestUrl}} HTTP/1.1
+
+{% for header in request.headers -%}
+{{ header.name }}: {{ header.value }}
+{% endfor %}
+{% if request.body -%}
+{{ request.body }}
+{% endif -%}

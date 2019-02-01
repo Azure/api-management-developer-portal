@@ -1,0 +1,123 @@
+﻿@import "variables.scss";
+@import "mixins.scss";
+@import "icons.scss";
+
+.list {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+
+
+    .list-item {
+        line-height: $list-item-size;
+        position: relative;
+        cursor: pointer;
+        vertical-align: middle;
+        display: flex;
+        flex-wrap: wrap;
+
+        .paperbits-icon {
+            padding: 0 5px 0 10px;
+        }
+
+        .list-item-label {
+            padding: 0 5px;
+            flex: 1;
+            text-decoration: none;
+            color: $color-base;
+            @include text-overflow();
+        }
+
+        &:focus,
+        &:hover {
+            outline: none;
+        }
+
+        &:hover {
+            @include selection();
+        }
+
+        &:focus {
+            @include selection();
+        }
+
+        &.selected {
+            @include selection();
+        }
+
+        &.dragged {
+            pointer-events: none;
+            box-shadow: 0 0 2px 2px rgba(128, 128, 128, 0.4);
+            transform: scale(1.07);
+            transition: transform .1s ease-in-out;
+            min-width: 200px;
+            position: fixed;
+        }
+
+        .list-item-collapse {
+            width: $list-item-size;
+            height: $list-item-size;
+            line-height: $list-item-size;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+            background: none;
+            flex: 0;
+
+            .paperbits-icon {
+                color: $collapse-button-color;
+            }
+        }
+
+        .list-item-handle {
+            cursor: pointer;
+            cursor: grab;
+        }
+
+        .list-item-children {
+            padding-left: 2.75em;
+            flex-basis: 100%;
+            width: 100%;;
+        }
+
+        .list-item-thumbnail {
+            width: 30px;
+            height: 30px;
+            display: block;
+            border-radius: 50%;
+            background-color: #f8f8f8;
+            float: right;
+            box-shadow: inset -1px 1px 1px 0 rgba(0,0,0,0.1);
+        }
+
+        &.list-item-image {
+            float: left;
+            margin: 3px;
+            background: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><path fill="white" d="M1,0H2V1H1V0ZM0,1H1V2H0V1Z"/><path fill="#eaeaea" d="M0,0H1V1H0V0ZM1,1H2V2H1V1Z"/></svg>');
+            background-size: 10px;
+        }
+
+        &.list-item-float {
+            float: left;
+            margin: 0;
+        }
+
+        &.list-item-large {
+            display: block;
+            width: 130px;
+            text-align: center;
+            padding: 5px;
+
+            a {
+                display: inline-block;
+            }
+
+            .paperbits-icon {
+                display: block;
+                padding: 0;
+                height: 1.5em;
+            }
+        }
+    }
+}

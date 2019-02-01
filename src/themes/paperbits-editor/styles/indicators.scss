@@ -1,0 +1,62 @@
+﻿@import "variables.scss";
+@import "mixins.scss";
+@import "animation.scss";
+
+.indicators {
+    position: fixed;
+    right: 0;
+    bottom: 100px;
+
+    .progress-indicator {
+        @include surface();
+        @include animation-slideleft();
+        margin: 5px;
+        padding: 20px;
+        display: inline-block;
+
+        .progress-indicator-content {
+            display: block;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .progress-indicator-value {
+            font-size: 2em;
+            float: left;
+            padding-right: 20px;
+        }
+
+        &.progress-indicator-success {
+            padding-left: 80px;
+        }
+    }
+
+    .indicator {
+        @include surface();
+        @include animation-slideleft();
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 400px;
+
+        .indicator-content {
+            flex: 1 1 auto;
+
+            p {
+                margin: 0;
+                margin-top: 5px;
+            }
+        }
+
+        .indicator-progress {
+            display: block;
+            width: 50px;
+            margin-left: 5px;
+            position: relative;
+        }
+
+        & > div {
+            padding: 10px;
+        }
+    }
+}

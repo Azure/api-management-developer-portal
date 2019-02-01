@@ -1,0 +1,39 @@
+.color {
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: inset -1px 1px 1px 0 rgba(0, 0, 0, 0.1);
+    width: 30px;
+    height: 30px;
+    margin: 10px;
+    padding: 0;
+    display: block;
+    position: relative;
+    text-align: center;
+}
+
+.palette {
+    list-style: none;
+    padding: 0;
+
+    .color-box {
+        float: left;
+
+        &:hover {
+            @include selection(10px);
+        }
+
+        &.selected {
+            .color:before {
+                position: absolute;
+                content: '';
+                border: 2px solid #4c5866;
+                border-radius: 50%;
+                width: 36px;
+                height: 36px;
+                top: -3px;
+                left: -3px;
+                pointer-events: none;
+            }
+        }
+    }
+}

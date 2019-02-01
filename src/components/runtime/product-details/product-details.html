@@ -1,0 +1,55 @@
+<!-- ko ifnot: showSubscribe -->
+<div class="container-fluid">
+    <div class="panel panel-table">
+        <!-- ko ifnot: product -->
+        <h2>Product not found</h2>    
+        <!-- /ko -->
+
+        <!-- ko if: product -->
+        <h2 data-bind="text: product().name"></h2>
+        <p data-bind="text: product().description"></p>        
+
+        <!-- ko if: apis -->
+        <p>
+            <b>This product contains <span data-bind="text: apis().length"></span> API(s):</b>
+        </p>
+
+        <ul>
+            <!-- ko foreach: apis -->
+            <li>
+                <a href="#" class="btn-link" data-bind="click: $parent.selectApi, text: name + (apiVersion ? ' - ' + apiVersion : '')"></a>
+            </li>
+            <!-- /ko -->
+        </ul>
+        <!-- /ko -->
+
+        <!-- ko if: subscriptions -->
+        <p>
+            <b>You have <span data-bind="text: subscriptions().length"></span> subscription(s) to this product:</b>
+        </p>
+
+        <ul>
+            <!-- ko foreach: subscriptions -->
+            <li>
+                <a href="#" class="btn-link" data-bind="click: $parent.selectSubscription, text: name"></a>
+            </li>
+            <!-- /ko -->
+        </ul>
+        <!-- /ko -->
+
+        <!-- ko if: limitReached() -->
+        <b>Text on product page, indicating that user already reached subscriptions limit</b>
+        <!-- /ko -->
+
+        <!-- ko if: multipleNotAllowed() === false -->
+        <a class="button button-primary" href="#" data-bind="click: subscribeToProduct">Add subscription</a>
+        <!-- /ko -->
+
+        <!-- /ko -->
+    </div>
+</div>
+<!-- /ko -->
+<!-- ko if: showSubscribe -->
+<h4><a href="#" class="btn-link" data-bind="click: toggleDetails, text: '<< ' + product().name"></a></h4>  
+<product-subscribe></product-subscribe>
+<!-- /ko -->

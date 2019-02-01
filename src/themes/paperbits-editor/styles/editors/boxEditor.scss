@@ -1,0 +1,143 @@
+$box-model-spacing: 30px;
+$box-model-spacing-from-border: 1px;
+$box-model-border-width: 4px;
+
+.box-model {
+    font-family: monospace;
+
+    .box-model-margin {
+        padding: 40px;
+        border: 1px dashed #D8E60A;
+        // background: #FDFFDF;
+    }
+
+    .box-model-border {
+        padding: 20px;
+        border: $box-model-border-width solid #737373;
+        // background: #737373;
+    }
+
+    .box-model-padding {
+        padding: $box-model-spacing;
+        // border: 1px solid #ccc;
+        // background: #E3DCFF;
+    }
+
+    .box-model-control {
+        border: none;
+        position: absolute;
+        width: $box-model-spacing - 2px;
+        text-align: center;
+        background: transparent;
+        font-family: monospace;
+
+        &:focus {
+            outline: 1px solid #ccc;
+        }
+    }
+
+    .box-model-control-top {
+        top: $box-model-spacing-from-border;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .box-model-control-left {
+        left: $box-model-spacing-from-border;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .box-model-control-right {
+        right: $box-model-spacing-from-border;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .box-model-control-bottom {
+        bottom: $box-model-spacing-from-border;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .box-model-control-top-left {
+        top: -$box-model-border-width / 2;
+        left: -$box-model-border-width / 2;
+    }
+
+    .box-model-control-top-right {
+        top: -$box-model-border-width / 2;
+        right: -$box-model-border-width / 2;
+    }
+
+    .box-model-control-bottom-left {
+        bottom: -$box-model-border-width / 2;
+        left: -$box-model-border-width / 2;
+    }
+
+    .box-model-control-bottom-right {
+        bottom: -$box-model-border-width / 2;
+        right: -$box-model-border-width / 2;
+    }
+
+    .box-model-content {
+        border: 1px dashed #54A9FF;
+        min-width: 80px;
+        height: 60px;
+        text-align: center;
+        line-height: 60px;
+        // background: #CFF0FB;
+    }
+
+    .box-model-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        line-height: $box-model-spacing;
+        padding: 0 5px;
+    }
+
+    .box-model-border {
+        & > .box-model-control {
+            background: #737373;
+            border-radius: 4px;
+            color: #fff;
+
+            &.box-model-control-top {
+                top: -$box-model-border-width / 2;
+                transform: translate(-50%, -50%);
+            }
+        
+            &.box-model-control-left {
+                left: -$box-model-border-width / 2;
+                transform: translate(-50%, -50%);
+            }
+        
+            &.box-model-control-right {
+                right: -$box-model-border-width / 2;
+                transform: translate(50%, -50%);
+            }
+        
+            &.box-model-control-bottom {
+                bottom: -$box-model-border-width / 2;
+                transform: translate(-50%, 50%);
+            }
+        
+            &.box-model-control-top-left {
+                transform: translate(-50%, -50%);
+            }
+        
+            &.box-model-control-top-right {
+                transform: translate(50%, -50%);
+            }
+        
+            &.box-model-control-bottom-left {
+                transform: translate(-50%, 50%);
+            }
+        
+            &.box-model-control-bottom-right {
+                transform: translate(50%, 50%);
+            }
+        }
+    }
+}

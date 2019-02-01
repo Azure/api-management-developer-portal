@@ -1,0 +1,51 @@
+﻿@import "variables.scss";
+@import "buttons.scss";
+
+
+
+.tools-paragraph-style {
+    @include tabable();
+    display: block;
+    padding: 5px 10px;
+    text-decoration: none;
+}
+
+.tools-paragraph-style {
+    &:last-child {
+        border: none;
+    }
+}
+
+.tools-paragraph-style-normal {
+    @extend .tools-paragraph-style;
+}
+
+.tools-paragraph-style-h1 {
+    @extend .tools-paragraph-style;
+    font-size: 2.6em;
+}
+
+.tools-paragraph-style-h2 {
+    @extend .tools-paragraph-style;
+    font-size: 2.3em;
+}
+
+.tools-paragraph-style-h3 {
+    @extend .tools-paragraph-style;
+    font-size: 1.7em;
+}
+
+.tools-paragraph-style-h4 {
+    @extend .tools-paragraph-style;
+    font-size: 1.4em;
+}
+
+.tools-paragraph-style-h5 {
+    @extend .tools-paragraph-style;
+    font-size: 1em;
+}
+
+.tools-paragraph-style-h6 {
+    @extend .tools-paragraph-style;
+    font-size: .85em;
+}

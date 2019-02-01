@@ -1,0 +1,52 @@
+// // This sample uses the Apache HTTP client from HTTP Components (http://hc.apache.org/httpcomponents-client-ga/)
+import java.net.URI;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
+public class JavaSample 
+{
+    public static void main(String[] args) 
+    {
+        HttpClient httpclient = HttpClients.createDefault();
+
+        try
+        {
+            URIBuilder builder = new URIBuilder("{{scheme}}://{{host}}{{path}}");
+
+{% if request.parameters.size > 0 -%}
+{% for parameter in request.parameters -%}
+            builder.setParameter("{{parameter.name}}", "{{parameter.value}}");
+{% endfor -%}
+{% endif -%}
+
+            URI uri = builder.build();
+            Http{{ method | downcase | capitalize }} request = new Http{{ method | downcase | capitalize }}(uri);
+{% for header in request.headers -%}
+            request.setHeader("{{header.name}}", "{{header.value}}");
+{% endfor %}
+
+{% if body -%}
+            // Request body
+            StringEntity reqEntity = new StringEntity("{{ body | replace:'"','\"' }}");
+            request.setEntity(reqEntity);
+{% endif -%}
+
+            HttpResponse response = httpclient.execute(request);
+            HttpEntity entity = response.getEntity();
+
+            if (entity != null) 
+            {
+                System.out.println(EntityUtils.toString(entity));
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+}

@@ -1,0 +1,7 @@
+@mixin fit($spacing: 0) {
+    top: $spacing;
+    left: $spacing;
+    right: $spacing;
+    bottom: $spacing;
+    position: absolute;
+}

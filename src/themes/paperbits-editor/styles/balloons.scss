@@ -1,0 +1,46 @@
+﻿@import "variables.scss";
+@import "mixins.scss";
+
+$tip-width: 10px;
+
+.balloon {
+    @include surface();
+    position: fixed;
+    background-color: $balloon-background;
+    z-index: $z-index-balloon;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, .15);
+    border-radius: $toolbox-border-radius;
+    line-height: $surface-lineheight;
+    display: block;
+
+    &:after {
+        position: absolute;
+        content: '';
+        width: $tip-width;
+        height: $tip-width;
+        background: $balloon-background;
+        z-index: $z-index-balloon;
+        box-shadow: -2px -2px 2px rgba(0, 0, 0, 0.15);
+        z-index: -100;
+    }
+
+    &.balloon-top {
+        &:after {
+            z-index: $z-index-balloon;
+            transform: translateY(50%) rotate(45deg);
+            box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.15);
+            left: $tip-width + ($tip-width/2);
+            bottom: 0;
+        }
+    }
+
+    &.balloon-bottom {
+        &:after {
+            z-index: $z-index-balloon;
+            transform: translateY(-50%) rotate(45deg);
+            box-shadow: -2px -2px 2px rgba(0, 0, 0, 0.15);
+            left: $tip-width + ($tip-width/2);
+            top: 0;
+        }
+    }
+}
