@@ -1,0 +1,75 @@
+########### Python 2.7 #############
+import httplib, urllib, base64
+
+headers = {
+{% if request.headers.size > 0 -%}
+    # Request headers
+{% for header in request.headers -%}
+    '{{header.name}}': '{{header.value}}',
+{% endfor -%}
+{% endif -%}
+}
+
+params = urllib.urlencode({
+{% if request.parameters.size > 0 -%}
+    # Request parameters
+{% for parameter in request.parameters -%}
+    '{{parameter.name}}': '{{parameter.value}}',
+{% endfor -%}
+{% endif -%}
+})
+
+try:
+{% case scheme -%}
+{% when "http" -%}
+    conn = httplib.HTTPConnection('{{host}}')
+{% when "https" -%}
+    conn = httplib.HTTPSConnection('{{host}}')
+{% endcase -%}
+    conn.request("{{method}}", "{{path}}{% if path contains '?' %}&{% else %}?{% endif %}%s" % params{% if body %}, "{{ body | replace:'"','\"' }}"{% endif %}, headers)
+    response = conn.getresponse()
+    data = response.read()
+    print(data)
+    conn.close()
+except Exception as e:
+    print("[Errno {0}] {1}".format(e.errno, e.strerror))
+
+####################################
+
+########### Python 3.2 #############
+import http.client, urllib.request, urllib.parse, urllib.error, base64
+
+headers = {
+{% if request.headers.size > 0 -%}
+    # Request headers
+{% for header in request.headers -%}
+    '{{header.name}}': '{{header.value}}',
+{% endfor -%}
+{% endif -%}
+}
+
+params = urllib.parse.urlencode({
+{% if parameters.size > 0 -%}
+    # Request parameters
+{% for parameter in request.parameters -%}
+    '{{parameter.name}}': '{{parameter.value}}',
+{% endfor -%}
+{% endif -%}
+})
+
+try:
+{% case scheme -%}
+{% when "http" -%}
+    conn = http.client.HTTPConnection('{{host}}')
+{% when "https" -%}
+    conn = http.client.HTTPSConnection('{{host}}')
+{% endcase -%}
+    conn.request("{{method}}", "{{path}}{% if path contains '?' %}&{% else %}?{% endif %}%s" % params{% if body %}, "{{ body | replace:'"','\"' }}"{% endif %}, headers)
+    response = conn.getresponse()
+    data = response.read()
+    print(data)
+    conn.close()
+except Exception as e:
+    print("[Errno {0}] {1}".format(e.errno, e.strerror))
+
+####################################

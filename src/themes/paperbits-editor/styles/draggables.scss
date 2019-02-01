@@ -1,0 +1,31 @@
+﻿@import "variables.scss";
+
+.dragtarget {
+    width: 100px;
+    height: 100px;
+    border: 1px dashed #ccc;
+}
+
+.dragsource {
+    border: 1px solid #ccc;
+    position: fixed;
+    background: #fff;
+}
+
+.dragged {
+    @include no-select();
+    @include no-drag();
+    @include no-pointer-events();
+    z-index: $z-index-dragging;
+    cursor: grab;
+    position: fixed;
+    background: #fff;
+}
+
+.placeholder {
+    border: 2px dashed #ccc;
+    border: 2px dashed darken($surface-background, 20%);
+    transition: height .5s ease-in-out;
+    position: relative;
+}
+

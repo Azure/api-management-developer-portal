@@ -1,0 +1,14 @@
+@import "emails.scss";
+
+body {
+    padding: 20px;
+}
+
+.dragged {
+    box-shadow: 2px 2px 2px 2px rgba(128, 128, 128, 0.4);
+    transform: scale(1.03);
+    transition: transform .3s ease-in-out, height .3s ease-in-out, width .3s ease-in-out;
+    opacity: .95;
+    position: fixed;
+    z-index: 9999;
+}

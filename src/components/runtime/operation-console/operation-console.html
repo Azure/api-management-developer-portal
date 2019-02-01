@@ -1,0 +1,225 @@
+<!--ko if: consoleOperation() -->
+<div class="panel panel-dark" data-bind="with: consoleOperation()">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-bind="click: $parents[1].closeConsole">
+        <span aria-hidden="true">✖</span>
+    </button>
+
+    <nav aria-label="breadcrumb" style="margin-right: 20px">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#" data-bind="text: api.name"></a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="#" data-bind="text: api.apiVersion"></a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <span data-bind="text: name"></span>
+            </li>
+        </ol>
+    </nav>
+
+    <div data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
+    <!-- <div class="row">
+        <div class="col-md-12">
+            <span data-bind="text: urlTemplate, attr: { 'data-method': method }"></span>
+        </div>
+    </div> -->
+
+    <!-- ko if: (templateParameters && templateParameters().length > 0) || (request.queryParameters && request.queryParameters().length > 0) -->
+
+    <h3>Parameters</h3>
+
+    <div data-bind="foreach: { data: templateParameters, as: 'parameter' }">
+        <div class="row flex flex-row">
+            <div class="col-md-4">
+                <input type="text" readonly autocomplete="off" class="form-control form-control-sm" placeholder="name"
+                    spellcheck="false" data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.name, valueUpdate: 'keyup'">
+            </div>
+            <div class="col-md-4">
+                <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
+                    spellcheck="false" data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
+            </div>
+        </div>
+    </div>
+
+    <div data-bind="foreach: { data: request.queryParameters, as: 'parameter' }">
+        <div class="row flex flex-row">
+            <div class="col-md-4">
+                <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
+                    spellcheck="false" data-bind="textInput: parameter.name, valueUpdate: 'keyup'">
+            </div>
+            <div class="col-md-4">
+                <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
+                    spellcheck="false" data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
+            </div>
+        </div>
+    </div>
+
+    <!-- /ko -->
+
+    <!-- ko if: request.headers().length > 0 -->
+    <h3>Headers</h3>
+
+    <div data-bind="foreach: { data: request.headers, as: 'header' }">
+        <div class="row flex flex-row">
+            <div class="col-md-4">
+                <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
+                    spellcheck="false" data-bind="textInput: header.name, valueUpdate: 'keyup'">
+            </div>
+            <div class="col-md-4">
+                <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
+                    spellcheck="false" data-bind="event: { keyup: $component.updateRequestSummary }, textInput: header.value, valueUpdate: 'keyup'">
+            </div>
+        </div>
+    </div>
+
+    <!-- /ko -->
+
+    <div data-bind="if: hasBody">
+        <h3>
+            Body
+            <div class="btn-group float-right" role="group" style="margin-right: 10px">
+                <button type="button" class="button btn-sm dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <span data-bind="text: $component.bodySource"></span>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" data-bind="click: $component.bodySource.bind(this, 'Raw')">Raw</a>
+                    <a class="dropdown-item" href="#" data-bind="click: $component.bodySource.bind(this, 'Binary')">Binary</a>
+                </div>
+            </div>
+        </h3>
+
+        <div class="clearfix"></div>
+        <div class="row ">
+            <div class="col-md-12">
+                <!-- ko if: $component.bodySource() === 'Raw' -->
+                <textarea class="form-control form-control-sm" rows="9" data-bind="event: { keyup: $component.updateRequestSummary }, textInput: request.body, valueUpdate: 'keyup'"></textarea>
+                <!-- /ko -->
+                <!-- ko if: $component.bodySource() === 'Binary' -->
+                <file-input params="{ selectedFile: $component.attachement }"></file-input>
+                <!-- /ko -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-dark panel-highlight flex-item flex-grow">
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'http'), css: { active: $component.selectedLanguage() === 'http' }">HTTP</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'curl'), css: { active: $component.selectedLanguage() === 'curl' }">Curl</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'csharp'), css: { active: $component.selectedLanguage() === 'csharp' }">C#</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'java'), css: { active: $component.selectedLanguage() === 'java' }">Java</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'javascript'), css: { active: $component.selectedLanguage() === 'javascript' }">JavaScript</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'php'), css: { active: $component.selectedLanguage() === 'php' }">PHP</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'python'), css: { active: $component.selectedLanguage() === 'python' }">Python</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'ruby'), css: { active: $component.selectedLanguage() === 'ruby' }">Ruby</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'objc'), css: { active: $component.selectedLanguage() === 'objc' }">Objective
+                C</a>
+        </li>
+    </ul>
+
+    <h3>HTTP request</h3>
+    <pre data-bind="codesample: { template: templates[selectedLanguage()], model: consoleOperation, language: selectedLanguage }"></pre>
+    <div class="flex flex-column align-items-end">
+        <div class="btn-group" role="group">
+            <div class="btn-group" role="group">
+                <button type="button" class="button btn-sm dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    From browser
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">From browser</a>
+                    <a class="dropdown-item" href="#">Via proxy</a>
+                </div>
+            </div>
+            <button type="button" class="button button-primary btn-sm" data-bind="click: validateAndSendRequest">Send</button>
+        </div>
+    </div>
+</div>
+
+<!-- ko if: responseStatusCode -->
+<div class="panel panel-dark" data-bind="scrollintoview: {}">
+    <ul class="nav">
+        <li class="nav-item">
+            <a href="#" class="nav-link active" data-bind="click: selectMessageTab, css: { active: responseActiveTab() === 'message' }">Message</a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link" data-bind="click: selectTraceTab, css: { active: responseActiveTab() === 'trace' }">Trace</a>
+        </li>
+    </ul>
+
+    <!-- ko if: responseActiveTab() === "message" -->
+
+    <h3>HTTP response</h3>
+    <pre><span>HTTP/1.1</span> <span data-bind="attr: { 'data-code': responseStatusCode  }"><span data-bind="text: responseStatusCode, attr: { 'data-code':responseStatusCode  }"></span> <span data-bind="text: responseStatusText"></span></span>
+
+<span data-bind="text: responseHeadersString"></span>
+
+<span data-bind="text: responseBody"></span></pre>
+
+    <!--/ko-->
+
+    <!-- ko if: responseActiveTab() === "trace" -->
+
+    <!-- ko if: consoleTrace -->
+    <!-- ko with: consoleTrace -->
+    <ul class="nav nav-pills">
+        <li class="nav-item nav-link">
+            <label>Jump to:</label>
+        </li>
+        <li class="nav-item nav-link">
+            <a href="#trace_inbound">Inbound</a>
+        </li>
+        <li class="nav-item nav-link">
+            <a href="#trace_backend">Backend</a>
+        </li>
+        <li class="nav-item nav-link">
+            <a href="#trace_outbound">Outbound</a>
+        </li>
+    </ul>
+    <!-- <div class="panel-contextual panel-contextual-top panel-contextual-right">
+        <b>Response latency: {{ totalExecutionTime | number : '1.3-3' }} ms</b>
+    </div> -->
+    <div data-bind="if: inbound">
+        <h3 id="trace_inbound">Inbound (<span data-bind="text: inboundExecutionTime"></span> ms)</h3>
+        <pre class="well well-sm" data-bind="foreach: { data: inbound, as: 'item'  }"><span highlight-code class="json"><span data-bind="text: item.source"></span> (<span data-bind="text: item.executionTime"></span> ms)<span data-bind="text: $component.formatJson(item.data)"></span></span><hr /></pre>
+    </div>
+    <div data-bind="if: backend">
+        <h3 id="trace_backend">Backend (<span data-bind="text: backendExecutionTime"></span> ms)</h3>
+        <pre class="well well-sm" data-bind="foreach: { data: backend, as: 'item'  }"><span highlight-code class="json"><span data-bind="text: item.source"></span> (<span data-bind="text: item.executionTime"></span> ms)<span data-bind="text: $component.formatJson(item.data)"></span></span><hr /></pre>
+    </div>
+    <div data-bind="if: outbound">
+        <h3 id="trace_outbound">Outbound (<span data-bind="text: outboundExecutionTime"></span> ms)</h3>
+        <pre class="well well-sm" data-bind="foreach: { data: outbound, as: 'item'  }"><span highlight-code class="json"><span data-bind="text: item.source"></span> (<span data-bind="text: item.executionTime"></span> ms)<span data-bind="text: $component.formatJson(item.data)"></span></span><hr /></pre>
+    </div>
+    <!--/ko-->
+    <!--/ko-->
+
+    <!-- ko if: consoleTraceError -->
+    <p><span data-bind="text: consoleTraceError"></span></p>
+    <!--/ko-->
+
+    <!--/ko-->
+</div>
+<!--/ko-->
+
+
+<!--/ko-->

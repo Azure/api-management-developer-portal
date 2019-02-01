@@ -1,0 +1,12 @@
+﻿@import "mixins.scss";
+
+.indicators {
+    position: fixed;
+    right: 0px;
+    bottom: 0px;
+
+    .progress-indicator {
+        @include surface();
+        margin: 20px;
+    }
+}
