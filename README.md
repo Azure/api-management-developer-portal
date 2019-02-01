@@ -120,17 +120,35 @@ The developer portal requires API Management's REST API to manage the content, a
 
 1. Replace `<service>` in `"managementApiUrl": "https://<service>.management.azure-api.net"` with the name of your API Management instance.
 
+#### Storage Account - Static website
+
+You need to configure the *Static website* feature in your Storage Account by providing routes to the index and error pages.
+
+1. Navigate to your Storage Account in the Azure portal and click on *Static website* from the menu on the left.
+1. In the field *Index document name* type *index.html*.
+1. In the field *Error document path* type *404/index.html*.
+1. Click *Save*.
+
 ### Step 3: Provision the default template
 
 API Management instances do not have any data specific to the new developer portal, so you need to provision it manually.
 
-First, specify your service name and access token. Then, execute the data generation script, which will upload content through [cURL]( https://curl.haxx.se/download.html) to the Management REST API:
+First, specify your API Management service name and the REST API access token in the `scripts\generate.bat` file:
 
 ```sh
 set access_token=SharedAccessSignature ...
 set service_name=...
-./scripts/generate.bat
 ```
+
+`access_token` is the same value that you specified in the configuration files under the `managementApiAccessToken` parameter.
+
+Then, execute the data generation script, which will upload content through [cURL]( https://curl.haxx.se/download.html) to the Management REST API:
+
+```sh
+.\scripts\generate.bat
+```
+
+If you're having troubles running the script, right click on the file and make sure that it is marked as an executable and that you have permissions to run it.
 
 ### Step 4: Run the portal
 
