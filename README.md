@@ -106,7 +106,7 @@ The developer portal requires API Management's REST API to manage the content, a
 
 1. Replace `<service>` in `"managementApiUrl": "https://<service>.management.azure-api.net"` with the name of your API Management instance.
 1. Copy the `"managementApiAccessToken": "SharedAccessSignature ..."` parameter from the previous configuration file.
-1. Provide the connection string to your Storage Account in the `"blobStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=..."` parameter. This storage account will host your portal.
+1. Provide the connection string to your Storage Account in the `"blobStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=..."` parameter. You can find it the *Access keys* section of your Storage Account in the Azure portal. This storage account will host your portal.
 
 #### `./src/config.runtime.json` file
 
@@ -145,7 +145,9 @@ set service_name=...
 Then, execute the data generation script, which will upload content through [cURL]( https://curl.haxx.se/download.html) to the Management REST API:
 
 ```sh
-.\scripts\generate.bat
+cd scripts
+.\generate.bat
+cd ..
 ```
 
 If you're having troubles running the script, right click on the file and make sure that it is marked as an executable and that you have permissions to run it.
