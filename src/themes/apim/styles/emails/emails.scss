@@ -1,0 +1,122 @@
+@import "../variables.scss";
+@import "text.scss";
+@import "picture.scss";
+@import "layouts.scss";
+
+
+* {
+    box-sizing: border-box;
+    position: relative;
+}
+
+body {
+    background-color: #fff;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    -webkit-text-size-adjust: 100% !important;
+    -ms-text-size-adjust: 100% !important;
+    -webkit-font-smoothing: antialiased !important;
+    font-family: "Times New Roman", serif;
+}
+
+table tr td {
+    a,
+    button,
+    p {
+        font-family: "Times New Roman", serif;
+        text-align: left;
+        color: #5b5f61;
+        font-size: 22px;
+        font-weight: normal;
+        line-height: 35.2px;
+        margin-bottom: 25px;
+    }
+
+    a {
+        color: #5cc6d0;
+        text-decoration: none;
+    }
+}
+
+div,
+p,
+ul {
+    margin: 0;
+    text-align: left;
+}
+
+ul {
+    list-style: disc;
+    padding-left: 20px;
+}
+
+$grid-padding: 10px;
+
+table {
+    vertical-align: top;
+    line-height: inherit;
+    border: none;
+
+    table {
+        tr {
+            td {
+                padding: $grid-padding;
+            }
+        }
+    }
+}
+
+.container {
+    max-width: 600px;
+    padding: $grid-padding;
+
+    table {
+        padding: $grid-padding;
+        width: 100%;
+
+        tr {
+            td {
+                padding: $grid-padding;
+            }
+        }
+    }
+}
+
+.main p,
+.main ul {
+    text-align: left;
+    color: #5b5f61;
+    font-size: 22px;
+    font-weight: normal;
+    line-height: 35.2px;
+    margin-bottom: 25px;
+}
+
+.footer p {
+    text-align: center;
+    font-size: 15px;
+    font-weight: normal;
+    line-height: 25px;
+}
+
+.social {
+    margin: 20px 0;
+}
+
+.btn {
+    font-size: 22px;
+    text-decoration: none;
+    padding: 15px 18px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.btn-default {
+    background: #f79740;
+    color: #ffffff;
+}
+
+picture {
+    display: inline-block;
+}

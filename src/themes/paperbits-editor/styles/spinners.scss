@@ -1,0 +1,36 @@
+.spinner-signal {
+    border: 3px solid #8bc34a;
+    border-radius: 50%;
+    left: calc(50% - #{25px});
+    top: calc(50% - #{25px});
+    opacity: 0;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    animation: pulsate 2s ease-out;
+    animation-iteration-count: infinite;
+    display: block;
+}
+
+@keyframes pulsate {
+    0% {
+        transform: scale(.1);
+        opacity: 0.0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+}
+
+.shutter {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: block;
+    position: fixed;
+}

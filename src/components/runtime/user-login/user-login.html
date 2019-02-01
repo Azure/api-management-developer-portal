@@ -1,0 +1,17 @@
+<fieldset data-bind="attr: { disabled : working }">    
+    <div class="form-group">
+        <label for="Email">Email</label>
+        <input aria-required="true" autofocus="autofocus" class="form-control" id="Email" name="Email" placeholder="Email"
+            type="text" data-bind="textInput: userName, css: {'is-invalid': isError}" required>
+    </div>
+    <div class="form-group">
+        <label for="Password">Password</label>
+        <input aria-required="true" class="form-control" id="Password" name="Password" placeholder="Password" type="password"
+            data-bind="textInput: userPassword, css: {'is-invalid': isError}">
+        <div class="invalid-feedback"><span data-bind="text: errorMessage"></span></div>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" id="signinButton" value="Sign in" class="button button-primary" data-bind="click: signinClick, enable: (!!userName() && !!userPassword())">
+    </div>
+</fieldset>

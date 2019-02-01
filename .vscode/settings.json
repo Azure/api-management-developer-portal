@@ -1,0 +1,36 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.vscode": true,
+        "**/.history": true,
+        "**/*.js": {
+            "when": "$(basename).ts"
+        },
+        "**/node_modules": true,
+        "**/dist": true,
+        "**/e2e/build": true,
+        "src/app/environment.module.ts": true
+    },
+    "search.exclude": {
+        "**/.git": true,
+        "**/.history": true,
+        "**/.vscode": true,
+        "**/*.js": {
+            "when": "$(basename).ts"
+        },
+        "**/node_modules": true,
+        "**/dist": true,
+        "**/e2e/build": true,
+        "src/app/environment.module.ts": true
+    },
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "mocha.options": {
+        "compilers": "ts-node/register"
+    },
+    "mocha.requires": [
+        "ts-node/register"
+    ],
+    "mocha.files.glob": "specs/*.spec.ts"
+}

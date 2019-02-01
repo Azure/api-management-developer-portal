@@ -1,0 +1,92 @@
+@font-face {
+    font-family: 'icons';
+    src: url('fonts/icons.eot?jxl2if');
+    src: url('fonts/icons.eot?jxl2if#iefix') format('embedded-opentype'), url('fonts/icons.ttf?jxl2if') format('truetype'), url('fonts/icons.woff?jxl2if') format('woff'), url('fonts/icons.svg?jxl2if#icons') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class*=" icon-"],
+[class^="icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icons' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.paperbits-icon.icon-zoom-2:before {
+    content: "\ea02";
+}
+
+.paperbits-icon.icon-logo-github:before {
+    content: "\ea03";
+}
+
+
+.icon-api-management:before {
+    content: "\e903";
+}
+
+.icon-chevron-down:before {
+    content: "\e904";
+}
+
+.icon-code:before {
+    content: "\e905";
+}
+
+.icon-drag-handle:before {
+    content: "\e906";
+}
+
+.icon-eye:before {
+    content: "\e907";
+}
+
+.icon-eye-fill:before {
+    content: "\e908";
+}
+
+.icon-magnifier:before {
+    content: "\e909";
+}
+
+.icon-option-horizontal:before {
+    content: "\e90a";
+}
+
+.icon-plus:before {
+    content: "\e90b";
+}
+
+.icon-search-filter:before {
+    content: "\e90c";
+}
+
+.icon-tag:before {
+    content: "\e90d";
+}
+
+.icon-trash:before {
+    content: "\e90e";
+}
+
+.icon-filtrofier:before {
+    content: "\e902";
+}
+
+.icon-grouped-list:before {
+    content: "\e900";
+}
+
+.icon-list:before {
+    content: "\e901";
+}

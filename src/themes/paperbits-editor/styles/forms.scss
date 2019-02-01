@@ -1,0 +1,211 @@
+﻿@import "variables.scss";
+@import "mixins.scss";
+@import "icons.scss";
+
+// .ps {
+//     overflow: auto;
+//     /* Shadow covers */
+
+//     background:linear-gradient(white 30%, rgba(255,255,255,0)), linear-gradient(rgba(255,255,255,0), white 70%) 0 100%,
+
+//     /* Shadows */
+//     radial-gradient(50% 0, farthest-side, rgba(0,0,0,.1), rgba(0,0,0,0)), radial-gradient(50% 100%,farthest-side, rgba(0,0,0,.1), rgba(0,0,0,0)) 0 100%;
+//     /* Shadow covers */
+//     background:linear-gradient(white 30%, rgba(255,255,255,0)), linear-gradient(rgba(255,255,255,0), white 70%) 0 100%,
+
+//     /* Shadows */
+//     radial-gradient(farthest-side at 50% 0, rgba(0,0,0,.1), rgba(0,0,0,0)), radial-gradient(farthest-side at 50% 100%, rgba(0,0,0,.1), rgba(0,0,0,0)) 0 100%;
+//     background-repeat: no-repeat;
+//     background-color: white;
+//     background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
+
+//     /* Opera doesn't support this in the shorthand */
+//     background-attachment: local, local, scroll, scroll;
+// }
+
+.form {
+    margin: 0;
+    padding: 0 15px 0 0;
+    border: none;
+}
+
+.form-group {
+    display: block;
+    margin-bottom: 20px;
+    overflow: hidden;
+    width: 100%;
+
+    .form-group {
+        // Nested form group
+        margin-bottom: 15px;
+    }
+
+    // &:last-of-type {
+    //     margin-bottom: 0;
+    //     padding-bottom: 0;
+    // }
+
+    &.form-group-collapsible {
+        .form-label {
+            position: unset;
+        }
+
+        .form-group-toggle {
+            position: unset;
+            padding: 2px;
+            text-decoration: none;
+            color: $collapse-button-color;
+
+            &:after {
+                content: "";
+                position: absolute;
+                top: 25px;
+                bottom: -10px;
+                left: 10px;
+                border-left: 1px dotted #ddd;
+            }
+            @extend .paperbits-icon;
+            @extend .paperbits-circle-delete;
+
+            &.collapsed {
+                @extend .paperbits-icon;
+                @extend .paperbits-circle-add;
+
+                &:after {
+                    border: none;
+                }
+            }
+        }
+
+        .form-group-collapse {
+            padding-left: 25px;
+            padding-bottom: 10px;
+
+            &.collapsed {
+                display: none;
+            }
+        }
+    }
+}
+
+.form-control,
+input[type=search],
+input[type=text],
+textarea {
+    font-family: $font-family-base;
+    font-weight: $font-weight-base;
+    font-size: $textbox-font-size;
+    color: $color-base;
+    border: .5px solid #BDBFC1;
+    display: block;
+
+    &::placeholder {
+        font-style: italic;
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    width: 100%;
+
+    &.is-invalid {
+        color: $color-danger;
+        border-color: $color-danger;
+    }
+
+    &[readonly]{
+        background-color: #f5f5f5;
+    }
+}
+
+input[type=search] {
+    background-position: 98% center;
+    background-repeat: no-repeat;
+    background-size: auto 60%;
+    background-blend-mode: exclusion;
+}
+
+input[type=radio] {
+    margin: 0 5px;
+}
+
+.form-control {
+    padding: $form-control-padding;
+    width: 100%;
+}
+
+a.form-control {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+label {
+    padding: 5px 0;
+    display: block;
+    font-weight: 600;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+hr {
+    display: block;
+    border: none;
+    border-bottom: 1px solid #E6E7E8;
+    height: 1px;
+    width: 100%;
+    margin: 12px 0;
+}
+
+.tabs {
+    border-bottom: 1px solid #E6E7E8;
+    display: flex;
+
+    .tab {
+        a {
+            width: 60px;
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 40px;
+            color: $color-base;
+
+            &:active,
+            &:focus,
+            &:hover {
+                outline: none;
+                @include selection();
+            }
+        }
+
+        &.tab-is-active {
+            border-bottom: 2px solid $tab-selected-color;
+        }
+    }
+}
+
+.input-group {
+    display: flex !important;
+    border: .5px solid #BDBFC1;
+
+    .form-control {
+        border: none;
+    }
+
+    .input-group-btn {
+        min-width: 1.5em;
+        border: none;
+    }
+
+    .input-group-addon {
+        font-size: $textbox-font-size;
+        padding: $form-control-padding;
+        min-width: 1.5em;
+        color: $color-base;
+        border: none;
+        display: block;
+    }
+}

@@ -1,0 +1,10 @@
+﻿.video-player {
+    width: 100%;
+    min-height: 150px;
+    position: relative;
+
+    video {
+        width: 100%;
+        pointer-events: none;
+    }
+}
