@@ -222,17 +222,15 @@ Your website is now live under the hostname specified in your Azure Storage prop
 
 ## Alternative development process
 
-### Custom hosting
+### Edit content through files, not visual editor
 
-TODO: under construction
+In the tutorial we described the workflow of editing content and customizing the portal through the built-in visual editor. You can also use REST API to fetch the underlying data files, edit them directly in a text editor, and upload new versions through API calls.
 
 ### Bring your own CMS
 
-TODO: under construction
+Portal-specific data (e.g., pages) of a standard developer portal is retrieved from, saved to, and stored in an API Management instance.
 
-### Edit content through files, not visual editor
-
-TODO: under construction
+You can configure your portal deployment to use a different data source. For example, you may leverage a headless CMS to manage your your content.  
 
 ### Build for production
 
@@ -298,6 +296,12 @@ Once it is deployed, you can invoke it with an HTTP call:
 ```sh
 curl -X POST https://<function app name>.azurewebsites.net/api/publish
 ```
+
+### Hosting and CDN
+
+Although in the tutorial we suggested using Azure Storage Account as a hosting for your website, you can publish the files through any solution, including hosting providers.
+
+You can also front the files with a Content Delivery Network (CDN) to reduce page loading times. We recommend using [Azure CDN](https://azure.microsoft.com/en-us/services/cdn/).
 
 ## APIs and entities (automation)
 
