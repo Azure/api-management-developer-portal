@@ -210,7 +210,7 @@ Use Azure CLI to upload the locally generated static files to a blob, and make t
 az storage blob upload-batch --source dist/website --destination $web --account-name <account name> --account-key <account key>
 ```
 
-Fill the **<account name>** and **<account key>** with the information you specified in the `./src/config.publish.json` file.
+Replace the `<account name>` and `<account key>` with the information you specified in the `./src/config.publish.json` file.
 
 ![API Management developer portal development - publish portal](docs/media/readme-dev-upload.png)
 
