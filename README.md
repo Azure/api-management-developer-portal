@@ -1,6 +1,18 @@
 # API Management developer portal - private preview
 
-## Overview
+This repository is managed by the [Microsoft Azure API Management](https://aka.ms/apimrocks) team.
+
+Table of contents:
+
+- [Overview](#overview)
+- [Getting started](#getting-started)
+- [Reporting bugs and providing feedback](#providing-feedback)
+- [Contributing](#contributing)
+- [License](#license)
+
+![API Management developer portal](readme/portal.png)
+
+## <a name="overview"></a> Overview
 
 The API Management developer portal is based on our own fork of the [Paperbits framework](http://paperbits.io/). It has a modern default look and feel, and is optimized for:
 
@@ -8,25 +20,21 @@ The API Management developer portal is based on our own fork of the [Paperbits f
 - Programmatic access through APIs for automating the development, management, and deployment.
 - Extensibility of the core functionality.
 
-![API Management developer portal](readme/portal.png)
-
 We extended the original Paperbits functionality to provide API Management-specific widgets (e.g., a list of APIs, or Products). We also implemented a connector to an API Management instance for saving and retrieving the content (e.g., pages, configuration, styling).
 
-The code of the developer portal is available in [our Github repository](https://github.com/Azure/api-management-developer-portal). We will maintain it and ensure it includes the latest updates from 3rd party dependencies, including the original Paperbits project. We will also keep adding more API Management-specific features.
-
-If you wish to have the best experience with your developer portal, you should **always merge updates from our original repository to your fork**.
+We will maintain [our Github repository](https://github.com/Azure/api-management-developer-portal) and ensure it includes the latest updates. If you wish to have the best experience with your developer portal, you should **always merge updates from our original repository to your fork**.
 
 When we reach the public preview stage, the repository will become publicly available.
 
-## Getting started
+## <a name="getting-started"></a> Getting started
 
 Learn how to get started with the new developer portal by navigating to the [documentation in wiki](https://github.com/Azure/api-management-developer-portal/wiki).
 
-## Report bugs and provide feedback
+## <a name="providing-feedback"></a> Reporting bugs and providing feedback
 
-Please, submit bug reports, feedback, and feature requests through the Issues functionality on GitHub.
+Please, submit bug reports, feedback, and feature requests through [the GitHub Issues page](https://github.com/Azure/api-management-developer-portal/issues).
 
-## Contributing
+## <a name="contributing"></a> Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.microsoft.com.
 
@@ -34,6 +42,6 @@ When you submit a pull request, a CLA-bot will automatically determine whether y
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-## License
+## <a name="license"></a> License
 
 This project is published under MIT license. See the details in the [license file](license).
