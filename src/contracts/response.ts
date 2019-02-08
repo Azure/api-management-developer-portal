@@ -1,5 +1,5 @@
-import { RepresentationContract } from './representation';
-import { ParameterContract } from './parameter';
+import { RepresentationContract } from "./representation";
+import { ParameterContract } from "./parameter";
 
 /*
  * Model of API operation response

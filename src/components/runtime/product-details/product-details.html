@@ -37,11 +37,11 @@
         </ul>
         <!-- /ko -->
 
-        <!-- ko if: limitReached() -->
+        <!-- ko if: limitReached -->
         <b>Text on product page, indicating that user already reached subscriptions limit</b>
         <!-- /ko -->
 
-        <!-- ko if: multipleNotAllowed() === false -->
+        <!-- ko ifnot: limitReached -->
         <a class="button button-primary" href="#" data-bind="click: subscribeToProduct">Add subscription</a>
         <!-- /ko -->
 
@@ -50,6 +50,6 @@
 </div>
 <!-- /ko -->
 <!-- ko if: showSubscribe -->
-<h4><a href="#" class="btn-link" data-bind="click: toggleDetails, text: '<< ' + product().name"></a></h4>  
+<h4><a href="#" class="btn-link" data-bind="click: toggleSubscribe, text: '<< ' + product().name"></a></h4>  
 <product-subscribe></product-subscribe>
 <!-- /ko -->

@@ -63,13 +63,13 @@
         "permalink": "/404",
         "documentId": "contentTypes/document/contentItems/f95c292b-b40b-e2cd-b5dc-71fffc97083d"
     },
-    "/contentTypes/page/contentItems/4e1bb2df-a6a7-2c63-ef40-f6e073c2bbbf": {
-        "id": "/contentTypes/page/contentItems/4e1bb2df-a6a7-2c63-ef40-f6e073c2bbbf",
+    "/contentTypes/page/contentItems/1787efa4-0c19-ec2a-7a8c-3a46d3f0bd95": {
+        "id": "/contentTypes/page/contentItems/1787efa4-0c19-ec2a-7a8c-3a46d3f0bd95",
         "title": "APIs",
         "description": "",
         "keywords": "",
         "permalink": "/apis",
-        "documentId": "contentTypes/document/contentItems/4e1bb2df-a6a7-2c63-ef40-f6e073c2bbbf"
+        "documentId": "contentTypes/document/contentItems/1787efa4-0c19-ec2a-7a8c-3a46d3f0bd95"
     },
     "/contentTypes/document/contentItems/stylesheet": {
         "id": "/contentTypes/document/contentItems/stylesheet",
@@ -140,6 +140,11 @@
                         "id": "colors/dzBpe",
                         "displayName": "Background - nav",
                         "value": "rgba(0, 50, 86, 1.0)"
+                    },
+                    "links": {
+                        "displayName": "Links",
+                        "id": "colors/links",
+                        "value": "rgba(92, 178, 208, 1.0)"
                     }
                 },
                 "components": {
@@ -392,6 +397,7 @@
                                     "displayName": "Navigation link",
                                     "id": "components/navbar/default/components/navLink",
                                     "typography": {
+                                        "colorId": "colors/default",
                                         "fontStyle": "normal",
                                         "fontWeight": "normal"
                                     }
@@ -435,6 +441,76 @@
                                 "weight": "700"
                             }
                         ]
+                    },
+                    "JGLby": {
+                        "id": "fonts/JGLby",
+                        "family": "Roboto",
+                        "displayName": "Roboto",
+                        "category": "sans-serif",
+                        "version": "v18",
+                        "lastModified": "2017-10-16",
+                        "variants": [
+                            {
+                                "weight": "100",
+                                "style": "normal",
+                                "file": "https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1MmgWxP.ttf"
+                            },
+                            {
+                                "weight": "100",
+                                "style": "italic",
+                                "file": "https://fonts.gstatic.com/s/roboto/v18/KFOiCnqEu92Fr1Mu51QrIzc.ttf"
+                            },
+                            {
+                                "weight": "300",
+                                "style": "normal",
+                                "file": "https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmSU5vAw.ttf"
+                            },
+                            {
+                                "weight": "300",
+                                "style": "italic",
+                                "file": "https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TjARc9.ttf"
+                            },
+                            {
+                                "weight": 400,
+                                "style": "regular",
+                                "file": "https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Me5Q.ttf"
+                            },
+                            {
+                                "weight": 400,
+                                "style": "italic",
+                                "file": "https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1Mu52xP.ttf"
+                            },
+                            {
+                                "weight": "500",
+                                "style": "normal",
+                                "file": "https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmEU9vAw.ttf"
+                            },
+                            {
+                                "weight": "500",
+                                "style": "italic",
+                                "file": "https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51S7ABc9.ttf"
+                            },
+                            {
+                                "weight": "700",
+                                "style": "normal",
+                                "file": "https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmWUlvAw.ttf"
+                            },
+                            {
+                                "weight": "700",
+                                "style": "italic",
+                                "file": "https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TzBhc9.ttf"
+                            },
+                            {
+                                "weight": "900",
+                                "style": "normal",
+                                "file": "https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmYUtvAw.ttf"
+                            },
+                            {
+                                "weight": "900",
+                                "style": "italic",
+                                "file": "https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TLBBc9.ttf"
+                            }
+                        ]
                     }
                 },
                 "globals": {
@@ -458,6 +534,7 @@
                         "displayName": "Text",
                         "id": "globals/body",
                         "typography": {
+                            "colorId": "colors/default",
                             "fontId": "fonts/quicksand",
                             "fontSize": 18,
                             "fontStyle": "normal",
@@ -547,7 +624,8 @@
                         "typography": {
                             "fontSize": 18,
                             "fontStyle": "normal",
-                            "fontWeight": "normal"
+                            "fontWeight": "normal",
+                            "fontId": "fonts/JGLby"
                         },
                         "background": {}
                     },
@@ -658,6 +736,9 @@
                 },
                 "instances": {
                     "section-01": {
+                        "background": {
+                            "colorId": "colors/dark"
+                        },
                         "typography": {
                             "colorId": "colors/primaryText"
                         }
@@ -668,14 +749,45 @@
                         }
                     },
                     "section-3PjlI": {
+                        "background": {
+                            "colorId": "colors/dark"
+                        },
                         "typography": {
                             "colorId": "colors/primaryText"
+                        }
+                    },
+                    "section-HCnub": {
+                        "background": {
+                            "images": [
+                                {
+                                    "position": "center center",
+                                    "repeat": "no-repeat",
+                                    "size": "cover",
+                                    "sourceId": "contentTypes/blob/contentItems/60fc6f08-6e1a-6e15-a24c-1675dbc506f0"
+                                }
+                            ]
+                        }
+                    },
+                    "section-QwOH9": {
+                        "background": {
+                            "colorId": "colors/Gpcrr",
+                            "images": [
+                                {
+                                    "position": "center center",
+                                    "repeat": "no-repeat",
+                                    "size": "cover",
+                                    "sourceId": "contentTypes/blob/contentItems/f6042995-4f9d-0397-c996-03a3b1dd96fa"
+                                }
+                            ]
                         }
                     },
                     "section-TaPvU": {
                         "background": {}
                     },
                     "section-XNxoW": {
+                        "background": {
+                            "colorId": "colors/dark"
+                        },
                         "typography": {
                             "colorId": "colors/primaryText"
                         }
@@ -685,7 +797,7 @@
                             "images": [
                                 {
                                     "sourceId": "/contentTypes/blob/contentItems/09879768-b2c8-afbd-a945-934c046b3c2d",
-                                    "position": "bottom center",
+                                    "position": "center center",
                                     "size": "cover",
                                     "repeat": "no-repeat"
                                 }
@@ -693,7 +805,22 @@
                             "colorId": "colors/s7KlY"
                         }
                     },
+                    "section-bdPlH": {
+                        "background": {
+                            "images": [
+                                {
+                                    "position": "center center",
+                                    "repeat": "no-repeat",
+                                    "size": "cover",
+                                    "sourceId": "contentTypes/blob/contentItems/f6042995-4f9d-0397-c996-03a3b1dd96fa"
+                                }
+                            ]
+                        }
+                    },
                     "section-dlBPo": {
+                        "background": {
+                            "colorId": "colors/primaryBg"
+                        },
                         "typography": {
                             "colorId": "colors/primaryText"
                         }
@@ -750,6 +877,21 @@
                         }
                     },
                     "section-nj4rb": {
+                        "background": {}
+                    },
+                    "section-uAGyo": {
+                        "background": {
+                            "images": [
+                                {
+                                    "sourceId": "/contentTypes/blob/contentItems/ac02f3b1-a144-467a-782c-2c6012113fbc",
+                                    "position": "bottom center",
+                                    "size": "cover",
+                                    "repeat": "no-repeat"
+                                }
+                            ]
+                        }
+                    },
+                    "section-1mrFT": {
                         "background": {}
                     }
                 },
@@ -1079,7 +1221,7 @@
                     {
                         "id": "32fea618-15ed-f8ab-e3fa-ec71a144632f",
                         "label": "APIs",
-                        "targetId": "/contentTypes/page/contentItems/4e1bb2df-a6a7-2c63-ef40-f6e073c2bbbf",
+                        "targetId": "/contentTypes/url/contentItems/db6d0be2-ec1a-2850-6476-ff53b65b00b9",
                         "navigationItems": null
                     },
                     {
@@ -1243,6 +1385,13 @@
                                 "nodes": [
                                     {
                                         "object": "block",
+                                        "type": "table-of-contents",
+                                        "title": "Tutorial",
+                                        "maxHeading": 1,
+                                        "navigationItemId": "3213b0bb-95c1-4b60-96a5-59af7c2750cf"
+                                    },
+                                    {
+                                        "object": "block",
                                         "type": "listOfApis"
                                     }
                                 ],
@@ -1250,8 +1399,12 @@
                                     "xs": 12,
                                     "md": 3
                                 },
-                                "alignment": {},
-                                "order": {}
+                                "alignment": {
+                                    "xl": "start start"
+                                },
+                                "order": {},
+                                "overflowX": "scroll",
+                                "overflowY": "scroll"
                             },
                             {
                                 "type": "layout-column",
@@ -1266,8 +1419,12 @@
                                     "xs": 12,
                                     "md": 9
                                 },
-                                "alignment": {},
-                                "order": {}
+                                "alignment": {
+                                    "xl": "start start"
+                                },
+                                "order": {},
+                                "overflowX": "scroll",
+                                "overflowY": "scroll"
                             }
                         ],
                         "align": {},
@@ -1407,8 +1564,12 @@
                                 "size": {
                                     "xs": 12
                                 },
-                                "alignment": {},
-                                "order": {}
+                                "alignment": {
+                                    "xl": "start start"
+                                },
+                                "order": {},
+                                "overflowX": null,
+                                "overflowY": null
                             }
                         ],
                         "align": {},
@@ -1416,8 +1577,7 @@
                     }
                 ],
                 "layout": "container",
-                "padding": "with-padding",
-                "snapping": "none"
+                "padding": "with-padding"
             }
         ]
     },
@@ -1729,7 +1889,8 @@
                                                             "xl": "utils/text/alignCenter",
                                                             "xs": "utils/text/alignCenter"
                                                         }
-                                                    }
+                                                    },
+                                                    "setId": true
                                                 },
                                                 "content": [
                                                     {
@@ -1745,22 +1906,16 @@
                                                         "text": "Welcome to Contoso"
                                                     }
                                                 ]
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "object": "widget",
-                                        "type": "text",
-                                        "nodes": [
+                                            },
                                             {
                                                 "type": "paragraph",
                                                 "attrs": {
                                                     "styles": {
                                                         "alignment": {
-                                                            "xl": "utils/text/alignCenter",
-                                                            "xs": "utils/text/alignCenter"
+                                                            "xl": "utils/text/alignCenter"
                                                         }
-                                                    }
+                                                    },
+                                                    "setId": false
                                                 },
                                                 "content": [
                                                     {
@@ -1783,8 +1938,12 @@
                                 "size": {
                                     "xs": 12
                                 },
-                                "alignment": {},
-                                "order": {}
+                                "alignment": {
+                                    "xl": "center center"
+                                },
+                                "order": {},
+                                "overflowX": null,
+                                "overflowY": null
                             }
                         ],
                         "align": {},
@@ -1842,7 +2001,6 @@
                 ],
                 "layout": "fluid",
                 "padding": "with-padding",
-                "snapping": "none",
                 "styles": {
                     "instance": "instances/section-ZvlVg"
                 }
@@ -1871,7 +2029,8 @@
                                                             "xl": "utils/text/alignCenter",
                                                             "xs": "utils/text/alignCenter"
                                                         }
-                                                    }
+                                                    },
+                                                    "setId": true
                                                 },
                                                 "content": [
                                                     {
@@ -1896,7 +2055,8 @@
                                                             "xl": "utils/text/alignCenter",
                                                             "xs": "utils/text/alignCenter"
                                                         }
-                                                    }
+                                                    },
+                                                    "setId": false
                                                 },
                                                 "content": [
                                                     {
@@ -1939,7 +2099,8 @@
                                                             "xl": "utils/text/alignCenter",
                                                             "xs": "utils/text/alignCenter"
                                                         }
-                                                    }
+                                                    },
+                                                    "setId": true
                                                 },
                                                 "content": [
                                                     {
@@ -1964,7 +2125,8 @@
                                                             "xl": "utils/text/alignCenter",
                                                             "xs": "utils/text/alignCenter"
                                                         }
-                                                    }
+                                                    },
+                                                    "setId": false
                                                 },
                                                 "content": [
                                                     {
@@ -2007,7 +2169,8 @@
                                                             "xl": "utils/text/alignCenter",
                                                             "xs": "utils/text/alignCenter"
                                                         }
-                                                    }
+                                                    },
+                                                    "setId": true
                                                 },
                                                 "content": [
                                                     {
@@ -2032,7 +2195,8 @@
                                                             "xl": "utils/text/alignCenter",
                                                             "xs": "utils/text/alignCenter"
                                                         }
-                                                    }
+                                                    },
+                                                    "setId": false
                                                 },
                                                 "content": [
                                                     {
@@ -2066,7 +2230,6 @@
                 ],
                 "layout": "container",
                 "padding": "with-padding",
-                "snapping": "none",
                 "styles": {
                     "instance": "instances/section-3ITnO"
                 }
@@ -2094,7 +2257,8 @@
                                                         "alignment": {
                                                             "xl": "utils/text/alignCenter"
                                                         }
-                                                    }
+                                                    },
+                                                    "setId": true
                                                 },
                                                 "content": [
                                                     {
@@ -2109,8 +2273,12 @@
                                 "size": {
                                     "xs": 12
                                 },
-                                "alignment": {},
-                                "order": {}
+                                "alignment": {
+                                    "xl": "center center"
+                                },
+                                "order": {},
+                                "overflowX": null,
+                                "overflowY": null
                             }
                         ],
                         "align": {},
@@ -2131,12 +2299,13 @@
                                             {
                                                 "type": "paragraph",
                                                 "attrs": {
-                                                    "styles": null
+                                                    "styles": null,
+                                                    "setId": false
                                                 },
                                                 "content": [
                                                     {
                                                         "type": "text",
-                                                        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                                                        "text": "Lorem!! ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                                                     }
                                                 ]
                                             }
@@ -2161,7 +2330,8 @@
                                             {
                                                 "type": "paragraph",
                                                 "attrs": {
-                                                    "styles": null
+                                                    "styles": null,
+                                                    "setId": false
                                                 },
                                                 "content": [
                                                     {
@@ -2187,7 +2357,6 @@
                 ],
                 "layout": "container",
                 "padding": "with-padding",
-                "snapping": "none",
                 "styles": {
                     "instance": "instances/section-1mrFT"
                 }
@@ -2215,7 +2384,8 @@
                                                         "alignment": {
                                                             "xl": "utils/text/alignCenter"
                                                         }
-                                                    }
+                                                    },
+                                                    "setId": true
                                                 },
                                                 "content": [
                                                     {
@@ -2230,8 +2400,12 @@
                                 "size": {
                                     "xs": 12
                                 },
-                                "alignment": {},
-                                "order": {}
+                                "alignment": {
+                                    "xl": "center center"
+                                },
+                                "order": {},
+                                "overflowX": null,
+                                "overflowY": null
                             }
                         ],
                         "align": {},
@@ -2268,7 +2442,8 @@
                                                     {
                                                         "type": "heading2",
                                                         "attrs": {
-                                                            "styles": null
+                                                            "styles": null,
+                                                            "setId": true
                                                         },
                                                         "content": [
                                                             {
@@ -2280,7 +2455,8 @@
                                                     {
                                                         "type": "paragraph",
                                                         "attrs": {
-                                                            "styles": null
+                                                            "styles": null,
+                                                            "setId": false
                                                         },
                                                         "content": [
                                                             {
@@ -2349,7 +2525,8 @@
                                                     {
                                                         "type": "heading2",
                                                         "attrs": {
-                                                            "styles": null
+                                                            "styles": null,
+                                                            "setId": true
                                                         },
                                                         "content": [
                                                             {
@@ -2361,7 +2538,8 @@
                                                     {
                                                         "type": "paragraph",
                                                         "attrs": {
-                                                            "styles": null
+                                                            "styles": null,
+                                                            "setId": false
                                                         },
                                                         "content": [
                                                             {
@@ -2430,7 +2608,8 @@
                                                     {
                                                         "type": "heading2",
                                                         "attrs": {
-                                                            "styles": null
+                                                            "styles": null,
+                                                            "setId": true
                                                         },
                                                         "content": [
                                                             {
@@ -2442,7 +2621,8 @@
                                                     {
                                                         "type": "paragraph",
                                                         "attrs": {
-                                                            "styles": null
+                                                            "styles": null,
+                                                            "setId": false
                                                         },
                                                         "content": [
                                                             {
@@ -2492,7 +2672,6 @@
                 ],
                 "layout": "container",
                 "padding": "with-padding",
-                "snapping": "none",
                 "styles": {
                     "instance": "instances/section-0A1Z0"
                 }
@@ -2520,7 +2699,8 @@
                                                         "alignment": {
                                                             "xl": "utils/text/alignLeft"
                                                         }
-                                                    }
+                                                    },
+                                                    "setId": false
                                                 },
                                                 "content": [
                                                     {
@@ -2802,12 +2982,12 @@
                                         }
                                     }
                                 ],
-                                "offset": {
-                                    "md": 3
-                                },
                                 "size": {
                                     "xs": 12,
                                     "md": 6
+                                },
+                                "offset": {
+                                    "md": 3
                                 },
                                 "alignment": {
                                     "xl": "center center"
@@ -2823,7 +3003,6 @@
                 ],
                 "layout": "container",
                 "padding": "with-padding",
-                "snapping": "none",
                 "styles": {
                     "instance": "instances/section-TaPvU"
                 }
@@ -2851,7 +3030,8 @@
                                                         "alignment": {
                                                             "xl": "utils/text/alignCenter"
                                                         }
-                                                    }
+                                                    },
+                                                    "setId": true
                                                 },
                                                 "content": [
                                                     {
@@ -2866,8 +3046,12 @@
                                 "size": {
                                     "xs": 12
                                 },
-                                "alignment": {},
-                                "order": {}
+                                "alignment": {
+                                    "xl": "center center"
+                                },
+                                "order": {},
+                                "overflowX": null,
+                                "overflowY": null
                             }
                         ],
                         "align": {},
@@ -2904,7 +3088,6 @@
                 ],
                 "layout": "container",
                 "padding": "with-padding",
-                "snapping": "none",
                 "styles": {
                     "instance": "instances/section-142PD"
                 }
@@ -3045,82 +3228,8 @@
             }
         ]
     },
-    "/contentTypes/document/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58": {
-        "id": "/contentTypes/document/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58",
-        "nodes": [
-            {
-                "background": {
-                    "position": "center center",
-                    "size": "contain"
-                },
-                "layout": "container",
-                "nodes": [
-                    {
-                        "nodes": [
-                            {
-                                "nodes": [
-                                    {
-                                        "object": "block",
-                                        "type": "productSubscribe"
-                                    }
-                                ],
-                                "object": "block",
-                                "size": {
-                                    "xs": 12
-                                },
-                                "type": "layout-column"
-                            }
-                        ],
-                        "object": "block",
-                        "type": "layout-row"
-                    }
-                ],
-                "object": "block",
-                "padding": "with-padding",
-                "snapping": "none",
-                "type": "layout-section"
-            }
-        ]
-    },
-    "/contentTypes/document/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2": {
-        "id": "/contentTypes/document/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2",
-        "nodes": [
-            {
-                "background": {
-                    "position": "center center",
-                    "size": "contain"
-                },
-                "layout": "fluid",
-                "nodes": [
-                    {
-                        "nodes": [
-                            {
-                                "nodes": [
-                                    {
-                                        "object": "block",
-                                        "type": "productDetails"
-                                    }
-                                ],
-                                "object": "block",
-                                "size": {
-                                    "xs": 12
-                                },
-                                "type": "layout-column"
-                            }
-                        ],
-                        "object": "block",
-                        "type": "layout-row"
-                    }
-                ],
-                "object": "block",
-                "padding": "with-padding",
-                "snapping": "none",
-                "type": "layout-section"
-            }
-        ]
-    },
-    "/contentTypes/document/contentItems/4e1bb2df-a6a7-2c63-ef40-f6e073c2bbbf": {
-        "id": "/contentTypes/document/contentItems/4e1bb2df-a6a7-2c63-ef40-f6e073c2bbbf",
+    "/contentTypes/document/contentItems/1787efa4-0c19-ec2a-7a8c-3a46d3f0bd95": {
+        "id": "/contentTypes/document/contentItems/1787efa4-0c19-ec2a-7a8c-3a46d3f0bd95",
         "nodes": [
             {
                 "layout": "container",
@@ -3194,20 +3303,6 @@
         "documentId": "contentTypes/document/contentItems/d7c50b85-12a5-3245-a4a5-d21ed7c8d6b9",
         "permalinkTemplate": "/*"
     },
-    "/contentTypes/layout/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58": {
-        "id": "/contentTypes/layout/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58",
-        "title": "Product subscribe form",
-        "description": "",
-        "documentId": "contentTypes/document/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58",
-        "permalinkTemplate": "/products/{id}/subscribe"
-    },
-    "/contentTypes/layout/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2": {
-        "id": "/contentTypes/layout/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2",
-        "title": "Product details pages",
-        "description": "",
-        "documentId": "contentTypes/document/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2",
-        "permalinkTemplate": "/products/{id}"
-    },
     "/contentTypes/url/contentItems/db6d0be2-ec1a-2850-6476-ff53b65b00b9": {
         "id": "/contentTypes/url/contentItems/db6d0be2-ec1a-2850-6476-ff53b65b00b9",
         "title": "APIs",
@@ -3222,7 +3317,7 @@
     },
     "/contentTypes/blob/contentItems/09879768-b2c8-afbd-a945-934c046b3c2d": {
         "id": "/contentTypes/blob/contentItems/09879768-b2c8-afbd-a945-934c046b3c2d",
-        "blobId": null,
+        "blobId": "09879768-b2c8-afbd-a945-934c046b3c2d",
         "filename": "hero-gradient.jpg",
         "description": "",
         "keywords": "",
@@ -3232,7 +3327,7 @@
     },
     "/contentTypes/blob/contentItems/c5d2da83-b255-245c-144b-cd3c242e9791": {
         "id": "/contentTypes/blob/contentItems/c5d2da83-b255-245c-144b-cd3c242e9791",
-        "blobId": null,
+        "blobId": "c5d2da83-b255-245c-144b-cd3c242e9791",
         "filename": "featured-1.jpg",
         "description": "",
         "keywords": "",
@@ -3242,7 +3337,7 @@
     },
     "/contentTypes/blob/contentItems/a2514081-47cb-95b1-ef0b-aef128c7a7ed": {
         "id": "/contentTypes/blob/contentItems/a2514081-47cb-95b1-ef0b-aef128c7a7ed",
-        "blobId": null,
+        "blobId": "a2514081-47cb-95b1-ef0b-aef128c7a7ed",
         "filename": "featured-2.jpg",
         "description": "",
         "keywords": "",
@@ -3252,7 +3347,7 @@
     },
     "/contentTypes/blob/contentItems/ed8e43d0-5f8e-af38-5536-8f0274656ce4": {
         "id": "/contentTypes/blob/contentItems/ed8e43d0-5f8e-af38-5536-8f0274656ce4",
-        "blobId": null,
+        "blobId": "ed8e43d0-5f8e-af38-5536-8f0274656ce4",
         "filename": "featured-3.jpg",
         "description": "",
         "keywords": "",
@@ -3262,7 +3357,7 @@
     },
     "/contentTypes/blob/contentItems/3e3d574f-0238-288b-0eb4-a51b3680ef4b": {
         "id": "/contentTypes/blob/contentItems/3e3d574f-0238-288b-0eb4-a51b3680ef4b",
-        "blobId": null,
+        "blobId": "3e3d574f-0238-288b-0eb4-a51b3680ef4b",
         "filename": "hero-surface.png",
         "description": "",
         "keywords": "",
@@ -3272,7 +3367,7 @@
     },
     "/contentTypes/blob/contentItems/70add409-0933-e01e-acef-99999a71167e": {
         "id": "/contentTypes/blob/contentItems/70add409-0933-e01e-acef-99999a71167e",
-        "blobId": null,
+        "blobId": "70add409-0933-e01e-acef-99999a71167e",
         "filename": "logo-contoso-small.png",
         "description": "",
         "keywords": "",

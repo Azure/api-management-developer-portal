@@ -75,7 +75,7 @@ export interface ServiceProperties {
     customProperties: Object;
 }
 
-export interface ServiceDescription {
+export interface ServiceDescriptionContract {
     /**
      * Example: /subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/Api-Default-West-US/providers/Microsoft.ApiManagement/service/aztest
      */

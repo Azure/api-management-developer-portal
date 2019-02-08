@@ -47,26 +47,32 @@ export class SmapiClient {
     private async setup(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
 
-        const managementApiUrl = settings["managamentApiUrl"];
+        const managementApiUrl = settings["managementApiUrl"];
 
         if (!managementApiUrl) {
-            throw new Error(`Management API URL ("managamentApiUrl") setting is missing in configuration file.`);
+            throw new Error(`Management API URL ("managementApiUrl") setting is missing in configuration file.`);
         }
 
         this.managementApiUrl = managementApiUrl;
 
-        const managementApiVersion = settings["managamentApiVersion"];
+        const managementApiVersion = settings["managementApiVersion"];
 
         if (!managementApiVersion) {
-            throw new Error(`Management API version ("managamentApiVersion") setting is missing in configuration file.`);
+            throw new Error(`Management API version ("managementApiVersion") setting is missing in configuration file.`);
         }
 
         this.managementApiVersion = managementApiVersion;
 
-        const managementApiAccessToken = settings["managamentApiAccessToken"];
+        const managementApiAccessToken = settings["managementApiAccessToken"];
 
         if (managementApiAccessToken) {
             this.authenticator.setAccessToken(managementApiAccessToken);
+        }
+
+        const managementApiUserId = settings["managementApiUserId"];
+
+        if (managementApiUserId) {
+            this.authenticator.setUser(managementApiUserId);
         }
 
         this.environment = settings["environment"];
@@ -200,7 +206,7 @@ export class SmapiClient {
                 return;
             }
 
-            console.warn(`Development mode: Please specify "managamentApiAccessToken" in configuration file.`);
+            console.warn(`Development mode: Please specify "managementApiAccessToken" in configuration file.`);
         }
 
         const error = this.processError(errorResponse.statusCode, requestedUrl, () => errorResponse.toObject().error);
