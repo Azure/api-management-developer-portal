@@ -1,7 +1,7 @@
 {
-    "managamentApiUrl": "https://<service>.management.azure-api.net",
-    "managamentApiVersion": "2018-06-01-preview",
-    "managamentApiAccessToken": "SharedAccessSignature...",
+    "managementApiUrl": "https://<service>.management.azure-api.net",
+    "managementApiVersion": "2018-06-01-preview",
+    "managementApiAccessToken": "SharedAccessSignature...",
     "blobStorageContainer": "media",
     "blobStorageConnectionString": "DefaultEndpointsProtocol=...",
     "environment": "publishing"
