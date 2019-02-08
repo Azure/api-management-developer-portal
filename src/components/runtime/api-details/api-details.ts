@@ -38,21 +38,19 @@ export class ApiDetails {
 
     @OnMounted()
     public async loadApi(): Promise<void> {
-        const route = this.routeHandler.getCurrentUrl();
-
         this.api(null);
         this.selectedOperation(null);
 
-        if (!route.startsWith("/apis/")) {
+        const apiName = this.routeHandler.getHash();
+
+        if (!apiName) {
             return;
         }
 
         this.working(true);
 
-        const apiId = route;
-
-        if (apiId) {
-            const api = await this.apiService.getApi(apiId);
+        if (apiName) {
+            const api = await this.apiService.getApi(`apis/${apiName}`);
 
             await this.loadOperations(api);
             this.api(api);

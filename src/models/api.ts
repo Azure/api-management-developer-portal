@@ -1,16 +1,20 @@
 import { VersionSet } from "./versionSet";
 import { ApiContract, SubscriptionKeyParameterName } from "../contracts/api";
 import { Operation } from "./operation";
+import { Utils } from "../utils";
 
 /**
  * API
  */
 export class Api {
     public readonly id: string;
+
+    public readonly name: string;
+
     /**
      * Display name of API, e.g. "HTTP Bin".
      */
-    public name?: string;
+    public displayName?: string;
 
     /**
      * Description of API.
@@ -80,7 +84,8 @@ export class Api {
 
     constructor(contract?: ApiContract) {
         this.id = contract.id;
-        this.name = contract.name;
+        this.name = Utils.getResourceName("apis", contract.id);
+        this.displayName = contract.name;
         this.serviceUrl = contract.serviceUrl;
         this.protocols = contract.protocols;
         this.description = contract.description;

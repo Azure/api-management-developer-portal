@@ -3,12 +3,11 @@ import template from "./api-list.html";
 import { SearchRequest } from "./searchRequest";
 import { TreeViewNode } from "./treeviewNode";
 import { VersionSetContract } from "../../../contracts/apiVersionSet";
-import { RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { TagContract } from "../../../contracts/tag";
 import { Utils } from "../../../utils";
 import { TagService } from "../../../services/tagService";
 import { ApiService } from "../../../services/apiService";
-import { Component } from "@paperbits/common/ko/decorators";
 import { DefaultRouteHandler } from "@paperbits/common/routing";
 import { Api } from "../../../models/api";
 
@@ -117,7 +116,7 @@ export class ApiList {
     //             versionSetNode.nodes.push(versionNode);
     //         }
     //         else {
-    //             const versionNode = new TreeViewNode(pair.api.name);
+    //             const versionNode = new TreeViewNode(pair.api.displayName);
     //             versionNode.data = pair.api;
     //             versionNode.id = Utils.getResourceName("apis", versionNode.data.id, "shortId");
     //             versionNode.onSelect = () => this.selectApi(versionNode);
@@ -137,16 +136,17 @@ export class ApiList {
 
         const unversionedApis = apis.filter(x => !x.apiVersionSet);
         const unversionedModels = unversionedApis.map(api => {
-            const node = new TreeViewNode(api.name);
+            const node = new TreeViewNode(api.displayName);
             const apiShortId = Utils.getResourceName("apis", api.id, "shortId");
             node.data(api);
             node.id = Utils.getResourceName("apis", node.data().id, "shortId");
+            node.name = Utils.getResourceName("apis", node.data().id);
             node.expanded(false);
             node.isSelected = ko.computed(() => node === this.selectedNode());
-            node.onSelect = () => {
-                this.selectedNode(node);
-                this.routeHandler.navigateTo(apiShortId); // TODO: It might no match the route
-            };
+            // node.onSelect = () => {
+            //     this.selectedNode(node);
+            //     this.routeHandler.navigateTo(apiShortId); // TODO: It might no match the route
+            // };
             node.level("level-1");
 
             return node;
@@ -164,7 +164,7 @@ export class ApiList {
             const versionSetShortId = Utils.getResourceName("api-version-sets", api.apiVersionSet.id, "shortId");
             versionSetNode.data(api);
             // versionSetNode.id = versionSetShortId;
-            versionSetNode.expanded(false);
+            versionSetNode.expanded(true);
             versionSetNode.isSelected = ko.computed(() => versionSetNode === this.selectedNode());
             versionSetNode.onSelect = () => {
                 // Do nothing for now
@@ -181,10 +181,11 @@ export class ApiList {
                 const apiShortId = Utils.getResourceName("apis", groupItem.id, "shortId");
                 versionNode.data(groupItem);
                 versionNode.id = apiShortId;
-                versionNode.onSelect = () => {
-                    this.routeHandler.navigateTo(apiShortId); // TODO: It might no match the route
-                    this.selectedNode(versionNode);
-                };
+                versionNode.name = Utils.getResourceName("apis", groupItem.id);
+                // versionNode.onSelect = () => {
+                //     this.routeHandler.navigateTo(apiShortId); // TODO: It might no match the route
+                //     this.selectedNode(versionNode);
+                // };
                 versionNode.isSelected = ko.computed(() => versionNode === this.selectedNode());
                 versionNode.level("level-1");
 
