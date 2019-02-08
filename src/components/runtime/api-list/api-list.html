@@ -1,9 +1,9 @@
 <template id="treeview">
-    <ul class="list-group">
+    <ul class="nav list-group">
         <!-- ko foreach: { data: nodes, as: 'node' } -->
-        <li class="list-group-item" role="listitem" data-bind="css: node.level">
+        <li class="nav-item list-group-item" role="listitem" data-bind="css: node.level">
             <div class="list-group-item-container" data-bind="css: { expanded: node.expanded, active: node.isSelected, 'has-active-child': node.hasActiveChild }">
-                <div [attr.name]="node.label" class="list-group-item-heading flex-container">
+                <div class="list-group-item-heading flex-container">
                     <!-- ko if: node.hasChildren() -->
                     <button class="toggle" aria-label="Expand" data-bind="css: { active: node.expanded }, click: node.toggle">
                         <i class="icon icon-chevron-down"></i>
@@ -11,7 +11,7 @@
                     <!-- /ko -->
 
                     <div class="list-group-item-label flex-item flex-grow">
-                        <a href="#" class="text-truncate" [attr.title]="node.label" data-bind="click: node.select, attr: { href: node.id }"
+                        <a href="#" class="text-truncate" data-bind="attr: { href: '/apis#'+node.name }"
                             [traceClick]="'API list > API'">
                             <span data-bind="text: node.label"></span>
                             <span data-bind="if: node.data && node.data.properties && node.data.type === 'soap'"

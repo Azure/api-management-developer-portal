@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import template from "./product-details.html";
 import { IRouteHandler } from "@paperbits/common/routing";
-import { matchUrl } from "@paperbits/common/utils";
+import { getUrlHashPart } from "@paperbits/common/utils";
 import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { Api } from "../../../models/api";
@@ -12,7 +12,6 @@ import { ProductService } from "../../../services/productService";
 import { UsersService } from "../../../services/usersService";
 import { ApiService } from "../../../services/apiService";
 
-export const urlTemplate = "/products/{id}";
 @RuntimeComponent({ selector: "product-details" })
 @Component({
     selector: "product-details",
@@ -20,12 +19,12 @@ export const urlTemplate = "/products/{id}";
     injectable: "productDetails"
 })
 export class ProductDetails {
+    private currentUrl: string;
 
     public apis: KnockoutObservableArray<Api>;
     public product: KnockoutObservable<Product>;    
     public subscriptions: KnockoutObservableArray<Subscription>;
     public limitReached: KnockoutObservable<boolean>;
-    public multipleNotAllowed: KnockoutObservable<boolean>;
     public showSubscribe: KnockoutObservable<boolean>;
 
     constructor(
@@ -36,7 +35,6 @@ export class ProductDetails {
     ) {
         this.product = ko.observable();
         this.limitReached = ko.observable();
-        this.multipleNotAllowed = ko.observable();
         this.apis = ko.observableArray();
         this.subscriptions = ko.observableArray();
         this.showSubscribe = ko.observable(false);
@@ -50,36 +48,31 @@ export class ProductDetails {
 
     @OnMounted()
     public async loadProduct(): Promise<void> {
-        const route = this.routeHandler.getCurrentUrl();        
+        this.currentUrl = this.routeHandler.getCurrentUrl().replace(/\/$/, "");        
 
-        if (route === urlTemplate || decodeURI(route) === urlTemplate) {
-            // This is a layout design time 
-            return;
-        }
-        const routeVars = matchUrl(route, urlTemplate);
-        if (!routeVars) {
-            // This is error
-            return;
-        }
-
-        const productId = route;
-        const product = await this.productService.getProduct(productId);
-
-        if (product) {     
-            this.product(product);
-
-            const apis = await this.apiService.getProductApis(productId);
-
-            if (apis) {
-                this.apis(apis || []);
-            }
-
-            const userId = this.usersService.getCurrentUserId();
-
-            if (userId) {
-                await this.loadSubscriptions(userId);
+        const hash = getUrlHashPart(this.currentUrl);
+        if (hash) {
+            const productId = "/products/"+ hash;
+            if (!this.product() || this.product().id !== productId) {
+                const product = await this.productService.getProduct(productId);
+                if (product) {     
+                    this.product(product);
+        
+                    const apis = await this.apiService.getProductApis(productId);
+        
+                    if (apis) {
+                        this.apis(apis || []);
+                    }
+        
+                    const userId = this.usersService.getCurrentUserId();
+        
+                    if (userId) {
+                        await this.loadSubscriptions(userId);
+                    }
+                }
             }
         }
+        
     }
 
     private async loadSubscriptions(userId: string): Promise<void> {
@@ -87,15 +80,30 @@ export class ProductDetails {
             const subscriptions = await this.productService.getUserSubscriptions(userId);
             const productSubscriptions = subscriptions.filter(item => item.productId === this.product().id && item.state === SubscriptionState.active) || [];
             this.subscriptions(productSubscriptions);
-            const product = this.product();
-            const activeCount = productSubscriptions.filter(item => item.state === SubscriptionState.active).length;
-            this.limitReached(product.allowMultipleSubscriptions && product.subscriptionsLimit && activeCount >= product.subscriptionsLimit);
-            this.multipleNotAllowed(!product.allowMultipleSubscriptions && activeCount > 0);
+            this.calculateSubscriptionsLimit(productSubscriptions);
         }
     }
 
+    private calculateSubscriptionsLimit(productSubscriptions: Subscription[]) {
+        const product = this.product();
+        const activeCount = productSubscriptions.filter(item => item.state === SubscriptionState.active).length;
+        let isLimitReached = false;
+        if (product.allowMultipleSubscriptions) {
+            if ((product.subscriptionsLimit || product.subscriptionsLimit === 0) && activeCount >= product.subscriptionsLimit) {
+                isLimitReached = true;
+            }
+        }
+        else {
+            if (activeCount === 1) {
+                isLimitReached = true;
+            }
+        }
+        this.limitReached(isLimitReached);
+    }
+
     public selectApi(api: Api): void {
-        location.assign(api.id);
+        // location.assign(api.id);
+        location.assign("/apis");
     }
 
     public selectSubscription(product: Product): void {
@@ -103,12 +111,10 @@ export class ProductDetails {
     }
 
     public subscribeToProduct(): void {
-        this.routeHandler.navigateTo(`${this.product().id}/subscribe`);
         this.showSubscribe(true);
     }
 
-    public toggleDetails() {
-        this.routeHandler.navigateTo(this.product().id);
+    public toggleSubscribe() {
         this.showSubscribe(false);
     }
 }

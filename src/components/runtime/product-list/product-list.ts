@@ -1,9 +1,8 @@
 import * as ko from "knockout";
 import template from "./product-list.html";
-import { matchUrl } from "@paperbits/common/utils";
+import { getUrlHashPart } from "@paperbits/common/utils";
 import { RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { Product } from "../../../models/product";
-import * as ProductDetails from "../product-details/product-details";
 import { ProductService } from "../../../services/productService";
 import { Component } from "@paperbits/common/ko/decorators";
 import { IRouteHandler } from "@paperbits/common/routing";
@@ -15,6 +14,8 @@ import { IRouteHandler } from "@paperbits/common/routing";
     injectable: "productList"
 })
 export class ProductList {
+    private currentUrl: string;
+    private selected: Product;
     public products: KnockoutObservableArray<Product>;
     public showDetails: KnockoutObservable<boolean>;
 
@@ -24,33 +25,42 @@ export class ProductList {
     ) {
         this.products = ko.observableArray();
         this.showDetails = ko.observable(false);
+        this.loadProducts = this.loadProducts.bind(this);
         this.selectProduct = this.selectProduct.bind(this);
+        this.routeHandler.addRouteChangeListener(this.loadProducts);
+        
         this.loadProducts();
     }
 
     private async loadProducts(): Promise<void> {
         const data = await this.productService.getProducts();       
         this.products(data);
-        await this.checkIsDetails();
+        this.checkIsDetails();
     }
 
-    private async checkIsDetails() {
-        const route = this.routeHandler.getCurrentUrl();        
+    private checkIsDetails() {
+        this.currentUrl = this.routeHandler.getCurrentUrl().replace(/\/$/, "");
 
-        if (route === ProductDetails.urlTemplate || decodeURI(route) === ProductDetails.urlTemplate) {
-            // This is a layout design time 
-            return;
-        }
-        const routeVars = matchUrl(route, ProductDetails.urlTemplate);
-        if (routeVars) {
-            const productId = route;
-            const product = await this.productService.getProduct(productId);
-            this.selectProduct(product);
+        const hash = getUrlHashPart(this.currentUrl);
+        if (hash) {
+            const productId = "/products/"+ hash;
+            if (!this.selected || this.selected.id !== productId) {
+                const loadedProducts = this.products();
+                const product = loadedProducts.find(p => p.id === productId);
+                this.selectProduct(product, false);
+            }
+        } else {
+            this.showDetails(false);
         }
     }
 
-    public selectProduct(product: Product) {
-        this.routeHandler.navigateTo(product.id);
+    public selectProduct(product: Product, needNavigation = true) {
+        this.selected = product;
+        if (needNavigation) {
+            const parts = product.id.split("/");
+            
+            this.routeHandler.navigateTo(`${this.currentUrl}#${parts[parts.length-1]}`);
+        }
         this.showDetails(true);
     }
 

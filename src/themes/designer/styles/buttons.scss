@@ -16,7 +16,7 @@
 
     &:focus,
     &:hover {
-        @include selection();
+        @include selection(5px);
         outline: none;
         color: $color-base;
         cursor: pointer;
@@ -24,7 +24,7 @@
 }
 
 .btn-link {
-    color: #99C248;
+    color: #99c248;
     text-decoration: none;
 }
 
@@ -41,4 +41,18 @@
     .btn {
         margin-right: 15px;
     }
+}
+
+.btn-info,
+.btn-info:hover,
+.btn-info:active {
+    min-width: initial;
+    border: none;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    color: $collapse-button-color;
+    z-index: 99999;
+    @extend .paperbits-icon;
+    @extend .paperbits-alert-circle-i;
 }

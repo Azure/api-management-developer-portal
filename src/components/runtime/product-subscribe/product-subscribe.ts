@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import template from "./product-subscribe.html";
 import { IRouteHandler } from "@paperbits/common/routing";
-import { matchUrl } from "@paperbits/common/utils";
+import { getUrlHashPart } from "@paperbits/common/utils";
 import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { Utils } from "../../../utils";
@@ -17,7 +17,7 @@ import { IAuthenticator } from "../../../services/IAuthenticator";
     injectable: "productSubscribe"
 })
 export class ProductSubscribe {
-    private readonly urlTemplate = "/products/{id}/subscribe";
+    private currentUrl: string;
 
     public product: KnockoutObservable<Product>;
     public showTerms: KnockoutObservable<boolean>;
@@ -50,32 +50,27 @@ export class ProductSubscribe {
 
     @OnMounted()
     public async loadProduct(): Promise<void> {
-        const route = this.routeHandler.getCurrentUrl();        
-
-        if (route === this.urlTemplate || decodeURI(route) === this.urlTemplate) {
-            // This is a layout design time 
-            return;
-        }
-        const routeVars = matchUrl(route, this.urlTemplate);
-        if (!routeVars || routeVars.length === 0) {
-            // This is error
-            return;
-        }
+        this.currentUrl = this.routeHandler.getCurrentUrl().replace(/\/$/, "");
 
         const userId = this.usersService.getCurrentUserId();
         if (!userId && this.usersService.isUserLoggedIn()) {
             location.assign("/signin");
         }
 
-        const productId = `/products/${routeVars[0].value}`;
-        const product = await this.productService.getProduct(productId);
-        if (product) {     
-            this.product(product);
-            this.subscriptionName(product.name);
-            if (product.terms) {
-                this.termsOfUse(product.terms);
-                this.showHideLabel("Show");
-                this.showTerms(false);
+        const hash = getUrlHashPart(this.currentUrl);
+        if (hash) {
+            const productId = "/products/"+ hash;
+            if (!this.product() || this.product().id !== productId) {
+                const product = await this.productService.getProduct(productId);
+                if (product) {     
+                    this.product(product);
+                    this.subscriptionName(product.name);
+                    if (product.terms) {
+                        this.termsOfUse(product.terms);
+                        this.showHideLabel("Show");
+                        this.showTerms(false);
+                    }
+                }
             }
         }
     }
@@ -96,7 +91,7 @@ export class ProductSubscribe {
     }
 
     public cancel(): void {
-        this.routeHandler.navigateTo(this.product().id);
+        this.routeHandler.navigateTo(this.currentUrl);
     }
 
     public isChangesReady(): boolean {

@@ -1,3 +1,4 @@
+import { ProductContract } from "./../contracts/product";
 import { ApiContract } from "../contracts/api";
 import { TagResourceContract } from "../contracts/tagResource";
 import { PageContract } from "../contracts/page";
@@ -12,6 +13,7 @@ import { SmapiClient } from "./smapiClient";
 import { Utils } from "../utils";
 import { OperationContract } from "../contracts/operation";
 import { SchemaContract } from "../contracts/schema";
+import { VersionSetContract } from "../contracts/apiVersionSet";
 
 
 export class ApiService {
@@ -147,36 +149,27 @@ export class ApiService {
             apiResourceUri += `;rev=${revision}`;
         }
 
-        apiResourceUri += `?expandApiVersionSet=true`; // doesn't work
+        apiResourceUri += `?expandApiVersionSet=true`; // TODO: doesn't work in non-ARM resources
 
-        const api = await this.smapiClient.get<ApiContract>(apiResourceUri);
+        const apiContract = await this.smapiClient.get<ApiContract>(apiResourceUri);
 
-        // if (api.apiVersionSetId && !api.apiVersionSet) {
-        //     api.apiVersionSet = await this.getApiVersionSet(api.apiVersionSetId);
-        // }
-
-        if (!api) {
+        if (!apiContract) {
             return null;
         }
 
-        return new Api(api);
+        const api = new Api(apiContract);
+
+        if (apiContract.apiVersionSetId && !api.apiVersionSet) {
+            api.apiVersionSet = await this.getApiVersionSet(apiContract.apiVersionSetId);
+        }
+
+        return api;
     }
 
-    // public async getApiVersionSet(versionSetId: string): Promise<VersionSetContract> {
-    //     const versionSet = await this.smapiClient.executeGet<VersionSetContract>(versionSetId);
-
-    //     if (versionSet.properties) {
-    //         versionSet.name = versionSet.name;
-    //         versionSet.versionHeaderName = versionSet.versionHeaderName;
-    //         versionSet.versionQueryName = versionSet.versionQueryName;
-    //         versionSet.versioningScheme = versionSet.versioningScheme;
-    //         versionSet.description = versionSet.description;
-    //     }
-
-    //     delete versionSet.properties;
-
-    //     return versionSet;
-    // }
+    public async getApiVersionSet(versionSetId: string): Promise<VersionSet> {
+        const versionSetContract = await this.smapiClient.get<VersionSetContract>(versionSetId);
+        return new VersionSet(versionSetContract);
+    }
 
     public async getOperations(api: Api, searchRequest?: SearchRequest): Promise<Page<Operation>> {
         let query = `${api.id}/operations`;
@@ -231,29 +224,22 @@ export class ApiService {
     }
 
     public async getAllApiProducts(apiId: string): Promise<Page<Product>> {
-        // return this.smapiClient.executeGetAll<Product>(`${apiId}/products`);
+        const result = [];
+        const pageOfProductContracts = await this.smapiClient.get<Page<ProductContract>>(`${apiId}/products`);
 
-        const productContract = {
-            "id": "unlimited",
-            "name": "Unlimited",
-            "description": "Unlimited product",
-            "terms": null,
-            "subscriptionRequired": true,
-            "approvalRequired": false,
-            "subscriptionsLimit": null,
-            "state": "published"
-
-        };
-
-        const product = new Product(productContract);
+        if (pageOfProductContracts && pageOfProductContracts.value) {
+            pageOfProductContracts.value.map(item => result.push(new Product(item)));
+        }
 
         const page = new Page<Product>();
-        page.value = [product];
+        page.value = result;
+        page.count = pageOfProductContracts.count;
+        // page.nextPage = pageOfProductContracts.nextPage;
         return page;
     }
 
     public async getProductApis(productId: string): Promise<Api[]> {
-        let result = [];
+        const result = [];
         const contracts = await this.smapiClient.get<Page<ApiContract>>(`${productId}/apis`);
         if (contracts && contracts.value) {
             contracts.value.map(item => result.push(new Api(item)));

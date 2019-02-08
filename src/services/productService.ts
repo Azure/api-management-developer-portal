@@ -24,9 +24,11 @@ export class ProductService {
     public async getSubscriptions(userId: string): Promise<Page<Subscription>> {
         const pageContract = await this.smapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
         const result = new Page<Subscription>();
+
         if (pageContract && pageContract.value) {
             result.value = pageContract.value.map(item => new Subscription(item));
-        } else {
+        }
+        else {
             result.value = [];
         }
         return result;
@@ -38,8 +40,9 @@ export class ProductService {
      * @param userId 
      */
     public async getUserSubscriptions(userId: string): Promise<Subscription[]> {
-        let result = [];
+        const result = [];
         const contracts = await this.smapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
+
         if (contracts && contracts.value) {
             const products = await this.getProducts();            
             contracts.value.map((item) => {
@@ -49,6 +52,7 @@ export class ProductService {
                 result.push(model);
             });
         }
+        
         return result;
     }
 
@@ -66,7 +70,7 @@ export class ProductService {
     }
 
     public async getProducts(): Promise<Product[]> {
-        let result = [];
+        const result = [];
         const contracts = await this.smapiClient.get<Page<ProductContract>>(`/products`);
         if (contracts && contracts.value) {
             contracts.value.map(item => result.push(new Product(item)));
@@ -101,7 +105,7 @@ export class ProductService {
             const data = {
                 scope: productId,
                 name: subscriptionName
-            }
+            };
             await this.smapiClient.put(userId + subscriptionId, null, data);
         }
     }
@@ -129,10 +133,10 @@ export class ProductService {
     }
 
     private async updateSubscription(subscriptionId: string, body?: object) {
-        let header: HttpHeader = {
+        const header: HttpHeader = {
             name: "If-Match",
             value: "*"
-        }
+        };
 
         await this.smapiClient.patch(subscriptionId, [header], body);
     }

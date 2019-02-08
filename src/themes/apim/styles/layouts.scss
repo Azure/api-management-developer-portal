@@ -26,11 +26,13 @@ section {
     .row {
         padding: 12px 10px;
         min-height: 90px;
+        flex-wrap: nowrap;
         flex: 1;
 
         .col {
             display: flex;
             flex-wrap: wrap;
+            flex-direction: row;
             align-content: flex-start;
             align-items: flex-start;
         }
