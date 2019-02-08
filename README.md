@@ -182,7 +182,9 @@ Execute the command:
 npm start
 ```
 
-It will automatically open the default browser with your local developer portal instance. Any changes to the codebase of the project will trigger a rebuild, and refresh your browser window.
+It will automatically open the default browser with your local developer portal instance. The default address is `http://localhost:8080`, but the port can change if `8080` is already occupied.
+
+Any changes to the codebase of the project will trigger a rebuild, and refresh your browser window.
 
 ### Step 5: Edit through the visual editor
 
