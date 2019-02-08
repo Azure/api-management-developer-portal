@@ -23,13 +23,13 @@ h2 {
 }
 
 .toolbox {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
     padding: 7px;
     z-index: $z-index-base;
     max-height: calc(100% - 40px);
     @include surface();
-    display: flex;
-    flex-wrap: wrap;
 
     &.toolbox-position-left {
         position: fixed;

@@ -31,8 +31,8 @@ export class StaticRouteHandler implements IRouteHandler {
         // this.callbacks.spliceremove(callback);
     }
 
-    public navigateTo(hash: string): void {
-        this.currentUrl = hash;
+    public navigateTo(permalink: string): void {
+        this.currentUrl = permalink;
 
         this.callbacks.forEach(callback => {
             callback();
@@ -41,6 +41,14 @@ export class StaticRouteHandler implements IRouteHandler {
 
     public getCurrentUrl(): string {
         return this.currentUrl;
+    }
+
+    public getPath(): string {
+        return this.currentUrl;
+    }
+
+    public getHash(): string {
+        return "";
     }
 
     public getCurrentUrlMetadata(): Object {

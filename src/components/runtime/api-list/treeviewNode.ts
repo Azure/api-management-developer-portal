@@ -2,21 +2,12 @@ import * as ko from "knockout";
 
 export class TreeViewNode {
     public id: string;
-
-    // @Observable()
+    public name: string;
     public label: KnockoutObservable<string>;
-
-    // @Observable()
     public expanded?: KnockoutObservable<boolean>;
-
     public nodes: KnockoutObservableArray<TreeViewNode>;
-
-    // @Observable()
     public data: KnockoutObservable<any>;
-
-    // @Observable()
     public level?: KnockoutObservable<string>;
-
     public hasChildren: KnockoutComputed<boolean>;
     public hasActiveChild: KnockoutComputed<boolean>;
 

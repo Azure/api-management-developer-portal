@@ -1,6 +1,8 @@
-import { ServiceDescription } from "../contracts/service";
+import { ServiceDescriptionContract } from "../contracts/service";
 import { TenantSettings } from "../contracts/tenantSettings";
 import { SmapiClient } from "./smapiClient";
+import { ServiceDescription } from "../models/service";
+import { HostType } from "../constants";
 
 export class TenantService {
     constructor(
@@ -11,7 +13,7 @@ export class TenantService {
     private async getServiceDescription(): Promise<ServiceDescription> {
         // return await this.smapiClient.executeGet<ServiceDescription>("");
 
-        return <any>{
+        const contract = {
             id: "",
             tags: {},
             eTag: "local",
@@ -21,15 +23,15 @@ export class TenantService {
             properties: {
                 addresserEmail: "admin@apim.net",
                 createdAtUtc: new Date(),
-                managementApiUrl: "https://management.apim.net",
+                managementApiUrl: "https://aztest.management.azure-api.net",
                 portalUrl: "https://portal.apim.net",
                 provisioningState: "Succeeded",
                 targetProvisioningState: null,
                 publisherEmail: "admin@apim.net",
                 publisherName: "Admin",
-                runtimeUrl: "https://proxy.apim.net",
+                runtimeUrl: "https://aztest.azure-api.net",
                 scmUrl: "https://scm.apim.net",
-                gatewayUrl: "https://proxy.apim.net",
+                gatewayUrl: "https://aztest.azure-api.net",
                 staticIps: ["127.0.0.1"],
                 virtualNetworkType: 0,
                 hostnameConfigurations: [],
@@ -41,11 +43,13 @@ export class TenantService {
                 name: "Developer",
                 capacity: 1
             }
-        }
+        };
+
+        return new ServiceDescription(<any>contract);
     }
 
     public async getSettings(): Promise<TenantSettings> {
-        const result =  await this.smapiClient.get("/tenant/settings");
+        const result = await this.smapiClient.get("/tenant/settings");
         return result && result["settings"];
     }
 
@@ -72,24 +76,22 @@ export class TenantService {
     }
 
     public async getProxyHostnames(): Promise<string[]> {
-        return ["proxy.host.name"];
+        const service = await this.getServiceDescription();
 
-        // const service = await this.getServiceDescription();
+        if (!service) {
+            throw new Error("Unable to get proxy hostname.");
+        }
 
-        // if (service && service.properties) {
-        //     const configs = service.hostnameConfigurations;
+        const configs = service.hostnameConfigurations;
 
-        //     if (configs.length && configs.length > 0) {
-        //         const hostnames = configs.filter((config) => config.type === HostType.Proxy).map(x => x.hostName);
+        if (configs.length && configs.length > 0) {
+            const hostnames = configs.filter((config) => config.type === HostType.Proxy).map(x => x.hostName);
 
-        //         if (hostnames.length > 0) {
-        //             return hostnames;
-        //         }
-        //     }
-        //     return [service.gatewayUrl.split("/")[2]]; // extracting aztest.azure-api.net
-        // }
-
-        // throw new Error("Unable to get proxy hostname.");
+            if (hostnames.length > 0) {
+                return hostnames;
+            }
+        }
+        return [service.gatewayUrl.split("/")[2]];
     }
 
     public async getPortalHostname(): Promise<string> {
@@ -117,7 +119,7 @@ export class TenantService {
 
     public async getManagementHostname(): Promise<string> {
         return "management.host.name";
-        
+
         // const service = await this.getServiceDescription();
 
         // if (service && service.properties) {
