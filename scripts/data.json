@@ -3317,7 +3317,7 @@
     },
     "/contentTypes/blob/contentItems/09879768-b2c8-afbd-a945-934c046b3c2d": {
         "id": "/contentTypes/blob/contentItems/09879768-b2c8-afbd-a945-934c046b3c2d",
-        "blobId": "09879768-b2c8-afbd-a945-934c046b3c2d",
+        "blobId": null,
         "filename": "hero-gradient.jpg",
         "description": "",
         "keywords": "",
@@ -3327,7 +3327,7 @@
     },
     "/contentTypes/blob/contentItems/c5d2da83-b255-245c-144b-cd3c242e9791": {
         "id": "/contentTypes/blob/contentItems/c5d2da83-b255-245c-144b-cd3c242e9791",
-        "blobId": "c5d2da83-b255-245c-144b-cd3c242e9791",
+        "blobId": null,
         "filename": "featured-1.jpg",
         "description": "",
         "keywords": "",
@@ -3337,7 +3337,7 @@
     },
     "/contentTypes/blob/contentItems/a2514081-47cb-95b1-ef0b-aef128c7a7ed": {
         "id": "/contentTypes/blob/contentItems/a2514081-47cb-95b1-ef0b-aef128c7a7ed",
-        "blobId": "a2514081-47cb-95b1-ef0b-aef128c7a7ed",
+        "blobId": null,
         "filename": "featured-2.jpg",
         "description": "",
         "keywords": "",
@@ -3347,7 +3347,7 @@
     },
     "/contentTypes/blob/contentItems/ed8e43d0-5f8e-af38-5536-8f0274656ce4": {
         "id": "/contentTypes/blob/contentItems/ed8e43d0-5f8e-af38-5536-8f0274656ce4",
-        "blobId": "ed8e43d0-5f8e-af38-5536-8f0274656ce4",
+        "blobId": null,
         "filename": "featured-3.jpg",
         "description": "",
         "keywords": "",
@@ -3357,7 +3357,7 @@
     },
     "/contentTypes/blob/contentItems/3e3d574f-0238-288b-0eb4-a51b3680ef4b": {
         "id": "/contentTypes/blob/contentItems/3e3d574f-0238-288b-0eb4-a51b3680ef4b",
-        "blobId": "3e3d574f-0238-288b-0eb4-a51b3680ef4b",
+        "blobId": null,
         "filename": "hero-surface.png",
         "description": "",
         "keywords": "",
@@ -3367,7 +3367,7 @@
     },
     "/contentTypes/blob/contentItems/70add409-0933-e01e-acef-99999a71167e": {
         "id": "/contentTypes/blob/contentItems/70add409-0933-e01e-acef-99999a71167e",
-        "blobId": "70add409-0933-e01e-acef-99999a71167e",
+        "blobId": null,
         "filename": "logo-contoso-small.png",
         "description": "",
         "keywords": "",
