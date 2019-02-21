@@ -20,9 +20,9 @@ The API Management developer portal is based on our own fork of the [Paperbits f
 - Programmatic access through APIs for automating the development, management, and deployment.
 - Extensibility of the core functionality.
 
-We extended the original Paperbits functionality to provide API Management-specific widgets (e.g., a list of APIs, or Products). We also implemented a connector to an API Management instance for saving and retrieving the content (e.g., pages, configuration, styling).
+We extended the original Paperbits functionality to provide API Management-specific widgets (e.g., a list of APIs, Products). We also implemented a connector to an API Management instance for saving and retrieving the content (e.g., pages, configuration, styling).
 
-We will maintain [our Github repository](https://github.com/Azure/api-management-developer-portal) and ensure it includes the latest updates. If you wish to have the best experience with your developer portal, you should **always merge updates from our original repository to your fork**.
+We will maintain [our Github repository](https://github.com/Azure/api-management-developer-portal) and ensure it includes the latest updates. If you wish to have the best experience with the developer portal, you should **always merge updates from our original repository to your fork**.
 
 When we reach the public preview stage, the repository will become publicly available.
 
@@ -32,7 +32,7 @@ Learn how to get started with the new developer portal by navigating to the [doc
 
 ## <a name="providing-feedback"></a> Reporting bugs and providing feedback
 
-Please, submit bug reports, feedback, and feature requests through [the GitHub Issues page](https://github.com/Azure/api-management-developer-portal/issues).
+Please, submit bug reports, feedback, and feature requests through [the GitHub Issues page](https://github.com/Azure/api-management-developer-portal/issues) or to apimportalfeedback@microsoft.com.
 
 ## <a name="contributing"></a> Contributing
 
