@@ -32,7 +32,7 @@ Learn how to get started with the new developer portal by navigating to the [doc
 
 ## <a name="providing-feedback"></a> Reporting bugs and providing feedback
 
-Please, submit bug reports, feedback, and feature requests through [the GitHub Issues page](https://github.com/Azure/api-management-developer-portal/issues).
+Please, submit bug reports, feedback, and feature requests through [the GitHub Issues page](https://github.com/Azure/api-management-developer-portal/issues) or to apimportalfeedback@microsoft.com.
 
 ## <a name="contributing"></a> Contributing
 
