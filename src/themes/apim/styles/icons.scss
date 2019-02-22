@@ -22,61 +22,52 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.paperbits-icon.icon-zoom-2:before {
-    content: "\ea02";
-}
-
-.paperbits-icon.icon-logo-github:before {
-    content: "\ea03";
-}
-
-
 .icon-api-management:before {
     content: "\e903";
 }
 
 .icon-chevron-down:before {
-    content: "\e904";
-}
-
-.icon-code:before {
     content: "\e905";
 }
 
-.icon-drag-handle:before {
+.icon-code:before {
     content: "\e906";
 }
 
-.icon-eye:before {
+.icon-drag-handle:before {
     content: "\e907";
 }
 
-.icon-eye-fill:before {
+.icon-eye:before {
     content: "\e908";
 }
 
-.icon-magnifier:before {
+.icon-eye-fill:before {
     content: "\e909";
 }
 
-.icon-option-horizontal:before {
+.icon-magnifier:before {
     content: "\e90a";
 }
 
-.icon-plus:before {
+.icon-option-horizontal:before {
     content: "\e90b";
 }
 
-.icon-search-filter:before {
+.icon-plus:before {
     content: "\e90c";
 }
 
-.icon-tag:before {
+.icon-search-filter:before {
     content: "\e90d";
 }
 
-.icon-trash:before {
+.icon-tag:before {
     content: "\e90e";
+}
+
+.icon-trash:before {
+    content: "\e90f";
 }
 
 .icon-filtrofier:before {
@@ -84,9 +75,13 @@
 }
 
 .icon-grouped-list:before {
-    content: "\e900";
+    content: "\e901";
 }
 
 .icon-list:before {
-    content: "\e901";
+    content: "\e902";
+}
+
+.icon-play:before {
+    content: "\e900";
 }

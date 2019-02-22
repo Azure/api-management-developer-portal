@@ -12,11 +12,11 @@ import { Api } from "../../../models/api";
     injectable: "apiDocumentation"
 })
 export class Documentation {
-    public navigation: KnockoutObservable<NavigationItemModel>;
+    public navigation: ko.Observable<NavigationItemModel>;
 
     // @Observable()
-    public selectedApi: KnockoutObservable<Api>;
-    public selectedOperation: KnockoutObservable<Operation>;
+    public selectedApi: ko.Observable<Api>;
+    public selectedOperation: ko.Observable<Operation>;
 
     constructor() {
         this.selectApi = this.selectApi.bind(this);

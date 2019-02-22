@@ -29,11 +29,11 @@ ko.bindingHandlers["schemaobjecttype"] = {
                 href = schemaObject.$ref;
             }
 
-            ko.applyBindingsToNode(element, { html: `<a href="${href}">${label}</a>` });
+            ko.applyBindingsToNode(element, { html: `<a href="${href}">${label}</a>` }, null);
         }
         else {
             label = schemaObject.type;
-            ko.applyBindingsToNode(element, { text: label });
+            ko.applyBindingsToNode(element, { text: label }, null);
         }
     }
 }

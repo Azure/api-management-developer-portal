@@ -8,14 +8,14 @@ import { Request } from "../request";
 
 export class ConsoleRequest {
     // @ValidateNested()
-    public queryParameters: KnockoutObservableArray<ConsoleParameter>;
+    public queryParameters: ko.ObservableArray<ConsoleParameter>;
 
     // @ValidateNested()
-    public headers: KnockoutObservableArray<ConsoleHeader>;
+    public headers: ko.ObservableArray<ConsoleHeader>;
 
     public representations: Array<ConsoleRepresentation>;
     public description: string;
-    public body: KnockoutObservable<string>;
+    public body: ko.Observable<string>;
     public binary: File;
     public bodyFormat: string;
 

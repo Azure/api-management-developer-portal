@@ -1,5 +1,5 @@
 import { IAuthenticator } from "./IAuthenticator";
-import { SmapiClient } from "./smapiClient";
+import { MapiClient } from "./mapiClient";
 import { IRouteHandler } from "@paperbits/common/routing";
 import { HttpHeader } from "@paperbits/common/http";
 import { User } from "../models/user";
@@ -8,7 +8,7 @@ import { SignupRequest } from "../contracts/signupRequest";
 
 export class UsersService {
     constructor(
-        private readonly smapiClient: SmapiClient,
+        private readonly smapiClient: MapiClient,
         private readonly routeHandler: IRouteHandler,
         private readonly authenticator: IAuthenticator
     ) { }
@@ -46,6 +46,16 @@ export class UsersService {
         }
 
         return (currentUserId.indexOf("/users") === 0) ? currentUserId : `/users/${currentUserId}`;
+    }
+
+    public isCurrentUserAdmin(): boolean {
+        const currentUserId = this.getCurrentUserId();
+
+        if (!currentUserId) {
+            return false;
+        }
+
+        return currentUserId === "/users/1";
     }
 
     public isUserLoggedIn(): boolean {
