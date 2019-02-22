@@ -1,1 +1,1 @@
-require("ts-node").register({ ignore: "node_modules\/(?!@paperbits)" });
+require("ts-node").register({ ignore: ["node_modules\/(?!@paperbits)"] });

@@ -16,8 +16,8 @@ export interface SearchResult {
     template: template
 })
 export class SearchResultOutput {
-    public pattern: KnockoutObservable<string>;
-    public results: KnockoutObservableArray<SearchResult>;
+    public pattern: ko.Observable<string>;
+    public results: ko.ObservableArray<SearchResult>;
 
     private searchTimeout: any;
     private idexer: any;
@@ -29,7 +29,7 @@ export class SearchResultOutput {
         const results = regex.exec(location.search);
 
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    };
+    }
 
     constructor(params) {
         const searchString = this.getUrlParameter("q");

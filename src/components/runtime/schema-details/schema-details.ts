@@ -11,10 +11,10 @@ import { Api } from "../../../models/api";
     injectable: "schemaDetails"
 })
 export class SchemaDetails {
-    public definitions: KnockoutObservableArray<SchemaObject>;
+    public definitions: ko.ObservableArray<SchemaObject>;
 
     @Param()
-    public api: KnockoutObservable<Api>;
+    public api: ko.Observable<Api>;
 
     constructor(
         private readonly apiService: ApiService

@@ -1,0 +1,73 @@
+﻿@import "variables.scss";
+@import "mixins.scss";
+@import "animation.scss";
+
+.toasts {
+    position: fixed;
+    right: 0;
+    bottom: 100px;
+
+    .toast {
+        @include surface();
+        @include animation-slideleft();
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+        max-width: 400px;
+
+        .toast-indicator {
+            width: 30px;
+
+            .progress {
+                @extend .spinner;
+
+                &:after {
+                    content: "";
+                    width: 10px;
+                    height: 10px;
+                    border: 2px solid $color-base;
+                    border-radius: 50%;
+                    float: left;
+                    transform: scale(0);
+                    animation: hollow-dots-spinner-animation 1000ms ease infinite 0ms;
+                }
+            }
+
+            .info {
+                @extend .paperbits-icon;
+                @extend .paperbits-alert-circle-i;
+            }
+
+            .success {
+                @extend .paperbits-icon;
+                @extend .paperbits-check-2;
+            }
+
+            .error {
+                @extend .paperbits-icon;
+                @extend .paperbits-alert;
+            }
+        }
+
+        .toast-container {
+            flex-basis: 100%;
+            line-height: 1.5em;
+        }
+
+        .toast-header {
+            font-weight: bold;
+        }
+
+        .toast-content {
+            p {
+                margin: 0;
+                margin-top: 5px;
+            }
+        }
+
+        & > div {
+            padding: 10px;
+        }
+    }
+}

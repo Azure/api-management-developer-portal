@@ -9,7 +9,7 @@ import { Page } from "../models/page";
 import { Operation } from "../models/operation";
 import { Product } from "../models/product";
 import { Schema } from "../models/schema";
-import { SmapiClient } from "./smapiClient";
+import { MapiClient } from "./mapiClient";
 import { Utils } from "../utils";
 import { OperationContract } from "../contracts/operation";
 import { SchemaContract } from "../contracts/schema";
@@ -17,7 +17,7 @@ import { VersionSetContract } from "../contracts/apiVersionSet";
 
 
 export class ApiService {
-    constructor(private readonly smapiClient: SmapiClient) { }
+    constructor(private readonly smapiClient: MapiClient) { }
 
     public async getApis(searchRequest?: SearchRequest): Promise<Page<Api>> {
         let query = "/apis?expandApiVersionSet=true";

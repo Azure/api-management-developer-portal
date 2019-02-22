@@ -17,31 +17,31 @@ import { IRouteHandler } from "@paperbits/common/routing";
 })
 export class UserSignup {
     private tenantSettings: TenantSettings;
-    public email: KnockoutObservable<string>;
-    public userPassword: KnockoutObservable<string>;
-    public userConfirmPassword: KnockoutObservable<string>;
-    public firstName: KnockoutObservable<string>;
-    public lastName: KnockoutObservable<string>;
-    public isUserRequested: KnockoutObservable<boolean>;
-    public isUserLoggedIn: KnockoutObservable<boolean>;
+    public email: ko.Observable<string>;
+    public userPassword: ko.Observable<string>;
+    public userConfirmPassword: ko.Observable<string>;
+    public firstName: ko.Observable<string>;
+    public lastName: ko.Observable<string>;
+    public isUserRequested: ko.Observable<boolean>;
+    public isUserLoggedIn: ko.Observable<boolean>;
 
-    public isTermsRequired: KnockoutObservable<boolean>;
-    public termsOfUse: KnockoutObservable<string>;
-    public showTerms: KnockoutObservable<boolean>;
-    public isAgreed: KnockoutObservable<boolean>;
-    public showHideLabel: KnockoutObservable<string>;
-    public serverErrors: KnockoutObservable<string>;
+    public isTermsRequired: ko.Observable<boolean>;
+    public termsOfUse: ko.Observable<string>;
+    public showTerms: ko.Observable<boolean>;
+    public isAgreed: ko.Observable<boolean>;
+    public showHideLabel: ko.Observable<string>;
+    public serverErrors: ko.Observable<string>;
 
     constructor(
         private readonly usersService: UsersService,
         private readonly tenantService: TenantService,
         private readonly routeHandler: IRouteHandler) {
 
-        this.email = ko.observable("").extend({ required: true, email: true });
-        this.userPassword = ko.observable("").extend({ required: true, minLength: 8 });
-        this.userConfirmPassword = ko.observable("").extend({ required: true, minLength: 8, equal: { message: "Must be equal to Password", params: this.userPassword } });
-        this.firstName = ko.observable("").extend({ required: true });
-        this.lastName = ko.observable("").extend({ required: true });
+        this.email = (<any>ko.observable("")).extend({ required: true, email: true });
+        this.userPassword = (<any>ko.observable("")).extend({ required: true, minLength: 8 });
+        this.userConfirmPassword = (<any>ko.observable("")).extend({ required: true, minLength: 8, equal: { message: "Must be equal to Password", params: this.userPassword } });
+        this.firstName = (<any>ko.observable("")).extend({ required: true });
+        this.lastName = (<any>ko.observable("")).extend({ required: true });
 
         this.isTermsRequired = ko.observable();
         this.showTerms = ko.observable();
@@ -69,7 +69,7 @@ export class UserSignup {
         this.tenantSettings = settings as TenantSettings;
 
         if (this.tenantSettings && this.tenantSettings.userRegistrationTermsEnabled) {
-            this.isAgreed = ko.observable(false).extend({ equal: { params: true, message: "You must agree before submitting." } });
+            this.isAgreed = (<any>ko.observable(false)).extend({ equal: { params: true, message: "You must agree before submitting." } });
             this.termsOfUse(settings.userRegistrationTerms);
             this.showHideLabel("Show");
             this.isTermsRequired(settings.userRegistrationTermsConsentRequired);

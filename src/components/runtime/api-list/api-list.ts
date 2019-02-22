@@ -10,6 +10,7 @@ import { TagService } from "../../../services/tagService";
 import { ApiService } from "../../../services/apiService";
 import { DefaultRouteHandler } from "@paperbits/common/routing";
 import { Api } from "../../../models/api";
+import { getUrlHashPart } from "@paperbits/common";
 
 @RuntimeComponent({ selector: "api-list" })
 @Component({
@@ -19,11 +20,11 @@ import { Api } from "../../../models/api";
 })
 export class ApiList {
     private searchRequest: SearchRequest;
-    public nodes: KnockoutObservableArray<TreeViewNode>;
-    public selectedNodeId: KnockoutObservable<string>;
+    public nodes: ko.ObservableArray<TreeViewNode>;
+    public selectedNodeId: ko.Observable<string>;
 
     // @Observable()
-    public selectedNode: KnockoutObservable<TreeViewNode>;
+    public selectedNode: ko.Observable<TreeViewNode>;
     public selectedVersionSet: VersionSetContract;
     public selection: TagContract[];
     public grouping: string;
@@ -227,6 +228,22 @@ export class ApiList {
                 throw new Error("Unexpected groupBy value");
         }
 
+        this.selectFirst();
+
         // TODO: await this.loadTags();
+    }
+
+    private selectFirst(): void {
+        const currentUrl = this.routeHandler.getCurrentUrl().replace(/\/$/, "");        
+
+        const hash = getUrlHashPart(currentUrl);
+        const nodes = this.nodes();
+        if (!hash && nodes.length > 0) {
+            let node = nodes[0];
+            if (!node.name) {
+                node = node.nodes()[0];
+            }
+            this.routeHandler.navigateTo("/apis#" + node.name);
+        }
     }
 }

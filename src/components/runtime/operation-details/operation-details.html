@@ -1,14 +1,16 @@
 
 <article data-bind="with: operation()">
-    <h2 id="find-pet-by-id" data-bind="click: $parents[2].openConsole">
-        <span data-bind="text: name"></span>
-    </h2>
+    <div class="api-header">
+        <h2 data-bind="click: $parents[2].openConsole">
+            <span data-bind="text: name"></span>
+        </h2>
+        <button class="open-console-btn" data-bind="click: $parents[2].openConsole">Try it <i class="icon icon-play"></i></button>
+    </div>
 
     <!-- ko if: description  -->
-    <p class="text-word-break" data-bind="text: description"></p>
+    <p class="text-word-break" data-bind="markdown: description"></p>
     <!-- /ko -->
     <span data-bind="text: urlTemplate, attr: { 'data-method': method }"></span>
-    <!-- <span class="text-attention">{petId}</span> -->
 
     <!-- ko if: templateParameters && templateParameters.length > 0 -->
     <div class="panel panel-table">
@@ -17,7 +19,7 @@
             <li class="list-group-item" data-bind="foreach: { data: templateParameters, as: 'parameter' }">
                 <div class="row flex flex-row">
                     <div class="col-md-3 text-attention" data-bind="text: parameter.name"></div>
-                    <div class="col-md-7" data-bind="text: parameter.description"></div>
+                    <div class="col-md-7" data-bind="markdown: parameter.description"></div>
                     <div class="col-md-2 text-mute" data-bind="text: parameter.type"></div>
                 </div>
             </li>
@@ -32,7 +34,7 @@
             <li class="list-group-item" data-bind="foreach: { data: request.headers, as: 'parameter' }">
                 <div class="row flex flex-row">
                     <div class="col-md-3 text-attention" data-bind="text: parameter.name"></div>
-                    <div class="col-md-7" data-bind="text: parameter.description"></div>
+                    <div class="col-md-7" data-bind="markdown: parameter.description"></div>
                     <div class="col-md-2 text-mute" data-bind="text: parameter.type"></div>
                 </div>
             </li>

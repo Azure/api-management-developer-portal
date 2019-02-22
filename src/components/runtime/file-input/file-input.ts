@@ -11,10 +11,10 @@ import { Component, Param } from "@paperbits/common/ko/decorators";
 export class FileInput {
     private readonly input: HTMLInputElement;
 
-    public selectedFileInfo: KnockoutObservable<string>;
+    public selectedFileInfo: ko.Observable<string>;
 
     @Param()
-    public selectedFile: KnockoutObservable<File>;
+    public selectedFile: ko.Observable<File>;
 
     constructor() {
         this.selectedFile = ko.observable<File>();

@@ -13,19 +13,19 @@ import { UsersService } from "../../../services/usersService";
     injectable: "userDetails"
 })
 export class UserDetails {
-    public firstName: KnockoutObservable<string>;
-    public lastName: KnockoutObservable<string>;
-    public email: KnockoutObservable<string>;    
-    public registrationDate: KnockoutComputed<string>;
-    
-    public isEdit: KnockoutObservable<boolean>;
-    public isEditEmail: KnockoutObservable<boolean>;
-    public isEditPassword: KnockoutObservable<boolean>;
+    public firstName: ko.Observable<string>;
+    public lastName: ko.Observable<string>;
+    public email: ko.Observable<string>;
+    public registrationDate: ko.Computed<string>;
 
-    public password: KnockoutObservable<string>;
-    public confirmPassword: KnockoutObservable<string>;
+    public isEdit: ko.Observable<boolean>;
+    public isEditEmail: ko.Observable<boolean>;
+    public isEditPassword: ko.Observable<boolean>;
 
-    public user: KnockoutObservable<User>;
+    public password: ko.Observable<string>;
+    public confirmPassword: ko.Observable<string>;
+
+    public user: ko.Observable<User>;
 
     constructor(
         private readonly usersService: UsersService
@@ -46,9 +46,9 @@ export class UserDetails {
     private async loadUser(): Promise<void> {
         if (!this.user()) {
             const userId = this.usersService.getCurrentUserId();
-            const model:User = await this.usersService.getUser(userId);
+            const model: User = await this.usersService.getUser(userId);
             this.setUser(model);
-        }        
+        }
     }
 
     private setUser(model: User): any {
@@ -85,14 +85,14 @@ export class UserDetails {
         this.isEditPassword(!this.isEditPassword());
     }
 
-    public changeEmail() {        
+    public changeEmail() {
         if (this.isEditEmail() && this.isEmailChanged()) {
             this.usersService.requestChangeEmail(this.user(), this.email());
         }
         this.toggleEditEmail();
     }
 
-    public changePassword() {        
+    public changePassword() {
         if (this.isEditPassword() && this.password() && this.password() === this.confirmPassword()) {
             this.usersService.requestChangePassword(this.user(), this.password());
         }
@@ -127,19 +127,19 @@ You will not be able to sign in to or restore your closed account. Are you sure 
         return date ? moment(date).format("MM/DD/YYYY") : "";
     }
 
-    public getRegistrationDate() {        
+    public getRegistrationDate() {
         return (this.user() && this.timeToString(this.user().registrationDate)) || "";
     }
 
-    public isUserChanged() {        
+    public isUserChanged() {
         return this.firstName() !== this.user().firstName || this.lastName() !== this.user().lastName;
     }
 
-    public isEmailChanged() {        
+    public isEmailChanged() {
         return this.email() !== this.user().email;
     }
 
-    public isPasswordChanged() {        
+    public isPasswordChanged() {
         return this.password() && (this.password() === this.confirmPassword());
     }
 

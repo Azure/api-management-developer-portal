@@ -8,7 +8,7 @@ export class ConsoleParameter {
 
     // @IsNotEmpty({ message: "Parameter value cannot be empty" })
     // @ValidateIf(x => x.required)
-    public value: KnockoutObservable<string>;
+    public value: ko.Observable<string>;
 
     public required: boolean;
     public options: Array<string>;

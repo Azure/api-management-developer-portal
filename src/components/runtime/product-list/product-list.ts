@@ -16,8 +16,8 @@ import { IRouteHandler } from "@paperbits/common/routing";
 export class ProductList {
     private currentUrl: string;
     private selected: Product;
-    public products: KnockoutObservableArray<Product>;
-    public showDetails: KnockoutObservable<boolean>;
+    public products: ko.ObservableArray<Product>;
+    public showDetails: ko.Observable<boolean>;
 
     constructor(
         private readonly productService: ProductService,
