@@ -5,15 +5,15 @@ export class SubscriptionViewModel {
     private hiddenKey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
     private showLabel = "Show";
     private hideLabel = "Hide";
-    public primaryKey: KnockoutObservable<string>;
-    public secondaryKey: KnockoutObservable<string>;
-    public primaryKeyBtnLabel: KnockoutObservable<string>;
-    public secondaryKeyBtnLabel: KnockoutObservable<string>;
-    public isPRegenerating: KnockoutObservable<boolean>;
-    public isSRegenerating: KnockoutObservable<boolean>;
+    public primaryKey: ko.Observable<string>;
+    public secondaryKey: ko.Observable<string>;
+    public primaryKeyBtnLabel: ko.Observable<string>;
+    public secondaryKeyBtnLabel: ko.Observable<string>;
+    public isPRegenerating: ko.Observable<boolean>;
+    public isSRegenerating: ko.Observable<boolean>;
 
-    public editName: KnockoutObservable<string>;
-    public isEdit: KnockoutObservable<boolean>;
+    public editName: ko.Observable<string>;
+    public isEdit: ko.Observable<boolean>;
     
     constructor(public model: Subscription) {
         this.primaryKey = ko.observable(this.hiddenKey);

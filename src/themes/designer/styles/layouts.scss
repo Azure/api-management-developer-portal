@@ -69,6 +69,13 @@ widget {
         font-family: $font-family-base;
         opacity: .7;
     }
+
+    &:after {
+        @include fit;
+        content: '';
+        display: block;
+        position: absolute;
+    }
 }
 
 .layout-editor-splitter {

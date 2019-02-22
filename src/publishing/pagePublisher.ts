@@ -39,7 +39,7 @@ export class PagePublisher implements IPublisher {
             this.routeHandler.navigateTo(page.permalink);
 
             const layoutViewModel = await this.layoutViewModelBinder.getLayoutViewModel();
-            ko.applyBindingsToNode(templateDocument.body, { widget: layoutViewModel });
+            ko.applyBindingsToNode(templateDocument.body, { widget: layoutViewModel }, null);
 
             if (page.ogImageSourceKey) {
                 imageMedia = await this.mediaService.getMediaByKey(page.ogImageSourceKey);

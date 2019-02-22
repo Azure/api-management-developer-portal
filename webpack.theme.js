@@ -2,13 +2,13 @@ const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const selectedTheme = "apim";
+const websiteTheme = "apim";
 
 module.exports = {
     mode: "development",
     target: "web",
     entry: {
-        "assets/styles/theme": [`./src/themes/${selectedTheme}/styles/styles.scss`],
+        "assets/styles/theme": [`./src/themes/${websiteTheme}/styles/styles.scss`],
         "assets/scripts/theme": ["./src/startup.runtime.ts"]
     },
     output: {
@@ -21,9 +21,9 @@ module.exports = {
                 test: /\.scss$/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    { loader: "css-loader" },
+                    { loader: "css-loader", options: { url: false } },
                     { loader: "postcss-loader" },
-                    { loader: "sass-loader", options: { sourceMap: true } }
+                    { loader: "sass-loader" }
                 ]
             },
             {
@@ -47,7 +47,8 @@ module.exports = {
     plugins: [
         new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" }),
         new CopyWebpackPlugin([
-            { from: `./src/config.runtime.json`, to: `./assets/config.json` }
+            { from: `./src/config.runtime.json`, to: `./assets/config.json` },
+            { from: `./src/themes/${websiteTheme}/styles/fonts`, to: "styles/fonts" },
         ])
     ],
     resolve: {

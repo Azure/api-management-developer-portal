@@ -19,12 +19,12 @@ import { IAuthenticator } from "../../../services/IAuthenticator";
 export class ProductSubscribe {
     private currentUrl: string;
 
-    public product: KnockoutObservable<Product>;
-    public showTerms: KnockoutObservable<boolean>;
-    public isAgreed: KnockoutObservable<boolean>;
-    public termsOfUse: KnockoutObservable<string>;
-    public showHideLabel: KnockoutObservable<string>;
-    public subscriptionName: KnockoutObservable<string>;
+    public product: ko.Observable<Product>;
+    public showTerms: ko.Observable<boolean>;
+    public isAgreed: ko.Observable<boolean>;
+    public termsOfUse: ko.Observable<string>;
+    public showHideLabel: ko.Observable<string>;
+    public subscriptionName: ko.Observable<string>;
 
     constructor(
         private readonly usersService: UsersService,

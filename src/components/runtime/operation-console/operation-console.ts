@@ -31,41 +31,41 @@ export class OperationConsole {
     private masterKey: string;
 
     @Param()
-    public api: KnockoutObservable<Api>;
+    public api: ko.Observable<Api>;
 
     @Param()
-    public operation: KnockoutObservable<Operation>;
+    public operation: ko.Observable<Operation>;
 
     @Param()
-    public revision: KnockoutObservable<Revision>;
+    public revision: ko.Observable<Revision>;
 
     public working: boolean;
-    public consoleOperation: KnockoutObservable<ConsoleOperation>;
+    public consoleOperation: ko.Observable<ConsoleOperation>;
     public requestSummarySecretsRevealed: boolean;
-    public responseStatusCode: KnockoutObservable<string>;
-    public responseStatusText: KnockoutObservable<string>;
-    public responseBody: KnockoutObservable<string>;
+    public responseStatusCode: ko.Observable<string>;
+    public responseStatusText: ko.Observable<string>;
+    public responseBody: ko.Observable<string>;
     public responseContentType: string;
-    public responseHeadersString: KnockoutObservable<string>;
-    public products: KnockoutObservable<Product[]>;
-    public selectedSubscriptionKey: KnockoutObservable<string>;
+    public responseHeadersString: ko.Observable<string>;
+    public products: ko.Observable<Product[]>;
+    public selectedSubscriptionKey: ko.Observable<string>;
     public subscriptionKeysView: string;
     public apiProductsView: string;
-    public consoleTrace: KnockoutObservable<ConsoleTrace>;
-    public consoleTraceError: KnockoutObservable<string>;
+    public consoleTrace: ko.Observable<ConsoleTrace>;
+    public consoleTraceError: ko.Observable<string>;
     public oauthView: string;
     public currentViewName: string;
     public mockingEnabled: boolean;
     public gotOpenProduct: boolean;
     public selectedTab: string;
-    public selectedLanguage: KnockoutObservable<string>;
+    public selectedLanguage: ko.Observable<string>;
     public isConsumptionMode: boolean;
     public selectedProduct: Product;
     public canSelectProduct: boolean;
-    public responseActiveTab: KnockoutObservable<string>;
-    public requestSummary: KnockoutObservable<string>;
-    public bodySource: KnockoutObservable<string>;
-    public attachment: KnockoutObservable<string>;
+    public responseActiveTab: ko.Observable<string>;
+    public requestSummary: ko.Observable<string>;
+    public bodySource: ko.Observable<string>;
+    public attachment: ko.Observable<string>;
     public templates: Object;
 
     constructor(
