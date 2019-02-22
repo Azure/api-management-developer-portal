@@ -14,10 +14,10 @@ import { Api } from "../../../models/api";
 })
 export class ApiDetails {
     // @Param()
-    public api: KnockoutObservable<Api> = null;
-    public operations: KnockoutObservableArray<Operation> = null;
-    public selectedOperation: KnockoutObservable<Operation>;
-    public working: KnockoutObservable<boolean>;
+    public api: ko.Observable<Api> = null;
+    public operations: ko.ObservableArray<Operation> = null;
+    public selectedOperation: ko.Observable<Operation>;
+    public working: ko.Observable<boolean>;
 
     constructor(
         private readonly apiService: ApiService,

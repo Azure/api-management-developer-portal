@@ -18,4 +18,4 @@ export const templates = {
     objc: objc,
     python: python,
     ruby: ruby
-}
+};

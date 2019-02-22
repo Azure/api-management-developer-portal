@@ -1,12 +1,12 @@
 import { ServiceDescriptionContract } from "../contracts/service";
 import { TenantSettings } from "../contracts/tenantSettings";
-import { SmapiClient } from "./smapiClient";
+import { MapiClient } from "./mapiClient";
 import { ServiceDescription } from "../models/service";
 import { HostType } from "../constants";
 
 export class TenantService {
     constructor(
-        private readonly smapiClient: SmapiClient
+        private readonly smapiClient: MapiClient
     ) {
     }
 

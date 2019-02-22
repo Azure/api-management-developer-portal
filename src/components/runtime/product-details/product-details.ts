@@ -21,11 +21,11 @@ import { ApiService } from "../../../services/apiService";
 export class ProductDetails {
     private currentUrl: string;
 
-    public apis: KnockoutObservableArray<Api>;
-    public product: KnockoutObservable<Product>;    
-    public subscriptions: KnockoutObservableArray<Subscription>;
-    public limitReached: KnockoutObservable<boolean>;
-    public showSubscribe: KnockoutObservable<boolean>;
+    public apis: ko.ObservableArray<Api>;
+    public product: ko.Observable<Product>;    
+    public subscriptions: ko.ObservableArray<Subscription>;
+    public limitReached: ko.Observable<boolean>;
+    public showSubscribe: ko.Observable<boolean>;
 
     constructor(
         private readonly usersService: UsersService,

@@ -40,7 +40,7 @@ export class ApiPublisher implements IPublisher {
             this.routeHandler.navigateTo(resourceUri);
 
             const layoutViewModel = await this.layoutViewModelBinder.getLayoutViewModel();
-            ko.applyBindingsToNode(templateDocument.body, { widget: layoutViewModel });
+            ko.applyBindingsToNode(templateDocument.body, { widget: layoutViewModel }, null);
 
             // this.setSiteSettings(templateDocument, settings, iconFile, imageFile, page, resourceUri);
 

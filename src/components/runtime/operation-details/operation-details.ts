@@ -10,7 +10,7 @@ import { Operation } from "../../../models/operation";
 })
 export class OperationDetails {
     @Param()
-    public operation: KnockoutObservable<Operation>;
+    public operation: ko.Observable<Operation>;
 
     constructor() {
         this.operation = ko.observable();

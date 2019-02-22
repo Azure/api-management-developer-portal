@@ -26,11 +26,8 @@
     "editor.tabSize": 4,
     "editor.detectIndentation": false,
     "typescript.tsdk": "node_modules/typescript/lib",
-    "mocha.options": {
-        "compilers": "ts-node/register"
-    },
-    "mocha.requires": [
-        "ts-node/register"
-    ],
-    "mocha.files.glob": "specs/*.spec.ts"
+    "mochaExplorer.files": "specs/**/*.spec.ts",
+    "mochaExplorer.require": "./mocha",
+    "mochaExplorer.timeout": 30000
+  
 }
