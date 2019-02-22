@@ -11,6 +11,7 @@
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-content: stretch;
+    min-height: 0; // fixes issue with oveflow in Edge, FF and other browsers
 }
 
 .flex-item {

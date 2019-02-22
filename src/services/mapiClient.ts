@@ -3,7 +3,7 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Utils } from "../utils";
 import { TtlCache } from "./ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
-import { SmapiError } from "./smapiError";
+import { MapiError } from "./mapiError";
 import { IAuthenticator } from "./IAuthenticator";
 import { IRouteHandler } from "@paperbits/common/routing";
 
@@ -19,7 +19,7 @@ export interface IHttpBatchResponse {
     content: any;
 }
 
-export class SmapiClient {
+export class MapiClient {
     private managementApiUrl: string;
     private managementApiVersion: string;
     private environment: string;
@@ -99,20 +99,13 @@ export class SmapiClient {
             httpRequest.body = JSON.stringify(httpRequest.body);
         }
 
-        if (httpRequest.body && httpRequest.url.contains("contentTypes/")) {
-            httpRequest.body = httpRequest.body
-                .replace(/contentKey/gm, "documentId")
-                .replace(/Key\b/gm, "Id")
-                .replace(/\bkey\b/gm, "id");
-        }
-
         httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${this.managementApiVersion}`);
 
         const call = () => this.makeRequest<T>(httpRequest);
         const requestKey = this.getRequestKey(httpRequest);
 
         if (requestKey) {
-            return this.requestCache.getOrAddAsync<T>(requestKey, call, 100);
+            return this.requestCache.getOrAddAsync<T>(requestKey, call, 300);
         }
 
         return call();
@@ -162,14 +155,6 @@ export class SmapiClient {
 
                 if (successResponse.statusCode >= 200 && successResponse.statusCode < 300) {
                     let responseBody = successResponse.toText();
-
-                    if (responseBody && httpRequest.url.contains("contentTypes/")) {
-                        responseBody = responseBody
-                            .replace(/documentId/gm, "contentKey")
-                            .replace(/Id\b/gm, "Key")
-                            .replace(/\bid\b/gm, "key");
-                    }
-
                     return responseBody ? JSON.parse(responseBody) : null;
                 }
                 else {
@@ -184,7 +169,7 @@ export class SmapiClient {
 
     private checkError(errorResponse: HttpResponse<any>, requestedUrl: string) {
         if (errorResponse.statusCode === 429) {
-            throw new SmapiError("to_many_logins", "Too many attempts. Please try later.");
+            throw new MapiError("to_many_logins", "Too many attempts. Please try later.");
         }
 
         if (errorResponse.statusCode === 401) {
@@ -194,10 +179,10 @@ export class SmapiClient {
 
             if (authHeader && authHeader.value.indexOf("Basic") !== -1) {
                 if (authHeader.value.indexOf("identity_not_confirmed") !== -1) {
-                    throw new SmapiError("identity_not_confirmed", "User status is Pending. Please check confirmation email.");
+                    throw new MapiError("identity_not_confirmed", "User status is Pending. Please check confirmation email.");
                 }
                 if (authHeader.value.indexOf("invalid_identity") !== -1) {
-                    throw new SmapiError("invalid_identity", "Invalid email or password.");
+                    throw new MapiError("invalid_identity", "Invalid email or password.");
                 }
             }
 
@@ -216,7 +201,7 @@ export class SmapiClient {
             throw error;
         }
 
-        throw new SmapiError("Unhandled", "Unhandled error");
+        throw new MapiError("Unhandled", "Unhandled error");
     }
 
     private processError(statusCode: number, url: string, getError: () => any): any {
@@ -225,25 +210,25 @@ export class SmapiClient {
                 return getError();
 
             case 401:
-                return new SmapiError("Unauthorized", "You're not authorized.");
+                return new MapiError("Unauthorized", "You're not authorized.");
 
             case 403:
-                return new SmapiError("AuthorizationFailed", "You're not authorized to perform this operation.");
+                return new MapiError("AuthorizationFailed", "You're not authorized to perform this operation.");
 
             case 404:
-                return new SmapiError("ResourceNotFound", `Resource not found: ${url}`);
+                return new MapiError("ResourceNotFound", `Resource not found: ${url}`);
 
             case 408:
-                return new SmapiError("RequestTimeout", "Could not complete the request. Please try again later.");
+                return new MapiError("RequestTimeout", "Could not complete the request. Please try again later.");
 
             case 409:
                 return getError();
 
             case 500:
-                return new SmapiError("ServerError", "Internal server error.");
+                return new MapiError("ServerError", "Internal server error.");
 
             default:
-                return new SmapiError("Unhandled", `Unexpected status code in SMAPI response: ${statusCode}.`);
+                return new MapiError("Unhandled", `Unexpected status code in SMAPI response: ${statusCode}.`);
         }
     }
 

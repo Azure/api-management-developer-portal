@@ -19,7 +19,7 @@
 
 @mixin animation-slideleft {
     animation-name: slideleft;
-    animation-duration: 1s;
+    animation-duration: .5s;
     animation-timing-function: ease-in-out;
     visibility: visible !important;
 }

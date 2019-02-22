@@ -1,7 +1,8 @@
+import { MapiObjectStorage } from "./persistence/mapiObjectStorage";
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";
 import { AccessTokenRouteChecker } from "./services/accessTokenRouteChecker";
 import { IRouteHandler } from "@paperbits/common/routing";
-import { SmapiClient } from "./services/smapiClient";
+import { MapiClient } from "./services/mapiClient";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { DocumentationModule } from "./components/documentation/ko/documentation.module";
 import { DocumentationEditorModule } from "./components/documentation/ko/documentationEditor.module";
@@ -23,16 +24,6 @@ import { ProductDetailsModule } from "./components/product-details/ko/productDet
 import { ProductDetailsEditorModule } from "./components/product-details/ko/productDetailsEditor.module";
 import { ProductSubscribeModule } from "./components/product-subscribe/ko/productSubscribe.module";
 import { ProductSubscribeEditorModule } from "./components/product-subscribe/ko/productSubscribeEditor.module";
-import { PageService } from "./services/pageService";
-import { BlogService } from "./services/blogService";
-import { LayoutService } from "./services/layoutService";
-import { BlockService } from "./services/blockService";
-import { MediaService } from "./services/mediaService";
-import { UrlService } from "./services/urlService";
-import { NavigationService } from "./services/navigationService";
-import { StyleService } from "./services/styleService";
-import { SiteService } from "./services/siteService";
-import { ContentItemService } from "./services/contentItemService";
 import { UserService } from "./services/userService";
 import { AzureBlobStorage } from "./components/azureBlobStorage2";
 
@@ -60,23 +51,12 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ProductSubscribeModule());
         injector.bindModule(new ProductSubscribeEditorModule());
         injector.bindSingleton("blobStorage", AzureBlobStorage);
-        injector.bindSingleton("pageService", PageService);
-        injector.bindSingleton("blogService", BlogService);
-        injector.bindSingleton("layoutService", LayoutService);
-        injector.bindSingleton("blockService", BlockService);
-        injector.bindSingleton("mediaService", MediaService);
-        injector.bindSingleton("urlService", UrlService);
-        injector.bindSingleton("navigationService", NavigationService);
-        injector.bindSingleton("styleService", StyleService);
-        injector.bindSingleton("siteService", SiteService);
-        injector.bindSingleton("contentItemService", ContentItemService);
         injector.bindSingleton("userService", UserService);
-        injector.bindSingleton("smapiClient", SmapiClient);
+        injector.bindSingleton("smapiClient", MapiClient);
 
         const authenticator = new DefaultAuthenticator();
         injector.bindInstance("authenticator", authenticator);
-
-        injector.bindInstance("objectStorage", null); // TODO: Remove after moving to version 0.1.41
+        injector.bindSingleton("objectStorage", MapiObjectStorage);
 
         const routeHandler = injector.resolve<IRouteHandler>("routeHandler");
         const checker = new AccessTokenRouteChecker(authenticator);

@@ -3,13 +3,13 @@ import * as ko from "knockout";
 export class TreeViewNode {
     public id: string;
     public name: string;
-    public label: KnockoutObservable<string>;
-    public expanded?: KnockoutObservable<boolean>;
-    public nodes: KnockoutObservableArray<TreeViewNode>;
-    public data: KnockoutObservable<any>;
-    public level?: KnockoutObservable<string>;
-    public hasChildren: KnockoutComputed<boolean>;
-    public hasActiveChild: KnockoutComputed<boolean>;
+    public label: ko.Observable<string>;
+    public expanded?: ko.Observable<boolean>;
+    public nodes: ko.ObservableArray<TreeViewNode>;
+    public data: ko.Observable<any>;
+    public level?: ko.Observable<string>;
+    public hasChildren: ko.Computed<boolean>;
+    public hasActiveChild: ko.Computed<boolean>;
 
     public onSelect: (node: TreeViewNode) => void;
     public isSelected: () => boolean;

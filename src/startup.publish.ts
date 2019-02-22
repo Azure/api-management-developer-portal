@@ -20,7 +20,7 @@ const settingsProvider = new StaticSettingsProvider(configuration);
 /* Storage that contains uploaded media files */
 const blobStorage = new AzureBlobStorage(configuration["blobStorageConnectionString"], configuration["blobStorageContainer"]);
 
-/* Storage where the website gets published */
+/* Storage where the website get published */
 const outputBlobStorage = new FileSystemBlobStorage("./dist/website");
 
 /* Initializing dependency injection container */
