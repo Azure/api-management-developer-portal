@@ -38,7 +38,7 @@ export class BlogPublisher implements IPublisher {
             this.routeHandler.navigateTo(post.permalink);
 
             const layoutViewModel = await this.layoutViewModelBinder.getLayoutViewModel();
-            ko.applyBindingsToNode(templateDocument.body, { widget: layoutViewModel });
+            ko.applyBindingsToNode(templateDocument.body, { widget: layoutViewModel }, null);
 
             setTimeout(() => {
                 this.setSiteSettings(templateDocument, settings, iconFile, post);

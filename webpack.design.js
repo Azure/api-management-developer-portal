@@ -23,7 +23,7 @@ module.exports = {
                 test: /\.scss$/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    { loader: "css-loader" },
+                    { loader: "css-loader", options: { url: false } },
                     { loader: "postcss-loader" },
                     { loader: "sass-loader" }
                 ]
@@ -54,7 +54,8 @@ module.exports = {
         new CopyWebpackPlugin([
             { from: `./src/themes/${editorTheme}/assets/index.html`, to: "index.html" },
             { from: `./src/themes/${editorTheme}/styles/fonts`, to: "editors/styles/fonts" },
-            { from: `./src/themes/${websiteTheme}/assets` }
+            { from: `./src/themes/${websiteTheme}/assets` },
+            { from: `./src/themes/${websiteTheme}/styles/fonts`, to: "styles/fonts" },
         ])
     ],
     resolve: {

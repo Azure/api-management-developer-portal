@@ -24,10 +24,10 @@ export class ConsoleOperation {
 
     public urlTemplate: string;
 
-    public requestUrl: KnockoutComputed<string>;
+    public requestUrl: ko.Computed<string>;
 
     // @ValidateNested()
-    public templateParameters: KnockoutObservableArray<ConsoleParameter>;
+    public templateParameters: ko.ObservableArray<ConsoleParameter>;
 
     public responses?: ConsoleResponse[];
 

@@ -2,12 +2,12 @@
 <div class="container-fluid">
     <div class="panel panel-table">
         <!-- ko ifnot: product -->
-        <h2>Product not found</h2>    
+        <h2>Product not found</h2>
         <!-- /ko -->
 
         <!-- ko if: product -->
         <h2 data-bind="text: product().name"></h2>
-        <p data-bind="text: product().description"></p>        
+        <p data-bind="text: product().description"></p>
 
         <!-- ko if: apis -->
         <p>
@@ -16,9 +16,7 @@
 
         <ul>
             <!-- ko foreach: apis -->
-            <li>
-                <a href="#" class="btn-link" data-bind="click: $parent.selectApi, text: name + (apiVersion ? ' - ' + apiVersion : '')"></a>
-            </li>
+            <li data-bind="text: name + (apiVersion ? ' - ' + apiVersion : '')"></li>
             <!-- /ko -->
         </ul>
         <!-- /ko -->
@@ -31,7 +29,7 @@
         <ul>
             <!-- ko foreach: subscriptions -->
             <li>
-                <a href="#" class="btn-link" data-bind="click: $parent.selectSubscription, text: name"></a>
+                <a href="#" class="btn-link" data-bind="click: $parent.selectSubscription, text: name || productName"></a>
             </li>
             <!-- /ko -->
         </ul>
@@ -50,6 +48,6 @@
 </div>
 <!-- /ko -->
 <!-- ko if: showSubscribe -->
-<h4><a href="#" class="btn-link" data-bind="click: toggleSubscribe, text: '<< ' + product().name"></a></h4>  
+<h4><a href="#" class="btn-link" data-bind="click: toggleSubscribe, text: '<< ' + product().name"></a></h4>
 <product-subscribe></product-subscribe>
 <!-- /ko -->

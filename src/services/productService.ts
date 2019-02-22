@@ -1,4 +1,4 @@
-import { SmapiClient } from "./smapiClient";
+import { MapiClient } from "./mapiClient";
 import { Page } from "../models/page";
 import { Subscription } from "../models/subscription";
 import { Product } from "../models/product";
@@ -12,7 +12,7 @@ export class ProductService {
     private tenantSettings: TenantSettings;
 
     constructor(
-        private readonly smapiClient: SmapiClient,
+        private readonly smapiClient: MapiClient,
         private readonly tenantService: TenantService
     ) {}
     
