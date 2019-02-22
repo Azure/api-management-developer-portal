@@ -50,7 +50,7 @@ export class MediaPublisher implements IPublisher {
     }
 
     public async publish(): Promise<void> {
-        const mediaFiles = await this.mediaService.search();
+        const mediaFiles = await this.mediaService.search("");
         await this.renderMedia(mediaFiles);
     }
 }

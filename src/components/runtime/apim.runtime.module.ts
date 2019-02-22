@@ -15,7 +15,7 @@ import { OperationConsole } from "./operation-console/operation-console";
 import { SchemaDetails } from "./schema-details/schema-details";
 import { ProductService } from "../../services/productService";
 import { FileInput } from "./file-input/file-input";
-import { SmapiClient } from "../../services/smapiClient";
+import { MapiClient } from "../../services/mapiClient";
 import { UsersService } from "../../services/usersService";
 import { UserLogin } from "./user-login/user-login";
 import { UserSignup } from "./user-signup/user-signup";
@@ -32,6 +32,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("eventManager", DefaultEventManager);
         injector.bindSingleton("routeHandler", DefaultRouteHandler);
         injector.bindModule(new KnockoutRegistrationLoaders());
+
         injector.bind("apiDocumentation", Documentation);
         injector.bind("apiList", ApiList);
         injector.bind("apiDetails", ApiDetails);
@@ -51,7 +52,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("productDetails", ProductDetails);
         injector.bind("productSubscribe", ProductSubscribe);
         injector.bind("usersService", UsersService);
-        injector.bindSingleton("smapiClient", SmapiClient);
+        injector.bindSingleton("smapiClient", MapiClient);
         injector.bindSingleton("httpClient", XmlHttpRequestClient);
         injector.bindSingleton("settingsProvider", SettingsProvider);
 
@@ -129,7 +130,7 @@ export class KnockoutRegistrationLoaders {
                         return instance;
                     };
 
-                    ko.components.defaultLoader.loadViewModel(name, viewModelConstructor, callback);
+                    (<any>ko.components.defaultLoader).loadViewModel(name, viewModelConstructor, callback);
                 }
                 else {
                     // Unrecognized config format. Let another loader handle it.
@@ -141,7 +142,7 @@ export class KnockoutRegistrationLoaders {
                 const parseHtmlFragment = <any>ko.utils.parseHtmlFragment;
                 const nodes = parseHtmlFragment(templateHtml, document);
 
-                ko.components.defaultLoader.loadTemplate(name, nodes, callback);
+                (<any>ko.components.defaultLoader).loadTemplate(name, nodes, callback);
             },
 
             loadComponent(componentName: string, config: any, callback: (definition: KnockoutComponentTypes.Definition) => void) {
@@ -170,7 +171,7 @@ export class KnockoutRegistrationLoaders {
                     callback(definitionWrapper);
                 };
 
-                ko.components.defaultLoader.loadComponent(componentName, config, callbackWrapper);
+                (<any>ko.components.defaultLoader).loadComponent(componentName, config, callbackWrapper);
             },
         };
 

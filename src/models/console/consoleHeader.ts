@@ -5,11 +5,11 @@ import { Parameter } from "../parameter";
 
 export class ConsoleHeader {
     // @IsNotEmpty({ message: "Header name cannot be empty" })
-    public name: KnockoutObservable<string>;
+    public name: ko.Observable<string>;
 
     // @IsNotEmpty({ message: "Header value cannot be empty" })
     // @ValidateIf(x => x.required)
-    public value: KnockoutObservable<string>;
+    public value: ko.Observable<string>;
 
     public inputTypeValue: string;
     public required: boolean;

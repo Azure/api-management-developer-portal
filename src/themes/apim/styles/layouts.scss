@@ -108,13 +108,3 @@ section {
 main {
     flex: 1;
 }
-
-api-list {
-    flex-basis: 100%;
-    max-width: 100%;
-}
-
-api-details,
-operation-details {
-  display: contents;
-}

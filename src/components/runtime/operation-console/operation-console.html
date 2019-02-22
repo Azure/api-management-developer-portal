@@ -174,16 +174,6 @@
         data-bind="codesample: { template: templates[selectedLanguage()], model: consoleOperation, language: selectedLanguage }"></pre>
     <div class="flex flex-column align-items-end">
         <div class="btn-group" role="group">
-            <div class="btn-group" role="group">
-                <button type="button" class="button btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                    From browser
-                </button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">From browser</a>
-                    <a class="dropdown-item" href="#">Via proxy</a>
-                </div>
-            </div>
             <button type="button" class="button button-primary btn-sm"
                 data-bind="click: validateAndSendRequest">Send</button>
         </div>
