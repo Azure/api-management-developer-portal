@@ -16,8 +16,6 @@ export class AccessTokenRouteChecker implements IRouteChecker {
     }
 
     public checkNavigatePath(path: string, metadata?: Object): Promise<string> {
-        console.log(`AccessTokenRouteChecker for path: ${path}`);
-
         if (this.isPublicAccess(path) || path === "/page.html" || this.authenticator.isUserLoggedIn()) {
             return Promise.resolve(path);
         } else {

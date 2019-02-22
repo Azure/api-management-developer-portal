@@ -19,7 +19,7 @@ import { SubscriptionState } from "../../../contracts/subscription";
 export class UserSubscriptions {
     private userId: string;
     public user: User;
-    public subscriptions: KnockoutObservableArray<SubscriptionViewModel>;
+    public subscriptions: ko.ObservableArray<SubscriptionViewModel>;
 
     constructor(
         private readonly usersService: UsersService,
@@ -71,7 +71,6 @@ export class UserSubscriptions {
     }
 
     public async renameSubscription(subscription: SubscriptionViewModel) {
-        console.log(subscription);
         const updated = await this.productService.renameUserSubscription(subscription.model.id, subscription.model.userId, subscription.editName())
         const updatedVM = new SubscriptionViewModel(updated);
         this.syncSubscriptionLabelState(subscription, updatedVM);
@@ -107,7 +106,6 @@ export class UserSubscriptions {
     }
 
     public async cancelSubscription(subscription: SubscriptionViewModel) {
-        console.log(subscription);
         const updated = await this.productService.cancelUserSubscription(subscription.model.id, subscription.model.userId);
         const updatedVM = new SubscriptionViewModel(updated);
         this.syncSubscriptionLabelState(subscription, updatedVM);

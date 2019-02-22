@@ -3,14 +3,14 @@ export interface SmapiErrorDetails {
     message: string;
 }
 
-export class SmapiError extends Error {
+export class MapiError extends Error {
     constructor(
         public readonly code: string,
         public readonly message: string,
         public readonly details?: SmapiErrorDetails[]
     ) {
         super();
-        Object.setPrototypeOf(this, SmapiError.prototype);
+        Object.setPrototypeOf(this, MapiError.prototype);
     }
 
     public toString(): string {

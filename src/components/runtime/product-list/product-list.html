@@ -14,7 +14,7 @@
                 <!-- ko foreach: products -->
                     <li>
                         <h3><a href="#" class="btn-link" data-bind="click: $parent.selectProduct, text: name"></a></h3>                        
-                        <span data-bind="text: description"></span>
+                        <span data-bind="markdown: description"></span>
                     </li>
                 <!-- /ko -->
                 </ul>
