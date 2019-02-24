@@ -1,5 +1,4 @@
 const path = require("path");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const websiteTheme = "apim";
@@ -45,11 +44,7 @@ module.exports = {
         ]
     },
     plugins: [
-        new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" }),
-        new CopyWebpackPlugin([
-            { from: `./src/config.runtime.json`, to: `./assets/config.json` },
-            { from: `./src/themes/${websiteTheme}/styles/fonts`, to: "styles/fonts" },
-        ])
+        new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" })
     ],
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"]
