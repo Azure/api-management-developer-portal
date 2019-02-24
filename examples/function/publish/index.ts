@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
-import { AzureBlobStorage } from "../../../src/components/azureBlobStorage";
+import { AzureBlobStorage } from "@paperbits/azure";
 import { InversifyInjector } from "@paperbits/common/injection";
 import { IPublisher } from "@paperbits/common/publishing";
 import { FormsModule } from "@paperbits/forms/forms.module";
@@ -16,13 +16,23 @@ export async function publish() {
     /* Reading settings from configuration file */
     const configFile = path.resolve(__dirname, "./config.json");
     const configuration = JSON.parse(fs.readFileSync(configFile, "utf8").toString());
-    const settingsProvider = new StaticSettingsProvider(configuration);
 
-    /* Storage that contains uploaded media files */
-    const blobStorage = new AzureBlobStorage(configuration["blobStorageConnectionString"], configuration["blobStorageContainer"]);
+    const settingsProvider = new StaticSettingsProvider({
+        managementApiUrl: configuration.managementApiUrl,
+        managementApiVersion: configuration.managementApiVersion,
+        managementApiAccessToken: configuration.managementApiAccessToken,
+        blobStorageContainer: configuration.outputBlobStorageContainer,
+        blobStorageConnectionString: configuration.outputBlobStorageConnectionString,
+        environment: "publishing"
+    });
+
+    const outputSettingsProvider = new StaticSettingsProvider({
+        blobStorageContainer: configuration.outputBlobStorageContainer,
+        blobStorageConnectionString: configuration.outputBlobStorageConnectionString
+    });
 
     /* Storage where the website get published */
-    const outputBlobStorage = new AzureBlobStorage(configuration["outputBlobStorageConnectionString"], configuration["outputBlobStorageContainer"]);
+    const outputBlobStorage = new AzureBlobStorage(outputSettingsProvider);
 
     const injector = new InversifyInjector();
     injector.bindModule(new CoreModule());
@@ -31,7 +41,6 @@ export async function publish() {
     injector.bindModule(new ProseMirrorModule());
     injector.bindModule(new ApimPublishModule());
     injector.bindInstance("settingsProvider", settingsProvider);
-    injector.bindInstance("blobStorage", blobStorage);
     injector.bindInstance("outputBlobStorage", outputBlobStorage);
     injector.bindModule(new PublishingNodeModule());
     injector.resolve("autostart");

@@ -29,7 +29,7 @@
         <ul>
             <!-- ko foreach: subscriptions -->
             <li>
-                <a href="#" class="btn-link" data-bind="click: $parent.selectSubscription, text: name || productName"></a>
+                <a href="#" data-bind="click: $parent.selectSubscription, text: name || productName"></a>
             </li>
             <!-- /ko -->
         </ul>
@@ -48,6 +48,6 @@
 </div>
 <!-- /ko -->
 <!-- ko if: showSubscribe -->
-<h4><a href="#" class="btn-link" data-bind="click: toggleSubscribe, text: '<< ' + product().name"></a></h4>
+<h4><a href="#" data-bind="click: toggleSubscribe, text: '<< ' + product().name"></a></h4>
 <product-subscribe></product-subscribe>
 <!-- /ko -->

@@ -1,4 +1,3 @@
-import "setimmediate";
 import { createDocument } from "@paperbits/core/ko/knockout-rendring";
 import { IInjector } from "@paperbits/common/injection";
 import { SitePublisher } from "./sitePublisher";
