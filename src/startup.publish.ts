@@ -9,16 +9,12 @@ import { StyleModule } from "@paperbits/styles/styles.module";
 import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
 import { StaticSettingsProvider } from "./components/staticSettingsProvider";
 import { FileSystemBlobStorage } from "./components/filesystemBlobStorage";
-import { AzureBlobStorage } from "./components/azureBlobStorage";
 import { ApimPublishModule } from "./apim.publish.module";
 
 /* Reading settings from configuration file */
 const configFile = path.resolve(__dirname, "./config.json");
 const configuration = JSON.parse(fs.readFileSync(configFile, "utf8").toString());
 const settingsProvider = new StaticSettingsProvider(configuration);
-
-/* Storage that contains uploaded media files */
-const blobStorage = new AzureBlobStorage(configuration["blobStorageConnectionString"], configuration["blobStorageContainer"]);
 
 /* Storage where the website get published */
 const outputBlobStorage = new FileSystemBlobStorage("./dist/website");
@@ -31,7 +27,6 @@ injector.bindModule(new StyleModule());
 injector.bindModule(new ProseMirrorModule());
 injector.bindModule(new ApimPublishModule());
 injector.bindInstance("settingsProvider", settingsProvider);
-injector.bindInstance("blobStorage", blobStorage);
 injector.bindInstance("outputBlobStorage", outputBlobStorage);
 injector.bindModule(new PublishingNodeModule());
 injector.resolve("autostart");

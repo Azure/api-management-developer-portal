@@ -1,2 +1,151 @@
 @import "styles.scss";
-@import "../../designer/styles/styleguide.scss";
+
+$style-guide-font-family: "Arial";
+$style-guide-font-size: 12px;
+$style-guide-color: #000;
+
+.living-style-guide {
+    .style-card {
+        cursor: default;
+        color: $style-guide-color;
+        user-select: none;
+
+        * {
+            pointer-events: none;
+        }
+
+        .style-card-label {
+            text-align: center;
+            display: block;
+            
+            font-size: $style-guide-font-size;
+            font-family: $style-guide-font-family;
+            padding: 5px;
+        }
+
+        &.style-card-empty {
+            color: #ccc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
+
+            * {
+                pointer-events: all;
+            }
+        }
+    }
+
+    
+
+
+    .fonts {
+        display: flex;
+        // justify-content: flex-end;
+    }
+
+    .font {
+        border: 1px solid #ededed;
+        padding: 20px 30px;
+        display: inline-block;
+        min-width: 100px;
+        text-align: center;
+        margin: 5px;
+
+        .font-sample {
+            padding: 0;
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .font-name {
+            color: $style-guide-color;
+            font-size: 10px;
+            font-family: $style-guide-font-family;
+        }
+    }
+
+    .font-primary {
+        padding: 40px 0;
+
+        .font-sample {
+            font-size: 150px;
+        }
+    }
+
+    .heading {
+        color: $style-guide-color;
+        font-family: $style-guide-font-family;
+        font-size: 30px;
+        font-weight: normal;
+    }
+
+    .category-name {
+        color: $style-guide-color;
+        font-size: $style-guide-font-size;
+        font-family: $style-guide-font-family;
+    }
+
+    .samples {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        align-items: center;
+        flex-wrap: wrap;
+
+        .sample {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+           
+
+            .sample-shadow {
+                width: 100px;
+                height: 100px;
+            }
+
+            .sample-color {
+                cursor: pointer;
+                border-radius: 50%;
+                box-shadow: inset -1px 1px 1px 0 rgba(0, 0, 0, 0.1);
+                width: 60px;
+                height: 60px;
+                margin: 10px;
+                padding: 0;
+                display: block;
+                position: relative;
+                text-align: center;
+            }
+        }
+    }
+
+    article {
+        padding-bottom: 50px;
+    }
+
+    .btn-round {
+        display: block;
+        background-color: #607d8b;
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbDpzcGFjZT0icHJlc2VydmUiIHN0cm9rZT0ibm9uZSIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48dGl0bGU+c2ltcGxlIGFkZDwvdGl0bGU+PGcgY2xhc3M9Im5jLWljb24td3JhcHBlciIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSIjMTExMTExIiBzdHJva2U9IiMxMTExMTEiPjxsaW5lIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VjZWNlYyIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiB4MT0iMTIiIHkxPSIyIiB4Mj0iMTIiIHkyPSIyMiIvPiA8bGluZSBmaWxsPSJub25lIiBzdHJva2U9IiNlY2VjZWMiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgeDE9IjIyIiB5MT0iMTIiIHgyPSIyIiB5Mj0iMTIiLz48L2c+PC9zdmc+);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 15px;
+        box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.15);
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        z-index: 9000;
+        line-height: 1em;
+        padding: 7px;
+    
+        &:hover {
+            transform: scale(1.2);
+            transition-duration: .3s;
+        }
+    }
+    
+}

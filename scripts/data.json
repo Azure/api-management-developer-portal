@@ -47,6 +47,14 @@
         "permalink": "/",
         "documentId": "contentTypes/document/contentItems/e0987ca1-f458-b546-7697-7be594b35583"
     },
+    "/contentTypes/page/contentItems/8e28245a-3807-fca4-0e64-caa7beed004e": {
+        "id": "/contentTypes/page/contentItems/8e28245a-3807-fca4-0e64-caa7beed004e",
+        "title": "APIs",
+        "description": "",
+        "keywords": "",
+        "permalink": "/apis",
+        "documentId": "contentTypes/document/contentItems/8e28245a-3807-fca4-0e64-caa7beed004e"
+    },
     "/contentTypes/document/contentItems/stylesheet": {
         "id": "/contentTypes/document/contentItems/stylesheet",
         "nodes": [
@@ -67,9 +75,9 @@
                         "id": "colors/Bqr2r",
                         "value": "rgba(254, 213, 60, 1.0)"
                     },
-                    "GNyJj": {
+                    "default": {
                         "displayName": "Text - black",
-                        "id": "colors/GNyJj",
+                        "id": "colors/default",
                         "value": "#000"
                     },
                     "Gpcrr": {
@@ -171,7 +179,7 @@
                                 "shadowId": "shadows/shadow1"
                             },
                             "typography": {
-                                "colorId": "colors/GNyJj",
+                                "colorId": "colors/default",
                                 "fontStyle": "normal",
                                 "fontWeight": "normal"
                             }
@@ -768,19 +776,6 @@
                             "colorId": "colors/primaryText"
                         }
                     },
-                    "section-QwOH9": {
-                        "background": {
-                            "colorId": "colors/Gpcrr",
-                            "images": [
-                                {
-                                    "position": "center center",
-                                    "repeat": "no-repeat",
-                                    "size": "cover",
-                                    "sourceId": "contentTypes/blob/contentItems/f6042995-4f9d-0397-c996-03a3b1dd96fa"
-                                }
-                            ]
-                        }
-                    },
                     "section-XNxoW": {
                         "typography": {
                             "colorId": "colors/primaryText"
@@ -799,18 +794,6 @@
                             "colorId": "colors/s7KlY"
                         }
                     },
-                    "section-bdPlH": {
-                        "background": {
-                            "images": [
-                                {
-                                    "position": "center center",
-                                    "repeat": "no-repeat",
-                                    "size": "cover",
-                                    "sourceId": "contentTypes/blob/contentItems/f6042995-4f9d-0397-c996-03a3b1dd96fa"
-                                }
-                            ]
-                        }
-                    },
                     "section-ssDdj": {
                         "background": {
                             "colorId": "colors/O6nZg"
@@ -818,7 +801,7 @@
                     },
                     "section-xcP4f": {
                         "background": {
-                            "colorId": "colors/GNyJj"
+                            "colorId": "colors/default"
                         }
                     },
                     "section-MTkLe": {
@@ -1089,18 +1072,11 @@
         "nodes": [
             {
                 "site": {
-                    "title": "API Management - Developer portal",
-                    "description": "",
-                    "keywords": "API, developer",
-                    "faviconSourceId": "/contentTypes/blob/contentItems/favicon",
-                    "author": "Microsoft"
-                },
-                "integration": {
-                    "intercom": {},
-                    "gtm": {},
-                    "googlemaps": {
-                        "apiId": ""
-                    }
+                    "title": "Microsoft Azure API Management - developer portal",
+                    "description": "Discover APIs, learn how to use them, try them out interactively, and sign up to acquire keys.",
+                    "keywords": "Azure, API Management, API, developer",
+                    "faviconSourceId": "contentTypes/blob/contentItems/favicon",
+                    "author": "Microsoft Azure API Management"
                 }
             }
         ]
@@ -1161,61 +1137,44 @@
     },
     "/contentTypes/document/contentItems/navigation": {
         "id": "/contentTypes/document/contentItems/navigation",
-        "nodes": [
-            {
+        "nodes": {
+            "0": {
                 "id": "main",
                 "label": "Main menu",
                 "navigationItems": [
                     {
                         "id": "0901ccd9-9c01-8a2b-5d86-7edd429f3a9a",
                         "label": "Home",
-                        "targetId": "/contentTypes/page/contentItems/e0987ca1-f458-b546-7697-7be594b35583",
-                        "navigationItems": null
+                        "targetId": "contentTypes/page/contentItems/e0987ca1-f458-b546-7697-7be594b35583"
                     },
                     {
                         "id": "32fea618-15ed-f8ab-e3fa-ec71a144632f",
                         "label": "APIs",
-                        "targetId": "/contentTypes/url/contentItems/db6d0be2-ec1a-2850-6476-ff53b65b00b9",
-                        "navigationItems": null
+                        "targetId": "contentTypes/url/contentItems/db6d0be2-ec1a-2850-6476-ff53b65b00b9"
                     },
                     {
                         "id": "775bc451-92f1-8463-f06c-0251fc529bd9",
                         "label": "Products",
-                        "targetId": "/contentTypes/page/contentItems/085eb170-7cd7-476f-da11-85b04e265b84",
-                        "navigationItems": null
-                    },
-                    {
-                        "id": "0153863f-3d75-4cbc-7347-8ce69e409425",
-                        "label": "Log In",
-                        "targetId": "/contentTypes/page/contentItems/81b0cd55-fb1a-12ee-e41a-d2d6b851ac60",
-                        "navigationItems": null
+                        "targetId": "contentTypes/page/contentItems/085eb170-7cd7-476f-da11-85b04e265b84"
                     },
                     {
                         "id": "f6c3ae82-cf61-17b9-e35f-08ffbd5c69d5",
                         "label": "Sign Up",
-                        "targetId": "/contentTypes/page/contentItems/0145411a-2c82-325a-4390-76cff184530b",
-                        "navigationItems": null
-                    }
-                ]
-            },
-            {
-                "id": "3213b0bb-95c1-4b60-96a5-59af7c2750cf",
-                "label": "Tutorial",
-                "navigationItems": [
-                    {
-                        "id": "f4b87cbb-5e6d-d0d2-12e8-82574c865e63",
-                        "label": "Overview",
-                        "targetId": "/contentTypes/page/contentItems/1722af9b-7cf0-70e5-8630-5cd4497575aa",
-                        "navigationItems": null
+                        "targetId": "contentTypes/page/contentItems/0145411a-2c82-325a-4390-76cff184530b"
                     },
                     {
-                        "id": "f0aa7743-153c-1648-c7ff-9947882d2583",
-                        "label": "Authentication",
-                        "navigationItems": null
+                        "id": "0153863f-3d75-4cbc-7347-8ce69e409425",
+                        "label": "Log In",
+                        "targetId": "contentTypes/page/contentItems/81b0cd55-fb1a-12ee-e41a-d2d6b851ac60"
+                    },
+                    {
+                        "id": "afa32b63-3c57-3cdf-ffb5-4ac4332b5553",
+                        "label": "Profile",
+                        "targetId": "contentTypes/page/contentItems/4e3cf6a5-574a-ba08-1f23-2e7a38faa6d8"
                     }
                 ]
             }
-        ]
+        }
     },
     "/contentTypes/document/contentItems/7fe21f13-d1dd-00c1-c00e-a296b2cdcdca": {
         "id": "/contentTypes/document/contentItems/7fe21f13-d1dd-00c1-c00e-a296b2cdcdca",
@@ -1732,129 +1691,6 @@
                 "padding": "with-padding",
                 "styles": {
                     "instance": "instances/section-6FK4J"
-                }
-            }
-        ]
-    },
-    "/contentTypes/document/contentItems/e04e0e51-7447-6be4-5f79-2c77cfe9fabd": {
-        "id": "/contentTypes/document/contentItems/e04e0e51-7447-6be4-5f79-2c77cfe9fabd",
-        "nodes": [
-            {
-                "type": "layout-section",
-                "object": "block",
-                "nodes": [
-                    {
-                        "type": "layout-row",
-                        "object": "block",
-                        "nodes": [
-                            {
-                                "type": "layout-column",
-                                "object": "block",
-                                "nodes": [
-                                    {
-                                        "object": "block",
-                                        "type": "navbar",
-                                        "rootId": "main",
-                                        "sourceId": "contentTypes/blob/contentItems/70add409-0933-e01e-acef-99999a71167e"
-                                    }
-                                ],
-                                "size": {
-                                    "xs": 12
-                                },
-                                "alignment": {
-                                    "xl": "center start"
-                                }
-                            }
-                        ]
-                    }
-                ],
-                "layout": "none",
-                "padding": "with-padding",
-                "styles": {
-                    "instance": "instances/section-apis-menu"
-                }
-            },
-            {
-                "type": "layout-section",
-                "object": "block",
-                "nodes": [
-                    {
-                        "type": "layout-row",
-                        "object": "block",
-                        "nodes": [
-                            {
-                                "type": "layout-column",
-                                "object": "block",
-                                "nodes": [
-                                    {
-                                        "type": "card",
-                                        "object": "block",
-                                        "styles": {
-                                            "appearance": "components/card/tifqy"
-                                        },
-                                        "nodes": [
-                                            {
-                                                "object": "widget",
-                                                "type": "text",
-                                                "nodes": [
-                                                    {
-                                                        "type": "heading2",
-                                                        "attrs": {
-                                                            "setId": true
-                                                        },
-                                                        "content": [
-                                                            {
-                                                                "type": "text",
-                                                                "text": "APIs"
-                                                            }
-                                                        ]
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "object": "block",
-                                                "type": "listOfApis"
-                                            }
-                                        ],
-                                        "alignment": {
-                                            "xl": "start start"
-                                        }
-                                    }
-                                ],
-                                "size": {
-                                    "xs": 12,
-                                    "md": 3
-                                },
-                                "alignment": {
-                                    "xl": "start start"
-                                },
-                                "overflowX": "scroll",
-                                "overflowY": "scroll"
-                            },
-                            {
-                                "type": "layout-column",
-                                "object": "block",
-                                "nodes": [
-                                    {
-                                        "object": "block",
-                                        "type": "detailsOfApi"
-                                    }
-                                ],
-                                "size": {
-                                    "xs": 12,
-                                    "md": 9
-                                }
-                            }
-                        ]
-                    }
-                ],
-                "layout": "none",
-                "padding": "with-padding",
-                "styles": {
-                    "instance": "instances/section-apis",
-                    "size": {
-                        "xs": "utils/block/stretch"
-                    }
                 }
             }
         ]
@@ -3073,6 +2909,167 @@
                 "padding": "with-padding",
                 "styles": {
                     "instance": "instances/section-142PD"
+                }
+            }
+        ]
+    },
+    "/contentTypes/document/contentItems/8e28245a-3807-fca4-0e64-caa7beed004e": {
+        "id": "/contentTypes/document/contentItems/8e28245a-3807-fca4-0e64-caa7beed004e",
+        "nodes": [
+            {
+                "type": "layout-section",
+                "object": "block",
+                "nodes": [
+                    {
+                        "type": "layout-row",
+                        "object": "block",
+                        "nodes": [
+                            {
+                                "type": "layout-column",
+                                "object": "block",
+                                "nodes": [
+                                    {
+                                        "object": "block",
+                                        "type": "detailsOfApi"
+                                    }
+                                ],
+                                "size": {
+                                    "xs": 12
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "layout": "none",
+                "padding": "with-padding",
+                "styles": {
+                    "instance": "instances/section-apis",
+                    "size": {
+                        "xs": "utils/block/stretch"
+                    }
+                }
+            }
+        ]
+    },
+    "/contentTypes/document/contentItems/e04e0e51-7447-6be4-5f79-2c77cfe9fabd": {
+        "id": "/contentTypes/document/contentItems/e04e0e51-7447-6be4-5f79-2c77cfe9fabd",
+        "nodes": [
+            {
+                "type": "layout-section",
+                "object": "block",
+                "nodes": [
+                    {
+                        "type": "layout-row",
+                        "object": "block",
+                        "nodes": [
+                            {
+                                "type": "layout-column",
+                                "object": "block",
+                                "nodes": [
+                                    {
+                                        "object": "block",
+                                        "type": "navbar",
+                                        "rootId": "main",
+                                        "sourceId": "contentTypes/blob/contentItems/70add409-0933-e01e-acef-99999a71167e"
+                                    }
+                                ],
+                                "size": {
+                                    "xs": 12
+                                },
+                                "alignment": {
+                                    "xl": "center start"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "layout": "none",
+                "padding": "with-padding",
+                "styles": {
+                    "instance": "instances/section-apis-menu"
+                }
+            },
+            {
+                "type": "layout-section",
+                "object": "block",
+                "nodes": [
+                    {
+                        "type": "layout-row",
+                        "object": "block",
+                        "nodes": [
+                            {
+                                "type": "layout-column",
+                                "object": "block",
+                                "nodes": [
+                                    {
+                                        "type": "card",
+                                        "object": "block",
+                                        "styles": {
+                                            "appearance": "components/card/tifqy"
+                                        },
+                                        "nodes": [
+                                            {
+                                                "object": "widget",
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "heading2",
+                                                        "attrs": {
+                                                            "setId": true
+                                                        },
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "APIs"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "object": "block",
+                                                "type": "listOfApis"
+                                            }
+                                        ],
+                                        "alignment": {
+                                            "xl": "start start"
+                                        }
+                                    }
+                                ],
+                                "size": {
+                                    "xs": 12,
+                                    "md": 3
+                                },
+                                "alignment": {
+                                    "xl": "start start"
+                                },
+                                "overflowX": "scroll",
+                                "overflowY": "scroll"
+                            },
+                            {
+                                "type": "layout-column",
+                                "object": "block",
+                                "nodes": [
+                                    {
+                                        "object": "block",
+                                        "type": "page"
+                                    }
+                                ],
+                                "size": {
+                                    "xs": 12,
+                                    "md": 9
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "layout": "none",
+                "padding": "with-padding",
+                "styles": {
+                    "instance": "instances/section-apis",
+                    "size": {
+                        "xs": "utils/block/stretch"
+                    }
                 }
             }
         ]
