@@ -50,7 +50,7 @@ export class PagePublisher implements IPublisher {
             setTimeout(() => {
                 htmlContent = "<!DOCTYPE html>" + templateDocument.documentElement.outerHTML;
                 resolve();
-            }, 500);
+            }, 1000);
         });
 
         await buildContentPromise;
