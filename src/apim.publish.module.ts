@@ -15,6 +15,7 @@ import { ProductSubscribeModule } from "./components/product-subscribe/ko/produc
 import { StaticRouteHandler } from "./components/staticRouteHandler";
 import { UserService } from "./services/userService";
 import { StaticAuthenticator } from "./components/staticAuthenticator";
+import { AzureBlobStorage } from "@paperbits/azure";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -30,6 +31,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ProductListModule());
         injector.bindModule(new ProductDetailsModule());
         injector.bindModule(new ProductSubscribeModule());
+        injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
         injector.bindSingleton("routeHandler", StaticRouteHandler);
         injector.bindSingleton("authenticator", StaticAuthenticator);

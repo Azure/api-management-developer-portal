@@ -33,7 +33,6 @@ section {
             display: flex;
             flex-wrap: wrap;
             flex-direction: row;
-            align-content: flex-start;
             align-items: flex-start;
         }
     }
@@ -49,6 +48,7 @@ section {
 
 .stretch {
     flex: 1;
+    height: 100%;
 }
 
 .overflow {
@@ -106,5 +106,6 @@ section {
 }
 
 main {
-    flex: 1;
+    flex-basis: 100%;
+    align-self: stretch;
 }
