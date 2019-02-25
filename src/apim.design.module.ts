@@ -25,7 +25,7 @@ import { ProductDetailsEditorModule } from "./components/product-details/ko/prod
 import { ProductSubscribeModule } from "./components/product-subscribe/ko/productSubscribe.module";
 import { ProductSubscribeEditorModule } from "./components/product-subscribe/ko/productSubscribeEditor.module";
 import { UserService } from "./services/userService";
-import { AzureBlobStorage } from "./components/azureBlobStorage2";
+import { AzureBlobStorage } from "@paperbits/azure";
 
 
 export class ApimDesignModule implements IInjectorModule {
