@@ -11,12 +11,12 @@
         <div class="row">
             <div class="col-md-12">
                 <ul class="list-unstyled">
-                <!-- ko foreach: products -->
+                    <!-- ko foreach: products -->
                     <li>
-                        <h3><a href="#" class="btn-link" data-bind="click: $parent.selectProduct, text: name"></a></h3>                        
+                        <h3><a href="#" data-bind="click: $parent.selectProduct, text: name"></a></h3>
                         <span data-bind="markdown: description"></span>
                     </li>
-                <!-- /ko -->
+                    <!-- /ko -->
                 </ul>
             </div>
         </div>
@@ -25,6 +25,7 @@
 </div>
 <!-- /ko -->
 <!-- ko if: showDetails -->
-<h4><a href="#" class="btn-link" data-bind="click: toggleDetails"><< All products</a></h4>  
-<product-details></product-details>
-<!-- /ko -->
+<h4><a href="#" data-bind="click: toggleDetails">
+        << All products</a> </h4> <product-details>
+            </product-details>
+            <!-- /ko -->
