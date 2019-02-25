@@ -25,7 +25,7 @@
             <div class="row">
                 <div class="col-md-12"><input type="checkbox" data-bind="checked: isAgreed" />
                     By subscribing to this Product, I agree to the Terms of Use.
-                    <a href="#" class="btn-link" data-bind="click: toggle, text: showHideLabel"></a>
+                    <a href="#" data-bind="click: toggle, text: showHideLabel"></a>
                 </div>
             </div>
                 <!-- ko if: showTerms -->
@@ -36,10 +36,10 @@
             <!-- /ko -->
         <div class="row">
             <div class="col-md-3">
-                <button type="button" class="btn btn-default" data-bind="click: confirm, enable: isChangesReady()">Confirm</button>
+                <button type="button" class="button button-default" data-bind="click: confirm, enable: isChangesReady()">Confirm</button>
             </div>
             <div class="col-md-3">
-                <!-- <button type="button" class="btn btn-default" data-bind="click: cancel">Cancel</button> -->
+                <!-- <button type="button" class="button button-default" data-bind="click: cancel">Cancel</button> -->
             </div>
         </div>
         <!-- /ko -->

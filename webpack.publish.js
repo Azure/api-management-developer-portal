@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const themeConfig = require("./webpack.theme");
 
+const websiteTheme = "apim";
 
 const publisherConfig = {
     mode: "development",
@@ -55,8 +56,9 @@ const publisherConfig = {
         new CleanWebpackPlugin(["dist/publisher"]),
         new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" }),
         new CopyWebpackPlugin([
-            { from: `./src/config.publish.json`, to: `./config.json` },
-            { from: `./src/config.runtime.json`, to: `./assets/config.json` }
+            { from: `./src/config.publish.json`, to: `config.json` },
+            { from: `./src/config.runtime.json`, to: `assets/config.json` },
+            { from: `./src/themes/${websiteTheme}/styles/fonts`, to: "assets/styles/fonts" }
         ])
     ],
     optimization: {
