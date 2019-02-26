@@ -1,4 +1,7 @@
-node_modules/
-dist/
-.vscode/
 .history/
+.vscode/
+dist/
+node_modules/
+src/config.design.json
+src/config.publish.json
+src/config.runtime.json
