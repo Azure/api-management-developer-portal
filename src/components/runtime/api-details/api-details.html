@@ -1,4 +1,8 @@
 <div class="fit flex flex-row">
+    <!-- ko if: working-->
+    <spinner class="fit"></spinner>
+    <!-- /ko -->
+
     <!-- ko ifnot: working -->
     <div class="flex-item flex-grow animation-fade-in">
         <div class="fit scrollable">
@@ -22,7 +26,6 @@
                 <!-- /ko -->
 
                 <schema-details params="{ api: api }"></schema-details>
-
                 <!-- /ko -->
 
                 <!-- ko ifnot: api() -->
