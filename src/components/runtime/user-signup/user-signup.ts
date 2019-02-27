@@ -1,8 +1,7 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./user-signup.html";
-import { RuntimeComponent } from "@paperbits/common/ko/decorators";
-import { Component } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../services/usersService";
 import { TenantService } from "../../../services/tenantService";
 import { TenantSettings } from "../../../contracts/tenantSettings";

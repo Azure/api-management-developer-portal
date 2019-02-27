@@ -40,7 +40,7 @@
         </div>
     </div>
 
-    <!-- ko if: $component.selectedOperation() -->
+    <!-- ko if: $component.selectedOperation -->
     <div class="flex-item flex-grow detachable">
         <operation-console class="fit scrollable flex flex-column" params="{ api: $component.selectedApi, operation: $component.selectedOperation }"></operation-console>
     </div>
