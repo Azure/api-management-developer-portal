@@ -543,7 +543,7 @@ export class OperationConsole {
         }
         catch (error) {
             if (error.code && error.code === "RequestError") {
-                this.requestError(`Since the browser initiates the request, it requires Cross-Origin Resource Sharing (CORS) enabled on the server. <a href="https://aka.ms/AA4e482">Learn more</a>`);
+                this.requestError(`Since the browser initiates the request, it requires Cross-Origin Resource Sharing (CORS) enabled on the server. <a href="https://aka.ms/AA4e482" target="_blank">Learn more</a>`);
             }
         }
         finally {
