@@ -39,7 +39,7 @@ export class OperationConsole {
     @Param()
     public revision: ko.Observable<Revision>;
 
-    public working: boolean;
+    public working: ko.Observable<boolean>;
     public consoleOperation: ko.Observable<ConsoleOperation>;
     public requestSummarySecretsRevealed: boolean;
     public responseStatusCode: ko.Observable<string>;
@@ -64,6 +64,7 @@ export class OperationConsole {
     public canSelectProduct: boolean;
     public responseActiveTab: ko.Observable<string>;
     public requestSummary: ko.Observable<string>;
+    public requestError: ko.Observable<string>;
     public bodySource: ko.Observable<string>;
     public attachment: ko.Observable<string>;
     public templates: Object;
@@ -89,6 +90,7 @@ export class OperationConsole {
         this.attachment = ko.observable();
         this.bodySource = ko.observable("Raw");
         this.requestSummary = ko.observable();
+        this.requestError = ko.observable();
         this.responseStatusCode = ko.observable();
         this.responseStatusText = ko.observable();
         this.responseHeadersString = ko.observable();
@@ -118,7 +120,7 @@ export class OperationConsole {
             return;
         }
 
-        this.working = true;
+        this.working = ko.observable(false);
         this.requestSummarySecretsRevealed = false;
         this.responseStatusCode(null);
         this.responseStatusText(null);
@@ -134,8 +136,6 @@ export class OperationConsole {
         const skuName = await this.tenantService.getServiceSkuName();
         this.masterKey = await this.tenantService.getServiceMasterKey();
         this.isConsumptionMode = skuName === ServiceSkuName.Consumption;
-
-        this.working = false;
 
         this.consoleOperation(new ConsoleOperation(this.api(), this.operation(), this.revision()));
 
@@ -414,34 +414,36 @@ export class OperationConsole {
     }
 
     private async sendRequest(): Promise<void> {
+        this.requestError(null);
         this.consoleTraceError(null);
-        this.working = true;
+        this.working(true);
         this.responseStatusCode(null);
 
         const url = `${this.consoleOperation().requestUrl()}`;
         const method = this.consoleOperation().method;
         const headers = [...this.consoleOperation().request.headers()];
 
-        if (this.isConsumptionMode) {
-            const traceHeaderIndex = headers.findIndex(header => header.name().toLowerCase() === KnownHttpHeaders.OcpApimTrace.toLowerCase());
-            traceHeaderIndex !== -1 && headers.splice(traceHeaderIndex, 1);
+        let traceHeader = headers.find(header => header.name().toLowerCase() === KnownHttpHeaders.OcpApimTrace.toLowerCase());
 
-            const traceHeader = this.consoleOperation().createHeader(KnownHttpHeaders.OcpApimTrace, "true", "bool", "Enable request tracing.");
-
-            if (this.isKeyProvidedByUser()) {
-                traceHeader.value(this.masterKey);
-            }
-            else {
-                const keyHeader = this.consoleOperation().createHeader(KnownHttpHeaders.OcpApimSubscriptionKey, this.masterKey, "string", "Subscription key.");
-
-                if (this.selectedProduct) {
-                    keyHeader.value(`${keyHeader.value};product=${this.selectedProduct}`);
-                }
-                headers.push(keyHeader);
-            }
-
-            headers.push(traceHeader);
+        if (traceHeader) {
+            headers.remove(traceHeader);
         }
+
+        traceHeader = this.consoleOperation().createHeader(KnownHttpHeaders.OcpApimTrace, "true", "bool", "Enable request tracing.");
+
+        if (this.isKeyProvidedByUser()) {
+            traceHeader.value(this.masterKey);
+        }
+        else {
+            const keyHeader = this.consoleOperation().createHeader(KnownHttpHeaders.OcpApimSubscriptionKey, this.masterKey, "string", "Subscription key.");
+
+            if (this.selectedProduct) {
+                keyHeader.value(`${keyHeader.value};product=${this.selectedProduct}`);
+            }
+            headers.push(keyHeader);
+        }
+
+        headers.push(traceHeader);
 
         let payload;
 
@@ -518,8 +520,13 @@ export class OperationConsole {
                 }
             }
         }
+        catch (error) {
+            if (error.code && error.code === "RequestError") {
+                this.requestError(`Since the browser initiates the request, it requires Cross-Origin Resource Sharing (CORS) enabled on the server. <a href="https://aka.ms/AA4e482">Learn more</a>`);
+            }
+        }
         finally {
-            this.working = false;
+            this.working(false);
         }
     }
 

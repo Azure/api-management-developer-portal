@@ -2,10 +2,12 @@
     <ul class="nav list-group">
         <!-- ko foreach: { data: nodes, as: 'node' } -->
         <li class="nav-item list-group-item" role="listitem" data-bind="css: node.level">
-            <div class="list-group-item-container" data-bind="css: { expanded: node.expanded, active: node.isSelected, 'has-active-child': node.hasActiveChild }">
+            <div class="list-group-item-container"
+                data-bind="css: { expanded: node.expanded, active: node.isSelected, 'has-active-child': node.hasActiveChild }">
                 <div class="list-group-item-heading flex-container">
                     <!-- ko if: node.hasChildren() -->
-                    <button class="toggle" aria-label="Expand" data-bind="css: { active: node.expanded }, click: node.toggle">
+                    <button class="toggle" aria-label="Expand"
+                        data-bind="css: { active: node.expanded }, click: node.toggle">
                         <i class="icon icon-chevron-down"></i>
                     </button>
                     <!-- /ko -->
@@ -37,9 +39,16 @@
     Number of APIs found - {{nodes.length}}
 </p> -->
 
-<!-- ko template: { name: 'treeview', data: { nodes: $component.nodes } } -->
+
+<!-- ko if: working-->
+<spinner class="fit"></spinner>
 <!-- /ko -->
+
+<!-- ko ifnot: working-->
+
+<!-- ko template: { name: 'treeview', data: { nodes: $component.nodes } } --><!-- /ko -->
 
 <div class="list-placeholder list-group-placeholder" data-bind="if: $component.nodes().length === 0">
     No APIs to display.
 </div>
+<!-- /ko -->
