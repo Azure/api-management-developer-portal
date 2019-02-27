@@ -30,16 +30,8 @@ export class OperationConsole {
     private portalHostname: string;
     private masterKey: string;
 
-    @Param()
-    public api: ko.Observable<Api>;
-
-    @Param()
-    public operation: ko.Observable<Operation>;
-
-    @Param()
-    public revision: ko.Observable<Revision>;
-
-    public working: ko.Observable<boolean>;
+    public sendingRequest: ko.Observable<boolean>;
+    public resettingOperation: ko.Observable<boolean>;
     public consoleOperation: ko.Observable<ConsoleOperation>;
     public requestSummarySecretsRevealed: boolean;
     public responseStatusCode: ko.Observable<string>;
@@ -79,12 +71,13 @@ export class OperationConsole {
         // private readonly corsService: CorsService
     ) {
         this.templates = templates;
-        this.updateConsole = this.updateConsole.bind(this);
+        this.resetConsole = this.resetConsole.bind(this);
         this.updateRequestSummary = this.updateRequestSummary.bind(this);
         this.selectMessageTab = this.selectMessageTab.bind(this);
         this.selectTraceTab = this.selectTraceTab.bind(this);
         this.initialize = this.initialize.bind(this);
         this.setSubscriptionKeyHeader = this.setSubscriptionKeyHeader.bind(this);
+        this.applySubscriptionKey = this.applySubscriptionKey.bind(this);
 
         this.products = ko.observable();
         this.attachment = ko.observable();
@@ -100,27 +93,43 @@ export class OperationConsole {
         this.responseActiveTab = ko.observable("message");
         this.selectedLanguage = ko.observable("http");
         this.api = ko.observable<Api>();
-        this.api.subscribe(this.updateConsole);
         this.revision = ko.observable<Revision>();
         this.operation = ko.observable<Operation>();
-        this.operation.subscribe(this.updateConsole);
         this.consoleOperation = ko.observable<ConsoleOperation>();
         this.selectedSubscriptionKey = ko.observable<string>();
-        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
+        this.resettingOperation = ko.observable(true);
+        this.sendingRequest = ko.observable(false);
     }
+
+    @Param()
+    public api: ko.Observable<Api>;
+
+    @Param()
+    public operation: ko.Observable<Operation>;
+
+    @Param()
+    public revision: ko.Observable<Revision>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.loadProducts();
-        await this.loadSubscriptionKeys();
+        await this.resetConsole();
+
+        this.api.subscribe(this.resetConsole);
+        this.operation.subscribe(this.resetConsole);
+        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
     }
 
-    public async updateConsole(): Promise<void> {
-        if (!this.api() || !this.operation()) {
+    private async resetConsole(): Promise<void> {
+        const selectedOperation = this.operation();
+        const selectedApi = this.api();
+
+        if (!selectedApi || !selectedOperation) {
             return;
         }
 
-        this.working = ko.observable(false);
+        this.resettingOperation(true);
+        this.sendingRequest(false);
+        this.consoleOperation(null);
         this.requestSummarySecretsRevealed = false;
         this.responseStatusCode(null);
         this.responseStatusText(null);
@@ -137,12 +146,14 @@ export class OperationConsole {
         this.masterKey = await this.tenantService.getServiceMasterKey();
         this.isConsumptionMode = skuName === ServiceSkuName.Consumption;
 
-        this.consoleOperation(new ConsoleOperation(this.api(), this.operation(), this.revision()));
+        const operation = await this.apiService.getOperation(selectedOperation.id);
+        const consoleOperation = new ConsoleOperation(selectedApi, operation, this.revision());
+        this.consoleOperation(consoleOperation);
 
         const proxyHostnames = await this.tenantService.getProxyHostnames();
         const hostname = proxyHostnames[0];
 
-        this.consoleOperation().host.hostname(hostname);
+        consoleOperation.host.hostname(hostname);
 
         if (this.api().type === TypeOfApi.soap) {
             this.setSoapHeaders();
@@ -160,7 +171,11 @@ export class OperationConsole {
             this.setVersionHeader();
         }
 
+        await this.loadProducts();
+        await this.loadSubscriptionKeys();
+
         this.updateRequestSummary();
+        this.resettingOperation(false);
     }
 
     private setSoapHeaders(): void {
@@ -416,7 +431,7 @@ export class OperationConsole {
     private async sendRequest(): Promise<void> {
         this.requestError(null);
         this.consoleTraceError(null);
-        this.working(true);
+        this.sendingRequest(true);
         this.responseStatusCode(null);
 
         const url = `${this.consoleOperation().requestUrl()}`;
@@ -526,7 +541,7 @@ export class OperationConsole {
             }
         }
         finally {
-            this.working(false);
+            this.sendingRequest(false);
         }
     }
 
