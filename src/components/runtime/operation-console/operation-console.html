@@ -1,5 +1,12 @@
-<!--ko if: consoleOperation() -->
-<div class="panel panel-dark" data-bind="with: consoleOperation()">
+<!-- ko if: resettingOperation -->
+<div class="panel panel-dark fit">
+    <spinner class="fit inverted"></spinner>
+</div>
+<!-- /ko -->
+
+<!-- ko ifnot: resettingOperation -->
+
+<div class="panel panel-dark animation-fade-in" data-bind="with: consoleOperation">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"
         data-bind="click: $parents[1].closeConsole">
         <span aria-hidden="true">✖</span>
@@ -21,10 +28,10 @@
 
     <div data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
     <!-- <div class="row">
-        <div class="col-md-12">
-            <span data-bind="text: urlTemplate, attr: { 'data-method': method }"></span>
-        </div>
-    </div> -->
+                        <div class="col-md-12">
+                            <span data-bind="text: urlTemplate, attr: { 'data-method': method }"></span>
+                        </div>
+                    </div> -->
 
     <h3>Authorization</h3>
 
@@ -128,7 +135,7 @@
     </div>
 </div>
 
-<div class="panel panel-dark panel-highlight flex-item flex-grow">
+<div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow">
     <ul class="nav">
         <li class="nav-item">
             <a class="nav-link" href="#"
@@ -174,12 +181,12 @@
         data-bind="codesample: { template: templates[selectedLanguage()], model: consoleOperation, language: selectedLanguage }"></pre>
     <div class="flex flex-column align-items-end">
         <div class="btn-group" role="group">
-            <!-- ko ifnot: working -->
+            <!-- ko ifnot: sendingRequest -->
             <button type="button" class="button button-primary btn-sm" data-bind="click: validateAndSendRequest">
                 Send
             </button>
             <!-- /ko -->
-            <!-- ko if: working -->
+            <!-- ko if: sendingRequest -->
             <button type="button" class="button button-primary btn-sm" disabled>
                 Sending...
             </button>
@@ -188,7 +195,7 @@
     </div>
 </div>
 
-<!-- ko if: working-->
+<!-- ko if: sendingRequest-->
 <div class="panel panel-dark" data-bind="scrollintoview: {}">
     <spinner class="fit inverted"></spinner>
 </div>
@@ -202,7 +209,7 @@
 <!-- /ko -->
 
 <!-- ko if: responseStatusCode -->
-<div class="panel panel-dark" data-bind="scrollintoview: {}">
+<div class="panel panel-dark animation-fade-in" data-bind="scrollintoview: {}">
     <ul class="nav">
         <li class="nav-item">
             <a href="#" class="nav-link active"
@@ -218,10 +225,10 @@
 
     <h3>HTTP response</h3>
     <pre><span>HTTP/1.1</span> <span data-bind="attr: { 'data-code': responseStatusCode  }"><span data-bind="text: responseStatusCode, attr: { 'data-code':responseStatusCode  }"></span> <span data-bind="text: responseStatusText"></span></span>
-
-<span data-bind="text: responseHeadersString"></span>
-
-<span data-bind="text: responseBody"></span></pre>
+                
+                <span data-bind="text: responseHeadersString"></span>
+                
+                <span data-bind="text: responseBody"></span></pre>
 
     <!--/ko-->
 
@@ -244,8 +251,8 @@
         </li>
     </ul>
     <!-- <div class="panel-contextual panel-contextual-top panel-contextual-right">
-        <b>Response latency: {{ totalExecutionTime | number : '1.3-3' }} ms</b>
-    </div> -->
+                        <b>Response latency: {{ totalExecutionTime | number : '1.3-3' }} ms</b>
+                    </div> -->
     <div data-bind="if: inbound">
         <h3 id="trace_inbound">Inbound (<span data-bind="text: inboundExecutionTime"></span> ms)</h3>
         <pre class="well well-sm"
@@ -271,6 +278,5 @@
     <!--/ko-->
 </div>
 <!--/ko-->
-
 
 <!--/ko-->
