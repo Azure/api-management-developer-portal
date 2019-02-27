@@ -13,7 +13,6 @@ import { Api } from "../../../models/api";
     injectable: "apiDetails"
 })
 export class ApiDetails {
-    // @Param()
     public api: ko.Observable<Api> = null;
     public operations: ko.ObservableArray<Operation> = null;
     public selectedOperation: ko.Observable<Operation>;
