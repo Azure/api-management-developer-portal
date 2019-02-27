@@ -235,7 +235,13 @@ export class OperationConsole {
             return;
         }
 
-        const pageOfSubscriptions = await this.productService.getSubscriptions(this.usersService.getCurrentUserId());
+        const userId = this.usersService.getCurrentUserId();
+
+        if (!userId) {
+            return;
+        }
+
+        const pageOfSubscriptions = await this.productService.getSubscriptions(userId);
         const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === "active");
         const availableProducts = [];
 
