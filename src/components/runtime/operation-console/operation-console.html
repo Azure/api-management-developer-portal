@@ -174,11 +174,32 @@
         data-bind="codesample: { template: templates[selectedLanguage()], model: consoleOperation, language: selectedLanguage }"></pre>
     <div class="flex flex-column align-items-end">
         <div class="btn-group" role="group">
-            <button type="button" class="button button-primary btn-sm"
-                data-bind="click: validateAndSendRequest">Send</button>
+            <!-- ko ifnot: working -->
+            <button type="button" class="button button-primary btn-sm" data-bind="click: validateAndSendRequest">
+                Send
+            </button>
+            <!-- /ko -->
+            <!-- ko if: working -->
+            <button type="button" class="button button-primary btn-sm" disabled>
+                Sending...
+            </button>
+            <!-- /ko -->
         </div>
     </div>
 </div>
+
+<!-- ko if: working-->
+<div class="panel panel-dark" data-bind="scrollintoview: {}">
+    <spinner class="fit inverted"></spinner>
+</div>
+<!-- /ko -->
+
+<!-- ko if: requestError-->
+<div class="panel panel-dark" data-bind="scrollintoview: {}">
+    <p>Unable to complete the request</p>
+    <p class="text-muted" data-bind="html: requestError"></p>
+</div>
+<!-- /ko -->
 
 <!-- ko if: responseStatusCode -->
 <div class="panel panel-dark" data-bind="scrollintoview: {}">
