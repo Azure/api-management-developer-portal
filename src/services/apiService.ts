@@ -171,6 +171,18 @@ export class ApiService {
         return new VersionSet(versionSetContract);
     }
 
+    public async getOperation(operationId: string): Promise<Operation> {
+        const operationContract = await this.smapiClient.get<OperationContract>(operationId);
+
+        if (!operationContract) {
+            return null;
+        }
+
+        const operation = new Operation(operationContract);
+
+        return operation;
+    }
+
     public async getOperations(api: Api, searchRequest?: SearchRequest): Promise<Page<Operation>> {
         let query = `${api.id}/operations`;
 
