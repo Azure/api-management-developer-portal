@@ -1,7 +1,6 @@
 {
     "extends": "tslint:latest",
     "rules": {
-        "no-unnecessary-type-assertion": true,
         "array-type": [
             true,
             "array"
@@ -25,15 +24,6 @@
         "interface-over-type-literal": true,
         "jsdoc-format": true,
         "linebreak-style": false,
-        "next-line": [
-            true,
-            "check-catch",
-            "check-else"
-        ],
-        "no-bom": true,
-        "no-double-space": true,
-        "no-in-operator": true,
-        "no-increment-decrement": true,
         "no-inferrable-types": false,
         "no-internal-module": true,
         "no-null-keyword": false,
@@ -42,11 +32,9 @@
             false,
             "ignore-template-strings"
         ],
-        "no-type-assertion-whitespace": true,
         "no-unnecessary-qualifier": true,
         "no-var-keyword": true,
         "object-literal-shorthand": false,
-        "object-literal-surrounding-space": true,
         "one-line": [
             true,
             "check-open-brace",
@@ -65,7 +53,6 @@
         ],
         "space-within-parens": true,
         "triple-equals": true,
-        "type-operator-spacing": true,
         "typedef-whitespace": [
             true,
             {
@@ -92,7 +79,6 @@
             "check-separator",
             "check-type"
         ],
-        // Config different from tslint:latest
         "no-implicit-dependencies": [
             true,
             "dev"
@@ -107,7 +93,7 @@
             "check-format",
             "allow-leading-underscore"
         ],
-        "arrow-parens": false, // [true, "ban-single-arg-parens"]
+        "arrow-parens": false,
         "arrow-return-shorthand": false,
         "forin": false,
         "member-access": true,
@@ -124,13 +110,11 @@
         "prefer-conditional-expression": false,
         "radix": false,
         "trailing-comma": false,
-        // These should be done automatically by a formatter. https://github.com/Microsoft/TypeScript/issues/18340
         "align": false,
         "eofline": false,
         "max-line-length": false,
         "no-consecutive-blank-lines": false,
         "space-before-function-paren": false,
-        // Not doing
         "ban-comma-operator": false,
         "max-classes-per-file": false,
         "member-ordering": false,

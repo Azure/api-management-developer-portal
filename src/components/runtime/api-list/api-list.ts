@@ -20,15 +20,15 @@ import { getUrlHashPart } from "@paperbits/common";
 })
 export class ApiList {
     private searchRequest: SearchRequest;
+
     public nodes: ko.ObservableArray<TreeViewNode>;
     public selectedNodeId: ko.Observable<string>;
-
-    // @Observable()
     public selectedNode: ko.Observable<TreeViewNode>;
     public selectedVersionSet: VersionSetContract;
     public selection: TagContract[];
     public grouping: string;
     public tags: TagContract[];
+    public working: ko.Observable<boolean>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -41,7 +41,7 @@ export class ApiList {
         this.tags = [];
         this.selection = [];
         this.grouping = "none";
-
+        this.working = ko.observable();
         this.selectedNode = ko.observable();
 
         this.searchApis();
@@ -146,7 +146,7 @@ export class ApiList {
             node.isSelected = ko.computed(() => node === this.selectedNode());
             // node.onSelect = () => {
             //     this.selectedNode(node);
-            //     this.routeHandler.navigateTo(apiShortId); // TODO: It might no match the route
+            //     this.routeHandler.navigateTo(apiShortId);
             // };
             node.level("level-1");
 
@@ -207,6 +207,8 @@ export class ApiList {
     }
 
     public async searchApis(searchRequest?: SearchRequest): Promise<void> {
+        this.working(true);
+
         this.searchRequest = searchRequest || this.searchRequest || { pattern: "", tags: [], grouping: "none" };
 
         switch (this.searchRequest.grouping) {
@@ -230,19 +232,22 @@ export class ApiList {
 
         this.selectFirst();
 
-        // TODO: await this.loadTags();
+        this.working(false);
     }
 
     private selectFirst(): void {
-        const currentUrl = this.routeHandler.getCurrentUrl().replace(/\/$/, "");        
+        const currentUrl = this.routeHandler.getCurrentUrl().replace(/\/$/, "");
 
         const hash = getUrlHashPart(currentUrl);
         const nodes = this.nodes();
+
         if (!hash && nodes.length > 0) {
             let node = nodes[0];
+
             if (!node.name) {
                 node = node.nodes()[0];
             }
+
             this.routeHandler.navigateTo("/apis#" + node.name);
         }
     }
