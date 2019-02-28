@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-//import { KnownHttpHeaders } from "../knownHttpHeaders";
+// import { KnownHttpHeaders } from "../knownHttpHeaders";
 // import { IsNotEmpty, ValidateIf } from "class-validator";
 import { Parameter } from "../parameter";
 
@@ -16,7 +16,7 @@ export class ConsoleHeader {
     public readonly: boolean;
     public secret: boolean;
     public revealed: boolean;
-    public options: Array<string>;
+    public options: string[];
     public custom: boolean;
     public description: string;
     public type: string;
@@ -37,8 +37,6 @@ export class ConsoleHeader {
     }
 
     constructor(contract?: Parameter) {
-        this.toggleRevealed = this.toggleRevealed.bind(this);
-
         this.name = ko.observable();
         this.value = ko.observable();
         this.inputTypeValue = "text";

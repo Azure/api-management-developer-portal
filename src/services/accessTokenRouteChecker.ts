@@ -2,10 +2,10 @@ import { IRouteChecker } from "@paperbits/common/routing";
 import { IAuthenticator } from "./IAuthenticator";
 
 export class AccessTokenRouteChecker implements IRouteChecker {
-    private publicPaths = ["/", "/signin", "/signup", "/apis", "/products", "/new"];
-    private publicPathsPrefixs = ["/apis/", "/products/"];
+    private publicPaths: string[] = ["/", "/signin", "/signup", "/apis", "/products", "/new"];
+    private publicPathsPrefixs: string[] = ["/apis/", "/products/"];
 
-    public name = "AccessTokenChecker";
+    public name: string = "AccessTokenChecker";
 
     constructor(private readonly authenticator: IAuthenticator) { }
 
@@ -15,7 +15,7 @@ export class AccessTokenRouteChecker implements IRouteChecker {
         return true;
     }
 
-    public checkNavigatePath(path: string, metadata?: Object): Promise<string> {
+    public checkNavigatePath(path: string, metadata?: object): Promise<string> {
         if (this.isPublicAccess(path) || path === "/page.html" || this.authenticator.isUserLoggedIn()) {
             return Promise.resolve(path);
         } else {

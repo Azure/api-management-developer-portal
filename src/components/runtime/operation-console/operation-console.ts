@@ -71,14 +71,6 @@ export class OperationConsole {
         // private readonly corsService: CorsService
     ) {
         this.templates = templates;
-        this.resetConsole = this.resetConsole.bind(this);
-        this.updateRequestSummary = this.updateRequestSummary.bind(this);
-        this.selectMessageTab = this.selectMessageTab.bind(this);
-        this.selectTraceTab = this.selectTraceTab.bind(this);
-        this.initialize = this.initialize.bind(this);
-        this.setSubscriptionKeyHeader = this.setSubscriptionKeyHeader.bind(this);
-        this.applySubscriptionKey = this.applySubscriptionKey.bind(this);
-
         this.products = ko.observable();
         this.attachment = ko.observable();
         this.bodySource = ko.observable("Raw");
@@ -114,8 +106,8 @@ export class OperationConsole {
     public async initialize(): Promise<void> {
         await this.resetConsole();
 
-        this.api.subscribe(this.resetConsole);
-        this.operation.subscribe(this.resetConsole);
+        this.api.subscribe(this.resetConsole.bind(this));
+        this.operation.subscribe(this.resetConsole.bind(this));
         this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
     }
 

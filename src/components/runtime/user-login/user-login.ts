@@ -58,7 +58,8 @@ export class UserLogin {
 
             if (userId) {
                 this.navigateToHome();
-            } else {
+            }
+            else {
                 this.errorMessage("Please provide a valid email and password.");
                 this.isError(true);
             }

@@ -5,11 +5,6 @@ import { DetailsOfApiContract } from "./detailsOfApiContract";
 
 
 export class DetailsOfApiModelBinder implements IModelBinder {
-    constructor(
-    ) {
-        this.contractToModel = this.contractToModel.bind(this);
-    }
-
     public canHandleWidgetType(widgetType: string): boolean {
         return widgetType === "detailsOfApi";
     }

@@ -22,9 +22,6 @@ export class ApiPublisher implements IPublisher {
         private readonly mediaService: MediaService,
         private readonly settingsProvider: ISettingsProvider
     ) {
-        this.publish = this.publish.bind(this);
-        this.renderPage = this.renderPage.bind(this);
-        this.setSiteSettings = this.setSiteSettings.bind(this);
     }
 
     private async renderPage(page: PageContract, settings: SettingsContract, iconFile: MediaContract, imageFile: MediaContract): Promise<{ name, bytes }> {
