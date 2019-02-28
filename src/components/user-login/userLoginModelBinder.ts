@@ -5,11 +5,6 @@ import { UserLoginContract } from "./userLoginContract";
 
 
 export class UserLoginModelBinder implements IModelBinder {
-    constructor(
-    ) {
-        this.contractToModel = this.contractToModel.bind(this);
-    }
-
     public canHandleWidgetType(widgetType: string): boolean {
         return widgetType === "userLogin";
     }
