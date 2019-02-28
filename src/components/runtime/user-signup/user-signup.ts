@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./user-signup.html";
-import { Component, RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../services/usersService";
 import { TenantService } from "../../../services/tenantService";
 import { TenantSettings } from "../../../contracts/tenantSettings";
@@ -23,25 +23,24 @@ export class UserSignup {
     public lastName: ko.Observable<string>;
     public isUserRequested: ko.Observable<boolean>;
     public isUserLoggedIn: ko.Observable<boolean>;
-
     public isTermsRequired: ko.Observable<boolean>;
     public termsOfUse: ko.Observable<string>;
     public showTerms: ko.Observable<boolean>;
     public isAgreed: ko.Observable<boolean>;
     public showHideLabel: ko.Observable<string>;
     public serverErrors: ko.Observable<string>;
+    public working: ko.Observable<boolean>;
 
     constructor(
         private readonly usersService: UsersService,
         private readonly tenantService: TenantService,
         private readonly routeHandler: IRouteHandler) {
 
-        this.email = (<any>ko.observable("")).extend({ required: true, email: true });
-        this.userPassword = (<any>ko.observable("")).extend({ required: true, minLength: 8 });
-        this.userConfirmPassword = (<any>ko.observable("")).extend({ required: true, minLength: 8, equal: { message: "Must be equal to Password", params: this.userPassword } });
-        this.firstName = (<any>ko.observable("")).extend({ required: true });
-        this.lastName = (<any>ko.observable("")).extend({ required: true });
-
+        this.email = ko.observable("");
+        this.userPassword = ko.observable("");
+        this.userConfirmPassword = ko.observable("");
+        this.firstName = ko.observable("");
+        this.lastName = ko.observable("");
         this.isTermsRequired = ko.observable();
         this.showTerms = ko.observable();
         this.termsOfUse = ko.observable();
@@ -49,12 +48,11 @@ export class UserSignup {
         this.serverErrors = ko.observable();
         this.isUserRequested = ko.observable(false);
         this.isUserLoggedIn = ko.observable(false);
-
-        this.signupClick = this.signupClick.bind(this);
-        this.init();
+        this.working = ko.observable(false);
     }
 
-    private async init() {
+    @OnMounted()
+    public async init() {
         if (this.usersService.isUserLoggedIn()) {
             this.isUserLoggedIn(true);
             return;
@@ -79,18 +77,25 @@ export class UserSignup {
             errorElementClass: "is-invalid",
             decorateInputElement: true
         });
+
+        this.email.extend(<any>{ required: true, email: true });
+        this.userPassword.extend(<any>{ required: true, minLength: 8 });
+        this.userConfirmPassword.extend(<any>{ required: true, minLength: 8, equal: { message: "Must be equal to Password", params: this.userPassword } });
+        this.firstName.extend(<any>{ required: true });
+        this.lastName.extend(<any>{ required: true });
     }
 
-    public navigateToHome() {
+    public navigateToHome(): void {
         location.assign("/");
     }
 
-    public login() {
+    public login(): void {
         location.assign("/signin");
     }
 
-    public async signupClick() {
+    public async signup(): Promise<void> {
         this.serverErrors(null);
+        
         const result = validation.group(this);
         if (result().length !== 0) {
             result.showAllMessages();
@@ -105,32 +110,37 @@ export class UserSignup {
             // nameIdentifier: undefined,
             password: this.userPassword(),
             confirmation: "signup",
-        }
+        };
 
         try {
             await this.usersService.createSignupRequest(createSignupRequest);
             this.isUserRequested(true);
-        } catch (error) {
+        }
+        catch (error) {
             if (error.code === "ValidationError") {
                 const details: any[] = error.details;
+
                 if (details && details.length > 0) {
                     let message = "";
                     details.map(item => message = `${message}${item.target}: ${item.message} \n`);
                     this.serverErrors(message);
                 }
             }
+            else {
+                throw new Error(error);
+            }
         }
-
     }
 
     public canSignup(): boolean {
         return ((this.termsOfUse() && this.isTermsRequired() && this.isAgreed()) || !this.isTermsRequired() || !!!this.termsOfUse());
     }
 
-    public toggle() {
+    public toggle(): void {
         if (this.showTerms()) {
             this.showHideLabel("Show");
-        } else {
+        }
+        else {
             this.showHideLabel("Hide");
         }
         this.showTerms(!this.showTerms());

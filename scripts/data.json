@@ -9,7 +9,7 @@
     },
     "/contentTypes/page/contentItems/81b0cd55-fb1a-12ee-e41a-d2d6b851ac60": {
         "id": "/contentTypes/page/contentItems/81b0cd55-fb1a-12ee-e41a-d2d6b851ac60",
-        "title": "User login",
+        "title": "User sign-in",
         "description": "",
         "keywords": "",
         "permalink": "/signin",
@@ -25,7 +25,7 @@
     },
     "/contentTypes/page/contentItems/0145411a-2c82-325a-4390-76cff184530b": {
         "id": "/contentTypes/page/contentItems/0145411a-2c82-325a-4390-76cff184530b",
-        "title": "User signup",
+        "title": "User sign-up",
         "description": "",
         "keywords": "",
         "permalink": "/signup",
@@ -552,8 +552,8 @@
                         "typography": {
                             "fontId": "fonts/JGLby",
                             "fontSize": 18,
-                            "fontStyle": "normal",
-                            "fontWeight": "normal"
+                            "fontWeight": "normal",
+                            "fontStyle": "normal"
                         }
                     },
                     "h1": {
@@ -1159,12 +1159,12 @@
                     },
                     {
                         "id": "f6c3ae82-cf61-17b9-e35f-08ffbd5c69d5",
-                        "label": "Sign Up",
+                        "label": "Sign up",
                         "targetId": "contentTypes/page/contentItems/0145411a-2c82-325a-4390-76cff184530b"
                     },
                     {
                         "id": "0153863f-3d75-4cbc-7347-8ce69e409425",
-                        "label": "Log In",
+                        "label": "Sign in",
                         "targetId": "contentTypes/page/contentItems/81b0cd55-fb1a-12ee-e41a-d2d6b851ac60"
                     },
                     {
@@ -1285,34 +1285,67 @@
         "id": "/contentTypes/document/contentItems/0145411a-2c82-325a-4390-76cff184530b",
         "nodes": [
             {
-                "layout": "container",
+                "type": "layout-section",
+                "object": "block",
                 "nodes": [
                     {
+                        "type": "layout-row",
+                        "object": "block",
                         "nodes": [
                             {
-                                "alignment": {
-                                    "xl": "start center"
-                                },
+                                "type": "layout-column",
+                                "object": "block",
+                                "nodes": [
+                                    {
+                                        "object": "widget",
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "heading1",
+                                                "attrs": {
+                                                    "setId": true
+                                                },
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "text": "Sign up"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "size": {
+                                    "xs": 12
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "layout-row",
+                        "object": "block",
+                        "nodes": [
+                            {
+                                "type": "layout-column",
+                                "object": "block",
                                 "nodes": [
                                     {
                                         "object": "block",
                                         "type": "userSignup"
                                     }
                                 ],
-                                "object": "block",
                                 "size": {
                                     "sm": "12"
                                 },
-                                "type": "layout-column"
+                                "alignment": {
+                                    "xl": "start start"
+                                }
                             }
-                        ],
-                        "object": "block",
-                        "type": "layout-row"
+                        ]
                     }
                 ],
-                "object": "block",
-                "padding": "with-padding",
-                "type": "layout-section"
+                "layout": "container",
+                "padding": "with-padding"
             }
         ]
     },
@@ -1390,85 +1423,119 @@
         "id": "/contentTypes/document/contentItems/4e3cf6a5-574a-ba08-1f23-2e7a38faa6d8",
         "nodes": [
             {
-                "background": {
-                    "position": "center center",
-                    "size": "contain"
-                },
-                "layout": "container",
+                "type": "layout-section",
+                "object": "block",
                 "nodes": [
                     {
+                        "type": "layout-row",
+                        "object": "block",
                         "nodes": [
                             {
+                                "type": "layout-column",
+                                "object": "block",
                                 "nodes": [
                                     {
+                                        "object": "widget",
+                                        "type": "text",
                                         "nodes": [
                                             {
-                                                "leaves": [
+                                                "type": "heading1",
+                                                "attrs": {
+                                                    "setId": true
+                                                },
+                                                "content": [
                                                     {
-                                                        "object": "leaf",
+                                                        "type": "text",
                                                         "text": "User profile"
                                                     }
-                                                ],
-                                                "object": "block",
-                                                "type": "heading-one"
+                                                ]
                                             }
-                                        ],
-                                        "object": "widget",
-                                        "type": "text"
+                                        ]
                                     }
                                 ],
-                                "object": "block",
                                 "size": {
                                     "sm": "12"
-                                },
-                                "type": "layout-column"
+                                }
                             }
-                        ],
-                        "object": "block",
-                        "type": "layout-row"
+                        ]
                     },
                     {
+                        "type": "layout-row",
+                        "object": "block",
                         "nodes": [
                             {
+                                "type": "layout-column",
+                                "object": "block",
                                 "nodes": [
+                                    {
+                                        "object": "widget",
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "heading2",
+                                                "attrs": {
+                                                    "setId": true
+                                                },
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "text": "Account info"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
                                     {
                                         "object": "block",
                                         "type": "userDetails"
                                     }
                                 ],
-                                "object": "block",
                                 "size": {
                                     "xs": 12
-                                },
-                                "type": "layout-column"
+                                }
                             }
-                        ],
-                        "object": "block",
-                        "type": "layout-row"
+                        ]
                     },
                     {
+                        "type": "layout-row",
+                        "object": "block",
                         "nodes": [
                             {
+                                "type": "layout-column",
+                                "object": "block",
                                 "nodes": [
+                                    {
+                                        "object": "widget",
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "heading2",
+                                                "attrs": {
+                                                    "setId": true
+                                                },
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "text": "Subscriptions"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
                                     {
                                         "object": "block",
                                         "type": "userSubscriptions"
                                     }
                                 ],
-                                "object": "block",
                                 "size": {
                                     "xs": 12
-                                },
-                                "type": "layout-column"
+                                }
                             }
-                        ],
-                        "object": "block",
-                        "type": "layout-row"
+                        ]
                     }
                 ],
-                "object": "block",
-                "padding": "with-padding",
-                "type": "layout-section"
+                "layout": "container",
+                "padding": "with-padding"
             }
         ]
     },
@@ -1476,34 +1543,67 @@
         "id": "/contentTypes/document/contentItems/81b0cd55-fb1a-12ee-e41a-d2d6b851ac60",
         "nodes": [
             {
-                "layout": "container",
+                "type": "layout-section",
+                "object": "block",
                 "nodes": [
                     {
+                        "type": "layout-row",
+                        "object": "block",
                         "nodes": [
                             {
-                                "alignment": {
-                                    "xl": "start center"
-                                },
+                                "type": "layout-column",
+                                "object": "block",
+                                "nodes": [
+                                    {
+                                        "object": "widget",
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "heading1",
+                                                "attrs": {
+                                                    "setId": true
+                                                },
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "text": "Sign in"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "size": {
+                                    "xs": 12
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "layout-row",
+                        "object": "block",
+                        "nodes": [
+                            {
+                                "type": "layout-column",
+                                "object": "block",
                                 "nodes": [
                                     {
                                         "object": "block",
                                         "type": "userLogin"
                                     }
                                 ],
-                                "object": "block",
                                 "size": {
                                     "xs": 12
                                 },
-                                "type": "layout-column"
+                                "alignment": {
+                                    "xl": "start start"
+                                }
                             }
-                        ],
-                        "object": "block",
-                        "type": "layout-row"
+                        ]
                     }
                 ],
-                "object": "block",
-                "padding": "with-padding",
-                "type": "layout-section"
+                "layout": "container",
+                "padding": "with-padding"
             }
         ]
     },
@@ -3074,6 +3174,80 @@
             }
         ]
     },
+    "/contentTypes/document/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58": {
+        "id": "/contentTypes/document/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58",
+        "nodes": [
+            {
+                "background": {
+                    "position": "center center",
+                    "size": "contain"
+                },
+                "layout": "container",
+                "nodes": [
+                    {
+                        "nodes": [
+                            {
+                                "nodes": [
+                                    {
+                                        "object": "block",
+                                        "type": "productSubscribe"
+                                    }
+                                ],
+                                "object": "block",
+                                "size": {
+                                    "xs": 12
+                                },
+                                "type": "layout-column"
+                            }
+                        ],
+                        "object": "block",
+                        "type": "layout-row"
+                    }
+                ],
+                "object": "block",
+                "padding": "with-padding",
+                "snapping": "none",
+                "type": "layout-section"
+            }
+        ]
+    },
+    "/contentTypes/document/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2": {
+        "id": "/contentTypes/document/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2",
+        "nodes": [
+            {
+                "background": {
+                    "position": "center center",
+                    "size": "contain"
+                },
+                "layout": "fluid",
+                "nodes": [
+                    {
+                        "nodes": [
+                            {
+                                "nodes": [
+                                    {
+                                        "object": "block",
+                                        "type": "productDetails"
+                                    }
+                                ],
+                                "object": "block",
+                                "size": {
+                                    "xs": 12
+                                },
+                                "type": "layout-column"
+                            }
+                        ],
+                        "object": "block",
+                        "type": "layout-row"
+                    }
+                ],
+                "object": "block",
+                "padding": "with-padding",
+                "snapping": "none",
+                "type": "layout-section"
+            }
+        ]
+    },
     "/contentTypes/layout/contentItems/default": {
         "id": "/contentTypes/layout/contentItems/default",
         "title": "Home",
@@ -3094,6 +3268,20 @@
         "description": "",
         "documentId": "contentTypes/document/contentItems/e04e0e51-7447-6be4-5f79-2c77cfe9fabd",
         "permalinkTemplate": "/apis"
+    },
+    "/contentTypes/layout/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58": {
+        "id": "/contentTypes/layout/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58",
+        "title": "Product subscribe form",
+        "description": "",
+        "documentId": "contentTypes/document/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58",
+        "permalinkTemplate": "/products/{id}/subscribe"
+    },
+    "/contentTypes/layout/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2": {
+        "id": "/contentTypes/layout/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2",
+        "title": "Product details pages",
+        "description": "",
+        "documentId": "contentTypes/document/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2",
+        "permalinkTemplate": "/products/{id}"
     },
     "/contentTypes/url/contentItems/db6d0be2-ec1a-2850-6476-ff53b65b00b9": {
         "id": "/contentTypes/url/contentItems/db6d0be2-ec1a-2850-6476-ff53b65b00b9",
