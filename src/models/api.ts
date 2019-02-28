@@ -63,7 +63,7 @@ export class Api {
 
     // proxyAuth?: string;
     // authenticationSettings?: AuthenticationSettings;
-    subscriptionKeyParameterNames?: SubscriptionKeyParameterName;
+    public subscriptionKeyParameterNames?: SubscriptionKeyParameterName;
 
     public urlSuffix?: string;
 

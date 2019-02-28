@@ -2,8 +2,7 @@ import * as ko from "knockout";
 import template from "./product-subscribe.html";
 import { IRouteHandler } from "@paperbits/common/routing";
 import { getUrlHashPart } from "@paperbits/common/utils";
-import { Component, OnMounted } from "@paperbits/common/ko/decorators";
-import { RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { Utils } from "../../../utils";
 import { Product } from "../../../models/product";
 import { ProductService } from "../../../services/productService";
@@ -38,13 +37,7 @@ export class ProductSubscribe {
         this.termsOfUse = ko.observable();
         this.showHideLabel = ko.observable();
         this.subscriptionName = ko.observable();
-
-        this.loadProduct = this.loadProduct.bind(this);
-        this.confirm = this.confirm.bind(this);
-        this.cancel = this.cancel.bind(this);
-        this.isChangesReady = this.isChangesReady.bind(this);
-        this.routeHandler.addRouteChangeListener(this.loadProduct);
-
+        this.routeHandler.addRouteChangeListener(this.loadProduct.bind(this));
         // this.isAgreed.subscribe((val) => console.log("isAgreed changed: " + val));
     }
 
@@ -53,18 +46,23 @@ export class ProductSubscribe {
         this.currentUrl = this.routeHandler.getCurrentUrl().replace(/\/$/, "");
 
         const userId = this.usersService.getCurrentUserId();
+
         if (!userId && this.usersService.isUserLoggedIn()) {
             location.assign("/signin");
         }
 
         const hash = getUrlHashPart(this.currentUrl);
+
         if (hash) {
-            const productId = "/products/"+ hash;
+            const productId = "/products/" + hash;
+
             if (!this.product() || this.product().id !== productId) {
                 const product = await this.productService.getProduct(productId);
-                if (product) {     
+
+                if (product) {
                     this.product(product);
                     this.subscriptionName(product.name);
+
                     if (product.terms) {
                         this.termsOfUse(product.terms);
                         this.showHideLabel("Show");
@@ -85,7 +83,8 @@ export class ProductSubscribe {
             const subscriptionId = `/subscriptions/${Utils.getBsonObjectId()}`;
             await this.productService.createUserSubscription(subscriptionId, userId, this.product().id, this.subscriptionName());
             location.assign("/profile");
-        } else {
+        }
+        else {
             location.assign("/signin");
         }
     }
@@ -95,14 +94,14 @@ export class ProductSubscribe {
     }
 
     public isChangesReady(): boolean {
-        return (!!this.subscriptionName() && this.subscriptionName().length > 0) && 
-                    ((this.termsOfUse() && this.isAgreed()) || !!!this.termsOfUse());
+        return (!!this.subscriptionName() && this.subscriptionName().length > 0) &&
+            ((this.termsOfUse() && this.isAgreed()) || !!!this.termsOfUse());
     }
 
     public toggle(): void {
         if (this.showTerms()) {
             this.showHideLabel("Show");
-        } 
+        }
         else {
             this.showHideLabel("Hide");
         }
