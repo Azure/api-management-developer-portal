@@ -1,10 +1,9 @@
 import * as ko from "knockout";
 import template from "./product-list.html";
 import { getUrlHashPart } from "@paperbits/common/utils";
-import { RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { Product } from "../../../models/product";
 import { ProductService } from "../../../services/productService";
-import { Component } from "@paperbits/common/ko/decorators";
 import { IRouteHandler } from "@paperbits/common/routing";
 
 @RuntimeComponent({ selector: "product-list" })
@@ -18,6 +17,7 @@ export class ProductList {
     private selected: Product;
     public products: ko.ObservableArray<Product>;
     public showDetails: ko.Observable<boolean>;
+    public working: ko.Observable<boolean>;
 
     constructor(
         private readonly productService: ProductService,
@@ -25,17 +25,19 @@ export class ProductList {
     ) {
         this.products = ko.observableArray();
         this.showDetails = ko.observable(false);
-        this.loadProducts = this.loadProducts.bind(this);
-        this.selectProduct = this.selectProduct.bind(this);
-        this.routeHandler.addRouteChangeListener(this.loadProducts);
-        
-        this.loadProducts();
+        this.working = ko.observable(true);
     }
 
-    private async loadProducts(): Promise<void> {
-        const data = await this.productService.getProducts();       
+    @OnMounted()
+    public async loadProducts(): Promise<void> {
+        this.working(true);
+        const data = await this.productService.getProducts();
         this.products(data);
         this.checkIsDetails();
+
+        this.working(false);
+
+        this.routeHandler.addRouteChangeListener(this.loadProducts);
     }
 
     private checkIsDetails() {
@@ -43,7 +45,7 @@ export class ProductList {
 
         const hash = getUrlHashPart(this.currentUrl);
         if (hash) {
-            const productId = "/products/"+ hash;
+            const productId = "/products/" + hash;
             if (!this.selected || this.selected.id !== productId) {
                 const loadedProducts = this.products();
                 const product = loadedProducts.find(p => p.id === productId);
@@ -58,8 +60,8 @@ export class ProductList {
         this.selected = product;
         if (needNavigation) {
             const parts = product.id.split("/");
-            
-            this.routeHandler.navigateTo(`${this.currentUrl}#${parts[parts.length-1]}`);
+
+            this.routeHandler.navigateTo(`${this.currentUrl}#${parts[parts.length - 1]}`);
         }
         this.showDetails(true);
     }

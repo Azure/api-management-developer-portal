@@ -1,39 +1,45 @@
-<div class="panel panel-table">
-    <!-- ko if: isUserLoggedIn -->
-    <h4>You are logged in</h4>
-    <a class="btn-link" href="/" >Home page</a>
-    <!-- /ko -->
+<!-- ko if: isUserLoggedIn -->
+<h4>You are logged in</h4>
+<a class="btn-link" href="/">Home page</a>
+<!-- /ko -->
 
-    <!-- ko if: isUserRequested -->
-    <h1>Create request was sent. Please check your email.</h1>
-    <a class="btn-link" href="/" >Home page</a> | 
-    <a class="btn-link" href="/signin" >Log in</a>
-    <!-- /ko -->
+<!-- ko if: isUserRequested -->
+<h1>Create request was sent. Please check your email.</h1>
+<a class="btn-link" href="/">Home page</a> |
+<a class="btn-link" href="/signin">Log in</a>
+<!-- /ko -->
 
-    <!-- ko if: (!isUserRequested() && !isUserLoggedIn()) -->
-    <h1>Sing up</h1>
+<!-- ko if: (!isUserRequested() && !isUserLoggedIn()) -->
+
+<form>
     <fieldset>
         <div class="form-group">
             <label for="email">Email</label>
-            <input aria-required="true" required autofocus="autofocus" class="form-control" id="email" name="email" placeholder="Email" type="text" data-bind="textInput: email">
+            <input aria-required="true" required autofocus="autofocus" class="form-control" id="email" name="email"
+                autocomplete="username email" placeholder="Email" type="email" data-bind="textInput: email">
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <input aria-required="true" required class="form-control" id="password" name="password" placeholder="Password" type="password" data-bind="textInput: userPassword">
+            <input aria-required="true" required class="form-control" id="password" name="password"
+                autocomplete="new-password" placeholder="Password" type="password" data-bind="textInput: userPassword">
         </div>
         <div class="form-group">
             <label for="confirm">Confirm password</label>
-            <input aria-required="true" required class="form-control" id="confirm" name="confirm" placeholder="Confirm password" type="password" data-bind="textInput: userConfirmPassword">
+            <input aria-required="true" required class="form-control" id="confirm" name="confirm"
+                autocomplete="new-password" placeholder="Confirm password" type="password"
+                data-bind="textInput: userConfirmPassword">
         </div>
         <div class="form-group">
             <label for="firstName">First name</label>
-            <input aria-required="true" required class="form-control" id="firstName" name="firstName" placeholder="First name" type="text" data-bind="textInput: firstName">
+            <input aria-required="true" required class="form-control" id="firstName" name="firstName"
+                placeholder="First name" type="text" data-bind="textInput: firstName">
         </div>
         <div class="form-group">
             <label for="lastName">Last name</label>
-            <input aria-required="true" required class="form-control" id="lastName" name="lastName" placeholder="Last name" type="text" data-bind="textInput: lastName">
+            <input aria-required="true" required class="form-control" id="lastName" name="lastName"
+                placeholder="Last name" type="text" data-bind="textInput: lastName">
         </div>
-        
+
         <!-- ko if: termsOfUse -->
         <div class="form-group">
             <!-- ko if: isTermsRequired -->
@@ -46,7 +52,10 @@
 
             <!-- ko ifnot: isTermsRequired -->
             <div class="row">
-                <p>Please review Terms of Use. <a href="#" class="btn-link" data-bind="click: toggle, text: showHideLabel"></a></p>                
+                <p>
+                    Please review Terms of Use.
+                    <a href="#" class="btn-link" data-bind="click: toggle, text: showHideLabel"></a>
+                </p>
             </div>
             <!-- /ko -->
 
@@ -57,17 +66,16 @@
             <!-- /ko -->
         </div>
         <!-- /ko -->
-        
+
         <!-- ko if: serverErrors -->
         <div class="form-group">
             <div class="alert alert-danger"><span data-bind="text: serverErrors"></span></div>
         </div>
         <!-- /ko -->
         <div class="form-group">
-            <input type="submit" id="signupButton" value="Sign up" class="button button-primary" data-bind="click: signupClick, enable: canSignup">
+            <input type="submit" id="signupButton" value="Sign up" class="button button-primary"
+                data-bind="click: signup, enable: canSignup">
         </div>
     </fieldset>
-    <!-- /ko -->
-</div>
-
-
+</form>
+<!-- /ko -->

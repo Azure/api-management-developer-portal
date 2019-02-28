@@ -310,7 +310,9 @@ pre {
   }
 }
 
-api-list {
+api-list,
+product-list,
+product-details {
   flex-basis: 100%;
   max-width: 100%;
 }
