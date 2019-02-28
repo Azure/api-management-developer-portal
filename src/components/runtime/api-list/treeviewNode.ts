@@ -15,9 +15,6 @@ export class TreeViewNode {
     public isSelected: () => boolean;
 
     constructor(label: string) {
-        this.select = this.select.bind(this);
-        this.toggle = this.toggle.bind(this);
-
         this.label = ko.observable(label);
         this.nodes = ko.observableArray([]);
         this.isSelected = ko.observable(false);

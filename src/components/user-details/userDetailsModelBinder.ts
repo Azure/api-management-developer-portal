@@ -5,11 +5,6 @@ import { UserDetailsContract } from "./userDetailsContract";
 
 
 export class UserDetailsModelBinder implements IModelBinder {
-    constructor(
-    ) {
-        this.contractToModel = this.contractToModel.bind(this);
-    }
-
     public canHandleWidgetType(widgetType: string): boolean {
         return widgetType === "userDetails";
     }

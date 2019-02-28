@@ -13,16 +13,10 @@ import { Api } from "../../../models/api";
 })
 export class Documentation {
     public navigation: ko.Observable<NavigationItemModel>;
-
-    // @Observable()
     public selectedApi: ko.Observable<Api>;
     public selectedOperation: ko.Observable<Operation>;
 
     constructor() {
-        this.selectApi = this.selectApi.bind(this);
-        this.openConsole = this.openConsole.bind(this);
-        this.closeConsole = this.closeConsole.bind(this);
-
         this.selectedApi = ko.observable();
         this.selectedOperation = ko.observable();
     }
