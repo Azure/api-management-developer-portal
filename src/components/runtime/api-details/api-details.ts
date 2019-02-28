@@ -22,17 +22,12 @@ export class ApiDetails {
         private readonly apiService: ApiService,
         private readonly routeHandler: DefaultRouteHandler
     ) {
-        this.loadApi = this.loadApi.bind(this);
-        this.loadOperations = this.loadOperations.bind(this);
-        this.openConsole = this.openConsole.bind(this);
-        this.closeConsole = this.closeConsole.bind(this);
-
         this.api = ko.observable();
         this.operations = ko.observableArray();
         this.selectedOperation = ko.observable();
         this.working = ko.observable(false);
 
-        this.routeHandler.addRouteChangeListener(this.loadApi);
+        this.routeHandler.addRouteChangeListener(this.loadApi.bind(this));
     }
 
     @OnMounted()

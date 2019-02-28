@@ -5,11 +5,6 @@ import { ListOfApisContract } from "./listOfApisContract";
 
 
 export class ListOfApisModelBinder implements IModelBinder {
-    constructor(
-    ) {
-        this.contractToModel = this.contractToModel.bind(this);
-    }
-
     public canHandleWidgetType(widgetType: string): boolean {
         return widgetType === "listOfApis";
     }

@@ -1,31 +1,31 @@
-<!-- ko ifnot: showDetails -->
-<div class="container-fluid">
-    <div class="panel panel-table">
-        <!-- ko ifnot: products -->
-        <div class="row">
-            No Products to display.
-        </div>
-        <!-- /ko -->
-
-        <!-- ko if: products -->
-        <div class="row">
-            <div class="col-md-12">
-                <ul class="list-unstyled">
-                    <!-- ko foreach: products -->
-                    <li>
-                        <h3><a href="#" data-bind="click: $parent.selectProduct, text: name"></a></h3>
-                        <span data-bind="markdown: description"></span>
-                    </li>
-                    <!-- /ko -->
-                </ul>
-            </div>
-        </div>
-        <!-- /ko -->
-    </div>
-</div>
+<!-- ko if: working -->
+<spinner class="fit"></spinner>
 <!-- /ko -->
+
+<!-- ko ifnot: working -->
+
+<!-- ko ifnot: showDetails -->
+
+<!-- ko ifnot: products -->
+<p>
+    No Products to display.
+</p>
+<!-- /ko -->
+
+<!-- ko if: products -->
+<!-- ko foreach: { data: products, as: 'product' } -->
+<h2>
+    <a href="#" data-bind="click: $parent.selectProduct, text: name"></a>
+</h2>
+<p data-bind="markdown: description"></p>
+<!-- /ko -->
+<!-- /ko -->
+
+
+<!-- /ko -->
+
 <!-- ko if: showDetails -->
-<h4><a href="#" data-bind="click: toggleDetails">
-        << All products</a> </h4> <product-details>
-            </product-details>
-            <!-- /ko -->
+<product-details class="animation-fade-in"></product-details>
+<!-- /ko -->
+
+<!-- /ko -->

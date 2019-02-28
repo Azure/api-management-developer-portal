@@ -19,11 +19,8 @@ export class BlogPublisher implements IPublisher {
         private readonly siteService: ISiteService,
         private readonly outputBlobStorage: IBlobStorage,
         private readonly layoutViewModelBinder: LayoutViewModelBinder,
-        private readonly mediaService: IMediaService,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly mediaService: IMediaService
     ) {
-        this.publish = this.publish.bind(this);
-        this.renderBlogPost = this.renderBlogPost.bind(this);
     }
 
     private async renderBlogPost(post: BlogPostContract, settings: SettingsContract, iconFile: MediaContract): Promise<{ name, bytes }> {

@@ -4,11 +4,6 @@ import { ProductDetailsModel } from "./productDetailsModel";
 import { ProductDetailsContract } from "./productDetailsContract";
 
 export class ProductDetailsModelBinder implements IModelBinder {
-    constructor(
-    ) {
-        this.contractToModel = this.contractToModel.bind(this);
-    }
-
     public canHandleWidgetType(widgetType: string): boolean {
         return widgetType === "productDetails";
     }

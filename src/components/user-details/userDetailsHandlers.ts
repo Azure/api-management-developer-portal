@@ -1,6 +1,5 @@
-﻿import { IWidgetOrder } from '@paperbits/common/editing';
-import { IWidgetHandler } from '@paperbits/common/editing';
-import { UserDetailsModel } from './userDetailsModel';
+﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+import { UserDetailsModel } from "./userDetailsModel";
 
 export class UserDetailsHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -10,7 +9,7 @@ export class UserDetailsHandlers implements IWidgetHandler {
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
             createModel: async () => new UserDetailsModel()
-        }
+        };
 
         return widgetOrder;
     }
