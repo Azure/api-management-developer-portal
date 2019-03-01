@@ -3174,80 +3174,6 @@
             }
         ]
     },
-    "/contentTypes/document/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58": {
-        "id": "/contentTypes/document/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58",
-        "nodes": [
-            {
-                "background": {
-                    "position": "center center",
-                    "size": "contain"
-                },
-                "layout": "container",
-                "nodes": [
-                    {
-                        "nodes": [
-                            {
-                                "nodes": [
-                                    {
-                                        "object": "block",
-                                        "type": "productSubscribe"
-                                    }
-                                ],
-                                "object": "block",
-                                "size": {
-                                    "xs": 12
-                                },
-                                "type": "layout-column"
-                            }
-                        ],
-                        "object": "block",
-                        "type": "layout-row"
-                    }
-                ],
-                "object": "block",
-                "padding": "with-padding",
-                "snapping": "none",
-                "type": "layout-section"
-            }
-        ]
-    },
-    "/contentTypes/document/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2": {
-        "id": "/contentTypes/document/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2",
-        "nodes": [
-            {
-                "background": {
-                    "position": "center center",
-                    "size": "contain"
-                },
-                "layout": "fluid",
-                "nodes": [
-                    {
-                        "nodes": [
-                            {
-                                "nodes": [
-                                    {
-                                        "object": "block",
-                                        "type": "productDetails"
-                                    }
-                                ],
-                                "object": "block",
-                                "size": {
-                                    "xs": 12
-                                },
-                                "type": "layout-column"
-                            }
-                        ],
-                        "object": "block",
-                        "type": "layout-row"
-                    }
-                ],
-                "object": "block",
-                "padding": "with-padding",
-                "snapping": "none",
-                "type": "layout-section"
-            }
-        ]
-    },
     "/contentTypes/layout/contentItems/default": {
         "id": "/contentTypes/layout/contentItems/default",
         "title": "Home",
@@ -3268,20 +3194,6 @@
         "description": "",
         "documentId": "contentTypes/document/contentItems/e04e0e51-7447-6be4-5f79-2c77cfe9fabd",
         "permalinkTemplate": "/apis"
-    },
-    "/contentTypes/layout/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58": {
-        "id": "/contentTypes/layout/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58",
-        "title": "Product subscribe form",
-        "description": "",
-        "documentId": "contentTypes/document/contentItems/6230ff05-5f96-ca4d-0f56-0c2bc92cce58",
-        "permalinkTemplate": "/products/{id}/subscribe"
-    },
-    "/contentTypes/layout/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2": {
-        "id": "/contentTypes/layout/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2",
-        "title": "Product details pages",
-        "description": "",
-        "documentId": "contentTypes/document/contentItems/ba5f88f4-8c6c-3a23-19dc-778f948877d2",
-        "permalinkTemplate": "/products/{id}"
     },
     "/contentTypes/url/contentItems/db6d0be2-ec1a-2850-6476-ff53b65b00b9": {
         "id": "/contentTypes/url/contentItems/db6d0be2-ec1a-2850-6476-ff53b65b00b9",
