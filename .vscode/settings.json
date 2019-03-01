@@ -1,6 +1,7 @@
 {
     "files.exclude": {
         "**/.git": true,
+        "**/.vs": true,
         "**/.vscode": true,
         "**/.history": true,
         "**/*.js": {
@@ -14,6 +15,7 @@
     "search.exclude": {
         "**/.git": true,
         "**/.history": true,
+        "**/.vs": true,
         "**/.vscode": true,
         "**/*.js": {
             "when": "$(basename).ts"
