@@ -67,6 +67,7 @@
         "@paperbits/prosemirror": "0.1.76",
         "@paperbits/styles": "0.1.76",
         "@webcomponents/webcomponentsjs": "^2.2.7",
+        "azure-storage": "^2.10.2",
         "core-js": "^2.6.5",
         "domino": "^2.1.2",
         "dotenv": "^6.2.0",
