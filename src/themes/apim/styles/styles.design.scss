@@ -4,11 +4,33 @@ $style-guide-font-family: "Arial";
 $style-guide-font-size: 12px;
 $style-guide-color: #000;
 
-.living-style-guide {
+@mixin pseudo-transparent-bckg {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAAA3NCSVQICAjb4U/gAAAABlBMVEXMzMz////TjRV2AAAACXBIWXMAAArrAAAK6wGCiw1aAAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAABFJREFUCJlj+M/AgBVhF/0PAH6/D/HkDxOGAAAAAElFTkSuQmCC");
+    background-size: 10px;
+}
+
+.style-guide {
     .style-card {
         cursor: default;
         color: $style-guide-color;
         user-select: none;
+
+        .style-card-body {
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        &.transparent {
+            .style-card-body {
+                @include pseudo-transparent-bckg();
+            }
+        }
+
+        &.dark {
+            .style-card-body {
+                background: #2f3538;
+            }
+        }
 
         * {
             pointer-events: none;
@@ -17,7 +39,7 @@ $style-guide-color: #000;
         .style-card-label {
             text-align: center;
             display: block;
-            
+
             font-size: $style-guide-font-size;
             font-family: $style-guide-font-family;
             padding: 5px;
@@ -36,9 +58,6 @@ $style-guide-color: #000;
             }
         }
     }
-
-    
-
 
     .fonts {
         display: flex;
@@ -99,8 +118,6 @@ $style-guide-color: #000;
             flex-direction: column;
             align-items: center;
 
-           
-
             .sample-shadow {
                 width: 100px;
                 height: 100px;
@@ -141,11 +158,10 @@ $style-guide-color: #000;
         z-index: 9000;
         line-height: 1em;
         padding: 7px;
-    
+
         &:hover {
             transform: scale(1.2);
-            transition-duration: .3s;
+            transition-duration: 0.3s;
         }
     }
-    
 }
