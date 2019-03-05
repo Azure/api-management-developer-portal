@@ -20,7 +20,7 @@ The API Management developer portal is based on our own fork of the [Paperbits f
 - Programmatic access through APIs for automating the development, management, and deployment.
 - Extensibility of the core functionality.
 
-We extended the original Paperbits functionality to provide API Management-specific widgets (e.g., a list of APIs, Products). We also implemented a connector to an API Management instance for saving and retrieving the content (e.g., pages, configuration, styling).
+We extended the original Paperbits functionality to provide API Management-specific widgets (e.g., a list of APIs, Products). We also implemented a connector to an API Management instance for saving and retrieving content (e.g., pages, configuration, styling).
 
 We will maintain [our Github repository](https://github.com/Azure/api-management-developer-portal) and ensure it includes the latest updates. If you wish to have the best experience with the developer portal, you should **always merge updates from our original repository to your fork**.
 
