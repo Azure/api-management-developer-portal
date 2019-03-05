@@ -65,7 +65,7 @@ const functionConfig = {
         ]
     },
     plugins: [
-        new CleanWebpackPlugin(["dist/function"]),
+        new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" }),
         new CopyWebpackPlugin([
             { from: `./examples/function`, to: `./` },
