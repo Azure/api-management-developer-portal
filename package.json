@@ -60,12 +60,12 @@
         "webpack-merge": "^4.2.1"
     },
     "dependencies": {
-        "@paperbits/azure": "0.1.77",
-        "@paperbits/common": "0.1.77",
-        "@paperbits/core": "0.1.77",
-        "@paperbits/forms": "0.1.77",
-        "@paperbits/prosemirror": "0.1.77",
-        "@paperbits/styles": "0.1.77",
+        "@paperbits/azure": "0.1.78",
+        "@paperbits/common": "0.1.78",
+        "@paperbits/core": "0.1.78",
+        "@paperbits/forms": "0.1.78",
+        "@paperbits/prosemirror": "0.1.78",
+        "@paperbits/styles": "0.1.78",
         "@webcomponents/webcomponentsjs": "^2.2.7",
         "azure-storage": "^2.10.2",
         "core-js": "^2.6.5",
