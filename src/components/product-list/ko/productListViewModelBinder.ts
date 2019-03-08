@@ -12,11 +12,12 @@ export class ProductListViewModelBinder implements IViewModelBinder<ProductListM
             displayName: "Product list",
             readonly: readonly,
             model: model,
+            editor: "product-list-editor",
             applyChanges: async (updatedModel: ProductListModel) => {
                 Object.assign(model, updatedModel);
                 this.modelToViewModel(model, readonly, viewModel);
             }
-        }
+        };
 
         return viewModel;
     }
