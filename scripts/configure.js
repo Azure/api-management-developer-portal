@@ -23,7 +23,11 @@ fs.readFile(configDesignFile, {encoding: 'utf-8'}, function(err,data){
         obj[apimServiceParameter] = apimServiceUrlValue;
         obj[apimSasAccessTokenParameter] = apimSasAccessTokenValue;
         obj[storageSasUrlParameter] = storageSasUrlValue;
-        console.log(obj);
+        fs.writeFile(configDesignFile, obj, function(errWrite) {
+            if(errWrite) {
+                return console.log(errWrite);
+            }
+        });
     } else {
         console.log(err);
     }
@@ -35,7 +39,11 @@ fs.readFile(configPublishFile, {encoding: 'utf-8'}, function(err,data){
         obj[apimServiceParameter] = apimServiceUrlValue;
         obj[apimSasAccessTokenParameter] = apimSasAccessTokenValue;
         obj[storageConnectionStringParameter] = storageConnectionStringValue;
-        console.log(obj);
+        fs.writeFile(configPublishFile, obj, function(errWrite) {
+            if(errWrite) {
+                return console.log(errWrite);
+            }
+        });
     } else {
         console.log(err);
     }
@@ -45,7 +53,11 @@ fs.readFile(configRuntimeFile, {encoding: 'utf-8'}, function(err,data){
     if (!err) {
         var obj = JSON.parse(data);
         obj[apimServiceParameter] = apimServiceUrlValue;
-        console.log(obj);
+        fs.writeFile(configRuntimeFile, obj, function(errWrite) {
+            if(errWrite) {
+                return console.log(errWrite);
+            }
+        });
     } else {
         console.log(err);
     }
