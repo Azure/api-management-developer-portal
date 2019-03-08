@@ -4,10 +4,10 @@ var fs = require('fs'),
     configPublishFile = path.join(__dirname, '\\..\\src\\config.publish.json'),
     configRuntimeFile = path.join(__dirname, '\\..\\src\\config.runtime.json');
 
-var apimServiceValue = process.argv[2]; //"apimservice";
-var apimSasAccessTokenValue = process.argv[3]; //"token";
-var storageSasUrlValue = process.argv[4]; //"bloburl";
-var storageConnectionStringValue = process.argv[4]; //"strconnstr";
+var apimServiceValue = process.argv[2];
+var apimSasAccessTokenValue = process.argv[3];
+var storageSasUrlValue = process.argv[4];
+var storageConnectionStringValue = process.argv[5];
 
 var apimServiceUrlValue = `https://${apimServiceValue}.management.azure-api.net`;
 
