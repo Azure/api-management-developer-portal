@@ -10,14 +10,14 @@ export class ListOfApisViewModelBinder implements IViewModelBinder<ListOfApisMod
         }
 
         viewModel["widgetBinding"] = {
-            name: "List of APIs",
+            displayName: "List of APIs",
             readonly: readonly,
             model: model,
+            editor: "list-of-apis-editor",
             applyChanges: async (updatedModel: ListOfApisModel) => {
-                Object.assign(model, updatedModel);
-                this.modelToViewModel(model, readonly, viewModel);
+                this.modelToViewModel(updatedModel, readonly, viewModel);
             }
-        }
+        };
 
         return viewModel;
     }
