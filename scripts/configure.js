@@ -1,3 +1,8 @@
+var fs = require('fs'),
+    path = require('path'),    
+    configDesignFile = path.join(__dirname, '\\..\\src\\config.design.json'),
+    configPublishFile = path.join(__dirname, '\\..\\src\\config.publish.json'),
+    configRuntimeFile = path.join(__dirname, '\\..\\src\\config.runtime.json');
 
 var apimServiceValue = process.argv[2]; //"apimservice";
 var apimSasAccessTokenValue = process.argv[3]; //"token";
@@ -11,19 +16,13 @@ const apimSasAccessTokenParameter = "managementApiAccessToken";
 const storageSasUrlParameter = "blobStorageUrl";
 const storageConnectionStringParameter = "blobStorageConnectionString";
 
-var fs = require('fs'),
-    path = require('path'),    
-    configDesignFile = path.join(__dirname, '\\..\\src\\config.design.json'),
-    configPublishFile = path.join(__dirname, '\\..\\src\\config.publish.json'),
-    configRuntimeFile = path.join(__dirname, '\\..\\src\\config.runtime.json');
-
 fs.readFile(configDesignFile, {encoding: 'utf-8'}, function(err,data){
     if (!err) {
         var obj = JSON.parse(data);
         obj[apimServiceParameter] = apimServiceUrlValue;
         obj[apimSasAccessTokenParameter] = apimSasAccessTokenValue;
         obj[storageSasUrlParameter] = storageSasUrlValue;
-        fs.writeFile(configDesignFile, obj, function(errWrite) {
+        fs.writeFile(configDesignFile, JSON.stringify(obj, null, 4), function(errWrite) {
             if(errWrite) {
                 return console.log(errWrite);
             }
@@ -39,7 +38,7 @@ fs.readFile(configPublishFile, {encoding: 'utf-8'}, function(err,data){
         obj[apimServiceParameter] = apimServiceUrlValue;
         obj[apimSasAccessTokenParameter] = apimSasAccessTokenValue;
         obj[storageConnectionStringParameter] = storageConnectionStringValue;
-        fs.writeFile(configPublishFile, obj, function(errWrite) {
+        fs.writeFile(configPublishFile, JSON.stringify(obj, null, 4), function(errWrite) {
             if(errWrite) {
                 return console.log(errWrite);
             }
@@ -53,7 +52,7 @@ fs.readFile(configRuntimeFile, {encoding: 'utf-8'}, function(err,data){
     if (!err) {
         var obj = JSON.parse(data);
         obj[apimServiceParameter] = apimServiceUrlValue;
-        fs.writeFile(configRuntimeFile, obj, function(errWrite) {
+        fs.writeFile(configRuntimeFile, JSON.stringify(obj, null, 4), function(errWrite) {
             if(errWrite) {
                 return console.log(errWrite);
             }

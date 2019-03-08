@@ -2,10 +2,10 @@ cd ..
 npm install
 cd scripts
 
-set apimService = "portal-preview";
-set apimSasAccessToken = "SharedAccessSignature ...";
-set storageSasUrl = "https://portalpreviewstorage.blob.core.windows.net/?...";
-set storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=portalpreviewstorage;AccountKey...";
+set apimService="portal-preview"
+set apimSasAccessToken="SharedAccessSignature ..."
+set storageSasUrl="https://portalpreviewstorage.blob.core.windows.net/?..."
+set storageConnectionString="DefaultEndpointsProtocol=https;AccountName=portalpreviewstorage;AccountKey=..."
 
 node ./cleanup %apimService% %apimSasAccessToken%
 node ./configure %apimService% %apimSasAccessToken% %storageSasUrl% %storageConnectionString%
