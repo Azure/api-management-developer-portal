@@ -118,7 +118,7 @@ async function deleteBlob(blobName) {
 
 async function cleanup() {
     try {
-        // await deleteContent();
+        await deleteContent();
         await deleteBlobs();
         process.exit();
 
