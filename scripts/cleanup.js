@@ -1,6 +1,9 @@
 const https = require("https");
-const serviceName = process.argv[2]
-const accessToken = process.argv[3]
+const storage = require("azure-storage");
+const serviceName = process.argv[2];
+const accessToken = process.argv[3];
+const connectionString = process.argv[4];
+const containerName = "media";
 
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
@@ -12,6 +15,8 @@ var options = {
         "If-Match": "*"
     }
 };
+
+const blobService = storage.createBlobService(connectionString);
 
 async function request(method, url) {
     return new Promise((resolve, reject) => {
@@ -48,6 +53,19 @@ async function request(method, url) {
     });
 }
 
+async function listFilesInContainer() {
+    return new Promise((resolve, reject) => {
+        blobService.listBlobsSegmented(containerName, null, function (error, result) {
+            if (error) {
+                reject(error);
+            }
+            else {
+                resolve(result.entries.map(blob => blob.name));
+            }
+        });
+    });
+}
+
 async function getContentTypes() {
     const data = await request("GET", `https://${serviceName}.management.azure-api.net/contentTypes?api-version=2018-06-01-preview`);
     const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
@@ -62,7 +80,7 @@ async function getContentItems(contentType) {
     return contentItems;
 }
 
-async function capture() {
+async function deleteContent() {
     const contentTypes = await getContentTypes();
 
     for (const contentType of contentTypes) {
@@ -74,6 +92,41 @@ async function capture() {
     }
 }
 
-capture().then(() => {
-    console.log("DONE");
-})
+async function deleteBlobs() {
+    const blobNames = await listFilesInContainer(containerName);
+
+    for (const blobName of blobNames) {
+        console.log(`Deleting blob: ${blobName}`);
+        await deleteBlob(blobName);
+    }
+}
+
+async function deleteBlob(blobName) {
+    return new Promise((resolve, reject) => {
+
+        blobService.deleteBlob(containerName, blobName, function (error, result, response) {
+            if (!error) {
+                resolve();
+            }
+            else {
+                reject(error);
+            }
+        });
+
+    });
+}
+
+async function cleanup() {
+    try {
+        // await deleteContent();
+        await deleteBlobs();
+        process.exit();
+
+        console.log("DONE");
+    }
+    catch (error) {
+        console.error(error);
+    }
+}
+
+cleanup();
