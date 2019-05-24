@@ -1,46 +1,46 @@
-# API Management developer portal - private preview
+# Azure API Management developer portal
 
-This repository is managed by the [Microsoft Azure API Management](https://aka.ms/apimrocks) team.
+This repository is managed by the [Microsoft Azure API Management](https://aka.ms/apimrocks) team and contains the source code of the developer portal along with instructions for setting up your own self-hosted version.
 
 Table of contents:
 
 - [Overview](#overview)
-- [Getting started](#getting-started)
-- [Reporting bugs and providing feedback](#providing-feedback)
-- [Contributing](#contributing)
+- [Implementation details](#implementation)
+- [Self-hosted version](#self-hosted)
+- [Roadmap](#roadmap)
+- [Bug reports and feedback](#feedback)
+- [Contributions](#contributions)
 - [License](#license)
 
 ![API Management developer portal](readme/portal.png)
 
 ## <a name="overview"></a> Overview
 
-The API Management developer portal is based on our own fork of the [Paperbits framework](http://paperbits.io/). It has a modern default look and feel, and is optimized for:
+If you're looking for **general information** on the new developer portal and its features, please refer to [the Azure update post](./).
 
-- Customization, styling, and authoring through a visual editor.
-- Programmatic access through APIs for automating the development, management, and deployment.
-- Extensibility of the core functionality.
+If you're looking for **general documentation on the developer portal**, please refer to [Azure documentation](https://docs.microsoft.com/azure/api-management/api-management-howto-developer-portal).
+
+## <a name="implementation"></a> Implementation details
+
+The portal is based on our own fork of the [Paperbits framework](http://paperbits.io/) - a [JAMstack technology](https://jamstack.org/).
 
 We extended the original Paperbits functionality to provide API Management-specific widgets (e.g., a list of APIs, Products). We also implemented a connector to an API Management instance for saving and retrieving content (e.g., pages, configuration, styling).
 
-We will maintain [our Github repository](https://github.com/Azure/api-management-developer-portal) and ensure it includes the latest updates. If you wish to have the best experience with the developer portal, you should **always merge updates from our original repository to your fork**.
+## <a name="self-hosted"></a> Self-hosted version
 
-When we reach the public preview stage, the repository will become publicly available.
+You can deploy your own portal outside of an API Management instance. This approach allows you to edit the portal's codebase and extend the provided core functionality. For  instructions, please refer to [**documentation in the repository's Wiki section**](https://github.com/Azure/api-management-developer-portal/wiki).
 
-## <a name="getting-started"></a> Getting started
+## <a name="roadmap"></a> Roadmap
 
-Learn how to get started with the new developer portal by navigating to the [documentation in wiki](https://github.com/Azure/api-management-developer-portal/wiki).
+The project's roadmap is published in [the repository's Projects section](https://github.com/Azure/api-management-developer-portal/projects).
 
-## <a name="providing-feedback"></a> Reporting bugs and providing feedback
+## <a name="feedback"></a> Bug reports and feedback
 
-Please, submit bug reports, feedback, and feature requests through [the GitHub Issues page](https://github.com/Azure/api-management-developer-portal/issues) or to apimportalfeedback@microsoft.com.
+You can provide us feedback, submit a feature request, or open a bug report through [the repository's Issues section](https://github.com/Azure/api-management-developer-portal/issues).
 
-## <a name="contributing"></a> Contributing
+## <a name="contributions"></a> Contributions
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.microsoft.com.
-
-When you submit a pull request, a CLA-bot will automatically determine whether you need to provide a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions provided by the bot. You will only need to do this once across all repos using our CLA.
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+We welcome contributions. See the details in [the contributions file](CONTRIBUTIONS.md).
 
 ## <a name="license"></a> License
 
