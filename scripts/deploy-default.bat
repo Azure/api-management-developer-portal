@@ -8,7 +8,7 @@ set storageSasUrl="https://portalstorage.blob.core.windows.net/?..."
 set storageConnectionString="DefaultEndpointsProtocol=https;AccountName=portalstorage;AccountKey=...;EndpointSuffix=core.windows.net"
 set portalUrl="https://portalstorage.../"
 
-node ./cleanup %apimService% %apimSasAccessToken%
+node ./cleanup %apimService% %apimSasAccessToken% %storageConnectionString%
 node ./configure %apimService% %apimSasAccessToken% %storageSasUrl% %storageConnectionString%
 node ./generate %apimService% %apimSasAccessToken%
 node ./upload %storageConnectionString%
