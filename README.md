@@ -16,9 +16,7 @@ Table of contents:
 
 ## <a name="overview"></a> Overview
 
-If you're looking for **general information** on the new developer portal and its features, please refer to [the Azure update post](./).
-
-If you're looking for **general documentation on the developer portal**, please refer to [Azure documentation](https://docs.microsoft.com/azure/api-management/api-management-howto-developer-portal).
+If you're looking for **general documentation on the developer portal**, please refer to [Azure documentation](https://aka.ms/apimdocs/portal).
 
 ## <a name="implementation"></a> Implementation details
 
