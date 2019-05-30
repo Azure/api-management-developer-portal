@@ -7,7 +7,6 @@ If you're looking for **general documentation on the developer portal**, please 
 Table of contents:
 
 - [Overview](#overview)
-- [Self-hosted version](#self-hosted)
 - [Roadmap](#roadmap)
 - [Bug reports and feedback](#feedback)
 - [Contributions](#contributions)
