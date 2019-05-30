@@ -20,7 +20,7 @@ Table of contents:
 
 The new developer portal is based on our own fork of the [Paperbits framework](http://paperbits.io/) - a [JAMstack technology](https://jamstack.org/), which we extended to provide API Management-specific features.
 
-You can deploy and self-host it outside of an API Management instance. This approach allows you to edit the portal's codebase and extend the provided core functionality. For  instructions, please refer to [**documentation in the repository's Wiki section**](https://github.com/Azure/api-management-developer-portal/wiki).
+You can deploy and self-host it outside of an API Management instance. This approach allows you to edit the portal's codebase and extend the provided core functionality. For  instructions, please refer to [documentation in the repository's Wiki section](https://github.com/Azure/api-management-developer-portal/wiki).
 
 ## <a name="roadmap"></a> Roadmap
 
