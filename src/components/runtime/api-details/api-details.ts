@@ -33,7 +33,6 @@ export class ApiDetails {
 
         this.routeHandler.addRouteChangeListener(this.loadApi);
         this.selectedId.subscribe(this.onVersionChanged);
-        this.loadApi(this.routeHandler.getCurrentRoute());
     }
 
     public async loadApi(route?: Route): Promise<void> {
