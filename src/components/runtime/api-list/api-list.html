@@ -46,7 +46,7 @@
         <!-- /ko -->
         <!-- ko if: itemStyleView() === 'dropdown' -->
         <div class="apis-dropdown">
-            <select class="form-control" data-bind="options: apis, optionsValue: 'name', optionsText: 'displayName', value: selectedId">
+            <select class="form-control" data-bind="options: apis, optionsValue: 'name', optionsText: 'displayName', value: dropDownId, event:{ change: selectionChanged}">
             </select>
         </div>
         <!-- /ko -->
