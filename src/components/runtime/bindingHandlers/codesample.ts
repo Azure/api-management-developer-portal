@@ -62,8 +62,8 @@ ko.bindingHandlers["codesample"] = {
             const html = Prism.highlight(result, Prism.languages[highlightLanguage], highlightLanguage);
 
             ko.applyBindingsToNode(element, { html: html }, null);
-        }
+        };
 
         render();
     }
-}
+};
