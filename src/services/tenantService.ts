@@ -24,7 +24,7 @@ export class TenantService {
     public async getServiceName(): Promise<string> {
         /* TODO: User proper service container */
         const managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
-        const regex = /https:\/\/(\w*)\./gm;
+        const regex = /https:\/\/([\w\-]*)\./gm;
         const match = regex.exec(managementApiUrl);
 
         if (match && match.length > 0) {
