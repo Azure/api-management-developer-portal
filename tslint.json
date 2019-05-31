@@ -87,6 +87,7 @@
             true,
             "consistent-as-needed"
         ],
+        "ban-types": false,
         "variable-name": [
             true,
             "ban-keywords",

@@ -1,38 +1,3 @@
-<template id="treeview">
-    <ul class="nav list-group">
-        <!-- ko foreach: { data: nodes, as: 'node' } -->
-        <li class="nav-item list-group-item" role="listitem" data-bind="css: node.level">
-            <div class="list-group-item-container"
-                data-bind="css: { expanded: node.expanded, active: node.isSelected, 'has-active-child': node.hasActiveChild }">
-                <div class="list-group-item-heading flex-container">
-                    <!-- ko if: node.hasChildren() -->
-                    <button class="toggle" aria-label="Expand"
-                        data-bind="css: { active: node.expanded }, click: node.toggle">
-                        <i class="icon icon-chevron-down"></i>
-                    </button>
-                    <!-- /ko -->
-
-                    <div class="list-group-item-label flex-item flex-grow">
-                        <a href="#" class="text-truncate" data-bind="attr: { href: '/apis#'+node.name }"
-                            [traceClick]="'API list > API'">
-                            <span data-bind="text: node.label"></span>
-                            <span data-bind="if: node.data && node.data.properties && node.data.type === 'soap'"
-                                class="badge badge-soap">
-                                SOAP
-                            </span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <!-- ko if: node.hasChildren() && node.expanded -->
-            <!-- ko template: { name: 'treeview', data: { nodes: node.nodes } } -->
-            <!-- /ko -->
-            <!-- /ko -->
-        </li>
-        <!-- /ko -->
-    </ul>
-</template>
-
 <searchbox [placeholder]="'Search APIs'" [tags]="tags" (onSearch)="searchApis($event)"></searchbox>
 
 <!-- <p id="apiSearchResult" class="hide-text" role="region" aria-live="assertive" aria-label="Search result">
@@ -45,10 +10,50 @@
 <!-- /ko -->
 
 <!-- ko ifnot: working-->
-
-<!-- ko template: { name: 'treeview', data: { nodes: $component.nodes } } --><!-- /ko -->
-
-<div class="list-placeholder list-group-placeholder" data-bind="if: $component.nodes().length === 0">
-    No APIs to display.
-</div>
+    <!-- ko if: apis -->
+        <!-- ko if: !itemStyleView() || itemStyleView() === 'list'-->
+        <ul class="nav list-group">
+            <!-- ko foreach: { data: apis, as: 'item' } -->
+            <li class="list-group-item" role="listitem">
+                <div class="list-group-item-container"
+                    data-bind="css: { active: item.name === $parent.selectedId() }">
+                    <div class="list-group-item-heading flex-container">
+                        <div class="list-group-item-label flex-item flex-grow">
+                            <a href="#" class="text-truncate"
+                                data-bind="attr: { href: '#?apiId=' + item.name }">
+                                <span data-bind="text: item.displayName"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <!-- /ko -->
+        </ul>
+        <!-- /ko -->
+        <!-- ko if: itemStyleView() === 'tiles' -->
+        <div class="apis-tiles">
+            <!-- ko foreach: { data: apis, as: 'item' } -->
+            <a href="#" data-bind="attr: { href: '/reference#?apiId=' + item.name }">
+                <div class="card card-default">
+                    <h3 data-bind="text: item.displayName"></h3>
+                    <div class="tile line-clamp">
+                        <p class="tile-content" data-bind="markdown: item.description"></p>
+                    </div>
+                </div>
+            </a>
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
+        <!-- ko if: itemStyleView() === 'dropdown' -->
+        <div class="apis-dropdown">
+            <select class="form-control" data-bind="options: apis, optionsValue: 'name', optionsText: 'displayName', value: selectedId">
+            </select>
+        </div>
+        <!-- /ko -->
+    <!-- /ko -->
+    <!-- ko if: apis().length === 0 -->
+    <div class="list-placeholder list-group-placeholder" data-bind="if: $component.nodes().length === 0">
+        No APIs to display.
+    </div>
+    <!-- /ko -->
 <!-- /ko -->

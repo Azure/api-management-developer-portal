@@ -14,6 +14,7 @@ import { Utils } from "../utils";
 import { OperationContract } from "../contracts/operation";
 import { SchemaContract } from "../contracts/schema";
 import { VersionSetContract } from "../contracts/apiVersionSet";
+import { HttpHeader } from "@paperbits/common/http/httpHeader";
 
 
 export class ApiService {
@@ -45,97 +46,19 @@ export class ApiService {
         page.value = result.value.map(x => new Api(x));
 
         return page;
+    }
 
+    public async getVersionSetApis(versionSetId: string): Promise<Api[]> {
+        if (!versionSetId) {
+            return null;
+        }
+        const query = "/apis?expandApiVersionSet=true";
 
+        const apisPage = await this.smapiClient.get<Page<ApiContract>>(query);
 
+        const result = apisPage.value.filter(x => x.apiVersionSetId && x.apiVersionSetId === versionSetId).map(x => new Api(x));
 
-        //         const mockVersionSet = new VersionSet({
-        //             "id": "/subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/Api-Default-West-US/providers/Microsoft.ApiManagement/service/aztest/api-version-sets/00008d19-2026-4646-80b2-712b223d8a87",
-        //             "name": "httpbin.org",
-        //             "description": null,
-        //             "versioningScheme": "Segment",
-        //             "versionQueryName": null,
-        //             "versionHeaderName": null
-        //         });
-
-        //         const apiV1 = new Api({
-        //             "id": "/subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/Api-Default-West-US/providers/Microsoft.ApiManagement/service/aztest/apis/httpbinv2",
-        //             "type": "Microsoft.ApiManagement/service/apis",
-        //             "name": "httpbinv2",
-        //             "properties": {
-        //                 "name": "httpbin.org",
-        //                 "apiRevision": "1",
-        //                 "description": "API Management facade for a very handy and free online HTTP tool.",
-        //                 "serviceUrl": "https://httpbin.org/",
-        //                 "path": "",
-        //                 "protocols": [
-        //                     "http",
-        //                     "https"
-        //                 ],
-        //                 "authenticationSettings": null,
-        //                 "subscriptionKeyParameterNames": null,
-        //                 "isCurrent": true,
-        //                 "apiVersion": "v2",
-        //                 "apiVersionSetId": "/subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/Api-Default-West-US/providers/Microsoft.ApiManagement/service/aztest/api-version-sets/00008d19-2026-4646-80b2-712b223d8a87",
-        //                 "apiVersionSet": {
-        //                     "id": "/subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/Api-Default-West-US/providers/Microsoft.ApiManagement/service/aztest/api-version-sets/00008d19-2026-4646-80b2-712b223d8a87",
-        //                     "name": "httpbin.org",
-        //                     "description": null,
-        //                     "versioningScheme": "Segment",
-        //                     "versionQueryName": null,
-        //                     "versionHeaderName": null
-        //                 }
-        //             }
-        //         });
-
-
-        //         /*
-        // {
-        //     "id": "1234567",
-        //     "name": "Sparky",
-        //     "category": {
-        //         "id": "1",
-        //         "name": "Dog"
-        //     },
-        //     "photoUrls": ["https://www.instagram.com/p/Bk5wigDgybz"]
-        // }
-        // */
-
-
-        //         const apiV2 = new Api({
-        //             "id": "/subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/Api-Default-West-US/providers/Microsoft.ApiManagement/service/aztest/apis/httpbin-v1",
-        //             "type": "Microsoft.ApiManagement/service/apis",
-        //             "name": "httpbin-v1",
-        //             "properties": {
-        //                 "name": "httpbin.org",
-        //                 "apiRevision": "1",
-        //                 "description": "API Management facade for a very handy and free online HTTP tool.",
-        //                 "serviceUrl": "https://httpbin.org/",
-        //                 "path": "",
-        //                 "protocols": [
-        //                     "http",
-        //                     "https"
-        //                 ],
-        //                 "authenticationSettings": null,
-        //                 "subscriptionKeyParameterNames": null,
-        //                 "isCurrent": true,
-        //                 "apiVersion": "v1",
-        //                 "apiVersionSetId": "/subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/Api-Default-West-US/providers/Microsoft.ApiManagement/service/aztest/api-version-sets/00008d19-2026-4646-80b2-712b223d8a87",
-        //                 "apiVersionSet": {
-        //                     "id": "/subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/Api-Default-West-US/providers/Microsoft.ApiManagement/service/aztest/api-version-sets/00008d19-2026-4646-80b2-712b223d8a87",
-        //                     "name": "httpbin.org",
-        //                     "description": null,
-        //                     "versioningScheme": "Segment",
-        //                     "versionQueryName": null,
-        //                     "versionHeaderName": null
-        //                 }
-        //             }
-        //         });
-
-        //         const page = new Page<Api>();
-        //         page.value = [apiV1, apiV2];
-
-        //         return page;
+        return result;
     }
 
     public async getApisByTags(searchRequest?: SearchRequest): Promise<PageContract<TagResourceContract[]>> {
@@ -166,6 +89,33 @@ export class ApiService {
         return api;
     }
 
+    public exportApi(apiId: string, format: string): Promise<string> {
+        const header: HttpHeader = {
+            name: "Accept",
+            value: "application/vnd.swagger.doc+json"
+        };
+        switch (format) {
+            case "wadl":
+                header.value = "application/vnd.sun.wadl+xml";
+                break;
+            case "wsdl":
+                header.value = "application/wsdl+xml";
+                break;
+            case "swagger": //json 2.0
+                header.value = "application/vnd.swagger.doc+json";
+                break;
+            case "openapi": //yaml 3.0
+                header.value = "application/vnd.oai.openapi";
+                break;
+            case "openapi+json": //json 3.0
+                header.value = "application/vnd.oai.openapi+json";
+                break;
+            default:
+        }
+
+        return this.smapiClient.get<string>(apiId, [header]);
+    }
+
     public async getApiVersionSet(versionSetId: string): Promise<VersionSet> {
         const versionSetContract = await this.smapiClient.get<VersionSetContract>(versionSetId);
         return new VersionSet(versionSetContract);
@@ -183,8 +133,8 @@ export class ApiService {
         return operation;
     }
 
-    public async getOperations(api: Api, searchRequest?: SearchRequest): Promise<Page<Operation>> {
-        let query = `${api.id}/operations`;
+    public async getOperations(apiId: string, searchRequest?: SearchRequest): Promise<Page<Operation>> {
+        let query = `${apiId}/operations`;
 
         let top;
 
@@ -216,12 +166,12 @@ export class ApiService {
     }
 
     public async getApiSchema(schemaId: string): Promise<Schema> {
-        const schema = await this.smapiClient.get<SchemaContract>(`${schemaId}`, null);
+        const schema = await this.smapiClient.get<SchemaContract>(`${schemaId}`);
         return new Schema(schema);
     }
 
     public async getSchemas(api: Api): Promise<Page<Schema>> {
-        const result = await this.smapiClient.get<Page<SchemaContract>>(`${api.id}/schemas?$top=20`, null);
+        const result = await this.smapiClient.get<Page<SchemaContract>>(`${api.id}/schemas?$top=20`);
         const schemaReferences = result.value;
         const schemas = await Promise.all(schemaReferences.map(schemaReference => this.getApiSchema(schemaReference.id)));
 
@@ -237,25 +187,32 @@ export class ApiService {
 
     public async getAllApiProducts(apiId: string): Promise<Page<Product>> {
         const result = [];
-        const pageOfProductContracts = await this.smapiClient.get<Page<ProductContract>>(`${apiId}/products`);
+        const pageOfProducts = await this.smapiClient.get<Page<ProductContract>>(`${apiId}/products`);
 
-        if (pageOfProductContracts && pageOfProductContracts.value) {
-            pageOfProductContracts.value.map(item => result.push(new Product(item)));
+        if (pageOfProducts && pageOfProducts.value) {
+            pageOfProducts.value.map(item => result.push(new Product(item)));
         }
 
         const page = new Page<Product>();
         page.value = result;
-        page.count = pageOfProductContracts.count;
+        page.count = pageOfProducts.count;
         // page.nextPage = pageOfProductContracts.nextPage;
         return page;
     }
 
-    public async getProductApis(productId: string): Promise<Api[]> {
-        const result = [];
-        const contracts = await this.smapiClient.get<Page<ApiContract>>(`${productId}/apis`);
-        if (contracts && contracts.value) {
-            contracts.value.map(item => result.push(new Api(item)));
+    public async getProductApis(productId: string): Promise<Page<Api>> {
+        const result: Api[] = [];
+
+        const pageOfApis = await this.smapiClient.get<Page<ApiContract>>(`${productId}/apis`);
+
+        if (pageOfApis && pageOfApis.value) {
+            pageOfApis.value.map(item => result.push(new Api(item)));
         }
-        return result;
+
+        const page = new Page<Api>();
+        page.value = result;
+        page.count = pageOfApis.count;
+
+        return page;
     }
 }

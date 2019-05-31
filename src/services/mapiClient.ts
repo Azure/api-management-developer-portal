@@ -4,7 +4,7 @@ import { Utils } from "../utils";
 import { TtlCache } from "./ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
 import { MapiError } from "./mapiError";
-import { IAuthenticator } from "./IAuthenticator";
+import { IAuthenticator } from "../authentication/IAuthenticator";
 import { IRouteHandler } from "@paperbits/common/routing";
 
 export interface IHttpBatchResponses {
@@ -111,7 +111,6 @@ export class MapiClient {
         return call();
     }
 
-
     private getRequestKey(httpRequest: HttpRequest): string {
         if (httpRequest.method !== HttpMethod.get && httpRequest.method !== HttpMethod.head && httpRequest.method !== "OPTIONS") {   // TODO:  HttpMethod.options) {
             return null;
@@ -141,39 +140,48 @@ export class MapiClient {
 
         httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
 
-        const responsePromise = this.httpClient.send<T>(httpRequest);
+        let response;
 
-        return responsePromise
-            .then((successResponse: HttpResponse<T>) => {
-                if (successResponse.headers) {
-                    const authTokenHeader = successResponse.headers.find(header => header.name === "ocp-apim-sas-token");
+        try {
+            response = await this.httpClient.send<T>(httpRequest);
+        }
+        catch (error) {
+            throw new Error(`Unable to complete request. Error: ${error}`);
+        }
 
-                    if (authTokenHeader && authTokenHeader.value) {
-                        this.authenticator.setAccessToken(`SharedAccessSignature ${authTokenHeader.value}`);
-                    }
-                }
+        let contentType = "";
+        if (response.headers) {
+            const authTokenHeader = response.headers.find(header => header.name === "ocp-apim-sas-token");
 
-                if (successResponse.statusCode >= 200 && successResponse.statusCode < 300) {
-                    let responseBody = successResponse.toText();
-                    return responseBody ? JSON.parse(responseBody) : null;
-                }
-                else {
-                    throw successResponse;
-                }
-            })
-            .catch((errorResponse: HttpResponse<any>) => {
-                this.checkError(errorResponse, httpRequest.url);
-                return undefined;
-            });
+            if (authTokenHeader && authTokenHeader.value) {
+                this.authenticator.setAccessToken(`SharedAccessSignature ${authTokenHeader.value}`);
+            }
+
+            const contentTypeHeader = response.headers.find(h => h.name.toLowerCase() === "content-type");
+            contentType = contentTypeHeader ? contentTypeHeader.value.toLowerCase() : "";
+        }
+
+        const text = response.toText();
+
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+            if (_.includes(contentType, "json") && text.length > 0) {
+                return JSON.parse(text) as T;
+            } else {
+                return <any>text;
+            }
+        }
+        else {
+            this.handleError(response, httpRequest.url);
+        }
     }
 
-    private checkError(errorResponse: HttpResponse<any>, requestedUrl: string) {
+    private handleError(errorResponse: HttpResponse<any>, requestedUrl: string): void {
         if (errorResponse.statusCode === 429) {
             throw new MapiError("to_many_logins", "Too many attempts. Please try later.");
         }
 
         if (errorResponse.statusCode === 401) {
-            this.authenticator.clear();
+            // this.authenticator.clear();
 
             const authHeader = errorResponse.headers.find(h => h.name.toLowerCase() === "www-authenticate");
 
@@ -191,10 +199,13 @@ export class MapiClient {
                 return;
             }
 
-            console.warn(`Development mode: Please specify "managementApiAccessToken" in configuration file.`);
+            if (this.environment === "development") {
+                console.warn(`Development mode: Please specify "managementApiAccessToken" in configuration file.`);
+                return;
+            }
         }
 
-        const error = this.processError(errorResponse.statusCode, requestedUrl, () => errorResponse.toObject().error);
+        const error = this.createMapiError(errorResponse.statusCode, requestedUrl, () => errorResponse.toObject().error);
 
         if (error) {
             error.response = errorResponse;
@@ -204,7 +215,7 @@ export class MapiClient {
         throw new MapiError("Unhandled", "Unhandled error");
     }
 
-    private processError(statusCode: number, url: string, getError: () => any): any {
+    private createMapiError(statusCode: number, url: string, getError: () => any): any {
         switch (statusCode) {
             case 400:
                 return getError();

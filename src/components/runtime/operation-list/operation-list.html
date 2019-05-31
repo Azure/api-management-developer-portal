@@ -1,0 +1,36 @@
+<div class="flex flex-row">
+    <!-- ko if: working-->
+    <spinner class="fit"></spinner>
+    <!-- /ko -->
+
+    <!-- ko ifnot: working-->
+    <div class="flex-item flex-grow animation-fade-in">
+        <!-- ko if: operations -->
+        <ul class="list-group">
+            <!-- ko foreach: { data: operations, as: 'item' } -->
+            <li class="list-group-item" role="listitem">
+                <div class="list-group-item-container"
+                    data-bind="css: { active: item.shortId === $parent.selectedId() }">
+                    <div class="list-group-item-heading flex-container">
+                        <div class="list-group-item-label flex-item flex-grow">
+                            <a href="#" class="text-truncate"
+                                data-bind="attr: { href: $parent.getNavigationProductId(item.id) }">
+                                <span class="operation-content" data-bind="attr: { 'data-method': method }"></span>
+                                <span class="operation-name" data-bind="text: item.name"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <!-- /ko -->
+        </ul>
+        <!-- /ko -->
+
+        <!-- ko if: operations().length === 0 -->
+        <div class="list-placeholder list-group-placeholder">
+            No Operations to display.
+        </div>
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+</div>

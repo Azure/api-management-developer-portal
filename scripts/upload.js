@@ -24,7 +24,7 @@ function listFilesInDirectory(dir) {
 async function upload(fileName, blobName) {
     return new Promise((resolve, reject) => {
 
-        blobService.createBlockBlobFromLocalFile("media", blobName, fileName, function (error, result, response) {
+        blobService.createBlockBlobFromLocalFile("content", blobName, fileName, function (error, result, response) {
             if (!error) {
                 resolve();
             }
