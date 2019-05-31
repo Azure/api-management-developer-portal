@@ -9,13 +9,13 @@ import * as python from "./python.liquid";
 import * as ruby from "./ruby.liquid";
 
 export const templates = {
-    curl: curl,
-    csharp: csharp,
-    http: http,
-    java: java,
-    javascript: javascript,
-    php: php,
-    objc: objc,
-    python: python,
-    ruby: ruby
+    curl: curl.default,
+    csharp: csharp.default,
+    http: http.default,
+    java: java.default,
+    javascript: javascript.default,
+    php: php.default,
+    objc: objc.default,
+    python: python.default,
+    ruby: ruby.default
 };
