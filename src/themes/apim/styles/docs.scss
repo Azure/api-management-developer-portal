@@ -350,7 +350,7 @@ operation-console {
 }
 
 .tile {
-    margin: 20px 0 1em 0;
+    margin: 1em 0;
     overflow: hidden;
 }
 .tile.tile-content {
@@ -358,10 +358,7 @@ operation-console {
 }
 
 .line-clamp {
-    text-align: justify;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;  
+    text-align: left; 
 }
 
 api-list,
