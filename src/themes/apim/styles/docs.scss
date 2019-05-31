@@ -64,7 +64,7 @@ aside {
   }
 
   .nav {
-    font-size: .8em;
+    font-size: 1em;
   }
 
   &.panel-dark {
@@ -155,7 +155,7 @@ pre {
   font-family: monospace;
   padding: 10px;
   border-radius: .25em;
-  font-size: .8em;
+  font-size: 1em;
   word-break: break-all;
   word-wrap: break-word;
   white-space: pre-wrap;
@@ -247,13 +247,14 @@ pre {
 
 .detachable-right {
   width: 100%;
+  box-shadow: -2px 2px 5px 0 rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   bottom: 0;
   right: 0;
   z-index: 1000;
   @media (min-width: $breakpoint-md) {
-    max-width: 500px;
+    max-width: 600px;
   }
 
 }
