@@ -1,0 +1,81 @@
+<!-- ko if: isUserLoggedIn -->
+<h4>You are logged in</h4>
+<a class="btn-link" href="/">Home page</a>
+<!-- /ko -->
+
+<!-- ko if: isUserRequested -->
+<h1>Create request was sent. Please check your email.</h1>
+<a class="btn-link" href="/">Home page</a> |
+<a class="btn-link" href="/signin">Log in</a>
+<!-- /ko -->
+
+<!-- ko if: (!isUserRequested() && !isUserLoggedIn()) -->
+
+<form>
+    <fieldset>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input aria-required="true" required autofocus="autofocus" class="form-control" id="email" name="email"
+                autocomplete="username email" placeholder="Email" type="email" data-bind="textInput: email">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input aria-required="true" required class="form-control" id="password" name="password"
+                autocomplete="new-password" placeholder="Password" type="password" data-bind="textInput: userPassword">
+        </div>
+        <div class="form-group">
+            <label for="confirm">Confirm password</label>
+            <input aria-required="true" required class="form-control" id="confirm" name="confirm"
+                autocomplete="new-password" placeholder="Confirm password" type="password"
+                data-bind="textInput: userConfirmPassword">
+        </div>
+        <div class="form-group">
+            <label for="firstName">First name</label>
+            <input aria-required="true" required class="form-control" id="firstName" name="firstName"
+                placeholder="First name" type="text" data-bind="textInput: firstName">
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last name</label>
+            <input aria-required="true" required class="form-control" id="lastName" name="lastName"
+                placeholder="Last name" type="text" data-bind="textInput: lastName">
+        </div>
+
+        <!-- ko if: termsOfUse -->
+        <div class="form-group">
+            <!-- ko if: isTermsRequired -->
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" data-bind="checked: consented" id="consented" required>
+                <label class="form-check-label" for="consented">I agree to the Terms of Use.</label>
+                <a href="#" class="btn-link" data-bind="click: toggle, text: showHideLabel"></a>
+            </div>
+            <!-- /ko -->
+
+            <!-- ko ifnot: isTermsRequired -->
+            <div class="row">
+                <p>
+                    Please review Terms of Use.
+                    <a href="#" class="btn-link" data-bind="click: toggle, text: showHideLabel"></a>
+                </p>
+            </div>
+            <!-- /ko -->
+
+            <!-- ko if: showTerms -->
+            <div class="row">
+                <textarea class="col-md-12" rows="10" readonly data-bind="text: termsOfUse"></textarea>
+            </div>
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: serverErrors -->
+        <div class="form-group">
+            <div class="alert alert-danger"><span data-bind="text: serverErrors"></span></div>
+        </div>
+        <!-- /ko -->
+        <div class="form-group">
+            <input type="submit" id="signupButton" value="Sign up" class="button button-primary"
+                data-bind="click: signup, enable: canSignup">
+        </div>
+    </fieldset>
+</form>
+<!-- /ko -->

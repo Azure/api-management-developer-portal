@@ -6,10 +6,26 @@ import { Page } from "../models/page";
 import { HttpHeader } from "@paperbits/common/http";
 
 
+const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block"];
+const selectedLocale = "en_us";
+
+
 export class MapiObjectStorage implements IObjectStorage {
     constructor(private readonly smapiClient: MapiClient) { }
 
-    public ArmResourceToPaperbitsKey(resource: string): string {
+    private getContentTypeFromResource(resource: string): string {
+        const regex = /contentTypes\/([\w]*)/gm;
+        const match = regex.exec(resource);
+
+        if (match && match.length > 0) {
+            const contentType = match[1];
+            return contentType;
+        }
+
+        throw new Error(`Could not determine content type by resource: ${resource}`);
+    }
+
+    public armResourceToPaperbitsKey(resource: string): string {
         if (!resource.contains("contentTypes")) {
             return resource;
         }
@@ -171,24 +187,26 @@ export class MapiObjectStorage implements IObjectStorage {
         }
     }
 
-    public async getObject<T>(path: string): Promise<T> {
+    public async getObject<T>(key: string): Promise<T> {
         try {
-            const resource = this.paperbitsKeyToArmResource(path);
+            const resource = this.paperbitsKeyToArmResource(key);
+            const contentType = this.getContentTypeFromResource(resource);
+            const isLocalized = localizedContentTypes.includes(contentType);
             const item = await this.smapiClient.get<T>(`${resource}`);
-            const converted = this.convertArmContractToPaperbitsContract(item);
+            const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
 
-            if (path.contains("settings") || path.contains("styles")) {
+            if (key.contains("settings") || key.contains("styles")) {
                 return (<any>converted).nodes[0];
             }
 
-            if (path.contains("navigationItems")) {
+            if (key.contains("navigationItems")) {
                 return (<any>converted).nodes;
             }
 
             return converted;
         }
         catch (error) {
-            console.warn(`Could not get object '${path}'. Error: ${error}.`);
+            console.warn(`Could not get object '${key}'. Error: ${error}.`);
         }
     }
 
@@ -206,20 +224,26 @@ export class MapiObjectStorage implements IObjectStorage {
         }
     }
 
-    public async updateObject<T>(path: string, dataObject: T): Promise<void> {
-        let converted = this.convertPaperbitsContractToArmContract(dataObject);
-        const resource = this.paperbitsKeyToArmResource(path);
+    public async updateObject<T>(key: string, dataObject: T): Promise<void> {
+        const resource = this.paperbitsKeyToArmResource(key);
+        const contentType = this.getContentTypeFromResource(resource);
+        const isLocalized = localizedContentTypes.includes(contentType);
+        let converted = this.convertPaperbitsContractToArmContract(dataObject, isLocalized);
 
         let exists: boolean;
 
         try {
 
-            if (path.contains("settings") || path.contains("styles")) {
-                converted = { nodes: [converted ] };
+            if (key.contains("settings") || key.contains("styles")) {
+                converted = { nodes: [converted] };
             }
 
-            if (path.contains("navigationItems")) {
+            if (key.contains("navigationItems")) {
                 converted = { nodes: converted };
+            }
+
+            if (key.contains("files")) {
+                delete converted["type"];
             }
 
             await this.smapiClient.head<T>(resource);
@@ -230,7 +254,7 @@ export class MapiObjectStorage implements IObjectStorage {
                 exists = false;
             }
             else {
-                throw new Error(`Could not update object '${path}'. Error: ${error}`);
+                throw new Error(`Could not update object '${key}'. Error: ${error}`);
             }
         }
 
@@ -244,50 +268,53 @@ export class MapiObjectStorage implements IObjectStorage {
             await this.smapiClient.put<T>(resource, headers, converted);
         }
         catch (error) {
-            throw new Error(`Could not update object '${path}'. Error: ${error}`);
+            throw new Error(`Could not update object '${key}'. Error: ${error}`);
         }
     }
 
-    public async searchObjects<T>(path: string, query: Query<T>): Promise<T[]> {
-        const resource = this.paperbitsKeyToArmResource(path);
-
-        if (!resource.contains("contentTypes")) {
-            debugger;
-        }
+    public async searchObjects<T>(key: string, query: Query<T>): Promise<T[]> {
+        const resource = this.paperbitsKeyToArmResource(key);
+        const contentType = this.getContentTypeFromResource(resource);
+        const isLocalized = localizedContentTypes.includes(contentType);
+        const localeSearchPrefix = isLocalized ? `${selectedLocale}/` : "";
 
         try {
             let filterQueryString = "";
 
             if (query && query.filters.length > 0) {
+                const filterExpressions = [];
+
                 for (const filter of query.filters) {
                     const operator = filter.operator;
 
                     switch (operator) {
                         case Operator.equals:
-                            filterQueryString += `&$filter=permalink eq '${filter.right}'`;
+                            filterExpressions.push(`${localeSearchPrefix}${filter.left} eq '${filter.right}'`);
                             break;
 
                         case Operator.contains:
-                            filterQueryString += `&$filter=contains(${filter.left},'${filter.right}')`;
+                            filterExpressions.push(`contains(${localeSearchPrefix}${filter.left},'${filter.right}')`);
                             break;
 
                         default:
                             throw new Error(`Cannot translate operator into OData query.`);
                     }
                 }
+
+                filterQueryString = `&$filter=${filterExpressions.join(" and ")}`;
             }
 
-            if (path.contains("navigationItems")) {
-                const item = await this.smapiClient.get<any>(`${resource}?$orderby=title${filterQueryString}`);
-                const converted = this.convertArmContractToPaperbitsContract(item);
+            if (key.contains("navigationItems")) {
+                const item = await this.smapiClient.get<any>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`);
+                const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
                 return converted.nodes;
             }
             else {
-                const pageOfTs = await this.smapiClient.get<Page<T>>(`${resource}?$orderby=title${filterQueryString}`);
+                const pageOfTs = await this.smapiClient.get<Page<T>>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`);
                 const searchResult = {};
 
                 for (const item of pageOfTs.value) {
-                    const converted = this.convertArmContractToPaperbitsContract(item);
+                    const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
 
                     const segments = converted.key.split("/");
                     const key = segments[1];
@@ -299,26 +326,25 @@ export class MapiObjectStorage implements IObjectStorage {
             }
         }
         catch (error) {
-            console.warn(`Could not search object '${path}'. Error: ${error}.`);
+            console.warn(`Could not search object '${key}'. Error: ${error}.`);
             // throw new Error(`Could not search object '${path}'. Error: ${error}.`);
         }
     }
 
-    private convertPaperbitsContractToArmContract(contract: any): any {
-        const converted = {};
+    private convertPaperbitsContractToArmContract(contract: any, isLocalized: boolean = false): any {
+        let converted;
 
-        Object.keys(contract).forEach(propertyName => {
-            const propertyValue = contract[propertyName];
-            let convertedKey = propertyName;
-            let convertedValue = propertyValue;
+        if (Array.isArray(contract)) {
+            converted = contract.map(x => this.convertPaperbitsContractToArmContract(x));
+        }
+        else if (typeof contract === "object") {
+            converted = {};
 
-            if (propertyValue && Array.isArray(propertyValue)) {
-                convertedValue = propertyValue.map(x => this.convertPaperbitsContractToArmContract(x));
-            }
-            else if (propertyValue && typeof propertyValue === "object") {
-                convertedValue = this.convertPaperbitsContractToArmContract(propertyValue);
-            }
-            else {
+            Object.keys(contract).forEach(propertyName => {
+                const propertyValue = contract[propertyName];
+                let convertedKey = propertyName;
+                let convertedValue = propertyValue;
+
                 convertedKey = propertyName
                     .replace(/contentKey/gm, "documentId")
                     .replace(/Key\b/gm, "Id")
@@ -327,41 +353,66 @@ export class MapiObjectStorage implements IObjectStorage {
                 if (typeof propertyValue === "string" && propertyName !== convertedKey) {
                     convertedValue = this.paperbitsKeyToArmResource(propertyValue);
                 }
-            }
+                else {
+                    convertedValue = this.convertArmContractToPaperbitsContract(propertyValue);
+                }
 
-            converted[convertedKey] = convertedValue;
-        });
+                converted[convertedKey] = convertedValue;
+            });
+        }
+        else {
+            converted = contract;
+        }
 
-        return converted;
+        delete converted["id"];
+
+        return isLocalized
+            ? { [selectedLocale]: converted }
+            : converted;
     }
 
-    private convertArmContractToPaperbitsContract(contract: any): any {
-        const converted = {};
+    private convertArmContractToPaperbitsContract(contract: any, isLocalized: boolean = false): any {
+        if (contract === null || contract === undefined) {
+            return contract;
+        }
 
-        Object.keys(contract).forEach(propertyName => {
-            const propertyValue = contract[propertyName];
-            let convertedKey = propertyName;
-            let convertedValue = propertyValue;
+        if (isLocalized) {
+            const id = contract.id;
+            contract = contract[selectedLocale];
+            contract.id = id;
+        }
 
-            if (propertyValue && Array.isArray(propertyValue)) {
-                convertedValue = propertyValue.map(x => this.convertArmContractToPaperbitsContract(x));
-            }
-            else if (propertyValue && typeof propertyValue === "object") {
-                convertedValue = this.convertArmContractToPaperbitsContract(propertyValue);
-            }
-            else {
+        let converted;
+
+        if (Array.isArray(contract)) {
+            converted = contract.map(x => this.convertArmContractToPaperbitsContract(x));
+        }
+        else if (typeof contract === "object") {
+            converted = {};
+
+            Object.keys(contract).forEach(propertyName => {
+                const propertyValue = contract[propertyName];
+                let convertedKey = propertyName;
+                let convertedValue = propertyValue;
+
                 convertedKey = propertyName
                     .replace(/documentId/gm, "contentKey")
                     .replace(/Id\b/gm, "Key")
                     .replace(/\bid\b/gm, "key");
 
                 if (typeof propertyValue === "string" && propertyValue.contains("contentType")) {
-                    convertedValue = this.ArmResourceToPaperbitsKey(propertyValue);
+                    convertedValue = this.armResourceToPaperbitsKey(propertyValue);
                 }
-            }
+                else {
+                    convertedValue = this.convertArmContractToPaperbitsContract(propertyValue);
+                }
 
-            converted[convertedKey] = convertedValue;
-        });
+                converted[convertedKey] = convertedValue;
+            });
+        }
+        else {
+            converted = contract;
+        }
 
         return converted;
     }
@@ -375,13 +426,13 @@ export class MapiObjectStorage implements IObjectStorage {
         Object.keys(delta).map(key => {
             const firstLevelObject = delta[key];
 
-            if (["pages", "layouts", "files", "uploads", "blocks", "urls"].contains(key)) {
+            if (["pages", "layouts", "files", "uploads", "blocks", "urls"].includes(key)) {
                 Object.keys(firstLevelObject).forEach(subkey => {
                     keys.push(`${key}/${subkey}`);
                 });
             }
 
-            if (["navigationItems", "settings", "styles"].contains(key)) {
+            if (["navigationItems", "settings", "styles"].includes(key)) {
                 keys.push(key);
             }
         });

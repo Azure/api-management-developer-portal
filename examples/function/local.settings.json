@@ -8,12 +8,12 @@
     "WEBSITE_RUN_FROM_PACKAGE": "1",
     "REMOTEDEBUGGINGVERSION": "15.0.28010.00",
     "WEBSITE_NODE_DEFAULT_VERSION": "10.14.1",
-    "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "DefaultEndpointsProtocol=https;AccountName=apimportalpublisher;AccountKey=srp3AXBsjeT5Jg+qQMpOubgeUJgzDrkbqtMrI0uAiQIrYSh403fXGW5jiXShUEJ5mGo9hWhl4H2ZmYn/4NSV5A==",
+    "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "DefaultEndpointsProtocol=...",
     "WEBSITE_CONTENTSHARE": "apim-portal-publisher-content",
     "WEBSITE_AUTH_AUTO_AAD": "False",
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "WEBSITE_SITE_NAME": "apim-portal-publisher",
     "WEBSITE_AUTH_LOGOUT_PATH": "/.auth/logout",
-    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=apimportalpublisher;AccountKey=srp3AXBsjeT5Jg+qQMpOubgeUJgzDrkbqtMrI0uAiQIrYSh403fXGW5jiXShUEJ5mGo9hWhl4H2ZmYn/4NSV5A=="
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=..."
   }
 }

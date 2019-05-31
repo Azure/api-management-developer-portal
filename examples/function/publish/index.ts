@@ -3,7 +3,6 @@ import * as fs from "fs";
 import { AzureBlobStorage } from "@paperbits/azure";
 import { InversifyInjector } from "@paperbits/common/injection";
 import { IPublisher } from "@paperbits/common/publishing";
-import { FormsModule } from "@paperbits/forms/forms.module";
 import { CoreModule } from "@paperbits/core/core.module";
 import { ApimPublishModule } from "../../../src/apim.publish.module";
 import { StyleModule } from "@paperbits/styles/styles.module";
@@ -36,7 +35,6 @@ export async function publish() {
 
     const injector = new InversifyInjector();
     injector.bindModule(new CoreModule());
-    injector.bindModule(new FormsModule());
     injector.bindModule(new StyleModule());
     injector.bindModule(new ProseMirrorModule());
     injector.bindModule(new ApimPublishModule());

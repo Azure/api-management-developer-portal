@@ -3,7 +3,7 @@ const storage = require("azure-storage");
 const serviceName = process.argv[2];
 const accessToken = process.argv[3];
 const connectionString = process.argv[4];
-const containerName = "media";
+const containerName = "content";
 
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 

@@ -3,6 +3,5 @@ module.exports = {
         require("autoprefixer")
     ],
     sourceMap: true,
-    url: true,
     minimize: true
 }

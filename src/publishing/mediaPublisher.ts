@@ -42,7 +42,7 @@ export class MediaPublisher implements IPublisher {
         const mediaPromises = new Array<Promise<void>>();
 
         mediaFiles.forEach(mediaFile => {
-            console.log(`Publishing media ${mediaFile.filename}...`);
+            console.log(`Publishing media ${mediaFile.fileName}...`);
             mediaPromises.push(this.renderMediaFile(mediaFile));
         });
 
