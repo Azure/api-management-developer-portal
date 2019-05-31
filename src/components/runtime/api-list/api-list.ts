@@ -17,11 +17,11 @@ import { Api } from "../../../models/api";
 export class ApiList {
     private searchRequest: SearchRequest;
     private queryParams: URLSearchParams;
-    private isParamChange: boolean;
 
     public apis: ko.ObservableArray<Api>;
     public working: ko.Observable<boolean>;
     public selectedId: ko.Observable<string>;
+    public dropDownId: ko.Observable<string>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -32,12 +32,15 @@ export class ApiList {
         this.itemStyleView = ko.observable();
         this.working = ko.observable();
         this.selectedId = ko.observable();
+        this.dropDownId = ko.observable();
         this.loadApis = this.loadApis.bind(this);
-        this.onSelectApi = this.onSelectApi.bind(this);
-        this.selectedId.subscribe(this.onSelectApi);
+        this.applySelectedApi = this.applySelectedApi.bind(this);
+        this.selectFirst = this.selectFirst.bind(this);
+        this.selectionChanged = this.selectionChanged.bind(this);
+
         this.routeHandler.addRouteChangeListener(this.loadApis);
 
-        this.loadApis();
+        this.loadApis(this.routeHandler.getCurrentRoute());
     }
 
     @Param()
@@ -49,16 +52,14 @@ export class ApiList {
     public async loadApis(route?: Route): Promise<void> {
         const currentHash = route && route.hash;
         if (currentHash) {
-            this.queryParams = new URLSearchParams(currentHash || "");
+            this.queryParams = new URLSearchParams(currentHash);
+
             if (this.queryParams.has("apiId")) {
-                if(this.selectedId() !== this.queryParams.get("apiId")) {
-                    this.isParamChange = true;
-                    this.selectedId(this.queryParams.get("apiId"));
-                    this.isParamChange = false;
-                }
-                if (this.apis().length > 0) {
-                    return;
-                }
+                if (this.apis().length === 0) {
+                    await this.searchApis();
+                }  
+                this.applySelectedApi();
+                return;
             }
         }
 
@@ -67,45 +68,48 @@ export class ApiList {
         if (this.apis().length > 0) {
             return;
         }
-        // this.itemStyleView("tiles");
-        // this.itemStyleView("dropdown");
         await this.searchApis();
+        
+        this.selectFirst();
     }
 
-    private onSelectApi(selectedId: string) {
-        if (this.queryParams) {
+    private applySelectedApi() {
+        const currentId = this.selectedId();
+        const selectedId = this.queryParams.get("apiId");
+        if(selectedId === currentId) {
+            return;
+        }
+        this.selectedId(selectedId);
+        if (this.itemStyleView() === "dropdown" &&this.dropDownId() !== selectedId) {
+            this.dropDownId(selectedId);
+        }
+        this.queryParams.set("apiId", selectedId);
+        this.routeHandler.navigateTo("#?" + this.queryParams.toString());        
+    }
+
+    public selectionChanged(change, event) {
+        if (event.originalEvent) { //user changed
             const currentId = this.queryParams.get("apiId");
-            if (currentId !== selectedId && !this.isParamChange) {
-                this.queryParams.set("apiId", selectedId);
-                this.queryParams.delete("operationId");
-                this.routeHandler.navigateTo("#?" + this.queryParams.toString());
+            const selectedId = this.dropDownId();
+            if(selectedId === currentId) {
+                return;
             }
+            this.queryParams.set("apiId", selectedId);
+            this.queryParams.delete("operationId");
+            this.routeHandler.navigateTo("#?" + this.queryParams.toString());   
         }
     }
 
-    // private async loadTags(): Promise<void> {
-    //     const pageOfTags = await this.tagService.getTags("apis");
-    //     this.tags = pageOfTags.value;
-    // }
-
-    // public async ngOnInit(): Promise<void> {
-    //     this.searchApis();
-    // }
-
-    // public groupByTag(): void {
-    //     this.grouping = "tag";
-    //     this.searchApis();
-    // }
-
-    // public groupByNone(): void {
-    //     this.grouping = "none";
-    //     this.searchApis();
-    // }
-
-    public openApi(item: Api) {
-        const selectApiId = item.name;
-        this.queryParams.set("apiId", selectApiId);
-        this.routeHandler.navigateTo("/apis#?" + this.queryParams.toString(), "");
+    private selectFirst() {
+        if (this.itemStyleView() === "tiles" || this.queryParams.has("apiId")) {
+            return;
+        }
+        const list = this.apis();
+        if (list.length > 0) {
+            const selectedId = list[0].name;
+            this.queryParams.set("apiId", selectedId);
+            this.applySelectedApi();
+        }
     }
 
     public async searchApis(searchRequest?: SearchRequest): Promise<void> {

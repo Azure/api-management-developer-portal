@@ -16,7 +16,7 @@
         <div class="tab-content">
 
 
-            <span class="operation-content" data-bind="text: $parent.hostName + urlTemplate, attr: { 'data-method': method }"></span>
+            <span class="operation-content" data-bind="text: $parent.hostName.replace(/\/$/, '') + urlTemplate, attr: { 'data-method': method }"></span>
 
             <!-- ko if: templateParameters && templateParameters.length > 0 -->
             <div class="operation-content">
