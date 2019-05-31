@@ -5,7 +5,7 @@ import { ParameterContract } from './parameter';
  */
 export interface RepresentationContract {
     contentType: string;
-    sample?: string;
+    generatedSample?: string;
     schemaId?: string;
     typeName?: string;
     formParameters?: ParameterContract[];

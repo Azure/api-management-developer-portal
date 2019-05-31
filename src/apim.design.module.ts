@@ -1,37 +1,41 @@
+import { UnsavedChangesRouteGuard } from "./routing/unsavedChangesRouteGuard";
 import { MapiObjectStorage } from "./persistence/mapiObjectStorage";
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";
-import { AccessTokenRouteChecker } from "./services/accessTokenRouteChecker";
-import { IRouteHandler } from "@paperbits/common/routing";
+import { AccessTokenRouteGuard } from "./routing/accessTokenRouteGuard";
 import { MapiClient } from "./services/mapiClient";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
-import { DocumentationModule } from "./components/documentation/ko/documentation.module";
-import { DocumentationEditorModule } from "./components/documentation/ko/documentationEditor.module";
 import { ListOfApisModule } from "./components/list-of-apis/ko/listOfApis.module";
 import { ListOfApisEditorModule } from "./components/list-of-apis/ko/listOfApisEditor.module";
 import { DetailsOfApiModule } from "./components/details-of-api/ko/detailsOfApi.module";
 import { DetailsOfApiEditorModule } from "./components/details-of-api/ko/detailsOfApiEditor.module";
-import { UserLoginModule } from "./components/user-login/ko/userLogin.module";
-import { UserLoginEditorModule } from "./components/user-login/ko/userLoginEditor.module";
-import { UserSignupModule } from "./components/user-signup/ko/userSignup.module";
-import { UserSignupEditorModule } from "./components/user-signup/ko/userSignupEditor.module";
-import { UserDetailsModule } from "./components/user-details/ko/userDetails.module";
-import { UserDetailsEditorModule } from "./components/user-details/ko/userDetailsEditor.module";
-import { UserSubscriptionsModule } from "./components/user-subscriptions/ko/userSubscriptions.module";
-import { UserSubscriptionsEditorModule } from "./components/user-subscriptions/ko/userSubscriptionsEditor.module";
-import { ProductListModule } from "./components/product-list/ko/productList.module";
-import { ProductListEditorModule } from "./components/product-list/ko/productListEditor.module";
-import { ProductDetailsModule } from "./components/product-details/ko/productDetails.module";
-import { ProductDetailsEditorModule } from "./components/product-details/ko/productDetailsEditor.module";
-import { ProductSubscribeModule } from "./components/product-subscribe/ko/productSubscribe.module";
-import { ProductSubscribeEditorModule } from "./components/product-subscribe/ko/productSubscribeEditor.module";
+import { UserLoginModule } from "./components/users/user-login/ko/userLogin.module";
+import { UserLoginEditorModule } from "./components/users/user-login/ko/userLoginEditor.module";
+import { UserSignupModule } from "./components/users/user-signup/ko/userSignup.module";
+import { UserSignupEditorModule } from "./components/users/user-signup/ko/userSignupEditor.module";
+import { UserDetailsModule } from "./components/users/user-details/ko/userDetails.module";
+import { UserDetailsEditorModule } from "./components/users/user-details/ko/userDetailsEditor.module";
+import { UserSubscriptionsModule } from "./components/users/user-subscriptions/ko/userSubscriptions.module";
+import { UserSubscriptionsEditorModule } from "./components/users/user-subscriptions/ko/userSubscriptionsEditor.module";
+import { ProductListModule } from "./components/products/product-list/ko/productList.module";
+import { ProductListEditorModule } from "./components/products/product-list/ko/productListEditor.module";
+import { ProductDetailsModule } from "./components/products/product-details/ko/productDetails.module";
+import { ProductDetailsEditorModule } from "./components/products/product-details/ko/productDetailsEditor.module";
+import { ProductSubscribeModule } from "./components/products/product-subscribe/ko/productSubscribe.module";
+import { ProductSubscribeEditorModule } from "./components/products/product-subscribe/ko/productSubscribeEditor.module";
 import { UserService } from "./services/userService";
 import { AzureBlobStorage } from "@paperbits/azure";
+import { SetupModule } from "./components/setup/setup.module";
+import { PublishingModule } from "./components/publishing";
+import { SaveChangesToolButton } from "./persistence/saveChangesToolbutton";
+import { OperationListModule } from "./components/operation-list/ko/operationList.module";
+import { OperationListEditorModule } from "./components/operation-list/ko/operationListEditor.module";
+import { OperationDetailsModule } from "./components/operation-details/ko/operationDetails.module";
+import { OperationDetailsEditorModule } from "./components/operation-details/ko/operationDetailsEditor.module";
 
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bindModule(new DocumentationModule());
-        injector.bindModule(new DocumentationEditorModule());
+        injector.bindModule(new SetupModule());
         injector.bindModule(new ListOfApisModule());
         injector.bindModule(new ListOfApisEditorModule());
         injector.bindModule(new DetailsOfApiModule());
@@ -50,16 +54,18 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ProductDetailsEditorModule());
         injector.bindModule(new ProductSubscribeModule());
         injector.bindModule(new ProductSubscribeEditorModule());
+        injector.bindModule(new PublishingModule());
+        injector.bindModule(new OperationListModule());
+        injector.bindModule(new OperationListEditorModule());
+        injector.bindModule(new OperationDetailsModule());
+        injector.bindModule(new OperationDetailsEditorModule());
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
         injector.bindSingleton("smapiClient", MapiClient);
-
-        const authenticator = new DefaultAuthenticator();
-        injector.bindInstance("authenticator", authenticator);
+        injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
-
-        const routeHandler = injector.resolve<IRouteHandler>("routeHandler");
-        const checker = new AccessTokenRouteChecker(authenticator);
-        routeHandler.addRouteChecker(checker);
+        injector.bindToCollection("routeGuards", UnsavedChangesRouteGuard);
+        injector.bindToCollection("routeGuards", AccessTokenRouteGuard);
+        injector.bindToCollection("trayCommands", SaveChangesToolButton);
     }
 }

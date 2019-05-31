@@ -1,13 +1,14 @@
 @import "mixins.scss";
-@import "navbar.scss";
 @import "layouts.scss";
 @import "variables.scss";
 @import "theme.scss";
+@import "type.scss";
 @import "text.scss";
 @import "cookies.scss";
 @import "icons.scss";
 @import "animations.scss";
 @import "widgets/widgets.scss";
+@import "grid.scss";
 @import "widgets/textblock.scss";
 @import "treeviews.scss";
 @import "flex.scss";
@@ -15,3 +16,4 @@
 @import "breadcrumbs.scss";
 @import "prism.scss";
 @import "spinners.scss";
+@import "tabs.scss";

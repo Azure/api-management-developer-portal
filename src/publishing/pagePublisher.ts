@@ -1,8 +1,8 @@
 import * as ko from "knockout";
 import * as Utils from "@paperbits/common/utils";
+import * as Objects from "@paperbits/common/objects";
 import template from "../themes/apim/assets/page.html";
 import { IPublisher } from "@paperbits/common/publishing";
-import { IRouteHandler } from "@paperbits/common/routing";
 import { IBlobStorage } from "@paperbits/common/persistence";
 import { IPageService, PageContract } from "@paperbits/common/pages";
 import { ISiteService, SettingsContract } from "@paperbits/common/sites";
@@ -10,12 +10,12 @@ import { LayoutViewModelBinder } from "@paperbits/core/layout/ko";
 import { MetaDataSetter } from "@paperbits/common/meta";
 import { MediaService, MediaContract } from "@paperbits/common/media";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { createDocument } from "@paperbits/core/ko/knockout-rendring";
+import { createDocument } from "@paperbits/core/ko/knockout-rendering";
+import { Contract } from "@paperbits/common";
 
 
 export class PagePublisher implements IPublisher {
     constructor(
-        private readonly routeHandler: IRouteHandler,
         private readonly pageService: IPageService,
         private readonly siteService: ISiteService,
         private readonly outputBlobStorage: IBlobStorage,
@@ -30,15 +30,14 @@ export class PagePublisher implements IPublisher {
 
     private async renderPage(page: PageContract, settings: SettingsContract, iconMedia: MediaContract, imageMedia: MediaContract): Promise<{ permalink, bytes }> {
         console.log(`Publishing page ${page.title}...`);
+
         const templateDocument = createDocument(template);
 
         let permalink = page.permalink;
         let htmlContent: string;
 
         const buildContentPromise = new Promise<void>(async (resolve, reject) => {
-            this.routeHandler.navigateTo(page.permalink);
-
-            const layoutViewModel = await this.layoutViewModelBinder.getLayoutViewModel();
+            const layoutViewModel = await this.layoutViewModelBinder.getLayoutViewModel(page.permalink, null);
             ko.applyBindingsToNode(templateDocument.body, { widget: layoutViewModel }, null);
 
             if (page.ogImageSourceKey) {
@@ -50,7 +49,7 @@ export class PagePublisher implements IPublisher {
             setTimeout(() => {
                 htmlContent = "<!DOCTYPE html>" + templateDocument.documentElement.outerHTML;
                 resolve();
-            }, 1000);
+            }, 500);
         });
 
         await buildContentPromise;
@@ -87,18 +86,13 @@ export class PagePublisher implements IPublisher {
             imageFile = await this.mediaService.getMediaByKey(settings.site.ogImageSourceKey);
         }
 
-        // const renderAndUpload = async (page): Promise<void> => {
-        //     const pageRenderResult = await this.renderPage(page, settings, iconFile, imageFile);
-        //     await this.outputBlobStorage.uploadBlob(pageRenderResult.name, pageRenderResult.bytes);
-        // };
-
-        // for (const page of pages) {
-        //     results.push(renderAndUpload(page));
-        // }
+        const renderAndUpload = async (page): Promise<void> => {
+            const pageRenderResult = await this.renderPage(page, settings, iconFile, imageFile);
+            await this.outputBlobStorage.uploadBlob(pageRenderResult.permalink, pageRenderResult.bytes);
+        };
 
         for (const page of pages) {
-            const pageRenderResult = await this.renderPage(page, settings, iconFile, imageFile);
-            results.push(this.outputBlobStorage.uploadBlob(pageRenderResult.permalink, pageRenderResult.bytes, "text/html"));
+            results.push(renderAndUpload(page));
         }
 
         await Promise.all(results);

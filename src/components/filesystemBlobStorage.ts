@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as mkdirp from "mkdirp";
-import { ProgressPromise } from "@paperbits/common";
 import { IBlobStorage } from "@paperbits/common/persistence";
 
 export class FileSystemBlobStorage implements IBlobStorage {
@@ -11,8 +10,8 @@ export class FileSystemBlobStorage implements IBlobStorage {
         this.basePath = basePath;
     }
 
-    public uploadBlob(blobPath: string, content: Uint8Array): ProgressPromise<void> {
-        return new ProgressPromise<void>((resolve, reject) => {
+    public uploadBlob(blobPath: string, content: Uint8Array): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             const fullpath = `${this.basePath}/${blobPath}`.replace("//", "/");
 
             mkdirp(path.dirname(fullpath), (error) => {

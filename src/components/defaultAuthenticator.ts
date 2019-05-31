@@ -1,12 +1,23 @@
-import { IAuthenticator } from "./../services/IAuthenticator";
+import { IAuthenticator } from "../authentication/IAuthenticator";
 
 export class DefaultAuthenticator implements IAuthenticator {
     public getAccessToken(): string {
-        return sessionStorage.getItem("authToken");
+        let accessToken = null;
+
+        if (location.pathname.startsWith("/signin-sso")) {
+            accessToken = "SharedAccessSignature " + location.href.split("?token=").pop();
+            this.setAccessToken(accessToken);
+            location.assign("/");
+        }
+        else {
+            accessToken = sessionStorage.getItem("accessToken");
+        }
+
+        return accessToken;
     }
 
-    public setAccessToken(token: string) {
-        sessionStorage.setItem("authToken", `${token}`);
+    public setAccessToken(accessToken: string): void {
+        sessionStorage.setItem("accessToken", accessToken);
     }
 
     public getUser(): string {
@@ -17,8 +28,8 @@ export class DefaultAuthenticator implements IAuthenticator {
         sessionStorage.setItem("current-user", userId);
     }
 
-    public clear(): void {
-        sessionStorage.removeItem("authToken");
+    public clearAccessToken(): void {
+        sessionStorage.removeItem("accessToken");
         sessionStorage.removeItem("current-user");
     }
 
