@@ -36,10 +36,10 @@
     <h3>Authorization</h3>
 
     <div class="row flex flex-row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <label for="subscriptionKey">Subscription key</label>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <select id="subscriptionKey" class="form-control" data-bind="value: $component.selectedSubscriptionKey">
                 <!-- ko foreach: { data: $component.products, as: 'product' } -->
                 <optgroup data-bind="attr: { label: product.name }">
@@ -56,12 +56,12 @@
     <h3>Parameters</h3>
     <div data-bind="foreach: { data: templateParameters, as: 'parameter' }">
         <div class="row flex flex-row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <input type="text" readonly autocomplete="off" class="form-control form-control-sm" placeholder="name"
                     spellcheck="false"
                     data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.name, valueUpdate: 'keyup'">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
                     spellcheck="false"
                     data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
@@ -71,11 +71,11 @@
 
     <div data-bind="foreach: { data: request.queryParameters, as: 'parameter' }">
         <div class="row flex flex-row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
                     spellcheck="false" data-bind="textInput: parameter.name, valueUpdate: 'keyup'">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
                     spellcheck="false"
                     data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
@@ -90,11 +90,11 @@
 
     <div data-bind="foreach: { data: request.headers, as: 'header' }">
         <div class="row flex flex-row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
                     spellcheck="false" data-bind="textInput: header.name, valueUpdate: 'keyup'">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
                     spellcheck="false"
                     data-bind="event: { keyup: $component.updateRequestSummary }, textInput: header.value, valueUpdate: 'keyup'">

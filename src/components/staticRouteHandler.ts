@@ -1,18 +1,9 @@
-/**
- * @license
- * Copyright Paperbits. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file and at https://paperbits.io/license.
- */
-
-import { IRouteHandler, IRouteChecker } from "@paperbits/common/routing";
+import { IRouteHandler, Route } from "@paperbits/common/routing";
 
 export class StaticRouteHandler implements IRouteHandler {
     private currentUrl: string;
     private metadata: Object;
     private callbacks: any[];
-    protected routeCheckers: IRouteChecker[];
 
     constructor() {
         this.currentUrl = "/";
@@ -31,8 +22,8 @@ export class StaticRouteHandler implements IRouteHandler {
         // this.callbacks.spliceremove(callback);
     }
 
-    public navigateTo(permalink: string): void {
-        this.currentUrl = permalink;
+    public async navigateTo(url: string): Promise<void> {
+        this.currentUrl = url;
 
         this.callbacks.forEach(callback => {
             callback();
@@ -55,20 +46,7 @@ export class StaticRouteHandler implements IRouteHandler {
         return this.metadata;
     }
 
-    public addRouteChecker(routeChecker: IRouteChecker) {
-        if (routeChecker) {
-            this.routeCheckers.push(routeChecker);
-        }
-    }
-
-    public removeRouteChecker(routeCheckerName: string) {
-        if (routeCheckerName) {
-            const removeIndex = this.routeCheckers.findIndex(item => item.name === routeCheckerName);
-            if (removeIndex !== -1) {
-                this.routeCheckers.splice(removeIndex, 1);
-            } else {
-                console.log(`routeChecker with name '${routeCheckerName}' was not found`);
-            }
-        }
+    public getCurrentRoute(): Route {
+        return <any>{ path: this.currentUrl };
     }
 }

@@ -5,24 +5,26 @@ import { ListOfApisContract } from "./listOfApisContract";
 
 
 export class ListOfApisModelBinder implements IModelBinder {
-    public canHandleWidgetType(widgetType: string): boolean {
-        return widgetType === "listOfApis";
-    }
-
     public canHandleModel(model: Object): boolean {
         return model instanceof ListOfApisModel;
     }
 
     public async contractToModel(contract: ListOfApisContract): Promise<ListOfApisModel> {
-        return new ListOfApisModel();
+        const model = new ListOfApisModel();
+        model.itemStyleView = contract.itemStyleView;
+        return model;
     }
 
-    public modelToContract(searchResultModel: ListOfApisModel): Contract {
-        const searchResultConfig: ListOfApisContract = {
-            object: "block",
-            type: "listOfApis"
+    public canHandleContract(contract: Contract): boolean {
+        return contract.type === "listOfApis";
+    }
+
+    public modelToContract(model: ListOfApisModel): Contract {
+        const contract: ListOfApisContract = {
+            type: "listOfApis",
+            itemStyleView: model.itemStyleView
         };
 
-        return searchResultConfig;
+        return contract;
     }
 }
