@@ -1,16 +1,12 @@
 import * as ko from "knockout";
 import template from "./api-list.html";
 import { SearchRequest } from "./searchRequest";
-import { TreeViewNode } from "./treeviewNode";
-import { VersionSetContract } from "../../../contracts/apiVersionSet";
-import { Component, RuntimeComponent } from "@paperbits/common/ko/decorators";
-import { TagContract } from "../../../contracts/tag";
+import { Component, RuntimeComponent, Param } from "@paperbits/common/ko/decorators";
 import { Utils } from "../../../utils";
 import { TagService } from "../../../services/tagService";
 import { ApiService } from "../../../services/apiService";
-import { DefaultRouteHandler } from "@paperbits/common/routing";
+import { DefaultRouteHandler, Route } from "@paperbits/common/routing";
 import { Api } from "../../../models/api";
-import { getUrlHashPart } from "@paperbits/common";
 
 @RuntimeComponent({ selector: "api-list" })
 @Component({
@@ -20,31 +16,71 @@ import { getUrlHashPart } from "@paperbits/common";
 })
 export class ApiList {
     private searchRequest: SearchRequest;
+    private queryParams: URLSearchParams;
+    private isParamChange: boolean;
 
-    public nodes: ko.ObservableArray<TreeViewNode>;
-    public selectedNodeId: ko.Observable<string>;
-    public selectedNode: ko.Observable<TreeViewNode>;
-    public selectedVersionSet: VersionSetContract;
-    public selection: TagContract[];
-    public grouping: string;
-    public tags: TagContract[];
+    public apis: ko.ObservableArray<Api>;
     public working: ko.Observable<boolean>;
+    public selectedId: ko.Observable<string>;
 
     constructor(
         private readonly apiService: ApiService,
         private readonly tagService: TagService,
-        // private readonly hostService: HostService,
-        // private readonly routingService: RoutingService
         private readonly routeHandler: DefaultRouteHandler
     ) {
-        this.nodes = ko.observableArray([]);
-        this.tags = [];
-        this.selection = [];
-        this.grouping = "none";
+        this.apis = ko.observableArray([]);
+        this.itemStyleView = ko.observable();
         this.working = ko.observable();
-        this.selectedNode = ko.observable();
+        this.selectedId = ko.observable();
+        this.loadApis = this.loadApis.bind(this);
+        this.onSelectApi = this.onSelectApi.bind(this);
+        this.selectedId.subscribe(this.onSelectApi);
+        this.routeHandler.addRouteChangeListener(this.loadApis);
 
-        this.searchApis();
+        this.loadApis();
+    }
+
+    @Param()
+    public itemStyleView: ko.Observable<string>;
+
+    public itemHeight: ko.Observable<string>;
+    public itemWidth: ko.Observable<string>;
+
+    public async loadApis(route?: Route): Promise<void> {
+        const currentHash = route && route.hash;
+        if (currentHash) {
+            this.queryParams = new URLSearchParams(currentHash || "");
+            if (this.queryParams.has("apiId")) {
+                if(this.selectedId() !== this.queryParams.get("apiId")) {
+                    this.isParamChange = true;
+                    this.selectedId(this.queryParams.get("apiId"));
+                    this.isParamChange = false;
+                }
+                if (this.apis().length > 0) {
+                    return;
+                }
+            }
+        }
+
+        this.queryParams = this.queryParams || new URLSearchParams();
+
+        if (this.apis().length > 0) {
+            return;
+        }
+        // this.itemStyleView("tiles");
+        // this.itemStyleView("dropdown");
+        await this.searchApis();
+    }
+
+    private onSelectApi(selectedId: string) {
+        if (this.queryParams) {
+            const currentId = this.queryParams.get("apiId");
+            if (currentId !== selectedId && !this.isParamChange) {
+                this.queryParams.set("apiId", selectedId);
+                this.queryParams.delete("operationId");
+                this.routeHandler.navigateTo("#?" + this.queryParams.toString());
+            }
+        }
     }
 
     // private async loadTags(): Promise<void> {
@@ -66,144 +102,10 @@ export class ApiList {
     //     this.searchApis();
     // }
 
-    // private tagResourcesToNodes(pairs: TagResourceContract[]): void {
-    //     const tagNodes = [];
-    //     const tagDictionary = {};
-    //     const versionSetDictionary = {};
-
-    //     pairs.forEach(pair => {
-    //         if (!pair.api.isCurrent) {
-    //             return;
-    //         }
-
-    //         let tagNode: TreeViewNode;
-    //         const tagName = pair.tag ? pair.tag.name : "Not tagged";
-
-    //         tagNode = tagDictionary[tagName];
-
-    //         if (!tagNode) {
-    //             tagNode = new TreeViewNode(tagName);
-    //             tagNode.id = tagName;
-    //             tagNode.level = 0;
-    //             tagNode.isSelected = () => tagNode.id === this.selectedNodeId;
-    //             tagNode.onSelect = () => this.selectedNodeId = tagNode.id;
-    //             tagDictionary[tagName] = tagNode;
-    //             tagNodes.push(tagNode);
-
-    //         }
-
-    //         if (pair.api.apiVersionSet) {
-    //             const versionSetKey = `${tagName}|${pair.api.apiVersionSet.name}`;
-    //             let versionSetNode = versionSetDictionary[versionSetKey];
-
-    //             if (!versionSetNode) {
-    //                 versionSetNode = new TreeViewNode(pair.api.apiVersionSet.name);
-    //                 versionSetNode.data = pair.api.apiVersionSet;
-    //                 versionSetNode.id = Utils.getResourceName("api-version-sets", versionSetNode.data.id, "shortId");
-    //                 versionSetNode.isSelected = () => versionSetNode.id === this.selectedNodeId;
-    //                 versionSetNode.onSelect = () => this.selectVersionSet(versionSetNode.data, true);
-    //                 versionSetNode.level = 1;
-
-    //                 versionSetDictionary[versionSetKey] = versionSetNode;
-    //                 tagNode.nodes.push(versionSetNode);
-    //             }
-
-    //             const versionNode = new TreeViewNode(pair.api.apiVersion || "Original");
-    //             versionNode.data = pair.api;
-    //             versionNode.id = Utils.getResourceName("apis", versionNode.data.id, "shortId");
-    //             versionNode.onSelect = () => this.selectApi(versionNode);
-    //             versionNode.isSelected = () => versionNode.id === this.selectedNodeId;
-    //             versionNode.level = 2;
-    //             versionSetNode.nodes.push(versionNode);
-    //         }
-    //         else {
-    //             const versionNode = new TreeViewNode(pair.api.displayName);
-    //             versionNode.data = pair.api;
-    //             versionNode.id = Utils.getResourceName("apis", versionNode.data.id, "shortId");
-    //             versionNode.onSelect = () => this.selectApi(versionNode);
-    //             versionNode.isSelected = () => versionNode.id === this.selectedNodeId;
-    //             versionNode.level = 1;
-    //             tagNode.nodes.push(versionNode);
-    //         }
-    //     });
-
-    //     this.nodes = tagNodes;
-    // }
-
-    private apisToNodes(apis: Api[]): void {
-        apis = apis.filter(x => x.isCurrent);
-
-        let apiModels = [];
-
-        const unversionedApis = apis.filter(x => !x.apiVersionSet);
-        const unversionedModels = unversionedApis.map(api => {
-            const node = new TreeViewNode(api.displayName);
-            const apiShortId = Utils.getResourceName("apis", api.id, "shortId");
-            node.data(api);
-            node.id = Utils.getResourceName("apis", node.data().id, "shortId");
-            node.name = Utils.getResourceName("apis", node.data().id);
-            node.expanded(false);
-            node.isSelected = ko.computed(() => node === this.selectedNode());
-            // node.onSelect = () => {
-            //     this.selectedNode(node);
-            //     this.routeHandler.navigateTo(apiShortId);
-            // };
-            node.level("level-1");
-
-            return node;
-        });
-
-        apiModels = apiModels.concat(unversionedModels);
-
-        const versionedApis = apis.filter(x => x.apiVersionSet !== null && x.apiVersionSet !== undefined);
-
-        const groups = Utils.groupBy(versionedApis, x => x.apiVersionSet.id);
-
-        const versionedModels = groups.map(group => {
-            const api = group[0];
-            const versionSetNode = new TreeViewNode(api.apiVersionSet.name);
-            const versionSetShortId = Utils.getResourceName("api-version-sets", api.apiVersionSet.id, "shortId");
-            versionSetNode.data(api);
-            // versionSetNode.id = versionSetShortId;
-            versionSetNode.expanded(true);
-            versionSetNode.isSelected = ko.computed(() => versionSetNode === this.selectedNode());
-            versionSetNode.onSelect = () => {
-                // Do nothing for now
-                // this.selectVersionSet(versionSetNode.data.apiVersionSet, true);
-            };
-            versionSetNode.level("level-1");
-
-            if (versionSetNode.isSelected()) {
-                this.selectedNode(versionSetNode);
-            }
-
-            versionSetNode.nodes(group.map((groupItem: Api) => {
-                const versionNode = new TreeViewNode(groupItem.apiVersion || "Original");
-                const apiShortId = Utils.getResourceName("apis", groupItem.id, "shortId");
-                versionNode.data(groupItem);
-                versionNode.id = apiShortId;
-                versionNode.name = Utils.getResourceName("apis", groupItem.id);
-                // versionNode.onSelect = () => {
-                //     this.routeHandler.navigateTo(apiShortId); // TODO: It might no match the route
-                //     this.selectedNode(versionNode);
-                // };
-                versionNode.isSelected = ko.computed(() => versionNode === this.selectedNode());
-                versionNode.level("level-1");
-
-                if (versionNode.isSelected()) {
-                    this.selectedNode(versionNode);
-                    versionSetNode.expanded(true);
-                }
-
-                return versionNode;
-            }));
-
-            return versionSetNode;
-        });
-
-        apiModels = apiModels.concat(versionedModels);
-
-        this.nodes(apiModels);
+    public openApi(item: Api) {
+        const selectApiId = item.name;
+        this.queryParams.set("apiId", selectApiId);
+        this.routeHandler.navigateTo("/apis#?" + this.queryParams.toString(), "");
     }
 
     public async searchApis(searchRequest?: SearchRequest): Promise<void> {
@@ -215,7 +117,7 @@ export class ApiList {
             case "none":
                 const pageOfApis = await this.apiService.getApis(searchRequest);
                 const apis = pageOfApis ? pageOfApis.value : [];
-                this.apisToNodes(apis);
+                this.apis(this.groupApis(apis));
 
                 break;
 
@@ -230,25 +132,15 @@ export class ApiList {
                 throw new Error("Unexpected groupBy value");
         }
 
-        this.selectFirst();
-
         this.working(false);
     }
 
-    private selectFirst(): void {
-        const currentUrl = this.routeHandler.getCurrentUrl().replace(/\/$/, "");
-
-        const hash = getUrlHashPart(currentUrl);
-        const nodes = this.nodes();
-
-        if (!hash && nodes.length > 0) {
-            let node = nodes[0];
-
-            if (!node.name) {
-                node = node.nodes()[0];
-            }
-
-            this.routeHandler.navigateTo("/apis#" + node.name);
-        }
+    private groupApis(apis: Api[]): Api[] {
+        apis = apis.filter(x => x.isCurrent);
+        const result = apis.filter(x => !x.apiVersionSet);
+        const versionedApis = apis.filter(x => !!x.apiVersionSet);
+        const groups = Utils.groupBy(versionedApis, x => x.apiVersionSet.id);
+        result.push(...groups.map(g => g[g.length - 1]));
+        return result;
     }
 }

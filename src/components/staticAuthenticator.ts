@@ -1,4 +1,4 @@
-import { IAuthenticator } from "./../services/IAuthenticator";
+import { IAuthenticator } from "../authentication/IAuthenticator";
 
 export class StaticAuthenticator implements IAuthenticator {
     private accessToken: string;
@@ -20,7 +20,7 @@ export class StaticAuthenticator implements IAuthenticator {
         this.currentUserId = userId;
     }
 
-    public clear(): void {
+    public clearAccessToken(): void {
         this.accessToken = undefined;
         this.currentUserId = undefined;
     }

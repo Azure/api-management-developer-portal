@@ -250,16 +250,21 @@ pre {
   font-family: monospace;
 }
 
-.detachable {
+.detachable-right {
+  width: 100%;
   position: fixed;
   top: 0;
   bottom: 0;
-  left: 0;
   right: 0;
   z-index: 1000;
-  @media (min-width: $breakpoint-lg) {
-    position: relative;
+  @media (min-width: $breakpoint-md) {
+    max-width: 500px;
   }
+  
+}
+
+operation-console {
+    height: 100%;
 }
 
 .collapsible {
@@ -285,13 +290,17 @@ pre {
   }
 }
 
-.api-header {
+.operation-header {
   display: flex;
   justify-content: space-between;
 
+  .operation-name {
+      margin: 0;
+      padding: 0;
+  }
+
   .open-console-btn {
     margin-left: 10px;
-    margin-top: 15px;
     font-size: .8em;
     font-weight: 700;
     border: none;
@@ -310,20 +319,59 @@ pre {
   }
 }
 
+.operation-content {
+    margin-top: 20px;
+}
+
+.operation-name {
+    white-space: normal;
+}
+
+.download-api {
+    margin-left: 20px;
+}
+
+.apis-dropdown {
+    margin: 10px 20px;
+}
+
+.apis-tiles {
+    a, a:hover, a:focus, a:active {
+        text-decoration: none;
+        color: inherit;
+    }
+    .card {
+        float: left;
+        overflow: hidden;
+        width: 300px;
+        height: 250px;
+        
+    }
+}
+
+.tile {
+    margin: 20px 0 1em 0;
+    overflow: hidden;
+}
+.tile.tile-content {
+    margin: 0;
+}
+
+.line-clamp {
+    text-align: justify;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;  
+}
+
 api-list,
+api-details,
+operation-list,
+operation-details,
 product-list,
 product-details {
   flex-basis: 100%;
   max-width: 100%;
-}
-
-api-details {
-  display: contents;
-}
-
-operation-details {
-  display: block;
-  padding-bottom: 40px;
 }
 
 operation-console {

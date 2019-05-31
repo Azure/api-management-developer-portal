@@ -1,0 +1,43 @@
+<!-- ko if: product -->
+
+<!-- ko if: limitReached -->
+<b>Text on product page, indicating that user already reached subscriptions limit</b>
+<!-- /ko -->
+
+<!-- ko ifnot: limitReached -->
+
+<!-- ko ifnot: showSubscribeForm -->
+<a class="button button-primary" href="#" data-bind="click: subscribe">Add subscription</a>
+<!-- /ko -->
+
+<!-- ko if: showSubscribeForm -->
+<div class="form-inline">
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Subscription name" data-bind="value: subscriptionName" />
+    </div>
+    <div class="form-group">
+        <button class="button button-primary" data-bind="click: confirm, enable: canSubscribe">Confirm</button>
+    </div>
+</div>
+<!-- /ko -->
+
+
+<!-- ko if: termsOfUse -->
+<div class="row">
+    <div class="col-md-12"><input type="checkbox" data-bind="checked: consented" />
+        By subscribing to this Product, I agree to the Terms of Use.
+        <a href="#" data-bind="click: toggle, text: showHideLabel"></a>
+    </div>
+</div>
+
+<!-- ko if: showTerms -->
+<div class="row">
+    <textarea class="col-md-12" rows="10" readonly data-bind="text: termsOfUse"></textarea>
+</div>
+<!-- /ko -->
+
+<!-- /ko -->
+
+<!-- /ko -->
+
+<!-- /ko -->

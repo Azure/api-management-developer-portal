@@ -1,4 +1,4 @@
-import { IAuthenticator } from "./IAuthenticator";
+import { IAuthenticator } from "../authentication/IAuthenticator";
 import { MapiClient } from "./mapiClient";
 import { IRouteHandler } from "@paperbits/common/routing";
 import { HttpHeader } from "@paperbits/common/http";
@@ -21,7 +21,7 @@ export class UsersService {
             this.authenticator.setUser(responseData.id);
             return responseData.id;
         } else {
-            this.authenticator.clear();
+            this.authenticator.clearAccessToken();
             return undefined;
         }
     }
@@ -31,7 +31,7 @@ export class UsersService {
     }
 
     public signOut(withRedirect = true): void {
-        this.authenticator.clear();
+        this.authenticator.clearAccessToken();
 
         if (withRedirect) {
             this.routeHandler.navigateTo("/signin");
@@ -70,7 +70,7 @@ export class UsersService {
                 return user;
             }
             else {
-                this.authenticator.clear();
+                this.authenticator.clearAccessToken();
                 return undefined;
             }
         } catch (error) {

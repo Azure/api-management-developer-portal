@@ -1,0 +1,26 @@
+<h3>APIs in the product</h3>
+
+<!-- ko if: working -->
+<spinner class="fit"></spinner>
+<!-- /ko -->
+
+<!-- ko ifnot: working -->
+
+<!-- ko ifnot: apis -->
+<p>
+    No APIs to display.
+</p>
+<!-- /ko -->
+
+<!-- ko if: apis -->
+<ul>
+    <!-- ko foreach: apis -->
+    <li data-bind="text: name"></li>
+    <!-- /ko -->
+</ul>
+<!-- /ko -->
+
+<!-- /ko -->
+
+
+

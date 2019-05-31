@@ -5,10 +5,6 @@ import { DetailsOfApiContract } from "./detailsOfApiContract";
 
 
 export class DetailsOfApiModelBinder implements IModelBinder {
-    public canHandleWidgetType(widgetType: string): boolean {
-        return widgetType === "detailsOfApi";
-    }
-
     public canHandleModel(model: Object): boolean {
         return model instanceof DetailsOfApiModel;
     }
@@ -17,9 +13,12 @@ export class DetailsOfApiModelBinder implements IModelBinder {
         return new DetailsOfApiModel();
     }
 
+    public canHandleContract(contract: Contract): boolean {
+        return contract.type === "detailsOfApi";
+    }
+
     public modelToContract(searchResultModel: DetailsOfApiModel): Contract {
         const searchResultConfig: DetailsOfApiContract = {
-            object: "block",
             type: "detailsOfApi"
         };
 

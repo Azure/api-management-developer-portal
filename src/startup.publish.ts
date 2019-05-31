@@ -3,7 +3,6 @@ import * as path from "path";
 import { InversifyInjector } from "@paperbits/common/injection";
 import { IPublisher } from "@paperbits/common/publishing";
 import { PublishingNodeModule } from "./publishing";
-import { FormsModule } from "@paperbits/forms/forms.module";
 import { CoreModule } from "@paperbits/core/core.module";
 import { StyleModule } from "@paperbits/styles/styles.module";
 import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
@@ -22,7 +21,6 @@ const outputBlobStorage = new FileSystemBlobStorage("./dist/website");
 /* Initializing dependency injection container */
 const injector = new InversifyInjector();
 injector.bindModule(new CoreModule());
-injector.bindModule(new FormsModule());
 injector.bindModule(new StyleModule());
 injector.bindModule(new ProseMirrorModule());
 injector.bindModule(new ApimPublishModule());
