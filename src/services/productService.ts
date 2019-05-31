@@ -14,8 +14,8 @@ export class ProductService {
     constructor(
         private readonly smapiClient: MapiClient,
         private readonly tenantService: TenantService
-    ) {}
-    
+    ) { }
+
     /**
      * Get page of subscriptions without product name for user
      * 
@@ -25,12 +25,19 @@ export class ProductService {
         const pageContract = await this.smapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
         const result = new Page<Subscription>();
 
-        if (pageContract && pageContract.value) {
-            result.value = pageContract.value.map(item => new Subscription(item));
-        }
-        else {
-            result.value = [];
-        }
+        result.value = pageContract && pageContract.value
+            ? pageContract.value.map(item => new Subscription(item))
+            : [];
+
+        return result;
+    }
+
+    public async getSubscriptionsForProduct(userId: string, productId: string): Promise<Subscription[]> {
+        const pageOfSubscriptions = await this.getSubscriptions(userId);
+        const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === "active");
+        const product = await this.getProduct(productId);
+        const result = subscriptions.filter(subscription => subscription.productId.endsWith(product.name));
+
         return result;
     }
 
@@ -44,7 +51,7 @@ export class ProductService {
         const contracts = await this.smapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
 
         if (contracts && contracts.value) {
-            const products = await this.getProducts();            
+            const products = await this.getProducts();
             contracts.value.map((item) => {
                 const model = new Subscription(item);
                 const product = products.find(p => p.id === model.productId);
@@ -52,13 +59,13 @@ export class ProductService {
                 result.push(model);
             });
         }
-        
+
         return result;
     }
 
     public async getSubscription(subscriptionId: string, loadProduct: boolean = true): Promise<Subscription> {
         const contract = await this.smapiClient.get<SubscriptionContract>(subscriptionId);
-        if (contract) {          
+        if (contract) {
             const model = new Subscription(contract);
             if (loadProduct) {
                 const product = await this.getProduct(model.productId);
@@ -132,7 +139,7 @@ export class ProductService {
         return await this.getSubscription(userId + subscriptionId);
     }
 
-    private async updateSubscription(subscriptionId: string, body?: object) {
+    private async updateSubscription(subscriptionId: string, body?: object): Promise<void> {
         const header: HttpHeader = {
             name: "If-Match",
             value: "*"

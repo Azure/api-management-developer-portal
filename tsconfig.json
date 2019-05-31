@@ -7,8 +7,6 @@
         ],
         "module": "commonjs",
         "moduleResolution": "node",
-        "declaration": false,
-        "noImplicitAny": false,
         "noStrictGenericChecks": true,
         "removeComments": true,
         "noLib": false,
@@ -16,9 +14,8 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "allowUnreachableCode": true,
-        "listFiles": false,
         "sourceMap": true,
-        "allowSyntheticDefaultImports": true
+        "incremental": true
     },
     "exclude": [
         "./node_modules"

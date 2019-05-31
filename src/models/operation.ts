@@ -5,6 +5,7 @@ import { Response } from "./response";
 
 export class Operation {
     public id: string;
+    public shortId: string;
     public name: string;
     public description: string;
     public urlTemplate: string;
@@ -16,6 +17,7 @@ export class Operation {
 
     constructor(contract?: OperationContract) {
         this.id = contract.id;
+        this.shortId = contract.id.split("/").pop();
         this.name = contract.name;
         this.description = contract.description;
         this.urlTemplate = contract.urlTemplate;

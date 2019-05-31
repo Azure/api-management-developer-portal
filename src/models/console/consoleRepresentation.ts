@@ -7,14 +7,14 @@ export class ConsoleRepresentation {
     public typeName?: string;
 
     constructor(contract: RepresentationContract) {
-        this.sample = contract.sample;
+        this.sample = contract.generatedSample;
         this.contentType = contract.contentType;
     }
 
     public toRepresentation(): RepresentationContract {
         let representation: RepresentationContract = {
             contentType: this.contentType,
-            sample: this.sample,
+            generatedSample: this.sample,
             schemaId: this.schemaId,
             typeName: this.typeName
         }

@@ -4,7 +4,10 @@ const TerserPlugin = require("terser-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const themeConfig = require("./webpack.theme");
+const runtimeConfig = require("./webpack.runtime");
+
+
+const websiteTheme = "apim";
 
 const functionConfig = {
     mode: "development",
@@ -15,6 +18,7 @@ const functionConfig = {
     },
     entry: {
         "publish/index": ["./examples/function/publish/index.ts"],
+        "publish/assets/styles/theme": [`./src/themes/${websiteTheme}/styles/styles.scss`]
     },
     output: {
         filename: "./[name].js",
@@ -41,9 +45,9 @@ const functionConfig = {
                 test: /\.scss$/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    { loader: "css-loader", options: { url: false, minimize: true, sourceMap: true } },
-                    { loader: "postcss-loader", options: { sourceMap: true, options: { plugins: () => [autoprefixer] } } },
-                    { loader: "sass-loader", options: { sourceMap: true } }
+                    { loader: "css-loader", options: { url: false } },
+                    { loader: "postcss-loader" },
+                    { loader: "sass-loader" }
                 ]
             },
             {
@@ -70,8 +74,9 @@ const functionConfig = {
         new CopyWebpackPlugin([
             { from: `./examples/function`, to: `./` },
             { from: `./src/config.publish.json`, to: `./publish/config.json` },
+            { from: `./src/themes/${websiteTheme}/styles/fonts`, to: "publish/assets/styles/fonts" }
         ]),
-        new webpack.DefinePlugin({	
+        new webpack.DefinePlugin({
             "process.env.NODE_ENV": JSON.stringify("production")
         })
     ],
@@ -80,6 +85,6 @@ const functionConfig = {
     }
 };
 
-themeConfig.output.path = path.resolve(__dirname, "dist/function/publish"),
+runtimeConfig.output.path = path.resolve(__dirname, "dist/function/publish");
 
-module.exports = [ functionConfig, themeConfig ];
+module.exports = [functionConfig, runtimeConfig];

@@ -1,4 +1,4 @@
-import { createDocument } from "@paperbits/core/ko/knockout-rendring";
+import { createDocument } from "@paperbits/core/ko/knockout-rendering";
 import { IInjector } from "@paperbits/common/injection";
 import { SitePublisher } from "./sitePublisher";
 import { PagePublisher } from "./pagePublisher";

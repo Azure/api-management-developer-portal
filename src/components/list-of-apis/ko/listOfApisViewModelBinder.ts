@@ -1,21 +1,23 @@
-import { IViewModelBinder } from "@paperbits/common/widgets";
+import { ViewModelBinder } from "@paperbits/common/widgets";
 import { ListOfApisViewModel } from "./listOfApisViewModel";
 import { ListOfApisModel } from "../listOfApisModel";
+import { Bag } from "@paperbits/common";
 
 
-export class ListOfApisViewModelBinder implements IViewModelBinder<ListOfApisModel, ListOfApisViewModel> {
-    public modelToViewModel(model: ListOfApisModel, readonly: boolean, viewModel?: ListOfApisViewModel): ListOfApisViewModel {
+export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisModel, ListOfApisViewModel> {
+    public async modelToViewModel(model: ListOfApisModel, viewModel?: ListOfApisViewModel, bindingContext?: Bag<any>): Promise<ListOfApisViewModel> {
         if (!viewModel) {
             viewModel = new ListOfApisViewModel();
         }
 
+        viewModel.itemStyleView(model.itemStyleView);
+
         viewModel["widgetBinding"] = {
             displayName: "List of APIs",
-            readonly: readonly,
             model: model,
             editor: "list-of-apis-editor",
             applyChanges: async (updatedModel: ListOfApisModel) => {
-                this.modelToViewModel(updatedModel, readonly, viewModel);
+                this.modelToViewModel(updatedModel, viewModel, bindingContext);
             }
         };
 
