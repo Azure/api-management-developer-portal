@@ -3,45 +3,43 @@ import * as Utils from "@paperbits/common/utils";
 import template from "../themes/apim/assets/page.html";
 import { IBlogService, BlogPostContract } from "@paperbits/common/blogs";
 import { IPublisher } from "@paperbits/common/publishing";
-import { IRouteHandler } from "@paperbits/common/routing";
 import { IBlobStorage } from "@paperbits/common/persistence";
 import { SettingsContract, ISiteService } from "@paperbits/common/sites";
 import { IMediaService, MediaContract } from "@paperbits/common/media";
 import { MetaDataSetter } from "@paperbits/common/meta";
 import { LayoutViewModelBinder } from "@paperbits/core/layout/ko";
-import { createDocument } from "@paperbits/core/ko/knockout-rendring";
+import { createDocument } from "@paperbits/core/ko/knockout-rendering";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 
 export class BlogPublisher implements IPublisher {
     constructor(
-        private readonly routeHandler: IRouteHandler,
         private readonly blogService: IBlogService,
         private readonly siteService: ISiteService,
         private readonly outputBlobStorage: IBlobStorage,
         private readonly layoutViewModelBinder: LayoutViewModelBinder,
-        private readonly mediaService: IMediaService
+        private readonly mediaService: IMediaService,
+        private readonly settingsProvider: ISettingsProvider
     ) {
+        this.publish = this.publish.bind(this);
+        this.renderBlogPost = this.renderBlogPost.bind(this);
     }
 
     private async renderBlogPost(post: BlogPostContract, settings: SettingsContract, iconFile: MediaContract): Promise<{ name, bytes }> {
         console.log(`Publishing blog post ${post.title}...`);
-
         const templateDocument = createDocument(template);
 
         let resourceUri: string;
         let htmlContent: string;
 
         const buildContentPromise = new Promise(async (resolve, reject) => {
-            this.routeHandler.navigateTo(post.permalink);
-
-            const layoutViewModel = await this.layoutViewModelBinder.getLayoutViewModel();
+            const layoutViewModel = await this.layoutViewModelBinder.getLayoutViewModel(post.permalink, null);
             ko.applyBindingsToNode(templateDocument.body, { widget: layoutViewModel }, null);
 
             setTimeout(() => {
                 this.setSiteSettings(templateDocument, settings, iconFile, post);
                 htmlContent = "<!DOCTYPE html>" + templateDocument.documentElement.outerHTML;
                 resolve();
-            }, 10);
+            }, 500);
         });
 
         await buildContentPromise;
@@ -72,8 +70,8 @@ export class BlogPublisher implements IPublisher {
             iconFile = await this.mediaService.getMediaByKey(settings.site.faviconSourceKey);
         }
 
-        const renderAndUpload = async (page): Promise<void> => {
-            const pageRenderResult = await this.renderBlogPost(page, settings, iconFile);
+        const renderAndUpload = async (post): Promise<void> => {
+            const pageRenderResult = await this.renderBlogPost(post, settings, iconFile);
             await this.outputBlobStorage.uploadBlob(pageRenderResult.name, pageRenderResult.bytes, "text/html");
         };
 

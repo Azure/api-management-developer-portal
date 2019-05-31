@@ -10,7 +10,17 @@ import { ListOfApisModel } from "../listOfApisModel";
     injectable: "listOfApisEditor"
 })
 export class ListOfApisEditor {
-    constructor(private readonly styleService: StyleService) { }
+    public itemStyles: ko.ObservableArray<any>;
+    public itemStyle: ko.Observable<string>;
+
+    constructor(private readonly styleService: StyleService) {
+        this.itemStyles = ko.observableArray<any>([
+            {name: "List", styleValue: "list"},
+            {name: "Tiles", styleValue: "tiles"},
+            {name: "Dropdown", styleValue: "dropdown"}
+        ]);
+        this.itemStyle = ko.observable<any>();
+    }
 
     @Param()
     public model: ListOfApisModel;
@@ -20,11 +30,12 @@ export class ListOfApisEditor {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        // TODO: Implement
+        this.itemStyle(this.model.itemStyleView || "");
+        this.itemStyle.subscribe(this.applyChanges);
     }
 
     private applyChanges(): void {
-        // TODO: Implement
+        this.model.itemStyleView = this.itemStyle();
         this.onChange(this.model);
     }
 }

@@ -21,7 +21,7 @@ export class Subscription {
 
     constructor(contract?: SubscriptionContract) {
         this.id = contract.id;
-        this.name = contract.name;
+        this.name = contract.name || "Unnamed";
         this.createdDate = new Date(contract.createdDate);
 
         this.endDate = (contract.endDate && new Date(contract.endDate)) || undefined;
