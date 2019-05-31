@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import template from "./api-list.html";
 import { SearchRequest } from "./searchRequest";
-import { Component, RuntimeComponent, Param } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, Param, OnMounted } from "@paperbits/common/ko/decorators";
 import { Utils } from "../../../utils";
 import { TagService } from "../../../services/tagService";
 import { ApiService } from "../../../services/apiService";
@@ -38,13 +38,17 @@ export class ApiList {
         this.selectFirst = this.selectFirst.bind(this);
         this.selectionChanged = this.selectionChanged.bind(this);
 
-        this.routeHandler.addRouteChangeListener(this.loadApis);
 
-        this.loadApis(this.routeHandler.getCurrentRoute());
     }
 
     @Param()
     public itemStyleView: ko.Observable<string>;
+
+    @OnMounted()
+    public async init() {
+        await this.loadApis(this.routeHandler.getCurrentRoute());
+        this.routeHandler.addRouteChangeListener(this.loadApis);
+    }
 
     public itemHeight: ko.Observable<string>;
     public itemWidth: ko.Observable<string>;
