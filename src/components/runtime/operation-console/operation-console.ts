@@ -27,7 +27,6 @@ import { templates } from "../templates/templates";
     injectable: "operationConsole"
 })
 export class OperationConsole {
-    private portalHostname: string;
     private masterKey: string;
 
     public sendingRequest: ko.Observable<boolean>;

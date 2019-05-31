@@ -20,7 +20,7 @@
             width: 30px;
 
             .progress {
-                @extend .spinner;
+                @extend spinner;
 
                 &:after {
                     content: "";
