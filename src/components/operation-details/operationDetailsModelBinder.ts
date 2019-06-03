@@ -3,7 +3,7 @@ import { IModelBinder } from "@paperbits/common/editing";
 import { OperationDetailsModel } from "./operationDetailsModel";
 import { OperationDetailsContract } from "./operationDetailsContract";
 
-export class OperationDetailsModelBinder implements IModelBinder {
+export class OperationDetailsModelBinder implements IModelBinder<OperationDetailsModel> {
     public canHandleContract(contract: Contract): boolean {
         return contract.type === "operationDetails";
     }

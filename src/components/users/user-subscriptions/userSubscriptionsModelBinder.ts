@@ -4,7 +4,7 @@ import { UserSubscriptionsModel } from "./userSubscriptionsModel";
 import { UserSubscriptionsContract } from "./userSubscriptionsContract";
 
 
-export class UserSubscriptionsModelBinder implements IModelBinder {
+export class UserSubscriptionsModelBinder implements IModelBinder<UserSubscriptionsModel> {
     public canHandleModel(model: Object): boolean {
         return model instanceof UserSubscriptionsModel;
     }

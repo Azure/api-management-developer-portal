@@ -4,7 +4,7 @@ import { ListOfApisModel } from "./listOfApisModel";
 import { ListOfApisContract } from "./listOfApisContract";
 
 
-export class ListOfApisModelBinder implements IModelBinder {
+export class ListOfApisModelBinder implements IModelBinder<ListOfApisModel> {
     public canHandleModel(model: Object): boolean {
         return model instanceof ListOfApisModel;
     }
