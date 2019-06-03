@@ -43,27 +43,3 @@ placeholder {
         text-align: center;
     }
 }
-
-/* Design-time styles */
-
-.dragged {
-    transform: scale(1.05);
-    transition: transform .3s ease-in-out, height .3s ease-in-out, width .3s ease-in-out;
-    opacity: .98;
-    position: fixed;
-    z-index: 9999;
-}
-
-.dragged-origin {
-    pointer-events: none;
-    border-color: #ccc;
-    border-style: dashed;
-    border-width: 2px;
-    opacity: .5;
-}
-
-.not-configured {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 15px;
-    text-align: center;
-}
