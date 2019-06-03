@@ -3,7 +3,7 @@ import { IModelBinder } from "@paperbits/common/editing";
 import { ProductSubscribeModel } from "./productSubscribeModel";
 import { ProductSubscribeContract } from "./productSubscribeContract";
 
-export class ProductSubscribeModelBinder implements IModelBinder {
+export class ProductSubscribeModelBinder implements IModelBinder<ProductSubscribeModel> {
     public canHandleModel(model: any): boolean {
         return model instanceof ProductSubscribeModel;
     }
