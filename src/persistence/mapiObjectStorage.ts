@@ -230,6 +230,13 @@ export class MapiObjectStorage implements IObjectStorage {
         const isLocalized = localizedContentTypes.includes(contentType);
         let converted = this.convertPaperbitsContractToArmContract(dataObject, isLocalized);
 
+        if (isLocalized) {
+            delete converted[selectedLocale]["id"];
+        }
+        else {
+            delete converted["id"]; // Delete top level ID (should be gone when switching to proper ARM contracts)
+        }
+
         let exists: boolean;
 
         try {
@@ -331,8 +338,12 @@ export class MapiObjectStorage implements IObjectStorage {
         }
     }
 
-    private convertPaperbitsContractToArmContract(contract: any, isLocalized: boolean = false): any {
+    public convertPaperbitsContractToArmContract(contract: any, isLocalized: boolean = false): any {
         let converted;
+
+        if (!contract) {
+            return null;
+        }
 
         if (Array.isArray(contract)) {
             converted = contract.map(x => this.convertPaperbitsContractToArmContract(x));
@@ -350,11 +361,13 @@ export class MapiObjectStorage implements IObjectStorage {
                     .replace(/Key\b/gm, "Id")
                     .replace(/\bkey\b/gm, "id");
 
-                if (typeof propertyValue === "string" && propertyName !== convertedKey) {
-                    convertedValue = this.paperbitsKeyToArmResource(propertyValue);
+                if (typeof propertyValue === "string") {
+                    if (propertyName !== convertedKey) {
+                        convertedValue = this.paperbitsKeyToArmResource(propertyValue);
+                    }
                 }
                 else {
-                    convertedValue = this.convertArmContractToPaperbitsContract(propertyValue);
+                    convertedValue = this.convertPaperbitsContractToArmContract(propertyValue);
                 }
 
                 converted[convertedKey] = convertedValue;
@@ -364,14 +377,12 @@ export class MapiObjectStorage implements IObjectStorage {
             converted = contract;
         }
 
-        delete converted["id"];
-
         return isLocalized
             ? { [selectedLocale]: converted }
             : converted;
     }
 
-    private convertArmContractToPaperbitsContract(contract: any, isLocalized: boolean = false): any {
+    public convertArmContractToPaperbitsContract(contract: any, isLocalized: boolean = false): any {
         if (contract === null || contract === undefined) {
             return contract;
         }
