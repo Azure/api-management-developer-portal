@@ -4,7 +4,7 @@ import { UserSignupModel } from "./userSignupModel";
 import { UserSignupContract } from "./userSignupContract";
 
 
-export class UserSignupModelBinder implements IModelBinder {
+export class UserSignupModelBinder implements IModelBinder<UserSignupModel> {
     public canHandleModel(model: Object): boolean {
         return model instanceof UserSignupModel;
     }
