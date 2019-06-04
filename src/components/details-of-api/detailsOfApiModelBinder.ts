@@ -4,7 +4,7 @@ import { DetailsOfApiModel } from "./detailsOfApiModel";
 import { DetailsOfApiContract } from "./detailsOfApiContract";
 
 
-export class DetailsOfApiModelBinder implements IModelBinder {
+export class DetailsOfApiModelBinder implements IModelBinder<DetailsOfApiModel> {
     public canHandleModel(model: Object): boolean {
         return model instanceof DetailsOfApiModel;
     }

@@ -144,6 +144,11 @@
                         "displayName": "Text - grey",
                         "key": "colors/H6I5d",
                         "value": "rgba(156, 156, 156, 1.0)"
+                    },
+                    "formattedBg": {
+                        "displayName": "Formatted text Bg",
+                        "key": "colors/formattedBg",
+                        "value": "#f7f7f7"
                     }
                 },
                 "components": {
@@ -311,6 +316,9 @@
                                 }
                             },
                             "displayName": "Card",
+                            "allowedStates": [
+                                "hover"
+                            ],
                             "category": "appearance",
                             "key": "components/card/4khnz",
                             "padding": {
@@ -345,6 +353,9 @@
                             "category": "appearance",
                             "displayName": "Default",
                             "key": "components/card/default",
+                            "allowedStates": [
+                                "hover"
+                            ],
                             "padding": {
                                 "top": 50,
                                 "left": 30,
@@ -389,6 +400,9 @@
                             },
                             "category": "appearance",
                             "displayName": "No border",
+                            "allowedStates": [
+                                "hover"
+                            ],
                             "key": "components/card/tifqy",
                             "padding": {
                                 "bottom": 20,
@@ -407,6 +421,9 @@
                             "key": "components/card/sf67m",
                             "displayName": "Landing page tile",
                             "category": "appearance",
+                            "allowedStates": [
+                                "hover"
+                            ],
                             "padding": {
                                 "left": 0,
                                 "right": 0,
@@ -423,7 +440,10 @@
                             "allowedStates": [
                                 "hover",
                                 "focus",
-                                "active"
+                                "active",
+                                "disabled",
+                                "valid",
+                                "invalid"
                             ],
                             "border": {
                                 "bottom": {
@@ -987,6 +1007,30 @@
                             },
                             "displayName": "Numbered list",
                             "key": "globals/ol/default"
+                        }
+                    },
+                    "pre": {
+                        "default": {
+                            "background": {
+                                "colorKey": "colors/formattedBg"
+                            },
+                            "borderRadius": {
+                                "bottomLeftRadius": 5,
+                                "bottomRightRadius": 5,
+                                "topLeftRadius": 5,
+                                "topRightRadius": 5
+                            },
+                            "displayName": "Formatted",
+                            "key": "globals/pre/default",
+                            "padding": {
+                                "bottom": 15,
+                                "left": 25,
+                                "right": 25,
+                                "top": 15
+                            },
+                            "typography": {
+                                "fontSize": 14
+                            }
                         }
                     }
                 },

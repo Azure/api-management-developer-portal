@@ -79,30 +79,6 @@ section {
     flex: 1 1 auto;
 }
 
-.placeholder {
-    min-height: 80px;
-    font-family: monospace;
-    font-size: 12px;
-    text-transform: uppercase;
-    height: 100%;
-    width: 100%;
-    pointer-events: none;
-
-    &:before {
-        @include fit(5px);
-        content: "";
-        background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.0) 10px, rgba(0, 0, 0, 0.05) 10px, rgba(0, 0, 0, 0.05) 20px);
-    }
-
-    &:after {
-        content: attr(placeholder);
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translateY(-50%) translatex(-50%);
-    }
-}
-
 main {
     flex-basis: 100%;
     align-self: stretch;
