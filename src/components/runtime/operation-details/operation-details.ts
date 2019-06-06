@@ -1,11 +1,11 @@
 import * as ko from "knockout";
 import template from "./operation-details.html";
-import { Component, RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { Operation } from "../../../models/operation";
 import { ApiService } from "../../../services/apiService";
 import { DefaultRouteHandler, Route } from "@paperbits/common/routing";
 import { Api } from "../../../models/api";
-import { TenantService } from "../../../services/tenantService";
+import { Utils } from "../../../utils";
 
 @RuntimeComponent({ selector: "operation-details" })
 @Component({
@@ -21,6 +21,7 @@ export class OperationDetails {
 
     public selectedOperation: ko.Observable<Operation>;
     public api: ko.Observable<Api>;
+    public schemas: ko.ObservableArray<string>;
     public operation: ko.Observable<Operation>;
 
     constructor(
@@ -28,12 +29,19 @@ export class OperationDetails {
         private readonly routeHandler: DefaultRouteHandler
     ) {
         this.api = ko.observable();
+        this.schemas = ko.observableArray([]);
         this.operation = ko.observable();
         this.selectedOperation = ko.observable();
 
         this.openConsole = this.openConsole.bind(this);
         this.closeConsole = this.closeConsole.bind(this);
         this.loadOperation = this.loadOperation.bind(this);
+        this.scrollToSchema = this.scrollToSchema.bind(this);
+    }
+
+    @OnMounted()
+    public async init() {
+        await this.loadOperation(this.routeHandler.getCurrentRoute());
         this.routeHandler.addRouteChangeListener(this.loadOperation);
     }
 
@@ -88,15 +96,33 @@ export class OperationDetails {
         const operation = await this.apiService.getOperation(`apis/${this.currentApiId}/operations/${this.operationId}`);
         if (operation) {
             this.operation(operation);
+            this.getSchemas();
         } else {
             this.cleanSelection();
         }
+    }
+
+    public getSchemas() {
+        const operation = this.operation();
+        const schemas = [];
+        const apiId = `${this.api().id}/schemas/`;
+        if (operation && operation.responses &&  operation.responses.length > 0) {
+            operation.responses.map(res => 
+                res.representations && res.representations.map(rep => 
+                    rep.schemaId && schemas.indexOf(`${apiId}${rep.schemaId}`) === -1 && schemas.push(`${apiId}${rep.schemaId}`)
+                ));
+        }
+        this.schemas(schemas);
     }
 
     private cleanSelection(): void {
         this.hostName = `https://${location.host}`;
         this.operation(null);
         this.closeConsole();
+    }
+
+    public scrollToSchema(item) {
+        Utils.scrollTo(item.typeName);
     }
 
     public openConsole(): void {

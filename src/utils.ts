@@ -178,4 +178,11 @@ export class Utils {
             return (Math.random() * 16 | 0).toString(16);
         }).toLowerCase();
     }
+
+    public static scrollTo(id: string) {            
+        const e = document.getElementById(id);
+        if (!!e && e.scrollIntoView) {
+            e.scrollIntoView();
+        }             
+    }
 }

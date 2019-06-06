@@ -19,6 +19,7 @@ export class ApiDetails {
     public versionApis: ko.ObservableArray<Api>;
     public working: ko.Observable<boolean>;
     public selectedId: ko.Observable<string>;
+    public downloadSelected: ko.Observable<string>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -28,9 +29,14 @@ export class ApiDetails {
         this.versionApis = ko.observableArray([]);
         this.working = ko.observable(false);
         this.selectedId = ko.observable();
+        this.downloadSelected = ko.observable("");
         this.loadApi = this.loadApi.bind(this);
         this.onVersionChanged = this.onVersionChanged.bind(this);
+    }
 
+    @OnMounted()
+    public async init() {
+        await this.loadApi(this.routeHandler.getCurrentRoute());
         this.routeHandler.addRouteChangeListener(this.loadApi);
         this.selectedId.subscribe(this.onVersionChanged);
     }
@@ -73,6 +79,35 @@ export class ApiDetails {
         this.working(false);
     }
 
+    public async onDownloadChange() {
+        const definitionType = this.downloadSelected();
+        if (!definitionType) {
+            return;
+        }
+        if (this.api() && this.api().id) {
+            let exportObject = await this.apiService.exportApi(this.api().id, definitionType);
+            let fileName = this.api().name;
+            let fileType = "application/json";
+
+            switch (definitionType) {
+                case "wadl":
+                case "wsdl":
+                    fileType = "text/xml";
+                    fileName = `${fileName}.xml`;
+                    break;
+                case "openapi": //yaml 3.0
+                    fileName = `${fileName}.yaml`;
+                    break;
+                default:
+                    fileName = `${fileName}.json`;
+                    exportObject = JSON.stringify(exportObject, null, 4);
+                    break
+            }
+            this.download(exportObject, fileName, fileType);
+        }
+        this.downloadSelected("");
+    }
+    
     public async downloadDefinition(definitionType: "swagger" | "openapi" | "openapi+json"|  "wadl" | "wsdl") {
         console.log(definitionType);
         if (this.api() && this.api().id) {
