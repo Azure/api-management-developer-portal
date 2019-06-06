@@ -159,7 +159,8 @@
                             "allowedStates": [
                                 "hover",
                                 "focus",
-                                "active"
+                                "active",
+                                "disabled"
                             ],
                             "background": {
                                 "colorKey": "colors/defaultBg"
@@ -1863,7 +1864,7 @@
                                 "type": "grid-cell",
                                 "nodes": [
                                     {
-                                        "type": "userLogin"
+                                        "type": "userSignin"
                                     }
                                 ],
                                 "role": "article",
