@@ -1,0 +1,130 @@
+<div class="panel panel-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Subscription details</th>
+                <th>Product</th>
+                <th>State</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- ko ifnot: subscriptions -->
+            <tr>
+                <td class="text-center" colspan="4">
+                    No subscriptions
+                </td>
+            </tr>
+            <!-- /ko -->
+            <!-- ko if: subscriptions -->
+            <!-- ko foreach: subscriptions -->
+            <tr>
+                <td>
+                    <div class="row">
+                        <label class="col-md-3">Name</label>
+                        <div class="col-md-6">
+                            <!-- ko ifnot: $data.isEdit -->
+                            <span data-bind="text: model.name"></span>
+                            <!-- /ko -->
+
+                            <!-- ko if: $data.isEdit -->
+                            <input type="text" class="form-control" data-bind="value: editName" />
+                            <!-- /ko -->
+                        </div>
+                        <div class="col-md-3">
+                            <!-- ko ifnot: $data.isEdit -->
+                            <a class="btn-link" href="#" data-bind="click: toggleEdit">Rename</a>
+                            <!-- /ko -->
+                            <!-- ko if: $data.isEdit -->
+                            <a class="btn-link" href="#" data-bind="click: $parent.renameSubscription">Save</a>
+                            <a class="btn-link" href="#" data-bind="click: toggleEdit">Cancel</a>
+                            <!-- /ko -->
+
+                        </div>
+                    </div>
+
+                    <!-- ko if: $data.model.isAwaitingApproval -->
+                    <div class="row">
+                        <label class="col-lg-3">Requested on</label>
+                        <div class="col-lg-6">
+                            <span data-bind="text: model.createdDate"></span>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+
+                    <!-- ko ifnot: $data.model.isRejected -->
+                    <!-- ko if: $data.model.startDate  -->
+                    <div class="row">
+                        <label class="col-lg-3">Started on</label>
+                        <div class="col-lg-6">
+                            <span data-bind="text: $parent.timeToString(model.startDate)"></span>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+
+                    <div class="row">
+                        <label class="col-md-3">Primary key</label>
+                        <div class="col-md-6">
+                            <code data-bind="text: primaryKey"></code>
+                        </div>
+                        <div class="col-md-3 nowrap">
+                            <!-- ko ifnot: $data.isPRegenerating  -->
+                            <a href="#" class="btn-link"
+                                data-bind="click: togglePrimaryKey, text: primaryKeyBtnLabel"></a> |
+                            <a href="#" class="btn-link" data-bind="click: $parent.regeneratePKey">Regenerate</a>
+                            <!-- /ko -->
+                            <!-- ko if: $data.isPRegenerating  -->
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                    aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-md-3">Secondary key</label>
+                        <div class="col-md-6">
+                            <code data-bind="text: secondaryKey"></code>
+                        </div>
+                        <div class="col-md-3 nowrap">
+                            <!-- ko ifnot: $data.isSRegenerating  -->
+                            <a href="#" class="btn-link"
+                                data-bind="click: toggleSecondaryKey, text: secondaryKeyBtnLabel"></a> |
+                            <a href="#" class="btn-link" data-bind="click: $parent.regenerateSKey">Regenerate</a>
+                            <!-- /ko -->
+                            <!-- ko if: $data.isSRegenerating  -->
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                    aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                    <!-- /ko -->
+                </td>
+                <td>
+                    <div class="row">
+                        <span data-bind="text: model.productName"></span>
+                    </div>
+                </td>
+                <td>
+                    <div class="row">
+                        <strong><span data-bind="text: model.state"></span></strong>
+                    </div>
+                </td>
+                <td>
+                    <!-- ko if: $data.model.canBeCancelled() -->
+                    <div class="row">
+                        <a class="btn-link" href="#" data-bind="click: $parent.cancelSubscription">Cancel</a>
+                    </div>
+                    <!-- /ko -->
+                </td>
+
+            </tr>
+            <!-- /ko -->
+            <!-- /ko -->
+
+        </tbody>
+    </table>
+</div>

@@ -5,7 +5,7 @@ export class UserDetailsHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
             name: "userDetails",
-            displayName: "User profile",
+            displayName: "User: Profile",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
             createModel: async () => new UserDetailsModel()

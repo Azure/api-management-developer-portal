@@ -1,5 +1,6 @@
 import { NameValuePair } from "request";
 import { js } from "js-beautify";
+import { JwtToken } from "./contracts/jwtToken";
 
 export class Utils {
     public static getResourceName(resource: string, fullId: string, resultType = "name"): string {
@@ -47,7 +48,7 @@ export class Utils {
         return url;
     }
 
-    public static getQueryParams(queryString: string) {
+    public static getQueryParams(queryString: string): any {
         const queryValues = {};
         queryString.split("&").forEach((item) => {
             const queryParam = item.split("=");
@@ -70,7 +71,7 @@ export class Utils {
         return result;
     }
 
-    public static formatXml(xml): string {
+    public static formatXml(xml: string): string {
         const original = xml;
 
         try {
@@ -177,5 +178,12 @@ export class Utils {
         return timestamp + "xxxxxxxxxxxxxxxx".replace(/[x]/g, () => {
             return (Math.random() * 16 | 0).toString(16);
         }).toLowerCase();
+    }
+
+    public static parseJwt(jwtToken: string): JwtToken {
+        const base64Url = jwtToken.split(".")[1];
+        const base64 = base64Url.replace("-", "+").replace("_", "/");
+
+        return JSON.parse(window.atob(base64));
     }
 }

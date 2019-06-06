@@ -5,7 +5,7 @@ export class ProductListHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
             name: "productList",
-            displayName: "Product list",
+            displayName: "List of products",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
             createModel: async () => new ProductListModel()

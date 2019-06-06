@@ -3,7 +3,7 @@ import { Component } from "@paperbits/common/ko/decorators";
 
 @Component({
     selector: "productList",
-    template: template
+    template: template,
+    injectable: "productList"
 })
-export class ProductListViewModel {
-}
+export class ProductListViewModel { }
