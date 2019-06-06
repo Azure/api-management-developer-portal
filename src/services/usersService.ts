@@ -1,6 +1,6 @@
 import { IAuthenticator } from "../authentication/IAuthenticator";
 import { MapiClient } from "./mapiClient";
-import { IRouteHandler } from "@paperbits/common/routing";
+import { RouteHandler } from "@paperbits/common/routing";
 import { HttpHeader } from "@paperbits/common/http";
 import { User } from "../models/user";
 import { Utils } from "../utils";
@@ -9,7 +9,7 @@ import { SignupRequest } from "../contracts/signupRequest";
 export class UsersService {
     constructor(
         private readonly smapiClient: MapiClient,
-        private readonly routeHandler: IRouteHandler,
+        private readonly routeHandler: RouteHandler,
         private readonly authenticator: IAuthenticator
     ) { }
 
@@ -30,7 +30,7 @@ export class UsersService {
         await this.smapiClient.post("/users", null, signupRequest);
     }
 
-    public signOut(withRedirect = true): void {
+    public signOut(withRedirect: boolean = true): void {
         this.authenticator.clearAccessToken();
 
         if (withRedirect) {
@@ -58,23 +58,24 @@ export class UsersService {
         return currentUserId === "/users/1";
     }
 
-    public isUserLoggedIn(): boolean {
+    public isUserSignedIn(): boolean {
         return !!this.authenticator.getAccessToken() && !!this.authenticator.getUser();
     }
 
-    public async getUser(userId: string): Promise<User> {
+    public async getCurrentUser(): Promise<User> {
         try {
+            const userId = this.getCurrentUserId();
+
+            if (!userId) {
+                return null;
+            }
+
             const user = await this.smapiClient.get<User>(userId);
 
-            if (user) {
-                return user;
-            }
-            else {
-                this.authenticator.clearAccessToken();
-                return undefined;
-            }
-        } catch (error) {
-            this.routeHandler.navigateTo("/signin");
+            return user;
+        }
+        catch (error) {
+            this.navigateToSignin();
         }
     }
 
@@ -125,6 +126,32 @@ export class UsersService {
             console.log("requestChangePassword is not implemented");
         } catch (error) {
             this.routeHandler.navigateTo("/signin");
+        }
+    }
+
+    public navigateToProfile(): void {
+        /**
+         * TODO: Take user profile URL from settings.
+         */
+        location.assign("/profile");
+    }
+
+    public navigateToSignin(): void {
+        /**
+         * TODO: Take sign-in URL from settings.
+         */
+        location.assign("/signin");
+    }
+
+    public navigateToHome(): void {
+        location.assign("/");
+    }
+
+    public async ensureSignedIn(): Promise<void> {
+        const userId = this.getCurrentUserId();
+
+        if (!userId) {
+            this.navigateToSignin();
         }
     }
 }

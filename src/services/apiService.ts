@@ -2,7 +2,7 @@ import { ProductContract } from "./../contracts/product";
 import { ApiContract } from "../contracts/api";
 import { TagResourceContract } from "../contracts/tagResource";
 import { PageContract } from "../contracts/page";
-import { SearchRequest } from "../components/runtime/api-list/searchRequest";
+import { SearchRequest } from "../contracts/searchRequest";
 import { Api } from "../models/api";
 import { VersionSet } from "../models/versionSet";
 import { Page } from "../models/page";
