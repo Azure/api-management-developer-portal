@@ -61,11 +61,11 @@
         "webpack-merge": "^4.2.1"
     },
     "dependencies": {
-        "@paperbits/azure": "0.1.113",
-        "@paperbits/common": "0.1.113",
-        "@paperbits/core": "0.1.113",
-        "@paperbits/prosemirror": "0.1.113",
-        "@paperbits/styles": "0.1.113",
+        "@paperbits/azure": "0.1.114",
+        "@paperbits/common": "0.1.114",
+        "@paperbits/core": "0.1.114",
+        "@paperbits/prosemirror": "0.1.114",
+        "@paperbits/styles": "0.1.114",
         "@webcomponents/webcomponentsjs": "^2.2.10",
         "core-js": "^3.1.3",
         "domino": "^2.1.3",
