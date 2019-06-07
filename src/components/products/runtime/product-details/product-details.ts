@@ -91,7 +91,7 @@ export class ProductDetails {
     }
 
     private async loadSubscriptions(productId: string): Promise<void> {
-        const userId = this.usersService.getCurrentUserId();
+        const userId = await this.usersService.getCurrentUserId();
         const subscriptions = await this.productService.getUserSubscriptions(userId);
         const productSubscriptions = subscriptions.filter(item => item.productId === productId && item.state === SubscriptionState.active) || [];
 

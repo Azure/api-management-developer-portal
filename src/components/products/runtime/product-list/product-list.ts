@@ -61,6 +61,8 @@ export class ProductList {
                 return;
             }
 
+            console.error(error);
+
             // TODO: Uncomment when API is in place:
             // this.notify.error("Oops, something went wrong.", "We're unable to load products. Please try again later.");
         }

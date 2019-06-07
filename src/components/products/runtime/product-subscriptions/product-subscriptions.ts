@@ -50,13 +50,20 @@ export class ProductSubscriptions {
                 return;
             }
 
-            const userId = this.usersService.getCurrentUserId();
+            const userId = await this.usersService.getCurrentUserId();
             const subscriptions = await this.productService.getSubscriptionsForProduct(userId, productId);
             this.subscriptions(subscriptions);
         }
         catch (error) {
-            // Notify user?
-            debugger;
+            if (error.code === "Unauthorized") {
+                this.usersService.navigateToSignin();
+                return;
+            }
+            
+            console.error(error);
+
+            // TODO: Uncomment when API is in place:
+            // this.notify.error("Oops, something went wrong.", "We're unable to add subscription. Please try again later.");
         }
         finally {
             this.working(false);
