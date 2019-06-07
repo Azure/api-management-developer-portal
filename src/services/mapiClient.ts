@@ -5,7 +5,7 @@ import { TtlCache } from "./ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
 import { MapiError } from "./mapiError";
 import { IAuthenticator } from "../authentication/IAuthenticator";
-import { IRouteHandler } from "@paperbits/common/routing";
+import { RouteHandler } from "@paperbits/common/routing";
 
 export interface IHttpBatchResponses {
     responses: IHttpBatchResponse[];
@@ -30,7 +30,7 @@ export class MapiClient {
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator,
         private readonly settingsProvider: ISettingsProvider,
-        private readonly routeHandler: IRouteHandler
+        private readonly routeHandler: RouteHandler
     ) {
         this.ensureInitialized();
     }
@@ -221,6 +221,7 @@ export class MapiClient {
                 return getError();
 
             case 401:
+                this.authenticator.clearAccessToken();
                 return new MapiError("Unauthorized", "You're not authorized.");
 
             case 403:

@@ -1,0 +1,15 @@
+<!-- ko if: working -->
+<spinner class="animation-fade-in"></spinner>
+<!-- /ko -->
+
+
+<!-- ko if: product -->
+<div class="animation-fade-in">
+    <h2 data-bind="text: product().name"></h2>
+    <p data-bind="markdown: product().description"></p>
+</div>
+<!-- /ko -->
+
+<!-- ko ifnot: product -->
+<p>Please select a product</p>
+<!-- /ko -->

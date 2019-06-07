@@ -1,0 +1,48 @@
+<div class="flex flex-row">
+    <!-- ko if: working-->
+    <spinner class="fit"></spinner>
+    <!-- /ko -->
+
+    <!-- ko ifnot: working -->
+    <div class="flex-item flex-grow animation-fade-in">
+        <!-- ko if: api -->
+        <h1>
+            <span data-bind="text: api().displayName"></span>
+        </h1>
+
+        <div class="form-group form-inline">
+            <!-- ko if: versionApis().length > 0 -->
+            <label for="apiVersions">Api version: </label>
+            &nbsp;
+            <select id="apiVersions" class="form-control"
+                data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: selectedId">
+            </select>
+            &nbsp;
+            <!-- /ko -->
+            <select id="apiDefinitions" class="form-control"
+                data-bind="value: downloadSelected, event: {change: onDownloadChange}">
+                <option value="" disabled="disabled" selected="selected">API definition</option>
+                <option value="openapi">Open API 3 (YAML)</option>
+                <option value="openapi+json">Open API 3 (JSON)</option>
+                <option value="swagger"> Open API 2 (JSON)</option>
+                <option value="wadl">WADL</option>
+                <!-- ko if: api().type === 'soap'  -->
+                <option value="wsdl">WSDL</option>
+                <!-- /ko -->
+            </select>
+        </div>
+
+        <!-- ko if: api().description  -->
+        <p data-bind="markdown: api().description"></p>
+        <!-- /ko -->
+
+        <!-- /ko -->
+
+        <!-- ko ifnot: api -->
+        <p>No API selected</p>
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+
+
+</div>

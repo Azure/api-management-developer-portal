@@ -2,7 +2,7 @@ import { ProductContract } from "./../contracts/product";
 import { ApiContract } from "../contracts/api";
 import { TagResourceContract } from "../contracts/tagResource";
 import { PageContract } from "../contracts/page";
-import { SearchRequest } from "../components/runtime/api-list/searchRequest";
+import { SearchRequest } from "../contracts/searchRequest";
 import { Api } from "../models/api";
 import { VersionSet } from "../models/versionSet";
 import { Page } from "../models/page";
@@ -165,9 +165,31 @@ export class ApiService {
         return page;
     }
 
+    private lastApiSchemas = {};
+
     public async getApiSchema(schemaId: string): Promise<Schema> {
+        const apiId = schemaId.split("/schemas").shift();
+        let cachedApi = this.lastApiSchemas[apiId];
+        if (!cachedApi) {
+            // clean cache if apiId changed
+            if (Object.keys(this.lastApiSchemas).length > 0) {
+                this.lastApiSchemas = {};
+            }
+            this.lastApiSchemas[apiId] = {};
+            cachedApi = this.lastApiSchemas[apiId];
+        }
+
+        const cached = cachedApi && cachedApi[schemaId];
+        if (cached) {
+            return cached;
+        }
+        
         const schema = await this.smapiClient.get<SchemaContract>(`${schemaId}`);
-        return new Schema(schema);
+        const loaded = new Schema(schema);
+        
+        cachedApi[schemaId] = loaded;
+
+        return loaded;
     }
 
     public async getSchemas(api: Api): Promise<Page<Schema>> {
