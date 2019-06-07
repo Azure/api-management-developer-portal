@@ -226,7 +226,7 @@ export class OperationConsole {
             return;
         }
 
-        const userId = this.usersService.getCurrentUserId();
+        const userId = await this.usersService.getCurrentUserId();
 
         if (!userId) {
             return;
