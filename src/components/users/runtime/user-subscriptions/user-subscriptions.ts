@@ -30,9 +30,9 @@ export class UserSubscriptions {
     }
 
     private async loadUser(): Promise<void> {
-        this.usersService.ensureSignedIn();
+        await this.usersService.ensureSignedIn();
 
-        const userId = this.usersService.getCurrentUserId();
+        const userId = await this.usersService.getCurrentUserId();
 
         await this.loadSubscriptions(userId);
     }

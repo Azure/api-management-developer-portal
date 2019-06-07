@@ -8,7 +8,6 @@ export class DefaultAuthenticator implements IAuthenticator {
         if (location.pathname.startsWith("/signin-sso")) {
             accessToken = "SharedAccessSignature " + location.href.split("?token=").pop();
             this.setAccessToken(accessToken);
-            location.assign("/");
         }
         else {
             accessToken = sessionStorage.getItem("accessToken");
