@@ -66,24 +66,28 @@
                 <ul class="list-group">
                     <li class="list-group-item"">
                         <div class=" row flex flex-row">
-                        <div class="col-md-3 text-attention">Content type</div>
-                        <div class="col-md-3 text-attention">Schema</div>
-                        <div class="col-md-6 text-attention">Sample</div>
+                            <div class="col-md-3 text-attention">Content type</div>
+                            <div class="col-md-3 text-attention">Schema</div>
+                            <div class="col-md-6 text-attention">Sample</div>
+                        </div>
+                    </li>
+                    <li class="list-group-item" data-bind="foreach: { data: representations, as: 'item' }">
+                        <div class="row flex flex-row">
+                            <div class="col-md-3" data-bind="text: item.contentType"></div>
+                            <div class="col-md-3"><a data-bind="attr: {'href': ''}, text: item.typeName, click: $component.scrollToSchema"></a>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- ko if: item.generatedSample -->
+                                <pre data-bind="text: item.generatedSample"></pre>
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
-            </li>
-            <li class="list-group-item" data-bind="foreach: { data: representations, as: 'item' }">
-                <div class="row flex flex-row">
-                    <div class="col-md-3" data-bind="text: item.contentType"></div>
-                    <div class="col-md-3"><a data-bind="attr: {'href': '#' + item.typeName}, text: item.typeName"></a>
-                    </div>
-                    <div class="col-md-6" data-bind="text: item.generatedSample"></div>
-                </div>
-            </li>
-            </ul>
-        </div>
-        <!-- /ko -->
+            <!-- /ko -->
 
-    </div>
+        </div>
     <!-- /ko -->
     <!-- /ko -->
     </div>
@@ -102,4 +106,8 @@
 <div>
     No Operation to display.
 </div>
+<!-- /ko -->
+
+<!-- ko if: schemas  -->
+<schema-details params="{ schemas: schemas }"></schema-details>
 <!-- /ko -->
