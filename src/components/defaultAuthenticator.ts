@@ -1,3 +1,4 @@
+import { Utils } from "../utils";
 import { IAuthenticator } from "../authentication/IAuthenticator";
 
 export class DefaultAuthenticator implements IAuthenticator {
@@ -7,11 +8,20 @@ export class DefaultAuthenticator implements IAuthenticator {
         if (location.pathname.startsWith("/signin-sso")) {
             accessToken = "SharedAccessSignature " + location.href.split("?token=").pop();
             this.setAccessToken(accessToken);
-            location.assign("/");
         }
         else {
             accessToken = sessionStorage.getItem("accessToken");
         }
+        
+        // Uncomment when swithed to ARM contracts:
+        //
+        // const decodedToken = Utils.parseJwt(accessToken);
+        // const now = Date.now().valueOf() / 1000;
+        //
+        // if (now >= decodedToken.exp) {
+        //     this.clearAccessToken();
+        //     return null;
+        // }
 
         return accessToken;
     }

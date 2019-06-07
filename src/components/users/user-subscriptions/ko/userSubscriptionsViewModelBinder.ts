@@ -10,7 +10,7 @@ export class UserSubscriptionsViewModelBinder implements ViewModelBinder<UserSub
         }
 
         viewModel["widgetBinding"] = {
-            displayName: "User subscriptions",
+            displayName: "User: Subscriptions",
             model: model,
             applyChanges: async (updatedModel: UserSubscriptionsModel) => {
                 Object.assign(model, updatedModel);

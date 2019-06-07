@@ -1,0 +1,32 @@
+<!-- ko if: working-->
+<spinner class="fit"></spinner>
+<!-- /ko -->
+
+<form>
+    <fieldset data-bind="attr: { disabled : working }">
+        <div class="form-group">
+            <label for="Email">Email</label>
+            <input aria-required="true" autofocus="autofocus" class="form-control" id="Email" name="Email"
+                autocomplete="username email" placeholder="Email" type="text"
+                data-bind="textInput: username, css: {'is-invalid': isError}" required>
+        </div>
+        <div class="form-group">
+            <label for="Password">Password</label>
+            <input aria-required="true" class="form-control" id="Password" name="Password" placeholder="Password"
+                type="password" autocomplete="current-password"
+                data-bind="textInput: password, css: {'is-invalid': isError}">
+            <div class="invalid-feedback"><span data-bind="text: errorMessage"></span></div>
+        </div>
+
+        <div class="form-group">
+            <!-- ko ifnot: working -->
+            <input type="submit" id="signinButton" value="Sign in" class="button button-primary"
+                data-bind="click: signinClick, enable: (!!username() && !!password())" />
+            <!-- /ko -->
+
+            <!-- ko if: working -->
+            <input type="submit" id="signinButton" value="Signing in ..." class="button button-primary" disabled />
+            <!-- /ko -->
+        </div>
+    </fieldset>
+</form>

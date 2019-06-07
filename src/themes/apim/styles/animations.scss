@@ -619,8 +619,9 @@
     }
 }
 
-.fadeIn {
+.animation-fade-in {
     animation-name: fadeIn;
+    animation-duration: .5s;
 }
 
 @keyframes fadeInDown {

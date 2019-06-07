@@ -14,27 +14,28 @@ export class SchemaDetails {
     public definitions: ko.ObservableArray<SchemaObject>;
 
     @Param()
-    public api: ko.Observable<Api>;
+    public schemas: ko.ObservableArray<string>;
 
     constructor(
         private readonly apiService: ApiService
     ) {
         this.onMounted = this.onMounted.bind(this);
 
-        this.api = ko.observable();
+        this.schemas = ko.observableArray();
         this.definitions = ko.observableArray([]);
     }
 
     @OnMounted()
     public onMounted(): void {
-        this.loadSchemas();
+        this.schemas.subscribe(this.loadSchemas);
     }
 
     private async loadSchemas(): Promise<void> {
         this.definitions([]);
 
-        const pageOfSchemas = await this.apiService.getSchemas(this.api());
-        const schemas = pageOfSchemas.value;
+        const ids = this.schemas();
+        const schemasPromises = ids.map(id => this.apiService.getApiSchema(id));
+        const schemas = await Promise.all(schemasPromises);
 
         // flatten schemas into list of schema objects
         const definitions = schemas.reduce((accumulator, currentValue) => accumulator.concat(currentValue.definitions), []);

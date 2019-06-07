@@ -10,7 +10,7 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
         }
 
         viewModel["widgetBinding"] = {
-            displayName: "Product list",
+            displayName: "List of products",
             model: model,
             editor: "product-list-editor",
             applyChanges: async (updatedModel: ProductListModel) => {

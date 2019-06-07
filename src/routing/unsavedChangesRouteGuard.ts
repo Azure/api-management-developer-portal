@@ -1,15 +1,15 @@
-import { IRouteGuard } from "@paperbits/common/routing";
+import { RouteGuard, Route } from "@paperbits/common/routing";
 import { OfflineObjectStorage } from "@paperbits/common/persistence";
 import { IViewManager } from "@paperbits/common/ui";
 
 
-export class UnsavedChangesRouteGuard implements IRouteGuard {
+export class UnsavedChangesRouteGuard implements RouteGuard {
     constructor(
         private readonly offlineObjectStorage: OfflineObjectStorage,
         private readonly viewManager: IViewManager
     ) { }
 
-    public canActivate(path: string, metadata?: object): Promise<boolean> {
+    public canActivate(route: Route): Promise<boolean> {
         return new Promise<boolean>((resolve) => {
             if (this.offlineObjectStorage.hasUnsavedChanges()) {
                 const toast = this.viewManager.addToast("Unsaved changes", `You have unsaved changes. Do you want to save or discard them?`, [
