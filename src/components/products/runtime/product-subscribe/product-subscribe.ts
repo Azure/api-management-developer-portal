@@ -108,6 +108,8 @@ export class ProductSubscribe {
                 return;
             }
 
+            console.error(error);
+
             // TODO: Uncomment when API is in place:
             // this.notify.error("Oops, something went wrong.", "We're unable to add subscription. Please try again later.");
         }
@@ -117,7 +119,7 @@ export class ProductSubscribe {
     }
 
     private async loadSubscriptions(): Promise<void> {
-        const userId = this.usersService.getCurrentUserId();
+        const userId = await this.usersService.getCurrentUserId();
 
         if (!userId) {
             return;
@@ -146,7 +148,7 @@ export class ProductSubscribe {
         
         this.working(true);
 
-        const userId = this.usersService.getCurrentUserId();
+        const userId = await this.usersService.getCurrentUserId();
 
         if (userId && this.subscriptionName() !== "") {
             const subscriptionId = `/subscriptions/${Utils.getBsonObjectId()}`;

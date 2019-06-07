@@ -5,6 +5,8 @@ import { HttpHeader } from "@paperbits/common/http";
 import { User } from "../models/user";
 import { Utils } from "../utils";
 import { SignupRequest } from "../contracts/signupRequest";
+import { resolve } from "dns";
+import { Identity } from "../contracts/identity";
 
 export class UsersService {
     constructor(
@@ -38,24 +40,14 @@ export class UsersService {
         }
     }
 
-    public getCurrentUserId(): string {
-        const currentUserId = this.authenticator.getUser();
+    public async getCurrentUserId(): Promise<string> {
+        const identity = await this.smapiClient.get<Identity>("/identity");
 
-        if (!currentUserId) {
+        if (!identity || !identity.id) {
             return null;
         }
 
-        return (currentUserId.indexOf("/users") === 0) ? currentUserId : `/users/${currentUserId}`;
-    }
-
-    public isCurrentUserAdmin(): boolean {
-        const currentUserId = this.getCurrentUserId();
-
-        if (!currentUserId) {
-            return false;
-        }
-
-        return currentUserId === "/users/1";
+        return `/users/${identity.id}`;
     }
 
     public isUserSignedIn(): boolean {
@@ -64,7 +56,7 @@ export class UsersService {
 
     public async getCurrentUser(): Promise<User> {
         try {
-            const userId = this.getCurrentUserId();
+            const userId = await this.getCurrentUserId();
 
             if (!userId) {
                 return null;
@@ -133,25 +125,30 @@ export class UsersService {
         /**
          * TODO: Take user profile URL from settings.
          */
-        location.assign("/profile");
+        this.routeHandler.navigateTo("/profile");
     }
 
     public navigateToSignin(): void {
         /**
          * TODO: Take sign-in URL from settings.
          */
-        location.assign("/signin");
+        this.routeHandler.navigateTo("/signin");
     }
 
     public navigateToHome(): void {
-        location.assign("/");
+        this.routeHandler.navigateTo("/");
     }
 
     public async ensureSignedIn(): Promise<void> {
-        const userId = this.getCurrentUserId();
+        return new Promise<void>((resolve) => {
+            const userId = this.getCurrentUserId();
 
-        if (!userId) {
-            this.navigateToSignin();
-        }
+            if (!userId) {
+                this.navigateToSignin();
+                return; // intentionally exiting without resolving the promise.
+            }
+
+            resolve();
+        });
     }
 }
