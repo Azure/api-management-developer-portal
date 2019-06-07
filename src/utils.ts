@@ -1,6 +1,6 @@
 import { NameValuePair } from "request";
-import { js } from "js-beautify";
 import { JwtToken } from "./contracts/jwtToken";
+import { js } from "js-beautify";
 
 export class Utils {
     public static getResourceName(resource: string, fullId: string, resultType = "name"): string {
@@ -185,5 +185,13 @@ export class Utils {
         const base64 = base64Url.replace("-", "+").replace("_", "/");
 
         return JSON.parse(window.atob(base64));
+    }
+
+    public static scrollTo(id: string): void {            
+        const e = document.getElementById(id);
+
+        if (!!e && e.scrollIntoView) {
+            e.scrollIntoView();
+        }             
     }
 }
