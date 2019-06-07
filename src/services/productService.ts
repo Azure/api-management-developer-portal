@@ -22,6 +22,10 @@ export class ProductService {
      * @param userId 
      */
     public async getSubscriptions(userId: string): Promise<Page<Subscription>> {
+        if (!userId) {
+            throw new Error(`Parameter "userId" not specified.`);
+        }
+
         const pageContract = await this.smapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
         const result = new Page<Subscription>();
 
@@ -33,10 +37,17 @@ export class ProductService {
     }
 
     public async getSubscriptionsForProduct(userId: string, productId: string): Promise<Subscription[]> {
+        if (!userId) {
+            throw new Error(`Parameter "userId" not specified.`);
+        }
+
+        if (!productId) {
+            throw new Error(`Parameter "productId" not specified.`);
+        }
+
         const pageOfSubscriptions = await this.getSubscriptions(userId);
         const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === "active");
-        const product = await this.getProduct(productId);
-        const result = subscriptions.filter(subscription => subscription.productId.endsWith(product.name));
+        const result = subscriptions.filter(subscription => subscription.productId === productId);
 
         return result;
     }
@@ -47,11 +58,16 @@ export class ProductService {
      * @param userId 
      */
     public async getUserSubscriptions(userId: string): Promise<Subscription[]> {
+        if (!userId) {
+            throw new Error(`Parameter "userId" not specified.`);
+        }
+
         const result = [];
         const contracts = await this.smapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
 
         if (contracts && contracts.value) {
             const products = await this.getProducts();
+
             contracts.value.map((item) => {
                 const model = new Subscription(item);
                 const product = products.find(p => p.id === model.productId);
@@ -64,29 +80,48 @@ export class ProductService {
     }
 
     public async getSubscription(subscriptionId: string, loadProduct: boolean = true): Promise<Subscription> {
+        if (!subscriptionId) {
+            throw new Error(`Parameter "subscriptionId" not specified.`);
+        }
+
         const contract = await this.smapiClient.get<SubscriptionContract>(subscriptionId);
+
+        if (!contract) {
+            return null;
+        }
+
         if (contract) {
             const model = new Subscription(contract);
+
             if (loadProduct) {
                 const product = await this.getProduct(model.productId);
                 model.productName = product && product.name;
             }
+
             return model;
         }
-        return undefined;
     }
 
     public async getProducts(): Promise<Product[]> {
         const result = [];
         const contracts = await this.smapiClient.get<Page<ProductContract>>(`/products`);
+
         if (contracts && contracts.value) {
-            contracts.value.map(item => result.push(new Product(item)));
+            contracts.value
+                .filter(x => x.subscriptionRequired === true)
+                .map(item => result.push(new Product(item)));
         }
+
         return result;
     }
 
     public async getProduct(productId: string): Promise<Product> {
+        if (!productId) {
+            throw new Error(`Parameter "productId" not specified.`);
+        }
+
         const contract = await this.smapiClient.get<ProductContract>(productId);
+
         if (contract) {
             return new Product(contract);
         }
@@ -94,6 +129,14 @@ export class ProductService {
     }
 
     public async regeneratePrimaryKey(subscriptionId: string, userId: string): Promise<Subscription> {
+        if (!subscriptionId) {
+            throw new Error(`Parameter "subscriptionId" not specified.`);
+        }
+
+        if (!userId) {
+            throw new Error(`Parameter "userId" not specified.`);
+        }
+
         await this.smapiClient.post(`${userId + subscriptionId}/regeneratePrimaryKey`);
         return await this.getSubscription(userId + subscriptionId);
     }
@@ -104,11 +147,20 @@ export class ProductService {
     }
 
     public async createUserSubscription(subscriptionId: string, userId: string, productId: string, subscriptionName: string): Promise<void> {
+        if (!subscriptionId) {
+            throw new Error(`Parameter "subscriptionId" not specified.`);
+        }
+
+        if (!userId) {
+            throw new Error(`Parameter "userId" not specified.`);
+        }
+
         await this.loadTenantSettings();
 
         if (this.tenantSettings["CustomPortalSettings.DelegationEnabled"] === true) {
             console.log("Delegation enabled. Can't create subscription");
-        } else {
+        }
+        else {
             const data = {
                 scope: productId,
                 name: subscriptionName
@@ -118,6 +170,14 @@ export class ProductService {
     }
 
     public async cancelUserSubscription(subscriptionId: string, userId: string): Promise<Subscription> {
+        if (!subscriptionId) {
+            throw new Error(`Parameter "subscriptionId" not specified.`);
+        }
+
+        if (!userId) {
+            throw new Error(`Parameter "userId" not specified.`);
+        }
+
         await this.loadTenantSettings();
 
         if (this.tenantSettings["CustomPortalSettings.DelegationEnabled"] === true) {

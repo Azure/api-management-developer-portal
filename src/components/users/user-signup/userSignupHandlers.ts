@@ -5,7 +5,7 @@ export class UserSignupHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
             name: "userSignup",
-            displayName: "User signup",
+            displayName: "Sign-up form",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
             createModel: async () => new UserSignupModel()

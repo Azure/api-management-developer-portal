@@ -1,25 +1,26 @@
 <!-- ko if: definitions().length > 0 -->
+<article>
+    <h2>Schemas</h2>
 
-<h2>Schemas</h2>
+    <div data-bind="foreach: { data: definitions, as: 'definition' }">
+        <h3 class="text-word-break" data-bind="text: definition.name, attr: { id: definition.name }"></h3>
 
-<section data-bind="foreach: { data: definitions, as: 'definition' }">
-    <h3 class="text-word-break" data-bind="text: definition.name, attr: { id: definition.name }"></h3>
+        <!-- ko if: definition.description -->
+        <p data-bind="markdown: definition.description">Pet object that needs to be added to the store</p>
+        <!-- /ko -->
 
-    <!-- ko if: definition.description -->
-    <p data-bind="markdown: definition.description">Pet object that needs to be added to the store</p>
-    <!-- /ko -->
-
-    <!-- ko if: definition.properties -->
-    <ul class="list-group">
-        <li class="list-group-item" data-bind="foreach: { data: definition.properties, as: 'property' }">
-            <div class="row flex flex-row">
-                <div class="col-md-3 text-attention" data-bind="text: property.name"></div>
-                <div class="col-md-7 text-word-break" data-bind="markdown: property.description"></div>
-                <div class="col-md-2 text-nowrap text-mute" data-bind="schemaobjecttype: property"></div>
-            </div>
-        </li>
-    </ul>
-    <!-- /ko -->
-</section>
+        <!-- ko if: (definition.properties && definition.properties.length > 0) -->
+        <ul class="list-group">
+            <li class="list-group-item" data-bind="foreach: { data: definition.properties, as: 'property' }">
+                <div class="row flex flex-row">
+                    <div class="col-md-3 text-attention" data-bind="text: property.name"></div>
+                    <div class="col-md-6 text-word-break" data-bind="markdown: property.description"></div>
+                    <div class="col-md-3 text-nowrap text-mute" data-bind="schemaobjecttype: property"></div>
+                </div>
+            </li>
+        </ul>
+        <!-- /ko -->
+    </div>
+</article>
 
 <!-- /ko -->

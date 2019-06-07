@@ -9,7 +9,6 @@ export class Product {
     public subscriptionRequired: boolean;
     public subscriptionsLimit?: number;
     public terms: string;
-    public allowMultipleSubscriptions: boolean;
 
     constructor(contract?: ProductContract) {
         this.id = contract.id;
@@ -20,7 +19,5 @@ export class Product {
         this.subscriptionRequired = contract.subscriptionRequired;
         this.subscriptionsLimit = contract.subscriptionsLimit;
         this.terms = contract.terms;
-
-        this.allowMultipleSubscriptions = !contract.subscriptionsLimit || contract.subscriptionsLimit > 1;
     }
 }
