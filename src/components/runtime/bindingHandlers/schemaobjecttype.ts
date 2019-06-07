@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import { SchemaObject } from "../../../models/schema";
+import { Utils } from "../../../utils";
 
 ko.bindingHandlers["schemaobjecttype"] = {
     init: (element: HTMLElement, valueAccessor: () => SchemaObject): void => {
@@ -29,7 +30,7 @@ ko.bindingHandlers["schemaobjecttype"] = {
                 href = schemaObject.$ref;
             }
 
-            ko.applyBindingsToNode(element, { html: `<a href="${href}">${label}</a>` }, null);
+            ko.applyBindingsToNode(element, { html: `<a href="">${label}</a>`, click: () => Utils.scrollTo(label)}, null);
         }
         else {
             label = schemaObject.type;
