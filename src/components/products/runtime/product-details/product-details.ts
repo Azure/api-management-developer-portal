@@ -48,6 +48,8 @@ export class ProductDetails {
 
         await this.loadSubscriptions(productId);
         await this.loadProduct(productId);
+
+        this.routeHandler.addRouteChangeListener(this.onRouteChange);
     }
 
     private onRouteChange(route: Route): void {
