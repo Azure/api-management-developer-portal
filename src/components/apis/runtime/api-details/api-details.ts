@@ -159,4 +159,8 @@ export class ApiDetails {
             this.routeHandler.navigateTo("#?" + this.queryParams.toString());
         }
     }
+
+    public dispose(): void {
+        this.routeHandler.removeRouteChangeListener(this.loadApi);
+    }
 }

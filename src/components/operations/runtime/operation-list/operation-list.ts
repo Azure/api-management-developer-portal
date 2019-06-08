@@ -131,4 +131,8 @@ export class OperationList {
             }
         }
     }
+
+    public dispose(): void {
+        this.routeHandler.removeRouteChangeListener(this.loadOperations);
+    }
 }

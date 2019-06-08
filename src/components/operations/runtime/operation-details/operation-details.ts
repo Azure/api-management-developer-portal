@@ -135,4 +135,8 @@ export class OperationDetails {
     public closeConsole(): void {
         this.selectedOperation(null);
     }
+
+    public dispose(): void {
+        this.routeHandler.removeRouteChangeListener(this.loadOperation);
+    }
 }

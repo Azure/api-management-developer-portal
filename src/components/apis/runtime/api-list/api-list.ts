@@ -37,8 +37,6 @@ export class ApiList {
         this.applySelectedApi = this.applySelectedApi.bind(this);
         this.selectFirst = this.selectFirst.bind(this);
         this.selectionChanged = this.selectionChanged.bind(this);
-
-
     }
 
     @Param()
@@ -150,5 +148,9 @@ export class ApiList {
         const groups = Utils.groupBy(versionedApis, x => x.apiVersionSet.id);
         result.push(...groups.map(g => g[g.length - 1]));
         return result;
+    }
+
+    public dispose(): void {
+        this.routeHandler.removeRouteChangeListener(this.loadApis);
     }
 }
