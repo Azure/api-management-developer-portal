@@ -1,3 +1,8 @@
+<!-- ko if: working -->
+<spinner class="center"></spinner>
+<!-- /ko -->
+
+<!-- ko ifnot: working -->
 <!-- ko if: definitions().length > 0 -->
 <article>
     <h2>Schemas</h2>
@@ -12,7 +17,7 @@
         <!-- ko if: (definition.properties && definition.properties.length > 0) -->
         <ul class="list-group">
             <li class="list-group-item" data-bind="foreach: { data: definition.properties, as: 'property' }">
-                <div class="row flex flex-row">
+                <div class="flex flex-row">
                     <div class="col-md-3 text-attention" data-bind="text: property.name"></div>
                     <div class="col-md-6 text-word-break" data-bind="markdown: property.description"></div>
                     <div class="col-md-3 text-nowrap text-mute" data-bind="schemaobjecttype: property"></div>
@@ -22,5 +27,5 @@
         <!-- /ko -->
     </div>
 </article>
-
+<!-- /ko -->
 <!-- /ko -->
