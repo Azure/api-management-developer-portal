@@ -102,4 +102,8 @@ export class ProductList {
     public getProductUrl(product: Product): string {
         return product.id.replace("/products/", "#?productId=");
     }
+
+    public dispose(): void {
+        this.routeHandler.removeRouteChangeListener(this.onRouteChange);
+    }    
 }

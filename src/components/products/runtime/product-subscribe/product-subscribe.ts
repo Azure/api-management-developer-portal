@@ -62,8 +62,9 @@ export class ProductSubscribe {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.loadProduct();
         this.routeHandler.addRouteChangeListener(this.loadProduct);
+
+        await this.loadProduct();
     }
 
     private getProductId(): string {
@@ -105,6 +106,10 @@ export class ProductSubscribe {
         catch (error) {
             if (error.code === "Unauthorized") {
                 this.usersService.navigateToSignin();
+                return;
+            }
+
+            if (error.code === "ResourceNotFound") {
                 return;
             }
 
@@ -172,5 +177,9 @@ export class ProductSubscribe {
             this.showHideLabel("Hide");
         }
         this.showTermsOfUse(!this.showTermsOfUse());
+    }
+
+    public dispose(): void {
+        this.routeHandler.removeRouteChangeListener(this.loadProduct);
     }
 }

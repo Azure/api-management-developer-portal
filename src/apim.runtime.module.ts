@@ -1,3 +1,4 @@
+import "@paperbits/core/ko/bindingHandlers/bindingHandlers.component";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { DefaultEventManager } from "@paperbits/common/events";
 import { XmlHttpRequestClient } from "@paperbits/common/http";
@@ -29,7 +30,6 @@ import { Spinner } from "./components/spinner/spinner";
 import { ProductApis } from "./components/products/runtime/product-apis/product-apis";
 import { OperationList } from "./components/operations/runtime/operation-list/operation-list";
 import { ProductSubscriptions } from "./components/products/runtime/product-subscriptions/product-subscriptions";
-
 
 
 export class ApimRuntimeModule implements IInjectorModule {

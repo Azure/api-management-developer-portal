@@ -26,8 +26,9 @@ export class ProductApis {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.loadProductApis();
         this.routeHandler.addRouteChangeListener(this.loadProductApis);
+
+        await this.loadProductApis();
     }
 
     private getProductId(): string {
