@@ -62,8 +62,9 @@ export class ProductSubscribe {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.loadProduct();
         this.routeHandler.addRouteChangeListener(this.loadProduct);
+
+        await this.loadProduct();
     }
 
     private getProductId(): string {

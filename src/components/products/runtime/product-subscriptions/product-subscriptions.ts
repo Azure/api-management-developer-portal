@@ -28,8 +28,10 @@ export class ProductSubscriptions {
     @OnMounted()
     public async initialize(): Promise<void> {
         await this.usersService.ensureSignedIn();
-        await this.loadProductSubscriptions();
+
         this.routeHandler.addRouteChangeListener(this.loadProductSubscriptions);
+
+        await this.loadProductSubscriptions();
     }
 
     private getProductId(): string {
