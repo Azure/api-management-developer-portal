@@ -19,7 +19,6 @@ export class ProductDetails {
     public apis: ko.ObservableArray<Api>;
     public product: ko.Observable<Product>;
     public subscriptions: ko.ObservableArray<Subscription>;
-
     public showSubscribe: ko.Observable<boolean>;
     public working: ko.Observable<boolean>;
 
@@ -39,8 +38,6 @@ export class ProductDetails {
     @OnMounted()
     public async initialize(): Promise<void> {
         await this.usersService.ensureSignedIn();
-
-        this.routeHandler.addRouteChangeListener(this.onRouteChange.bind(this));
 
         const route = this.routeHandler.getCurrentRoute();
         const productId = this.getProductId(route);
@@ -91,14 +88,35 @@ export class ProductDetails {
     }
 
     private async loadSubscriptions(productId: string): Promise<void> {
-        const userId = await this.usersService.getCurrentUserId();
-        const subscriptions = await this.productService.getUserSubscriptions(userId);
-        const productSubscriptions = subscriptions.filter(item => item.productId === productId && item.state === SubscriptionState.active) || [];
+        try {
+            const userId = await this.usersService.getCurrentUserId();
+            const subscriptions = await this.productService.getUserSubscriptions(userId);
+            const productSubscriptions = subscriptions.filter(item => item.productId === productId && item.state === SubscriptionState.active) || [];
 
-        this.subscriptions(productSubscriptions);
+            this.subscriptions(productSubscriptions);
+        }
+        catch (error) {
+            if (error.code === "Unauthorized") {
+                this.usersService.navigateToSignin();
+                return;
+            }
+
+            if (error.code === "ResourceNotFound") {
+                return;
+            }
+
+            console.error(error);
+
+            // TODO: Uncomment when API is in place:
+            // this.notify.error("Oops, something went wrong.", "We're unable to add subscription. Please try again later.");
+        }
     }
 
     public toggleSubscribe(): void {
         this.showSubscribe(false);
+    }
+
+    public dispose(): void {
+        this.routeHandler.removeRouteChangeListener(this.onRouteChange);
     }
 }

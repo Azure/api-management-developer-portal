@@ -108,6 +108,10 @@ export class ProductSubscribe {
                 return;
             }
 
+            if (error.code === "ResourceNotFound") {
+                return;
+            }
+
             console.error(error);
 
             // TODO: Uncomment when API is in place:
@@ -172,5 +176,9 @@ export class ProductSubscribe {
             this.showHideLabel("Hide");
         }
         this.showTermsOfUse(!this.showTermsOfUse());
+    }
+
+    public dispose(): void {
+        this.routeHandler.removeRouteChangeListener(this.loadProduct);
     }
 }

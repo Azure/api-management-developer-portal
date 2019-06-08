@@ -5,7 +5,6 @@ import { HttpHeader } from "@paperbits/common/http";
 import { User } from "../models/user";
 import { Utils } from "../utils";
 import { SignupRequest } from "../contracts/signupRequest";
-import { resolve } from "dns";
 import { Identity } from "../contracts/identity";
 
 export class UsersService {

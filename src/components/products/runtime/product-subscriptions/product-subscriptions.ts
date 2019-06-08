@@ -59,6 +59,10 @@ export class ProductSubscriptions {
                 this.usersService.navigateToSignin();
                 return;
             }
+
+            if (error.code === "ResourceNotFound") {
+                return;
+            }
             
             console.error(error);
 
@@ -69,4 +73,8 @@ export class ProductSubscriptions {
             this.working(false);
         }
     }
+
+    public dispose(): void {
+        this.routeHandler.removeRouteChangeListener(this.loadProductSubscriptions);
+    }    
 }
