@@ -36,7 +36,7 @@
     <h3>Authorization</h3>
 
     <div class="row flex flex-row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label for="subscriptionKey">Subscription key</label>
         </div>
         <div class="col-md-6">
@@ -56,7 +56,7 @@
     <h3>Parameters</h3>
     <div data-bind="foreach: { data: templateParameters, as: 'parameter' }">
         <div class="row flex flex-row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <input type="text" readonly autocomplete="off" class="form-control form-control-sm" placeholder="name"
                     spellcheck="false"
                     data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.name, valueUpdate: 'keyup'">
@@ -68,10 +68,9 @@
             </div>
         </div>
     </div>
-
     <div data-bind="foreach: { data: request.queryParameters, as: 'parameter' }">
         <div class="row flex flex-row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
                     spellcheck="false" data-bind="textInput: parameter.name, valueUpdate: 'keyup'">
             </div>
@@ -80,8 +79,12 @@
                     spellcheck="false"
                     data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
             </div>
+            <div class="col-md-2 button-remove">
+                <a href="#" data-bind="click: $component.removeQueryParameter">Remove</a>
+            </div>
         </div>
     </div>
+    <a href="#" class="button-add" data-bind="click: $component.addQueryParameter">+ Add parameter</a>
 
     <!-- /ko -->
 
@@ -90,7 +93,7 @@
 
     <div data-bind="foreach: { data: request.headers, as: 'header' }">
         <div class="row flex flex-row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
                     spellcheck="false" data-bind="textInput: header.name, valueUpdate: 'keyup'">
             </div>
@@ -99,29 +102,32 @@
                     spellcheck="false"
                     data-bind="event: { keyup: $component.updateRequestSummary }, textInput: header.value, valueUpdate: 'keyup'">
             </div>
+            <div class="col-md-2 button-remove">
+                <a href="#" data-bind="click: $component.removeHeader">Remove</a>
+            </div>
         </div>
     </div>
+
+    <a href="#" class="button-add" data-bind="click: $component.addHeader">+ Add header</a>
 
     <!-- /ko -->
 
     <div data-bind="if: hasBody">
-        <h3>
-            Body
-            <div class="btn-group float-right" role="group" style="margin-right: 10px">
-                <button type="button" class="button btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
+        <div class="row">
+            <h3 class="console-body">Body</h3>
+            <div class="button-body" role="group">
+                <button type="button" class="button dropdown-toggle button-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span data-bind="text: $component.bodySource"></span>
                 </button>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="#" data-bind="click: $component.bodySource.bind(this, 'Raw')">Raw</a>
-                    <a class="dropdown-item" href="#"
-                        data-bind="click: $component.bodySource.bind(this, 'Binary')">Binary</a>
+                    <a class="dropdown-item" href="#" data-bind="click: $component.bodySource.bind(this, 'Binary')">Binary</a>
                 </div>
             </div>
-        </h3>
+        </div>
 
         <div class="clearfix"></div>
-        <div class="row ">
+        <div class="row">
             <div class="col-md-12">
                 <!-- ko if: $component.bodySource() === 'Raw' -->
                 <textarea class="form-control form-control-sm" rows="9"

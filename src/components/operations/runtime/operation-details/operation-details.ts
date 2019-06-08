@@ -97,6 +97,9 @@ export class OperationDetails {
         if (operation) {
             this.operation(operation);
             this.getSchemas();
+            if (this.selectedOperation()) {
+                this.openConsole();
+            }
         } else {
             this.cleanSelection();
         }

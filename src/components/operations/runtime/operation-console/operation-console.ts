@@ -20,6 +20,7 @@ import { ServiceSkuName, TypeOfApi } from "../../../../constants";
 import { HttpClient, HttpRequest } from "@paperbits/common/http";
 import { Revision } from "../../../../models/revision";
 import { templates } from "../templates/templates";
+import { ConsoleParameter } from "../../../../models/console/consoleParameter";
 
 @Component({
     selector: "operation-console",
@@ -272,6 +273,23 @@ export class OperationConsole {
             this.subscriptionKeysView = "none";
         }
     }
+
+    public addHeader(): void {
+        this.consoleOperation().request.headers.push(new ConsoleHeader());
+    }
+
+    public removeHeader(header: ConsoleHeader): void {
+        this.consoleOperation().request.headers.remove(header);
+    }
+
+    public addQueryParameter(): void {
+        this.consoleOperation().request.queryParameters.push(new ConsoleParameter());
+    }
+
+    public removeQueryParameter(parameter:ConsoleParameter): void {
+        this.consoleOperation().request.queryParameters.remove(parameter);
+    }
+    
 
     public applySubscriptionKey(subscriptionKey: string): void {
         if (!subscriptionKey) {

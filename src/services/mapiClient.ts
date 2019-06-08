@@ -105,7 +105,7 @@ export class MapiClient {
         const requestKey = this.getRequestKey(httpRequest);
 
         if (requestKey) {
-            return this.requestCache.getOrAddAsync<T>(requestKey, call, 300);
+            return this.requestCache.getOrAddAsync<T>(requestKey, call, 1000);
         }
 
         return call();
