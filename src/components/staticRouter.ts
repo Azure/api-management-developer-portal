@@ -1,6 +1,6 @@
-import { RouteHandler, Route } from "@paperbits/common/routing";
+import { Router, Route } from "@paperbits/common/routing";
 
-export class StaticRouteHandler implements RouteHandler {
+export class StaticRouter implements Router {
     private currentUrl: string;
     private metadata: Object;
     private callbacks: any[];

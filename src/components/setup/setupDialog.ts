@@ -5,7 +5,7 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Utils } from "../../utils";
 import { IAuthenticator } from "../../authentication/IAuthenticator";
 import { IViewManager } from "@paperbits/common/ui";
-import { RouteHandler } from "@paperbits/common/routing";
+import { Router } from "@paperbits/common/routing";
 
 @Component({
     selector: "setup-dialog",
@@ -21,7 +21,7 @@ export class SetupDialog {
         private readonly settingsProvider: ISettingsProvider,
         private readonly authenticator: IAuthenticator,
         private readonly viewManager: IViewManager,
-        private readonly routeHandler: RouteHandler
+        private readonly router: Router
     ) { }
 
     @OnMounted()
@@ -46,7 +46,7 @@ export class SetupDialog {
 
         try {
             await this.provision();
-            this.routeHandler.navigateTo("/");
+            this.router.navigateTo("/");
             this.viewManager.initialize();
         }
         catch (error) {

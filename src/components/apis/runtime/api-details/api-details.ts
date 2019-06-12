@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import template from "./api-details.html";
 import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
-import { DefaultRouteHandler, Route } from "@paperbits/common/routing";
+import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { ApiService } from "../../../../services/apiService";
 import { Api } from "../../../../models/api";
 
@@ -23,7 +23,7 @@ export class ApiDetails {
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly routeHandler: DefaultRouteHandler
+        private readonly router: DefaultRouter
     ) {
         this.api = ko.observable();
         this.versionApis = ko.observableArray([]);
@@ -36,13 +36,13 @@ export class ApiDetails {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.loadApi(this.routeHandler.getCurrentRoute());
-        this.routeHandler.addRouteChangeListener(this.loadApi);
+        await this.loadApi(this.router.getCurrentRoute());
+        this.router.addRouteChangeListener(this.loadApi);
         this.selectedId.subscribe(this.onVersionChanged);
     }
 
     public async loadApi(route?: Route): Promise<void> {
-        if (!route || !route.hash) {            
+        if (!route || !route.hash) {
             this.api(null);
             return;
         }
@@ -107,8 +107,8 @@ export class ApiDetails {
         }
         this.downloadSelected("");
     }
-    
-    public async downloadDefinition(definitionType: "swagger" | "openapi" | "openapi+json"|  "wadl" | "wsdl") {
+
+    public async downloadDefinition(definitionType: "swagger" | "openapi" | "openapi+json" | "wadl" | "wsdl") {
         console.log(definitionType);
         if (this.api() && this.api().id) {
             let exportObject = await this.apiService.exportApi(this.api().id, definitionType);
@@ -135,28 +135,32 @@ export class ApiDetails {
     }
 
     private download(data: string, filename: string, type: string) {
-        const file = new Blob([data], {type: type});
+        const file = new Blob([data], { type: type });
         if (window.navigator.msSaveOrOpenBlob) // IE10+
             window.navigator.msSaveOrOpenBlob(file, filename);
         else { // Others
             const a = document.createElement("a"),
-                    url = URL.createObjectURL(file);
+                url = URL.createObjectURL(file);
             a.href = url;
             a.download = filename;
             document.body.appendChild(a);
             a.click();
-            setTimeout(function() {
+            setTimeout(function () {
                 document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);  
-            }, 0); 
+                window.URL.revokeObjectURL(url);
+            }, 0);
         }
     }
 
     private onVersionChanged(selectedApiName: string) {
-        if(!this.isParamChange && selectedApiName && this.api() && selectedApiName !== this.api().name) {
+        if (!this.isParamChange && selectedApiName && this.api() && selectedApiName !== this.api().name) {
             this.queryParams.set("apiId", selectedApiName);
             this.queryParams.delete("operationId");
-            this.routeHandler.navigateTo("#?" + this.queryParams.toString());
+            this.router.navigateTo("#?" + this.queryParams.toString());
         }
+    }
+
+    public dispose(): void {
+        this.router.removeRouteChangeListener(this.loadApi);
     }
 }

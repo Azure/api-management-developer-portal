@@ -21,9 +21,4 @@ export class OperationDetailsEditor {
     public async initialize(): Promise<void> {
         // TODO: Implement
     }
-
-    private applyChanges(): void {
-        // TODO: Implement
-        this.onChange(this.model);
-    }
 }

@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import template from "./product-details.html";
-import { RouteHandler, Route } from "@paperbits/common/routing";
+import { Router, Route } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { Api } from "../../../../models/api";
 import { Product } from "../../../../models/product";
@@ -16,17 +16,16 @@ import { UsersService } from "../../../../services/usersService";
     injectable: "productDetails"
 })
 export class ProductDetails {
-    public apis: ko.ObservableArray<Api>;
-    public product: ko.Observable<Product>;
-    public subscriptions: ko.ObservableArray<Subscription>;
-
-    public showSubscribe: ko.Observable<boolean>;
-    public working: ko.Observable<boolean>;
+    public readonly apis: ko.ObservableArray<Api>;
+    public readonly product: ko.Observable<Product>;
+    public readonly subscriptions: ko.ObservableArray<Subscription>;
+    public readonly showSubscribe: ko.Observable<boolean>;
+    public readonly working: ko.Observable<boolean>;
 
     constructor(
         private readonly usersService: UsersService,
         private readonly productService: ProductService,
-        private readonly routeHandler: RouteHandler
+        private readonly router: Router
     ) {
         this.product = ko.observable();
 
@@ -38,18 +37,22 @@ export class ProductDetails {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.usersService.ensureSignedIn();
+        const userId = await this.usersService.getCurrentUserId();
 
-        this.routeHandler.addRouteChangeListener(this.onRouteChange.bind(this));
+        if (!userId) {
+            this.usersService.navigateToSignin();
+        }
 
-        const route = this.routeHandler.getCurrentRoute();
+        this.router.addRouteChangeListener(this.onRouteChange);
+
+        const route = this.router.getCurrentRoute();
         const productId = this.getProductId(route);
 
         if (!productId) {
             return;
         }
 
-        await this.loadSubscriptions(productId);
+        await this.loadSubscriptions(productId, userId);
         await this.loadProduct(productId);
     }
 
@@ -82,23 +85,51 @@ export class ProductDetails {
                 return;
             }
 
+            if (error.code === "ResourceNotFound") {
+                return;
+            }
+
             // TODO: Uncomment when API is in place:
             // this.notify.error("Oops, something went wrong.", "We're unable to add subscription. Please try again later.");
+
+            throw error;
         }
         finally {
             this.working(false);
         }
     }
 
-    private async loadSubscriptions(productId: string): Promise<void> {
-        const userId = await this.usersService.getCurrentUserId();
-        const subscriptions = await this.productService.getUserSubscriptions(userId);
-        const productSubscriptions = subscriptions.filter(item => item.productId === productId && item.state === SubscriptionState.active) || [];
+    private async loadSubscriptions(productId: string, userId: string): Promise<void> {
+        this.subscriptions(null);
 
-        this.subscriptions(productSubscriptions);
+        try {
+            const subscriptions = await this.productService.getUserSubscriptions(userId);
+            const productSubscriptions = subscriptions.filter(item => item.productId === productId && item.state === SubscriptionState.active) || [];
+
+            this.subscriptions(productSubscriptions);
+        }
+        catch (error) {
+            if (error.code === "Unauthorized") {
+                this.usersService.navigateToSignin();
+                return;
+            }
+
+            if (error.code === "ResourceNotFound") {
+                return;
+            }
+
+            // TODO: Uncomment when API is in place:
+            // this.notify.error("Oops, something went wrong.", "We're unable to add subscription. Please try again later.");
+
+            throw error;
+        }
     }
 
     public toggleSubscribe(): void {
         this.showSubscribe(false);
+    }
+
+    public dispose(): void {
+        this.router.removeRouteChangeListener(this.onRouteChange);
     }
 }
