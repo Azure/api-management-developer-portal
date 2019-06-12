@@ -92,7 +92,7 @@ export class Api {
         this.path = contract.path;
         this.urlSuffix = contract.urlSuffix;
         this.isCurrent = contract.isCurrent;
-        this.apiVersion = contract.apiVersion;
+        this.apiVersion = contract.apiVersion || "Original";
         this.apiRevision = contract.apiRevision;
 
         if (contract.apiVersionSet) {

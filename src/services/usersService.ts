@@ -1,17 +1,20 @@
 import { IAuthenticator } from "../authentication/IAuthenticator";
 import { MapiClient } from "./mapiClient";
-import { RouteHandler } from "@paperbits/common/routing";
+import { Router } from "@paperbits/common/routing";
 import { HttpHeader } from "@paperbits/common/http";
 import { User } from "../models/user";
 import { Utils } from "../utils";
 import { SignupRequest } from "../contracts/signupRequest";
-import { resolve } from "dns";
 import { Identity } from "../contracts/identity";
+
+const signinUrl = "/signin";
+const profileUrl = "/profile";
+const homeUrl = "/";
 
 export class UsersService {
     constructor(
         private readonly smapiClient: MapiClient,
-        private readonly routeHandler: RouteHandler,
+        private readonly router: Router,
         private readonly authenticator: IAuthenticator
     ) { }
 
@@ -36,22 +39,40 @@ export class UsersService {
         this.authenticator.clearAccessToken();
 
         if (withRedirect) {
-            this.routeHandler.navigateTo("/signin");
+            this.router.navigateTo(signinUrl);
         }
     }
 
     public async getCurrentUserId(): Promise<string> {
-        const identity = await this.smapiClient.get<Identity>("/identity");
+        try {
+            const identity = await this.smapiClient.get<Identity>("/identity");
 
-        if (!identity || !identity.id) {
-            return null;
+            if (!identity || !identity.id) {
+                return null;
+            }
+
+            return `/users/${identity.id}`;
+
         }
+        catch (error) {
+            if (error.code === "Unauthorized") {
+                return null;
+            }
 
-        return `/users/${identity.id}`;
+            if (error.code === "ResourceNotFound") {
+                return null;
+            }
+        }
     }
 
-    public isUserSignedIn(): boolean {
-        return !!this.authenticator.getAccessToken() && !!this.authenticator.getUser();
+    public async isUserSignedIn(): Promise<boolean> {
+        const userId = await this.getCurrentUserId();
+
+        if (userId) {
+            return true;
+        }
+
+        return false;
     }
 
     public async getCurrentUser(): Promise<User> {
@@ -85,7 +106,7 @@ export class UsersService {
                 return undefined;
             }
         } catch (error) {
-            this.routeHandler.navigateTo("/signin");
+            this.router.navigateTo(signinUrl);
         }
     }
 
@@ -101,7 +122,7 @@ export class UsersService {
             this.signOut();
             console.log("User was deleted");
         } catch (error) {
-            this.routeHandler.navigateTo("/signin");
+            this.router.navigateTo(signinUrl);
         }
     }
 
@@ -109,7 +130,7 @@ export class UsersService {
         try {
             console.log("requestChangeEmail is not implemented");
         } catch (error) {
-            this.routeHandler.navigateTo("/signin");
+            this.router.navigateTo(signinUrl);
         }
     }
 
@@ -117,7 +138,7 @@ export class UsersService {
         try {
             console.log("requestChangePassword is not implemented");
         } catch (error) {
-            this.routeHandler.navigateTo("/signin");
+            this.router.navigateTo(signinUrl);
         }
     }
 
@@ -125,18 +146,18 @@ export class UsersService {
         /**
          * TODO: Take user profile URL from settings.
          */
-        this.routeHandler.navigateTo("/profile");
+        this.router.navigateTo(profileUrl);
     }
 
     public navigateToSignin(): void {
         /**
          * TODO: Take sign-in URL from settings.
          */
-        this.routeHandler.navigateTo("/signin");
+        this.router.navigateTo(signinUrl);
     }
 
     public navigateToHome(): void {
-        this.routeHandler.navigateTo("/");
+        this.router.navigateTo(homeUrl);
     }
 
     public async ensureSignedIn(): Promise<void> {
