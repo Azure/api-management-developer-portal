@@ -38,13 +38,15 @@ aside {
   overflow: auto;
 }
 
-.panel {
-  padding: 30px;
-
-  .text-attention {
+.list-group-item {
+    .text-attention {
     color: #ff6a7c;
     font-weight: 500;
   }
+}
+
+.panel {
+  padding: 30px;  
 
   .text-muted {
     color: #d1c8b2;
@@ -130,7 +132,6 @@ aside {
     }
 
     file-input {
-      display: flex;
       width: 100%;
 
       .btn-group {
@@ -261,6 +262,10 @@ pre {
 
 operation-console {
   height: 100%;
+  
+  .form-control {
+      margin: 0;
+  }
 }
 
 .collapsible {
@@ -289,12 +294,7 @@ operation-console {
 .operation-header {
   display: flex;
   justify-content: space-between;
-
-  .operation-name {
-    margin: 0;
-    padding: 0;
-  }
-
+  
   .open-console-btn {
     margin-left: 10px;
     font-size: .8em;
@@ -313,22 +313,6 @@ operation-console {
       background-color: white;
     }
   }
-}
-
-.operation-content {
-  margin-top: 20px;
-}
-
-.operation-name {
-  white-space: normal;
-}
-
-.download-api {
-  margin-left: 20px;
-}
-
-.apis-dropdown {
-  margin: 10px 20px;
 }
 
 .apis-tiles {
@@ -374,4 +358,14 @@ product-list {
 
 operation-console {
   background: #2c2f3e;
+}
+
+schema-details {
+    .center {
+        width: 100%;
+        text-align: center;
+    }
+    article {
+        margin-top: 20px;
+    }
 }

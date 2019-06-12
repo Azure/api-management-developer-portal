@@ -5,7 +5,7 @@ import { TtlCache } from "./ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
 import { MapiError } from "./mapiError";
 import { IAuthenticator } from "../authentication/IAuthenticator";
-import { RouteHandler } from "@paperbits/common/routing";
+import { Router } from "@paperbits/common/routing";
 
 export interface IHttpBatchResponses {
     responses: IHttpBatchResponse[];
@@ -30,7 +30,7 @@ export class MapiClient {
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator,
         private readonly settingsProvider: ISettingsProvider,
-        private readonly routeHandler: RouteHandler
+        private readonly router: Router
     ) {
         this.ensureInitialized();
     }
@@ -105,7 +105,7 @@ export class MapiClient {
         const requestKey = this.getRequestKey(httpRequest);
 
         if (requestKey) {
-            return this.requestCache.getOrAddAsync<T>(requestKey, call, 300);
+            return this.requestCache.getOrAddAsync<T>(requestKey, call, 1000);
         }
 
         return call();
@@ -195,7 +195,7 @@ export class MapiClient {
             }
 
             if (this.environment === "production") {
-                this.routeHandler.navigateTo("/signin");
+                this.router.navigateTo("/signin");
                 return;
             }
 

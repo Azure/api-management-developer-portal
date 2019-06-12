@@ -1,6 +1,6 @@
 <!-- ko if: resettingOperation -->
 <div class="panel panel-dark fit">
-    <spinner class="fit inverted"></spinner>
+    <spinner class="fit"></spinner>
 </div>
 <!-- /ko -->
 
@@ -36,7 +36,7 @@
     <h3>Authorization</h3>
 
     <div class="row flex flex-row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label for="subscriptionKey">Subscription key</label>
         </div>
         <div class="col-md-6">
@@ -53,10 +53,10 @@
     </div>
 
     <!-- ko if: (templateParameters && templateParameters().length > 0) || (request.queryParameters && request.queryParameters().length > 0) -->
-    <h3>Parameters</h3>
+    <h4>Parameters</h4>
     <div data-bind="foreach: { data: templateParameters, as: 'parameter' }">
         <div class="row flex flex-row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <input type="text" readonly autocomplete="off" class="form-control form-control-sm" placeholder="name"
                     spellcheck="false"
                     data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.name, valueUpdate: 'keyup'">
@@ -68,10 +68,9 @@
             </div>
         </div>
     </div>
-
     <div data-bind="foreach: { data: request.queryParameters, as: 'parameter' }">
         <div class="row flex flex-row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
                     spellcheck="false" data-bind="textInput: parameter.name, valueUpdate: 'keyup'">
             </div>
@@ -80,8 +79,15 @@
                     spellcheck="false"
                     data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
             </div>
+            <div class="col-md-2 button-remove">
+                <a href="#" data-bind="click: $component.removeQueryParameter">Remove</a>
+            </div>
         </div>
     </div>
+    <a href="#" class="button-add" role="button" data-bind="click: $component.addQueryParameter" >
+        <i class="icon icon-plus"></i>
+        Add parameter
+    </a>
 
     <!-- /ko -->
 
@@ -90,7 +96,7 @@
 
     <div data-bind="foreach: { data: request.headers, as: 'header' }">
         <div class="row flex flex-row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
                     spellcheck="false" data-bind="textInput: header.name, valueUpdate: 'keyup'">
             </div>
@@ -99,17 +105,24 @@
                     spellcheck="false"
                     data-bind="event: { keyup: $component.updateRequestSummary }, textInput: header.value, valueUpdate: 'keyup'">
             </div>
+            <div class="col-md-2 button-remove">
+                <a href="#" data-bind="click: $component.removeHeader">Remove</a>
+            </div>
         </div>
     </div>
+
+    <a href="#" class="button-add" role="button" data-bind="click: $component.addHeader">
+        <i class="icon icon-plus"></i> Add header
+    </a>
 
     <!-- /ko -->
 
     <div data-bind="if: hasBody">
-        <h3>
-            Body
-            <div class="btn-group float-right" role="group" style="margin-right: 10px">
-                <button type="button" class="button btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
+        <div class="row">
+            <h3 class="console-body">Body</h3>
+            <div class="button-body" role="group">
+                <button type="button" class="button dropdown-toggle button-default" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
                     <span data-bind="text: $component.bodySource"></span>
                 </button>
                 <div class="dropdown-menu">
@@ -118,10 +131,10 @@
                         data-bind="click: $component.bodySource.bind(this, 'Binary')">Binary</a>
                 </div>
             </div>
-        </h3>
+        </div>
 
         <div class="clearfix"></div>
-        <div class="row ">
+        <div class="row">
             <div class="col-md-12">
                 <!-- ko if: $component.bodySource() === 'Raw' -->
                 <textarea class="form-control form-control-sm" rows="9"
@@ -177,7 +190,8 @@
     </ul>
 
     <h3>HTTP request</h3>
-    <pre data-bind="codesample: { template: templates[selectedLanguage()], model: consoleOperation, language: selectedLanguage }"></pre>
+    <pre
+        data-bind="codesample: { template: templates[selectedLanguage()], model: consoleOperation, language: selectedLanguage }"></pre>
 
     <div class="flex flex-column align-items-end">
         <div class="btn-group" role="group">
@@ -197,7 +211,7 @@
 
 <!-- ko if: sendingRequest-->
 <div class="panel panel-dark" data-bind="scrollintoview: {}">
-    <spinner class="fit inverted"></spinner>
+    <spinner class="fit"></spinner>
 </div>
 <!-- /ko -->
 
@@ -224,7 +238,9 @@
     <!-- ko if: responseActiveTab() === "message" -->
 
     <h3>HTTP response</h3>
-    <pre><span>HTTP/1.1</span> <span data-bind="attr: { 'data-code': responseStatusCode  }"><span data-bind="text: responseStatusCode, attr: { 'data-code':responseStatusCode  }"></span> <span data-bind="text: responseStatusText"></span></span><span data-bind="text: responseHeadersString"></span><span data-bind="text: responseBody"></span></pre>
+    <pre><span>HTTP/1.1</span> <span data-bind="attr: { 'data-code': responseStatusCode  }"><span data-bind="text: responseStatusCode, attr: { 'data-code':responseStatusCode  }"></span> <span data-bind="text: responseStatusText"></span></span>
+
+<span data-bind="text: responseHeadersString"></span><span data-bind="text: responseBody"></span></pre>
 
     <!--/ko-->
 

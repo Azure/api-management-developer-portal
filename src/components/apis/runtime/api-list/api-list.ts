@@ -5,7 +5,7 @@ import { Component, RuntimeComponent, Param, OnMounted } from "@paperbits/common
 import { Utils } from "../../../../utils";
 import { TagService } from "../../../../services/tagService";
 import { ApiService } from "../../../../services/apiService";
-import { DefaultRouteHandler, Route } from "@paperbits/common/routing";
+import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { Api } from "../../../../models/api";
 
 @RuntimeComponent({ selector: "api-list" })
@@ -26,7 +26,7 @@ export class ApiList {
     constructor(
         private readonly apiService: ApiService,
         private readonly tagService: TagService,
-        private readonly routeHandler: DefaultRouteHandler
+        private readonly router: DefaultRouter
     ) {
         this.apis = ko.observableArray([]);
         this.itemStyleView = ko.observable();
@@ -37,17 +37,15 @@ export class ApiList {
         this.applySelectedApi = this.applySelectedApi.bind(this);
         this.selectFirst = this.selectFirst.bind(this);
         this.selectionChanged = this.selectionChanged.bind(this);
-
-
     }
 
     @Param()
     public itemStyleView: ko.Observable<string>;
 
     @OnMounted()
-    public async init() {
-        await this.loadApis(this.routeHandler.getCurrentRoute());
-        this.routeHandler.addRouteChangeListener(this.loadApis);
+    public async initialize(): Promise<void> {
+        await this.loadApis(this.router.getCurrentRoute());
+        this.router.addRouteChangeListener(this.loadApis);
     }
 
     public itemHeight: ko.Observable<string>;
@@ -61,7 +59,7 @@ export class ApiList {
             if (this.queryParams.has("apiId")) {
                 if (this.apis().length === 0) {
                     await this.searchApis();
-                }  
+                }
                 this.applySelectedApi();
                 return;
             }
@@ -73,42 +71,46 @@ export class ApiList {
             return;
         }
         await this.searchApis();
-        
+
         this.selectFirst();
     }
 
-    private applySelectedApi() {
+    private applySelectedApi(): void {
         const currentId = this.selectedId();
         const selectedId = this.queryParams.get("apiId");
-        if(selectedId === currentId) {
+        if (selectedId === currentId) {
             return;
         }
         this.selectedId(selectedId);
-        if (this.itemStyleView() === "dropdown" &&this.dropDownId() !== selectedId) {
+
+        if (this.itemStyleView() === "dropdown" && this.dropDownId() !== selectedId) {
             this.dropDownId(selectedId);
         }
+        
         this.queryParams.set("apiId", selectedId);
-        this.routeHandler.navigateTo("#?" + this.queryParams.toString());        
+        this.router.navigateTo("#?" + this.queryParams.toString());
     }
 
-    public selectionChanged(change, event) {
-        if (event.originalEvent) { //user changed
+    public selectionChanged(change, event): void {
+        if (event.originalEvent) { // user changed
             const currentId = this.queryParams.get("apiId");
             const selectedId = this.dropDownId();
-            if(selectedId === currentId) {
+            if (selectedId === currentId) {
                 return;
             }
             this.queryParams.set("apiId", selectedId);
             this.queryParams.delete("operationId");
-            this.routeHandler.navigateTo("#?" + this.queryParams.toString());   
+            this.router.navigateTo("#?" + this.queryParams.toString());
         }
     }
 
-    private selectFirst() {
+    private selectFirst(): void {
         if (this.itemStyleView() === "tiles" || this.queryParams.has("apiId")) {
             return;
         }
+
         const list = this.apis();
+
         if (list.length > 0) {
             const selectedId = list[0].name;
             this.queryParams.set("apiId", selectedId);
@@ -150,5 +152,9 @@ export class ApiList {
         const groups = Utils.groupBy(versionedApis, x => x.apiVersionSet.id);
         result.push(...groups.map(g => g[g.length - 1]));
         return result;
+    }
+
+    public dispose(): void {
+        this.router.removeRouteChangeListener(this.loadApis);
     }
 }

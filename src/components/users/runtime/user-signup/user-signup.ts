@@ -3,10 +3,8 @@ import * as validation from "knockout.validation";
 import template from "./user-signup.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../services/usersService";
-import { TenantService } from "../../../../services/tenantService";
 import { TenantSettings } from "../../../../contracts/tenantSettings";
 import { SignupRequest } from "../../../../contracts/signupRequest";
-import { RouteHandler } from "@paperbits/common/routing";
 
 @RuntimeComponent({ selector: "user-signup" })
 @Component({
@@ -31,11 +29,7 @@ export class UserSignup {
     public serverErrors: ko.Observable<string>;
     public working: ko.Observable<boolean>;
 
-    constructor(
-        private readonly usersService: UsersService,
-        private readonly tenantService: TenantService,
-        private readonly routeHandler: RouteHandler) {
-
+    constructor(private readonly usersService: UsersService) {
         this.email = ko.observable("");
         this.userPassword = ko.observable("");
         this.userConfirmPassword = ko.observable("");
@@ -52,11 +46,14 @@ export class UserSignup {
     }
 
     @OnMounted()
-    public async init(): Promise<void> {
-        if (this.usersService.isUserSignedIn()) {
-            this.isUserLoggedIn(true);
+    public async initialize(): Promise<void> {
+        const isUserSignedIn = await this.usersService.isUserSignedIn();
+
+        if (isUserSignedIn) {
+            this.usersService.navigateToHome();
             return;
         }
+
         // const settings = await this.tenantService.getSettings();
         const settings = {
             userRegistrationTerms: "Test userRegistrationTerms!!!",
@@ -85,18 +82,11 @@ export class UserSignup {
         this.lastName.extend(<any>{ required: true });
     }
 
-    public navigateToHome(): void {
-        this.usersService.navigateToHome();
-    }
-
-    public login(): void {
-        this.usersService.navigateToSignin();
-    }
-
     public async signup(): Promise<void> {
         this.serverErrors(null);
-        
+
         const result = validation.group(this);
+
         if (result().length !== 0) {
             result.showAllMessages();
             return;
@@ -106,8 +96,6 @@ export class UserSignup {
             email: this.email(),
             firstName: this.firstName(),
             lastName: this.lastName(),
-            // providerName: "Basic",
-            // nameIdentifier: undefined,
             password: this.userPassword(),
             confirmation: "signup",
             appType: "developerPortal"

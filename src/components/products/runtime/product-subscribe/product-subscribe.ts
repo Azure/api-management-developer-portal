@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import template from "./product-subscribe.html";
-import { RouteHandler } from "@paperbits/common/routing";
+import { Router } from "@paperbits/common/routing";
 import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { Utils } from "../../../../utils";
 import { Product } from "../../../../models/product";
@@ -32,7 +32,7 @@ export class ProductSubscribe {
     constructor(
         private readonly usersService: UsersService,
         private readonly productService: ProductService,
-        private readonly routeHandler: RouteHandler
+        private readonly router: Router
     ) {
         this.product = ko.observable();
         this.showTermsOfUse = ko.observable();
@@ -62,12 +62,13 @@ export class ProductSubscribe {
 
     @OnMounted()
     public async initialize(): Promise<void> {
+        this.router.addRouteChangeListener(this.loadProduct);
+
         await this.loadProduct();
-        this.routeHandler.addRouteChangeListener(this.loadProduct);
     }
 
     private getProductId(): string {
-        const route = this.routeHandler.getCurrentRoute();
+        const route = this.router.getCurrentRoute();
         const queryParams = new URLSearchParams(route.hash);
         const productId = queryParams.get("productId");
 
@@ -108,10 +109,14 @@ export class ProductSubscribe {
                 return;
             }
 
-            console.error(error);
+            if (error.code === "ResourceNotFound") {
+                return;
+            }
 
             // TODO: Uncomment when API is in place:
             // this.notify.error("Oops, something went wrong.", "We're unable to add subscription. Please try again later.");
+
+            throw error;
         }
         finally {
             this.working(false);
@@ -145,22 +150,39 @@ export class ProductSubscribe {
         if (!this.canSubscribe()) {
             return;
         }
-        
+
         this.working(true);
 
         const userId = await this.usersService.getCurrentUserId();
 
-        if (userId && this.subscriptionName() !== "") {
-            const subscriptionId = `/subscriptions/${Utils.getBsonObjectId()}`;
-            await this.productService.createUserSubscription(subscriptionId, userId, this.product().id, this.subscriptionName());
-
-            this.usersService.navigateToProfile();
-        }
-        else {
+        if (!userId) {
             this.usersService.navigateToSignin();
         }
 
-        this.working(true);
+        if (!this.subscriptionName()) {
+            return;
+        }
+
+        const subscriptionId = `/subscriptions/${Utils.getBsonObjectId()}`;
+
+        try {
+            await this.productService.createUserSubscription(subscriptionId, userId, this.product().id, this.subscriptionName());
+            this.usersService.navigateToProfile();
+        }
+        catch (error) {
+            if (error.code === "Unauthorized") {
+                this.usersService.navigateToSignin();
+                return;
+            }
+
+            // TODO: Uncomment when API is in place:
+            // this.notify.error("Oops, something went wrong.", "We're unable to load products. Please try again later.");
+
+            throw error;
+        }
+        finally {
+            this.working(false);
+        }
     }
 
     public toggleTermsOfUser(): void {
@@ -172,5 +194,9 @@ export class ProductSubscribe {
             this.showHideLabel("Hide");
         }
         this.showTermsOfUse(!this.showTermsOfUse());
+    }
+
+    public dispose(): void {
+        this.router.removeRouteChangeListener(this.loadProduct);
     }
 }
