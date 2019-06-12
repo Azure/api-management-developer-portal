@@ -11,13 +11,14 @@ export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApi
         }
 
         viewModel["widgetBinding"] = {
-            name: "List of APIs",
+            displayName: "API: Details",
             model: model,
+            editor: "details-of-api-editor",
             applyChanges: async (updatedModel: DetailsOfApiModel) => {
                 Object.assign(model, updatedModel);
                 this.modelToViewModel(model, viewModel, bindingContext);
             }
-        }
+        };
 
         return viewModel;
     }

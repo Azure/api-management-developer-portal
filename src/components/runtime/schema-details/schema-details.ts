@@ -11,6 +11,7 @@ import { Api } from "../../../models/api";
     injectable: "schemaDetails"
 })
 export class SchemaDetails {
+    public readonly working: ko.Observable<boolean>;
     public definitions: ko.ObservableArray<SchemaObject>;
 
     @Param()
@@ -23,6 +24,7 @@ export class SchemaDetails {
 
         this.schemas = ko.observableArray();
         this.definitions = ko.observableArray([]);
+        this.working = ko.observable(true);
     }
 
     @OnMounted()
@@ -31,6 +33,7 @@ export class SchemaDetails {
     }
 
     private async loadSchemas(): Promise<void> {
+        this.working(true);
         this.definitions([]);
 
         const ids = this.schemas();
@@ -40,5 +43,6 @@ export class SchemaDetails {
         // flatten schemas into list of schema objects
         const definitions = schemas.reduce((accumulator, currentValue) => accumulator.concat(currentValue.definitions), []);
         this.definitions(definitions);
+        this.working(false);
     }
 }

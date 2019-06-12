@@ -1,26 +1,33 @@
+<!-- ko if: working -->
+<spinner class="center"></spinner>
+<!-- /ko -->
+
+<!-- ko ifnot: working -->
 <!-- ko if: definitions().length > 0 -->
 <article>
-    <h2>Schemas</h2>
+    <h3>Definitions</h3>
 
-    <div data-bind="foreach: { data: definitions, as: 'definition' }">
-        <h3 class="text-word-break" data-bind="text: definition.name, attr: { id: definition.name }"></h3>
+    <!-- ko foreach: { data: definitions, as: 'definition' } -->
 
-        <!-- ko if: definition.description -->
-        <p data-bind="markdown: definition.description">Pet object that needs to be added to the store</p>
-        <!-- /ko -->
+    <h4 class="text-word-break" data-bind="text: definition.name, attr: { id: definition.name }"></h4>
 
-        <!-- ko if: (definition.properties && definition.properties.length > 0) -->
-        <ul class="list-group">
-            <li class="list-group-item" data-bind="foreach: { data: definition.properties, as: 'property' }">
-                <div class="row flex flex-row">
-                    <div class="col-md-3 text-attention" data-bind="text: property.name"></div>
-                    <div class="col-md-6 text-word-break" data-bind="markdown: property.description"></div>
-                    <div class="col-md-3 text-nowrap text-mute" data-bind="schemaobjecttype: property"></div>
-                </div>
-            </li>
-        </ul>
-        <!-- /ko -->
-    </div>
+    <!-- ko if: definition.description -->
+    <p data-bind="markdown: definition.description">Pet object that needs to be added to the store</p>
+    <!-- /ko -->
+
+    <!-- ko if: (definition.properties && definition.properties.length > 0) -->
+    <ul class="list-group">
+        <li class="list-group-item" data-bind="foreach: { data: definition.properties, as: 'property' }">
+            <div class="flex flex-row">
+                <div class="col-md-3 text-attention" data-bind="text: property.name"></div>
+                <div class="col-md-6 text-word-break" data-bind="markdown: property.description"></div>
+                <div class="col-md-3 text-nowrap text-mute" data-bind="schemaobjecttype: property"></div>
+            </div>
+        </li>
+    </ul>
+    <!-- /ko -->
+    <!-- /ko -->
+
 </article>
-
+<!-- /ko -->
 <!-- /ko -->

@@ -3,7 +3,7 @@ import template from "./operation-details.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { Operation } from "../../../../models/operation";
 import { ApiService } from "../../../../services/apiService";
-import { DefaultRouteHandler, Route } from "@paperbits/common/routing";
+import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { Api } from "../../../../models/api";
 import { Utils } from "../../../../utils";
 
@@ -26,7 +26,7 @@ export class OperationDetails {
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly routeHandler: DefaultRouteHandler
+        private readonly router: DefaultRouter
     ) {
         this.api = ko.observable();
         this.schemas = ko.observableArray([]);
@@ -41,8 +41,8 @@ export class OperationDetails {
 
     @OnMounted()
     public async init() {
-        await this.loadOperation(this.routeHandler.getCurrentRoute());
-        this.routeHandler.addRouteChangeListener(this.loadOperation);
+        await this.loadOperation(this.router.getCurrentRoute());
+        this.router.addRouteChangeListener(this.loadOperation);
     }
 
     public async loadOperation(route?: Route): Promise<void> {
@@ -97,6 +97,9 @@ export class OperationDetails {
         if (operation) {
             this.operation(operation);
             this.getSchemas();
+            if (this.selectedOperation()) {
+                this.openConsole();
+            }
         } else {
             this.cleanSelection();
         }
@@ -131,5 +134,9 @@ export class OperationDetails {
 
     public closeConsole(): void {
         this.selectedOperation(null);
+    }
+
+    public dispose(): void {
+        this.router.removeRouteChangeListener(this.loadOperation);
     }
 }

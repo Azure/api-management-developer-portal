@@ -1,8 +1,9 @@
+import "@paperbits/core/ko/bindingHandlers/bindingHandlers.component";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { DefaultEventManager } from "@paperbits/common/events";
 import { XmlHttpRequestClient } from "@paperbits/common/http";
 import { SettingsProvider } from "@paperbits/common/configuration";
-import { DefaultRouteHandler, DefaultRouteGuard } from "@paperbits/common/routing";
+import { DefaultRouter, DefaultRouteGuard } from "@paperbits/common/routing";
 import { KnockoutRegistrationLoaders } from "@paperbits/core/ko/knockout.loaders";
 import { ApiList } from "./components/apis/runtime/api-list/api-list";
 import { ApiService } from "./services/apiService";
@@ -31,14 +32,14 @@ import { OperationList } from "./components/operations/runtime/operation-list/op
 import { ProductSubscriptions } from "./components/products/runtime/product-subscriptions/product-subscriptions";
 
 
-
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindModule(new KnockoutRegistrationLoaders());
         injector.bindSingleton("eventManager", DefaultEventManager);
+        injector.bindCollection("autostart");
         injector.bindCollection("routeGuards");
         injector.bindToCollection("routeGuards", AccessTokenRouteGuard);
-        injector.bindSingleton("routeHandler", DefaultRouteHandler);
+        injector.bindSingleton("router", DefaultRouter);
         injector.bind("apiList", ApiList);
         injector.bind("apiDetails", ApiDetails);
         injector.bind("operationDetails", OperationDetails);
