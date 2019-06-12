@@ -1,12 +1,10 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { IWidgetHandler, IContentDropHandler } from "@paperbits/common/editing";
 import { DetailsOfApiHandlers } from "../detailsOfApiHandlers";
+import { DetailsOfApiEditor } from "./detailsOfApiEditor";
 
 export class DetailsOfApiEditorModule implements IInjectorModule {
-    register(injector: IInjector): void {
-        injector.bindSingleton("detailsOfApiHandlers", DetailsOfApiHandlers);
-
-        const widgetHandlers:Array<IWidgetHandler> = injector.resolve("widgetHandlers");
-        widgetHandlers.push(injector.resolve<DetailsOfApiHandlers>("detailsOfApiHandlers"));
+    public register(injector: IInjector): void {
+        injector.bind("detailsOfApiEditor", DetailsOfApiEditor);
+        injector.bindToCollection("widgetHandlers", DetailsOfApiHandlers, "detailsOfApiHandlers");
     }
 }

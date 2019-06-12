@@ -3,11 +3,13 @@
 @import "icons.scss";
 
 .list {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
     padding: 0;
     margin: 0;
     height: 100%;
     width: 100%;
-
 
     .list-item {
         line-height: $list-item-size;
@@ -16,6 +18,7 @@
         vertical-align: middle;
         display: flex;
         flex-wrap: wrap;
+        flex-basis: 100%;
 
         .paperbits-icon {
             padding: 0 5px 0 10px;
@@ -92,14 +95,9 @@
         }
 
         &.list-item-image {
-            float: left;
-            margin: 3px;
             @include pseudo-transparent-bckg();
-        }
-
-        &.list-item-float {
-            float: left;
-            margin: 0;
+            margin: 3px;
+            flex-basis: auto;
         }
 
         &.list-item-large {
@@ -107,6 +105,9 @@
             width: 130px;
             text-align: center;
             padding: 5px;
+            line-height: 1.5em;
+            margin-bottom: 15px;
+            flex-basis: auto;
 
             a {
                 display: inline-block;
