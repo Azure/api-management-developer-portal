@@ -207,7 +207,19 @@ export class ApiService {
         return page;
     }
 
+    private lastApiProducts = {};
+
     public async getAllApiProducts(apiId: string): Promise<Page<Product>> {
+        let cachedApi = this.lastApiProducts[apiId];
+        if (!cachedApi) {
+            // clean cache if apiId changed
+            if (Object.keys(this.lastApiProducts).length > 0) {
+                this.lastApiProducts = {};
+            }
+        } else {
+            return cachedApi;
+        }
+
         const result = [];
         const pageOfProducts = await this.smapiClient.get<Page<ProductContract>>(`${apiId}/products`);
 
@@ -219,6 +231,8 @@ export class ApiService {
         page.value = result;
         page.count = pageOfProducts.count;
         // page.nextPage = pageOfProductContracts.nextPage;
+
+        this.lastApiProducts[apiId] = page;
         return page;
     }
 

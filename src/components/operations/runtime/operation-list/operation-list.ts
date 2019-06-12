@@ -3,7 +3,7 @@ import template from "./operation-list.html";
 import { SearchRequest } from "./searchRequest";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { ApiService } from "../../../../services/apiService";
-import { DefaultRouteHandler, Route } from "@paperbits/common/routing";
+import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { Operation } from "../../../../models/operation";
 
 @RuntimeComponent({ selector: "operation-list" })
@@ -24,7 +24,7 @@ export class OperationList {
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly routeHandler: DefaultRouteHandler
+        private readonly router: DefaultRouter
     ) {
         this.operations = ko.observableArray([]);
         this.working = ko.observable();
@@ -34,11 +34,11 @@ export class OperationList {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        const route = this.routeHandler.getCurrentRoute();
+        const route = this.router.getCurrentRoute();
 
         this.loadOperations(route);
 
-        this.routeHandler.addRouteChangeListener(this.loadOperations);
+        this.router.addRouteChangeListener(this.loadOperations);
     }
 
     public async loadOperations(route?: Route): Promise<void> {
@@ -127,8 +127,12 @@ export class OperationList {
                 const selectProductId = list[0].shortId;
                 this.selectedId(selectProductId);
                 this.queryParams.set("operationId", selectProductId);
-                this.routeHandler.navigateTo("#?" + this.queryParams.toString());
+                this.router.navigateTo("#?" + this.queryParams.toString());
             }
         }
+    }
+
+    public dispose(): void {
+        this.router.removeRouteChangeListener(this.loadOperations);
     }
 }
