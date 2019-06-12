@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import template from "./product-subscriptions.html";
 import { Subscription } from "../../../../models/subscription";
-import { RouteHandler } from "@paperbits/common/routing";
+import { Router } from "@paperbits/common/routing";
 import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { ProductService } from "../../../../services/productService";
 import { UsersService } from "../../../../services/usersService";
@@ -19,7 +19,7 @@ export class ProductSubscriptions {
     constructor(
         private readonly usersService: UsersService,
         private readonly productService: ProductService,
-        private readonly routeHandler: RouteHandler
+        private readonly router: Router
     ) {
         this.working = ko.observable();
         this.subscriptions = ko.observableArray();
@@ -28,12 +28,14 @@ export class ProductSubscriptions {
     @OnMounted()
     public async initialize(): Promise<void> {
         await this.usersService.ensureSignedIn();
+
+        this.router.addRouteChangeListener(this.loadProductSubscriptions);
+
         await this.loadProductSubscriptions();
-        this.routeHandler.addRouteChangeListener(this.loadProductSubscriptions);
     }
 
     private getProductId(): string {
-        const route = this.routeHandler.getCurrentRoute();
+        const route = this.router.getCurrentRoute();
         const queryParams = new URLSearchParams(route.hash);
         const productId = queryParams.get("productId");
 
@@ -59,14 +61,22 @@ export class ProductSubscriptions {
                 this.usersService.navigateToSignin();
                 return;
             }
-            
-            console.error(error);
+
+            if (error.code === "ResourceNotFound") {
+                return;
+            }
 
             // TODO: Uncomment when API is in place:
             // this.notify.error("Oops, something went wrong.", "We're unable to add subscription. Please try again later.");
+
+            throw error;
         }
         finally {
             this.working(false);
         }
     }
+
+    public dispose(): void {
+        this.router.removeRouteChangeListener(this.loadProductSubscriptions);
+    }    
 }
