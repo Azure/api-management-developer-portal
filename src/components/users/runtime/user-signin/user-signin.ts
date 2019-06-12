@@ -1,9 +1,9 @@
 import * as ko from "knockout";
 import template from "./user-signin.html";
-import { Component, RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../services/usersService";
 import { MapiError } from "../../../../services/mapiError";
-import { RouteHandler } from "@paperbits/common/routing";
+
 
 @RuntimeComponent({ selector: "user-signin" })
 @Component({
@@ -26,14 +26,26 @@ export class UserSignin {
         this.working = ko.observable(false);
 
         this.signinClick = this.signinClick.bind(this);
-        this.checkUser();
     }
 
-    private async checkUser(): Promise<void> {
-        const userId = await this.usersService.getCurrentUserId();
+    @OnMounted()
+    public async initialize(): Promise<void> {
+        try {
+            const userId = await this.usersService.getCurrentUserId();
 
-        if (userId) {
-            this.navigateToHome();
+            if (userId) {
+                this.navigateToHome();
+            }
+
+        }
+        catch (error) {
+            if (error.code === "Unauthorized") {
+                return;
+            }
+
+            if (error.code === "ResourceNotFound") {
+                return;
+            }
         }
     }
 

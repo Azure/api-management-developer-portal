@@ -20,6 +20,7 @@ import { ServiceSkuName, TypeOfApi } from "../../../../constants";
 import { HttpClient, HttpRequest } from "@paperbits/common/http";
 import { Revision } from "../../../../models/revision";
 import { templates } from "../templates/templates";
+import { ConsoleParameter } from "../../../../models/console/consoleParameter";
 
 @Component({
     selector: "operation-console",
@@ -162,7 +163,6 @@ export class OperationConsole {
             this.setVersionHeader();
         }
 
-        await this.loadProducts();
         await this.loadSubscriptionKeys();
 
         this.updateRequestSummary();
@@ -196,23 +196,6 @@ export class OperationConsole {
         this.consoleOperation().urlTemplate = "";
     }
 
-    private async loadProducts(): Promise<boolean> {
-        this.apiProductsView = "loading";
-
-        const pageOfProducts = await this.apiService.getAllApiProducts(this.api().id);
-
-        this.products(pageOfProducts.value);
-
-        if (this.products.length > 0) {
-            this.apiProductsView = "loaded";
-        }
-        else {
-            this.apiProductsView = "none";
-        }
-
-        return true;
-    }
-
     private async loadSubscriptionKeys(): Promise<void> {
         this.subscriptionKeysView = "loading";
 
@@ -226,11 +209,12 @@ export class OperationConsole {
             return;
         }
 
-        const userId = await this.usersService.getCurrentUserId();
-
-        if (!userId) {
+        const isLogged = await this.usersService.isUserSignedIn();
+        if (!isLogged) {
             return;
         }
+
+        const userId = await this.usersService.getCurrentUserId();
 
         const pageOfSubscriptions = await this.productService.getSubscriptions(userId);
         const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === "active");
@@ -272,6 +256,23 @@ export class OperationConsole {
             this.subscriptionKeysView = "none";
         }
     }
+
+    public addHeader(): void {
+        this.consoleOperation().request.headers.push(new ConsoleHeader());
+    }
+
+    public removeHeader(header: ConsoleHeader): void {
+        this.consoleOperation().request.headers.remove(header);
+    }
+
+    public addQueryParameter(): void {
+        this.consoleOperation().request.queryParameters.push(new ConsoleParameter());
+    }
+
+    public removeQueryParameter(parameter:ConsoleParameter): void {
+        this.consoleOperation().request.queryParameters.remove(parameter);
+    }
+    
 
     public applySubscriptionKey(subscriptionKey: string): void {
         if (!subscriptionKey) {

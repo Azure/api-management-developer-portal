@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import template from "./product-list.html";
-import { RouteHandler } from "@paperbits/common/routing";
+import { Router } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { Utils } from "../../../../utils";
 import { Product } from "../../../../models/product";
@@ -23,7 +23,7 @@ export class ProductList {
     constructor(
         private readonly usersService: UsersService,
         private readonly productService: ProductService,
-        private readonly routeHandler: RouteHandler
+        private readonly router: Router
     ) {
         this.products = ko.observableArray();
         this.selectedProductId = ko.observable();
@@ -35,7 +35,7 @@ export class ProductList {
         await this.usersService.ensureSignedIn();
         await this.loadProducts();
 
-        this.routeHandler.addRouteChangeListener(this.onRouteChange);
+        this.router.addRouteChangeListener(this.onRouteChange);
     }
 
     private async loadProducts(): Promise<void> {
@@ -61,10 +61,10 @@ export class ProductList {
                 return;
             }
 
-            console.error(error);
-
             // TODO: Uncomment when API is in place:
             // this.notify.error("Oops, something went wrong.", "We're unable to load products. Please try again later.");
+
+            throw error;
         }
         finally {
             this.working(false);
@@ -72,7 +72,7 @@ export class ProductList {
     }
 
     private getProductId(): string {
-        const route = this.routeHandler.getCurrentRoute();
+        const route = this.router.getCurrentRoute();
         const queryParams = new URLSearchParams(route.hash);
         const productId = queryParams.get("productId");
 
@@ -91,15 +91,19 @@ export class ProductList {
 
     private selectProduct(productId: string): void {
         const productName = Utils.getResourceName("products", productId);
-        const route = this.routeHandler.getCurrentRoute();
+        const route = this.router.getCurrentRoute();
         const queryParams = new URLSearchParams(route.hash);
 
         queryParams.set("productId", productName);
 
-        this.routeHandler.navigateTo("#?" + queryParams.toString());
+        this.router.navigateTo("#?" + queryParams.toString());
     }
 
     public getProductUrl(product: Product): string {
         return product.id.replace("/products/", "#?productId=");
     }
+
+    public dispose(): void {
+        this.router.removeRouteChangeListener(this.onRouteChange);
+    }    
 }
