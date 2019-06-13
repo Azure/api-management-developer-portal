@@ -1,18 +1,22 @@
 import { Utils } from "../utils";
 import { IAuthenticator } from "../authentication/IAuthenticator";
+import { Router } from "@paperbits/common/routing";
 
 export class DefaultAuthenticator implements IAuthenticator {
+    constructor(private readonly router: Router) {}
+
     public getAccessToken(): string {
         let accessToken = null;
 
         if (location.pathname.startsWith("/signin-sso")) {
             accessToken = "SharedAccessSignature " + location.href.split("?token=").pop();
             this.setAccessToken(accessToken);
+            this.router.navigateTo("/");
         }
         else {
             accessToken = sessionStorage.getItem("accessToken");
         }
-        
+
         // Uncomment when swithed to ARM contracts:
         //
         // const decodedToken = Utils.parseJwt(accessToken);
