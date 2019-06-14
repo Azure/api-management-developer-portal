@@ -1,6 +1,6 @@
 const https = require("https");
 const storage = require("azure-storage");
-const serviceName = process.argv[2];
+const managementEndpoint = process.argv[2];
 const accessToken = process.argv[3];
 const connectionString = process.argv[4];
 const containerName = "content";
@@ -67,14 +67,14 @@ async function listFilesInContainer() {
 }
 
 async function getContentTypes() {
-    const data = await request("GET", `https://${serviceName}.management.azure-api.net/contentTypes?api-version=2018-06-01-preview`);
+    const data = await request("GET", `https://${managementEndpoint}/contentTypes?api-version=2018-06-01-preview`);
     const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
 
     return contentTypes;
 }
 
 async function getContentItems(contentType) {
-    const data = await request("GET", `https://${serviceName}.management.azure-api.net/contentTypes/${contentType}/contentItems?api-version=2018-06-01-preview`);
+    const data = await request("GET", `https://${managementEndpoint}/contentTypes/${contentType}/contentItems?api-version=2018-06-01-preview`);
     const contentItems = data.value;
 
     return contentItems;
@@ -87,7 +87,7 @@ async function deleteContent() {
         const contentItems = await getContentItems(contentType);
 
         for (const contentItem of contentItems) {
-            await request("DELETE", `https://${serviceName}.management.azure-api.net${contentItem.id}?api-version=2018-06-01-preview`);
+            await request("DELETE", `https://${managementEndpoint}${contentItem.id}?api-version=2018-06-01-preview`);
         }
     }
 }
