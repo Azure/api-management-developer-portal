@@ -1,5 +1,5 @@
-set service_name="service name"
+set management_endpoint="< service name >.management.azure-api.net"
 set access_token="SharedAccessSignature ..."
 set connection_string="DefaultEndpointsProtocol=..."
 
-node ./cleanup %service_name% %access_token% %connection_string%
+node ./cleanup %management_endpoint% %access_token% %connection_string%
