@@ -9,15 +9,15 @@ module.exports = merge(designerConfig, {
     mode: "production",
     optimization: {
         minimizer: [
-            // new TerserPlugin({
-            //     terserOptions: {
-            //         sourceMap: false,
-            //         mangle: false,
-            //         output: {
-            //             comments: false,
-            //         }
-            //     }
-            // })
+            new TerserPlugin({
+                sourceMap: false,
+                terserOptions: {
+                    mangle: false,
+                    output: {
+                        comments: false,
+                    }
+                }
+            })
         ]
     },
     plugins: [
