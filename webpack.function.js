@@ -29,8 +29,8 @@ const functionConfig = {
     optimization: {
         minimizer: [
             new TerserPlugin({
+                sourceMap: false,
                 terserOptions: {
-                    sourceMap: false,
                     mangle: false,
                     output: {
                         comments: false,

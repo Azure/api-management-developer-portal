@@ -1,6 +1,5 @@
-set service_name="service name"
+set management_endpoint="< service name >.management.azure-api.net"
 set access_token="SharedAccessSignature ..."
 set connection_string="DefaultEndpointsProtocol=..."
 
-node ./generate %service_name% %access_token%
-node ./upload %connection_string%
+node ./generate %management_endpoint% %access_token%
