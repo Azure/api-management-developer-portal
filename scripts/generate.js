@@ -1,6 +1,6 @@
 const fs = require("fs");
 const https = require("https");
-const serviceName = process.argv[2]
+const managementEndpoint = process.argv[2]
 const accessToken = process.argv[3]
 
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
@@ -53,7 +53,7 @@ async function restore() {
     const keys = Object.keys(dataObj);
 
     for (const key of keys) {
-        await request(`https://${serviceName}.management.azure-api.net${key}?api-version=2018-06-01-preview`, JSON.stringify(dataObj[key]));
+        await request(`https://${managementEndpoint}${key}?api-version=2018-06-01-preview`, JSON.stringify(dataObj[key]));
     }
 }
 
