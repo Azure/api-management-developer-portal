@@ -16,7 +16,7 @@ export class ProductApisModelBinder implements IModelBinder<ProductApisModel> {
         return new ProductApisModel();
     }
 
-    public modelToContract(searchResultModel: ProductApisModel): Contract {
+    public modelToContract(model: ProductApisModel): Contract {
         const contract: ProductApisContract = {
             type: "product-apis"
         };
