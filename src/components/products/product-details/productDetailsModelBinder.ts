@@ -5,7 +5,8 @@ import { ProductDetailsContract } from "./productDetailsContract";
 
 export class ProductDetailsModelBinder implements IModelBinder<ProductDetailsModel> {
     public canHandleContract(contract: Contract): boolean {
-        return contract.type === "productDetails";
+        return contract.type === "product-details"
+            || contract.type === "productDetails"; // for backward compatibility
     }
 
     public canHandleModel(model: Object): boolean {
@@ -16,9 +17,9 @@ export class ProductDetailsModelBinder implements IModelBinder<ProductDetailsMod
         return new ProductDetailsModel();
     }
 
-    public modelToContract(searchResultModel: ProductDetailsModel): Contract {
+    public modelToContract(model: ProductDetailsModel): Contract {
         const contract: ProductDetailsContract = {
-            type: "productDetails"
+            type: "product-details"
         };
 
         return contract;

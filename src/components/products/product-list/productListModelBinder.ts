@@ -9,16 +9,17 @@ export class ProductListModelBinder implements IModelBinder<ProductListModel> {
     }
 
     public canHandleContract(contract: Contract): boolean {
-        return contract.type === "productList";
+        return contract.type === "product-list"
+            || contract.type === "productList"; // for backward compatibility
     }
 
     public async contractToModel(contract: ProductListContract): Promise<ProductListModel> {
         return new ProductListModel();
     }
 
-    public modelToContract(searchResultModel: ProductListModel): Contract {
+    public modelToContract(model: ProductListModel): Contract {
         const contract: ProductListContract = {
-            type: "productList"
+            type: "product-list"
         };
 
         return contract;
