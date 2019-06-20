@@ -16,7 +16,7 @@ export class ProductSubscriptionsModelBinder implements IModelBinder<ProductSubs
         return new ProductSubscriptionsModel();
     }
 
-    public modelToContract(searchResultModel: ProductSubscriptionsModel): Contract {
+    public modelToContract(model: ProductSubscriptionsModel): Contract {
         const contract: ProductSubscriptionsContract = {
             type: "product-subscriptions"
         };

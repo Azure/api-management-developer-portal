@@ -17,7 +17,7 @@ export class DetailsOfApiModelBinder implements IModelBinder<DetailsOfApiModel> 
         return contract.type === "detailsOfApi";
     }
 
-    public modelToContract(searchResultModel: DetailsOfApiModel): Contract {
+    public modelToContract(model: DetailsOfApiModel): Contract {
         const searchResultConfig: DetailsOfApiContract = {
             type: "detailsOfApi"
         };

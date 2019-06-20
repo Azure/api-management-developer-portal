@@ -17,7 +17,7 @@ export class UserSignupModelBinder implements IModelBinder<UserSignupModel> {
         return contract.type === "userSignup";
     }
 
-    public modelToContract(searchResultModel: UserSignupModel): Contract {
+    public modelToContract(model: UserSignupModel): Contract {
         const contract: UserSignupContract = {
             type: "userSignup"
         };
