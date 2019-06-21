@@ -61,7 +61,7 @@ export class SetupDialog {
 
     public async provision(): Promise<void> {
         // TODO: Move to config
-        const dataUrl = `https://apimdeveloperportal.blob.core.windows.net/releases/201904101200/themes/default.json`;
+        const dataUrl = `https://apimdeveloperportal.blob.core.windows.net/releases/201906201530/themes/default.json`;
         const dataObj = await this.fetchData(dataUrl);
         const keys = Object.keys(dataObj);
         const accessToken = this.authenticator.getAccessToken();
