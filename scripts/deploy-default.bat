@@ -2,18 +2,20 @@ cd ..
 call npm install
 cd scripts
 
-set apimService="apim-instance"
-set apimSasAccessToken="SharedAccessSignature integration&..."
-set storageSasUrl="https://portalstorage.blob.core.windows.net/?..."
-set storageConnectionString="DefaultEndpointsProtocol=https;AccountName=portalstorage;AccountKey=...;EndpointSuffix=core.windows.net"
+set management_endpoint="apim-instance"
+set access_token="SharedAccessSignature integration&..."
+set access_token="https://portalstorage.blob.core.windows.net/?..."
+set storage_connection_string="DefaultEndpointsProtocol=https;AccountName=portalstorage;AccountKey=...;EndpointSuffix=core.windows.net"
 set portalUrl="https://portalstorage.../"
+set data_file="./data.json"
+set media_folder="./media"
 
-node ./cleanup %apimService% %apimSasAccessToken% %storageConnectionString%
-node ./configure %apimService% %apimSasAccessToken% %storageSasUrl% %storageConnectionString%
-node ./generate %apimService% %apimSasAccessToken%
-node ./upload %storageConnectionString%
+node ./cleanup %management_endpoint% %access_token% %storage_connection_string%
+node ./configure %management_endpoint% %access_token% %access_token% %storage_connection_string%
+node ./generate %management_endpoint% %access_token% %data_file%
+node ./upload %storage_connection_string% %media_folder%
 
 cd ..
 call npm run publish
-call az storage blob upload-batch --source dist/website --destination $web --connection-string %storageConnectionString%
+call az storage blob upload-batch --source dist/website --destination $web --connection-string %storage_connection_string%
 explorer %portalUrl%

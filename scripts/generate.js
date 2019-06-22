@@ -2,9 +2,9 @@ const fs = require("fs");
 const https = require("https");
 const managementEndpoint = process.argv[2]
 const accessToken = process.argv[3]
+const dataFile = process.argv[4];
 
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
-
 
 async function request(url, body) {
     return new Promise((resolve, reject) => {
@@ -47,7 +47,7 @@ async function request(url, body) {
 }
 
 async function restore() {
-    const data = fs.readFileSync("./data.json");
+    const data = fs.readFileSync(dataFile);
     const dataObj = JSON.parse(data);
 
     const keys = Object.keys(dataObj);
