@@ -2,6 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const storage = require("azure-storage");
 const connectionString = process.argv[2];
+const mediaPath = process.argv[3];
+
 
 function listFilesInDirectory(dir) {
     const results = [];
@@ -15,7 +17,6 @@ function listFilesInDirectory(dir) {
         } else {
             results.push(file);
         }
-
     });
 
     return results;
@@ -23,7 +24,6 @@ function listFilesInDirectory(dir) {
 
 async function upload(fileName, blobName) {
     return new Promise((resolve, reject) => {
-
         blobService.createBlockBlobFromLocalFile("content", blobName, fileName, function (error, result, response) {
             if (!error) {
                 resolve();
@@ -32,12 +32,11 @@ async function upload(fileName, blobName) {
                 reject(error);
             }
         });
-
     });
 }
 
 async function uploadFiles() {
-    const fileNames = listFilesInDirectory("./media");
+    const fileNames = listFilesInDirectory(mediaPath);
 
     for (const fileName of fileNames) {
         const blobName = path.basename(fileName).split(".")[0];
@@ -47,6 +46,7 @@ async function uploadFiles() {
 }
 
 const blobService = storage.createBlobService(connectionString);
+
 uploadFiles()
     .then(() => {
         console.log("DONE");
