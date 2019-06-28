@@ -462,7 +462,7 @@ export class OperationConsole {
 
         switch (this.consoleOperation().request.bodyFormat) {
             case "raw":
-                payload = this.consoleOperation().request.body;
+                payload = this.consoleOperation().request.body();
                 break;
 
             case "binary":
