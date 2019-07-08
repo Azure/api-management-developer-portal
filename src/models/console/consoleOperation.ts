@@ -79,12 +79,12 @@ export class ConsoleOperation {
         parameters.forEach(parameter => {
             if (parameter.value()) {
                 const parameterPlaceholder = `{${parameter.name}}`;
-
+                const parameterValue = encodeURIComponent(parameter.value());
                 if (requestUrl.indexOf(parameterPlaceholder) > -1) {
-                    requestUrl = requestUrl.replace(parameterPlaceholder, parameter.value());
+                    requestUrl = requestUrl.replace(parameterPlaceholder, parameterValue);
                 }
                 else {
-                    requestUrl = this.addParam(requestUrl, parameter.name, parameter.value());
+                    requestUrl = this.addParam(requestUrl, parameter.name, parameterValue);
                 }
             }
         });

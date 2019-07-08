@@ -1,9 +1,9 @@
 {
-  "managementApiUrl": "https://<service>.management.azure-api.net",
-  "managementApiVersion": "2018-06-01-preview",
-  "managementApiAccessToken": "SharedAccessSignature ...",
-  "managementApiUserId": "1",
-  "blobStorageContainer": "media",
-  "blobStorageUrl": "https://<account>.blob.core.windows.net?st=...",
-  "environment": "development"
+    "managementApiUrl": "https://aztest.management.azure-api.net",
+    "managementApiVersion": "2018-06-01-preview",
+    "managementApiAccessToken": "SharedAccessSignature 1&201908070000&0u3QDRd2PBz+yEtq+UCk3X/q1tWP3kSPLCn7bYyff66GdMbfhYIeeGWLcCldD3i+XD02wNeAxcT7as5NeTfGkQ==",
+    "managementApiUserId": "1",
+    "blobStorageContainer": "media",
+    "blobStorageUrl": "https://apimgmtstqsv1g2co3t2tto9.blob.core.windows.net?st=2019-01-25T22%3A22%3A29Z&se=2021-01-26T22%3A22%3A00Z&sp=rwdl&sv=2018-03-28&sr=c&sig=T4mxROhnDLixTpjrc%2FgwuAQqqeNAXrFZUPw%2BBOpG4j8%3D",
+    "environment": "development"
 }
