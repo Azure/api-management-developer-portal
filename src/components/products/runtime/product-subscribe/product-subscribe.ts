@@ -134,9 +134,8 @@ export class ProductSubscribe {
         const subscriptions = await this.productService.getUserSubscriptions(userId);
         const activeSubscriptions = subscriptions.filter(item => item.productId === product.id && item.state === SubscriptionState.active) || [];
         const numberOfSubscriptions = activeSubscriptions.length;
-        const allowMultiple = product.subscriptionsLimit && product.subscriptionsLimit > 1;
-        const subscriptionsLimit = product.subscriptionsLimit || 1;
-        const limitReached = subscriptionsLimit <= numberOfSubscriptions;
+        const allowMultiple = product.subscriptionsLimit !== 1;
+        const limitReached = product.subscriptionsLimit && product.subscriptionsLimit <= numberOfSubscriptions;
 
         this.allowMultiple(allowMultiple);
         this.limitReached(limitReached);
