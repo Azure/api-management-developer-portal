@@ -6,11 +6,11 @@ export class Schema {
     constructor(contract?: SchemaContract) {
         this.definitions = [];
 
-        if (contract.document && contract.document.definitions) {
+        if (contract.properties.document && contract.properties.document.definitions) {
             this.definitions = Object
-                .keys(contract.document.definitions)
+                .keys(contract.properties.document.definitions)
                 .map(definitionName => {
-                    return new SchemaObject(definitionName, contract.document.definitions[definitionName]);
+                    return new SchemaObject(definitionName, contract.properties.document.definitions[definitionName]);
                 });
         }
     }

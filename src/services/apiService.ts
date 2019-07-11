@@ -56,7 +56,7 @@ export class ApiService {
 
         const apisPage = await this.smapiClient.get<Page<ApiContract>>(query);
 
-        const result = apisPage.value.filter(x => x.apiVersionSetId && x.apiVersionSetId === versionSetId).map(x => new Api(x));
+        const result = apisPage.value.filter(x => x.properties.apiVersionSetId && Utils.getResourceName("api-version-sets", x.properties.apiVersionSetId, "shortId") === versionSetId).map(x => new Api(x));
 
         return result;
     }
@@ -82,8 +82,9 @@ export class ApiService {
 
         const api = new Api(apiContract);
 
-        if (apiContract.apiVersionSetId && !api.apiVersionSet) {
-            api.apiVersionSet = await this.getApiVersionSet(apiContract.apiVersionSetId);
+        if (apiContract.properties.apiVersionSetId && !api.apiVersionSet) {
+            const setId = Utils.getResourceName("api-version-sets", apiContract.properties.apiVersionSetId, "shortId");
+            api.apiVersionSet = await this.getApiVersionSet(setId);
         }
 
         return api;
@@ -118,7 +119,7 @@ export class ApiService {
 
     public async getApiVersionSet(versionSetId: string): Promise<VersionSet> {
         const versionSetContract = await this.smapiClient.get<VersionSetContract>(versionSetId);
-        return new VersionSet(versionSetContract);
+        return new VersionSet(versionSetContract.id, versionSetContract);
     }
 
     public async getOperation(operationId: string): Promise<Operation> {

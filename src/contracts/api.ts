@@ -1,18 +1,27 @@
 import { OperationContract } from "./operation";
-import { VersionSetContract } from "./apiVersionSet";
 import { AuthenticationSettings } from "./authenticationSettings";
+import { ArmResource } from "./armResource";
 
 /**
  * Cotract of API
  */
-export interface ApiContract {
-    id?: string;
-    name?: string;
+export interface ApiContract extends ArmResource {
+    properties: ApiProperties;
+}
+
+export interface ApiProperties {
+    displayName?: string;
     description?: string;
     apiVersion?: string;
     apiVersionDescription?: string;
     apiVersionSetId?: string;
-    apiVersionSet?: VersionSetContract;
+    apiVersionSet?: {
+        name: string,
+        description: string,
+        versioningScheme: string,
+        versionQueryName: string,
+        versionHeaderName: string
+    };
     apiRevision?: string;
     apiRevisionDescription?: string;
     serviceUrl?: string;
@@ -26,7 +35,9 @@ export interface ApiContract {
     type?: string;
     isCurrent?: boolean;
     isOnline?: boolean;
+    subscriptionRequired?: boolean;
 }
+
 
 export interface SubscriptionKeyParameterName {
     header: string;
