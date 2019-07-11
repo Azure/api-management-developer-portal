@@ -1,4 +1,5 @@
 import { VersionSetContract } from "../contracts/apiVersionSet";
+import { Utils } from "../utils";
 
 export class VersionSet {
     public readonly id: string;
@@ -8,23 +9,19 @@ export class VersionSet {
     public versionQueryName: string;
     public versionHeaderName: string;
 
-    constructor(contract?: VersionSetContract) {
+    constructor(id: string, contract?: VersionSetContract) {
+        this.id = Utils.getResourceName("api-version-sets", id, "shortId");
+
         if (!contract) {
             return;
         }
 
-        this.id = contract.id;
-        this.name = contract.name;
-        this.description = contract["description"];
-        this.versioningScheme = contract["versioningScheme"];
-        this.versionQueryName = contract["versionQueryName"];
-        this.versionHeaderName = contract["versionHeaderName"];
-
         if (contract.properties) {
-            this.description = contract.description;
-            this.versioningScheme = contract.versioningScheme;
-            this.versionQueryName = contract.versionQueryName;
-            this.versionHeaderName = contract.versionHeaderName;
+            this.name = contract.properties.displayName;
+            this.description = contract.properties.description;
+            this.versioningScheme = contract.properties.versioningScheme;
+            this.versionQueryName = contract.properties.versionQueryName;
+            this.versionHeaderName = contract.properties.versionHeaderName;
         }
     }
 }

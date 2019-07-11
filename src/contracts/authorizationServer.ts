@@ -1,11 +1,11 @@
+import { ArmResource } from "./armResource";
 
-
-export interface AuthorizationServer  {
+export interface AuthorizationServer extends ArmResource  {
     properties: AuthProperties;
 }
 
 interface AuthProperties {
-    name?: string;
+    displayName?: string;
     description: string;    
     clientRegistrationEndpoint: string;
 
