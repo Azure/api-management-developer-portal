@@ -6,6 +6,6 @@ export class Tag {
 
     constructor(contract: TagContract) {
         this.id = contract.id;
-        this.name = contract.name;
+        this.name = contract.properties.displayName;
     }
 }
