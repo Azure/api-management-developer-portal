@@ -6,6 +6,7 @@ import { User } from "../models/user";
 import { Utils } from "../utils";
 import { SignupRequest } from "../contracts/signupRequest";
 import { Identity } from "../contracts/identity";
+import { UserContract } from "../contracts/user";
 
 const signinUrl = "/signin";
 const profileUrl = "/profile";
@@ -83,9 +84,9 @@ export class UsersService {
                 return null;
             }
 
-            const user = await this.smapiClient.get<User>(userId);
+            const user = await this.smapiClient.get<UserContract>(userId);
 
-            return user;
+            return new User(user);
         }
         catch (error) {
             this.navigateToSignin();
@@ -98,9 +99,11 @@ export class UsersService {
                 name: "If-Match",
                 value: "*"
             };
-            const user = await this.smapiClient.patch<string>(`${userId}`, [header], updateUserData);
+            await this.smapiClient.patch<string>(`${userId}`, [header], updateUserData);
+            const user = await this.smapiClient.get<UserContract>(userId);
+            
             if (user) {
-                return user;
+                return new User(user);
             } else {
                 console.error("User was not updated with data: " + updateUserData);
                 return undefined;

@@ -13,8 +13,7 @@
                     data-bind="css: { active: item.shortId === $parent.selectedId() }">
                     <div class="list-group-item-heading flex-container">
                         <div class="list-group-item-label flex-item flex-grow">
-                            <a href="#" class="text-truncate"
-                                data-bind="attr: { href: $parent.getNavigationProductId(item.id) }">
+                            <a href="#" class="text-truncate" data-bind="click: $parent.selectOperation">
                                 <span data-bind="attr: { 'data-method': method }"></span>
                                 <span class="operation-name" data-bind="text: item.name"></span>
                             </a>

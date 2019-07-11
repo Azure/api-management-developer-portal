@@ -1,3 +1,6 @@
+import { UserContract } from "../contracts/user";
+import { Utils } from "../utils";
+
 export class User {
     public id: string;
     public firstName: string;
@@ -8,6 +11,18 @@ export class User {
     public note: string;
     public groups?: UserGroup[];
     public identities: UserIdentity[];
+
+    constructor(contract: UserContract) {
+        this.id = Utils.getResourceName("users", contract.id, "shortId");
+        this.firstName = contract.properties.firstName;
+        this.lastName = contract.properties.lastName;
+        this.email = contract.properties.email;
+        this.state = <any>contract.properties.state;
+        this.registrationDate = contract.properties.registrationDate;
+        this.note = contract.properties.note;
+        this.groups = contract.properties.groups;
+        this.identities = contract.properties.identities;
+    }
 }
 
 export class UserGroup {
@@ -19,9 +34,9 @@ export class UserGroup {
     public externalId: string;
 }
 
-export class UserIdentity {
-    public id: string;
-    public provider: string;
+export interface UserIdentity {
+    id: string;
+    provider: string;
 }
 
 export enum UserState {

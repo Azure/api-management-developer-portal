@@ -2,6 +2,7 @@ import { OperationContract } from "../contracts/operation";
 import { Parameter } from "./parameter";
 import { Request } from "./request";
 import { Response } from "./response";
+import { Utils } from "../utils";
 
 export class Operation {
     public id: string;
@@ -16,22 +17,22 @@ export class Operation {
     public responses?: Response[];
 
     constructor(contract?: OperationContract) {
-        this.id = contract.id;
-        this.shortId = contract.id.split("/").pop();
-        this.name = contract.name;
-        this.description = contract.description;
-        this.urlTemplate = contract.urlTemplate;
-        this.method = contract.method;
-        this.version = contract.version;
+        this.id = Utils.getResourceName("apis", contract.id, "shortId");
+        this.shortId = contract.name;
+        this.name = contract.properties.displayName;
+        this.description = contract.properties.description;
+        this.urlTemplate = contract.properties.urlTemplate;
+        this.method = contract.properties.method;
+        this.version = contract.properties.version;
 
-        this.templateParameters = contract.templateParameters
-            ? contract.templateParameters.map(x => new Parameter(x))
+        this.templateParameters = contract.properties.templateParameters
+            ? contract.properties.templateParameters.map(x => new Parameter(x))
             : [];
 
-        this.request = new Request(contract.request);
+        this.request = new Request(contract.properties.request);
 
-        this.responses = contract.responses
-            ? contract.responses.map(x => new Response(x))
+        this.responses = contract.properties.responses
+            ? contract.properties.responses.map(x => new Response(x))
             : [];
     }
 }

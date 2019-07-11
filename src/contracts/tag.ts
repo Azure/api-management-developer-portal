@@ -1,4 +1,8 @@
+export interface TagProperties {
+    displayName: string;
+}
+
 export interface TagContract {
     id: string;
-    name: string;
+    properties: TagProperties;
 }
