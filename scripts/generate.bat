@@ -5,4 +5,4 @@ set data_file="./data.json"
 set media_folder="./media"
 
 node ./generate %management_endpoint% %access_token% %data_file%
-node ./upload %connection_string% %media_folder%
+node ./upload %storage_connection_string% %media_folder%
