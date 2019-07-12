@@ -5,6 +5,7 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { ApiService } from "../../../../services/apiService";
 import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { Operation } from "../../../../models/operation";
+import { Page } from "../../../../models/page";
 
 @RuntimeComponent({ selector: "operation-list" })
 @Component({
@@ -21,6 +22,7 @@ export class OperationList {
     public operations: ko.ObservableArray<Operation>;
     public working: ko.Observable<boolean>;
     public selectedId: ko.Observable<string>;
+    public lastPage: ko.Observable<Page<Operation>>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -29,7 +31,10 @@ export class OperationList {
         this.operations = ko.observableArray([]);
         this.working = ko.observable();
         this.selectedId = ko.observable();
+        this.lastPage = ko.observable();
         this.loadOperations = this.loadOperations.bind(this);
+
+        this.router.addRouteChangeListener(this.loadOperations);
     }
 
     @OnMounted()
@@ -37,8 +42,6 @@ export class OperationList {
         const route = this.router.getCurrentRoute();
 
         this.loadOperations(route);
-
-        this.router.addRouteChangeListener(this.loadOperations);
     }
 
     public async loadOperations(route?: Route): Promise<void> {
@@ -69,11 +72,13 @@ export class OperationList {
             return;
         }
 
-        if (this.currentApiId === apiId && this.operations().length > 0) {
+        if (this.currentApiId === apiId) {
             return;
         }
 
         this.currentApiId = apiId;
+        this.operations([]);
+        this.searchRequest = { pattern: "", tags: [], grouping: "none" };
         await this.searchOperations();
         this.selectFirst();
     }
@@ -81,13 +86,12 @@ export class OperationList {
     public async searchOperations(searchRequest?: SearchRequest): Promise<void> {
         this.working(true);
 
-        this.searchRequest = searchRequest || this.searchRequest || { pattern: "", tags: [], grouping: "none" };
+        this.searchRequest = searchRequest || this.searchRequest;
 
         try {
             switch (this.searchRequest.grouping) {
                 case "none":
-                    const pageOfOperations = await this.apiService.getOperations(`apis/${this.currentApiId}`);
-                    this.operations(pageOfOperations.value);
+                    await this.load();
                     break;
 
                 case "tag":
@@ -102,6 +106,27 @@ export class OperationList {
         }
         finally {
             this.working(false);
+        }
+    }
+
+    private async load() : Promise<void> {
+        const pageOfOperations = await this.apiService.getOperations(`apis/${this.currentApiId}`, this.searchRequest);
+        this.lastPage(pageOfOperations);
+        const current = this.operations();
+        if (current && current.length > 0) {
+            this.operations.push(...pageOfOperations.value);
+        } else {
+            this.operations(pageOfOperations.value);
+        }
+    }
+
+    public async loadMore() {
+        const page =this.lastPage();
+        if(page.nextLink) {
+            this.searchRequest.skip = page.getSkip();
+            if (this.searchRequest.skip) {
+                await this.load();
+            }
         }
     }
 
