@@ -4,6 +4,7 @@ import { IObjectStorage, Query, Operator } from "@paperbits/common/persistence";
 import { MapiClient } from "../services/mapiClient";
 import { Page } from "../models/page";
 import { HttpHeader } from "@paperbits/common/http";
+import { ArmResource } from "../contracts/armResource";
 
 
 const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block"];
@@ -382,21 +383,30 @@ export class MapiObjectStorage implements IObjectStorage {
             : converted;
     }
 
-    public convertArmContractToPaperbitsContract(contract: any, isLocalized: boolean = false): any {
-        if (contract === null || contract === undefined) {
-            return contract;
+    public convertArmContractToPaperbitsContract(contractObject: ArmResource | any, isLocalized: boolean = false, isArm: boolean = true): any {
+        if (contractObject === null || contractObject === undefined) {
+            return contractObject;
         }
 
+        let contract: any;
         if (isLocalized) {
-            const id = contract.id;
-            contract = contract[selectedLocale];
-            contract.id = id;
+            contract = contractObject.properties[selectedLocale];
+            contract.id = contractObject.id;
+            contract.name = contractObject.name;
+        } else {
+            if (isArm) {
+                contract = contractObject.properties;
+                contract.id = contractObject.id;
+                contract.name = contractObject.name;
+            } else {
+                contract = contractObject;
+            }
         }
 
         let converted;
 
         if (Array.isArray(contract)) {
-            converted = contract.map(x => this.convertArmContractToPaperbitsContract(x));
+            converted = contract.map(x => this.convertArmContractToPaperbitsContract(x, false, false));
         }
         else if (typeof contract === "object") {
             converted = {};
@@ -415,7 +425,7 @@ export class MapiObjectStorage implements IObjectStorage {
                     convertedValue = this.armResourceToPaperbitsKey(propertyValue);
                 }
                 else {
-                    convertedValue = this.convertArmContractToPaperbitsContract(propertyValue);
+                    convertedValue = this.convertArmContractToPaperbitsContract(propertyValue, false, false);
                 }
 
                 converted[convertedKey] = convertedValue;
