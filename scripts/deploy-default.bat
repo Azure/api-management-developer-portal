@@ -2,7 +2,7 @@ cd ..
 call npm install
 cd scripts
 
-set management_endpoint="apim-instance"
+set management_endpoint="<service-name>.management.azure-api.net/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.ApiManagement/service/<service-name>"
 set access_token="SharedAccessSignature integration&..."
 set storage_sas_url="https://portalstorage.blob.core.windows.net/?..."
 set storage_connection_string="DefaultEndpointsProtocol=https;AccountName=portalstorage;AccountKey=...;EndpointSuffix=core.windows.net"
