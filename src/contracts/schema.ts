@@ -1,5 +1,6 @@
 
 import { Bag } from "@paperbits/common";
+import { ArmResource } from "./armResource";
 
 export interface ReferenceObjectContract {
     $ref: string;
@@ -114,8 +115,9 @@ export interface SchemaDocumentContract {
 /**
  * 
  */
-export interface SchemaContract {
-    id: string;
-    contentType: string;
-    document?: SchemaDocumentContract;
+export interface SchemaContract extends ArmResource  {
+    properties: {
+        contentType: string;
+        document?: SchemaDocumentContract;
+    }
 }
