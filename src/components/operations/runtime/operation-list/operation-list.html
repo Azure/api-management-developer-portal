@@ -23,6 +23,11 @@
             </li>
             <!-- /ko -->
         </ul>
+            <!-- ko if: lastPage() && lastPage().nextLink -->
+            <div class="list-group-placeholder centered">
+                <a href="#" class="btn-link" data-bind="click: loadMore">Load more</a>
+            </div>
+            <!-- /ko -->
         <!-- /ko -->
 
         <!-- ko if: operations().length === 0 -->
