@@ -30,7 +30,7 @@ export class ProductService {
         const result = new Page<Subscription>();
 
         result.value = pageContract && pageContract.value
-            ? pageContract.value.map(item => new Subscription(item))
+            ? pageContract.value.filter(item => item.properties.scope.indexOf("/products/") !== -1).map(item => new Subscription(item))
             : [];
 
         return result;
@@ -68,7 +68,7 @@ export class ProductService {
         if (contracts && contracts.value) {
             const products = await this.getProducts(true);
 
-            contracts.value.map((item) => {
+            contracts.value.filter(item => item.properties.scope.indexOf("/products/") !== -1).map((item) => {
                 const model = new Subscription(item);
                 const product = products.find(p => p.id === model.productId);
                 model.productName = product && product.name;
