@@ -109,7 +109,7 @@ export class OperationList {
         }
     }
 
-    private async load() : Promise<void> {
+    private async load(): Promise<void> {
         const pageOfOperations = await this.apiService.getOperations(`apis/${this.currentApiId}`, this.searchRequest);
         this.lastPage(pageOfOperations);
         const current = this.operations();
@@ -120,9 +120,9 @@ export class OperationList {
         }
     }
 
-    public async loadMore() {
-        const page =this.lastPage();
-        if(page.nextLink) {
+    public async loadMore(): Promise<void> {
+        const page = this.lastPage();
+        if (page.nextLink) {
             this.searchRequest.skip = page.getSkip();
             if (this.searchRequest.skip) {
                 await this.load();
