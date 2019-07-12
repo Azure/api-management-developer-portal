@@ -162,6 +162,7 @@ export class ApiService {
         const page = new Page<Operation>();
 
         page.value = result.value.map(c => new Operation(<any>c));
+        page.nextLink = result.nextLink;
 
         return page;
     }
