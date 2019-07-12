@@ -83,20 +83,28 @@ export class Api {
     public isCurrent?: boolean;
 
     constructor(contract?: ApiContract) {
-        this.id = contract.id;
-        this.name = Utils.getResourceName("apis", contract.id);
-        this.displayName = contract.name;
-        this.serviceUrl = contract.serviceUrl;
-        this.protocols = contract.protocols;
-        this.description = contract.description;
-        this.path = contract.path;
-        this.urlSuffix = contract.urlSuffix;
-        this.isCurrent = contract.isCurrent;
-        this.apiVersion = contract.apiVersion || "Original";
-        this.apiRevision = contract.apiRevision;
+        this.id = Utils.getResourceName("apis", contract.id, "shortId");
+        this.name = contract.name;
+        this.displayName = contract.properties.displayName;
+        this.serviceUrl = contract.properties.serviceUrl;
+        this.protocols = contract.properties.protocols;
+        this.description = contract.properties.description;
+        this.path = contract.properties.path;
+        this.urlSuffix = contract.properties.urlSuffix;
+        this.isCurrent = contract.properties.isCurrent;
+        this.apiVersion = contract.properties.apiVersion || "Original";
+        this.apiRevision = contract.properties.apiRevision;
 
-        if (contract.apiVersionSet) {
-            this.apiVersionSet = new VersionSet(contract.apiVersionSet);
+        if (contract.properties.apiVersionSet) {
+            const nestedVersionSet = contract.properties.apiVersionSet;
+            const versionSet = new VersionSet(contract.properties.apiVersionSetId);
+            versionSet.name = nestedVersionSet.name;
+            versionSet.description = nestedVersionSet.description;
+            versionSet.versionHeaderName = nestedVersionSet.versionHeaderName;
+            versionSet.versionQueryName = nestedVersionSet.versionQueryName;
+            versionSet.versioningScheme = nestedVersionSet.versioningScheme;
+
+            this.apiVersionSet = versionSet;
         }
     }
 }

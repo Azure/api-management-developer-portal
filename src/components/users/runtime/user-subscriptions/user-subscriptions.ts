@@ -51,7 +51,7 @@ export class UserSubscriptions {
     }
 
     public async renameSubscription(subscription: SubscriptionViewModel): Promise<void> {
-        const updated = await this.productService.renameUserSubscription(subscription.model.id, subscription.model.userId, subscription.editName());
+        const updated = await this.productService.renameUserSubscription(subscription.model.id, subscription.editName());
         const updatedVM = new SubscriptionViewModel(updated);
         this.syncSubscriptionLabelState(subscription, updatedVM);
         this.subscriptions.replace(subscription, updatedVM);
@@ -60,7 +60,7 @@ export class UserSubscriptions {
 
     public async regeneratePKey(subscription: SubscriptionViewModel): Promise<void> {
         subscription.isPRegenerating(true);
-        const updated = await this.productService.regeneratePrimaryKey(subscription.model.id, subscription.model.userId);
+        const updated = await this.productService.regeneratePrimaryKey(subscription.model.id);
         const updatedVM = new SubscriptionViewModel(updated);
         this.syncSubscriptionLabelState(subscription, updatedVM);
         this.subscriptions.replace(subscription, updatedVM);
@@ -69,7 +69,7 @@ export class UserSubscriptions {
 
     public async regenerateSKey(subscription: SubscriptionViewModel): Promise<void> {
         subscription.isSRegenerating(true);
-        const updated = await this.productService.regenerateSecondaryKey(subscription.model.id, subscription.model.userId);
+        const updated = await this.productService.regenerateSecondaryKey(subscription.model.id);
         const updatedVM = new SubscriptionViewModel(updated);
         this.syncSubscriptionLabelState(subscription, updatedVM);
         this.subscriptions.replace(subscription, updatedVM);
@@ -86,7 +86,7 @@ export class UserSubscriptions {
     }
 
     public async cancelSubscription(subscription: SubscriptionViewModel): Promise<void> {
-        const updated = await this.productService.cancelUserSubscription(subscription.model.id, subscription.model.userId);
+        const updated = await this.productService.cancelUserSubscription(subscription.model.id);
         const updatedVM = new SubscriptionViewModel(updated);
         this.syncSubscriptionLabelState(subscription, updatedVM);
         this.subscriptions.replace(subscription, updatedVM);
