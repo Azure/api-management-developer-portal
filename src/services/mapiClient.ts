@@ -140,7 +140,7 @@ export class MapiClient {
 
         httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
 
-        let response;
+        let response: HttpResponse<T>;
 
         try {
             response = await this.httpClient.send<T>(httpRequest);
@@ -149,6 +149,10 @@ export class MapiClient {
             throw new Error(`Unable to complete request. Error: ${error}`);
         }
 
+        return this.handleResponse<T>(response, httpRequest.url);
+    }
+
+    private handleResponse<T>(response: HttpResponse<T>, url: string) {
         let contentType = "";
         if (response.headers) {
             const authTokenHeader = response.headers.find(header => header.name === "ocp-apim-sas-token");
@@ -169,9 +173,8 @@ export class MapiClient {
             } else {
                 return <any>text;
             }
-        }
-        else {
-            this.handleError(response, httpRequest.url);
+        } else {
+            this.handleError(response, url);
         }
     }
 

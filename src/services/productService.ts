@@ -30,7 +30,7 @@ export class ProductService {
         const result = new Page<Subscription>();
 
         result.value = pageContract && pageContract.value
-            ? pageContract.value.map(item => new Subscription(item))
+            ? pageContract.value.filter(item => item.properties.scope.indexOf("/products/") !== -1).map(item => new Subscription(item))
             : [];
 
         return result;
@@ -66,9 +66,9 @@ export class ProductService {
         const contracts = await this.smapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
 
         if (contracts && contracts.value) {
-            const products = await this.getProducts();
+            const products = await this.getProducts(true);
 
-            contracts.value.map((item) => {
+            contracts.value.filter(item => item.properties.scope.indexOf("/products/") !== -1).map((item) => {
                 const model = new Subscription(item);
                 const product = products.find(p => p.id === model.productId);
                 model.productName = product && product.name;
@@ -102,14 +102,18 @@ export class ProductService {
         }
     }
 
-    public async getProducts(): Promise<Product[]> {
+    public async getProducts(getAll: boolean = false): Promise<Product[]> {
         const result = [];
         const contracts = await this.smapiClient.get<Page<ProductContract>>(`/products`);
 
         if (contracts && contracts.value) {
-            contracts.value
-                .filter(x => x.subscriptionRequired === true)
-                .map(item => result.push(new Product(item)));
+            if (getAll) {
+                contracts.value.map(item => result.push(new Product(item)));
+            } else {
+                contracts.value
+                    .filter(x => x.properties.subscriptionRequired === true)
+                    .map(item => result.push(new Product(item)));
+            }
         }
 
         return result;
@@ -128,22 +132,18 @@ export class ProductService {
         return undefined;
     }
 
-    public async regeneratePrimaryKey(subscriptionId: string, userId: string): Promise<Subscription> {
+    public async regeneratePrimaryKey(subscriptionId: string): Promise<Subscription> {
         if (!subscriptionId) {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        if (!userId) {
-            throw new Error(`Parameter "userId" not specified.`);
-        }
-
-        await this.smapiClient.post(`${userId + subscriptionId}/regeneratePrimaryKey`);
-        return await this.getSubscription(userId + subscriptionId);
+        await this.smapiClient.post(`${subscriptionId}/regeneratePrimaryKey`);
+        return await this.getSubscription(subscriptionId);
     }
 
-    public async regenerateSecondaryKey(subscriptionId: string, userId: string): Promise<Subscription> {
-        await this.smapiClient.post(`${userId + subscriptionId}/regenerateSecondaryKey`);
-        return await this.getSubscription(userId + subscriptionId);
+    public async regenerateSecondaryKey(subscriptionId: string): Promise<Subscription> {
+        await this.smapiClient.post(`${subscriptionId}/regenerateSecondaryKey`);
+        return await this.getSubscription(subscriptionId);
     }
 
     public async createUserSubscription(subscriptionId: string, userId: string, productId: string, subscriptionName: string): Promise<void> {
@@ -169,13 +169,9 @@ export class ProductService {
         }
     }
 
-    public async cancelUserSubscription(subscriptionId: string, userId: string): Promise<Subscription> {
+    public async cancelUserSubscription(subscriptionId: string): Promise<Subscription> {
         if (!subscriptionId) {
             throw new Error(`Parameter "subscriptionId" not specified.`);
-        }
-
-        if (!userId) {
-            throw new Error(`Parameter "userId" not specified.`);
         }
 
         await this.loadTenantSettings();
@@ -183,20 +179,20 @@ export class ProductService {
         if (this.tenantSettings["CustomPortalSettings.DelegationEnabled"] === true) {
             console.log("Delegation enabled. Can't cancel subscription");
         } else {
-            await this.updateSubscription(userId + subscriptionId, { state: SubscriptionState.cancelled });
+            await this.updateSubscription(subscriptionId, { state: SubscriptionState.cancelled });
         }
 
-        return await this.getSubscription(userId + subscriptionId);
+        return await this.getSubscription(subscriptionId);
     }
 
-    public async renameUserSubscription(subscriptionId: string, userId: string, newName: string): Promise<Subscription> {
+    public async renameUserSubscription(subscriptionId: string, newName: string): Promise<Subscription> {
         await this.loadTenantSettings();
 
         if (newName) {
-            await this.updateSubscription(userId + subscriptionId, { name: newName });
+            await this.updateSubscription(subscriptionId, { name: newName });
         }
 
-        return await this.getSubscription(userId + subscriptionId);
+        return await this.getSubscription(subscriptionId);
     }
 
     private async updateSubscription(subscriptionId: string, body?: object): Promise<void> {

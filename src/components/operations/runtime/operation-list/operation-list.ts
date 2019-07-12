@@ -105,11 +105,11 @@ export class OperationList {
         }
     }
 
-    public getNavigationProductId(fullOperationId: string): string {
-        if (!fullOperationId) {
-            return "#";
+    public selectOperation(operation: Operation): void {
+        if (!operation) {
+            return;
         }
-        const parts = fullOperationId.split("/operations/");
+        const parts = operation.id.split("/operations/");
         const apiId = parts[0].split("/apis/").pop();
         const operationId = parts[1];
 
@@ -117,16 +117,16 @@ export class OperationList {
         params.append("apiId", apiId);
         operationId && params.append("operationId", operationId);
 
-        return `#?${params.toString()}`;
+        this.router.navigateTo("#?" + params.toString());
     }
 
     private selectFirst(): void {
         if (!this.queryParams.has("operationId")) {
             const list = this.operations();
             if (list.length > 0) {
-                const selectProductId = list[0].shortId;
-                this.selectedId(selectProductId);
-                this.queryParams.set("operationId", selectProductId);
+                const selectId = list[0].shortId;
+                this.selectedId(selectId);
+                this.queryParams.set("operationId", selectId);
                 this.router.navigateTo("#?" + this.queryParams.toString());
             }
         }
