@@ -78,7 +78,7 @@
         "knockout-mapping": "^2.6.0",
         "knockout.validation": "^2.0.3",
         "liquidjs": "^8.2.3",
-        "lodash": "^4.17.11",
+        "lodash": "^4.17.14",
         "lunr": "^2.3.6",
         "moment": "^2.24.0",
         "prismjs": "^1.16.0",
