@@ -8,14 +8,13 @@ export class UnsavedChangesRouteGuard implements RouteGuard {
     constructor(
         private readonly offlineObjectStorage: OfflineObjectStorage,
         private readonly viewManager: IViewManager,
-        private readonly router: Router,
         private readonly pageService: IPageService
     ) { }
 
     public canActivate(route: Route): Promise<boolean> {
         return new Promise<boolean>(async (resolve) => {
             if (this.offlineObjectStorage.hasUnsavedChanges()) {
-                const path = this.router.getPath();
+                const path = route.path;
 
                 if (route.previous && route.previous.path === path) {
                     const page = await this.pageService.getPageByPermalink(path);
