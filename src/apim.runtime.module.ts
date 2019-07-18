@@ -38,7 +38,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("eventManager", DefaultEventManager);
         injector.bindCollection("autostart");
         injector.bindCollection("routeGuards");
-        injector.bindToCollection("routeGuards", AccessTokenRouteGuard);
+        // injector.bindToCollection("routeGuards", AccessTokenRouteGuard);
         injector.bindSingleton("router", DefaultRouter);
         injector.bind("apiList", ApiList);
         injector.bind("apiDetails", ApiDetails);

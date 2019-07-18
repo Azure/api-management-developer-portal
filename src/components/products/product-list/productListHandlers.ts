@@ -5,6 +5,7 @@ export class ProductListHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
             name: "productList",
+            category: "Products",
             displayName: "List of products",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
