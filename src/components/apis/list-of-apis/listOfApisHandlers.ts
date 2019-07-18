@@ -5,6 +5,7 @@ export class ListOfApisHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
             name: "listOfApis",
+            category: "APIs",
             displayName: "List of APIs",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
@@ -18,6 +19,7 @@ export class ListOfApisTilesHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
             name: "listOfApisTiles",
+            category: "APIs",
             displayName: "List of APIs (tiles)",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
@@ -31,6 +33,7 @@ export class ListOfApisDropdownHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
             name: "listOfApisDropdown",
+            category: "APIs",
             displayName: "List of APIs (dropdown)",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],

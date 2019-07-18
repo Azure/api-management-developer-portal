@@ -4,14 +4,14 @@ import { AzureBlobStorage } from "@paperbits/azure";
 import { InversifyInjector } from "@paperbits/common/injection";
 import { IPublisher } from "@paperbits/common/publishing";
 import { CoreModule } from "@paperbits/core/core.module";
+import { CorePublishModule } from "@paperbits/core/core.publish.module";
 import { ApimPublishModule } from "../../../src/apim.publish.module";
 import { StyleModule } from "@paperbits/styles/styles.module";
 import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
 import { StaticSettingsProvider } from "../../../src/components/staticSettingsProvider";
-import { PublishingNodeModule } from "../../../src/publishing";
 
 
-export async function publish() {
+export async function publish(): Promise<void> {
     /* Reading settings from configuration file */
     const configFile = path.resolve(__dirname, "./config.json");
     const configuration = JSON.parse(fs.readFileSync(configFile, "utf8").toString());
@@ -35,12 +35,12 @@ export async function publish() {
 
     const injector = new InversifyInjector();
     injector.bindModule(new CoreModule());
+    injector.bindModule(new CorePublishModule());
     injector.bindModule(new StyleModule());
     injector.bindModule(new ProseMirrorModule());
     injector.bindModule(new ApimPublishModule());
     injector.bindInstance("settingsProvider", settingsProvider);
     injector.bindInstance("outputBlobStorage", outputBlobStorage);
-    injector.bindModule(new PublishingNodeModule());
     injector.resolve("autostart");
 
     const publisher = injector.resolve<IPublisher>("sitePublisher");
