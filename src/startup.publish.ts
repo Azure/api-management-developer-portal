@@ -2,8 +2,8 @@ import * as fs from "fs";
 import * as path from "path";
 import { InversifyInjector } from "@paperbits/common/injection";
 import { IPublisher } from "@paperbits/common/publishing";
-import { PublishingNodeModule } from "./publishing";
 import { CoreModule } from "@paperbits/core/core.module";
+import { CorePublishModule } from "@paperbits/core/core.publish.module";
 import { StyleModule } from "@paperbits/styles/styles.module";
 import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
 import { StaticSettingsProvider } from "./components/staticSettingsProvider";
@@ -21,12 +21,12 @@ const outputBlobStorage = new FileSystemBlobStorage("./dist/website");
 /* Initializing dependency injection container */
 const injector = new InversifyInjector();
 injector.bindModule(new CoreModule());
+injector.bindModule(new CorePublishModule());
 injector.bindModule(new StyleModule());
 injector.bindModule(new ProseMirrorModule());
 injector.bindModule(new ApimPublishModule());
 injector.bindInstance("settingsProvider", settingsProvider);
 injector.bindInstance("outputBlobStorage", outputBlobStorage);
-injector.bindModule(new PublishingNodeModule());
 injector.resolve("autostart");
 
 /* Allowing self-signed certificates for HTTP requests */
