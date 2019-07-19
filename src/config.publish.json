@@ -1,8 +1,10 @@
 {
-  "managementApiUrl": "https://<service-name>.management.azure-api.net/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.ApiManagement/service/<service-name>",
+  "managementApiUrl": "https://alzaslondemo.management.azure-api.net/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.ApiManagement/service/alzaslondemo",
   "managementApiVersion": "2018-06-01-preview",
-  "managementApiAccessToken": "SharedAccessSignature...",
-  "blobStorageContainer": "media",
-  "blobStorageConnectionString": "DefaultEndpointsProtocol=...",
+  "managementApiAccessToken": "SharedAccessSignature 1&201907202045&8Zy95DXaGUspp8vCIlg3mSNJKaKDr7rDNFjRi56GX9tBNqkLsI2q7gPTt9l77FW1KuiwSGb0Vyt+CEhOFxKbcg==",
+  "blobStorageContainer": "content",
+  "blobStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=apimgmtsta7hcwb4tnhaxy2r;AccountKey=47C8qzZ2WaQO6bIAEX6Zgk0M86ZssFJsOfBfCaqk1F18AMu2cq+nSrvvef5jDQwjfO4/j9enlO12ShaaEMNeSA==;EndpointSuffix=core.windows.net",
+  "outputBlobStorageContainer": "$web",
+  "outputBlobStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=apimgmtsta7hcwb4tnhaxy2r;AccountKey=47C8qzZ2WaQO6bIAEX6Zgk0M86ZssFJsOfBfCaqk1F18AMu2cq+nSrvvef5jDQwjfO4/j9enlO12ShaaEMNeSA==;EndpointSuffix=core.windows.net",
   "environment": "publishing"
 }
