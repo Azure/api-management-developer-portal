@@ -53,7 +53,7 @@ export class MapiClient {
             throw new Error(`Management API URL ("managementApiUrl") setting is missing in configuration file.`);
         }
 
-        this.managementApiUrl = managementApiUrl;
+        this.managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
 
         const managementApiVersion = settings["managementApiVersion"];
 
@@ -152,7 +152,7 @@ export class MapiClient {
         return this.handleResponse<T>(response, httpRequest.url);
     }
 
-    private handleResponse<T>(response: HttpResponse<T>, url: string) {
+    private handleResponse<T>(response: HttpResponse<T>, url: string): T {
         let contentType = "";
         if (response.headers) {
             const authTokenHeader = response.headers.find(header => header.name === "ocp-apim-sas-token");
@@ -170,7 +170,8 @@ export class MapiClient {
         if (response.statusCode >= 200 && response.statusCode < 300) {
             if (_.includes(contentType, "json") && text.length > 0) {
                 return JSON.parse(text) as T;
-            } else {
+            }
+            else {
                 return <any>text;
             }
         } else {
