@@ -34,7 +34,7 @@ export class SetupDialog {
             throw new Error(`Management API URL ("managementApiUrl") setting is missing in configuration file.`);
         }
 
-        this.managementApiUrl = managementApiUrl;
+        this.managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
 
         const managementApiVersion = settings["managementApiVersion"];
 
