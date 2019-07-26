@@ -2,9 +2,7 @@
 
 This repository is managed by the [Microsoft Azure API Management](https://aka.ms/apimrocks) team and contains the source code of the developer portal along with instructions for setting up your own self-hosted version.
 
-If you're looking for **general information** on the new developer portal and its features, please refer to [the Azure update post](https://aka.ms/apimupdates/portalpreview).
-
-If you're looking for **general documentation on the developer portal**, please refer to [Azure documentation](https://aka.ms/apimdocs/portal).
+If you're looking for **general information or documentation on the developer portal**, please refer to the [official Azure documentation](https://aka.ms/apimdocs/portal).
 
 Table of contents:
 
