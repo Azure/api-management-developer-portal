@@ -538,9 +538,13 @@
 }
 
 .paperbits-wireframe::before {
-    content: "\ea6f"
+    content: "\ea6f";
 }
 
 .paperbits-send::before {
     content: "\ea70";
+}
+
+.paperbits-c-question::before {
+    content: "\ea71";
 }

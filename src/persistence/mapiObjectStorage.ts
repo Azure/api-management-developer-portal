@@ -194,6 +194,7 @@ export class MapiObjectStorage implements IObjectStorage {
             const contentType = this.getContentTypeFromResource(resource);
             const isLocalized = localizedContentTypes.includes(contentType);
             const item = await this.smapiClient.get<T>(`${resource}`);
+
             const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
 
             if (key.contains("settings") || key.contains("styles")) {
@@ -207,7 +208,11 @@ export class MapiObjectStorage implements IObjectStorage {
             return converted;
         }
         catch (error) {
-            console.warn(`Could not get object '${key}'. Error: ${error}.`);
+            if (error && error.code === "ResourceNotFound") {
+                return null;
+            }
+            
+            throw new Error(`Could not get object '${key}'. Error: ${error}.`);
         }
     }
 
@@ -334,8 +339,7 @@ export class MapiObjectStorage implements IObjectStorage {
             }
         }
         catch (error) {
-            console.warn(`Could not search object '${key}'. Error: ${error}.`);
-            // throw new Error(`Could not search object '${path}'. Error: ${error}.`);
+            throw new Error(`Could not search object '${key}'. Error: ${error}.`);
         }
     }
 

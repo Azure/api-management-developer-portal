@@ -21,7 +21,7 @@
             position: relative;
 
             &:after {
-                content: '';
+                content: "";
                 position: absolute;
                 top: 40px;
                 bottom: 40px;
@@ -29,7 +29,7 @@
                 width: 1px;
                 border: 0;
                 background: #eceaea;
-                background: radial-gradient(#eceaea,white);
+                background: radial-gradient(#eceaea, white);
             }
         }
 
@@ -39,6 +39,15 @@
 
         h1 {
             padding-left: 5px;
+            line-height: 25px;
+            .btn-help {
+                font-size: 0.9em;
+                border: none;
+                background: none;
+                cursor: pointer;
+                vertical-align: middle;
+                color: #91D8F7;
+            }
         }
     }
 }
@@ -53,7 +62,6 @@
 }
 
 .workshop {
-    @include animation-fadein();
     padding: 10px;
     @media (min-width: $breakpoint-lg) {
         width: 80%;
