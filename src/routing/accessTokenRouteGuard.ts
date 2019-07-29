@@ -14,7 +14,7 @@ export class AccessTokenRouteGuard implements RouteGuard {
     }
 
     public async canActivate(route: Route): Promise<boolean> {
-        if (this.isPublicResource(route.path) || this.authenticator.isUserLoggedIn()) {
+        if (this.isPublicResource(route.path) || this.authenticator.isUserSignedIn()) {
             return true;
         } 
         else {
