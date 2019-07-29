@@ -8,7 +8,7 @@ export class StaticAuthenticator implements IAuthenticator {
         return this.accessToken;
     }
 
-    public setAccessToken(token: string) {
+    public setAccessToken(token: string): void {
         this.accessToken = `${token}`;
     }
 
@@ -25,7 +25,7 @@ export class StaticAuthenticator implements IAuthenticator {
         this.currentUserId = undefined;
     }
 
-    public isUserLoggedIn(): boolean {
+    public isUserSignedIn(): boolean {
         return !!this.getAccessToken() && !!this.getUser();
     }
 }

@@ -7,6 +7,7 @@ import { MapiError } from "./mapiError";
 import { IAuthenticator } from "../authentication/IAuthenticator";
 import { Router } from "@paperbits/common/routing";
 
+
 export interface IHttpBatchResponses {
     responses: IHttpBatchResponse[];
 }
@@ -24,13 +25,13 @@ export class MapiClient {
     private managementApiVersion: string;
     private environment: string;
     private initializePromise: Promise<void>;
-    private requestCache = new TtlCache();
+    private requestCache: TtlCache = new TtlCache();
 
     constructor(
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator,
         private readonly settingsProvider: ISettingsProvider,
-        private readonly router: Router
+        private readonly router: Router,
     ) {
         this.ensureInitialized();
     }
@@ -67,6 +68,10 @@ export class MapiClient {
 
         if (managementApiAccessToken) {
             this.authenticator.setAccessToken(managementApiAccessToken);
+        }
+        else if (this.environment === "development") {
+            console.warn(`Development mode: Please specify "managementApiAccessToken" in configuration file.`);
+            return;
         }
 
         const managementApiUserId = settings["managementApiUserId"];
@@ -200,11 +205,6 @@ export class MapiClient {
 
             if (this.environment === "production") {
                 this.router.navigateTo("/signin");
-                return;
-            }
-
-            if (this.environment === "development") {
-                console.warn(`Development mode: Please specify "managementApiAccessToken" in configuration file.`);
                 return;
             }
         }
