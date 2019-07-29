@@ -84,7 +84,7 @@
             </div>
         </div>
     </div>
-    <a href="#" class="button-add" role="button" data-bind="click: $component.addQueryParameter" >
+    <a href="#" class="button-add" role="button" data-bind="click: $component.addQueryParameter">
         <i class="icon icon-plus"></i>
         Add parameter
     </a>
@@ -240,7 +240,9 @@
     <h3>HTTP response</h3>
     <pre><span>HTTP/1.1</span> <span data-bind="attr: { 'data-code': responseStatusCode  }"><span data-bind="text: responseStatusCode, attr: { 'data-code':responseStatusCode  }"></span> <span data-bind="text: responseStatusText"></span></span>
 
-<span data-bind="text: responseHeadersString"></span><span data-bind="text: responseBody"></span></pre>
+<span data-bind="text: responseHeadersString"></span>
+
+<span data-bind="text: responseBody"></span></pre>
 
     <!--/ko-->
 

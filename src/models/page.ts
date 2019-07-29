@@ -3,14 +3,22 @@ export class Page<T> {
     public count: number;
     public nextLink?: string;
 
+    constructor() {
+        this.value = [];
+        this.count = 0;
+        this.nextLink = null;
+    }
+
     public getSkip(): string {
-        if (this.nextLink) {
-            const url = new URL(this.nextLink);
-            const queryParams = new URLSearchParams(decodeURIComponent(url.search));
-            if (queryParams.has("$skip")) {
-                return queryParams.get("$skip");
-            }
+        if (!this.nextLink) {
+            return undefined;
         }
-        return undefined;
+
+        const url = new URL(this.nextLink);
+        const queryParams = new URLSearchParams(decodeURIComponent(url.search));
+
+        if (queryParams.has("$skip")) {
+            return queryParams.get("$skip");
+        }
     }
 }

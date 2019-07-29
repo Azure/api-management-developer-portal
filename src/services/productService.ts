@@ -26,14 +26,24 @@ export class ProductService {
             throw new Error(`Parameter "userId" not specified.`);
         }
 
-        const pageContract = await this.smapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
         const result = new Page<Subscription>();
 
-        result.value = pageContract && pageContract.value
-            ? pageContract.value.filter(item => item.properties.scope.indexOf("/products/") !== -1).map(item => new Subscription(item))
-            : [];
+        try {
+            const pageContract = await this.smapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
 
-        return result;
+            result.value = pageContract && pageContract.value
+                ? pageContract.value.filter(item => item.properties.scope.indexOf("/products/") !== -1).map(item => new Subscription(item))
+                : [];
+
+            return result;
+        }
+        catch (error) {
+            if (error && error.code === "ResourceNotFound") {
+                return result;
+            }
+
+            throw new Error(`Unable to retrieve subscriptions for user with ID "${userId}": ${error}`);
+        }
     }
 
     public async getSubscriptionsForProduct(userId: string, productId: string): Promise<Subscription[]> {
@@ -45,11 +55,22 @@ export class ProductService {
             throw new Error(`Parameter "productId" not specified.`);
         }
 
-        const pageOfSubscriptions = await this.getSubscriptions(userId);
-        const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === "active");
-        const result = subscriptions.filter(subscription => subscription.productId === productId);
+        try {
+            const pageOfSubscriptions = await this.getSubscriptions(userId);
 
-        return result;
+            const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === "active");
+            const result = subscriptions.filter(subscription => subscription.productId === productId);
+
+            return result;
+
+        }
+        catch (error) {
+            if (error && error.code === "ResourceNotFound") {
+                return [];
+            }
+
+            throw new Error(`Unable to retrieve subscriptions for user with ID "${userId}": ${error}`);
+        }
     }
 
     /**

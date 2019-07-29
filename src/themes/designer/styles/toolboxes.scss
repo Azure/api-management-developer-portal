@@ -18,7 +18,8 @@ h1 {
 }
 
 h2 {
-    font-size: 1em;
+    font-size: 1.1em;
+    margin-top: 20px;
 }
 
 .toolbox {
@@ -28,7 +29,9 @@ h2 {
     padding: 7px;
     z-index: $z-index-base;
     max-height: calc(100% - 40px);
+
     @include surface();
+    @include animation-fadein(.3s);
 
     &.toolbox-horizontal {
         flex-direction: row;
@@ -83,7 +86,7 @@ h2 {
                 background-color: $toolbox-btn-active-bg;
                 border: 1px solid $toolbox-btn-active-border;
                 border-radius: $toolbox-border-radius - 5px;
-                content: '';
+                content: "";
             }
         }
 
@@ -111,6 +114,10 @@ h2 {
             width: 100%;
             @include tabable();
         }
+
+        &[disabled] {
+            opacity: 0.2;
+        }
     }
 
     .toolbox-btn-group {
@@ -126,7 +133,7 @@ h2 {
         .toolbox-btn-is-active:before {
             position: absolute;
             left: -7px;
-            content: '';
+            content: "";
             width: 4px;
             background: $tab-selected-color;
             top: 0;
@@ -153,7 +160,7 @@ h2 {
 
     &::after {
         clear: both;
-        content: '';
+        content: "";
         display: block;
     }
 
@@ -201,7 +208,7 @@ h2 {
         }
     }
 
-     &.resized-horizontally {
+    &.resized-horizontally {
         .resizable-content {
         }
     }

@@ -66,6 +66,10 @@ export class SetupDialog {
         const keys = Object.keys(dataObj);
         const accessToken = this.authenticator.getAccessToken();
 
+        if (!accessToken) {
+            this.viewManager.notifyError(`Unable to setup website`, `Management API access token is empty or invald.`);
+        }
+
         for (const key of keys) {
             const contentItem = dataObj[key];
             const url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(key)}?api-version=${this.managementApiVersion}`;
@@ -84,7 +88,7 @@ export class SetupDialog {
             const response = await this.httpClient.send(request);
 
             if (response.statusCode >= 400) {
-                throw new Error("Unable to setup website theme.");
+                throw new Error("Unable to setup website.");
             }
         }
     }
