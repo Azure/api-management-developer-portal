@@ -1,4 +1,4 @@
-@REM Reprovising an existing API Management portal deployment - clean all the content, autogenerate new content, and upload it
+@REM Reprovision an existing API Management portal deployment - clean all the content, autogenerate new content, upload it, publish the portal, and host it
 
 cd ..
 call npm install
@@ -18,6 +18,9 @@ node ./generate %management_endpoint% %access_token% %data_file%
 node ./upload %storage_connection_string% %media_folder%
 
 cd ..
+
+@REM Run the publishing step and upload the generated portal to a Storage Account for hosting 
+
 call npm run publish
 call az storage blob upload-batch --source dist/website --destination $web --connection-string %storage_connection_string%
 explorer %portalUrl%
