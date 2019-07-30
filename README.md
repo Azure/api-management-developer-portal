@@ -4,6 +4,8 @@ This repository is managed by the [Microsoft Azure API Management](https://aka.m
 
 If you're looking for **general information or documentation on the developer portal**, please refer to the [official Azure documentation](https://aka.ms/apimdocs/portal).
 
+**As we're approaching the general availability of the new portal, we'd love to hear about your experience with the preview version. We'd especially appreciate your feedback on [the Issues marked with the `community` label](https://github.com/Azure/api-management-developer-portal/issues?q=is%3Aopen+is%3Aissue+label%3Acommunity).**
+
 Table of contents:
 
 - [Overview](#overview)
@@ -26,11 +28,11 @@ The project's roadmap is published in [the repository's Projects section](https:
 
 ## <a name="feedback"></a> Bug reports and feedback
 
-You can provide us feedback, submit a feature request, or open a bug report through [the repository's Issues section](https://github.com/Azure/api-management-developer-portal/issues).
+You can provide us feedback, submit a feature request, or file a bug report through [the repository's Issues section](https://github.com/Azure/api-management-developer-portal/issues). We're especially looking for your feedback on [the Issues marked with the *community* label](https://github.com/Azure/api-management-developer-portal/issues?q=is%3Aopen+is%3Aissue+label%3Acommunity).
 
 ## <a name="contributions"></a> Contributions
 
-We welcome contributions. See the details in [the contributions file](CONTRIBUTIONS.md).
+We welcome and appreciate community contributions. See the details in [the contributions file](CONTRIBUTIONS.md).
 
 ## <a name="license"></a> License
 
