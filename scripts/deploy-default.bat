@@ -1,3 +1,5 @@
+@REM Reprovising an existing API Management portal deployment - clean all the content, autogenerate new content, and upload it
+
 cd ..
 call npm install
 cd scripts
