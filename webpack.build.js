@@ -18,7 +18,16 @@ module.exports = merge(designerConfig, {
                     }
                 }
             })
-        ]
+        ],
+        splitChunks: {
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "vendor",
+                    chunks: "initial"
+                }
+            }
+        }
     },
     plugins: [
         new CleanWebpackPlugin(),

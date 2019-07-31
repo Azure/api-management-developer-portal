@@ -47,7 +47,8 @@ export class SetupDialog {
         try {
             await this.provision();
             this.router.navigateTo("/");
-            this.viewManager.initialize();
+            this.viewManager.setHost({ name: "content-host" });
+            this.viewManager.showToolboxes();
         }
         catch (error) {
             console.error(error);
@@ -59,7 +60,7 @@ export class SetupDialog {
         return response.toObject();
     }
 
-    public async provision(): Promise<void> {
+    private async provision(): Promise<void> {
         // TODO: Move to config
         const dataUrl = `https://apimdeveloperportal.blob.core.windows.net/releases/201906201530/themes/default.json`;
         const dataObj = await this.fetchData(dataUrl);
