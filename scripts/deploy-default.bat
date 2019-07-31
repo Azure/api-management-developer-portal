@@ -10,7 +10,7 @@ set storage_sas_url="https://portalstorage.blob.core.windows.net/?..."
 set storage_connection_string="DefaultEndpointsProtocol=https;AccountName=portalstorage;AccountKey=...;EndpointSuffix=core.windows.net"
 set portalUrl="https://portalstorage.../"
 set data_file="./data.json"
-set media_folder="./media"
+set media_folder="./content"
 
 node ./cleanup %management_endpoint% %access_token% %storage_connection_string%
 node ./configure %management_endpoint% %access_token% %storage_sas_url% %storage_connection_string%

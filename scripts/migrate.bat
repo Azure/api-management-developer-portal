@@ -9,7 +9,7 @@ set target_access_token="SharedAccessSignature ..."
 set target_storage_connection_string="DefaultEndpointsProtocol=..."
 
 set data_file="../dist/data.json"
-set media_folder="../dist/media"
+set media_folder="../dist/content"
 
 @REM Capture the content of the source portal (excl. media)
 node ./capture %source_management_endpoint% %source_access_token% %data_file%
