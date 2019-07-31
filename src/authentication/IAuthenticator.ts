@@ -1,3 +1,5 @@
+import { AcceessToken } from "./accessToken";
+
 export interface IAuthenticator {
     /**
      * Returns access token for current session.
@@ -11,10 +13,10 @@ export interface IAuthenticator {
     setAccessToken(accessToken: string): void;
 
     /**
-     * Validates access token. If invalid, throws an error explaining the problem.
+     * Parses specified access token.
      * @param accessToken 
      */
-    validateAccessToken?(accessToken: string): void;
+    parseAccessToken?(accessToken: string): AcceessToken;
 
     /**
      * Returns authenticated user identifier.
