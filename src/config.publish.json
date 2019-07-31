@@ -2,7 +2,7 @@
   "managementApiUrl": "https://<service-name>.management.azure-api.net/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.ApiManagement/service/<service-name>",
   "managementApiVersion": "2018-06-01-preview",
   "managementApiAccessToken": "SharedAccessSignature...",
-  "blobStorageContainer": "media",
+  "blobStorageContainer": "content",
   "blobStorageConnectionString": "DefaultEndpointsProtocol=...",
   "environment": "publishing"
 }
