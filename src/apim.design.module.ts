@@ -35,6 +35,7 @@ import { ProductApisModule } from "./components/products/product-apis/ko/product
 import { ProductApisEditorModule } from "./components/products/product-apis/ko/productApisEditor.module";
 import { ProductSubscriptionsEditorModule } from "./components/products/product-subscriptions/ko/productSubscriptionsEditor.module";
 import { ProductSubscriptionsModule } from "./components/products/product-subscriptions/ko/productSubscriptions.module";
+import { App } from "./app/app";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -67,6 +68,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new OperationListEditorModule());
         injector.bindModule(new OperationDetailsModule());
         injector.bindModule(new OperationDetailsEditorModule());
+        injector.bindSingleton("app", App);
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
         injector.bindSingleton("smapiClient", MapiClient);
