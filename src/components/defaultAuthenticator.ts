@@ -1,6 +1,6 @@
 import * as moment from "moment";
+import { IAuthenticator, AcceessToken } from "./../authentication";
 import { Utils } from "../utils";
-import { IAuthenticator } from "../authentication/IAuthenticator";
 import { Router } from "@paperbits/common/routing";
 
 export class DefaultAuthenticator implements IAuthenticator {
@@ -17,16 +17,6 @@ export class DefaultAuthenticator implements IAuthenticator {
         else {
             accessToken = sessionStorage.getItem("accessToken");
         }
-
-        // Uncomment when switched to ARM contracts:
-        //
-        // const decodedToken = Utils.parseJwt(accessToken);
-        // const now = Date.now().valueOf() / 1000;
-        //
-        // if (now >= decodedToken.exp) {
-        //     this.clearAccessToken();
-        //     return null;
-        // }
 
         return accessToken;
     }
@@ -52,39 +42,39 @@ export class DefaultAuthenticator implements IAuthenticator {
         return !!this.getAccessToken() && !!this.getUser();
     }
 
-    private validateSharedAccessSignature(accessToken: string): void {
+    private parseSharedAccessSignature(accessToken: string): AcceessToken {
         const regex = /^\w*\&(\d*)\&/gm;
         const match = regex.exec(accessToken);
 
         if (!match && match.length < 2) {
-            throw new Error(`Access token format is not valid.`);
+            throw new Error(`ShredAccessSignature token format is not valid.`);
         }
 
-        const expirationDateUtc = moment(match[1]);
+        const dateTime = match[1];
+        const dateTimeIso = `${dateTime.substr(0, 8)} ${dateTime.substr(8, 4)}`;
+        const expirationDateUtc = moment(dateTimeIso).toDate();
 
-        if (moment().utc() > expirationDateUtc) {
-            throw new Error(`Access token has expired.`);
-        }
+        return { type: "SharedAccessSignature", expires: expirationDateUtc };
     }
 
-    private validateBearerToken(accessToken: string): void {
+    private parseBearerToken(accessToken: string): AcceessToken {
         const decodedToken = Utils.parseJwt(accessToken);
-        const now = Date.now().valueOf() / 1000;
+        const exp = moment(decodedToken.exp).toDate();
 
-        if (now >= decodedToken.exp) {
-            throw new Error(`Access token has expired.`);
-        }
+        return { type: "Bearer", expires: exp };
     }
 
-    public validateAccessToken(accessToken: string): void {
-        if (accessToken.startsWith("SharedAccessSignature ")) {
-            this.validateBearerToken(accessToken.replace("Bearer ", ""));
-            return;
+    public parseAccessToken(token: string): AcceessToken {
+        let accessToken: AcceessToken;
+
+        if (token.startsWith("Bearer ")) {
+            accessToken = this.parseBearerToken(token.replace("Bearer ", ""));
+            return accessToken;
         }
 
-        if (accessToken.startsWith("Bearer ")) {
-            this.validateSharedAccessSignature(accessToken.replace("SharedAccessSignature ", ""));
-            return;
+        if (token.startsWith("SharedAccessSignature ")) {
+            accessToken = this.parseSharedAccessSignature(token.replace("SharedAccessSignature ", ""));
+            return accessToken;
         }
 
         throw new Error(`Access token format is not valid. Please use "Bearer" or "SharedAccessSignature".`);
