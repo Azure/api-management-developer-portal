@@ -45,6 +45,7 @@ export class SetupDialog {
         this.managementApiVersion = managementApiVersion;
 
         try {
+            this.viewManager.removeShutter();
             await this.provision();
             this.router.navigateTo("/");
             this.viewManager.setHost({ name: "content-host" });
