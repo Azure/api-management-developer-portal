@@ -3,7 +3,7 @@
   "managementApiVersion": "2018-06-01-preview",
   "managementApiAccessToken": "SharedAccessSignature ...",
   "managementApiUserId": "1",
-  "blobStorageContainer": "media",
+  "blobStorageContainer": "content",
   "blobStorageUrl": "https://<account>.blob.core.windows.net?st=...",
   "environment": "development"
 }
