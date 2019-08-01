@@ -38,9 +38,7 @@ export class MapiClient {
         if (!this.initializePromise) {
             this.initializePromise = this.initialize();
         }
-        else {
-            return this.initializePromise;
-        }
+        return this.initializePromise;
     }
 
     private async initialize(): Promise<void> {
@@ -157,6 +155,7 @@ export class MapiClient {
 
     private handleResponse<T>(response: HttpResponse<T>, url: string): T {
         let contentType = "";
+
         if (response.headers) {
             const authTokenHeader = response.headers.find(header => header.name === "ocp-apim-sas-token");
 
