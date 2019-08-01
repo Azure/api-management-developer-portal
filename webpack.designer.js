@@ -14,6 +14,17 @@ module.exports = {
         "scripts/theme": ["./src/startup.runtime.ts"],
         "styles/theme": [`./src/themes/${websiteTheme}/styles/styles.design.scss`]
     },
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "vendor",
+                    chunks: "initial"
+                }
+            }
+        }
+    },
     output: {
         filename: "./[name].js",
         path: path.resolve(__dirname, "./dist/designer")
