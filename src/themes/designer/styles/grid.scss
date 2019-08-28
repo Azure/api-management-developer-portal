@@ -1,3 +1,43 @@
+// .cell {
+//     border: 1px dashed #ccc;
+//     text-align: center;
+//     position: relative;
+//     overflow: auto;
+// }
+
+// .resize-handle {
+//     position: absolute;
+//     border-radius: 50%;
+//     width: 15px;
+//     height: 15px;
+//     background: #00afef;
+
+//     &.resize-handle-top {
+//         top: 0;
+//         left: 50%;
+//         transform: translateX(-50%) translateY(-50%);
+//         cursor: ns-resize;
+//     }
+//     &.resize-handle-bottom {
+//         bottom: 0;
+//         left: 50%;
+//         transform: translateX(-50%) translateY(50%);
+//         cursor: ns-resize;
+//     }
+//     &.resize-handle-left {
+//         top: 50%;
+//         left: 0;
+//         transform: translateX(-50%) translateY(-50%);
+//         cursor: ew-resize;
+//     }
+//     &.resize-handle-right {
+//         top: 50%;
+//         right: 0;
+//         transform: translateX(50%) translateY(-50%);
+//         cursor: ew-resize;
+//     }
+// }
+
 .snippet-grid {
   display: grid;
   grid-template-columns: repeat(12, 10px);
