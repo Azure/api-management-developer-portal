@@ -4,6 +4,15 @@
     text-align: center;
 }
 
+.text-hide {
+    overflow: hidden;
+    position: fixed;
+    top: -1000px;
+    left: -1000px;
+    width: 0;
+    height: 0;
+}
+
 .d-none {
     display: none !important;
 }
