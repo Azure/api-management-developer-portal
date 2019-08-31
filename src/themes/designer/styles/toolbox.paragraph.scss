@@ -2,12 +2,12 @@
 @import "buttons.scss";
 
 
-
 .tools-paragraph-style {
     @include tabable();
     display: block;
     padding: 5px 10px;
     text-decoration: none;
+    color: #000;
 }
 
 .tools-paragraph-style {
