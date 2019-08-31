@@ -152,12 +152,6 @@ h2 {
         resize: horizontal;
     }
 
-    .clickable {
-        outline: 1px dashed $button-border-color;
-        cursor: pointer;
-        padding: 10px;
-    }
-
     &::after {
         clear: both;
         content: "";
