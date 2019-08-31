@@ -24,7 +24,7 @@
 
 .placeholder {
     border: 2px dashed #ccc;
-    border: 2px dashed darken($surface-background, 20%);
+    border: 2px dashed darken($toolbox-background, 20%);
     transition: height .5s ease-in-out;
     position: relative;
 }

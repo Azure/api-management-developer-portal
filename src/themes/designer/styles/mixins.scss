@@ -63,7 +63,7 @@
 @mixin surface() {
    @include box-shadow(1px 1px 20px 1px rgba(0, 0, 0, 0.15));
   margin: 0;
-  background-color: $surface-background;
+  background-color: $toolbox-background;
   border-radius: $toolbox-border-radius;
   font-family: $font-family-base;
   font-weight: $font-weight-base;
