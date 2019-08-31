@@ -18,22 +18,15 @@ $font-family-base: 'OpenSans', sans-serif;
 $font-size-base: 13px;
 $font-weight-base: 500;
 $font-weight-headers: 600;
-
-
-/* Surfaces */
-$surface-padding: 18px;
-$surface-lineheight: 2em;
-
-/* Balloons */
-$balloon-background: #fff;
+$lineheight: 2em;
 
 /* Toolboxes */
+$toolbox-background: #fff;
 $toolbox-btn-size: 45px;
 $toolbox-btn-padding: 5px;
 $toolbox-btn-active-bg: #F9FBFC;
 $toolbox-btn-active-border: #96989A;
 $toolbox-border-radius: 4px;
-
 
 /* Workshops */
 $workshop-button-height: 2em;
@@ -42,11 +35,29 @@ $workshop-max-height: 300px;
 $workshop-subtitle-color: #AFBD77;
 $workshop-padding: 20px;
 
-/* Thumbnails */
-$thumbnail-width: 195px;
-$thumbnail-height: 140px;
-$thumbnail-hint-width: 50px;
-$thumbnail-hint-height: 33px;
+/* Balloons */
+$balloon-background: $toolbox-background;
+
+/* Palette */
+$tab-selected-color: #A8CF45;
+$collapse-button-color: #91D8F7;
+$color-base: #5b5f61;
+$color-danger: #e46969;
+$color-info: #91D8F7;
+$color-watermark: #CCC;
+$link-color: #00AFEF;
+$arrow-active-color: #F58634;
+$icon-base-color: #57585a;
+
+/* Forms */
+$form-control-font-size: 0.9em;
+$form-control-border: #e6e7e8;
+$form-control-border-focused: #61b2e8;
+$form-control-bg: #ffffff;
+$form-control-bg-readonly: #e6e7e8;
+$form-control-bg-disabled: #e6e7e8;
+$form-control-padding: 7px;
+$form-control-focus-color: #61b2e8;
 
 /* Others */
 $z-index-base: 9100;
@@ -54,34 +65,4 @@ $z-index-balloon: 9110;
 $z-index-dragging: 9120;
 $z-index-arrows: 9130;
 $z-index-selection: 9000;
-
-$selection-width: 3px;
 $list-item-size: 2.5em;
-
-$hover-color: #F6F8F9;
-$surface-background: #fff;
-$button-border-color: #BDBFC1;
-$help-button-font-size: 20px;
-$help-button-font-family: 'Rockwell';
-
-$button-active-outline-color: #96989A;
-$button-active-bg-color: #F9FBFC;
-
-
-/* Media library */
-$thumbnail-progress-toast-label-color: #000;
-
-$textbox-font-size: 0.9em;
-$form-control-padding: 7px;
-
-/* Palette */
-$tab-selected-color: #A8CF45;
-$collapse-button-color: #91D8F7;
-$color-base: #5b5f61;
-$color-danger: #e46969;
-$color-watermark: #CCC;
-$link-color: #00AFEF;
-$arrow-active-color: #F58634;
-$icon-base-color: #57585a;
-
-
