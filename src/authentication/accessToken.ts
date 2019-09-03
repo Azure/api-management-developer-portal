@@ -1,4 +1,4 @@
-export interface AcceessToken {
+export interface AccessToken {
     /**
      * Type of token, i.e. Bearer or SharedAccessSignature.
      */
@@ -13,4 +13,9 @@ export interface AcceessToken {
      * User for whom the token was issued.
      */
     userId?: string;
+
+    /**
+     * Token value.
+     */
+    value: string;
 }
