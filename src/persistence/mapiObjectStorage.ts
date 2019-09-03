@@ -393,16 +393,17 @@ export class MapiObjectStorage implements IObjectStorage {
         }
 
         let contract: any;
+        
         if (isLocalized) {
             contract = contractObject.properties[selectedLocale];
             contract.id = contractObject.id;
-            contract.name = contractObject.name;
-        } else {
+        } 
+        else {
             if (isArm) {
                 contract = contractObject.properties;
                 contract.id = contractObject.id;
-                contract.name = contractObject.name;
-            } else {
+            }
+            else {
                 contract = contractObject;
             }
         }

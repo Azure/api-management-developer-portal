@@ -1,5 +1,5 @@
 import * as moment from "moment";
-import { IAuthenticator, AcceessToken } from "./../authentication";
+import { IAuthenticator, AccessToken } from "./../authentication";
 import { Utils } from "../utils";
 import { Router } from "@paperbits/common/routing";
 
@@ -42,7 +42,7 @@ export class DefaultAuthenticator implements IAuthenticator {
         return !!this.getAccessToken() && !!this.getUser();
     }
 
-    private parseSharedAccessSignature(accessToken: string): AcceessToken {
+    private parseSharedAccessSignature(accessToken: string): AccessToken {
         const regex = /^\w*\&(\d*)\&/gm;
         const match = regex.exec(accessToken);
 
@@ -54,18 +54,18 @@ export class DefaultAuthenticator implements IAuthenticator {
         const dateTimeIso = `${dateTime.substr(0, 8)} ${dateTime.substr(8, 4)}`;
         const expirationDateUtc = moment(dateTimeIso).toDate();
 
-        return { type: "SharedAccessSignature", expires: expirationDateUtc };
+        return { type: "SharedAccessSignature", expires: expirationDateUtc, value: accessToken };
     }
 
-    private parseBearerToken(accessToken: string): AcceessToken {
+    private parseBearerToken(accessToken: string): AccessToken {
         const decodedToken = Utils.parseJwt(accessToken);
         const exp = moment(decodedToken.exp).toDate();
 
-        return { type: "Bearer", expires: exp };
+        return { type: "Bearer", expires: exp, value: accessToken };
     }
 
-    public parseAccessToken(token: string): AcceessToken {
-        let accessToken: AcceessToken;
+    public parseAccessToken(token: string): AccessToken {
+        let accessToken: AccessToken;
 
         if (token.startsWith("Bearer ")) {
             accessToken = this.parseBearerToken(token.replace("Bearer ", ""));
