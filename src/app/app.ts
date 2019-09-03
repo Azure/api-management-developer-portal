@@ -23,7 +23,6 @@ export class App {
     @OnMounted()
     public async initialize(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
-        const managementApiAccessToken = settings["managementApiAccessToken"];
 
         if (!settings["managementApiUrl"]) {
             this.viewManager.addToast(startupError, `Management API URL is missing. See setting <i>managementApiUrl</i> in the configuration file <i>config.design.json</i>`);
@@ -36,19 +35,26 @@ export class App {
         }
 
         try {
-            const accessToken = this.authenticator.parseAccessToken(managementApiAccessToken);
-            const now = new Date();
+            const token = this.authenticator.getAccessToken();
 
-            if (now >= accessToken.expires) {
-                this.viewManager.addToast(startupError, `Management API access token has expired. See setting <i>managementApiAccessToken</i> in the configuration file <i>config.design.json</i>`);
-                return;
+            if (!token) {
+                const managementApiAccessToken = settings["managementApiAccessToken"];
+                const accessToken = this.authenticator.parseAccessToken(managementApiAccessToken);
+                const now = new Date();
+
+                if (now >= accessToken.expires) {
+                    this.viewManager.addToast(startupError, `Management API access token has expired. See setting <i>managementApiAccessToken</i> in the configuration file <i>config.design.json</i>`);
+                    return;
+                }
+
+                this.authenticator.setAccessToken(accessToken.value);
             }
         }
         catch (error) {
             this.viewManager.addToast(startupError, error);
             return;
         }
-        
+
         try {
             /* Checking if settings were created, and if not, we consider the portal not initialized and launch setup dialog. */
 
@@ -58,7 +64,7 @@ export class App {
                 this.viewManager.setHost({ name: "setup-dialog" });
                 return;
             }
-    
+
             this.viewManager.setHost({ name: "content-host" });
             this.viewManager.showToolboxes();
         }

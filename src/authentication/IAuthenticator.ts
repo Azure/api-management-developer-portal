@@ -1,4 +1,4 @@
-import { AcceessToken } from "./accessToken";
+import { AccessToken } from "./accessToken";
 
 export interface IAuthenticator {
     /**
@@ -16,7 +16,7 @@ export interface IAuthenticator {
      * Parses specified access token.
      * @param accessToken 
      */
-    parseAccessToken?(accessToken: string): AcceessToken;
+    parseAccessToken?(accessToken: string): AccessToken;
 
     /**
      * Returns authenticated user identifier.
