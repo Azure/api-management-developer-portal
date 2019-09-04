@@ -1,4 +1,6 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
+import { ConsoleLogger } from "@paperbits/common/logging";
+import { AzureBlobStorage } from "@paperbits/azure";
 import { MapiClient } from "./services/mapiClient";
 import { MapiObjectStorage } from "./persistence/mapiObjectStorage";
 import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
@@ -11,13 +13,13 @@ import { ProductDetailsModule } from "./components/products/product-details/ko/p
 import { StaticRouter } from "./components/staticRouter";
 import { UserService } from "./services/userService";
 import { StaticAuthenticator } from "./components/staticAuthenticator";
-import { AzureBlobStorage } from "@paperbits/azure";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";
 import { OperationDetailsModule } from "./components/operations/operation-details/ko/operationDetails.module";
 import { ProductListModule } from "./components/products/product-list/ko/productList.module";
 import { ProductSubscribeModule } from "./components/products/product-subscribe/ko/productSubscribe.module";
 import { ProductApisModule } from "./components/products/product-apis/ko/productApis.module";
 import { ProductSubscriptionsModule } from "./components/products/product-subscriptions/ko/productSubscriptions.module";
+
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -40,5 +42,6 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("authenticator", StaticAuthenticator);
         injector.bindSingleton("smapiClient", MapiClient);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
+        injector.bindSingleton("logger", ConsoleLogger);
     }
 }
