@@ -14,18 +14,20 @@ import { MapiError } from "../../../../services/mapiError";
 export class UserSignin {
     public username: ko.Observable<string>;
     public password: ko.Observable<string>;
-    public errorMessage: ko.Observable<string>;
-    public isError: ko.Observable<boolean>;
+    public canSignin: ko.Computed<boolean>;
+    public errorMessages: ko.ObservableArray<string>;
+    public hasErrors: ko.Observable<boolean>;
     public working: ko.Observable<boolean>;
 
     constructor(private readonly usersService: UsersService) {
         this.username = ko.observable("");
         this.password = ko.observable("");
-        this.errorMessage = ko.observable("");
-        this.isError = ko.observable(false);
+        this.errorMessages = ko.observableArray([]);
+        this.hasErrors = ko.observable(false);
         this.working = ko.observable(false);
-
-        this.signinClick = this.signinClick.bind(this);
+        this.canSignin = ko.pureComputed(() => {
+            return !!this.username() && !!this.password() && !this.working();
+        });
     }
 
     @OnMounted()
@@ -58,8 +60,8 @@ export class UserSignin {
         this.navigateToHome();
     }
 
-    public async signinClick(): Promise<void> {
-        this.isError(false);
+    public async signin(): Promise<void> {
+        this.hasErrors(false);
         this.working(true);
 
         try {
@@ -69,21 +71,19 @@ export class UserSignin {
                 this.navigateToHome();
             }
             else {
-                this.errorMessage("Please provide a valid email and password.");
-                this.isError(true);
+                this.errorMessages(["Please provide a valid email and password."]);
+                this.hasErrors(true);
             }
         }
         catch (error) {
-            this.isError(true);
+            this.hasErrors(true);
 
             if (error instanceof MapiError) {
                 if (error.code === "identity_not_confirmed") {
-                    this.errorMessage(`We found an unconfirmed account for the e-mail address ${this.username()}. To complete the creation of your account we need to verify your e-mail address. We’ve sent an e-mail to ${this.username()}. Please follow the instructions inside the e-mail to activate your account. If the e-mail doesn’t arrive within the next few minutes, please check your junk email folder`);
-
+                    this.errorMessages([`We found an unconfirmed account for the e-mail address ${this.username()}. To complete the creation of your account we need to verify your e-mail address. We’ve sent an e-mail to ${this.username()}. Please follow the instructions inside the e-mail to activate your account. If the e-mail doesn’t arrive within the next few minutes, please check your junk email folder`]);
                     return;
                 }
-
-                this.errorMessage(error.message);
+                this.errorMessages([error.message]);
             }
         }
         this.working(false);
