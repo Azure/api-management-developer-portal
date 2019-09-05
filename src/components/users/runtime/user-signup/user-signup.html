@@ -1,8 +1,3 @@
-<!-- ko if: isUserLoggedIn -->
-<h4>You are logged in</h4>
-<a class="btn-link" href="/">Home page</a>
-<!-- /ko -->
-
 <!-- ko if: isUserRequested -->
 <p>Create request was sent. Please check your email.</p>
 <!-- /ko -->
@@ -10,49 +5,56 @@
 <!-- ko if: (!isUserRequested() && !isUserLoggedIn()) -->
 
 <form>
+    <div class="text-hide alert alert-danger" role="region" aria-live="assertive" aria-atomic="true"
+        data-bind="css: { 'text-hide': !hasErrors() }">
+        <!-- ko foreach: { data: errorMessages, as: 'errorMessage' } -->
+            <div data-bind="text: errorMessage"></div>
+        <!-- /ko -->
+    </div>
+
     <fieldset>
         <div class="form-group">
             <label for="email">Email</label>
-            <input aria-required="true" required autofocus="autofocus" class="form-control" id="email" name="email"
-                autocomplete="email" placeholder="Email" type="email" data-bind="textInput: email">
+            <input aria-required="true" autofocus="autofocus" class="form-control" id="email" name="email"
+                autocomplete="email" placeholder="e.g. name@example.com" type="email" data-bind="textInput: email">
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <input aria-required="true" required class="form-control" id="password" name="password"
-                autocomplete="new-password" placeholder="Password" type="password" data-bind="textInput: userPassword">
+            <input aria-required="true" class="form-control" id="password" name="password"
+                autocomplete="new-password" type="password" data-bind="textInput: password">
         </div>
         <div class="form-group">
-            <label for="confirm">Confirm password</label>
-            <input aria-required="true" required class="form-control" id="confirm" name="confirm"
-                autocomplete="new-password" placeholder="Confirm password" type="password"
-                data-bind="textInput: userConfirmPassword">
+            <label for="confirmPassword">Confirm password</label>
+            <input aria-required="true" class="form-control" id="confirmPassword" name="confirm"
+                autocomplete="new-password" type="password"
+                data-bind="textInput: passwordConfirmation">
         </div>
         <div class="form-group">
             <label for="firstName">First name</label>
-            <input aria-required="true" required class="form-control" id="firstName" name="firstName"
-                placeholder="First name" type="text" data-bind="textInput: firstName">
+            <input aria-required="true" class="form-control" id="firstName" name="firstName"
+                placeholder="e.g. John" type="text" data-bind="textInput: firstName">
         </div>
         <div class="form-group">
             <label for="lastName">Last name</label>
-            <input aria-required="true" required class="form-control" id="lastName" name="lastName"
-                placeholder="Last name" type="text" data-bind="textInput: lastName">
+            <input aria-required="true" class="form-control" id="lastName" name="lastName"
+                placeholder="e.g. Doe" type="text" data-bind="textInput: lastName">
         </div>
 
         <!-- ko if: termsOfUse -->
         <div class="form-group">
-            <!-- ko if: isTermsRequired -->
+            <!-- ko if: isConsentRequired -->
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" data-bind="checked: consented" id="consented" required>
                 <label class="form-check-label" for="consented">I agree to the Terms of Use.</label>
-                <a href="#" class="btn-link" data-bind="click: toggle, text: showHideLabel"></a>
+                <a href="#" class="btn-link" data-bind="click: toggleRegistrationTerms, text: showHideLabel"></a>
             </div>
             <!-- /ko -->
 
-            <!-- ko ifnot: isTermsRequired -->
+            <!-- ko ifnot: isConsentRequired -->
             <div class="row">
                 <p>
                     Please review Terms of Use.
-                    <a href="#" class="btn-link" data-bind="click: toggle, text: showHideLabel"></a>
+                    <a href="#" class="btn-link" data-bind="click: toggleRegistrationTerms, text: showHideLabel"></a>
                 </p>
             </div>
             <!-- /ko -->
@@ -65,14 +67,10 @@
         </div>
         <!-- /ko -->
 
-        <!-- ko if: serverErrors -->
         <div class="form-group">
-            <div class="alert alert-danger"><span data-bind="text: serverErrors"></span></div>
-        </div>
-        <!-- /ko -->
-        <div class="form-group">
-            <input type="submit" id="signupButton" value="Sign up" class="button button-primary"
-                data-bind="click: signup, enable: canSignup">
+            <button type="button" id="signup" class="button button-primary" data-bind="click: signup, enable: canSubmit">
+                Sign up
+            </button>
         </div>
     </fieldset>
 </form>
