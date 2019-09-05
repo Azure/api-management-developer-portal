@@ -1,32 +1,30 @@
-<!-- ko if: working-->
-<spinner class="fit"></spinner>
-<!-- /ko -->
-
 <form>
+    <div class="text-hide alert alert-danger" role="region" aria-live="assertive" aria-atomic="true"
+        data-bind="css: { 'text-hide': !hasErrors() }">
+        <!-- ko foreach: { data: errorMessages, as: 'errorMessage' } -->
+        <div data-bind="text: errorMessage"></div>
+        <!-- /ko -->
+    </div>
+
     <fieldset data-bind="attr: { disabled : working }">
         <div class="form-group">
-            <label for="Email">Email</label>
-            <input aria-required="true" autofocus="autofocus" class="form-control" id="Email" name="Email"
-                autocomplete="email" placeholder="Email" type="text"
-                data-bind="textInput: username, css: {'is-invalid': isError}" required>
-        </div>
-        <div class="form-group">
-            <label for="Password">Password</label>
-            <input aria-required="true" class="form-control" id="Password" name="Password" placeholder="Password"
-                type="password" autocomplete="current-password"
-                data-bind="textInput: password, css: {'is-invalid': isError}">
-            <div class="invalid-feedback"><span data-bind="text: errorMessage"></span></div>
+            <label for="email">Email</label>
+            <input type="email" id="email" aria-required="true" autofocus="autofocus" class="form-control"
+                autocomplete="email" placeholder="e.g. name@example.com"
+                data-bind="textInput: username, css: { 'is-invalid': hasErrors }">
         </div>
 
         <div class="form-group">
-            <!-- ko ifnot: working -->
-            <input type="submit" id="signinButton" value="Sign in" class="button button-primary"
-                data-bind="click: signinClick, enable: (!!username() && !!password())" />
-            <!-- /ko -->
+            <label for="password">Password</label>
+            <input type="password" id="password" aria-required="true" class="form-control" name="Password"
+                placeholder="Password" autocomplete="current-password"
+                data-bind="textInput: password, css: { 'is-invalid': hasErrors }">
+        </div>
 
-            <!-- ko if: working -->
-            <input type="submit" id="signinButton" value="Signing in ..." class="button button-primary" disabled />
-            <!-- /ko -->
+        <div class="form-group">
+            <button id="signin" class="button button-primary" data-bind="click: signin, enable: canSubmit">
+                Sign in
+            </button>
         </div>
     </fieldset>
 </form>

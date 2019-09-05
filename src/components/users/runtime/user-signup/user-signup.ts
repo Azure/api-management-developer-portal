@@ -6,6 +6,7 @@ import { UsersService } from "../../../../services/usersService";
 import { TenantSettings } from "../../../../contracts/tenantSettings";
 import { SignupRequest } from "../../../../contracts/signupRequest";
 
+
 @RuntimeComponent({ selector: "user-signup" })
 @Component({
     selector: "user-signup",
@@ -14,37 +15,54 @@ import { SignupRequest } from "../../../../contracts/signupRequest";
 })
 export class UserSignup {
     private tenantSettings: TenantSettings;
-    public email: ko.Observable<string>;
-    public userPassword: ko.Observable<string>;
-    public userConfirmPassword: ko.Observable<string>;
-    public firstName: ko.Observable<string>;
-    public lastName: ko.Observable<string>;
-    public isUserRequested: ko.Observable<boolean>;
-    public isUserLoggedIn: ko.Observable<boolean>;
-    public isTermsRequired: ko.Observable<boolean>;
-    public termsOfUse: ko.Observable<string>;
-    public showTerms: ko.Observable<boolean>;
-    public consented: ko.Observable<boolean>;
-    public showHideLabel: ko.Observable<string>;
-    public serverErrors: ko.Observable<string>;
-    public working: ko.Observable<boolean>;
+
+    public readonly email: ko.Observable<string>;
+    public readonly password: ko.Observable<string>;
+    public readonly passwordConfirmation: ko.Observable<string>;
+    public readonly firstName: ko.Observable<string>;
+    public readonly lastName: ko.Observable<string>;
+    public readonly isUserRequested: ko.Observable<boolean>;
+    public readonly isUserLoggedIn: ko.Observable<boolean>;
+    public readonly isConsentRequired: ko.Observable<boolean>;
+    public readonly termsOfUse: ko.Observable<string>;
+    public readonly showTerms: ko.Observable<boolean>;
+    public readonly consented: ko.Observable<boolean>;
+    public readonly showHideLabel: ko.Observable<string>;
+    public readonly errorMessages: ko.ObservableArray<string>;
+    public readonly working: ko.Observable<boolean>;
+    public readonly hasErrors: ko.Computed<boolean>;
+    public readonly canSubmit: ko.Computed<boolean>;
 
     constructor(private readonly usersService: UsersService) {
         this.email = ko.observable("");
-        this.userPassword = ko.observable("");
-        this.userConfirmPassword = ko.observable("");
+        this.password = ko.observable("");
+        this.passwordConfirmation = ko.observable("");
         this.firstName = ko.observable("");
         this.lastName = ko.observable("");
-        this.isTermsRequired = ko.observable();
+        this.isConsentRequired = ko.observable();
+        this.consented = ko.observable(false);
         this.showTerms = ko.observable();
         this.termsOfUse = ko.observable();
         this.showHideLabel = ko.observable();
-        this.serverErrors = ko.observable();
+        this.errorMessages = ko.observableArray([]);
         this.isUserRequested = ko.observable(false);
         this.isUserLoggedIn = ko.observable(false);
         this.working = ko.observable(false);
+        this.hasErrors = ko.pureComputed(() => {
+            return this.errorMessages().length > 0;
+        });
+        this.canSubmit = ko.pureComputed(() => {
+            return true;
+
+            // return ((this.termsOfUse() && this.isConsentRequired() && this.consented())
+            //     || !this.isConsentRequired()
+            //     || !!!this.termsOfUse());
+        });
     }
 
+    /**
+     * Initializes component right after creation.
+     */
     @OnMounted()
     public async initialize(): Promise<void> {
         const isUserSignedIn = await this.usersService.isUserSignedIn();
@@ -54,19 +72,23 @@ export class UserSignup {
             return;
         }
 
-        // const settings = await this.tenantService.getSettings();
+        // TODO: Registration terms could be rendered at pubnlish time
+        // const settings = await this.tenantService.getSettings(); 
+
         const settings = {
             userRegistrationTerms: "Test userRegistrationTerms!!!",
             userRegistrationTermsEnabled: false,
             userRegistrationTermsConsentRequired: false
         };
+
         this.tenantSettings = settings as TenantSettings;
 
         if (this.tenantSettings && this.tenantSettings.userRegistrationTermsEnabled) {
-            this.consented = (<any>ko.observable(false)).extend({ equal: { params: true, message: "You must agree before submitting." } });
+            this.consented.extend(<any>{ equal: { params: true, message: "You must agree to registration terms." } });
+
             this.termsOfUse(settings.userRegistrationTerms);
             this.showHideLabel("Show");
-            this.isTermsRequired(settings.userRegistrationTermsConsentRequired);
+            this.isConsentRequired(settings.userRegistrationTermsConsentRequired);
         }
 
         validation.init({
@@ -75,20 +97,31 @@ export class UserSignup {
             decorateInputElement: true
         });
 
-        this.email.extend(<any>{ required: true, email: true });
-        this.userPassword.extend(<any>{ required: true, minLength: 8 });
-        this.userConfirmPassword.extend(<any>{ required: true, minLength: 8, equal: { message: "Must be equal to Password", params: this.userPassword } });
-        this.firstName.extend(<any>{ required: true });
-        this.lastName.extend(<any>{ required: true });
+        this.email.extend(<any>{ required: { message: `Email is required.` }, email: true });
+        this.password.extend(<any>{ required: { message: `Password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
+        this.passwordConfirmation.extend(<any>{ equal: { message: "Password confirmation field must be equal to password.", params: this.password } });
+        this.firstName.extend(<any>{ required: { message: `First name is required.` } });
+        this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
     }
 
+    /**
+     * Sends user signup request to Management API.
+     */
     public async signup(): Promise<void> {
-        this.serverErrors(null);
+        this.errorMessages([]);
 
-        const result = validation.group(this);
+        const result = validation.group({
+            email: this.email,
+            password: this.password,
+            passwordConfirmation: this.passwordConfirmation,
+            firstName: this.firstName,
+            lastName: this.lastName
+        });
 
-        if (result().length !== 0) {
-            result.showAllMessages();
+        const clientErrors = result();
+
+        if (clientErrors.length > 0) {
+            this.errorMessages(clientErrors);
             return;
         }
 
@@ -96,7 +129,7 @@ export class UserSignup {
             email: this.email(),
             firstName: this.firstName(),
             lastName: this.lastName(),
-            password: this.userPassword(),
+            password: this.password(),
             confirmation: "signup",
             appType: "developerPortal"
         };
@@ -111,8 +144,8 @@ export class UserSignup {
 
                 if (details && details.length > 0) {
                     let message = "";
-                    details.map(item => message = `${message}${item.target}: ${item.message} \n`);
-                    this.serverErrors(message);
+                    const errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
+                    this.errorMessages(errorMessages);
                 }
             }
             else {
@@ -121,17 +154,17 @@ export class UserSignup {
         }
     }
 
-    public canSignup(): boolean {
-        return ((this.termsOfUse() && this.isTermsRequired() && this.consented()) || !this.isTermsRequired() || !!!this.termsOfUse());
-    }
-
-    public toggle(): void {
+    /**
+     * Shows/hides registration terms.
+     */
+    public toggleRegistrationTerms(): void {
         if (this.showTerms()) {
             this.showHideLabel("Show");
         }
         else {
             this.showHideLabel("Hide");
         }
+
         this.showTerms(!this.showTerms());
     }
 }
