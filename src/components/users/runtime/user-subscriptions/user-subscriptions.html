@@ -33,11 +33,11 @@
                         </div>
                         <div class="col-md-3">
                             <!-- ko ifnot: $data.isEdit -->
-                            <a class="btn-link" href="#" data-bind="click: toggleEdit">Rename</a>
+                            <a class="btn-link" href="#" data-bind="click: toggleEdit" aria-label="rename subscription">Rename</a>
                             <!-- /ko -->
                             <!-- ko if: $data.isEdit -->
-                            <a class="btn-link" href="#" data-bind="click: $parent.renameSubscription">Save</a>
-                            <a class="btn-link" href="#" data-bind="click: toggleEdit">Cancel</a>
+                            <a class="btn-link" href="#" data-bind="click: $parent.renameSubscription" aria-label="Save subscription name">Save</a>
+                            <a class="btn-link" href="#" data-bind="click: toggleEdit" aria-label="Cancel subscription rename">Cancel</a>
                             <!-- /ko -->
 
                         </div>
@@ -70,8 +70,8 @@
                         <div class="col-md-3 nowrap">
                             <!-- ko ifnot: $data.isPRegenerating  -->
                             <a href="#" class="btn-link"
-                                data-bind="click: togglePrimaryKey, text: primaryKeyBtnLabel"></a> |
-                            <a href="#" class="btn-link" data-bind="click: $parent.regeneratePKey">Regenerate</a>
+                                data-bind="click: togglePrimaryKey, text: primaryKeyBtnLabel, attr: { 'aria-label': primaryKeyBtnLabel() + ' primary key'}"></a> |
+                            <a href="#" class="btn-link" data-bind="click: $parent.regeneratePKey" aria-label="Regenerate primary key">Regenerate</a>
                             <!-- /ko -->
                             <!-- ko if: $data.isPRegenerating  -->
                             <div class="progress">
@@ -90,8 +90,8 @@
                         <div class="col-md-3 nowrap">
                             <!-- ko ifnot: $data.isSRegenerating  -->
                             <a href="#" class="btn-link"
-                                data-bind="click: toggleSecondaryKey, text: secondaryKeyBtnLabel"></a> |
-                            <a href="#" class="btn-link" data-bind="click: $parent.regenerateSKey">Regenerate</a>
+                                data-bind="click: toggleSecondaryKey, text: secondaryKeyBtnLabel, attr: { 'aria-label': secondaryKeyBtnLabel() + ' Secondary key'}"></a> |
+                            <a href="#" class="btn-link" data-bind="click: $parent.regenerateSKey" aria-label="Regenerate Secondary key">Regenerate</a>
                             <!-- /ko -->
                             <!-- ko if: $data.isSRegenerating  -->
                             <div class="progress">
@@ -116,7 +116,7 @@
                 <td>
                     <!-- ko if: $data.model.canBeCancelled() -->
                     <div class="row">
-                        <a class="btn-link" href="#" data-bind="click: $parent.cancelSubscription">Cancel</a>
+                        <a class="btn-link" href="#" data-bind="click: $parent.cancelSubscription" aria-label="cancel subscription">Cancel</a>
                     </div>
                     <!-- /ko -->
                 </td>
