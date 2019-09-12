@@ -45,7 +45,7 @@
 <!-- ko if: itemStyleView() === 'dropdown' -->
 
 <div class="form-group">
-    <select class="form-control"
+    <select class="form-control" aria-label="selected api"
         data-bind="options: apis, optionsValue: 'name', optionsText: 'displayName', value: dropDownId, event:{ change: selectionChanged}">
     </select>
 </div>
