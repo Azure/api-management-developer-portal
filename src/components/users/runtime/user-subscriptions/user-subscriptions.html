@@ -71,7 +71,7 @@
                             <!-- ko ifnot: $data.isPRegenerating  -->
                             <a href="#" class="btn-link"
                                 data-bind="click: togglePrimaryKey, text: primaryKeyBtnLabel, attr: { 'aria-label': primaryKeyBtnLabel() + ' primary key'}"></a> |
-                            <a href="#" class="btn-link" data-bind="click: $parent.regeneratePKey" aria-label="Regenerate primary key">Regenerate</a>
+                            <a href="#" class="btn-link" data-bind="click: $parent.regeneratePKey, hasFocus: $data.changedItem() === 'primaryKey'" aria-label="Regenerate primary key">Regenerate</a>
                             <!-- /ko -->
                             <!-- ko if: $data.isPRegenerating  -->
                             <div class="progress">
@@ -91,7 +91,7 @@
                             <!-- ko ifnot: $data.isSRegenerating  -->
                             <a href="#" class="btn-link"
                                 data-bind="click: toggleSecondaryKey, text: secondaryKeyBtnLabel, attr: { 'aria-label': secondaryKeyBtnLabel() + ' Secondary key'}"></a> |
-                            <a href="#" class="btn-link" data-bind="click: $parent.regenerateSKey" aria-label="Regenerate Secondary key">Regenerate</a>
+                            <a href="#" class="btn-link" data-bind="click: $parent.regenerateSKey, hasFocus: $data.changedItem() === 'secondaryKey'" aria-label="Regenerate Secondary key">Regenerate</a>
                             <!-- /ko -->
                             <!-- ko if: $data.isSRegenerating  -->
                             <div class="progress">

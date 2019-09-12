@@ -11,6 +11,7 @@ export class SubscriptionViewModel {
     public secondaryKeyBtnLabel: ko.Observable<string>;
     public isPRegenerating: ko.Observable<boolean>;
     public isSRegenerating: ko.Observable<boolean>;
+    public changedItem: ko.Observable<string>;
 
     public editName: ko.Observable<string>;
     public isEdit: ko.Observable<boolean>;
@@ -22,6 +23,7 @@ export class SubscriptionViewModel {
         this.secondaryKeyBtnLabel = ko.observable(this.showLabel);
         this.isPRegenerating = ko.observable(false);
         this.isSRegenerating = ko.observable(false);
+        this.changedItem = ko.observable();
         this.editName = ko.observable(model.name);
         this.isEdit = ko.observable(false);
     }
