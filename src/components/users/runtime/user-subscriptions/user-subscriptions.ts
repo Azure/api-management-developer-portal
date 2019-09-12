@@ -63,6 +63,7 @@ export class UserSubscriptions {
         const updated = await this.productService.regeneratePrimaryKey(subscription.model.id);
         const updatedVM = new SubscriptionViewModel(updated);
         this.syncSubscriptionLabelState(subscription, updatedVM);
+        updatedVM.changedItem("primaryKey");
         this.subscriptions.replace(subscription, updatedVM);
         subscription.isPRegenerating(false);
     }
@@ -72,6 +73,7 @@ export class UserSubscriptions {
         const updated = await this.productService.regenerateSecondaryKey(subscription.model.id);
         const updatedVM = new SubscriptionViewModel(updated);
         this.syncSubscriptionLabelState(subscription, updatedVM);
+        updatedVM.changedItem("secondaryKey");
         this.subscriptions.replace(subscription, updatedVM);
         subscription.isSRegenerating(false);
     }
