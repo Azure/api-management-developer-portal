@@ -13,8 +13,7 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
             displayName: "Product: APIs",
             model: model,
             applyChanges: async (updatedModel: ProductApisModel) => {
-                Object.assign(model, updatedModel);
-                this.modelToViewModel(model, viewModel, bindingContext);
+                this.modelToViewModel(updatedModel, viewModel, bindingContext);
             }
         };
 
