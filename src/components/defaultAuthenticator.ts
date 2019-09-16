@@ -65,6 +65,10 @@ export class DefaultAuthenticator implements IAuthenticator {
     }
 
     public parseAccessToken(token: string): AccessToken {
+        if (!token) {
+            throw new Error("Access token is missing.");
+        }
+
         let accessToken: AccessToken;
 
         if (token.startsWith("Bearer ")) {
