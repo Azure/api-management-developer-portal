@@ -13,8 +13,7 @@ export class ProductDetailsViewModelBinder implements ViewModelBinder<ProductDet
             displayName: "Product: Details",
             model: model,
             applyChanges: async (updatedModel: ProductDetailsModel) => {
-                Object.assign(model, updatedModel);
-                this.modelToViewModel(model, viewModel, bindingContext);
+                this.modelToViewModel(updatedModel, viewModel, bindingContext);
             }
         };
 

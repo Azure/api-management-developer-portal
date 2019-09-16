@@ -14,8 +14,7 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
             model: model,
             editor: "operation-details-editor",
             applyChanges: async (updatedModel: OperationDetailsModel) => {
-                Object.assign(model, updatedModel);
-                this.modelToViewModel(model, viewModel, bindingContext);
+                this.modelToViewModel(updatedModel, viewModel, bindingContext);
             }
         };
 

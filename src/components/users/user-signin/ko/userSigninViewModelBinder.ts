@@ -15,8 +15,7 @@ export class UserSigninViewModelBinder implements ViewModelBinder<UserSigninMode
             displayName: "Sign-in form",
             model: model,
             applyChanges: async (updatedModel: UserSigninModel) => {
-                Object.assign(model, updatedModel);
-                this.modelToViewModel(model, viewModel, bindingContext);
+                this.modelToViewModel(updatedModel, viewModel, bindingContext);
             }
         };
 

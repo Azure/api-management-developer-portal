@@ -14,8 +14,7 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
             model: model,
             editor: "operation-list-editor",
             applyChanges: async (updatedModel: OperationListModel) => {
-                Object.assign(model, updatedModel);
-                this.modelToViewModel(model, viewModel, bindingContext);
+                this.modelToViewModel(updatedModel, viewModel, bindingContext);
             }
         };
 

@@ -13,8 +13,7 @@ export class ProductSubscriptionsViewModelBinder implements ViewModelBinder<Prod
             displayName: "Product: Subscriptions",
             model: model,
             applyChanges: async (updatedModel: ProductSubscriptionsModel) => {
-                Object.assign(model, updatedModel);
-                this.modelToViewModel(model, viewModel, bindingContext);
+                this.modelToViewModel(updatedModel, viewModel, bindingContext);
             }
         };
 
