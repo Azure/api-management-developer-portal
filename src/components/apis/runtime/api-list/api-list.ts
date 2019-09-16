@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import template from "./api-list.html";
-import { SearchRequest } from "../../../../contracts/searchRequest";
+import { ApiSearchQuery } from "../../../../contracts/apiSearchQuery";
 import { Component, RuntimeComponent, Param, OnMounted } from "@paperbits/common/ko/decorators";
 import { Utils } from "../../../../utils";
 import { TagService } from "../../../../services/tagService";
@@ -15,7 +15,7 @@ import { Api } from "../../../../models/api";
     injectable: "apiList"
 })
 export class ApiList {
-    private searchRequest: SearchRequest;
+    private searchRequest: ApiSearchQuery;
     private queryParams: URLSearchParams;
 
     public apis: ko.ObservableArray<Api>;
@@ -118,7 +118,7 @@ export class ApiList {
         }
     }
 
-    public async searchApis(searchRequest?: SearchRequest): Promise<void> {
+    public async searchApis(searchRequest?: ApiSearchQuery): Promise<void> {
         this.working(true);
 
         this.searchRequest = searchRequest || this.searchRequest || { pattern: "", tags: [], grouping: "none" };

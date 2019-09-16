@@ -14,8 +14,7 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
             model: model,
             editor: "product-list-editor",
             applyChanges: async (updatedModel: ProductListModel) => {
-                Object.assign(model, updatedModel);
-                this.modelToViewModel(model, viewModel, bindingContext);
+                this.modelToViewModel(updatedModel, viewModel, bindingContext);
             }
         };
 

@@ -13,8 +13,7 @@ export class UserDetailsViewModelBinder implements ViewModelBinder<UserDetailsMo
             displayName: "User: Profile",
             model: model,
             applyChanges: async (updatedModel: UserDetailsModel) => {
-                Object.assign(model, updatedModel);
-                this.modelToViewModel(model, viewModel, bindingContext);
+                this.modelToViewModel(updatedModel, viewModel, bindingContext);
             }
         };
 
