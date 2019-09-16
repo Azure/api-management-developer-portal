@@ -2,7 +2,7 @@ import { ProductContract } from "./../contracts/product";
 import { ApiContract } from "../contracts/api";
 import { TagResourceContract } from "../contracts/tagResource";
 import { PageContract } from "../contracts/page";
-import { SearchRequest } from "../contracts/searchRequest";
+import { ApiSearchQuery } from "../contracts/apiSearchQuery";
 import { Api } from "../models/api";
 import { VersionSet } from "../models/versionSet";
 import { Page } from "../models/page";
@@ -20,7 +20,7 @@ import { HttpHeader } from "@paperbits/common/http/httpHeader";
 export class ApiService {
     constructor(private readonly smapiClient: MapiClient) { }
 
-    public async getApis(searchRequest?: SearchRequest): Promise<Page<Api>> {
+    public async getApis(searchRequest?: ApiSearchQuery): Promise<Page<Api>> {
         let query = "/apis?expandApiVersionSet=true";
 
         if (searchRequest) {
@@ -61,7 +61,7 @@ export class ApiService {
         return result;
     }
 
-    public async getApisByTags(searchRequest?: SearchRequest): Promise<PageContract<TagResourceContract[]>> {
+    public async getApisByTags(searchRequest?: ApiSearchQuery): Promise<PageContract<TagResourceContract[]>> {
         throw new Error("Not implemented.");
     }
 
@@ -134,25 +134,25 @@ export class ApiService {
         return operation;
     }
 
-    public async getOperations(apiId: string, searchRequest?: SearchRequest): Promise<Page<Operation>> {
+    public async getOperations(apiId: string, searchQuery?: ApiSearchQuery): Promise<Page<Operation>> {
         let query = `${apiId}/operations`;
 
         let top;
 
-        if (searchRequest) {
-            searchRequest.tags.forEach((tag, index) => {
+        if (searchQuery) {
+            searchQuery.tags.forEach((tag, index) => {
                 query = Utils.addQueryParameter(query, `tags[${index}]=${tag.name}`);
             });
 
-            if (searchRequest.pattern) {
-                const pattern = Utils.escapeValueForODataFilter(searchRequest.pattern);
+            if (searchQuery.pattern) {
+                const pattern = Utils.escapeValueForODataFilter(searchQuery.pattern);
                 query = Utils.addQueryParameter(query, `$filter=contains(properties/name,'${encodeURIComponent(pattern)}')`);
             }
 
-            top = searchRequest.top;
+            top = searchQuery.top;
 
-            if (searchRequest.skip) {
-                query = Utils.addQueryParameter(query, `$skip=${searchRequest.skip}`);
+            if (searchQuery.skip) {
+                query = Utils.addQueryParameter(query, `$skip=${searchQuery.skip}`);
             }
         }
 
