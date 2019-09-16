@@ -14,8 +14,7 @@ export class UserSignupViewModelBinder implements ViewModelBinder<UserSignupMode
             name: "User signup",
             model: model,
             applyChanges: async (updatedModel: UserSignupModel) => {
-                Object.assign(model, updatedModel);
-                this.modelToViewModel(model, viewModel, bindingContext);
+                this.modelToViewModel(updatedModel, viewModel, bindingContext);
             }
         };
 

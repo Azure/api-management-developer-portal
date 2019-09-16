@@ -14,7 +14,7 @@ import { MapiError } from "../../../../services/mapiError";
 export class UserSignin {
     public username: ko.Observable<string>;
     public password: ko.Observable<string>;
-    public canSignin: ko.Computed<boolean>;
+    public canSubmit: ko.Computed<boolean>;
     public errorMessages: ko.ObservableArray<string>;
     public hasErrors: ko.Observable<boolean>;
     public working: ko.Observable<boolean>;
@@ -25,7 +25,7 @@ export class UserSignin {
         this.errorMessages = ko.observableArray([]);
         this.hasErrors = ko.observable(false);
         this.working = ko.observable(false);
-        this.canSignin = ko.pureComputed(() => {
+        this.canSubmit = ko.pureComputed(() => {
             return !!this.username() && !!this.password() && !this.working();
         });
     }

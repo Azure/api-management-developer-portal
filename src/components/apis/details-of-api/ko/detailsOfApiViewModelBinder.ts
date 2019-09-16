@@ -15,8 +15,7 @@ export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApi
             model: model,
             editor: "details-of-api-editor",
             applyChanges: async (updatedModel: DetailsOfApiModel) => {
-                Object.assign(model, updatedModel);
-                this.modelToViewModel(model, viewModel, bindingContext);
+                this.modelToViewModel(updatedModel, viewModel, bindingContext);
             }
         };
 
