@@ -1,0 +1,24 @@
+.subunit {
+  fill: none;
+  stroke: #f0f0f0;
+  stroke-width: 1px;
+}
+
+text.subunit-label {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  text-anchor: middle;
+  fill: #000;
+}
+
+.subunit-label {
+  display: none;
+}
+
+.graticule {
+  fill: none;
+  stroke: #aaa;
+  stroke-opacity: .5;
+  stroke-width: .5px;
+}
