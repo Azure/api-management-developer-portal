@@ -9,6 +9,7 @@ import { ApiList } from "./components/apis/runtime/api-list/api-list";
 import { ApiService } from "./services/apiService";
 import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
+import { AnalyticsService } from "./services/analyticsService";
 import { ApiDetails } from "./components/apis/runtime/api-details/api-details";
 import { OperationDetails } from "./components/operations/runtime/operation-details/operation-details";
 import { OperationConsole } from "./components/operations/runtime/operation-console/operation-console";
@@ -30,6 +31,7 @@ import { Spinner } from "./components/spinner/spinner";
 import { ProductApis } from "./components/products/runtime/product-apis/product-apis";
 import { OperationList } from "./components/operations/runtime/operation-list/operation-list";
 import { ProductSubscriptions } from "./components/products/runtime/product-subscriptions/product-subscriptions";
+import { Reports } from "./components/runtime/analytics/reports";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -50,6 +52,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("tagService", TagService);
         injector.bind("tenantService", TenantService);
         injector.bind("productService", ProductService);
+        injector.bind("analyticsService", AnalyticsService);
         injector.bind("userSignin", UserSignin);
         injector.bind("userSignup", UserSignup);
         injector.bind("userDetails", UserDetails);
@@ -62,6 +65,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationList", OperationList);
         injector.bind("operationDetails", OperationDetails);
         injector.bind("usersService", UsersService);
+        injector.bind("reports", Reports);
         injector.bind("spinner", Spinner);
         injector.bindSingleton("smapiClient", MapiClient);
         injector.bindSingleton("httpClient", XmlHttpRequestClient);

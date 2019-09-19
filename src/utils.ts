@@ -124,6 +124,85 @@ export class Utils {
         }
     }
 
+    /**
+     * Formats number into string.
+     * @param num {number} Number to be formatted.
+     */
+    public static formatNumber(num: number): string {
+        let suffix = "";
+        let divider = 1;
+
+        if (num > 1000) {
+            suffix = " K";
+            divider = 1024;
+        }
+
+        if (num > 1000 * 1000) {
+            suffix = " M";
+            divider = 1000 * 1000;
+        }
+
+        if (num > 1000 * 1000 * 1000) {
+            suffix = " Gb";
+            divider = 1000 * 1000 * 1000;
+        }
+
+        const result = Math.round(((num / divider) + Number.EPSILON) * 100) / 100;
+
+        return `${result}${suffix}`;
+    }
+
+    /**
+     * Formats number of bytes into string.
+     * @param bytes 
+     */
+    public static formatBytes(bytes: number): string {
+        let suffix = " bytes";
+        let divider = 1;
+
+        if (bytes > 1024) {
+            suffix = " Kb";
+            divider = 1024;
+        }
+
+        if (bytes > 1024 * 1024) {
+            suffix = " Mb";
+            divider = 1024 * 1024;
+        }
+
+        if (bytes > 1024 * 1024 * 1024) {
+            suffix = " Gb";
+            divider = 1024 * 1024 * 1024;
+        }
+
+        // const result = Math.round(((bytes / divider) + Number.EPSILON) * 100) / 100;
+
+        const result =  Math.floor(bytes / divider);
+
+        return `${result}${suffix}`;
+    }
+
+    /**
+     * Formats time span into string.
+     * @param bytes 
+     */
+    public static formatTimespan(milliseconds: number): string {
+        let suffix = " ms";
+        let divider = 1;
+
+        if (milliseconds > 1000) {
+            suffix = " s";
+            divider = 1000;
+        }
+
+        if (milliseconds > 1000 * 60) {
+            suffix = " h";
+            divider = 1000 * 60;
+        }
+
+        return `${(milliseconds / divider).toFixed(0)}${suffix}`;
+    }
+
     public static parseHeaderString(headerString: string): NameValuePair[] {
         if (!headerString) {
             return [];
@@ -132,8 +211,7 @@ export class Utils {
         const headers = [];
         const headerPairs = headerString.split("\u000d\u000a");
 
-        for (let i = 0; i < headerPairs.length; i++) {
-            const headerPair = headerPairs[i];
+        for (const headerPair of headerPairs) {
             const index = headerPair.indexOf("\u003a\u0020");
 
             if (index > 0) {
