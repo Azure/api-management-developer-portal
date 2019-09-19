@@ -1,85 +1,110 @@
 @font-face {
-    font-family: 'icons';
-    src:  url('fonts/icons.eot?a6lw2r');
-    src:  url('fonts/icons.eot?a6lw2r#iefix') format('embedded-opentype'),
-      url('fonts/icons.ttf?a6lw2r') format('truetype'),
-      url('fonts/icons.woff?a6lw2r') format('woff'),
-      url('fonts/icons.svg?a6lw2r#icons') format('svg');
-    font-weight: normal;
-    font-style: normal;
-  }
-  
-  [class^="icon-"], [class*=" icon-"] {
-    /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'icons' !important;
-    speak: none;
-    font-style: normal;
-    font-weight: normal;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
-  
-    /* Better Font Rendering =========== */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
-  .icon-download:before {
-    content: "\e906";
-  }
-  .icon-openapi:before {
-    content: "\e907";
-  }
-  .icon-grouped-list:before {
-    content: "\e900";
-  }
-  .icon-list:before {
-    content: "\e901";
-  }
-  .icon-filtrofier:before {
-    content: "\e902";
-  }
-  .icon-play:before {
-    content: "\e908";
-  }
-  .icon-api-management:before {
-    content: "\e903";
-  }
-  .icon-chevron-down:before {
-    content: "\e904";
-  }
-  .icon-code:before {
-    content: "\e905";
-  }
-  .icon-drag-handle:before {
-    content: "\e91e";
-  }
-  .icon-eye:before {
-    content: "\e91f";
-  }
-  .icon-eye-fill:before {
-    content: "\e920";
-  }
-  .icon-magnifier:before {
-    content: "\e91b";
-  }
-  .icon-option-horizontal:before {
-    content: "\e91d";
-  }
-  .icon-plus:before {
-    content: "\e91c";
-  }
-  .icon-search-filter:before {
-    content: "\e923";
-  }
-  .icon-tag:before {
-    content: "\e921";
-  }
-  .icon-trash:before {
-    content: "\e922";
-  }
-  
-  
+  font-family: 'icons';
+  src: url('fonts/icons.eot?a6lw2r');
+  src: url('fonts/icons.eot?a6lw2r#iefix') format('embedded-opentype'), url('fonts/icons.ttf?a6lw2r') format('truetype'), url('fonts/icons.woff?a6lw2r') format('woff'), url('fonts/icons.svg?a6lw2r#icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class*=" icon-"],
+[class^="icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icons' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-download:before {
+  content: "\e906";
+}
+
+.icon-openapi:before {
+  content: "\e907";
+}
+
+.icon-grouped-list:before {
+  content: "\e900";
+}
+
+.icon-list:before {
+  content: "\e901";
+}
+
+.icon-filtrofier:before {
+  content: "\e902";
+}
+
+.icon-play:before {
+  content: "\e908";
+}
+
+.icon-api-management:before {
+  content: "\e903";
+}
+
+.icon-chevron-down:before {
+  content: "\e90a";
+}
+
+.icon-chevron-up:before {
+  content: "\e90b";
+}
+
+.icon-chevron-right:before {
+  content: "\e904";
+}
+
+.icon-chevron-left:before {
+  content: "\e909";
+}
+
+.icon-code:before {
+  content: "\e905";
+}
+
+.icon-drag-handle:before {
+  content: "\e91e";
+}
+
+.icon-eye:before {
+  content: "\e91f";
+}
+
+.icon-eye-fill:before {
+  content: "\e920";
+}
+
+.icon-magnifier:before {
+  content: "\e91b";
+}
+
+.icon-option-horizontal:before {
+  content: "\e91d";
+}
+
+.icon-plus:before {
+  content: "\e91c";
+}
+
+.icon-search-filter:before {
+  content: "\e923";
+}
+
+.icon-tag:before {
+  content: "\e921";
+}
+
+.icon-trash:before {
+  content: "\e922";
+}
 
 .icon.icon-wadl {
   @include icon-18px();
