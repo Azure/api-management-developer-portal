@@ -2,7 +2,7 @@ export enum HostType {
     Proxy = "Proxy",
     Portal = "Portal",
     Mapi = "Management"
-};
+}
 
 export enum ServiceSkuName {
     Developer = "Developer",
@@ -10,9 +10,11 @@ export enum ServiceSkuName {
     Standard = "Standard",
     Premium = "Premium",
     Consumption = "Consumption"
-};
+}
 
 export const TypeOfApi = {
     soap: "soap",
     http: "http"
 };
+
+export const defaultPageSize = 10;
