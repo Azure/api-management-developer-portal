@@ -30,6 +30,7 @@
     "typescript.tsdk": "node_modules/typescript/lib",
     "mochaExplorer.files": "specs/**/*.spec.ts",
     "mochaExplorer.require": "./mocha",
-    "mochaExplorer.timeout": 30000
+    "mochaExplorer.timeout": 30000,
+    "sfmt.insize": 4
   
 }
