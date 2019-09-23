@@ -18,7 +18,7 @@ import { HttpHeader } from "@paperbits/common/http/httpHeader";
 
 
 export class ApiService {
-    constructor(private readonly smapiClient: MapiClient) { }
+    constructor(private readonly mapiClient: MapiClient) { }
 
     public async getApis(searchRequest?: ApiSearchQuery): Promise<Page<Api>> {
         let query = "/apis?expandApiVersionSet=true";
@@ -34,7 +34,7 @@ export class ApiService {
             }
         }
 
-        const result = await this.smapiClient.get<Page<ApiContract>>(query);
+        const result = await this.mapiClient.get<Page<ApiContract>>(query);
 
         // return {
         //     value: result.value.map(x => new Api(x)),
@@ -54,7 +54,7 @@ export class ApiService {
         }
         const query = "/apis?expandApiVersionSet=true";
 
-        const apisPage = await this.smapiClient.get<Page<ApiContract>>(query);
+        const apisPage = await this.mapiClient.get<Page<ApiContract>>(query);
 
         const result = apisPage.value.filter(x => x.properties.apiVersionSetId && Utils.getResourceName("api-version-sets", x.properties.apiVersionSetId, "shortId") === versionSetId).map(x => new Api(x));
 
@@ -74,7 +74,7 @@ export class ApiService {
 
         apiResourceUri += `?expandApiVersionSet=true`; // TODO: doesn't work in non-ARM resources
 
-        const apiContract = await this.smapiClient.get<ApiContract>(apiResourceUri);
+        const apiContract = await this.mapiClient.get<ApiContract>(apiResourceUri);
 
         if (!apiContract) {
             return null;
@@ -114,16 +114,16 @@ export class ApiService {
             default:
         }
 
-        return this.smapiClient.get<string>(apiId, [header]);
+        return this.mapiClient.get<string>(apiId, [header]);
     }
 
     public async getApiVersionSet(versionSetId: string): Promise<VersionSet> {
-        const versionSetContract = await this.smapiClient.get<VersionSetContract>(versionSetId);
+        const versionSetContract = await this.mapiClient.get<VersionSetContract>(versionSetId);
         return new VersionSet(versionSetContract.id, versionSetContract);
     }
 
     public async getOperation(operationId: string): Promise<Operation> {
-        const operationContract = await this.smapiClient.get<OperationContract>(operationId);
+        const operationContract = await this.mapiClient.get<OperationContract>(operationId);
 
         if (!operationContract) {
             return null;
@@ -158,7 +158,7 @@ export class ApiService {
 
         query = Utils.addQueryParameter(query, `$top=${top || 20}`);
 
-        const result = await this.smapiClient.get<Page<OperationContract>>(query);
+        const result = await this.mapiClient.get<Page<OperationContract>>(query);
         const page = new Page<Operation>();
 
         page.value = result.value.map(c => new Operation(<any>c));
@@ -186,7 +186,7 @@ export class ApiService {
             return cached;
         }
         
-        const schema = await this.smapiClient.get<SchemaContract>(`${schemaId}`);
+        const schema = await this.mapiClient.get<SchemaContract>(`${schemaId}`);
         const loaded = new Schema(schema);
         
         cachedApi[schemaId] = loaded;
@@ -195,12 +195,12 @@ export class ApiService {
     }
 
     public async getSchemas(api: Api): Promise<Page<Schema>> {
-        const result = await this.smapiClient.get<Page<SchemaContract>>(`${api.id}/schemas?$top=20`);
+        const result = await this.mapiClient.get<Page<SchemaContract>>(`${api.id}/schemas?$top=20`);
         const schemaReferences = result.value;
         const schemas = await Promise.all(schemaReferences.map(schemaReference => this.getApiSchema(schemaReference.id)));
 
         // return schemas;
-        // const result = await this.smapiClient.get<Page<SchemaContract>>(`${api.id}/schemas?$top=20`, null);
+        // const result = await this.mapiClient.get<Page<SchemaContract>>(`${api.id}/schemas?$top=20`, null);
         // const schemas = await Promise.all(schemaReferences.map(schemaReference => this.getApiSchema(schemaReference.id)));
         // return schemas;
 
@@ -223,7 +223,7 @@ export class ApiService {
         }
 
         const result = [];
-        const pageOfProducts = await this.smapiClient.get<Page<ProductContract>>(`${apiId}/products`);
+        const pageOfProducts = await this.mapiClient.get<Page<ProductContract>>(`${apiId}/products`);
 
         if (pageOfProducts && pageOfProducts.value) {
             pageOfProducts.value.map(item => result.push(new Product(item)));
@@ -241,7 +241,7 @@ export class ApiService {
     public async getProductApis(productId: string): Promise<Page<Api>> {
         const result: Api[] = [];
 
-        const pageOfApis = await this.smapiClient.get<Page<ApiContract>>(`${productId}/apis`);
+        const pageOfApis = await this.mapiClient.get<Page<ApiContract>>(`${productId}/apis`);
 
         if (pageOfApis && pageOfApis.value) {
             pageOfApis.value.map(item => result.push(new Api(item)));

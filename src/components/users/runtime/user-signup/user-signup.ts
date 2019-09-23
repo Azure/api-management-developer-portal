@@ -48,15 +48,11 @@ export class UserSignup {
         this.isUserRequested = ko.observable(false);
         this.isUserLoggedIn = ko.observable(false);
         this.working = ko.observable(false);
-        this.hasErrors = ko.pureComputed(() => {
-            return this.errorMessages().length > 0;
-        });
+        this.hasErrors = ko.pureComputed(() => this.errorMessages().length > 0);
         this.canSubmit = ko.pureComputed(() => {
-            return true;
-
-            // return ((this.termsOfUse() && this.isConsentRequired() && this.consented())
-            //     || !this.isConsentRequired()
-            //     || !!!this.termsOfUse());
+            return ((this.termsOfUse() && this.isConsentRequired() && this.consented())
+                || !this.isConsentRequired()
+                || !!!this.termsOfUse());
         });
     }
 
@@ -72,10 +68,8 @@ export class UserSignup {
             return;
         }
 
-        // TODO: Registration terms could be rendered at pubnlish time
-        // const settings = await this.tenantService.getSettings(); 
-
         const settings = {
+            // TODO: Registration terms could be rendered at publish time
             userRegistrationTerms: "Test userRegistrationTerms!!!",
             userRegistrationTermsEnabled: false,
             userRegistrationTermsConsentRequired: false
