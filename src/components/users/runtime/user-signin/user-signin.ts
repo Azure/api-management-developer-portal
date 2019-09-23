@@ -12,12 +12,12 @@ import { MapiError } from "../../../../services/mapiError";
     injectable: "userSignin"
 })
 export class UserSignin {
-    public username: ko.Observable<string>;
-    public password: ko.Observable<string>;
-    public canSubmit: ko.Computed<boolean>;
-    public errorMessages: ko.ObservableArray<string>;
-    public hasErrors: ko.Observable<boolean>;
-    public working: ko.Observable<boolean>;
+    public readonly username: ko.Observable<string>;
+    public readonly password: ko.Observable<string>;
+    public readonly canSubmit: ko.Computed<boolean>;
+    public readonly errorMessages: ko.ObservableArray<string>;
+    public readonly hasErrors: ko.Observable<boolean>;
+    public readonly working: ko.Observable<boolean>;
 
     constructor(private readonly usersService: UsersService) {
         this.username = ko.observable("");
@@ -38,7 +38,6 @@ export class UserSignin {
             if (userId) {
                 this.navigateToHome();
             }
-
         }
         catch (error) {
             if (error.code === "Unauthorized") {

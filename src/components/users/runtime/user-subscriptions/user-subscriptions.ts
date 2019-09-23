@@ -38,7 +38,7 @@ export class UserSubscriptions {
     }
 
     private async loadSubscriptions(userId: string): Promise<void> {
-        const models = await this.productService.getUserSubscriptions(userId);
+        const models = await this.productService.getUserSubscriptionsWithProductName(userId);
         const subscriptions = [];
 
         models.map(item => item.state === SubscriptionState.active && subscriptions.push(new SubscriptionViewModel(item)));
@@ -51,7 +51,7 @@ export class UserSubscriptions {
     }
 
     public async renameSubscription(subscription: SubscriptionViewModel): Promise<void> {
-        const updated = await this.productService.renameUserSubscription(subscription.model.id, subscription.editName());
+        const updated = await this.productService.renameSubscription(subscription.model.id, subscription.editName());
         const updatedVM = new SubscriptionViewModel(updated);
         this.syncSubscriptionLabelState(subscription, updatedVM);
         this.subscriptions.replace(subscription, updatedVM);
@@ -88,7 +88,7 @@ export class UserSubscriptions {
     }
 
     public async cancelSubscription(subscription: SubscriptionViewModel): Promise<void> {
-        const updated = await this.productService.cancelUserSubscription(subscription.model.id);
+        const updated = await this.productService.cancelSubscription(subscription.model.id);
         const updatedVM = new SubscriptionViewModel(updated);
         this.syncSubscriptionLabelState(subscription, updatedVM);
         this.subscriptions.replace(subscription, updatedVM);

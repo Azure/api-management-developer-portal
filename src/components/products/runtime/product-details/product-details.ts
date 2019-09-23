@@ -103,7 +103,7 @@ export class ProductDetails {
         this.subscriptions(null);
 
         try {
-            const subscriptions = await this.productService.getUserSubscriptions(userId);
+            const subscriptions = await this.productService.getUserSubscriptionsWithProductName(userId);
             const productSubscriptions = subscriptions.filter(item => item.productId === productId && item.state === SubscriptionState.active) || [];
 
             this.subscriptions(productSubscriptions);

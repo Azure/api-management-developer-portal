@@ -1,0 +1,11 @@
+<div class="text-hide alert alert-danger" role="region" aria-live="assertive" aria-atomic="true"
+    data-bind="css: { 'text-hide': !hasErrors() }">
+    <!-- ko foreach: { data: errorMessages, as: 'errorMessage' } -->
+    <div data-bind="text: errorMessage"></div>
+    <!-- /ko -->
+</div>
+
+<button class="button button-default" data-bind="click: signInAad">
+    <i class="icon icon-aad"></i>
+    Azure Active Directory
+</button>
