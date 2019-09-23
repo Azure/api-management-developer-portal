@@ -12,7 +12,7 @@ const selectedLocale = "en_us";
 
 
 export class MapiObjectStorage implements IObjectStorage {
-    constructor(private readonly smapiClient: MapiClient) { }
+    constructor(private readonly mapiClient: MapiClient) { }
 
     private getContentTypeFromResource(resource: string): string {
         const regex = /contentTypes\/([\w]*)/gm;
@@ -181,7 +181,7 @@ export class MapiObjectStorage implements IObjectStorage {
 
         try {
             const headers: HttpHeader[] = [];
-            await this.smapiClient.put<T>(resource, headers, converted);
+            await this.mapiClient.put<T>(resource, headers, converted);
         }
         catch (error) {
             throw new Error(`Could not add object '${path}'. Error: ${error}`);
@@ -193,7 +193,7 @@ export class MapiObjectStorage implements IObjectStorage {
             const resource = this.paperbitsKeyToArmResource(key);
             const contentType = this.getContentTypeFromResource(resource);
             const isLocalized = localizedContentTypes.includes(contentType);
-            const item = await this.smapiClient.get<T>(`${resource}`);
+            const item = await this.mapiClient.get<T>(`${resource}`);
 
             const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
 
@@ -223,7 +223,7 @@ export class MapiObjectStorage implements IObjectStorage {
             const headers: HttpHeader[] = [];
             headers.push({ name: "If-Match", value: "*" });
 
-            await this.smapiClient.delete(resource, headers);
+            await this.mapiClient.delete(resource, headers);
         }
         catch (error) {
             throw new Error(`Could not delete object '${path}'. Error: ${error}.`);
@@ -259,7 +259,7 @@ export class MapiObjectStorage implements IObjectStorage {
                 delete converted["type"];
             }
 
-            await this.smapiClient.head<T>(resource);
+            await this.mapiClient.head<T>(resource);
             exists = true;
         }
         catch (error) {
@@ -278,7 +278,7 @@ export class MapiObjectStorage implements IObjectStorage {
                 headers.push({ name: "If-Match", value: "*" });
             }
 
-            await this.smapiClient.put<T>(resource, headers, converted);
+            await this.mapiClient.put<T>(resource, headers, converted);
         }
         catch (error) {
             throw new Error(`Could not update object '${key}'. Error: ${error}`);
@@ -318,12 +318,12 @@ export class MapiObjectStorage implements IObjectStorage {
             }
 
             if (key.contains("navigationItems")) {
-                const item = await this.smapiClient.get<any>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`);
+                const item = await this.mapiClient.get<any>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`);
                 const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
                 return converted.nodes;
             }
             else {
-                const pageOfTs = await this.smapiClient.get<Page<T>>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`);
+                const pageOfTs = await this.mapiClient.get<Page<T>>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`);
                 const searchResult = {};
 
                 for (const item of pageOfTs.value) {

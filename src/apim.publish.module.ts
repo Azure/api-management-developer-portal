@@ -6,6 +6,7 @@ import { MapiObjectStorage } from "./persistence/mapiObjectStorage";
 import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
 import { DetailsOfApiModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
 import { UserSigninModule } from "./components/users/user-signin/ko/userSignin.module";
+import { UserSigninSocialModule } from "./components/users/user-signin-social/ko/userSigninSocial.module";
 import { UserSignupModule } from "./components/users/user-signup/ko/userSignup.module";
 import { UserDetailsModule } from "./components/users/user-details/ko/userDetails.module";
 import { UserSubscriptionsModule } from "./components/users/user-subscriptions/ko/userSubscriptions.module";
@@ -19,6 +20,7 @@ import { ProductListModule } from "./components/products/product-list/ko/product
 import { ProductSubscribeModule } from "./components/products/product-subscribe/ko/productSubscribe.module";
 import { ProductApisModule } from "./components/products/product-apis/ko/productApis.module";
 import { ProductSubscriptionsModule } from "./components/products/product-subscriptions/ko/productSubscriptions.module";
+import { IdentityService } from "./services/identityService";
 
 
 export class ApimPublishModule implements IInjectorModule {
@@ -26,6 +28,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ListOfApisModule());
         injector.bindModule(new DetailsOfApiModule());
         injector.bindModule(new UserSigninModule());
+        injector.bindModule(new UserSigninSocialModule());
         injector.bindModule(new UserSignupModule());
         injector.bindModule(new UserDetailsModule());
         injector.bindModule(new UserSubscriptionsModule());
@@ -38,9 +41,10 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new OperationDetailsModule());
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
+        injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("router", StaticRouter);
         injector.bindSingleton("authenticator", StaticAuthenticator);
-        injector.bindSingleton("smapiClient", MapiClient);
+        injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("logger", ConsoleLogger);
     }
