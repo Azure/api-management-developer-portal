@@ -1,4 +1,5 @@
-import { IAuthenticator } from "../authentication/IAuthenticator";
+import * as Constants from "./../constants";
+import { IAuthenticator } from "../authentication";
 import { MapiClient } from "./mapiClient";
 import { Router } from "@paperbits/common/routing";
 import { HttpHeader } from "@paperbits/common/http";
@@ -8,45 +9,63 @@ import { SignupRequest } from "../contracts/signupRequest";
 import { Identity } from "../contracts/identity";
 import { UserContract } from "../contracts/user";
 
-const signinUrl = "/signin";
-const profileUrl = "/profile";
-const homeUrl = "/";
 
+/**
+ * A service for management operations with users.
+ */
 export class UsersService {
     constructor(
-        private readonly smapiClient: MapiClient,
+        private readonly mapiClient: MapiClient,
         private readonly router: Router,
         private readonly authenticator: IAuthenticator
     ) { }
 
+    /**
+     * Initiates signing-in with Basic identity provider.
+     * @param username {string} User name.
+     * @param password {string} Password.
+     */
     public async signIn(username: string, password: string): Promise<string> {
         const authString = `Basic ${btoa(`${username}:${password}`)}`;
 
-        const responseData = await this.smapiClient.get<{ id: string }>("identity", [{ name: "Authorization", value: authString }]);
+        const responseData = await this.mapiClient.get<{ id: string }>("identity", [{ name: "Authorization", value: authString }]);
+
         if (responseData && responseData.id) {
             this.authenticator.setUser(responseData.id);
             return responseData.id;
-        } else {
+        }
+        else {
             this.authenticator.clearAccessToken();
             return undefined;
         }
     }
 
+    /**
+     * Creates sign-up request.
+     * @param signupRequest 
+     */
     public async createSignupRequest(signupRequest: SignupRequest): Promise<void> {
-        await this.smapiClient.post("/users", null, signupRequest);
+        await this.mapiClient.post("/users", null, signupRequest);
     }
 
+    /**
+     * Initiates signing-out with Basic identity provider.
+     * @param withRedirect 
+     */
     public signOut(withRedirect: boolean = true): void {
         this.authenticator.clearAccessToken();
 
         if (withRedirect) {
-            this.router.navigateTo(signinUrl);
+            this.router.navigateTo(Constants.signinUrl);
         }
     }
 
+    /**
+     * Returns currently authenticated user ID.
+     */
     public async getCurrentUserId(): Promise<string> {
         try {
-            const identity = await this.smapiClient.get<Identity>("/identity");
+            const identity = await this.mapiClient.get<Identity>("/identity");
 
             if (!identity || !identity.id) {
                 return null;
@@ -66,6 +85,9 @@ export class UsersService {
         }
     }
 
+    /**
+     * Checks if current user is authenticated.
+     */
     public async isUserSignedIn(): Promise<boolean> {
         const userId = await this.getCurrentUserId();
 
@@ -76,6 +98,9 @@ export class UsersService {
         return false;
     }
 
+    /**
+     * Returns currently authenticated user.
+     */
     public async getCurrentUser(): Promise<User> {
         try {
             const userId = await this.getCurrentUserId();
@@ -84,7 +109,7 @@ export class UsersService {
                 return null;
             }
 
-            const user = await this.smapiClient.get<UserContract>(userId);
+            const user = await this.mapiClient.get<UserContract>(userId);
 
             return new User(user);
         }
@@ -93,26 +118,36 @@ export class UsersService {
         }
     }
 
+    /**
+     * Updates user profile data.
+     * @param userId {string} Unique user identifier.
+     * @param updateUserData 
+     */
     public async updateUser(userId: string, updateUserData: { firstName: string, lastName: string }): Promise<any> {
         try {
             const header: HttpHeader = {
                 name: "If-Match",
                 value: "*"
             };
-            await this.smapiClient.patch<string>(`${userId}`, [header], updateUserData);
-            const user = await this.smapiClient.get<UserContract>(userId);
-            
+            await this.mapiClient.patch<string>(`${userId}`, [header], updateUserData);
+            const user = await this.mapiClient.get<UserContract>(userId);
+
             if (user) {
                 return new User(user);
-            } else {
+            }
+            else {
                 console.error("User was not updated with data: " + updateUserData);
                 return undefined;
             }
         } catch (error) {
-            this.router.navigateTo(signinUrl);
+            this.router.navigateTo(Constants.signinUrl);
         }
     }
 
+    /**
+     * Deletes specified user.
+     * @param userId {string} Unique user identifier.
+     */
     public async deleteUser(userId: string): Promise<void> {
         try {
             const header: HttpHeader = {
@@ -121,48 +156,60 @@ export class UsersService {
             };
 
             const query = Utils.addQueryParameter(userId, "deleteSubscriptions=true&notify=true");
-            await this.smapiClient.delete<string>(query, [header]);
+
+            await this.mapiClient.delete<string>(query, [header]);
+
             this.signOut();
-            console.log("User was deleted");
-        } catch (error) {
-            this.router.navigateTo(signinUrl);
+        }
+        catch (error) {
+            this.router.navigateTo(Constants.signinUrl);
         }
     }
 
+    /**
+     * Initiates change email request.
+     * TODO: Not implemented.
+     * @param user {User} User.
+     * @param newEmail {string} Email.
+     */
     public async requestChangeEmail(user: User, newEmail: string): Promise<any> {
         try {
             console.log("requestChangeEmail is not implemented");
         } catch (error) {
-            this.router.navigateTo(signinUrl);
+            this.router.navigateTo(Constants.signinUrl);
         }
     }
 
+    /**
+     * Initiates password change request.
+     * TODO: Not implemented.
+     * @param user 
+     * @param newPassword 
+     */
     public async requestChangePassword(user: User, newPassword: string): Promise<any> {
         try {
             console.log("requestChangePassword is not implemented");
-        } catch (error) {
-            this.router.navigateTo(signinUrl);
+        }
+        catch (error) {
+            this.router.navigateTo(Constants.signinUrl);
         }
     }
 
     public navigateToProfile(): void {
-        /**
-         * TODO: Take user profile URL from settings.
-         */
-        this.router.navigateTo(profileUrl);
+        this.router.navigateTo(Constants.profileUrl);
     }
 
     public navigateToSignin(): void {
-        /**
-         * TODO: Take sign-in URL from settings.
-         */
-        this.router.navigateTo(signinUrl);
+        this.router.navigateTo(Constants.signinUrl);
     }
 
     public navigateToHome(): void {
-        this.router.navigateTo(homeUrl);
+        this.router.navigateTo(Constants.homeUrl);
     }
 
+    /**
+     * Check whether current user is authenticated and, if not, redirects to sign-in page.
+     */
     public async ensureSignedIn(): Promise<void> {
         return new Promise<void>((resolve) => {
             const userId = this.getCurrentUserId();

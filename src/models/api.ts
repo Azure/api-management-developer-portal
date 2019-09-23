@@ -1,10 +1,9 @@
 import { VersionSet } from "./versionSet";
 import { ApiContract, SubscriptionKeyParameterName } from "../contracts/api";
-import { Operation } from "./operation";
 import { Utils } from "../utils";
 
 /**
- * API
+ * API model.
  */
 export class Api {
     public readonly id: string;

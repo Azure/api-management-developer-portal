@@ -131,7 +131,7 @@ export class ProductSubscribe {
         }
 
         const product = this.product();
-        const subscriptions = await this.productService.getUserSubscriptions(userId);
+        const subscriptions = await this.productService.getUserSubscriptionsWithProductName(userId);
         const activeSubscriptions = subscriptions.filter(item => item.productId === product.id && item.state === SubscriptionState.active) || [];
         const numberOfSubscriptions = activeSubscriptions.length;
         const allowMultiple = product.subscriptionsLimit !== 1;
@@ -165,7 +165,7 @@ export class ProductSubscribe {
         const subscriptionId = `/subscriptions/${Utils.getBsonObjectId()}`;
 
         try {
-            await this.productService.createUserSubscription(subscriptionId, userId, this.product().id, this.subscriptionName());
+            await this.productService.createSubscription(subscriptionId, userId, this.product().id, this.subscriptionName());
             this.usersService.navigateToProfile();
         }
         catch (error) {

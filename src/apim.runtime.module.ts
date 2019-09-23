@@ -3,7 +3,7 @@ import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { DefaultEventManager } from "@paperbits/common/events";
 import { XmlHttpRequestClient } from "@paperbits/common/http";
 import { SettingsProvider } from "@paperbits/common/configuration";
-import { DefaultRouter, DefaultRouteGuard } from "@paperbits/common/routing";
+import { DefaultRouter } from "@paperbits/common/routing";
 import { KnockoutRegistrationLoaders } from "@paperbits/core/ko/knockout.loaders";
 import { ApiList } from "./components/apis/runtime/api-list/api-list";
 import { ApiService } from "./services/apiService";
@@ -19,6 +19,7 @@ import { FileInput } from "./components/runtime/file-input/file-input";
 import { MapiClient } from "./services/mapiClient";
 import { UsersService } from "./services/usersService";
 import { UserSignin } from "./components/users/runtime/user-signin/user-signin";
+import { UserSignInSocial } from "./components/users/runtime/user-signin-social/user-signin-social";
 import { UserSignup } from "./components/users/runtime/user-signup/user-signup";
 import { UserDetails } from "./components/users/runtime/user-details/user-details";
 import { UserSubscriptions } from "./components/users/runtime/user-subscriptions/user-subscriptions";
@@ -31,6 +32,7 @@ import { Spinner } from "./components/spinner/spinner";
 import { ProductApis } from "./components/products/runtime/product-apis/product-apis";
 import { OperationList } from "./components/operations/runtime/operation-list/operation-list";
 import { ProductSubscriptions } from "./components/products/runtime/product-subscriptions/product-subscriptions";
+import { AadService } from "./services/aadService";
 import { Reports } from "./components/runtime/analytics/reports";
 
 
@@ -54,6 +56,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("productService", ProductService);
         injector.bind("analyticsService", AnalyticsService);
         injector.bind("userSignin", UserSignin);
+        injector.bind("userSigninSocial", UserSignInSocial);
         injector.bind("userSignup", UserSignup);
         injector.bind("userDetails", UserDetails);
         injector.bind("userSubscriptions", UserSubscriptions);
@@ -67,7 +70,8 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("usersService", UsersService);
         injector.bind("reports", Reports);
         injector.bind("spinner", Spinner);
-        injector.bindSingleton("smapiClient", MapiClient);
+        injector.bindSingleton("aadService", AadService);
+        injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("httpClient", XmlHttpRequestClient);
         injector.bindSingleton("settingsProvider", SettingsProvider);
         injector.bindSingleton("accessTokenRouteChecker", AccessTokenRouteGuard);

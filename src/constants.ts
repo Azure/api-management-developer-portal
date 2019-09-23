@@ -17,4 +17,7 @@ export const TypeOfApi = {
     http: "http"
 };
 
+export const signinUrl = "/signin";
+export const profileUrl = "/profile";
+export const homeUrl = "/";
 export const defaultPageSize = 10;
