@@ -5,7 +5,9 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { UsersService } from "../../../../services/usersService";
 import { TenantSettings } from "../../../../contracts/tenantSettings";
 import { SignupRequest } from "../../../../contracts/signupRequest";
+import { CaptchaService } from "../../../../services/captchaService";
 
+declare var WLSPHIP0;
 
 @RuntimeComponent({ selector: "user-signup" })
 @Component({
@@ -22,7 +24,6 @@ export class UserSignup {
     public readonly firstName: ko.Observable<string>;
     public readonly lastName: ko.Observable<string>;
     public readonly isUserRequested: ko.Observable<boolean>;
-    public readonly isUserLoggedIn: ko.Observable<boolean>;
     public readonly isConsentRequired: ko.Observable<boolean>;
     public readonly termsOfUse: ko.Observable<string>;
     public readonly showTerms: ko.Observable<boolean>;
@@ -32,13 +33,16 @@ export class UserSignup {
     public readonly working: ko.Observable<boolean>;
     public readonly hasErrors: ko.Computed<boolean>;
     public readonly canSubmit: ko.Computed<boolean>;
+    public readonly captcha: ko.Observable<string>;
 
-    constructor(private readonly usersService: UsersService) {
-        this.email = ko.observable("");
-        this.password = ko.observable("");
-        this.passwordConfirmation = ko.observable("");
-        this.firstName = ko.observable("");
-        this.lastName = ko.observable("");
+    constructor(
+        private readonly usersService: UsersService,       
+        private readonly captchaService: CaptchaService) {
+        this.email = ko.observable();
+        this.password = ko.observable();
+        this.passwordConfirmation = ko.observable();
+        this.firstName = ko.observable();
+        this.lastName = ko.observable();
         this.isConsentRequired = ko.observable();
         this.consented = ko.observable(false);
         this.showTerms = ko.observable();
@@ -46,7 +50,6 @@ export class UserSignup {
         this.showHideLabel = ko.observable();
         this.errorMessages = ko.observableArray([]);
         this.isUserRequested = ko.observable(false);
-        this.isUserLoggedIn = ko.observable(false);
         this.working = ko.observable(false);
         this.hasErrors = ko.pureComputed(() => this.errorMessages().length > 0);
         this.canSubmit = ko.pureComputed(() => {
@@ -54,13 +57,14 @@ export class UserSignup {
                 || !this.isConsentRequired()
                 || !!!this.termsOfUse());
         });
+        this.captcha = ko.observable();
     }
 
     /**
      * Initializes component right after creation.
      */
     @OnMounted()
-    public async initialize(): Promise<void> {
+    public async initialize(): Promise<void> { 
         const isUserSignedIn = await this.usersService.isUserSignedIn();
 
         if (isUserSignedIn) {
@@ -96,6 +100,7 @@ export class UserSignup {
         this.passwordConfirmation.extend(<any>{ equal: { message: "Password confirmation field must be equal to password.", params: this.password } });
         this.firstName.extend(<any>{ required: { message: `First name is required.` } });
         this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
+        this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
     }
 
     /**
@@ -104,12 +109,36 @@ export class UserSignup {
     public async signup(): Promise<void> {
         this.errorMessages([]);
 
+        let captchaSolution;
+        let captchaFlowId;
+        let captchaToken;
+        let captchaType;
+
+        WLSPHIP0.verify( (solution, token, param) => {
+            WLSPHIP0.clientValidation();
+            if (WLSPHIP0.error != "0")
+            {
+                this.captcha(null); //is not valid
+                return;
+            }
+            else {
+                captchaSolution = solution;
+                captchaToken = token;
+                captchaType = WLSPHIP0.type;
+                const flowIdElement = <HTMLInputElement>document.getElementById("FlowId")
+                captchaFlowId = flowIdElement.value;
+                this.captcha("valid");
+                return;
+            }
+        },'');
+
         const result = validation.group({
             email: this.email,
             password: this.password,
             passwordConfirmation: this.passwordConfirmation,
             firstName: this.firstName,
-            lastName: this.lastName
+            lastName: this.lastName,
+            captcha: this.captcha
         });
 
         const clientErrors = result();
@@ -120,19 +149,26 @@ export class UserSignup {
         }
 
         const createSignupRequest: SignupRequest = {
-            email: this.email(),
-            firstName: this.firstName(),
-            lastName: this.lastName(),
-            password: this.password(),
-            confirmation: "signup",
-            appType: "developerPortal"
+            solution: captchaSolution,
+            flowId: captchaFlowId,
+            token: captchaToken,
+            type: captchaType,
+            signupData: {
+                email: this.email(),
+                firstName: this.firstName(),
+                lastName: this.lastName(),
+                password: this.password(),
+                confirmation: "signup",
+                appType: "developerPortal"
+            }
         };
 
         try {
-            await this.usersService.createSignupRequest(createSignupRequest);
+            await this.captchaService.sendSignupRequest(createSignupRequest);
             this.isUserRequested(true);
         }
         catch (error) {
+            WLSPHIP0.reloadHIP();
             if (error.code === "ValidationError") {
                 const details: any[] = error.details;
 
@@ -143,7 +179,8 @@ export class UserSignup {
                 }
             }
             else {
-                throw new Error(error);
+                this.errorMessages(["Server error. Unable to send request. Please try again later."]);
+                console.error("Sign up", error);
             }
         }
     }

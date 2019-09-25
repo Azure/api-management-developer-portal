@@ -5,10 +5,8 @@ import { Router } from "@paperbits/common/routing";
 import { HttpHeader } from "@paperbits/common/http";
 import { User } from "../models/user";
 import { Utils } from "../utils";
-import { SignupRequest } from "../contracts/signupRequest";
 import { Identity } from "../contracts/identity";
 import { UserContract } from "../contracts/user";
-
 
 /**
  * A service for management operations with users.
@@ -38,14 +36,6 @@ export class UsersService {
             this.authenticator.clearAccessToken();
             return undefined;
         }
-    }
-
-    /**
-     * Creates sign-up request.
-     * @param signupRequest 
-     */
-    public async createSignupRequest(signupRequest: SignupRequest): Promise<void> {
-        await this.mapiClient.post("/users", null, signupRequest);
     }
 
     /**

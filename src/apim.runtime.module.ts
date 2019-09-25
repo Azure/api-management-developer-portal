@@ -34,6 +34,10 @@ import { OperationList } from "./components/operations/runtime/operation-list/op
 import { ProductSubscriptions } from "./components/products/runtime/product-subscriptions/product-subscriptions";
 import { AadService } from "./services/aadService";
 import { Reports } from "./components/runtime/analytics/reports";
+import { CaptchaService } from "./services/captchaService";
+import { HipCaptcha } from "./components/users/runtime/hip-captcha/hip-captcha";
+import { UserReset } from "./components/users/runtime/user-reset/user-reset";
+import { UserResetPswd } from "./components/users/runtime/user-reset-pswd/user-reset-pswd";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -69,6 +73,10 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationDetails", OperationDetails);
         injector.bind("usersService", UsersService);
         injector.bind("reports", Reports);
+        injector.bind("captchaService", CaptchaService);
+        injector.bind("hipCaptcha", HipCaptcha);
+        injector.bind("userReset", UserReset);
+        injector.bind("userResetPswd", UserResetPswd);
         injector.bind("spinner", Spinner);
         injector.bindSingleton("aadService", AadService);
         injector.bindSingleton("mapiClient", MapiClient);

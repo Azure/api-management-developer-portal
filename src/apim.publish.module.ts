@@ -21,6 +21,8 @@ import { ProductSubscribeModule } from "./components/products/product-subscribe/
 import { ProductApisModule } from "./components/products/product-apis/ko/productApis.module";
 import { ProductSubscriptionsModule } from "./components/products/product-subscriptions/ko/productSubscriptions.module";
 import { IdentityService } from "./services/identityService";
+import { UserResetModule } from "./components/users/user-reset/ko/userReset.module";
+import { UserResetPswdModule } from "./components/users/user-reset-pswd/ko/userResetPswd.module";
 
 
 export class ApimPublishModule implements IInjectorModule {
@@ -39,6 +41,8 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ProductSubscribeModule());
         injector.bindModule(new OperationListModule());
         injector.bindModule(new OperationDetailsModule());
+        injector.bindModule(new UserResetModule());
+        injector.bindModule(new UserResetPswdModule());
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
         injector.bindSingleton("identityService", IdentityService);

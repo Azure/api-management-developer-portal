@@ -39,6 +39,10 @@ import { ProductSubscriptionsModule } from "./components/products/product-subscr
 import { App } from "./app/app";
 import { ReportsModule } from "./components/reports/ko/reports.module";
 import { ReportsEditorModule } from "./components/reports/ko/reportsEditor.module";
+import { UserResetModule } from "./components/users/user-reset/ko/userReset.module";
+import { UserResetEditorModule } from "./components/users/user-reset/ko/userResetEditor.module";
+import { UserResetPswdModule } from "./components/users/user-reset-pswd/ko/userResetPswd.module";
+import { UserResetPswdEditorModule } from "./components/users/user-reset-pswd/ko/userResetPswdEditor.module";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -75,6 +79,10 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new OperationDetailsEditorModule());
         injector.bindModule(new ReportsModule());
         injector.bindModule(new ReportsEditorModule());
+        injector.bindModule(new UserResetModule());
+        injector.bindModule(new UserResetEditorModule());
+        injector.bindModule(new UserResetPswdModule());
+        injector.bindModule(new UserResetPswdEditorModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
