@@ -43,6 +43,8 @@ import { ResetPasswordModule } from "./components/users/reset-password/ko/resetP
 import { ResetPasswordEditorModule } from "./components/users/reset-password/ko/resetPasswordEditor.module";
 import { ConfirmPasswordModule } from "./components/users/confirm-password/ko/confirmPassword.module";
 import { ConfirmPassworEditorModule } from "./components/users/confirm-password/ko/confirmPasswordEditor.module";
+import { HelpModule } from "./components/help";
+
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -82,6 +84,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ResetPasswordEditorModule());
         injector.bindModule(new ConfirmPasswordModule());
         injector.bindModule(new ConfirmPassworEditorModule());
+        injector.bindModule(new HelpModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
