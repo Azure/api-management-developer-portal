@@ -39,6 +39,7 @@ import { ProductSubscriptionsModule } from "./components/products/product-subscr
 import { App } from "./app/app";
 import { ReportsModule } from "./components/reports/ko/reports.module";
 import { ReportsEditorModule } from "./components/reports/ko/reportsEditor.module";
+import { HelpModule } from "./components/help";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -75,6 +76,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new OperationDetailsEditorModule());
         injector.bindModule(new ReportsModule());
         injector.bindModule(new ReportsEditorModule());
+        injector.bindModule(new HelpModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
