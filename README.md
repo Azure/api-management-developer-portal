@@ -9,6 +9,7 @@ If you're looking for **general information or documentation on the developer po
 Table of contents:
 
 - [Overview](#overview)
+- [Releases](#releases)
 - [Roadmap](#roadmap)
 - [Bug reports and feedback](#feedback)
 - [Contributions](#contributions)
@@ -21,6 +22,10 @@ Table of contents:
 The new developer portal is based on our own fork of the [Paperbits framework](http://paperbits.io/) - a [JAMstack technology](https://jamstack.org/), which we extended to provide API Management-specific features.
 
 You can deploy and self-host it outside of an API Management instance. This approach allows you to edit the portal's codebase and extend the provided core functionality. For  instructions, please refer to [documentation in the repository's Wiki section](https://github.com/Azure/api-management-developer-portal/wiki).
+
+## <a name="releases"></a> Releases
+
+The `master` branch of this repository is used for daily development purposes and may contain unstable version of the software. We recommend using [GitHub releases](https://github.com/Azure/api-management-developer-portal/releases) for setting up the portal.
 
 ## <a name="roadmap"></a> Roadmap
 
