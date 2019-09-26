@@ -1,7 +1,7 @@
 import { IToolButton, IViewManager, IView } from "@paperbits/common/ui";
 
 export class HelpWorkshopSection implements IToolButton {
-    public iconClass: string = "paperbits-icon paperbits-question-2";
+    public iconClass: string = "paperbits-icon paperbits-help";
     public title: string = "Help";
 
     constructor(private readonly viewManager: IViewManager) { }
