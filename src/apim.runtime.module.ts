@@ -36,8 +36,8 @@ import { AadService } from "./services/aadService";
 import { Reports } from "./components/runtime/analytics/reports";
 import { CaptchaService } from "./services/captchaService";
 import { HipCaptcha } from "./components/users/runtime/hip-captcha/hip-captcha";
-import { UserReset } from "./components/users/runtime/user-reset/user-reset";
-import { UserResetPswd } from "./components/users/runtime/user-reset-pswd/user-reset-pswd";
+import { ResetPassword } from "./components/users/runtime/reset-password/reset-password";
+import { ConfirmPassword } from "./components/users/runtime/confirm-password/confirm-password";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -75,8 +75,8 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("reports", Reports);
         injector.bind("captchaService", CaptchaService);
         injector.bind("hipCaptcha", HipCaptcha);
-        injector.bind("userReset", UserReset);
-        injector.bind("userResetPswd", UserResetPswd);
+        injector.bind("resetPassword", ResetPassword);
+        injector.bind("confirmPassword", ConfirmPassword);
         injector.bind("spinner", Spinner);
         injector.bindSingleton("aadService", AadService);
         injector.bindSingleton("mapiClient", MapiClient);

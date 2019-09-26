@@ -1,18 +1,18 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
-import template from "./user-reset-pswd.html";
+import template from "./confirm-password.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { ResetPassword } from "../../../../contracts/resetRequest";
 import { CaptchaService } from "../../../../services/captchaService";
 import { UsersService } from "../../../../services/usersService";
 
-@RuntimeComponent({ selector: "user-reset-pswd" })
+@RuntimeComponent({ selector: "confirm-password" })
 @Component({
-    selector: "user-reset-pswd",
+    selector: "confirm-password",
     template: template,
-    injectable: "userResetPswd"
+    injectable: "confirmPassword"
 })
-export class UserResetPswd {
+export class ConfirmPassword {
     private queryParams: URLSearchParams;
     private userId: string;
     private ticket: string;

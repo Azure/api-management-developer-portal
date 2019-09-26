@@ -1,21 +1,21 @@
 import * as ko from "knockout";
-import template from "./userResetPswdEditor.html";
+import template from "./confirmPasswordEditor.html";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
-import { UserResetPswdModel } from "../userResetPswdModel";
+import { ConfirmPasswordModel } from "../confirmPasswordModel";
 
 @Component({
-    selector: "user-reset-pswd-editor",
+    selector: "confirm-passwor-editor",
     template: template,
-    injectable: "userResetPswdEditor"
+    injectable: "confirmPasswordEditor"
 })
-export class UserResetPswdEditor {
+export class ConfirmPasswordEditor {
     constructor() {}
 
     @Param()
-    public model: UserResetPswdModel;
+    public model: ConfirmPasswordModel;
 
     @Event()
-    public onChange: (model: UserResetPswdModel) => void;
+    public onChange: (model: ConfirmPasswordModel) => void;
 
     @OnMounted()
     public async initialize(): Promise<void> {}

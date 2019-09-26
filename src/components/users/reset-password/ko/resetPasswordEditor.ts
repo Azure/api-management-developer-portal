@@ -1,14 +1,14 @@
 import * as ko from "knockout";
-import template from "./userResetEditor.html";
+import template from "./resetPasswordEditor.html";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
-import { UserResetModel } from "../userResetModel";
+import { ResetPasswordModel } from "../resetPasswordModel";
 
 @Component({
-    selector: "user-reset-editor",
+    selector: "reset-password-editor",
     template: template,
-    injectable: "userResetEditor"
+    injectable: "resetPasswordEditor"
 })
-export class UserResetEditor {
+export class ResetPasswordEditor {
     public requireHipCaptcha: ko.Observable<boolean>;
 
     constructor() {
@@ -16,10 +16,10 @@ export class UserResetEditor {
     }
 
     @Param()
-    public model: UserResetModel;
+    public model: ResetPasswordModel;
 
     @Event()
-    public onChange: (model: UserResetModel) => void;
+    public onChange: (model: ResetPasswordModel) => void;
 
     @OnMounted()
     public async initialize(): Promise<void> {

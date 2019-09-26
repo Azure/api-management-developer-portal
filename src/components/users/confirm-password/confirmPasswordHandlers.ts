@@ -1,15 +1,15 @@
 ﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
-import { UserResetModel } from "./userResetModel";
+import { ConfirmPasswordModel } from "./confirmPasswordModel";
 
-export class UserResetHandlers implements IWidgetHandler {
+export class ConfirmPasswordHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
-            name: "userReset",
+            name: "confirmPassword",
             category: "User",
-            displayName: "Password reset request",
+            displayName: "Confirm password",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
-            createModel: async () => new UserResetModel()
+            createModel: async () => new ConfirmPasswordModel()
         };
 
         return widgetOrder;

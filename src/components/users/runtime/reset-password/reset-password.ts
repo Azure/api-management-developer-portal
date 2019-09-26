@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
-import template from "./user-reset.html";
+import template from "./reset-password.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../services/usersService";
 import { ResetRequest } from "../../../../contracts/resetRequest";
@@ -8,13 +8,13 @@ import { CaptchaService } from "../../../../services/captchaService";
 
 declare var WLSPHIP0;
 
-@RuntimeComponent({ selector: "user-reset" })
+@RuntimeComponent({ selector: "reset-password" })
 @Component({
-    selector: "user-reset",
+    selector: "reset-password",
     template: template,
-    injectable: "userReset"
+    injectable: "resetPassword"
 })
-export class UserReset {
+export class ResetPassword {
     public readonly email: ko.Observable<string>;
     public readonly isResetRequested: ko.Observable<boolean>;
     public readonly errorMessages: ko.ObservableArray<string>;

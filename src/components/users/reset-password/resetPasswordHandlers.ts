@@ -1,15 +1,15 @@
 ﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
-import { UserResetPswdModel } from "./userResetPswdModel";
+import { ResetPasswordModel } from "./resetPasswordModel";
 
-export class UserResetPswdHandlers implements IWidgetHandler {
+export class ResetPasswordHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
-            name: "userResetPswd",
+            name: "resetPassword",
             category: "User",
-            displayName: "Password reset",
+            displayName: "Reset password",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
-            createModel: async () => new UserResetPswdModel()
+            createModel: async () => new ResetPasswordModel()
         };
 
         return widgetOrder;

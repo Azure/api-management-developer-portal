@@ -1,13 +1,13 @@
 import * as ko from "knockout";
-import template from "./userReset.html";
+import template from "./resetPassword.html";
 import { Component } from "@paperbits/common/ko/decorators";
 
 
 @Component({
-    selector: "userReset",
+    selector: "resetPassword",
     template: template
 })
-export class UserResetViewModel {
+export class ResetPasswordViewModel {
     public requireHipCaptcha: ko.Observable<boolean>;
 
     constructor() {
