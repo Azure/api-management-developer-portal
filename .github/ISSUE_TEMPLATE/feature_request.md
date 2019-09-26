@@ -1,9 +1,9 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: Suggest an idea for the product
 title: ''
-labels: ''
-assignees: ''
+labels: feature-request, to-triage
+assignees: mikebudzynski
 
 ---
 
