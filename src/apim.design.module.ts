@@ -36,7 +36,7 @@ import { ProductApisModule } from "./components/products/product-apis/ko/product
 import { ProductApisEditorModule } from "./components/products/product-apis/ko/productApisEditor.module";
 import { ProductSubscriptionsEditorModule } from "./components/products/product-subscriptions/ko/productSubscriptionsEditor.module";
 import { ProductSubscriptionsModule } from "./components/products/product-subscriptions/ko/productSubscriptions.module";
-import { App } from "./app/app";
+import { App } from "./components/app/app";
 import { ReportsModule } from "./components/reports/ko/reports.module";
 import { ReportsEditorModule } from "./components/reports/ko/reportsEditor.module";
 import { HelpModule } from "./components/help";
