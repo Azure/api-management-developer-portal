@@ -1,8 +1,8 @@
 {
-  "managementApiUrl": "https://<service-name>.management.azure-api.net/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.ApiManagement/service/<service-name>",
+  "managementApiUrl": "https://alzaslondemo.management.azure-api.net/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.ApiManagement/service/alzaslondemo",
   "managementApiVersion": "2018-06-01-preview",
-  "managementApiAccessToken": "SharedAccessSignature...",
+  "managementApiAccessToken": "SharedAccessSignature 1&201910100000&0JLpbB2ERzvaYeh7v9m0toLk13W1+lmYiSjOZLlbHmsSLPdcmTesV7pCFimeBK3S926ZIA9Fjb0o1be88oACzg==",
   "blobStorageContainer": "content",
-  "blobStorageConnectionString": "DefaultEndpointsProtocol=...",
+  "blobStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=apimsteg93vjytcd51eq9xfo;AccountKey=NALPQeLMngYv8fP1iNGfldwuz6+oGpeHfDGCZvdfnZJEsx6RsnAXObr3HxkY/lotfbaEfJkN8xz1yvufRO/kvA==;EndpointSuffix=core.windows.net",
   "environment": "publishing"
 }
