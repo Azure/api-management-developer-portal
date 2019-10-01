@@ -38,6 +38,7 @@ import { CaptchaService } from "./services/captchaService";
 import { HipCaptcha } from "./components/users/runtime/hip-captcha/hip-captcha";
 import { ResetPassword } from "./components/users/runtime/reset-password/reset-password";
 import { ConfirmPassword } from "./components/users/runtime/confirm-password/confirm-password";
+import { ChangePassword } from "./components/users/runtime/change-password/change-password";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -77,6 +78,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("hipCaptcha", HipCaptcha);
         injector.bind("resetPassword", ResetPassword);
         injector.bind("confirmPassword", ConfirmPassword);
+        injector.bind("changePassword", ChangePassword);
         injector.bind("spinner", Spinner);
         injector.bindSingleton("aadService", AadService);
         injector.bindSingleton("mapiClient", MapiClient);

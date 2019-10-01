@@ -42,8 +42,10 @@ import { ReportsEditorModule } from "./components/reports/ko/reportsEditor.modul
 import { ResetPasswordModule } from "./components/users/reset-password/ko/resetPassword.module";
 import { ResetPasswordEditorModule } from "./components/users/reset-password/ko/resetPasswordEditor.module";
 import { ConfirmPasswordModule } from "./components/users/confirm-password/ko/confirmPassword.module";
-import { ConfirmPassworEditorModule } from "./components/users/confirm-password/ko/confirmPasswordEditor.module";
+import { ConfirmPasswordEditorModule } from "./components/users/confirm-password/ko/confirmPasswordEditor.module";
 import { HelpModule } from "./components/help";
+import { ChangePasswordModule } from "./components/users/change-password/ko/changePassword.module";
+import { ChangePasswordEditorModule } from "./components/users/change-password/ko/changePasswordEditor.module";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -83,7 +85,9 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ResetPasswordModule());
         injector.bindModule(new ResetPasswordEditorModule());
         injector.bindModule(new ConfirmPasswordModule());
-        injector.bindModule(new ConfirmPassworEditorModule());
+        injector.bindModule(new ConfirmPasswordEditorModule());
+        injector.bindModule(new ChangePasswordModule());
+        injector.bindModule(new ChangePasswordEditorModule());
         injector.bindModule(new HelpModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("blobStorage", AzureBlobStorage);

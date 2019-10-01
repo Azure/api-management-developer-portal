@@ -23,6 +23,7 @@ import { ProductSubscriptionsModule } from "./components/products/product-subscr
 import { IdentityService } from "./services/identityService";
 import { ResetPasswordModule } from "./components/users/reset-password/ko/resetPassword.module";
 import { ConfirmPasswordModule } from "./components/users/confirm-password/ko/confirmPassword.module";
+import { ChangePasswordModule } from "./components/users/change-password/ko/changePassword.module";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -42,6 +43,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new OperationDetailsModule());
         injector.bindModule(new ResetPasswordModule());
         injector.bindModule(new ConfirmPasswordModule());
+        injector.bindModule(new ChangePasswordModule());
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
         injector.bindSingleton("identityService", IdentityService);

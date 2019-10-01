@@ -17,7 +17,7 @@ export class ResetPasswordViewModelBinder implements ViewModelBinder<ResetPasswo
         viewModel["widgetBinding"] = {
             displayName: "Reset password",
             model: model,
-            editor: "user-reset-editor",
+            editor: "reset-password-editor",
             applyChanges: async (updatedModel: ResetPasswordModel) => {
                 this.modelToViewModel(updatedModel, viewModel, bindingContext);
                 this.eventManager.dispatchEvent("onContentUpdate");

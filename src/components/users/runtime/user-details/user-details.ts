@@ -17,8 +17,6 @@ export class UserDetails {
     public email: ko.Observable<string>;
     public registrationDate: ko.Computed<string>;
     public isEdit: ko.Observable<boolean>;
-    public isEditEmail: ko.Observable<boolean>;
-    public isEditPassword: ko.Observable<boolean>;
     public password: ko.Observable<string>;
     public confirmPassword: ko.Observable<string>;
     public user: ko.Observable<User>;
@@ -31,8 +29,6 @@ export class UserDetails {
         this.password = ko.observable();
         this.confirmPassword = ko.observable();
         this.isEdit = ko.observable(false);
-        this.isEditEmail = ko.observable(false);
-        this.isEditPassword = ko.observable(false);
         this.registrationDate = ko.computed(() => this.getRegistrationDate());
     }
 
@@ -62,35 +58,6 @@ export class UserDetails {
             this.lastName(this.user().lastName);
         }
         this.isEdit(!this.isEdit());
-    }
-
-    public toggleEditEmail(): void {
-        if (this.isEditEmail()) {
-            this.email(this.user().email);
-        }
-        this.isEditEmail(!this.isEditEmail());
-    }
-
-    public toggleEditPassword(): void {
-        if (this.isEditPassword()) {
-            this.password(undefined);
-            this.confirmPassword(undefined);
-        }
-        this.isEditPassword(!this.isEditPassword());
-    }
-
-    public changeEmail(): void {
-        if (this.isEditEmail() && this.isEmailChanged()) {
-            this.usersService.requestChangeEmail(this.user(), this.email());
-        }
-        this.toggleEditEmail();
-    }
-
-    public changePassword(): void {
-        if (this.isEditPassword() && this.password() && this.password() === this.confirmPassword()) {
-            this.usersService.requestChangePassword(this.user(), this.password());
-        }
-        this.toggleEditPassword();
     }
 
     public async changeAccountInfo(): Promise<void> {

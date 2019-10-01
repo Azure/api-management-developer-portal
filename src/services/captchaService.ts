@@ -2,11 +2,13 @@
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod } from "@paperbits/common/http";
 import { CaptchaParams } from "../contracts/captchaParams";
 import { SignupRequest } from "../contracts/signupRequest";
-import { ResetRequest, ResetPassword } from "../contracts/resetRequest";
+import { ResetRequest, ResetPassword, ChangePasswordRequest } from "../contracts/resetRequest";
+import { IAuthenticator } from "../authentication/IAuthenticator";
 
 export class CaptchaService {
     constructor(
-        private readonly httpClient: HttpClient
+        private readonly httpClient: HttpClient,
+        private readonly authenticator: IAuthenticator
     ) { }
 
     public async getCaptchaParams(): Promise<CaptchaParams> {
@@ -14,7 +16,6 @@ export class CaptchaService {
         const httpRequest: HttpRequest = {
             method: HttpMethod.get,
             url: "/captcha"
-            // url: `https://igo-test.developer.current.int-azure-api.net/captcha`
         }
 
         try {
@@ -52,6 +53,30 @@ export class CaptchaService {
                 method: HttpMethod.post,
                 headers: [{ name: "Content-Type", value: "application/json" }], 
                 body: JSON.stringify(resetRequest)
+            });
+        if (response.statusCode !== 200) {
+            if(response.statusCode === 400) {
+                const responseObj = <any>response.toObject();
+                throw responseObj.error;
+            } else {
+                throw Error(response.toText());             
+            }
+        }
+    }
+
+    public async sendChangePassword(changePasswordRequest: ChangePasswordRequest): Promise<void> {
+        const authToken = this.authenticator.getAccessToken();
+
+        if (!authToken) {
+            throw Error("Auth token not found");
+        }
+
+        const response = await this.httpClient.send(
+            { 
+                url: "/change-password", 
+                method: HttpMethod.post,
+                headers: [{ name: "Authorization", value: authToken }, { name: "Content-Type", value: "application/json" }], 
+                body: JSON.stringify(changePasswordRequest)
             });
         if (response.statusCode !== 200) {
             if(response.statusCode === 400) {

@@ -24,18 +24,27 @@ export class UsersService {
      * @param password {string} Password.
      */
     public async signIn(username: string, password: string): Promise<string> {
-        const authString = `Basic ${btoa(`${username}:${password}`)}`;
 
-        const responseData = await this.mapiClient.get<{ id: string }>("identity", [{ name: "Authorization", value: authString }]);
+        const userId = await this.checkCredentials(username, password);
 
-        if (responseData && responseData.id) {
-            this.authenticator.setUser(responseData.id);
-            return responseData.id;
+        if (userId) {
+            this.authenticator.setUser(userId);
+            return userId;
         }
         else {
             this.authenticator.clearAccessToken();
             return undefined;
         }
+    }
+
+    public async checkCredentials(username: string, password: string): Promise<string> {
+        const authString = `Basic ${btoa(`${username}:${password}`)}`;
+
+        const responseData = await this.mapiClient.get<{ id: string }>("identity", [{ name: "Authorization", value: authString }]);
+        if (responseData && responseData.id) {
+            return responseData.id;
+        }
+        return undefined;
     }
 
     /**
