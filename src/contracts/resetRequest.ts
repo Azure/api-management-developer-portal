@@ -1,3 +1,6 @@
+/**
+ * Cotract of Reset password request
+ */
 export interface ResetRequest {
     solution: string,
     token: string,
@@ -6,6 +9,9 @@ export interface ResetRequest {
     email: string
 }
 
+/**
+ * Cotract of user change password 
+ */
 export interface ChangePasswordRequest {
     solution: string,
     token: string,
@@ -15,6 +21,9 @@ export interface ChangePasswordRequest {
     newPassword: string
 }
 
+/**
+ * Cotract of user reset password
+ */
 export interface ResetPassword {
     userid: string,
     ticketid: string,

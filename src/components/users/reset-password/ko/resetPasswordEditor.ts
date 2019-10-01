@@ -23,12 +23,10 @@ export class ResetPasswordEditor {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        // this.requireHipCaptcha(this.model.requireHipCaptcha);
         this.requireHipCaptcha.subscribe(this.applyChanges);
     }
 
     private applyChanges(): void {
-        // this.model.requireHipCaptcha = this.requireHipCaptcha();
         this.onChange(this.model);
     }
 }

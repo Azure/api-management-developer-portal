@@ -17,6 +17,7 @@ export class UserDetails {
     public email: ko.Observable<string>;
     public registrationDate: ko.Computed<string>;
     public isEdit: ko.Observable<boolean>;
+    public working: ko.Observable<boolean>;
     public password: ko.Observable<string>;
     public confirmPassword: ko.Observable<string>;
     public user: ko.Observable<User>;
@@ -29,6 +30,7 @@ export class UserDetails {
         this.password = ko.observable();
         this.confirmPassword = ko.observable();
         this.isEdit = ko.observable(false);
+        this.working = ko.observable(false);
         this.registrationDate = ko.computed(() => this.getRegistrationDate());
     }
 
@@ -62,13 +64,14 @@ export class UserDetails {
 
     public async changeAccountInfo(): Promise<void> {
         if (this.isEdit()) {
+            this.working(true);
             const updateData = {
                 firstName: this.firstName(),
                 lastName: this.lastName()
             };
 
             const user = await this.usersService.updateUser(this.user().id, updateData);
-
+            this.working(false);
             this.setUser(user);
             this.toggleEdit();
         }

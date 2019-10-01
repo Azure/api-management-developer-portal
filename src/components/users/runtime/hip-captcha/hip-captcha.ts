@@ -24,7 +24,7 @@ export class HipCaptcha {
         document.body.appendChild(hipObjScriptElement);
     }
 
-    private async onLoad() {
+    private async onLoad(): Promise<void> {
         const params = await this.captchaService.getCaptchaParams();
         this.encryptedFlowId(params.EncryptedFlowId);
 

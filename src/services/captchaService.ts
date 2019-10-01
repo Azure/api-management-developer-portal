@@ -31,7 +31,7 @@ export class CaptchaService {
     public async sendSignupRequest(signupRequest: SignupRequest): Promise<void> {
         const response = await this.httpClient.send(
             { 
-                url: "/sign-up", 
+                url: "/signup", 
                 method: HttpMethod.post,
                 headers: [{ name: "Content-Type", value: "application/json" }], 
                 body: JSON.stringify(signupRequest)
