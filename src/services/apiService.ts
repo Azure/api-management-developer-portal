@@ -15,6 +15,8 @@ import { OperationContract } from "../contracts/operation";
 import { SchemaContract } from "../contracts/schema";
 import { VersionSetContract } from "../contracts/apiVersionSet";
 import { HttpHeader } from "@paperbits/common/http/httpHeader";
+import { ChangeLog } from "../models/changeLog";
+import { ChangeLogContract } from "../contracts/apiChangeLog";
 
 
 export class ApiService {
@@ -115,6 +117,23 @@ export class ApiService {
         }
 
         return this.mapiClient.get<string>(apiId, [header]);
+    }
+
+    public async getApiChangeLog(apiId: string): Promise<Page<ChangeLog>> {
+        let apiResourceUri = apiId;
+        apiResourceUri += "/releases?$top=10&skip=0";
+
+        const changelogContracts = await this.mapiClient.get<Page<ChangeLogContract>>(apiResourceUri);
+
+        console.log(changelogContracts);
+        if (!changelogContracts) {
+            return null;
+        }
+
+        const pages = new Page<ChangeLog>();
+        pages.value = changelogContracts.value.map(x => new ChangeLog(x.id, x));
+
+        return pages;
     }
 
     public async getApiVersionSet(versionSetId: string): Promise<VersionSet> {
