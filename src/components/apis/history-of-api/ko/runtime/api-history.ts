@@ -5,6 +5,7 @@ import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
 import { ChangeLog } from "../../../../../models/changeLog";
+import { apiChangeLogPageSize } from "../../../../../constants";
 
 
 @RuntimeComponent({ selector: "api-history" })
@@ -15,7 +16,6 @@ import { ChangeLog } from "../../../../../models/changeLog";
 })
 export class ApiHistory {
     private queryParams: URLSearchParams;
-    private readonly pageSize: number;
 
     public api: ko.Observable<Api> = null;
     public versionApis: ko.ObservableArray<Api>;
@@ -42,8 +42,7 @@ export class ApiHistory {
         this.changeLogPage = ko.observable(1);
         this.changeLogHasNextPage = ko.observable(false);
         this.changeLogHasPrevPage = ko.observable(false);
-        this.changeLogHasPager =  ko.computed(() => this.changeLogHasNextPage() || this.changeLogHasPrevPage());
-        this.pageSize = 1;
+        this.changeLogHasPager = ko.computed(() => this.changeLogHasNextPage() || this.changeLogHasPrevPage());
     }
 
     @OnMounted()
@@ -70,23 +69,27 @@ export class ApiHistory {
         if (this.api() && this.api().name === apiName) {
             return;
         }
-        
-        this.working(true);
-        if (apiName) {
-            const api = await this.apiService.getApi(`apis/${apiName}`);
-            if (api.apiVersionSet && api.apiVersionSet.id) {
-                const apis = await this.apiService.getVersionSetApis(api.apiVersionSet.id);
-                this.versionApis(apis || []);
-            } else {
-                this.versionApis([]);
+
+        try {
+            this.working(true);
+            if (apiName) {
+                const api = await this.apiService.getApi(`apis/${apiName}`);
+                if (api && api.apiVersionSet && api.apiVersionSet.id) {
+                    const apis = await this.apiService.getVersionSetApis(api.apiVersionSet.id);
+                    this.versionApis(apis || []);
+                } else {
+                    this.versionApis([]);
+                }
+                const changelogs = await this.apiService.getApiChangeLog(api.id);
+                this.selectedId(api.name);
+                this.api(api);
+                this.changeLog(changelogs.value);
+                this.getCurrentPage();
             }
-            const changelogs = await this.apiService.getApiChangeLog(api.id);
-            this.selectedId(api.name);
-            this.api(api);
-            this.changeLog(changelogs.value);
-            this.getCurrentPage();
+        } catch (error) {
+        } finally {
+            this.working(false);
         }
-        this.working(false);
     }
 
     public dispose(): void {
@@ -104,13 +107,13 @@ export class ApiHistory {
     }
 
     private getCurrentPage(): void {
-        var idx = (this.changeLogPage() - 1) * this.pageSize;
-        if (this.changeLog().length < this.pageSize + idx) {
+        var idx = (this.changeLogPage() - 1) * apiChangeLogPageSize;
+        if (this.changeLog().length < apiChangeLogPageSize + idx) {
             this.currentPageLog(this.changeLog().slice(idx, this.changeLog().length));
         } else {
-            this.currentPageLog(this.changeLog().slice(idx, this.pageSize + idx))
+            this.currentPageLog(this.changeLog().slice(idx, apiChangeLogPageSize + idx))
         }
         this.changeLogHasPrevPage(this.changeLogPage() > 1);
-        this.changeLogHasNextPage(this.changeLog().length > this.pageSize + idx);
+        this.changeLogHasNextPage(this.changeLog().length > apiChangeLogPageSize + idx);
     }
 }

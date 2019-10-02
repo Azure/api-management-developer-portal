@@ -125,7 +125,6 @@ export class ApiService {
 
         const changelogContracts = await this.mapiClient.get<Page<ChangeLogContract>>(apiResourceUri);
 
-        console.log(changelogContracts);
         if (!changelogContracts) {
             return null;
         }

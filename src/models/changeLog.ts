@@ -18,8 +18,8 @@ export class ChangeLog {
         if (contract.properties) {
             this.name = contract.name;
             this.notes = contract.properties.notes;
-            this.createdDateTime = Utils.formatLogTime(contract.properties.createdDateTime);
-            this.updatedDateTime = Utils.formatLogTime(contract.properties.updatedDateTime);
+            this.createdDateTime = Utils.formatDateTime(contract.properties.createdDateTime);
+            this.updatedDateTime = Utils.formatDateTime(contract.properties.updatedDateTime);
         }
     }
 }

@@ -1,4 +1,3 @@
-import * as ko from "knockout";
 import template from "./historyOfApiEditor.html";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
 import { HistoryOfApiModel } from "../historyOfApiModel";
@@ -13,9 +12,6 @@ export class HistoryOfApiEditor {
 
     @Param()
     public model: HistoryOfApiModel;
-
-    @Event()
-    public onChange: (model: HistoryOfApiModel) => void;
 
     @OnMounted()
     public async initialize(): Promise<void> {

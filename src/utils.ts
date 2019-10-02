@@ -294,7 +294,7 @@ export class Utils {
         return resourceUrl;
     }
 
-    public static formatLogTime(time: string): string {
+    public static formatDateTime(time: string): string {
         return moment(time).format("M/D LT");
     }
 }
