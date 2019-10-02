@@ -1,6 +1,7 @@
 import { NameValuePair } from "request";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
+import * as moment from "moment";
 
 export class Utils {
     public static getResourceName(resource: string, fullId: string, resultType = "name"): string {
@@ -294,7 +295,6 @@ export class Utils {
     }
 
     public static formatLogTime(time: string): string {
-        const timeBlock = time.split("T");
-        return timeBlock[0];
+        return moment(time).format("M/D LT");
     }
 }

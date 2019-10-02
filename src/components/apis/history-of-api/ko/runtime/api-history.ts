@@ -43,7 +43,7 @@ export class ApiHistory {
         this.changeLogHasNextPage = ko.observable(false);
         this.changeLogHasPrevPage = ko.observable(false);
         this.changeLogHasPager =  ko.computed(() => this.changeLogHasNextPage() || this.changeLogHasPrevPage());
-        this.pageSize = 2;
+        this.pageSize = 1;
     }
 
     @OnMounted()
@@ -70,9 +70,8 @@ export class ApiHistory {
         if (this.api() && this.api().name === apiName) {
             return;
         }
-
+        
         this.working(true);
-
         if (apiName) {
             const api = await this.apiService.getApi(`apis/${apiName}`);
             if (api.apiVersionSet && api.apiVersionSet.id) {
@@ -87,7 +86,6 @@ export class ApiHistory {
             this.changeLog(changelogs.value);
             this.getCurrentPage();
         }
-
         this.working(false);
     }
 
