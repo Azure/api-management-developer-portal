@@ -292,4 +292,9 @@ export class Utils {
 
         return resourceUrl;
     }
+
+    public static formatLogTime(time: string): string {
+        const timeBlock = time.split("T");
+        return timeBlock[0];
+    }
 }
