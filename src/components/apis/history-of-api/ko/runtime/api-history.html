@@ -1,0 +1,61 @@
+<div class="flex flex-row">
+    <!-- ko if: working-->
+    <spinner class="fit"></spinner>
+    <!-- /ko -->
+
+    <!-- ko ifnot: working -->
+    <div class="flex-item flex-grow animation-fade-in">
+        <!-- ko if: api -->
+        <h2 data-bind="text: api().displayName"></h2>
+        <div style="background-color:white">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Release date
+                        </th>
+                        <th>
+                            Notes
+                        </th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: currentPageLog, as: 'hist' }">
+                    <tr>
+                        <td data-bind="text: hist.properties.updatedDateTime"></td>
+                        <td data-bind="text: hist.properties.notes"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ko if: changeLogHasPager -->
+            <ul class="pagination justify-content-center">
+                <!-- ko if: changeLogHasPrevPage -->
+                <li class="page-item">
+                    <a href="#" class="page-link" role="button" aria-label="Previous page"
+                        data-bind="click: changeLogPrevPage, enable: changeLogHasPrevPage">
+                        <i class="icon icon-chevron-left"></i>
+                    </a>
+                </li>
+                <!-- /ko -->
+                <li class="page-item">
+                    <span class="page-link" data-bind="text: changeLogPage"></span>
+                </li>
+                <!-- ko if: changeLogHasNextPage -->
+                <li class="page-item">
+                    <a href="#" class="page-link" role="button" aria-label="Next page"
+                        data-bind="click: changeLogNextPage, enable: changeLogHasNextPage">
+                        <i class="icon icon-chevron-right"></i>
+                    </a>
+                </li>
+                <!-- /ko -->
+            </ul>
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
+
+        <!-- ko ifnot: api -->
+        <p>No API selected</p>
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+</div>

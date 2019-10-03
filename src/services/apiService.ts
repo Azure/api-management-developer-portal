@@ -15,6 +15,8 @@ import { OperationContract } from "../contracts/operation";
 import { SchemaContract } from "../contracts/schema";
 import { VersionSetContract } from "../contracts/apiVersionSet";
 import { HttpHeader } from "@paperbits/common/http/httpHeader";
+import { ChangeLogContract } from "../contracts/apiChangeLog";
+import { apiChangeLogPageSize } from "../constants";
 
 
 export class ApiService {
@@ -115,6 +117,25 @@ export class ApiService {
         }
 
         return this.mapiClient.get<string>(apiId, [header]);
+    }
+
+    /**
+     * This is a function to get all change log pages for the API
+     * 
+     * @param apiId A string parameter which is the id of the API
+     * @returns all changelog pages
+     */
+    public async getApiChangeLog(apiId: string, skip: number): Promise<Page<ChangeLogContract>> {
+        let apiResourceUri = apiId;
+        const take = apiChangeLogPageSize;
+        apiResourceUri += `/releases?$top=${take}&$skip=${skip}`;
+
+        const changelogContracts = await this.mapiClient.get<Page<ChangeLogContract>>(apiResourceUri);
+        if (!changelogContracts) {
+            return null;
+        }
+
+        return changelogContracts;
     }
 
     public async getApiVersionSet(versionSetId: string): Promise<VersionSet> {

@@ -1,6 +1,7 @@
 import { NameValuePair } from "request";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
+import * as moment from "moment";
 
 export class Utils {
     public static getResourceName(resource: string, fullId: string, resultType = "name"): string {
@@ -291,5 +292,15 @@ export class Utils {
         resourceUrl = `${protocol}//${hostname}/subscriptions/xxx/resourceGroups/xxx/providers/Microsoft.ApiManagement/service/xxx${pathname}`;
 
         return resourceUrl;
+    }
+
+    /**
+     * This is a function used to generate long date format like (Weekday, Month, Day, Year) 
+     * 
+     * @param time time string
+     */
+    public static formatDateTime(time: string): string {
+        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(time).toLocaleDateString("en-US", options);
     }
 }
