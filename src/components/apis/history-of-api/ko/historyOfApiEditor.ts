@@ -12,9 +12,4 @@ export class HistoryOfApiEditor {
 
     @Param()
     public model: HistoryOfApiModel;
-
-    @OnMounted()
-    public async initialize(): Promise<void> {
-        // TODO: Implement
-    }
 }

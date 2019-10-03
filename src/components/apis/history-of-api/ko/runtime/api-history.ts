@@ -18,10 +18,10 @@ export class ApiHistory {
     private queryParams: URLSearchParams;
 
     public api: ko.Observable<Api> = null;
+    public apiId: string = null;
     public versionApis: ko.ObservableArray<Api>;
     public working: ko.Observable<boolean>;
     public selectedId: ko.Observable<string>;
-    public changeLog: ko.ObservableArray<ChangeLog>;
     public changeLogHasNextPage: ko.Observable<boolean>;
     public changeLogHasPrevPage: ko.Observable<boolean>;
     public changeLogPage: ko.Observable<number>;
@@ -37,12 +37,12 @@ export class ApiHistory {
         this.working = ko.observable(false);
         this.selectedId = ko.observable();
         this.loadApi = this.loadApi.bind(this);
-        this.changeLog = ko.observableArray([]);
         this.currentPageLog = ko.observableArray([]);
         this.changeLogPage = ko.observable(1);
         this.changeLogHasNextPage = ko.observable(false);
         this.changeLogHasPrevPage = ko.observable(false);
         this.changeLogHasPager = ko.computed(() => this.changeLogHasNextPage() || this.changeLogHasPrevPage());
+        this.apiId = null;
     }
 
     @OnMounted()
@@ -80,13 +80,13 @@ export class ApiHistory {
                 } else {
                     this.versionApis([]);
                 }
-                const changelogs = await this.apiService.getApiChangeLog(api.id);
                 this.selectedId(api.name);
                 this.api(api);
-                this.changeLog(changelogs.value);
+                this.apiId = api.id;
                 this.getCurrentPage();
             }
         } catch (error) {
+            console.error(error);
         } finally {
             this.working(false);
         }
@@ -106,14 +106,11 @@ export class ApiHistory {
         this.getCurrentPage();
     }
 
-    private getCurrentPage(): void {
-        var idx = (this.changeLogPage() - 1) * apiChangeLogPageSize;
-        if (this.changeLog().length < apiChangeLogPageSize + idx) {
-            this.currentPageLog(this.changeLog().slice(idx, this.changeLog().length));
-        } else {
-            this.currentPageLog(this.changeLog().slice(idx, apiChangeLogPageSize + idx))
-        }
+    private async getCurrentPage(): Promise<void> {
+        const changelogs = await this.apiService.getApiChangeLog(this.apiId, (this.changeLogPage()-1) * apiChangeLogPageSize);
         this.changeLogHasPrevPage(this.changeLogPage() > 1);
-        this.changeLogHasNextPage(this.changeLog().length > apiChangeLogPageSize + idx);
+        const nextlogs = await this.apiService.getApiChangeLog(this.apiId, (this.changeLogPage()) * apiChangeLogPageSize)
+        this.changeLogHasNextPage(nextlogs.value.length != 0);
+        this.currentPageLog(changelogs.value);
     }
 }
