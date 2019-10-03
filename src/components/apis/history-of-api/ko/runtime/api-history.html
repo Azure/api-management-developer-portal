@@ -21,8 +21,8 @@
                 </thead>
                 <tbody data-bind="foreach: { data: currentPageLog, as: 'hist' }">
                     <tr>
-                        <td data-bind="text: hist.updatedDateTime"></td>
-                        <td data-bind="text: hist.notes"></td>
+                        <td data-bind="text: hist.properties.updatedDateTime"></td>
+                        <td data-bind="text: hist.properties.notes"></td>
                     </tr>
                 </tbody>
             </table>

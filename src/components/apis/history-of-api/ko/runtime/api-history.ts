@@ -4,9 +4,9 @@ import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/dec
 import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
-import { ChangeLog } from "../../../../../models/changeLog";
 import { apiChangeLogPageSize } from "../../../../../constants";
-
+import { ChangeLogContract } from "../../../../../contracts/apiChangeLog";
+import { Utils } from "../../../../../utils";
 
 @RuntimeComponent({ selector: "api-history" })
 @Component({
@@ -26,7 +26,7 @@ export class ApiHistory {
     public changeLogHasPrevPage: ko.Observable<boolean>;
     public changeLogPage: ko.Observable<number>;
     public changeLogHasPager: ko.Computed<boolean>;
-    public currentPageLog: ko.ObservableArray<ChangeLog>;
+    public currentPageLog: ko.ObservableArray<ChangeLogContract>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -107,10 +107,10 @@ export class ApiHistory {
     }
 
     private async getCurrentPage(): Promise<void> {
-        const changelogs = await this.apiService.getApiChangeLog(this.apiId, (this.changeLogPage()-1) * apiChangeLogPageSize);
+        const pageOfLogs = await this.apiService.getApiChangeLog(this.apiId, (this.changeLogPage()-1) * apiChangeLogPageSize);
+        pageOfLogs.value.map(x => x.properties.updatedDateTime = Utils.formatDateTime(x.properties.updatedDateTime));
         this.changeLogHasPrevPage(this.changeLogPage() > 1);
-        const nextlogs = await this.apiService.getApiChangeLog(this.apiId, (this.changeLogPage()) * apiChangeLogPageSize)
-        this.changeLogHasNextPage(nextlogs.value.length != 0);
-        this.currentPageLog(changelogs.value);
+        this.changeLogHasNextPage(!!pageOfLogs.nextLink);
+        this.currentPageLog(pageOfLogs.value);
     }
 }
