@@ -11,6 +11,7 @@ import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
 import { AnalyticsService } from "./services/analyticsService";
 import { ApiDetails } from "./components/apis/details-of-api/ko/runtime/api-details";
+import { ApiHistory } from "./components/apis/history-of-api/ko/runtime/api-history";
 import { OperationDetails } from "./components/operations/operation-details/ko/runtime/operation-details";
 import { OperationConsole } from "./components/operations/operation-details/ko/runtime/operation-console";
 import { SchemaDetails } from "./components/operations/operation-details/ko/runtime/schema-details";
@@ -46,6 +47,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("router", DefaultRouter);
         injector.bind("apiList", ApiList);
         injector.bind("apiDetails", ApiDetails);
+        injector.bind("apiHistory", ApiHistory);
         injector.bind("operationDetails", OperationDetails);
         injector.bind("operationConsole", OperationConsole);
         injector.bind("schemaDetails", SchemaDetails);
