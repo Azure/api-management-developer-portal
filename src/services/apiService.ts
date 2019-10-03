@@ -119,6 +119,12 @@ export class ApiService {
         return this.mapiClient.get<string>(apiId, [header]);
     }
 
+    /**
+     * This is a function to get all change log pages for the API
+     * 
+     * @param apiId A string parameter which is the id of the API
+     * @returns all changelog pages
+     */
     public async getApiChangeLog(apiId: string): Promise<Page<ChangeLog>> {
         let apiResourceUri = apiId;
         apiResourceUri += "/releases?$top=10&skip=0";

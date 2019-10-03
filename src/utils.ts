@@ -294,7 +294,13 @@ export class Utils {
         return resourceUrl;
     }
 
+    /**
+     * This is a function used to generate long date format like (Weekday, Month, Day, Year) 
+     * 
+     * @param time time string
+     */
     public static formatDateTime(time: string): string {
-        return moment(time).format("M/D LT");
+        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(time).toLocaleDateString("en-US", options);
     }
 }
