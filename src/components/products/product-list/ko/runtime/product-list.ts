@@ -103,19 +103,12 @@ export class ProductList {
 
         try {
             const itemsPage = await this.productService.getProductsPage(query);
-            const contracts = itemsPage.value;
 
             this.hasPrevPage(pageNumber > 0);
             this.hasNextPage(!!itemsPage.nextLink);
 
-            const searchItems = [];
-
-            if (contracts) {
-                contracts.map(item => searchItems.push(new Product(item)));            
-            }
-
             this.lastPattern = query.pattern;
-            this.products(searchItems);
+            this.products(itemsPage.value);
 
         }
         catch (error) {

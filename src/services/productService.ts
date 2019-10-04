@@ -164,7 +164,7 @@ export class ProductService {
     /**
      * Returns page of products filtered by name.
      */
-    public async getProductsPage(filter: PatternFilter ): Promise<Page<ProductContract>> {
+    public async getProductsPage(filter: PatternFilter ): Promise<Page<Product>> {
         const skip = filter.skip || 0;
         const take = filter.take || Constants.defaultPageSize;    
         let query = `/products?$top=${take}&$skip=${skip}`;
@@ -174,8 +174,11 @@ export class ProductService {
         }
 
         const page = await this.mapiClient.get<Page<ProductContract>>(query);
-
-        return page;
+        const result = new Page<Product>();
+        result.count = page.count;
+        result.nextLink = page.nextLink;
+        result.value = page.value.map(item => new Product(item));
+        return result;
     }
 
     /**
