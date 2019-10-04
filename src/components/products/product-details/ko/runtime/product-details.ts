@@ -62,7 +62,7 @@ export class ProductDetails {
     }
 
     private getProductId(route: Route): string {
-        const queryParams = new URLSearchParams(route.hash);
+        const queryParams = new URLSearchParams(route.hash || (route.url.indexOf("?") !== -1 ? route.url.split("?").pop() : ""));
         const productId = queryParams.get("productId");
 
         return productId;
