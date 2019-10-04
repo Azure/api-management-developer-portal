@@ -7,6 +7,9 @@ import { ProductContract } from "../contracts/product";
 import { TenantSettings } from "../contracts/tenantSettings";
 import { TenantService } from "../services/tenantService";
 import { HttpHeader } from "@paperbits/common/http";
+import * as Constants from "../constants";
+import { Utils } from "../utils";
+import { PatternFilter } from "../contracts/nameFilter";
 
 /**
  * A service for management operations with products.
@@ -156,6 +159,23 @@ export class ProductService {
         }
 
         return result;
+    }
+
+    /**
+     * Returns page of products filtered by name.
+     */
+    public async getProductsPage(filter: PatternFilter ): Promise<Page<ProductContract>> {
+        const skip = filter.skip || 0;
+        const take = filter.take || Constants.defaultPageSize;    
+        let query = `/products?$top=${take}&$skip=${skip}`;
+
+        if (filter.pattern) {
+            query = Utils.addQueryParameter(query, `$filter=(contains(properties/displayName,'${encodeURIComponent(filter.pattern)}'))`);
+        }
+
+        const page = await this.mapiClient.get<Page<ProductContract>>(query);
+
+        return page;
     }
 
     /**
