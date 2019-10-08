@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import template from "./userSigninSocial.html";
-import { Component, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component } from "@paperbits/common/ko/decorators";
 
 
 @Component({
@@ -9,14 +9,11 @@ import { Component, OnMounted } from "@paperbits/common/ko/decorators";
     injectable: "userSigninSocialViewModel"
 })
 export class UserSigninSocialViewModel {
-    public readonly params: ko.Observable<string>;
+    public readonly aadConfig: ko.Observable<string>;
+    public readonly aadB2CConfig: ko.Observable<string>;
 
     constructor() {
-        this.params = ko.observable<string>();
-    }
-
-    @OnMounted()
-    public async initialize(): Promise<void> {
-       // TODO
+        this.aadConfig = ko.observable<string>();
+        this.aadB2CConfig = ko.observable<string>();
     }
 }
