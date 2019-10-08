@@ -1,20 +1,20 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
-import template from "./user-signin-social.html";
+import template from "./signin-aad-b2c.html";
 import { Router } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { AadService } from "../../../../../services";
 
 
 @RuntimeComponent({
-    selector: "user-signin-social-runtime"
+    selector: "signin-aad-b2c"
 })
 @Component({
-    selector: "user-signin-social-runtime",
+    selector: "signin-aad-b2c",
     template: template,
-    injectable: "userSigninSocial"
+    injectable: "signInAadB2C"
 })
-export class UserSignInSocial {
+export class SignInAadB2C {
     public readonly errorMessages: ko.ObservableArray<string>;
     public readonly hasErrors: ko.Observable<boolean>;
 
@@ -22,41 +22,42 @@ export class UserSignInSocial {
         private readonly router: Router,
         private readonly aadService: AadService
     ) {
-        this.aadClientId = ko.observable();
         this.errorMessages = ko.observableArray([]);
         this.hasErrors = ko.observable(false);
+        this.clientId = ko.observable();
+        this.authority = ko.observable();
+        this.instance = ko.observable();
+        this.signInPolicy = ko.observable();
     }
 
     @Param()
-    public aadClientId: ko.Observable<string>;
+    public clientId: ko.Observable<string>;
+
+    @Param()
+    public authority: ko.Observable<string>;
+
+    @Param()
+    public instance: ko.Observable<string>;
+
+    @Param()
+    public signInPolicy: ko.Observable<string>;
+
+    @OnMounted()
+    public async initialize(): Promise<void> {
+        await this.aadService.checkCallbacks();
+    }
 
     /**
      * Initiates signing-in with Azure Active Directory.
      */
-    public async signInAad(): Promise<void> {
-        const aadClientId = ko.unwrap(this.aadClientId());
-
-        if (!aadClientId) {
-            this.hasErrors(true);
-            this.errorMessages([`AAD identity provider is not configured.`]);
-            return;
-        }
-
+    public async signIn(): Promise<void> {
         try {
-            await this.aadService.signIn(aadClientId);
+            await this.aadService.signInWithAadB2C(this.clientId(), this.authority(), this.instance(), this.signInPolicy());
             await this.router.navigateTo(Constants.homeUrl);
         }
         catch (error) {
             this.hasErrors(true);
             this.errorMessages([error.message]);
         }
-    }
-
-    /**
-     * Initiates signing-out with Azure Active Directory.
-     */
-    public async signOutAad(): Promise<void> {
-        await this.aadService.signOut();
-        await this.router.navigateTo(Constants.homeUrl);
     }
 }
