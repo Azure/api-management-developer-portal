@@ -5,10 +5,6 @@ import { Bag } from "@paperbits/common";
 import { IdentityService } from "../../../../services/identityService";
 
 
-interface RuntimeConfiguration {
-    aadClientId?: string;
-}
-
 export class UserSigninSocialViewModelBinder implements ViewModelBinder<UserSigninSocialModel, UserSigninSocialViewModel> {
     constructor(private readonly identityService: IdentityService) { }
 
@@ -19,19 +15,31 @@ export class UserSigninSocialViewModelBinder implements ViewModelBinder<UserSign
 
         const identityProviders = await this.identityService.getIdentityProviders();
         const aadIdentityProvider = identityProviders.find(x => x.type === "aad");
-        const configuration: RuntimeConfiguration = {};
 
         if (aadIdentityProvider) {
-            configuration.aadClientId = aadIdentityProvider.clientId;
+            const aadConfig = { clientId: aadIdentityProvider.clientId };
+            viewModel.aadConfig(JSON.stringify(aadConfig));
         }
 
-        viewModel.params(JSON.stringify(configuration));
+        const aadB2CIdentityProvider = identityProviders.find(x => x.type === "aadB2C");
+
+        if (aadB2CIdentityProvider) {
+            const aadB2CConfig = {
+                clientId: aadB2CIdentityProvider.clientId,
+                authority: aadB2CIdentityProvider.authority,
+                instance: aadB2CIdentityProvider.signinTenant,
+                signInPolicy: aadB2CIdentityProvider.signinPolicyName
+            };
+
+            viewModel.aadB2CConfig(JSON.stringify(aadB2CConfig));
+        }
 
         viewModel["widgetBinding"] = {
-            name: "User login",
-            displayName: "Sign-in form",
+            name: "signinSocial",
+            displayName: "Social account sign-in",
+            editor: "",
             model: model,
-            applyChanges: async (updatedModel: UserSigninSocialModel) => {
+            applyChanges: () => {
                 this.modelToViewModel(model, viewModel, bindingContext);
             }
         };

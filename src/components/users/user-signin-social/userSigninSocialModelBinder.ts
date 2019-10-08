@@ -4,6 +4,8 @@ import { UserSigninSocialModel } from "./userSigninSocialModel";
 import { UserSigninSocialContract } from "./userSigninSocialContract";
 
 
+const nodeType = "userSigninSocial";
+
 export class UserSigninSocialModelBinder implements IModelBinder<UserSigninSocialModel> {
     public canHandleModel(model: Object): boolean {
         return model instanceof UserSigninSocialModel;
@@ -14,12 +16,12 @@ export class UserSigninSocialModelBinder implements IModelBinder<UserSigninSocia
     }
 
     public canHandleContract(contract: Contract): boolean {
-        return contract.type === "userSigninSocial";
+        return contract.type === nodeType;
     }
 
     public modelToContract(model: UserSigninSocialModel): Contract {
         const contract: UserSigninSocialContract = {
-            type: "userSigninSocial"
+            type: nodeType
         };
 
         return contract;
