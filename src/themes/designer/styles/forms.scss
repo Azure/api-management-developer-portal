@@ -3,214 +3,218 @@
 @import "icons.scss";
 
 .form {
-  margin: 0;
-  padding: 0 15px 0 0;
-  border: none;
+    margin: 0;
+    padding: 0 15px 0 0;
+    border: none;
 }
 
 .form-group {
-  display: block;
-  margin-bottom: 20px;
-  overflow: hidden;
-  width: 100%;
+    display: block;
+    margin-bottom: 20px;
+    overflow: hidden;
+    width: 100%;
 
-  .form-group {
-    // Nested form group
-    margin-bottom: 15px;
-  }
-
-  &.form-group-collapsible {
-    .form-label {
-      position: unset;
+    .form-group {
+        // Nested form group
+        margin-bottom: 15px;
     }
 
-    .form-group-toggle {
-      position: unset;
-      padding: 2px;
-      text-decoration: none;
-      color: $collapse-button-color;
-
-      &:after {
-        content: "";
-        position: absolute;
-        top: 25px;
-        bottom: -10px;
-        left: 10px;
-        border-left: 1px dotted #ddd;
-      }
-      @extend .paperbits-icon;
-      @extend .paperbits-circle-delete;
-
-      &.collapsed {
-        @extend .paperbits-icon;
-        @extend .paperbits-circle-add;
-
-        &:after {
-          border: none;
+    &.form-group-collapsible {
+        .form-label {
+            position: unset;
         }
-      }
-    }
 
-    .form-group-collapse {
-      padding-left: 25px;
-      padding-bottom: 10px;
+        .form-group-toggle {
+            position: unset;
+            padding: 2px;
+            text-decoration: none;
+            color: $collapse-button-color;
 
-      &.collapsed {
-        display: none;
-      }
+            &:after {
+                content: "";
+                position: absolute;
+                top: 25px;
+                bottom: -10px;
+                left: 10px;
+                border-left: 1px dotted #ddd;
+            }
+            @extend .paperbits-icon;
+            @extend .paperbits-circle-delete;
+
+            &.collapsed {
+                @extend .paperbits-icon;
+                @extend .paperbits-circle-add;
+
+                &:after {
+                    border: none;
+                }
+            }
+        }
+
+        .form-group-collapse {
+            padding-left: 25px;
+            padding-bottom: 10px;
+
+            &.collapsed {
+                display: none;
+            }
+        }
     }
-  }
 }
 
 .form-control,
 input[type="search"],
 input[type="text"],
 textarea {
-  font-family: $font-family-base;
-  font-weight: $font-weight-base;
-  font-size: $form-control-font-size;
-  color: $color-base;
-  border: 1px solid $form-control-border;
-  background-color: $form-control-bg;
-  display: block;
-  width: 100%;
+    font-family: $font-family-base;
+    font-weight: $font-weight-base;
+    font-size: $form-control-font-size;
+    color: $color-base;
+    border: 1px solid $form-control-border;
+    background-color: $form-control-bg;
+    display: block;
+    width: 100%;
 
-  &::placeholder {
-    font-style: italic;
-  }
+    &::placeholder {
+        font-style: italic;
+    }
 
-  &:focus {
-    outline: none;
-    border: 1px solid $form-control-focus-color;
-  }
+    &:focus {
+        outline: none;
+        border: 1px solid $form-control-focus-color;
+    }
 
-  &.is-invalid {
-    color: $color-danger;
-    border-color: $color-danger;
-  }
+    &.is-invalid {
+        color: $color-danger;
+        border-color: $color-danger;
+    }
 
-  &[readonly] {
-    background-color: $form-control-bg-readonly;
-  }
+    &[readonly] {
+        background-color: $form-control-bg-readonly;
+    }
 
-  &[disabled] {
-    background-color: $form-control-bg-disabled;
-  }
+    &[disabled] {
+        background-color: $form-control-bg-disabled;
+    }
 }
 
 input[type="search"] {
-  background-position: 98% center;
-  background-repeat: no-repeat;
-  background-size: auto 60%;
-  background-blend-mode: exclusion;
+    background-position: 98% center;
+    background-repeat: no-repeat;
+    background-size: auto 60%;
+    background-blend-mode: exclusion;
 }
 
 input[type="range"].form-control {
-  -webkit-appearance: none;
-  padding: 0;
-  border: 1px solid $form-control-border;
-  border-radius: 20px;
-  height: 10px;
-  margin: 10px 0;
-
-  &::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 17px;
-    height: 17px;
-    background: #fff;
-    border: 2px solid $form-control-border;
-    cursor: pointer;
+    padding: 0;
+    border: 1px solid $form-control-border;
     border-radius: 20px;
-  }
+    height: 10px;
+    margin: 10px 0;
+
+    &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 17px;
+        height: 17px;
+        background: #fff;
+        border: 2px solid $form-control-border;
+        cursor: pointer;
+        border-radius: 20px;
+    }
 }
 
 input[type="radio"] {
-  margin: 0 5px;
+    margin: 0 5px;
 }
 
 .form-control {
-  padding: $form-control-padding;
-  width: 100%;
+    padding: $form-control-padding;
+    width: 100%;
 }
 
 a.form-control {
-  text-decoration: none;
-  font-weight: bold;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 label {
-  padding: 5px 0;
-  display: block;
-  font-weight: 400;
+    padding: 5px 0;
+    display: block;
+    font-weight: 400;
 }
 
 textarea {
-  resize: vertical;
-  min-height: 100px;
+    resize: vertical;
+    min-height: 100px;
 }
 
 .input-group {
-  display: flex !important;
-  border: 1px solid $form-control-border;
+    display: flex !important;
+    border: 1px solid $form-control-border;
 
-  &:focus-within {
-    border: 1px solid $form-control-border-focused;
-  }
+    &:focus-within {
+        border: 1px solid $form-control-border-focused;
+    }
 
-  .form-control,
-  .form-control:active,
-  .form-control:focus {
-    border: none;
-  }
+    .form-control,
+    .form-control:active,
+    .form-control:focus {
+        border: none;
+    }
 
-  .input-group-btn {
-    min-width: 1.5em;
-    border: none;
-    line-height: inherit;
-  }
+    .input-group-btn {
+        min-width: 1.5em;
+        border: none;
+        line-height: inherit;
+    }
 
-  .input-group-addon {
-    font-size: $form-control-font-size;
-    padding: $form-control-padding;
-    min-width: 1.5em;
-    color: $color-base;
-    border: none;
-    display: block;
-  }
+    .input-group-addon {
+        font-size: $form-control-font-size;
+        padding: $form-control-padding;
+        min-width: 1.5em;
+        color: $color-base;
+        border: none;
+        display: block;
+    }
 }
 
 hr {
-  display: block;
-  border: none;
-  border-bottom: 1px solid $form-control-border;
-  height: 1px;
-  width: 100%;
-  margin: 12px 0;
+    display: block;
+    border: none;
+    border-bottom: 1px solid $form-control-border;
+    height: 1px;
+    width: 100%;
+    margin: 12px 0;
 }
 
 .tabs {
-  border-bottom: 1px solid $form-control-border;
-  display: flex;
+    border-bottom: 1px solid $form-control-border;
+    display: flex;
+    width: 100%;
 
-  .tab {
-    a {
-      width: 60px;
-      display: inline-block;
-      vertical-align: middle;
-      text-align: center;
-      line-height: 40px;
-      color: $color-base;
+    .tab {
+        & > a {
+            min-width: 60px;
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 35px;
+            color: $color-base;
+            padding: 0 10px;
+            text-decoration: none;
+            font-weight: bold;
 
-      &:active,
-      &:focus,
-      &:hover {
-        outline: none;
-        @include selection();
-      }
+            &:active,
+            &:focus,
+            &:hover {
+                outline: none;
+                @include selection();
+            }
+        }
+
+        &.tab-is-active {
+            border-bottom: 2px solid $tab-selected-color;
+        }
     }
-
-    &.tab-is-active {
-      border-bottom: 2px solid $tab-selected-color;
-    }
-  }
 }
