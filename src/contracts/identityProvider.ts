@@ -34,4 +34,14 @@ export interface IdentityProviderProperties {
      * List of Allowed Tenants when configuring Azure Active Directory login, e.g. mytenant.onmicrosoft.com
      */
     allowedTenants: string[];
+
+    /**
+     * The TenantId to use instead of Common when logging into Active Directory.
+     */
+    signinTenant: string;
+
+    /**
+     * Signup Policy Name. Only applies to AAD B2C Identity Provider.
+     */
+    signinPolicyName: string;
 }
