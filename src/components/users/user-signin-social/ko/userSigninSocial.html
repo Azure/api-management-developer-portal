@@ -1,1 +1,7 @@
-<user-signin-social-runtime data-bind="attr: { params: params }"></user-signin-social-runtime>
+<!-- ko if: aadConfig -->
+<signin-aad data-bind="attr: { params: aadConfig }"></signin-aad>
+<!-- /ko -->
+
+<!-- ko if: aadB2CConfig -->
+<signin-aad-b2c data-bind="attr: { params: aadB2CConfig }"></signin-aad-b2c>
+<!-- /ko -->

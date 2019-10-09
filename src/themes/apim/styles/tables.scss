@@ -1,0 +1,36 @@
+.table-row {
+    border-bottom: solid 1px rgb(161, 159, 157);
+    min-height: 50px;
+    padding: 15px 0;
+
+    &.table-header {
+        font-weight: bold; 
+    }
+
+    div {
+        padding: 0;
+    }
+}
+
+.search-input {
+    width: 50%;
+    display: flex;
+    margin-bottom: 20px;
+
+    .search {
+        border-width: 0 0 1px 0;
+        vertical-align: top;
+        min-height: 32px;
+        width: 100%;
+    }
+    
+    .button {
+        &.button-primary {
+            border-radius: 0;
+            vertical-align: top;
+            padding: 5px;
+            margin: 0 0 1px 0;
+            min-width: 30px;
+        }
+    }
+}
