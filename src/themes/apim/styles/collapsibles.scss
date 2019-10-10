@@ -1,0 +1,28 @@
+.dropdown {
+    position: absolute;
+    background: #fff;
+    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.5);
+    z-index: 9000;
+    padding: 20px;
+    width: 100%;
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+
+.collapsible {
+    .collapsible-body {
+        display: none;
+    }
+
+    &.expanded {
+        .collapsible-container {
+            display: block;
+        }
+    }
+
+    .collapsible-trigger {
+        border: none;
+        background: none;
+    }
+}
