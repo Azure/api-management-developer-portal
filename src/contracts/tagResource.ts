@@ -4,9 +4,9 @@ import { TagContract } from "./tag";
 
 
 /**
- * Cotract of TagResource
+ * Contract of TagResource
  */
-export interface TagResourceContract {
+export interface ApiTagResourceContract {
     api?: ApiContract;
     operation?: OperationContract;
     tag?: TagContract;
