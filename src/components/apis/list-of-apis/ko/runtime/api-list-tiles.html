@@ -15,17 +15,11 @@
     </div>
 </div>
 
-<div class="table">
-    <div class="table-row table-header flex">
-        <div class="col-md-5">Name</div>
-        <div class="col-md-7">Description</div>
-    </div>
-
-    <div class="table-body">
+<div class="cards">
+    <div class="cards-body">
         <!-- ko if: working -->
         <spinner class="fit"></spinner>
         <!-- /ko -->
-
         <!-- ko ifnot: working -->
 
         <!-- ko if: groupByTag -->
@@ -33,47 +27,51 @@
         <div class="tag-group">
             <a href="#" class="tag" role="group" data-bind="text: group.tag"></a>
         </div>
+
         <!-- ko foreach: { data: group.items, as: 'item' } -->
-        <div class="row">
-            <div class="col-5">
-                <a href="#" role="listitem" class="nav-link text-truncate"
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }, text: item.displayName"></a>
+        <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
+            <div class="card card-default">
+                <h3 data-bind="text: item.displayName"></h3>
+                <div class="tile line-clamp">
+                    <p class="tile-content" data-bind="markdown: item.description"></p>
+                </div>
             </div>
-            <div class="col-7" data-bind="markdown: item.description">
-            </div>
-        </div>
+        </a>
         <!-- /ko -->
+
         <!-- /ko -->
 
         <!-- ko if: apiGroups().length === 0 -->
         <p>No APIs found</p>
         <!-- /ko -->
+
         <!-- /ko -->
 
         <!-- ko ifnot: groupByTag -->
+
         <!-- ko foreach: { data: apis, as: 'item' } -->
-        <div class="row">
-            <div class="col-5">
-                <a href="#" class="text-truncate"
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }, text: item.displayName"></a>
+        <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
+            <div class="card card-default">
+                <h3 data-bind="text: item.displayName"></h3>
+                <div class="tile line-clamp">
+                    <p class="tile-content" data-bind="markdown: item.description"></p>
+                </div>
             </div>
-            <div class="col-5" data-bind="markdown: item.description">
-            </div>
-        </div>
+        </a>
         <!-- /ko -->
+
 
         <!-- ko if: apis().length === 0 -->
         <p>No APIs found</p>
         <!-- /ko -->
 
         <!-- /ko -->
+
         <!-- /ko -->
     </div>
-
-    <!-- ko if: hasPager -->
-    <!-- ko ifnot: working -->
-    <div class="table-footer">
-        <ul class="pagination justify-content-center">
+    <div class="cards-footer">
+        <!-- ko if: hasPager -->
+        <ul class="pagination">
             <!-- ko if: hasPrevPage -->
             <li class="page-item">
                 <a href="#" class="page-link" role="button" aria-label="Previous page"
@@ -94,7 +92,6 @@
             </li>
             <!-- /ko -->
         </ul>
+        <!-- /ko -->
     </div>
-    <!-- /ko -->
-    <!-- /ko -->
 </div>

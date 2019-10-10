@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
-import template from "./api-list.html";
-import { Component, RuntimeComponent, Param, OnMounted, OnDestroyed } from "@paperbits/common/ko/decorators";
+import template from "./api-list-tiles.html";
+import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { ApiService } from "../../../../../services/apiService";
 import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { Api } from "../../../../../models/api";
@@ -9,13 +9,13 @@ import { TagGroup } from "../../../../../models/tagGroup";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 
 
-@RuntimeComponent({ selector: "api-list" })
+@RuntimeComponent({ selector: "api-list-tiles" })
 @Component({
-    selector: "api-list",
+    selector: "api-list-tiles",
     template: template,
-    injectable: "apiList"
+    injectable: "apiListTiles"
 })
-export class ApiList {
+export class ApiListTiles {
     private queryParams: URLSearchParams;
     public readonly apis: ko.ObservableArray<Api>;
     public readonly apiGroups: ko.ObservableArray<TagGroup<Api>>;
@@ -31,16 +31,12 @@ export class ApiList {
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly router: DefaultRouter
+        private readonly router: DefaultRouter,
     ) {
         this.apis = ko.observableArray([]);
-        this.itemStyleView = ko.observable();
         this.working = ko.observable();
         this.selectedId = ko.observable();
         this.dropDownId = ko.observable();
-        this.applySelectedApi = this.applySelectedApi.bind(this);
-        this.selectFirst = this.selectFirst.bind(this);
-        this.selectionChanged = this.selectionChanged.bind(this);
         this.pattern = ko.observable();
         this.page = ko.observable(1);
         this.hasPrevPage = ko.observable();
@@ -49,9 +45,6 @@ export class ApiList {
         this.apiGroups = ko.observableArray();
         this.groupByTag = ko.observable(false);
     }
-
-    @Param()
-    public itemStyleView: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -95,16 +88,12 @@ export class ApiList {
         }
         this.selectedId(selectedId);
 
-        if (this.itemStyleView() === "dropdown" && this.dropDownId() !== selectedId) {
-            this.dropDownId(selectedId);
-        }
-
         this.queryParams.set("apiId", selectedId);
         this.router.navigateTo("#?" + this.queryParams.toString());
     }
 
     private selectFirst(): void {
-        if (this.itemStyleView() === "tiles" || this.queryParams.has("apiId")) {
+        if (this.queryParams.has("apiId")) {
             return;
         }
 
@@ -170,23 +159,5 @@ export class ApiList {
 
     public getReferenceUrl(api: Api): string {
         return `${Constants.apiReferencePageUrl}#?apiId=${api.name}`;
-    }
-
-    public selectionChanged(change, event): void {
-        if (event.originalEvent) { // user changed
-            const currentId = this.queryParams.get("apiId");
-            const selectedId = this.dropDownId();
-            if (selectedId === currentId) {
-                return;
-            }
-            this.queryParams.set("apiId", selectedId);
-            this.queryParams.delete("operationId");
-            this.router.navigateTo("#?" + this.queryParams.toString());
-        }
-    }
-
-    @OnDestroyed()
-    public dispose(): void {
-        this.router.removeRouteChangeListener(this.loadApis);
     }
 }
