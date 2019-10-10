@@ -7,9 +7,11 @@
 </div>
 <div class="dropdown" data-bind="visible: expanded">
     <div class="search-input">
-        <input id="searchBox" class="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
-            data-bind="delayedInput: pattern" />
-        <button type="button" class="button button-primary"><i class="icon icon-magnifier"></i></button>
+        <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
+            data-bind="textInput: pattern" />
+        <button type="button" class="search-button">
+            <i class="icon icon-magnifier"></i>
+        </button>
     </div>
 
     <div role="list">

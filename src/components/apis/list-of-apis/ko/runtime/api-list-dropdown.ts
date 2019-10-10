@@ -26,7 +26,6 @@ export class ApiListDropdown {
     public readonly expanded: ko.Observable<boolean>;
     public readonly selectedApi: ko.Observable<Api>;
 
-
     constructor(private readonly apiService: ApiService) {
         this.working = ko.observable();
         this.selectedId = ko.observable();
@@ -42,14 +41,24 @@ export class ApiListDropdown {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.searchApis();
-        this.pattern.subscribe(this.searchApis);
+        await this.loadPageOfApis();
+
+        this.pattern
+            .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
+            .subscribe(this.searchApis);
     }
 
     /**
      * Initiates searching APIs.
      */
     public async searchApis(): Promise<void> {
+        this.page(1);
+    }
+
+    /**
+     * Loads page of APIs.
+     */
+    public async loadPageOfApis(): Promise<void> {
         try {
             this.working(true);
 
@@ -85,12 +94,12 @@ export class ApiListDropdown {
 
     public prevPage(): void {
         this.page(this.page() - 1);
-        this.searchApis();
+        this.loadPageOfApis();
     }
 
     public nextPage(): void {
         this.page(this.page() + 1);
-        this.searchApis();
+        this.loadPageOfApis();
     }
 
     public toggle(): void {

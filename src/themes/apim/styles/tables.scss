@@ -1,25 +1,3 @@
-.search-input {
-    display: flex;
-    margin-bottom: 20px;
-
-    .search {
-        border-width: 0 0 1px 0;
-        vertical-align: top;
-        min-height: 32px;
-        width: 100%;
-    }
-    
-    .button {
-        &.button-primary {
-            border-radius: 0;
-            vertical-align: top;
-            padding: 5px;
-            margin: 0 0 1px 0;
-            min-width: 30px;
-        }
-    }
-}
-
 .table {
     .row {
         margin-bottom: 20px;

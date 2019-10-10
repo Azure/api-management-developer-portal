@@ -1,6 +1,5 @@
 import "./polyfills";
 import "./bindingHandlers/scrollintoview";
-import "./bindingHandlers/delayedInput";
 import "./bindingHandlers/codesample";
 import "./bindingHandlers/schemaobjecttype";
 import "./bindingHandlers/markdown";

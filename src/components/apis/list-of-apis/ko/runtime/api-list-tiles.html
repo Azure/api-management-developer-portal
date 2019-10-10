@@ -1,9 +1,11 @@
 <div class="row">
     <div class="col-md-6">
         <div class="search-input">
-            <input id="searchBox" class="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
-                data-bind="delayedInput: pattern" />
-            <button type="button" class="button button-primary"><i class="icon icon-magnifier"></i></button>
+            <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
+                data-bind="textInput: pattern" />
+            <button type="button" class="search-button">
+                <i class="icon icon-magnifier"></i>
+            </button>
         </div>
     </div>
     <div class="col-md-4">

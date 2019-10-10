@@ -58,8 +58,13 @@ export class ApiList {
         await this.loadApis(this.router.getCurrentRoute());
 
         this.router.addRouteChangeListener(this.loadApis);
-        this.pattern.subscribe(this.searchApis);
-        this.groupByTag.subscribe(this.searchApis);
+
+        this.pattern
+            .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
+            .subscribe(this.searchApis);
+
+        this.groupByTag
+            .subscribe(this.searchApis);
     }
 
     public async loadApis(route?: Route): Promise<void> {

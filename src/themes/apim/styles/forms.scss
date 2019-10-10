@@ -3,8 +3,7 @@
     align-items: center;
 
     label {
-        margin: 5px 0;
-        margin-right: 30px;
+        margin: 5px 30px 5px 0;
     }
 }
 
@@ -47,5 +46,32 @@ input[type=checkbox] {
                 box-shadow: -2px 4px 3px rgba(0,0,0,0.05);
             }
         }
+    }
+}
+
+$search-button-width: 30px;
+
+.search-input {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #a19f9d;
+
+    input[type=search] {
+        border: none;
+        background: none;;
+        padding-left: $search-button-width;
+        min-height: 32px;
+        width: 100%;
+        vertical-align: top;
+    }
+
+    .search-button {
+        border: none;
+        background: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: $search-button-width;
     }
 }
