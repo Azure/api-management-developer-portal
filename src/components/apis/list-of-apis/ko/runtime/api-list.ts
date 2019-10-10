@@ -132,7 +132,18 @@ export class ApiList {
         this.searchApis();
     }
 
+    /**
+     * Initiates searching APIs.
+     */
     public async searchApis(): Promise<void> {
+        this.page(1);
+        this.loadPageOfApis();
+    }
+
+    /**
+     * Loads page of APIs.
+     */
+    public async loadPageOfApis(): Promise<void> {
         try {
             this.working(true);
 

@@ -126,6 +126,7 @@ export class ApiListTiles {
      */
     public async searchApis(): Promise<void> {
         this.page(1);
+        this.loadPageOfApis();
     }
 
     /**

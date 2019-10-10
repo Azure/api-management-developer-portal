@@ -53,6 +53,7 @@ export class ApiListDropdown {
      */
     public async searchApis(): Promise<void> {
         this.page(1);
+        this.loadPageOfApis();
     }
 
     /**
