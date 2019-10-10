@@ -1,7 +1,18 @@
 export class Page<T> {
+    /**
+     * Collection of items on the page.
+     */
     public value: T[];
+
+    /**
+     * Number of items in the page.
+     */
     public count: number;
-    public nextLink?: string;
+
+    /**
+     * A link to the next page of the query result.
+     */
+    public nextLink?: string; // TODO: Implement .next() instead of link.
 
     constructor() {
         this.value = [];
@@ -9,7 +20,7 @@ export class Page<T> {
         this.nextLink = null;
     }
 
-    public getSkip(): string {
+    public getSkip(): number {
         if (!this.nextLink) {
             return undefined;
         }
@@ -18,7 +29,7 @@ export class Page<T> {
         const queryParams = new URLSearchParams(decodeURIComponent(url.search));
 
         if (queryParams.has("$skip")) {
-            return queryParams.get("$skip");
+            return parseInt(queryParams.get("$skip"));
         }
     }
 }
