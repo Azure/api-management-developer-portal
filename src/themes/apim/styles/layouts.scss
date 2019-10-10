@@ -22,27 +22,6 @@ section {
         flex-direction: column;
         flex: 1;
     }
-
-    .row {
-        padding: 10px;
-        min-height: 90px;
-        flex: 1;
-
-        .col {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            align-items: flex-start;
-        }
-    }
-
-    &.with-padding {
-        padding: 40px;
-    }
-    /* TODO: Enable row height through editor */
-    &.stretch > .container, .container-fluid > .row {
-        flex: 1;
-    }
 }
 
 .stretch {
