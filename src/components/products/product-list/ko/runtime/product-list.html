@@ -1,7 +1,10 @@
 <div class="animation-fade-in">
     <div class="search-input">
-        <input id="searchBox" class="search" role="searchbox" aria-label="Search" placeholder="Search" data-bind="textInput: pattern, valueUpdate: 'input', event: { keyup: onEnter}" >
-        <button type="button" class="button button-primary" data-bind="click: searchByName"><i class="icon icon-magnifier"></i></button>
+        <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
+            data-bind="textInput: pattern" />
+        <button type="button" class="search-button" data-bind="click: searchByName">
+            <i class="icon icon-magnifier"></i>
+        </button>
     </div>
 
     <!-- ko if: working -->
@@ -16,14 +19,15 @@
     <!-- /ko -->
 
     <!-- ko if: products().length > 0 -->
-    <div class="table">        
+    <div class="table">
         <div class="table-row table-header flex">
             <div class="col-md-5">Name</div>
             <div class="col-md-7">Description</div>
         </div>
         <!-- ko foreach: { data: products, as: 'product' } -->
         <div class="table-row flex">
-            <div class="col-md-5"><a data-bind="attr: { href: $component.getProductUrl(product) }, text: product.name"></a></div>
+            <div class="col-md-5"><a
+                    data-bind="attr: { href: $component.getProductUrl(product) }, text: product.name"></a></div>
             <div class="col-md-7" data-bind="text: product.description">Product description</div>
         </div>
         <!-- /ko -->

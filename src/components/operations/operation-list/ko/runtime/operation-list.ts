@@ -1,11 +1,11 @@
 import * as ko from "knockout";
 import template from "./operation-list.html";
-import { SearchRequest } from "../../searchRequest";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { ApiService } from "../../../../../services/apiService";
 import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { Operation } from "../../../../../models/operation";
 import { Page } from "../../../../../models/page";
+import { SearchQuery } from "../../../../../contracts/searchQuery";
 
 @RuntimeComponent({ selector: "operation-list" })
 @Component({
@@ -14,7 +14,7 @@ import { Page } from "../../../../../models/page";
     injectable: "operationList"
 })
 export class OperationList {
-    private searchRequest: SearchRequest;
+    private searchRequest: SearchQuery;
     private currentApiId: string;
     private currentUrl: string;
     private queryParams: URLSearchParams;
@@ -83,7 +83,7 @@ export class OperationList {
         this.selectFirst();
     }
 
-    public async searchOperations(searchRequest?: SearchRequest): Promise<void> {
+    public async searchOperations(searchRequest?: SearchQuery): Promise<void> {
         this.working(true);
 
         this.searchRequest = searchRequest || this.searchRequest;
@@ -111,8 +111,11 @@ export class OperationList {
 
     private async load(): Promise<void> {
         const pageOfOperations = await this.apiService.getOperations(`apis/${this.currentApiId}`, this.searchRequest);
+        
         this.lastPage(pageOfOperations);
         const current = this.operations();
+
+
         if (current && current.length > 0) {
             this.operations.push(...pageOfOperations.value);
         } else {

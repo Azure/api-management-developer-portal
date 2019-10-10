@@ -132,9 +132,7 @@ export class MapiClient {
         if (!authHeader || !authHeader.value) {
             const authToken = this.authenticator.getAccessToken();
 
-            if (!authToken) {
-                console.log("Auth token not found");
-            } else {
+            if (authToken) {
                 httpRequest.headers.push({ name: "Authorization", value: `${authToken}` });
             }
         }

@@ -1,10 +1,10 @@
 import * as ko from "knockout";
+import * as Constants from "../../../../../constants";
 import template from "./api-history.html";
 import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
-import { apiChangeLogPageSize } from "../../../../../constants";
 import { ChangeLogContract } from "../../../../../contracts/apiChangeLog";
 import { Utils } from "../../../../../utils";
 
@@ -107,7 +107,7 @@ export class ApiHistory {
     }
 
     private async getCurrentPage(): Promise<void> {
-        const pageOfLogs = await this.apiService.getApiChangeLog(this.apiId, (this.changeLogPage()-1) * apiChangeLogPageSize);
+        const pageOfLogs = await this.apiService.getApiChangeLog(this.apiId, (this.changeLogPage() - 1) * Constants.defaultPageSize);
         pageOfLogs.value.map(x => x.properties.updatedDateTime = Utils.formatDateTime(x.properties.updatedDateTime));
         this.changeLogHasPrevPage(this.changeLogPage() > 1);
         this.changeLogHasNextPage(!!pageOfLogs.nextLink);
