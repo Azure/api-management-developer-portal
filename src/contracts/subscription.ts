@@ -19,10 +19,10 @@ export interface SubscriptionContract extends ArmResource {
 }
 
 export enum SubscriptionState {
-    suspended = "suspended",
-    active = "active",
-    expired = "expired",
-    submitted = "submitted",
-    rejected = "rejected",
-    cancelled = "cancelled"
+    suspended = "Suspended",
+    active = "Active",
+    expired = "Expired",
+    submitted = "Submitted",
+    rejected = "Rejected",
+    cancelled = "Cancelled"
 }
