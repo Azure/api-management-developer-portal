@@ -45,6 +45,20 @@ aside {
     }
 }
 
+.dropdown-items {
+    a {
+        color: inherit;
+        padding: 10px;
+        display: block;
+
+        &:hover {
+            color: inherit;
+            text-decoration: none;
+            background-color: #EDEBE9;
+        }
+    }
+}
+
 .panel {
     padding: 30px;
 
@@ -322,7 +336,11 @@ api-list,
 operation-details,
 operation-list,
 product-details,
-product-list {
+product-subscriptions,
+product-subscribe,
+product-apis,
+product-list,
+product-list-dropdown {
     flex-basis: 100%;
     max-width: 100%;
 }

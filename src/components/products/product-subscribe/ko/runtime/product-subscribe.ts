@@ -1,16 +1,16 @@
 import * as ko from "knockout";
 import template from "./product-subscribe.html";
 import { Router } from "@paperbits/common/routing";
-import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Component, OnMounted, RuntimeComponent, OnDestroyed } from "@paperbits/common/ko/decorators";
 import { Utils } from "../../../../../utils";
 import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 
-@RuntimeComponent({ selector: "product-subscribe-runtime" })
+@RuntimeComponent({ selector: "product-subscribe" })
 @Component({
-    selector: "product-subscribe-runtime",
+    selector: "product-subscribe",
     template: template,
     injectable: "productSubscribe"
 })
@@ -22,12 +22,9 @@ export class ProductSubscribe {
     public readonly termsOfUse: ko.Observable<string>;
     public readonly showHideLabel: ko.Observable<string>;
     public readonly subscriptionName: ko.Observable<string>;
-    public readonly allowMultiple: ko.Observable<boolean>;
     public readonly limitReached: ko.Observable<boolean>;
-    public readonly showLimitReached: ko.Computed<boolean>;
     public readonly canSubscribe: ko.Computed<boolean>;
-    public readonly showSubscribeForm: ko.Observable<boolean>;
-    public readonly showAddSubscription: ko.Computed<boolean>;
+    public readonly isUserSignedIn: ko.Observable<boolean>;
 
     constructor(
         private readonly usersService: UsersService,
@@ -39,24 +36,13 @@ export class ProductSubscribe {
         this.consented = ko.observable();
         this.termsOfUse = ko.observable();
         this.showHideLabel = ko.observable();
-        this.showSubscribeForm = ko.observable(false);
-        this.subscriptionName = ko.observable();
-        this.limitReached = ko.observable();
-        this.allowMultiple = ko.observable();
+        this.subscriptionName = ko.observable("");
+        this.limitReached = ko.observable(false);
         this.working = ko.observable(true);
+        this.isUserSignedIn = ko.observable(false);
 
         this.canSubscribe = ko.pureComputed((): boolean => {
-            return !!this.subscriptionName()
-                && this.subscriptionName().length > 0
-                && ((this.termsOfUse() && this.consented()) || !!!this.termsOfUse());
-        });
-
-        this.showLimitReached = ko.computed((): boolean => {
-            return this.allowMultiple() && this.limitReached();
-        });
-
-        this.showAddSubscription = ko.computed((): boolean => {
-            return !this.allowMultiple() && !this.limitReached() && !this.showSubscribeForm();
+            return this.subscriptionName().length > 0 && ((this.termsOfUse() && this.consented()) || !!!this.termsOfUse());
         });
     }
 
@@ -69,15 +55,17 @@ export class ProductSubscribe {
 
     private getProductId(): string {
         const route = this.router.getCurrentRoute();
-        const queryParams = new URLSearchParams(route.hash);
+        const queryParams = new URLSearchParams(route.hash || (route.url.indexOf("?") !== -1 ? route.url.split("?").pop() : ""));
         const productId = queryParams.get("productId");
 
         return productId ? `/products/${productId}` : null;
     }
 
     private async loadProduct(): Promise<void> {
+        const userId = await this.usersService.getCurrentUserId();
+        this.isUserSignedIn(!!userId);
+        
         try {
-            this.showSubscribeForm(false);
             this.showTermsOfUse(false);
             this.working(true);
 
@@ -101,7 +89,10 @@ export class ProductSubscribe {
                 this.showHideLabel("Show");
             }
 
-            await this.loadSubscriptions();
+            if (userId) {
+                await this.loadSubscriptions(userId);
+            }
+            
         }
         catch (error) {
             if (error.code === "Unauthorized") {
@@ -123,40 +114,23 @@ export class ProductSubscribe {
         }
     }
 
-    private async loadSubscriptions(): Promise<void> {
-        const userId = await this.usersService.getCurrentUserId();
-
-        if (!userId) {
-            return;
-        }
-
+    private async loadSubscriptions(userId: string): Promise<void> {
         const product = this.product();
-        const subscriptions = await this.productService.getUserSubscriptionsWithProductName(userId);
-        const activeSubscriptions = subscriptions.filter(item => item.productId === product.id && item.state === SubscriptionState.active) || [];
+        const subscriptions = await this.productService.getSubscriptionsForProduct(userId, product.id);
+        const activeSubscriptions = subscriptions.value.filter(item => item.state === SubscriptionState.active) || [];
         const numberOfSubscriptions = activeSubscriptions.length;
-        const allowMultiple = product.subscriptionsLimit !== 1;
-        const limitReached = product.subscriptionsLimit && product.subscriptionsLimit <= numberOfSubscriptions;
-
-        this.allowMultiple(allowMultiple);
+        const limitReached = (product.subscriptionsLimit || product.subscriptionsLimit === 0) && product.subscriptionsLimit <= numberOfSubscriptions;
         this.limitReached(limitReached);
     }
 
-    public addSubscription(): void {
-        this.showSubscribeForm(true);
-    }
-
     public async subscribe(): Promise<void> {
+        const userId = await this.usersService.ensureSignedIn();
+
         if (!this.canSubscribe()) {
             return;
         }
 
         this.working(true);
-
-        const userId = await this.usersService.getCurrentUserId();
-
-        if (!userId) {
-            this.usersService.navigateToSignin();
-        }
 
         if (!this.subscriptionName()) {
             return;
@@ -195,6 +169,7 @@ export class ProductSubscribe {
         this.showTermsOfUse(!this.showTermsOfUse());
     }
 
+    @OnDestroyed()
     public dispose(): void {
         this.router.removeRouteChangeListener(this.loadProduct);
     }
