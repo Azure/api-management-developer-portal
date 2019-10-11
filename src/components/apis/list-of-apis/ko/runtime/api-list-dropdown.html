@@ -1,10 +1,5 @@
-<div tabindex="0" role="listbox" class="form-control" data-bind="click: toggle">
-    <!-- ko if: selectedApi -->
-    <!-- ko with: selectedApi -->
-    <span data-bind="text: displayName"></span>
-    <!-- /ko -->
-    <!-- /ko -->
-    
+<div tabindex="0" role="listbox" class="form-control">
+    <div data-bind="click: toggle, text: selection"></div>
     <div class="dropdown" data-bind="visible: expanded">
         <div class="search-input">
             <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
