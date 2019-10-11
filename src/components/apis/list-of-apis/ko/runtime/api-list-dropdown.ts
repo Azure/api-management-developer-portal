@@ -25,6 +25,7 @@ export class ApiListDropdown {
     public readonly hasNextPage: ko.Observable<boolean>;
     public readonly expanded: ko.Observable<boolean>;
     public readonly selectedApi: ko.Observable<Api>;
+    public readonly selection: ko.Computed<string>;
 
     constructor(private readonly apiService: ApiService) {
         this.working = ko.observable();
@@ -37,6 +38,10 @@ export class ApiListDropdown {
         this.apiGroups = ko.observableArray();
         this.selectedApi = ko.observable();
         this.expanded = ko.observable(false);
+        this.selection = ko.computed(() => {
+            const api = ko.unwrap(this.selectedApi);
+            return api ? api.displayName : "Select API";
+        });
     }
 
     @OnMounted()
@@ -80,10 +85,6 @@ export class ApiListDropdown {
 
             this.hasPrevPage(pageNumber > 0);
             this.hasNextPage(!!nextLink);
-
-            const api = apiGroups[0].items[0];
-
-            this.selectedApi(api);
         }
         catch (error) {
             console.error(`Unable to load APIs. ${error}`);
