@@ -8,9 +8,9 @@ import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 
-@RuntimeComponent({ selector: "product-list" })
+@RuntimeComponent({ selector: "product-list-runtime" })
 @Component({
-    selector: "product-list",
+    selector: "product-list-runtime",
     template: template,
     injectable: "productList"
 })

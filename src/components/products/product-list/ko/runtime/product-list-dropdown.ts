@@ -7,9 +7,9 @@ import { Product } from "../../../../../models/product";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { Router } from "@paperbits/common/routing/router";
 
-@RuntimeComponent({ selector: "product-list-dropdown" })
+@RuntimeComponent({ selector: "product-list-dropdown-runtime" })
 @Component({
-    selector: "product-list-dropdown",
+    selector: "product-list-dropdown-runtime",
     template: template,
     injectable: "productListDropdown"
 })

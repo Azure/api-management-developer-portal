@@ -6,9 +6,9 @@ import { Component, OnMounted, RuntimeComponent, OnDestroyed } from "@paperbits/
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 
-@RuntimeComponent({ selector: "product-subscriptions" })
+@RuntimeComponent({ selector: "product-subscriptions-runtime" })
 @Component({
-    selector: "product-subscriptions",
+    selector: "product-subscriptions-runtime",
     template: template,
     injectable: "productSubscriptions"
 })

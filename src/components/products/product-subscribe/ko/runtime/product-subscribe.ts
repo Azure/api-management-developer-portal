@@ -8,9 +8,9 @@ import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 
-@RuntimeComponent({ selector: "product-subscribe" })
+@RuntimeComponent({ selector: "product-subscribe-runtime" })
 @Component({
-    selector: "product-subscribe",
+    selector: "product-subscribe-runtime",
     template: template,
     injectable: "productSubscribe"
 })

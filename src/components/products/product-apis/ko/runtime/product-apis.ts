@@ -8,9 +8,9 @@ import * as Constants from "../../../../../constants";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 
 
-@RuntimeComponent({ selector: "product-apis" })
+@RuntimeComponent({ selector: "product-apis-runtime" })
 @Component({
-    selector: "product-apis",
+    selector: "product-apis-runtime",
     template: template,
     injectable: "productApis"
 })

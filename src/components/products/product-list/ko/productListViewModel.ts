@@ -3,7 +3,7 @@ import template from "./productList.html";
 import { Component } from "@paperbits/common/ko/decorators";
 
 @Component({
-    selector: "productList",
+    selector: "product-list",
     template: template
 })
 export class ProductListViewModel {    

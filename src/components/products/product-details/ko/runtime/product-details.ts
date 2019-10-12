@@ -14,7 +14,6 @@ import { UsersService } from "../../../../../services/usersService";
     injectable: "productDetails"
 })
 export class ProductDetails {
-    public readonly apis: ko.ObservableArray<Api>;
     public readonly product: ko.Observable<Product>;
     public readonly working: ko.Observable<boolean>;
 
@@ -24,8 +23,6 @@ export class ProductDetails {
         private readonly router: Router
     ) {
         this.product = ko.observable();
-
-        this.apis = ko.observableArray();
         this.working = ko.observable();
     }
 
@@ -55,7 +52,7 @@ export class ProductDetails {
         if (!productId) {
             return;
         }
-        
+
         this.working(true);
         this.product(null);
 
