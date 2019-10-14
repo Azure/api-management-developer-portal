@@ -21,6 +21,7 @@ import { HttpClient, HttpRequest } from "@paperbits/common/http";
 import { Revision } from "../../../../../models/revision";
 import { templates } from "./templates/templates";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
+import { SubscriptionState } from "../../../../../contracts/subscription";
 
 @Component({
     selector: "operation-console",
@@ -217,7 +218,7 @@ export class OperationConsole {
         const userId = await this.usersService.getCurrentUserId();
 
         const pageOfSubscriptions = await this.productService.getSubscriptions(userId);
-        const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === "active");
+        const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === SubscriptionState.active);
         const availableProducts = [];
 
         products.forEach(product => {
