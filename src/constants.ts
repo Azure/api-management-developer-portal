@@ -26,4 +26,5 @@ export const homeUrl = "/";
  */
 export const defaultPageSize = 50;
 export const apiReferencePageUrl = "/reference";
+export const productReferencePageUrl = "/product";
 export const defaultInputDelayMs = 600;

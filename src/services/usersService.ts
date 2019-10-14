@@ -210,16 +210,14 @@ export class UsersService {
     /**
      * Check whether current user is authenticated and, if not, redirects to sign-in page.
      */
-    public async ensureSignedIn(): Promise<void> {
-        return new Promise<void>((resolve) => {
-            const userId = this.getCurrentUserId();
+    public async ensureSignedIn(): Promise<string> {
+        const userId = await this.getCurrentUserId();
 
-            if (!userId) {
-                this.navigateToSignin();
-                return; // intentionally exiting without resolving the promise.
-            }
-
-            resolve();
-        });
+        if (!userId) {
+            this.navigateToSignin();
+            return; // intentionally exiting without resolving the promise.
+        }
+        
+        return userId;
     }
 }

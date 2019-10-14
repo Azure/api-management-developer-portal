@@ -1,1 +1,7 @@
-export class ProductListModel { }
+export class ProductListModel {
+    public itemStyleView?: string;
+
+    constructor(itemStyleView: string = "list") {
+        this.itemStyleView = itemStyleView;
+    }
+}
