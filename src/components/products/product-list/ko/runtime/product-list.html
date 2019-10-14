@@ -1,6 +1,6 @@
 <div class="animation-fade-in">
     <div class="search-input">
-        <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
+        <input type="search" role="searchbox" aria-label="Search" placeholder="Search Products"
             data-bind="textInput: pattern" />
         <button type="button" class="search-button" data-bind="click: searchByName">
             <i class="icon icon-magnifier"></i>
@@ -26,8 +26,7 @@
         </div>
         <!-- ko foreach: { data: products, as: 'product' } -->
         <div class="table-row flex">
-            <div class="col-md-5"><a
-                    data-bind="attr: { href: $component.getProductUrl(product) }, text: product.name"></a></div>
+            <div class="col-md-5"><a data-bind="attr: { href: $component.getProductUrl(product) }, text: product.name"></a></div>
             <div class="col-md-7" data-bind="text: product.description">Product description</div>
         </div>
         <!-- /ko -->
