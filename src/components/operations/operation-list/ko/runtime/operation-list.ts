@@ -6,6 +6,8 @@ import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { Operation } from "../../../../../models/operation";
 import { Page } from "../../../../../models/page";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
+import { TagGroup } from "../../../../../models/tagGroup";
+import * as Constants from "../../../../../constants";
 
 @RuntimeComponent({ selector: "operation-list" })
 @Component({
@@ -22,7 +24,13 @@ export class OperationList {
     public operations: ko.ObservableArray<Operation>;
     public working: ko.Observable<boolean>;
     public selectedId: ko.Observable<string>;
-    public lastPage: ko.Observable<Page<Operation>>;
+    public readonly groupByTag: ko.Observable<boolean>;
+    public readonly opsGroups: ko.ObservableArray<TagGroup<Operation>>;
+    public readonly pattern: ko.Observable<string>;
+    public readonly pageNumber: ko.Observable<number>;
+    public readonly hasPrePage: ko.Observable<boolean>;
+    public readonly hasNextPage: ko.Observable<boolean>;
+    public readonly hasPager: ko.Computed<boolean>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -31,17 +39,27 @@ export class OperationList {
         this.operations = ko.observableArray([]);
         this.working = ko.observable();
         this.selectedId = ko.observable();
-        this.lastPage = ko.observable();
         this.loadOperations = this.loadOperations.bind(this);
-
+        this.groupByTag = ko.observable(true);
         this.router.addRouteChangeListener(this.loadOperations);
+        this.opsGroups = ko.observableArray();
+        this.pattern = ko.observable();
+        this.pageNumber = ko.observable(1);
+        this.hasNextPage = ko.observable();
+        this.hasPrePage = ko.observable();
+        this.hasPager = ko.computed(() => this.hasPrePage() || this.hasNextPage());
     }
 
     @OnMounted()
     public async initialize(): Promise<void> {
         const route = this.router.getCurrentRoute();
-
         this.loadOperations(route);
+        this.pattern
+            .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
+            .subscribe(this.updateOperations);
+
+        this.groupByTag
+            .subscribe(this.updateOperations);
     }
 
     public async loadOperations(route?: Route): Promise<void> {
@@ -77,10 +95,37 @@ export class OperationList {
         }
 
         this.currentApiId = apiId;
-        this.operations([]);
-        this.searchRequest = { pattern: "", tags: [], grouping: "none" };
-        await this.searchOperations();
+        await this.updateOperations();
         this.selectFirst();
+    }
+
+    public prePage(): void {
+        this.pageNumber(this.pageNumber() - 1);
+        if (this.groupByTag()) {
+            this.loadBytag();
+        } else {
+            this.load();
+        }
+    }
+
+    public nextPage(): void {
+        this.pageNumber(this.pageNumber() + 1);
+        if (this.groupByTag()) {
+            this.loadBytag();
+        } else {
+            this.load();
+        }
+    }
+
+    public async updateOperations() {
+        if (this.groupByTag()) {
+            this.opsGroups([]);
+            this.searchRequest = { pattern: this.pattern(), tags: [], grouping: "tag" };
+        } else {
+            this.operations([]);
+            this.searchRequest = { pattern: this.pattern(), tags: [], grouping: "none" };
+        }
+        await this.searchOperations();
     }
 
     public async searchOperations(searchRequest?: SearchQuery): Promise<void> {
@@ -95,6 +140,7 @@ export class OperationList {
                     break;
 
                 case "tag":
+                    await this.loadBytag();
                     break;
 
                 default:
@@ -109,28 +155,48 @@ export class OperationList {
         }
     }
 
-    private async load(): Promise<void> {
-        const pageOfOperations = await this.apiService.getOperations(`apis/${this.currentApiId}`, this.searchRequest);
-        
-        this.lastPage(pageOfOperations);
-        const current = this.operations();
-
-
-        if (current && current.length > 0) {
-            this.operations.push(...pageOfOperations.value);
+    public clickGroupByTag(): void {
+        this.groupByTag(!this.groupByTag());
+        if (this.groupByTag()) {
+            this.searchRequest.grouping = "tag";
         } else {
-            this.operations(pageOfOperations.value);
+            this.searchRequest.grouping = "none";
         }
+        this.searchOperations();
     }
 
-    public async loadMore(): Promise<void> {
-        const page = this.lastPage();
-        if (page.nextLink) {
-            this.searchRequest.skip = page.getSkip();
-            if (this.searchRequest.skip) {
-                await this.load();
-            }
+    private async loadBytag(): Promise<void> {
+        this.searchRequest.skip = (this.pageNumber() - 1) * Constants.defaultPageSize;
+        const pageOfOperationsByTag = await this.apiService.getOperationsByTags(this.currentApiId, this.searchRequest);
+        const operationGroups = pageOfOperationsByTag.value;
+        this.opsGroups(operationGroups);
+        this.hasPrePage(this.pageNumber() > 1);
+        this.hasNextPage(!!pageOfOperationsByTag.nextLink);
+    }
+
+    private async load(): Promise<void> {
+        this.searchRequest.skip = (this.pageNumber() - 1) * Constants.defaultPageSize;
+        const pageOfOperations = await this.apiService.getOperations(`apis/${this.currentApiId}`, this.searchRequest);
+
+        this.operations(pageOfOperations.value);
+
+        this.hasPrePage(this.pageNumber() > 1);
+        this.hasNextPage(!!pageOfOperations.nextLink);
+    }
+
+    public selectOperationWithTag(operation: Operation): void {
+        if (!operation) {
+            return;
         }
+        const parts = operation.id.split("/operations/");
+        const apiId = parts[0].split("/apis/").pop();
+        const operationId = parts[1];
+
+        const params = new URLSearchParams();
+        params.append("apiId", apiId);
+        operationId && params.append("operationId", operationId);
+
+        this.router.navigateTo("#?" + params.toString());
     }
 
     public selectOperation(operation: Operation): void {
