@@ -75,6 +75,62 @@ export class ApiService {
     }
 
     /**
+     * Returns Tag/Operation pairs matching search request (if specified).
+     * @param searchRequest Search request definition.
+     */
+    public async getOperationsByTags(apiId: string, searchQuery?: SearchQuery): Promise<Page<TagGroup<Operation>>> {
+        const skip = searchQuery && searchQuery.skip || 0;
+        const take = searchQuery && searchQuery.take || Constants.defaultPageSize;
+
+        let query = `apis/${apiId}/operationsByTags?includeNotTaggedOperations=true&$top=${take}&$skip=${skip}`;
+        const odataFilterEntries = [];
+
+        if (searchQuery) {
+            if (searchQuery.tags && searchQuery.tags.length > 0) {
+                const tagFilterEntries = searchQuery.tags.map((tag) => `tag/name eq '${tag}'`);
+                odataFilterEntries.push(`(${tagFilterEntries.join(" or ")})`);
+            }
+
+            if (searchQuery.pattern) {
+                const pattern = Utils.escapeValueForODataFilter(searchQuery.pattern);
+                odataFilterEntries.push(`(contains(operation/name,'${encodeURIComponent(pattern)}'))`);
+            }
+        }
+
+        if (odataFilterEntries.length > 0) {
+            query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
+        }
+        const pagesOfOperationsByTag = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(query);
+        const page = new Page<TagGroup<Operation>>();
+        const tagGroups: Bag<TagGroup<Operation>> = {};
+        pagesOfOperationsByTag.value.forEach(x => {
+            const tagContract: TagContract = x.tag ? Utils.armifyContract(x.tag) : null;
+            const operationContract: OperationContract = x.operation ? Utils.armifyContract(x.operation) : null;
+
+            let tagGroup: TagGroup<Operation>;
+            let tagName: string;
+
+            if (tagContract) {
+                tagName = tagContract.properties.displayName;
+            } else {
+                tagName = "Not tagged";
+            }
+            tagGroup = tagGroups[tagName];
+
+            if (!tagGroup) {
+                tagGroup = new TagGroup<Operation>();
+                tagGroup.tag = tagName;
+                tagGroups[tagName] = tagGroup;
+            }
+            tagGroup.items.push(new Operation(operationContract));
+        })
+        page.value = Object.keys(tagGroups).map(x => tagGroups[x]);
+        page.nextLink = pagesOfOperationsByTag.nextLink;
+
+        return page;
+    }
+
+    /**
      * Returns Tag/API pairs matching search request (if specified).
      * @param searchRequest Search request definition.
      */
@@ -242,16 +298,15 @@ export class ApiService {
 
             if (searchQuery.pattern) {
                 const pattern = Utils.escapeValueForODataFilter(searchQuery.pattern);
-                query = Utils.addQueryParameter(query, `$filter=contains(properties/name,'${encodeURIComponent(pattern)}')`);
+                query = Utils.addQueryParameter(query, `$filter=contains(properties/displayName,'${encodeURIComponent(pattern)}')`);
             }
 
-            top = searchQuery.take;
+            top = searchQuery && searchQuery.take || Constants.defaultPageSize;
 
             if (searchQuery.skip) {
                 query = Utils.addQueryParameter(query, `$skip=${searchQuery.skip}`);
             }
         }
-
         query = Utils.addQueryParameter(query, `$top=${top || 20}`);
 
         const result = await this.mapiClient.get<Page<OperationContract>>(query);
