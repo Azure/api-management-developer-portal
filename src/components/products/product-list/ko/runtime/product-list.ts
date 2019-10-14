@@ -1,13 +1,12 @@
 import * as ko from "knockout";
+import * as Constants from "../../../../../constants";
 import template from "./product-list.html";
 import { Router } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
-import { Utils } from "../../../../../utils";
 import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
-import { PatternFilter } from "../../../../../contracts/nameFilter";
-import * as Constants from "../../../../../constants";
+import { SearchQuery } from "../../../../../contracts/searchQuery";
 
 @RuntimeComponent({ selector: "product-list-runtime" })
 @Component({
@@ -16,7 +15,6 @@ import * as Constants from "../../../../../constants";
     injectable: "productList"
 })
 export class ProductList {
-    public readonly selectedProductId: ko.Observable<string>;
     public readonly products: ko.ObservableArray<Product>;
     public readonly showDetails: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
@@ -35,7 +33,6 @@ export class ProductList {
         private readonly router: Router
     ) {
         this.products = ko.observableArray();
-        this.selectedProductId = ko.observable();
         this.working = ko.observable(true);
 
         this.pattern = ko.observable();
@@ -47,43 +44,15 @@ export class ProductList {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.usersService.ensureSignedIn();
         await this.searchByName();
 
-        this.router.addRouteChangeListener(this.onRouteChange);
-    }
-
-    private getProductId(): string {
-        const route = this.router.getCurrentRoute();
-        const queryParams = new URLSearchParams(route.hash);
-        const productId = queryParams.get("productId");
-
-        return productId;
-    }
-
-    private onRouteChange(): void {
-        const productId = this.getProductId();
-
-        if (!productId) {
-            return;
-        }
-
-        this.selectedProductId(`/products/${productId}`);
+        this.pattern
+            .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
+            .subscribe(this.searchByName);
     }
 
     public getProductUrl(product: Product): string {
-        return product.id.replace("/products/", "/product#?productId=");
-    }
-
-    public dispose(): void {
-        this.router.removeRouteChangeListener(this.onRouteChange);
-    }
-
-    public async onEnter(data?: any, event?: KeyboardEvent): Promise<boolean> {
-        if(event && event.keyCode === 13) {
-            await this.searchByName();
-        }
-        return true;
+        return product.id.replace("/products/", `${Constants.productReferencePageUrl}#?productId=`);
     }
 
     public async searchByName(): Promise<void> {
@@ -93,7 +62,7 @@ export class ProductList {
         }
 
         const pageNumber = this.page() - 1;
-        const query: PatternFilter = {
+        const query: SearchQuery = {
             pattern: this.pattern(),
             skip: pageNumber * Constants.defaultPageSize,
             take: Constants.defaultPageSize

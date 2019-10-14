@@ -1,23 +1,52 @@
-<h3>Your subscriptions</h3>
-
 <!-- ko if: working -->
 <spinner class="fit"></spinner>
 <!-- /ko -->
 
 <!-- ko ifnot: working -->
 <div class="animation-fade-in">
-    <!-- ko if: subscriptions().length === 0 -->
+    <!-- ko if: subscriptions().length === 0 || !isUserSignedIn()-->
     <p>
         You don't have subscriptions yet.
     </p>
     <!-- /ko -->
 
-    <!-- ko if: subscriptions().length > 0 -->
-    <ul>
+    <!-- ko if: subscriptions().length > 0 && isUserSignedIn()-->
+    <div class="table">        
+        <div class="table-row table-header flex">
+            <div class="col-md-5">Name</div>
+            <div class="col-md-7">Status</div>
+        </div>
         <!-- ko foreach: { data: subscriptions, as: 'subscription' } -->
-        <li data-bind="text: name"></li>
+        <div class="table-row flex">
+            <div class="col-md-5" data-bind="text: subscription.name"></div>
+            <div class="col-md-7" data-bind="text: subscription.state"></div>
+        </div>
+        <!-- /ko -->
+    </div>
+
+    <!-- ko if: hasPager -->
+    <ul class="pagination justify-content-center">
+        <!-- ko if: hasPrevPage -->
+        <li class="page-item">
+            <a href="#" class="page-link" role="button" aria-label="Previous page"
+                data-bind="click: prevPage, enable: hasPrevPage">
+                <i class="icon icon-chevron-left"></i>
+            </a>
+        </li>
+        <!-- /ko -->
+        <li class="page-item">
+            <span class="page-link" data-bind="text: page"></span>
+        </li>
+        <!-- ko if: hasNextPage -->
+        <li class="page-item">
+            <a href="#" class="page-link" role="button" aria-label="Next page"
+                data-bind="click: nextPage, enable: hasNextPage">
+                <i class="icon icon-chevron-right"></i>
+            </a>
+        </li>
         <!-- /ko -->
     </ul>
+    <!-- /ko -->
     <!-- /ko -->
 </div>
 

@@ -1,9 +1,11 @@
 import * as ko from "knockout";
 import template from "./product-apis.html";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, OnDestroyed } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing";
 import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
+import * as Constants from "../../../../../constants";
+import { SearchQuery } from "../../../../../contracts/searchQuery";
 
 
 @RuntimeComponent({ selector: "product-apis-runtime" })
@@ -13,56 +15,107 @@ import { Api } from "../../../../../models/api";
     injectable: "productApis"
 })
 export class ProductApis {
-    public apis: ko.ObservableArray<Api>;
-    public working: ko.Observable<boolean>;
+    public readonly apis: ko.ObservableArray<Api>;
+    public readonly working: ko.Observable<boolean>;
+    public readonly pattern: ko.Observable<string>;
+    public readonly page: ko.Observable<number>;
+    public readonly hasPager: ko.Computed<boolean>;
+    public readonly hasPrevPage: ko.Observable<boolean>;
+    public readonly hasNextPage: ko.Observable<boolean>;
 
     constructor(
         private readonly apiService: ApiService,
         private readonly router: Router
     ) {
-        this.working = ko.observable(true);
-        this.apis = ko.observableArray();
+        this.apis = ko.observableArray([]);
+        this.working = ko.observable();
+        this.pattern = ko.observable();
+        this.page = ko.observable(1);
+        this.hasPrevPage = ko.observable();
+        this.hasNextPage = ko.observable();
+        this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
     }
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        this.router.addRouteChangeListener(this.loadProductApis);
+        await this.searchApis();
+        
+        this.router.addRouteChangeListener(this.searchApis);
 
-        await this.loadProductApis();
+        this.pattern
+            .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
+            .subscribe(this.searchApis);
     }
 
     private getProductId(): string {
         const route = this.router.getCurrentRoute();
-        const queryParams = new URLSearchParams(route.hash);
+        const queryParams = new URLSearchParams(route.hash || (route.url.indexOf("?") !== -1 ? route.url.split("?").pop() : ""));
         const productId = queryParams.get("productId");
 
-        return productId ? `/products/${productId}` : null;
+        return productId ? `/products/${productId}` : undefined;
     }
 
-    private async loadProductApis(): Promise<void> {
+    /**
+     * Initiates searching APIs.
+     */
+    public async searchApis(): Promise<void> {
+        this.page(1);
+        this.loadPageOfApis();
+    }
+
+    /**
+     * Loads page of APIs.
+     */
+    public async loadPageOfApis(): Promise<void> {
+        const productId = this.getProductId();
+
+        if (!productId) {
+            return;
+        }
+
         try {
             this.working(true);
 
-            const productId = this.getProductId();
+            const pageNumber = this.page() - 1;
 
-            if (!productId) {
-                return;
-            }
+            const query: SearchQuery = {
+                pattern: this.pattern(),
+                skip: pageNumber * Constants.defaultPageSize,
+                take: Constants.defaultPageSize
+            };
 
-            const apis = await this.apiService.getProductApis(productId);
+            const pageOfApis = await this.apiService.getProductApis(productId, query);
+            this.apis(pageOfApis.value);
 
-            this.apis(apis.value);
+            const nextLink = pageOfApis.nextLink;
+            
+            this.hasPrevPage(pageNumber > 0);
+            this.hasNextPage(!!nextLink);
         }
         catch (error) {
-            // Notify user?
-            debugger;
+            console.error(`Unable to load APIs. ${error}`);
         }
         finally {
             this.working(false);
         }
     }
 
+    public getReferenceUrl(api: Api): string {
+        return `${Constants.apiReferencePageUrl}#?apiId=${api.name}`;
+    }
+    
+    public prevPage(): void {
+        this.page(this.page() - 1);
+        this.loadPageOfApis();
+    }
+
+    public nextPage(): void {
+        this.page(this.page() + 1);
+        this.loadPageOfApis();
+    }
+
+    @OnDestroyed()
     public dispose(): void {
-        this.router.removeRouteChangeListener(this.loadProductApis);
+        this.router.removeRouteChangeListener(this.searchApis);
     }
 }
