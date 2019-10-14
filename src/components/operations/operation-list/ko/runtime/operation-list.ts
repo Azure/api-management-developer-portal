@@ -4,7 +4,6 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { ApiService } from "../../../../../services/apiService";
 import { DefaultRouter, Route } from "@paperbits/common/routing";
 import { Operation } from "../../../../../models/operation";
-import { Page } from "../../../../../models/page";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { TagGroup } from "../../../../../models/tagGroup";
 import * as Constants from "../../../../../constants";
@@ -56,7 +55,7 @@ export class OperationList {
         this.loadOperations(route);
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
-            .subscribe(this.updateOperations);
+            .subscribe(this.searchOperationsByPattern);
 
         this.groupByTag
             .subscribe(this.updateOperations);
@@ -97,6 +96,11 @@ export class OperationList {
         this.currentApiId = apiId;
         await this.updateOperations();
         this.selectFirst();
+    }
+
+    public async searchOperationsByPattern(): Promise<void> {
+        this.pageNumber(1);
+        this.updateOperations();
     }
 
     public prePage(): void {
