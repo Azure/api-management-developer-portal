@@ -1,9 +1,10 @@
 import { NameValuePair } from "request";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
+import * as moment from "moment";
 
 export class Utils {
-    public static getResourceName(resource: string, fullId: string, resultType = "name"): string {
+    public static getResourceName(resource: string, fullId: string, resultType: string = "name"): string {
         const regexp = new RegExp(`\/${resource}\/(.*)`);
         const matches = regexp.exec(fullId);
 
@@ -177,7 +178,7 @@ export class Utils {
 
         // const result = Math.round(((bytes / divider) + Number.EPSILON) * 100) / 100;
 
-        const result =  Math.floor(bytes / divider);
+        const result = Math.floor(bytes / divider);
 
         return `${result}${suffix}`;
     }
@@ -291,5 +292,36 @@ export class Utils {
         resourceUrl = `${protocol}//${hostname}/subscriptions/xxx/resourceGroups/xxx/providers/Microsoft.ApiManagement/service/xxx${pathname}`;
 
         return resourceUrl;
+    }
+
+    public static armifyContract(contract: any): any {
+        const armifiedContract = {};
+
+        if (contract.id) {
+            const segments = contract.id.split("/");
+            armifiedContract["id"] = contract.id;
+            armifiedContract["name"] = segments[segments.length - 1];
+        }
+
+        if (contract.name) {
+            contract.displayName = contract.name;
+        }
+
+        armifiedContract["properties"] = contract;
+
+        delete contract.id;
+        delete contract.name;
+
+        return armifiedContract;
+    }
+
+    /**
+     * This is a function used to generate long date format like (Weekday, Month, Day, Year) 
+     * 
+     * @param time time string
+     */
+    public static formatDateTime(time: string): string {
+        const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+        return new Date(time).toLocaleDateString("en-US", options);
     }
 }

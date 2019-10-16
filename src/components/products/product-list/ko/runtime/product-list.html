@@ -1,0 +1,60 @@
+<div class="animation-fade-in">
+    <div class="search-input">
+        <input type="search" role="searchbox" aria-label="Search" placeholder="Search Products"
+            data-bind="textInput: pattern" />
+        <button type="button" class="search-button" data-bind="click: searchByName">
+            <i class="icon icon-magnifier"></i>
+        </button>
+    </div>
+
+    <!-- ko if: working -->
+    <spinner class="fit"></spinner>
+    <!-- /ko -->
+
+    <!-- ko ifnot: working -->
+    <!-- ko if: products().length === 0 -->
+    <p>
+        No Products to display.
+    </p>
+    <!-- /ko -->
+
+    <!-- ko if: products().length > 0 -->
+    <div class="table">
+        <div class="table-row table-header flex">
+            <div class="col-md-5">Name</div>
+            <div class="col-md-7">Description</div>
+        </div>
+        <!-- ko foreach: { data: products, as: 'product' } -->
+        <div class="table-row flex">
+            <div class="col-md-5"><a data-bind="attr: { href: $component.getProductUrl(product) }, text: product.name"></a></div>
+            <div class="col-md-7" data-bind="text: product.description">Product description</div>
+        </div>
+        <!-- /ko -->
+    </div>
+
+    <!-- ko if: hasPager -->
+    <ul class="pagination justify-content-center">
+        <!-- ko if: hasPrevPage -->
+        <li class="page-item">
+            <a href="#" class="page-link" role="button" aria-label="Previous page"
+                data-bind="click: prevPage, enable: hasPrevPage">
+                <i class="icon icon-chevron-left"></i>
+            </a>
+        </li>
+        <!-- /ko -->
+        <li class="page-item">
+            <span class="page-link" data-bind="text: page"></span>
+        </li>
+        <!-- ko if: hasNextPage -->
+        <li class="page-item">
+            <a href="#" class="page-link" role="button" aria-label="Next page"
+                data-bind="click: nextPage, enable: hasNextPage">
+                <i class="icon icon-chevron-right"></i>
+            </a>
+        </li>
+        <!-- /ko -->
+    </ul>
+    <!-- /ko -->
+    <!-- /ko -->
+    <!-- /ko -->
+</div>

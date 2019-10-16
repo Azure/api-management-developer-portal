@@ -1,0 +1,63 @@
+<div tabindex="0" role="listbox" class="form-control">
+    <div data-bind="click: toggle, text: selection"></div>
+    <div class="dropdown" data-bind="visible: expanded">
+        <div class="search-input">
+            <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
+                data-bind="textInput: pattern" />
+            <button type="button" class="search-button">
+                <i class="icon icon-magnifier"></i>
+            </button>
+        </div>
+
+        <div role="list">
+            <!-- ko if: working -->
+            <spinner class="fit" role="presentation"></spinner>
+            <!-- /ko -->
+
+            <!-- ko ifnot: working -->
+            <!-- ko foreach: { data: apiGroups, as: 'group' } -->
+            <div class="collapsible">
+                <div class="tag-group">
+                    <a href="#" class="tag" role="group" data-bind="text: group.tag"></a>
+                </div>
+                <div class="collapsible-container">
+                    <!-- ko foreach: { data: group.items, as: 'item' } -->
+                    <a href="#" role="listitem" class="nav-link text-truncate"
+                        data-bind="attr: { href: $component.getReferenceUrl(item) }, text: item.displayName"></a>
+                    <!-- /ko -->
+                </div>
+            </div>
+            <!-- /ko -->
+
+            <!-- ko if: apiGroups().length === 0 -->
+            <p>No APIs found</p>
+            <!-- /ko -->
+
+            <!-- ko if: hasPager -->
+            <ul class="pagination justify-content-center">
+                <!-- ko if: hasPrevPage -->
+                <li class="page-item">
+                    <a href="#" class="page-link" role="button" aria-label="Previous page"
+                        data-bind="click: prevPage, enable: hasPrevPage">
+                        <i class="icon icon-chevron-left"></i>
+                    </a>
+                </li>
+                <!-- /ko -->
+                <li class="page-item">
+                    <span class="page-link" data-bind="text: page"></span>
+                </li>
+                <!-- ko if: hasNextPage -->
+                <li class="page-item">
+                    <a href="#" class="page-link" role="button" aria-label="Next page"
+                        data-bind="click: nextPage, enable: hasNextPage">
+                        <i class="icon icon-chevron-right"></i>
+                    </a>
+                </li>
+                <!-- /ko -->
+            </ul>
+            <!-- /ko -->
+
+            <!-- /ko -->
+        </div>
+    </div>
+</div>

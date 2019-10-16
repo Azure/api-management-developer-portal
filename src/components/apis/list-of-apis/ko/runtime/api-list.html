@@ -1,0 +1,102 @@
+<div class="row">
+    <div class="col-md-6">
+        <div class="search-input">
+            <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
+                data-bind="textInput: pattern" />
+            <button type="button" class="search-button">
+                <i class="icon icon-magnifier"></i>
+            </button>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group form-group-inline">
+            <label for="groupByTag">Group by tag</label>
+            <input id="groupByTag" class="switch" type="checkbox" name="groupByTag"
+                data-bind="checked: $component.groupByTag" />
+        </div>
+    </div>
+</div>
+
+<div class="table">
+    <div class="table-row table-header flex">
+        <div class="col-md-5">Name</div>
+        <div class="col-md-7">Description</div>
+    </div>
+
+    <div class="table-body">
+        <!-- ko if: working -->
+        <spinner class="fit"></spinner>
+        <!-- /ko -->
+
+        <!-- ko ifnot: working -->
+
+        <!-- ko if: groupByTag -->
+        <!-- ko foreach: { data: apiGroups, as: 'group' } -->
+        <div class="tag-group">
+            <a href="#" class="tag" role="group" data-bind="text: group.tag"></a>
+        </div>
+        <!-- ko foreach: { data: group.items, as: 'item' } -->
+        <div class="row">
+            <div class="col-5">
+                <a href="#" role="listitem" class="nav-link text-truncate"
+                    data-bind="attr: { href: $component.getReferenceUrl(item) }, text: item.displayName"></a>
+            </div>
+            <div class="col-7" data-bind="markdown: item.description">
+            </div>
+        </div>
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko if: apiGroups().length === 0 -->
+        <p>No APIs found</p>
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko ifnot: groupByTag -->
+        <!-- ko foreach: { data: apis, as: 'item' } -->
+        <div class="row">
+            <div class="col-5">
+                <a href="#" class="text-truncate"
+                    data-bind="attr: { href: $component.getReferenceUrl(item) }, text: item.displayName"></a>
+            </div>
+            <div class="col-5" data-bind="markdown: item.description">
+            </div>
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: apis().length === 0 -->
+        <p>No APIs found</p>
+        <!-- /ko -->
+
+        <!-- /ko -->
+        <!-- /ko -->
+    </div>
+
+    <!-- ko if: hasPager -->
+    <!-- ko ifnot: working -->
+    <div class="table-footer">
+        <ul class="pagination justify-content-center">
+            <!-- ko if: hasPrevPage -->
+            <li class="page-item">
+                <a href="#" class="page-link" role="button" aria-label="Previous page"
+                    data-bind="click: prevPage, enable: hasPrevPage">
+                    <i class="icon icon-chevron-left"></i>
+                </a>
+            </li>
+            <!-- /ko -->
+            <li class="page-item">
+                <span class="page-link" data-bind="text: page"></span>
+            </li>
+            <!-- ko if: hasNextPage -->
+            <li class="page-item">
+                <a href="#" class="page-link" role="button" aria-label="Next page"
+                    data-bind="click: nextPage, enable: hasNextPage">
+                    <i class="icon icon-chevron-right"></i>
+                </a>
+            </li>
+            <!-- /ko -->
+        </ul>
+    </div>
+    <!-- /ko -->
+    <!-- /ko -->
+</div>

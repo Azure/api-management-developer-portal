@@ -1,0 +1,19 @@
+.table {
+    .row {
+        margin-bottom: 20px;
+    }
+}
+
+.table-row {
+    border-bottom: solid 1px rgb(161, 159, 157);
+    min-height: 50px;
+    padding: 15px 0;
+
+    &.table-header {
+        font-weight: bold;
+    }
+
+    div {
+        padding: 0;
+    }
+}

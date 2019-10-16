@@ -1,0 +1,55 @@
+<!-- ko if: working -->
+<spinner class="fit"></spinner>
+<!-- /ko -->
+
+<!-- ko ifnot: working -->
+
+<!-- ko if: product -->
+
+<!-- ko ifnot: isUserSignedIn -->
+<div>
+    <button class="button button-primary" data-bind="click: $component.subscribe">Subscribe</button>
+</div>
+<!-- /ko -->
+
+<!-- ko if: isUserSignedIn -->
+
+<!-- ko if: limitReached -->
+<div>
+    <b>You've reached maximum number of subscriptions.</b>
+</div>
+<!-- /ko -->
+
+<!-- ko ifnot: limitReached -->
+<form>
+    <div class="table">        
+        <div class="row">
+            <div class="col-md-5">
+                <input type="text" class="form-control" placeholder="Subscription name" data-bind="value: subscriptionName" />
+            </div>
+            <div class="col-md-4 form-inline">
+                <!-- ko if: termsOfUse -->
+                <div class="form-check">
+                    <input id="consentCheckbox" type="checkbox" class="form-check-input" data-bind="checked: consented" />
+                    <label for="consentCheckbox" class="form-check-label"> I agree to the Terms of Use. &nbsp;<a href="#" data-bind="click: toggleTermsOfUser, text: showHideLabel"></a></label>
+                </div>
+                <!-- /ko -->
+            </div>
+            <div class="col-md-3">
+                <button class="button button-primary" data-bind="click: $component.subscribe, enable: canSubscribe">Subscribe</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ko if: showTermsOfUse -->
+    <textarea class="form-control" rows="10" readonly data-bind="text: termsOfUse"></textarea>
+    <!-- /ko -->
+
+</form>
+<!-- /ko -->
+
+<!-- /ko -->
+
+<!-- /ko -->
+
+<!-- /ko -->

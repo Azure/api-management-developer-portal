@@ -31,6 +31,16 @@ export class IdentityProvider {
      */
     public allowedTenants: string[];
 
+    /**
+     * The TenantId to use instead of Common when logging into Active Directory.
+     */
+    public signinTenant: string;
+
+    /**
+     * Signup Policy Name. Only applies to AAD B2C Identity Provider.
+     */
+    public signinPolicyName: string;
+
     constructor(contract?: IdentityProviderContract) {
         if (!contract) {
             return;
@@ -41,5 +51,7 @@ export class IdentityProvider {
         this.authority = contract.properties.authority;
         this.type = contract.properties.type;
         this.allowedTenants = contract.properties.allowedTenants;
+        this.signinTenant = contract.properties.signinTenant;
+        this.signinPolicyName = contract.properties.signinPolicyName;
     }
 }

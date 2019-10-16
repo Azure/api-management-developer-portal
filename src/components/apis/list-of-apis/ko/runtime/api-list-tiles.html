@@ -1,0 +1,99 @@
+<div class="row">
+    <div class="col-md-6">
+        <div class="search-input">
+            <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
+                data-bind="textInput: pattern" />
+            <button type="button" class="search-button">
+                <i class="icon icon-magnifier"></i>
+            </button>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group form-group-inline">
+            <label for="groupByTag">Group by tag</label>
+            <input id="groupByTag" class="switch" type="checkbox" name="groupByTag"
+                data-bind="checked: $component.groupByTag" />
+        </div>
+    </div>
+</div>
+
+<div class="cards">
+    <div class="cards-body">
+        <!-- ko if: working -->
+        <spinner class="fit"></spinner>
+        <!-- /ko -->
+        <!-- ko ifnot: working -->
+
+        <!-- ko if: groupByTag -->
+        <!-- ko foreach: { data: apiGroups, as: 'group' } -->
+        <div class="tag-group">
+            <a href="#" class="tag" role="group" data-bind="text: group.tag"></a>
+        </div>
+
+        <!-- ko foreach: { data: group.items, as: 'item' } -->
+        <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
+            <div class="card card-default">
+                <h3 data-bind="text: item.displayName"></h3>
+                <div class="tile line-clamp">
+                    <p class="tile-content" data-bind="markdown: item.description"></p>
+                </div>
+            </div>
+        </a>
+        <!-- /ko -->
+
+        <!-- /ko -->
+
+        <!-- ko if: apiGroups().length === 0 -->
+        <p>No APIs found</p>
+        <!-- /ko -->
+
+        <!-- /ko -->
+
+        <!-- ko ifnot: groupByTag -->
+
+        <!-- ko foreach: { data: apis, as: 'item' } -->
+        <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
+            <div class="card card-default">
+                <h3 data-bind="text: item.displayName"></h3>
+                <div class="tile line-clamp">
+                    <p class="tile-content" data-bind="markdown: item.description"></p>
+                </div>
+            </div>
+        </a>
+        <!-- /ko -->
+
+
+        <!-- ko if: apis().length === 0 -->
+        <p>No APIs found</p>
+        <!-- /ko -->
+
+        <!-- /ko -->
+
+        <!-- /ko -->
+    </div>
+    <div class="cards-footer">
+        <!-- ko if: hasPager -->
+        <ul class="pagination">
+            <!-- ko if: hasPrevPage -->
+            <li class="page-item">
+                <a href="#" class="page-link" role="button" aria-label="Previous page"
+                    data-bind="click: prevPage, enable: hasPrevPage">
+                    <i class="icon icon-chevron-left"></i>
+                </a>
+            </li>
+            <!-- /ko -->
+            <li class="page-item">
+                <span class="page-link" data-bind="text: page"></span>
+            </li>
+            <!-- ko if: hasNextPage -->
+            <li class="page-item">
+                <a href="#" class="page-link" role="button" aria-label="Next page"
+                    data-bind="click: nextPage, enable: hasNextPage">
+                    <i class="icon icon-chevron-right"></i>
+                </a>
+            </li>
+            <!-- /ko -->
+        </ul>
+        <!-- /ko -->
+    </div>
+</div>

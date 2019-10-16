@@ -6,8 +6,14 @@ import { Utils } from "../utils";
  * API model.
  */
 export class Api {
+    /**
+     * Unique ARM identifier.
+     */
     public readonly id: string;
 
+    /**
+     * Unique API identifier.
+     */
     public readonly name: string;
 
     /**
@@ -82,7 +88,10 @@ export class Api {
     public isCurrent?: boolean;
 
     constructor(contract?: ApiContract) {
-        this.id = Utils.getResourceName("apis", contract.id, "shortId");
+        if (contract.id) {
+            this.id = Utils.getResourceName("apis", contract.id, "shortId");
+        }
+
         this.name = contract.name;
         this.displayName = contract.properties.displayName;
         this.serviceUrl = contract.properties.serviceUrl;

@@ -7,6 +7,8 @@ import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.m
 import { ListOfApisEditorModule } from "./components/apis/list-of-apis/ko/listOfApisEditor.module";
 import { DetailsOfApiModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
 import { DetailsOfApiEditorModule } from "./components/apis/details-of-api/ko/detailsOfApiEditor.module";
+import { HistoryOfApiModule } from "./components/apis/history-of-api/ko/historyOfApi.module";
+import { HistoryOfApiEditorModule } from "./components/apis/history-of-api/ko/historyOfApiEditor.module";
 import { UserSigninModule } from "./components/users/user-signin/ko/userSignin.module";
 import { UserSigninEditorModule } from "./components/users/user-signin/ko/userSigninEditor.module";
 import { UserSigninSocialModule } from "./components/users/user-signin-social/ko/userSigninSocial.module";
@@ -36,7 +38,7 @@ import { ProductApisModule } from "./components/products/product-apis/ko/product
 import { ProductApisEditorModule } from "./components/products/product-apis/ko/productApisEditor.module";
 import { ProductSubscriptionsEditorModule } from "./components/products/product-subscriptions/ko/productSubscriptionsEditor.module";
 import { ProductSubscriptionsModule } from "./components/products/product-subscriptions/ko/productSubscriptions.module";
-import { App } from "./app/app";
+import { App } from "./components/app/app";
 import { ReportsModule } from "./components/reports/ko/reports.module";
 import { ReportsEditorModule } from "./components/reports/ko/reportsEditor.module";
 import { ResetPasswordModule } from "./components/users/reset-password/ko/resetPassword.module";
@@ -46,6 +48,7 @@ import { ConfirmPasswordEditorModule } from "./components/users/confirm-password
 import { HelpModule } from "./components/help";
 import { ChangePasswordModule } from "./components/users/change-password/ko/changePassword.module";
 import { ChangePasswordEditorModule } from "./components/users/change-password/ko/changePasswordEditor.module";
+import { TenantService } from "./services/tenantService";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -55,6 +58,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ListOfApisEditorModule());
         injector.bindModule(new DetailsOfApiModule());
         injector.bindModule(new DetailsOfApiEditorModule());
+        injector.bindModule(new HistoryOfApiModule());
+        injector.bindModule(new HistoryOfApiEditorModule());
         injector.bindModule(new UserSigninModule());
         injector.bindModule(new UserSigninEditorModule());
         injector.bindModule(new UserSigninSocialModule());
@@ -92,6 +97,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("app", App);
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
+        injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
