@@ -166,7 +166,7 @@ export class ApiListTiles {
             this.hasNextPage(!!nextLink);
         }
         catch (error) {
-            console.error(`Unable to load APIs. ${error}`);
+            throw error;
         }
         finally {
             this.working(false);

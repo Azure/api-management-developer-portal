@@ -69,7 +69,7 @@ export class AadService {
             }
         }
         catch (error) {
-            console.error(`Unable to obtain id_token with client ID: ${aadClientId}. Error: ${error}.`);
+            throw error;
         }
     }
 

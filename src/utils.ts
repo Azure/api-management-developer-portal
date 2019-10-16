@@ -1,7 +1,6 @@
 import { NameValuePair } from "request";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
-import * as moment from "moment";
 
 export class Utils {
     public static getResourceName(resource: string, fullId: string, resultType: string = "name"): string {
