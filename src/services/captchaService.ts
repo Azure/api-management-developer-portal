@@ -1,4 +1,3 @@
-
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod } from "@paperbits/common/http";
 import { CaptchaParams } from "../contracts/captchaParams";
 import { SignupRequest } from "../contracts/signupRequest";

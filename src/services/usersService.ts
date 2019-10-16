@@ -135,7 +135,7 @@ export class UsersService {
                 return new User(user);
             }
             else {
-                console.error("User was not updated with data: " + updateUserData);
+                throw new Error("User was not updated with data: " + updateUserData);
                 return undefined;
             }
         } catch (error) {

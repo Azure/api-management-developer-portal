@@ -41,6 +41,7 @@ import { ResetPassword } from "./components/users/runtime/reset-password/reset-p
 import { ConfirmPassword } from "./components/users/runtime/confirm-password/confirm-password";
 import { ChangePassword } from "./components/users/runtime/change-password/change-password";
 import { Reports } from "./components/reports/ko/runtime/reports";
+import { UnhandledErrorHandler } from "./bindingHandlers/unhandledErrorHandler";
 import { ProductListDropdown } from "./components/products/product-list/ko/runtime/product-list-dropdown";
 
 
@@ -49,6 +50,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindModule(new KnockoutRegistrationLoaders());
         injector.bindSingleton("eventManager", DefaultEventManager);
         injector.bindCollection("autostart");
+        injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindCollection("routeGuards");
         // injector.bindToCollection("routeGuards", AccessTokenRouteGuard);
         injector.bindSingleton("router", DefaultRouter);
