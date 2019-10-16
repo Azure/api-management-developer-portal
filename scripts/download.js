@@ -23,7 +23,7 @@ async function downloadBlobs() {
     return new Promise((resolve) => {
         blobService.listBlobsSegmented(containerName, null, function (error, result) {
             if (error) {
-                console.log(error);
+                throw err;
             }
             else {
                 var blobs = result.entries;
@@ -34,7 +34,7 @@ async function downloadBlobs() {
                         blobsDownloaded++;
 
                         if (error2) {
-                            console.log(error2);
+                            throw error2;
                         }
                         else {
                             console.log('Blob ' + blob.name + ' download finished.');
@@ -59,5 +59,5 @@ downloadBlobs()
         process.exit();
     })
     .catch(error => {
-        console.log(error);
+        throw error;
     });
