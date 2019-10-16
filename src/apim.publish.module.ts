@@ -22,6 +22,9 @@ import { ProductSubscribeModule } from "./components/products/product-subscribe/
 import { ProductApisModule } from "./components/products/product-apis/ko/productApis.module";
 import { ProductSubscriptionsModule } from "./components/products/product-subscriptions/ko/productSubscriptions.module";
 import { IdentityService } from "./services/identityService";
+import { ResetPasswordModule } from "./components/users/reset-password/ko/resetPassword.module";
+import { ConfirmPasswordModule } from "./components/users/confirm-password/ko/confirmPassword.module";
+import { ChangePasswordModule } from "./components/users/change-password/ko/changePassword.module";
 import { ReportsModule } from "./components/reports/ko/reports.module";
 import { TenantService } from "./services/tenantService";
 
@@ -43,6 +46,9 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ProductSubscribeModule());
         injector.bindModule(new OperationListModule());
         injector.bindModule(new OperationDetailsModule());
+        injector.bindModule(new ResetPasswordModule());
+        injector.bindModule(new ConfirmPasswordModule());
+        injector.bindModule(new ChangePasswordModule());
         injector.bindModule(new ReportsModule());
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
