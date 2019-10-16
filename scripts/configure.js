@@ -26,7 +26,7 @@ fs.readFile(configDesignFile, {encoding: 'utf-8'}, function(err,data){
             }
         });
     } else {
-        throw err;
+        console.log(err);
     }
 });
 
@@ -42,7 +42,7 @@ fs.readFile(configPublishFile, {encoding: 'utf-8'}, function(err,data){
             }
         });
     } else {
-        throw err;
+        console.log(err);
     }
 });
 
@@ -56,6 +56,6 @@ fs.readFile(configRuntimeFile, {encoding: 'utf-8'}, function(err,data){
             }
         });
     } else {
-        throw err;
+        console.log(err);
     }
 });
