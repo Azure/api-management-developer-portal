@@ -21,7 +21,7 @@ export class PublishingWorkshop {
     public async publish(): Promise<void> {
         try {
             const accessToken = this.authenticator.getAccessToken();
-            this.httpClient.send({ url: "/publish", method: "POST", headers: [{ name: "Authorization", value: accessToken }] });
+            await this.httpClient.send({ url: "/publish", method: "POST", headers: [{ name: "Authorization", value: accessToken }] });
             this.viewManager.notifySuccess("Publishing", `The website is being published...`);
             this.viewManager.closeWorkshop("publishing-workshop");
         }

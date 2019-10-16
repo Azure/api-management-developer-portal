@@ -84,7 +84,11 @@ export class TenantService {
     public async getDelegationUrl(action: DelegationAction, delegationParameters: {}, delegationUrl?: string ) : Promise<string> {
         const settings = await this.getSettings();
         const isDelegationEnabled = await this.isDelegationEnabled(settings);
-        if (isDelegationEnabled && nodeCrypto) {
+        if (isDelegationEnabled) {
+            if(!nodeCrypto){
+                console.warn("node Crypto lib was not found");
+                return undefined;
+            }
             const url = new URL(delegationUrl || settings["CustomPortalSettings.DelegationUrl"] || "");
             const queryParams = new URLSearchParams(url.search);
 
@@ -106,8 +110,6 @@ export class TenantService {
             queryParams.append(DelegationParameters.Signature, signature);
 
             return `${url.origin + url.pathname}?${queryParams.toString()}`;
-        } else {
-            console.warn("node Crypto lib was not found");
         }
         return undefined;
     }
