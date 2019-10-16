@@ -9,6 +9,8 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
             viewModel = new ProductListViewModel();
         }
 
+        viewModel.itemStyleView(model.itemStyleView);
+
         viewModel["widgetBinding"] = {
             displayName: "List of products",
             model: model,

@@ -389,18 +389,25 @@ export class ApiService {
         return page;
     }
 
-    public async getProductApis(productId: string): Promise<Page<Api>> {
-        const result: Api[] = [];
+    public async getProductApis(productId: string, searchQuery: SearchQuery): Promise<Page<Api>> {
+        let query = `${productId}/apis`;
 
-        const pageOfApis = await this.mapiClient.get<Page<ApiContract>>(`${productId}/apis`);
-
-        if (pageOfApis && pageOfApis.value) {
-            pageOfApis.value.map(item => result.push(new Api(item)));
+        if (searchQuery.pattern) {
+            const pattern = Utils.escapeValueForODataFilter(searchQuery.pattern);
+            query = Utils.addQueryParameter(query, `$filter=contains(properties/displayName,'${encodeURIComponent(pattern)}')`);
         }
 
+        if (searchQuery.skip) {
+            query = Utils.addQueryParameter(query, `$skip=${searchQuery.skip}`);
+        }
+
+        query = Utils.addQueryParameter(query, `$top=${searchQuery.take}`);
+
+        const result = await this.mapiClient.get<Page<ApiContract>>(query);
         const page = new Page<Api>();
-        page.value = result;
-        page.count = pageOfApis.count;
+
+        page.value = result.value.map(item => new Api(item));
+        page.nextLink = result.nextLink;
 
         return page;
     }

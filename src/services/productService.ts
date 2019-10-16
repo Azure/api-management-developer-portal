@@ -9,7 +9,7 @@ import { TenantService } from "../services/tenantService";
 import { HttpHeader } from "@paperbits/common/http";
 import * as Constants from "../constants";
 import { Utils } from "../utils";
-import { PatternFilter } from "../contracts/nameFilter";
+import { SearchQuery } from "../contracts/searchQuery";
 
 /**
  * A service for management operations with products.
@@ -26,20 +26,23 @@ export class ProductService {
      * Returns user subscriptions.
      * @param userId {string} User unique identifier.
      */
-    public async getSubscriptions(userId: string): Promise<Page<Subscription>> {
+    public async getSubscriptions(userId: string, productId?: string): Promise<Page<Subscription>> {
         if (!userId) {
             throw new Error(`Parameter "userId" not specified.`);
         }
 
         const pageOfSubscriptions = new Page<Subscription>();
 
+        const query = !productId ? "" : `?$filter=properties/scope eq '${productId}'`;
+
         try {
-            const pageContract = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
+            const pageContract = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`);
 
             pageOfSubscriptions.value = pageContract && pageContract.value
-                ? pageContract.value.filter(item => item.properties.scope.indexOf("/products/") !== -1).map(item => new Subscription(item))
-                : [];
+                ? pageContract.value.map(item => new Subscription(item)) : [];
 
+            pageOfSubscriptions.count = pageContract.count;
+            pageOfSubscriptions.nextLink = pageContract.nextLink;
             return pageOfSubscriptions;
         }
         catch (error) {
@@ -56,7 +59,7 @@ export class ProductService {
      * @param userId {string} User unique identifier.
      * @param productId {string} Product unique identifier.
      */
-    public async getSubscriptionsForProduct(userId: string, productId: string): Promise<Subscription[]> {
+    public async getSubscriptionsForProduct(userId: string, productId: string): Promise<Page<Subscription>> {
         if (!userId) {
             throw new Error(`Parameter "userId" not specified.`);
         }
@@ -66,17 +69,12 @@ export class ProductService {
         }
 
         try {
-            const pageOfSubscriptions = await this.getSubscriptions(userId);
-
-            const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === "active");
-            const result = subscriptions.filter(subscription => subscription.productId === productId);
-
-            return result;
-
+            const pageOfSubscriptions = await this.getSubscriptions(userId, productId);
+            return pageOfSubscriptions;
         }
         catch (error) {
             if (error && error.code === "ResourceNotFound") {
-                return [];
+                return new Page();
             }
 
             throw new Error(`Unable to retrieve subscriptions for user with ID "${userId}": ${error}`);
@@ -164,7 +162,7 @@ export class ProductService {
     /**
      * Returns page of products filtered by name.
      */
-    public async getProductsPage(filter: PatternFilter ): Promise<Page<Product>> {
+    public async getProductsPage(filter: SearchQuery): Promise<Page<Product>> {
         const skip = filter.skip || 0;
         const take = filter.take || Constants.defaultPageSize;    
         let query = `/products?$top=${take}&$skip=${skip}`;
@@ -238,7 +236,7 @@ export class ProductService {
 
         await this.loadTenantSettings();
 
-        if (this.tenantSettings["CustomPortalSettings.DelegationEnabled"] === true) {
+        if (this.tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"] && this.tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"].toLowerCase() === "true") {
             console.log("Delegation enabled. Can't create subscription");
         }
         else {
@@ -261,7 +259,7 @@ export class ProductService {
 
         await this.loadTenantSettings();
 
-        if (this.tenantSettings["CustomPortalSettings.DelegationEnabled"] === true) {
+        if (this.tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"] && this.tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"].toLowerCase() === "true") {
             console.log("Delegation enabled. Can't cancel subscription");
         } else {
             await this.updateSubscription(subscriptionId, { state: SubscriptionState.cancelled });

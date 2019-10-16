@@ -37,6 +37,7 @@ import { ProductSubscriptions } from "./components/products/product-subscription
 import { AadService } from "./services/aadService";
 import { Reports } from "./components/reports/ko/runtime/reports";
 import { UnhandledErrorHandler } from "./bindingHandlers/unhandledErrorHandler";
+import { ProductListDropdown } from "./components/products/product-list/ko/runtime/product-list-dropdown";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -58,7 +59,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);
         injector.bind("tagService", TagService);
-        injector.bind("tenantService", TenantService);
         injector.bind("productService", ProductService);
         injector.bind("analyticsService", AnalyticsService);
         injector.bind("userSignin", UserSignin);
@@ -68,6 +68,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("userDetails", UserDetails);
         injector.bind("userSubscriptions", UserSubscriptions);
         injector.bind("productList", ProductList);
+        injector.bind("productListDropdown", ProductListDropdown);
         injector.bind("productDetails", ProductDetails);
         injector.bind("productSubscribe", ProductSubscribe);
         injector.bind("productSubscriptions", ProductSubscriptions);
@@ -78,6 +79,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("reports", Reports);
         injector.bind("autostart", UnhandledErrorHandler);
         injector.bind("spinner", Spinner);
+        injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("aadService", AadService);
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("httpClient", XmlHttpRequestClient);

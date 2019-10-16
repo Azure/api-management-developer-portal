@@ -1,36 +1,27 @@
-<div tabindex="0" role="listbox" class="form-control">
-    <div data-bind="click: toggle, text: selection"></div>
+<div id="products-dropdown" tabindex="0" role="listbox" class="form-control">
+    <div data-bind="click: toggle, text: selection"></div>    
     <div class="dropdown" data-bind="visible: expanded">
         <div class="search-input">
-            <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
+            <input type="search" role="searchbox" aria-label="Search" placeholder="Search Products"
                 data-bind="textInput: pattern" />
             <button type="button" class="search-button">
                 <i class="icon icon-magnifier"></i>
             </button>
         </div>
 
-        <div role="list">
+        <div role="list" class="dropdown-items">
             <!-- ko if: working -->
             <spinner class="fit" role="presentation"></spinner>
             <!-- /ko -->
 
             <!-- ko ifnot: working -->
-            <!-- ko foreach: { data: apiGroups, as: 'group' } -->
-            <div class="collapsible">
-                <div class="tag-group">
-                    <a href="#" class="tag" role="group" data-bind="text: group.tag"></a>
-                </div>
-                <div class="collapsible-container">
-                    <!-- ko foreach: { data: group.items, as: 'item' } -->
-                    <a href="#" role="listitem" class="nav-link text-truncate"
-                        data-bind="attr: { href: $component.getReferenceUrl(item) }, text: item.displayName"></a>
-                    <!-- /ko -->
-                </div>
-            </div>
+
+            <!-- ko foreach: { data: products, as: 'product' } -->
+            <a href="#" role="listitem" class="text-truncate" data-bind="attr: { href: $component.getProductUrl(product) }, text: product.name"></a>
             <!-- /ko -->
 
-            <!-- ko if: apiGroups().length === 0 -->
-            <p>No APIs found</p>
+            <!-- ko if: products().length === 0 -->
+            <p>No Products found</p>
             <!-- /ko -->
 
             <!-- ko if: hasPager -->

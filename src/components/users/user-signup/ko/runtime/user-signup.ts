@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./user-signup.html";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../../services/usersService";
 import { TenantSettings } from "../../../../../contracts/tenantSettings";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
@@ -31,9 +31,9 @@ export class UserSignup {
     public readonly errorMessages: ko.ObservableArray<string>;
     public readonly working: ko.Observable<boolean>;
     public readonly hasErrors: ko.Computed<boolean>;
-    public readonly canSubmit: ko.Computed<boolean>;
 
     constructor(private readonly usersService: UsersService) {
+            
         this.email = ko.observable("");
         this.password = ko.observable("");
         this.passwordConfirmation = ko.observable("");
@@ -46,26 +46,38 @@ export class UserSignup {
         this.showHideLabel = ko.observable();
         this.errorMessages = ko.observableArray([]);
         this.isUserRequested = ko.observable(false);
-        this.isUserLoggedIn = ko.observable(false);
         this.working = ko.observable(false);
         this.hasErrors = ko.pureComputed(() => this.errorMessages().length > 0);
-        this.canSubmit = ko.pureComputed(() => {
-            return ((this.termsOfUse() && this.isConsentRequired() && this.consented())
-                || !this.isConsentRequired()
-                || !!!this.termsOfUse());
-        });
+        this.delegationUrl = ko.observable();
     }
+
+    @Param()
+    public delegationUrl: ko.Observable<string>;
 
     /**
      * Initializes component right after creation.
      */
     @OnMounted()
     public async initialize(): Promise<void> {
-        const isUserSignedIn = await this.usersService.isUserSignedIn();
+        try {
+            const isUserSignedIn = await this.usersService.isUserSignedIn();
 
-        if (isUserSignedIn) {
-            this.usersService.navigateToHome();
-            return;
+            if (isUserSignedIn) {
+                this.usersService.navigateToHome();
+                return;
+            } else {
+                const redirectUrl = this.delegationUrl();
+                if (redirectUrl) {
+                    window.open(redirectUrl, "_self");
+                }
+            }
+        }
+        catch (error) {
+            if (error.code === "Unauthorized" || error.code === "ResourceNotFound") {
+                return;
+            }
+
+            throw error;
         }
 
         const settings = {
@@ -137,8 +149,7 @@ export class UserSignup {
                 const details: any[] = error.details;
 
                 if (details && details.length > 0) {
-                    let message = "";
-                    const errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
+                    const errorMessages = details.map(item => `${item.message}`);
                     this.errorMessages(errorMessages);
                 }
             }
