@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./user-signin.html";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../../services/usersService";
 import { MapiError } from "../../../../../services/mapiError";
 
@@ -22,12 +22,17 @@ export class UserSignin {
     public readonly working: ko.Observable<boolean>;
 
     constructor(private readonly usersService: UsersService) {
+            
+        this.delegationUrl = ko.observable();
         this.username = ko.observable("");
         this.password = ko.observable("");
         this.errorMessages = ko.observableArray([]);
         this.hasErrors = ko.pureComputed(() => this.errorMessages().length > 0);
         this.working = ko.observable(false);
     }
+
+    @Param()
+    public delegationUrl: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -36,6 +41,11 @@ export class UserSignin {
 
             if (userId) {
                 this.navigateToHome();
+            } else {
+                const redirectUrl = this.delegationUrl();
+                if (redirectUrl) {
+                    window.open(redirectUrl, "_self");
+                }
             }
 
             validation.init({
