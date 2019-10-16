@@ -53,5 +53,5 @@ uploadFiles()
         process.exit();
     })
     .catch(error => {
-        throw error;
+        console.log(error);
     })
