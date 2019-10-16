@@ -23,6 +23,7 @@ import { ProductApisModule } from "./components/products/product-apis/ko/product
 import { ProductSubscriptionsModule } from "./components/products/product-subscriptions/ko/productSubscriptions.module";
 import { IdentityService } from "./services/identityService";
 import { ReportsModule } from "./components/reports/ko/reports.module";
+import { TenantService } from "./services/tenantService";
 
 
 export class ApimPublishModule implements IInjectorModule {
@@ -45,6 +46,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ReportsModule());
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
+        injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("router", StaticRouter);
         injector.bindSingleton("authenticator", StaticAuthenticator);

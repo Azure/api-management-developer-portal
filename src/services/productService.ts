@@ -236,7 +236,7 @@ export class ProductService {
 
         await this.loadTenantSettings();
 
-        if (this.tenantSettings["CustomPortalSettings.DelegationEnabled"] === true) {
+        if (this.tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"] && this.tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"].toLowerCase() === "true") {
             console.log("Delegation enabled. Can't create subscription");
         }
         else {
@@ -259,7 +259,7 @@ export class ProductService {
 
         await this.loadTenantSettings();
 
-        if (this.tenantSettings["CustomPortalSettings.DelegationEnabled"] === true) {
+        if (this.tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"] && this.tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"].toLowerCase() === "true") {
             console.log("Delegation enabled. Can't cancel subscription");
         } else {
             await this.updateSubscription(subscriptionId, { state: SubscriptionState.cancelled });

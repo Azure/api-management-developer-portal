@@ -2,7 +2,7 @@
 <p>Create request was sent. Please check your email.</p>
 <!-- /ko -->
 
-<!-- ko if: (!isUserRequested() && !isUserLoggedIn()) -->
+<!-- ko ifnot: isUserRequested -->
 
 <form>
     <div class="text-hide alert alert-danger" role="region" aria-live="assertive" aria-atomic="true"
@@ -68,7 +68,7 @@
         <!-- /ko -->
 
         <div class="form-group">
-            <button type="button" id="signup" class="button button-primary" data-bind="click: signup, enable: canSubmit">
+            <button type="button" id="signup" class="button button-primary" data-bind="click: signup">
                 Sign up
             </button>
         </div>
