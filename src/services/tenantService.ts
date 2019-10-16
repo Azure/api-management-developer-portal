@@ -1,7 +1,7 @@
-import { TenantSettings } from "../contracts/tenantSettings";
+import { TenantSettings, DelegationParameters, DelegationAction } from "../contracts/tenantSettings";
 import { MapiClient } from "./mapiClient";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-
+import * as nodeCrypto from "crypto";
 
 /**
  * A service for management operations with API Management tenant.
@@ -72,4 +72,46 @@ export class TenantService {
         const serviceName = await this.getServiceName();
         return [`${serviceName}.azure-api.net`];
     }
+
+    public async isDelegationEnabled(loadedSettings?: TenantSettings): Promise<boolean> {        
+        const tenantSettings = loadedSettings || await this.getSettings();
+        return tenantSettings && tenantSettings["CustomPortalSettings.DelegationEnabled"] && tenantSettings["CustomPortalSettings.DelegationEnabled"].toLowerCase() === "true";
+    }
+
+    /**
+     * Returns delegation config.
+     */
+    public async getDelegationUrl(action: DelegationAction, delegationParameters: {}, delegationUrl?: string ) : Promise<string> {
+        const settings = await this.getSettings();
+        const isDelegationEnabled = await this.isDelegationEnabled(settings);
+        if (isDelegationEnabled && nodeCrypto) {
+            const url = new URL(delegationUrl || settings["CustomPortalSettings.DelegationUrl"] || "");
+            const queryParams = new URLSearchParams(url.search);
+
+            const validationKey = settings["CustomPortalSettings.DelegationValidationKey"];
+            const salt = nodeCrypto.randomBytes(32).toString("base64");
+            const payload = [salt];
+            Object.keys(delegationParameters).map(key => {
+                const val = delegationParameters[key];
+                queryParams.append(key, val);
+                payload.push(val);
+                
+                console.log("param", val);
+            });
+
+            const hmac = nodeCrypto.createHmac("sha512", Buffer.from(validationKey, "base64"));
+            const digest = hmac.update(payload.join("\n")).digest();
+            const signature = digest.toString("base64");
+
+            queryParams.append(DelegationParameters.Operation, action);
+            queryParams.append(DelegationParameters.Salt, salt);
+            queryParams.append(DelegationParameters.Signature, signature);
+
+            return `${url.origin + url.pathname}?${queryParams.toString()}`;
+        } else {
+            console.warn("node Crypto lib was not found");
+        }
+        return undefined;
+    }
+
 }
