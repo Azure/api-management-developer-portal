@@ -19,8 +19,8 @@ export interface TenantSettings {
     "CustomPortalSettings.UserRegistrationTerms": string;
     "CustomPortalSettings.UserRegistrationTermsEnabled": string;
     "CustomPortalSettings.UserRegistrationTermsConsentRequired": string;
-    "CustomPortalSettings.DelegationEnabled": boolean;
-    "CustomPortalSettings.DelegationUrl"?: any;
+    "CustomPortalSettings.DelegationEnabled": string;
+    "CustomPortalSettings.DelegationUrl": string;
     "CustomPortalSettings.DelegatedSubscriptionEnabled": string;
     "CustomPortalSettings.DelegationValidationKey": string;
     "CustomPortalSettings.RequireUserSigninEnabled": string;
@@ -29,4 +29,25 @@ export interface TenantSettings {
     userRegistrationTerms: string;
     userRegistrationTermsConsentRequired: boolean;
     requireUserSigninEnabled: boolean;
+}
+
+export enum DelegationAction {     
+    signIn = "SignIn",
+    subscribe = "Subscribe",
+    unsubscribe = "Unsubscribe",
+    renew = "Renew",
+    changeProfile = "ChangeProfile",
+    changePassword = "ChangePassword",
+    closeAccount = "CloseAccount",
+    signOut = "SignOut",   
+}
+  
+export enum DelegationParameters { 
+    ReturnUrl = "returnUrl",
+    ProductId = "productId",
+    Operation = "operation",
+    Signature = "sig",
+    UserId = "userId",
+    SubscriptionId = "subscriptionId",
+    Salt = "salt"
 }

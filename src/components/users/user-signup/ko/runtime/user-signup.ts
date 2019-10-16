@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./user-signup.html";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../../services/usersService";
 import { TenantSettings } from "../../../../../contracts/tenantSettings";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
@@ -33,6 +33,7 @@ export class UserSignup {
     public readonly hasErrors: ko.Computed<boolean>;
 
     constructor(private readonly usersService: UsersService) {
+            
         this.email = ko.observable("");
         this.password = ko.observable("");
         this.passwordConfirmation = ko.observable("");
@@ -45,10 +46,13 @@ export class UserSignup {
         this.showHideLabel = ko.observable();
         this.errorMessages = ko.observableArray([]);
         this.isUserRequested = ko.observable(false);
-        this.isUserLoggedIn = ko.observable(false);
         this.working = ko.observable(false);
         this.hasErrors = ko.pureComputed(() => this.errorMessages().length > 0);
+        this.delegationUrl = ko.observable();
     }
+
+    @Param()
+    public delegationUrl: ko.Observable<string>;
 
     /**
      * Initializes component right after creation.
@@ -61,6 +65,11 @@ export class UserSignup {
             if (isUserSignedIn) {
                 this.usersService.navigateToHome();
                 return;
+            } else {
+                const redirectUrl = this.delegationUrl();
+                if (redirectUrl) {
+                    window.open(redirectUrl, "_self");
+                }
             }
         }
         catch (error) {

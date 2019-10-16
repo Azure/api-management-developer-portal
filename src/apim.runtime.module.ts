@@ -58,7 +58,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);
         injector.bind("tagService", TagService);
-        injector.bind("tenantService", TenantService);
         injector.bind("productService", ProductService);
         injector.bind("analyticsService", AnalyticsService);
         injector.bind("userSignin", UserSignin);
@@ -78,6 +77,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("usersService", UsersService);
         injector.bind("reports", Reports);
         injector.bind("spinner", Spinner);
+        injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("aadService", AadService);
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("httpClient", XmlHttpRequestClient);

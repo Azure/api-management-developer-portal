@@ -42,6 +42,7 @@ import { App } from "./components/app/app";
 import { ReportsModule } from "./components/reports/ko/reports.module";
 import { ReportsEditorModule } from "./components/reports/ko/reportsEditor.module";
 import { HelpModule } from "./components/help";
+import { TenantService } from "./services/tenantService";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -84,6 +85,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("app", App);
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
+        injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
