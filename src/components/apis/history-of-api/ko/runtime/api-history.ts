@@ -86,7 +86,7 @@ export class ApiHistory {
                 this.getCurrentPage();
             }
         } catch (error) {
-            console.error(error);
+            throw error;
         } finally {
             this.working(false);
         }

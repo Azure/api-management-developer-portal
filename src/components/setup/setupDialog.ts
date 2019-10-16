@@ -52,7 +52,7 @@ export class SetupDialog {
             this.viewManager.showToolboxes();
         }
         catch (error) {
-            console.error(error);
+            throw error;
         }
     }
 

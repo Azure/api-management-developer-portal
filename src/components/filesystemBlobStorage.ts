@@ -16,8 +16,8 @@ export class FileSystemBlobStorage implements IBlobStorage {
 
             mkdirp(path.dirname(fullpath), (error) => {
                 if (error) {
-                    console.error(error);
                     reject(error);
+                    throw error;
                 }
                 else {
                     fs.writeFile(fullpath, Buffer.from(content), error => {
