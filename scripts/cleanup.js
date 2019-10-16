@@ -125,7 +125,7 @@ async function cleanup() {
         console.log("DONE");
     }
     catch (error) {
-        console.error(error);
+        throw error;
     }
 }
 

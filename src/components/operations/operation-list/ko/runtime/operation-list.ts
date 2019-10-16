@@ -52,7 +52,7 @@ export class OperationList {
     @OnMounted()
     public async initialize(): Promise<void> {
         const route = this.router.getCurrentRoute();
-        this.loadOperations(route);
+        await this.loadOperations(route);
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.searchOperationsByPattern);
@@ -152,7 +152,7 @@ export class OperationList {
             }
         }
         catch (error) {
-            console.error("operation-list error: ", error);
+            throw error;
         }
         finally {
             this.working(false);

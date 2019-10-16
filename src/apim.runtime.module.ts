@@ -36,6 +36,7 @@ import { OperationList } from "./components/operations/operation-list/ko/runtime
 import { ProductSubscriptions } from "./components/products/product-subscriptions/ko/runtime/product-subscriptions";
 import { AadService } from "./services/aadService";
 import { Reports } from "./components/reports/ko/runtime/reports";
+import { UnhandledErrorHandler } from "./bindingHandlers/unhandledErrorHandler";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -75,6 +76,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationDetails", OperationDetails);
         injector.bind("usersService", UsersService);
         injector.bind("reports", Reports);
+        injector.bind("autostart", UnhandledErrorHandler);
         injector.bind("spinner", Spinner);
         injector.bindSingleton("aadService", AadService);
         injector.bindSingleton("mapiClient", MapiClient);

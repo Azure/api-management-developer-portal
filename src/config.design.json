@@ -1,9 +1,9 @@
 {
-  "managementApiUrl": "https://<service-name>.management.azure-api.net/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.ApiManagement/service/<service-name>",
+  "managementApiUrl": "https://devportal-lrp.management.azure-api.net/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.ApiManagement/service/devportal-lrp",
   "managementApiVersion": "2018-06-01-preview",
-  "managementApiAccessToken": "SharedAccessSignature ...",
+  "managementApiAccessToken": "SharedAccessSignature integration&201911141734&iHKIsRvVAIlWU/WqhTgZBAjXmJWhuugpNnl/5DxcvKe+J7UxmwQ0R8PqqxEjdxu2iBVjlHqlFd6NCsz+PKdPYg==",
   "managementApiUserId": "1",
   "blobStorageContainer": "content",
-  "blobStorageUrl": "https://<account>.blob.core.windows.net?st=...",
+  "blobStorageUrl": "https://devportaldb.blob.core.windows.net/?sv=2018-03-28&ss=bfqt&srt=sco&sp=rwdlacup&se=2019-10-16T01:32:28Z&st=2019-10-15T17:32:28Z&spr=https&sig=gVL0tagzjZPLpIcBjf8P8Iyonw7ktTNVktNU8bBvxzY%3D",
   "environment": "development"
 }
