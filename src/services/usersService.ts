@@ -5,10 +5,8 @@ import { Router } from "@paperbits/common/routing";
 import { HttpHeader } from "@paperbits/common/http";
 import { User } from "../models/user";
 import { Utils } from "../utils";
-import { SignupRequest } from "../contracts/signupRequest";
 import { Identity } from "../contracts/identity";
 import { UserContract } from "../contracts/user";
-
 
 /**
  * A service for management operations with users.
@@ -26,13 +24,12 @@ export class UsersService {
      * @param password {string} Password.
      */
     public async signIn(username: string, password: string): Promise<string> {
-        const authString = `Basic ${btoa(`${username}:${password}`)}`;
 
-        const responseData = await this.mapiClient.get<{ id: string }>("identity", [{ name: "Authorization", value: authString }]);
+        const userId = await this.checkCredentials(username, password);
 
-        if (responseData && responseData.id) {
-            this.authenticator.setUser(responseData.id);
-            return responseData.id;
+        if (userId) {
+            this.authenticator.setUser(userId);
+            return userId;
         }
         else {
             this.authenticator.clearAccessToken();
@@ -40,12 +37,14 @@ export class UsersService {
         }
     }
 
-    /**
-     * Creates sign-up request.
-     * @param signupRequest 
-     */
-    public async createSignupRequest(signupRequest: SignupRequest): Promise<void> {
-        await this.mapiClient.post("/users", null, signupRequest);
+    public async checkCredentials(username: string, password: string): Promise<string> {
+        const authString = `Basic ${btoa(`${username}:${password}`)}`;
+
+        const responseData = await this.mapiClient.get<{ id: string }>("identity", [{ name: "Authorization", value: authString }]);
+        if (responseData && responseData.id) {
+            return responseData.id;
+        }
+        return undefined;
     }
 
     /**

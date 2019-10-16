@@ -59,7 +59,8 @@ const publisherConfig = {
         new CopyWebpackPlugin([
             { from: `./src/config.publish.json`, to: `config.json` },
             { from: `./src/config.runtime.json`, to: `assets/config.json` },
-            { from: `./src/themes/${websiteTheme}/styles/fonts`, to: "assets/styles/fonts" }
+            { from: `./src/themes/${websiteTheme}/styles/fonts`, to: "assets/styles/fonts" },
+            { from: `./js/HipObject.js`, to: "assets/scripts/js" }
         ])
     ],
     resolve: {
