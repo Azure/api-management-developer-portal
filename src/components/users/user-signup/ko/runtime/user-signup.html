@@ -4,7 +4,7 @@
 
 <!-- ko ifnot: isUserRequested -->
 
-<form>
+<form data-bind="submit: signup">
     <div class="text-hide alert alert-danger" role="region" aria-live="assertive" aria-atomic="true"
         data-bind="css: { 'text-hide': !hasErrors() }">
         <!-- ko foreach: { data: errorMessages, as: 'errorMessage' } -->
@@ -40,6 +40,10 @@
                 placeholder="e.g. Doe" type="text" data-bind="textInput: lastName">
         </div>
 
+        
+        <hip-captcha></hip-captcha>
+       
+        
         <!-- ko if: termsOfUse -->
         <div class="form-group">
             <!-- ko if: isConsentRequired -->
