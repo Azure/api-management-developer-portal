@@ -36,6 +36,7 @@ import { OperationList } from "./components/operations/operation-list/ko/runtime
 import { ProductSubscriptions } from "./components/products/product-subscriptions/ko/runtime/product-subscriptions";
 import { AadService } from "./services/aadService";
 import { Reports } from "./components/reports/ko/runtime/reports";
+import { UnhandledErrorHandler } from "./bindingHandlers/unhandledErrorHandler";
 import { ProductListDropdown } from "./components/products/product-list/ko/runtime/product-list-dropdown";
 
 
@@ -76,6 +77,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationDetails", OperationDetails);
         injector.bind("usersService", UsersService);
         injector.bind("reports", Reports);
+        injector.bind("autostart", UnhandledErrorHandler);
         injector.bind("spinner", Spinner);
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("aadService", AadService);

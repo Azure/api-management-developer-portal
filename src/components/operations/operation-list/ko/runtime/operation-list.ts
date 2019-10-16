@@ -40,7 +40,6 @@ export class OperationList {
         this.selectedId = ko.observable();
         this.loadOperations = this.loadOperations.bind(this);
         this.groupByTag = ko.observable(true);
-        this.router.addRouteChangeListener(this.loadOperations);
         this.opsGroups = ko.observableArray();
         this.pattern = ko.observable();
         this.pageNumber = ko.observable(1);
@@ -52,11 +51,11 @@ export class OperationList {
     @OnMounted()
     public async initialize(): Promise<void> {
         const route = this.router.getCurrentRoute();
-        this.loadOperations(route);
+        await this.loadOperations(route);
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.searchOperationsByPattern);
-
+        this.router.addRouteChangeListener(this.loadOperations);
         this.groupByTag
             .subscribe(this.updateOperations);
     }
@@ -152,7 +151,7 @@ export class OperationList {
             }
         }
         catch (error) {
-            console.error("operation-list error: ", error);
+            throw new Error(`operation-list error: ${error}`);
         }
         finally {
             this.working(false);
