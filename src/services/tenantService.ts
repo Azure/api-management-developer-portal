@@ -95,8 +95,6 @@ export class TenantService {
                 const val = delegationParameters[key];
                 queryParams.append(key, val);
                 payload.push(val);
-                
-                console.log("param", val);
             });
 
             const hmac = nodeCrypto.createHmac("sha512", Buffer.from(validationKey, "base64"));
