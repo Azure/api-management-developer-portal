@@ -11,7 +11,7 @@ Table of contents:
 - [Overview](#overview)
 - [Releases](#releases)
 - [Roadmap](#roadmap)
-- [Bug reports and feedback](#feedback)
+- [Bug reports, feature requests, feedback, questions](#feedback)
 - [Contributions](#contributions)
 - [License](#license)
 
