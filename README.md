@@ -11,7 +11,7 @@ Table of contents:
 - [Overview](#overview)
 - [Releases](#releases)
 - [Roadmap](#roadmap)
-- [Bug reports and feedback](#feedback)
+- [Bug reports, feature requests, feedback, questions](#feedback)
 - [Contributions](#contributions)
 - [License](#license)
 
@@ -31,9 +31,15 @@ The `master` branch of this repository is used for daily development purposes an
 
 The project's roadmap is published in [the repository's Projects section](https://github.com/Azure/api-management-developer-portal/projects).
 
-## <a name="feedback"></a> Bug reports and feedback
+## <a name="feedback"></a> Bug reports, feature requests, feedback, questions
 
-You can provide us feedback, submit a feature request, or file a bug report through [the repository's Issues section](https://github.com/Azure/api-management-developer-portal/issues). We're especially looking for your feedback on [the Issues marked with the *community* label](https://github.com/Azure/api-management-developer-portal/issues?q=is%3Aopen+is%3Aissue+label%3Acommunity).
+You can **report bugs** through [the repository's Issues section](https://github.com/Azure/api-management-developer-portal/issues).
+
+If you'd like to provide feedback and help us shape the product, we're looking for your opinion on [the Issues marked with the *community* label](https://github.com/Azure/api-management-developer-portal/issues?q=is%3Aopen+is%3Aissue+label%3Acommunity).
+
+**Feature requests** can be raised [on the Azure Feedback Forum for API Management](https://aka.ms/apimwish).
+
+For **assistance requests**, you can submit a post [on Stack Overflow](http://aka.ms/apimso) or contact Azure support for help.
 
 ## <a name="contributions"></a> Contributions
 
