@@ -1,0 +1,5 @@
+<div class="text-hide alert alert-danger" role="region" aria-live="assertive" aria-atomic="true" data-bind="css: { 'text-hide': !hasErrors() }">
+    <!-- ko foreach: { data: errorMsgs, as: 'msg' } -->
+    <div data-bind="text: msg"></div>
+    <!-- /ko -->
+</div>
