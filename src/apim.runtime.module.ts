@@ -43,6 +43,7 @@ import { ChangePassword } from "./components/users/runtime/change-password/chang
 import { Reports } from "./components/reports/ko/runtime/reports";
 import { UnhandledErrorHandler } from "./bindingHandlers/unhandledErrorHandler";
 import { ProductListDropdown } from "./components/products/product-list/ko/runtime/product-list-dropdown";
+import { ValidationSummary } from "./components/users/validation-summary/ko/runtime/validation-summary";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -75,6 +76,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("userSubscriptions", UserSubscriptions);
         injector.bind("productList", ProductList);
         injector.bind("productListDropdown", ProductListDropdown);
+        injector.bind("validationSummary", ValidationSummary);
         injector.bind("productDetails", ProductDetails);
         injector.bind("productSubscribe", ProductSubscribe);
         injector.bind("productSubscriptions", ProductSubscriptions);
