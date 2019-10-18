@@ -4,6 +4,7 @@ import template from "./signin-aad.html";
 import { Router } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, Param } from "@paperbits/common/ko/decorators";
 import { AadService } from "../../../../../services";
+import { IEventManager } from "@paperbits/common/events/IEventManager";
 
 
 @RuntimeComponent({
@@ -15,16 +16,13 @@ import { AadService } from "../../../../../services";
     injectable: "signInAad"
 })
 export class SignInAad {
-    public readonly errorMessages: ko.ObservableArray<string>;
-    public readonly hasErrors: ko.Observable<boolean>;
 
     constructor(
         private readonly router: Router,
-        private readonly aadService: AadService
+        private readonly aadService: AadService,
+        private readonly eventManager: IEventManager
     ) {
         this.clientId = ko.observable();
-        this.errorMessages = ko.observableArray([]);
-        this.hasErrors = ko.observable(false);
     }
 
     @Param()
@@ -37,14 +35,12 @@ export class SignInAad {
         try {
             await this.aadService.signInWithAad(this.clientId());
             await this.router.navigateTo(Constants.homeUrl);
-            const event = new CustomEvent("validationerror", {detail: {msgs: [], from: "socialAcc"}});
-            document.dispatchEvent(event);
+            const event = new CustomEvent("validationsummary", {detail: {msgs: [], from: "socialAcc"}});
+            this.eventManager.dispatchEvent("validationsummary", event);
         }
         catch (error) {
-            const event = new CustomEvent("validationerror", {detail: {msgs: [error.message], from: "socialAcc"}});
-            document.dispatchEvent(event);
-            this.hasErrors(true);
-            this.errorMessages([error.message]);
+            const event = new CustomEvent("validationsummary", {detail: {msgs: [error.message], from: "socialAcc"}});
+            this.eventManager.dispatchEvent("validationsummary", event);
         }
     }
 }

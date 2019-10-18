@@ -5,6 +5,7 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { UsersService } from "../../../../services/usersService";
 import { ResetRequest } from "../../../../contracts/resetRequest";
 import { CaptchaService } from "../../../../services/captchaService";
+import { IEventManager } from "@paperbits/common/events/IEventManager";
 
 declare var WLSPHIP0;
 
@@ -19,19 +20,16 @@ export class ResetPassword {
     public readonly isResetRequested: ko.Observable<boolean>;
     public readonly errorMessages: ko.ObservableArray<string>;
     public readonly working: ko.Observable<boolean>;
-    public readonly hasErrors: ko.Computed<boolean>;
     public readonly captcha: ko.Observable<string>;
 
     constructor(
         private readonly usersService: UsersService,       
-        private readonly captchaService: CaptchaService) {
+        private readonly captchaService: CaptchaService,
+        private readonly eventManager: IEventManager) {
         this.email = ko.observable();
         this.errorMessages = ko.observableArray([]);
         this.isResetRequested = ko.observable(false);
         this.working = ko.observable(false);
-        this.hasErrors = ko.pureComputed(() => {
-            return this.errorMessages().length > 0;
-        });
         this.captcha = ko.observable();
     }
 
@@ -94,6 +92,8 @@ export class ResetPassword {
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
+            const event = new CustomEvent("validationsummary", {detail: {msgs: clientErrors, from: "resetpassword"}});
+            this.eventManager.dispatchEvent("validationsummary", event);
             this.errorMessages(clientErrors);
             return;
         }
@@ -119,11 +119,15 @@ export class ResetPassword {
                     let message = "";
                     const errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
                     this.errorMessages(errorMessages);
+                    const event = new CustomEvent("validationsummary", {detail: {msgs: errorMessages, from: "signup"}});
+                    this.eventManager.dispatchEvent("validationsummary", event);
+                    
                 }
             }
             else {
                 this.errorMessages(["Server error. Unable to send request. Please try again later."]);
-                console.error("Reset password", error);
+                const event = new CustomEvent("validationsummary", {detail: {msgs: ["Server error. Unable to send request. Please try again later."], from: "signup"}});
+                this.eventManager.dispatchEvent("validationsummary", event);
             }
         }
     }

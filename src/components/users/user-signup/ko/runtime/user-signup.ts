@@ -6,6 +6,7 @@ import { CaptchaService } from "../../../../../services/captchaService";
 import { UsersService } from "../../../../../services/usersService";
 import { TenantSettings } from "../../../../../contracts/tenantSettings";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
+import { IEventManager } from "@paperbits/common/events/IEventManager";
 
 declare var WLSPHIP0;
 
@@ -31,12 +32,12 @@ export class UserSignup {
     public readonly showHideLabel: ko.Observable<string>;
     public readonly errorMessages: ko.ObservableArray<string>;
     public readonly working: ko.Observable<boolean>;
-    public readonly hasErrors: ko.Computed<boolean>;
     public readonly captcha: ko.Observable<string>;
 
     constructor(
         private readonly usersService: UsersService,       
-        private readonly captchaService: CaptchaService) {            
+        private readonly captchaService: CaptchaService,
+        private readonly eventManager: IEventManager) {            
         this.email = ko.observable("");
         this.password = ko.observable("");
         this.passwordConfirmation = ko.observable("");
@@ -50,7 +51,6 @@ export class UserSignup {
         this.errorMessages = ko.observableArray([]);
         this.isUserRequested = ko.observable(false);
         this.working = ko.observable(false);
-        this.hasErrors = ko.pureComputed(() => this.errorMessages().length > 0);
         this.captcha = ko.observable();
         this.delegationUrl = ko.observable();
     }
@@ -157,8 +157,8 @@ export class UserSignup {
 
         if (clientErrors.length > 0) {
             this.errorMessages(clientErrors);
-            const event = new CustomEvent("validationerror", {detail: {msgs: clientErrors, from: "signup"}});
-            document.dispatchEvent(event);
+            const event = new CustomEvent("validationsummary", {detail: {msgs: clientErrors, from: "signup"}});
+            this.eventManager.dispatchEvent("validationsummary", event);
             return;
         }
 
@@ -180,24 +180,24 @@ export class UserSignup {
         try {
             await this.captchaService.sendSignupRequest(createSignupRequest);
             this.isUserRequested(true);
-            const event = new CustomEvent("validationerror", {detail: {msgs: [], from: "signup"}});
-            document.dispatchEvent(event);
+            const event = new CustomEvent("validationsummary", {detail: {msgs: [], from: "signup"}});
+            this.eventManager.dispatchEvent("validationsummary",event);
         }
         catch (error) {
             WLSPHIP0.reloadHIP();
-            if (error.code === "ValidationError") {
+            if (error.code === "validationsummary") {
                 const details: any[] = error.details;
 
                 if (details && details.length > 0) {
                     const errorMessages = details.map(item => `${item.message}`);
                     this.errorMessages(errorMessages);
-                    const event = new CustomEvent("validationerror", {detail: {msgs: errorMessages, from: "signup"}});
-                    document.dispatchEvent(event);
+                    const event = new CustomEvent("validationsummary", {detail: {msgs: errorMessages, from: "signup"}});
+                    this.eventManager.dispatchEvent("validationsummary",event);
                 }
             }
             else {
-                this.errorMessages(["Server error. Unable to send request. Please try again later."]);
-                console.error("Sign up", error);
+                const event = new CustomEvent("validationsummary", {detail: {msgs: ["Server error. Unable to send request. Please try again later."], from: "signup"}});
+                this.eventManager.dispatchEvent("validationsummary",event);
             }
         }
     }

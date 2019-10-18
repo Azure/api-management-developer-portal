@@ -5,6 +5,7 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { ChangePasswordRequest } from "../../../../contracts/resetRequest";
 import { CaptchaService } from "../../../../services/captchaService";
 import { UsersService } from "../../../../services/usersService";
+import { IEventManager } from "@paperbits/common/events/IEventManager";
 
 declare var WLSPHIP0;
 
@@ -21,21 +22,18 @@ export class ChangePassword {
     public readonly isChangeConfirmed: ko.Observable<boolean>;
     public readonly errorMessages: ko.ObservableArray<string>;
     public readonly working: ko.Observable<boolean>;
-    public readonly hasErrors: ko.Computed<boolean>;
     public readonly captcha: ko.Observable<string>;
 
     constructor(
         private readonly usersService: UsersService,    
-        private readonly captchaService: CaptchaService) {
+        private readonly captchaService: CaptchaService,
+        private readonly eventManager: IEventManager) {
         this.password = ko.observable();
         this.newPassword = ko.observable();
         this.passwordConfirmation = ko.observable();
         this.isChangeConfirmed = ko.observable(false);
         this.errorMessages = ko.observableArray([]);
         this.working = ko.observable(false);
-        this.hasErrors = ko.pureComputed(() => {
-            return this.errorMessages().length > 0;
-        });
         this.captcha = ko.observable();
     }
 
@@ -103,6 +101,8 @@ export class ChangePassword {
 
         if (clientErrors.length > 0) {
             this.errorMessages(clientErrors);
+            const event = new CustomEvent("validationsummary", {detail: {msgs: clientErrors, from: "changepassword"}});
+            this.eventManager.dispatchEvent("validationsummary", event);
             return;
         }
 
@@ -112,6 +112,8 @@ export class ChangePassword {
 
         if (!userId) {
             this.errorMessages(["Password is not valid"]);
+            const event = new CustomEvent("validationsummary", {detail: {msgs: ["Password is not valid"], from: "changepassword"}});
+            this.eventManager.dispatchEvent("validationsummary", event);
             return;
         }
 
@@ -137,11 +139,14 @@ export class ChangePassword {
                     let message = "";
                     const errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
                     this.errorMessages(errorMessages);
+                    const event = new CustomEvent("validationsummary", {detail: {msgs: errorMessages, from: "changepassword"}});
+                    this.eventManager.dispatchEvent("validationsummary", event);
                 }
             }
             else {
+                const event = new CustomEvent("validationsummary", {detail: {msgs: ["Server error. Unable to send request. Please try again later."], from: "changepassword"}});
+                    this.eventManager.dispatchEvent("validationsummary", event);
                 this.errorMessages(["Server error. Unable to send request. Please try again later."]);
-                console.error("Change password", error);
             }
         }
     }

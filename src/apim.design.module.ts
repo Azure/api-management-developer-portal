@@ -49,8 +49,8 @@ import { HelpModule } from "./components/help";
 import { ChangePasswordModule } from "./components/users/change-password/ko/changePassword.module";
 import { ChangePasswordEditorModule } from "./components/users/change-password/ko/changePasswordEditor.module";
 import { TenantService } from "./services/tenantService";
-import { ValidationErrorModule } from "./components/users/validation-error/ko/validationError.module";
-import { ValidationErrorEditorModule} from "./components/users/validation-error/ko/validationErrorEditor.module"
+import { ValidationSummaryModule } from "./components/users/validation-summary/ko/validationSummary.module";
+import { ValidationSummaryEditorModule} from "./components/users/validation-summary/ko/validationSummaryEditor.module"
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -96,8 +96,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ChangePasswordModule());
         injector.bindModule(new ChangePasswordEditorModule());
         injector.bindModule(new HelpModule());
-        injector.bindModule(new ValidationErrorEditorModule());
-        injector.bindModule(new ValidationErrorModule());
+        injector.bindModule(new ValidationSummaryEditorModule());
+        injector.bindModule(new ValidationSummaryModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);

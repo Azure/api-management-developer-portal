@@ -4,6 +4,7 @@ import template from "./signin-aad-b2c.html";
 import { Router } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { AadService } from "../../../../../services";
+import { IEventManager } from "@paperbits/common/events/IEventManager";
 
 
 @RuntimeComponent({
@@ -15,15 +16,11 @@ import { AadService } from "../../../../../services";
     injectable: "signInAadB2C"
 })
 export class SignInAadB2C {
-    public readonly errorMessages: ko.ObservableArray<string>;
-    public readonly hasErrors: ko.Observable<boolean>;
-
     constructor(
         private readonly router: Router,
-        private readonly aadService: AadService
+        private readonly aadService: AadService,
+        private readonly eventManager: IEventManager
     ) {
-        this.errorMessages = ko.observableArray([]);
-        this.hasErrors = ko.observable(false);
         this.clientId = ko.observable();
         this.authority = ko.observable();
         this.instance = ko.observable();
@@ -54,14 +51,12 @@ export class SignInAadB2C {
         try {
             await this.aadService.signInWithAadB2C(this.clientId(), this.authority(), this.instance(), this.signInPolicy());
             await this.router.navigateTo(Constants.homeUrl);
-            const event = new CustomEvent("validationerror", {detail: {msgs: [], from: "socialAcc"}});
-            document.dispatchEvent(event);
+            const event = new CustomEvent("validationsummary", {detail: {msgs: [], from: "socialAcc"}});
+            this.eventManager.dispatchEvent("validationsummary", event);
         }
         catch (error) {
-            const event = new CustomEvent("validationerror", {detail: {msgs: [error.message], from: "socialAcc"}});
-            document.dispatchEvent(event);
-            this.hasErrors(true);
-            this.errorMessages([error.message]);
+            const event = new CustomEvent("validationsummary", {detail: {msgs: [error.message], from: "socialAcc"}});
+            this.eventManager.dispatchEvent("validationsummary", event);
         }
     }
 }

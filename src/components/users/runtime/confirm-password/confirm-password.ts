@@ -5,6 +5,7 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { ResetPassword } from "../../../../contracts/resetRequest";
 import { CaptchaService } from "../../../../services/captchaService";
 import { UsersService } from "../../../../services/usersService";
+import { IEventManager } from "@paperbits/common/events/IEventManager";
 
 @RuntimeComponent({ selector: "confirm-password" })
 @Component({
@@ -22,20 +23,17 @@ export class ConfirmPassword {
     public readonly isResetConfirmed: ko.Observable<boolean>;
     public readonly errorMessages: ko.ObservableArray<string>;
     public readonly working: ko.Observable<boolean>;
-    public readonly hasErrors: ko.Computed<boolean>;
     public readonly canSubmit: ko.Computed<boolean>;
 
     constructor(
         private readonly usersService: UsersService,    
-        private readonly captchaService: CaptchaService) {
+        private readonly captchaService: CaptchaService,
+        private readonly eventManager: IEventManager) {
         this.password = ko.observable();
         this.passwordConfirmation = ko.observable();
         this.isResetConfirmed = ko.observable(false);
         this.errorMessages = ko.observableArray([]);
         this.working = ko.observable(false);
-        this.hasErrors = ko.pureComputed(() => {
-            return this.errorMessages().length > 0;
-        });
         this.canSubmit = ko.pureComputed(() => {
             return this.password() === this.passwordConfirmation();
         });
@@ -66,6 +64,8 @@ export class ConfirmPassword {
 
         if (!this.queryParams.has("userid") || !this.queryParams.has("ticketid") || !this.queryParams.has("ticket")) {
             this.errorMessages.push("Required params not found");
+            const event = new CustomEvent("validationsummary", {detail: {msgs: ["Required params not found"], from: "confirmpassword"}});
+            this.eventManager.dispatchEvent("validationsummary",event);
             return;
         }
 
@@ -87,6 +87,8 @@ export class ConfirmPassword {
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
+            const event = new CustomEvent("validationsummary", {detail: {msgs: clientErrors, from: "confirmpassword"}});
+            this.eventManager.dispatchEvent("validationsummary",event);
             this.errorMessages(clientErrors);
             return;
         }
@@ -110,11 +112,14 @@ export class ConfirmPassword {
                     let message = "";
                     const errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
                     this.errorMessages(errorMessages);
+                    const event = new CustomEvent("validationsummary", {detail: {msgs: errorMessages, from: "confirmpassword"}});
+                    this.eventManager.dispatchEvent("validationsummary",event);
                 }
             }
             else {
                 this.errorMessages(["Server error. Unable to send request. Please try again later."]);
-                console.error("Confirm reset password", error);
+                const event = new CustomEvent("validationsummary", {detail: {msgs: ["Server error. Unable to send request. Please try again later."], from: "confirmpassword"}});
+                this.eventManager.dispatchEvent("validationsummary",event);
             }
         }
     }

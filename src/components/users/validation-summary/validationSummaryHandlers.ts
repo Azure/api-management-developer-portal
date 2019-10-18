@@ -1,15 +1,15 @@
 import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
-import { ValidationErrorModel } from "./validationErrorModel";
+import { ValidationSummaryModel } from "../validation-summary/validationSummaryModel";
 
-export class ValidationErrorHandlers implements IWidgetHandler {
+export class ValidationSummaryHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
-            name: "validation-error",
+            name: "validation-summary",
             category: "User",
-            displayName: "Validation Error",
+            displayName: "Validation Summary",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
-            createModel: async () => new ValidationErrorModel()
+            createModel: async () => new ValidationSummaryModel()
         };
 
         return widgetOrder;
