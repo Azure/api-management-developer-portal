@@ -4,6 +4,8 @@ import template from "./user-signin.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../../services/usersService";
 import { MapiError } from "../../../../../services/mapiError";
+import { IEventManager } from "@paperbits/common/events";
+import { ValidationReport } from "../../../../../contracts/validationReport";
 
 
 @RuntimeComponent({
@@ -21,7 +23,10 @@ export class UserSignin {
     public readonly hasErrors: ko.Computed<boolean>;
     public readonly working: ko.Observable<boolean>;
 
-    constructor(private readonly usersService: UsersService) {
+    constructor(
+        private readonly usersService: UsersService,
+        private readonly eventManager: IEventManager
+        ) {
             
         this.delegationUrl = ko.observable();
         this.username = ko.observable("");
@@ -86,29 +91,52 @@ export class UserSignin {
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
+            const validationReport: ValidationReport = {
+                source: "signin",
+                errors: clientErrors
+            };
+            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             this.errorMessages(clientErrors);
             return;
         }
-
         this.working(true);
-
         try {
             const userId = await this.usersService.signIn(this.username(), this.password());
 
             if (userId) {
                 this.navigateToHome();
+                const validationReport: ValidationReport = {
+                    source: "signin",
+                    errors: []
+                };
+                this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             }
             else {
                 this.errorMessages(["Please provide a valid email and password."]);
+                const validationReport: ValidationReport = {
+                    source: "signin",
+                    errors: ["Please provide a valid email and password."]
+                };
+                this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             }
         }
         catch (error) {
             if (error instanceof MapiError) {
                 if (error.code === "identity_not_confirmed") {
-                    this.errorMessages([`We found an unconfirmed account for the e-mail address ${this.username()}. To complete the creation of your account we need to verify your e-mail address. We’ve sent an e-mail to ${this.username()}. Please follow the instructions inside the e-mail to activate your account. If the e-mail doesn’t arrive within the next few minutes, please check your junk email folder`]);
+                    const msg = [`We found an unconfirmed account for the e-mail address ${this.username()}. To complete the creation of your account we need to verify your e-mail address. We’ve sent an e-mail to ${this.username()}. Please follow the instructions inside the e-mail to activate your account. If the e-mail doesn’t arrive within the next few minutes, please check your junk email folder`];
+                    const validationReport: ValidationReport = {
+                        source: "signin",
+                        errors: msg
+                    };
+                    this.eventManager.dispatchEvent("onValidationErrors",validationReport);
                     return;
                 }
                 this.errorMessages([error.message]);
+                const validationReport: ValidationReport = {
+                    source: "signin",
+                    errors: [error.message]
+                };
+                this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             }
         }
         finally {
