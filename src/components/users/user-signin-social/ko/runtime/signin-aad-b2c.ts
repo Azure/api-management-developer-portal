@@ -54,8 +54,12 @@ export class SignInAadB2C {
         try {
             await this.aadService.signInWithAadB2C(this.clientId(), this.authority(), this.instance(), this.signInPolicy());
             await this.router.navigateTo(Constants.homeUrl);
+            const event = new CustomEvent("validationerror", {detail: {msgs: [], from: "socialAcc"}});
+            document.dispatchEvent(event);
         }
         catch (error) {
+            const event = new CustomEvent("validationerror", {detail: {msgs: [error.message], from: "socialAcc"}});
+            document.dispatchEvent(event);
             this.hasErrors(true);
             this.errorMessages([error.message]);
         }

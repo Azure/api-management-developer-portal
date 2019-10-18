@@ -37,8 +37,12 @@ export class SignInAad {
         try {
             await this.aadService.signInWithAad(this.clientId());
             await this.router.navigateTo(Constants.homeUrl);
+            const event = new CustomEvent("validationerror", {detail: {msgs: [], from: "socialAcc"}});
+            document.dispatchEvent(event);
         }
         catch (error) {
+            const event = new CustomEvent("validationerror", {detail: {msgs: [error.message], from: "socialAcc"}});
+            document.dispatchEvent(event);
             this.hasErrors(true);
             this.errorMessages([error.message]);
         }

@@ -43,6 +43,8 @@ import { ReportsModule } from "./components/reports/ko/reports.module";
 import { ReportsEditorModule } from "./components/reports/ko/reportsEditor.module";
 import { HelpModule } from "./components/help";
 import { TenantService } from "./services/tenantService";
+import { ValidationErrorModule } from "./components/users/validation-error/ko/validationError.module";
+import { ValidationErrorEditorModule} from "./components/users/validation-error/ko/validationErrorEditor.module"
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -82,6 +84,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ReportsModule());
         injector.bindModule(new ReportsEditorModule());
         injector.bindModule(new HelpModule());
+        injector.bindModule(new ValidationErrorEditorModule());
+        injector.bindModule(new ValidationErrorModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);

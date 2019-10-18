@@ -38,6 +38,7 @@ import { AadService } from "./services/aadService";
 import { Reports } from "./components/reports/ko/runtime/reports";
 import { UnhandledErrorHandler } from "./bindingHandlers/unhandledErrorHandler";
 import { ProductListDropdown } from "./components/products/product-list/ko/runtime/product-list-dropdown";
+import { ValidationError } from "./components/users/validation-error/ko/runtime/validation-error";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -69,6 +70,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("userSubscriptions", UserSubscriptions);
         injector.bind("productList", ProductList);
         injector.bind("productListDropdown", ProductListDropdown);
+        injector.bind("validation-error", ValidationError);
         injector.bind("productDetails", ProductDetails);
         injector.bind("productSubscribe", ProductSubscribe);
         injector.bind("productSubscriptions", ProductSubscriptions);

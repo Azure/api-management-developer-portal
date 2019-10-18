@@ -1,11 +1,5 @@
 <form>
-    <div class="text-hide alert alert-danger" role="region" aria-live="assertive" aria-atomic="true" data-bind="css: { 'text-hide': !hasErrors() }">
-        <!-- ko foreach: { data: errorMessages, as: 'errorMessage' } -->
-        <div data-bind="text: errorMessage"></div>
-        <!-- /ko -->
-    </div>
-
-    <fieldset data-bind="attr: { disabled : working }">
+     <fieldset data-bind="attr: { disabled : working }">
         <div class="form-group">
             <label for="email">
                 Email

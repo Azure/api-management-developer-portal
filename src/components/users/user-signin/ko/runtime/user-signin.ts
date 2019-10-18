@@ -77,7 +77,6 @@ export class UserSignin {
 
     public async signin(): Promise<void> {
         this.errorMessages([]);
-
         const result = validation.group({
             username: this.username,
             password: this.password
@@ -86,28 +85,36 @@ export class UserSignin {
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
+            const event = new CustomEvent("validationerror", {detail: {msgs: clientErrors, from: "signin"}});
+            document.dispatchEvent(event);
             this.errorMessages(clientErrors);
             return;
         }
-
         this.working(true);
-
         try {
             const userId = await this.usersService.signIn(this.username(), this.password());
 
             if (userId) {
                 this.navigateToHome();
+                const event = new CustomEvent("validationerror", {detail: {msgs: [], from: "signin"}});
+                document.dispatchEvent(event);
             }
             else {
                 this.errorMessages(["Please provide a valid email and password."]);
+                const event = new CustomEvent("validationerror", {detail: {msgs: ["Please provide a valid email and password."], from: "signin"}});
+                document.dispatchEvent(event);
             }
         }
         catch (error) {
             if (error instanceof MapiError) {
                 if (error.code === "identity_not_confirmed") {
-                    this.errorMessages([`We found an unconfirmed account for the e-mail address ${this.username()}. To complete the creation of your account we need to verify your e-mail address. We’ve sent an e-mail to ${this.username()}. Please follow the instructions inside the e-mail to activate your account. If the e-mail doesn’t arrive within the next few minutes, please check your junk email folder`]);
+                    const msg = [`We found an unconfirmed account for the e-mail address ${this.username()}. To complete the creation of your account we need to verify your e-mail address. We’ve sent an e-mail to ${this.username()}. Please follow the instructions inside the e-mail to activate your account. If the e-mail doesn’t arrive within the next few minutes, please check your junk email folder`];
+                    const event = new CustomEvent("validationerror", {detail: {msgs: msg, from: "signin"}});
+                    document.dispatchEvent(event);
                     return;
                 }
+                const event = new CustomEvent("validationerror", {detail: {msgs: [error.message], from: "signin"}});
+                document.dispatchEvent(event);
                 this.errorMessages([error.message]);
             }
         }

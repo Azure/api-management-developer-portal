@@ -24,6 +24,7 @@ import { ProductSubscriptionsModule } from "./components/products/product-subscr
 import { IdentityService } from "./services/identityService";
 import { ReportsModule } from "./components/reports/ko/reports.module";
 import { TenantService } from "./services/tenantService";
+import { ValidationErrorModule } from "./components/users/validation-error/ko/validationError.module";
 
 
 export class ApimPublishModule implements IInjectorModule {
@@ -44,6 +45,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new OperationListModule());
         injector.bindModule(new OperationDetailsModule());
         injector.bindModule(new ReportsModule());
+        injector.bindModule(new ValidationErrorModule());
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
         injector.bindSingleton("tenantService", TenantService);

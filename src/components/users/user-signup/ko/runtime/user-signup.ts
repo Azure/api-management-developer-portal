@@ -128,6 +128,8 @@ export class UserSignup {
 
         if (clientErrors.length > 0) {
             this.errorMessages(clientErrors);
+            const event = new CustomEvent("validationerror", {detail: {msgs: clientErrors, from: "signup"}});
+            document.dispatchEvent(event);
             return;
         }
 
@@ -143,6 +145,8 @@ export class UserSignup {
         try {
             await this.usersService.createSignupRequest(createSignupRequest);
             this.isUserRequested(true);
+            const event = new CustomEvent("validationerror", {detail: {msgs: [], from: "signup"}});
+            document.dispatchEvent(event);
         }
         catch (error) {
             if (error.code === "ValidationError") {
@@ -151,6 +155,8 @@ export class UserSignup {
                 if (details && details.length > 0) {
                     const errorMessages = details.map(item => `${item.message}`);
                     this.errorMessages(errorMessages);
+                    const event = new CustomEvent("validationerror", {detail: {msgs: errorMessages, from: "signup"}});
+                    document.dispatchEvent(event);
                 }
             }
             else {
