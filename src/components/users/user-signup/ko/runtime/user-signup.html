@@ -3,8 +3,6 @@
 <!-- /ko -->
 
 <!-- ko ifnot: isUserRequested -->
-
-<form>
     <fieldset>
         <div class="form-group">
             <label for="email">Email</label>
@@ -33,6 +31,10 @@
                 placeholder="e.g. Doe" type="text" data-bind="textInput: lastName">
         </div>
 
+        
+        <hip-captcha></hip-captcha>
+       
+        
         <!-- ko if: termsOfUse -->
         <div class="form-group">
             <!-- ko if: isConsentRequired -->

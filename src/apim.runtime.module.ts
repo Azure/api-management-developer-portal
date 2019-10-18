@@ -35,6 +35,11 @@ import { ProductApis } from "./components/products/product-apis/ko/runtime/produ
 import { OperationList } from "./components/operations/operation-list/ko/runtime/operation-list";
 import { ProductSubscriptions } from "./components/products/product-subscriptions/ko/runtime/product-subscriptions";
 import { AadService } from "./services/aadService";
+import { CaptchaService } from "./services/captchaService";
+import { HipCaptcha } from "./components/users/runtime/hip-captcha/hip-captcha";
+import { ResetPassword } from "./components/users/runtime/reset-password/reset-password";
+import { ConfirmPassword } from "./components/users/runtime/confirm-password/confirm-password";
+import { ChangePassword } from "./components/users/runtime/change-password/change-password";
 import { Reports } from "./components/reports/ko/runtime/reports";
 import { UnhandledErrorHandler } from "./bindingHandlers/unhandledErrorHandler";
 import { ProductListDropdown } from "./components/products/product-list/ko/runtime/product-list-dropdown";
@@ -46,6 +51,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindModule(new KnockoutRegistrationLoaders());
         injector.bindSingleton("eventManager", DefaultEventManager);
         injector.bindCollection("autostart");
+        injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindCollection("routeGuards");
         // injector.bindToCollection("routeGuards", AccessTokenRouteGuard);
         injector.bindSingleton("router", DefaultRouter);
@@ -79,7 +85,11 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationDetails", OperationDetails);
         injector.bind("usersService", UsersService);
         injector.bind("reports", Reports);
-        injector.bind("autostart", UnhandledErrorHandler);
+        injector.bind("captchaService", CaptchaService);
+        injector.bind("hipCaptcha", HipCaptcha);
+        injector.bind("resetPassword", ResetPassword);
+        injector.bind("confirmPassword", ConfirmPassword);
+        injector.bind("changePassword", ChangePassword);
         injector.bind("spinner", Spinner);
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("aadService", AadService);

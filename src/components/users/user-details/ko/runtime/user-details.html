@@ -1,6 +1,6 @@
 <div class="panel panel-table">
     <!-- ko if: user -->
-    <!-- ko if: !isEdit() && !isEditEmail() && !isEditPassword() -->
+    <!-- ko if: !isEdit() -->
     <div class="row">
         <div class="col-md-6">Email</div>
         <div class="col-md-6" data-bind="text: user().email"></div>
@@ -20,8 +20,7 @@
     <div class="row">
         <div class="col-md-12">
             <button type="button" class="button button-default" data-bind="click: toggleEdit">Change name</button>
-            <button type="button" class="button" data-bind="click: toggleEditEmail">Change email</button>
-            <button type="button" class="button" data-bind="click: toggleEditPassword">Change password</button>
+            <a role="button" class="button button-default" href="/change-password">Change password</a>
         </div>
     </div>
     <!-- /ko -->
@@ -48,6 +47,10 @@
         <div class="col-md-6" data-bind="text: registrationDate"></div>
     </div>
     <div class="row">
+        <!-- ko if: working-->
+        <spinner class="fit"></spinner>
+        <!-- /ko -->
+        <!-- ko ifnot: working -->
         <div class="col-md-6">
             <button type="button" class="button"
                 data-bind="click: changeAccountInfo, enable: isUserChanged()">Save</button>
@@ -55,72 +58,7 @@
         <div class="col-md-6">
             <button type="button" class="button" data-bind="click: toggleEdit">Cancel</button>
         </div>
-    </div>
-    <!-- /ko -->
-
-    <!-- ko if: isEditEmail -->
-    <div class="row">
-        <div class="col-md-6">Email</div>
-        <div class="col-md-6">
-            <input type="text" class="form-control" data-bind="value: email" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">First name</div>
-        <div class="col-md-6" data-bind="text: user().firstName"></div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">Last name</div>
-        <div class="col-md-6" data-bind="text: user().lastName"></div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">Registration date</div>
-        <div class="col-md-6" data-bind="text: registrationDate"></div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <button type="button" class="button" data-bind="click: changeEmail, enable: isEmailChanged()">Save</button>
-        </div>
-        <div class="col-md-6">
-            <button type="button" class="button" data-bind="click: toggleEditEmail">Cancel</button>
-        </div>
-    </div>
-    <!-- /ko -->
-
-    <!-- ko if: isEditPassword -->
-    <div class="row">
-        <div class="col-md-6">Email</div>
-        <div class="col-md-6" data-bind="text: user().email"></div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">First name</div>
-        <div class="col-md-6" data-bind="text: user().firstName"></div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">Last name</div>
-        <div class="col-md-6" data-bind="text: user().lastName"></div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">Registration date</div>
-        <div class="col-md-6" data-bind="text: registrationDate"></div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">Change password</div>
-        <div class="col-md-3">
-            <input type="password" class="form-control" placeholder="New password" data-bind="value: password" />
-        </div>
-        <div class="col-md-3">
-            <input type="password" class="form-control" placeholder="Confirm" data-bind="value: confirmPassword" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <button type="button" class="button"
-                data-bind="click: changePassword, enable: isPasswordChanged()">Save</button>
-        </div>
-        <div class="col-md-6">
-            <button type="button" class="button" data-bind="click: toggleEditPassword">Cancel</button>
-        </div>
+        <!-- /ko -->
     </div>
     <!-- /ko -->
 
