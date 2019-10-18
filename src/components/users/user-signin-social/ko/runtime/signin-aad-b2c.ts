@@ -4,7 +4,8 @@ import template from "./signin-aad-b2c.html";
 import { Router } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { AadService } from "../../../../../services";
-import { IEventManager } from "@paperbits/common/events/IEventManager";
+import { IEventManager } from "@paperbits/common/events";
+import { ValidationReport } from "../../../../../contracts/validationReport";
 
 
 @RuntimeComponent({
@@ -51,12 +52,18 @@ export class SignInAadB2C {
         try {
             await this.aadService.signInWithAadB2C(this.clientId(), this.authority(), this.instance(), this.signInPolicy());
             await this.router.navigateTo(Constants.homeUrl);
-            const event = new CustomEvent("validationsummary", {detail: {msgs: [], from: "socialAcc"}});
-            this.eventManager.dispatchEvent("validationsummary", event);
+            const validationReport: ValidationReport = {
+                source: "socialAcc",
+                errors: []
+            };
+            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
         }
         catch (error) {
-            const event = new CustomEvent("validationsummary", {detail: {msgs: [error.message], from: "socialAcc"}});
-            this.eventManager.dispatchEvent("validationsummary", event);
+            const validationReport: ValidationReport = {
+                source: "socialAcc",
+                errors: [error.message]
+            };
+            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
         }
     }
 }

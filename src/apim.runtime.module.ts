@@ -76,7 +76,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("userSubscriptions", UserSubscriptions);
         injector.bind("productList", ProductList);
         injector.bind("productListDropdown", ProductListDropdown);
-        injector.bind("validation-summary", ValidationSummary);
+        injector.bind("validationSummary", ValidationSummary);
         injector.bind("productDetails", ProductDetails);
         injector.bind("productSubscribe", ProductSubscribe);
         injector.bind("productSubscriptions", ProductSubscriptions);

@@ -5,7 +5,8 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { ResetPassword } from "../../../../contracts/resetRequest";
 import { CaptchaService } from "../../../../services/captchaService";
 import { UsersService } from "../../../../services/usersService";
-import { IEventManager } from "@paperbits/common/events/IEventManager";
+import { IEventManager } from "@paperbits/common/events";
+import { ValidationReport } from "../../../../contracts/validationReport";
 
 @RuntimeComponent({ selector: "confirm-password" })
 @Component({
@@ -21,7 +22,6 @@ export class ConfirmPassword {
     public readonly password: ko.Observable<string>;
     public readonly passwordConfirmation: ko.Observable<string>;
     public readonly isResetConfirmed: ko.Observable<boolean>;
-    public readonly errorMessages: ko.ObservableArray<string>;
     public readonly working: ko.Observable<boolean>;
     public readonly canSubmit: ko.Computed<boolean>;
 
@@ -32,7 +32,6 @@ export class ConfirmPassword {
         this.password = ko.observable();
         this.passwordConfirmation = ko.observable();
         this.isResetConfirmed = ko.observable(false);
-        this.errorMessages = ko.observableArray([]);
         this.working = ko.observable(false);
         this.canSubmit = ko.pureComputed(() => {
             return this.password() === this.passwordConfirmation();
@@ -63,9 +62,11 @@ export class ConfirmPassword {
         this.queryParams = new URLSearchParams(location.search);
 
         if (!this.queryParams.has("userid") || !this.queryParams.has("ticketid") || !this.queryParams.has("ticket")) {
-            this.errorMessages.push("Required params not found");
-            const event = new CustomEvent("validationsummary", {detail: {msgs: ["Required params not found"], from: "confirmpassword"}});
-            this.eventManager.dispatchEvent("validationsummary",event);
+            const validationReport: ValidationReport = {
+                source: "confirmpassword",
+                errors: ["Required params not found"]
+            };
+            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             return;
         }
 
@@ -78,7 +79,6 @@ export class ConfirmPassword {
      * Sends user resetPswd request to Management API.
      */
     public async resetPswd(): Promise<void> {
-        this.errorMessages([]);
         const result = validation.group({
             password: this.password,
             passwordConfirmation: this.passwordConfirmation
@@ -87,9 +87,11 @@ export class ConfirmPassword {
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
-            const event = new CustomEvent("validationsummary", {detail: {msgs: clientErrors, from: "confirmpassword"}});
-            this.eventManager.dispatchEvent("validationsummary",event);
-            this.errorMessages(clientErrors);
+            const validationReport: ValidationReport = {
+                source: "confirmpassword",
+                errors: clientErrors
+            };
+            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             return;
         }
 
@@ -111,15 +113,19 @@ export class ConfirmPassword {
                 if (details && details.length > 0) {
                     let message = "";
                     const errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
-                    this.errorMessages(errorMessages);
-                    const event = new CustomEvent("validationsummary", {detail: {msgs: errorMessages, from: "confirmpassword"}});
-                    this.eventManager.dispatchEvent("validationsummary",event);
+                    const validationReport: ValidationReport = {
+                        source: "confirmpassword",
+                        errors: errorMessages
+                    };
+                    this.eventManager.dispatchEvent("onValidationErrors",validationReport);
                 }
             }
             else {
-                this.errorMessages(["Server error. Unable to send request. Please try again later."]);
-                const event = new CustomEvent("validationsummary", {detail: {msgs: ["Server error. Unable to send request. Please try again later."], from: "confirmpassword"}});
-                this.eventManager.dispatchEvent("validationsummary",event);
+                const validationReport: ValidationReport = {
+                    source: "confirmpassword",
+                    errors: ["Server error. Unable to send request. Please try again later."]
+                };
+                this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             }
         }
     }

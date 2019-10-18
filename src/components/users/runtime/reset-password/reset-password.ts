@@ -5,7 +5,8 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { UsersService } from "../../../../services/usersService";
 import { ResetRequest } from "../../../../contracts/resetRequest";
 import { CaptchaService } from "../../../../services/captchaService";
-import { IEventManager } from "@paperbits/common/events/IEventManager";
+import { IEventManager } from "@paperbits/common/events";
+import { ValidationReport } from "../../../../contracts/validationReport";
 
 declare var WLSPHIP0;
 
@@ -18,7 +19,6 @@ declare var WLSPHIP0;
 export class ResetPassword {
     public readonly email: ko.Observable<string>;
     public readonly isResetRequested: ko.Observable<boolean>;
-    public readonly errorMessages: ko.ObservableArray<string>;
     public readonly working: ko.Observable<boolean>;
     public readonly captcha: ko.Observable<string>;
 
@@ -27,7 +27,6 @@ export class ResetPassword {
         private readonly captchaService: CaptchaService,
         private readonly eventManager: IEventManager) {
         this.email = ko.observable();
-        this.errorMessages = ko.observableArray([]);
         this.isResetRequested = ko.observable(false);
         this.working = ko.observable(false);
         this.captcha = ko.observable();
@@ -59,7 +58,6 @@ export class ResetPassword {
      * Sends user reset password request to Management API.
      */
     public async resetSubmit(): Promise<void> {
-        this.errorMessages([]);
 
         let captchaSolution;
         let captchaFlowId;
@@ -92,9 +90,11 @@ export class ResetPassword {
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
-            const event = new CustomEvent("validationsummary", {detail: {msgs: clientErrors, from: "resetpassword"}});
-            this.eventManager.dispatchEvent("validationsummary", event);
-            this.errorMessages(clientErrors);
+            const validationReport: ValidationReport = {
+                source: "resetpassword",
+                errors: clientErrors
+            };
+            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             return;
         }
 
@@ -118,16 +118,19 @@ export class ResetPassword {
                 if (details && details.length > 0) {
                     let message = "";
                     const errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
-                    this.errorMessages(errorMessages);
-                    const event = new CustomEvent("validationsummary", {detail: {msgs: errorMessages, from: "signup"}});
-                    this.eventManager.dispatchEvent("validationsummary", event);
-                    
+                    const validationReport: ValidationReport = {
+                        source: "resetpassword",
+                        errors: errorMessages
+                    };
+                    this.eventManager.dispatchEvent("onValidationErrors",validationReport);
                 }
             }
             else {
-                this.errorMessages(["Server error. Unable to send request. Please try again later."]);
-                const event = new CustomEvent("validationsummary", {detail: {msgs: ["Server error. Unable to send request. Please try again later."], from: "signup"}});
-                this.eventManager.dispatchEvent("validationsummary", event);
+                const validationReport: ValidationReport = {
+                    source: "resetpassword",
+                    errors: ["Server error. Unable to send request. Please try again later."]
+                };
+                this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             }
         }
     }

@@ -4,7 +4,8 @@ import template from "./signin-aad.html";
 import { Router } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, Param } from "@paperbits/common/ko/decorators";
 import { AadService } from "../../../../../services";
-import { IEventManager } from "@paperbits/common/events/IEventManager";
+import { IEventManager } from "@paperbits/common/events";
+import { ValidationReport } from "../../../../../contracts/validationReport";
 
 
 @RuntimeComponent({
@@ -35,12 +36,18 @@ export class SignInAad {
         try {
             await this.aadService.signInWithAad(this.clientId());
             await this.router.navigateTo(Constants.homeUrl);
-            const event = new CustomEvent("validationsummary", {detail: {msgs: [], from: "socialAcc"}});
-            this.eventManager.dispatchEvent("validationsummary", event);
+            const validationReport: ValidationReport = {
+                source: "socialAcc",
+                errors: []
+            };
+            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
         }
         catch (error) {
-            const event = new CustomEvent("validationsummary", {detail: {msgs: [error.message], from: "socialAcc"}});
-            this.eventManager.dispatchEvent("validationsummary", event);
+            const validationReport: ValidationReport = {
+                source: "socialAcc",
+                errors: [error.message]
+            };
+            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
         }
     }
 }

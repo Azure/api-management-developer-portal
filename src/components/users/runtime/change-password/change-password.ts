@@ -5,7 +5,8 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { ChangePasswordRequest } from "../../../../contracts/resetRequest";
 import { CaptchaService } from "../../../../services/captchaService";
 import { UsersService } from "../../../../services/usersService";
-import { IEventManager } from "@paperbits/common/events/IEventManager";
+import { IEventManager } from "@paperbits/common/events";
+import { ValidationReport } from "../../../../contracts/validationReport";
 
 declare var WLSPHIP0;
 
@@ -20,7 +21,6 @@ export class ChangePassword {
     public readonly newPassword: ko.Observable<string>;
     public readonly passwordConfirmation: ko.Observable<string>;
     public readonly isChangeConfirmed: ko.Observable<boolean>;
-    public readonly errorMessages: ko.ObservableArray<string>;
     public readonly working: ko.Observable<boolean>;
     public readonly captcha: ko.Observable<string>;
 
@@ -32,7 +32,6 @@ export class ChangePassword {
         this.newPassword = ko.observable();
         this.passwordConfirmation = ko.observable();
         this.isChangeConfirmed = ko.observable(false);
-        this.errorMessages = ko.observableArray([]);
         this.working = ko.observable(false);
         this.captcha = ko.observable();
     }
@@ -65,7 +64,6 @@ export class ChangePassword {
      * Sends user change password request to Management API.
      */
     public async changePassword(): Promise<void> {
-        this.errorMessages([]);
 
         let captchaSolution;
         let captchaFlowId;
@@ -100,9 +98,11 @@ export class ChangePassword {
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
-            this.errorMessages(clientErrors);
-            const event = new CustomEvent("validationsummary", {detail: {msgs: clientErrors, from: "changepassword"}});
-            this.eventManager.dispatchEvent("validationsummary", event);
+            const validationReport: ValidationReport = {
+                source: "changepassword",
+                errors: clientErrors
+            };
+            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             return;
         }
 
@@ -111,9 +111,11 @@ export class ChangePassword {
         const userId = await this.usersService.checkCredentials(user.email, this.password());
 
         if (!userId) {
-            this.errorMessages(["Password is not valid"]);
-            const event = new CustomEvent("validationsummary", {detail: {msgs: ["Password is not valid"], from: "changepassword"}});
-            this.eventManager.dispatchEvent("validationsummary", event);
+            const validationReport: ValidationReport = {
+                source: "changepassword",
+                errors: ["Password is not valid"]
+            };
+            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             return;
         }
 
@@ -138,15 +140,19 @@ export class ChangePassword {
                 if (details && details.length > 0) {
                     let message = "";
                     const errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
-                    this.errorMessages(errorMessages);
-                    const event = new CustomEvent("validationsummary", {detail: {msgs: errorMessages, from: "changepassword"}});
-                    this.eventManager.dispatchEvent("validationsummary", event);
+                    const validationReport: ValidationReport = {
+                        source: "changepassword",
+                        errors: errorMessages
+                    };
+                    this.eventManager.dispatchEvent("onValidationErrors",validationReport);
                 }
             }
             else {
-                const event = new CustomEvent("validationsummary", {detail: {msgs: ["Server error. Unable to send request. Please try again later."], from: "changepassword"}});
-                    this.eventManager.dispatchEvent("validationsummary", event);
-                this.errorMessages(["Server error. Unable to send request. Please try again later."]);
+                const validationReport: ValidationReport = {
+                    source: "changepassword",
+                    errors: ["Server error. Unable to send request. Please try again later."]
+                };
+                this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             }
         }
     }

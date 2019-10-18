@@ -6,7 +6,8 @@ import { CaptchaService } from "../../../../../services/captchaService";
 import { UsersService } from "../../../../../services/usersService";
 import { TenantSettings } from "../../../../../contracts/tenantSettings";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
-import { IEventManager } from "@paperbits/common/events/IEventManager";
+import { IEventManager } from "@paperbits/common/events";
+import { ValidationReport } from "../../../../../contracts/validationReport";
 
 declare var WLSPHIP0;
 
@@ -30,7 +31,6 @@ export class UserSignup {
     public readonly showTerms: ko.Observable<boolean>;
     public readonly consented: ko.Observable<boolean>;
     public readonly showHideLabel: ko.Observable<string>;
-    public readonly errorMessages: ko.ObservableArray<string>;
     public readonly working: ko.Observable<boolean>;
     public readonly captcha: ko.Observable<string>;
 
@@ -48,7 +48,6 @@ export class UserSignup {
         this.showTerms = ko.observable();
         this.termsOfUse = ko.observable();
         this.showHideLabel = ko.observable();
-        this.errorMessages = ko.observableArray([]);
         this.isUserRequested = ko.observable(false);
         this.working = ko.observable(false);
         this.captcha = ko.observable();
@@ -119,7 +118,6 @@ export class UserSignup {
      * Sends user signup request to Management API.
      */
     public async signup(): Promise<void> {
-        this.errorMessages([]);
 
         let captchaSolution;
         let captchaFlowId;
@@ -156,9 +154,11 @@ export class UserSignup {
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
-            this.errorMessages(clientErrors);
-            const event = new CustomEvent("validationsummary", {detail: {msgs: clientErrors, from: "signup"}});
-            this.eventManager.dispatchEvent("validationsummary", event);
+            const validationReport: ValidationReport = {
+                source: "signup",
+                errors: clientErrors
+            };
+            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             return;
         }
 
@@ -180,24 +180,32 @@ export class UserSignup {
         try {
             await this.captchaService.sendSignupRequest(createSignupRequest);
             this.isUserRequested(true);
-            const event = new CustomEvent("validationsummary", {detail: {msgs: [], from: "signup"}});
-            this.eventManager.dispatchEvent("validationsummary",event);
+            const validationReport: ValidationReport = {
+                source: "signup",
+                errors: []
+            };
+            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
         }
         catch (error) {
             WLSPHIP0.reloadHIP();
-            if (error.code === "validationsummary") {
+            if (error.code === "ValidationError") {
                 const details: any[] = error.details;
 
                 if (details && details.length > 0) {
                     const errorMessages = details.map(item => `${item.message}`);
-                    this.errorMessages(errorMessages);
-                    const event = new CustomEvent("validationsummary", {detail: {msgs: errorMessages, from: "signup"}});
-                    this.eventManager.dispatchEvent("validationsummary",event);
+                    const validationReport: ValidationReport = {
+                        source: "signup",
+                        errors: errorMessages
+                    };
+                    this.eventManager.dispatchEvent("onValidationErrors",validationReport);
                 }
             }
             else {
-                const event = new CustomEvent("validationsummary", {detail: {msgs: ["Server error. Unable to send request. Please try again later."], from: "signup"}});
-                this.eventManager.dispatchEvent("validationsummary",event);
+                const validationReport: ValidationReport = {
+                    source: "signup",
+                    errors: ["Server error. Unable to send request. Please try again later."]
+                };
+                this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             }
         }
     }
