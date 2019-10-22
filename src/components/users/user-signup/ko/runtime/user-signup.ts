@@ -90,7 +90,9 @@ export class UserSignup {
 
             throw error;
         }
-
+        // When user didn't specify the setting, set them to false
+        if (!this.isConsentRequired()) this.isConsentRequired(false);
+        if (!this.termsEnabled()) this.termsEnabled(false);
         const settings = {
             userRegistrationTerms: this.termsOfUse(),
             userRegistrationTermsEnabled: this.termsEnabled(),
