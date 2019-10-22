@@ -4,7 +4,6 @@ import { Subscription } from "../models/subscription";
 import { Product } from "../models/product";
 import { SubscriptionContract, SubscriptionState } from "../contracts/subscription";
 import { ProductContract } from "../contracts/product";
-import { TenantSettings } from "../contracts/tenantSettings";
 import { TenantService } from "../services/tenantService";
 import { HttpHeader } from "@paperbits/common/http";
 import * as Constants from "../constants";
@@ -15,8 +14,6 @@ import { SearchQuery } from "../contracts/searchQuery";
  * A service for management operations with products.
  */
 export class ProductService {
-    private tenantSettings: TenantSettings;
-
     constructor(
         private readonly mapiClient: MapiClient,
         private readonly tenantService: TenantService
@@ -234,10 +231,10 @@ export class ProductService {
             throw new Error(`Parameter "userId" not specified.`);
         }
 
-        await this.loadTenantSettings();
+        const isDelegation = await this.tenantService.isSubscriptionDelegationEnabled();
 
-        if (this.tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"] && this.tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"].toLowerCase() === "true") {
-            console.log("Delegation enabled. Can't create subscription");
+        if (isDelegation) {
+            console.warn("Delegation enabled. Can't create subscription");
         }
         else {
             const data = {
@@ -257,10 +254,10 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        await this.loadTenantSettings();
+        const isDelegation = await this.tenantService.isSubscriptionDelegationEnabled();
 
-        if (this.tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"] && this.tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"].toLowerCase() === "true") {
-            console.log("Delegation enabled. Can't cancel subscription");
+        if (isDelegation) {
+            console.warn("Delegation enabled. Can't cancel subscription");
         } else {
             await this.updateSubscription(subscriptionId, { state: SubscriptionState.cancelled });
         }
@@ -274,7 +271,9 @@ export class ProductService {
      * @param newName {string} New subscription name.
      */
     public async renameSubscription(subscriptionId: string, newName: string): Promise<Subscription> {
-        await this.loadTenantSettings();
+        if (!subscriptionId) {
+            throw new Error(`Parameter "subscriptionId" not specified.`);
+        }
 
         if (newName) {
             await this.updateSubscription(subscriptionId, { name: newName });
@@ -295,11 +294,5 @@ export class ProductService {
         };
 
         await this.mapiClient.patch(subscriptionId, [header], body);
-    }
-
-    private async loadTenantSettings(): Promise<void> {
-        if (!this.tenantSettings) {
-            this.tenantSettings = await this.tenantService.getSettings();
-        }
     }
 }

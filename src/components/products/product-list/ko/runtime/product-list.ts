@@ -1,7 +1,6 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./product-list.html";
-import { Router } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
@@ -29,8 +28,7 @@ export class ProductList {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly productService: ProductService,
-        private readonly router: Router
+        private readonly productService: ProductService
     ) {
         this.products = ko.observableArray();
         this.working = ko.observable(true);

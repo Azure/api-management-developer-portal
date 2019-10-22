@@ -28,6 +28,7 @@ import { ChangePasswordModule } from "./components/users/change-password/ko/chan
 import { ReportsModule } from "./components/reports/ko/reports.module";
 import { TenantService } from "./services/tenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/ko/validationSummary.module";
+import { BackendService } from "./services/backendService";
 
 
 export class ApimPublishModule implements IInjectorModule {
@@ -54,7 +55,8 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ValidationSummaryModule());
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
-        injector.bindSingleton("tenantService", TenantService);
+        injector.bindSingleton("tenantService", TenantService);        
+        injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("router", StaticRouter);
         injector.bindSingleton("authenticator", StaticAuthenticator);

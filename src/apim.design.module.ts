@@ -51,6 +51,7 @@ import { ChangePasswordEditorModule } from "./components/users/change-password/k
 import { TenantService } from "./services/tenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/ko/validationSummary.module";
 import { ValidationSummaryEditorModule} from "./components/users/validation-summary/ko/validationSummaryEditor.module"
+import { BackendService } from "./services/backendService";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -101,7 +102,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("app", App);
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("userService", UserService);
-        injector.bindSingleton("tenantService", TenantService);
+        injector.bindSingleton("tenantService", TenantService);        
+        injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
