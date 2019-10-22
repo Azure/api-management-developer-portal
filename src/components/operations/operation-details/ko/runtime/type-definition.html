@@ -48,5 +48,8 @@
 
 <!-- ko if: $component.example -->
 <h5>Example</h5>
-<pre data-bind="text: $component.example" highlight-code class="json"></pre>
+<div>
+    <button data-bind="copyToClipboard: $component.example">Copy</button>
+    <pre data-bind="syntaxHighlight: { code: $component.example, language: $component.exampleLanguage }"></pre>
+</div>
 <!-- /ko -->

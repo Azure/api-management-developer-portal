@@ -1,11 +1,3 @@
-import "./polyfills";
-import "./bindingHandlers/scrollintoview";
-import "./bindingHandlers/codesample";
-import "./bindingHandlers/schemaobjecttype";
-import "./bindingHandlers/markdown";
-import "./bindingHandlers/barChart";
-import "./bindingHandlers/mapChart";
-import "./bindingHandlers/minMaxAvgChart";
 import { InversifyInjector } from "@paperbits/common/injection";
 import { ApimRuntimeModule } from "./apim.runtime.module";
 import { HistoryRouteHandler, LocationRouteHandler } from "@paperbits/common/routing";

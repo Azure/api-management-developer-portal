@@ -7,29 +7,23 @@ import "prismjs/components/prism-csharp";
 import "prismjs/components/prism-java";
 import "prismjs/components/prism-python";
 import "prismjs/components/prism-ruby";
-// import "prismjs/components/prism-markup";
+import "prismjs/components/prism-markup";
 // import "prismjs/components/prism-php"; // broken!
 
-import { TemplatingService } from "../services/templatingService";
 
-interface TemplateConfig {
-    template?: string;
-    model: Object;
+interface SyntaxHighlightConfig {
+    code: string;
     language: string;
 }
 
-ko.bindingHandlers["codeSample"] = {
-    update: (element: HTMLElement, valueAccessor: () => TemplateConfig): void => {
+ko.bindingHandlers["syntaxHighlight"] = {
+    update: (element: HTMLElement, valueAccessor: () => SyntaxHighlightConfig): void => {
         const config = valueAccessor();
-        const template = ko.unwrap(config.template);
+        const code = ko.unwrap(config.code);
         const language = ko.unwrap(config.language);
-        const templateModel = ko.unwrap(config.model);
 
         const render = async () => {
-            const result = await TemplatingService.render(template, ko.toJS(templateModel));
-
             let highlightLanguage;
-            highlightLanguage = "js";
 
             switch (language) {
                 case "csharp":
@@ -61,11 +55,21 @@ ko.bindingHandlers["codeSample"] = {
                 case "xml":
                     highlightLanguage = "xml";
                     break;
+                case "json":
+                    highlightLanguage = "js";
+                    break;
+                default:
+                    highlightLanguage = "plain";
             }
 
-            const html = Prism.highlight(result, Prism.languages[highlightLanguage], highlightLanguage);
-
-            ko.applyBindingsToNode(element, { html: html }, null);
+            if (highlightLanguage === "plain") {
+                const text = code;
+                ko.applyBindingsToNode(element, { text: text }, null);
+            }
+            else {
+                const html = Prism.highlight(code, Prism.languages[highlightLanguage], highlightLanguage);
+                ko.applyBindingsToNode(element, { html: html }, null);
+            }
         };
 
         render();

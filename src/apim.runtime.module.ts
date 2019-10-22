@@ -1,7 +1,17 @@
-import { RouteHelper } from "./routing/routeHelper";
+import "./polyfills";
+import "./bindingHandlers/scrollintoview";
+import "./bindingHandlers/codeSample";
+import "./bindingHandlers/copyToClipboard";
+import "./bindingHandlers/syntaxHighlight";
+import "./bindingHandlers/schemaobjecttype";
+import "./bindingHandlers/markdown";
+import "./bindingHandlers/barChart";
+import "./bindingHandlers/mapChart";
+import "./bindingHandlers/minMaxAvgChart";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.component";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.focus";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.activate";
+import { RouteHelper } from "./routing/routeHelper";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { DefaultEventManager } from "@paperbits/common/events";
 import { XmlHttpRequestClient } from "@paperbits/common/http";

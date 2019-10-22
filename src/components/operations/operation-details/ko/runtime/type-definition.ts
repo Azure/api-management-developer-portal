@@ -13,9 +13,11 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 })
 export class TypeDefinitionViewModel {
     public example: ko.Observable<string>;
+    public exampleLanguage: ko.Observable<string>;
 
     constructor(private readonly routeHelper: RouteHelper) {
         this.example = ko.observable();
+        this.exampleLanguage = ko.observable();
     }
 
     @Param()
@@ -37,19 +39,24 @@ export class TypeDefinitionViewModel {
     public initialize(): void {
         if (this.representation && this.representation.sample) {
             let example;
+            let exampleLanguage = "none";
 
             if (this.representation.contentType.contains("/xml")) {
                 example = Utils.formatXml(this.representation.sample);
+                exampleLanguage = "xml";
             }
 
             if (this.representation.contentType.contains("/json")) {
                 example = Utils.formatJson(this.representation.sample);
+                exampleLanguage = "json";
             }
-
+            
+            this.exampleLanguage(exampleLanguage);
             this.example(example);
         }
         else if (this.definition.example) {
             // Definition has always JSON example
+            this.exampleLanguage("json");
             this.example(this.definition.example);
         }
     }
