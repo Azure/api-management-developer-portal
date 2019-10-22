@@ -1,36 +1,38 @@
-<div class="row">
-    <div class="col-md-9">
-        <div class="search-input">
-            <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
-                data-bind="textInput: pattern" />
-            <button type="button" class="search-button">
-                <i class="icon icon-magnifier"></i>
-            </button>
-        </div>
+<div class="form-inline search-input">
+    <div class="input-group">
+        <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs" data-bind="textInput: pattern" />
+        <button type="button" class="search-button">
+            <i class="icon icon-magnifier"></i>
+        </button>
     </div>
-    <div class="col-md-3"></div>
 </div>
 
 <div class="table">
-    <div class="table-row table-header flex">
-        <div class="col-md-5">Name</div>
-        <div class="col-md-7">Description</div>
+    <div class="table-head">
+        <div class="row">
+            <div class="col-md-5">Name</div>
+            <div class="col-md-7">Description</div>
+        </div>
     </div>
 
+    <!-- ko if: working -->
     <div class="table-body">
-        <!-- ko if: working -->
         <spinner class="fit"></spinner>
-        <!-- /ko -->
+    </div>
+    <!-- /ko -->
 
-        <!-- ko ifnot: working -->
-            
+    <!-- ko ifnot: working -->
+    <div class="table-body">
         <!-- ko if: apis().length > 0 -->
         <!-- ko foreach: { data: apis, as: 'item' } -->
         <div class="table-row flex">
             <div class="col-5">
-                <a href="#" class="text-truncate" data-bind="attr: { href: $component.getReferenceUrl(item) }, text: item.displayName"></a>
+                <a href="#" class="text-truncate"
+                    data-bind="attr: { href: $component.getReferenceUrl(item) }, text: item.displayName"></a>
             </div>
-            <div class="col-7" data-bind="markdown: item.description"></div>
+            <div class="col-7">
+                <div data-bind="markdown: item.description"></div>
+            </div>
         </div>
         <!-- /ko -->
         <!-- /ko -->
@@ -38,9 +40,10 @@
         <!-- ko if: apis().length === 0 -->
         <p>This product doesn't have APIs.</p>
         <!-- /ko -->
-
-        <!-- /ko -->
     </div>
+    <!-- /ko -->
+
+
     <!-- ko if: hasPager -->
     <!-- ko ifnot: working -->
     <div class="table-footer">
@@ -58,7 +61,8 @@
             </li>
             <!-- ko if: hasNextPage -->
             <li class="page-item">
-                <a href="#" class="page-link" role="button" aria-label="Next page" data-bind="click: nextPage, enable: hasNextPage">
+                <a href="#" class="page-link" role="button" aria-label="Next page"
+                    data-bind="click: nextPage, enable: hasNextPage">
                     <i class="icon icon-chevron-right"></i>
                 </a>
             </li>

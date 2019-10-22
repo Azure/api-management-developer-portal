@@ -7,17 +7,19 @@ export class ConsoleRepresentation {
     public typeName?: string;
 
     constructor(contract: RepresentationContract) {
-        this.sample = contract.generatedSample;
+        this.sample = contract.sample;
         this.contentType = contract.contentType;
+        this.schemaId = contract.schemaId;
+        this.typeName = contract.typeName;
     }
 
     public toRepresentation(): RepresentationContract {
-        let representation: RepresentationContract = {
+        const representation: RepresentationContract = {
             contentType: this.contentType,
-            generatedSample: this.sample,
+            sample: this.sample,
             schemaId: this.schemaId,
             typeName: this.typeName
-        }
+        };
         return representation;
     }
 }

@@ -1,9 +1,10 @@
+import { RouteHelper } from "./../../../../../routing/routeHelper";
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./api-list-dropdown.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
-import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
+import { ApiService } from "../../../../../services/apiService";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 
@@ -16,8 +17,8 @@ import { SearchQuery } from "../../../../../contracts/searchQuery";
 })
 export class ApiListDropdown {
     public readonly apiGroups: ko.ObservableArray<TagGroup<Api>>;
+    public readonly selectedApiName: ko.Observable<string>;
     public readonly working: ko.Observable<boolean>;
-    public readonly selectedId: ko.Observable<string>;
     public readonly pattern: ko.Observable<string>;
     public readonly page: ko.Observable<number>;
     public readonly hasPager: ko.Computed<boolean>;
@@ -27,9 +28,12 @@ export class ApiListDropdown {
     public readonly selectedApi: ko.Observable<Api>;
     public readonly selection: ko.Computed<string>;
 
-    constructor(private readonly apiService: ApiService) {
+    constructor(
+        private readonly apiService: ApiService,
+        private readonly routeHelper: RouteHelper
+    ) {
         this.working = ko.observable();
-        this.selectedId = ko.observable();
+        this.selectedApiName = ko.observable();
         this.pattern = ko.observable();
         this.page = ko.observable(1);
         this.hasPrevPage = ko.observable();
@@ -109,6 +113,6 @@ export class ApiListDropdown {
     }
 
     public getReferenceUrl(api: Api): string {
-        return `${Constants.apiReferencePageUrl}#?apiId=${api.name}`;
+        return this.routeHelper.getApiReferenceUrl(api.name);
     }
 }

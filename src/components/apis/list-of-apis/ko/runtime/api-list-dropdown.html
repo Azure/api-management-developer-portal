@@ -1,9 +1,17 @@
-<div tabindex="0" role="listbox" class="form-control">
-    <div data-bind="click: toggle, text: selection"></div>
+<div tabindex="0" role="listbox">
+    <div class="form-control" tabindex="0" data-bind="activate: toggle, css: { expanded: expanded }, attr: { 'aria-expanded': expanded }">
+        <div class="input-group">
+            <div class="input" data-bind="text: selection"></div>
+            <div class="input-group-append">
+                <i class="icon icon-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+
     <div class="dropdown" data-bind="visible: expanded">
         <div class="search-input">
             <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
-                data-bind="textInput: pattern" />
+                data-bind="textInput: pattern" autofocus />
             <button type="button" class="search-button">
                 <i class="icon icon-magnifier"></i>
             </button>

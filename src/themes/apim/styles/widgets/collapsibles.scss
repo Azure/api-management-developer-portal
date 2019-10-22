@@ -1,0 +1,64 @@
+.collapsible-container {
+    flex-wrap: wrap;
+}
+
+.collapsible-content {
+    display: none;
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.collapsible-panel {
+    flex: 1;
+    min-width: 1px;
+
+    .hamburger {
+        display: none;
+        border: none;
+        background: none;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 0 10px;
+        cursor: pointer;
+        position: absolute;
+        right: 0; // TODO: Should be configurable
+        z-index: 9000;
+    }
+}
+
+@media (min-width: $breakpoint-md) {
+    .collapsible-panel {
+        > .collapsible-content {
+            display: flex;
+        }
+    }
+}
+
+.collapsible.expanded > .collapsible-content {
+    display: flex;
+    position: absolute;
+    top: 100%;
+
+    z-index: 9000;
+    border: 1px solid #ccc;
+}
+
+.collapsible-panel.collapsible.expanded > .collapsible-content {
+    left: 0;
+    right: 0;
+}
+
+@media (max-width: $breakpoint-md) {
+    .collapsible-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        .hamburger {
+            display: block;
+        }
+    }
+}

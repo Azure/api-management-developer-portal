@@ -2,7 +2,8 @@ import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./api-history.html";
 import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
-import { DefaultRouter, Route } from "@paperbits/common/routing";
+import { Router } from "@paperbits/common/routing";
+import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
 import { ChangeLogContract } from "../../../../../contracts/apiChangeLog";
@@ -15,8 +16,6 @@ import { Utils } from "../../../../../utils";
     injectable: "apiHistory"
 })
 export class ApiHistory {
-    private queryParams: URLSearchParams;
-
     public api: ko.Observable<Api> = null;
     public apiId: string = null;
     public versionApis: ko.ObservableArray<Api>;
@@ -30,7 +29,8 @@ export class ApiHistory {
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly router: DefaultRouter
+        private readonly router: Router,
+        private readonly routeHelper: RouteHelper
     ) {
         this.api = ko.observable();
         this.versionApis = ko.observableArray([]);
@@ -47,37 +47,33 @@ export class ApiHistory {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.loadApi(this.router.getCurrentRoute());
+        await this.loadApi();
         this.router.addRouteChangeListener(this.loadApi);
     }
 
-    public async loadApi(route?: Route): Promise<void> {
-        if (!route || !route.hash) {
-            this.api(null);
-            return;
-        }
-        const currentHash = route.hash;
+    public async loadApi(): Promise<void> {
+        const apiName = this.routeHelper.getApiName();
 
-        this.queryParams = new URLSearchParams(currentHash);
-
-        if (!this.queryParams.has("apiId")) {
+        if (!apiName) {
             this.api(null);
             return;
         }
 
-        const apiName = this.queryParams.get("apiId");
         if (this.api() && this.api().name === apiName) {
             return;
         }
 
         try {
             this.working(true);
+
             if (apiName) {
                 const api = await this.apiService.getApi(`apis/${apiName}`);
+
                 if (api && api.apiVersionSet && api.apiVersionSet.id) {
-                    const apis = await this.apiService.getVersionSetApis(api.apiVersionSet.id);
+                    const apis = await this.apiService.getApisInVersionSet(api.apiVersionSet.id);
                     this.versionApis(apis || []);
-                } else {
+                } 
+                else {
                     this.versionApis([]);
                 }
                 this.selectedId(api.name);
@@ -85,9 +81,11 @@ export class ApiHistory {
                 this.apiId = api.id;
                 this.getCurrentPage();
             }
-        } catch (error) {
-            throw error;
-        } finally {
+        } 
+        catch (error) {
+            throw new Error(`Unable to load API history. Error: ${error}`);
+        } 
+        finally {
             this.working(false);
         }
     }
@@ -109,6 +107,7 @@ export class ApiHistory {
     private async getCurrentPage(): Promise<void> {
         const pageOfLogs = await this.apiService.getApiChangeLog(this.apiId, (this.changeLogPage() - 1) * Constants.defaultPageSize);
         pageOfLogs.value.map(x => x.properties.updatedDateTime = Utils.formatDateTime(x.properties.updatedDateTime));
+        
         this.changeLogHasPrevPage(this.changeLogPage() > 1);
         this.changeLogHasNextPage(!!pageOfLogs.nextLink);
         this.currentPageLog(pageOfLogs.value);

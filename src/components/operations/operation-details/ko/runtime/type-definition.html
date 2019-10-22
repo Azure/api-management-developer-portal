@@ -1,0 +1,52 @@
+<!-- ko if: definition.properties && definition.properties.length > 0 -->
+
+<!-- ko if: $component.anchor -->
+<h4 class="text-word-break" data-bind="text: definition.name, attr: { id: $component.getReferenceId(definition) }">
+</h4>
+<!-- /ko -->
+
+<!-- ko ifnot: $component.anchor -->
+<h4 class="text-word-break" data-bind="text: definition.name"></h4>
+<!-- /ko -->
+
+<!-- /ko -->
+
+<!-- ko if: definition.description -->
+<p data-bind="markdown: definition.description"></p>
+<!-- /ko -->
+
+<!-- ko if: definition.properties && definition.properties.length > 0 -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Required</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: { data: definition.properties, as: 'property' }">
+        <tr>
+            <td>
+                <code data-bind="text: property.name"></code>
+            </td>
+            <td data-bind="text: property.required"></td>
+            <td>
+                <!-- ko if: property.$ref -->
+                <a
+                    data-bind="text: $component.definition.name, attr: { href: $component.getReferenceUrl($component.definition) }"></a>
+                <!-- /ko -->
+                <!-- ko ifnot: property.$ref -->
+                <code data-bind="text: property.type"></code>
+                <!-- /ko -->
+            </td>
+            <td data-bind="markdown: property.description"></td>
+        </tr>
+    </tbody>
+</table>
+<!-- /ko -->
+
+<!-- ko if: $component.example -->
+<h5>Example</h5>
+<pre data-bind="text: $component.example" highlight-code class="json"></pre>
+<!-- /ko -->

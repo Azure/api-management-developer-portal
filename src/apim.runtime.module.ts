@@ -1,4 +1,7 @@
+import { RouteHelper } from "./routing/routeHelper";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.component";
+import "@paperbits/core/ko/bindingHandlers/bindingHandlers.focus";
+import "@paperbits/core/ko/bindingHandlers/bindingHandlers.activate";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { DefaultEventManager } from "@paperbits/common/events";
 import { XmlHttpRequestClient } from "@paperbits/common/http";
@@ -44,6 +47,9 @@ import { Reports } from "./components/reports/ko/runtime/reports";
 import { UnhandledErrorHandler } from "./bindingHandlers/unhandledErrorHandler";
 import { ProductListDropdown } from "./components/products/product-list/ko/runtime/product-list-dropdown";
 import { ValidationSummary } from "./components/users/validation-summary/ko/runtime/validation-summary";
+import { TypeDefinitionViewModel } from "./components/operations/operation-details/ko/runtime/type-definition";
+import { VisibilityGuard } from "@paperbits/common/user";
+import { StaticUserService } from "./services";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -54,6 +60,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindCollection("routeGuards");
         // injector.bindToCollection("routeGuards", AccessTokenRouteGuard);
+        injector.bindToCollection("autostart", VisibilityGuard);
         injector.bindSingleton("router", DefaultRouter);
         injector.bind("apiList", ApiList);
         injector.bind("apiListDropdown", ApiListDropdown);
@@ -63,6 +70,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationDetails", OperationDetails);
         injector.bind("operationConsole", OperationConsole);
         injector.bind("schemaDetails", SchemaDetails);
+        injector.bind("typeDefinition", TypeDefinitionViewModel);
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);
         injector.bind("tagService", TagService);
@@ -98,5 +106,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("settingsProvider", SettingsProvider);
         injector.bindSingleton("accessTokenRouteChecker", AccessTokenRouteGuard);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
+        injector.bindSingleton("routeHelper", RouteHelper);
+        injector.bindSingleton("userService", StaticUserService);
     }
 }

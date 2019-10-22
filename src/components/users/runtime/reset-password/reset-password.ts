@@ -5,7 +5,7 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { UsersService } from "../../../../services/usersService";
 import { ResetRequest } from "../../../../contracts/resetRequest";
 import { CaptchaService } from "../../../../services/captchaService";
-import { IEventManager } from "@paperbits/common/events";
+import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../contracts/validationReport";
 
 declare var WLSPHIP0;
@@ -25,7 +25,7 @@ export class ResetPassword {
     constructor(
         private readonly usersService: UsersService,       
         private readonly captchaService: CaptchaService,
-        private readonly eventManager: IEventManager) {
+        private readonly eventManager: EventManager) {
         this.email = ko.observable();
         this.isResetRequested = ko.observable(false);
         this.working = ko.observable(false);

@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const injector = new InversifyInjector();
     injector.bindModule(new ApimRuntimeModule());
 
-    if (location.href.contains("designtime=true")) {
+    if (location.href.includes("designtime=true")) {
         injector.bindToCollection("autostart", HistoryRouteHandler);
     }
     else {

@@ -20,6 +20,7 @@ import { HttpHeader } from "@paperbits/common/http/httpHeader";
 import { ChangeLogContract } from "../contracts/apiChangeLog";
 import { TagGroup } from "../models/tagGroup";
 import { Bag } from "@paperbits/common";
+import { Tag } from "../models/tag";
 
 
 export class ApiService {
@@ -61,14 +62,13 @@ export class ApiService {
      * Returns APIs in specified version set.
      * @param versionSetId Unique version set identifier.
      */
-    public async getVersionSetApis(versionSetId: string): Promise<Api[]> {
+    public async getApisInVersionSet(versionSetId: string): Promise<Api[]> {
         if (!versionSetId) {
             return null;
         }
+        
         const query = "/apis?expandApiVersionSet=true";
-
         const apisPage = await this.mapiClient.get<Page<ApiContract>>(query);
-
         const result = apisPage.value.filter(x => x.properties.apiVersionSetId && Utils.getResourceName("api-version-sets", x.properties.apiVersionSetId, "shortId") === versionSetId).map(x => new Api(x));
 
         return result;
@@ -79,6 +79,10 @@ export class ApiService {
      * @param searchRequest Search request definition.
      */
     public async getOperationsByTags(apiId: string, searchQuery?: SearchQuery): Promise<Page<TagGroup<Operation>>> {
+        if (!apiId) {
+            throw new Error(`Parameter "apiId" not specified.`);
+        }
+
         const skip = searchQuery && searchQuery.skip || 0;
         const take = searchQuery && searchQuery.take || Constants.defaultPageSize;
 
@@ -103,6 +107,7 @@ export class ApiService {
         const pagesOfOperationsByTag = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(query);
         const page = new Page<TagGroup<Operation>>();
         const tagGroups: Bag<TagGroup<Operation>> = {};
+
         pagesOfOperationsByTag.value.forEach(x => {
             const tagContract: TagContract = x.tag ? Utils.armifyContract(x.tag) : null;
             const operationContract: OperationContract = x.operation ? Utils.armifyContract(x.operation) : null;
@@ -123,7 +128,7 @@ export class ApiService {
                 tagGroups[tagName] = tagGroup;
             }
             tagGroup.items.push(new Operation(operationContract));
-        })
+        });
         page.value = Object.keys(tagGroups).map(x => tagGroups[x]);
         page.nextLink = pagesOfOperationsByTag.nextLink;
 
@@ -193,12 +198,25 @@ export class ApiService {
         return page;
     }
 
+    public async getOperationTags(operationId: string): Promise<Tag[]> {
+        if (!operationId) {
+            throw new Error(`Parameter "operationId" not specified.`);
+        }
+
+        const result = await this.mapiClient.get<Page<TagContract>>(`${operationId}/tags`);
+        return result.value.map(contract => new Tag(contract));
+    }
+
     /**
      * Returns API with specified ID and revision.
      * @param apiId Unique API indentifier.
      * @param revision 
      */
     public async getApi(apiId: string, revision?: string): Promise<Api> {
+        if (!apiId) {
+            throw new Error(`Parameter "apiId" not specified.`);
+        }
+
         let apiResourceUri = apiId;
 
         if (revision) {
@@ -224,6 +242,10 @@ export class ApiService {
     }
 
     public exportApi(apiId: string, format: string): Promise<string> {
+        if (!apiId) {
+            throw new Error(`Parameter "apiId" not specified.`);
+        }
+
         const header: HttpHeader = {
             name: "Accept",
             value: "application/vnd.swagger.doc+json"
@@ -257,6 +279,10 @@ export class ApiService {
      * @returns all changelog pages
      */
     public async getApiChangeLog(apiId: string, skip: number): Promise<Page<ChangeLogContract>> {
+        if (!apiId) {
+            throw new Error(`Parameter "apiId" not specified.`);
+        }
+
         let apiResourceUri = apiId;
         const take = Constants.defaultPageSize;
         apiResourceUri += `/releases?$top=${take}&$skip=${skip}`;
@@ -275,6 +301,10 @@ export class ApiService {
     }
 
     public async getOperation(operationId: string): Promise<Operation> {
+        if (!operationId) {
+            throw new Error(`Parameter "operationId" not specified.`);
+        }
+
         const operationContract = await this.mapiClient.get<OperationContract>(operationId);
 
         if (!operationContract) {
@@ -287,6 +317,10 @@ export class ApiService {
     }
 
     public async getOperations(apiId: string, searchQuery?: SearchQuery): Promise<Page<Operation>> {
+        if (!apiId) {
+            throw new Error(`Parameter "apiId" not specified.`);
+        }
+
         let query = `${apiId}/operations`;
 
         let top;
@@ -323,6 +357,7 @@ export class ApiService {
     public async getApiSchema(schemaId: string): Promise<Schema> {
         const apiId = schemaId.split("/schemas").shift();
         let cachedApi = this.lastApiSchemas[apiId];
+
         if (!cachedApi) {
             // clean cache if apiId changed
             if (Object.keys(this.lastApiSchemas).length > 0) {
@@ -363,7 +398,12 @@ export class ApiService {
     private lastApiProducts = {};
 
     public async getAllApiProducts(apiId: string): Promise<Page<Product>> {
+        if (!apiId) {
+            throw new Error(`Parameter "apiId" not specified.`);
+        }
+
         let cachedApi = this.lastApiProducts[apiId];
+
         if (!cachedApi) {
             // clean cache if apiId changed
             if (Object.keys(this.lastApiProducts).length > 0) {

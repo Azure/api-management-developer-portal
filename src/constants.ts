@@ -25,6 +25,6 @@ export const homeUrl = "/";
  * Maximum number of items to show in a paginated view.
  */
 export const defaultPageSize = 50;
-export const apiReferencePageUrl = "/reference";
-export const productReferencePageUrl = "/product";
+export const apiDetailsPageUrl = "/reference";
+export const productDetailsPageUrl = "/products";
 export const defaultInputDelayMs = 600;

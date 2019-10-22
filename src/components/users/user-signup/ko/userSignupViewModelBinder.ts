@@ -2,14 +2,14 @@ import { ViewModelBinder } from "@paperbits/common/widgets";
 import { UserSignupViewModel } from "./userSignupViewModel";
 import { UserSignupModel } from "../userSignupModel";
 import { Bag } from "@paperbits/common";
-import { IEventManager } from "@paperbits/common/events/IEventManager";
+import { EventManager } from "@paperbits/common/events";
 import { TenantService } from "../../../../services/tenantService";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 
 export class UserSignupViewModelBinder implements ViewModelBinder<UserSignupModel, UserSignupViewModel> {
     
     constructor(
-        private readonly eventManager: IEventManager, 
+        private readonly eventManager: EventManager, 
         private readonly tenantService: TenantService) {}
     
     public async modelToViewModel(model: UserSignupModel, viewModel?: UserSignupViewModel, bindingContext?: Bag<any>): Promise<UserSignupViewModel> {

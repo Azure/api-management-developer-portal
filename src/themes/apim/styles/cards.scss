@@ -10,11 +10,15 @@
         color: inherit;
     }
 
-    .cards-body,
+    .cards-body, 
     .cards-footer {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+    }
+
+    .cards-body {
+        min-height: 200px;
     }
 
     .card {

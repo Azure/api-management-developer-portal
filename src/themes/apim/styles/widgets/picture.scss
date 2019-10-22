@@ -1,74 +1,37 @@
-﻿.picture {
+﻿picture {
     display: inline-block;
-    line-height: 1em;
-    text-align: center;
-    max-width: 100%;
-    user-select: none;
-    margin: 0;
 
-    * {
-        pointer-events: none;
-    }
-
-    .content {
-        //@include no-drag();
-        position: relative;
-        max-width: 100%;
-    }
-
-    &.noframe {
-        .picture-caption {
-            padding: 0;
-            margin: 5px 0 0;
-            font-weight: normal;
-            text-align: center;
-            width: 100%;
-        }
-    }
-
-    &.polaroid {
-        box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.15);
-
-        .picture-caption {
-            font-size: .8em;
-            line-height: 2.5em;
-            padding: 0;
-            margin: 5px 0 0;
-            font-style: italic;
-            width: 100%;
-        }
-    }
-
-    &.circle {
-        border-radius: 50%;
-        overflow: hidden;
+    a {
+        display: inline-block;
     }
 }
 
-img:not([src]) {
-    width: 270px;
-    height: 270px;
-    display: block;
-    position: relative;
+img {
+    max-width: 100%;
 
-    &:before {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: #fff;
-        content: "";
-    }
+    &:not([src]) {
+        min-width: 250px;
+        min-height: 250px;
+        display: block;
+        position: relative;
+        overflow: hidden;
 
-    &:after {
-        content: attr(alt);
-        line-height: 270px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.0) 10px, rgba(0, 0, 0, 0.05) 10px, rgba(0, 0, 0, 0.05) 20px);
+        &:before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #fff;
+            content: "";
+        }
+
+        &:after {
+            @include fit(0);
+            background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8IS0tIENyZWF0b3I6IENvcmVsRFJBVyAyMDE3IC0tPg0KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSIzMDBweCIgaGVpZ2h0PSIzMDBweCIgdmVyc2lvbj0iMS4xIiBzdHlsZT0ic2hhcGUtcmVuZGVyaW5nOmdlb21ldHJpY1ByZWNpc2lvbjsgdGV4dC1yZW5kZXJpbmc6Z2VvbWV0cmljUHJlY2lzaW9uOyBpbWFnZS1yZW5kZXJpbmc6b3B0aW1pemVRdWFsaXR5OyBmaWxsLXJ1bGU6ZXZlbm9kZDsgY2xpcC1ydWxlOmV2ZW5vZGQiDQp2aWV3Qm94PSIwIDAgMTYzNzAwIDE2MzcwMCINCiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+DQogPGRlZnM+DQogIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQogICA8IVtDREFUQVsNCiAgICAuc3RyMCB7c3Ryb2tlOiNBOUFCQUU7c3Ryb2tlLXdpZHRoOjE3MDtzdHJva2UtbWl0ZXJsaW1pdDoyLjYxMzEzfQ0KICAgIC5maWwwIHtmaWxsOm5vbmV9DQogICAgLmZpbDEge2ZpbGw6I0U2RTdFODtmaWxsLXJ1bGU6bm9uemVyb30NCiAgIF1dPg0KICA8L3N0eWxlPg0KIDwvZGVmcz4NCiA8ZyBpZD0iTGF5ZXJfeDAwMjBfMSI+DQogIDxtZXRhZGF0YSBpZD0iQ29yZWxDb3JwSURfMENvcmVsLUxheWVyIi8+DQogIDxyZWN0IGNsYXNzPSJmaWwwIiB3aWR0aD0iMTYzNzAwIiBoZWlnaHQ9IjE2MzcwMCIvPg0KICA8ZyBpZD0iXzI0NDY3NzA1MTg1MTIiPg0KICAgPHBhdGggY2xhc3M9ImZpbDEgc3RyMCIgZD0iTTU0OTQwIDEwMzA3MGwxMTI2MCAtMTk3MTAgMTAzMjAgNzc0MCAxNTcxMCAtMTgzMzAgMTg0NTAgMzM4MjAgLTU3NzUwIDAgMjAxMCAtMzUyMHptMTI3MTAgLTEyNzcwbC02NjMwIDExNTkwIDQxNzYwIDAgLTExNDEwIC0yMDkxMCAtMTQxNDAgMTY1MDAgLTk1ODAgLTcxODB6Ii8+DQogICA8cGF0aCBjbGFzcz0iZmlsMSBzdHIwIiBkPSJNNzcwMTAgNjgxNzBjMCwtMTA3MCAtNDMwLC0yMDQwIC0xMTMwLC0yNzQwIC03MDAsLTcwMCAtMTY3MCwtMTEzMCAtMjc0MCwtMTEzMCAtMTA2MCwwIC0yMDMwLDQzMCAtMjczMCwxMTMwIC03MDAsNzAwIC0xMTMwLDE2NzAgLTExMzAsMjc0MCAwLDEwNzAgNDMwLDIwMzAgMTEzMCwyNzMwIDcwMCw3MDAgMTY3MCwxMTQwIDI3MzAsMTE0MCAxMDcwLDAgMjA0MCwtNDQwIDI3NDAsLTExNDAgNzAwLC03MDAgMTEzMCwtMTY2MCAxMTMwLC0yNzMwem0yMTkwIC02MDYwYzE1NTAsMTU1MCAyNTEwLDM2OTAgMjUxMCw2MDYwIDAsMjM3MCAtOTYwLDQ1MTAgLTI1MTAsNjA2MCAtMTU1MCwxNTUwIC0zNjkwLDI1MTAgLTYwNjAsMjUxMCAtMjM2MCwwIC00NTEwLC05NjAgLTYwNjAsLTI1MTAgLTE1NTAsLTE1NTAgLTI1MTAsLTM2OTAgLTI1MTAsLTYwNjAgMCwtMjM3MCA5NjAsLTQ1MTAgMjUxMCwtNjA2MCAxNTUwLC0xNTUwIDM3MDAsLTI1MTAgNjA2MCwtMjUxMCAyMzcwLDAgNDUxMCw5NjAgNjA2MCwyNTEweiIvPg0KICAgPHBhdGggY2xhc3M9ImZpbDEgc3RyMCIgZD0iTTQ5MzcwIDExNDMzMGw2NDk2MCAwIDAgLTY0OTYwIC02NDk2MCAwIDAgNjQ5NjB6bTY3MzEwIDQ3MDBsLTcyMDEwIDAgMCAtNzQzNjAgNzQzNjAgMCAwIDc0MzYwIC0yMzUwIDB6Ii8+DQogIDwvZz4NCiA8L2c+DQo8L3N2Zz4NCg==");
+            background-position: center;
+            background-color: #f7f7f8;
+            content: "";
+        }
     }
 }

@@ -1,11 +1,14 @@
 import * as ko from "knockout";
 import template from "./operation-details.html";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { Router } from "@paperbits/common/routing";
+import { Component, RuntimeComponent, OnMounted, OnDestroyed } from "@paperbits/common/ko/decorators";
+import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
-import { DefaultRouter, Route } from "@paperbits/common/routing";
-import { Api } from "../../../../../models/api";
-import { Utils } from "../../../../../utils";
+import { TypeDefinition } from "./../../../../../models/schema";
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { TenantService } from "../../../../../services/tenantService";
+
 
 @RuntimeComponent({ selector: "operation-details" })
 @Component({
@@ -14,129 +17,160 @@ import { Utils } from "../../../../../utils";
     injectable: "operationDetails"
 })
 export class OperationDetails {
-    private currentUrl: string;
-    private currentApiId: string;
-    private operationId: string;
-    private hostName: string;
+    private definitions: ko.ObservableArray<TypeDefinition>;
 
-    public selectedOperation: ko.Observable<Operation>;
-    public api: ko.Observable<Api>;
-    public schemas: ko.ObservableArray<string>;
-    public operation: ko.Observable<Operation>;
+    public readonly selectedApiName: ko.Observable<string>;
+    public readonly selectedOperationName: ko.Observable<string>;
+    public readonly consoleIsOpen: ko.Observable<boolean>;
+    public readonly api: ko.Observable<Api>;
+    public readonly schemas: ko.ObservableArray<string>;
+    public readonly tags: ko.ObservableArray<string>;
+    public readonly operation: ko.Observable<Operation>;
+    public readonly requestUrlSample: ko.Computed<string>;
+    public readonly hostname: ko.Observable<string>;
+    public readonly working: ko.Observable<boolean>;
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly router: DefaultRouter
+        private readonly tenantService: TenantService,
+        private readonly router: Router,
+        private readonly routeHelper: RouteHelper
     ) {
+        this.working = ko.observable(false);
+        this.hostname = ko.observable();
         this.api = ko.observable();
         this.schemas = ko.observableArray([]);
+        this.tags = ko.observableArray([]);
         this.operation = ko.observable();
-        this.selectedOperation = ko.observable();
-
-        this.openConsole = this.openConsole.bind(this);
-        this.closeConsole = this.closeConsole.bind(this);
-        this.loadOperation = this.loadOperation.bind(this);
-        this.scrollToSchema = this.scrollToSchema.bind(this);
+        this.selectedApiName = ko.observable();
+        this.selectedOperationName = ko.observable();
+        this.consoleIsOpen = ko.observable();
+        this.definitions = ko.observableArray<TypeDefinition>();
+        this.requestUrlSample = ko.computed(() => {
+            if (!this.api() || !this.operation()) {
+                return null;
+            }
+            return `https://${this.hostname()}/${this.api().path}`.replace(/\/$/, "") + this.operation().urlTemplate;
+        });
     }
 
     @OnMounted()
-    public async init() {
-        await this.loadOperation(this.router.getCurrentRoute());
-        this.router.addRouteChangeListener(this.loadOperation);
+    public async initialize(): Promise<void> {
+        const proxyHostnames = await this.tenantService.getProxyHostnames();
+        const hostname = proxyHostnames[0];
+        this.hostname(hostname);
+
+        this.router.addRouteChangeListener(this.onRouteChange.bind(this));
+
+        const apiName = this.routeHelper.getApiName();
+        const operationName = this.routeHelper.getOperationName();
+
+        if (!apiName || !operationName) {
+            return;
+        }
+
+        this.selectedApiName(apiName);
+        this.selectedOperationName(operationName);
+
+        await this.loadApi(apiName);
+        await this.loadOperation(apiName, operationName);
     }
 
-    public async loadOperation(route?: Route): Promise<void> {
-        if (!route || !route.hash) {
-            return;
+    private async onRouteChange(): Promise<void> {
+        const apiName = this.routeHelper.getApiName();
+        const operationName = this.routeHelper.getOperationName();
+
+        if (apiName !== this.selectedApiName()) {
+            this.selectedApiName(apiName);
+            this.loadApi(apiName);
         }
 
-        const currentUrl = route.url;
-        const currentHash = route.hash;
-
-        if (currentUrl === this.currentUrl && this.operation()) {
-            return;
+        if (apiName !== this.selectedApiName() || operationName !== this.selectedOperationName()) {
+            this.selectedOperationName(operationName);
+            this.loadOperation(apiName, operationName);
         }
+    }
 
-        this.currentUrl = currentUrl;
+    public async loadApi(apiName: string): Promise<void> {
 
-        const queryParams = new URLSearchParams(currentHash);
-        if (!queryParams.has("operationId")) {
-            this.cleanSelection();
-            return;
-        }
-
-        if (!queryParams.has("apiId")) {
-            this.cleanSelection();
-            return;
-        }
-        const apiId = queryParams.get("apiId");
-        if (apiId === "undefined" || apiId === "null") {
-            this.cleanSelection();
-            return;
-        }
-
-        this.currentApiId = apiId;
-        const api = await this.apiService.getApi(`apis/${this.currentApiId}`);
-        
-        if (!api) {
-            this.cleanSelection();
-            return;
-        }
-        this.hostName = `https://${location.host}/${api.path}`;
+        const api = await this.apiService.getApi(`apis/${apiName}`);
         this.api(api);
+    }
 
-        const operationId = queryParams.get("operationId");
-        if (operationId === "undefined" || operationId === "null") {
-            this.cleanSelection();
+    public async loadOperation(apiName: string, operationName: string): Promise<void> {
+        this.operation(null);
+        this.working(true);
+
+        if (!operationName) {
             return;
         }
 
-        this.operationId = operationId;
+        const operation = await this.apiService.getOperation(`apis/${apiName}/operations/${operationName}`);
 
-        const operation = await this.apiService.getOperation(`apis/${this.currentApiId}/operations/${this.operationId}`);
         if (operation) {
+            await this.loadDefinitions(operation);
             this.operation(operation);
-            this.getSchemas();
-            if (this.selectedOperation()) {
-                this.openConsole();
-            }
-        } else {
+        }
+        else {
             this.cleanSelection();
         }
+
+        const operationTags = await this.apiService.getOperationTags(`apis/${apiName}/operations/${operationName}`);
+        this.tags(operationTags.map(tag => tag.name));
+
+        this.working(false);
     }
 
-    public getSchemas() {
-        const operation = this.operation();
-        const schemas = [];
-        const apiId = `${this.api().id}/schemas/`;
-        if (operation && operation.responses &&  operation.responses.length > 0) {
-            operation.responses.map(res => 
-                res.representations && res.representations.map(rep => 
-                    rep.schemaId && schemas.indexOf(`${apiId}${rep.schemaId}`) === -1 && schemas.push(`${apiId}${rep.schemaId}`)
-                ));
-        }
-        this.schemas(schemas);
+    public async loadDefinitions(operation: Operation): Promise<void> {
+        const schemaIds = [];
+        const apiId = `apis/${this.selectedApiName()}/schemas/`;
+
+        const prepresentations = operation.responses.map(response => response.representations)
+            .concat(operation.request.representations)
+            .flat();
+
+        prepresentations
+            .map(representation => representation.schemaId)
+            .filter(schemaId => !!schemaId)
+            .forEach(schemaId => {
+                if (!schemaIds.includes(schemaId)) {
+                    schemaIds.push(schemaId);
+                }
+            });
+
+        const schemasPromises = schemaIds.map(schemaId => this.apiService.getApiSchema(`${apiId}${schemaId}`));
+        const schemas = await Promise.all(schemasPromises);
+        const definitions = schemas.map(x => x.definitions).flat();
+
+        this.definitions(definitions);
     }
 
     private cleanSelection(): void {
-        this.hostName = `https://${location.host}`;
         this.operation(null);
         this.closeConsole();
     }
 
-    public scrollToSchema(item) {
-        Utils.scrollTo(item.typeName);
-    }
-
     public openConsole(): void {
-        this.selectedOperation(this.operation());
+        this.consoleIsOpen(true);
     }
 
     public closeConsole(): void {
-        this.selectedOperation(null);
+        this.consoleIsOpen(false);
     }
 
+    public getDefinitionByTypeName(typeName: string): TypeDefinition {
+        return this.definitions().find(x => x.name === typeName);
+    }
+
+    public getDefinitionReferenceUrl(definition: TypeDefinition): string {
+        const apiName = this.selectedApiName();
+        const operationName = this.selectedOperationName();
+
+        return this.routeHelper.getDefinitionReferenceUrl(apiName, operationName, definition.name);
+    }
+
+    @OnDestroyed()
     public dispose(): void {
-        this.router.removeRouteChangeListener(this.loadOperation);
+        this.router.removeRouteChangeListener(this.onRouteChange);
     }
 }

@@ -15,12 +15,12 @@
     <nav aria-label="breadcrumb" style="margin-right: 20px">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="#" data-bind="text: api.displayName"></a>
+                <a href="#" data-bind="text: api.displayName, attr: { href: $component.getApiReferenceUrl() }"></a>
             </li>
             <li class="breadcrumb-item">
-                <a href="#" data-bind="text: api.apiVersion"></a>
+                <span data-bind="text: api.apiVersion"></span>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">
+            <li class="breadcrumb-item">
                 <span data-bind="text: name"></span>
             </li>
         </ol>
@@ -28,10 +28,10 @@
 
     <div data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
     <!-- <div class="row">
-                        <div class="col-md-12">
-                            <span data-bind="text: urlTemplate, attr: { 'data-method': method }"></span>
-                        </div>
-                    </div> -->
+        <div class="col-md-12">
+            <span data-bind="text: urlTemplate, attr: { 'data-method': method }"></span>
+        </div>
+    </div> -->
 
     <h3>Authorization</h3>
 
@@ -216,7 +216,7 @@
 <!-- /ko -->
 
 <!-- ko if: requestError-->
-<div class="panel panel-dark" data-bind="scrollintoview: {}">
+<div class="panel panel-dark animation-fade-in" data-bind="scrollintoview: {}">
     <p>Unable to complete the request</p>
     <p class="text-muted" data-bind="html: requestError"></p>
 </div>

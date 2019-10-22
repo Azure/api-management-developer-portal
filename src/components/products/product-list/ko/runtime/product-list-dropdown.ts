@@ -6,6 +6,7 @@ import { ProductService } from "../../../../../services/productService";
 import { Product } from "../../../../../models/product";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { Router } from "@paperbits/common/routing/router";
+import { RouteHelper } from "../../../../../routing/routeHelper";
 
 @RuntimeComponent({ selector: "product-list-dropdown-runtime" })
 @Component({
@@ -29,7 +30,9 @@ export class ProductListDropdown {
 
     constructor(
         private readonly productService: ProductService,
-        private readonly router: Router) {
+        private readonly router: Router, // Should be used for selection
+        private readonly routeHelper: RouteHelper
+    ) {
         this.working = ko.observable();
         this.selectedId = ko.observable();
         this.pattern = ko.observable();
@@ -42,7 +45,7 @@ export class ProductListDropdown {
         this.expanded = ko.observable(false);
         this.selection = ko.computed(() => {
             const product = ko.unwrap(this.selectedProduct);
-            return product ? product.name : "Select Product";
+            return product ? product.displayName : "Select Product";
         });
     }
 
@@ -53,19 +56,23 @@ export class ProductListDropdown {
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.searchProducts);
-        
+
+        // TODO: Find out why and get rid of it.
         document.addEventListener("click", this.checkClickOutside, false);
+
         if (!this.productsDropdown) {
             this.productsDropdown = document.getElementById("products-dropdown");
         }
+
         if (this.productsDropdown) {
             this.productsDropdown.addEventListener("keyup", this.onKeyUp, false);
         }
     }
 
     private checkClickOutside(event: any): void {
-        if(this.expanded() && this.productsDropdown) {
+        if (this.expanded() && this.productsDropdown) {
             const inside = this.productsDropdown.contains(event.target);
+
             if (!inside) {
                 this.toggle();
             }
@@ -73,7 +80,7 @@ export class ProductListDropdown {
     }
 
     private onKeyUp(event: any): void {
-        if(this.expanded()) {
+        if (this.expanded()) {
             if (event && event.key === "Escape") {
                 this.toggle();
             }
@@ -82,14 +89,6 @@ export class ProductListDropdown {
                 this.expanded(true);
             }
         }
-    }
-
-    private getSelectedProductId(): string {
-        const route = this.router.getCurrentRoute();
-        const queryParams = new URLSearchParams(route.hash || (route.url.indexOf("?") !== -1 ? route.url.split("?").pop() : ""));
-        const productId = queryParams.get("productId");
-
-        return productId;
     }
 
     /**
@@ -121,8 +120,11 @@ export class ProductListDropdown {
             this.hasPrevPage(pageNumber > 0);
             this.hasNextPage(!!itemsPage.nextLink);
 
-            const productId = this.getSelectedProductId();
-            this.selectedProduct(productId ? itemsPage.value.find(item => item.id.endsWith(productId)) : itemsPage.value[0]);
+            const productName = this.routeHelper.getProductName();
+            
+            this.selectedProduct(productName
+                ? itemsPage.value.find(item => item.id.endsWith(productName))
+                : itemsPage.value[0]);
         }
         catch (error) {
             console.error(`Unable to load APIs. ${error}`);
@@ -147,7 +149,7 @@ export class ProductListDropdown {
     }
 
     public getProductUrl(product: Product): string {
-        return product.id.replace("/products/", `${Constants.productReferencePageUrl}#?productId=`);
+        return product.id.replace("/products/", `${Constants.productDetailsPageUrl}#productId=`);
     }
 
     @OnDestroyed()

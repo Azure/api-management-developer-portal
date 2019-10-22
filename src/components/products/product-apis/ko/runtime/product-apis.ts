@@ -1,11 +1,12 @@
 import * as ko from "knockout";
+import * as Constants from "../../../../../constants";
 import template from "./product-apis.html";
 import { Component, RuntimeComponent, OnMounted, OnDestroyed } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing";
 import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
-import * as Constants from "../../../../../constants";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
+import { RouteHelper } from "../../../../../routing/routeHelper";
 
 
 @RuntimeComponent({ selector: "product-apis-runtime" })
@@ -25,7 +26,8 @@ export class ProductApis {
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly router: Router
+        private readonly router: Router,
+        private readonly routeHelper: RouteHelper
     ) {
         this.apis = ko.observableArray([]);
         this.working = ko.observable();
@@ -47,14 +49,6 @@ export class ProductApis {
             .subscribe(this.searchApis);
     }
 
-    private getProductId(): string {
-        const route = this.router.getCurrentRoute();
-        const queryParams = new URLSearchParams(route.hash || (route.url.indexOf("?") !== -1 ? route.url.split("?").pop() : ""));
-        const productId = queryParams.get("productId");
-
-        return productId ? `/products/${productId}` : undefined;
-    }
-
     /**
      * Initiates searching APIs.
      */
@@ -67,9 +61,9 @@ export class ProductApis {
      * Loads page of APIs.
      */
     public async loadPageOfApis(): Promise<void> {
-        const productId = this.getProductId();
+        const productName = this.routeHelper.getProductName();
 
-        if (!productId) {
+        if (!productName) {
             return;
         }
 
@@ -84,7 +78,7 @@ export class ProductApis {
                 take: Constants.defaultPageSize
             };
 
-            const pageOfApis = await this.apiService.getProductApis(productId, query);
+            const pageOfApis = await this.apiService.getProductApis(`products/${productName}`, query);
             this.apis(pageOfApis.value);
 
             const nextLink = pageOfApis.nextLink;
@@ -93,7 +87,7 @@ export class ProductApis {
             this.hasNextPage(!!nextLink);
         }
         catch (error) {
-            console.error(`Unable to load APIs. ${error}`);
+            throw new Error(`Unable to load APIs. ${error}`);
         }
         finally {
             this.working(false);
@@ -101,7 +95,7 @@ export class ProductApis {
     }
 
     public getReferenceUrl(api: Api): string {
-        return `${Constants.apiReferencePageUrl}#?apiId=${api.name}`;
+        return this.routeHelper.getApiReferenceUrl(api.name);
     }
     
     public prevPage(): void {

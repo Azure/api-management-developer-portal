@@ -1,16 +1,16 @@
 .tag-group {
-    padding: 20px 0;
+    padding-top: 20px;
     flex-basis: 100%;
     // border-bottom: solid 1px #a19f9d;
-    .tag,
-    .tag:active,
-    .tag:hover {
-        border: 1px solid #0078d4;
-        padding: 5px;
-        font-size: 1.1em;
-        border-radius: 5px;
-        color: #0078d4;
-        display: inline-block;
-        text-decoration: none;
-    }
+}
+
+.tag,
+.tag:active,
+.tag:hover {
+    border: 1px solid #0078d4;
+    padding: 2px 5px;
+    border-radius: 3px;
+    color: #0078d4;
+    display: inline-block;
+    text-decoration: none;
 }

@@ -18,11 +18,15 @@
 </div>
 
 <div class="cards">
+    <!-- ko if: working -->
     <div class="cards-body">
-        <!-- ko if: working -->
         <spinner class="fit"></spinner>
-        <!-- /ko -->
-        <!-- ko ifnot: working -->
+    </div>
+    <!-- /ko -->
+
+<!-- ko ifnot: working -->
+    <div class="cards-body animation-fade-in">
+        
 
         <!-- ko if: groupByTag -->
         <!-- ko foreach: { data: apiGroups, as: 'group' } -->
@@ -68,9 +72,9 @@
         <!-- /ko -->
 
         <!-- /ko -->
-
-        <!-- /ko -->
     </div>
+    <!-- /ko -->
+    
     <div class="cards-footer">
         <!-- ko if: hasPager -->
         <ul class="pagination">

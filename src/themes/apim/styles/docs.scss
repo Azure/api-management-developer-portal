@@ -79,10 +79,6 @@ aside {
         padding: 10px 20px;
     }
 
-    .nav {
-        font-size: 1em;
-    }
-
     &.panel-dark {
         background-color: #fafafa;
 
@@ -181,16 +177,14 @@ pre {
     font-size: .8em;
     /* font-family: Menlo,Monaco,Consolas,"Courier New",monospace; */
     font-weight: 700;
-    border: 1px solid;
     border-radius: 4px;
     padding: 2px 10px;
-    margin-right: 5px;
+    width: 50px;
 }
 
 [data-method*="GET"]:before {
     content: "GET";
     color: #038a00;
-    border-color: #038a00;
 }
 
 [data-method*="POST"]:before {
@@ -248,12 +242,6 @@ pre {
 
 [data-code^="5"] {
     color: #e30012;
-}
-
-.nav-link {
-    &.active {
-        border-bottom: 2px solid #ff6a7c;
-    }
 }
 
 .monospace {
@@ -322,8 +310,8 @@ operation-console {
 }
 
 api-list,
-api-list-tiles,
-api-list-dropdown {
+api-list-dropdown,
+api-list-tiles {
     flex-basis: 100%;
 }
 
@@ -333,23 +321,23 @@ api-list-dropdown {
 
 api-details,
 api-list,
+change-password,
+confirm-password,
 operation-details,
 operation-list,
-change-password,
-reset-password,
-confirm-password,
-product-details-runtime,
-product-subscriptions-runtime,
-product-subscribe-runtime,
 product-apis-runtime,
+product-details-runtime,
+product-list-dropdown-runtime,
 product-list-runtime,
-product-list-dropdown-runtime {
+product-subscribe-runtime,
+product-subscriptions-runtime,
+reset-password {
     flex-basis: 100%;
     max-width: 100%;
 }
 
 operation-console {
-    background: #2c2f3e;
+    background: #fafafa;
 }
 
 schema-details {
@@ -360,12 +348,5 @@ schema-details {
 
     article {
         margin-top: 20px;
-    }
-}
-
-api-list {
-    .nav-item { 
-        display: block;
-        flex-basis: 100%;
     }
 }

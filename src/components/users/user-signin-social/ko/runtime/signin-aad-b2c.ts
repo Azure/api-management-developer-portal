@@ -4,7 +4,7 @@ import template from "./signin-aad-b2c.html";
 import { Router } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { AadService } from "../../../../../services";
-import { IEventManager } from "@paperbits/common/events";
+import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
 
@@ -20,7 +20,7 @@ export class SignInAadB2C {
     constructor(
         private readonly router: Router,
         private readonly aadService: AadService,
-        private readonly eventManager: IEventManager
+        private readonly eventManager: EventManager
     ) {
         this.clientId = ko.observable();
         this.authority = ko.observable();

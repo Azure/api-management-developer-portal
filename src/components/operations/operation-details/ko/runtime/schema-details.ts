@@ -2,8 +2,7 @@ import * as ko from "knockout";
 import template from "./schema-details.html";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { ApiService } from "../../../../../services/apiService";
-import { SchemaObject } from "../../../../../models/schema";
-import { Api } from "../../../../../models/api";
+import { TypeDefinition } from "../../../../../models/schema";
 
 @Component({
     selector: "schema-details",
@@ -12,7 +11,7 @@ import { Api } from "../../../../../models/api";
 })
 export class SchemaDetails {
     public readonly working: ko.Observable<boolean>;
-    public definitions: ko.ObservableArray<SchemaObject>;
+    public definitions: ko.ObservableArray<TypeDefinition>;
 
     @Param()
     public schemas: ko.ObservableArray<string>;
@@ -20,8 +19,6 @@ export class SchemaDetails {
     constructor(
         private readonly apiService: ApiService
     ) {
-        this.onMounted = this.onMounted.bind(this);
-
         this.schemas = ko.observableArray();
         this.definitions = ko.observableArray([]);
         this.working = ko.observable(true);
