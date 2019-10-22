@@ -41,7 +41,7 @@ export class UserSignup {
         this.passwordConfirmation = ko.observable("");
         this.firstName = ko.observable("");
         this.lastName = ko.observable("");
-        this.isConsentRequired = ko.observable();
+        this.isConsentRequired = ko.observable(false);
         this.consented = ko.observable(false);
         this.showTerms = ko.observable();
         this.termsOfUse = ko.observable();
@@ -50,7 +50,7 @@ export class UserSignup {
         this.working = ko.observable(false);
         this.captcha = ko.observable();
         this.delegationUrl = ko.observable();
-        this.termsEnabled = ko.observable();
+        this.termsEnabled = ko.observable(false);
     }
 
     @Param()
