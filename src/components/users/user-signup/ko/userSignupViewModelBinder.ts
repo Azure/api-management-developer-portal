@@ -5,13 +5,21 @@ import { Bag } from "@paperbits/common";
 import { IEventManager } from "@paperbits/common/events/IEventManager";
 import { TenantService } from "../../../../services/tenantService";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
+import { IdentityService } from "../../../../services";
 
 export class UserSignupViewModelBinder implements ViewModelBinder<UserSignupModel, UserSignupViewModel> {
-    
+
     constructor(
-        private readonly eventManager: IEventManager, 
-        private readonly tenantService: TenantService) {}
-    
+        private readonly eventManager: IEventManager,
+        private readonly tenantService: TenantService,
+        private readonly identityService: IdentityService) { }
+
+
+    public async getTermsOfUse(): Promise<string> {
+        const identutySetting = await this.identityService.getIdentitySetting()
+        return identutySetting.properties.termsOfService.text;
+    }
+
     public async modelToViewModel(model: UserSignupModel, viewModel?: UserSignupViewModel, bindingContext?: Bag<any>): Promise<UserSignupViewModel> {
         if (!viewModel) {
             viewModel = new UserSignupViewModel();
@@ -21,9 +29,12 @@ export class UserSignupViewModelBinder implements ViewModelBinder<UserSignupMode
         delegationParam[DelegationParameters.ReturnUrl] =  "/";
 
         const delegationUrl = await this.tenantService.getDelegationUrl(DelegationAction.signIn, delegationParam);
-        if (delegationUrl) {
-            viewModel.delegationConfig(JSON.stringify({ delegationUrl: delegationUrl}));
-        }
+        const termsOfUse = await this.getTermsOfUse();
+        const runtimeConfig = JSON.stringify({
+            delegationUrl: delegationUrl,
+            termsOfUse: termsOfUse
+        });
+        viewModel.runtimeConfig(runtimeConfig);
 
         viewModel["widgetBinding"] = {
             displayName: "User signup",
