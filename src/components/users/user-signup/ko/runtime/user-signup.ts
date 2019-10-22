@@ -27,7 +27,6 @@ export class UserSignup {
     public readonly lastName: ko.Observable<string>;
     public readonly isUserRequested: ko.Observable<boolean>;
     public readonly isConsentRequired: ko.Observable<boolean>;
-    public readonly termsOfUse: ko.Observable<string>;
     public readonly showTerms: ko.Observable<boolean>;
     public readonly consented: ko.Observable<boolean>;
     public readonly showHideLabel: ko.Observable<string>;
@@ -55,6 +54,7 @@ export class UserSignup {
     }
 
     @Param()
+    public termsOfUse: ko.Observable<string>;
     public delegationUrl: ko.Observable<string>;
 
     /**
@@ -84,10 +84,9 @@ export class UserSignup {
         }
 
         const settings = {
-            // TODO: Registration terms could be rendered at publish time
-            userRegistrationTerms: "Test userRegistrationTerms!!!",
-            userRegistrationTermsEnabled: false,
-            userRegistrationTermsConsentRequired: false
+            userRegistrationTerms: this.termsOfUse(),
+            userRegistrationTermsEnabled: true,
+            userRegistrationTermsConsentRequired: true
         };
 
         this.tenantSettings = settings as TenantSettings;
