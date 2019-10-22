@@ -29,15 +29,21 @@ export class UserSignupViewModelBinder implements ViewModelBinder<UserSignupMode
         const delegationParam = {};
         delegationParam[DelegationParameters.ReturnUrl] =  "/";
 
-        const delegationUrl = await this.tenantService.getDelegationUrl(DelegationAction.signIn, delegationParam);
-        const termsOfService = await this.getTermsOfService();
-        const runtimeConfig = JSON.stringify({
-            delegationUrl: delegationUrl,
-            termsOfUse: termsOfService.text,
-            isConsentRequired: termsOfService.consentRequired,
-            termsEnabled: termsOfService.enabled
-        });
-        viewModel.runtimeConfig(runtimeConfig);
+        try {
+            const delegationUrl = await this.tenantService.getDelegationUrl(DelegationAction.signIn, delegationParam);
+            const termsOfService = await this.getTermsOfService();
+            let params = {};
+            if (delegationUrl) params["delegationUrl"] = delegationUrl;
+            if (termsOfService.text) params["termsOfUse"] = termsOfService.text;
+            if (termsOfService.consentRequired) params["isConsentRequired"] = termsOfService.consentRequired;
+            if (termsOfService.enabled) params["termsEnabled"] = termsOfService.enabled;
+            if (Object.keys(params).length !== 0) {
+                const runtimeConfig = JSON.stringify(params);
+                viewModel.runtimeConfig(runtimeConfig);
+            }
+        } catch (error) {
+            throw error;
+        }
 
         viewModel["widgetBinding"] = {
             displayName: "User signup",
