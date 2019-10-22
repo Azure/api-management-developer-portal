@@ -6,6 +6,7 @@ import { IEventManager } from "@paperbits/common/events/IEventManager";
 import { TenantService } from "../../../../services/tenantService";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { IdentityService } from "../../../../services";
+import { TermsOfService } from "../../../../contracts/IdentitySettings";
 
 export class UserSignupViewModelBinder implements ViewModelBinder<UserSignupModel, UserSignupViewModel> {
 
@@ -15,9 +16,9 @@ export class UserSignupViewModelBinder implements ViewModelBinder<UserSignupMode
         private readonly identityService: IdentityService) { }
 
 
-    public async getTermsOfUse(): Promise<string> {
+    public async getTermsOfService(): Promise<TermsOfService> {
         const identutySetting = await this.identityService.getIdentitySetting()
-        return identutySetting.properties.termsOfService.text;
+        return identutySetting.properties.termsOfService;
     }
 
     public async modelToViewModel(model: UserSignupModel, viewModel?: UserSignupViewModel, bindingContext?: Bag<any>): Promise<UserSignupViewModel> {
@@ -29,10 +30,12 @@ export class UserSignupViewModelBinder implements ViewModelBinder<UserSignupMode
         delegationParam[DelegationParameters.ReturnUrl] =  "/";
 
         const delegationUrl = await this.tenantService.getDelegationUrl(DelegationAction.signIn, delegationParam);
-        const termsOfUse = await this.getTermsOfUse();
+        const termsOfService = await this.getTermsOfService();
         const runtimeConfig = JSON.stringify({
             delegationUrl: delegationUrl,
-            termsOfUse: termsOfUse
+            termsOfUse: termsOfService.text,
+            isConsentRequired: termsOfService.consentRequired,
+            termsEnabled: termsOfService.enabled
         });
         viewModel.runtimeConfig(runtimeConfig);
 

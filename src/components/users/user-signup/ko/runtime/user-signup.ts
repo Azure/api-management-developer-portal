@@ -26,7 +26,6 @@ export class UserSignup {
     public readonly firstName: ko.Observable<string>;
     public readonly lastName: ko.Observable<string>;
     public readonly isUserRequested: ko.Observable<boolean>;
-    public readonly isConsentRequired: ko.Observable<boolean>;
     public readonly showTerms: ko.Observable<boolean>;
     public readonly consented: ko.Observable<boolean>;
     public readonly showHideLabel: ko.Observable<string>;
@@ -51,10 +50,19 @@ export class UserSignup {
         this.working = ko.observable(false);
         this.captcha = ko.observable();
         this.delegationUrl = ko.observable();
+        this.termsEnabled = ko.observable();
     }
 
     @Param()
     public termsOfUse: ko.Observable<string>;
+
+    @Param()
+    public isConsentRequired: ko.Observable<boolean>;
+
+    @Param()
+    public termsEnabled: ko.Observable<boolean>;
+
+    @Param()
     public delegationUrl: ko.Observable<string>;
 
     /**
@@ -85,18 +93,14 @@ export class UserSignup {
 
         const settings = {
             userRegistrationTerms: this.termsOfUse(),
-            userRegistrationTermsEnabled: true,
-            userRegistrationTermsConsentRequired: true
+            userRegistrationTermsEnabled: this.termsEnabled(),
+            userRegistrationTermsConsentRequired: this.isConsentRequired()
         };
-
         this.tenantSettings = settings as TenantSettings;
 
         if (this.tenantSettings && this.tenantSettings.userRegistrationTermsEnabled) {
             this.consented.extend(<any>{ equal: { params: true, message: "You must agree to registration terms." } });
-
-            this.termsOfUse(settings.userRegistrationTerms);
             this.showHideLabel("Show");
-            this.isConsentRequired(settings.userRegistrationTermsConsentRequired);
         }
 
         validation.init({
@@ -150,7 +154,15 @@ export class UserSignup {
             captcha: this.captcha
         });
 
-        const clientErrors = result();
+        let clientErrors = result();
+
+        if (this.termsEnabled() && this.isConsentRequired()) {
+            const termsConsented = validation.group({
+                consented: this.consented
+            });
+            clientErrors = clientErrors.concat(termsConsented());
+        }
+
 
         if (clientErrors.length > 0) {
             const validationReport: ValidationReport = {
