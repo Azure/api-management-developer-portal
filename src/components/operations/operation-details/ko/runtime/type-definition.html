@@ -48,8 +48,16 @@
 
 <!-- ko if: $component.example -->
 <h5>Example</h5>
-<div>
-    <button data-bind="copyToClipboard: $component.example">Copy</button>
-    <pre data-bind="syntaxHighlight: { code: $component.example, language: $component.exampleLanguage }"></pre>
+<div class="flex code-block">
+    <div class="flex-item flex-item-grow code-block-heading" data-bind="text: $component.exampleLanguage">
+    </div>
+    <div class="flex-item">
+        <button class="code-block-command" data-bind="copyToClipboard: $component.example">
+            <i class="icon icon-duplicate"></i>
+            Copy
+        </button>
+    </div>
 </div>
+<pre data-bind="syntaxHighlight: { code: $component.example, language: $component.exampleLanguage }"></pre>
+
 <!-- /ko -->

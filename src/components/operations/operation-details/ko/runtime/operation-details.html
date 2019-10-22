@@ -21,7 +21,7 @@
     <!-- ko if: tags().length > 0 -->
     <div class="tag-group">
         <!-- ko foreach: { data: $component.tags, as: 'tag' } -->
-        <a href="#" class="tag" role="group" data-bind="text: tag"></a>
+        <span class="tag" role="group" data-bind="text: tag"></span>
         <!-- /ko -->
     </div>
     <!-- /ko -->

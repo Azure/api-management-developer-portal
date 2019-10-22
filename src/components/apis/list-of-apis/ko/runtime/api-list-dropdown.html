@@ -26,7 +26,7 @@
             <!-- ko foreach: { data: apiGroups, as: 'group' } -->
             <div class="collapsible">
                 <div class="tag-group">
-                    <a href="#" class="tag" role="group" data-bind="text: group.tag"></a>
+                    <span class="tag" role="group" data-bind="text: group.tag"></span>
                 </div>
                 <div class="collapsible-container">
                     <!-- ko foreach: { data: group.items, as: 'item' } -->

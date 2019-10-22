@@ -350,3 +350,21 @@ schema-details {
         margin-top: 20px;
     }
 }
+
+.code-block {
+    background: #EDEBE9;
+    border: 1px solid #ccc;
+    font-size: .8em;
+
+    .code-block-heading {
+        text-transform: uppercase;
+        padding: 5px 10px;
+    }
+
+    .code-block-command {
+        background: none;
+        border: none;
+        border-left: 1px solid #ccc;
+        padding: 5px 10px;
+    }
+}
