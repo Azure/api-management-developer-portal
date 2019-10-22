@@ -93,14 +93,7 @@ export class UserSignup {
         // When user didn't specify the setting, set them to false
         if (!this.isConsentRequired()) this.isConsentRequired(false);
         if (!this.termsEnabled()) this.termsEnabled(false);
-        const settings = {
-            userRegistrationTerms: this.termsOfUse(),
-            userRegistrationTermsEnabled: this.termsEnabled(),
-            userRegistrationTermsConsentRequired: this.isConsentRequired()
-        };
-        this.tenantSettings = settings as TenantSettings;
-
-        if (this.tenantSettings && this.tenantSettings.userRegistrationTermsEnabled) {
+        if (this.termsOfUse() && this.termsEnabled()) {
             this.consented.extend(<any>{ equal: { params: true, message: "You must agree to registration terms." } });
             this.showHideLabel("Show");
         }
