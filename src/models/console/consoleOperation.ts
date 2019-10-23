@@ -8,35 +8,49 @@ import { Api } from "../api";
 import { Utils } from "../../utils";
 import { Revision } from "../revision";
 import { ConsoleHeader } from "./consoleHeader";
-// import { ValidateNested } from "class-validator";
 
 export class ConsoleOperation {
     private api: Api;
-    private operation: Operation;
     private revision: Revision;
 
     public name: string;
-
     public method: string;
-
-    // @ValidateNested()
     public host: ConsoleHost;
-
     public urlTemplate: string;
-
     public requestUrl: ko.Computed<string>;
-
-    // @ValidateNested()
     public templateParameters: ko.ObservableArray<ConsoleParameter>;
-
     public responses?: ConsoleResponse[];
-
     public description: string;
-
     public hasBody: boolean;
-
-    // @ValidateNested()
     public request: ConsoleRequest;
+
+    constructor(api: Api, operation: Operation, revision: Revision) {
+        this.api = api;
+        this.revision = revision;
+        this.name = operation.displayName;
+        this.method = operation.method.toUpperCase();
+        this.host = new ConsoleHost();
+        this.urlTemplate = operation.urlTemplate;
+        this.description = operation.description;
+        this.request = new ConsoleRequest(operation.request);
+        this.templateParameters = ko.observableArray(operation.templateParameters.map(parameterContract => new ConsoleParameter(parameterContract)));
+        this.hasBody = !["GET", "HEAD", "TRACE"].includes(this.method);
+
+        if (operation.responses) {
+            this.responses = operation.responses.map(x => new ConsoleResponse(x));
+        }
+        else {
+            this.responses = [];
+        }
+
+        this.requestUrl = ko.computed(() => {
+            const protocol = this.api.protocols.indexOf("https") !== -1 ? "https" : "http";
+            const urlTemplate = this.getRequestPath();
+            const result = `${protocol}://${this.host.hostname()}${Utils.ensureLeadingSlash(urlTemplate)}`;
+
+            return result;
+        });
+    }
 
     private addParam(uri: string, name: string, value: string): string {
         const separator = uri.indexOf("?") >= 0 ? "&" : "?";
@@ -99,34 +113,5 @@ export class ConsoleOperation {
         }
 
         return `${this.api.path}${versionPath}${revision}${requestUrl}`;
-    }
-
-    constructor(api: Api, operation: Operation, revision: Revision) {
-        this.api = api;
-        this.operation = operation;
-        this.revision = revision;
-        this.name = operation.name;
-        this.method = operation.method.toUpperCase();
-        this.host = new ConsoleHost();
-        this.urlTemplate = operation.urlTemplate;
-        this.description = operation.description;
-        this.request = new ConsoleRequest(operation.request);
-        this.templateParameters = ko.observableArray(operation.templateParameters.map(parameterContract => new ConsoleParameter(parameterContract)));
-        this.hasBody = !["GET", "HEAD", "TRACE"].includes(this.method);
-
-        if (operation.responses) {
-            this.responses = operation.responses.map(x => new ConsoleResponse(x));
-        }
-        else {
-            this.responses = [];
-        }
-
-        this.requestUrl = ko.computed(() => {
-            const protocol = this.api.protocols.indexOf("https") !== -1 ? "https" : "http";
-            const urlTemplate = this.getRequestPath();
-            const result = `${protocol}://${this.host.hostname()}${Utils.ensureLeadingSlash(urlTemplate)}`;
-
-            return result;
-        });
     }
 }

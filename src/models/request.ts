@@ -8,6 +8,13 @@ export class Request {
     public headers: Parameter[];
     public representations: Representation[];
 
+    /**
+     * Returns "true" if this request is meaningful from documentation prospective.
+     */
+    public isMeaningful(): boolean {
+        return this.representations.some(x => !!x.typeName);
+    }
+
     constructor(contract?: RequestContract) {
         this.queryParameters = [];
         this.headers = [];

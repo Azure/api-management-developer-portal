@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import template from "./validation-summary.html";
 import { Component, OnMounted, RuntimeComponent} from "@paperbits/common/ko/decorators";
-import { IEventManager } from "@paperbits/common/events";
+import { EventManager } from "@paperbits/common/events";
 import { Bag } from "@paperbits/common";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
@@ -17,7 +17,7 @@ export class ValidationSummary {
     public hasErrors: ko.Observable<Boolean>;
     private errorGroups: Bag<string[]>;
 
-    constructor(private readonly eventManager: IEventManager) {
+    constructor(private readonly eventManager: EventManager) {
         this.errorMsgs = ko.observableArray([]);
         this.hasErrors = ko.observable(false);
         this.errorGroups = {};

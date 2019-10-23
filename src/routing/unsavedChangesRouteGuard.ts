@@ -1,13 +1,13 @@
 import { RouteGuard, Route, Router } from "@paperbits/common/routing";
 import { OfflineObjectStorage } from "@paperbits/common/persistence";
-import { IViewManager } from "@paperbits/common/ui";
+import { ViewManager } from "@paperbits/common/ui";
 import { IPageService } from "@paperbits/common/pages";
 
 
 export class UnsavedChangesRouteGuard implements RouteGuard {
     constructor(
         private readonly offlineObjectStorage: OfflineObjectStorage,
-        private readonly viewManager: IViewManager,
+        private readonly viewManager: ViewManager,
         private readonly pageService: IPageService
     ) { }
 

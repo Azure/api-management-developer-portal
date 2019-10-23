@@ -1,5 +1,5 @@
 ﻿import template from "./publishing.html";
-import { IViewManager } from "@paperbits/common/ui";
+import { ViewManager } from "@paperbits/common/ui";
 import { Component } from "@paperbits/common/ko/decorators";
 import { HttpClient } from "@paperbits/common/http";
 import { IAuthenticator } from "../../authentication/IAuthenticator";
@@ -11,7 +11,7 @@ import { IAuthenticator } from "../../authentication/IAuthenticator";
 })
 export class PublishingWorkshop {
     constructor(
-        private readonly viewManager: IViewManager,
+        private readonly viewManager: ViewManager,
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator,
     ) {

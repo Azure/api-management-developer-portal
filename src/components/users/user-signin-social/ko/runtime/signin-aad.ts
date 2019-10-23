@@ -4,7 +4,7 @@ import template from "./signin-aad.html";
 import { Router } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, Param } from "@paperbits/common/ko/decorators";
 import { AadService } from "../../../../../services";
-import { IEventManager } from "@paperbits/common/events";
+import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
 
@@ -21,7 +21,7 @@ export class SignInAad {
     constructor(
         private readonly router: Router,
         private readonly aadService: AadService,
-        private readonly eventManager: IEventManager
+        private readonly eventManager: EventManager
     ) {
         this.clientId = ko.observable();
     }

@@ -1,53 +1,60 @@
-<!-- ko if: working -->
-<spinner class="fit"></spinner>
-<!-- /ko -->
-
-<!-- ko ifnot: working -->
-<div class="animation-fade-in">
-    <!-- ko if: subscriptions().length === 0 || !isUserSignedIn()-->
-    <p>
-        You don't have subscriptions yet.
-    </p>
-    <!-- /ko -->
-
-    <!-- ko if: subscriptions().length > 0 && isUserSignedIn()-->
-    <div class="table">        
-        <div class="table-row table-header flex">
+<div class="table">
+    <div class="table-head">
+        <div class="row">
             <div class="col-md-5">Name</div>
             <div class="col-md-7">Status</div>
         </div>
+    </div>
+
+    <!-- ko if: working -->
+    <div class="table-body">
+        <spinner class="fit"></spinner>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko ifnot: working -->
+    <div class="table-body">
         <!-- ko foreach: { data: subscriptions, as: 'subscription' } -->
-        <div class="table-row flex">
+        <div class="row">
             <div class="col-md-5" data-bind="text: subscription.name"></div>
             <div class="col-md-7" data-bind="text: subscription.state"></div>
         </div>
         <!-- /ko -->
     </div>
 
+    <!-- ko if: subscriptions().length === 0 || !isUserSignedIn()-->
+    <p>
+        You don't have subscriptions yet.
+    </p>
+    <!-- /ko -->
+
+    <!-- /ko -->
+
     <!-- ko if: hasPager -->
-    <ul class="pagination justify-content-center">
-        <!-- ko if: hasPrevPage -->
-        <li class="page-item">
-            <a href="#" class="page-link" role="button" aria-label="Previous page"
-                data-bind="click: prevPage, enable: hasPrevPage">
-                <i class="icon icon-chevron-left"></i>
-            </a>
-        </li>
-        <!-- /ko -->
-        <li class="page-item">
-            <span class="page-link" data-bind="text: page"></span>
-        </li>
-        <!-- ko if: hasNextPage -->
-        <li class="page-item">
-            <a href="#" class="page-link" role="button" aria-label="Next page"
-                data-bind="click: nextPage, enable: hasNextPage">
-                <i class="icon icon-chevron-right"></i>
-            </a>
-        </li>
-        <!-- /ko -->
-    </ul>
+    <!-- ko ifnot: working -->
+    <div class="table-footer">
+        <ul class="pagination justify-content-center">
+            <!-- ko if: hasPrevPage -->
+            <li>
+                <a href="#" class="page-link" role="button" aria-label="Previous page"
+                    data-bind="click: prevPage, enable: hasPrevPage">
+                    <i class="icon icon-chevron-left"></i>
+                </a>
+            </li>
+            <!-- /ko -->
+            <li>
+                <span class="page-link" data-bind="text: page"></span>
+            </li>
+            <!-- ko if: hasNextPage -->
+            <li>
+                <a href="#" class="page-link" role="button" aria-label="Next page"
+                    data-bind="click: nextPage, enable: hasNextPage">
+                    <i class="icon icon-chevron-right"></i>
+                </a>
+            </li>
+            <!-- /ko -->
+        </ul>
+    </div>
     <!-- /ko -->
     <!-- /ko -->
 </div>
-
-<!-- /ko -->

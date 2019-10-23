@@ -1,19 +1,18 @@
 .table {
     .row {
-        margin-bottom: 20px;
+        width: 100%;
     }
-}
 
-.table-row {
-    border-bottom: solid 1px rgb(161, 159, 157);
-    min-height: 50px;
-    padding: 15px 0;
-
-    &.table-header {
+    .table-head {
+        display: flex;
         font-weight: bold;
+        padding: 15px 0;
     }
 
-    div {
-        padding: 0;
+    .table-body {
+        display: flex;
+        flex-direction: column;
+        min-height: 200px;
+        padding: 15px 0;
     }
 }
