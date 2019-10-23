@@ -2,11 +2,11 @@ import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./confirm-password.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
-import { ResetPassword } from "../../../../contracts/resetRequest";
-import { CaptchaService } from "../../../../services/captchaService";
-import { UsersService } from "../../../../services/usersService";
+import { ResetPassword } from "../../../../../contracts/resetRequest";
+import { BackendService } from "../../../../../services/backendService";
+import { UsersService } from "../../../../../services/usersService";
 import { EventManager } from "@paperbits/common/events";
-import { ValidationReport } from "../../../../contracts/validationReport";
+import { ValidationReport } from "../../../../../contracts/validationReport";
 
 @RuntimeComponent({ selector: "confirm-password" })
 @Component({
@@ -26,9 +26,9 @@ export class ConfirmPassword {
     public readonly canSubmit: ko.Computed<boolean>;
 
     constructor(
-        private readonly usersService: UsersService,    
-        private readonly captchaService: CaptchaService,
-        private readonly eventManager: EventManager) {
+        private readonly usersService: UsersService,
+        private readonly eventManager: EventManager,
+        private readonly backendService: BackendService) {
         this.password = ko.observable();
         this.passwordConfirmation = ko.observable();
         this.isResetConfirmed = ko.observable(false);
@@ -103,7 +103,7 @@ export class ConfirmPassword {
         };
 
         try {
-            await this.captchaService.sendConfirmRequest(resetPswdRequest);
+            await this.backendService.sendConfirmRequest(resetPswdRequest);
             this.isResetConfirmed(true);
         }
         catch (error) {

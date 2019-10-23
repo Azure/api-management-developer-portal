@@ -20,6 +20,7 @@ export const TypeOfApi = {
 export const signinUrl = "/signin";
 export const profileUrl = "/profile";
 export const homeUrl = "/";
+export const changePasswordUrl = "/change-password";
 
 /**
  * Maximum number of items to show in a paginated view.

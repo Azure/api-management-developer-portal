@@ -4,6 +4,12 @@ import template from "./user-details.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { User } from "../../../../../models/user";
 import { UsersService } from "../../../../../services/usersService";
+import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
+import { TenantService } from "../../../../../services/tenantService";
+import { BackendService } from "../../../../../services/backendService";
+import { Router } from "@paperbits/common/routing/router";
+import { changePasswordUrl } from "../../../../../constants";
+import { Utils } from "../../../../../utils";
 
 @RuntimeComponent({ selector: "user-details" })
 @Component({
@@ -22,7 +28,11 @@ export class UserDetails {
     public confirmPassword: ko.Observable<string>;
     public user: ko.Observable<User>;
 
-    constructor(private readonly usersService: UsersService) {
+    constructor(
+        private readonly usersService: UsersService, 
+        private readonly tenantService: TenantService,
+        private readonly backendService: BackendService,
+        private readonly router: Router) {
         this.user = ko.observable();
         this.firstName = ko.observable();
         this.lastName = ko.observable();
@@ -43,6 +53,22 @@ export class UserDetails {
         this.setUser(model);
     }
 
+    private async isDelegation(action: DelegationAction): Promise<void> {
+        if (!this.user()) {
+            return;
+        }
+        const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
+        if (isDelegationEnabled) {
+            const delegationParam = {};
+            delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", this.user().id);
+
+            const delegationUrl = await this.backendService.getDelegationUrl(action, delegationParam);
+            if (delegationUrl) {
+                window.open(delegationUrl, "_self");
+            }
+        }
+    }
+
     private setUser(model: User): any {
         if (!model) {
             return;
@@ -54,12 +80,19 @@ export class UserDetails {
         this.email = ko.observable(model.email);
     }
 
-    public toggleEdit(): void {
+    public async toggleEdit(): Promise<void> {
         if (this.isEdit()) {
             this.firstName(this.user().firstName);
             this.lastName(this.user().lastName);
+        } else {            
+            await this.isDelegation(DelegationAction.changeProfile);
         }
         this.isEdit(!this.isEdit());
+    }
+
+    public async toggleEditPassword(): Promise<void> {
+        await this.isDelegation(DelegationAction.changePassword);
+        await this.router.navigateTo(changePasswordUrl);
     }
 
     public async changeAccountInfo(): Promise<void> {
@@ -78,10 +111,8 @@ export class UserDetails {
     }
 
     public async closeAccount(): Promise<void> {
-        const confirmed = window.confirm(`Dear ${this.user().firstName} ${this.user().lastName},
-You are about to close your account associated with email address
-${this.user().email}.
-You will not be able to sign in to or restore your closed account. Are you sure you want to close your account?`);
+        await this.isDelegation(DelegationAction.closeAccount);
+        const confirmed = window.confirm(`Dear ${this.user().firstName} ${this.user().lastName}, \nYou are about to close your account associated with email address ${this.user().email}.\nYou will not be able to sign in to or restore your closed account. Are you sure you want to close your account?`);
 
         if (confirmed) {
             await this.usersService.deleteUser(this.user().id);

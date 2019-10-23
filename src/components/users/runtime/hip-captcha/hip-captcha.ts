@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import { CaptchaService } from "../../../../services/captchaService";
+import { BackendService } from "../../../../services/backendService";
 import { Component } from "@paperbits/common/ko/decorators";
 import template from "./hip-captcha.html";
 
@@ -14,7 +14,7 @@ declare var fillHipData;
 export class HipCaptcha {
     public encryptedFlowId: ko.Observable<string>;
 
-    constructor(private readonly captchaService: CaptchaService) {
+    constructor(private readonly backendService: BackendService) {
         this.encryptedFlowId = ko.observable();
         const hipObjScriptElement = document.createElement("script");
         hipObjScriptElement.src = "/scripts/js/HipObject.js";
@@ -25,7 +25,7 @@ export class HipCaptcha {
     }
 
     private async onLoad(): Promise<void> {
-        const params = await this.captchaService.getCaptchaParams();
+        const params = await this.backendService.getCaptchaParams();
         this.encryptedFlowId(params.EncryptedFlowId);
 
         const scriptElement = document.createElement("script");
