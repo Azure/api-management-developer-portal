@@ -1,10 +1,10 @@
 import { KnownStatusCodes } from "../models/knownStatusCodes";
 
 export class StatusCode {
-    public code: string;
+    public code: number;
     public description: string;
 
-    constructor(code: string) {
+    constructor(code: number) {
         this.code = code;
 
         const knownStatusCode = KnownStatusCodes.find(x => x.code.toString() === code.toString());

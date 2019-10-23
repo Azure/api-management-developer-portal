@@ -5,7 +5,7 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { ResetPassword } from "../../../../contracts/resetRequest";
 import { CaptchaService } from "../../../../services/captchaService";
 import { UsersService } from "../../../../services/usersService";
-import { IEventManager } from "@paperbits/common/events";
+import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../contracts/validationReport";
 
 @RuntimeComponent({ selector: "confirm-password" })
@@ -28,7 +28,7 @@ export class ConfirmPassword {
     constructor(
         private readonly usersService: UsersService,    
         private readonly captchaService: CaptchaService,
-        private readonly eventManager: IEventManager) {
+        private readonly eventManager: EventManager) {
         this.password = ko.observable();
         this.passwordConfirmation = ko.observable();
         this.isResetConfirmed = ko.observable(false);

@@ -3,8 +3,8 @@ import { Utils } from "../utils";
 
 export class Product {
     public id: string;
-    public shortId: string;
     public name: string;
+    public displayName: string;
     public description: string;
     public approvalRequired: boolean;
     public state: string;
@@ -14,8 +14,8 @@ export class Product {
 
     constructor(contract?: ProductContract) {
         this.id = Utils.getResourceName("products", contract.id, "shortId");
-        this.shortId = contract.name;
-        this.name = contract.properties.displayName;
+        this.name = contract.name;
+        this.displayName = contract.properties.displayName;
         this.description = contract.properties.description;
         this.approvalRequired = contract.properties.approvalRequired;
         this.state = contract.properties.state;

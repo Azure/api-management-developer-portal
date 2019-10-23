@@ -1,9 +1,10 @@
 import * as ko from "knockout";
 import template from "./api-details.html";
-import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
-import { DefaultRouter, Route } from "@paperbits/common/routing";
+import { Component, OnMounted, RuntimeComponent, OnDestroyed } from "@paperbits/common/ko/decorators";
+import { Router } from "@paperbits/common/routing";
 import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
+import { RouteHelper } from "../../../../../routing/routeHelper";
 
 
 @RuntimeComponent({ selector: "api-details" })
@@ -13,78 +14,80 @@ import { Api } from "../../../../../models/api";
     injectable: "apiDetails"
 })
 export class ApiDetails {
-    private queryParams: URLSearchParams;
-    private isParamChange: boolean;
-
-    public api: ko.Observable<Api> = null;
-    public versionApis: ko.ObservableArray<Api>;
-    public working: ko.Observable<boolean>;
-    public selectedId: ko.Observable<string>;
-    public downloadSelected: ko.Observable<string>;
+    public readonly api: ko.Observable<Api>;
+    public readonly selectedApiName: ko.Observable<string>;
+    public readonly currentApiVersion: ko.Observable<string>;
+    public readonly versionApis: ko.ObservableArray<Api>;
+    public readonly working: ko.Observable<boolean>;
+    public readonly downloadSelected: ko.Observable<string>;
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly router: DefaultRouter
+        private readonly routeHelper: RouteHelper,
+        private readonly router: Router,
     ) {
         this.api = ko.observable();
+        this.selectedApiName = ko.observable();
         this.versionApis = ko.observableArray([]);
         this.working = ko.observable(false);
-        this.selectedId = ko.observable();
+        this.currentApiVersion = ko.observable();
         this.downloadSelected = ko.observable("");
         this.loadApi = this.loadApi.bind(this);
-        this.onVersionChanged = this.onVersionChanged.bind(this);
     }
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.loadApi(this.router.getCurrentRoute());
-        this.router.addRouteChangeListener(this.loadApi);
-        this.selectedId.subscribe(this.onVersionChanged);
+        const apiName = this.routeHelper.getApiName();
+
+        if (!apiName) {
+            return;
+        }
+
+        this.selectedApiName(apiName);
+        await this.loadApi(apiName);
+
+        this.router.addRouteChangeListener(this.onRouteChange);
+        this.currentApiVersion.subscribe(this.onVersionChange);
     }
 
-    public async loadApi(route?: Route): Promise<void> {
-        if (!route || !route.hash) {
-            this.api(null);
-            return;
-        }
-        const currentHash = route.hash;
+    private async onRouteChange(): Promise<void> {
+        const apiName = this.routeHelper.getApiName();
 
-        this.queryParams = new URLSearchParams(currentHash);
-
-        if (!this.queryParams.has("apiId")) {
-            this.api(null);
+        if (!apiName || apiName === this.selectedApiName()) {
             return;
         }
 
-        const apiName = this.queryParams.get("apiId");
-        if (this.api() && this.api().name === apiName) {
-            return;
-        }
+        this.api(null);
+        this.selectedApiName(apiName);
+        this.loadApi(apiName);
+    }
 
+    public async loadApi(apiName: string): Promise<void> {
         this.working(true);
 
-        if (apiName) {
-            const api = await this.apiService.getApi(`apis/${apiName}`);
-            if (api.apiVersionSet && api.apiVersionSet.id) {
-                const apis = await this.apiService.getVersionSetApis(api.apiVersionSet.id);
-                this.versionApis(apis || []);
-            } else {
-                this.versionApis([]);
-            }
-            this.isParamChange = true;
-            this.selectedId(api.name);
-            this.isParamChange = false;
-            this.api(api);
+        const api = await this.apiService.getApi(`apis/${apiName}`);
+
+        if (api.apiVersionSet && api.apiVersionSet.id) {
+            const apis = await this.apiService.getApisInVersionSet(api.apiVersionSet.id);
+            this.versionApis(apis || []);
         }
+        else {
+            this.versionApis([]);
+        }
+
+        this.currentApiVersion(api.name);
+        this.api(api);
 
         this.working(false);
     }
 
-    public async onDownloadChange() {
+    public async onDownloadChange(): Promise<void> {
         const definitionType = this.downloadSelected();
+
         if (!definitionType) {
             return;
         }
+
         if (this.api() && this.api().id) {
             let exportObject = await this.apiService.exportApi(this.api().id, definitionType);
             let fileName = this.api().name;
@@ -96,21 +99,21 @@ export class ApiDetails {
                     fileType = "text/xml";
                     fileName = `${fileName}.xml`;
                     break;
-                case "openapi": //yaml 3.0
+                case "openapi": // yaml 3.0
                     fileName = `${fileName}.yaml`;
                     break;
                 default:
                     fileName = `${fileName}.json`;
                     exportObject = JSON.stringify(exportObject, null, 4);
-                    break
+                    break;
             }
             this.download(exportObject, fileName, fileType);
         }
+
         this.downloadSelected("");
     }
 
-    public async downloadDefinition(definitionType: "swagger" | "openapi" | "openapi+json" | "wadl" | "wsdl") {
-        console.log(definitionType);
+    public async downloadDefinition(definitionType: "swagger" | "openapi" | "openapi+json" | "wadl" | "wsdl"): Promise<void> {
         if (this.api() && this.api().id) {
             let exportObject = await this.apiService.exportApi(this.api().id, definitionType);
             let fileName = this.api().name;
@@ -122,23 +125,25 @@ export class ApiDetails {
                     fileType = "text/xml";
                     fileName = `${fileName}.xml`;
                     break;
-                case "openapi": //yaml 3.0
+                case "openapi": // yaml 3.0
                     fileName = `${fileName}.yaml`;
                     break;
                 default:
                     fileName = `${fileName}.json`;
                     exportObject = JSON.stringify(exportObject, null, 4);
-                    break
+                    break;
             }
             this.download(exportObject, fileName, fileType);
         }
         return;
     }
 
-    private download(data: string, filename: string, type: string) {
+    private download(data: string, filename: string, type: string): void {
         const file = new Blob([data], { type: type });
-        if (window.navigator.msSaveOrOpenBlob) // IE10+
+
+        if (window.navigator.msSaveOrOpenBlob) { // IE10+
             window.navigator.msSaveOrOpenBlob(file, filename);
+        }
         else { // Others
             const a = document.createElement("a"),
                 url = URL.createObjectURL(file);
@@ -146,21 +151,20 @@ export class ApiDetails {
             a.download = filename;
             document.body.appendChild(a);
             a.click();
-            setTimeout(function () {
+
+            setTimeout(() => {
                 document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
             }, 0);
         }
     }
 
-    private onVersionChanged(selectedApiName: string) {
-        if (!this.isParamChange && selectedApiName && this.api() && selectedApiName !== this.api().name) {
-            this.queryParams.set("apiId", selectedApiName);
-            this.queryParams.delete("operationId");
-            this.router.navigateTo("#?" + this.queryParams.toString());
-        }
+    private onVersionChange(selectedApiName: string): void {
+        const apiUrl = this.routeHelper.getApiReferenceUrl(selectedApiName);
+        this.router.navigateTo(apiUrl);
     }
 
+    @OnDestroyed()
     public dispose(): void {
         this.router.removeRouteChangeListener(this.loadApi);
     }

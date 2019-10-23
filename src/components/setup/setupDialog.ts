@@ -4,7 +4,7 @@ import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Utils } from "../../utils";
 import { IAuthenticator } from "../../authentication/IAuthenticator";
-import { IViewManager } from "@paperbits/common/ui";
+import { ViewManager } from "@paperbits/common/ui";
 import { Router } from "@paperbits/common/routing";
 
 @Component({
@@ -20,7 +20,7 @@ export class SetupDialog {
         private readonly httpClient: HttpClient,
         private readonly settingsProvider: ISettingsProvider,
         private readonly authenticator: IAuthenticator,
-        private readonly viewManager: IViewManager,
+        private readonly viewManager: ViewManager,
         private readonly router: Router
     ) { }
 

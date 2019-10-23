@@ -1,11 +1,11 @@
 import * as ko from "knockout";
 import template from "./product-details.html";
-import { Router, Route } from "@paperbits/common/routing";
+import { Router } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, OnMounted, OnDestroyed } from "@paperbits/common/ko/decorators";
-import { Api } from "../../../../../models/api";
 import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
+import { RouteHelper } from "../../../../../routing/routeHelper";
 
 @RuntimeComponent({ selector: "product-details-runtime" })
 @Component({
@@ -20,6 +20,7 @@ export class ProductDetails {
     constructor(
         private readonly usersService: UsersService,
         private readonly productService: ProductService,
+        private readonly routeHelper: RouteHelper,
         private readonly router: Router
     ) {
         this.product = ko.observable();
@@ -28,28 +29,19 @@ export class ProductDetails {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-
+        const productName = this.routeHelper.getProductName();
         this.router.addRouteChangeListener(this.onRouteChange);
 
-        const route = this.router.getCurrentRoute();
-        const productId = this.getProductId(route);
-        await this.loadProduct(productId);
+        await this.loadProduct(productName);
     }
 
-    private onRouteChange(route: Route): void {
-        const productId = this.getProductId(route);
-        this.loadProduct(productId);
+    private onRouteChange(): void {
+        const productName = this.routeHelper.getProductName();
+        this.loadProduct(productName);
     }
 
-    private getProductId(route: Route): string {
-        const queryParams = new URLSearchParams(route.hash || (route.url.indexOf("?") !== -1 ? route.url.split("?").pop() : ""));
-        const productId = queryParams.get("productId");
-
-        return productId;
-    }
-
-    private async loadProduct(productId: string): Promise<void> {
-        if (!productId) {
+    private async loadProduct(productName: string): Promise<void> {
+        if (!productName) {
             return;
         }
 
@@ -57,7 +49,7 @@ export class ProductDetails {
         this.product(null);
 
         try {
-            const product = await this.productService.getProduct("/products/" + productId);
+            const product = await this.productService.getProduct("/products/" + productName);
 
             if (product) {
                 this.product(product);

@@ -7,6 +7,7 @@ import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
+import { RouteHelper } from "../../../../../routing/routeHelper";
 
 @RuntimeComponent({ selector: "product-subscribe-runtime" })
 @Component({
@@ -29,7 +30,8 @@ export class ProductSubscribe {
     constructor(
         private readonly usersService: UsersService,
         private readonly productService: ProductService,
-        private readonly router: Router
+        private readonly router: Router,
+        private readonly routeHelper: RouteHelper
     ) {
         this.product = ko.observable();
         this.showTermsOfUse = ko.observable();
@@ -53,14 +55,6 @@ export class ProductSubscribe {
         await this.loadProduct();
     }
 
-    private getProductId(): string {
-        const route = this.router.getCurrentRoute();
-        const queryParams = new URLSearchParams(route.hash || (route.url.indexOf("?") !== -1 ? route.url.split("?").pop() : ""));
-        const productId = queryParams.get("productId");
-
-        return productId ? `/products/${productId}` : null;
-    }
-
     private async loadProduct(): Promise<void> {
         const userId = await this.usersService.getCurrentUserId();
         this.isUserSignedIn(!!userId);
@@ -69,20 +63,20 @@ export class ProductSubscribe {
             this.showTermsOfUse(false);
             this.working(true);
 
-            const productId = this.getProductId();
+            const productName = this.routeHelper.getProductName();
 
-            if (!productId) {
+            if (!productName) {
                 return;
             }
 
-            const product = await this.productService.getProduct(productId);
+            const product = await this.productService.getProduct(`products/${productName}`);
 
             if (!product) {
                 return;
             }
 
             this.product(product);
-            this.subscriptionName(product.name);
+            this.subscriptionName(product.displayName);
             this.termsOfUse(product.terms);
 
             if (product.terms) {
@@ -91,8 +85,7 @@ export class ProductSubscribe {
 
             if (userId) {
                 await this.loadSubscriptions(userId);
-            }
-            
+            }   
         }
         catch (error) {
             if (error.code === "Unauthorized") {
@@ -104,10 +97,7 @@ export class ProductSubscribe {
                 return;
             }
 
-            // TODO: Uncomment when API is in place:
-            // this.notify.error("Oops, something went wrong.", "We're unable to add subscription. Please try again later.");
-
-            throw error;
+            throw new Error(`Unable to load products. Error: ${error}`);
         }
         finally {
             this.working(false);
@@ -147,11 +137,7 @@ export class ProductSubscribe {
                 this.usersService.navigateToSignin();
                 return;
             }
-
-            // TODO: Uncomment when API is in place:
-            // this.notify.error("Oops, something went wrong.", "We're unable to load products. Please try again later.");
-
-            throw error;
+            throw new Error(`Unable to subscribe to a product. Error: ${error}`);
         }
         finally {
             this.working(false);
@@ -159,7 +145,6 @@ export class ProductSubscribe {
     }
 
     public toggleTermsOfUser(): void {
-        // TODO: Move terms of use to a separate widget?
         if (this.showTermsOfUse()) {
             this.showHideLabel("Show");
         }

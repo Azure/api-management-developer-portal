@@ -1,5 +1,5 @@
 import template from "./app.html";
-import { IViewManager } from "@paperbits/common/ui";
+import { ViewManager } from "@paperbits/common/ui";
 import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ISiteService } from "@paperbits/common/sites";
@@ -16,7 +16,7 @@ export class App {
     constructor(
         private readonly settingsProvider: ISettingsProvider,
         private readonly authenticator: IAuthenticator,
-        private readonly viewManager: IViewManager,
+        private readonly viewManager: ViewManager,
         private readonly siteService: ISiteService
     ) { }
 

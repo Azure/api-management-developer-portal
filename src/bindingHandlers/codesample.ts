@@ -7,6 +7,7 @@ import "prismjs/components/prism-csharp";
 import "prismjs/components/prism-java";
 import "prismjs/components/prism-python";
 import "prismjs/components/prism-ruby";
+// import "prismjs/components/prism-markup";
 // import "prismjs/components/prism-php"; // broken!
 
 import { TemplatingService } from "../services/templatingService";
@@ -17,7 +18,7 @@ interface TemplateConfig {
     language: string;
 }
 
-ko.bindingHandlers["codesample"] = {
+ko.bindingHandlers["codeSample"] = {
     update: (element: HTMLElement, valueAccessor: () => TemplateConfig): void => {
         const config = valueAccessor();
         const template = ko.unwrap(config.template);
@@ -56,6 +57,9 @@ ko.bindingHandlers["codesample"] = {
                 case "ruby":
                 case "php":
                     highlightLanguage = "ruby";
+                    break;
+                case "xml":
+                    highlightLanguage = "xml";
                     break;
             }
 

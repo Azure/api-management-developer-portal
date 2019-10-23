@@ -1,15 +1,26 @@
+import { StatusCode } from "./statusCode";
 import { Parameter } from "./parameter";
 import { Representation } from "./representation";
 import { ResponseContract } from "../contracts/response";
+import { Utils } from "../utils";
 
 export class Response {
+    public identifier: string;
     public headers?: Parameter[];
-    public statusCode: string;
+    public statusCode: StatusCode;
     public representations?: Representation[];
     public description?: string;
 
+    /**
+     * Returns "true" if this response is meaningful from documentation prospective.
+     */
+    public isMeaningful(): boolean {
+        return this.representations.some(x => !!x.typeName);
+    }
+
     constructor(contract?: ResponseContract) {
-        this.statusCode = contract.statusCode;
+        this.identifier = Utils.getBsonObjectId();
+        this.statusCode = new StatusCode(contract.statusCode);
         this.description = contract.description;
 
         this.headers = contract.headers
@@ -17,7 +28,8 @@ export class Response {
             : [];
 
         this.representations = contract.representations
-            ? contract.representations.map(x => new Representation(x))
+            ? contract.representations
+                .map(representation => new Representation(representation))
             : [];
     }
 }

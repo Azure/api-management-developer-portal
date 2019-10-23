@@ -1,0 +1,51 @@
+.carousel-item > * {
+    flex: 1;
+}
+
+.carousel.carousel-short {
+    .carousel-item > div {
+        height: 300px;
+    }
+}
+
+.carousel {
+    .carousel-item > div {
+        height: 400px;
+    }
+}
+
+.carousel.carousel-tall {
+    .carousel-item > div {
+        height: 600px;
+    }
+}
+
+.carousel-toasts.carousel-toasts-thumbnails {
+    position: absolute;
+    right: 0;
+    bottom: -70px;
+    left: 0;
+    z-index: 15;
+    display: flex;
+    justify-content: center;
+    padding-left: 0;
+    margin-right: 15%;
+    margin-left: 15%;
+    list-style: none;
+    align-items: center;
+
+    li {
+        border-radius: 50%;
+        display: block;
+        width: 70px;
+        height: 70px;
+        background: #ccc;
+        margin: 10px;
+        max-width: 70px;
+        cursor: pointer;
+
+        &.active {
+            zoom: 1.3;
+        }
+    }
+}

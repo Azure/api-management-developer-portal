@@ -2,12 +2,12 @@ import { ViewModelBinder } from "@paperbits/common/widgets";
 import { ListOfApisViewModel } from "./listOfApisViewModel";
 import { ListOfApisModel } from "../listOfApisModel";
 import { Bag } from "@paperbits/common";
-import { IEventManager } from "@paperbits/common/events/IEventManager";
+import { EventManager } from "@paperbits/common/events";
 
 
 export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisModel, ListOfApisViewModel> {
 
-    constructor(private readonly eventManager: IEventManager) {}
+    constructor(private readonly eventManager: EventManager) {}
     
     public async modelToViewModel(model: ListOfApisModel, viewModel?: ListOfApisViewModel, bindingContext?: Bag<any>): Promise<ListOfApisViewModel> {
         if (!viewModel) {

@@ -131,4 +131,17 @@
             }
         }
     }
+
+    &.list-checkboxes {
+        .list-item {
+            padding-left: 25px;
+
+            &.list-item-checked::before {
+                @extend .paperbits-icon;
+                @extend .paperbits-check-2;
+                position: absolute;
+                left: 5px;
+            }
+        }
+    }
 }

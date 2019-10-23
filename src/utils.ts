@@ -48,6 +48,14 @@ export class Utils {
         return url;
     }
 
+    public static ensureTrailingSlash(url: string): string {
+        if (!url.endsWith("/")) {
+            url = url + "/";
+        }
+
+        return url;
+    }
+
     public static getQueryParams(queryString: string): any {
         const queryValues = {};
         queryString.split("&").forEach((item) => {
