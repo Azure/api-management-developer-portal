@@ -23,6 +23,9 @@ A clear and concise description of what you expected to happen.
 **Portal environment**
 Managed / Self-hosted
 
+**Release tag or commit SHA (if using self-hosted version)**
+For example, release `1.2.0` or commit `c45da9778b70d369aba60fa2e63c191efe2b548f`
+
 **API Management service name**
 contoso-api
 
