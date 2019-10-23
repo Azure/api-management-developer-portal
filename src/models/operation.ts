@@ -6,8 +6,8 @@ import { Utils } from "../utils";
 
 export class Operation {
     public id: string;
-    public shortId: string;
     public name: string;
+    public displayName: string;
     public description: string;
     public urlTemplate: string;
     public templateParameters: Parameter[];
@@ -16,10 +16,14 @@ export class Operation {
     public request?: Request;
     public responses?: Response[];
 
+    public meaningfulResponses(): Response[] {
+        return this.responses.filter(x => x.isMeaningful());
+    }
+
     constructor(contract?: OperationContract) {
         this.id = Utils.getResourceName("apis", contract.id, "shortId");
-        this.shortId = contract.name;
-        this.name = contract.properties.displayName;
+        this.name = contract.name;
+        this.displayName = contract.properties.displayName;
         this.description = contract.properties.description;
         this.urlTemplate = contract.properties.urlTemplate;
         this.method = contract.properties.method;

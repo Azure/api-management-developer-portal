@@ -4,7 +4,7 @@ import template from "./reset-password.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../../services/usersService";
 import { ResetRequest } from "../../../../../contracts/resetRequest";
-import { IEventManager } from "@paperbits/common/events";
+import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 import { BackendService } from "../../../../../services/backendService";
 
@@ -24,7 +24,7 @@ export class ResetPassword {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly eventManager: IEventManager,
+        private readonly eventManager: EventManager,
         private readonly backendService: BackendService) {
         this.email = ko.observable();
         this.isResetRequested = ko.observable(false);

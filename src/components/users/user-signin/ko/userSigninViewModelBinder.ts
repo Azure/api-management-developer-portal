@@ -5,12 +5,12 @@ import { Bag } from "@paperbits/common";
 import { TenantService } from "../../../../services/tenantService";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { BackendService } from "../../../../services/backendService";
-import { IEventManager } from "@paperbits/common/events/IEventManager";
+import { EventManager } from "@paperbits/common/events";
 
 export class UserSigninViewModelBinder implements ViewModelBinder<UserSigninModel, UserSigninViewModel> {
     
     constructor(
-        private readonly eventManager: IEventManager, 
+        private readonly eventManager: EventManager, 
         private readonly tenantService: TenantService,
         private readonly backendService: BackendService) {}
 

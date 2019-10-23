@@ -4,7 +4,7 @@ import template from "./user-signin.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../../services/usersService";
 import { MapiError } from "../../../../../services/mapiError";
-import { IEventManager } from "@paperbits/common/events";
+import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
 
@@ -25,7 +25,7 @@ export class UserSignin {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly eventManager: IEventManager
+        private readonly eventManager: EventManager
         ) {
             
         this.delegationUrl = ko.observable();

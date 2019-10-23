@@ -22,6 +22,7 @@ import { Revision } from "../../../../../models/revision";
 import { templates } from "./templates/templates";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
 import { SubscriptionState } from "../../../../../contracts/subscription";
+import { RouteHelper } from "../../../../../routing/routeHelper";
 
 @Component({
     selector: "operation-console",
@@ -68,6 +69,7 @@ export class OperationConsole {
         private readonly usersService: UsersService,
         private readonly productService: ProductService,
         private readonly httpClient: HttpClient,
+        private readonly routeHelper: RouteHelper
         // private readonly hostService: HostService,
         // private readonly corsService: CorsService
     ) {
@@ -239,7 +241,7 @@ export class OperationConsole {
             });
 
             if (keys.length > 0) {
-                availableProducts.push({ name: product.name, subscriptionKeys: keys });
+                availableProducts.push({ name: product.displayName, subscriptionKeys: keys });
             }
         });
 
@@ -270,10 +272,9 @@ export class OperationConsole {
         this.consoleOperation().request.queryParameters.push(new ConsoleParameter());
     }
 
-    public removeQueryParameter(parameter:ConsoleParameter): void {
+    public removeQueryParameter(parameter: ConsoleParameter): void {
         this.consoleOperation().request.queryParameters.remove(parameter);
     }
-    
 
     public applySubscriptionKey(subscriptionKey: string): void {
         if (!subscriptionKey) {
@@ -601,5 +602,9 @@ export class OperationConsole {
 
     public selectTraceTab(): void {
         this.responseActiveTab("trace");
+    }
+
+    public getApiReferenceUrl(): string {
+        return this.routeHelper.getApiReferenceUrl(this.api().name);
     }
 }

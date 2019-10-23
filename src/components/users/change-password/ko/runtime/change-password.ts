@@ -5,7 +5,7 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { ChangePasswordRequest } from "../../../../../contracts/resetRequest";
 import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services/usersService";
-import { IEventManager } from "@paperbits/common/events";
+import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
 declare var WLSPHIP0;
@@ -26,7 +26,7 @@ export class ChangePassword {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly eventManager: IEventManager,
+        private readonly eventManager: EventManager,
         private readonly backendService: BackendService) {
         this.password = ko.observable();
         this.newPassword = ko.observable();

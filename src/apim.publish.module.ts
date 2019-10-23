@@ -13,7 +13,7 @@ import { UserDetailsModule } from "./components/users/user-details/ko/userDetail
 import { UserSubscriptionsModule } from "./components/users/user-subscriptions/ko/userSubscriptions.module";
 import { ProductDetailsModule } from "./components/products/product-details/ko/productDetails.module";
 import { StaticRouter } from "./components/staticRouter";
-import { UserService } from "./services/userService";
+import { StaticUserService } from "./services/userService";
 import { StaticAuthenticator } from "./components/staticAuthenticator";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";
 import { OperationDetailsModule } from "./components/operations/operation-details/ko/operationDetails.module";
@@ -29,7 +29,7 @@ import { ReportsModule } from "./components/reports/ko/reports.module";
 import { TenantService } from "./services/tenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/ko/validationSummary.module";
 import { BackendService } from "./services/backendService";
-
+import { StaticRoleService } from "./services/roleService";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -54,9 +54,11 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ReportsModule());
         injector.bindModule(new ValidationSummaryModule());
         injector.bindSingleton("blobStorage", AzureBlobStorage);
-        injector.bindSingleton("userService", UserService);
         injector.bindSingleton("tenantService", TenantService);        
         injector.bindSingleton("backendService", BackendService);
+        injector.bindSingleton("userService", StaticUserService);
+        injector.bindSingleton("roleService", StaticRoleService);
+        injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("router", StaticRouter);
         injector.bindSingleton("authenticator", StaticAuthenticator);

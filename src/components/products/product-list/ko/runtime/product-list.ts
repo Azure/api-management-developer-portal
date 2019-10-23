@@ -6,8 +6,13 @@ import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { Router } from "@paperbits/common/routing/router";
 
-@RuntimeComponent({ selector: "product-list-runtime" })
+
+@RuntimeComponent({
+    selector: "product-list-runtime"
+})
 @Component({
     selector: "product-list-runtime",
     template: template,
@@ -15,24 +20,24 @@ import { SearchQuery } from "../../../../../contracts/searchQuery";
 })
 export class ProductList {
     public readonly products: ko.ObservableArray<Product>;
+    public readonly selectedProductName: ko.Observable<string>;
     public readonly showDetails: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
-
-    public readonly pattern: ko.Observable<string>;    
+    public readonly pattern: ko.Observable<string>;
     public readonly page: ko.Observable<number>;
     public readonly hasPager: ko.Computed<boolean>;
     public readonly hasPrevPage: ko.Observable<boolean>;
     public readonly hasNextPage: ko.Observable<boolean>;
 
-    private lastPattern;
-
     constructor(
         private readonly usersService: UsersService,
-        private readonly productService: ProductService
+        private readonly productService: ProductService,
+        private readonly router: Router,
+        private readonly routeHelper: RouteHelper
     ) {
         this.products = ko.observableArray();
+        this.selectedProductName = ko.observable();
         this.working = ko.observable(true);
-
         this.pattern = ko.observable();
         this.page = ko.observable(1);
         this.hasPrevPage = ko.observable(false);
@@ -42,41 +47,35 @@ export class ProductList {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.searchByName();
+        await this.resetSearch();
 
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
-            .subscribe(this.searchByName);
+            .subscribe(this.resetSearch);
     }
 
-    public getProductUrl(product: Product): string {
-        return product.id.replace("/products/", `${Constants.productReferencePageUrl}#?productId=`);
-    }
-
-    public async searchByName(): Promise<void> {
-        const currentPattern = this.pattern();
-        if (this.lastPattern !== currentPattern) {
-            this.page(1);
-        }
-
+    public async loadPageOfProducts(): Promise<void> {
         const pageNumber = this.page() - 1;
+
         const query: SearchQuery = {
             pattern: this.pattern(),
             skip: pageNumber * Constants.defaultPageSize,
             take: Constants.defaultPageSize
         };
 
-        this.working(true);
-
         try {
+            this.working(true);
+
             const itemsPage = await this.productService.getProductsPage(query);
 
             this.hasPrevPage(pageNumber > 0);
             this.hasNextPage(!!itemsPage.nextLink);
 
-            this.lastPattern = query.pattern;
             this.products(itemsPage.value);
 
+            if (!this.selectedProductName()) {
+                this.selectFirstProduct();
+            }
         }
         catch (error) {
             if (error.code === "Unauthorized") {
@@ -84,23 +83,40 @@ export class ProductList {
                 return;
             }
 
-            // TODO: Uncomment when API is in place:
-            // this.notify.error("Oops, something went wrong.", "We're unable to load products. Please try again later.");
-
-            throw error;
+            throw new Error(`Unable to load products. ${error}`);
         }
         finally {
             this.working(false);
         }
     }
 
+    public selectFirstProduct(): void {
+        let productName;
+        const products = this.products();
+        productName = products[0].name;
+
+        this.selectedProductName(productName);
+
+        const productUrl = this.routeHelper.getProductReferenceUrl(productName);
+        this.router.navigateTo(productUrl);
+    }
+
+    public getProductUrl(product: Product): string {
+        return this.routeHelper.getProductReferenceUrl(product.name);
+    }
+
     public prevPage(): void {
         this.page(this.page() - 1);
-        this.searchByName();
+        this.loadPageOfProducts();
     }
 
     public nextPage(): void {
         this.page(this.page() + 1);
-        this.searchByName();
+        this.loadPageOfProducts();
+    }
+
+    public async resetSearch(): Promise<void> {
+        this.page(1);
+        this.loadPageOfProducts();
     }
 }

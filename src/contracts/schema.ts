@@ -69,6 +69,8 @@ export interface SchemaObjectContract extends ReferenceObjectContract {
     maxProperties;
 
     minProperties;
+
+    example: string;
 }
 
 /**
@@ -119,5 +121,5 @@ export interface SchemaContract extends ArmResource  {
     properties: {
         contentType: string;
         document?: SchemaDocumentContract;
-    }
+    };
 }
