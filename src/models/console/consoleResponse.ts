@@ -1,5 +1,5 @@
-import { ConsoleHeader } from './consoleHeader'
-import { ConsoleRepresentation } from './consoleRepresentation'
+import { ConsoleHeader } from "./consoleHeader";
+import { ConsoleRepresentation } from "./consoleRepresentation";
 // import { ValidateNested } from "class-validator";
 import { StatusCode } from "../statusCode";
 import { Response } from "../response";
@@ -17,7 +17,7 @@ export class ConsoleResponse {
     public description: string;
 
     constructor(response: Response) {
-        this.statusCode = new StatusCode(response.statusCode);
+        this.statusCode = response.statusCode;
         this.description = response.description;
         this.headers = response.headers.map(x => new ConsoleHeader(x));
 

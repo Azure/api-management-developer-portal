@@ -15,12 +15,12 @@
     <nav aria-label="breadcrumb" style="margin-right: 20px">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="#" data-bind="text: api.displayName"></a>
+                <a href="#" data-bind="text: api.displayName, attr: { href: $component.getApiReferenceUrl() }"></a>
             </li>
             <li class="breadcrumb-item">
-                <a href="#" data-bind="text: api.apiVersion"></a>
+                <span data-bind="text: api.apiVersion"></span>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">
+            <li class="breadcrumb-item">
                 <span data-bind="text: name"></span>
             </li>
         </ol>
@@ -28,10 +28,10 @@
 
     <div data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
     <!-- <div class="row">
-                        <div class="col-md-12">
-                            <span data-bind="text: urlTemplate, attr: { 'data-method': method }"></span>
-                        </div>
-                    </div> -->
+        <div class="col-md-12">
+            <span data-bind="text: urlTemplate, attr: { 'data-method': method }"></span>
+        </div>
+    </div> -->
 
     <h3>Authorization</h3>
 
@@ -120,7 +120,7 @@
     <div data-bind="if: hasBody">
         <div class="row">
             <h3 class="console-body">Body</h3>
-            <div class="button-body" role="group">
+            <!-- <div class="button-body" role="group">
                 <button type="button" class="button dropdown-toggle button-default" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     <span data-bind="text: $component.bodySource"></span>
@@ -130,7 +130,7 @@
                     <a class="dropdown-item" href="#"
                         data-bind="click: $component.bodySource.bind(this, 'Binary')">Binary</a>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <div class="clearfix"></div>
@@ -148,50 +148,48 @@
     </div>
 </div>
 
-<div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow">
+<div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
     <ul class="nav">
-        <li class="nav-item">
-            <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'http'), css: { active: $component.selectedLanguage() === 'http' }">HTTP</a>
+        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'http' }">
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'http')">HTTP</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'curl'), css: { active: $component.selectedLanguage() === 'curl' }">Curl</a>
+        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'curl' }">
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'curl')">Curl</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'csharp' }">
             <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'csharp'), css: { active: $component.selectedLanguage() === 'csharp' }">C#</a>
+                data-bind="click: $component.selectedLanguage.bind(this, 'csharp')">C#</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'java' }">
             <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'java'), css: { active: $component.selectedLanguage() === 'java' }">Java</a>
+                data-bind="click: $component.selectedLanguage.bind(this, 'java')">Java</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'javascript' }">
             <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'javascript'), css: { active: $component.selectedLanguage() === 'javascript' }">JavaScript</a>
+                data-bind="click: $component.selectedLanguage.bind(this, 'javascript')">JavaScript</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'php' }">
             <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'php'), css: { active: $component.selectedLanguage() === 'php' }">PHP</a>
+                data-bind="click: $component.selectedLanguage.bind(this, 'php')">PHP</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'python' }">
             <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'python'), css: { active: $component.selectedLanguage() === 'python' }">Python</a>
+                data-bind="click: $component.selectedLanguage.bind(this, 'python')">Python</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'ruby' }">
             <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'ruby'), css: { active: $component.selectedLanguage() === 'ruby' }">Ruby</a>
+                data-bind="click: $component.selectedLanguage.bind(this, 'ruby')">Ruby</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'objc' }">
             <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'objc'), css: { active: $component.selectedLanguage() === 'objc' }">Objective
+                data-bind="click: $component.selectedLanguage.bind(this, 'objc')">Objective
                 C</a>
         </li>
     </ul>
 
     <h3>HTTP request</h3>
     <pre
-        data-bind="codesample: { template: templates[selectedLanguage()], model: consoleOperation, language: selectedLanguage }"></pre>
+        data-bind="codeSample: { template: templates[selectedLanguage()], model: consoleOperation, language: selectedLanguage }"></pre>
 
     <div class="flex flex-column align-items-end">
         <div class="btn-group" role="group">
@@ -216,7 +214,7 @@
 <!-- /ko -->
 
 <!-- ko if: requestError-->
-<div class="panel panel-dark" data-bind="scrollintoview: {}">
+<div class="panel panel-dark animation-fade-in" data-bind="scrollintoview: {}">
     <p>Unable to complete the request</p>
     <p class="text-muted" data-bind="html: requestError"></p>
 </div>

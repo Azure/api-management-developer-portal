@@ -25,15 +25,15 @@ export class ProductService {
     /**
      * Returns user subscriptions.
      * @param userId {string} User unique identifier.
+     * @param productName {string} Product unique identifier.
      */
-    public async getSubscriptions(userId: string, productId?: string): Promise<Page<Subscription>> {
+    public async getSubscriptions(userId: string, productName?: string): Promise<Page<Subscription>> {
         if (!userId) {
             throw new Error(`Parameter "userId" not specified.`);
         }
 
         const pageOfSubscriptions = new Page<Subscription>();
-
-        const query = !productId ? "" : `?$filter=properties/scope eq '${productId}'`;
+        const query = !productName ? "" : `?$filter=contains(properties/scope,'/products/${productName}')`;
 
         try {
             const pageContract = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`);
@@ -101,7 +101,7 @@ export class ProductService {
                 .map((item) => {
                     const model = new Subscription(item);
                     const product = products.find(p => p.id === model.productId);
-                    model.productName = product && product.name;
+                    model.productName = product && product.displayName;
                     result.push(model);
                 });
         }
@@ -130,7 +130,7 @@ export class ProductService {
 
             if (loadProduct) {
                 const product = await this.getProduct(model.productId);
-                model.productName = product && product.name;
+                model.productName = product && product.displayName;
             }
 
             return model;

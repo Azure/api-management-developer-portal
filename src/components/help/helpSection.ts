@@ -1,15 +1,15 @@
-import { IToolButton, IViewManager, IView } from "@paperbits/common/ui";
+import { ToolButton, ViewManager, View } from "@paperbits/common/ui";
 
-export class HelpWorkshopSection implements IToolButton {
-    public iconClass: string = "paperbits-icon paperbits-help";
+export class HelpWorkshopSection implements ToolButton {
+    public iconClass: string = "paperbits-icon paperbits-c-question";
     public title: string = "Help";
 
-    constructor(private readonly viewManager: IViewManager) { }
+    constructor(private readonly viewManager: ViewManager) { }
 
     public onActivate(): void {
         this.viewManager.clearJourney();
 
-        const view: IView = {
+        const view: View = {
             heading: this.title,
             component: { name: "help-workshop" }
         };

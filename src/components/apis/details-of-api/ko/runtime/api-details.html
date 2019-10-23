@@ -11,19 +11,19 @@
         <div class="form-inline">
             <div class="form-group">
                 <!-- ko if: versionApis().length > 0 -->
-                <label for="apiVersions">Api version: </label>
+                <label for="apiVersions">API version: </label>
                 <select id="apiVersions" class="form-control"
-                    data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: selectedId">
+                    data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: currentApiVersion">
                 </select>
                 <!-- /ko -->
-                <select id="apiDefinitions" class="form-control" aria-label="api definitions"
+                <select id="apiDefinitions" class="form-control" aria-label="API definitions"
                     data-bind="value: downloadSelected, event: {change: onDownloadChange}">
                     <option value="" disabled="disabled" selected="selected">API definition</option>
                     <option value="openapi">Open API 3 (YAML)</option>
                     <option value="openapi+json">Open API 3 (JSON)</option>
                     <option value="swagger"> Open API 2 (JSON)</option>
                     <option value="wadl">WADL</option>
-                    <!-- ko if: api().type === 'soap'  -->
+                    <!-- ko if: api().type === 'soap' -->
                     <option value="wsdl">WSDL</option>
                     <!-- /ko -->
                 </select>

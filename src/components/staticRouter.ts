@@ -15,11 +15,23 @@ export class StaticRouter implements Router {
     }
 
     public addRouteChangeListener(callback: () => void): void {
-        // this.callbacks.push(callback);
+        // Do nothing
     }
 
     public removeRouteChangeListener(callback: () => void): void {
-        // this.callbacks.spliceremove(callback);
+        // Do nothing
+    }
+
+    public addHistoryUpdateListener(eventHandler: (args?: any) => void): void {
+        // Do nothing
+    }
+
+    public removeHistoryUpdateListener(eventHandler: (args?: any) => void): void {
+        // Do nothing
+    }
+
+    public updateHistory(url: string, title: string): void {
+        // Do nothing
     }
 
     public async navigateTo(url: string): Promise<void> {

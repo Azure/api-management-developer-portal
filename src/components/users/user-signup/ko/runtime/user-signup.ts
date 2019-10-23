@@ -6,7 +6,7 @@ import { CaptchaService } from "../../../../../services/captchaService";
 import { UsersService } from "../../../../../services/usersService";
 import { TenantSettings } from "../../../../../contracts/tenantSettings";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
-import { IEventManager } from "@paperbits/common/events";
+import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
 declare var WLSPHIP0;
@@ -35,7 +35,7 @@ export class UserSignup {
     constructor(
         private readonly usersService: UsersService,       
         private readonly captchaService: CaptchaService,
-        private readonly eventManager: IEventManager) {            
+        private readonly eventManager: EventManager) {            
         this.email = ko.observable("");
         this.password = ko.observable("");
         this.passwordConfirmation = ko.observable("");

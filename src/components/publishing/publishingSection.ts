@@ -1,15 +1,15 @@
-import { IToolButton, IViewManager, IView } from "@paperbits/common/ui";
+import { ToolButton, ViewManager, View } from "@paperbits/common/ui";
 
-export class PublishingWorkshopSection implements IToolButton {
+export class PublishingWorkshopSection implements ToolButton {
     public iconClass: string = "paperbits-icon paperbits-send";
     public title: string = "Publishing";
 
-    constructor(private readonly viewManager: IViewManager) { }
+    constructor(private readonly viewManager: ViewManager) { }
 
     public onActivate(): void {
         this.viewManager.clearJourney();
 
-        const view: IView = {
+        const view: View = {
             heading: this.title,
             helpText: "Publish your portal to make the latest version available to visitors.",
             component: { name: "publishing-workshop" }

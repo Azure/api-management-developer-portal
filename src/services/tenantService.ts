@@ -25,18 +25,20 @@ export class TenantService {
      * Returns API Management service name.
      */
     public async getServiceName(): Promise<string> {
-        /* TODO: User proper service container */
-        const managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
-        const regex = /https:\/\/([\w\-]*)\./gm;
-        const match = regex.exec(managementApiUrl);
+        return location.hostname;
 
-        if (match && match.length > 0) {
-            const serviceName = match[1];
-            return serviceName;
-        }
-        else {
-            return "";
-        }
+        // /* TODO: User proper service container */
+        // const managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
+        // const regex = /https:\/\/([\w\-]*)\./gm;
+        // const match = regex.exec(managementApiUrl);
+
+        // if (match && match.length > 0) {
+        //     const serviceName = match[1];
+        //     return serviceName;
+        // }
+        // else {
+        //     return "";
+        // }
     }
 
     /**
@@ -73,7 +75,7 @@ export class TenantService {
         return [`${serviceName}.azure-api.net`];
     }
 
-    public async isDelegationEnabled(loadedSettings?: TenantSettings): Promise<boolean> {        
+    public async isDelegationEnabled(loadedSettings?: TenantSettings): Promise<boolean> {
         const tenantSettings = loadedSettings || await this.getSettings();
         return tenantSettings && tenantSettings["CustomPortalSettings.DelegationEnabled"] && tenantSettings["CustomPortalSettings.DelegationEnabled"].toLowerCase() === "true";
     }
@@ -81,11 +83,11 @@ export class TenantService {
     /**
      * Returns delegation config.
      */
-    public async getDelegationUrl(action: DelegationAction, delegationParameters: {}, delegationUrl?: string ) : Promise<string> {
+    public async getDelegationUrl(action: DelegationAction, delegationParameters: {}, delegationUrl?: string): Promise<string> {
         const settings = await this.getSettings();
         const isDelegationEnabled = await this.isDelegationEnabled(settings);
         if (isDelegationEnabled) {
-            if(!nodeCrypto){
+            if (!nodeCrypto) {
                 console.warn("node Crypto lib was not found");
                 return undefined;
             }

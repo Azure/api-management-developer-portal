@@ -1,40 +1,42 @@
 import * as ko from "knockout";
-import { SchemaObject } from "../models/schema";
+import { TypeDefinition } from "../models/schema";
 import { Utils } from "../utils";
 
 ko.bindingHandlers["schemaobjecttype"] = {
-    init: (element: HTMLElement, valueAccessor: () => SchemaObject): void => {
-        const schemaObject = ko.unwrap(valueAccessor());
+    init: (element: HTMLElement, valueAccessor: () => TypeDefinition): void => {
+        const value = ko.unwrap(valueAccessor());
 
         let label;
         let href;
 
-        if (schemaObject.type) {
-            label = schemaObject.type;
+        if (value.type) {
+            label = value.type;
         }
         else {
             label = "Object";
         }
 
-        if (schemaObject.$ref) {
-            if (schemaObject.$ref.startsWith("#/definitions/")) {
-                href = schemaObject.$ref;
+        const reference = value.$ref;
+
+        if (reference) {
+            if (reference.startsWith("#/definitions/")) {
+                href = reference;
 
                 if (label === "Object") {
-                    label = schemaObject.$ref.substring(14);
+                    label = reference.substring(14);
                 }
 
-                href = `#${schemaObject.$ref.substring(14)}`;
+                href = `#${reference.substring(14)}`;
             }
             else {
-                href = schemaObject.$ref;
+                href = reference;
             }
 
-            ko.applyBindingsToNode(element, { html: `<a href="">${label}</a>`, click: () => Utils.scrollTo(label)}, null);
+            ko.applyBindingsToNode(element, { html: `<a href="${href}">${label}</a>`}, null);
         }
         else {
-            label = schemaObject.type;
+            label = value.type;
             ko.applyBindingsToNode(element, { text: label }, null);
         }
     }
-}
+};
