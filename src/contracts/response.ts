@@ -6,7 +6,7 @@ import { ParameterContract } from "./parameter";
  */
 export interface ResponseContract {
     headers?: ParameterContract[];
-    statusCode: string;
+    statusCode: number;
     representations?: RepresentationContract[];
     description?: string;
 }

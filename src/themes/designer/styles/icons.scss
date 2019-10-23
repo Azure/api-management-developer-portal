@@ -10,6 +10,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
 /*------------------------
     change icon size
   -------------------------*/
@@ -140,415 +141,497 @@
 /*------------------------
       icons
   -------------------------*/
+@function unicode($str) {
+    @return unquote('"\\#{$str}"');
+}
+
+$paperbits-chat-45: unicode(ea02);
+$paperbits-layout-11: unicode(ea03);
+$paperbits-action-74: unicode(ea08);
+$paperbits-align-center: unicode(ea09);
+$paperbits-align-justify: unicode(ea0a);
+$paperbits-align-left-2: unicode(ea0b);
+$paperbits-align-right-2: unicode(ea0c);
+$paperbits-size: unicode(ea0d);
+$paperbits-edit-2: unicode(ea0e);
+$paperbits-code: unicode(ea0f);
+$paperbits-list-bullet: unicode(ea10);
+$paperbits-list-numbers: unicode(ea11);
+$paperbits-bold: unicode(ea12);
+$paperbits-audio-91: unicode(ea13);
+$paperbits-quote: unicode(ea14);
+$paperbits-subscript: unicode(ea15);
+$paperbits-superscript: unicode(ea16);
+$paperbits-alert-circle-i: unicode(ea17);
+$paperbits-chat-45-2: unicode(ea18);
+$paperbits-drop: unicode(ea1a);
+$paperbits-database: unicode(ea1b);
+$paperbits-m-location: unicode(ea1d);
+$paperbits-mobile: unicode(ea1f);
+$paperbits-desktop-screen: unicode(ea20);
+$paperbits-mobile-landscape: unicode(ea22);
+$paperbits-player-48: unicode(ea23);
+$paperbits-tablet-2: unicode(ea24);
+$paperbits-wifi-off: unicode(ea25);
+$paperbits-wifi: unicode(ea26);
+$paperbits-ban: unicode(ea27);
+$paperbits-single-content-03: unicode(ea28);
+$paperbits-single-copy-04: unicode(ea29);
+$paperbits-single-copies: unicode(ea2a);
+$paperbits-mirror-2: unicode(ea2b);
+$paperbits-slider: unicode(ea2c);
+$paperbits-abc: unicode(ea2f);
+$paperbits-puzzle-10: unicode(ea30);
+$paperbits-image-2: unicode(ea31);
+$paperbits-paint-bucket-40: unicode(ea32);
+$paperbits-palette: unicode(ea33);
+$paperbits-transform-origin: unicode(ea34);
+$paperbits-menu-right: unicode(ea35);
+$paperbits-menu-34: unicode(ea36);
+$paperbits-menu-left: unicode(ea37);
+$paperbits-check-2: unicode(ea38);
+$paperbits-preferences-circle: unicode(ea39);
+$paperbits-underline: unicode(ea3a);
+$paperbits-link-69-2: unicode(ea3d);
+$paperbits-capitalize: unicode(ea3e);
+$paperbits-color: unicode(ea3f);
+$paperbits-anchor: unicode(ea40);
+$paperbits-italic: unicode(ea41);
+$paperbits-square-upload: unicode(ea42);
+$paperbits-square-download: unicode(ea43);
+$paperbits-simple-add: unicode(ea44);
+$paperbits-simple-remove: unicode(ea45);
+$paperbits-circle-delete: unicode(ea47);
+$paperbits-circle-add: unicode(ea48);
+$paperbits-button-2: unicode(ea49);
+$paperbits-enlarge-circle: unicode(ea4a);
+$paperbits-align-bottom: unicode(ea4c);
+$paperbits-align-right: unicode(ea4d);
+$paperbits-align-top: unicode(ea4e);
+$paperbits-align-center-horizontal: unicode(ea4f);
+$paperbits-align-center-vertical: unicode(ea50);
+$paperbits-align-left: unicode(ea51);
+$paperbits-disperse: unicode(ea52);
+$paperbits-zoom-out: unicode(ea53);
+$paperbits-zoom-in: unicode(ea54);
+$paperbits-trash-simple: unicode(ea55);
+$paperbits-edit-72: unicode(ea56);
+$paperbits-form: unicode(ea57);
+$paperbits-zoom-99: unicode(ea58);
+$paperbits-crop: unicode(ea59);
+$paperbits-enlarge-vertical: unicode(ea5a);
+$paperbits-enlarge-horizontal: unicode(ea5b);
+$paperbits-rotate-right-2: unicode(ea5c);
+$paperbits-rotate-left-2: unicode(ea5d);
+$paperbits-margin-right: unicode(ea5e);
+$paperbits-margin-left: unicode(ea5f);
+$paperbits-alert: unicode(ea60);
+$paperbits-cheque-3: unicode(ea61);
+$paperbits-favourite-31: unicode(ea62);
+$paperbits-at-sign: unicode(ea63);
+$paperbits-gradient: unicode(ea64);
+$paperbits-polaroid: unicode(ea65);
+$paperbits-marker-2: unicode(ea67);
+$paperbits-undo-25: unicode(ea68);
+$paperbits-redo-26: unicode(ea69);
+$paperbits-floppy-disk: unicode(ea6a);
+$paperbits-upload: unicode(ea6b);
+$paperbits-world: unicode(ea6e);
+$paperbits-wireframe: unicode(ea6f);
+$paperbits-send: unicode(ea70);
+$paperbits-c-question: unicode(ea71);
+$paperbits-layout-11-2: unicode(ea73);
+$paperbits-clapperboard: unicode(ea75);
+$paperbits-single-02: unicode(ea76);
 
 .paperbits-chat-45::before {
-    content: "\ea02";
+    content: $paperbits-chat-45;
 }
 
 .paperbits-layout-11::before {
-    content: "\ea03";
-}
-
-.paperbits-logo-youtube::before {
-    content: "\ea07";
+    content: $paperbits-layout-11;
 }
 
 .paperbits-action-74::before {
-    content: "\ea08";
+    content: $paperbits-action-74;
 }
 
 .paperbits-align-center::before {
-    content: "\ea09";
+    content: $paperbits-align-center;
 }
 
 .paperbits-align-justify::before {
-    content: "\ea0a";
+    content: $paperbits-align-justify;
 }
 
 .paperbits-align-left-2::before {
-    content: "\ea0b";
+    content: $paperbits-align-left-2;
 }
 
 .paperbits-align-right-2::before {
-    content: "\ea0c";
+    content: $paperbits-align-right-2;
 }
 
 .paperbits-size::before {
-    content: "\ea0d";
+    content: $paperbits-size;
 }
 
 .paperbits-edit-2::before {
-    content: "\ea0e";
+    content: $paperbits-edit-2;
 }
 
 .paperbits-code::before {
-    content: "\ea0f";
+    content: $paperbits-code;
 }
 
 .paperbits-list-bullet::before {
-    content: "\ea10";
+    content: $paperbits-list-bullet;
 }
 
 .paperbits-list-numbers::before {
-    content: "\ea11";
+    content: $paperbits-list-numbers;
 }
 
 .paperbits-bold::before {
-    content: "\ea12";
+    content: $paperbits-bold;
 }
 
 .paperbits-audio-91::before {
-    content: "\ea13";
+    content: $paperbits-audio-91;
 }
 
 .paperbits-quote::before {
-    content: "\ea14";
+    content: $paperbits-quote;
 }
 
 .paperbits-subscript::before {
-    content: "\ea15";
+    content: $paperbits-subscript;
 }
 
 .paperbits-superscript::before {
-    content: "\ea16";
+    content: $paperbits-superscript;
 }
 
 .paperbits-alert-circle-i::before {
-    content: "\ea17";
+    content: $paperbits-alert-circle-i;
 }
 
 .paperbits-chat-45-2::before {
-    content: "\ea18";
-}
-
-.paperbits-cloud-25::before {
-    content: "\ea19";
+    content: $paperbits-chat-45-2;
 }
 
 .paperbits-drop::before {
-    content: "\ea1a";
+    content: $paperbits-drop;
 }
 
 .paperbits-database::before {
-    content: "\ea1b";
+    content: $paperbits-database;
 }
 
 .paperbits-m-location::before {
-    content: "\ea1d";
-}
-
-.paperbits-map::before {
-    content: "\ea1e";
+    content: $paperbits-m-location;
 }
 
 .paperbits-mobile::before {
-    content: "\ea1f";
+    content: $paperbits-mobile;
 }
 
 .paperbits-desktop-screen::before {
-    content: "\ea20";
-}
-
-.paperbits-tv-2::before {
-    content: "\ea21";
+    content: $paperbits-desktop-screen;
 }
 
 .paperbits-mobile-landscape::before {
-    content: "\ea22";
+    content: $paperbits-mobile-landscape;
 }
 
 .paperbits-player-48::before {
-    content: "\ea23";
+    content: $paperbits-player-48;
 }
 
 .paperbits-tablet-2::before {
-    content: "\ea24";
+    content: $paperbits-tablet-2;
 }
 
 .paperbits-wifi-off::before {
-    content: "\ea25";
+    content: $paperbits-wifi-off;
 }
 
 .paperbits-wifi::before {
-    content: "\ea26";
+    content: $paperbits-wifi;
 }
 
 .paperbits-ban::before {
-    content: "\ea27";
+    content: $paperbits-ban;
 }
 
 .paperbits-single-content-03::before {
-    content: "\ea28";
+    content: $paperbits-single-content-03;
 }
 
 .paperbits-single-copy-04::before {
-    content: "\ea29";
+    content: $paperbits-single-copy-04;
 }
 
 .paperbits-single-copies::before {
-    content: "\ea2a";
+    content: $paperbits-single-copies;
 }
 
 .paperbits-mirror-2::before {
-    content: "\ea2b";
+    content: $paperbits-mirror-2;
 }
 
 .paperbits-slider::before {
-    content: "\ea2c";
+    content: $paperbits-slider;
 }
 
 .paperbits-abc::before {
-    content: "\ea2f";
+    content: $paperbits-abc;
 }
 
 .paperbits-puzzle-10::before {
-    content: "\ea30";
+    content: $paperbits-puzzle-10;
 }
 
 .paperbits-image-2::before {
-    content: "\ea31";
+    content: $paperbits-image-2;
 }
 
 .paperbits-paint-bucket-40::before {
-    content: "\ea32";
+    content: $paperbits-paint-bucket-40;
 }
 
 .paperbits-palette::before {
-    content: "\ea33";
+    content: $paperbits-palette;
 }
 
 .paperbits-transform-origin::before {
-    content: "\ea34";
+    content: $paperbits-transform-origin;
 }
 
 .paperbits-menu-right::before {
-    content: "\ea35";
+    content: $paperbits-menu-right;
 }
 
 .paperbits-menu-34::before {
-    content: "\ea36";
+    content: $paperbits-menu-34;
 }
 
 .paperbits-menu-left::before {
-    content: "\ea37";
+    content: $paperbits-menu-left;
 }
 
 .paperbits-check-2::before {
-    content: "\ea38";
+    content: $paperbits-check-2;
 }
 
 .paperbits-preferences-circle::before {
-    content: "\ea39";
+    content: $paperbits-preferences-circle;
 }
 
 .paperbits-underline::before {
-    content: "\ea3a";
+    content: $paperbits-underline;
 }
 
 .paperbits-link-69-2::before {
-    content: "\ea3d";
+    content: $paperbits-link-69-2;
 }
 
 .paperbits-capitalize::before {
-    content: "\ea3e";
+    content: $paperbits-capitalize;
 }
 
 .paperbits-color::before {
-    content: "\ea3f";
+    content: $paperbits-color;
 }
 
 .paperbits-anchor::before {
-    content: "\ea40";
+    content: $paperbits-anchor;
 }
 
 .paperbits-italic::before {
-    content: "\ea41";
+    content: $paperbits-italic;
 }
 
 .paperbits-square-upload::before {
-    content: "\ea42";
+    content: $paperbits-square-upload;
 }
 
 .paperbits-square-download::before {
-    content: "\ea43";
+    content: $paperbits-square-download;
 }
 
 .paperbits-simple-add::before {
-    content: "\ea44";
+    content: $paperbits-simple-add;
 }
 
 .paperbits-simple-remove::before {
-    content: "\ea45";
-}
-
-.paperbits-question::before {
-    content: "\ea46";
+    content: $paperbits-simple-remove;
 }
 
 .paperbits-circle-delete::before {
-    content: "\ea47";
+    content: $paperbits-circle-delete;
 }
 
 .paperbits-circle-add::before {
-    content: "\ea48";
+    content: $paperbits-circle-add;
 }
 
 .paperbits-button-2::before {
-    content: "\ea49";
+    content: $paperbits-button-2;
 }
 
 .paperbits-enlarge-circle::before {
-    content: "\ea4a";
-}
-
-.paperbits-components::before {
-    content: "\ea4b";
+    content: $paperbits-enlarge-circle;
 }
 
 .paperbits-align-bottom::before {
-    content: "\ea4c";
+    content: $paperbits-align-bottom;
 }
 
 .paperbits-align-right::before {
-    content: "\ea4d";
+    content: $paperbits-align-right;
 }
 
 .paperbits-align-top::before {
-    content: "\ea4e";
+    content: $paperbits-align-top;
 }
 
 .paperbits-align-center-horizontal::before {
-    content: "\ea4f";
+    content: $paperbits-align-center-horizontal;
 }
 
 .paperbits-align-center-vertical::before {
-    content: "\ea50";
+    content: $paperbits-align-center-vertical;
 }
 
 .paperbits-align-left::before {
-    content: "\ea51";
+    content: $paperbits-align-left;
 }
 
 .paperbits-disperse::before {
-    content: "\ea52";
+    content: $paperbits-disperse;
 }
 
 .paperbits-zoom-out::before {
-    content: "\ea53";
+    content: $paperbits-zoom-out;
 }
 
 .paperbits-zoom-in::before {
-    content: "\ea54";
+    content: $paperbits-zoom-in;
 }
 
 .paperbits-trash-simple::before {
-    content: "\ea55";
+    content: $paperbits-trash-simple;
 }
 
 .paperbits-edit-72::before {
-    content: "\ea56";
+    content: $paperbits-edit-72;
 }
 
 .paperbits-form::before {
-    content: "\ea57";
+    content: $paperbits-form;
 }
 
 .paperbits-zoom-99::before {
-    content: "\ea58";
+    content: $paperbits-zoom-99;
 }
 
 .paperbits-crop::before {
-    content: "\ea59";
+    content: $paperbits-crop;
 }
 
 .paperbits-enlarge-vertical::before {
-    content: "\ea5a";
+    content: $paperbits-enlarge-vertical;
 }
 
 .paperbits-enlarge-horizontal::before {
-    content: "\ea5b";
+    content: $paperbits-enlarge-horizontal;
 }
 
 .paperbits-rotate-right-2::before {
-    content: "\ea5c";
+    content: $paperbits-rotate-right-2;
 }
 
 .paperbits-rotate-left-2::before {
-    content: "\ea5d";
+    content: $paperbits-rotate-left-2;
 }
 
 .paperbits-margin-right::before {
-    content: "\ea5e";
+    content: $paperbits-margin-right;
 }
 
 .paperbits-margin-left::before {
-    content: "\ea5f";
+    content: $paperbits-margin-left;
 }
 
 .paperbits-alert::before {
-    content: "\ea60";
+    content: $paperbits-alert;
 }
 
 .paperbits-cheque-3::before {
-    content: "\ea61";
+    content: $paperbits-cheque-3;
 }
 
 .paperbits-favourite-31::before {
-    content: "\ea62";
+    content: $paperbits-favourite-31;
 }
 
 .paperbits-at-sign::before {
-    content: "\ea63";
+    content: $paperbits-at-sign;
 }
 
 .paperbits-gradient::before {
-    content: "\ea64";
+    content: $paperbits-gradient;
 }
 
 .paperbits-polaroid::before {
-    content: "\ea65";
-}
-
-.paperbits-polaroid::before {
-    content: "\ea65";
+    content: $paperbits-polaroid;
 }
 
 .paperbits-marker-2::before {
-    content: "\ea67";
+    content: $paperbits-marker-2;
 }
 
 .paperbits-undo-25::before {
-    content: "\ea68";
+    content: $paperbits-undo-25;
 }
 
 .paperbits-redo-26::before {
-    content: "\ea69";
+    content: $paperbits-redo-26;
 }
 
 .paperbits-floppy-disk::before {
-    content: "\ea6a";
+    content: $paperbits-floppy-disk;
 }
 
 .paperbits-upload::before {
-    content: "\ea6b";
+    content: $paperbits-upload;
 }
 
 .paperbits-world::before {
-    content: "\ea6e";
+    content: $paperbits-world;
 }
 
 .paperbits-wireframe::before {
-    content: "\ea6f";
+    content: $paperbits-wireframe;
 }
 
 .paperbits-send::before {
-    content: "\ea70";
+    content: $paperbits-send;
 }
 
 .paperbits-c-question::before {
-    content: "\ea71";
+    content: $paperbits-c-question;
 }
 
-.paperbits-help::before {
-    content: "\ea71";
+.paperbits-layout-11-2::before {
+    content: $paperbits-layout-11-2;
+}
+
+.paperbits-clapperboard::before {
+    content: $paperbits-clapperboard;
+}
+
+.paperbits-single-02::before {
+    content: $paperbits-single-02;
 }

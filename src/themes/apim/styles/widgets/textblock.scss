@@ -1,4 +1,8 @@
 textblock {
     display: block;
     flex-basis: 100%;
+
+    &[contenteditable]:focus {
+        outline: none;
+    }
 }

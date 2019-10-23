@@ -1,7 +1,8 @@
 import { SchemaContract, SchemaDocumentContract, SchemaObjectContract, ReferenceObjectContract } from "../contracts/schema";
+import { Utils } from "../utils";
 
 export class Schema {
-    public definitions: SchemaObject[];
+    public definitions: TypeDefinition[];
 
     constructor(contract?: SchemaContract) {
         this.definitions = [];
@@ -10,7 +11,7 @@ export class Schema {
             this.definitions = Object
                 .keys(contract.properties.document.definitions)
                 .map(definitionName => {
-                    return new SchemaObject(definitionName, contract.properties.document.definitions[definitionName]);
+                    return new TypeDefinition(definitionName, contract.properties.document.definitions[definitionName]);
                 });
         }
     }
@@ -24,18 +25,30 @@ export class SchemaDocument {
     }
 }
 
-export class SchemaObject {
+export class TypeDefinition {
     public name: string;
     public description: string;
     public type: string;
-    public properties?: SchemaObject[];
+    public required: boolean;
+    public properties?: TypeDefinition[];
     public $ref: string;
+    public example: string;
 
     constructor(name: string, contract?: SchemaObjectContract) {
         this.name = name;
+        this.required = false; // TODO: Read from schema
 
         if (!contract) {
             return;
+        }
+
+        if (contract.example) {
+            if (typeof contract.example === "object") {
+                this.example = JSON.stringify(contract.example, null, 4);
+            }
+            else {
+                this.example = contract.example;
+            }
         }
 
         this.description = contract.description;
@@ -54,18 +67,17 @@ export class SchemaObject {
                     if (contract.properties) {
                         this.properties = Object
                             .keys(contract.properties)
-                            .map(propertyName => new SchemaObject(propertyName, contract.properties[propertyName]));
+                            .map(propertyName => new TypeDefinition(propertyName, contract.properties[propertyName]));
                     }
                     break;
 
                 case "array":
                     if (contract.items) {
-                        this.properties = [new SchemaObject("[]", contract.items)];
+                        this.properties = [new TypeDefinition("[]", contract.items)];
                     }
                     break;
 
                 default:
-                    debugger;
                     console.warn(`Unknown type of schema definition: ${contract.type}`);
             }
         }

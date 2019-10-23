@@ -21,7 +21,7 @@ import { UserSubscriptionsModule } from "./components/users/user-subscriptions/k
 import { UserSubscriptionsEditorModule } from "./components/users/user-subscriptions/ko/userSubscriptionsEditor.module";
 import { ProductDetailsModule } from "./components/products/product-details/ko/productDetails.module";
 import { ProductDetailsEditorModule } from "./components/products/product-details/ko/productDetailsEditor.module";
-import { MapiClient, UserService, IdentityService } from "./services";
+import { MapiClient, StaticUserService, IdentityService } from "./services";
 import { AzureBlobStorage } from "@paperbits/azure";
 import { SetupModule } from "./components/setup/setup.module";
 import { PublishingModule } from "./components/publishing";
@@ -51,6 +51,7 @@ import { ChangePasswordEditorModule } from "./components/users/change-password/k
 import { TenantService } from "./services/tenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/ko/validationSummary.module";
 import { ValidationSummaryEditorModule} from "./components/users/validation-summary/ko/validationSummaryEditor.module"
+import { StaticRoleService } from "./services/roleService";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -100,7 +101,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ValidationSummaryModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("blobStorage", AzureBlobStorage);
-        injector.bindSingleton("userService", UserService);
+        injector.bindSingleton("roleService", StaticRoleService);
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("mapiClient", MapiClient);
