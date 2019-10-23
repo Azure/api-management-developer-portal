@@ -323,6 +323,9 @@ api-details,
 api-list,
 change-password,
 confirm-password,
+reset-password,
+user-signup,
+user-signin,
 user-details,
 user-subscriptions,
 operation-details,
@@ -332,8 +335,7 @@ product-details-runtime,
 product-list-dropdown-runtime,
 product-list-runtime,
 product-subscribe-runtime,
-product-subscriptions-runtime,
-reset-password {
+product-subscriptions-runtime {
     flex-basis: 100%;
     max-width: 100%;
 }
