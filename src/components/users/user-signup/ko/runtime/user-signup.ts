@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./user-signup.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
-import { CaptchaService } from "../../../../../services/captchaService";
+import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services/usersService";
 import { TenantSettings } from "../../../../../contracts/tenantSettings";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
@@ -33,9 +33,9 @@ export class UserSignup {
     public readonly captcha: ko.Observable<string>;
 
     constructor(
-        private readonly usersService: UsersService,       
-        private readonly captchaService: CaptchaService,
-        private readonly eventManager: EventManager) {            
+        private readonly usersService: UsersService,
+        private readonly eventManager: EventManager,
+        private readonly backendService: BackendService) {            
         this.email = ko.observable("");
         this.password = ko.observable("");
         this.passwordConfirmation = ko.observable("");
@@ -182,7 +182,7 @@ export class UserSignup {
         };
 
         try {
-            await this.captchaService.sendSignupRequest(createSignupRequest);
+            await this.backendService.sendSignupRequest(createSignupRequest);
             this.isUserRequested(true);
             const validationReport: ValidationReport = {
                 source: "signup",

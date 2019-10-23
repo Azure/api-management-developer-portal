@@ -7,6 +7,9 @@ import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
+import { TenantService } from "../../../../../services/tenantService";
+import { BackendService } from "../../../../../services/backendService";
+import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
 @RuntimeComponent({ selector: "product-subscribe-runtime" })
@@ -29,6 +32,8 @@ export class ProductSubscribe {
 
     constructor(
         private readonly usersService: UsersService,
+        private readonly tenantService: TenantService,
+        private readonly backendService: BackendService,
         private readonly productService: ProductService,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
@@ -113,8 +118,36 @@ export class ProductSubscribe {
         this.limitReached(limitReached);
     }
 
+    private async isDelegation(userId: string, productId: string): Promise<boolean> {
+        const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
+        if (isDelegationEnabled) {
+            const delegationParam = {};
+            delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", userId);
+            delegationParam[DelegationParameters.ProductId] =  Utils.getResourceName("products", productId);
+
+            const delegationUrl = await this.backendService.getDelegationUrl(DelegationAction.subscribe, delegationParam);
+            if (delegationUrl) {
+                window.open(delegationUrl, "_self");
+            }
+            return true;
+        }
+
+        return false;
+    }
+
     public async subscribe(): Promise<void> {
         const userId = await this.usersService.ensureSignedIn();
+        
+        if (!userId) {
+            return;
+        }
+        const productName = this.routeHelper.getProductName();
+
+        if (!productName) {
+            return;
+        }
+
+        const productId = `products/${productName}`;
 
         if (!this.canSubscribe()) {
             return;
@@ -122,14 +155,20 @@ export class ProductSubscribe {
 
         this.working(true);
 
-        if (!this.subscriptionName()) {
-            return;
-        }
-
-        const subscriptionId = `/subscriptions/${Utils.getBsonObjectId()}`;
-
         try {
-            await this.productService.createSubscription(subscriptionId, userId, this.product().id, this.subscriptionName());
+
+            const isDelegation = await this.isDelegation(userId, productId);
+            if (isDelegation) {
+                return;
+            }
+
+            if (!this.subscriptionName()) {
+                return;
+            }
+
+            const subscriptionId = `/subscriptions/${Utils.getBsonObjectId()}`;
+
+            await this.productService.createSubscription(subscriptionId, userId, productId, this.subscriptionName());
             this.usersService.navigateToProfile();
         }
         catch (error) {

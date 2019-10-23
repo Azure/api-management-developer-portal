@@ -2,6 +2,7 @@ import { TenantSettings, DelegationParameters, DelegationAction } from "../contr
 import { MapiClient } from "./mapiClient";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import * as nodeCrypto from "crypto";
+import { HttpClient } from "@paperbits/common/http/httpClient";
 
 /**
  * A service for management operations with API Management tenant.
@@ -9,6 +10,7 @@ import * as nodeCrypto from "crypto";
 export class TenantService {
     constructor(
         private readonly mapiClient: MapiClient,
+        private readonly httpClient: HttpClient,
         private readonly settingsProvider: ISettingsProvider
     ) { }
 
@@ -78,6 +80,12 @@ export class TenantService {
     public async isDelegationEnabled(loadedSettings?: TenantSettings): Promise<boolean> {
         const tenantSettings = loadedSettings || await this.getSettings();
         return tenantSettings && tenantSettings["CustomPortalSettings.DelegationEnabled"] && tenantSettings["CustomPortalSettings.DelegationEnabled"].toLowerCase() === "true";
+    }
+
+    public async isSubscriptionDelegationEnabled(): Promise<boolean> {        
+        const tenantSettings = await this.getSettings();
+        const delegationEnabled = await this.isDelegationEnabled(tenantSettings);
+        return delegationEnabled && tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"] && tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"].toLowerCase() === "true";
     }
 
     /**
