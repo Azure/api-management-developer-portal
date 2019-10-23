@@ -1,37 +1,33 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
-import template from "./change-password.html";
+import template from "./reset-password.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
-import { ChangePasswordRequest } from "../../../../contracts/resetRequest";
-import { CaptchaService } from "../../../../services/captchaService";
-import { UsersService } from "../../../../services/usersService";
+import { UsersService } from "../../../../../services/usersService";
+import { ResetRequest } from "../../../../../contracts/resetRequest";
 import { EventManager } from "@paperbits/common/events";
-import { ValidationReport } from "../../../../contracts/validationReport";
+import { ValidationReport } from "../../../../../contracts/validationReport";
+import { BackendService } from "../../../../../services/backendService";
 
 declare var WLSPHIP0;
 
-@RuntimeComponent({ selector: "change-password" })
+@RuntimeComponent({ selector: "reset-password" })
 @Component({
-    selector: "change-password",
+    selector: "reset-password",
     template: template,
-    injectable: "changePassword"
+    injectable: "resetPassword"
 })
-export class ChangePassword {
-    public readonly password: ko.Observable<string>;
-    public readonly newPassword: ko.Observable<string>;
-    public readonly passwordConfirmation: ko.Observable<string>;
-    public readonly isChangeConfirmed: ko.Observable<boolean>;
+export class ResetPassword {
+    public readonly email: ko.Observable<string>;
+    public readonly isResetRequested: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
     public readonly captcha: ko.Observable<string>;
 
     constructor(
-        private readonly usersService: UsersService,    
-        private readonly captchaService: CaptchaService,
-        private readonly eventManager: EventManager) {
-        this.password = ko.observable();
-        this.newPassword = ko.observable();
-        this.passwordConfirmation = ko.observable();
-        this.isChangeConfirmed = ko.observable(false);
+        private readonly usersService: UsersService,
+        private readonly eventManager: EventManager,
+        private readonly backendService: BackendService) {
+        this.email = ko.observable();
+        this.isResetRequested = ko.observable(false);
         this.working = ko.observable(false);
         this.captcha = ko.observable();
     }
@@ -40,10 +36,10 @@ export class ChangePassword {
      * Initializes component right after creation.
      */
     @OnMounted()
-    public async initialize(): Promise<void> {
+    public async initialize(): Promise<void> { 
         const isUserSignedIn = await this.usersService.isUserSignedIn();
 
-        if (!isUserSignedIn) {
+        if (isUserSignedIn) {
             this.usersService.navigateToHome();
             return;
         }
@@ -54,16 +50,14 @@ export class ChangePassword {
             decorateInputElement: true
         });
 
-        this.password.extend(<any>{ required: { message: `Password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
-        this.newPassword.extend(<any>{ required: { message: `New password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
-        this.passwordConfirmation.extend(<any>{ equal: { message: "Password confirmation field must be equal to new password.", params: this.newPassword } });
+        this.email.extend(<any>{ required: { message: `Email is required.` }, email: true });
         this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
     }
 
     /**
-     * Sends user change password request to Management API.
+     * Sends user reset password request to Management API.
      */
-    public async changePassword(): Promise<void> {
+    public async resetSubmit(): Promise<void> {
 
         let captchaSolution;
         let captchaFlowId;
@@ -89,9 +83,7 @@ export class ChangePassword {
         },'');
 
         const result = validation.group({
-            password: this.password,
-            newPassword: this.newPassword,
-            passwordChangeation: this.passwordConfirmation,
+            email: this.email,
             captcha: this.captcha
         });
 
@@ -99,38 +91,24 @@ export class ChangePassword {
 
         if (clientErrors.length > 0) {
             const validationReport: ValidationReport = {
-                source: "changepassword",
+                source: "resetpassword",
                 errors: clientErrors
             };
             this.eventManager.dispatchEvent("onValidationErrors",validationReport);
             return;
         }
 
-        const user = await this.usersService.getCurrentUser();
-
-        const userId = await this.usersService.checkCredentials(user.email, this.password());
-
-        if (!userId) {
-            const validationReport: ValidationReport = {
-                source: "changepassword",
-                errors: ["Password is not valid"]
-            };
-            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
-            return;
-        }
-
-        const resetRequest: ChangePasswordRequest = {
+        const resetRequest: ResetRequest = {
             solution: captchaSolution,
             flowId: captchaFlowId,
             token: captchaToken,
             type: captchaType,
-            userId: userId,
-            newPassword: this.newPassword()
+            email: this.email()
         };
 
         try {
-            await this.captchaService.sendChangePassword(resetRequest);
-            this.isChangeConfirmed(true);
+            await this.backendService.sendResetRequest(resetRequest);
+            this.isResetRequested(true);
         }
         catch (error) {
             WLSPHIP0.reloadHIP();
@@ -141,7 +119,7 @@ export class ChangePassword {
                     let message = "";
                     const errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
                     const validationReport: ValidationReport = {
-                        source: "changepassword",
+                        source: "resetpassword",
                         errors: errorMessages
                     };
                     this.eventManager.dispatchEvent("onValidationErrors",validationReport);
@@ -149,7 +127,7 @@ export class ChangePassword {
             }
             else {
                 const validationReport: ValidationReport = {
-                    source: "changepassword",
+                    source: "resetpassword",
                     errors: ["Server error. Unable to send request. Please try again later."]
                 };
                 this.eventManager.dispatchEvent("onValidationErrors",validationReport);

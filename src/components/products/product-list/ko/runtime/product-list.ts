@@ -1,13 +1,13 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./product-list.html";
-import { Router } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { RouteHelper } from "../../../../../routing/routeHelper";
+import { Router } from "@paperbits/common/routing/router";
 
 
 @RuntimeComponent({

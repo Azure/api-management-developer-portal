@@ -2,61 +2,59 @@
     <!-- ko if: user -->
     <!-- ko if: !isEdit() -->
     <div class="row">
-        <div class="col-md-6">Email</div>
-        <div class="col-md-6" data-bind="text: user().email"></div>
+        <div class="col-md-3">Email</div>
+        <div class="col-md-9" data-bind="text: user().email"></div>
     </div>
     <div class="row">
-        <div class="col-md-6">First name</div>
-        <div class="col-md-6" data-bind="text: user().firstName"></div>
+        <div class="col-md-3">First name</div>
+        <div class="col-md-9" data-bind="text: user().firstName"></div>
     </div>
     <div class="row">
-        <div class="col-md-6">Last name</div>
-        <div class="col-md-6" data-bind="text: user().lastName"></div>
+        <div class="col-md-3">Last name</div>
+        <div class="col-md-9" data-bind="text: user().lastName"></div>
     </div>
     <div class="row">
-        <div class="col-md-6">Registration date</div>
-        <div class="col-md-6" data-bind="text: registrationDate"></div>
+        <div class="col-md-3">Registration date</div>
+        <div class="col-md-9" data-bind="text: registrationDate"></div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <button type="button" class="button button-default" data-bind="click: toggleEdit">Change name</button>
-            <a role="button" class="button button-default" href="/change-password">Change password</a>
+            <button type="button" class="button button-default" data-bind="click: toggleEditPassword">Change password</button>
+            <button type="button" class="button button-default" data-bind="click: closeAccount">Close account</button>
         </div>
     </div>
     <!-- /ko -->
 
     <!-- ko if: isEdit -->
     <div class="row">
-        <div class="col-md-6">Email</div>
-        <div class="col-md-6" data-bind="text: user().email"></div>
+        <div class="col-md-3">Email</div>
+        <div class="col-md-9" data-bind="text: user().email"></div>
     </div>
     <div class="row">
-        <div class="col-md-6">First name</div>
-        <div class="col-md-6">
+        <div class="col-md-3">First name</div>
+        <div class="col-md-9">
             <input type="text" class="form-control" data-bind="value: firstName" />
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">Last name</div>
-        <div class="col-md-6">
+        <div class="col-md-3">Last name</div>
+        <div class="col-md-9">
             <input type="text" class="form-control" data-bind="value: lastName" />
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">Registration date</div>
-        <div class="col-md-6" data-bind="text: registrationDate"></div>
+        <div class="col-md-3">Registration date</div>
+        <div class="col-md-9" data-bind="text: registrationDate"></div>
     </div>
     <div class="row">
         <!-- ko if: working-->
         <spinner class="fit"></spinner>
         <!-- /ko -->
         <!-- ko ifnot: working -->
-        <div class="col-md-6">
-            <button type="button" class="button"
-                data-bind="click: changeAccountInfo, enable: isUserChanged()">Save</button>
-        </div>
-        <div class="col-md-6">
-            <button type="button" class="button" data-bind="click: toggleEdit">Cancel</button>
+        <div class="col-md-12">
+            <button type="button" class="button button-default" data-bind="click: changeAccountInfo, enable: isUserChanged()">Save</button>
+            <button type="button" class="button button-default" data-bind="click: toggleEdit">Cancel</button>
         </div>
         <!-- /ko -->
     </div>

@@ -2,11 +2,14 @@ import * as ko from "knockout";
 import * as moment from "moment";
 import template from "./user-subscriptions.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
-import { User } from "../../../../../models/user";
 import { SubscriptionViewModel } from "./subscriptionViewModel";
 import { UsersService } from "../../../../../services/usersService";
 import { ProductService } from "../../../../../services/productService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
+import { TenantService } from "../../../../../services/tenantService";
+import { BackendService } from "../../../../../services/backendService";
+import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
+import { Utils } from "../../../../../utils";
 
 @RuntimeComponent({ selector: "user-subscriptions" })
 @Component({
@@ -18,7 +21,9 @@ export class UserSubscriptions {
     public readonly subscriptions: ko.ObservableArray<SubscriptionViewModel>;
 
     constructor(
-        private readonly usersService: UsersService,
+        private readonly usersService: UsersService, 
+        private readonly tenantService: TenantService,
+        private readonly backendService: BackendService,
         private readonly productService: ProductService
     ) {
         this.subscriptions = ko.observableArray();
@@ -88,10 +93,47 @@ export class UserSubscriptions {
     }
 
     public async cancelSubscription(subscription: SubscriptionViewModel): Promise<void> {
-        const updated = await this.productService.cancelSubscription(subscription.model.id);
-        const updatedVM = new SubscriptionViewModel(updated);
-        this.syncSubscriptionLabelState(subscription, updatedVM);
-        this.subscriptions.replace(subscription, updatedVM);
-        subscription.isSRegenerating(false);
+        if (!subscription || !subscription.model || !subscription.model.id) {
+            return;
+        }
+        const subscriptionId = subscription.model.id;
+
+        subscription.isSRegenerating(true);
+
+        try {
+            const isDelegation = await this.isDelegation(subscriptionId);
+            if (isDelegation) {
+                return;
+            }
+            const updated = await this.productService.cancelSubscription(subscriptionId);
+            const updatedVM = new SubscriptionViewModel(updated);
+            this.syncSubscriptionLabelState(subscription, updatedVM);
+            this.subscriptions.replace(subscription, updatedVM);
+        } catch (error) {
+            if (error.code === "Unauthorized") {
+                this.usersService.navigateToSignin();
+                return;
+            }
+
+            throw error;
+        } finally {
+            subscription.isSRegenerating(false);
+        }
+    }
+    
+    private async isDelegation(subscriptionId: string): Promise<boolean> {
+        const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
+        if (isDelegationEnabled) {
+            const delegationParam = {};
+            delegationParam[DelegationParameters.SubscriptionId] = Utils.getResourceName("subscriptions", subscriptionId);
+
+            const delegationUrl = await this.backendService.getDelegationUrl(DelegationAction.unsubscribe, delegationParam);
+            if (delegationUrl) {
+                window.open(delegationUrl, "_self");
+            }
+            return true;
+        }
+
+        return false;
     }
 }
