@@ -5,13 +5,21 @@ import { Bag } from "@paperbits/common";
 import { EventManager } from "@paperbits/common/events";
 import { TenantService } from "../../../../services/tenantService";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
+import { IdentityService } from "../../../../services";
+import { TermsOfService } from "../../../../contracts/IdentitySettings";
 
 export class UserSignupViewModelBinder implements ViewModelBinder<UserSignupModel, UserSignupViewModel> {
-    
+
     constructor(
-        private readonly eventManager: EventManager, 
-        private readonly tenantService: TenantService) {}
-    
+        private readonly eventManager: EventManager,
+        private readonly tenantService: TenantService,
+        private readonly identityService: IdentityService) { }
+
+    public async getTermsOfService(): Promise<TermsOfService> {
+        const identutySetting = await this.identityService.getIdentitySetting();
+        return identutySetting.properties.termsOfService;
+    }
+
     public async modelToViewModel(model: UserSignupModel, viewModel?: UserSignupViewModel, bindingContext?: Bag<any>): Promise<UserSignupViewModel> {
         if (!viewModel) {
             viewModel = new UserSignupViewModel();
@@ -20,9 +28,20 @@ export class UserSignupViewModelBinder implements ViewModelBinder<UserSignupMode
         const delegationParam = {};
         delegationParam[DelegationParameters.ReturnUrl] =  "/";
 
-        const delegationUrl = await this.tenantService.getDelegationUrl(DelegationAction.signIn, delegationParam);
-        if (delegationUrl) {
-            viewModel.delegationConfig(JSON.stringify({ delegationUrl: delegationUrl}));
+        try {
+            const delegationUrl = await this.tenantService.getDelegationUrl(DelegationAction.signIn, delegationParam);
+            const termsOfService = await this.getTermsOfService();
+            let params = {};
+            if (delegationUrl) params["delegationUrl"] = delegationUrl;
+            if (termsOfService.text) params["termsOfUse"] = termsOfService.text;
+            if (termsOfService.consentRequired) params["isConsentRequired"] = termsOfService.consentRequired;
+            if (termsOfService.enabled) params["termsEnabled"] = termsOfService.enabled;
+            if (Object.keys(params).length !== 0) {
+                const runtimeConfig = JSON.stringify(params);
+                viewModel.runtimeConfig(runtimeConfig);
+            }
+        } catch (error) {
+            throw error;
         }
 
         viewModel["widgetBinding"] = {
