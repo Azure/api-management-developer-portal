@@ -1,8 +1,23 @@
 const path = require("path");
+// const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
-    mode: "development",
     target: "web",
+    mode: "development",
+    // mode: "production",
+    // optimization: {
+    //     minimizer: [
+    //         new TerserPlugin({
+    //             sourceMap: false,
+    //             terserOptions: {
+    //                 mangle: false,
+    //                 output: {
+    //                     comments: false,
+    //                 }
+    //             }
+    //         })
+    //     ]
+    // },
     entry: {
         "assets/scripts/theme": ["./src/startup.runtime.ts"]
     },
