@@ -23,6 +23,7 @@ import { templates } from "./templates/templates";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { RouteHelper } from "../../../../../routing/routeHelper";
+import { TemplatingService } from "../../../../../services/templatingService";
 
 @Component({
     selector: "operation-console",
@@ -33,7 +34,7 @@ export class OperationConsole {
     private masterKey: string;
 
     public sendingRequest: ko.Observable<boolean>;
-    public resettingOperation: ko.Observable<boolean>;
+    public working: ko.Observable<boolean>;
     public consoleOperation: ko.Observable<ConsoleOperation>;
     public requestSummarySecretsRevealed: boolean;
     public responseStatusCode: ko.Observable<string>;
@@ -62,6 +63,8 @@ export class OperationConsole {
     public bodySource: ko.Observable<string>;
     public attachment: ko.Observable<string>;
     public templates: Object;
+    public codeSample: ko.Observable<string>;
+
 
     constructor(
         private readonly apiService: ApiService,
@@ -70,8 +73,6 @@ export class OperationConsole {
         private readonly productService: ProductService,
         private readonly httpClient: HttpClient,
         private readonly routeHelper: RouteHelper
-        // private readonly hostService: HostService,
-        // private readonly corsService: CorsService
     ) {
         this.templates = templates;
         this.products = ko.observable();
@@ -88,12 +89,14 @@ export class OperationConsole {
         this.responseActiveTab = ko.observable("message");
         this.selectedLanguage = ko.observable("http");
         this.api = ko.observable<Api>();
-        this.revision = ko.observable<Revision>();
-        this.operation = ko.observable<Operation>();
-        this.consoleOperation = ko.observable<ConsoleOperation>();
-        this.selectedSubscriptionKey = ko.observable<string>();
-        this.resettingOperation = ko.observable(true);
+        this.revision = ko.observable();
+        this.operation = ko.observable();
+        this.hostnames = ko.observable();
+        this.consoleOperation = ko.observable();
+        this.selectedSubscriptionKey = ko.observable();
+        this.working = ko.observable(true);
         this.sendingRequest = ko.observable(false);
+        this.codeSample = ko.observable();
     }
 
     @Param()
@@ -105,13 +108,17 @@ export class OperationConsole {
     @Param()
     public revision: ko.Observable<Revision>;
 
+    @Param()
+    public hostnames: ko.Observable<string[]>;
+
     @OnMounted()
     public async initialize(): Promise<void> {
         await this.resetConsole();
 
-        this.api.subscribe(this.resetConsole.bind(this));
-        this.operation.subscribe(this.resetConsole.bind(this));
-        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
+        this.api.subscribe(this.resetConsole);
+        this.operation.subscribe(this.resetConsole);
+        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey);
+        this.selectedLanguage.subscribe(this.updateCodeSample);
     }
 
     private async resetConsole(): Promise<void> {
@@ -122,7 +129,7 @@ export class OperationConsole {
             return;
         }
 
-        this.resettingOperation(true);
+        this.working(true);
         this.sendingRequest(false);
         this.consoleOperation(null);
         this.requestSummarySecretsRevealed = false;
@@ -145,7 +152,8 @@ export class OperationConsole {
         const consoleOperation = new ConsoleOperation(selectedApi, operation, this.revision());
         this.consoleOperation(consoleOperation);
 
-        const proxyHostnames = await this.tenantService.getProxyHostnames();
+        // TODO: Take into account multiple hostnames.
+        const proxyHostnames = this.hostnames();
         const hostname = proxyHostnames[0];
 
         consoleOperation.host.hostname(hostname);
@@ -169,7 +177,7 @@ export class OperationConsole {
         await this.loadSubscriptionKeys();
 
         this.updateRequestSummary();
-        this.resettingOperation(false);
+        this.working(false);
     }
 
     private setSoapHeaders(): void {
@@ -213,6 +221,7 @@ export class OperationConsole {
         }
 
         const isLogged = await this.usersService.isUserSignedIn();
+
         if (!isLogged) {
             return;
         }
@@ -408,13 +417,18 @@ export class OperationConsole {
         }
 
         this.requestSummary(requestSummary);
+        this.updateCodeSample();
+    }
+
+    public async updateCodeSample(): Promise<void> {
+        const template = templates[this.selectedLanguage()];
+        const codeSample = await TemplatingService.render(template, ko.toJS(this.consoleOperation));
+
+        this.codeSample(codeSample);
     }
 
     public async validateAndSendRequest(): Promise<void> {
-        // if (!await this.validator.validate(this.consoleOperation)) {
-        //     return;
-        // }
-
+        // TODO: Add validation.
         this.sendRequest();
     }
 
@@ -550,7 +564,7 @@ export class OperationConsole {
         return match ? +(1000 * (60 * (60 * +match[1] + +match[2]) + +match[3] + +match[4])) : null;
     }
 
-    public formatJson(data): string {
+    public formatJson(data: any): string {
         return JSON.stringify(data, null, 4);
     }
 

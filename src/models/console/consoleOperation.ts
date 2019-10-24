@@ -11,8 +11,6 @@ import { ConsoleHeader } from "./consoleHeader";
 
 export class ConsoleOperation {
     private api: Api;
-    private revision: Revision;
-
     public name: string;
     public method: string;
     public host: ConsoleHost;
@@ -26,7 +24,6 @@ export class ConsoleOperation {
 
     constructor(api: Api, operation: Operation, revision: Revision) {
         this.api = api;
-        this.revision = revision;
         this.name = operation.displayName;
         this.method = operation.method.toUpperCase();
         this.host = new ConsoleHost();
@@ -106,10 +103,6 @@ export class ConsoleOperation {
 
         if (this.api.apiVersionSet && this.api.apiVersionSet.versioningScheme === "Query") {
             requestUrl = this.addParam(requestUrl, this.api.apiVersionSet.versionQueryName, this.api.apiVersion);
-        }
-
-        if (this.revision && !this.revision.isCurrent) {
-            revision = ";rev=" + this.revision.apiRevision;
         }
 
         return `${this.api.path}${versionPath}${revision}${requestUrl}`;

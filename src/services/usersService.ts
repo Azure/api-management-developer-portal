@@ -55,7 +55,7 @@ export class UsersService {
         this.authenticator.clearAccessToken();
 
         if (withRedirect) {
-            this.router.navigateTo(Constants.signinUrl);
+            this.router.navigateTo(Constants.pageUrlSignIn);
         }
     }
 
@@ -139,7 +139,7 @@ export class UsersService {
                 return undefined;
             }
         } catch (error) {
-            this.router.navigateTo(Constants.signinUrl);
+            this.router.navigateTo(Constants.pageUrlSignIn);
         }
     }
 
@@ -161,7 +161,7 @@ export class UsersService {
             this.signOut();
         }
         catch (error) {
-            this.router.navigateTo(Constants.signinUrl);
+            this.router.navigateTo(Constants.pageUrlSignIn);
         }
     }
 
@@ -175,7 +175,7 @@ export class UsersService {
         try {
             console.log("requestChangeEmail is not implemented");
         } catch (error) {
-            this.router.navigateTo(Constants.signinUrl);
+            this.router.navigateTo(Constants.pageUrlSignIn);
         }
     }
 
@@ -190,20 +190,20 @@ export class UsersService {
             console.log("requestChangePassword is not implemented");
         }
         catch (error) {
-            this.router.navigateTo(Constants.signinUrl);
+            this.router.navigateTo(Constants.pageUrlSignIn);
         }
     }
 
     public navigateToProfile(): void {
-        this.router.navigateTo(Constants.profileUrl);
+        this.router.navigateTo(Constants.pageUrlProfile);
     }
 
     public navigateToSignin(): void {
-        this.router.navigateTo(Constants.signinUrl);
+        this.router.navigateTo(Constants.pageUrlSignIn);
     }
 
     public navigateToHome(): void {
-        this.router.navigateTo(Constants.homeUrl);
+        this.router.navigateTo(Constants.pageUrlHome);
     }
 
     /**

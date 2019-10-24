@@ -16,7 +16,7 @@ public class JavaSample
 
         try
         {
-            URIBuilder builder = new URIBuilder("{{scheme}}://{{host}}{{path}}");
+            URIBuilder builder = new URIBuilder("{{requestUrl}}");
 
 {% if request.parameters.size > 0 -%}
 {% for parameter in request.parameters -%}
