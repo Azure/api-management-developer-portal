@@ -40,7 +40,7 @@ export class OperationList {
         this.selectedApiName = ko.observable();
         this.selectedOperationName = ko.observable();
         this.working = ko.observable(false);
-        this.groupByTag = ko.observable(true);
+        this.groupByTag = ko.observable(false);
         this.pattern = ko.observable();
         this.pageNumber = ko.observable(1);
         this.hasNextPage = ko.observable();

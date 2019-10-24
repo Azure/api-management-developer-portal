@@ -10,7 +10,7 @@
         <h2 class="operation-name" data-bind="click: $component.openConsole">
             <span data-bind="text: operation().displayName"></span>
         </h2>
-        <button class="open-console-btn" data-bind="click: $component.openConsole">Try it <i class="icon icon-play"></i>
+        <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i class="icon icon-play"></i>
         </button>
     </div>
 
@@ -29,9 +29,9 @@
     <div class="collapsible">
         <h3>Request</h3>
         <div class="collapsible-container">
-            <span data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
+            <span class="monospace" data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
 
-            <!-- ko if: operation().templateParameters.length > 0 -->
+            <!-- ko if: operation().parameters.length > 0 -->
             <h4>Request parameters</h4>
             <table class="table">
                 <thead>
@@ -44,10 +44,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- ko foreach: { data: operation().templateParameters, as: 'parameter' } -->
+                    <!-- ko foreach: { data: operation().parameters, as: 'parameter' } -->
                     <tr>
                         <td data-bind="text: parameter.name"></td>
-                        <td>path</td>
+                        <td data-bind="text: parameter.in"></td>
                         <td data-bind="text: parameter.required"></td>
                         <td data-bind="text: parameter.type"></td>
                         <td data-bind="text: parameter.description"></td>
@@ -96,8 +96,7 @@
 
                 <div class="tab-content">
                     <!-- ko if: representation.typeName -->
-                    <type-definition
-                        params="{ representation: representation, definition: $component.getDefinitionByTypeName(representation.typeName) }">
+                    <type-definition params="{ representation: representation, apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionByTypeName(representation.typeName) }">
                     </type-definition>
                     <!-- /ko -->
                 </div>
@@ -107,7 +106,7 @@
 
             <!-- /ko -->
 
-            <!-- ko foreach: { data: operation().meaningfulResponses(), as: 'response' } -->
+            <!-- ko foreach: { data: operation().getMeaningfulResponses(), as: 'response' } -->
             <h3>Response: <span data-bind="text: response.statusCode"></span></h3>
 
             <!-- ko if: response.representations.length > 0 -->
@@ -167,7 +166,7 @@
 
 <!-- ko if: $component.consoleIsOpen -->
 <div class="detachable-right scrollable flex-grow animation-fade-in">
-    <operation-console class="test flex flex-column" params="{ api: api, operation: operation }">
+    <operation-console class="test flex flex-column" params="{ api: api, operation: operation, hostnames: hostnames }">
     </operation-console>
 </div>
 <!-- /ko -->

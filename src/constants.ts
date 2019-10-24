@@ -17,10 +17,12 @@ export const TypeOfApi = {
     http: "http"
 };
 
-export const signinUrl = "/signin";
-export const profileUrl = "/profile";
-export const homeUrl = "/";
-export const changePasswordUrl = "/change-password";
+export const pageUrlSignIn = "/signin";
+export const pageUrlProfile = "/profile";
+export const pageUrlHome = "/";
+export const pageUrl404 = "/404";
+export const pageUrl500 = "/500";
+export const pageUrlChangePassword = "/change-password";
 
 /**
  * Maximum number of items to show in a paginated view.

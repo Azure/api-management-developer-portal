@@ -1,6 +1,5 @@
 import "./polyfills";
 import "./bindingHandlers/scrollintoview";
-import "./bindingHandlers/codeSample";
 import "./bindingHandlers/copyToClipboard";
 import "./bindingHandlers/syntaxHighlight";
 import "./bindingHandlers/schemaobjecttype";
@@ -17,6 +16,7 @@ import { DefaultEventManager } from "@paperbits/common/events";
 import { XmlHttpRequestClient } from "@paperbits/common/http";
 import { SettingsProvider } from "@paperbits/common/configuration";
 import { DefaultRouter } from "@paperbits/common/routing";
+import { ConsoleLogger } from "@paperbits/common/logging";
 import { KnockoutRegistrationLoaders } from "@paperbits/core/ko/knockout.loaders";
 import { ApiList, ApiListDropdown, ApiListTiles } from "./components/apis/list-of-apis/ko/runtime";
 import { ApiService } from "./services/apiService";
@@ -66,6 +66,7 @@ export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindModule(new KnockoutRegistrationLoaders());
         injector.bindSingleton("eventManager", DefaultEventManager);
+        injector.bindSingleton("logger", ConsoleLogger);
         injector.bindCollection("autostart");
         injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindCollection("routeGuards");

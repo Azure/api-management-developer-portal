@@ -51,7 +51,7 @@ export class SignInAadB2C {
     public async signIn(): Promise<void> {
         try {
             await this.aadService.signInWithAadB2C(this.clientId(), this.authority(), this.instance(), this.signInPolicy());
-            await this.router.navigateTo(Constants.homeUrl);
+            await this.router.navigateTo(Constants.pageUrlHome);
             const validationReport: ValidationReport = {
                 source: "socialAcc",
                 errors: []

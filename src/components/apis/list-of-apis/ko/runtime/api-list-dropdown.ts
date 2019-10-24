@@ -1,8 +1,8 @@
-import { RouteHelper } from "./../../../../../routing/routeHelper";
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./api-list-dropdown.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { RouteHelper } from "./../../../../../routing/routeHelper";
 import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
 import { TagGroup } from "../../../../../models/tagGroup";

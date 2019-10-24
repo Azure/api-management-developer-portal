@@ -83,7 +83,7 @@ namespace CSHttpClientSample
             queryString["{{parameter.Name}}"] = "{{parameter.Value}}";
 {% endfor -%}
 {% endif -%}
-            var uri = "{{scheme}}://{{host}}{{path}}{% if path contains '?' %}&{% else %}?{% endif %}" + queryString;
+            var uri = "{{requestUrl}}{% if path contains '?' %}&{% else %}?{% endif %}" + queryString;
 
 {% case method -%}
 
