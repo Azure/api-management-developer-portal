@@ -36,8 +36,12 @@
         <!-- ko foreach: { data: group.items, as: 'item' } -->
         <div class="row">
             <div class="col-5">
-                <a href="#" role="listitem" class="nav-link text-truncate"
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }, text: item.displayName"></a>
+                <a href="#" role="listitem" class="nav-link text-truncate" data-bind="attr: { href: $component.getReferenceUrl(item) }">
+                    <span data-bind="text: item.displayName"></span>
+                    <!-- ko if: item.apiVersion -->
+                    (<span data-bind="text: item.apiVersion"></span>)
+                    <!-- /ko -->
+                </a>
             </div>
             <div class="col-7">
                 <div data-bind="markdown: item.description"></div>
@@ -55,8 +59,12 @@
         <!-- ko foreach: { data: apis, as: 'item' } -->
         <div class="row">
             <div class="col-5">
-                <a href="#" class="text-truncate"
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }, text: item.displayName"></a>
+                <a href="#" role="listitem" class="nav-link text-truncate" data-bind="attr: { href: $component.getReferenceUrl(item) }">
+                    <span data-bind="text: item.displayName"></span>
+                    <!-- ko if: item.apiVersion -->
+                    (<span data-bind="text: item.apiVersion"></span>)
+                    <!-- /ko -->
+                </a>
             </div>
             <div class="col-7">
                 <div data-bind="markdown: item.description"></div>

@@ -31,8 +31,12 @@ export class TypeDefinition {
     public type: string;
     public required: boolean;
     public properties?: TypeDefinition[];
+    public items?: TypeDefinition[];
     public $ref: string;
+    public referencedTypeName?: string;
     public example: string;
+    public enum?: string[];
+    public uiType: string;
 
     constructor(name: string, contract?: SchemaObjectContract) {
         this.name = name;
@@ -51,8 +55,17 @@ export class TypeDefinition {
             }
         }
 
+        this.enum = contract.enum;
+
         this.description = contract.description;
         this.$ref = contract.$ref;
+        this.type = contract.type;
+        this.uiType = "primitive";
+        this.referencedTypeName = this.getTypeNameFromRef(contract.$ref);
+
+        if (contract.enum) {
+            this.uiType = "enum";
+        }
 
         if (contract.type) {
             switch (contract.type) {
@@ -65,6 +78,7 @@ export class TypeDefinition {
 
                 case "object":
                     if (contract.properties) {
+                        this.uiType = "object";
                         this.properties = Object
                             .keys(contract.properties)
                             .map(propertyName => new TypeDefinition(propertyName, contract.properties[propertyName]));
@@ -72,8 +86,18 @@ export class TypeDefinition {
                     break;
 
                 case "array":
+                    this.uiType = "array";
+
                     if (contract.items) {
-                        this.properties = [new TypeDefinition("[]", contract.items)];
+                        const indexerProperty: any = {
+                            name: "[]",
+                            type: "object",
+                            uiType: "object",
+                            description: contract.items.description,
+                            referencedTypeName: this.getTypeNameFromRef(contract.items.$ref)
+                        };
+
+                        this.properties = [indexerProperty];
                     }
                     break;
 
@@ -81,6 +105,10 @@ export class TypeDefinition {
                     console.warn(`Unknown type of schema definition: ${contract.type}`);
             }
         }
+    }
+
+    private getTypeNameFromRef($ref: string): string {
+        return $ref && $ref.startsWith("#/definitions/") ? $ref.substring(14) : null;
     }
 
     public toString(): string {

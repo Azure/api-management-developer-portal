@@ -62,30 +62,23 @@ export class Api {
     public path?: string;
 
     /**
+     * API URL suffix that contains API version, e.g. /httpbin/v2
+     */
+    public versionedPath?: string;
+
+    /**
      * Supported protocols, e.g. ["http", "https"]
      */
     public protocols?: string[];
 
-    // proxyAuth?: string;
-    // authenticationSettings?: AuthenticationSettings;
     public subscriptionKeyParameterNames?: SubscriptionKeyParameterName;
 
     public urlSuffix?: string;
 
     /**
-     * To be defined
-     */
-    // public operations?: Operation[];
-
-    /**
-     * To be defined
+     * Determines type of API, e.g. "soap".
      */
     public type?: string;
-
-    /**
-     * To be defined
-     */
-    public isCurrent?: boolean;
 
     constructor(contract?: ApiContract) {
         if (contract.id) {
@@ -98,9 +91,9 @@ export class Api {
         this.protocols = contract.properties.protocols;
         this.description = contract.properties.description;
         this.path = contract.properties.path;
+        this.versionedPath = this.path;
         this.urlSuffix = contract.properties.urlSuffix;
-        this.isCurrent = contract.properties.isCurrent;
-        this.apiVersion = contract.properties.apiVersion || "Original";
+        this.apiVersion = contract.properties.apiVersion;
         this.apiRevision = contract.properties.apiRevision;
 
         if (contract.properties.apiVersionSet) {
@@ -111,8 +104,11 @@ export class Api {
             versionSet.versionHeaderName = nestedVersionSet.versionHeaderName;
             versionSet.versionQueryName = nestedVersionSet.versionQueryName;
             versionSet.versioningScheme = nestedVersionSet.versioningScheme;
-
             this.apiVersionSet = versionSet;
+
+            if (nestedVersionSet && this.apiVersion && versionSet.versioningScheme === "Segment") {
+                this.versionedPath = `${this.path}/${this.apiVersion}`;
+            }
         }
     }
 }

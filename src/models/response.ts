@@ -24,7 +24,7 @@ export class Response {
         this.description = contract.description;
 
         this.headers = contract.headers
-            ? contract.headers.map(x => new Parameter(x))
+            ? contract.headers.map(header => new Parameter("header", header))
             : [];
 
         this.representations = contract.representations

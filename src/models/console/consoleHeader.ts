@@ -4,13 +4,8 @@ import * as ko from "knockout";
 import { Parameter } from "../parameter";
 
 export class ConsoleHeader {
-    // @IsNotEmpty({ message: "Header name cannot be empty" })
     public name: ko.Observable<string>;
-
-    // @IsNotEmpty({ message: "Header value cannot be empty" })
-    // @ValidateIf(x => x.required)
     public value: ko.Observable<string>;
-
     public inputTypeValue: string;
     public required: boolean;
     public readonly: boolean;
@@ -28,12 +23,6 @@ export class ConsoleHeader {
 
     public canRename(): boolean {
         return !this.required && this.custom;
-    }
-
-    public names() {
-        // var keys = Object.keys(KnownHttpHeaders);
-        // var values = keys.map((value) => { return KnownHttpHeaders[value]; });
-        // return values;
     }
 
     constructor(contract?: Parameter) {
@@ -62,7 +51,7 @@ export class ConsoleHeader {
     }
 
     public toHeader(): Parameter {
-        let header = new Parameter({
+        const header = new Parameter("header", {
             name: this.name(),
             defaultValue: this.value(),
             description: this.description,
