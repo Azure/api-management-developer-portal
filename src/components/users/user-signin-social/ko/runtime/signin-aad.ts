@@ -35,7 +35,7 @@ export class SignInAad {
     public async signIn(): Promise<void> {
         try {
             await this.aadService.signInWithAad(this.clientId());
-            await this.router.navigateTo(Constants.homeUrl);
+            await this.router.navigateTo(Constants.pageUrlHome);
             const validationReport: ValidationReport = {
                 source: "socialAcc",
                 errors: []

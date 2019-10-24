@@ -24,9 +24,9 @@
     </div>
     <!-- /ko -->
 
-<!-- ko ifnot: working -->
+    <!-- ko ifnot: working -->
     <div class="cards-body animation-fade-in">
-        
+
 
         <!-- ko if: groupByTag -->
         <!-- ko foreach: { data: apiGroups, as: 'group' } -->
@@ -37,7 +37,12 @@
         <!-- ko foreach: { data: group.items, as: 'item' } -->
         <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
             <div class="card card-default">
-                <h3 data-bind="text: item.displayName"></h3>
+                <h3>
+                    <span data-bind="text: item.displayName"></span>
+                    <!-- ko if: item.apiVersion -->
+                    (<span data-bind="text: item.apiVersion"></span>)
+                    <!-- /ko -->
+                </h3>
                 <div class="tile line-clamp">
                     <p class="tile-content" data-bind="markdown: item.description"></p>
                 </div>
@@ -58,7 +63,12 @@
         <!-- ko foreach: { data: apis, as: 'item' } -->
         <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
             <div class="card card-default">
-                <h3 data-bind="text: item.displayName"></h3>
+                <h3>
+                    <span data-bind="text: item.displayName"></span>
+                    <!-- ko if: item.apiVersion -->
+                    (<span data-bind="text: item.apiVersion"></span>)
+                    <!-- /ko -->
+                </h3>
                 <div class="tile line-clamp">
                     <p class="tile-content" data-bind="markdown: item.description"></p>
                 </div>
@@ -74,7 +84,7 @@
         <!-- /ko -->
     </div>
     <!-- /ko -->
-    
+
     <div class="cards-footer">
         <!-- ko if: hasPager -->
         <ul class="pagination">

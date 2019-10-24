@@ -72,9 +72,9 @@ export class TenantService {
      * TODO: Not implemented.
      */
     public async getProxyHostnames(): Promise<string[]> {
-        /* TODO: User proper service container */
-        const serviceName = await this.getServiceName();
-        return [`${serviceName}.azure-api.net`];
+        const setting = await this.settingsProvider.getSetting<string>("proxyHostnames");
+        const hostnames = setting ? setting.split(";") : [];
+        return hostnames;
     }
 
     public async isDelegationEnabled(loadedSettings?: TenantSettings): Promise<boolean> {

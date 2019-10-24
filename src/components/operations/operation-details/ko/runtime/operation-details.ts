@@ -8,6 +8,7 @@ import { ApiService } from "../../../../../services/apiService";
 import { TypeDefinition } from "./../../../../../models/schema";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TenantService } from "../../../../../services/tenantService";
+import { SwaggerObject } from "./../../../../../contracts/swaggerObject";
 
 
 @RuntimeComponent({ selector: "operation-details" })
@@ -27,7 +28,8 @@ export class OperationDetails {
     public readonly tags: ko.ObservableArray<string>;
     public readonly operation: ko.Observable<Operation>;
     public readonly requestUrlSample: ko.Computed<string>;
-    public readonly hostname: ko.Observable<string>;
+    public readonly primaryHostname: ko.Observable<string>;
+    public readonly hostnames: ko.Observable<string[]>;
     public readonly working: ko.Observable<boolean>;
 
     constructor(
@@ -37,7 +39,8 @@ export class OperationDetails {
         private readonly routeHelper: RouteHelper
     ) {
         this.working = ko.observable(false);
-        this.hostname = ko.observable();
+        this.primaryHostname = ko.observable();
+        this.hostnames = ko.observable();
         this.api = ko.observable();
         this.schemas = ko.observableArray([]);
         this.tags = ko.observableArray([]);
@@ -50,20 +53,25 @@ export class OperationDetails {
             if (!this.api() || !this.operation()) {
                 return null;
             }
-            return `https://${this.hostname()}/${this.api().path}`.replace(/\/$/, "") + this.operation().urlTemplate;
+
+            const api = this.api();
+            const operation = this.operation();
+            const hostname = this.primaryHostname();
+            const apiPath = api.versionedPath;
+            const operationPath = operation.displayUrlTemplate;
+
+            return `https://${hostname}/${apiPath}${operationPath}`;
         });
     }
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        const proxyHostnames = await this.tenantService.getProxyHostnames();
-        const hostname = proxyHostnames[0];
-        this.hostname(hostname);
-
-        this.router.addRouteChangeListener(this.onRouteChange.bind(this));
-
+        await this.loadGatewayInfo();
+        
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
+
+        this.router.addRouteChangeListener(this.onRouteChange.bind(this));
 
         if (!apiName || !operationName) {
             return;
@@ -71,7 +79,7 @@ export class OperationDetails {
 
         this.selectedApiName(apiName);
         this.selectedOperationName(operationName);
-
+        
         await this.loadApi(apiName);
         await this.loadOperation(apiName, operationName);
     }
@@ -92,7 +100,6 @@ export class OperationDetails {
     }
 
     public async loadApi(apiName: string): Promise<void> {
-
         const api = await this.apiService.getApi(`apis/${apiName}`);
         this.api(api);
     }
@@ -123,7 +130,7 @@ export class OperationDetails {
 
     public async loadDefinitions(operation: Operation): Promise<void> {
         const schemaIds = [];
-        const apiId = `apis/${this.selectedApiName()}/schemas/`;
+        const apiId = `apis/${this.selectedApiName()}/schemas`;
 
         const prepresentations = operation.responses.map(response => response.representations)
             .concat(operation.request.representations)
@@ -138,11 +145,27 @@ export class OperationDetails {
                 }
             });
 
-        const schemasPromises = schemaIds.map(schemaId => this.apiService.getApiSchema(`${apiId}${schemaId}`));
+        const schemasPromises = schemaIds.map(schemaId => this.apiService.getApiSchema(`${apiId}/${schemaId}`));
         const schemas = await Promise.all(schemasPromises);
         const definitions = schemas.map(x => x.definitions).flat();
 
         this.definitions(definitions);
+    }
+
+    public async loadGatewayInfo(): Promise<void> {
+        let hostnames = await this.tenantService.getProxyHostnames();
+
+        if (hostnames.length === 0) {
+            // TODO: Remove once setting backend serving the setting gets deployed.
+            hostnames = await this.getProxyHostnames();
+        }
+
+        if (hostnames.length === 0) {
+            throw new Error(`Unable to fetch gateway hostnames.`);
+        }
+
+        this.primaryHostname(hostnames[0]);
+        this.hostnames(hostnames);
     }
 
     private cleanSelection(): void {
@@ -167,6 +190,12 @@ export class OperationDetails {
         const operationName = this.selectedOperationName();
 
         return this.routeHelper.getDefinitionReferenceUrl(apiName, operationName, definition.name);
+    }
+
+    private async getProxyHostnames(): Promise<string[]> {
+        const apiName = this.routeHelper.getApiName();
+        const apiDefinition: SwaggerObject = await this.apiService.exportApi(`apis/${apiName}`, "swagger");
+        return [apiDefinition.host];
     }
 
     @OnDestroyed()

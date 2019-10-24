@@ -1,5 +1,3 @@
-<!-- ko if: definition.properties && definition.properties.length > 0 -->
-
 <!-- ko if: $component.anchor -->
 <h4 class="text-word-break" data-bind="text: definition.name, attr: { id: $component.getReferenceId(definition) }">
 </h4>
@@ -9,55 +7,117 @@
 <h4 class="text-word-break" data-bind="text: definition.name"></h4>
 <!-- /ko -->
 
-<!-- /ko -->
-
 <!-- ko if: definition.description -->
 <p data-bind="markdown: definition.description"></p>
 <!-- /ko -->
 
-<!-- ko if: definition.properties && definition.properties.length > 0 -->
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Required</th>
-            <th>Type</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody data-bind="foreach: { data: definition.properties, as: 'property' }">
-        <tr>
-            <td>
-                <code data-bind="text: property.name"></code>
-            </td>
-            <td data-bind="text: property.required"></td>
-            <td>
-                <!-- ko if: property.$ref -->
-                <a
-                    data-bind="text: $component.definition.name, attr: { href: $component.getReferenceUrl($component.definition) }"></a>
-                <!-- /ko -->
-                <!-- ko ifnot: property.$ref -->
-                <code data-bind="text: property.type"></code>
-                <!-- /ko -->
-            </td>
-            <td data-bind="markdown: property.description"></td>
-        </tr>
-    </tbody>
-</table>
+<!-- ko if: definition.uiType === 'object' -->
+<!-- ko template: { name: 'typeDefinitionObject', data: $component } -->
+<!-- /ko -->
 <!-- /ko -->
 
-<!-- ko if: $component.example -->
-<h5>Example</h5>
-<div class="flex code-block">
-    <div class="flex-item flex-item-grow code-block-heading" data-bind="text: $component.exampleLanguage">
-    </div>
-    <div class="flex-item">
-        <button class="code-block-command" data-bind="copyToClipboard: $component.example">
-            <i class="icon icon-duplicate"></i>
-            Copy
-        </button>
-    </div>
-</div>
-<pre data-bind="syntaxHighlight: { code: $component.example, language: $component.exampleLanguage }"></pre>
-
+<!-- ko if: definition.uiType === 'enum' -->
+<!-- ko template: { name: 'typeDefinitionEnum', data: $component } -->
 <!-- /ko -->
+<!-- /ko -->
+
+<!-- ko if: definition.uiType === 'array' -->
+<!-- ko template: { name: 'typeDefinitionArray', data: $component } -->
+<!-- /ko -->
+<!-- /ko -->
+
+<template id="typeDefinitionObject">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Required</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: { data: definition.properties, as: 'property' }">
+            <tr>
+                <td>
+                    <code data-bind="text: property.name"></code>
+                </td>
+                <td data-bind="text: property.required"></td>
+                <td>
+                    <!-- ko if: property.referencedTypeName -->
+                    <a
+                        data-bind="text: property.referencedTypeName, attr: { href: $component.getReferenceUrl(property) }"></a>
+                    <!-- /ko -->
+                    <!-- ko ifnot: property.referencedTypeName -->
+                    <code data-bind="text: property.type"></code>
+                    <!-- /ko -->
+                </td>
+                <td data-bind="markdown: property.description"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ko if: $component.example -->
+    <h5>Example</h5>
+    <div class="flex code-block code-block-bordered">
+        <div class="code-block-heading">
+            <span data-bind="text: $component.exampleLanguage"></span>
+            <button class="code-block-command" data-bind="copyToClipboard: $component.example"
+                aria-label="Copy to clipboard">
+                <i class="icon icon-duplicate"></i>
+                Copy
+            </button>
+        </div>
+    </div>
+    <pre data-bind="syntaxHighlight: { code: $component.example, language: $component.exampleLanguage }"></pre>
+    <!-- /ko -->
+</template>
+
+<template id="typeDefinitionEnum">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Values</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td data-bind="markdown: definition.type"></td>
+                <td>
+                    <!-- ko foreach: { data: definition.enum, as: 'value' } -->
+                    <!-- ko if: $index() > 0 -->,
+                    <!-- /ko --><code data-bind="text: value"></code><!-- /ko -->
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</template>
+
+<template id="typeDefinitionArray">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: { data: definition.properties, as: 'property' }">
+            <tr>
+                <td>
+                    <code data-bind="text: property.name"></code>
+                </td>
+                <td>
+                    <!-- ko if: property.referencedTypeName -->
+                    <a
+                        data-bind="text: property.referencedTypeName, attr: { href: $component.getReferenceUrl(property) }"></a>
+                    <!-- /ko -->
+                    <!-- ko ifnot: property.referencedTypeName -->
+                    <code data-bind="text: property.type"></code>
+                    <!-- /ko -->
+                </td>
+                <td data-bind="markdown: property.description"></td>
+            </tr>
+        </tbody>
+    </table>
+</template>

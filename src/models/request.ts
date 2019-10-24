@@ -24,11 +24,11 @@ export class Request {
             this.description = contract.description;
 
             this.queryParameters = contract.queryParameters
-                ? contract.queryParameters.map(x => new Parameter(x))
+                ? contract.queryParameters.map(x => new Parameter("query", x))
                 : [];
 
             this.headers = contract.headers
-                ? contract.headers.map(x => new Parameter(x))
+                ? contract.headers.map(x => new Parameter("header", x))
                 : [];
 
             this.representations = contract.representations
