@@ -14,10 +14,12 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 export class TypeDefinitionViewModel {
     public example: ko.Observable<string>;
     public exampleLanguage: ko.Observable<string>;
+    public type: ko.Observable<string>;
 
     constructor(private readonly routeHelper: RouteHelper) {
         this.example = ko.observable();
         this.exampleLanguage = ko.observable();
+        this.type = ko.observable();
     }
 
     @Param()
@@ -50,7 +52,7 @@ export class TypeDefinitionViewModel {
                 example = Utils.formatJson(this.representation.sample);
                 exampleLanguage = "json";
             }
-            
+
             this.exampleLanguage(exampleLanguage);
             this.example(example);
         }
@@ -59,6 +61,8 @@ export class TypeDefinitionViewModel {
             this.exampleLanguage("json");
             this.example(this.definition.example);
         }
+
+        this.type(this.definition.uiType);
     }
 
     public getReferenceId(definition: TypeDefinition): string {
@@ -66,6 +70,6 @@ export class TypeDefinitionViewModel {
     }
 
     public getReferenceUrl(definition: TypeDefinition): string {
-        return this.routeHelper.getDefinitionReferenceUrl(this.apiName, this.operationName, definition.name);
+        return this.routeHelper.getDefinitionReferenceUrl(this.apiName, this.operationName, definition.referencedTypeName);
     }
 }

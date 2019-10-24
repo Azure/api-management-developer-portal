@@ -25,6 +25,10 @@ export class RouteHelper {
     }
 
     public getApiReferenceUrl(apiName: string): string {
+        if (!apiName) {
+            throw new Error(`Parameter "apiName" not specified.`);
+        }
+
         let path = "";
         const currentPath = this.router.getPath();
 
@@ -40,6 +44,14 @@ export class RouteHelper {
     }
 
     public getOperationReferenceUrl(apiName: string, operationName: string): string {
+        if (!apiName) {
+            throw new Error(`Parameter "apiName" not specified.`);
+        }
+
+        if (!operationName) {
+            throw new Error(`Parameter "operationName" not specified.`);
+        }
+
         let path = "";
         const currentPath = this.router.getPath();
 
@@ -55,10 +67,34 @@ export class RouteHelper {
     }
 
     public getDefinitionReferenceId(apiName: string, operationName: string, definitionName: string): string {
+        if (!apiName) {
+            throw new Error(`Parameter "apiName" not specified.`);
+        }
+
+        if (!operationName) {
+            throw new Error(`Parameter "operationName" not specified.`);
+        }
+
+        if (!definitionName) {
+            throw new Error(`Parameter "definitionName" not specified.`);
+        }
+
         return `api=${apiName}&operation=${operationName}&definition=${definitionName}`;
     }
 
     public getDefinitionReferenceUrl(apiName: string, operationName: string, definitionName: string): string {
+        if (!apiName) {
+            throw new Error(`Parameter "apiName" not specified.`);
+        }
+
+        if (!operationName) {
+            throw new Error(`Parameter "operationName" not specified.`);
+        }
+
+        if (!definitionName) {
+            throw new Error(`Parameter "definitionName" not specified.`);
+        }
+
         let path = "";
         const currentPath = this.router.getPath();
 

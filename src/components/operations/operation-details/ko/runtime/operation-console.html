@@ -1,10 +1,10 @@
-<!-- ko if: resettingOperation -->
+<!-- ko if: working -->
 <div class="panel panel-dark fit">
     <spinner class="fit"></spinner>
 </div>
 <!-- /ko -->
 
-<!-- ko ifnot: resettingOperation -->
+<!-- ko ifnot: working -->
 
 <div class="panel panel-dark animation-fade-in" data-bind="with: consoleOperation">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"
@@ -17,38 +17,43 @@
             <li class="breadcrumb-item">
                 <a href="#" data-bind="text: api.displayName, attr: { href: $component.getApiReferenceUrl() }"></a>
             </li>
+            <!-- ko if: api.apiVersion -->
             <li class="breadcrumb-item">
                 <span data-bind="text: api.apiVersion"></span>
             </li>
+            <!-- /ko -->
             <li class="breadcrumb-item">
                 <span data-bind="text: name"></span>
             </li>
         </ol>
     </nav>
 
-    <div data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
-    <!-- <div class="row">
-        <div class="col-md-12">
-            <span data-bind="text: urlTemplate, attr: { 'data-method': method }"></span>
-        </div>
-    </div> -->
+    <div class="monospace" data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
 
     <h3>Authorization</h3>
 
     <div class="row flex flex-row">
-        <div class="col-md-4">
-            <label for="subscriptionKey">Subscription key</label>
+        <div class="col-4">
+            <input type="text" readonly class="form-control form-control-sm" value="Subscription key" />
         </div>
-        <div class="col-md-6">
-            <select id="subscriptionKey" class="form-control" data-bind="value: $component.selectedSubscriptionKey">
-                <!-- ko foreach: { data: $component.products, as: 'product' } -->
-                <optgroup data-bind="attr: { label: product.name }">
-                    <!-- ko foreach: { data: product.subscriptionKeys, as: 'subscriptionKey' } -->
-                    <option data-bind="value: subscriptionKey.value, text: subscriptionKey.name"></option>
+        <div class="col-6">
+            <div class="form-group">
+                <!-- ko if: $component.products() && $component.products().length > 0 -->
+                <select id="subscriptionKey" class="form-control" data-bind="value: $component.selectedSubscriptionKey">
+                    <!-- ko foreach: { data: $component.products, as: 'product' } -->
+                    <optgroup data-bind="attr: { label: product.name }">
+                        <!-- ko foreach: { data: product.subscriptionKeys, as: 'subscriptionKey' } -->
+                        <option data-bind="value: subscriptionKey.value, text: subscriptionKey.name"></option>
+                        <!-- /ko -->
+                    </optgroup>
                     <!-- /ko -->
-                </optgroup>
+                </select>
                 <!-- /ko -->
-            </select>
+                <!-- ko if: !$component.products() || $component.products().length === 0 -->
+                <input type="text" class="form-control" placeholder="subscription key"
+                    data-bind="inputText: subscriptionKey.value" />
+                <!-- /ko -->
+            </div>
         </div>
     </div>
 
@@ -56,30 +61,38 @@
     <h4>Parameters</h4>
     <div data-bind="foreach: { data: templateParameters, as: 'parameter' }">
         <div class="row flex flex-row">
-            <div class="col-md-4">
-                <input type="text" readonly autocomplete="off" class="form-control form-control-sm" placeholder="name"
-                    spellcheck="false"
-                    data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.name, valueUpdate: 'keyup'">
+            <div class="col-4">
+                <div class="form-group">
+                    <input type="text" readonly autocomplete="off" class="form-control form-control-sm"
+                        placeholder="name" spellcheck="false"
+                        data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.name, valueUpdate: 'keyup'">
+                </div>
             </div>
-            <div class="col-md-6">
-                <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                    spellcheck="false"
-                    data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
+            <div class="col-6">
+                <div class="form-group">
+                    <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
+                        spellcheck="false"
+                        data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
+                </div>
             </div>
         </div>
     </div>
     <div data-bind="foreach: { data: request.queryParameters, as: 'parameter' }">
         <div class="row flex flex-row">
-            <div class="col-md-4">
-                <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
-                    spellcheck="false" data-bind="textInput: parameter.name, valueUpdate: 'keyup'">
+            <div class="col-4">
+                <div class="form-group">
+                    <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
+                        spellcheck="false" data-bind="textInput: parameter.name, valueUpdate: 'keyup'">
+                </div>
             </div>
-            <div class="col-md-6">
-                <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                    spellcheck="false"
-                    data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
+            <div class="col-6">
+                <div class="form-group">
+                    <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
+                        spellcheck="false"
+                        data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
+                </div>
             </div>
-            <div class="col-md-2 button-remove">
+            <div class="col-2 button-remove">
                 <a href="#" data-bind="click: $component.removeQueryParameter">Remove</a>
             </div>
         </div>
@@ -96,16 +109,20 @@
 
     <div data-bind="foreach: { data: request.headers, as: 'header' }">
         <div class="row flex flex-row">
-            <div class="col-md-4">
-                <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
-                    spellcheck="false" data-bind="textInput: header.name, valueUpdate: 'keyup'">
+            <div class="col-4">
+                <div class="form-group">
+                    <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
+                        spellcheck="false" data-bind="textInput: header.name, valueUpdate: 'keyup'">
+                </div>
             </div>
-            <div class="col-md-6">
-                <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                    spellcheck="false"
-                    data-bind="event: { keyup: $component.updateRequestSummary }, textInput: header.value, valueUpdate: 'keyup'">
+            <div class="col-6">
+                <div class="form-group">
+                    <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
+                        spellcheck="false"
+                        data-bind="event: { keyup: $component.updateRequestSummary }, textInput: header.value, valueUpdate: 'keyup'">
+                </div>
             </div>
-            <div class="col-md-2 button-remove">
+            <div class="col-2 button-remove">
                 <a href="#" data-bind="click: $component.removeHeader">Remove</a>
             </div>
         </div>
@@ -117,10 +134,10 @@
 
     <!-- /ko -->
 
-    <div data-bind="if: hasBody">
-        <div class="row">
-            <h3 class="console-body">Body</h3>
-            <!-- <div class="button-body" role="group">
+    <!-- ko if: hasBody -->
+    <h3>Body</h3>
+    <div class="row flex flex-row">
+        <!-- <div class="button-body" role="group">
                 <button type="button" class="button dropdown-toggle button-default" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     <span data-bind="text: $component.bodySource"></span>
@@ -131,11 +148,11 @@
                         data-bind="click: $component.bodySource.bind(this, 'Binary')">Binary</a>
                 </div>
             </div> -->
-        </div>
+    </div>
 
-        <div class="clearfix"></div>
-        <div class="row">
-            <div class="col-md-12">
+    <div class="row flex flex-row">
+        <div class="col-12">
+            <div class="form-group">
                 <!-- ko if: $component.bodySource() === 'Raw' -->
                 <textarea class="form-control form-control-sm" rows="9"
                     data-bind="event: { keyup: $component.updateRequestSummary }, textInput: request.body, valueUpdate: 'keyup'"></textarea>
@@ -146,6 +163,7 @@
             </div>
         </div>
     </div>
+    <!-- /ko -->
 </div>
 
 <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
@@ -157,39 +175,43 @@
             <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'curl')">Curl</a>
         </li>
         <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'csharp' }">
-            <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'csharp')">C#</a>
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'csharp')">C#</a>
         </li>
         <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'java' }">
-            <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'java')">Java</a>
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'java')">Java</a>
         </li>
         <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'javascript' }">
             <a class="nav-link" href="#"
                 data-bind="click: $component.selectedLanguage.bind(this, 'javascript')">JavaScript</a>
         </li>
         <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'php' }">
-            <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'php')">PHP</a>
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'php')">PHP</a>
         </li>
         <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'python' }">
-            <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'python')">Python</a>
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'python')">Python</a>
         </li>
         <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'ruby' }">
-            <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'ruby')">Ruby</a>
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'ruby')">Ruby</a>
         </li>
         <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'objc' }">
-            <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'objc')">Objective
+            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'objc')">Objective
                 C</a>
         </li>
     </ul>
 
     <h3>HTTP request</h3>
-    <pre
-        data-bind="codeSample: { template: templates[selectedLanguage()], model: consoleOperation, language: selectedLanguage }"></pre>
+    <div class="code-block">
+        <div class="code-block-heading">
+            <button class="code-block-command" data-bind="copyToClipboard: $component.codeSample"
+                aria-label="Copy to clipboard">
+                <i class="icon icon-duplicate"></i> Copy
+            </button>
+        </div>
+    </div>
+
+    <!-- ko if: $component.codeSample -->
+    <pre data-bind="syntaxHighlight: { code: $component.codeSample, language: $component.selectedLanguage }"></pre>
+    <!-- /ko -->
 
     <div class="flex flex-column align-items-end">
         <div class="btn-group" role="group">

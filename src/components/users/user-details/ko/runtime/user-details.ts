@@ -8,7 +8,7 @@ import { DelegationParameters, DelegationAction } from "../../../../../contracts
 import { TenantService } from "../../../../../services/tenantService";
 import { BackendService } from "../../../../../services/backendService";
 import { Router } from "@paperbits/common/routing/router";
-import { changePasswordUrl } from "../../../../../constants";
+import { pageUrlChangePassword } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
 
 @RuntimeComponent({ selector: "user-details" })
@@ -92,7 +92,7 @@ export class UserDetails {
 
     public async toggleEditPassword(): Promise<void> {
         await this.isDelegation(DelegationAction.changePassword);
-        await this.router.navigateTo(changePasswordUrl);
+        await this.router.navigateTo(pageUrlChangePassword);
     }
 
     public async changeAccountInfo(): Promise<void> {

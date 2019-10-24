@@ -1,19 +1,15 @@
 import * as ko from "knockout";
-import { ConsoleParameter } from './consoleParameter'
-import { ConsoleHeader } from './consoleHeader'
-import { ConsoleRepresentation } from './consoleRepresentation'
+import { ConsoleParameter } from "./consoleParameter";
+import { ConsoleHeader } from "./consoleHeader";
+import { ConsoleRepresentation } from "./consoleRepresentation";
 // import { ValidateNested } from "class-validator";
 import { Request } from "../request";
 
 
 export class ConsoleRequest {
-    // @ValidateNested()
     public queryParameters: ko.ObservableArray<ConsoleParameter>;
-
-    // @ValidateNested()
     public headers: ko.ObservableArray<ConsoleHeader>;
-
-    public representations: Array<ConsoleRepresentation>;
+    public representations: ConsoleRepresentation[];
     public description: string;
     public body: ko.Observable<string>;
     public binary: File;

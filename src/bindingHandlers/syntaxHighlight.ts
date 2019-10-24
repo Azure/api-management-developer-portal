@@ -8,6 +8,7 @@ import "prismjs/components/prism-java";
 import "prismjs/components/prism-python";
 import "prismjs/components/prism-ruby";
 import "prismjs/components/prism-markup";
+import "prismjs/components/prism-bash";
 // import "prismjs/components/prism-php"; // broken!
 
 
@@ -19,7 +20,7 @@ interface SyntaxHighlightConfig {
 ko.bindingHandlers["syntaxHighlight"] = {
     update: (element: HTMLElement, valueAccessor: () => SyntaxHighlightConfig): void => {
         const config = valueAccessor();
-        const code = ko.unwrap(config.code);
+        let code = ko.unwrap(config.code);
         const language = ko.unwrap(config.language);
 
         const render = async () => {
@@ -30,6 +31,8 @@ ko.bindingHandlers["syntaxHighlight"] = {
                     highlightLanguage = "csharp";
                     break;
                 case "curl":
+                    highlightLanguage = "bash";
+                    break;
                 case "http":
                     highlightLanguage = "http";
                     break;
@@ -42,14 +45,14 @@ ko.bindingHandlers["syntaxHighlight"] = {
                 case "objc":
                     highlightLanguage = "c";
                     break;
-                // case "php":
-                //     highlightLanguage = "php";
-                //     break;
+                case "php":
+                    // highlightLanguage = "php"; // broken!
+                    highlightLanguage = "ruby";
+                    break;
                 case "python":
                     highlightLanguage = "python";
                     break;
                 case "ruby":
-                case "php":
                     highlightLanguage = "ruby";
                     break;
                 case "xml":
@@ -67,7 +70,12 @@ ko.bindingHandlers["syntaxHighlight"] = {
                 ko.applyBindingsToNode(element, { text: text }, null);
             }
             else {
-                const html = Prism.highlight(code, Prism.languages[highlightLanguage], highlightLanguage);
+
+                code = code.replaceAll("/", "fwdslsh"); // workaround for PrismJS bug.
+                let html = Prism.highlight(code, Prism.languages[highlightLanguage], highlightLanguage);
+                html = html.replaceAll("fwdslsh", "/");
+
+                // const html = Prism.highlight(code, Prism.languages[highlightLanguage], highlightLanguage);
                 ko.applyBindingsToNode(element, { html: html }, null);
             }
         };

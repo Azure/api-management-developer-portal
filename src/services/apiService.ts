@@ -231,17 +231,21 @@ export class ApiService {
             return null;
         }
 
-        const api = new Api(apiContract);
-
-        if (apiContract.properties.apiVersionSetId && !api.apiVersionSet) {
+        if (apiContract.properties.apiVersionSetId && !apiContract.properties.apiVersionSet) { // Filling the missing version set
             const setId = Utils.getResourceName("api-version-sets", apiContract.properties.apiVersionSetId, "shortId");
-            api.apiVersionSet = await this.getApiVersionSet(setId);
+            const apiVersionSetContract = await this.getApiVersionSet(setId);
+            apiContract.properties.apiVersionSet = apiVersionSetContract;
         }
 
-        return api;
+        return new Api(apiContract);
     }
 
-    public exportApi(apiId: string, format: string): Promise<string> {
+    /**
+     * Returns a document of exported API in specified format.
+     * @param apiId {string} Unique identifier.
+     * @param format {string} Export format.
+     */
+    public exportApi(apiId: string, format: string): Promise<any> {
         if (!apiId) {
             throw new Error(`Parameter "apiId" not specified.`);
         }
