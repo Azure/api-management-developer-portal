@@ -96,8 +96,7 @@
 
                 <div class="tab-content">
                     <!-- ko if: representation.typeName -->
-                    <type-definition
-                        params="{ representation: representation, definition: $component.getDefinitionByTypeName(representation.typeName) }">
+                    <type-definition params="{ representation: representation, apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionByTypeName(representation.typeName) }">
                     </type-definition>
                     <!-- /ko -->
                 </div>
