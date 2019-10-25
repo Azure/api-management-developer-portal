@@ -69,7 +69,7 @@ export class AadService {
             }
         }
         catch (error) {
-            throw new Error(`Unable to obtain id_token with client ID: ${aadClientId}. Error: ${error}.`);
+            throw new Error(`Unable to obtain id_token with client ID: ${aadClientId}. Error: ${error.message}`);
         }
     }
 
@@ -111,7 +111,7 @@ export class AadService {
             }
         }
         catch (error) {
-            throw new Error(`Unable to obtain id_token with client ID: ${clientId}. Error: ${error}.`);
+            throw new Error(`Unable to obtain id_token with client ID: ${clientId}. Error: ${error.message}`);
         }
     }
 

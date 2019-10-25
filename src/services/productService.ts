@@ -47,7 +47,7 @@ export class ProductService {
                 return pageOfSubscriptions;
             }
 
-            throw new Error(`Unable to retrieve subscriptions for user with ID "${userId}": ${error}`);
+            throw new Error(`Unable to retrieve subscriptions for user with ID "${userId}". Error: ${error.message}`);
         }
     }
 
@@ -74,7 +74,7 @@ export class ProductService {
                 return new Page();
             }
 
-            throw new Error(`Unable to retrieve subscriptions for user with ID "${userId}": ${error}`);
+            throw new Error(`Unable to retrieve subscriptions for user with ID "${userId}". Error: ${error.message}`);
         }
     }
 
@@ -231,10 +231,10 @@ export class ProductService {
             throw new Error(`Parameter "userId" not specified.`);
         }
 
-        const isDelegation = await this.tenantService.isSubscriptionDelegationEnabled();
+        const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
 
-        if (isDelegation) {
-            console.warn("Delegation enabled. Can't create subscription");
+        if (isDelegationEnabled) {
+            console.warn("Delegation enabled. Can't create subscription.");
         }
         else {
             const data = {

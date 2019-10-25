@@ -113,7 +113,7 @@ export class OperationList {
             }
         }
         catch (error) {
-            throw new Error(`Unable to load operations: ${error}`);
+            throw new Error(`Unable to load operations: Error: ${error.message}`);
         }
         finally {
             this.working(false);
