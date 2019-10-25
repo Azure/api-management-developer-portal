@@ -25,25 +25,13 @@ export class LogService implements Logger {
 
     public async traceEvent(eventName: string, properties?: Bag<string>, measurments?: Bag<number>): Promise<void> {
         AppInsights.trackEvent(eventName, properties, measurments);
-
-        if (!this.instrumentationKey && location.hostname === "localhost") {
-            console.info(`${eventName}`);
-        }
     }
 
     public async traceError(error: Error, handledAt?: string): Promise<void> {
         AppInsights.trackException(error, handledAt);
-
-        if (!this.instrumentationKey && location.hostname === "localhost") {
-            console.error(error);
-        }
     }
 
     public async traceView(name: string): Promise<void> {
         AppInsights.trackPageView(name);
-
-        if (!this.instrumentationKey && location.hostname === "localhost") {
-            console.info(`View: ${name}`);
-        }
     }
 }
