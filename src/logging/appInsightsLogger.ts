@@ -1,7 +1,7 @@
-import { AppInsights } from "applicationinsights-js";
-import { TenantService } from "../services/tenantService";
 import { Bag } from "@paperbits/common";
 import { Logger } from "@paperbits/common/logging";
+import { AppInsights } from "applicationinsights-js";
+import { TenantService } from "../services/tenantService";
 
 
 export class LogService implements Logger {
@@ -20,9 +20,6 @@ export class LogService implements Logger {
     }
 
     public async traceSession(): Promise<void> {
-        // const service = await this.tenantService.getServiceName();
-        // AppInsights.setAuthenticatedUserContext(null, `${service.name} (${service.sku.name})`);
-
         this.traceEvent(`Session started`);
     }
 
@@ -30,7 +27,7 @@ export class LogService implements Logger {
         AppInsights.trackEvent(eventName, properties, measurments);
 
         if (!this.instrumentationKey && location.hostname === "localhost") {
-            console.log(`${eventName}`);
+            console.info(`${eventName}`);
         }
     }
 
@@ -38,7 +35,7 @@ export class LogService implements Logger {
         AppInsights.trackException(error, handledAt);
 
         if (!this.instrumentationKey && location.hostname === "localhost") {
-            console.log(error);
+            console.error(error);
         }
     }
 
@@ -46,7 +43,7 @@ export class LogService implements Logger {
         AppInsights.trackPageView(name);
 
         if (!this.instrumentationKey && location.hostname === "localhost") {
-            console.log(`View: ${name}`);
+            console.info(`View: ${name}`);
         }
     }
 }
