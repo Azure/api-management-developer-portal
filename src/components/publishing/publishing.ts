@@ -3,6 +3,7 @@ import { ViewManager } from "@paperbits/common/ui";
 import { Component } from "@paperbits/common/ko/decorators";
 import { HttpClient } from "@paperbits/common/http";
 import { IAuthenticator } from "../../authentication/IAuthenticator";
+import { ProvisionService } from "../../services/provisioningService";
 
 @Component({
     selector: "publishing-workshop",
@@ -14,6 +15,7 @@ export class PublishingWorkshop {
         private readonly viewManager: ViewManager,
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator,
+        private provisioningService: ProvisionService
     ) {
         this.viewManager = viewManager;
     }
@@ -27,6 +29,27 @@ export class PublishingWorkshop {
         }
         catch (error) {
             this.viewManager.notifyError("Publishing", `Unable to schedule publishing. Please try again later.`);
+        }
+    }
+
+    public async unpublish(): Promise<void> {
+        try {
+            this.viewManager.notifySuccess("Website reset", `The website is being resetted...`);
+            await this.provisioningService.cleanup();
+            await this.provisioningService.provision();
+            this.viewManager.closeWorkshop("publishing-workshop");
+            const toast = this.viewManager.addToast("Website reset", `Website has been reset successfully...`, [
+                {
+                    title: "Ok",
+                    iconClass: "paperbits-check-2",
+                    action: async (): Promise<void> => {
+                        this.viewManager.removeToast(toast);
+                    }
+                },
+            ]);
+        } 
+        catch (error) {
+            this.viewManager.notifyError("Reset", `Unable to reset website. Please try again later.`);
         }
     }
 }

@@ -30,6 +30,7 @@ import { TenantService } from "./services/tenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/ko/validationSummary.module";
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
+import { ProvisionService } from "./services/provisioningService";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -59,6 +60,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("userService", StaticUserService);
         injector.bindSingleton("roleService", StaticRoleService);
         injector.bindSingleton("tenantService", TenantService);
+        injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("router", StaticRouter);
         injector.bindSingleton("authenticator", StaticAuthenticator);
