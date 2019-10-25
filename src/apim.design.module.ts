@@ -52,6 +52,7 @@ import { TenantService } from "./services/tenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/ko/validationSummary.module";
 import { ValidationSummaryEditorModule} from "./components/users/validation-summary/ko/validationSummaryEditor.module"
 import { StaticRoleService } from "./services/roleService";
+import { ProvisionService } from "./services/provisioningService";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -103,6 +104,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("roleService", StaticRoleService);
         injector.bindSingleton("tenantService", TenantService);
+        injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("authenticator", DefaultAuthenticator);

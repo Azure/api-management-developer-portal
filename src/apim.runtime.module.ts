@@ -60,6 +60,7 @@ import { ValidationSummary } from "./components/users/validation-summary/ko/runt
 import { TypeDefinitionViewModel } from "./components/operations/operation-details/ko/runtime/type-definition";
 import { VisibilityGuard } from "@paperbits/common/user";
 import { StaticUserService } from "./services";
+import { ProvisionService } from "./services/provisioningService";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -118,5 +119,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("routeHelper", RouteHelper);
         injector.bindSingleton("userService", StaticUserService);
+        injector.bindSingleton("provisioningService", ProvisionService);
     }
 }
