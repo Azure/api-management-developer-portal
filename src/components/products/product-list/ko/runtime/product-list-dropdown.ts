@@ -127,7 +127,7 @@ export class ProductListDropdown {
                 : itemsPage.value[0]);
         }
         catch (error) {
-            console.error(`Unable to load APIs. ${error}`);
+            throw new Error(`Unable to load APIs. Error: ${error.message}`);
         }
         finally {
             this.working(false);

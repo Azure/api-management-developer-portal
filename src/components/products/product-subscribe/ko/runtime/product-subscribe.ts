@@ -102,7 +102,7 @@ export class ProductSubscribe {
                 return;
             }
 
-            throw new Error(`Unable to load products. Error: ${error}`);
+            throw new Error(`Unable to load products. Error: ${error.message}`);
         }
         finally {
             this.working(false);
@@ -176,7 +176,7 @@ export class ProductSubscribe {
                 this.usersService.navigateToSignin();
                 return;
             }
-            throw new Error(`Unable to subscribe to a product. Error: ${error}`);
+            throw new Error(`Unable to subscribe to a product. Error: ${error.message}`);
         }
         finally {
             this.working(false);

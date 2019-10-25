@@ -34,8 +34,6 @@ ko.bindingHandlers["barChart"] = {
             .create("svg")
             .attr("viewBox", [0, 0, width, height]);
 
-        console.info(configuration.startTime);
-
         /* Axis X */
         const x = d3.scaleTime()
             .domain([configuration.startTime, configuration.endTime])
