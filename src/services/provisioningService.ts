@@ -22,7 +22,6 @@ export class ProvisionService {
     }
 
     public async provision(): Promise<void> {
-        // TODO: Move to config
         const settings = await this.settingsProvider.getSettings();
         let managementApiUrl = settings["managementApiUrl"];
         if (!managementApiUrl) {
@@ -95,12 +94,9 @@ export class ProvisionService {
             ],
         };
         const response = await this.sendRequest(request);
-        //const contentTypes = response["values"].map(x => x.name);
-        console.log(response["value"]);
         const contentTypes = Object.values(response["value"]);
         for (const contentType of contentTypes) {
             const contentTypeName = contentType["name"];
-            console.log(contentTypeName);
             const curReq: HttpRequest = {
                 url: `${managementApiUrl}/contentTypes/${contentTypeName}/contentItems?api-version=2018-06-01-preview`,
                 method: "GET",
@@ -111,10 +107,8 @@ export class ProvisionService {
                 ],
             };
             const itemsResponse = await this.sendRequest(curReq);
-            console.log(itemsResponse);
             const items = Object.values(itemsResponse["value"]);
             for (const item of items) {
-                console.log(item["id"]);
                 const itemReq: HttpRequest = {
                     url: `${managementApiUrl}${item["id"]}?api-version=2018-06-01-preview`,
                     method: "DELETE", 
@@ -125,7 +119,6 @@ export class ProvisionService {
                     ],
                 };
                 const response = await this.httpClient.send(itemReq);
-                console.log(response);
             }
         } 
     }
