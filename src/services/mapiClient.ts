@@ -145,7 +145,7 @@ export class MapiClient {
             response = await this.httpClient.send<T>(httpRequest);
         }
         catch (error) {
-            throw new Error(`Unable to complete request. Error: ${error}`);
+            throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
         return this.handleResponse<T>(response, httpRequest.url);

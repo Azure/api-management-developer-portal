@@ -184,7 +184,7 @@ export class MapiObjectStorage implements IObjectStorage {
             await this.mapiClient.put<T>(resource, headers, converted);
         }
         catch (error) {
-            throw new Error(`Could not add object '${path}'. Error: ${error}`);
+            throw new Error(`Could not add object '${path}'. Error: ${error.message}`);
         }
     }
 
@@ -212,7 +212,7 @@ export class MapiObjectStorage implements IObjectStorage {
                 return null;
             }
             
-            throw new Error(`Could not get object '${key}'. Error: ${error}.`);
+            throw new Error(`Could not get object '${key}'. Error: ${error.message}`);
         }
     }
 
@@ -226,7 +226,7 @@ export class MapiObjectStorage implements IObjectStorage {
             await this.mapiClient.delete(resource, headers);
         }
         catch (error) {
-            throw new Error(`Could not delete object '${path}'. Error: ${error}.`);
+            throw new Error(`Could not delete object '${path}'. Error: ${error.message}`);
         }
     }
 
@@ -267,7 +267,7 @@ export class MapiObjectStorage implements IObjectStorage {
                 exists = false;
             }
             else {
-                throw new Error(`Could not update object '${key}'. Error: ${error}`);
+                throw new Error(`Could not update object '${key}'. Error: ${error.message}`);
             }
         }
 
@@ -281,7 +281,7 @@ export class MapiObjectStorage implements IObjectStorage {
             await this.mapiClient.put<T>(resource, headers, converted);
         }
         catch (error) {
-            throw new Error(`Could not update object '${key}'. Error: ${error}`);
+            throw new Error(`Could not update object '${key}'. Error: ${error.message}`);
         }
     }
 
@@ -339,7 +339,7 @@ export class MapiObjectStorage implements IObjectStorage {
             }
         }
         catch (error) {
-            throw new Error(`Could not search object '${key}'. Error: ${error}.`);
+            throw new Error(`Could not search object '${key}'. Error: ${error.message}`);
         }
     }
 
@@ -444,8 +444,6 @@ export class MapiObjectStorage implements IObjectStorage {
     }
 
     public async saveChanges(delta: Object): Promise<void> {
-        console.log("Saving changes...");
-
         const saveTasks = [];
         const keys = [];
 

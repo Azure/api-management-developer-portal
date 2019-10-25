@@ -83,7 +83,7 @@ export class ApiHistory {
             }
         } 
         catch (error) {
-            throw new Error(`Unable to load API history. Error: ${error}`);
+            throw new Error(`Unable to load API history. Error: ${error.message}`);
         } 
         finally {
             this.working(false);

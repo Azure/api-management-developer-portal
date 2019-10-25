@@ -77,7 +77,7 @@ export class ProductSubscriptions {
                 return;
             }
 
-            throw new Error(`Could not load product subscriptions. Error: ${error}`);
+            throw new Error(`Could not load product subscriptions. Error: ${error.message}`);
         }
         finally {
             this.working(false);
