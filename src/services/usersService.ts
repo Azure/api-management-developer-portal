@@ -174,7 +174,8 @@ export class UsersService {
     public async requestChangeEmail(user: User, newEmail: string): Promise<any> {
         try {
             console.log("requestChangeEmail is not implemented");
-        } catch (error) {
+        } 
+        catch (error) {
             this.router.navigateTo(Constants.pageUrlSignIn);
         }
     }

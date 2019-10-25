@@ -90,7 +90,7 @@ export class ApiList {
             this.hasNextPage(!!nextLink);
         }
         catch (error) {
-            throw new Error(`Unable to load APIs. ${error}`);
+            throw new Error(`Unable to load APIs. Error: ${error.message}`);
         }
         finally {
             this.working(false);

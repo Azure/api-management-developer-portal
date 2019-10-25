@@ -83,7 +83,7 @@ export class ProductList {
                 return;
             }
 
-            throw new Error(`Unable to load products. ${error}`);
+            throw new Error(`Unable to load products. Error: ${error.message}`);
         }
         finally {
             this.working(false);
