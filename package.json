@@ -67,6 +67,7 @@
         "@paperbits/prosemirror": "0.1.161",
         "@paperbits/styles": "0.1.161",
         "@webcomponents/webcomponentsjs": "^2.2.10",
+        "applicationinsights-js": "^1.0.20",
         "core-js": "^3.2.1",
         "d3": "^5.11.0",
         "domino": "^2.1.3",

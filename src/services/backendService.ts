@@ -2,7 +2,7 @@ import { HttpClient, HttpRequest, HttpResponse, HttpMethod } from "@paperbits/co
 import { CaptchaParams } from "../contracts/captchaParams";
 import { SignupRequest } from "../contracts/signupRequest";
 import { ResetRequest, ResetPassword, ChangePasswordRequest } from "../contracts/resetRequest";
-import { IAuthenticator } from "../authentication/IAuthenticator";
+import { IAuthenticator } from "../authentication";
 import { DelegationAction } from "../contracts/tenantSettings";
 
 export class BackendService {
@@ -16,13 +16,13 @@ export class BackendService {
         const httpRequest: HttpRequest = {
             method: HttpMethod.get,
             url: this.getUrl("/captcha")
-        }
+        };
 
         try {
             response = await this.httpClient.send<any>(httpRequest);
         }
         catch (error) {
-            throw new Error(`Unable to complete request. Error: ${error}`);
+            throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
         return this.handleResponse(response);
@@ -30,36 +30,36 @@ export class BackendService {
 
     public async sendSignupRequest(signupRequest: SignupRequest): Promise<void> {
         const response = await this.httpClient.send(
-            { 
-                url: this.getUrl("/signup"), 
+            {
+                url: this.getUrl("/signup"),
                 method: HttpMethod.post,
-                headers: [{ name: "Content-Type", value: "application/json" }], 
+                headers: [{ name: "Content-Type", value: "application/json" }],
                 body: JSON.stringify(signupRequest)
             });
         if (response.statusCode !== 200) {
-            if(response.statusCode === 400) {
+            if (response.statusCode === 400) {
                 const responseObj = <any>response.toObject();
                 throw responseObj.error;
             } else {
-                throw Error(response.toText());             
+                throw Error(response.toText());
             }
         }
     }
 
     public async sendResetRequest(resetRequest: ResetRequest): Promise<void> {
         const response = await this.httpClient.send(
-            { 
-                url: this.getUrl("/reset-password-request"), 
+            {
+                url: this.getUrl("/reset-password-request"),
                 method: HttpMethod.post,
-                headers: [{ name: "Content-Type", value: "application/json" }], 
+                headers: [{ name: "Content-Type", value: "application/json" }],
                 body: JSON.stringify(resetRequest)
             });
         if (response.statusCode !== 200) {
-            if(response.statusCode === 400) {
+            if (response.statusCode === 400) {
                 const responseObj = <any>response.toObject();
                 throw responseObj.error;
             } else {
-                throw Error(response.toText());             
+                throw Error(response.toText());
             }
         }
     }
@@ -72,28 +72,28 @@ export class BackendService {
         }
 
         const response = await this.httpClient.send(
-            { 
-                url: this.getUrl("/change-password"), 
+            {
+                url: this.getUrl("/change-password"),
                 method: HttpMethod.post,
-                headers: [{ name: "Authorization", value: authToken }, { name: "Content-Type", value: "application/json" }], 
+                headers: [{ name: "Authorization", value: authToken }, { name: "Content-Type", value: "application/json" }],
                 body: JSON.stringify(changePasswordRequest)
             });
         if (response.statusCode !== 200) {
-            if(response.statusCode === 400) {
+            if (response.statusCode === 400) {
                 const responseObj = <any>response.toObject();
                 throw responseObj.error;
             } else {
-                throw Error(response.toText());             
+                throw Error(response.toText());
             }
         }
     }
 
     public async sendConfirmRequest(resetPassword: ResetPassword): Promise<void> {
         const response = await this.httpClient.send(
-            { 
-                url: this.getUrl("/confirm/password"), 
+            {
+                url: this.getUrl("/confirm/password"),
                 method: HttpMethod.post,
-                headers: [{ name: "Content-Type", value: "application/json" }], 
+                headers: [{ name: "Content-Type", value: "application/json" }],
                 body: JSON.stringify(resetPassword)
             });
         if (response.statusCode !== 200) {
@@ -101,7 +101,7 @@ export class BackendService {
         }
     }
 
-    public async getDelegationUrl(action: DelegationAction, delegationParameters: {}) : Promise<string> {
+    public async getDelegationUrl(action: DelegationAction, delegationParameters: {}): Promise<string> {
         const authToken = this.authenticator.getAccessToken();
 
         if (!authToken) {
@@ -113,10 +113,10 @@ export class BackendService {
             delegationParameters: delegationParameters
         }
         const response = await this.httpClient.send(
-            { 
-                url: this.getUrl("/delegation-url"), 
+            {
+                url: this.getUrl("/delegation-url"),
                 method: HttpMethod.post,
-                headers: [{ name: "Authorization", value: authToken }, { name: "Content-Type", value: "application/json" }], 
+                headers: [{ name: "Authorization", value: authToken }, { name: "Content-Type", value: "application/json" }],
                 body: JSON.stringify(payload)
             });
         if (response.statusCode === 200) {
@@ -134,9 +134,9 @@ export class BackendService {
     private handleResponse(response: HttpResponse<CaptchaParams>): CaptchaParams {
         if (response.statusCode === 200) {
             return response.toObject();
-        } else {
-            console.log("Error: please check captcha endpoint on server");
-            throw new Error("Get captcha params error");
+        }
+        else {
+            throw new Error("Unable to handle Captcha response. Check captcha endpoint on server.");
         }
     }
 }

@@ -18,7 +18,6 @@ export class TenantService {
      * Returns tenant settings.
      */
     public async getSettings(): Promise<TenantSettings> {
-        /* TODO: User proper service container */
         const result = await this.mapiClient.get("/tenant/settings");
         return result && result["settings"];
     }
@@ -82,46 +81,9 @@ export class TenantService {
         return tenantSettings && tenantSettings["CustomPortalSettings.DelegationEnabled"] && tenantSettings["CustomPortalSettings.DelegationEnabled"].toLowerCase() === "true";
     }
 
-    public async isSubscriptionDelegationEnabled(): Promise<boolean> {        
+    public async isSubscriptionDelegationEnabled(): Promise<boolean> {
         const tenantSettings = await this.getSettings();
         const delegationEnabled = await this.isDelegationEnabled(tenantSettings);
         return delegationEnabled && tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"] && tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"].toLowerCase() === "true";
     }
-
-    /**
-     * Returns delegation config.
-     */
-    public async getDelegationUrl(action: DelegationAction, delegationParameters: {}, delegationUrl?: string): Promise<string> {
-        const settings = await this.getSettings();
-        const isDelegationEnabled = await this.isDelegationEnabled(settings);
-        if (isDelegationEnabled) {
-            if (!nodeCrypto) {
-                console.warn("node Crypto lib was not found");
-                return undefined;
-            }
-            const url = new URL(delegationUrl || settings["CustomPortalSettings.DelegationUrl"] || "");
-            const queryParams = new URLSearchParams(url.search);
-
-            const validationKey = settings["CustomPortalSettings.DelegationValidationKey"];
-            const salt = nodeCrypto.randomBytes(32).toString("base64");
-            const payload = [salt];
-            Object.keys(delegationParameters).map(key => {
-                const val = delegationParameters[key];
-                queryParams.append(key, val);
-                payload.push(val);
-            });
-
-            const hmac = nodeCrypto.createHmac("sha512", Buffer.from(validationKey, "base64"));
-            const digest = hmac.update(payload.join("\n")).digest();
-            const signature = digest.toString("base64");
-
-            queryParams.append(DelegationParameters.Operation, action);
-            queryParams.append(DelegationParameters.Salt, salt);
-            queryParams.append(DelegationParameters.Signature, signature);
-
-            return `${url.origin + url.pathname}?${queryParams.toString()}`;
-        }
-        return undefined;
-    }
-
 }
