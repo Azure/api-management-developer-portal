@@ -63,7 +63,10 @@ import { StaticUserService } from "./services";
 import { SignOutRouteGuard } from "./routing/signOutRouteGuard";
 import { ProvisionService } from "./services/provisioningService";
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> Add reset button
 
 >>>>>>> Add reset button
 
