@@ -70,6 +70,6 @@ export class TypeDefinitionViewModel {
     }
 
     public getReferenceUrl(definition: TypeDefinition): string {
-        return this.routeHelper.getDefinitionReferenceUrl(this.apiName, this.operationName, definition.referencedTypeName);
+        return this.routeHelper.getDefinitionAnchor(this.apiName, this.operationName, definition.referencedTypeName);
     }
 }

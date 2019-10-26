@@ -1,3 +1,12 @@
 import { Contract } from "@paperbits/common";
+import { HyperlinkContract } from "@paperbits/common/editing";
 
-export interface ProductApisContract extends Contract { }
+/**
+ * Product API list widget configuration.
+ */
+export interface ProductApisContract extends Contract {
+    /**
+     * Link to a page that contains operation details.
+     */
+    detailsPageHyperlink?: HyperlinkContract;
+}

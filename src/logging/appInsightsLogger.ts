@@ -1,14 +1,10 @@
 import { Bag } from "@paperbits/common";
 import { Logger } from "@paperbits/common/logging";
 import { AppInsights } from "applicationinsights-js";
-import { TenantService } from "../services/tenantService";
 
 
 export class LogService implements Logger {
-    constructor(
-        private readonly instrumentationKey: string,
-        private readonly tenantService: TenantService
-    ) {
+    constructor(private readonly instrumentationKey: string) {
         if (this.instrumentationKey && location.hostname.endsWith(".net")) {
             AppInsights.downloadAndSetup({ instrumentationKey: this.instrumentationKey });
         }
