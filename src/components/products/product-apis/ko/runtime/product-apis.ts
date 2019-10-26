@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./product-apis.html";
-import { Component, RuntimeComponent, OnMounted, OnDestroyed } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing";
 import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
@@ -29,6 +29,7 @@ export class ProductApis {
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
     ) {
+        this.detailsPageUrl = ko.observable();
         this.apis = ko.observableArray([]);
         this.working = ko.observable();
         this.pattern = ko.observable();
@@ -38,10 +39,13 @@ export class ProductApis {
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
     }
 
+    @Param()
+    public detailsPageUrl: ko.Observable<string>;
+
     @OnMounted()
     public async initialize(): Promise<void> {
         await this.searchApis();
-        
+
         this.router.addRouteChangeListener(this.searchApis);
 
         this.pattern
@@ -82,7 +86,7 @@ export class ProductApis {
             this.apis(pageOfApis.value);
 
             const nextLink = pageOfApis.nextLink;
-            
+
             this.hasPrevPage(pageNumber > 0);
             this.hasNextPage(!!nextLink);
         }
@@ -95,9 +99,9 @@ export class ProductApis {
     }
 
     public getReferenceUrl(api: Api): string {
-        return this.routeHelper.getApiReferenceUrl(api.name);
+        return this.routeHelper.getApiReferenceUrl(api.name, this.detailsPageUrl());
     }
-    
+
     public prevPage(): void {
         this.page(this.page() - 1);
         this.loadPageOfApis();

@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./api-list.html";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
 import { TagGroup } from "../../../../../models/tagGroup";
@@ -30,6 +30,8 @@ export class ApiList {
         private readonly apiService: ApiService,
         private readonly routeHelper: RouteHelper
     ) {
+        this.detailsPageUrl = ko.observable();
+        this.allowSelection = ko.observable(false);
         this.apis = ko.observableArray([]);
         this.working = ko.observable();
         this.pattern = ko.observable();
@@ -40,6 +42,12 @@ export class ApiList {
         this.apiGroups = ko.observableArray();
         this.groupByTag = ko.observable(false);
     }
+
+    @Param()
+    public allowSelection: ko.Observable<boolean>;
+
+    @Param()
+    public detailsPageUrl: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -98,7 +106,7 @@ export class ApiList {
     }
 
     public getReferenceUrl(api: Api): string {
-        return this.routeHelper.getApiReferenceUrl(api.name);
+        return this.routeHelper.getApiReferenceUrl(api.name, this.detailsPageUrl());
     }
 
     public prevPage(): void {

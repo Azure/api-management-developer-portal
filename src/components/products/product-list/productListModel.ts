@@ -1,7 +1,25 @@
-export class ProductListModel {
-    public itemStyleView?: string;
+import { HyperlinkModel } from "@paperbits/common/permalinks";
 
-    constructor(itemStyleView: string = "list") {
-        this.itemStyleView = itemStyleView;
+/**
+ * Product list widget configuration.
+ */
+export class ProductListModel {
+    /**
+     * Product list layout, e.g. "list", "dropdown".
+     */
+    public layout?: string;
+
+    /**
+     * Indicated that a product can be selected.
+     */
+    public allowSelection: boolean;
+
+    /**
+     * Link to a page that contains operation details.
+     */
+    public detailsPageHyperlink: HyperlinkModel;
+
+    constructor(layout: string = "list") {
+        this.layout = layout;
     }
 }

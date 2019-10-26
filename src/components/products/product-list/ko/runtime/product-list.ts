@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./product-list.html";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
@@ -35,8 +35,10 @@ export class ProductList {
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
     ) {
+        this.detailsPageUrl = ko.observable();
+        this.allowSelection = ko.observable(false);
         this.products = ko.observableArray();
-        this.selectedProductName = ko.observable();
+        this.selectedProductName = ko.observable().extend(<any>{ acceptChange: this.allowSelection });
         this.working = ko.observable(true);
         this.pattern = ko.observable();
         this.page = ko.observable(1);
@@ -44,6 +46,12 @@ export class ProductList {
         this.hasNextPage = ko.observable(false);
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
     }
+
+    @Param()
+    public allowSelection: ko.Observable<boolean>;
+
+    @Param()
+    public detailsPageUrl: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -73,7 +81,7 @@ export class ProductList {
 
             this.products(itemsPage.value);
 
-            if (!this.selectedProductName()) {
+            if (this.allowSelection() && !this.selectedProductName()) {
                 this.selectFirstProduct();
             }
         }
@@ -97,12 +105,12 @@ export class ProductList {
 
         this.selectedProductName(productName);
 
-        const productUrl = this.routeHelper.getProductReferenceUrl(productName);
+        const productUrl = this.routeHelper.getProductReferenceUrl(productName, this.detailsPageUrl());
         this.router.navigateTo(productUrl);
     }
 
     public getProductUrl(product: Product): string {
-        return this.routeHelper.getProductReferenceUrl(product.name);
+        return this.routeHelper.getProductReferenceUrl(product.name, this.detailsPageUrl());
     }
 
     public prevPage(): void {

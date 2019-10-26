@@ -2,12 +2,13 @@ import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./operation-list.html";
 import { Router } from "@paperbits/common/routing";
-import { Component, RuntimeComponent, OnMounted, OnDestroyed } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@paperbits/common/ko/decorators";
 import { ApiService } from "../../../../../services/apiService";
 import { Operation } from "../../../../../models/operation";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { RouteHelper } from "../../../../../routing/routeHelper";
+
 
 @RuntimeComponent({ selector: "operation-list" })
 @Component({
@@ -35,10 +36,12 @@ export class OperationList {
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
     ) {
+        this.detailsPageUrl = ko.observable();
+        this.allowSelection = ko.observable(false);
         this.operations = ko.observableArray();
         this.operationGroups = ko.observableArray();
         this.selectedApiName = ko.observable();
-        this.selectedOperationName = ko.observable();
+        this.selectedOperationName = ko.observable().extend(<any>{ acceptChange: this.allowSelection });
         this.working = ko.observable(false);
         this.groupByTag = ko.observable(false);
         this.pattern = ko.observable();
@@ -47,6 +50,12 @@ export class OperationList {
         this.hasPrevPage = ko.observable();
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
     }
+
+    @Param()
+    public allowSelection: ko.Observable<boolean>;
+
+    @Param()
+    public detailsPageUrl: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -69,7 +78,7 @@ export class OperationList {
         this.groupByTag
             .subscribe(this.loadOperations);
 
-        this.router.addRouteChangeListener(this.onRouteChange.bind(this));
+        this.router.addRouteChangeListener(this.onRouteChange);
     }
 
     private async onRouteChange(): Promise<void> {
@@ -108,7 +117,7 @@ export class OperationList {
                 await this.loadPageOfOperations();
             }
 
-            if (!this.selectedOperationName()) {
+            if (this.allowSelection() && !this.selectedOperationName()) {
                 this.selectFirstOperation();
             }
         }
@@ -166,13 +175,13 @@ export class OperationList {
 
         this.selectedOperationName(operationName);
 
-        const operationUrl = this.routeHelper.getOperationReferenceUrl(this.selectedApiName(), operationName);
+        const operationUrl = this.routeHelper.getOperationReferenceUrl(this.selectedApiName(), operationName, this.detailsPageUrl());
         this.router.navigateTo(operationUrl);
     }
 
     public getReferenceUrl(operation: Operation): string {
         const apiName = this.routeHelper.getApiName();
-        return this.routeHelper.getOperationReferenceUrl(apiName, operation.name);
+        return this.routeHelper.getOperationReferenceUrl(apiName, operation.name, this.detailsPageUrl());
     }
 
     public async resetSearch(): Promise<void> {
@@ -185,7 +194,8 @@ export class OperationList {
 
         if (this.groupByTag()) {
             this.loadOfOperationsByTag();
-        } else {
+        }
+        else {
             this.loadPageOfOperations();
         }
     }
