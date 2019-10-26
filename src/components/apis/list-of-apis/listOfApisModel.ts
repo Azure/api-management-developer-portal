@@ -1,7 +1,22 @@
-export class ListOfApisModel {
-    public itemStyleView?: string;
+import { HyperlinkModel } from "@paperbits/common/permalinks";
 
-    constructor(itemStyleView?: string) {
-        this.itemStyleView = itemStyleView;
+export class ListOfApisModel {
+    /**
+     * List layout.
+     */
+    public layout?: string;
+
+    /**
+     * Indicated that an operations can be selected.
+     */
+    public allowSelection: boolean;
+
+    /**
+     * Link to a page that contains operation details.
+     */
+    public detailsPageHyperlink: HyperlinkModel;
+
+    constructor(layout?: string) {
+        this.layout = layout;
     }
 }

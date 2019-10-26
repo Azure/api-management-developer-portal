@@ -1,3 +1,17 @@
 import { Contract } from "@paperbits/common";
+import { HyperlinkContract } from "@paperbits/common/editing";
 
-export interface OperationListContract extends Contract { }
+/**
+ * Operation list widget configuration.
+ */
+export interface OperationListContract extends Contract {
+    /**
+     * Indicated that an operation can be selected.
+     */
+    allowSelection: boolean;
+
+    /**
+     * Link to a page that contains operation details.
+     */
+    detailsPageHyperlink?: HyperlinkContract;
+}
