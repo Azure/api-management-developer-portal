@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./api-list-dropdown.html";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { RouteHelper } from "./../../../../../routing/routeHelper";
 import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
@@ -32,8 +32,10 @@ export class ApiListDropdown {
         private readonly apiService: ApiService,
         private readonly routeHelper: RouteHelper
     ) {
+        this.detailsPageUrl = ko.observable();
+        this.allowSelection = ko.observable(false);
         this.working = ko.observable();
-        this.selectedApiName = ko.observable();
+        this.selectedApiName = ko.observable().extend(<any>{ acceptChange: this.allowSelection });
         this.pattern = ko.observable();
         this.page = ko.observable(1);
         this.hasPrevPage = ko.observable();
@@ -47,6 +49,12 @@ export class ApiListDropdown {
             return api ? api.displayName : "Select API";
         });
     }
+
+    @Param()
+    public allowSelection: ko.Observable<boolean>;
+
+    @Param()
+    public detailsPageUrl: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -113,6 +121,6 @@ export class ApiListDropdown {
     }
 
     public getReferenceUrl(api: Api): string {
-        return this.routeHelper.getApiReferenceUrl(api.name);
+        return this.routeHelper.getApiReferenceUrl(api.name, this.detailsPageUrl());
     }
 }

@@ -1,9 +1,13 @@
 import { Contract } from "@paperbits/common";
 import { IModelBinder } from "@paperbits/common/editing";
+import { IPermalinkResolver } from "@paperbits/common/permalinks";
 import { ProductListModel } from "./productListModel";
 import { ProductListContract } from "./productListContract";
 
+
 export class ProductListModelBinder implements IModelBinder<ProductListModel> {
+    constructor(private readonly permalinkResolver: IPermalinkResolver) { }
+    
     public canHandleModel(model: Object): boolean {
         return model instanceof ProductListModel;
     }
@@ -15,14 +19,29 @@ export class ProductListModelBinder implements IModelBinder<ProductListModel> {
 
     public async contractToModel(contract: ProductListContract): Promise<ProductListModel> {
         const model = new ProductListModel();
-        model.itemStyleView = contract.itemStyleView;
+
+        model.layout = contract.itemStyleView;
+
+        model.allowSelection = contract.allowSelection;
+
+        if (contract.detailsPageHyperlink) {
+            model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromConfig(contract.detailsPageHyperlink);
+        }
+
         return model;
     }
 
     public modelToContract(model: ProductListModel): Contract {
         const contract: ProductListContract = {
             type: "product-list",
-            itemStyleView: model.itemStyleView
+            itemStyleView: model.layout,
+            allowSelection: model.allowSelection,
+            detailsPageHyperlink: model.detailsPageHyperlink
+                ? {
+                    target: model.detailsPageHyperlink.target,
+                    targetKey: model.detailsPageHyperlink.targetKey
+                }
+                : null
         };
 
         return contract;

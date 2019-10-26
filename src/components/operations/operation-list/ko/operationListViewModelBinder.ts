@@ -2,19 +2,30 @@ import { ViewModelBinder } from "@paperbits/common/widgets";
 import { OperationListViewModel } from "./operationListViewModel";
 import { OperationListModel } from "../operationListModel";
 import { Bag } from "@paperbits/common";
+import { EventManager } from "@paperbits/common/events";
 
 export class OperationListViewModelBinder implements ViewModelBinder<OperationListModel, OperationListViewModel> {
+    constructor(private readonly eventManager: EventManager) { }
+
     public async modelToViewModel(model: OperationListModel, viewModel?: OperationListViewModel, bindingContext?: Bag<any>): Promise<OperationListViewModel> {
         if (!viewModel) {
             viewModel = new OperationListViewModel();
         }
+
+        viewModel.runtimeConfig(JSON.stringify({
+            allowSelection: model.allowSelection,
+            detailsPageUrl: model.detailsPageHyperlink
+                ? model.detailsPageHyperlink.href
+                : undefined
+        }));
 
         viewModel["widgetBinding"] = {
             displayName: "List of operations",
             model: model,
             editor: "operation-list-editor",
             applyChanges: async (updatedModel: OperationListModel) => {
-                this.modelToViewModel(updatedModel, viewModel, bindingContext);
+                await this.modelToViewModel(updatedModel, viewModel, bindingContext);
+                this.eventManager.dispatchEvent("onContentUpdate");
             }
         };
 

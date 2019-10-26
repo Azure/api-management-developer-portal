@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./api-list-tiles.html";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
 import { TagGroup } from "../../../../../models/tagGroup";
@@ -9,7 +9,9 @@ import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
 
-@RuntimeComponent({ selector: "api-list-tiles" })
+@RuntimeComponent({
+    selector: "api-list-tiles"
+})
 @Component({
     selector: "api-list-tiles",
     template: template,
@@ -31,9 +33,11 @@ export class ApiListTiles {
         private readonly apiService: ApiService,
         private readonly routeHelper: RouteHelper
     ) {
+        this.detailsPageUrl = ko.observable();
+        this.allowSelection = ko.observable(false);
         this.apis = ko.observableArray([]);
         this.working = ko.observable();
-        this.selectedApiName = ko.observable();
+        this.selectedApiName = ko.observable().extend(<any>{ acceptChange: this.allowSelection });
         this.pattern = ko.observable();
         this.page = ko.observable(1);
         this.hasPrevPage = ko.observable();
@@ -42,6 +46,12 @@ export class ApiListTiles {
         this.apiGroups = ko.observableArray();
         this.groupByTag = ko.observable(false);
     }
+
+    @Param()
+    public allowSelection: ko.Observable<boolean>;
+
+    @Param()
+    public detailsPageUrl: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -118,6 +128,6 @@ export class ApiListTiles {
     }
 
     public getReferenceUrl(api: Api): string {
-        return this.routeHelper.getApiReferenceUrl(api.name);
+        return this.routeHelper.getApiReferenceUrl(api.name, this.detailsPageUrl());
     }
 }

@@ -24,7 +24,7 @@ export class RouteHelper {
         return this.getHashParameter("product");
     }
 
-    public getApiReferenceUrl(apiName: string): string {
+    public getApiReferenceUrl(apiName: string, detailsPageUrl: string = ""): string {
         if (!apiName) {
             throw new Error(`Parameter "apiName" not specified.`);
         }
@@ -32,8 +32,8 @@ export class RouteHelper {
         let path = "";
         const currentPath = this.router.getPath();
 
-        if (currentPath !== Constants.apiDetailsPageUrl) {
-            path = Constants.apiDetailsPageUrl;
+        if (currentPath !== detailsPageUrl) {
+            path = detailsPageUrl;
         }
 
         if (currentPath.endsWith("/")) {
@@ -43,7 +43,7 @@ export class RouteHelper {
         return `${path}#api=${apiName}`;
     }
 
-    public getOperationReferenceUrl(apiName: string, operationName: string): string {
+    public getOperationReferenceUrl(apiName: string, operationName: string, detailsPageUrl: string = ""): string {
         if (!apiName) {
             throw new Error(`Parameter "apiName" not specified.`);
         }
@@ -55,8 +55,8 @@ export class RouteHelper {
         let path = "";
         const currentPath = this.router.getPath();
 
-        if (currentPath !== Constants.apiDetailsPageUrl) {
-            path = Constants.apiDetailsPageUrl;
+        if (currentPath !== detailsPageUrl) {
+            path = detailsPageUrl;
         }
 
         if (currentPath.endsWith("/")) {
@@ -82,7 +82,7 @@ export class RouteHelper {
         return `api=${apiName}&operation=${operationName}&definition=${definitionName}`;
     }
 
-    public getDefinitionReferenceUrl(apiName: string, operationName: string, definitionName: string): string {
+    public getDefinitionAnchor(apiName: string, operationName: string, definitionName: string): string {
         if (!apiName) {
             throw new Error(`Parameter "apiName" not specified.`);
         }
@@ -95,26 +95,19 @@ export class RouteHelper {
             throw new Error(`Parameter "definitionName" not specified.`);
         }
 
-        let path = "";
-        const currentPath = this.router.getPath();
-
-        if (currentPath !== Constants.apiDetailsPageUrl) {
-            path = Constants.apiDetailsPageUrl;
-        }
-
-        if (currentPath.endsWith("/")) {
-            path = Utils.ensureTrailingSlash(path);
-        }
-
-        return `${path}#api=${apiName}&operation=${operationName}&definition=${definitionName}`;
+        return `#api=${apiName}&operation=${operationName}&definition=${definitionName}`;
     }
 
-    public getProductReferenceUrl(productName: string): string {
+    public getProductReferenceUrl(productName: string, detailsPageUrl: string = ""): string {
+        if (!productName) {
+            throw new Error(`Parameter "productName" not specified.`);
+        }
+
         let path = "";
         const currentPath = this.router.getPath();
 
-        if (currentPath !== Constants.productDetailsPageUrl) {
-            path = Constants.productDetailsPageUrl;
+        if (currentPath !== detailsPageUrl) {
+            path = detailsPageUrl;
         }
 
         if (currentPath.endsWith("/")) {

@@ -46,7 +46,7 @@ export class DefaultAuthenticator implements IAuthenticator {
         const regex = /^\w*\&(\d*)\&/gm;
         const match = regex.exec(accessToken);
 
-        if (!match && match.length < 2) {
+        if (!match || match.length < 2) {
             throw new Error(`ShredAccessSignature token format is not valid.`);
         }
 

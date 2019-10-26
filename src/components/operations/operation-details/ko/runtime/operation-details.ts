@@ -67,7 +67,7 @@ export class OperationDetails {
     @OnMounted()
     public async initialize(): Promise<void> {
         await this.loadGatewayInfo();
-        
+
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
 
@@ -79,7 +79,7 @@ export class OperationDetails {
 
         this.selectedApiName(apiName);
         this.selectedOperationName(operationName);
-        
+
         await this.loadApi(apiName);
         await this.loadOperation(apiName, operationName);
     }
@@ -94,8 +94,12 @@ export class OperationDetails {
         }
 
         if (apiName !== this.selectedApiName() || operationName !== this.selectedOperationName()) {
-            this.selectedOperationName(operationName);
-            this.loadOperation(apiName, operationName);
+            this.operation(null);
+           
+            if (operationName) {
+                this.selectedOperationName(operationName);
+                await this.loadOperation(apiName, operationName);
+            }
         }
     }
 
@@ -105,12 +109,7 @@ export class OperationDetails {
     }
 
     public async loadOperation(apiName: string, operationName: string): Promise<void> {
-        this.operation(null);
         this.working(true);
-
-        if (!operationName) {
-            return;
-        }
 
         const operation = await this.apiService.getOperation(`apis/${apiName}/operations/${operationName}`);
 
@@ -170,6 +169,7 @@ export class OperationDetails {
 
     private cleanSelection(): void {
         this.operation(null);
+        this.selectedOperationName(null);
         this.closeConsole();
     }
 
@@ -189,7 +189,7 @@ export class OperationDetails {
         const apiName = this.selectedApiName();
         const operationName = this.selectedOperationName();
 
-        return this.routeHelper.getDefinitionReferenceUrl(apiName, operationName, definition.name);
+        return this.routeHelper.getDefinitionAnchor(apiName, operationName, definition.name);
     }
 
     private async getProxyHostnames(): Promise<string[]> {

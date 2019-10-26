@@ -1,11 +1,11 @@
-<!-- ko if: itemStyleView() === 'list' -->
-<api-list></api-list>
+<!-- ko if: layout() === 'list' -->
+<api-list data-bind="attr: { params: runtimeConfig }"></api-list>
 <!-- /ko -->
 
-<!-- ko if: itemStyleView() === 'dropdown' -->
-<api-list-dropdown></api-list-dropdown>
+<!-- ko if: layout() === 'dropdown' -->
+<api-list-dropdown data-bind="attr: { params: runtimeConfig }"></api-list-dropdown>
 <!-- /ko -->
 
-<!-- ko if: itemStyleView() === 'tiles' -->
-<api-list-tiles></api-list-tiles>
+<!-- ko if: layout() === 'tiles' -->
+<api-list-tiles data-bind="attr: { params: runtimeConfig }"></api-list-tiles>
 <!-- /ko -->
