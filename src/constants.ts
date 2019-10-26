@@ -30,3 +30,9 @@ export const pageUrlChangePassword = "/change-password";
 export const defaultPageSize = 50;
 
 export const defaultInputDelayMs = 600;
+
+export const settingNames = {
+    managementApiUrl: "managementApiUrl",
+    managementApiVersion: "managementApiVersion",
+    managementApiAccessToken: "managementApiAccessToken"
+};

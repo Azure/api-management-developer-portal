@@ -19,17 +19,6 @@ export interface IAuthenticator {
     parseAccessToken?(accessToken: string): AccessToken;
 
     /**
-     * Returns authenticated user identifier.
-     */
-    getUser(): string;
-
-    /**
-     * Sets user for current secction
-     * @param userId 
-     */
-    setUser(userId: string): void;
-
-    /**
      * Clears access token from current session.
      */
     clearAccessToken(): void;
@@ -37,5 +26,5 @@ export interface IAuthenticator {
     /**
      * Checks if current user is signed in.
      */
-    isUserSignedIn(): boolean;
+    isAuthenticated(): boolean;
 }

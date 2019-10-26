@@ -1,7 +1,6 @@
 import { UnsavedChangesRouteGuard } from "./routing/unsavedChangesRouteGuard";
 import { MapiObjectStorage } from "./persistence/mapiObjectStorage";
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";
-import { AccessTokenRouteGuard } from "./routing/accessTokenRouteGuard";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
 import { ListOfApisEditorModule } from "./components/apis/list-of-apis/ko/listOfApisEditor.module";
@@ -111,7 +110,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindToCollection("routeGuards", UnsavedChangesRouteGuard);
-        injector.bindToCollection("routeGuards", AccessTokenRouteGuard);
         injector.bindToCollection("trayCommands", SaveChangesToolButton);
     }
 }
