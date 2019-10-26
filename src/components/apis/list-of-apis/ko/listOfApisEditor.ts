@@ -1,8 +1,9 @@
 import * as ko from "knockout";
 import template from "./listOfApisEditor.html";
-import { StyleService } from "@paperbits/styles";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
+import { HyperlinkModel } from "@paperbits/common/permalinks";
 import { ListOfApisModel } from "../listOfApisModel";
+
 
 @Component({
     selector: "list-of-apis-editor",
@@ -10,15 +11,26 @@ import { ListOfApisModel } from "../listOfApisModel";
     injectable: "listOfApisEditor"
 })
 export class ListOfApisEditor {
-    public itemStyles: ko.ObservableArray<any>;
-    public itemStyle: ko.Observable<string>;
+    public readonly itemStyles: ko.ObservableArray<any>;
+    public readonly itemStyle: ko.Observable<string>;
+    public readonly allowSelection: ko.Observable<boolean>;
+    public readonly hyperlink: ko.Observable<HyperlinkModel>;
+    public readonly hyperlinkTitle: ko.Computed<string>;
 
-    constructor(private readonly styleService: StyleService) {
+    constructor() {
+        this.allowSelection = ko.observable(false);
+        this.hyperlink = ko.observable();
+        this.hyperlinkTitle = ko.computed<string>(
+            () => this.hyperlink()
+                ? this.hyperlink().title
+                : "Add a link...");
+
         this.itemStyles = ko.observableArray<any>([
-            {name: "List", styleValue: "list"},
-            {name: "Tiles", styleValue: "tiles"},
-            {name: "Dropdown", styleValue: "dropdown"}
+            { name: "List", styleValue: "list" },
+            { name: "Tiles", styleValue: "tiles" },
+            { name: "Dropdown", styleValue: "dropdown" }
         ]);
+
         this.itemStyle = ko.observable<any>();
     }
 
@@ -30,12 +42,20 @@ export class ListOfApisEditor {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        this.itemStyle(this.model.itemStyleView || "");
-        this.itemStyle.subscribe(this.applyChanges);
+        this.allowSelection(this.model.allowSelection);
+        this.hyperlink(this.model.detailsPageHyperlink);
+
+        this.allowSelection.subscribe(this.applyChanges);
     }
 
     private applyChanges(): void {
-        this.model.itemStyleView = this.itemStyle();
+        this.model.allowSelection = this.allowSelection();
+        this.model.detailsPageHyperlink = this.hyperlink();
         this.onChange(this.model);
+    }
+
+    public onHyperlinkChange(hyperlink: HyperlinkModel): void {
+        this.hyperlink(hyperlink);
+        this.applyChanges();
     }
 }

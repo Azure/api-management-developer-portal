@@ -1,10 +1,11 @@
-<!-- ko if: operation -->
+
 
 <!-- ko if: working -->
 <spinner class="fit"></spinner>
 <!-- /ko -->
 
 <!-- ko ifnot: working -->
+<!-- ko if: operation -->
 <div class="animation-fade-in">
     <div class="operation-header">
         <h2 class="operation-name" data-bind="click: $component.openConsole">
@@ -161,7 +162,9 @@
     <!-- /ko -->
 </div>
 <!-- /ko -->
-
+<!-- ko ifnot: operation -->
+<p>No operation selected.</p>
+<!-- /ko -->
 <!-- /ko -->
 
 <!-- ko if: $component.consoleIsOpen -->

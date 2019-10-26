@@ -7,9 +7,11 @@ import { Component } from "@paperbits/common/ko/decorators";
     template: template
 })
 export class ListOfApisViewModel {
-    public itemStyleView: ko.Observable<string>;
+    public readonly layout: ko.Observable<string>;
+    public readonly runtimeConfig: ko.Observable<string>;
 
     constructor() {        
-        this.itemStyleView = ko.observable();
+        this.layout = ko.observable();
+        this.runtimeConfig = ko.observable();
     }
 }

@@ -66,7 +66,7 @@ export class ApiService {
         if (!versionSetId) {
             return null;
         }
-        
+
         const query = "/apis?expandApiVersionSet=true";
         const apisPage = await this.mapiClient.get<Page<ApiContract>>(query);
         const result = apisPage.value.filter(x => x.properties.apiVersionSetId && Utils.getResourceName("api-version-sets", x.properties.apiVersionSetId, "shortId") === versionSetId).map(x => new Api(x));
@@ -109,8 +109,8 @@ export class ApiService {
         const tagGroups: Bag<TagGroup<Operation>> = {};
 
         pagesOfOperationsByTag.value.forEach(x => {
-            const tagContract: TagContract = x.tag ? Utils.armifyContract(x.tag) : null;
-            const operationContract: OperationContract = x.operation ? Utils.armifyContract(x.operation) : null;
+            const tagContract: TagContract = x.tag ? Utils.armifyContract("tags", x.tag) : null;
+            const operationContract: OperationContract = x.operation ? Utils.armifyContract("operations", x.operation) : null;
 
             let tagGroup: TagGroup<Operation>;
             let tagName: string;
@@ -168,9 +168,9 @@ export class ApiService {
         const page = new Page<TagGroup<Api>>();
         const tagGroups: Bag<TagGroup<Api>> = {};
 
-        pageOfApiTagResources.value.forEach(x => {
-            const tagContract: TagContract = x.tag ? Utils.armifyContract(x.tag) : null;
-            const apiContract: ApiContract = x.api ? Utils.armifyContract(x.api) : null;
+        pageOfApiTagResources.value.forEach((x) => {
+            const tagContract: TagContract = x.tag ? Utils.armifyContract("tags", x.tag) : null;
+            const apiContract: ApiContract = x.api ? Utils.armifyContract("apis", x.api) : null;
 
             let tagGroup: TagGroup<Api>;
             let tagName: string;

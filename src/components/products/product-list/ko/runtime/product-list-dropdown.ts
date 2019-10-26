@@ -1,11 +1,10 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./product-list-dropdown.html";
-import { Component, RuntimeComponent, OnMounted, OnDestroyed } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@paperbits/common/ko/decorators";
 import { ProductService } from "../../../../../services/productService";
 import { Product } from "../../../../../models/product";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
-import { Router } from "@paperbits/common/routing/router";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
 @RuntimeComponent({ selector: "product-list-dropdown-runtime" })
@@ -30,9 +29,10 @@ export class ProductListDropdown {
 
     constructor(
         private readonly productService: ProductService,
-        private readonly router: Router, // Should be used for selection
         private readonly routeHelper: RouteHelper
     ) {
+        this.detailsPageUrl = ko.observable();
+        this.allowSelection = ko.observable(false);
         this.working = ko.observable();
         this.selectedId = ko.observable();
         this.pattern = ko.observable();
@@ -48,6 +48,12 @@ export class ProductListDropdown {
             return product ? product.displayName : "Select Product";
         });
     }
+
+    @Param()
+    public allowSelection: ko.Observable<boolean>;
+
+    @Param()
+    public detailsPageUrl: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -121,7 +127,7 @@ export class ProductListDropdown {
             this.hasNextPage(!!itemsPage.nextLink);
 
             const productName = this.routeHelper.getProductName();
-            
+
             this.selectedProduct(productName
                 ? itemsPage.value.find(item => item.id.endsWith(productName))
                 : itemsPage.value[0]);
@@ -149,12 +155,13 @@ export class ProductListDropdown {
     }
 
     public getProductUrl(product: Product): string {
-        return product.id.replace("/products/", `${Constants.productDetailsPageUrl}#productId=`);
+        return this.routeHelper.getProductReferenceUrl(product.name, this.detailsPageUrl());
     }
 
     @OnDestroyed()
     public dispose(): void {
         document.removeEventListener("click", this.checkClickOutside, false);
+
         if (this.productsDropdown) {
             this.productsDropdown.removeEventListener("keyup", this.onKeyUp, false);
         }

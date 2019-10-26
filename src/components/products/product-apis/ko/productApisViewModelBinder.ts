@@ -1,19 +1,30 @@
+import { Bag } from "@paperbits/common";
+import { EventManager } from "@paperbits/common/events";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { ProductApisViewModel } from "./productApisViewModel";
 import { ProductApisModel } from "../productApisModel";
-import { Bag } from "@paperbits/common";
 
 export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisModel, ProductApisViewModel> {
+    constructor(private readonly eventManager: EventManager) { }
+    
     public async modelToViewModel(model: ProductApisModel, viewModel?: ProductApisViewModel, bindingContext?: Bag<any>): Promise<ProductApisViewModel> {
         if (!viewModel) {
             viewModel = new ProductApisViewModel();
         }
 
+        viewModel.runtimeConfig(JSON.stringify({
+            detailsPageUrl: model.detailsPageHyperlink
+                ? model.detailsPageHyperlink.href
+                : undefined
+        }));
+
         viewModel["widgetBinding"] = {
             displayName: "Product: APIs",
             model: model,
+            editor: "product-apis-editor",
             applyChanges: async (updatedModel: ProductApisModel) => {
-                this.modelToViewModel(updatedModel, viewModel, bindingContext);
+                await this.modelToViewModel(updatedModel, viewModel, bindingContext);
+                this.eventManager.dispatchEvent("onContentUpdate");
             }
         };
 
