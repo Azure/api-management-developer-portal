@@ -62,6 +62,10 @@ export interface JwtToken {
      * Not valid before (seconds since Unix epoch)
      */
     nbf: number;
+
+    /**
+     * Object ID.
+     */
     oid: string;
     onprem_sid: string;
     puid: string;

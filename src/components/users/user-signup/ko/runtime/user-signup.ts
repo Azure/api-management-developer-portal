@@ -35,7 +35,7 @@ export class UserSignup {
     constructor(
         private readonly usersService: UsersService,
         private readonly eventManager: EventManager,
-        private readonly backendService: BackendService) {            
+        private readonly backendService: BackendService) {
         this.email = ko.observable("");
         this.password = ko.observable("");
         this.passwordConfirmation = ko.observable("");
@@ -90,7 +90,7 @@ export class UserSignup {
 
             throw error;
         }
-        
+
         if (this.termsOfUse() && this.termsEnabled()) {
             this.consented.extend(<any>{ equal: { params: true, message: "You must agree to registration terms." } });
             this.showHideLabel("Show");
@@ -114,17 +114,16 @@ export class UserSignup {
      * Sends user signup request to Management API.
      */
     public async signup(): Promise<void> {
-
         let captchaSolution;
         let captchaFlowId;
         let captchaToken;
         let captchaType;
 
-        WLSPHIP0.verify( (solution, token, param) => {
+        WLSPHIP0.verify((solution, token, param) => {
             WLSPHIP0.clientValidation();
-            if (WLSPHIP0.error != "0")
-            {
-                this.captcha(null); //is not valid
+
+            if (WLSPHIP0.error !== "0") {
+                this.captcha(null); // is not valid
                 return;
             }
             else {
@@ -136,7 +135,7 @@ export class UserSignup {
                 this.captcha("valid");
                 return;
             }
-        },'');
+        }, "");
 
         const result = validation.group({
             email: this.email,
@@ -153,16 +152,16 @@ export class UserSignup {
             const termsConsented = validation.group({
                 consented: this.consented
             });
+
             clientErrors = clientErrors.concat(termsConsented());
         }
-
 
         if (clientErrors.length > 0) {
             const validationReport: ValidationReport = {
                 source: "signup",
                 errors: clientErrors
             };
-            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
             return;
         }
 
@@ -188,10 +187,11 @@ export class UserSignup {
                 source: "signup",
                 errors: []
             };
-            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         }
         catch (error) {
             WLSPHIP0.reloadHIP();
+
             if (error.code === "ValidationError") {
                 const details: any[] = error.details;
 
@@ -201,7 +201,7 @@ export class UserSignup {
                         source: "signup",
                         errors: errorMessages
                     };
-                    this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+                    this.eventManager.dispatchEvent("onValidationErrors", validationReport);
                 }
             }
             else {
@@ -209,7 +209,7 @@ export class UserSignup {
                     source: "signup",
                     errors: ["Server error. Unable to send request. Please try again later."]
                 };
-                this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
             }
         }
     }
