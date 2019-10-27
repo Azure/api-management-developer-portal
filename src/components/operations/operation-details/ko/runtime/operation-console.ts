@@ -220,7 +220,7 @@ export class OperationConsole {
             return;
         }
 
-        const isLogged = await this.usersService.isUserSignedIn();
+        const isLogged = this.usersService.isUserSignedIn();
 
         if (!isLogged) {
             return;

@@ -42,8 +42,8 @@ export class ConfirmPassword {
      * Initializes component right after creation.
      */
     @OnMounted()
-    public async initialize(): Promise<void> {
-        const isUserSignedIn = await this.usersService.isUserSignedIn();
+    public initialize(): void {
+        const isUserSignedIn = this.usersService.isUserSignedIn();
 
         if (isUserSignedIn) {
             this.usersService.navigateToHome();
