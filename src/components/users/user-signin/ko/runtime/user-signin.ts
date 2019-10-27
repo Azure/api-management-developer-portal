@@ -26,8 +26,8 @@ export class UserSignin {
     constructor(
         private readonly usersService: UsersService,
         private readonly eventManager: EventManager
-        ) {
-            
+    ) {
+
         this.delegationUrl = ko.observable();
         this.username = ko.observable("");
         this.password = ko.observable("");
@@ -46,8 +46,10 @@ export class UserSignin {
 
             if (userId) {
                 this.navigateToHome();
-            } else {
+            }
+            else {
                 const redirectUrl = this.delegationUrl();
+
                 if (redirectUrl) {
                     window.open(redirectUrl, "_self");
                 }
@@ -60,7 +62,7 @@ export class UserSignin {
             });
 
             this.username.extend(<any>{ required: { message: `Email is required.` }, email: true });
-            this.password.extend(<any>{ required: { message: `Password is required.` }});
+            this.password.extend(<any>{ required: { message: `Password is required.` } });
         }
         catch (error) {
             if (error.code === "Unauthorized" || error.code === "ResourceNotFound") {
@@ -95,29 +97,35 @@ export class UserSignin {
                 source: "signin",
                 errors: clientErrors
             };
-            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
             this.errorMessages(clientErrors);
             return;
         }
+
         this.working(true);
+
         try {
             const userId = await this.usersService.signIn(this.username(), this.password());
 
             if (userId) {
                 this.navigateToHome();
+
                 const validationReport: ValidationReport = {
                     source: "signin",
                     errors: []
                 };
-                this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+
+                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
             }
             else {
                 this.errorMessages(["Please provide a valid email and password."]);
+
                 const validationReport: ValidationReport = {
                     source: "signin",
                     errors: ["Please provide a valid email and password."]
                 };
-                this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+                
+                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
             }
         }
         catch (error) {
@@ -128,16 +136,22 @@ export class UserSignin {
                         source: "signin",
                         errors: msg
                     };
-                    this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+                    this.eventManager.dispatchEvent("onValidationErrors", validationReport);
                     return;
                 }
+
                 this.errorMessages([error.message]);
+
                 const validationReport: ValidationReport = {
                     source: "signin",
                     errors: [error.message]
                 };
-                this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+
+                return;
             }
+
+            throw new Error(`Unable to complete signing in. Error: ${error.message}`);
         }
         finally {
             this.working(false);

@@ -108,7 +108,7 @@ export class ChangePassword {
 
         const user = await this.usersService.getCurrentUser();
 
-        const userId = await this.usersService.checkCredentials(user.email, this.password());
+        const userId = await this.usersService.authenticate(user.email, this.password());
 
         if (!userId) {
             const validationReport: ValidationReport = {
