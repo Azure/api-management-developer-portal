@@ -42,7 +42,6 @@ import { UserSubscriptions } from "./components/users/user-subscriptions/ko/runt
 import { ProductList } from "./components/products/product-list/ko/runtime/product-list";
 import { ProductDetails } from "./components/products/product-details/ko/runtime/product-details";
 import { ProductSubscribe } from "./components/products/product-subscribe/ko/runtime/product-subscribe";
-import { AccessTokenRouteGuard } from "./routing/accessTokenRouteGuard";
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";
 import { Spinner } from "./components/spinner/spinner";
 import { ProductApis } from "./components/products/product-apis/ko/runtime/product-apis";
@@ -116,7 +115,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("httpClient", XmlHttpRequestClient);
         injector.bindSingleton("settingsProvider", SettingsProvider);
-        injector.bindSingleton("accessTokenRouteChecker", AccessTokenRouteGuard);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("routeHelper", RouteHelper);
         injector.bindSingleton("userService", StaticUserService);
