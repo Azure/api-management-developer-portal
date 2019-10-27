@@ -12,10 +12,10 @@ export enum ServiceSkuName {
     Consumption = "Consumption"
 }
 
-export const TypeOfApi = {
-    soap: "soap",
-    http: "http"
-};
+export enum TypeOfApi {
+    soap = "soap",
+    http = "http"
+}
 
 export const pageUrlSignIn = "/signin";
 export const pageUrlProfile = "/profile";
