@@ -82,7 +82,7 @@ export class UsersService {
         this.authenticator.clearAccessToken();
 
         if (withRedirect) {
-            this.router.navigateTo(Constants.pageUrlSignIn);
+            this.navigateToSignin();
         }
     }
 
@@ -114,14 +114,8 @@ export class UsersService {
     /**
      * Checks if current user is authenticated.
      */
-    public async isUserSignedIn(): Promise<boolean> {
-        const userId = await this.getCurrentUserId();
-
-        if (userId) {
-            return true;
-        }
-
-        return false;
+    public isUserSignedIn(): boolean {
+        return this.authenticator.isAuthenticated();
     }
 
     /**
@@ -166,7 +160,7 @@ export class UsersService {
                 return undefined;
             }
         } catch (error) {
-            this.router.navigateTo(Constants.pageUrlSignIn);
+            this.navigateToSignin();
         }
     }
 
@@ -188,37 +182,7 @@ export class UsersService {
             this.signOut();
         }
         catch (error) {
-            this.router.navigateTo(Constants.pageUrlSignIn);
-        }
-    }
-
-    /**
-     * Initiates change email request.
-     * TODO: Not implemented.
-     * @param user {User} User.
-     * @param newEmail {string} Email.
-     */
-    public async requestChangeEmail(user: User, newEmail: string): Promise<any> {
-        try {
-            console.log("requestChangeEmail is not implemented");
-        }
-        catch (error) {
-            this.router.navigateTo(Constants.pageUrlSignIn);
-        }
-    }
-
-    /**
-     * Initiates password change request.
-     * TODO: Not implemented.
-     * @param user 
-     * @param newPassword 
-     */
-    public async requestChangePassword(user: User, newPassword: string): Promise<any> {
-        try {
-            console.log("requestChangePassword is not implemented");
-        }
-        catch (error) {
-            this.router.navigateTo(Constants.pageUrlSignIn);
+            this.navigateToSignin();
         }
     }
 
