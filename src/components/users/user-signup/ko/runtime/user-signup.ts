@@ -69,9 +69,9 @@ export class UserSignup {
      * Initializes component right after creation.
      */
     @OnMounted()
-    public async initialize(): Promise<void> {
+    public initialize(): void {
         try {
-            const isUserSignedIn = await this.usersService.isUserSignedIn();
+            const isUserSignedIn = this.usersService.isUserSignedIn();
 
             if (isUserSignedIn) {
                 this.usersService.navigateToHome();

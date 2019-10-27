@@ -60,6 +60,7 @@ import { ValidationSummary } from "./components/users/validation-summary/ko/runt
 import { TypeDefinitionViewModel } from "./components/operations/operation-details/ko/runtime/type-definition";
 import { VisibilityGuard } from "@paperbits/common/user";
 import { StaticUserService } from "./services";
+import { SignOutRouteGuard } from "./routing/signOutRouteGuard";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -70,7 +71,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindCollection("autostart");
         injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindCollection("routeGuards");
-        // injector.bindToCollection("routeGuards", AccessTokenRouteGuard);
+        injector.bindToCollection("routeGuards", SignOutRouteGuard);
         injector.bindToCollection("autostart", VisibilityGuard);
         injector.bindSingleton("router", DefaultRouter);
         injector.bind("apiList", ApiList);
