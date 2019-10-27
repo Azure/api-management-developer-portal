@@ -24,7 +24,9 @@ export class AadService {
             const jwtToken = Utils.parseJwt(idToken);
 
             setTimeout(async () => {
-                const email = prompt("Enter your email address");
+                const email = jwtToken.email
+                    ? jwtToken.email
+                    : prompt("Enter your email address");
 
                 const user: UserPropertiesContract = {
                     firstName: jwtToken.given_name,
@@ -90,15 +92,21 @@ export class AadService {
      * Initiates signing-in with Azure Active Directory identity provider.
      * @param aadClientId {string} Azure Active Directory client ID.
      */
-    public async signInWithAad(aadClientId: string): Promise<void> {
+    public async signInWithAad(aadClientId: string, signinTenant: string): Promise<void> {
+        const auth = `https://login.microsoftonline.com/${signinTenant}/`;
+
         const msalConfig = {
             auth: {
-                clientId: aadClientId
+                clientId: aadClientId,
+                authority: auth,
+                validateAuthority: false
             }
         };
 
         const msalInstance = new Msal.UserAgentApplication(msalConfig);
-        const loginRequest = {};
+        const loginRequest = {
+            scopes: ["openid", "email", "profile"]
+        };
 
         try {
             const response = await msalInstance.loginPopup(loginRequest);
@@ -140,7 +148,9 @@ export class AadService {
 
         const msalInstance = new Msal.UserAgentApplication(msalConfig);
 
-        const loginRequest = {};
+        const loginRequest = {
+            scopes: ["openid", "email", "profile"]
+        };
 
         try {
             const response = await msalInstance.loginPopup(loginRequest);

@@ -80,4 +80,9 @@ export interface JwtToken {
     upn: string;
     uti: string;
     ver: string;
+
+    /**
+     * Email address.
+     */
+    email: string;
 }
