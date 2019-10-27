@@ -190,3 +190,7 @@ function instructionCallback(instruction) //add instruction as parameter, and re
         document.getElementById('idInstruction').innerHTML = instruction;
     }
 }
+
+if (!$.ajax) {
+    $.ajax = () => {};
+}

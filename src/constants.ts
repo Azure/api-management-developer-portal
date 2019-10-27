@@ -17,6 +17,7 @@ export enum TypeOfApi {
     http = "http"
 }
 
+export const hashSignOut = "signout";
 export const pageUrlSignIn = "/signin";
 export const pageUrlProfile = "/profile";
 export const pageUrlHome = "/";

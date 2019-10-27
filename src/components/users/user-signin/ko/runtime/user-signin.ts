@@ -77,11 +77,6 @@ export class UserSignin {
         this.usersService.navigateToHome();
     }
 
-    public signOut(): void {
-        this.usersService.signOut();
-        this.navigateToHome();
-    }
-
     public async signin(): Promise<void> {
         this.errorMessages([]);
 

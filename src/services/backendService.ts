@@ -4,19 +4,23 @@ import { SignupRequest } from "../contracts/signupRequest";
 import { ResetRequest, ResetPassword, ChangePasswordRequest } from "../contracts/resetRequest";
 import { IAuthenticator } from "../authentication";
 import { DelegationAction } from "../contracts/tenantSettings";
+import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
 
 export class BackendService {
+    private portalUrl;
+
     constructor(
+        private readonly settingsProvider: ISettingsProvider,
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator
-    ) { }
+    ) {}
 
     public async getCaptchaParams(): Promise<CaptchaParams> {
         let response: HttpResponse<CaptchaParams>;
         const httpRequest: HttpRequest = {
             method: HttpMethod.get,
-            url: this.getUrl("/captcha")
-        };
+            url: await this.getUrl("/captcha")
+        }
 
         try {
             response = await this.httpClient.send<any>(httpRequest);
@@ -30,8 +34,8 @@ export class BackendService {
 
     public async sendSignupRequest(signupRequest: SignupRequest): Promise<void> {
         const response = await this.httpClient.send(
-            {
-                url: this.getUrl("/signup"),
+            { 
+                url: await this.getUrl("/signup"), 
                 method: HttpMethod.post,
                 headers: [{ name: "Content-Type", value: "application/json" }],
                 body: JSON.stringify(signupRequest)
@@ -48,8 +52,8 @@ export class BackendService {
 
     public async sendResetRequest(resetRequest: ResetRequest): Promise<void> {
         const response = await this.httpClient.send(
-            {
-                url: this.getUrl("/reset-password-request"),
+            { 
+                url: await this.getUrl("/reset-password-request"), 
                 method: HttpMethod.post,
                 headers: [{ name: "Content-Type", value: "application/json" }],
                 body: JSON.stringify(resetRequest)
@@ -72,8 +76,8 @@ export class BackendService {
         }
 
         const response = await this.httpClient.send(
-            {
-                url: this.getUrl("/change-password"),
+            { 
+                url: await this.getUrl("/change-password"), 
                 method: HttpMethod.post,
                 headers: [{ name: "Authorization", value: authToken }, { name: "Content-Type", value: "application/json" }],
                 body: JSON.stringify(changePasswordRequest)
@@ -90,8 +94,8 @@ export class BackendService {
 
     public async sendConfirmRequest(resetPassword: ResetPassword): Promise<void> {
         const response = await this.httpClient.send(
-            {
-                url: this.getUrl("/confirm/password"),
+            { 
+                url: await this.getUrl("/confirm/password"), 
                 method: HttpMethod.post,
                 headers: [{ name: "Content-Type", value: "application/json" }],
                 body: JSON.stringify(resetPassword)
@@ -113,8 +117,8 @@ export class BackendService {
             delegationParameters: delegationParameters
         }
         const response = await this.httpClient.send(
-            {
-                url: this.getUrl("/delegation-url"),
+            { 
+                url: await this.getUrl("/delegation-url"), 
                 method: HttpMethod.post,
                 headers: [{ name: "Authorization", value: authToken }, { name: "Content-Type", value: "application/json" }],
                 body: JSON.stringify(payload)
@@ -127,8 +131,11 @@ export class BackendService {
         }
     }
 
-    private getUrl(path: string): string {
-        return path;
+    private async getUrl(path: string): Promise<string> {
+        if (!this.portalUrl) {
+            this.portalUrl = await this.settingsProvider.getSetting<string>("devPortalUrl") || "";
+        }
+        return `${this.portalUrl}${path}`;
     }
 
     private handleResponse(response: HttpResponse<CaptchaParams>): CaptchaParams {
