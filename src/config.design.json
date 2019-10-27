@@ -5,5 +5,6 @@
   "managementApiUserId": "1",
   "blobStorageContainer": "content",
   "blobStorageUrl": "https://<account>.blob.core.windows.net?st=...",
-  "environment": "development"
+  "environment": "development",
+  "devPortalUrl": "https://<service-name>.developer.azure-api.net"
 }
