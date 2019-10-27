@@ -12,9 +12,9 @@ export class StaticUserService implements UserService {
      * Returns current user's role keys.
      */
     public async getUserRoles(): Promise<string[]> {
-        const user = this.authenticator.getUser();
+        const authenticated = this.authenticator.isAuthenticated();
 
-        if (user) {
+        if (authenticated) {
             return [BuiltInRoles.authenticated.key];
         }
         else {
