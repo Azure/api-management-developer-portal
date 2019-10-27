@@ -1,45 +1,22 @@
 import * as moment from "moment";
-import { IAuthenticator, AccessToken } from "./../authentication";
 import { Utils } from "../utils";
-import { Router } from "@paperbits/common/routing";
+import { IAuthenticator, AccessToken } from "./../authentication";
 
 export class DefaultAuthenticator implements IAuthenticator {
-    constructor(private readonly router: Router) { }
-
     public getAccessToken(): string {
-        let accessToken = null;
-
-        if (location.pathname.startsWith("/signin-sso")) {
-            accessToken = "SharedAccessSignature " + location.href.split("?token=").pop();
-            this.setAccessToken(accessToken);
-            this.router.navigateTo("/");
-        }
-        else {
-            accessToken = sessionStorage.getItem("accessToken");
-        }
-
-        return accessToken;
+        return sessionStorage.getItem("accessToken");
     }
 
     public setAccessToken(accessToken: string): void {
         sessionStorage.setItem("accessToken", accessToken);
     }
 
-    public getUser(): string {
-        return sessionStorage.getItem("current-user");
-    }
-
-    public setUser(userId: string): void {
-        sessionStorage.setItem("current-user", userId);
-    }
-
     public clearAccessToken(): void {
         sessionStorage.removeItem("accessToken");
-        sessionStorage.removeItem("current-user");
     }
 
-    public isUserSignedIn(): boolean {
-        return !!this.getAccessToken() && !!this.getUser();
+    public isAuthenticated(): boolean {
+        return !!this.getAccessToken();
     }
 
     private parseSharedAccessSignature(accessToken: string): AccessToken {
@@ -47,7 +24,7 @@ export class DefaultAuthenticator implements IAuthenticator {
         const match = regex.exec(accessToken);
 
         if (!match || match.length < 2) {
-            throw new Error(`ShredAccessSignature token format is not valid.`);
+            throw new Error(`SharedAccessSignature token format is not valid.`);
         }
 
         const dateTime = match[1];

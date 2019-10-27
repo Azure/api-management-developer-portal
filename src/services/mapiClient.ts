@@ -1,11 +1,13 @@
 import * as _ from "lodash";
+import * as Constants from "./../constants";
+import { Router } from "@paperbits/common/routing";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Utils } from "../utils";
 import { TtlCache } from "./ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
 import { MapiError } from "./mapiError";
 import { IAuthenticator } from "../authentication/IAuthenticator";
-import { Router } from "@paperbits/common/routing";
+
 
 
 export interface IHttpBatchResponses {
@@ -44,36 +46,30 @@ export class MapiClient {
     private async initialize(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
 
-        const managementApiUrl = settings["managementApiUrl"];
+        const managementApiUrl = settings[Constants.settingNames.managementApiUrl];
 
         if (!managementApiUrl) {
-            throw new Error(`Management API URL ("managementApiUrl") setting is missing in configuration file.`);
+            throw new Error(`Management API URL ("${Constants.settingNames.managementApiUrl}") setting is missing in configuration file.`);
         }
 
         this.managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
 
-        const managementApiVersion = settings["managementApiVersion"];
+        const managementApiVersion = settings[Constants.settingNames.managementApiVersion];
 
         if (!managementApiVersion) {
-            throw new Error(`Management API version ("managementApiVersion") setting is missing in configuration file.`);
+            throw new Error(`Management API version ("${Constants.settingNames.managementApiVersion}") setting is missing in configuration file.`);
         }
 
         this.managementApiVersion = managementApiVersion;
 
-        const managementApiAccessToken = settings["managementApiAccessToken"];
+        const managementApiAccessToken = settings[Constants.settingNames.managementApiAccessToken];
 
         if (managementApiAccessToken) {
             this.authenticator.setAccessToken(managementApiAccessToken);
         }
         else if (this.environment === "development") {
-            console.warn(`Development mode: Please specify "managementApiAccessToken" in configuration file.`);
+            console.warn(`Development mode: Please specify ${Constants.settingNames.managementApiAccessToken}" in configuration file.`);
             return;
-        }
-
-        const managementApiUserId = settings["managementApiUserId"];
-
-        if (managementApiUserId) {
-            this.authenticator.setUser(managementApiUserId);
         }
 
         this.environment = settings["environment"];
@@ -155,12 +151,6 @@ export class MapiClient {
         let contentType = "";
 
         if (response.headers) {
-            const authTokenHeader = response.headers.find(header => header.name === "ocp-apim-sas-token");
-
-            if (authTokenHeader && authTokenHeader.value) {
-                this.authenticator.setAccessToken(`SharedAccessSignature ${authTokenHeader.value}`);
-            }
-
             const contentTypeHeader = response.headers.find(h => h.name.toLowerCase() === "content-type");
             contentType = contentTypeHeader ? contentTypeHeader.value.toLowerCase() : "";
         }

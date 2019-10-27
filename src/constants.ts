@@ -12,10 +12,10 @@ export enum ServiceSkuName {
     Consumption = "Consumption"
 }
 
-export const TypeOfApi = {
-    soap: "soap",
-    http: "http"
-};
+export enum TypeOfApi {
+    soap = "soap",
+    http = "http"
+}
 
 export const pageUrlSignIn = "/signin";
 export const pageUrlProfile = "/profile";
@@ -30,3 +30,9 @@ export const pageUrlChangePassword = "/change-password";
 export const defaultPageSize = 50;
 
 export const defaultInputDelayMs = 600;
+
+export const settingNames = {
+    managementApiUrl: "managementApiUrl",
+    managementApiVersion: "managementApiVersion",
+    managementApiAccessToken: "managementApiAccessToken"
+};
