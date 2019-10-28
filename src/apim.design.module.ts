@@ -24,7 +24,7 @@ import { ProductDetailsEditorModule } from "./components/products/product-detail
 import { MapiClient, StaticUserService, IdentityService } from "./services";
 import { AzureBlobStorage } from "@paperbits/azure";
 import { SetupModule } from "./components/setup/setup.module";
-import { PublishingModule } from "./components/publishing";
+import { ContentModule } from "./components/content";
 import { SaveChangesToolButton } from "./persistence/saveChangesToolbutton";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";
 import { OperationListEditorModule } from "./components/operations/operation-list/ko/operationListEditor.module";
@@ -84,7 +84,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ProductDetailsEditorModule());
         injector.bindModule(new ProductSubscribeModule());
         injector.bindModule(new ProductSubscribeEditorModule());
-        injector.bindModule(new PublishingModule());
+        injector.bindModule(new ContentModule());
         injector.bindModule(new OperationListModule());
         injector.bindModule(new OperationListEditorModule());
         injector.bindModule(new OperationDetailsModule());

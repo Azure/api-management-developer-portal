@@ -1,6 +1,6 @@
 import { ToolButton, ViewManager, View } from "@paperbits/common/ui";
 
-export class PublishingWorkshopSection implements ToolButton {
+export class ContentWorkshopSection implements ToolButton {
     public iconClass: string = "paperbits-icon paperbits-send";
     public title: string = "Publishing";
 
@@ -12,7 +12,7 @@ export class PublishingWorkshopSection implements ToolButton {
         const view: View = {
             heading: this.title,
             helpText: "Publish your portal to make the latest version available to visitors.",
-            component: { name: "publishing-workshop" }
+            component: { name: "content-workshop" }
         };
 
         this.viewManager.openViewAsWorkshop(view);
