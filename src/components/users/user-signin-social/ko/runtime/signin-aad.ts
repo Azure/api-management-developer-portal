@@ -17,24 +17,27 @@ import { ValidationReport } from "../../../../../contracts/validationReport";
     injectable: "signInAad"
 })
 export class SignInAad {
-
     constructor(
         private readonly router: Router,
         private readonly aadService: AadService,
         private readonly eventManager: EventManager
     ) {
         this.clientId = ko.observable();
+        this.signinTenant = ko.observable();
     }
 
     @Param()
     public clientId: ko.Observable<string>;
+
+    @Param()
+    public signinTenant: ko.Observable<string>;
 
     /**
      * Initiates signing-in with Azure Active Directory.
      */
     public async signIn(): Promise<void> {
         try {
-            await this.aadService.signInWithAad(this.clientId());
+            await this.aadService.signInWithAad(this.clientId(), this.signinTenant());
             await this.router.navigateTo(Constants.pageUrlHome);
             const validationReport: ValidationReport = {
                 source: "socialAcc",

@@ -56,14 +56,14 @@ export class SignInAadB2C {
                 source: "socialAcc",
                 errors: []
             };
-            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         }
         catch (error) {
             const validationReport: ValidationReport = {
                 source: "socialAcc",
                 errors: [error.message]
             };
-            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         }
     }
 }

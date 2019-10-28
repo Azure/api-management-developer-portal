@@ -6,7 +6,7 @@ import { HttpHeader, HttpClient, HttpMethod } from "@paperbits/common/http";
 import { User } from "../models/user";
 import { Utils } from "../utils";
 import { Identity } from "../contracts/identity";
-import { UserContract } from "../contracts/user";
+import { UserContract, UserPropertiesContract, UserIdentity } from "../contracts/user";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 
 /**
@@ -39,8 +39,8 @@ export class UsersService {
     }
 
     public async authenticate(username: string, password: string): Promise<string> {
-        const managementApiUrl = await this.settingsProvider.getSetting(Constants.settingNames.managementApiUrl);
-        const managementApiVersion = await this.settingsProvider.getSetting(Constants.settingNames.managementApiVersion);
+        const managementApiUrl = await this.settingsProvider.getSetting(Constants.SettingNames.managementApiUrl);
+        const managementApiVersion = await this.settingsProvider.getSetting(Constants.SettingNames.managementApiVersion);
         const credentials = `Basic ${btoa(`${username}:${password}`)}`;
 
         try {
@@ -159,10 +159,13 @@ export class UsersService {
                 throw new Error("User was not updated with data: " + updateUserData);
                 return undefined;
             }
-        } catch (error) {
+        }
+        catch (error) {
             this.navigateToSignin();
         }
     }
+
+    
 
     /**
      * Deletes specified user.
