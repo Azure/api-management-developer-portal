@@ -62,13 +62,6 @@ import { VisibilityGuard } from "@paperbits/common/user";
 import { StaticUserService } from "./services";
 import { SignOutRouteGuard } from "./routing/signOutRouteGuard";
 import { ProvisionService } from "./services/provisioningService";
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> Add reset button
-
->>>>>>> Add reset button
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
