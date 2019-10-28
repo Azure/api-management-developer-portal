@@ -43,7 +43,7 @@ export class UserSignup {
         this.lastName = ko.observable("");
         this.isConsentRequired = ko.observable(false);
         this.consented = ko.observable(false);
-        this.showTerms = ko.observable(true);
+        this.showTerms = ko.observable();
         this.termsOfUse = ko.observable();
         this.showHideLabel = ko.observable("Show");
         this.isUserRequested = ko.observable(false);
