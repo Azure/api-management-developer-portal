@@ -15,7 +15,6 @@ export class ContentWorkshop {
         private readonly viewManager: ViewManager,
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator,
-        private provisioningService: ProvisionService
     ) {
         this.viewManager = viewManager;
     }
