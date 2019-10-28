@@ -3,7 +3,6 @@ import { ViewManager, View } from "@paperbits/common/ui";
 import { Component } from "@paperbits/common/ko/decorators";
 import { HttpClient } from "@paperbits/common/http";
 import { IAuthenticator } from "../../authentication/IAuthenticator";
-import { ProvisionService } from "../../services/provisioningService";
 
 @Component({
     selector: "content-workshop",
