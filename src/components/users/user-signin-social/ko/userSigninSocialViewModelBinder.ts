@@ -17,7 +17,10 @@ export class UserSigninSocialViewModelBinder implements ViewModelBinder<UserSign
         const aadIdentityProvider = identityProviders.find(x => x.type === "aad");
 
         if (aadIdentityProvider) {
-            const aadConfig = { clientId: aadIdentityProvider.clientId };
+            const aadConfig = {
+                clientId: aadIdentityProvider.clientId,
+                signinTenant: aadIdentityProvider.signinTenant
+            };
             viewModel.aadConfig(JSON.stringify(aadConfig));
         }
 
