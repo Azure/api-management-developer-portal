@@ -43,9 +43,9 @@ export class UserSignup {
         this.lastName = ko.observable("");
         this.isConsentRequired = ko.observable(false);
         this.consented = ko.observable(false);
-        this.showTerms = ko.observable(true);
+        this.showTerms = ko.observable();
         this.termsOfUse = ko.observable();
-        this.showHideLabel = ko.observable();
+        this.showHideLabel = ko.observable("Show");
         this.isUserRequested = ko.observable(false);
         this.working = ko.observable(false);
         this.captcha = ko.observable();
@@ -95,7 +95,6 @@ export class UserSignup {
             if (this.isConsentRequired()) {
                 this.consented.extend(<any>{ equal: { params: true, message: "You must agree to registration terms." } });
             }
-            this.showHideLabel("Show");
         }
 
         validation.init({
