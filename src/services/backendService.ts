@@ -5,7 +5,7 @@ import { ResetRequest, ResetPassword, ChangePasswordRequest } from "../contracts
 import { IAuthenticator } from "../authentication";
 import { DelegationAction } from "../contracts/tenantSettings";
 import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
-import { settingNames } from "../constants";
+import { SettingNames } from "../constants";
 
 export class BackendService {
     private portalUrl;
@@ -134,7 +134,7 @@ export class BackendService {
 
     private async getUrl(path: string): Promise<string> {
         if (!this.portalUrl) {
-            this.portalUrl = await this.settingsProvider.getSetting<string>(settingNames.devPortalUrl) || "";
+            this.portalUrl = await this.settingsProvider.getSetting<string>(SettingNames.devPortalUrl) || "";
         }
         return `${this.portalUrl}${path}`;
     }

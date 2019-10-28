@@ -17,6 +17,15 @@ export enum TypeOfApi {
     http = "http"
 }
 
+/**
+ * Types of identity providers (values are case-sensitive).
+ */
+export enum IdentityProviders {
+    basic = "Basic",
+    aad = "Aad",
+    aadB2C = "AadB2C"
+}
+
 export const hashSignOut = "signout";
 export const pageUrlSignIn = "/signin";
 export const pageUrlProfile = "/profile";
@@ -32,7 +41,7 @@ export const defaultPageSize = 50;
 
 export const defaultInputDelayMs = 600;
 
-export const settingNames = {
+export const SettingNames = {
     devPortalUrl: "devPortalUrl",
     managementApiUrl: "managementApiUrl",
     managementApiVersion: "managementApiVersion",
