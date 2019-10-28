@@ -4,7 +4,6 @@ import template from "./user-signup.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services/usersService";
-import { TenantSettings } from "../../../../../contracts/tenantSettings";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
 import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../../contracts/validationReport";
@@ -18,7 +17,6 @@ declare var WLSPHIP0;
     injectable: "userSignup"
 })
 export class UserSignup {
-    private tenantSettings: TenantSettings;
 
     public readonly email: ko.Observable<string>;
     public readonly password: ko.Observable<string>;
@@ -43,7 +41,7 @@ export class UserSignup {
         this.lastName = ko.observable("");
         this.isConsentRequired = ko.observable(false);
         this.consented = ko.observable(false);
-        this.showTerms = ko.observable();
+        this.showTerms = ko.observable(true);
         this.termsOfUse = ko.observable();
         this.showHideLabel = ko.observable("Show");
         this.isUserRequested = ko.observable(false);

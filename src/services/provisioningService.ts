@@ -6,7 +6,6 @@ import { Utils } from "../utils";
 import { AzureBlobStorage } from "@paperbits/azure";
 import * as Constants from "../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-
 export class ProvisionService {
     constructor(
         private readonly httpClient: HttpClient,
@@ -131,6 +130,7 @@ export class ProvisionService {
         catch (error) {
             throw error;
         }
+
     }
 
     private async sendRequest(request: HttpRequest): Promise<Object> {
