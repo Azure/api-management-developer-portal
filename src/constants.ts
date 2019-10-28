@@ -42,6 +42,7 @@ export const defaultPageSize = 50;
 export const defaultInputDelayMs = 600;
 
 export const SettingNames = {
+    devPortalUrl: "devPortalUrl",
     managementApiUrl: "managementApiUrl",
     managementApiVersion: "managementApiVersion",
     managementApiAccessToken: "managementApiAccessToken"
