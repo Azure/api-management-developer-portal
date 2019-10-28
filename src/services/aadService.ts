@@ -61,8 +61,8 @@ export class AadService {
      * @param type {string} Provider type, "Aad" or "AadB2C".
      */
     private async exchangeIdToken(idToken: string, type: string): Promise<void> {
-        const managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
-        const managementApiVersion = await this.settingsProvider.getSetting<string>("managementApiVersion");
+        const managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
+        const managementApiVersion = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiVersion);
 
         const request = {
             url: `${managementApiUrl}/identity?api-version=${managementApiVersion}`,
