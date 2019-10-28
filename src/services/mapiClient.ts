@@ -46,29 +46,29 @@ export class MapiClient {
     private async initialize(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
 
-        const managementApiUrl = settings[Constants.settingNames.managementApiUrl];
+        const managementApiUrl = settings[Constants.SettingNames.managementApiUrl];
 
         if (!managementApiUrl) {
-            throw new Error(`Management API URL ("${Constants.settingNames.managementApiUrl}") setting is missing in configuration file.`);
+            throw new Error(`Management API URL ("${Constants.SettingNames.managementApiUrl}") setting is missing in configuration file.`);
         }
 
         this.managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
 
-        const managementApiVersion = settings[Constants.settingNames.managementApiVersion];
+        const managementApiVersion = settings[Constants.SettingNames.managementApiVersion];
 
         if (!managementApiVersion) {
-            throw new Error(`Management API version ("${Constants.settingNames.managementApiVersion}") setting is missing in configuration file.`);
+            throw new Error(`Management API version ("${Constants.SettingNames.managementApiVersion}") setting is missing in configuration file.`);
         }
 
         this.managementApiVersion = managementApiVersion;
 
-        const managementApiAccessToken = settings[Constants.settingNames.managementApiAccessToken];
+        const managementApiAccessToken = settings[Constants.SettingNames.managementApiAccessToken];
 
         if (managementApiAccessToken) {
             this.authenticator.setAccessToken(managementApiAccessToken);
         }
         else if (this.environment === "development") {
-            console.warn(`Development mode: Please specify ${Constants.settingNames.managementApiAccessToken}" in configuration file.`);
+            console.warn(`Development mode: Please specify ${Constants.SettingNames.managementApiAccessToken}" in configuration file.`);
             return;
         }
 
