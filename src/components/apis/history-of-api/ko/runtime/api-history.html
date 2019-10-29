@@ -6,6 +6,9 @@
     <!-- ko ifnot: working -->
     <div class="flex-item flex-grow animation-fade-in">
         <!-- ko if: api -->
+        <h1>API changelog</h1>
+        <a href="#" class="nav-link text-truncate" data-bind="attr: {href: $component.getReferenceUrl()}">&lt&lt Go back to the
+            API reference page.</a>
         <h2 data-bind="text: api().displayName"></h2>
         <div style="background-color:white">
             <div class="table">
