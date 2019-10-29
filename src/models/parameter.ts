@@ -15,7 +15,7 @@ export class Parameter {
         this.type = contract.type;
         this.defaultValue = contract.defaultValue;
         this.values = contract.values;
-        this.required = contract.required;
+        this.required = !!contract.required;
         this.in = placement;
     }
 }
