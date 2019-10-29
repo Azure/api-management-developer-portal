@@ -31,7 +31,7 @@ export class RouteHelper {
 
         let path = "";
         const currentPath = this.router.getPath();
-
+        
         if (currentPath !== detailsPageUrl) {
             path = detailsPageUrl;
         }
@@ -41,6 +41,14 @@ export class RouteHelper {
         }
 
         return `${path}#api=${apiName}`;
+    }
+
+    public getReferenceUrl(apiName: string): string {
+        return `${Constants.pageUrlReference}#api=${apiName}`;
+    }
+
+    public getApiChangelogUrl(apiName: string): string {
+        return `${Constants.pageUrlChangelog}#api=${apiName}`;
     }
 
     public getOperationReferenceUrl(apiName: string, operationName: string, detailsPageUrl: string = ""): string {
