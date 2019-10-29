@@ -34,6 +34,15 @@ export class UserSignin {
         this.errorMessages = ko.observableArray([]);
         this.hasErrors = ko.pureComputed(() => this.errorMessages().length > 0);
         this.working = ko.observable(false);
+
+        validation.init({
+            insertMessages: false,
+            errorElementClass: "is-invalid",
+            decorateInputElement: true
+        });
+
+        this.username.extend(<any>{ required: { message: `Email is required.` }, email: true });
+        this.password.extend(<any>{ required: { message: `Password is required.` } });
     }
 
     @Param()
@@ -54,15 +63,6 @@ export class UserSignin {
                     window.open(redirectUrl, "_self");
                 }
             }
-
-            validation.init({
-                insertMessages: false,
-                errorElementClass: "is-invalid",
-                decorateInputElement: true
-            });
-
-            this.username.extend(<any>{ required: { message: `Email is required.` }, email: true });
-            this.password.extend(<any>{ required: { message: `Password is required.` } });
         }
         catch (error) {
             if (error.code === "Unauthorized" || error.code === "ResourceNotFound") {
@@ -88,6 +88,7 @@ export class UserSignin {
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
+            result.showAllMessages();
             const validationReport: ValidationReport = {
                 source: "signin",
                 errors: clientErrors
