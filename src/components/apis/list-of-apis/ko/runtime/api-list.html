@@ -22,7 +22,7 @@
 
     <!-- ko if: working -->
     <div class="table-body">
-        <spinner class="fit"></spinner>
+        <spinner></spinner>
     </div>
     <!-- /ko -->
 
@@ -36,7 +36,8 @@
         <!-- ko foreach: { data: group.items, as: 'item' } -->
         <div class="table-row">
             <div class="col-5">
-                <a href="#" role="listitem" class="nav-link text-truncate" data-bind="attr: { href: $component.getReferenceUrl(item) }">
+                <a href="#" role="listitem" class="text-truncate"
+                    data-bind="attr: { href: $component.getReferenceUrl(item) }">
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.apiVersion -->
                     - <span data-bind="text: item.apiVersion"></span>
@@ -51,7 +52,11 @@
         <!-- /ko -->
 
         <!-- ko if: apiGroups().length === 0 -->
-        <p>No APIs found</p>
+        <div class="table-row">
+            <div class="col-12">
+                No APIs found
+            </div>
+        </div>
         <!-- /ko -->
         <!-- /ko -->
 
@@ -59,7 +64,8 @@
         <!-- ko foreach: { data: apis, as: 'item' } -->
         <div class="table-row">
             <div class="col-5">
-                <a href="#" role="listitem" class="nav-link text-truncate" data-bind="attr: { href: $component.getReferenceUrl(item) }">
+                <a href="#" role="listitem" class="text-truncate"
+                    data-bind="attr: { href: $component.getReferenceUrl(item) }">
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.apiVersion -->
                     - <span data-bind="text: item.apiVersion"></span>
@@ -73,7 +79,11 @@
         <!-- /ko -->
 
         <!-- ko if: apis().length === 0 -->
-        <p>No APIs found</p>
+        <div class="table-row">
+            <div class="col-12">
+                No APIs found
+            </div>
+        </div>
         <!-- /ko -->
 
         <!-- /ko -->

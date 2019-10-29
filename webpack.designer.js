@@ -57,7 +57,8 @@ module.exports = {
             { from: `./src/themes/${editorTheme}/styles/fonts`, to: "editors/styles/fonts" },
             { from: `./src/themes/${websiteTheme}/assets` },
             { from: `./src/themes/${websiteTheme}/styles/fonts`, to: "styles/fonts" },
-            { from: `./js/HipObject.js`, to: "scripts/js" }
+            { from: `./js/HipObject.js`, to: "scripts/js" },
+            { from: `./scripts/data.json`, to: "editors/themes/default.json" }
         ])
     ],
     resolve: {
