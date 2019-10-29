@@ -1,17 +1,11 @@
 import * as ko from "knockout";
 import { Parameter } from "../parameter";
-// import { IsNotEmpty, ValidateIf } from "class-validator";
 
 export class ConsoleParameter {
-    // @IsNotEmpty({ message: "Parameter name cannot be empty" })
     public name: string;
-
-    // @IsNotEmpty({ message: "Parameter value cannot be empty" })
-    // @ValidateIf(x => x.required)
     public value: ko.Observable<string>;
-
     public required: boolean;
-    public options: Array<string>;
+    public options: string[];
     public type: string;
     public secret: boolean;
     public custom: boolean;
@@ -42,10 +36,10 @@ export class ConsoleParameter {
     }
 
     public nameIsValid(): boolean {
-        return name != null && name != "";
+        return name !== null && name !== "";
     }
 
     public valueIsValid(): boolean {
-        return this.value() != null && this.value() != "";
+        return this.value() !== null && this.value() !== "";
     }
 }

@@ -9,7 +9,7 @@ export class Subscription {
     public expirationDate?: Date;
     public notificationDate?: Date;
     public primaryKey: string;
-    public productId: string;
+    public scope: string;
     public productName?: string;
     public secondaryKey: string;
     public startDate: string;
@@ -30,7 +30,7 @@ export class Subscription {
         this.notificationDate = (contract.properties.notificationDate && new Date(contract.properties.notificationDate)) || undefined;
 
         this.primaryKey = contract.properties.primaryKey;
-        this.productId = Utils.getResourceName("products", contract.properties.scope, "shortId");
+        this.scope = contract.properties.scope;
         this.secondaryKey = contract.properties.secondaryKey;
         this.startDate = (contract.properties.startDate && contract.properties.startDate.split("T")[0]) || undefined;
         this.stateComment = contract.properties.stateComment;

@@ -237,7 +237,7 @@ export class OperationConsole {
             const productId = product.id;
 
             subscriptions.forEach(subscription => {
-                if (subscription.productId.endsWith(productId)) {
+                if (subscription.scope.endsWith(productId)) {
                     keys.push({
                         name: `Primary-${subscription.primaryKey.substr(0, 4)}`,
                         value: subscription.primaryKey
