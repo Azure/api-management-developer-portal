@@ -1,5 +1,5 @@
-<div tabindex="0" role="listbox">
-    <div class="form-control" tabindex="0"
+<div>
+    <div class="form-control" tabindex="0" role="listbox"
         data-bind="activate: toggle, css: { expanded: expanded }, attr: { 'aria-expanded': expanded }">
         <div class="input-group">
             <div class="input" data-bind="text: selection"></div>
@@ -34,7 +34,7 @@
                     <a href="#" role="listitem" class="nav-link text-truncate" data-bind="attr: { href: $component.getReferenceUrl(item) }">
                         <span data-bind="text: item.displayName"></span>
                         <!-- ko if: item.apiVersion -->
-                        (<span data-bind="text: item.apiVersion"></span>)
+                        - <span data-bind="text: item.apiVersion"></span>
                         <!-- /ko -->
                     </a>
                     <!-- /ko -->

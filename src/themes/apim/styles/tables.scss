@@ -1,18 +1,30 @@
 .table {
-    .row {
-        width: 100%;
+    margin: 20px 0;
+    overflow-x: auto;
+
+    .table-row {
+        display: flex;
+        flex-basis: 100%;
+        border-top: 1px solid #dee2e6;
+
+        > div {
+            padding: .75rem;
+            vertical-align: top;
+        }
     }
 
     .table-head {
         display: flex;
+        flex-direction: row;
         font-weight: bold;
-        padding: 15px 0;
+
+        .table-row {
+            border: none;
+        }
     }
 
     .table-body {
         display: flex;
         flex-direction: column;
-        min-height: 200px;
-        padding: 15px 0;
     }
 }
