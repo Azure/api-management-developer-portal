@@ -30,6 +30,15 @@ export class ResetPassword {
         this.isResetRequested = ko.observable(false);
         this.working = ko.observable(false);
         this.captcha = ko.observable();
+
+        validation.init({
+            insertMessages: false,
+            errorElementClass: "is-invalid",
+            decorateInputElement: true
+        });
+
+        this.email.extend(<any>{ required: { message: `Email is required.` }, email: true });
+        this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
     }
 
     /**
@@ -43,15 +52,6 @@ export class ResetPassword {
             this.usersService.navigateToHome();
             return;
         }
-
-        validation.init({
-            insertMessages: false,
-            errorElementClass: "is-invalid",
-            decorateInputElement: true
-        });
-
-        this.email.extend(<any>{ required: { message: `Email is required.` }, email: true });
-        this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
     }
 
     /**
@@ -66,7 +66,7 @@ export class ResetPassword {
 
         WLSPHIP0.verify( (solution, token, param) => {
             WLSPHIP0.clientValidation();
-            if (WLSPHIP0.error != "0")
+            if (WLSPHIP0.error !== 0)
             {
                 this.captcha(null); //is not valid
                 return;
@@ -90,6 +90,7 @@ export class ResetPassword {
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
+            result.showAllMessages();
             const validationReport: ValidationReport = {
                 source: "resetpassword",
                 errors: clientErrors
