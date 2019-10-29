@@ -164,6 +164,10 @@ export class ApiDetails {
         this.router.navigateTo(apiUrl);
     }
 
+    public getChanglogUrl() {
+        return this.routeHelper.getApiChangelogUrl(this.selectedApiName());
+    }
+
     @OnDestroyed()
     public dispose(): void {
         this.router.removeRouteChangeListener(this.loadApi);

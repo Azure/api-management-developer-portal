@@ -33,6 +33,8 @@ export const pageUrlHome = "/";
 export const pageUrl404 = "/404";
 export const pageUrl500 = "/500";
 export const pageUrlChangePassword = "/change-password";
+export const pageUrlChangelog = "/api-history";
+export const pageUrlReference = "/reference";
 
 /**
  * Maximum number of items to show in a paginated view.
