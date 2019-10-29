@@ -36,6 +36,15 @@ export class ConfirmPassword {
         this.canSubmit = ko.pureComputed(() => {
             return this.password() === this.passwordConfirmation();
         });
+
+        validation.init({
+            insertMessages: false,
+            errorElementClass: "is-invalid",
+            decorateInputElement: true
+        });
+
+        this.password.extend(<any>{ required: { message: `Password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
+        this.passwordConfirmation.extend(<any>{ required: { message: `Password confirmation is required.` }, equal: { message: "Password confirmation field must be equal to password.", params: this.password } });
     }
 
     /**
@@ -49,15 +58,6 @@ export class ConfirmPassword {
             this.usersService.navigateToHome();
             return;
         }
-
-        validation.init({
-            insertMessages: false,
-            errorElementClass: "is-invalid",
-            decorateInputElement: true
-        });
-
-        this.password.extend(<any>{ required: { message: `Password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
-        this.passwordConfirmation.extend(<any>{ equal: { message: "Password confirmation field must be equal to password.", params: this.password } });
 
         this.queryParams = new URLSearchParams(location.search);
 
@@ -87,6 +87,7 @@ export class ConfirmPassword {
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
+            result.showAllMessages();
             const validationReport: ValidationReport = {
                 source: "confirmpassword",
                 errors: clientErrors

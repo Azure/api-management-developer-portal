@@ -49,6 +49,19 @@ export class UserSignup {
         this.captcha = ko.observable();
         this.delegationUrl = ko.observable();
         this.termsEnabled = ko.observable(false);
+
+        validation.init({
+            insertMessages: false,
+            errorElementClass: "is-invalid",
+            decorateInputElement: true
+        });
+
+        this.email.extend(<any>{ required: { message: `Email is required.` }, email: true });
+        this.password.extend(<any>{ required: { message: `Password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
+        this.passwordConfirmation.extend(<any>{ required: { message: `Password confirmation is required.` }, equal: { message: "Password confirmation field must be equal to password.", params: this.password } });
+        this.firstName.extend(<any>{ required: { message: `First name is required.` } });
+        this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
+        this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
     }
 
     @Param()
@@ -94,19 +107,6 @@ export class UserSignup {
                 this.consented.extend(<any>{ equal: { params: true, message: "You must agree to registration terms." } });
             }
         }
-
-        validation.init({
-            insertMessages: false,
-            errorElementClass: "is-invalid",
-            decorateInputElement: true
-        });
-
-        this.email.extend(<any>{ required: { message: `Email is required.` }, email: true });
-        this.password.extend(<any>{ required: { message: `Password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
-        this.passwordConfirmation.extend(<any>{ equal: { message: "Password confirmation field must be equal to password.", params: this.password } });
-        this.firstName.extend(<any>{ required: { message: `First name is required.` } });
-        this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
-        this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
     }
 
     /**
@@ -156,6 +156,7 @@ export class UserSignup {
         }
 
         if (clientErrors.length > 0) {
+            result.showAllMessages();
             const validationReport: ValidationReport = {
                 source: "signup",
                 errors: clientErrors

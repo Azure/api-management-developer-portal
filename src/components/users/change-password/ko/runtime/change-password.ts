@@ -34,6 +34,17 @@ export class ChangePassword {
         this.isChangeConfirmed = ko.observable(false);
         this.working = ko.observable(false);
         this.captcha = ko.observable();
+
+        validation.init({
+            insertMessages: false,
+            errorElementClass: "is-invalid",
+            decorateInputElement: true
+        });
+
+        this.password.extend(<any>{ required: { message: `Password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
+        this.newPassword.extend(<any>{ required: { message: `New password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
+        this.passwordConfirmation.extend(<any>{ required: { message: `Password confirmation is required.` }, equal: { message: "Password confirmation field must be equal to new password.", params: this.newPassword } });
+        this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
     }
 
     /**
@@ -47,24 +58,12 @@ export class ChangePassword {
             this.usersService.navigateToHome();
             return;
         }
-
-        validation.init({
-            insertMessages: false,
-            errorElementClass: "is-invalid",
-            decorateInputElement: true
-        });
-
-        this.password.extend(<any>{ required: { message: `Password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
-        this.newPassword.extend(<any>{ required: { message: `New password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
-        this.passwordConfirmation.extend(<any>{ equal: { message: "Password confirmation field must be equal to new password.", params: this.newPassword } });
-        this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
     }
 
     /**
      * Sends user change password request to Management API.
      */
     public async changePassword(): Promise<void> {
-
         let captchaSolution;
         let captchaFlowId;
         let captchaToken;
@@ -72,7 +71,7 @@ export class ChangePassword {
 
         WLSPHIP0.verify( (solution, token, param) => {
             WLSPHIP0.clientValidation();
-            if (WLSPHIP0.error != "0")
+            if (WLSPHIP0.error !== 0)
             {
                 this.captcha(null); //is not valid
                 return;
@@ -98,6 +97,7 @@ export class ChangePassword {
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
+            result.showAllMessages();
             const validationReport: ValidationReport = {
                 source: "changepassword",
                 errors: clientErrors
