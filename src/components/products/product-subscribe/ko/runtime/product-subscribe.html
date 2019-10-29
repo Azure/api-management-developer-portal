@@ -23,11 +23,11 @@
 <!-- ko ifnot: limitReached -->
 <form>
     <div class="table">        
-        <div class="row">
-            <div class="col-md-5">
+        <div class="table-row">
+            <div class="col-5">
                 <input type="text" class="form-control" placeholder="Subscription name" data-bind="value: subscriptionName" />
             </div>
-            <div class="col-md-4 form-inline">
+            <div class="col-4 form-inline">
                 <!-- ko if: termsOfUse -->
                 <div class="form-check">
                     <input id="consentCheckbox" type="checkbox" class="form-check-input" data-bind="checked: consented" />
@@ -35,7 +35,7 @@
                 </div>
                 <!-- /ko -->
             </div>
-            <div class="col-md-3">
+            <div class="col-3">
                 <button class="button button-primary" data-bind="click: $component.subscribe, enable: canSubscribe">Subscribe</button>
             </div>
         </div>

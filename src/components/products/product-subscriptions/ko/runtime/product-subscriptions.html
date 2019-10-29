@@ -1,6 +1,6 @@
 <div class="table">
     <div class="table-head">
-        <div class="row">
+        <div class="table-row">
             <div class="col-md-5">Name</div>
             <div class="col-md-7">Status</div>
         </div>
@@ -15,7 +15,7 @@
     <!-- ko ifnot: working -->
     <div class="table-body">
         <!-- ko foreach: { data: subscriptions, as: 'subscription' } -->
-        <div class="row">
+        <div class="table-row">
             <div class="col-md-5" data-bind="text: subscription.name"></div>
             <div class="col-md-7" data-bind="text: subscription.state"></div>
         </div>

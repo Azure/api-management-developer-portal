@@ -1,6 +1,7 @@
 <div class="form-inline search-input">
     <div class="input-group">
-        <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs" data-bind="textInput: pattern" />
+        <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
+            data-bind="textInput: pattern" />
         <button type="button" class="search-button">
             <i class="icon icon-magnifier"></i>
         </button>
@@ -9,7 +10,7 @@
 
 <div class="table">
     <div class="table-head">
-        <div class="row">
+        <div class="table-row">
             <div class="col-md-5">Name</div>
             <div class="col-md-7">Description</div>
         </div>
@@ -25,10 +26,14 @@
     <div class="table-body">
         <!-- ko if: apis().length > 0 -->
         <!-- ko foreach: { data: apis, as: 'item' } -->
-        <div class="table-row flex">
+        <div class="table-row">
             <div class="col-5">
-                <a href="#" class="text-truncate"
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }, text: item.displayName"></a>
+                <a href="#" class="text-truncate" data-bind="attr: { href: $component.getReferenceUrl(item) }">
+                    <span data-bind="text: item.displayName"></span>
+                    <!-- ko if: item.apiVersion -->
+                    - <span data-bind="text: item.apiVersion"></span>
+                    <!-- /ko -->
+                </a>
             </div>
             <div class="col-7">
                 <div data-bind="markdown: item.description"></div>

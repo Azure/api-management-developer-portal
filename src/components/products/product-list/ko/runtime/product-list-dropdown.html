@@ -1,5 +1,14 @@
-<div id="products-dropdown" tabindex="0" role="listbox" class="form-control">
-    <div data-bind="click: toggle, text: selection"></div>    
+<div>
+    <div class="form-control" tabindex="0" role="listbox"
+        data-bind="activate: toggle, css: { expanded: expanded }, attr: { 'aria-expanded': expanded }">
+        <div class="input-group">
+            <div class="input" data-bind="text: selection"></div>
+            <div class="input-group-append">
+                <i class="icon icon-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+
     <div class="dropdown" data-bind="visible: expanded">
         <div class="search-input">
             <input type="search" role="searchbox" aria-label="Search" placeholder="Search Products"
@@ -9,7 +18,7 @@
             </button>
         </div>
 
-        <div role="list" class="dropdown-items">
+        <div role="list">
             <!-- ko if: working -->
             <spinner class="fit" role="presentation"></spinner>
             <!-- /ko -->
@@ -17,7 +26,8 @@
             <!-- ko ifnot: working -->
 
             <!-- ko foreach: { data: products, as: 'product' } -->
-            <a href="#" role="listitem" class="text-truncate" data-bind="attr: { href: $component.getProductUrl(product) }, text: product.name"></a>
+            <a href="#" role="listitem" class="nav-link text-truncate"
+                data-bind="attr: { href: $component.getProductUrl(product) }, text: product.displayName"></a>
             <!-- /ko -->
 
             <!-- ko if: products().length === 0 -->
