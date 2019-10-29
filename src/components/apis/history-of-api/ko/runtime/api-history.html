@@ -8,24 +8,24 @@
         <!-- ko if: api -->
         <h2 data-bind="text: api().displayName"></h2>
         <div style="background-color:white">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
+            <div class="table">
+                <div class="table-head">
+                    <div class="table-row">
+                        <div class="col-3">
                             Release date
-                        </th>
-                        <th>
+                        </div>
+                        <div class="col-9">
                             Notes
-                        </th>
-                    </tr>
-                </thead>
-                <tbody data-bind="foreach: { data: currentPageLog, as: 'hist' }">
-                    <tr>
-                        <td data-bind="text: hist.properties.updatedDateTime"></td>
-                        <td data-bind="text: hist.properties.notes"></td>
-                    </tr>
-                </tbody>
-            </table>
+                        </div>
+                    </div>
+                </div>
+                <div data-bind="foreach: { data: currentPageLog, as: 'hist' }">
+                    <div class="table-row">
+                        <div class="col-3" data-bind="text: hist.properties.updatedDateTime"></div>
+                        <div class="col-9" data-bind="text: hist.properties.notes"></div>
+                    </div>
+                </div>
+            </div>
 
             <!-- ko if: changeLogHasPager -->
             <ul class="pagination justify-content-center">

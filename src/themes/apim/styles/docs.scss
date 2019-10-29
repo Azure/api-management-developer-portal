@@ -45,20 +45,6 @@ aside {
     }
 }
 
-.dropdown-items {
-    a {
-        color: inherit;
-        padding: 10px;
-        display: block;
-
-        &:hover {
-            color: inherit;
-            text-decoration: none;
-            background-color: #EDEBE9;
-        }
-    }
-}
-
 .panel {
     padding: 30px;
 
@@ -324,6 +310,7 @@ api-list-tiles {
 
 api-details,
 api-list,
+api-history,
 change-password,
 confirm-password,
 operation-details,

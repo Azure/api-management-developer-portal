@@ -97,7 +97,7 @@ export class ProductService {
                 .filter(item => item.properties.scope.indexOf("/products/") !== -1)
                 .map((item) => {
                     const model = new Subscription(item);
-                    const product = products.find(p => p.id === model.productId);
+                    const product = products.find(p => p.id === model.scope);
                     model.productName = product && product.displayName;
                     result.push(model);
                 });
@@ -111,7 +111,7 @@ export class ProductService {
      * @param subscriptionId subscriptionId {string} Subscription unique identifier.
      * @param loadProduct {boolean} Indicates whether products should be included.
      */
-    public async getSubscription(subscriptionId: string, loadProduct: boolean = true): Promise<Subscription> {
+    public async getSubscription(subscriptionId: string): Promise<Subscription> {
         if (!subscriptionId) {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
@@ -123,14 +123,7 @@ export class ProductService {
         }
 
         if (contract) {
-            const model = new Subscription(contract);
-
-            if (loadProduct) {
-                const product = await this.getProduct(model.productId);
-                model.productName = product && product.displayName;
-            }
-
-            return model;
+            return new Subscription(contract);
         }
     }
 
