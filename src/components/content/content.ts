@@ -30,7 +30,7 @@ export class ContentWorkshop {
         }
     }
 
-    public async unpublish(): Promise<void> {
+    public async reset(): Promise<void> {
         const view: View = {
             heading: "Reset content",
             component: {

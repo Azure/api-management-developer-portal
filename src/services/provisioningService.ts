@@ -87,7 +87,8 @@ export class ProvisionService {
 
     private async cleanupContent(): Promise<void> {
         const managementApiUrl = await this.getManagementUrl();
-        const url = `${managementApiUrl}/contentTypes?api-version=2018-06-01-preview`;
+        const managementApiVersion = await this.getManagementApiVersion();
+        const url = `${managementApiUrl}/contentTypes?api-version=${managementApiVersion}`;
         const accessToken = this.authenticator.getAccessToken();
         try {
             const request: HttpRequest = {
@@ -104,7 +105,7 @@ export class ProvisionService {
             for (const contentType of contentTypes) {
                 const contentTypeName = contentType["name"];
                 const curReq: HttpRequest = {
-                    url: `${managementApiUrl}/contentTypes/${contentTypeName}/contentItems?api-version=2018-06-01-preview`,
+                    url: `${managementApiUrl}/contentTypes/${contentTypeName}/contentItems?api-version=${managementApiVersion}`,
                     method: "GET",
                     headers: [
                         { name: "If-Match", value: "*" },
@@ -116,7 +117,7 @@ export class ProvisionService {
                 const items = Object.values(itemsResponse["value"]);
                 for (const item of items) {
                     const itemReq: HttpRequest = {
-                        url: `${managementApiUrl}${item["id"]}?api-version=2018-06-01-preview`,
+                        url: `${managementApiUrl}${item["id"]}?api-version=${managementApiVersion}`,
                         method: "DELETE", 
                         headers: [
                             { name: "If-Match", value: "*" },
