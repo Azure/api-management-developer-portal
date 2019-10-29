@@ -21,6 +21,10 @@
         color: $color-base;
         cursor: pointer;
     }
+
+    &:disabled {
+        opacity: 0.2;
+    }
 }
 
 .btn-link {
