@@ -8,7 +8,6 @@
     </div>
 </div>
 
-<!-- ko if: products().length > 0 -->
 <div class="table">
     <div class="table-head">
         <div class="table-row">
@@ -18,8 +17,8 @@
     </div>
 
     <!-- ko if: working -->
-    <div class="table-body animation-fade-in">
-        <spinner class="fit"></spinner>
+    <div class="table-body">
+        <spinner></spinner>
     </div>
     <!-- /ko -->
 
@@ -39,7 +38,7 @@
 
     <!-- ko if: products().length === 0 -->
     <p>
-        No products to display.
+        No products found.
     </p>
     <!-- /ko -->
 
@@ -73,4 +72,3 @@
     <!-- /ko -->
     <!-- /ko -->
 </div>
-<!-- /ko -->

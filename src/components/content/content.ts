@@ -22,11 +22,11 @@ export class ContentWorkshop {
         try {
             const accessToken = this.authenticator.getAccessToken();
             await this.httpClient.send({ url: "/publish", method: "POST", headers: [{ name: "Authorization", value: accessToken }] });
-            this.viewManager.notifySuccess("Publishing", `The website is being published...`);
+            this.viewManager.notifySuccess("Operations", `The website is being published...`);
             this.viewManager.closeWorkshop("content-workshop");
         }
         catch (error) {
-            this.viewManager.notifyError("Publishing", `Unable to schedule publishing. Please try again later.`);
+            this.viewManager.notifyError("Operations", `Unable to schedule publishing. Please try again later.`);
         }
     }
 
