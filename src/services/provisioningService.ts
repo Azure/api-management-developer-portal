@@ -24,7 +24,8 @@ export class ProvisionService {
 
     private async getManagementUrl(): Promise<string> {
         const settings = await this.settingsProvider.getSettings();
-        let managementApiUrl = settings[Constants.SettingNames.managementApiUrl];
+        const managementApiUrl = settings[Constants.SettingNames.managementApiUrl];
+
         if (!managementApiUrl) {
             throw new Error(`Management API URL ("managementApiUrl") setting is missing in configuration file.`);
         }
@@ -43,7 +44,7 @@ export class ProvisionService {
     public async provision(): Promise<void> {
         const managementApiUrl = await this.getManagementUrl();
         const managementApiVersion = await this.getManagementApiVersion();
-        const dataUrl = `https://apimdeveloperportal.blob.core.windows.net/releases/201906201530/themes/default.json`;
+        const dataUrl = `/editors/themes/default.json`;
 
         try {
             this.viewManager.removeShutter();
