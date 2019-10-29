@@ -61,7 +61,7 @@ import { TypeDefinitionViewModel } from "./components/operations/operation-detai
 import { VisibilityGuard } from "@paperbits/common/user";
 import { StaticUserService } from "./services";
 import { SignOutRouteGuard } from "./routing/signOutRouteGuard";
-
+import { ProvisionService } from "./services/provisioningService";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -119,5 +119,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("routeHelper", RouteHelper);
         injector.bindSingleton("userService", StaticUserService);
+        injector.bindSingleton("provisioningService", ProvisionService);
     }
 }

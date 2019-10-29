@@ -1,0 +1,11 @@
+<div class="flex-container flex-container-column fit" data-bind="scrollable: true">
+    <p>Resetting the content will restore the portal to its initial state. It will replace all the pages, layouts,
+        customizations, uploaded media, etc. with the default content.</p>
+    <p>Resetting the content will not remove the published version of the portal.</p>
+    <p>Are you sure you want to reset the portal's content? Type "yes" in the field below to confirm.</p>
+    <input type="text" data-bind="value: response" placeholder="Confirm by entering yes">
+    <button type="button" class="btn" background-color="blue" data-bind="click: reset, enable: isYes">
+        <i class="paperbits-icon paperbits-check-2"></i>
+        Reset content
+    </button>
+</div>
