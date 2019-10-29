@@ -23,7 +23,7 @@ import { ProductDetailsEditorModule } from "./components/products/product-detail
 import { MapiClient, IdentityService } from "./services";
 import { AzureBlobStorage } from "@paperbits/azure";
 import { SetupModule } from "./components/setup/setup.module";
-import { PublishingModule } from "./components/publishing";
+import { ContentModule } from "./components/content";
 import { SaveChangesToolButton } from "./persistence/saveChangesToolbutton";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";
 import { OperationListEditorModule } from "./components/operations/operation-list/ko/operationListEditor.module";
@@ -52,6 +52,7 @@ import { ValidationSummaryModule } from "./components/users/validation-summary/k
 import { ValidationSummaryEditorModule} from "./components/users/validation-summary/ko/validationSummaryEditor.module"
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
+import { ProvisionService } from "./services/provisioningService";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -83,7 +84,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ProductDetailsEditorModule());
         injector.bindModule(new ProductSubscribeModule());
         injector.bindModule(new ProductSubscribeEditorModule());
-        injector.bindModule(new PublishingModule());
+        injector.bindModule(new ContentModule());
         injector.bindModule(new OperationListModule());
         injector.bindModule(new OperationListEditorModule());
         injector.bindModule(new OperationDetailsModule());
@@ -105,6 +106,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("roleService", StaticRoleService);
         injector.bindSingleton("tenantService", TenantService);
+        injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
