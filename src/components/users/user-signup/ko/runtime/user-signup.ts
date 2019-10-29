@@ -18,8 +18,6 @@ declare var WLSPHIP0;
     injectable: "userSignup"
 })
 export class UserSignup {
-    private tenantSettings: TenantSettings;
-
     public readonly email: ko.Observable<string>;
     public readonly password: ko.Observable<string>;
     public readonly passwordConfirmation: ko.Observable<string>;
@@ -123,7 +121,7 @@ export class UserSignup {
         WLSPHIP0.verify((solution, token, param) => {
             WLSPHIP0.clientValidation();
 
-            if (WLSPHIP0.error !== "0") {
+            if (WLSPHIP0.error !== 0) {
                 this.captcha(null); // is not valid
                 return;
             }
