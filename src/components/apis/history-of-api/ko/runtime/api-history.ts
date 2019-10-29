@@ -112,4 +112,8 @@ export class ApiHistory {
         this.changeLogHasNextPage(!!pageOfLogs.nextLink);
         this.currentPageLog(pageOfLogs.value);
     }
+
+    public getReferenceUrl() {
+        return this.routeHelper.getReferenceUrl(this.selectedId());
+    }
 }
