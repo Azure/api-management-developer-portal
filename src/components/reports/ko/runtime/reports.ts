@@ -41,6 +41,7 @@ export class Reports {
     public readonly reportByProductHasPrevPage: ko.Observable<boolean>;
     public readonly reportByProductHasNextPage: ko.Observable<boolean>;
     public readonly reportByProductWorking: ko.Observable<boolean>;
+    public readonly reportByProductHasData: ko.Computed<boolean>;
 
     public readonly reportBySubscription: ko.Observable<ReportRecordBySubscriptionViewModel[]>;
     public readonly reportBySubscriptionOrder: ko.Observable<string>;
@@ -49,6 +50,7 @@ export class Reports {
     public readonly reportBySubscriptionHasPrevPage: ko.Observable<boolean>;
     public readonly reportBySubscriptionHasNextPage: ko.Observable<boolean>;
     public readonly reportBySubscriptionWorking: ko.Observable<boolean>;
+    public readonly reportBySubscriptionHasData: ko.Computed<boolean>;
 
     public readonly reportByApi: ko.Observable<ReportRecordByApiViewModel[]>;
     public readonly reportByApiOrder: ko.Observable<string>;
@@ -57,6 +59,7 @@ export class Reports {
     public readonly reportByApiHasPrevPage: ko.Observable<boolean>;
     public readonly reportByApiHasNextPage: ko.Observable<boolean>;
     public readonly reportByApiWorking: ko.Observable<boolean>;
+    public readonly reportByApiHasData: ko.Computed<boolean>;
 
     public readonly reportByOperation: ko.Observable<ReportRecordByOperationViewModel[]>;
     public readonly reportByOperationOrder: ko.Observable<string>;
@@ -65,6 +68,7 @@ export class Reports {
     public readonly reportByOperationHasPrevPage: ko.Observable<boolean>;
     public readonly reportByOperationHasNextPage: ko.Observable<boolean>;
     public readonly reportByOperationWorking: ko.Observable<boolean>;
+    public readonly reportByOperationHasData: ko.Computed<boolean>;
 
     constructor(private readonly analyticsService: AnalyticsService) {
         this.startTime = ko.observable();
@@ -78,37 +82,41 @@ export class Reports {
         this.reportByLatency = ko.observable();
         this.reportByLatencyGeo = ko.observable();
 
-        this.reportByProduct = ko.observable();
+        this.reportByProduct = ko.observable([]);
         this.reportByProductOrder = ko.observable("callCountSuccess");
         this.reportByProductPage = ko.observable(1);
         this.reportByProductHasPrevPage = ko.observable(false);
         this.reportByProductHasNextPage = ko.observable(false);
         this.reportByProductHasPager = ko.computed(() => this.reportByProductHasPrevPage() || this.reportByProductHasNextPage());
         this.reportByProductWorking = ko.observable(false);
+        this.reportByProductHasData = ko.computed(() => this.reportByProduct().length !== 0);
 
-        this.reportBySubscription = ko.observable();
+        this.reportBySubscription = ko.observable([]);
         this.reportBySubscriptionOrder = ko.observable("callCountSuccess");
         this.reportBySubscriptionPage = ko.observable(1);
         this.reportBySubscriptionHasPrevPage = ko.observable(false);
         this.reportBySubscriptionHasNextPage = ko.observable(false);
         this.reportBySubscriptionHasPager = ko.computed(() => this.reportBySubscriptionHasPrevPage() || this.reportBySubscriptionHasNextPage());
         this.reportBySubscriptionWorking = ko.observable(false);
+        this.reportBySubscriptionHasData = ko.computed(() => this.reportBySubscription().length !== 0);
 
-        this.reportByApi = ko.observable();
+        this.reportByApi = ko.observable([]);
         this.reportByApiOrder = ko.observable("callCountSuccess");
         this.reportByApiPage = ko.observable(1);
         this.reportByApiHasPrevPage = ko.observable(false);
         this.reportByApiHasNextPage = ko.observable(false);
         this.reportByApiHasPager = ko.computed(() => this.reportByApiHasPrevPage() || this.reportByApiHasNextPage());
         this.reportByApiWorking = ko.observable(false);
+        this.reportByApiHasData = ko.computed(() => this.reportByApi().length !== 0);
 
-        this.reportByOperation = ko.observable();
+        this.reportByOperation = ko.observable([]);
         this.reportByOperationOrder = ko.observable("callCountSuccess");
         this.reportByOperationPage = ko.observable(1);
         this.reportByOperationHasPrevPage = ko.observable(false);
         this.reportByOperationHasNextPage = ko.observable(false);
         this.reportByOperationHasPager = ko.computed(() => this.reportByOperationHasPrevPage() || this.reportByOperationHasNextPage());
         this.reportByOperationWorking = ko.observable(false);
+        this.reportByOperationHasData = ko.computed(() => this.reportByOperation().length !== 0);
     }
 
     @OnMounted()
@@ -335,7 +343,6 @@ export class Reports {
         };
 
         this.reportByOperationWorking(true);
-
         const pageOfRecords = await this.analyticsService.getReportsByOperation(query);
         const records = pageOfRecords.value;
 
