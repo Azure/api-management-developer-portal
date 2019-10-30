@@ -4,16 +4,15 @@ import template from "./user-signup.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services/usersService";
-import { TenantSettings } from "../../../../../contracts/tenantSettings";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
 import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
 declare var WLSPHIP0;
 
-@RuntimeComponent({ selector: "user-signup" })
+@RuntimeComponent({ selector: "user-signup-runtime" })
 @Component({
-    selector: "user-signup",
+    selector: "user-signup-runtime",
     template: template,
     injectable: "userSignup"
 })
@@ -49,6 +48,7 @@ export class UserSignup {
         this.captcha = ko.observable();
         this.delegationUrl = ko.observable();
         this.termsEnabled = ko.observable(false);
+        this.requireHipCaptcha = ko.observable();
 
         validation.init({
             insertMessages: false,
@@ -63,6 +63,9 @@ export class UserSignup {
         this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
         this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
     }
+
+    @Param()
+    public requireHipCaptcha: ko.Observable<boolean>;
 
     @Param()
     public termsOfUse: ko.Observable<string>;
@@ -113,37 +116,43 @@ export class UserSignup {
      * Sends user signup request to Management API.
      */
     public async signup(): Promise<void> {
+        const isCaptcha = this.requireHipCaptcha();
+        const validationGroup = {
+            email: this.email,
+            password: this.password,
+            passwordConfirmation: this.passwordConfirmation,
+            firstName: this.firstName,
+            lastName: this.lastName
+        };
+
         let captchaSolution;
         let captchaFlowId;
         let captchaToken;
         let captchaType;
 
-        WLSPHIP0.verify((solution, token, param) => {
-            WLSPHIP0.clientValidation();
+        if (isCaptcha) {
+            validationGroup["captcha"] = this.captcha;
 
-            if (WLSPHIP0.error !== 0) {
-                this.captcha(null); // is not valid
-                return;
-            }
-            else {
-                captchaSolution = solution;
-                captchaToken = token;
-                captchaType = WLSPHIP0.type;
-                const flowIdElement = <HTMLInputElement>document.getElementById("FlowId")
-                captchaFlowId = flowIdElement.value;
-                this.captcha("valid");
-                return;
-            }
-        }, "");
+            WLSPHIP0.verify((solution, token, param) => {
+                WLSPHIP0.clientValidation();
 
-        const result = validation.group({
-            email: this.email,
-            password: this.password,
-            passwordConfirmation: this.passwordConfirmation,
-            firstName: this.firstName,
-            lastName: this.lastName,
-            captcha: this.captcha
-        });
+                if (WLSPHIP0.error !== 0) {
+                    this.captcha(null); // is not valid
+                    return;
+                }
+                else {
+                    captchaSolution = solution;
+                    captchaToken = token;
+                    captchaType = WLSPHIP0.type;
+                    const flowIdElement = <HTMLInputElement>document.getElementById("FlowId")
+                    captchaFlowId = flowIdElement.value;
+                    this.captcha("valid");
+                    return;
+                }
+            }, "");
+        }
+
+        const result = validation.group(validationGroup);
 
         let clientErrors = result();
 
@@ -165,54 +174,62 @@ export class UserSignup {
             return;
         }
 
-        const createSignupRequest: SignupRequest = {
-            solution: captchaSolution,
-            flowId: captchaFlowId,
-            token: captchaToken,
-            type: captchaType,
-            signupData: {
-                email: this.email(),
-                firstName: this.firstName(),
-                lastName: this.lastName(),
-                password: this.password(),
-                confirmation: "signup",
-                appType: "developerPortal"
-            }
-        };
+        const mapiSignupData = {
+            email: this.email(),
+            firstName: this.firstName(),
+            lastName: this.lastName(),
+            password: this.password(),
+            confirmation: "signup",
+            appType: "developerPortal"
+        }
 
         try {
-            await this.backendService.sendSignupRequest(createSignupRequest);
+            if (isCaptcha) {
+                const createSignupRequest: SignupRequest = {
+                    solution: captchaSolution,
+                    flowId: captchaFlowId,
+                    token: captchaToken,
+                    type: captchaType,
+                    signupData: mapiSignupData
+                };
+
+                await this.backendService.sendSignupRequest(createSignupRequest);
+            } else {
+                await this.usersService.createSignupRequest(mapiSignupData);
+            }
+
             this.isUserRequested(true);
+
             const validationReport: ValidationReport = {
                 source: "signup",
                 errors: []
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        }
-        catch (error) {
-            WLSPHIP0.reloadHIP();
+        } catch (error) {
+            if (isCaptcha) {
+                WLSPHIP0.reloadHIP();
+            }
+
+            let errorMessages: string[];
 
             if (error.code === "ValidationError") {
                 const details: any[] = error.details;
 
                 if (details && details.length > 0) {
-                    const errorMessages = details.map(item => `${item.message}`);
-                    const validationReport: ValidationReport = {
-                        source: "signup",
-                        errors: errorMessages
-                    };
-                    this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+                    errorMessages = details.map(item => `${item.message}`);
                 }
+            } else {
+                errorMessages = ["Server error. Unable to send request. Please try again later."];
             }
-            else {
-                const validationReport: ValidationReport = {
-                    source: "signup",
-                    errors: ["Server error. Unable to send request. Please try again later."]
-                };
-                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-            }
+            
+            const validationReport: ValidationReport = {
+                source: "signup",
+                errors: errorMessages
+            };
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         }
     }
+
 
     /**
      * Shows/hides registration terms.

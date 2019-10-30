@@ -4,13 +4,14 @@ import { Component } from "@paperbits/common/ko/decorators";
 
 
 @Component({
-    selector: "resetPassword",
-    template: template
+    selector: "reset-password",
+    template: template,
+    injectable: "resetPassword"
 })
 export class ResetPasswordViewModel {
-    public requireHipCaptcha: ko.Observable<boolean>;
+    public readonly runtimeConfig: ko.Observable<string>;
 
     constructor() {
-        this.requireHipCaptcha = ko.observable<boolean>();
+        this.runtimeConfig = ko.observable();
     }
 }
