@@ -343,8 +343,7 @@ export class Reports {
         };
 
         this.reportByOperationWorking(true);
-        try{
-            const pageOfRecords = await this.analyticsService.getReportsByOperation(query);
+        const pageOfRecords = await this.analyticsService.getReportsByOperation(query);
         const records = pageOfRecords.value;
 
         this.reportByOperationHasPrevPage(pageNumber > 0);
@@ -367,10 +366,6 @@ export class Reports {
         });
 
         this.reportByOperation(viewModels);
-        } 
-        catch (error) {
-            console.log(error);
-        }
         this.reportByOperationWorking(false);
     }
 
