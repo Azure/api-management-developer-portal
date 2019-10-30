@@ -74,7 +74,7 @@ export class ApiHistory {
                 if (api && api.apiVersionSet && api.apiVersionSet.id) {
                     const apis = await this.apiService.getApisInVersionSet(api.apiVersionSet.id);
                     this.versionApis(apis || []);
-                } 
+                }
                 else {
                     this.versionApis([]);
                 }
@@ -82,10 +82,10 @@ export class ApiHistory {
                 this.api(api);
                 this.apiId = api.id;
             }
-        } 
+        }
         catch (error) {
             throw new Error(`Unable to load API Info. Error: ${error.message}`);
-        } 
+        }
         finally {
             this.apiWorking(false);
         }
@@ -107,16 +107,16 @@ export class ApiHistory {
     }
 
     private async getCurrentPage(): Promise<void> {
-        try{
+        try {
             this.changeLogWorking(true);
 
-        const pageOfLogs = await this.apiService.getApiChangeLog(this.apiId, (this.changeLogPage() - 1) * Constants.defaultPageSize);
-        pageOfLogs.value.map(x => x.properties.updatedDateTime = Utils.formatDateTime(x.properties.updatedDateTime));
-        
-        this.changeLogHasPrevPage(this.changeLogPage() > 1);
-        this.changeLogHasNextPage(!!pageOfLogs.nextLink);
-        this.currentPageLog(pageOfLogs.value);
-        } 
+            const pageOfLogs = await this.apiService.getApiChangeLog(this.apiId, (this.changeLogPage() - 1) * Constants.defaultPageSize);
+            pageOfLogs.value.map(x => x.properties.updatedDateTime = Utils.formatDateTime(x.properties.updatedDateTime));
+
+            this.changeLogHasPrevPage(this.changeLogPage() > 1);
+            this.changeLogHasNextPage(!!pageOfLogs.nextLink);
+            this.currentPageLog(pageOfLogs.value);
+        }
         catch (error) {
             throw new Error(`Unable to load API history. Error: ${error.message}`);
         }
