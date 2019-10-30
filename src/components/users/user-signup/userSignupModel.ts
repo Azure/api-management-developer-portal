@@ -1,1 +1,3 @@
-export class UserSignupModel { }
+export class UserSignupModel { 
+    requireHipCaptcha: boolean;
+}

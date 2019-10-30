@@ -4,7 +4,7 @@ import { ChangePasswordModel } from "./changePasswordModel";
 export class ChangePasswordHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
-            name: "changePassword",
+            name: "change-password",
             category: "User",
             displayName: "Change password",
             iconClass: "paperbits-cheque-3",

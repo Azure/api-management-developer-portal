@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./change-password.html";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { ChangePasswordRequest } from "../../../../../contracts/resetRequest";
 import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services/usersService";
@@ -10,9 +10,9 @@ import { ValidationReport } from "../../../../../contracts/validationReport";
 
 declare var WLSPHIP0;
 
-@RuntimeComponent({ selector: "change-password" })
+@RuntimeComponent({ selector: "change-password-runtime" })
 @Component({
-    selector: "change-password",
+    selector: "change-password-runtime",
     template: template,
     injectable: "changePassword"
 })
@@ -34,6 +34,7 @@ export class ChangePassword {
         this.isChangeConfirmed = ko.observable(false);
         this.working = ko.observable(false);
         this.captcha = ko.observable();
+        this.requireHipCaptcha = ko.observable();
 
         validation.init({
             insertMessages: false,
@@ -46,6 +47,9 @@ export class ChangePassword {
         this.passwordConfirmation.extend(<any>{ required: { message: `Password confirmation is required.` }, equal: { message: "Password confirmation field must be equal to new password.", params: this.newPassword } });
         this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
     }
+
+    @Param()
+    public requireHipCaptcha: ko.Observable<boolean>;
 
     /**
      * Initializes component right after creation.
@@ -64,35 +68,40 @@ export class ChangePassword {
      * Sends user change password request to Management API.
      */
     public async changePassword(): Promise<void> {
+        const isCaptcha = this.requireHipCaptcha();
+        const validationGroup = {
+            password: this.password,
+            newPassword: this.newPassword,
+            passwordConfirmation: this.passwordConfirmation
+        };
+
         let captchaSolution;
         let captchaFlowId;
         let captchaToken;
         let captchaType;
 
-        WLSPHIP0.verify( (solution, token, param) => {
-            WLSPHIP0.clientValidation();
-            if (WLSPHIP0.error !== 0)
-            {
-                this.captcha(null); //is not valid
-                return;
-            }
-            else {
-                captchaSolution = solution;
-                captchaToken = token;
-                captchaType = WLSPHIP0.type;
-                const flowIdElement = <HTMLInputElement>document.getElementById("FlowId")
-                captchaFlowId = flowIdElement.value;
-                this.captcha("valid");
-                return;
-            }
-        },'');
+        if (isCaptcha) {
+            validationGroup["captcha"] = this.captcha;
 
-        const result = validation.group({
-            password: this.password,
-            newPassword: this.newPassword,
-            passwordChangeation: this.passwordConfirmation,
-            captcha: this.captcha
-        });
+            WLSPHIP0.verify((solution, token, param) => {
+                WLSPHIP0.clientValidation();
+                if (WLSPHIP0.error !== 0) {
+                    this.captcha(null); //is not valid
+                    return;
+                }
+                else {
+                    captchaSolution = solution;
+                    captchaToken = token;
+                    captchaType = WLSPHIP0.type;
+                    const flowIdElement = <HTMLInputElement>document.getElementById("FlowId")
+                    captchaFlowId = flowIdElement.value;
+                    this.captcha("valid");
+                    return;
+                }
+            }, '');
+        }
+
+        const result = validation.group(validationGroup);
 
         const clientErrors = result();
 
@@ -102,58 +111,70 @@ export class ChangePassword {
                 source: "changepassword",
                 errors: clientErrors
             };
-            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
             return;
         }
 
         const user = await this.usersService.getCurrentUser();
 
-        const userId = await this.usersService.authenticate(user.email, this.password());
+        let userId = await this.usersService.authenticate(user.email, this.password());
 
         if (!userId) {
             const validationReport: ValidationReport = {
                 source: "changepassword",
                 errors: ["Password is not valid"]
             };
-            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
             return;
         }
 
-        const resetRequest: ChangePasswordRequest = {
-            solution: captchaSolution,
-            flowId: captchaFlowId,
-            token: captchaToken,
-            type: captchaType,
-            userId: userId,
-            newPassword: this.newPassword()
-        };
+        userId = `/users/${userId}`;
 
         try {
-            await this.backendService.sendChangePassword(resetRequest);
+            if (isCaptcha) {
+                const resetRequest: ChangePasswordRequest = {
+                    solution: captchaSolution,
+                    flowId: captchaFlowId,
+                    token: captchaToken,
+                    type: captchaType,
+                    userId: userId,
+                    newPassword: this.newPassword()
+                };
+                await this.backendService.sendChangePassword(resetRequest);
+            } else {
+                await this.usersService.changePassword(userId, this.newPassword());
+            }
             this.isChangeConfirmed(true);
-        }
-        catch (error) {
-            WLSPHIP0.reloadHIP();
+
+            const validationReport: ValidationReport = {
+                source: "changepassword",
+                errors: []
+            };
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+        } catch (error) {
+            if (isCaptcha) {
+                WLSPHIP0.reloadHIP();
+            }
+
+            let errorMessages: string[];
+
             if (error.code === "ValidationError") {
                 const details: any[] = error.details;
 
                 if (details && details.length > 0) {
                     let message = "";
-                    const errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
-                    const validationReport: ValidationReport = {
-                        source: "changepassword",
-                        errors: errorMessages
-                    };
-                    this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+                    errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
                 }
             }
             else {
-                const validationReport: ValidationReport = {
-                    source: "changepassword",
-                    errors: ["Server error. Unable to send request. Please try again later."]
-                };
-                this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+                errorMessages = ["Server error. Unable to send request. Please try again later."];
             }
+
+            const validationReport: ValidationReport = {
+                source: "changepassword",
+                errors: errorMessages
+            };
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         }
     }
 }
