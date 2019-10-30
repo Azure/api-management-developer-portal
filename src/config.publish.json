@@ -4,5 +4,6 @@
   "managementApiAccessToken": "SharedAccessSignature...",
   "blobStorageContainer": "content",
   "blobStorageConnectionString": "DefaultEndpointsProtocol=...",
-  "environment": "publishing"
+  "environment": "publishing",
+  "useHipCaptcha": false
 }
