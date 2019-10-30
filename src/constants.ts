@@ -1,9 +1,6 @@
-export enum HostType {
-    Proxy = "Proxy",
-    Portal = "Portal",
-    Mapi = "Management"
-}
-
+/**
+ * APIM service SKU names.
+ */
 export enum ServiceSkuName {
     Developer = "Developer",
     Basic = "Basic",
@@ -12,6 +9,9 @@ export enum ServiceSkuName {
     Consumption = "Consumption"
 }
 
+/**
+ * Types of API.
+ */
 export enum TypeOfApi {
     soap = "soap",
     http = "http"
@@ -37,12 +37,39 @@ export const pageUrlChangelog = "/api-history";
 export const pageUrlReference = "/reference";
 
 /**
+ * Permalinks pointing to resources that cannot be added, modified or modified.
+ */
+export const reservedPermalinks = [
+    pageUrlSignIn,
+    hashSignOut,
+    pageUrlSignIn,
+    pageUrlProfile,
+    pageUrlHome,
+    pageUrl404,
+    pageUrl500,
+    pageUrlChangePassword,
+    pageUrlChangelog,
+    pageUrlReference,
+    "/publish",
+    "/confirm-v2/identities/basic/signup",
+    "/confirm/invitation",
+    "/confirm-v2/password",
+    "/captcha"
+]
+
+/**
  * Maximum number of items to show in a paginated view.
  */
 export const defaultPageSize = 50;
 
+/**
+ * Default input delay before changes take effect.
+ */
 export const defaultInputDelayMs = 600;
 
+/**
+ * Known setting names.
+ */
 export const SettingNames = {
     devPortalUrl: "devPortalUrl",
     managementApiUrl: "managementApiUrl",
