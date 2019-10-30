@@ -44,10 +44,7 @@
 
 <h2>Products</h2>
 <div>
-    <!-- ko if: reportByProductWorking -->
-    <spinner class="fit"></spinner>
-    <!-- /ko -->
-
+    <!-- ko if: reportByProductHasData -->
     <table class="table">
         <thead>
             <tr>
@@ -151,15 +148,19 @@
         <!-- /ko -->
     </ul>
     <!-- /ko -->
+    <!-- /ko -->
+    <!-- ko ifnot: reportByProductHasData -->
+    <h4>No data to display</h4>
+    <!-- /ko -->
+    <!-- ko if: reportByProductWorking -->
+    <spinner></spinner>
+    <!-- /ko -->
 </div>
 
 
 <h2>Subscriptions</h2>
 <div>
-    <!-- ko if: reportBySubscriptionWorking -->
-    <spinner class="fit"></spinner>
-    <!-- /ko -->
-
+    <!-- ko if: reportBySubscriptionHasData -->
     <table class="table">
         <thead>
             <tr>
@@ -268,14 +269,18 @@
         <!-- /ko -->
     </ul>
     <!-- /ko -->
+    <!-- /ko -->
+    <!-- ko ifnot: reportBySubscriptionHasData -->
+    <h4>No data to display</h4>
+    <!-- /ko -->
+    <!-- ko if: reportBySubscriptionWorking -->
+    <spinner></spinner>
+    <!-- /ko -->
 </div>
 
 <h2>APIs</h2>
 <div>
-    <!-- ko if: reportByApiWorking -->
-    <spinner class="fit"></spinner>
-    <!-- /ko -->
-
+    <!-- ko if: reportByApiHasData -->
     <table class="table">
         <thead>
             <tr>
@@ -379,14 +384,18 @@
         <!-- /ko -->
     </ul>
     <!-- /ko -->
+    <!-- /ko -->
+    <!-- ko ifnot: reportByApiHasData -->
+    <h4>No data to display</h4>
+    <!-- /ko -->
+    <!-- ko if: reportByApiWorking -->
+    <spinner></spinner>
+    <!-- /ko -->
 </div>
 
 <h2>Operations</h2>
 <div>
-    <!-- ko if: reportByOperationWorking -->
-    <spinner class="fit"></spinner>
-    <!-- /ko -->
-
+    <!-- ko if: reportByOperationHasData -->
     <table class="table">
         <thead>
             <tr>
@@ -491,5 +500,12 @@
         </li>
         <!-- /ko -->
     </ul>
+    <!-- /ko -->
+    <!-- /ko -->
+    <!-- ko ifnot: reportByOperationHasData -->
+    <h4>No data to display</h4>
+    <!-- /ko -->
+    <!-- ko if: reportByOperationWorking -->
+    <spinner></spinner>
     <!-- /ko -->
 </div>
