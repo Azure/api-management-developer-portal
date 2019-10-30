@@ -32,9 +32,9 @@
                 placeholder="e.g. Doe" type="text" data-bind="textInput: lastName">
         </div>
 
-        
+        <!-- ko if: requireHipCaptcha -->
         <hip-captcha></hip-captcha>
-       
+        <!-- /ko -->       
         
         <!-- ko if: termsOfUse -->
         <div class="form-group">

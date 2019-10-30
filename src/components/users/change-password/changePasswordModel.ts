@@ -1,1 +1,3 @@
-export class ChangePasswordModel { }
+export class ChangePasswordModel { 
+    public requireHipCaptcha: boolean;
+}

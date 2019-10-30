@@ -5,21 +5,26 @@ import { UserSignupContract } from "./userSignupContract";
 
 
 export class UserSignupModelBinder implements IModelBinder<UserSignupModel> {
+
+    public canHandleContract(contract: Contract): boolean {
+        return contract.type === "user-signup";
+    }
+
     public canHandleModel(model: Object): boolean {
         return model instanceof UserSignupModel;
     }
 
     public async contractToModel(contract: UserSignupContract): Promise<UserSignupModel> {
-        return new UserSignupModel();
-    }
+        const model = new UserSignupModel();
+        model.requireHipCaptcha = contract.requireHipCaptcha;
 
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === "userSignup";
+        return model;
     }
 
     public modelToContract(model: UserSignupModel): Contract {
         const contract: UserSignupContract = {
-            type: "userSignup"
+            type: "user-signup",
+            requireHipCaptcha: model.requireHipCaptcha
         };
 
         return contract;
