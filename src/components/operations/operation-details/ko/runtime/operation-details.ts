@@ -95,7 +95,7 @@ export class OperationDetails {
 
         if (apiName !== this.selectedApiName() || operationName !== this.selectedOperationName()) {
             this.operation(null);
-           
+
             if (operationName) {
                 this.selectedOperationName(operationName);
                 await this.loadOperation(apiName, operationName);
@@ -194,6 +194,11 @@ export class OperationDetails {
 
     private async getProxyHostnames(): Promise<string[]> {
         const apiName = this.routeHelper.getApiName();
+
+        if (!apiName) {
+            return [];
+        }
+
         const apiDefinition: SwaggerObject = await this.apiService.exportApi(`apis/${apiName}`, "swagger");
         return [apiDefinition.host];
     }

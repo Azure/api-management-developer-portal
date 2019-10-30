@@ -5,25 +5,11 @@
     }
 }
 
-// @media (min-width: $breakpoint-xs) {
-//     .nav {
-//         flex-basis: 100%;
-
-//         .nav-item {
-//             flex-basis: 100%;
-//         }
-//     }
-// }
-
-// @media (min-width: $breakpoint-md) {
-//     .nav {
-//         flex-basis: auto;
-
-//         .nav-item {
-//             flex-basis: auto;
-//         }
-//     }
-// }
+.menu {
+    .nav-item {
+        cursor: pointer;
+    }
+}
 
 .menu.menu-vertical {
     .nav {
