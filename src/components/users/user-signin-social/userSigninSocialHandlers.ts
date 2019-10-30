@@ -7,7 +7,7 @@ export class UserSigninSocialHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "userSigninSocial",
             category: "User",
-            displayName: "Social accounts",
+            displayName: "OAuth buttons",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
             createModel: async () => new UserSigninSocialModel()
