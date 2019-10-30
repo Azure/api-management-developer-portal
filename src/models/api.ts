@@ -21,6 +21,8 @@ export class Api {
      */
     public displayName?: string;
 
+    public versionedDisplayName?: string;
+
     /**
      * Description of API.
      */
@@ -87,6 +89,7 @@ export class Api {
 
         this.name = contract.name;
         this.displayName = contract.properties.displayName;
+        this.versionedDisplayName = contract.properties.displayName;
         this.serviceUrl = contract.properties.serviceUrl;
         this.protocols = contract.properties.protocols;
         this.description = contract.properties.description;
@@ -108,6 +111,10 @@ export class Api {
 
             if (nestedVersionSet && this.apiVersion && versionSet.versioningScheme === "Segment") {
                 this.versionedPath = `${this.path}/${this.apiVersion}`;
+            }
+
+            if (this.apiVersion) {
+                this.versionedDisplayName = `${this.displayName} - ${this.apiVersion}`;
             }
         }
     }
