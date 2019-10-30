@@ -9,8 +9,7 @@ export class SignOutRouteGuard implements RouteGuard {
     public async canActivate(route: Route): Promise<boolean> {
         if (route.hash === hashSignOut) {
             this.authenticator.clearAccessToken();
-            route.path = pageUrlHome;
-            route.url = pageUrlHome;
+            location.assign(pageUrlHome);
         }
         return true;
     }
