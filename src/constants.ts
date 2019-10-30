@@ -28,28 +28,33 @@ export enum IdentityProviders {
 
 export const hashSignOut = "signout";
 export const pageUrlSignIn = "/signin";
+export const pageUrlSignInSso = "/signinsso";
+export const pageUrlSignUp = "/signup";
 export const pageUrlProfile = "/profile";
 export const pageUrlHome = "/";
 export const pageUrl404 = "/404";
 export const pageUrl500 = "/500";
 export const pageUrlChangePassword = "/change-password";
-export const pageUrlChangelog = "/api-history";
-export const pageUrlReference = "/reference";
+export const pageUrlConfirmPassword = "/confirm-password";
+export const pageUrlResetPassword = "/reset-password";
+export const pageUrlChangelog = "/api-change-log";
+export const pageUrlReference = "/apis";
 
 /**
  * Permalinks pointing to resources that cannot be added, modified or modified.
  */
 export const reservedPermalinks = [
-    pageUrlSignIn,
-    hashSignOut,
-    pageUrlSignIn,
-    pageUrlProfile,
     pageUrlHome,
     pageUrl404,
     pageUrl500,
+    pageUrlSignIn,
+    pageUrlSignInSso,
+    pageUrlSignUp,
+    pageUrlProfile,
     pageUrlChangePassword,
+    pageUrlConfirmPassword,
     pageUrlChangelog,
-    pageUrlReference,
+    hashSignOut,
     "/publish",
     "/confirm-v2/identities/basic/signup",
     "/confirm/invitation",
