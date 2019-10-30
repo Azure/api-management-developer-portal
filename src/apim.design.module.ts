@@ -1,3 +1,4 @@
+import * as Constants from "./constants";
 import { UnsavedChangesRouteGuard } from "./routing/unsavedChangesRouteGuard";
 import { MapiObjectStorage } from "./persistence/mapiObjectStorage";
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";
@@ -113,5 +114,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindToCollection("routeGuards", UnsavedChangesRouteGuard);
         injector.bindToCollection("trayCommands", SaveChangesToolButton);
+        injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);       
     }
 }
