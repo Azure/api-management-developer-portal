@@ -45,7 +45,7 @@ export class ProductListDropdown {
         this.expanded = ko.observable(false);
         this.selection = ko.computed(() => {
             const product = ko.unwrap(this.selectedProduct);
-            return product ? product.displayName : "Select Product";
+            return product ? product.displayName : "Select product";
         });
     }
 
