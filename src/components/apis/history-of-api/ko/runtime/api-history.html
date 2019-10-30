@@ -1,12 +1,11 @@
 <div class="flex flex-row">
-    <!-- ko if: working-->
+    <!-- ko if: apiWorking-->
     <spinner class="fit"></spinner>
     <!-- /ko -->
 
-    <!-- ko ifnot: working -->
+    <!-- ko ifnot: apiWorking -->
     <div class="flex-item flex-grow animation-fade-in">
         <!-- ko if: api -->
-        <h1>API changelog</h1>
         <a href="#" class="nav-link text-truncate" data-bind="attr: {href: $component.getReferenceUrl()}">&lt&lt Go back to the
             API reference page.</a>
         <h2 data-bind="text: api().displayName"></h2>
@@ -22,13 +21,26 @@
                         </div>
                     </div>
                 </div>
+                <!-- ko ifnot: changeLogWorking -->
+                <!-- ko if: currentPageLog().length > 0 -->
                 <div data-bind="foreach: { data: currentPageLog, as: 'hist' }">
                     <div class="table-row">
                         <div class="col-3" data-bind="text: hist.properties.updatedDateTime"></div>
                         <div class="col-9" data-bind="text: hist.properties.notes"></div>
                     </div>
                 </div>
+                <!-- /ko -->
+                <!-- ko if: currentPageLog().length === 0 -->
+                <p>
+                    No records to show.
+                </p>
+                <!-- /ko -->
+                <!-- /ko -->
             </div>
+
+            <!-- ko if: changeLogWorking -->
+            <spinner></spinner>
+            <!-- /ko -->
 
             <!-- ko if: changeLogHasPager -->
             <ul class="pagination justify-content-center">
