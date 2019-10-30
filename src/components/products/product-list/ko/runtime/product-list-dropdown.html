@@ -11,7 +11,7 @@
 
     <div class="dropdown" data-bind="visible: expanded">
         <div class="search-input">
-            <input type="search" role="searchbox" aria-label="Search" placeholder="Search Products"
+            <input type="search" role="searchbox" aria-label="Search" placeholder="Search products"
                 data-bind="textInput: pattern" />
             <button type="button" class="search-button">
                 <i class="icon icon-magnifier"></i>
@@ -20,7 +20,7 @@
 
         <div role="list">
             <!-- ko if: working -->
-            <spinner class="fit" role="presentation"></spinner>
+            <spinner role="presentation"></spinner>
             <!-- /ko -->
 
             <!-- ko ifnot: working -->
@@ -31,7 +31,7 @@
             <!-- /ko -->
 
             <!-- ko if: products().length === 0 -->
-            <p>No Products found</p>
+            <p>No products found</p>
             <!-- /ko -->
 
             <!-- ko if: hasPager -->
