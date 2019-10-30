@@ -6,8 +6,9 @@ import { HttpHeader, HttpClient, HttpMethod } from "@paperbits/common/http";
 import { User } from "../models/user";
 import { Utils } from "../utils";
 import { Identity } from "../contracts/identity";
-import { UserContract, UserPropertiesContract, UserIdentity } from "../contracts/user";
+import { UserContract, } from "../contracts/user";
 import { ISettingsProvider } from "@paperbits/common/configuration";
+import { MapiSignupRequest } from "../contracts/signupRequest";
 
 /**
  * A service for management operations with users.
@@ -213,5 +214,29 @@ export class UsersService {
         }
 
         return userId;
+    }
+
+    public async createSignupRequest(signupRequest: MapiSignupRequest): Promise<void> {
+        await this.mapiClient.post("/users", null, signupRequest);
+    }
+
+    public async createResetPasswordRequest(email: string): Promise<void> {
+        const payload = {"to": email, "appType": "developerPortal"};
+        await this.mapiClient.post("/confirmations/password", null, payload);
+    }
+
+    public async changePassword(userId: string, newPassword: string): Promise<void> {
+        const authToken = this.authenticator.getAccessToken();
+
+        if (!authToken) {
+            throw Error("Auth token not found");
+        }
+        
+        const headers = [
+            { name: "Authorization", value: authToken },
+            { name: "If-Match", value: "*" }
+        ];
+        const payload = { "password": newPassword };
+        await this.mapiClient.patch(userId, headers, payload);
     }
 }
