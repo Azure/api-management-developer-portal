@@ -71,7 +71,7 @@ export const defaultInputDelayMs = 600;
  * Known setting names.
  */
 export const SettingNames = {
-    devPortalUrl: "devPortalUrl",
+    backendUrl: "backendUrl",
     managementApiUrl: "managementApiUrl",
     managementApiVersion: "managementApiVersion",
     managementApiAccessToken: "managementApiAccessToken"

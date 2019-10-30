@@ -134,7 +134,7 @@ export class BackendService {
 
     private async getUrl(path: string): Promise<string> {
         if (!this.portalUrl) {
-            this.portalUrl = await this.settingsProvider.getSetting<string>(SettingNames.devPortalUrl) || "";
+            this.portalUrl = await this.settingsProvider.getSetting<string>(SettingNames.backendUrl) || "";
         }
         return `${this.portalUrl}${path}`;
     }
