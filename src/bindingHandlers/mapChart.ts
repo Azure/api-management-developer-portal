@@ -148,10 +148,10 @@ ko.bindingHandlers["mapChart"] = {
 
         const subunits = topojson.feature(worldMapShapes, worldMapShapes.objects.subunits);
         subunits.features = subunits.features.filter((d) => d.id !== "ATA");
-
+        
         minHeat = d3.min(subunits.features, (d) => d.properties.heat);
         const maxHeat = d3.max(subunits.features, (d) => d.properties.heat);
-
+        
         let heats = subunits.features.map((d) => { return d.properties.heat; });
         heats = heats.filter((d) => d).sort(d3.ascending);
 
@@ -183,49 +183,51 @@ ko.bindingHandlers["mapChart"] = {
                 ? formatHeat(record.properties.heat)
                 : "");
 
-        const gradient = defs.append("linearGradient")
-            .attr("id", "heatGradient")
-            .attr("x1", "0%")
-            .attr("x2", "100%")
-            .attr("y1", "50%")
-            .attr("y2", "50%");
+        if (maxHeat !== undefined) {
+            const gradient = defs.append("linearGradient")
+                .attr("id", "heatGradient")
+                .attr("x1", "0%")
+                .attr("x2", "100%")
+                .attr("y1", "50%")
+                .attr("y2", "50%");
 
-        gradient.append("stop")
-            .attr("class", "start")
-            .attr("offset", "0%")
-            .attr("stop-color", palette[0])
-            .attr("stop-opacity", 1);
+            gradient.append("stop")
+                .attr("class", "start")
+                .attr("offset", "0%")
+                .attr("stop-color", palette[0])
+                .attr("stop-opacity", 1);
 
-        gradient.append("stop")
-            .attr("class", "end")
-            .attr("offset", "100%")
-            .attr("stop-color", palette[palette.length - 1])
-            .attr("stop-opacity", 1);
+            gradient.append("stop")
+                .attr("class", "end")
+                .attr("offset", "100%")
+                .attr("stop-color", palette[palette.length - 1])
+                .attr("stop-opacity", 1);
 
-        svg.append("rect")
-            .attr("x", legendTextWidth)
-            .attr("y", height - 80)
-            .attr("width", width - (legendTextWidth * 2))
-            .attr("height", heatBarHeight)
-            .style("fill", "url(#heatGradient)");
+            svg.append("rect")
+                .attr("x", legendTextWidth)
+                .attr("y", height - 80)
+                .attr("width", width - (legendTextWidth * 2))
+                .attr("height", heatBarHeight)
+                .style("fill", "url(#heatGradient)");
 
-        const legendTextPadding = 10;
+            const legendTextPadding = 10;
 
-        svg.append("text")
-            .attr("x", legendTextWidth - legendTextPadding)
-            .attr("y", height - 71)
-            .attr("text-anchor", "end")
-            .text("0")
-            .style("font-size", fontSize)
-            .style("text-align", "right")
-            .attr("alignment-baseline", "middle");
+            svg.append("text")
+                .attr("x", legendTextWidth - legendTextPadding)
+                .attr("y", height - 71)
+                .attr("text-anchor", "end")
+                .text("0")
+                .style("font-size", fontSize)
+                .style("text-align", "right")
+                .attr("alignment-baseline", "middle");
 
-        svg.append("text")
-            .attr("x", width - legendTextWidth + legendTextPadding)
-            .attr("y", height - 71)
-            .attr("width", legendTextWidth)
-            .text(formatHeat(maxHeat))
-            .style("font-size", fontSize)
-            .attr("alignment-baseline", "middle");
+            svg.append("text")
+                .attr("x", width - legendTextWidth + legendTextPadding)
+                .attr("y", height - 71)
+                .attr("width", legendTextWidth)
+                .text(formatHeat(maxHeat))
+                .style("font-size", fontSize)
+                .attr("alignment-baseline", "middle");
+        }
     }
 };
