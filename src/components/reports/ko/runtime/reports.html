@@ -44,7 +44,6 @@
 
 <h2>Products</h2>
 <div>
-    <!-- ko if: reportByProductHasData -->
     <table class="table">
         <thead>
             <tr>
@@ -109,6 +108,7 @@
                 </th>
             </tr>
         </thead>
+        <!-- ko if: reportByProductHasData -->
         <tbody data-bind="foreach: { data: $component.reportByProduct, as: 'record' }">
             <tr class="ap-table-row ap-is-first" data-bind="css: { 'ap-is-first': !$index() }">
                 <td>
@@ -123,6 +123,16 @@
                 <td data-bind="text: record.bandwidth"></td>
             </tr>
         </tbody>
+        <!-- /ko -->
+        <!-- ko ifnot: reportByProductHasData -->
+        <tbody>
+            <tr>
+                <td>
+                    No data to display
+                </td>
+            </tr>
+        </tbody>
+        <!-- /ko -->
     </table>
 
     <!-- ko if: reportByProductHasPager -->
@@ -148,10 +158,6 @@
         <!-- /ko -->
     </ul>
     <!-- /ko -->
-    <!-- /ko -->
-    <!-- ko ifnot: reportByProductHasData -->
-    <h4>No data to display</h4>
-    <!-- /ko -->
     <!-- ko if: reportByProductWorking -->
     <spinner></spinner>
     <!-- /ko -->
@@ -160,7 +166,6 @@
 
 <h2>Subscriptions</h2>
 <div>
-    <!-- ko if: reportBySubscriptionHasData -->
     <table class="table">
         <thead>
             <tr>
@@ -230,6 +235,7 @@
                 </th>
             </tr>
         </thead>
+        <!-- ko if: reportBySubscriptionHasData -->
         <tbody data-bind="foreach: { data: $component.reportBySubscription, as: 'record' }">
             <tr>
                 <td>
@@ -244,6 +250,16 @@
                 <td data-bind="text: record.bandwidth"></td>
             </tr>
         </tbody>
+        <!-- /ko -->
+        <!-- ko ifnot: reportBySubscriptionHasData -->
+        <tbody>
+            <tr>
+                <td>
+                    No data to display
+                </td>
+            </tr>
+        </tbody>
+        <!-- /ko -->
     </table>
 
     <!-- ko if: reportBySubscriptionHasPager -->
@@ -269,10 +285,6 @@
         <!-- /ko -->
     </ul>
     <!-- /ko -->
-    <!-- /ko -->
-    <!-- ko ifnot: reportBySubscriptionHasData -->
-    <h4>No data to display</h4>
-    <!-- /ko -->
     <!-- ko if: reportBySubscriptionWorking -->
     <spinner></spinner>
     <!-- /ko -->
@@ -280,7 +292,6 @@
 
 <h2>APIs</h2>
 <div>
-    <!-- ko if: reportByApiHasData -->
     <table class="table">
         <thead>
             <tr>
@@ -345,6 +356,7 @@
                 </th>
             </tr>
         </thead>
+        <!-- ko if: reportByApiHasData -->
         <tbody data-bind="foreach: { data: $component.reportByApi, as: 'record' }">
             <tr>
                 <td>
@@ -359,6 +371,16 @@
                 <td data-bind="text: record.bandwidth"></td>
             </tr>
         </tbody>
+        <!-- /ko -->
+        <!-- ko ifnot: reportByApiHasData -->
+        <tbody>
+            <tr>
+                <td>
+                    No data to display
+                </td>
+            </tr>
+        </tbody>
+        <!-- /ko -->
     </table>
 
     <!-- ko if: reportByApiHasPager -->
@@ -384,10 +406,6 @@
         <!-- /ko -->
     </ul>
     <!-- /ko -->
-    <!-- /ko -->
-    <!-- ko ifnot: reportByApiHasData -->
-    <h4>No data to display</h4>
-    <!-- /ko -->
     <!-- ko if: reportByApiWorking -->
     <spinner></spinner>
     <!-- /ko -->
@@ -395,7 +413,6 @@
 
 <h2>Operations</h2>
 <div>
-    <!-- ko if: reportByOperationHasData -->
     <table class="table">
         <thead>
             <tr>
@@ -462,6 +479,7 @@
                 </th>
             </tr>
         </thead>
+        <!-- ko if: reportByOperationHasData -->
         <tbody data-bind="foreach: { data: $component.reportByOperation, as: 'record' }">
             <tr>
                 <td>
@@ -476,6 +494,16 @@
                 <td data-bind="text: record.bandwidth"></td>
             </tr>
         </tbody>
+        <!-- /ko -->
+        <!-- ko ifnot: reportByOperationHasData -->
+        <tbody>
+            <tr>
+                <td>
+                    No data to display
+                </td>
+            </tr>
+        </tbody>
+        <!-- /ko -->
     </table>
 
     <!-- ko if: reportByOperationHasPager -->
@@ -500,10 +528,6 @@
         </li>
         <!-- /ko -->
     </ul>
-    <!-- /ko -->
-    <!-- /ko -->
-    <!-- ko ifnot: reportByOperationHasData -->
-    <h4>No data to display</h4>
     <!-- /ko -->
     <!-- ko if: reportByOperationWorking -->
     <spinner></spinner>
