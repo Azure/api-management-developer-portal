@@ -49,7 +49,7 @@
                 <div class="row">
                     <label class="col-lg-3">Requested on</label>
                     <div class="col-lg-6">
-                        <span data-bind="text: model.createdDate"></span>
+                        <span data-bind="text: $parent.timeToString(model.createdDate)"></span>
                     </div>
                 </div>
                 <!-- /ko -->
