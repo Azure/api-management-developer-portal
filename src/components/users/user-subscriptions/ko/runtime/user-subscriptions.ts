@@ -42,9 +42,7 @@ export class UserSubscriptions {
 
     private async loadSubscriptions(userId: string): Promise<void> {
         const models = await this.productService.getUserSubscriptionsWithProductName(userId);
-        const subscriptions = [];
-
-        models.map(item => item.state === SubscriptionState.active && subscriptions.push(new SubscriptionViewModel(item)));
+        const subscriptions = models.map(item => new SubscriptionViewModel(item));
 
         this.subscriptions(subscriptions);
     }
