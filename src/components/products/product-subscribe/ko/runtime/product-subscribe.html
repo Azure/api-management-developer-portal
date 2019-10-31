@@ -15,9 +15,9 @@
 <!-- ko if: isUserSignedIn -->
 
 <!-- ko if: limitReached -->
-<div>
-    <b>You've reached maximum number of subscriptions.</b>
-</div>
+<p>
+    You've reached maximum number of subscriptions.
+</p>
 <!-- /ko -->
 
 <!-- ko ifnot: limitReached -->
@@ -25,7 +25,7 @@
     <div class="table">        
         <div class="table-row">
             <div class="col-5">
-                <input type="text" class="form-control" placeholder="Your new product subscription name" data-bind="value: subscriptionName" />
+                <input type="text" class="form-control" placeholder="Your new product subscription name" data-bind="textInput: subscriptionName" />
             </div>
             <div class="col-4 form-inline">
                 <!-- ko if: termsOfUse -->

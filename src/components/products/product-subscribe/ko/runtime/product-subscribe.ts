@@ -63,7 +63,7 @@ export class ProductSubscribe {
     private async loadProduct(): Promise<void> {
         const userId = await this.usersService.getCurrentUserId();
         this.isUserSignedIn(!!userId);
-        
+
         try {
             this.showTermsOfUse(false);
             this.working(true);
@@ -81,7 +81,6 @@ export class ProductSubscribe {
             }
 
             this.product(product);
-            this.subscriptionName(product.displayName);
             this.termsOfUse(product.terms);
 
             if (product.terms) {
@@ -90,7 +89,7 @@ export class ProductSubscribe {
 
             if (userId) {
                 await this.loadSubscriptions(userId);
-            }   
+            }
         }
         catch (error) {
             if (error.code === "Unauthorized") {
@@ -122,8 +121,8 @@ export class ProductSubscribe {
         const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
         if (isDelegationEnabled) {
             const delegationParam = {};
-            delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", userId);
-            delegationParam[DelegationParameters.ProductId] =  Utils.getResourceName("products", productId);
+            delegationParam[DelegationParameters.UserId] = Utils.getResourceName("users", userId);
+            delegationParam[DelegationParameters.ProductId] = Utils.getResourceName("products", productId);
 
             const delegationUrl = await this.backendService.getDelegationUrl(DelegationAction.subscribe, delegationParam);
             if (delegationUrl) {
@@ -137,7 +136,7 @@ export class ProductSubscribe {
 
     public async subscribe(): Promise<void> {
         const userId = await this.usersService.ensureSignedIn();
-        
+
         if (!userId) {
             return;
         }
@@ -147,7 +146,7 @@ export class ProductSubscribe {
             return;
         }
 
-        const productId = `products/${productName}`;
+        const productId = `/products/${productName}`;
 
         if (!this.canSubscribe()) {
             return;
@@ -170,15 +169,13 @@ export class ProductSubscribe {
 
             await this.productService.createSubscription(subscriptionId, userId, productId, this.subscriptionName());
             this.usersService.navigateToProfile();
-        }
-        catch (error) {
+        } catch (error) {
             if (error.code === "Unauthorized") {
                 this.usersService.navigateToSignin();
                 return;
             }
             throw new Error(`Unable to subscribe to a product. Error: ${error.message}`);
-        }
-        finally {
+        } finally {
             this.working(false);
         }
     }
@@ -186,8 +183,7 @@ export class ProductSubscribe {
     public toggleTermsOfUser(): void {
         if (this.showTermsOfUse()) {
             this.showHideLabel("Show");
-        }
-        else {
+        } else {
             this.showHideLabel("Hide");
         }
         this.showTermsOfUse(!this.showTermsOfUse());

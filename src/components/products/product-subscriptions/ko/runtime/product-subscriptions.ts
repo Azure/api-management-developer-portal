@@ -61,7 +61,7 @@ export class ProductSubscriptions {
         this.working(true);
         try {
             const pageNumber = this.page() - 1;
-            const itemsPage = await this.productService.getSubscriptionsForProduct(userId, productName);
+            const itemsPage = await this.productService.getSubscriptionsForProduct(userId, `/products/${productName}`);
 
             this.hasPrevPage(pageNumber > 0);
             this.hasNextPage(!!itemsPage.nextLink);
