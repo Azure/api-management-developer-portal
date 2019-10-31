@@ -17,6 +17,7 @@ export class HipCaptcha {
     constructor(private readonly backendService: BackendService) {
         this.encryptedFlowId = ko.observable();
         const hipObjScriptElement = document.createElement("script");
+        hipObjScriptElement.type = "text/javascript";
         hipObjScriptElement.src = "/scripts/js/HipObject.js";
 
         this.onLoad = this.onLoad.bind(this);
@@ -29,6 +30,7 @@ export class HipCaptcha {
         this.encryptedFlowId(params.EncryptedFlowId);
 
         const scriptElement = document.createElement("script");
+        scriptElement.type = "text/javascript";
         scriptElement.src = params.HipUrl;
 
         const captchaElement = document.getElementById("captcha");
