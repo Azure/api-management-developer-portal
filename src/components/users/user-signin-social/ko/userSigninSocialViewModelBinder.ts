@@ -27,10 +27,16 @@ export class UserSigninSocialViewModelBinder implements ViewModelBinder<UserSign
         const aadB2CIdentityProvider = identityProviders.find(x => x.type === "aadB2C");
 
         if (aadB2CIdentityProvider) {
+            let signinTenant = aadB2CIdentityProvider.signinTenant;
+
+            if (!signinTenant && aadB2CIdentityProvider.allowedTenants.length > 0) {
+                signinTenant = aadB2CIdentityProvider.allowedTenants[0];
+            }
+
             const aadB2CConfig = {
                 clientId: aadB2CIdentityProvider.clientId,
                 authority: aadB2CIdentityProvider.authority,
-                instance: aadB2CIdentityProvider.signinTenant,
+                instance: signinTenant,
                 signInPolicy: aadB2CIdentityProvider.signinPolicyName
             };
 
