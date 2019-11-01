@@ -7,47 +7,68 @@
     }
 }
 
-$switch-background-color: #0078d4;
+$switch-background-color-on: #0078d4;
+$switch-background-color-off: #ccc;
 $switch-handle-color: #fff;
-$switch-width: 50px;
+$switch-width: 55px;
 $switch-height: 30px;
-$switch-trigger-size: 26px;
+$switch-trigger-gap: 4px;
+$switch-trigger-size: $switch-height - $switch-trigger-gap * 2;
 
-input[type=checkbox].switch {
+
+.switch {
     position: relative;
-    -webkit-appearance: none;
-    outline: none;
+    display: inline-block;
     width: $switch-width;
     height: $switch-height;
-    background-color: $switch-handle-color;
-    border: 1px solid #D9DADC;
-    border-radius: $switch-width;
-    box-shadow: inset -20px 0 0 0 $switch-handle-color;
-    min-width: $switch-width;
     margin: 10px;
 
-    &:after {
-        content: "";
-        position: absolute;
-        top: 1px;
-        left: 1px;
-        background: transparent;
-        width: $switch-trigger-size;
-        height: $switch-trigger-size;
-        border-radius: 50%;
-        box-shadow: 2px 4px 6px rgba(0,0,0,0.2);
-    }
+    input[type=checkbox] {
+        opacity: 0;
+        width: 0;
+        height: 0;
 
-    &:checked {
-        box-shadow: inset 20px 0 0 0 $switch-background-color;
-        border-color: $switch-background-color;
-
-        &:after {
-            left: 20px;
-            box-shadow: -2px 4px 3px rgba(0,0,0,0.05);
+        &:checked + .slider {
+            background: $switch-background-color-on;
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        
+         &:checked + .slider:before {
+            transform: translateX(26px);
         }
     }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: $switch-background-color-off;
+        box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.4);
+        transition: .4s;
+
+        &.round {
+            border-radius: 34px;
+            &:before {
+                border-radius: 50%;
+            }
+        }
+
+        &:before {
+            position: absolute;
+            content: "";
+            height: $switch-trigger-size;
+            width: $switch-trigger-size;
+            left: $switch-trigger-gap;
+            bottom: $switch-trigger-gap;
+            background: #ffffff;
+            transition: .4s;
+        }
+    }   
 }
+
 
 $search-button-width: 30px;
 
@@ -70,7 +91,8 @@ $search-button-width: 30px;
 }
 
 .expanded {
-    .icon-chevron-down { // TODO: Introduce proper class for dropdown toggle
+    .icon-chevron-down {
+        // TODO: Introduce proper class for dropdown toggle
         transform: rotate(180deg);
     }
 }
