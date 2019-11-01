@@ -2,6 +2,7 @@ import * as ko from "knockout";
 import { ToolButton } from "@paperbits/common/ui";
 import { EventManager } from "@paperbits/common/events";
 import { OfflineObjectStorage } from "@paperbits/common/persistence";
+import { Logger } from "@paperbits/common/logging";
 
 export class SaveChangesToolButton implements ToolButton {
     public iconClass: string = "paperbits-icon paperbits-floppy-disk";
@@ -10,7 +11,8 @@ export class SaveChangesToolButton implements ToolButton {
 
     constructor(
         private readonly eventManager: EventManager,
-        private readonly offlineObjectStorage: OfflineObjectStorage
+        private readonly offlineObjectStorage: OfflineObjectStorage,
+        private readonly logger: Logger
     ) {
         this.disabled = ko.observable(true);
         this.eventManager.addEventListener("onDataChange", this.onDataChange.bind(this));
@@ -21,6 +23,7 @@ export class SaveChangesToolButton implements ToolButton {
     }
 
     public onActivate(): void {
+        this.logger.traceEvent("Click: Save changes button");
         this.eventManager.dispatchEvent("onSaveChanges");
     }
 }
