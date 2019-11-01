@@ -10,9 +10,12 @@
     </div>
     <div class="col-md-4">
         <div class="form-group form-group-inline">
-            <label for="groupByTag">Group by tag</label>
-            <input id="groupByTag" class="switch" type="checkbox" name="groupByTag"
-                data-bind="checked: $component.groupByTag" />
+            <label for="groupByTag">Group by tag
+                <div class="switch">
+                    <input id="groupByTag" type="checkbox" data-bind="checked: $component.groupByTag">
+                    <span class="slider round"></span>
+                </div>
+            </label>
         </div>
     </div>
 </div>
@@ -26,8 +29,6 @@
 
     <!-- ko ifnot: working -->
     <div class="cards-body animation-fade-in">
-
-
         <!-- ko if: groupByTag -->
         <!-- ko foreach: { data: apiGroups, as: 'group' } -->
         <div class="tag-group">

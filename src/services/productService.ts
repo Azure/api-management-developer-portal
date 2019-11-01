@@ -94,10 +94,9 @@ export class ProductService {
             const products = await this.getProducts(true);
 
             contracts.value
-                .filter(item => item.properties.scope.indexOf("/products/") !== -1)
                 .map((item) => {
                     const model = new Subscription(item);
-                    const product = products.find(p => p.id === model.scope);
+                    const product = products.find(p => model.scope.endsWith(p.id));
                     model.productName = product && product.displayName;
                     result.push(model);
                 });
