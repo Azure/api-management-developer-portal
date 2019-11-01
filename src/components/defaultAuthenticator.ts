@@ -16,11 +16,25 @@ export class DefaultAuthenticator implements IAuthenticator {
     }
 
     public isAuthenticated(): boolean {
-        return !!this.getAccessToken();
+        const accessToken = this.getAccessToken();
+
+        if (!accessToken) {
+            return false;
+        }
+
+        const parsedToken = this.parseAccessToken(accessToken);
+
+        if (!parsedToken) {
+            return false;
+        }
+
+        const now = new Date();
+
+        return now < parsedToken.expires;
     }
 
     private parseSharedAccessSignature(accessToken: string): AccessToken {
-        const regex = /^\w*\&(\d*)\&/gm;
+        const regex = /^[\w\-]*\&(\d*)\&/gm;
         const match = regex.exec(accessToken);
 
         if (!match || match.length < 2) {
