@@ -229,13 +229,13 @@
     </div>
 </div>
 
-<!-- ko if: sendingRequest-->
+<!-- ko if: sendingRequest -->
 <div class="panel panel-dark" data-bind="scrollintoview: {}">
     <spinner class="fit"></spinner>
 </div>
 <!-- /ko -->
 
-<!-- ko if: requestError-->
+<!-- ko if: requestError -->
 <div class="panel panel-dark animation-fade-in" data-bind="scrollintoview: {}">
     <p>Unable to complete the request</p>
     <p class="text-muted" data-bind="html: requestError"></p>
@@ -243,15 +243,15 @@
 <!-- /ko -->
 
 <!-- ko if: responseStatusCode -->
-<div class="panel panel-dark animation-fade-in" data-bind="scrollintoview: {}">
+<div class="panel panel-dark menu menu-horizontal animation-fade-in" data-bind="scrollintoview: {}">
     <ul class="nav">
-        <li class="nav-item">
-            <a href="#" class="nav-link active"
-                data-bind="click: selectMessageTab, css: { active: responseActiveTab() === 'message' }">Message</a>
-        </li>
-        <li class="nav-item">
+        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.responseActiveTab() === 'message' }">
             <a href="#" class="nav-link"
-                data-bind="click: selectTraceTab, css: { active: responseActiveTab() === 'trace' }">Trace</a>
+                data-bind="click: $component.selectMessageTab">Message</a>
+        </li>
+        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.responseActiveTab() === 'trace' }">
+            <a href="#" class="nav-link"
+                data-bind="click: $component.selectTraceTab">Trace</a>
         </li>
     </ul>
 
