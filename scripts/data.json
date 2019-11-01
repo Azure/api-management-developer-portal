@@ -86,7 +86,7 @@
             "description": "",
             "keywords": "",
             "documentId": "contentTypes/document/contentItems/933ce351-2259-d7b7-3f4f-5c33f3ad328a",
-            "permalink": "/api-change-log"
+            "permalink": "/api-changelog"
         }
     },
     "/contentTypes/page/contentItems/9862f795-6e36-217e-6dc7-cf7226591267": {
@@ -766,10 +766,10 @@
                             "category": "appearance",
                             "id": "components/picture/nhebn",
                             "margin": {
-                                "top": 20,
+                                "top": 10,
                                 "left": 20,
                                 "right": 20,
-                                "bottom": 4
+                                "bottom": 20
                             }
                         }
                     },
@@ -904,6 +904,10 @@
                                                     "colorId": "colors/O6nZg"
                                                 }
                                             }
+                                        },
+                                        "margin": {
+                                            "left": 1,
+                                            "right": 1
                                         }
                                     }
                                 }
@@ -985,6 +989,10 @@
                                                     "colorId": "colors/primaryText"
                                                 }
                                             }
+                                        },
+                                        "margin": {
+                                            "left": 1,
+                                            "right": 1
                                         }
                                     }
                                 }
@@ -1763,6 +1771,10 @@
                                                     "colorId": "colors/O6nZg"
                                                 }
                                             }
+                                        },
+                                        "margin": {
+                                            "left": 1,
+                                            "right": 1
                                         }
                                     },
                                     "active": {
@@ -3082,6 +3094,17 @@
         "nodes": [
             {
                 "type": "layout-section",
+                "styles": {
+                    "instance": {
+                        "stickTo": {
+                            "xl": "none",
+                            "sm": "none",
+                            "md": "none",
+                            "lg": "none"
+                        },
+                        "id": "bcgkrvidmt"
+                    }
+                },
                 "nodes": [
                     {
                         "type": "grid",
@@ -3099,49 +3122,28 @@
                                         "hyperlink": {
                                             "targetId": "contentTypes/page/contentItems/e0987ca1-f458-b546-7697-7be594b35583"
                                         }
-                                    }
-                                ],
-                                "role": "aside",
-                                "styles": {
-                                    "instance": {
-                                        "grid-cell": {
-                                            "xs": {
-                                                "position": {
-                                                    "col": 1,
-                                                    "row": 1
-                                                },
-                                                "span": {
-                                                    "cols": 1,
-                                                    "rows": 1
-                                                },
-                                                "alignment": {
-                                                    "vertical": "center",
-                                                    "horizontal": "center"
-                                                }
-                                            },
-                                            "xl": {
-                                                "alignment": {
-                                                    "vertical": "start",
-                                                    "horizontal": "start"
-                                                }
-                                            }
-                                        },
-                                        "id": "bqpgvzuzsh"
-                                    }
-                                }
-                            },
-                            {
-                                "type": "grid-cell",
-                                "nodes": [
+                                    },
                                     {
                                         "type": "collapsible-panel",
                                         "styles": {
                                             "instance": {
                                                 "container": {
-                                                    "xl": {
+                                                    "lg": {
                                                         "alignment": {
-                                                            "vertical": "start",
                                                             "horizontal": "end"
+                                                        },
+                                                        "overflow": {
+                                                            "vertical": "auto",
+                                                            "horizontal": "auto"
+                                                        }
+                                                    },
+                                                    "md": {
+                                                        "alignment": {
+                                                            "horizontal": "end"
+                                                        },
+                                                        "overflow": {
+                                                            "vertical": "auto",
+                                                            "horizontal": "auto"
                                                         }
                                                     }
                                                 },
@@ -3151,8 +3153,6 @@
                                         "nodes": [
                                             {
                                                 "type": "menu",
-                                                "minHeading": null,
-                                                "maxHeading": null,
                                                 "navigationItemId": "main",
                                                 "layout": "horizontal",
                                                 "styles": {
@@ -3162,8 +3162,6 @@
                                             },
                                             {
                                                 "type": "menu",
-                                                "minHeading": null,
-                                                "maxHeading": null,
                                                 "navigationItemId": "ed7c0fc2-6fa3-2efd-4ec9-0d8feb484a12",
                                                 "layout": "horizontal",
                                                 "styles": {
@@ -3175,8 +3173,6 @@
                                             },
                                             {
                                                 "type": "menu",
-                                                "minHeading": null,
-                                                "maxHeading": null,
                                                 "navigationItemId": "74ed66aa-1cc0-f91a-60c6-6e1b2aa239ea",
                                                 "layout": "horizontal",
                                                 "styles": {
@@ -3195,7 +3191,7 @@
                                         "grid-cell": {
                                             "xs": {
                                                 "position": {
-                                                    "col": 2,
+                                                    "col": 1,
                                                     "row": 1
                                                 },
                                                 "span": {
@@ -3204,11 +3200,41 @@
                                                 },
                                                 "alignment": {
                                                     "vertical": "center",
-                                                    "horizontal": "center"
+                                                    "horizontal": "start"
+                                                },
+                                                "overflow": {
+                                                    "vertical": "auto",
+                                                    "horizontal": "auto"
+                                                }
+                                            },
+                                            "xl": {
+                                                "alignment": {
+                                                    "vertical": "center",
+                                                    "horizontal": "start"
+                                                }
+                                            },
+                                            "sm": {
+                                                "alignment": {
+                                                    "vertical": "center",
+                                                    "horizontal": "start"
                                                 }
                                             }
                                         },
-                                        "id": "fpaycegsar"
+                                        "id": "kltazpmqso",
+                                        "padding": {
+                                            "xs": {
+                                                "top": 5,
+                                                "left": 5,
+                                                "right": 5,
+                                                "bottom": 5
+                                            },
+                                            "md": {
+                                                "top": 15,
+                                                "left": 15,
+                                                "right": 15,
+                                                "bottom": 15
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -3216,17 +3242,58 @@
                         "styles": {
                             "instance": {
                                 "grid": {
-                                    "rows": [
-                                        "auto"
-                                    ],
-                                    "rowGap": "0",
-                                    "cols": [
-                                        "4fr",
-                                        "8fr"
-                                    ],
-                                    "colGap": "50px"
+                                    "xs": {
+                                        "rows": [
+                                            "auto"
+                                        ],
+                                        "cols": [
+                                            "1fr"
+                                        ]
+                                    }
                                 },
-                                "id": "drojybhweq"
+                                "id": "gjpnqnxbbj",
+                                "size": {
+                                    "sm": {
+                                        "maxWidth": ""
+                                    },
+                                    "md": {
+                                        "maxWidth": ""
+                                    },
+                                    "lg": {
+                                        "maxWidth": ""
+                                    },
+                                    "xl": {
+                                        "maxWidth": ""
+                                    }
+                                },
+                                "margin": {
+                                    "xs": {
+                                        "top": 10,
+                                        "left": "auto",
+                                        "right": "auto",
+                                        "bottom": 10
+                                    },
+                                    "md": {
+                                        "top": "0",
+                                        "bottom": "0",
+                                        "left": "auto",
+                                        "right": "auto"
+                                    },
+                                    "xl": {
+                                        "top": "0",
+                                        "bottom": "0",
+                                        "left": "auto",
+                                        "right": "auto"
+                                    },
+                                    "sm": {
+                                        "left": "auto",
+                                        "right": "auto"
+                                    },
+                                    "lg": {
+                                        "left": "auto",
+                                        "right": "auto"
+                                    }
+                                }
                             }
                         }
                     }
@@ -3405,12 +3472,42 @@
                                                             "xs": "utils/text/alignCenter"
                                                         }
                                                     },
-                                                    "id": "Fy9xq"
+                                                    "id": "hWrNM"
                                                 },
                                                 "nodes": [
                                                     {
                                                         "type": "text",
                                                         "text": "Welcome to Contoso!",
+                                                        "marks": [
+                                                            {
+                                                                "type": "color",
+                                                                "attrs": {
+                                                                    "colorId": "colors/primaryText"
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text-block",
+                                        "nodes": [
+                                            {
+                                                "type": "paragraph",
+                                                "attrs": {
+                                                    "styles": {
+                                                        "alignment": {
+                                                            "xl": "utils/text/alignCenter",
+                                                            "xs": "utils/text/alignCenter"
+                                                        }
+                                                    }
+                                                },
+                                                "nodes": [
+                                                    {
+                                                        "type": "text",
+                                                        "text": "We provide industry-leading APIs.",
                                                         "marks": [
                                                             {
                                                                 "type": "color",
@@ -3444,36 +3541,6 @@
                                         "hyperlink": {
                                             "targetId": "contentTypes/url/contentItems/db6d0be2-ec1a-2850-6476-ff53b65b00b9"
                                         }
-                                    },
-                                    {
-                                        "type": "text-block",
-                                        "nodes": [
-                                            {
-                                                "type": "paragraph",
-                                                "attrs": {
-                                                    "styles": {
-                                                        "alignment": {
-                                                            "xl": "utils/text/alignCenter",
-                                                            "xs": "utils/text/alignCenter"
-                                                        }
-                                                    }
-                                                },
-                                                "nodes": [
-                                                    {
-                                                        "type": "text",
-                                                        "text": "We provide industry-leading APIs.",
-                                                        "marks": [
-                                                            {
-                                                                "type": "color",
-                                                                "attrs": {
-                                                                    "colorId": "colors/primaryText"
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                ]
-                                            }
-                                        ]
                                     }
                                 ],
                                 "role": "article",
@@ -3489,6 +3556,12 @@
                                                     "cols": 2,
                                                     "rows": 1
                                                 },
+                                                "alignment": {
+                                                    "vertical": "center",
+                                                    "horizontal": "center"
+                                                }
+                                            },
+                                            "xl": {
                                                 "alignment": {
                                                     "vertical": "center",
                                                     "horizontal": "center"
@@ -3520,7 +3593,7 @@
                                         "type": "picture",
                                         "caption": "Picture",
                                         "styles": {
-                                            "appearance": "components/picture/default"
+                                            "appearance": "components/picture/nhebn"
                                         },
                                         "sourceId": "contentTypes/blob/contentItems/70add409-0933-e01e-acef-99999a71167e"
                                     },
@@ -3531,6 +3604,7 @@
                                                 "container": {
                                                     "xl": {
                                                         "alignment": {
+                                                            "vertical": "end",
                                                             "horizontal": "end"
                                                         }
                                                     },
@@ -3565,8 +3639,6 @@
                                             },
                                             {
                                                 "type": "menu",
-                                                "minHeading": null,
-                                                "maxHeading": null,
                                                 "navigationItemId": "ed7c0fc2-6fa3-2efd-4ec9-0d8feb484a12",
                                                 "layout": "horizontal",
                                                 "styles": {
@@ -3578,8 +3650,6 @@
                                             },
                                             {
                                                 "type": "menu",
-                                                "minHeading": null,
-                                                "maxHeading": null,
                                                 "navigationItemId": "74ed66aa-1cc0-f91a-60c6-6e1b2aa239ea",
                                                 "layout": "horizontal",
                                                 "styles": {
@@ -3772,7 +3842,7 @@
                                                         },
                                                         "appearance": "globals/body/inte3"
                                                     },
-                                                    "id": "SDDuo"
+                                                    "id": "bNwXG"
                                                 },
                                                 "nodes": [
                                                     {
@@ -3879,7 +3949,7 @@
                                                         },
                                                         "appearance": "globals/body/inte3"
                                                     },
-                                                    "id": "uq6M6"
+                                                    "id": "i9rMf"
                                                 },
                                                 "nodes": [
                                                     {
@@ -3990,7 +4060,7 @@
                                                         },
                                                         "appearance": "globals/body/inte3"
                                                     },
-                                                    "id": "mZzm6"
+                                                    "id": "0w4am"
                                                 },
                                                 "nodes": [
                                                     {
@@ -4167,7 +4237,7 @@
                                                             "xs": "utils/text/alignCenter"
                                                         }
                                                     },
-                                                    "id": "6enqJ"
+                                                    "id": "7N0k3"
                                                 },
                                                 "nodes": [
                                                     {
@@ -4429,7 +4499,7 @@
                                                             "xs": "utils/text/alignCenter"
                                                         }
                                                     },
-                                                    "id": "vPEbj"
+                                                    "id": "is6x4"
                                                 },
                                                 "nodes": [
                                                     {
@@ -4494,7 +4564,7 @@
                                                     {
                                                         "type": "heading2",
                                                         "attrs": {
-                                                            "id": "kTBhA"
+                                                            "id": "jFkwz"
                                                         },
                                                         "nodes": [
                                                             {
@@ -4598,7 +4668,7 @@
                                                     {
                                                         "type": "heading2",
                                                         "attrs": {
-                                                            "id": "hgM9y"
+                                                            "id": "lDIfl"
                                                         },
                                                         "nodes": [
                                                             {
@@ -4706,7 +4776,7 @@
                                                     {
                                                         "type": "heading2",
                                                         "attrs": {
-                                                            "id": "Shh5A"
+                                                            "id": "jAxWb"
                                                         },
                                                         "nodes": [
                                                             {
@@ -5370,7 +5440,7 @@
                                                         },
                                                         "appearance": "globals/body/chdr7"
                                                     },
-                                                    "id": "ZoAjI"
+                                                    "id": "nJwC4"
                                                 },
                                                 "nodes": [
                                                     {
