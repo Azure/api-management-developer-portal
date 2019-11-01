@@ -2,20 +2,31 @@ import { ViewModelBinder } from "@paperbits/common/widgets";
 import { DetailsOfApiViewModel } from "./detailsOfApiViewModel";
 import { DetailsOfApiModel } from "../detailsOfApiModel";
 import { Bag } from "@paperbits/common";
+import { EventManager } from "@paperbits/common/events";
 
 
 export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApiModel, DetailsOfApiViewModel> {
+    
+    constructor(private readonly eventManager: EventManager) { }
+
     public async modelToViewModel(model: DetailsOfApiModel, viewModel?: DetailsOfApiViewModel, bindingContext?: Bag<any>): Promise<DetailsOfApiViewModel> {
         if (!viewModel) {
             viewModel = new DetailsOfApiViewModel();
         }
+
+        viewModel.runtimeConfig(JSON.stringify({
+            changeLogPageUrl: model.changeLogPageHyperlink
+                ? model.changeLogPageHyperlink.href
+                : undefined
+        }));
 
         viewModel["widgetBinding"] = {
             displayName: "API: Details",
             model: model,
             editor: "details-of-api-editor",
             applyChanges: async (updatedModel: DetailsOfApiModel) => {
-                this.modelToViewModel(updatedModel, viewModel, bindingContext);
+                await this.modelToViewModel(updatedModel, viewModel, bindingContext);
+                this.eventManager.dispatchEvent("onContentUpdate");
             }
         };
 
