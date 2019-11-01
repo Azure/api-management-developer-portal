@@ -22,9 +22,9 @@ export class SetupDialog {
         try {
             this.viewManager.removeShutter();
             await this.provisioningService.provision();
-            this.router.navigateTo("/");
-            this.viewManager.setHost({ name: "content-host" });
-            this.viewManager.showToolboxes();
+            await this.router.navigateTo("/");
+            
+            window.location.reload();
         }
         catch (error) {
             throw error;
