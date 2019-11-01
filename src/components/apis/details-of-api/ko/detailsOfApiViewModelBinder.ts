@@ -9,7 +9,12 @@ export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApi
         if (!viewModel) {
             viewModel = new DetailsOfApiViewModel();
         }
-
+        viewModel.runtimeConfig(JSON.stringify({
+            allowSelection: model.allowSelection,
+            detailsPageUrl: model.detailsPageHyperlink
+                ? model.detailsPageHyperlink.href
+                : undefined
+        }));
         viewModel["widgetBinding"] = {
             displayName: "API: Details",
             model: model,

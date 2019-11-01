@@ -39,6 +39,7 @@ export const pageUrlConfirmPassword = "/confirm-password";
 export const pageUrlResetPassword = "/reset-password";
 export const pageUrlChangelog = "/api-change-log";
 export const pageUrlReference = "/apis";
+export const pageUrlApiDetail = "/api-details";
 
 /**
  * Permalinks pointing to resources that cannot be added, modified or modified.

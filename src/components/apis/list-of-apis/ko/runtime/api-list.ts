@@ -106,7 +106,7 @@ export class ApiList {
     }
 
     public getReferenceUrl(api: Api): string {
-        return this.routeHelper.getApiReferenceUrl(api.name, this.detailsPageUrl());
+        return this.routeHelper.getApiCurrentPathUrl(api.name, this.detailsPageUrl());
     }
 
     public prevPage(): void {

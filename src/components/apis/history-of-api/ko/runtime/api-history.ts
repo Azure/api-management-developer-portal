@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./api-history.html";
-import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Component, OnMounted, RuntimeComponent, Param } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
@@ -45,7 +45,15 @@ export class ApiHistory {
         this.changeLogHasPrevPage = ko.observable(false);
         this.changeLogHasPager = ko.computed(() => this.changeLogHasNextPage() || this.changeLogHasPrevPage());
         this.apiId = null;
+        this.allowSelection = ko.observable(false);
+        this.detailsPageUrl = ko.observable();
     }
+
+    @Param()
+    public allowSelection: ko.Observable<boolean>;
+
+    @Param()
+    public detailsPageUrl: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -125,7 +133,9 @@ export class ApiHistory {
         }
     }
 
-    public getReferenceUrl() {
-        return this.routeHelper.getReferenceUrl(this.selectedId());
+    public getApiDetailsUrl() {
+        if (this.detailsPageUrl()) {
+            return this.routeHelper.getApiCurrentPathUrl(this.selectedId(), this.detailsPageUrl());
+        }
     }
 }

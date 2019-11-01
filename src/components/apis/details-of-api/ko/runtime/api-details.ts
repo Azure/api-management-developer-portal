@@ -1,10 +1,11 @@
 import * as ko from "knockout";
 import template from "./api-details.html";
-import { Component, OnMounted, RuntimeComponent, OnDestroyed } from "@paperbits/common/ko/decorators";
+import { Component, OnMounted, RuntimeComponent, OnDestroyed, Param } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing";
 import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
+import * as Constants from "../../../../../constants";
 
 
 @RuntimeComponent({ selector: "api-details" })
@@ -33,7 +34,15 @@ export class ApiDetails {
         this.currentApiVersion = ko.observable();
         this.downloadSelected = ko.observable("");
         this.loadApi = this.loadApi.bind(this);
+        this.allowSelection = ko.observable(false);
+        this.detailsPageUrl = ko.observable();
     }
+
+    @Param()
+    public allowSelection: ko.Observable<boolean>;
+
+    @Param()
+    public detailsPageUrl: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -160,12 +169,16 @@ export class ApiDetails {
     }
 
     private onVersionChange(selectedApiName: string): void {
-        const apiUrl = this.routeHelper.getApiReferenceUrl(selectedApiName);
+        const apiUrl = this.routeHelper.getApiCurrentPathUrl(selectedApiName);
         this.router.navigateTo(apiUrl);
     }
 
     public getChanglogUrl() {
-        return this.routeHelper.getApiChangelogUrl(this.selectedApiName());
+        if (this.detailsPageUrl()) {
+            return this.routeHelper.getApiCurrentPathUrl(this.selectedApiName(), this.detailsPageUrl());
+        } else {
+            return `${Constants.pageUrlChangelog}#api=${this.selectedApiName()}`;
+        }
     }
 
     @OnDestroyed()

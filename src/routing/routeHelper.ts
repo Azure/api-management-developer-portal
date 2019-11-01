@@ -24,7 +24,7 @@ export class RouteHelper {
         return this.getHashParameter("product");
     }
 
-    public getApiReferenceUrl(apiName: string, detailsPageUrl: string = ""): string {
+    public getApiCurrentPathUrl(apiName: string, detailsPageUrl: string = ""): string {
         if (!apiName) {
             throw new Error(`Parameter "apiName" not specified.`);
         }
@@ -43,12 +43,23 @@ export class RouteHelper {
         return `${path}#api=${apiName}`;
     }
 
-    public getReferenceUrl(apiName: string): string {
-        return `${Constants.pageUrlReference}#api=${apiName}`;
-    }
+    public getApiReferenceUrl(apiName: string, detailsPageUrl: string = ""): string {
+        if (!apiName) {
+            throw new Error(`Parameter "apiName" not specified.`);
+        }
 
-    public getApiChangelogUrl(apiName: string): string {
-        return `${Constants.pageUrlChangelog}#api=${apiName}`;
+        let path = "";
+        const currentPath = this.router.getPath();
+        
+        if (currentPath !== detailsPageUrl) {
+            path = detailsPageUrl;
+        }
+
+        if (currentPath.endsWith("/")) {
+            path = Utils.ensureTrailingSlash(path);
+        }
+
+        return `${path}#api=${apiName}`;
     }
 
     public getOperationReferenceUrl(apiName: string, operationName: string, detailsPageUrl: string = ""): string {

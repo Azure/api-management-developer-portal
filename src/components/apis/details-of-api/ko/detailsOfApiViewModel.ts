@@ -1,4 +1,5 @@
 import template from "./detailsOfApi.html";
+import * as ko from "knockout";
 import { Component } from "@paperbits/common/ko/decorators";
 
 @Component({
@@ -6,4 +7,9 @@ import { Component } from "@paperbits/common/ko/decorators";
     template: template
 })
 export class DetailsOfApiViewModel {
+    public readonly runtimeConfig: ko.Observable<string>;
+
+    constructor() {        
+        this.runtimeConfig = ko.observable();
+    }
 }
