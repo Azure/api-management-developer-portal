@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./api-history.html";
-import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Component, OnMounted, RuntimeComponent, Param } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
@@ -33,6 +33,7 @@ export class ApiHistory {
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
     ) {
+        this.detailsPageUrl = ko.observable();
         this.api = ko.observable();
         this.versionApis = ko.observableArray([]);
         this.apiWorking = ko.observable(false);
@@ -47,6 +48,9 @@ export class ApiHistory {
         this.apiId = null;
     }
 
+    @Param()
+    public detailsPageUrl: ko.Observable<string>;
+    
     @OnMounted()
     public async initialize(): Promise<void> {
         await this.loadApi();
@@ -126,6 +130,6 @@ export class ApiHistory {
     }
 
     public getReferenceUrl() {
-        return this.routeHelper.getReferenceUrl(this.selectedId());
+        return this.routeHelper.getApiReferenceUrl(this.selectedId(), this.detailsPageUrl());
     }
 }

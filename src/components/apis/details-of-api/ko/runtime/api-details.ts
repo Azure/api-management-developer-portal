@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import template from "./api-details.html";
-import { Component, OnMounted, RuntimeComponent, OnDestroyed } from "@paperbits/common/ko/decorators";
+import { Component, OnMounted, RuntimeComponent, OnDestroyed, Param } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing";
 import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
@@ -26,6 +26,7 @@ export class ApiDetails {
         private readonly routeHelper: RouteHelper,
         private readonly router: Router,
     ) {
+        this.changeLogPageUrl = ko.observable();
         this.api = ko.observable();
         this.selectedApiName = ko.observable();
         this.versionApis = ko.observableArray([]);
@@ -34,6 +35,9 @@ export class ApiDetails {
         this.downloadSelected = ko.observable("");
         this.loadApi = this.loadApi.bind(this);
     }
+
+    @Param()
+    public changeLogPageUrl: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -165,7 +169,7 @@ export class ApiDetails {
     }
 
     public getChanglogUrl() {
-        return this.routeHelper.getApiChangelogUrl(this.selectedApiName());
+        return this.routeHelper.getApiReferenceUrl(this.selectedApiName(), this.changeLogPageUrl());
     }
 
     @OnDestroyed()
