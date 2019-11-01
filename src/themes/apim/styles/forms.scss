@@ -30,7 +30,6 @@ $switch-trigger-size: $switch-height - $switch-trigger-gap * 2;
 
         &:checked + .slider {
             background: $switch-background-color-on;
-            box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.4);
         }
         
          &:checked + .slider:before {
@@ -46,7 +45,6 @@ $switch-trigger-size: $switch-height - $switch-trigger-gap * 2;
         right: 0;
         bottom: 0;
         background: $switch-background-color-off;
-        box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.4);
         transition: .4s;
 
         &.round {
