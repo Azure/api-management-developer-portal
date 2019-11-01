@@ -29,17 +29,7 @@ export class ResetDetailsWorkshop {
             await this.provisioningService.cleanup();
             await this.provisioningService.provision();
 
-            this.viewManager.closeWorkshop("content-workshop");
-
-            const toast = this.viewManager.addToast("Website reset", `Website has been reset successfully...`, [
-                {
-                    title: "Reset",
-                    iconClass: "paperbits-check-2",
-                    action: async (): Promise<void> => {
-                        this.viewManager.removeToast(toast);
-                    }
-                },
-            ]);
+            window.location.reload();
         } 
         catch (error) {
             this.viewManager.notifyError("Confirm", `Unable to reset website. Please try again later.`);

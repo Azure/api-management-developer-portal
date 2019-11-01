@@ -37,7 +37,7 @@ export const pageUrl500 = "/500";
 export const pageUrlChangePassword = "/change-password";
 export const pageUrlConfirmPassword = "/confirm-password";
 export const pageUrlResetPassword = "/reset-password";
-export const pageUrlChangelog = "/api-change-log";
+export const pageUrlChangelog = "/api-changelog";
 export const pageUrlReference = "/apis";
 
 /**
