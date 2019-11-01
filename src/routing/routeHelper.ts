@@ -47,10 +47,6 @@ export class RouteHelper {
         return `${Constants.pageUrlReference}#api=${apiName}`;
     }
 
-    public getApiChangelogUrl(apiName: string): string {
-        return `${Constants.pageUrlChangelog}#api=${apiName}`;
-    }
-
     public getOperationReferenceUrl(apiName: string, operationName: string, detailsPageUrl: string = ""): string {
         if (!apiName) {
             throw new Error(`Parameter "apiName" not specified.`);

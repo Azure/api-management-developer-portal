@@ -37,7 +37,6 @@ export const pageUrl500 = "/500";
 export const pageUrlChangePassword = "/change-password";
 export const pageUrlConfirmPassword = "/confirm-password";
 export const pageUrlResetPassword = "/reset-password";
-export const pageUrlChangelog = "/api-changelog";
 export const pageUrlReference = "/api-details";
 
 /**
@@ -53,7 +52,6 @@ export const reservedPermalinks = [
     pageUrlProfile,
     pageUrlChangePassword,
     pageUrlConfirmPassword,
-    pageUrlChangelog,
     hashSignOut,
     "/publish",
     "/confirm-v2/identities/basic/signup",

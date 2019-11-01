@@ -1,7 +1,17 @@
 <fieldset class="form flex-item flex-item-grow" data-bind="scrollable: {}">
-        <b>Coming soon</b>
-        <p>
-            An editor for this widget is not yet ready.<br />
-        </p>
-        
-    </fieldset>
+    <div class="form-group">
+        <label class="form-label">
+            Link to API changelog page
+            <button class="btn btn-info" type="button" title="Help"
+                data-bind="tooltipToggle: 'A link to be navigated on click.'"></button>
+        </label>
+        <div class="input-group">
+            <a href="#" class="form-control"
+                data-bind="text: hyperlinkTitle, balloon: { component: { name: 'hyperlink-selector', params: { hyperlink: $component.hyperlink, onChange: $component.onHyperlinkChange } } }">
+            </a>
+            <div class="input-group-addon">
+                <i class="paperbits-icon paperbits-link-69-2"></i>
+            </div>
+        </div>
+    </div>    
+</fieldset>
