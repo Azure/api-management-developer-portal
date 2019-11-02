@@ -1,16 +1,15 @@
 ﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
-import { UserSigninSocialModel } from "./userSigninSocialModel";
+import { UserSignupSocialModel } from "./userSignupSocialModel";
 
-
-export class UserSigninSocialHandlers implements IWidgetHandler {
+export class UserSignupSocialHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
-            name: "userSigninSocial",
+            name: "user-signup",
             category: "User",
-            displayName: "Sign in: OAuth",
+            displayName: "Sign up: OAuth",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
-            createModel: async () => new UserSigninSocialModel()
+            createModel: async () => new UserSignupSocialModel()
         };
 
         return widgetOrder;

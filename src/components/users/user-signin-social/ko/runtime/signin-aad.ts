@@ -18,7 +18,6 @@ import { ValidationReport } from "../../../../../contracts/validationReport";
 })
 export class SignInAad {
     constructor(
-        private readonly router: Router,
         private readonly aadService: AadService,
         private readonly eventManager: EventManager
     ) {
@@ -36,21 +35,26 @@ export class SignInAad {
      * Initiates signing-in with Azure Active Directory.
      */
     public async signIn(): Promise<void> {
+        this.cleanValidationErrors();
+
         try {
             await this.aadService.signInWithAad(this.clientId(), this.signinTenant());
-            await this.router.navigateTo(Constants.pageUrlHome);
-            const validationReport: ValidationReport = {
-                source: "socialAcc",
-                errors: []
-            };
-            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
         }
         catch (error) {
             const validationReport: ValidationReport = {
                 source: "socialAcc",
                 errors: [error.message]
             };
-            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         }
+    }
+
+    private cleanValidationErrors(): void {
+        const validationReport: ValidationReport = {
+            source: "signInOAuth",
+            errors: []
+        };
+
+        this.eventManager.dispatchEvent("onValidationErrors", validationReport);
     }
 }
