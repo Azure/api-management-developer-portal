@@ -13,7 +13,9 @@ import { HistoryOfApiEditorModule } from "./components/apis/history-of-api/ko/hi
 import { UserSigninModule } from "./components/users/user-signin/ko/userSignin.module";
 import { UserSigninEditorModule } from "./components/users/user-signin/ko/userSigninEditor.module";
 import { UserSigninSocialModule } from "./components/users/user-signin-social/ko/userSigninSocial.module";
+import { UserSignupSocialModule } from "./components/users/user-signup-social/ko/userSignupSocial.module";
 import { UserSigninSocialEditorModule } from "./components/users/user-signin-social/ko/userSigninSocialEditor.module";
+import { UserSignupSocialEditorModule } from "./components/users/user-signup-social/ko/userSignupSocialEditor.module";
 import { UserSignupModule } from "./components/users/user-signup/ko/userSignup.module";
 import { UserSignupEditorModule } from "./components/users/user-signup/ko/userSignupEditor.module";
 import { UserDetailsModule } from "./components/users/user-details/ko/userDetails.module";
@@ -69,7 +71,9 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new UserSigninModule());
         injector.bindModule(new UserSigninEditorModule());
         injector.bindModule(new UserSigninSocialModule());
+        injector.bindModule(new UserSignupSocialModule());
         injector.bindModule(new UserSigninSocialEditorModule());
+        injector.bindModule(new UserSignupSocialEditorModule());
         injector.bindModule(new UserSignupModule());
         injector.bindModule(new UserSignupEditorModule());
         injector.bindModule(new UserDetailsModule());

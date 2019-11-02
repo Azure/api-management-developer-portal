@@ -30,7 +30,7 @@ export class UserSigninViewModelBinder implements ViewModelBinder<UserSigninMode
 
         viewModel["widgetBinding"] = {
             name: "User login",
-            displayName: "Sign-in form",
+            displayName: "Sign in: Basic",
             model: model,
             applyChanges: async (updatedModel: UserSigninModel) => {
                 this.modelToViewModel(updatedModel, viewModel, bindingContext);
