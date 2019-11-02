@@ -1,10 +1,11 @@
 import * as Msal from "msal";
 import * as Constants from "../constants";
 import { IAuthenticator } from "../authentication";
-import { HttpClient, HttpHeader } from "@paperbits/common/http";
+import { Router } from "@paperbits/common/routing";
+import { HttpClient } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { UserPropertiesContract } from "../contracts/user";
-import { Utils } from "../utils";
+import { RouteHelper } from "../routing/routeHelper";
+
 
 /**
  * Service for operations with Azure Active Directory identity provider.
@@ -13,68 +14,33 @@ export class AadService {
     constructor(
         private readonly authenticator: IAuthenticator,
         private readonly httpClient: HttpClient,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly router: Router,
+        private readonly routeHelper: RouteHelper
     ) { }
-
-    private async createUser(idToken: string, type: string): Promise<HttpHeader> {
-        const managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
-        const managementApiVersion = await this.settingsProvider.getSetting<string>("managementApiVersion");
-
-        return new Promise(async (resolve, reject) => {
-            const jwtToken = Utils.parseJwt(idToken);
-
-            setTimeout(async () => {
-                const email = jwtToken.email
-                    ? jwtToken.email
-                    : prompt("Enter your email address");
-
-                const user: UserPropertiesContract = {
-                    firstName: jwtToken.given_name,
-                    lastName: jwtToken.family_name,
-                    email: email,
-                    identities: [{
-                        id: jwtToken.oid,
-                        provider: type
-                    }]
-                };
-
-                const response = await this.httpClient.send({
-                    url: `${managementApiUrl}/users?api-version=${managementApiVersion}`,
-                    method: "POST",
-                    headers: [
-                        { name: "Content-Type", value: "application/json" },
-                        { name: "Authorization", value: `${type} id_token="${idToken}"` }
-                    ],
-                    body: JSON.stringify(user)
-                });
-
-                const accessTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
-
-                resolve(accessTokenHeader);
-            }, 1000);
-        });
-    }
 
     /**
      * Converts Azure Active Directory ID-token into MAPI Shared Access Signature.
      * @param idToken {string} ID token.
-     * @param type {string} Provider type, "Aad" or "AadB2C".
+     * @param provider {string} Provider type, "Aad" or "AadB2C".
      */
-    private async exchangeIdToken(idToken: string, type: string): Promise<void> {
+    private async exchangeIdToken(idToken: string, provider: string): Promise<void> {
         const managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
         const managementApiVersion = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiVersion);
 
         const request = {
             url: `${managementApiUrl}/identity?api-version=${managementApiVersion}`,
             method: "GET",
-            headers: [{ name: "Authorization", value: `${type} id_token="${idToken}"` }]
+            headers: [{ name: "Authorization", value: `${provider} id_token="${idToken}"` }]
         };
 
         const response = await this.httpClient.send(request);
-        let sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
+        const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
 
-        if (!sasTokenHeader) { // User not registered in APIM.
-            sasTokenHeader = await this.createUser(idToken, type);
+        if (!sasTokenHeader) { // User not registered with APIM.
+            const signupUrl = this.routeHelper.getIdTokenReferenceUrl(provider, idToken);
+            await this.router.navigateTo(signupUrl);
+            return;
         }
 
         const regex = /token=\"(.*==)\"/gm;
@@ -86,6 +52,7 @@ export class AadService {
 
         const sasToken = matches[1];
         this.authenticator.setAccessToken(`SharedAccessSignature ${sasToken}`);
+        await this.router.navigateTo(Constants.pageUrlHome);
     }
 
     /**

@@ -9,6 +9,7 @@ import { HistoryOfApiModule } from "./components/apis/history-of-api/ko/historyO
 import { UserSigninModule } from "./components/users/user-signin/ko/userSignin.module";
 import { UserSigninSocialModule } from "./components/users/user-signin-social/ko/userSigninSocial.module";
 import { UserSignupModule } from "./components/users/user-signup/ko/userSignup.module";
+import { UserSignupSocialModule } from "./components/users/user-signup-social/ko/userSignupSocial.module";
 import { UserDetailsModule } from "./components/users/user-details/ko/userDetails.module";
 import { UserSubscriptionsModule } from "./components/users/user-subscriptions/ko/userSubscriptions.module";
 import { ProductDetailsModule } from "./components/products/product-details/ko/productDetails.module";
@@ -40,6 +41,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new UserSigninModule());
         injector.bindModule(new UserSigninSocialModule());
         injector.bindModule(new UserSignupModule());
+        injector.bindModule(new UserSignupSocialModule());
         injector.bindModule(new UserDetailsModule());
         injector.bindModule(new UserSubscriptionsModule());
         injector.bindModule(new ProductListModule());
