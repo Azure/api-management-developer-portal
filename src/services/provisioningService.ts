@@ -119,7 +119,7 @@ export class ProvisionService {
                 for (const item of items) {
                     const itemReq: HttpRequest = {
                         url: `${managementApiUrl}${item["id"]}?api-version=${managementApiVersion}`,
-                        method: "DELETE", 
+                        method: "DELETE",
                         headers: [
                             { name: "If-Match", value: "*" },
                             { name: "Content-Type", value: "application/json" },
@@ -128,7 +128,7 @@ export class ProvisionService {
                     };
                     await this.sendRequest(itemReq);
                 }
-            } 
+            }
         }
         catch (error) {
             throw error;
@@ -148,8 +148,14 @@ export class ProvisionService {
 
     private async cleanupBlobs(): Promise<void> {
         const blobs = await this.blobStorage.listBlobs();
+
         for (const blob of blobs) {
-            await this.blobStorage.deleteBlob(blob);
+            try {
+                await this.blobStorage.deleteBlob(blob);
+            }
+            catch (error) {
+                console.warn(`Unable to delete blob "${blob}"`);
+            }
         }
     }
 
