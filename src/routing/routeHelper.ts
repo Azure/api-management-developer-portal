@@ -31,7 +31,7 @@ export class RouteHelper {
 
         let path = "";
         const currentPath = this.router.getPath();
-        
+
         if (currentPath !== detailsPageUrl) {
             path = detailsPageUrl;
         }
@@ -119,5 +119,36 @@ export class RouteHelper {
         }
 
         return `${path}#product=${productName}`;
+    }
+
+    public getIdTokenReferenceUrl(provider: string, idToken: string): string {
+        if (!provider) {
+            throw new Error(`Parameter "provider" not specified.`);
+        }
+
+        if (!idToken) {
+            throw new Error(`Parameter "idToken" not specified.`);
+        }
+
+        let path = "";
+        const currentPath = this.router.getPath();
+
+        if (currentPath !== Constants.pageUrlSignUpOAuth) {
+            path = Constants.pageUrlSignUpOAuth;
+        }
+
+        if (currentPath.endsWith("/")) {
+            path = Utils.ensureTrailingSlash(path);
+        }
+
+        return `${path}#provider=${provider}&token=${idToken}`;
+    }
+
+    public getIdToken(): string {
+        return this.getHashParameter("token");
+    }
+
+    public getIdTokenProvider(): string {
+        return this.getHashParameter("provider");
     }
 }
