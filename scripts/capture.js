@@ -70,7 +70,7 @@ async function capture() {
         });
     }
 
-    fs.writeFileSync(dataFile, JSON.stringify(result, null, 4));
+    fs.writeFileSync(dataFile, JSON.stringify(result));
 }
 
 
