@@ -30,6 +30,7 @@ export const hashSignOut = "signout";
 export const pageUrlSignIn = "/signin";
 export const pageUrlSignInSso = "/signinsso";
 export const pageUrlSignUp = "/signup";
+export const pageUrlSignUpOAuth = "/signup-oauth";
 export const pageUrlProfile = "/profile";
 export const pageUrlHome = "/";
 export const pageUrl404 = "/404";
@@ -49,16 +50,16 @@ export const reservedPermalinks = [
     pageUrlSignIn,
     pageUrlSignInSso,
     pageUrlSignUp,
+    pageUrlSignUpOAuth,
     pageUrlProfile,
     pageUrlChangePassword,
     pageUrlConfirmPassword,
     hashSignOut,
-    "/publish",
     "/confirm-v2/identities/basic/signup",
     "/confirm/invitation",
     "/confirm-v2/password",
     "/captcha"
-]
+];
 
 /**
  * Maximum number of items to show in a paginated view.

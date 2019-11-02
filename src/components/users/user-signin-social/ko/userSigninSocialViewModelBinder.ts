@@ -45,7 +45,7 @@ export class UserSigninSocialViewModelBinder implements ViewModelBinder<UserSign
 
         viewModel["widgetBinding"] = {
             name: "signinSocial",
-            displayName: "Social account sign-in",
+            displayName: "Sign in: OAuth",
             editor: "",
             model: model,
             applyChanges: () => {

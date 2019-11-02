@@ -6,7 +6,7 @@ export class UserSigninHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "userSignin",
             category: "User",
-            displayName: "Sign-in form",
+            displayName: "Sign in: Basic",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
             createModel: async () => new UserSigninModel()

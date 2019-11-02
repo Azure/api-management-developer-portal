@@ -37,6 +37,7 @@ import { UserSignin } from "./components/users/user-signin/ko/runtime/user-signi
 import { SignInAad } from "./components/users/user-signin-social/ko/runtime/signin-aad";
 import { SignInAadB2C } from "./components/users/user-signin-social/ko/runtime/signin-aad-b2c";
 import { UserSignup } from "./components/users/user-signup/ko/runtime/user-signup";
+import { UserSignupSocial } from "./components/users/user-signup-social/ko/runtime/user-signup-social";
 import { UserDetails } from "./components/users/user-details/ko/runtime/user-details";
 import { UserSubscriptions } from "./components/users/user-subscriptions/ko/runtime/user-subscriptions";
 import { ProductList } from "./components/products/product-list/ko/runtime/product-list";
@@ -92,6 +93,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("signInAad", SignInAad);
         injector.bind("signInAadB2C", SignInAadB2C);
         injector.bind("userSignup", UserSignup);
+        injector.bind("userSignupSocial", UserSignupSocial);
         injector.bind("userDetails", UserDetails);
         injector.bind("userSubscriptions", UserSubscriptions);
         injector.bind("productList", ProductList);
