@@ -8,14 +8,14 @@
         </div>
     </div>
     <div class="table-body">
-        <!-- ko ifnot: subscriptions -->
+        <!-- ko if: subscriptions().length === 0 -->
         <div class="table-row">
             <div class="col-12 text-center" colspan="4">
-                No subscriptions
+                No subscriptions to show.
             </div>
         </div>
         <!-- /ko -->
-        <!-- ko if: subscriptions -->
+        <!-- ko if: subscriptions().length > 0 -->
         <!-- ko foreach: subscriptions -->
         <div class="table-row">
             <div class="col-8">
@@ -115,7 +115,7 @@
                 <span data-bind="text: model.productName"></span>
             </div>
             <div class="col-1">
-                <strong><span data-bind="text: model.state"></span></strong>
+                <span data-bind="text: model.state"></span>
             </div>
             <div class="col-1">
                 <!-- ko if: $data.model.canBeCancelled() -->
