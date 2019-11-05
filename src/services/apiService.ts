@@ -118,7 +118,7 @@ export class ApiService {
             if (tagContract) {
                 tagName = tagContract.properties.displayName;
             } else {
-                tagName = "Not tagged";
+                tagName = "Untagged";
             }
             tagGroup = tagGroups[tagName];
 
@@ -179,7 +179,7 @@ export class ApiService {
                 tagName = tagContract.properties.displayName;
             }
             else {
-                tagName = "Not tagged";
+                tagName = "Untagged";
             }
 
             tagGroup = tagGroups[tagName];

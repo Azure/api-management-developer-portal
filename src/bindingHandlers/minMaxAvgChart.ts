@@ -141,7 +141,7 @@ ko.bindingHandlers["minMaxAvgChart"] = {
             const legendNode = svg.append("text")
                 .attr("x", (legendColumn * legendColumnWidth) + margin.left + 25 + legendColumnWidth - 50)
                 .attr("y", height - (legendLines * legendRowHeight) + (legendRow * legendRowHeight) + 12 + legendPadding)
-                .text(123)
+                .text("-")
                 .style("font-size", fontSize)
                 .attr("text-anchor", "end")
                 .attr("alignment-baseline", "middle");
