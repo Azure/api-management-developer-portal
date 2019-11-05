@@ -8,14 +8,14 @@
         </div>
     </div>
     <div class="table-body">
-        <!-- ko if: subscriptions.length === 0 -->
+        <!-- ko if: subscriptions().length === 0 -->
         <div class="table-row">
             <div class="col-12 text-center" colspan="4">
                 No subscriptions to show.
             </div>
         </div>
         <!-- /ko -->
-        <!-- ko if: subscriptions.length > 0 -->
+        <!-- ko if: subscriptions().length > 0 -->
         <!-- ko foreach: subscriptions -->
         <div class="table-row">
             <div class="col-8">
