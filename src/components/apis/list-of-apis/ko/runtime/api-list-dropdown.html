@@ -1,6 +1,6 @@
-<div>
-    <div class="form-control" tabindex="0" role="listbox"
-        data-bind="activate: toggle, css: { expanded: expanded }, attr: { 'aria-expanded': expanded }">
+<div class="dropdown-container">
+    <div class="form-control" tabindex="0" role="button" aria-label="APIs"
+        data-bind="activate: toggle, css: { expanded: expanded }, attr: { 'aria-expanded': expanded().toString() }">
         <div class="input-group">
             <div class="input" data-bind="text: selection"></div>
             <div class="input-group-append">
