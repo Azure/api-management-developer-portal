@@ -4,7 +4,6 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const runtimeConfig = require("./webpack.runtime");
 
-const websiteTheme = "apim";
 
 const publisherConfig = {
     mode: "development",
@@ -16,7 +15,7 @@ const publisherConfig = {
     },
     entry: {
         "index": ["./src/startup.publish.ts"],
-        "assets/styles/theme": [`./src/themes/${websiteTheme}/styles/styles.scss`]
+        "assets/styles/theme": [`./src/themes/website/styles/styles.scss`]
     },
     output: {
         filename: "./[name].js",
@@ -59,7 +58,7 @@ const publisherConfig = {
         new CopyWebpackPlugin([
             { from: `./src/config.publish.json`, to: `config.json` },
             { from: `./src/config.runtime.json`, to: `assets/config.json` },
-            { from: `./src/themes/${websiteTheme}/styles/fonts`, to: "assets/styles/fonts" },
+            { from: `./src/themes/website/styles/fonts`, to: "assets/styles/fonts" },
             { from: `./js/HipObject.js`, to: "assets/scripts/js" }
         ])
     ],

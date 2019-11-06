@@ -76,6 +76,7 @@
 
 .dropzone {
     margin: 10px 0;
+    
 
     .dropzone-controls {
         padding: 12px;
@@ -86,22 +87,16 @@
         height: 150px;
         position: relative;
         display: block;
+        border: 1px solid $form-control-border;
         @include tabable();
         @include pseudo-transparent-bckg();
     }
 }
 
-.dropzone-small {
-    border: 1px dashed #bdbfc1;
-    width: 100%;
-    height: 3em;
-    position: relative;
-}
-
 .dropzone-square {
     width: 60px;
     height: 60px;
-    outline: 1px solid #f1f1f1;
+    outline: 1px solid $form-control-border;
     outline-offset: 4px;
     margin: 6px;
 }

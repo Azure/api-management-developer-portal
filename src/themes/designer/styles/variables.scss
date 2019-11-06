@@ -34,6 +34,11 @@ $workshop-help-button-size: 24px;
 $workshop-max-height: 300px;
 $workshop-subtitle-color: #AFBD77;
 $workshop-padding: 20px;
+$workshop-journey-step-border-color: #eceaea;
+
+/* Buttons */
+$button-danger-text-color: #fff;
+$button-link-color: #99c248;
 
 /* Balloons */
 $balloon-background: $toolbox-background;
@@ -51,13 +56,32 @@ $icon-base-color: #57585a;
 
 /* Forms */
 $form-control-font-size: 0.9em;
-$form-control-border: #e6e7e8;
-$form-control-border-focused: #61b2e8;
+$form-control-border: #7f7f7fd9;
+$form-control-border-focused: #0078d4;
 $form-control-bg: #ffffff;
 $form-control-bg-readonly: #e6e7e8;
 $form-control-bg-disabled: #e6e7e8;
 $form-control-padding: 7px;
-$form-control-focus-color: #61b2e8;
+$form-control-slider-thumb-bg: #fff;
+$form-collapsible-section-gutter-color: #ddd;
+
+/* Lists */
+$list-item-thumbnail-bg: #f8f8f8;
+
+/* Spinners */
+$spinner-shutter-bg: #fff;
+$spinner-dot-border-color: #003255;
+$spinner-inverted-bg: #fff;
+$spinner-inverted-dot-border-color: #fff;
+
+/* Scrollbars */
+$scrollbar-rail-active-bg: #eee;
+$scrollbar-thumb-bg: #aaa;
+$scrollbar-thumb-active-bg: #999;
+
+/* Layout editor */
+$layout-editor-selection-color: #3c3c3c;
+$layout-editor-splitter-color: #ccc;
 
 /* Others */
 $z-index-base: 9100;
