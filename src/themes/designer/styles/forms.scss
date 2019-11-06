@@ -15,7 +15,7 @@
     width: 100%;
 
     .form-group {
-        // Nested form group
+        // Nested form group margin
         margin-bottom: 15px;
     }
 
@@ -36,7 +36,7 @@
                 top: 25px;
                 bottom: -10px;
                 left: 10px;
-                border-left: 1px dotted #ddd;
+                border-left: 1px dotted $form-collapsible-section-gutter-color;
             }
             @extend .paperbits-icon;
             @extend .paperbits-circle-delete;
@@ -81,7 +81,7 @@ textarea {
 
     &:focus {
         outline: none;
-        border: 1px solid $form-control-focus-color;
+        border: 1px solid $form-control-border-focused;
     }
 
     &.is-invalid {
@@ -117,7 +117,7 @@ input[type="range"].form-control {
         -webkit-appearance: none;
         width: 17px;
         height: 17px;
-        background: #fff;
+        background: $form-control-slider-thumb-bg;
         border: 2px solid $form-control-border;
         cursor: pointer;
         border-radius: 20px;

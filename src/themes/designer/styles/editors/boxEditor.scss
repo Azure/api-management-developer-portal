@@ -8,19 +8,15 @@ $box-model-border-width: 4px;
     .box-model-margin {
         padding: 40px;
         border: 1px dashed #D8E60A;
-        // background: #FDFFDF;
     }
 
     .box-model-border {
         padding: 20px;
         border: $box-model-border-width solid #737373;
-        // background: #737373;
     }
 
     .box-model-padding {
         padding: $box-model-spacing;
-        // border: 1px solid #ccc;
-        // background: #E3DCFF;
     }
 
     .box-model-control {
@@ -87,7 +83,6 @@ $box-model-border-width: 4px;
         height: 60px;
         text-align: center;
         line-height: 60px;
-        // background: #CFF0FB;
     }
 
     .box-model-label {

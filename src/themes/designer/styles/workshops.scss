@@ -28,8 +28,8 @@
                 right: 0;
                 width: 1px;
                 border: 0;
-                background: #eceaea;
-                background: radial-gradient(#eceaea, white);
+                background: $workshop-journey-step-border-color;
+                background: radial-gradient($workshop-journey-step-border-color, white);
             }
         }
 

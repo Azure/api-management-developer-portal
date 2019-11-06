@@ -7,8 +7,6 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const runtimeConfig = require("./webpack.runtime");
 
 
-const websiteTheme = "apim";
-
 const functionConfig = {
     mode: "development",
     target: "node",
@@ -18,7 +16,7 @@ const functionConfig = {
     },
     entry: {
         "publish/index": ["./examples/function/publish/index.ts"],
-        "publish/assets/styles/theme": [`./src/themes/${websiteTheme}/styles/styles.scss`]
+        "publish/assets/styles/theme": [`./src/themes/website/styles/styles.scss`]
     },
     output: {
         filename: "./[name].js",
@@ -74,7 +72,7 @@ const functionConfig = {
         new CopyWebpackPlugin([
             { from: `./examples/function`, to: `./` },
             { from: `./src/config.publish.json`, to: `./publish/config.json` },
-            { from: `./src/themes/${websiteTheme}/styles/fonts`, to: "publish/assets/styles/fonts" }
+            { from: `./src/themes/website/styles/fonts`, to: "publish/assets/styles/fonts" }
         ]),
         new webpack.DefinePlugin({
             "process.env.NODE_ENV": JSON.stringify("production")
