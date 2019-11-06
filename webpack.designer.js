@@ -2,17 +2,15 @@ const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const websiteTheme = "apim";
-const editorTheme = "designer";
 
 module.exports = {
     target: "web",
     devtool: "inline-source-map",
     entry: {
         "editors/scripts/paperbits": ["./src/startup.design.ts"],
-        "editors/styles/paperbits": [`./src/themes/${editorTheme}/styles/paperbits.scss`],
+        "editors/styles/paperbits": [`./src/themes/designer/styles/paperbits.scss`],
         "scripts/theme": ["./src/startup.runtime.ts"],
-        "styles/theme": [`./src/themes/${websiteTheme}/styles/styles.design.scss`]
+        "styles/theme": [`./src/themes/website/styles/styles.design.scss`]
     },
     output: {
         filename: "./[name].js",
@@ -53,10 +51,10 @@ module.exports = {
             chunkFilename: "[id].css"
         }),
         new CopyWebpackPlugin([
-            { from: `./src/themes/${editorTheme}/assets/index.html`, to: "index.html" },
-            { from: `./src/themes/${editorTheme}/styles/fonts`, to: "editors/styles/fonts" },
-            { from: `./src/themes/${websiteTheme}/assets` },
-            { from: `./src/themes/${websiteTheme}/styles/fonts`, to: "styles/fonts" },
+            { from: `./src/themes/designer/assets/index.html`, to: "index.html" },
+            { from: `./src/themes/designer/styles/fonts`, to: "editors/styles/fonts" },
+            { from: `./src/themes/website/assets` },
+            { from: `./src/themes/website/styles/fonts`, to: "styles/fonts" },
             { from: `./js/HipObject.js`, to: "scripts/js" },
             { from: `./scripts/data.json`, to: "editors/themes/default.json" }
         ])

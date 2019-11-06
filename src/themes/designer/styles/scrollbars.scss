@@ -4,9 +4,7 @@
  .ps {
     overflow: hidden !important;
     overflow-anchor: none;
-    -ms-overflow-style: none;
     touch-action: auto;
-    -ms-touch-action: auto;
 }
 
 /*
@@ -16,7 +14,6 @@
     display: none;
     opacity: .2;
     transition: background-color .2s linear, opacity .2s linear;
-    -webkit-transition: background-color .2s linear, opacity .2s linear;
     height: 15px;
     /* there must be 'bottom' or 'top' for ps__rail-x */
     bottom: 0;
@@ -29,7 +26,6 @@
     display: none;
     opacity: .2;
     transition: background-color .2s linear, opacity .2s linear;
-    -webkit-transition: background-color .2s linear, opacity .2s linear;
     width: 15px;
     /* there must be 'right' or 'left' for ps__rail-y */
     right: 0;
@@ -57,7 +53,7 @@
 .ps__rail-x:hover,
 .ps__rail-y:focus,
 .ps__rail-y:hover {
-    background-color: #eee;
+    background-color: $scrollbar-rail-active-bg;
     opacity: .9;
 }
 
@@ -65,10 +61,9 @@
    * Scrollbar thumb styles
    */
 .ps__thumb-x {
-    background-color: #aaa;
+    background-color: $scrollbar-thumb-bg;
     border-radius: 6px;
     transition: background-color .2s linear, height .2s ease-in-out;
-    -webkit-transition: background-color .2s linear, height .2s ease-in-out;
     height: 6px;
     /* there must be 'bottom' for ps__thumb-x */
     bottom: 2px;
@@ -77,10 +72,9 @@
 }
 
 .ps__thumb-y {
-    background-color: #aaa;
+    background-color: $scrollbar-thumb-bg;
     border-radius: 6px;
     transition: background-color .2s linear, width .2s ease-in-out;
-    -webkit-transition: background-color .2s linear, width .2s ease-in-out;
     width: 6px;
     /* there must be 'right' for ps__thumb-y */
     right: 2px;
@@ -90,13 +84,13 @@
 
 .ps__rail-x:focus > .ps__thumb-x,
 .ps__rail-x:hover > .ps__thumb-x {
-    background-color: #999;
+    background-color: $scrollbar-thumb-active-bg;
     height: 11px;
 }
 
 .ps__rail-y:focus > .ps__thumb-y,
 .ps__rail-y:hover > .ps__thumb-y {
-    background-color: #999;
+    background-color: $scrollbar-thumb-active-bg;
     width: 11px;
 }
 
