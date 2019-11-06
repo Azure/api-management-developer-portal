@@ -1,28 +1,24 @@
-.flex-container-row {
-    flex-direction: row;
-}
-
-.flex-container-column {
-    flex-direction: column;
-}
-
-.flex-container {
+.flex {
     display: flex;
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-content: stretch;
     min-height: 0; // fixes issue with oveflow in Edge, FF and other browsers
-}
 
-.flex-item {
-    flex: 0 1 auto;
-    align-self: auto;
-
-    &.flex-item-grow {
-        flex: 1 1 auto;
+    &.flex-row {
+        flex-direction: row;
     }
-}
 
-.expand {
-    width: 100%;
+    &.flex-column {
+        flex-direction: column;
+    }
+
+    .flex-item {
+        flex: 0 1 auto;
+        align-self: auto;
+
+        &.flex-item-grow {
+            flex: 1 1 auto;
+        }
+    }
 }

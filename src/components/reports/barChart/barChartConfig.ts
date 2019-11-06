@@ -1,4 +1,3 @@
-import { BarChartDimension } from "./barChartConfig";
 import { Bag } from "@paperbits/common";
 
 /**
