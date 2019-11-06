@@ -9,7 +9,7 @@
         right: 0;
         display: block;
         position: fixed;
-        background: #fff;
+        background: $spinner-shutter-bg;
         pointer-events: none;
         opacity: 0;
     }
@@ -29,7 +29,7 @@ spinner {
         border-radius: 100%;
         display: inline-block;
         animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-        border: 1px solid #003255;
+        border: 1px solid $spinner-dot-border-color;
 
         &:nth-child(1) {
             animation-delay: -0.32s;
@@ -41,8 +41,8 @@ spinner {
     }
 
     &.inverted > div {
-        border: 1px solid #fff;
-        background: #fff;
+        border: 1px solid $spinner-inverted-dot-border-color;
+        background: $spinner-inverted-bg;
     }
 }
 @keyframes sk-bouncedelay {

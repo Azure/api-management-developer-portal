@@ -23,7 +23,7 @@ export class SaveChangesToolButton implements ToolButton {
     }
 
     public onActivate(): void {
-        this.logger.traceEvent("Click: Save changes button");
+        this.logger.traceEvent("Click: Save changes");
         this.eventManager.dispatchEvent("onSaveChanges");
     }
 }

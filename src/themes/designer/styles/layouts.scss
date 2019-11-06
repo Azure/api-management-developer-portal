@@ -1,32 +1,6 @@
 ﻿@import "mixins.scss";
 @import "variables.scss";
 
-.widget-placeholder {
-    position: relative;
-    transition: height 0.5s ease-in-out, width 0.5s ease-in-out;
-}
-
-.widget-placeholder::before {
-    content: "";
-    cursor: pointer;
-    position: absolute;
-    display: block;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    top: 0;
-    opacity: 0.5;
-    border: 1px dashed #eee;
-    opacity: 0.5;
-}
-
-.widget-selection {
-    @include selection(20px);
-
-    &:hover {
-        @include selection(20px);
-    }
-}
 
 paperbits-code,
 paperbits-googlemaps,
@@ -58,7 +32,7 @@ widget {
 
     &:before {
         content: attr(title);
-        background: #3c3c3c;
+        background: $layout-editor-selection-color;
         color: #fff;
         padding: 5px;
         left: -5px;
@@ -82,16 +56,10 @@ widget {
     position: fixed;
     pointer-events: none;
     z-index: $z-index-selection;
-    border-color: #ccc;
+    border-color: $layout-editor-splitter-color;
     border-style: dashed;
     border-width: 0;
     opacity: 0.5;
-}
-
-.empty-column {
-    min-height: 150px;
-    padding-top: 65px;
-    width: 100%;
 }
 
 .empty-item {
