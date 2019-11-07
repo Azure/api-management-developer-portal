@@ -19,7 +19,9 @@ export class ApiDetails {
     public readonly currentApiVersion: ko.Observable<string>;
     public readonly versionApis: ko.ObservableArray<Api>;
     public readonly working: ko.Observable<boolean>;
-    public readonly downloadSelected: ko.Observable<string>;
+    public readonly expandedDefinition: ko.Observable<boolean>;
+    public readonly apiDefinitions: ko.ObservableArray<string>;
+    public readonly expandVersion: ko.Observable<boolean>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -32,8 +34,10 @@ export class ApiDetails {
         this.versionApis = ko.observableArray([]);
         this.working = ko.observable(false);
         this.currentApiVersion = ko.observable();
-        this.downloadSelected = ko.observable("");
         this.loadApi = this.loadApi.bind(this);
+        this.expandedDefinition = ko.observable(false);
+        this.apiDefinitions = ko.observableArray([]);
+        this.expandVersion = ko.observable(false);
     }
 
     @Param()
@@ -81,29 +85,32 @@ export class ApiDetails {
 
         this.currentApiVersion(api.name);
         this.api(api);
+        if (this.api() && this.api().type === "soap") {
+            this.apiDefinitions(["Open API 3 (YAML)", "Open API 3 (JSON)", "Open API 2 (JSON)", "WADL", "WSDL"]);
+        } else {
+            this.apiDefinitions(["Open API 3 (YAML)", "Open API 3 (JSON)", "Open API 2 (JSON)", "WADL"]);
+        }
 
         this.working(false);
     }
 
-    public async onDownloadChange(): Promise<void> {
-        const definitionType = this.downloadSelected();
-
-        if (!definitionType) {
+    public async onDownloadChange(apiDefinition: string): Promise<void> {
+        if (!apiDefinition) {
             return;
         }
 
         if (this.api() && this.api().id) {
-            let exportObject = await this.apiService.exportApi(this.api().id, definitionType);
+            let exportObject = await this.apiService.exportApi(this.api().id, apiDefinition);
             let fileName = this.api().name;
             let fileType = "application/json";
 
-            switch (definitionType) {
-                case "wadl":
-                case "wsdl":
+            switch (apiDefinition) {
+                case "WADL":
+                case "WSDL":
                     fileType = "text/xml";
                     fileName = `${fileName}.xml`;
                     break;
-                case "openapi": // yaml 3.0
+                case "Open API 3 (YAML)": // yaml 3.0
                     fileName = `${fileName}.yaml`;
                     break;
                 default:
@@ -113,38 +120,10 @@ export class ApiDetails {
             }
             this.download(exportObject, fileName, fileType);
         }
-
-        this.downloadSelected("");
-    }
-
-    public async downloadDefinition(definitionType: "swagger" | "openapi" | "openapi+json" | "wadl" | "wsdl"): Promise<void> {
-        if (this.api() && this.api().id) {
-            let exportObject = await this.apiService.exportApi(this.api().id, definitionType);
-            let fileName = this.api().name;
-            let fileType = "application/json";
-
-            switch (definitionType) {
-                case "wadl":
-                case "wsdl":
-                    fileType = "text/xml";
-                    fileName = `${fileName}.xml`;
-                    break;
-                case "openapi": // yaml 3.0
-                    fileName = `${fileName}.yaml`;
-                    break;
-                default:
-                    fileName = `${fileName}.json`;
-                    exportObject = JSON.stringify(exportObject, null, 4);
-                    break;
-            }
-            this.download(exportObject, fileName, fileType);
-        }
-        return;
     }
 
     private download(data: string, filename: string, type: string): void {
         const file = new Blob([data], { type: type });
-
         if (window.navigator.msSaveOrOpenBlob) { // IE10+
             window.navigator.msSaveOrOpenBlob(file, filename);
         }
@@ -166,6 +145,18 @@ export class ApiDetails {
     private onVersionChange(selectedApiName: string): void {
         const apiUrl = this.routeHelper.getApiReferenceUrl(selectedApiName);
         this.router.navigateTo(apiUrl);
+    }
+
+    public toggleDefinition(): void {
+        this.expandedDefinition(!this.expandedDefinition());
+    }
+
+    public toggleVersion(): void {
+        this.expandVersion(!this.expandVersion());
+    }
+
+    public changeApiVersion(curVersion: Api): void {
+        this.currentApiVersion(curVersion.name);
     }
 
     public getChanglogUrl() {

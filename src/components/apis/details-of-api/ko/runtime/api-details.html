@@ -9,28 +9,55 @@
         <h1 data-bind="text: api().displayName"></h1>
 
         <div class="form-inline">
-            <div class="form-group">
-                <!-- ko if: versionApis().length > 0 -->
-                <label for="apiVersions">API version: </label>
-                <select id="apiVersions" class="form-control"
-                    data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: currentApiVersion">
-                </select>
-                <!-- /ko -->
-                <select id="apiDefinitions" class="form-control" aria-label="API definitions"
-                    data-bind="value: downloadSelected, event: {change: onDownloadChange}">
-                    <option value="" disabled="disabled" selected="selected">API definition</option>
-                    <option value="openapi">Open API 3 (YAML)</option>
-                    <option value="openapi+json">Open API 3 (JSON)</option>
-                    <option value="swagger"> Open API 2 (JSON)</option>
-                    <option value="wadl">WADL</option>
-                    <!-- ko if: api().type === 'soap' -->
-                    <option value="wsdl">WSDL</option>
-                    <!-- /ko -->
-                </select>
-                <a href="#" class="nav-link text-truncate" data-bind="attr: { href: $component.getChanglogUrl()} ">
-                    Changelog
-                </a>
+            <!-- ko if: versionApis().length > 0 -->
+            <div>
+                <div class="form-control" role="listbox"
+                    data-bind="activate: toggleVersion, css: { expanded: expandVersion }, attr: { 'aria-expanded': expandVersion }">
+                    <div class="input-group">
+                        <div class="input">API version</div>
+                        <div class="input-group-append">
+                            &nbsp;
+                            <i class="icon icon-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="dropdown" data-bind="visible: expandVersion">
+                    <div role="list">
+                        <!-- ko foreach: { data: versionApis, as: 'curVersion' } -->
+                        <a href="#" role="listitem" class="nav-link"
+                            data-bind="click: $component.changeApiVersion">
+                            <span data-bind="text: curVersion.name"></span>
+                        </a>
+                        <!-- /ko -->
+                    </div>
+                </div>
             </div>
+            <!-- /ko -->
+            <div>
+                <div class="form-control" role="listbox"
+                    data-bind="activate: toggleDefinition, css: { expanded: expandedDefinition }, attr: { 'aria-expanded': expandedDefinition }">
+                    <div class="input-group">
+                        <div class="input">API definition</div>
+                        <div class="input-group-append">
+                            &nbsp;
+                            <i class="icon icon-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="dropdown" data-bind="visible: expandedDefinition">
+                    <div role="list">
+                        <!-- ko foreach: { data: apiDefinitions, as: 'curDefinition' } -->
+                        <a href="#" role="listitem" class="nav-link"
+                            data-bind="click: $component.onDownloadChange">
+                            <span data-bind="text: curDefinition"></span>
+                        </a>
+                        <!-- /ko -->
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="nav-link text-truncate" data-bind="attr: { href: $component.getChanglogUrl()} ">
+                Changelog
+            </a>
         </div>
 
         <!-- ko if: api().description  -->
