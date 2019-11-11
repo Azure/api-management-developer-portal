@@ -26,6 +26,11 @@ export enum IdentityProviders {
     aadB2C = "AadB2C"
 }
 
+export enum AadEndpoints {
+    primary = "login.microsoftonline.com",
+    legacy = "login.windows.net"
+}
+
 export const hashSignOut = "signout";
 export const pageUrlSignIn = "/signin";
 export const pageUrlSignInSso = "/signinsso";

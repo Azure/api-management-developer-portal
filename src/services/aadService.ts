@@ -1,4 +1,5 @@
 import * as Msal from "msal";
+import * as AuthenticationContext from "adal-vanilla";
 import * as Constants from "../constants";
 import { IAuthenticator } from "../authentication";
 import { Router } from "@paperbits/common/routing";
@@ -58,15 +59,16 @@ export class AadService {
     /**
      * Initiates signing-in with Azure Active Directory identity provider.
      * @param aadClientId {string} Azure Active Directory client ID.
+     * @param signinTenant {string} Azure Active Directory tenant used to signin.
      */
-    public async signInWithAad(aadClientId: string, signinTenant: string): Promise<void> {
-        const auth = `https://login.microsoftonline.com/${signinTenant}/`;
+    public async signInWithAadMsal(aadClientId: string, signinTenant: string): Promise<void> {
+        const auth = `https://${Constants.AadEndpoints.primary}/${signinTenant}`;
 
         const msalConfig = {
             auth: {
                 clientId: aadClientId,
                 authority: auth,
-                validateAuthority: false
+                validateAuthority: true
             }
         };
 
@@ -89,6 +91,40 @@ export class AadService {
 
     /**
      * Initiates signing-in with Azure Active Directory identity provider.
+     * @param aadClientId {string} Azure Active Directory client ID.
+     * @param signinTenant {string} Azure Active Directory tenant used to signin.
+     */
+    public signInWithAadAdal(aadClientId: string, signinTenant: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            const callback = async (errorDescription: string, idToken: string, error: string, tokenType: string) => {
+                if (!idToken) {
+                    reject(new Error(`Authentication failed.`));
+                    console.error(`Unable to obtain id_token with client ID: ${aadClientId}. Error: ${error}. Details: ${errorDescription}.`);
+                }
+
+                try {
+                    await this.exchangeIdToken(idToken, Constants.IdentityProviders.aad);
+                    resolve();
+                }
+                catch (error) {
+                    reject(error);
+                }
+            };
+
+            const authContextConfig = {
+                tenant: signinTenant,
+                clientId: aadClientId,
+                popUp: true,
+                callback: callback
+            };
+
+            const authContext = new AuthenticationContext(authContextConfig);
+            authContext.login();
+        });
+    }
+
+    /**
+     * Initiates signing-in with Azure Active Directory identity provider.
      * @param clientId {string} Azure Active Directory B2C client ID.
      * @param authority {string} Tenant, e.g. "contoso.b2clogin.com".
      * @param instance {string} Instance, e.g. "contoso.onmicrosoft.com".
@@ -102,6 +138,7 @@ export class AadService {
         if (!authority) {
             throw new Error(`Authority not specified.`);
         }
+
 
         const auth = `https://${authority}/tfp/${instance}/${signInPolicy}`;
 

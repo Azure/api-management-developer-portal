@@ -38,7 +38,7 @@ export class SignInAad {
         this.cleanValidationErrors();
 
         try {
-            await this.aadService.signInWithAad(this.clientId(), this.signinTenant());
+            await this.aadService.signInWithAadAdal(this.clientId(), this.signinTenant());
         }
         catch (error) {
             const validationReport: ValidationReport = {
