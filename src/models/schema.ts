@@ -11,11 +11,11 @@ export class Schema {
             
             if (definitionType === SchemaType.swagger) {
                 const swaggerDoc = <SwaggerSchemaContract>contract.properties?.document;
-                definitions = swaggerDoc?.definitions;
+                definitions = swaggerDoc?.definitions || {};
             } else {
                 if (definitionType === SchemaType.openapi) {
                     const openApiDoc = <OpenApiSchemaContract>contract.properties?.document;
-                    definitions = openApiDoc?.components?.schemas;
+                    definitions = openApiDoc?.components?.schemas || {};
                 }
             }
 
