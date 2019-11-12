@@ -1,9 +1,7 @@
 import * as ko from "knockout";
 import template from "./type-definition.html";
 import { Component, Param, OnMounted } from "@paperbits/common/ko/decorators";
-import { TypeDefinition } from "../../../../../models/schema";
-import { Representation } from "./../../../../../models/representation";
-import { Utils } from "../../../../../utils";
+import { TypeDefinition, TypeDefinitionProperty } from "../../../../../models/typeDefinition";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
 @Component({
@@ -12,14 +10,18 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
     injectable: "typeDefinition"
 })
 export class TypeDefinitionViewModel {
-    public example: ko.Observable<string>;
-    public exampleLanguage: ko.Observable<string>;
-    public type: ko.Observable<string>;
+    public readonly name: ko.Observable<string>;
+    public readonly description: ko.Observable<string>;
+    public readonly kind: ko.Observable<string>;
+    public readonly example: ko.Observable<string>;
+    public readonly exampleLanguage: ko.Observable<string>;
 
     constructor(private readonly routeHelper: RouteHelper) {
+        this.name = ko.observable();
+        this.description = ko.observable();
+        this.kind = ko.observable();
         this.example = ko.observable();
         this.exampleLanguage = ko.observable();
-        this.type = ko.observable();
     }
 
     @Param()
@@ -32,44 +34,25 @@ export class TypeDefinitionViewModel {
     public operationName: string;
 
     @Param()
-    public representation: Representation;
-
-    @Param()
     public anchor: string;
 
     @OnMounted()
     public initialize(): void {
-        if (this.representation && this.representation.sample) {
-            let example;
-            let exampleLanguage = "none";
+        this.name(this.definition.name);
+        this.description(this.definition.description);
+        this.kind(this.definition.kind);
 
-            if (this.representation.contentType.contains("/xml")) {
-                example = Utils.formatXml(this.representation.sample);
-                exampleLanguage = "xml";
-            }
-
-            if (this.representation.contentType.contains("/json")) {
-                example = Utils.formatJson(this.representation.sample);
-                exampleLanguage = "json";
-            }
-
-            this.exampleLanguage(exampleLanguage);
-            this.example(example);
-        }
-        else if (this.definition.example) {
-            // Definition has always JSON example
-            this.exampleLanguage("json");
+        if (this.definition.example) {
+            this.exampleLanguage(this.definition.exampleFormat);
             this.example(this.definition.example);
         }
-
-        this.type(this.definition.uiType);
     }
 
     public getReferenceId(definition: TypeDefinition): string {
         return this.routeHelper.getDefinitionReferenceId(this.apiName, this.operationName, definition.name);
     }
 
-    public getReferenceUrl(definition: TypeDefinition): string {
-        return this.routeHelper.getDefinitionAnchor(this.apiName, this.operationName, definition.referencedTypeName);
+    public getReferenceUrl(typeName: string): string {
+        return this.routeHelper.getDefinitionAnchor(this.apiName, this.operationName, typeName);
     }
 }
