@@ -97,7 +97,7 @@
 
                 <div class="tab-content">
                     <!-- ko if: representation.typeName -->
-                    <type-definition params="{ representation: representation, apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionByTypeName(representation.typeName) }">
+                    <type-definition params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation) }">
                     </type-definition>
                     <!-- /ko -->
                 </div>
@@ -113,15 +113,15 @@
             <!-- ko if: response.representations.length > 0 -->
             <div class="tabs" data-bind="foreach: { data: representations, as: 'representation' }">
                 <input class="tab-radio" type="radio"
-                    data-bind="attr : { id: response.identifier + representation.contentType, name: response.identifier, checked: $index() === 0 }">
+                    data-bind="attr: { id: response.identifier + representation.contentType, name: response.identifier, checked: $index() === 0 }">
 
                 <label class="tab-label"
-                    data-bind="attr : { for: response.identifier + representation.contentType }, text: representation.contentType"></label>
+                    data-bind="attr: { for: response.identifier + representation.contentType }, text: representation.contentType"></label>
 
                 <div class="tab-content">
                     <!-- ko if: representation.typeName -->
                     <type-definition
-                        params="{ representation: representation, apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionByTypeName(representation.typeName) }">
+                        params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation) }">
                     </type-definition>
                     <!-- /ko -->
                 </div>
