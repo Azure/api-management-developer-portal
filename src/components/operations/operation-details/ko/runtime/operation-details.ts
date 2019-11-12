@@ -1,3 +1,4 @@
+import { Representation } from "./../../../../../models/representation";
 import * as ko from "knockout";
 import template from "./operation-details.html";
 import { Router } from "@paperbits/common/routing";
@@ -5,10 +6,11 @@ import { Component, RuntimeComponent, OnMounted, OnDestroyed } from "@paperbits/
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
-import { TypeDefinition } from "./../../../../../models/schema";
+import { TypeDefinition } from "../../../../../models/typeDefinition";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TenantService } from "../../../../../services/tenantService";
 import { SwaggerObject } from "./../../../../../contracts/swaggerObject";
+import { Utils } from "../../../../../utils";
 
 
 @RuntimeComponent({ selector: "operation-details" })
@@ -131,7 +133,8 @@ export class OperationDetails {
         const schemaIds = [];
         const apiId = `apis/${this.selectedApiName()}/schemas`;
 
-        const prepresentations = operation.responses.map(response => response.representations)
+        const prepresentations = operation.responses
+            .map(response => response.representations)
             .concat(operation.request.representations)
             .flat();
 
@@ -181,8 +184,33 @@ export class OperationDetails {
         this.consoleIsOpen(false);
     }
 
-    public getDefinitionByTypeName(typeName: string): TypeDefinition {
-        return this.definitions().find(x => x.name === typeName);
+    public getDefinitionForRepresentation(representation: Representation): TypeDefinition {
+        const definition = this.definitions().find(x => x.name === representation.typeName);
+
+        if (!definition) {
+            // Fallback for the case when type is referenced, but not defined in schema.
+            return new TypeDefinition(representation.typeName, {});
+        }
+
+        if (!definition.name) {
+            definition.name = representation.typeName;
+        }
+
+        if (representation.sample) {
+            definition.example = representation.sample;
+
+            if (representation.contentType.contains("/xml")) {
+                definition.example = Utils.formatXml(representation.sample);
+                definition.exampleFormat = "xml";
+            }
+
+            if (representation.contentType.contains("/json")) {
+                definition.example = Utils.formatJson(representation.sample);
+                definition.exampleFormat = "json";
+            }
+        }
+
+        return definition;
     }
 
     public getDefinitionReferenceUrl(definition: TypeDefinition): string {
