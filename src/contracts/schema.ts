@@ -110,8 +110,14 @@ export interface XmlObject {
 /**
  * 
  */
-export interface SchemaDocumentContract {
+export interface SwaggerSchemaContract {
     definitions: Bag<SchemaObjectContract>;
+}
+
+export interface OpenApiSchemaContract {
+    components: {
+        schemas: Bag<SchemaObjectContract>;
+    };
 }
 
 /**
@@ -120,6 +126,11 @@ export interface SchemaDocumentContract {
 export interface SchemaContract extends ArmResource  {
     properties: {
         contentType: string;
-        document?: SchemaDocumentContract;
+        document?: SwaggerSchemaContract | OpenApiSchemaContract;
     };
+}
+
+export enum SchemaType {
+    swagger = "application/vnd.ms-azure-apim.swagger.definitions+json",
+    openapi = "application/vnd.oai.openapi.components+json"
 }

@@ -14,7 +14,7 @@ import { Schema } from "../models/schema";
 import { MapiClient } from "./mapiClient";
 import { Utils } from "../utils";
 import { OperationContract } from "../contracts/operation";
-import { SchemaContract } from "../contracts/schema";
+import { SchemaContract, SchemaType } from "../contracts/schema";
 import { VersionSetContract } from "../contracts/apiVersionSet";
 import { HttpHeader } from "@paperbits/common/http/httpHeader";
 import { ChangeLogContract } from "../contracts/apiChangeLog";
@@ -385,9 +385,10 @@ export class ApiService {
     }
 
     public async getSchemas(api: Api): Promise<Page<Schema>> {
-        const result = await this.mapiClient.get<Page<SchemaContract>>(`${api.id}/schemas?$top=20`);
+        const result = await this.mapiClient.get<Page<SchemaContract>>(`${api.id}/schemas`);
         const schemaReferences = result.value;
-        const schemas = await Promise.all(schemaReferences.map(schemaReference => this.getApiSchema(schemaReference.id)));
+        const schemaType = this.getSchemasType(schemaReferences);
+        const schemas = await Promise.all(schemaReferences.filter(schema => schema.properties.contentType === schemaType).map(schemaReference => this.getApiSchema(schemaReference.id)));
 
         // return schemas;
         // const result = await this.mapiClient.get<Page<SchemaContract>>(`${api.id}/schemas?$top=20`, null);
@@ -397,6 +398,18 @@ export class ApiService {
         const page = new Page<Schema>();
         page.value = schemas;
         return page;
+    }
+
+    private getSchemasType(schemas: SchemaContract[]): SchemaType {
+        if (schemas && schemas.length > 0) {
+            const is2 = !!schemas.find(item => item.properties.contentType === SchemaType.swagger) 
+                        &&
+                        !schemas.find(item => item.properties.contentType === SchemaType.openapi);
+            if (is2) {
+                return SchemaType.swagger;
+            }
+        }
+        return SchemaType.openapi;
     }
 
     private lastApiProducts = {};
