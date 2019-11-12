@@ -2,7 +2,6 @@ import "./polyfills";
 import "./bindingHandlers/scrollintoview";
 import "./bindingHandlers/copyToClipboard";
 import "./bindingHandlers/syntaxHighlight";
-import "./bindingHandlers/schemaobjecttype";
 import "./bindingHandlers/markdown";
 import "./bindingHandlers/barChart";
 import "./bindingHandlers/mapChart";
@@ -28,7 +27,6 @@ import { ApiDetails } from "./components/apis/details-of-api/ko/runtime/api-deta
 import { ApiHistory } from "./components/apis/history-of-api/ko/runtime/api-history";
 import { OperationDetails } from "./components/operations/operation-details/ko/runtime/operation-details";
 import { OperationConsole } from "./components/operations/operation-details/ko/runtime/operation-console";
-import { SchemaDetails } from "./components/operations/operation-details/ko/runtime/schema-details";
 import { ProductService } from "./services/productService";
 import { FileInput } from "./components/file-input/file-input";
 import { MapiClient } from "./services/mapiClient";
@@ -82,7 +80,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("apiHistory", ApiHistory);
         injector.bind("operationDetails", OperationDetails);
         injector.bind("operationConsole", OperationConsole);
-        injector.bind("schemaDetails", SchemaDetails);
         injector.bind("typeDefinition", TypeDefinitionViewModel);
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);

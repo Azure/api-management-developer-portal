@@ -1,32 +1,33 @@
 <!-- ko if: $component.anchor -->
-<h4 class="text-word-break" data-bind="text: definition.name, attr: { id: $component.getReferenceId(definition) }">
+<h4 class="text-word-break" data-bind="text: $component.name, attr: { id: $component.getReferenceId(definition) }">
 </h4>
 <!-- /ko -->
 
 <!-- ko ifnot: $component.anchor -->
-<h4 class="text-word-break" data-bind="text: definition.name"></h4>
+<h4 class="text-word-break" data-bind="text: $component.name"></h4>
 <!-- /ko -->
 
-<!-- ko if: definition.description -->
-<p data-bind="markdown: definition.description"></p>
+<!-- ko if: $component.description -->
+<p data-bind="markdown: $component.description"></p>
 <!-- /ko -->
 
-<!-- ko if: definition.uiType === 'object' -->
+<!-- ko if: $component.kind() === 'object' -->
 <!-- ko template: { name: 'typeDefinitionObject', data: $component } -->
 <!-- /ko -->
 <!-- /ko -->
 
-<!-- ko if: definition.uiType === 'enum' -->
+<!-- ko if: $component.kind() === 'enum' -->
 <!-- ko template: { name: 'typeDefinitionEnum', data: $component } -->
 <!-- /ko -->
 <!-- /ko -->
 
-<!-- ko if: definition.uiType === 'array' -->
-<!-- ko template: { name: 'typeDefinitionArray', data: $component } -->
+<!-- ko if: $component.kind() === 'indexer' -->
+<!-- ko template: { name: 'typeDefinitionIndexer', data: $component } -->
 <!-- /ko -->
 <!-- /ko -->
 
 <template id="typeDefinitionObject">
+    <!-- ko if: definition.properties && definition.properties.length > 0 -->
     <div class="table">
         <div class="table-head">
             <div class="table-row">
@@ -38,23 +39,26 @@
         </div>
         <div class="table-body" data-bind="foreach: { data: definition.properties, as: 'property' }">
             <div class="table-row">
-                <div class="col-3">
+                <div class="col-3 text-truncate">
                     <code data-bind="text: property.name"></code>
                 </div>
                 <div class="col-1" data-bind="text: property.required"></div>
-                <div class="col-1">
-                    <!-- ko if: property.referencedTypeName -->
-                    <a
-                        data-bind="text: property.referencedTypeName, attr: { href: $component.getReferenceUrl(property) }"></a>
+                <div class="col-1 text-truncate">
+                    <!-- ko if: property.type.isReference -->
+                    <a data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name) }"></a>
                     <!-- /ko -->
-                    <!-- ko ifnot: property.referencedTypeName -->
-                    <code data-bind="text: property.type"></code>
+                    <!-- ko ifnot: property.type.isReference -->
+                    <code data-bind="text: property.type.name"></code>
+                    <!-- /ko -->
+                    <!-- ko if: property.type.isArray -->
+                    []
                     <!-- /ko -->
                 </div>
                 <div class="col-6" data-bind="markdown: property.description"></div>
             </div>
         </div>
     </div>
+    <!-- /ko -->
 
     <!-- ko if: $component.example -->
     <h5>Example</h5>
@@ -80,20 +84,20 @@
                 <div class="col-11">Values</div>
             </div>
         </div>
-    </div>
-    <div class="table-body">
-        <div class="table-row">
-            <div class="col-1" data-bind="markdown: definition.type"></div>
-            <div class="col-11">
-                <!-- ko foreach: { data: definition.enum, as: 'value' } -->
-                <!-- ko if: $index() > 0 -->,
-                <!-- /ko --><code data-bind="text: value"></code><!-- /ko -->
+        <div class="table-body">
+            <div class="table-row">
+                <div class="col-1 text-truncate" data-bind="markdown: definition.type.name"></div>
+                <div class="col-11">
+                    <!-- ko foreach: { data: definition.enum, as: 'value' } -->
+                    <!-- ko if: $index() > 0 -->,
+                    <!-- /ko --><code data-bind="text: value"></code><!-- /ko -->
+                </div>
             </div>
         </div>
     </div>
 </template>
 
-<template id="typeDefinitionArray">
+<template id="typeDefinitionIndexer">
     <div class="table">
         <div class="table-head">
             <div class="table-row">
@@ -104,16 +108,15 @@
         </div>
         <div class="table-body" data-bind="foreach: { data: definition.properties, as: 'property' }">
             <div class="table-row">
-                <div class="col-3">
+                <div class="col-3 text-truncate">
                     <code data-bind="text: property.name"></code>
                 </div>
-                <div class="col-1">
-                    <!-- ko if: property.referencedTypeName -->
-                    <a
-                        data-bind="text: property.referencedTypeName, attr: { href: $component.getReferenceUrl(property) }"></a>
+                <div class="col-1 text-truncate">
+                    <!-- ko if: property.type.name -->
+                    <a data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property) }"></a>
                     <!-- /ko -->
-                    <!-- ko ifnot: property.referencedTypeName -->
-                    <code data-bind="text: property.type"></code>
+                    <!-- ko ifnot: property.type.name -->
+                    <code data-bind="text: property.type.name"></code>
                     <!-- /ko -->
                 </div>
                 <div class="col-8" data-bind="markdown: property.description"></div>
