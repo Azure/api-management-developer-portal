@@ -1,27 +1,31 @@
-import { SchemaContract, SchemaDocumentContract, SchemaObjectContract, ReferenceObjectContract } from "../contracts/schema";
-import { Utils } from "../utils";
+import { SchemaContract, SchemaObjectContract, SchemaType, OpenApiSchemaContract, SwaggerSchemaContract } from "../contracts/schema";
 
 export class Schema {
     public definitions: TypeDefinition[];
 
     constructor(contract?: SchemaContract) {
         this.definitions = [];
+        if (contract) {
+            const definitionType = contract.properties?.contentType;
+            let definitions = {};
+            
+            if (definitionType === SchemaType.swagger) {
+                const swaggerDoc = <SwaggerSchemaContract>contract.properties?.document;
+                definitions = swaggerDoc?.definitions;
+            } else {
+                if (definitionType === SchemaType.openapi) {
+                    const openApiDoc = <OpenApiSchemaContract>contract.properties?.document;
+                    definitions = openApiDoc?.components?.schemas;
+                }
+            }
 
-        if (contract.properties.document && contract.properties.document.definitions) {
-            this.definitions = Object
-                .keys(contract.properties.document.definitions)
+            this.definitions = Object.keys(definitions)
                 .map(definitionName => {
-                    return new TypeDefinition(definitionName, contract.properties.document.definitions[definitionName]);
+                    return new TypeDefinition(definitionName, definitions[definitionName]);
                 });
+
         }
-    }
-}
-
-export class SchemaDocument {
-    public definitions?: Object;
-
-    constructor(contract: SchemaDocumentContract) {
-        this.definitions = contract.definitions;
+        
     }
 }
 
