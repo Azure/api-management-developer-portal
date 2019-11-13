@@ -236,7 +236,13 @@ $style-guide-color: #000;
     &:before {
         @include fit(5px);
         content: "";
-        background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.0) 10px, rgba(0, 0, 0, 0.05) 10px, rgba(0, 0, 0, 0.05) 20px);
+        background: repeating-linear-gradient(
+            45deg,
+            rgba(0, 0, 0, 0),
+            rgba(0, 0, 0, 0) 10px,
+            rgba(0, 0, 0, 0.05) 10px,
+            rgba(0, 0, 0, 0.05) 20px
+        );
     }
 
     &:after {
@@ -249,7 +255,7 @@ $style-guide-color: #000;
 }
 
 .not-configured {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     font-size: 15px;
     text-align: center;
     width: 100%;
@@ -258,9 +264,9 @@ $style-guide-color: #000;
 .dragged {
     box-shadow: 2px 2px 2px 2px rgba(128, 128, 128, 0.4);
     transform: scale(1.05);
-    transition: transform .3s ease-in-out, height .3s ease-in-out, width .3s ease-in-out;
+    transition: transform 0.3s ease-in-out, height 0.3s ease-in-out, width 0.3s ease-in-out;
     background: #fff;
-    opacity: .98;
+    opacity: 0.98;
     position: fixed;
     z-index: 9999;
 }
@@ -270,12 +276,18 @@ $style-guide-color: #000;
     border-color: #ccc;
     border-style: dashed;
     border-width: 2px;
-    opacity: .5;
+    opacity: 0.5;
 }
 
 .empty-item {
     @include fit(5px);
-    background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.0) 10px, rgba(0, 0, 0, 0.05) 10px, rgba(0, 0, 0, 0.05) 20px);
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0),
+        rgba(0, 0, 0, 0) 10px,
+        rgba(0, 0, 0, 0.05) 10px,
+        rgba(0, 0, 0, 0.05) 20px
+    );
 
     &:after {
         content: attr(placeholder);
@@ -293,4 +305,18 @@ placeholder {
     text-align: center;
     border: 3px solid grey;
     display: block;
+}
+
+body {
+    &.design {
+        &::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+        }
+    }
 }
