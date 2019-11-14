@@ -214,8 +214,8 @@ export class OperationDetails {
     }
 
     public getDefinitionReferenceUrl(definition: TypeDefinition): string {
-        const apiName = this.selectedApiName();
-        const operationName = this.selectedOperationName();
+        const apiName = this.api().name;
+        const operationName = this.operation().name;
 
         return this.routeHelper.getDefinitionAnchor(apiName, operationName, definition.name);
     }

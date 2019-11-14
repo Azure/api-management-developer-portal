@@ -122,7 +122,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         }
 
         if (contract.items) { // indexer
-            let type;
+            let type = new TypeDefinitionPropertyType("object");
 
             if (contract.items.type) {
                 type = new TypeDefinitionPropertyType(contract.items.type);
