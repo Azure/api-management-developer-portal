@@ -59,11 +59,11 @@
         "webpack-merge": "^4.2.2"
     },
     "dependencies": {
-        "@paperbits/azure": "0.1.171",
-        "@paperbits/common": "0.1.171",
-        "@paperbits/core": "0.1.171",
-        "@paperbits/prosemirror": "0.1.171",
-        "@paperbits/styles": "0.1.171",
+        "@paperbits/azure": "0.1.173",
+        "@paperbits/common": "0.1.173",
+        "@paperbits/core": "0.1.173",
+        "@paperbits/prosemirror": "0.1.173",
+        "@paperbits/styles": "0.1.173",
         "@webcomponents/webcomponentsjs": "^2.4.0",
         "adal-vanilla": "^1.0.18",
         "applicationinsights-js": "^1.0.20",
