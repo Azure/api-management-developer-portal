@@ -112,10 +112,10 @@
                     <code data-bind="text: property.name"></code>
                 </div>
                 <div class="col-1 text-truncate">
-                    <!-- ko if: property.type.name -->
-                    <a data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property) }"></a>
+                    <!-- ko if: property.type.isReference -->
+                    <a data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name) }"></a>
                     <!-- /ko -->
-                    <!-- ko ifnot: property.type.name -->
+                    <!-- ko ifnot: property.type.isReference -->
                     <code data-bind="text: property.type.name"></code>
                     <!-- /ko -->
                 </div>
