@@ -244,72 +244,15 @@
 
 <!-- ko if: responseStatusCode -->
 <div class="panel panel-dark menu menu-horizontal animation-fade-in" data-bind="scrollintoview: {}">
-    <ul class="nav">
-        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.responseActiveTab() === 'message' }">
-            <a href="#" class="nav-link"
-                data-bind="click: $component.selectMessageTab">Message</a>
-        </li>
-        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.responseActiveTab() === 'trace' }">
-            <a href="#" class="nav-link"
-                data-bind="click: $component.selectTraceTab">Trace</a>
-        </li>
-    </ul>
-
-    <!-- ko if: responseActiveTab() === "message" -->
 
     <h3>HTTP response</h3>
     <pre><span>HTTP/1.1</span> <span data-bind="attr: { 'data-code': responseStatusCode  }"><span data-bind="text: responseStatusCode, attr: { 'data-code':responseStatusCode  }"></span> <span data-bind="text: responseStatusText"></span></span>
 
-<span data-bind="text: responseHeadersString"></span>
+    <span data-bind="text: responseHeadersString"></span>
 
-<span data-bind="text: responseBody"></span></pre>
+    <span data-bind="text: responseBody"></span></pre>
 
-    <!--/ko-->
 
-    <!-- ko if: responseActiveTab() === "trace" -->
-
-    <!-- ko if: consoleTrace -->
-    <!-- ko with: consoleTrace -->
-    <ul class="nav nav-pills">
-        <li class="nav-item nav-link">
-            <label>Jump to:</label>
-        </li>
-        <li class="nav-item nav-link">
-            <a href="#trace_inbound">Inbound</a>
-        </li>
-        <li class="nav-item nav-link">
-            <a href="#trace_backend">Backend</a>
-        </li>
-        <li class="nav-item nav-link">
-            <a href="#trace_outbound">Outbound</a>
-        </li>
-    </ul>
-    <!-- <div class="panel-contextual panel-contextual-top panel-contextual-right">
-                        <b>Response latency: {{ totalExecutionTime | number : '1.3-3' }} ms</b>
-                    </div> -->
-    <div data-bind="if: inbound">
-        <h3 id="trace_inbound">Inbound (<span data-bind="text: inboundExecutionTime"></span> ms)</h3>
-        <pre class="well well-sm"
-            data-bind="foreach: { data: inbound, as: 'item'  }"><span highlight-code class="json"><span data-bind="text: item.source"></span> (<span data-bind="text: item.executionTime"></span> ms)<span data-bind="text: $component.formatJson(item.data)"></span></span><hr /></pre>
-    </div>
-    <div data-bind="if: backend">
-        <h3 id="trace_backend">Backend (<span data-bind="text: backendExecutionTime"></span> ms)</h3>
-        <pre class="well well-sm"
-            data-bind="foreach: { data: backend, as: 'item'  }"><span highlight-code class="json"><span data-bind="text: item.source"></span> (<span data-bind="text: item.executionTime"></span> ms)<span data-bind="text: $component.formatJson(item.data)"></span></span><hr /></pre>
-    </div>
-    <div data-bind="if: outbound">
-        <h3 id="trace_outbound">Outbound (<span data-bind="text: outboundExecutionTime"></span> ms)</h3>
-        <pre class="well well-sm"
-            data-bind="foreach: { data: outbound, as: 'item'  }"><span highlight-code class="json"><span data-bind="text: item.source"></span> (<span data-bind="text: item.executionTime"></span> ms)<span data-bind="text: $component.formatJson(item.data)"></span></span><hr /></pre>
-    </div>
-    <!--/ko-->
-    <!--/ko-->
-
-    <!-- ko if: consoleTraceError -->
-    <p><span data-bind="text: consoleTraceError"></span></p>
-    <!--/ko-->
-
-    <!--/ko-->
 </div>
 <!--/ko-->
 

@@ -9,9 +9,7 @@ import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { Utils } from "../../../../../utils";
 import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
 import { Api } from "../../../../../models/api";
-import { ConsoleTrace } from "../../../../../models/console/consoleTrace";
 import { KnownStatusCodes } from "../../../../../models/knownStatusCodes";
-import { Trace } from "../../../../../contracts/trace";
 import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
@@ -46,18 +44,14 @@ export class OperationConsole {
     public selectedSubscriptionKey: ko.Observable<string>;
     public subscriptionKeysView: string;
     public apiProductsView: string;
-    public consoleTrace: ko.Observable<ConsoleTrace>;
-    public consoleTraceError: ko.Observable<string>;
     public oauthView: string;
     public currentViewName: string;
     public mockingEnabled: boolean;
     public gotOpenProduct: boolean;
-    public selectedTab: string;
     public selectedLanguage: ko.Observable<string>;
     public isConsumptionMode: boolean;
     public selectedProduct: Product;
     public canSelectProduct: boolean;
-    public responseActiveTab: ko.Observable<string>;
     public requestSummary: ko.Observable<string>;
     public requestError: ko.Observable<string>;
     public bodySource: ko.Observable<string>;
@@ -84,9 +78,6 @@ export class OperationConsole {
         this.responseStatusText = ko.observable();
         this.responseHeadersString = ko.observable();
         this.responseBody = ko.observable();
-        this.consoleTrace = ko.observable();
-        this.consoleTraceError = ko.observable();
-        this.responseActiveTab = ko.observable("message");
         this.selectedLanguage = ko.observable("http");
         this.api = ko.observable<Api>();
         this.revision = ko.observable();
@@ -136,11 +127,9 @@ export class OperationConsole {
         this.responseStatusCode(null);
         this.responseStatusText(null);
         this.responseBody(null);
-        this.consoleTrace(null);
         this.responseContentType = null;
         this.mockingEnabled = false;
         this.selectedSubscriptionKey(null);
-        this.selectedTab = "message";
         this.selectedProduct = null;
         this.canSelectProduct = true;
 
@@ -164,7 +153,6 @@ export class OperationConsole {
 
         if (!this.isConsumptionMode) {
             this.setNoCacheHeader();
-            this.setTraceHeader();
         }
         else {
             this.canSelectProduct = !this.isKeyProvidedByUser();
@@ -298,10 +286,6 @@ export class OperationConsole {
         this.consoleOperation().setHeader(KnownHttpHeaders.CacheControl, "no-cache", "string", "Disable caching.");
     }
 
-    private setTraceHeader(): void {
-        this.consoleOperation().setHeader(KnownHttpHeaders.OcpApimTrace, "true", "bool", "Enable request tracing.");
-    }
-
     private setVersionHeader(): void {
         this.consoleOperation().setHeader(this.api().apiVersionSet.versionHeaderName, this.api().apiVersion, "string", "API version");
     }
@@ -323,10 +307,6 @@ export class OperationConsole {
     private getSubscriptionKeyHeader(): ConsoleHeader {
         const subscriptionKeyHeaderName = this.getSubscriptionKeyHeaderName();
         return this.findRequestHeader(subscriptionKeyHeaderName);
-    }
-
-    private isTraceHeaderSpecified(): boolean {
-        return !!this.findRequestHeader(KnownHttpHeaders.OcpApimTrace);
     }
 
     private setSubscriptionKeyHeader(): ConsoleHeader {
@@ -444,26 +424,14 @@ export class OperationConsole {
 
     private async sendRequest(): Promise<void> {
         this.requestError(null);
-        this.consoleTraceError(null);
         this.sendingRequest(true);
         this.responseStatusCode(null);
 
         const url = `${this.consoleOperation().requestUrl()}`;
         const method = this.consoleOperation().method;
         const headers = [...this.consoleOperation().request.headers()];
-
-        let traceHeader = headers.find(header => header.name().toLowerCase() === KnownHttpHeaders.OcpApimTrace.toLowerCase());
-
-        if (traceHeader) {
-            headers.remove(traceHeader);
-        }
-
-        traceHeader = this.consoleOperation().createHeader(KnownHttpHeaders.OcpApimTrace, "true", "bool", "Enable request tracing.");
-
-        if (this.isKeyProvidedByUser()) {
-            traceHeader.value(this.masterKey);
-        }
-        else {
+        
+        if (!this.isKeyProvidedByUser()) {
             const keyHeader = this.consoleOperation().createHeader(KnownHttpHeaders.OcpApimSubscriptionKey, this.masterKey, "string", "Subscription key.");
 
             if (this.selectedProduct) {
@@ -471,8 +439,6 @@ export class OperationConsole {
             }
             headers.push(keyHeader);
         }
-
-        headers.push(traceHeader);
 
         let payload;
 
@@ -526,15 +492,6 @@ export class OperationConsole {
                 return consoleHeader;
             });
 
-            if (this.isTraceHeaderSpecified()) {
-                if (!this.isSubscriptionKeyHeaderSpecified()) {
-                    this.consoleTraceError("Trace is not available for requests with no subscription key specified.");
-                }
-                else {
-                    this.checkTraces(responseHeaders);
-                }
-            }
-
             const contentTypeHeader = responseHeaders.find((header) => header.name().toLowerCase() === KnownHttpHeaders.ContentType.toLowerCase());
 
             if (contentTypeHeader) {
@@ -568,54 +525,8 @@ export class OperationConsole {
         return JSON.stringify(data, null, 4);
     }
 
-    private checkTraces(headers: ConsoleHeader[]): void {
-        const traceHeader = headers.find((header) => header.name().toUpperCase() === KnownHttpHeaders.OcpApimTraceLocation.toUpperCase());
-
-        if (traceHeader && traceHeader.value) {
-            this.downloadTraces(traceHeader.value());
-        }
-        else {
-            this.consoleTraceError(`Trace is not available because response does not contain ${KnownHttpHeaders.OcpApimTraceLocation} header.`);
-        }
-    }
-
-    private async downloadTraces(traceUrl: string): Promise<void> {
-        try {
-            const request: HttpRequest = {
-                url: traceUrl,
-                method: "GET"
-            };
-
-            /**
-             * TODO: Add retriable send to http client.
-             * Traces may not be available with first 2-4 requests.
-             */
-            const result = await this.httpClient.send<Trace>(request);
-            const trace = result.toObject();
-            const traceId = Utils.getQueryParams(traceUrl.split("?", 2)[1])["traceId"];
-
-            if (trace.traceId !== traceId) {
-                throw new Error("traceId mismatch");
-            }
-
-            this.consoleTrace(new ConsoleTrace(trace));
-        }
-        catch (error) {
-            this.consoleTrace(null);
-            this.consoleTraceError("Could not load trace due to error. Please try again later.");
-        }
-    }
-
     public toggleRequestSummarySecrets(): void {
         this.requestSummarySecretsRevealed = !this.requestSummarySecretsRevealed;
-    }
-
-    public selectMessageTab(): void {
-        this.responseActiveTab("message");
-    }
-
-    public selectTraceTab(): void {
-        this.responseActiveTab("trace");
     }
 
     public getApiReferenceUrl(): string {
