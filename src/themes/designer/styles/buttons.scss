@@ -1,6 +1,7 @@
 ﻿@import "variables.scss";
 @import "mixins.scss";
 
+
 .btn {
     border: none;
     background: none;
@@ -20,6 +21,10 @@
         outline: none;
         color: $color-base;
         cursor: pointer;
+    }
+
+    &:disabled {
+        opacity: 0.2;
     }
 }
 
