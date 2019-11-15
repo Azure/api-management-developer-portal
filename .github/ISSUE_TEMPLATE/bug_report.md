@@ -7,32 +7,44 @@ assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**Every bug report should have precise description and reproduction steps; console traces or source code references are appreciated.**
 
-**To Reproduce**
-Steps to reproduce the behavior:
+**For assistance requests, contact Azure support or submit a post [on Stack Overflow](http://aka.ms/apimso). We don't provide support through GitHub Issues. Feature requests can be raised [on the Azure Feedback Forum](https://aka.ms/apimwish).**
+
+
+## Bug description
+
+A clear and concise description of the bug.
+
+## Reproduction steps
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected behavior**
+## Expected behavior
+
 A clear and concise description of what you expected to happen.
 
-**Portal environment**
+## Is your portal managed or self-hosted?
+
 Managed / Self-hosted
 
-**Release tag or commit SHA (if using self-hosted version)**
-For example, release `2.0.0` or commit `c45da9778b70d369aba60fa2e63c191efe2b548f`
+## Release tag or commit SHA (if using self-hosted version)
 
-**API Management service name**
-contoso-api
+[e.g., release `2.0.0`, commit `c45da9778b70d369aba60fa2e63c191efe2b548f`]
 
-**Environment**
+## API Management service name
+
+[e.g., contoso-api]
+
+## Environment
+
  - Operating system: [e.g., iOS]
  - Browser: [e.g., Google Chrome, Safari]
  - Version: [e.g., 22]
 
-**Additional context**
+## Additional context
+
 Add any other context about the problem here, including screenshots.
