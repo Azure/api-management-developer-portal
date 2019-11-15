@@ -6,7 +6,7 @@ import { Component, RuntimeComponent, OnMounted, OnDestroyed } from "@paperbits/
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
-import { TypeDefinition } from "../../../../../models/typeDefinition";
+import { TypeDefinition, TypeDefinitionObjectProperty, TypeDefinitionProperty } from "../../../../../models/typeDefinition";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TenantService } from "../../../../../services/tenantService";
 import { SwaggerObject } from "./../../../../../contracts/swaggerObject";
@@ -146,12 +146,29 @@ export class OperationDetails {
                     schemaIds.push(schemaId);
                 }
             });
+        
+        const typeNames = prepresentations.filter(p => !!p.typeName).map(p => p.typeName).filter((item, pos, self) => self.indexOf(item) === pos);
 
         const schemasPromises = schemaIds.map(schemaId => this.apiService.getApiSchema(`${apiId}/${schemaId}`));
         const schemas = await Promise.all(schemasPromises);
         const definitions = schemas.map(x => x.definitions).flat();
 
-        this.definitions(definitions);
+        let lookupResult = [...typeNames];
+        while (lookupResult.length > 0) {            
+            const references = definitions.filter(d => lookupResult.indexOf(d.name) !== -1);
+
+            lookupResult = references.length === 0 ? [] : this.lookupReferences(references, typeNames);
+            if (lookupResult.length > 0) {
+                typeNames.push(...lookupResult);
+            }
+        } 
+
+        this.definitions(definitions.filter(d => typeNames.indexOf(d.name) !== -1));
+    }
+
+    private lookupReferences(definitions: TypeDefinition[], skipNames: string[]): string[] {
+        const objectDefinitions: TypeDefinitionProperty[] = definitions.map(r => r.properties).flat();
+        return objectDefinitions.filter(p => p.type && p.type.isReference && skipNames.indexOf(p.type.name) === -1).map(d => d.type.name);
     }
 
     public async loadGatewayInfo(): Promise<void> {
