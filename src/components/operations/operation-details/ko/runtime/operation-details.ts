@@ -168,7 +168,7 @@ export class OperationDetails {
 
     private lookupReferences(definitions: TypeDefinition[], skipNames: string[]): string[] {
         const objectDefinitions: TypeDefinitionProperty[] = definitions.map(r => r.properties).flat();
-        return objectDefinitions.filter(p => p.type && p.type.isReference && skipNames.indexOf(p.type.name) === -1).map(d => d.type.name);
+        return objectDefinitions.filter(p => p && p.type && (p.type.isReference || p.kind === "indexer") && skipNames.indexOf(p.type.name) === -1).map(d => d.type.name);
     }
 
     public async loadGatewayInfo(): Promise<void> {
