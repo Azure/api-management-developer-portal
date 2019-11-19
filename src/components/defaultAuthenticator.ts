@@ -28,7 +28,7 @@ export class DefaultAuthenticator implements IAuthenticator {
             return false;
         }
 
-        const now = new Date();
+        const now = Utils.getUtcDateTime();
 
         return now < parsedToken.expires;
     }
