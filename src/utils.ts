@@ -331,4 +331,11 @@ export class Utils {
     public static clone(obj: Object): Object {
         return JSON.parse(JSON.stringify(obj));
     }
+
+    public static getUtcDateTime(): Date {
+        const now = new Date();
+        const utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+
+        return utc;
+    }
 }
