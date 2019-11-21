@@ -34,7 +34,7 @@
 
     &[alignment="top center"] {
         top: 0;
-        left: 0;
+        left: 50%;
         bottom: initial;
         transform: rotate(317deg);
     }
@@ -46,6 +46,7 @@
 
     &[alignment="center left"] {
         top: 50%;
+        left: 0;
         transform: rotate(225deg);
     }
 
@@ -75,7 +76,7 @@
 }
 
 .dropzone {
-    margin: 10px 0;
+    margin: 10px 5px;
     
 
     .dropzone-controls {

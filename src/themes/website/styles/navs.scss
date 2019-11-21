@@ -1,13 +1,29 @@
 .nav {
-    .nav-link {
+    display: flex;
+    flex-wrap: wrap;
+
+    .nav-item {
         padding: 0;
+        margin: 0;
+    }
+
+    .nav-link {
         color: inherit;
     }
-}
 
-.menu {
-    .nav-item {
-        cursor: pointer;
+    .nav { // nested
+        margin-left: 20px;
+    }
+
+    .dropdown {
+        .nav {
+            margin: 0px;
+        }
+
+        .nav-item {
+            white-space: nowrap;
+            flex-grow: 1;
+        }
     }
 }
 

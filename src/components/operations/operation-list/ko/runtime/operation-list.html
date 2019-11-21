@@ -31,10 +31,9 @@
         </div>
         <ul class="nav">
             <!-- ko foreach: { data: group.items, as: 'item' } -->
-            <li class="nav-item"
-                data-bind="css: { 'nav-item-active': $component.selectedOperationName() === item.name }">
+            <li class="nav-item">
                 <a href="#" role="listitem" class="nav-link text-truncate"
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }">
+                    data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
                     <span data-bind="attr: { 'data-method': method }"></span>
                     <span class="operation-name" data-bind="text: item.displayName"></span>
                 </a>
@@ -66,10 +65,9 @@
         <!-- ko if: operations -->
         <ul class="nav">
             <!-- ko foreach: { data: operations, as: 'item' } -->
-            <li class="nav-item"
-                data-bind="css: { 'nav-item-active': $component.selectedOperationName() === item.name }">
+            <li class="nav-item">
                 <a href="#" role="listitem" class="nav-link text-truncate"
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }">
+                    data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
                     <span data-bind="attr: { 'data-method': method }"></span>
                     <span class="operation-name" data-bind="text: item.displayName"></span>
                 </a>

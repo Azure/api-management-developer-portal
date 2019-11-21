@@ -1,5 +1,38 @@
-.card {
-    flex-direction: row;
-    flex-wrap: wrap;
-    flex-basis: 100%;
+.cards {
+    display: flex;
+    flex-direction: column;
+
+    a,
+    a:active,
+    a:focus,
+    a:hover {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .cards-body, 
+    .cards-footer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .cards-body {
+        min-height: 200px;
+    }
+
+    .card {
+        overflow: hidden;
+        width: 300px;
+        height: 250px;
+    }
+}
+
+.tile {
+    margin: 1em 0;
+    overflow: hidden;
+}
+
+.tile.tile-content {
+    margin: 0;
 }

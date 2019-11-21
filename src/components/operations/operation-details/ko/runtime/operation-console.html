@@ -168,34 +168,59 @@
 
 <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
     <ul class="nav">
-        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'http' }">
-            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'http')">HTTP</a>
-        </li>
-        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'curl' }">
-            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'curl')">Curl</a>
-        </li>
-        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'csharp' }">
-            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'csharp')">C#</a>
-        </li>
-        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'java' }">
-            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'java')">Java</a>
-        </li>
-        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'javascript' }">
+        <li class="nav-item">
             <a class="nav-link" href="#"
-                data-bind="click: $component.selectedLanguage.bind(this, 'javascript')">JavaScript</a>
+                data-bind="click: $component.selectedLanguage.bind(this, 'http'), css: { 'nav-link-active': $component.selectedLanguage() === 'http' }">
+                HTTP
+            </a>
         </li>
-        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'php' }">
-            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'php')">PHP</a>
+        <li class="nav-item">
+            <a class="nav-link" href="#"
+                data-bind="click: $component.selectedLanguage.bind(this, 'curl'), css: { 'nav-link-active': $component.selectedLanguage() === 'curl' }">
+                Curl
+            </a>
         </li>
-        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'python' }">
-            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'python')">Python</a>
+        <li class="nav-item">
+            <a class="nav-link" href="#"
+                data-bind="click: $component.selectedLanguage.bind(this, 'csharp'), css: { 'nav-link-active': $component.selectedLanguage() === 'csharp' }">
+                C#
+            </a>
         </li>
-        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'ruby' }">
-            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'ruby')">Ruby</a>
+        <li class="nav-item">
+            <a class="nav-link" href="#"
+                data-bind="click: $component.selectedLanguage.bind(this, 'java'), css: { 'nav-link-active': $component.selectedLanguage() === 'java' }">
+                Java
+            </a>
         </li>
-        <li class="nav-item" data-bind="css: { 'nav-item-active': $component.selectedLanguage() === 'objc' }">
-            <a class="nav-link" href="#" data-bind="click: $component.selectedLanguage.bind(this, 'objc')">Objective
-                C</a>
+        <li class="nav-item">
+            <a class="nav-link" href="#"
+                data-bind="click: $component.selectedLanguage.bind(this, 'javascript'), css: { 'nav-link-active': $component.selectedLanguage() === 'javascript' }">
+                JavaScript
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#"
+                data-bind="click: $component.selectedLanguage.bind(this, 'php'), css: { 'nav-link-active': $component.selectedLanguage() === 'php' }">
+                PHP
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#"
+                data-bind="click: $component.selectedLanguage.bind(this, 'python'), css: { 'nav-link-active': $component.selectedLanguage() === 'python' }">
+                Python
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#"
+                data-bind="click: $component.selectedLanguage.bind(this, 'ruby'), css: { 'nav-link-active': $component.selectedLanguage() === 'ruby' }">
+                Ruby
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#"
+                data-bind="click: $component.selectedLanguage.bind(this, 'objc'), css: { 'nav-link-active': $component.selectedLanguage() === 'objc' }">
+                Objective C
+            </a>
         </li>
     </ul>
 
