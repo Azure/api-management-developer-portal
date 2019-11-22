@@ -27,6 +27,7 @@ export class UserDetails {
     public password: ko.Observable<string>;
     public confirmPassword: ko.Observable<string>;
     public user: ko.Observable<User>;
+    public isBasicAccount: ko.Observable<boolean>;
 
     constructor(
         private readonly usersService: UsersService, 
@@ -40,6 +41,7 @@ export class UserDetails {
         this.password = ko.observable();
         this.confirmPassword = ko.observable();
         this.isEdit = ko.observable(false);
+        this.isBasicAccount = ko.observable(false);
         this.working = ko.observable(false);
         this.registrationDate = ko.computed(() => this.getRegistrationDate());
     }
@@ -49,7 +51,7 @@ export class UserDetails {
         await this.usersService.ensureSignedIn();
 
         const model: User = await this.usersService.getCurrentUser();
-
+        this.isBasicAccount(model.isBasicAccount);
         this.setUser(model);
     }
 

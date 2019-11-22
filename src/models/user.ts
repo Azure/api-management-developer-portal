@@ -11,6 +11,7 @@ export class User {
     public note: string;
     public groups?: UserGroup[];
     public identities: UserIdentity[];
+    public isBasicAccount: boolean;
 
     constructor(contract: UserContract) {
         this.id = Utils.getResourceName("users", contract.id, "shortId");
@@ -22,6 +23,7 @@ export class User {
         this.note = contract.properties.note;
         this.groups = contract.properties.groups;
         this.identities = contract.properties.identities;
+        this.isBasicAccount = this.identities[0]?.provider === "Basic";
     }
 }
 
