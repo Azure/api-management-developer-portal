@@ -17,6 +17,7 @@
         <div class="col-md-3">Registration date</div>
         <div class="col-md-9" data-bind="text: registrationDate"></div>
     </div>
+    <!-- ko if: isBasicAccount -->
     <div class="row">
         <div class="col-md-12">
             <button type="button" class="button button-default" data-bind="click: toggleEdit">Change name</button>
@@ -24,6 +25,7 @@
             <button type="button" class="button button-default" data-bind="click: closeAccount">Close account</button>
         </div>
     </div>
+    <!-- /ko -->
     <!-- /ko -->
 
     <!-- ko if: isEdit -->
