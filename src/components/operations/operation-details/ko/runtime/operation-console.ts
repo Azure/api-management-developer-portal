@@ -221,19 +221,21 @@ export class OperationConsole {
 
         products.forEach(product => {
             const keys = [];
-            const productId = product.id;
 
             subscriptions.forEach(subscription => {
-                if (subscription.scope.endsWith("/apis") || subscription.scope.endsWith(productId)) {
-                    keys.push({
-                        name: `Primary-${subscription.primaryKey.substr(0, 4)}`,
-                        value: subscription.primaryKey
-                    });
-                    keys.push({
-                        name: `Secondary-${subscription.secondaryKey.substr(0, 4)}`,
-                        value: subscription.secondaryKey
-                    });
+                if (!this.productService.isScopeSuitable(subscription.scope, this.api().name, product.name)) {
+                    return;
                 }
+
+                keys.push({
+                    name: `Primary-${subscription.primaryKey.substr(0, 4)}`,
+                    value: subscription.primaryKey
+                });
+
+                keys.push({
+                    name: `Secondary-${subscription.secondaryKey.substr(0, 4)}`,
+                    value: subscription.secondaryKey
+                });
             });
 
             if (keys.length > 0) {
@@ -429,7 +431,7 @@ export class OperationConsole {
         const url = `${this.consoleOperation().requestUrl()}`;
         const method = this.consoleOperation().method;
         const headers = [...this.consoleOperation().request.headers()];
-        
+
         if (!this.isKeyProvidedByUser()) {
             const keyHeader = this.consoleOperation().createHeader(KnownHttpHeaders.OcpApimSubscriptionKey, this.masterKey, "string", "Subscription key.");
 

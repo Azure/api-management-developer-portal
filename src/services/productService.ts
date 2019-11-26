@@ -153,7 +153,7 @@ export class ProductService {
      */
     public async getProductsPage(filter: SearchQuery): Promise<Page<Product>> {
         const skip = filter.skip || 0;
-        const take = filter.take || Constants.defaultPageSize;    
+        const take = filter.take || Constants.defaultPageSize;
         let query = `/products?$top=${take}&$skip=${skip}`;
 
         if (filter.pattern) {
@@ -286,5 +286,24 @@ export class ProductService {
         };
 
         await this.mapiClient.patch(subscriptionId, [header], body);
+    }
+
+    /**
+     * Determines if specified subscription scope is suitable in context of an API or a Product.
+     * @param scope {string} Subscription scope.
+     * @param apiName {string} ARM name of the API.
+     * @param productName {string} ARM name of the Product.
+     */
+    public isScopeSuitable(scope: string, apiName: string = null, productName: string = null): boolean {
+        if (!scope) {
+            throw new Error(`Parameter "scope" not specified.`);
+        }
+
+        console.log(apiName);
+        console.log(productName);
+
+        return scope.endsWith("/apis")
+            || (apiName && scope.endsWith(`/apis/${apiName}`))
+            || (productName && scope.endsWith(`/products/${productName}`));
     }
 }
