@@ -22,7 +22,6 @@ export class UserSignup {
     public readonly passwordConfirmation: ko.Observable<string>;
     public readonly firstName: ko.Observable<string>;
     public readonly lastName: ko.Observable<string>;
-    public readonly isUserRequested: ko.Observable<boolean>;
     public readonly showTerms: ko.Observable<boolean>;
     public readonly consented: ko.Observable<boolean>;
     public readonly showHideLabel: ko.Observable<string>;
@@ -43,7 +42,6 @@ export class UserSignup {
         this.showTerms = ko.observable();
         this.termsOfUse = ko.observable();
         this.showHideLabel = ko.observable("Show");
-        this.isUserRequested = ko.observable(false);
         this.working = ko.observable(false);
         this.captcha = ko.observable();
         this.delegationUrl = ko.observable();
@@ -90,7 +88,8 @@ export class UserSignup {
             if (isUserSignedIn) {
                 this.usersService.navigateToHome();
                 return;
-            } else {
+            }
+            else {
                 const redirectUrl = this.delegationUrl();
                 if (redirectUrl) {
                     window.open(redirectUrl, "_self");
@@ -116,7 +115,8 @@ export class UserSignup {
      * Sends user signup request to Management API.
      */
     public async signup(): Promise<void> {
-        const isCaptcha = this.requireHipCaptcha();
+        const isCaptchaRequired = this.requireHipCaptcha();
+
         const validationGroup = {
             email: this.email,
             password: this.password,
@@ -130,7 +130,7 @@ export class UserSignup {
         let captchaToken;
         let captchaType;
 
-        if (isCaptcha) {
+        if (isCaptchaRequired) {
             validationGroup["captcha"] = this.captcha;
 
             WLSPHIP0.verify((solution, token, param) => {
@@ -181,10 +181,12 @@ export class UserSignup {
             password: this.password(),
             confirmation: "signup",
             appType: "developerPortal"
-        }
+        };
 
         try {
-            if (isCaptcha) {
+            this.working(true);
+
+            if (isCaptchaRequired) {
                 const createSignupRequest: SignupRequest = {
                     solution: captchaSolution,
                     flowId: captchaFlowId,
@@ -194,19 +196,19 @@ export class UserSignup {
                 };
 
                 await this.backendService.sendSignupRequest(createSignupRequest);
-            } else {
+            }
+            else {
                 await this.usersService.createSignupRequest(mapiSignupData);
             }
-
-            this.isUserRequested(true);
 
             const validationReport: ValidationReport = {
                 source: "signup",
                 errors: []
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        } catch (error) {
-            if (isCaptcha) {
+        }
+        catch (error) {
+            if (isCaptchaRequired) {
                 WLSPHIP0.reloadHIP();
             }
 
@@ -218,15 +220,20 @@ export class UserSignup {
                 if (details && details.length > 0) {
                     errorMessages = details.map(item => `${item.message}`);
                 }
-            } else {
+            }
+            else {
                 errorMessages = ["Server error. Unable to send request. Please try again later."];
             }
-            
+
             const validationReport: ValidationReport = {
                 source: "signup",
                 errors: errorMessages
             };
+
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+        }
+        finally {
+            this.working(false);
         }
     }
 
