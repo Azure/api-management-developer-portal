@@ -98,9 +98,9 @@ export class UserSignin {
             return;
         }
 
-        this.working(true);
-
         try {
+            this.working(true);
+            
             const userId = await this.usersService.signIn(this.username(), this.password());
 
             if (userId) {

@@ -2,7 +2,7 @@
 <p>Follow the instructions from the email to verify your account.</p>
 <!-- /ko -->
 
-<!-- ko ifnot: isUserRequested -->
+<!-- ko ifnot: working -->
 <form data-bind="submit: signup">
     <fieldset>
         <div class="form-group">
@@ -64,7 +64,7 @@
         <!-- /ko -->
 
         <div class="form-group">
-            <button type="button" id="signup" class="button button-primary" data-bind="click: signup">
+            <button type="button" id="signup" class="button button-primary" data-bind="click: signup, disable: working">
                 Sign up
             </button>
         </div>
