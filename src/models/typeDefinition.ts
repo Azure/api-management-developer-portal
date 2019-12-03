@@ -200,7 +200,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
     }
 
     protected getTypeNameFromRef($ref: string): string {
-        return $ref && $ref.startsWith("#/definitions/") ? $ref.substring(14) : null;
+        return $ref && $ref.split("/").pop();
     }
 }
 
