@@ -40,15 +40,15 @@
         <div class="table-body" data-bind="foreach: { data: definition.properties, as: 'property' }">
             <div class="table-row">
                 <div class="col-3 text-truncate">
-                    <code data-bind="text: property.name"></code>
+                    <code data-bind="text: property.name, attr: { title: property.name }"></code>
                 </div>
                 <div class="col-1" data-bind="text: property.required"></div>
                 <div class="col-1 text-truncate">
                     <!-- ko if: property.type.isReference -->
-                    <a data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name) }"></a>
+                    <a data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name), title: property.type.name }"></a>
                     <!-- /ko -->
                     <!-- ko ifnot: property.type.isReference -->
-                    <code data-bind="text: property.type.name"></code>
+                    <code data-bind="text: property.type.name, attr: { title: property.type.name }"></code>
                     <!-- /ko -->
                     <!-- ko if: property.type.isArray -->
                     []
@@ -86,7 +86,7 @@
         </div>
         <div class="table-body">
             <div class="table-row">
-                <div class="col-1 text-truncate" data-bind="markdown: definition.type.name"></div>
+                <div class="col-1 text-truncate" data-bind="markdown: definition.type.name, attr: { title: definition.type.name }"></div>
                 <div class="col-11">
                     <!-- ko foreach: { data: definition.enum, as: 'value' } -->
                     <!-- ko if: $index() > 0 -->,
@@ -109,14 +109,14 @@
         <div class="table-body" data-bind="foreach: { data: definition.properties, as: 'property' }">
             <div class="table-row">
                 <div class="col-3 text-truncate">
-                    <code data-bind="text: property.name"></code>
+                    <code data-bind="text: property.name, attr: { title: property.name }"></code>
                 </div>
                 <div class="col-2 text-truncate">
                     <!-- ko if: property.type.isReference -->
-                    <a data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name) }"></a>
+                    <a data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name), attr: { title: property.type.name } }"></a>
                     <!-- /ko -->
                     <!-- ko ifnot: property.type.isReference -->
-                    <code data-bind="text: property.type.name"></code>
+                    <code data-bind="text: property.type.name, attr: { title: property.type.name }"></code>
                     <!-- /ko -->
                 </div>
                 <div class="col-7" data-bind="markdown: property.description"></div>
