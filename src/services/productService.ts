@@ -299,9 +299,6 @@ export class ProductService {
             throw new Error(`Parameter "scope" not specified.`);
         }
 
-        console.log(apiName);
-        console.log(productName);
-
         return scope.endsWith("/apis")
             || (apiName && scope.endsWith(`/apis/${apiName}`))
             || (productName && scope.endsWith(`/products/${productName}`));
