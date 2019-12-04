@@ -71,7 +71,7 @@ export abstract class TypeDefinitionProperty {
     public enum: any[];
 
 
-    constructor(name: string, contract: SchemaObjectContract, isArray: boolean) {
+    constructor(name: string, contract: SchemaObjectContract, isRequired: boolean, isArray: boolean) {
         this.name = contract.title || name;
         this.description = contract.description;
         this.type = new TypeDefinitionPropertyType(contract.format || contract.type || "object");
@@ -85,20 +85,22 @@ export abstract class TypeDefinitionProperty {
                 this.example = contract.example;
             }
         }
+
+        this.required = isRequired;
     }
 }
 
 export class TypeDefinitionPrimitiveProperty extends TypeDefinitionProperty {
-    constructor(name: string, contract: SchemaObjectContract, isArray: boolean = false) {
-        super(name, contract, isArray);
+    constructor(name: string, contract: SchemaObjectContract, isRequired: boolean, isArray: boolean = false) {
+        super(name, contract, isRequired, isArray);
 
         this.kind = "primitive";
     }
 }
 
-export class TypeDefinitionEnumeration extends TypeDefinitionProperty {
-    constructor(name: string, contract: SchemaObjectContract, isArray: boolean = false) {
-        super(name, contract, isArray);
+export class TypeDefinitionEnumerationProperty extends TypeDefinitionProperty {
+    constructor(name: string, contract: SchemaObjectContract, isRequired: boolean, isArray: boolean = false) {
+        super(name, contract, isRequired, isArray);
 
         this.kind = "enum";
         this.enum = this.enum;
@@ -111,8 +113,8 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
      */
     public properties?: TypeDefinitionProperty[];
 
-    constructor(name: string, contract: SchemaObjectContract, isArray: boolean = false) {
-        super(name, contract, isArray);
+    constructor(name: string, contract: SchemaObjectContract, isRequired: boolean, isArray: boolean = false) {
+        super(name, contract, isRequired, isArray);
 
         this.kind = "object";
 
@@ -129,7 +131,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
             }
 
             if (contract.items.$ref) {
-                type = new TypeDefinitionPropertyType(this.getTypeNameFromRef(contract.items.$ref), false);
+                type = new TypeDefinitionPropertyType(this.getTypeNameFromRef(contract.items.$ref), true);
             }
 
             this.properties = [new TypeDefinitionIndexerProperty(type)];
@@ -152,6 +154,8 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                         return null;
                     }
 
+                    const isRequired = contract.required?.includes(propertyName) || false;
+
                     if (propertySchemaObject.$ref) {
                         propertySchemaObject.type = "object";
                     }
@@ -166,18 +170,18 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                         case "string":
                         case "boolean":
                             if (propertySchemaObject.enum) {
-                                return new TypeDefinitionEnumeration(propertyName, propertySchemaObject);
+                                return new TypeDefinitionEnumerationProperty(propertyName, propertySchemaObject, isRequired);
                             }
 
-                            return new TypeDefinitionPrimitiveProperty(propertyName, propertySchemaObject);
+                            return new TypeDefinitionPrimitiveProperty(propertyName, propertySchemaObject, isRequired);
                             break;
 
                         case "object":
-                            return new TypeDefinitionObjectProperty(propertyName, propertySchemaObject, true);
+                            return new TypeDefinitionObjectProperty(propertyName, propertySchemaObject, isRequired, true);
                             break;
 
                         case "array":
-                            const prop = new TypeDefinitionPrimitiveProperty(propertyName, propertySchemaObject, true);
+                            const prop = new TypeDefinitionPrimitiveProperty(propertyName, propertySchemaObject, isRequired, true);
 
                             if (propertySchemaObject.items.type) {
                                 prop.type = new TypeDefinitionPropertyType(propertySchemaObject.items.type, false, true);
@@ -206,7 +210,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
 
 export class TypeDefinitionIndexerProperty extends TypeDefinitionObjectProperty {
     constructor(type: TypeDefinitionPropertyType) {
-        super("[]", {});
+        super("[]", {}, true);
 
         this.kind = "indexer";
         this.type = type;
@@ -215,7 +219,7 @@ export class TypeDefinitionIndexerProperty extends TypeDefinitionObjectProperty 
 
 export class TypeDefinition extends TypeDefinitionObjectProperty {
     constructor(name: string, contract: SchemaObjectContract) {
-        super(name, contract);
+        super(name, contract, true);
 
         this.name = name;
     }
