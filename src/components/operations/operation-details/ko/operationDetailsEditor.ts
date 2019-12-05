@@ -9,7 +9,11 @@ import { OperationDetailsModel } from "../operationDetailsModel";
     injectable: "operationDetailsEditor"
 })
 export class OperationDetailsEditor {
-    constructor() { }
+    public readonly enableConsole: ko.Observable<boolean>;
+
+    constructor() {
+        this.enableConsole = ko.observable();
+    }
 
     @Param()
     public model: OperationDetailsModel;
@@ -19,6 +23,12 @@ export class OperationDetailsEditor {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        // TODO: Implement
+        this.enableConsole(this.model.enableConsole);
+        this.enableConsole.subscribe(this.applyChanges);
+    }
+
+    private applyChanges(): void {
+        this.model.enableConsole = this.enableConsole();
+        this.onChange(this.model);
     }
 }
