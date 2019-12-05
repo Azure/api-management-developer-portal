@@ -2,7 +2,7 @@ import { Representation } from "./../../../../../models/representation";
 import * as ko from "knockout";
 import template from "./operation-details.html";
 import { Router } from "@paperbits/common/routing";
-import { Component, RuntimeComponent, OnMounted, OnDestroyed } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@paperbits/common/ko/decorators";
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
@@ -65,6 +65,9 @@ export class OperationDetails {
             return `https://${hostname}/${apiPath}${operationPath}`;
         });
     }
+
+    @Param()
+    public enableConsole: boolean;
 
     @OnMounted()
     public async initialize(): Promise<void> {
