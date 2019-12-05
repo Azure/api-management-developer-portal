@@ -7,6 +7,11 @@ export class OperationListModel {
     public allowSelection: boolean;
 
     /**
+     * Default GroupByTag to enabled.
+     */
+    public defaultGroupByTagToEnabled: boolean;
+
+    /**
      * Link to a page that contains operation details.
      */
     public detailsPageHyperlink: HyperlinkModel;

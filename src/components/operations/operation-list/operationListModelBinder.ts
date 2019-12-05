@@ -20,6 +20,7 @@ export class OperationListModelBinder implements IModelBinder<OperationListModel
         const model = new OperationListModel();
 
         model.allowSelection = contract.allowSelection;
+        model.defaultGroupByTagToEnabled = contract.defaultGroupByTagToEnabled === true;
 
         if (contract.detailsPageHyperlink) {
             model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromConfig(contract.detailsPageHyperlink);
@@ -32,6 +33,7 @@ export class OperationListModelBinder implements IModelBinder<OperationListModel
         const contract: OperationListContract = {
             type: "operationList",
             allowSelection: model.allowSelection,
+            defaultGroupByTagToEnabled: model.defaultGroupByTagToEnabled,
             detailsPageHyperlink: model.detailsPageHyperlink
                 ? {
                     target: model.detailsPageHyperlink.target,
