@@ -22,6 +22,7 @@ export class UserSignup {
     public readonly passwordConfirmation: ko.Observable<string>;
     public readonly firstName: ko.Observable<string>;
     public readonly lastName: ko.Observable<string>;
+    public readonly isUserRequested: ko.Observable<boolean>;
     public readonly showTerms: ko.Observable<boolean>;
     public readonly consented: ko.Observable<boolean>;
     public readonly showHideLabel: ko.Observable<string>;
@@ -37,6 +38,7 @@ export class UserSignup {
         this.passwordConfirmation = ko.observable("");
         this.firstName = ko.observable("");
         this.lastName = ko.observable("");
+        this.isUserRequested = ko.observable(false);
         this.isConsentRequired = ko.observable(false);
         this.consented = ko.observable(false);
         this.showTerms = ko.observable();
@@ -61,6 +63,7 @@ export class UserSignup {
         this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
         this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
     }
+
 
     @Param()
     public requireHipCaptcha: ko.Observable<boolean>;
@@ -200,6 +203,8 @@ export class UserSignup {
             else {
                 await this.usersService.createSignupRequest(mapiSignupData);
             }
+
+            this.isUserRequested(true);
 
             const validationReport: ValidationReport = {
                 source: "signup",
