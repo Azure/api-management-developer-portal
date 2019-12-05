@@ -13,12 +13,16 @@ export class OperationDetailsModelBinder implements IModelBinder<OperationDetail
     }
 
     public async contractToModel(contract: OperationDetailsContract): Promise<OperationDetailsModel> {
-        return new OperationDetailsModel();
+        const model = new OperationDetailsModel();
+        model.enableConsole = contract.enableConsole === true;
+
+        return model;
     }
 
     public modelToContract(model: OperationDetailsModel): Contract {
         const contract: OperationDetailsContract = {
-            type: "operationDetails"
+            type: "operationDetails",
+            enableConsole: model.enableConsole
         };
 
         return contract;

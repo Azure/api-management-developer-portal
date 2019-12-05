@@ -11,8 +11,10 @@
         <h2 class="operation-name" data-bind="click: $component.openConsole">
             <span data-bind="text: operation().displayName"></span>
         </h2>
+        <!-- ko if: $component.enableConsole -->
         <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i class="icon icon-play"></i>
         </button>
+        <!-- /ko -->
     </div>
 
     <!-- ko if: operation().description  -->
