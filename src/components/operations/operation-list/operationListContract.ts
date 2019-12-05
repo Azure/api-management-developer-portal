@@ -11,6 +11,11 @@ export interface OperationListContract extends Contract {
     allowSelection: boolean;
 
     /**
+     * Default GroupByTag to enabled.
+     */
+    defaultGroupByTagToEnabled?: boolean;
+
+    /**
      * Link to a page that contains operation details.
      */
     detailsPageHyperlink?: HyperlinkContract;
