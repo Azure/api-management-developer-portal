@@ -2,7 +2,9 @@
 <p>Follow the instructions from the email to verify your account.</p>
 <!-- /ko -->
 
+
 <!-- ko ifnot: working -->
+<!-- ko ifnot: isUserRequested -->
 <form data-bind="submit: signup">
     <fieldset>
         <div class="form-group">
@@ -70,4 +72,5 @@
         </div>
     </fieldset>
 </form>
+<!-- /ko -->
 <!-- /ko -->
