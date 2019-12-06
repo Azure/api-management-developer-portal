@@ -14,7 +14,7 @@ export class OperationDetailsModelBinder implements IModelBinder<OperationDetail
 
     public async contractToModel(contract: OperationDetailsContract): Promise<OperationDetailsModel> {
         const model = new OperationDetailsModel();
-        model.enableConsole = contract.enableConsole === true;
+        model.enableConsole = contract.enableConsole === true || contract.enableConsole === undefined;
 
         return model;
     }
