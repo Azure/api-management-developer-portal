@@ -77,13 +77,13 @@ var WLSPHIP0 = {
     // you can set them here to override the default style. 
     // (Blocked out for test purposes)
     // ----------------------------------------------------------------------------------------------------------
-//      cssSet: {
-//      cssCdHIPMenu: "csshMenu1",
-//      cssCdHIPInput: "csshInput1",
-//      cssCdHIPLink: "csshLink1",
-//      cssCdHIPError: "csshError1",
-//      cssCdHIPErrorImg: "csshErrorImg1"
-//      },
+    //      cssSet: {
+    //      cssCdHIPMenu: "csshMenu1",
+    //      cssCdHIPInput: "csshInput1",
+    //      cssCdHIPLink: "csshLink1",
+    //      cssCdHIPError: "csshError1",
+    //      cssCdHIPErrorImg: "csshErrorImg1"
+    //      },
 
     getSolution: function () { },
     reloadHIP: function () { },
@@ -122,10 +122,6 @@ var verifyOnClient = function (solution, token, param) {
     }
     else {
         fillHipData(solution, token);
-
-        //document.getElementById('Solution').value = solution;
-        //document.getElementById('Token').value = token;
-        //document.getElementById('Type').value = WLSPHIP0.type;
         return;
     }
 }
@@ -157,8 +153,6 @@ function refreshOutsideMenu(menu) {
     //set if needed
     var itemLength = menu.length;
     if (!WLSPHIP0.showMenu) {
-        //var menu = WLSPHIP0.getMenu();
-
         for (var j = 0; j < itemLength; j++) {
             (function (j) {
 
@@ -169,7 +163,6 @@ function refreshOutsideMenu(menu) {
                 ele.onclick = function () { trigger(); return false };
 
             })(j);
-
         }
     }
 
@@ -186,11 +179,14 @@ function instructionCallback(instruction) //add instruction as parameter, and re
         document.getElementById('idInstruction').innerHTML = '';
     }
     else {
-        //var instruction = WLSPHIP0.getInstruction();
         document.getElementById('idInstruction').innerHTML = instruction;
     }
 }
 
-if (!$.ajax) {
-    $.ajax = () => {};
+if (window.$ == undefined) {
+    window.$ = {};
+}
+
+if (!window.$.ajax) {
+    window.$.ajax = () => { };
 }
