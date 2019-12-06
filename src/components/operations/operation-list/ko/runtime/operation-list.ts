@@ -44,6 +44,7 @@ export class OperationList {
         this.selectedOperationName = ko.observable().extend(<any>{ acceptChange: this.allowSelection });
         this.working = ko.observable(false);
         this.groupByTag = ko.observable(false);
+        this.defaultGroupByTagToEnabled = ko.observable(false);
         this.pattern = ko.observable();
         this.pageNumber = ko.observable(1);
         this.hasNextPage = ko.observable();
@@ -53,6 +54,9 @@ export class OperationList {
 
     @Param()
     public allowSelection: ko.Observable<boolean>;
+
+    @Param()
+    public defaultGroupByTagToEnabled: ko.Observable<boolean>;
 
     @Param()
     public detailsPageUrl: ko.Observable<string>;
@@ -68,6 +72,8 @@ export class OperationList {
         if (!this.selectedApiName()) {
             return;
         }
+
+        this.groupByTag(this.defaultGroupByTagToEnabled());
 
         await this.loadOperations();
 

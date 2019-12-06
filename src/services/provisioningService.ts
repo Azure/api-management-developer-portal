@@ -78,7 +78,7 @@ export class ProvisionService {
                 }
             }
             this.router.navigateTo("/");
-            this.viewManager.setHost({ name: "content-host" });
+            this.viewManager.setHost({ name: "page-host" });
             this.viewManager.showToolboxes();
         }
         catch (error) {

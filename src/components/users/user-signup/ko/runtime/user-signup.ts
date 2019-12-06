@@ -38,12 +38,12 @@ export class UserSignup {
         this.passwordConfirmation = ko.observable("");
         this.firstName = ko.observable("");
         this.lastName = ko.observable("");
+        this.isUserRequested = ko.observable(false);
         this.isConsentRequired = ko.observable(false);
         this.consented = ko.observable(false);
         this.showTerms = ko.observable();
         this.termsOfUse = ko.observable();
         this.showHideLabel = ko.observable("Show");
-        this.isUserRequested = ko.observable(false);
         this.working = ko.observable(false);
         this.captcha = ko.observable();
         this.delegationUrl = ko.observable();
@@ -63,6 +63,7 @@ export class UserSignup {
         this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
         this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
     }
+
 
     @Param()
     public requireHipCaptcha: ko.Observable<boolean>;
@@ -90,7 +91,8 @@ export class UserSignup {
             if (isUserSignedIn) {
                 this.usersService.navigateToHome();
                 return;
-            } else {
+            }
+            else {
                 const redirectUrl = this.delegationUrl();
                 if (redirectUrl) {
                     window.open(redirectUrl, "_self");
@@ -116,7 +118,8 @@ export class UserSignup {
      * Sends user signup request to Management API.
      */
     public async signup(): Promise<void> {
-        const isCaptcha = this.requireHipCaptcha();
+        const isCaptchaRequired = this.requireHipCaptcha();
+
         const validationGroup = {
             email: this.email,
             password: this.password,
@@ -130,7 +133,7 @@ export class UserSignup {
         let captchaToken;
         let captchaType;
 
-        if (isCaptcha) {
+        if (isCaptchaRequired) {
             validationGroup["captcha"] = this.captcha;
 
             WLSPHIP0.verify((solution, token, param) => {
@@ -181,10 +184,12 @@ export class UserSignup {
             password: this.password(),
             confirmation: "signup",
             appType: "developerPortal"
-        }
+        };
 
         try {
-            if (isCaptcha) {
+            this.working(true);
+
+            if (isCaptchaRequired) {
                 const createSignupRequest: SignupRequest = {
                     solution: captchaSolution,
                     flowId: captchaFlowId,
@@ -194,7 +199,8 @@ export class UserSignup {
                 };
 
                 await this.backendService.sendSignupRequest(createSignupRequest);
-            } else {
+            }
+            else {
                 await this.usersService.createSignupRequest(mapiSignupData);
             }
 
@@ -205,8 +211,9 @@ export class UserSignup {
                 errors: []
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        } catch (error) {
-            if (isCaptcha) {
+        }
+        catch (error) {
+            if (isCaptchaRequired) {
                 WLSPHIP0.reloadHIP();
             }
 
@@ -218,15 +225,20 @@ export class UserSignup {
                 if (details && details.length > 0) {
                     errorMessages = details.map(item => `${item.message}`);
                 }
-            } else {
+            }
+            else {
                 errorMessages = ["Server error. Unable to send request. Please try again later."];
             }
-            
+
             const validationReport: ValidationReport = {
                 source: "signup",
                 errors: errorMessages
             };
+
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+        }
+        finally {
+            this.working(false);
         }
     }
 

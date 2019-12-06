@@ -3,7 +3,7 @@ import { Bag } from "@paperbits/common";
 import { ArmResource } from "./armResource";
 
 export interface ReferenceObjectContract {
-    $ref: string;
+    $ref?: string;
 }
 
 /**
@@ -13,64 +13,64 @@ export interface SchemaObjectContract extends ReferenceObjectContract {
     /**
      * e.g. "integer".
      */
-    type: string;
+    type?: string;
 
     /**
      * e.g. "int64"
      */
-    format: string;
+    format?: string;
 
     /**
      * e.g. "Pet object that needs to be added to the store".
      */
-    description: string;
+    description?: string;
 
     /**
      * e.g. ["name"].
      */
-    required: string[];
+    required?: string[];
 
-    properties: Bag<SchemaObjectContract>;
+    properties?: Bag<SchemaObjectContract>;
 
-    items: SchemaObjectContract;
+    items?: SchemaObjectContract;
 
-    allOf: SchemaObjectContract;
+    allOf?: SchemaObjectContract;
 
-    anyOf: SchemaObjectContract;
+    anyOf?: SchemaObjectContract;
 
-    not: SchemaObjectContract;
+    not?: SchemaObjectContract;
 
     minimum?: number;
 
     maximum?: number;
 
-    enum: string[];
+    enum?: string[];
 
-    title;
+    title?: string;
 
-    multipleOf;
+    multipleOf?;
 
-    exclusiveMaximum;
+    exclusiveMaximum?;
 
-    exclusiveMinimum;
+    exclusiveMinimum?;
 
-    maxLength;
+    maxLength?;
 
-    minLength;
+    minLength?;
 
-    pattern;
+    pattern?;
 
-    maxItems;
+    maxItems?;
 
-    minItems;
+    minItems?;
 
-    uniqueItems;
+    uniqueItems?;
 
-    maxProperties;
+    maxProperties?: number;
 
-    minProperties;
+    minProperties?: number;
 
-    example: string;
+    example?: string;
 }
 
 /**
@@ -83,35 +83,41 @@ export interface XmlObject {
      * When defined alongside type being array (outside the items), it will affect the wrapping element and only if wrapped is true.
      * If wrapped is false, it will be ignored.
      */
-    name: string;
+    name?: string;
 
     /**
      * The URI of the namespace definition. Value MUST be in the form of an absolute URI.
      */
-    namespace: string;
+    namespace?: string;
 
     /**
      * The prefix to be used for the name.
      */
-    prefix: string;
+    prefix?: string;
 
     /**
      * Declares whether the property definition translates to an attribute instead of an element. Default value is false.
      */
-    attribute: boolean;
+    attribute?: boolean;
 
     /**
      * MAY be used only for an array definition. Signifies whether the array is wrapped (for example, <books><book/><book/></books>) or unwrapped (<book/><book/>).
      * Default value is false. The definition takes effect only when defined alongside type being array (outside the items).
      */
-    wrapped: boolean;
+    wrapped?: boolean;
 }
 
 /**
  * 
  */
-export interface SchemaDocumentContract {
+export interface SwaggerSchemaContract {
     definitions: Bag<SchemaObjectContract>;
+}
+
+export interface OpenApiSchemaContract {
+    components: {
+        schemas: Bag<SchemaObjectContract>;
+    };
 }
 
 /**
@@ -120,6 +126,11 @@ export interface SchemaDocumentContract {
 export interface SchemaContract extends ArmResource  {
     properties: {
         contentType: string;
-        document?: SchemaDocumentContract;
+        document?: SwaggerSchemaContract | OpenApiSchemaContract;
     };
+}
+
+export enum SchemaType {
+    swagger = "application/vnd.ms-azure-apim.swagger.definitions+json",
+    openapi = "application/vnd.oai.openapi.components+json"
 }

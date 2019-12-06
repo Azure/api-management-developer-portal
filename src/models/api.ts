@@ -98,6 +98,7 @@ export class Api {
         this.urlSuffix = contract.properties.urlSuffix;
         this.apiVersion = contract.properties.apiVersion;
         this.apiRevision = contract.properties.apiRevision;
+        this.subscriptionKeyParameterNames = contract.properties.subscriptionKeyParameterNames;
 
         if (contract.properties.apiVersionSet) {
             const nestedVersionSet = contract.properties.apiVersionSet;

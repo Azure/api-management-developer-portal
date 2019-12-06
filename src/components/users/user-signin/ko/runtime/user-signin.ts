@@ -1,10 +1,10 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./user-signin.html";
+import { EventManager } from "@paperbits/common/events";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../../services/usersService";
 import { MapiError } from "../../../../../services/mapiError";
-import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
 
@@ -98,9 +98,9 @@ export class UserSignin {
             return;
         }
 
-        this.working(true);
-
         try {
+            this.working(true);
+            
             const userId = await this.usersService.signIn(this.username(), this.password());
 
             if (userId) {
