@@ -346,7 +346,7 @@ export class MapiObjectStorage implements IObjectStorage {
     public convertPaperbitsContractToArmContract(contract: any, isLocalized: boolean = false): any {
         let converted;
 
-        if (!contract) {
+        if (contract === null || contract === undefined) { // here we expect "false" as a value too
             return null;
         }
 
