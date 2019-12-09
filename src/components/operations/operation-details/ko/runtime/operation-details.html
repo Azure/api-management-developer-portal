@@ -111,6 +111,9 @@
 
             <!-- ko foreach: { data: operation().getMeaningfulResponses(), as: 'response' } -->
             <h3>Response: <span data-bind="text: response.statusCode"></span></h3>
+            <!-- ko if: response.description -->
+            <p data-bind="text: response.description"></p>
+            <!-- /ko -->
 
             <!-- ko if: response.representations.length > 0 -->
             <div class="tabs" data-bind="foreach: { data: representations, as: 'representation' }">
