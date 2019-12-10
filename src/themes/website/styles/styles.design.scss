@@ -266,9 +266,10 @@ $style-guide-color: #000;
     transform: scale(1.05);
     transition: transform 0.3s ease-in-out, height 0.3s ease-in-out, width 0.3s ease-in-out;
     background: #fff;
-    opacity: 0.98;
+    opacity: 0.8;
     position: fixed;
     z-index: 9999;
+    pointer-events: none;
 }
 
 .dragged-origin {
