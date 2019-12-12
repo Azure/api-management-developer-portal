@@ -52,7 +52,6 @@ export class OperationConsole {
     public isConsumptionMode: boolean;
     public selectedProduct: Product;
     public canSelectProduct: boolean;
-    // public requestSummary: ko.Observable<string>;
     public requestError: ko.Observable<string>;
     public bodySource: ko.Observable<string>;
     public attachment: ko.Observable<string>;
@@ -141,9 +140,8 @@ export class OperationConsole {
         const consoleOperation = new ConsoleOperation(selectedApi, operation);
         this.consoleOperation(consoleOperation);
 
-        // TODO: Take into account multiple hostnames.
         const proxyHostnames = this.hostnames();
-        const hostname = proxyHostnames[0];
+        const hostname = proxyHostnames[0]; // TODO: Take into account multiple hostnames.
 
         consoleOperation.host.hostname(hostname);
 
