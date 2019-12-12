@@ -5,10 +5,10 @@ require_once 'HTTP/Request2.php';
 $request = new Http_Request2('{{requestUrl}}');
 $url = $request->getUrl();
 
-{% if headers.size > 0 -%}
+{% if meaningfulHeaders.size > 0 -%}
 $headers = array(
     // Request headers
-{% for header in request.headers -%}
+{% for header in request.meaningfulHeaders -%}
     '{{header.name}}' => '{{header.value}}',
 {% endfor -%}
 );

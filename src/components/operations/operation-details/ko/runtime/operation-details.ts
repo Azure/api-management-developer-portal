@@ -20,8 +20,7 @@ import { Utils } from "../../../../../utils";
     injectable: "operationDetails"
 })
 export class OperationDetails {
-    private definitions: ko.ObservableArray<TypeDefinition>;
-
+    private readonly definitions: ko.ObservableArray<TypeDefinition>;
     public readonly selectedApiName: ko.Observable<string>;
     public readonly selectedOperationName: ko.Observable<string>;
     public readonly consoleIsOpen: ko.Observable<boolean>;
@@ -205,12 +204,15 @@ export class OperationDetails {
     }
 
     public getDefinitionForRepresentation(representation: Representation): TypeDefinition {
-        const definition = this.definitions().find(x => x.name === representation.typeName);
+        let definition = this.definitions().find(x => x.name === representation.typeName);
 
         if (!definition) {
             // Fallback for the case when type is referenced, but not defined in schema.
             return new TypeDefinition(representation.typeName, {});
         }
+
+        // Making copy to avoid overriding original properties.
+        definition = Utils.clone(definition);
 
         if (!definition.name) {
             definition.name = representation.typeName;

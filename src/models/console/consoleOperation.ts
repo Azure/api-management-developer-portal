@@ -6,29 +6,27 @@ import { ConsoleHost } from "./consoleHost";
 import { Operation } from "../operation";
 import { Api } from "../api";
 import { Utils } from "../../utils";
-import { Revision } from "../revision";
 import { ConsoleHeader } from "./consoleHeader";
 
 export class ConsoleOperation {
-    private api: Api;
-    public name: string;
-    public method: string;
-    public host: ConsoleHost;
+    private readonly api: Api;
+    
+    public readonly name: string;
+    public readonly method: string;
+    public readonly host: ConsoleHost;
+    public readonly requestUrl: ko.Computed<string>;
+    public readonly templateParameters: ko.ObservableArray<ConsoleParameter>;
+    public readonly responses?: ConsoleResponse[];
+    public readonly hasBody: boolean;
+    public readonly request: ConsoleRequest;
     public urlTemplate: string;
-    public requestUrl: ko.Computed<string>;
-    public templateParameters: ko.ObservableArray<ConsoleParameter>;
-    public responses?: ConsoleResponse[];
-    public description: string;
-    public hasBody: boolean;
-    public request: ConsoleRequest;
 
-    constructor(api: Api, operation: Operation, revision: Revision) {
+    constructor(api: Api, operation: Operation) {
         this.api = api;
         this.name = operation.displayName;
         this.method = operation.method.toUpperCase();
         this.host = new ConsoleHost();
         this.urlTemplate = operation.urlTemplate;
-        this.description = operation.description;
         this.request = new ConsoleRequest(operation.request);
         this.templateParameters = ko.observableArray(operation.templateParameters.map(parameterContract => new ConsoleParameter(parameterContract)));
         this.hasBody = !["GET", "HEAD", "TRACE"].includes(this.method);
@@ -57,8 +55,6 @@ export class ConsoleOperation {
     }
 
     public setHeader(name: string, value: string, type: string = "string", description?: string): ConsoleHeader {
-        // _.remove(this.consoleOperation().request.headers, header => header.name.toLowerCase() === name.toLowerCase());
-
         const header = this.createHeader(name, value, type, description);
 
         this.request.headers.push(header);
@@ -78,7 +74,7 @@ export class ConsoleOperation {
 
     private getRequestPath(): string {
         let versionPath = "";
-        let revision = "";
+        const revision = "";
 
         if (this.api.apiVersionSet && this.api.apiVersion && this.api.apiVersionSet.versioningScheme === "Segment") {
             versionPath = `/${this.api.apiVersion}`;
