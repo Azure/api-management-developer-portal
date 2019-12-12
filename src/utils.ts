@@ -328,7 +328,7 @@ export class Utils {
         return new Date(time).toLocaleDateString("en-US", options);
     }
 
-    public static clone(obj: Object): Object {
+    public static clone<T>(obj: T): T {
         return JSON.parse(JSON.stringify(obj));
     }
 
