@@ -52,7 +52,6 @@ export class OperationConsole {
     public isConsumptionMode: boolean;
     public selectedProduct: Product;
     public canSelectProduct: boolean;
-    public requestSummary: ko.Observable<string>;
     public requestError: ko.Observable<string>;
     public bodySource: ko.Observable<string>;
     public attachment: ko.Observable<string>;
@@ -72,7 +71,7 @@ export class OperationConsole {
         this.products = ko.observable();
         this.attachment = ko.observable();
         this.bodySource = ko.observable("Raw");
-        this.requestSummary = ko.observable();
+        // this.requestSummary = ko.observable();
         this.requestError = ko.observable();
         this.responseStatusCode = ko.observable();
         this.responseStatusText = ko.observable();
@@ -109,7 +108,7 @@ export class OperationConsole {
         this.api.subscribe(this.resetConsole);
         this.operation.subscribe(this.resetConsole);
         this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey);
-        this.selectedLanguage.subscribe(this.updateCodeSample);
+        this.selectedLanguage.subscribe(this.updateRequestSummary);
     }
 
     private async resetConsole(): Promise<void> {
@@ -138,12 +137,11 @@ export class OperationConsole {
         this.isConsumptionMode = skuName === ServiceSkuName.Consumption;
 
         const operation = await this.apiService.getOperation(selectedOperation.id);
-        const consoleOperation = new ConsoleOperation(selectedApi, operation, this.revision());
+        const consoleOperation = new ConsoleOperation(selectedApi, operation);
         this.consoleOperation(consoleOperation);
 
-        // TODO: Take into account multiple hostnames.
         const proxyHostnames = this.hostnames();
-        const hostname = proxyHostnames[0];
+        const hostname = proxyHostnames[0]; // TODO: Take into account multiple hostnames.
 
         consoleOperation.host.hostname(hostname);
 
@@ -260,18 +258,22 @@ export class OperationConsole {
 
     public addHeader(): void {
         this.consoleOperation().request.headers.push(new ConsoleHeader());
+        this.updateRequestSummary();
     }
 
     public removeHeader(header: ConsoleHeader): void {
         this.consoleOperation().request.headers.remove(header);
+        this.updateRequestSummary();
     }
 
     public addQueryParameter(): void {
         this.consoleOperation().request.queryParameters.push(new ConsoleParameter());
+        this.updateRequestSummary();
     }
 
     public removeQueryParameter(parameter: ConsoleParameter): void {
         this.consoleOperation().request.queryParameters.remove(parameter);
+        this.updateRequestSummary();
     }
 
     public applySubscriptionKey(subscriptionKey: string): void {
@@ -357,51 +359,7 @@ export class OperationConsole {
         return header;
     }
 
-    public updateRequestSummary(): void {
-        const urlTemplate = this.consoleOperation().requestUrl();
-        let requestSummary = `${this.consoleOperation().method} ${urlTemplate} HTTP/1.1\n`;
-
-        requestSummary += `\n${KnownHttpHeaders.Host}: ${this.consoleOperation().host.hostname}`;
-
-        this.consoleOperation().request.headers().forEach(header => {
-            if (header.name && header.value()) {
-
-                let value = header.value();
-
-                if (header.secret && !this.requestSummarySecretsRevealed) {
-                    value = value.replace(/./g, "•");
-                }
-
-                requestSummary += `\n${header.name}: ${value}`;
-            }
-        });
-
-        let requestBody = "";
-
-        switch (this.consoleOperation().request.bodyFormat) {
-            case "raw":
-                requestBody = this.consoleOperation().request.body();
-                break;
-
-            case "binary":
-                if (this.consoleOperation().request.binary) {
-                    requestBody = `[ ${this.consoleOperation().request.binary.name} ]`;
-                }
-                break;
-
-            default:
-                throw new Error("Unknown body format.");
-        }
-
-        if (requestBody) {
-            requestSummary += `\n\n${requestBody}`;
-        }
-
-        this.requestSummary(requestSummary);
-        this.updateCodeSample();
-    }
-
-    public async updateCodeSample(): Promise<void> {
+    public async updateRequestSummary(): Promise<void> {
         const template = templates[this.selectedLanguage()];
         const codeSample = await TemplatingService.render(template, ko.toJS(this.consoleOperation));
 
@@ -462,7 +420,9 @@ export class OperationConsole {
             const request: HttpRequest = {
                 url: url,
                 method: method,
-                headers: headers.map(x => { return { name: x.name(), value: x.value() }; }),
+                headers: headers
+                    .map(x => { return { name: x.name(), value: x.value() ?? "" }; })
+                    .filter(x => !!x.name && !!x.value),
                 body: payload
             };
 

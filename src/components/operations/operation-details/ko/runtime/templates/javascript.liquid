@@ -2,10 +2,10 @@ $.ajax({
     type: "{{method}}",
     url: "{{requestUrl}}",
 
-    {% if request.headers.size > 0 -%}
+    {% if request.meaningfulHeaders.size > 0 -%}
     // Request headers
     beforeSend: function(xhrObj) {
-        {% for header in request.headers -%}
+        {% for header in request.meaningfulHeaders -%}
         xhrObj.setRequestHeader("{{header.name}}", "{{header.value}}");
         {% endfor -%}
     },
