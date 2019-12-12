@@ -56,9 +56,9 @@
             </div>
         </div>
     </div>
-
-    <!-- ko if: (templateParameters && templateParameters().length > 0) || (request.queryParameters && request.queryParameters().length > 0) -->
+    
     <h4>Parameters</h4>
+    <!-- ko if: (templateParameters && templateParameters().length > 0) || (request.queryParameters && request.queryParameters().length > 0) -->
     <div data-bind="foreach: { data: templateParameters, as: 'parameter' }">
         <div class="row flex flex-row">
             <div class="col-4">
@@ -97,12 +97,13 @@
             </div>
         </div>
     </div>
+    <!-- /ko -->
+
     <a href="#" class="button-add" role="button" data-bind="click: $component.addQueryParameter">
         <i class="icon icon-plus"></i>
         Add parameter
     </a>
-
-    <!-- /ko -->
+    
 
     <!-- ko if: request.headers().length > 0 -->
     <h3>Headers</h3>

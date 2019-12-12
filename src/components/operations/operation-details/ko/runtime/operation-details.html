@@ -89,8 +89,8 @@
             <!-- ko if: request.isMeaningful() -->
             <h4>Request body</h4>
 
-            <!-- ko if: request.representations.length > 0 -->
-            <div class="tabs" data-bind="foreach: { data: request.representations, as: 'representation' }">
+            <!-- ko if: request.meaningfulRepresentations().length > 0 -->
+            <div class="tabs" data-bind="foreach: { data: request.meaningfulRepresentations(), as: 'representation' }">
                 <input class="tab-radio" type="radio" name="requestContentType"
                     data-bind="attr : { id: 'request' + representation.contentType, checked: $index() === 0 }">
 
@@ -98,6 +98,8 @@
                     data-bind="attr : { for: 'request' + representation.contentType }, text: representation.contentType"></label>
 
                 <div class="tab-content">
+                    <span data-bind="text: $index()"></span>
+                    
                     <!-- ko if: representation.typeName -->
                     <type-definition params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation) }">
                     </type-definition>
@@ -115,8 +117,8 @@
             <p data-bind="text: response.description"></p>
             <!-- /ko -->
 
-            <!-- ko if: response.representations.length > 0 -->
-            <div class="tabs" data-bind="foreach: { data: representations, as: 'representation' }">
+            <!-- ko if: response.meaningfulRepresentations().length > 0 -->
+            <div class="tabs" data-bind="foreach: { data: meaningfulRepresentations(), as: 'representation' }">
                 <input class="tab-radio" type="radio"
                     data-bind="attr: { id: response.identifier + representation.contentType, name: response.identifier, checked: $index() === 0 }">
 

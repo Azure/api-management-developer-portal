@@ -2,9 +2,9 @@
 import httplib, urllib, base64
 
 headers = {
-{% if request.headers.size > 0 -%}
+{% if request.meaningfulHeaders.size > 0 -%}
     # Request headers
-{% for header in request.headers -%}
+{% for header in request.meaningfulHeaders -%}
     '{{header.name}}': '{{header.value}}',
 {% endfor -%}
 {% endif -%}
@@ -40,9 +40,9 @@ except Exception as e:
 import http.client, urllib.request, urllib.parse, urllib.error, base64
 
 headers = {
-{% if request.headers.size > 0 -%}
+{% if request.meaningfulHeaders.size > 0 -%}
     # Request headers
-{% for header in request.headers -%}
+{% for header in request.meaningfulHeaders -%}
     '{{header.name}}': '{{header.value}}',
 {% endfor -%}
 {% endif -%}
