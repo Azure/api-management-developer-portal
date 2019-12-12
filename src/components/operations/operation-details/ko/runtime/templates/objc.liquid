@@ -22,9 +22,9 @@ int main(int argc, const char * argv[])
 
     NSMutableURLRequest* _request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:path]];
     [_request setHTTPMethod:@"{{method}}"];
-{% if headers.size > 0 -%}
+{% if meaningfulHeaders.size > 0 -%}
     // Request headers
-{% for header in request.headers -%}
+{% for header in request.meaningfulHeaders -%}
     [_request setValue:@"{{header.value}}" forHTTPHeaderField:@"{{header.name}}"];
 {% endfor -%}
 {% endif -%}

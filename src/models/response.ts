@@ -18,6 +18,10 @@ export class Response {
         return !!this.description || this.representations.some(x => !!x.typeName);
     }
 
+    public meaningfulRepresentations(): Representation[] {
+        return this.representations.filter(x => !!x.typeName || !!x.sample);
+    }
+
     constructor(contract?: ResponseContract) {
         this.identifier = Utils.getBsonObjectId();
         this.statusCode = new StatusCode(contract.statusCode);

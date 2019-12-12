@@ -1,7 +1,7 @@
 @ECHO OFF
 
 curl -v -X {{method}} "{{requestUrl}}"
-{% for header in request.headers -%}
+{% for header in request.meaningfulHeaders -%}
 -H "{{ header.name }}: {{ header.value }}"
 {% endfor -%}
 {% if request.body -%}
