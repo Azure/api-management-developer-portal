@@ -98,8 +98,6 @@
                     data-bind="attr : { for: 'request' + representation.contentType }, text: representation.contentType"></label>
 
                 <div class="tab-content">
-                    <span data-bind="text: $index()"></span>
-                    
                     <!-- ko if: representation.typeName -->
                     <type-definition params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation) }">
                     </type-definition>
