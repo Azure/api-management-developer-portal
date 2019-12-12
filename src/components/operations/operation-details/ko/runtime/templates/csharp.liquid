@@ -20,9 +20,9 @@ namespace CSHttpClientSample
             var client = new HttpClient();
             var queryString = HttpUtility.ParseQueryString(string.Empty);
 
-{% if headers.size > 0 -%}
+{% if meaningfulHeaders.size > 0 -%}
             // Request headers
-{% for header in request.headers -%}
+{% for header in request.meaningfulHeaders -%}
 {% case header.Name -%}
 {% when "Accept"%}
             client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("{{header.value}}"));
