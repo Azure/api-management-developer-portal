@@ -10,7 +10,7 @@ import { ConsoleHeader } from "./consoleHeader";
 
 export class ConsoleOperation {
     private readonly api: Api;
-    
+
     public readonly name: string;
     public readonly method: string;
     public readonly host: ConsoleHost;
@@ -53,6 +53,7 @@ export class ConsoleOperation {
 
         return uri + separator + paramString;
     }
+
 
     public setHeader(name: string, value: string, type: string = "string", description?: string): ConsoleHeader {
         const header = this.createHeader(name, value, type, description);
