@@ -29,35 +29,25 @@ import { TemplatingService } from "../../../../../services/templatingService";
     injectable: "operationConsole"
 })
 export class OperationConsole {
-    private masterKey: string;
-
-    public sendingRequest: ko.Observable<boolean>;
-    public working: ko.Observable<boolean>;
-    public consoleOperation: ko.Observable<ConsoleOperation>;
-    public requestSummarySecretsRevealed: boolean;
-    public responseStatusCode: ko.Observable<string>;
-    public responseStatusText: ko.Observable<string>;
-    public responseBody: ko.Observable<string>;
-    public responseContentType: string;
-    public responseHeadersString: ko.Observable<string>;
-    public products: ko.Observable<Product[]>;
-    public selectedSubscriptionKey: ko.Observable<string>;
-    public subscriptionKeysView: string;
-    public apiProductsView: string;
-    public oauthView: string;
-    public currentViewName: string;
-    public mockingEnabled: boolean;
-    public gotOpenProduct: boolean;
-    public selectedLanguage: ko.Observable<string>;
+    public readonly sendingRequest: ko.Observable<boolean>;
+    public readonly working: ko.Observable<boolean>;
+    public readonly consoleOperation: ko.Observable<ConsoleOperation>;
+    public readonly secretsRevealed: ko.Observable<boolean>;
+    public readonly responseStatusCode: ko.Observable<string>;
+    public readonly responseStatusText: ko.Observable<string>;
+    public readonly responseBody: ko.Observable<string>;
+    public readonly responseHeadersString: ko.Observable<string>;
+    public readonly products: ko.Observable<Product[]>;
+    public readonly selectedSubscriptionKey: ko.Observable<string>;
+    public readonly selectedLanguage: ko.Observable<string>;
+    public readonly selectedProduct: ko.Observable<Product>;
+    public readonly requestError: ko.Observable<string>;
+    public readonly bodySource: ko.Observable<string>;
+    public readonly attachment: ko.Observable<string>;
+    public readonly codeSample: ko.Observable<string>;
+    public masterKey: string;
     public isConsumptionMode: boolean;
-    public selectedProduct: Product;
-    public canSelectProduct: boolean;
-    public requestError: ko.Observable<string>;
-    public bodySource: ko.Observable<string>;
-    public attachment: ko.Observable<string>;
     public templates: Object;
-    public codeSample: ko.Observable<string>;
-
 
     constructor(
         private readonly apiService: ApiService,
@@ -71,7 +61,6 @@ export class OperationConsole {
         this.products = ko.observable();
         this.attachment = ko.observable();
         this.bodySource = ko.observable("Raw");
-        // this.requestSummary = ko.observable();
         this.requestError = ko.observable();
         this.responseStatusCode = ko.observable();
         this.responseStatusText = ko.observable();
@@ -83,10 +72,12 @@ export class OperationConsole {
         this.operation = ko.observable();
         this.hostnames = ko.observable();
         this.consoleOperation = ko.observable();
+        this.secretsRevealed = ko.observable();
         this.selectedSubscriptionKey = ko.observable();
         this.working = ko.observable(true);
         this.sendingRequest = ko.observable(false);
         this.codeSample = ko.observable();
+        this.selectedProduct = ko.observable();
     }
 
     @Param()
@@ -103,6 +94,10 @@ export class OperationConsole {
 
     @OnMounted()
     public async initialize(): Promise<void> {
+        const skuName = await this.tenantService.getServiceSkuName();
+        this.masterKey = await this.tenantService.getServiceMasterKey();
+        this.isConsumptionMode = skuName === ServiceSkuName.Consumption;
+
         await this.resetConsole();
 
         this.api.subscribe(this.resetConsole);
@@ -122,19 +117,12 @@ export class OperationConsole {
         this.working(true);
         this.sendingRequest(false);
         this.consoleOperation(null);
-        this.requestSummarySecretsRevealed = false;
+        this.secretsRevealed(false);
         this.responseStatusCode(null);
         this.responseStatusText(null);
         this.responseBody(null);
-        this.responseContentType = null;
-        this.mockingEnabled = false;
         this.selectedSubscriptionKey(null);
-        this.selectedProduct = null;
-        this.canSelectProduct = true;
-
-        const skuName = await this.tenantService.getServiceSkuName();
-        this.masterKey = await this.tenantService.getServiceMasterKey();
-        this.isConsumptionMode = skuName === ServiceSkuName.Consumption;
+        this.selectedProduct(null);
 
         const operation = await this.apiService.getOperation(selectedOperation.id);
         const consoleOperation = new ConsoleOperation(selectedApi, operation);
@@ -152,9 +140,6 @@ export class OperationConsole {
         if (!this.isConsumptionMode) {
             this.setNoCacheHeader();
         }
-        else {
-            this.canSelectProduct = !this.isKeyProvidedByUser();
-        }
 
         if (this.api().apiVersionSet && this.api().apiVersionSet.versioningScheme === "Header") {
             this.setVersionHeader();
@@ -167,51 +152,42 @@ export class OperationConsole {
     }
 
     private setSoapHeaders(): void {
-        const representation = this.consoleOperation().request.representations[0];
+        const consoleOperation = this.consoleOperation();
+        const representation = consoleOperation.request.representations[0];
 
         if (representation) {
             if (representation.contentType.toLowerCase() === "text/xml".toLowerCase()) {
                 // Soap 1.1
-                this.consoleOperation().setHeader(KnownHttpHeaders.SoapAction, `"${this.consoleOperation().urlTemplate.split("=")[1]}"`);
+                consoleOperation.setHeader(KnownHttpHeaders.SoapAction, `"${consoleOperation.urlTemplate.split("=")[1]}"`);
             }
 
             if (representation.contentType.toLowerCase() === "application/soap+xml".toLowerCase()) {
                 // Soap 1.2
-                const contentHeader = this.consoleOperation().request.headers()
+                const contentHeader = consoleOperation.request.headers()
                     .find(header => header.name().toLowerCase() === KnownHttpHeaders.ContentType.toLowerCase());
 
                 if (contentHeader) {
-                    const contentType = `${contentHeader.value};action="${this.consoleOperation().urlTemplate.split("=")[1]}"`;
-                    this.consoleOperation().setHeader(KnownHttpHeaders.ContentType, contentType);
+                    const contentType = `${contentHeader.value};action="${consoleOperation.urlTemplate.split("=")[1]}"`;
+                    consoleOperation.setHeader(KnownHttpHeaders.ContentType, contentType);
                 }
             }
         }
         else {
-            this.consoleOperation().setHeader(KnownHttpHeaders.SoapAction, "\"" + this.consoleOperation().urlTemplate.split("=")[1] + "\"");
+            consoleOperation.setHeader(KnownHttpHeaders.SoapAction, "\"" + consoleOperation.urlTemplate.split("=")[1] + "\"");
         }
 
-        this.consoleOperation().urlTemplate = "";
+        consoleOperation.urlTemplate = "";
     }
 
     private async loadSubscriptionKeys(): Promise<void> {
-        this.subscriptionKeysView = "loading";
-
-        const pageOfProducts = await this.apiService.getAllApiProducts(this.api().id);
-        const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
-
-        this.gotOpenProduct = products.some(product => !product.subscriptionRequired);
-
-        if (this.gotOpenProduct) {
-            this.subscriptionKeysView = "open";
-            return;
-        }
-
         const isLogged = this.usersService.isUserSignedIn();
 
         if (!isLogged) {
             return;
         }
 
+        const pageOfProducts = await this.apiService.getAllApiProducts(this.api().id);
+        const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
         const userId = await this.usersService.getCurrentUserId();
         const pageOfSubscriptions = await this.productService.getSubscriptions(userId);
         const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === SubscriptionState.active);
@@ -244,30 +220,34 @@ export class OperationConsole {
         this.products(availableProducts);
 
         if (availableProducts.length > 0) {
-            this.subscriptionKeysView = "loaded";
-            this.selectedSubscriptionKey(availableProducts[0].subscriptionKeys[0].value);
-
-            if (this.consoleOperation && this.consoleOperation().request) {
-                this.setSubscriptionKeyHeader();
-            }
-        }
-        else {
-            this.subscriptionKeysView = "none";
+            const subscriptionKey = availableProducts[0].subscriptionKeys[0].value;
+            this.selectedSubscriptionKey(subscriptionKey);
         }
     }
 
-    public addHeader(): void {
-        this.consoleOperation().request.headers.push(new ConsoleHeader());
+    public addHeader(header: ConsoleHeader = new ConsoleHeader()): void {
+        this.consoleOperation().request.headers.push(header);
         this.updateRequestSummary();
     }
 
     public removeHeader(header: ConsoleHeader): void {
-        this.consoleOperation().request.headers.remove(header);
+        const index = this.consoleOperation().request.headers().indexOf(header);
+
+        if (index < 0) {
+            return;
+        }
+
+        this.consoleOperation().request.headers.splice(index, 1);
         this.updateRequestSummary();
     }
 
-    public addQueryParameter(): void {
-        this.consoleOperation().request.queryParameters.push(new ConsoleParameter());
+    public findHeader(name: string): ConsoleHeader {
+        const searchName = name.toLocaleLowerCase();
+        return this.consoleOperation().request.headers().find(x => x.name().toLocaleLowerCase() === searchName);
+    }
+
+    public addQueryParameter(parameter: ConsoleParameter = new ConsoleParameter()): void {
+        this.consoleOperation().request.queryParameters.push(parameter);
         this.updateRequestSummary();
     }
 
@@ -277,12 +257,12 @@ export class OperationConsole {
     }
 
     public applySubscriptionKey(subscriptionKey: string): void {
-        if (!subscriptionKey) {
+        if (!this.consoleOperation()) {
             return;
         }
 
-        this.selectedSubscriptionKey(subscriptionKey);
-        this.setSubscriptionKeyHeader();
+        this.setSubscriptionKeyHeader(subscriptionKey);
+        this.updateRequestSummary();
     }
 
     private setNoCacheHeader(): void {
@@ -291,10 +271,6 @@ export class OperationConsole {
 
     private setVersionHeader(): void {
         this.consoleOperation().setHeader(this.api().apiVersionSet.versionHeaderName, this.api().apiVersion, "string", "API version");
-    }
-
-    private findRequestHeader(headerName: string): ConsoleHeader {
-        return this.consoleOperation().request.headers().find(header => header.name().toLowerCase() === headerName.toLowerCase());
     }
 
     private getSubscriptionKeyHeaderName(): string {
@@ -309,54 +285,40 @@ export class OperationConsole {
 
     private getSubscriptionKeyHeader(): ConsoleHeader {
         const subscriptionKeyHeaderName = this.getSubscriptionKeyHeaderName();
-        return this.findRequestHeader(subscriptionKeyHeaderName);
+        return this.findHeader(subscriptionKeyHeaderName);
     }
 
-    private setSubscriptionKeyHeader(): ConsoleHeader {
-        const subscriptionKeyHeaderName = this.getSubscriptionKeyHeaderName();
-        const subscriptionKeyHeader = this.getSubscriptionKeyHeader();
+    private setSubscriptionKeyHeader(subscriptionKey: string): void {
+        this.removeSubscriptionKeyHeader();
 
-        const headerIndex = this.consoleOperation().request.headers.indexOf(subscriptionKeyHeader);
-
-        if (headerIndex >= 0) {
-            this.consoleOperation().request.headers.splice(headerIndex, 1);
+        if (!subscriptionKey) {
+            return;
         }
+
+        const subscriptionKeyHeaderName = this.getSubscriptionKeyHeaderName();
 
         const keyHeader = new ConsoleHeader();
         keyHeader.name(subscriptionKeyHeaderName);
-        keyHeader.value(this.selectedSubscriptionKey());
+        keyHeader.value(subscriptionKey);
         keyHeader.description = "Subscription key.";
         keyHeader.secret = true;
         keyHeader.inputTypeValue = "password";
         keyHeader.type = "string";
-        keyHeader.required = false;
-
-        this.consoleOperation().request.headers.push(keyHeader);
-
-        return keyHeader;
+        keyHeader.required = true;
+        this.addHeader(keyHeader);
     }
 
-    private isSubscriptionKeyHeaderSpecified(): boolean {
-        const header = this.getSubscriptionKeyHeader();
+    private setMasterSubsciptionKeyHeader(): void {
+        const subscriptionKey = this.selectedProduct
+            ? `${this.masterKey};product=${this.selectedProduct}`
+            : this.masterKey;
 
-        return header && !!header.value;
+        this.setSubscriptionKeyHeader(subscriptionKey);
     }
 
-    private setAuthorizationHeader(accessToken: string): ConsoleHeader {
-        // TODO: Update @paperbits/core to enable native .remove();
-        _.remove(<any>this.consoleOperation().request.headers, header => (<any>header).name().toLowerCase() === KnownHttpHeaders.Authorization.toLowerCase());
-
-        const header = new ConsoleHeader();
-        header.name(KnownHttpHeaders.Authorization);
-        header.value(accessToken);
-        header.description = "Access token.";
-        header.secret = true;
-        header.type = "string";
-        header.required = true;
-
-        this.consoleOperation().request.headers.push(header);
-
-        return header;
+    private removeSubscriptionKeyHeader(): void {
+        const subscriptionKeyHeader = this.getSubscriptionKeyHeader();
+        this.removeHeader(subscriptionKeyHeader);
     }
 
     public async updateRequestSummary(): Promise<void> {
@@ -367,18 +329,8 @@ export class OperationConsole {
     }
 
     public async validateAndSendRequest(): Promise<void> {
-        // TODO: Add validation.
+        // TODO: Add request validation.
         this.sendRequest();
-    }
-
-    public isKeyProvidedByUser(): boolean {
-        const keyInHeader = this.consoleOperation().request.headers().find(header => header.name().toLowerCase() === KnownHttpHeaders.OcpApimSubscriptionKey.toLowerCase());
-        const keyInQuery = this.consoleOperation().request.queryParameters().find(queryParam => queryParam.name.toLowerCase() === KnownHttpHeaders.OcpApimSubscriptionKey.toLowerCase());
-        if (keyInHeader || keyInQuery) {
-            this.selectedProduct = undefined;
-            return true;
-        }
-        return false;
     }
 
     private async sendRequest(): Promise<void> {
@@ -386,29 +338,22 @@ export class OperationConsole {
         this.sendingRequest(true);
         this.responseStatusCode(null);
 
-        const url = `${this.consoleOperation().requestUrl()}`;
-        const method = this.consoleOperation().method;
-        const headers = [...this.consoleOperation().request.headers()];
-
-        if (!this.isKeyProvidedByUser()) {
-            const keyHeader = this.consoleOperation().createHeader(KnownHttpHeaders.OcpApimSubscriptionKey, this.masterKey, "string", "Subscription key.");
-
-            if (this.selectedProduct) {
-                keyHeader.value(`${keyHeader.value};product=${this.selectedProduct}`);
-            }
-            headers.push(keyHeader);
-        }
+        const consoleOperation = this.consoleOperation();
+        const request = consoleOperation.request;
+        const url = consoleOperation.requestUrl();
+        const method = consoleOperation.method;
+        const headers = [...request.headers()];
 
         let payload;
 
-        switch (this.consoleOperation().request.bodyFormat) {
+        switch (request.bodyFormat) {
             case "raw":
-                payload = this.consoleOperation().request.body();
+                payload = request.body();
                 break;
 
             case "binary":
                 const formData = new FormData();
-                formData.append(this.consoleOperation().request.binary.name, this.consoleOperation().request.binary);
+                formData.append(request.binary.name, request.binary);
                 payload = formData;
                 break;
 
@@ -432,18 +377,12 @@ export class OperationConsole {
 
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
 
-            let responseStatusText;
-
-            if (knownStatusCode) {
-                responseStatusText = knownStatusCode.description;
-            }
-            else {
-                responseStatusText = "Unknown";
-            }
+            const responseStatusText = knownStatusCode
+                ? knownStatusCode.description
+                : "Unknown";
 
             this.responseStatusCode(response.statusCode.toString());
             this.responseStatusText(responseStatusText);
-
             this.responseBody(response.toText());
 
             const responseHeaders = response.headers.map(x => {
@@ -457,12 +396,10 @@ export class OperationConsole {
 
             if (contentTypeHeader) {
                 if (contentTypeHeader.value().toLowerCase().indexOf("json") >= 0) {
-                    this.responseContentType = "json";
                     this.responseBody(Utils.formatJson(this.responseBody()));
                 }
 
                 if (contentTypeHeader.value().toLowerCase().indexOf("xml") >= 0) {
-                    this.responseContentType = "xml";
                     this.responseBody(Utils.formatXml(this.responseBody()));
                 }
             }
@@ -477,17 +414,12 @@ export class OperationConsole {
         }
     }
 
-    public parseTime(time: string): number {
-        const match = time.match(/(\d\d?):(\d\d?):(\d\d?)(\.\d+)/);
-        return match ? +(1000 * (60 * (60 * +match[1] + +match[2]) + +match[3] + +match[4])) : null;
-    }
-
     public formatJson(data: any): string {
         return JSON.stringify(data, null, 4);
     }
 
     public toggleRequestSummarySecrets(): void {
-        this.requestSummarySecretsRevealed = !this.requestSummarySecretsRevealed;
+        this.secretsRevealed(!this.secretsRevealed());
     }
 
     public getApiReferenceUrl(): string {
