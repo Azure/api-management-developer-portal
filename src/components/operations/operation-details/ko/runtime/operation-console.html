@@ -51,7 +51,7 @@
                 <!-- /ko -->
                 <!-- ko if: !$component.products() || $component.products().length === 0 -->
                 <input type="text" class="form-control" placeholder="subscription key"
-                    data-bind="inputText: subscriptionKey.value" />
+                    data-bind="textInput: $component.selectedSubscriptionKey" />
                 <!-- /ko -->
             </div>
         </div>

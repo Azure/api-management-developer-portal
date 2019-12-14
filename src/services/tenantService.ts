@@ -1,7 +1,6 @@
 import { TenantSettings, DelegationParameters, DelegationAction } from "../contracts/tenantSettings";
 import { MapiClient } from "./mapiClient";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import * as nodeCrypto from "crypto";
 import { HttpClient } from "@paperbits/common/http/httpClient";
 
 /**
