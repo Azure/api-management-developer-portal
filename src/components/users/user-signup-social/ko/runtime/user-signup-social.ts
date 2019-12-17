@@ -112,7 +112,7 @@ export class UserSignupSocial {
         }
 
         const sasToken = matches[1];
-        this.authenticator.setAccessToken(`SharedAccessSignature ${sasToken}`);
+        await this.authenticator.setAccessToken(`SharedAccessSignature ${sasToken}`);
 
         this.router.navigateTo(Constants.pageUrlHome);
     }

@@ -4,13 +4,13 @@ export interface IAuthenticator {
     /**
      * Returns access token for current session.
      */
-    getAccessToken(): string;
+    getAccessToken(): Promise<string>;
 
     /**
      * Sets new token for the session.
      * @param accessToken {string} Access token in SharedAccessSignature or Bearer token format.
      */
-    setAccessToken(accessToken: string): void;
+    setAccessToken(accessToken: string): Promise<void>;
 
     /**
      * Parses specified access token.
@@ -21,10 +21,10 @@ export interface IAuthenticator {
     /**
      * Clears access token from current session.
      */
-    clearAccessToken(): void;
+    clearAccessToken(): Promise<void>;
 
     /**
      * Checks if current user is signed in.
      */
-    isAuthenticated(): boolean;
+    isAuthenticated(): Promise<boolean>;
 }
