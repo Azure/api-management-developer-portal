@@ -50,7 +50,7 @@ export class ProvisionService {
             this.viewManager.removeShutter();
             const dataObj = await this.fetchData(dataUrl);
             const keys = Object.keys(dataObj);
-            const accessToken = this.authenticator.getAccessToken();
+            const accessToken = await this.authenticator.getAccessToken();
 
             if (!accessToken) {
                 this.viewManager.notifyError(`Unable to setup website`, `Management API access token is empty or invald.`);
@@ -90,7 +90,8 @@ export class ProvisionService {
         const managementApiUrl = await this.getManagementUrl();
         const managementApiVersion = await this.getManagementApiVersion();
         const url = `${managementApiUrl}/contentTypes?api-version=${managementApiVersion}`;
-        const accessToken = this.authenticator.getAccessToken();
+        const accessToken = await this.authenticator.getAccessToken();
+
         try {
             const request: HttpRequest = {
                 url: url,

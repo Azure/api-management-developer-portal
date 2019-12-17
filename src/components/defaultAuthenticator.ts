@@ -3,20 +3,20 @@ import { Utils } from "../utils";
 import { IAuthenticator, AccessToken } from "./../authentication";
 
 export class DefaultAuthenticator implements IAuthenticator {
-    public getAccessToken(): string {
+    public async getAccessToken(): Promise<string> {
         return sessionStorage.getItem("accessToken");
     }
 
-    public setAccessToken(accessToken: string): void {
+    public async setAccessToken(accessToken: string): Promise<void> {
         sessionStorage.setItem("accessToken", accessToken);
     }
 
-    public clearAccessToken(): void {
+    public async clearAccessToken(): Promise<void> {
         sessionStorage.removeItem("accessToken");
     }
 
-    public isAuthenticated(): boolean {
-        const accessToken = this.getAccessToken();
+    public async isAuthenticated(): Promise<boolean> {
+        const accessToken = await this.getAccessToken();
 
         if (!accessToken) {
             return false;
