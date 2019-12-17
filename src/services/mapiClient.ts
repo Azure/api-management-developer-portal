@@ -65,7 +65,7 @@ export class MapiClient {
         const managementApiAccessToken = settings[Constants.SettingNames.managementApiAccessToken];
 
         if (managementApiAccessToken) {
-            this.authenticator.setAccessToken(managementApiAccessToken);
+            await this.authenticator.setAccessToken(managementApiAccessToken);
         }
         else if (this.environment === "development") {
             console.warn(`Development mode: Please specify ${Constants.SettingNames.managementApiAccessToken}" in configuration file.`);
@@ -126,7 +126,7 @@ export class MapiClient {
         const authHeader = httpRequest.headers.find(header => header.name === "Authorization");
 
         if (!authHeader || !authHeader.value) {
-            const authToken = this.authenticator.getAccessToken();
+            const authToken = await this.authenticator.getAccessToken();
 
             if (authToken) {
                 httpRequest.headers.push({ name: "Authorization", value: `${authToken}` });
@@ -175,8 +175,6 @@ export class MapiClient {
         }
 
         if (errorResponse.statusCode === 401) {
-            // this.authenticator.clear();
-
             const authHeader = errorResponse.headers.find(h => h.name.toLowerCase() === "www-authenticate");
 
             if (authHeader && authHeader.value.indexOf("Basic") !== -1) {

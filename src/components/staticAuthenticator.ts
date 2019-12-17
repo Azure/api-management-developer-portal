@@ -3,19 +3,20 @@ import { IAuthenticator } from "../authentication";
 export class StaticAuthenticator implements IAuthenticator {
     private accessToken: string;
 
-    public getAccessToken(): string {
+    public async getAccessToken(): Promise<string> {
         return this.accessToken;
     }
 
-    public setAccessToken(token: string): void {
+    public async setAccessToken(token: string): Promise<void> {
         this.accessToken = token;
     }
 
-    public clearAccessToken(): void {
+    public async clearAccessToken(): Promise<void> {
         this.accessToken = undefined;
     }
 
-    public isAuthenticated(): boolean {
-        return !!this.getAccessToken();
+    public async isAuthenticated(): Promise<boolean> {
+        const accessToken = await this.getAccessToken();
+        return !!accessToken;
     }
 }
