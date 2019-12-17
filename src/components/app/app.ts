@@ -35,7 +35,7 @@ export class App {
         }
 
         try {
-            const token = this.authenticator.getAccessToken();
+            const token = await this.authenticator.getAccessToken();
 
             if (!token) {
                 const managementApiAccessToken = settings["managementApiAccessToken"];
@@ -47,7 +47,7 @@ export class App {
                     return;
                 }
 
-                this.authenticator.setAccessToken(accessToken.value);
+                await this.authenticator.setAccessToken(accessToken.value);
             }
         }
         catch (error) {
