@@ -34,7 +34,7 @@ export class UsersService {
             return userId;
         }
         else {
-            this.authenticator.clearAccessToken();
+            await this.authenticator.clearAccessToken();
             return undefined;
         }
     }
@@ -63,7 +63,7 @@ export class UsersService {
                 }
 
                 const accessToken = match[1];
-                this.authenticator.setAccessToken(`SharedAccessSignature ${accessToken}`);
+                await this.authenticator.setAccessToken(`SharedAccessSignature ${accessToken}`);
             }
 
             if (identity && identity.id) {
@@ -79,8 +79,8 @@ export class UsersService {
      * Initiates signing-out with Basic identity provider.
      * @param withRedirect 
      */
-    public signOut(withRedirect: boolean = true): void {
-        this.authenticator.clearAccessToken();
+    public async signOut(withRedirect: boolean = true): Promise<void> {
+        await this.authenticator.clearAccessToken();
 
         if (withRedirect) {
             this.navigateToSignin();
@@ -115,8 +115,8 @@ export class UsersService {
     /**
      * Checks if current user is authenticated.
      */
-    public isUserSignedIn(): boolean {
-        return this.authenticator.isAuthenticated();
+    public async isUserSignedIn(): Promise<boolean> {
+        return await this.authenticator.isAuthenticated();
     }
 
     /**
@@ -166,7 +166,7 @@ export class UsersService {
         }
     }
 
-    
+
 
     /**
      * Deletes specified user.
@@ -183,7 +183,7 @@ export class UsersService {
 
             await this.mapiClient.delete<string>(query, [header]);
 
-            this.signOut();
+            await this.signOut();
         }
         catch (error) {
             this.navigateToSignin();
@@ -221,22 +221,22 @@ export class UsersService {
     }
 
     public async createResetPasswordRequest(email: string): Promise<void> {
-        const payload = {"to": email, "appType": "developerPortal"};
+        const payload = { to: email, appType: "developerPortal" };
         await this.mapiClient.post("/confirmations/password", null, payload);
     }
 
     public async changePassword(userId: string, newPassword: string): Promise<void> {
-        const authToken = this.authenticator.getAccessToken();
+        const authToken = await this.authenticator.getAccessToken();
 
         if (!authToken) {
             throw Error("Auth token not found");
         }
-        
+
         const headers = [
             { name: "Authorization", value: authToken },
             { name: "If-Match", value: "*" }
         ];
-        const payload = { "password": newPassword };
+        const payload = { password: newPassword };
         await this.mapiClient.patch(userId, headers, payload);
     }
 }

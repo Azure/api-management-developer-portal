@@ -52,7 +52,7 @@ export class AadService {
         }
 
         const sasToken = matches[1];
-        this.authenticator.setAccessToken(`SharedAccessSignature ${sasToken}`);
+        await this.authenticator.setAccessToken(`SharedAccessSignature ${sasToken}`);
         await this.router.navigateTo(Constants.pageUrlHome);
     }
 
