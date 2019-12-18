@@ -80,6 +80,7 @@ export class OperationConsole {
         this.selectedProduct = ko.observable();
     }
 
+
     @Param()
     public api: ko.Observable<Api>;
 
@@ -98,11 +99,12 @@ export class OperationConsole {
         this.masterKey = await this.tenantService.getServiceMasterKey();
         this.isConsumptionMode = skuName === ServiceSkuName.Consumption;
 
+        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey);
+
         await this.resetConsole();
 
         this.api.subscribe(this.resetConsole);
         this.operation.subscribe(this.resetConsole);
-        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey);
         this.selectedLanguage.subscribe(this.updateRequestSummary);
     }
 
@@ -180,15 +182,14 @@ export class OperationConsole {
     }
 
     private async loadSubscriptionKeys(): Promise<void> {
-        const isLogged = this.usersService.isUserSignedIn();
+        const userId = await this.usersService.getCurrentUserId();
 
-        if (!isLogged) {
+        if (!userId) {
             return;
         }
 
         const pageOfProducts = await this.apiService.getAllApiProducts(this.api().id);
         const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
-        const userId = await this.usersService.getCurrentUserId();
         const pageOfSubscriptions = await this.productService.getSubscriptions(userId);
         const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === SubscriptionState.active);
         const availableProducts = [];
@@ -225,8 +226,8 @@ export class OperationConsole {
         }
     }
 
-    public addHeader(header: ConsoleHeader = new ConsoleHeader()): void {
-        this.consoleOperation().request.headers.push(header);
+    public addHeader(): void {
+        this.consoleOperation().request.headers.push(new ConsoleHeader());
         this.updateRequestSummary();
     }
 
@@ -241,13 +242,13 @@ export class OperationConsole {
         this.updateRequestSummary();
     }
 
-    public findHeader(name: string): ConsoleHeader {
+    private findHeader(name: string): ConsoleHeader {
         const searchName = name.toLocaleLowerCase();
         return this.consoleOperation().request.headers().find(x => x.name().toLocaleLowerCase() === searchName);
     }
 
-    public addQueryParameter(parameter: ConsoleParameter = new ConsoleParameter()): void {
-        this.consoleOperation().request.queryParameters.push(parameter);
+    public addQueryParameter(): void {
+        this.consoleOperation().request.queryParameters.push(new ConsoleParameter());
         this.updateRequestSummary();
     }
 
@@ -256,7 +257,7 @@ export class OperationConsole {
         this.updateRequestSummary();
     }
 
-    public applySubscriptionKey(subscriptionKey: string): void {
+    private applySubscriptionKey(subscriptionKey: string): void {
         if (!this.consoleOperation()) {
             return;
         }
@@ -305,7 +306,9 @@ export class OperationConsole {
         keyHeader.inputTypeValue = "password";
         keyHeader.type = "string";
         keyHeader.required = true;
-        this.addHeader(keyHeader);
+
+        this.consoleOperation().request.headers.push(keyHeader);
+        this.updateRequestSummary();
     }
 
     private setMasterSubsciptionKeyHeader(): void {
@@ -412,10 +415,6 @@ export class OperationConsole {
         finally {
             this.sendingRequest(false);
         }
-    }
-
-    public formatJson(data: any): string {
-        return JSON.stringify(data, null, 4);
     }
 
     public toggleRequestSummarySecrets(): void {

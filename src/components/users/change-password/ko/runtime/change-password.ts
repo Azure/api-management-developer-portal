@@ -27,7 +27,8 @@ export class ChangePassword {
     constructor(
         private readonly usersService: UsersService,
         private readonly eventManager: EventManager,
-        private readonly backendService: BackendService) {
+        private readonly backendService: BackendService
+    ) {
         this.password = ko.observable();
         this.newPassword = ko.observable();
         this.passwordConfirmation = ko.observable();
@@ -55,8 +56,8 @@ export class ChangePassword {
      * Initializes component right after creation.
      */
     @OnMounted()
-    public initialize(): void {
-        const isUserSignedIn = this.usersService.isUserSignedIn();
+    public async initialize(): Promise<void> {
+        const isUserSignedIn = await this.usersService.isUserSignedIn();
 
         if (!isUserSignedIn) {
             this.usersService.navigateToHome();
