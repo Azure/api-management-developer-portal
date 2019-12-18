@@ -49,8 +49,8 @@ export class ResetPassword {
      * Initializes component right after creation.
      */
     @OnMounted()
-    public initialize(): void {
-        const isUserSignedIn = this.usersService.isUserSignedIn();
+    public async initialize(): Promise<void> {
+        const isUserSignedIn = await this.usersService.isUserSignedIn();
 
         if (isUserSignedIn) {
             this.usersService.navigateToHome();
