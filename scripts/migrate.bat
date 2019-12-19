@@ -12,6 +12,7 @@ set target_storage_connection_string="DefaultEndpointsProtocol=..."
 
 set data_file="../dist/data.json"
 set media_folder="../dist/content"
+set media_container="content"
 
 @REM Capture the content of the source portal (excl. media)
 node ./capture %source_management_endpoint% %source_access_token% %data_file%
@@ -23,9 +24,10 @@ node ./cleanup %target_management_endpoint% %target_access_token% %target_storag
 node ./generate %target_management_endpoint% %target_access_token% %data_file%
 
 @REM Download the media files from the source portal
-node ./download %source_storage_connection_string% %media_folder%
+md %media_folder%
+az storage blob download-batch --source %media_container% --destination %media_folder% --connection-string %source_storage_connection_string%
 
 @REM Upload the media files to the target portal
-node ./upload %target_storage_connection_string% %media_folder%
+az storage blob upload-batch --source %media_folder% --destination %media_container% --connection-string %target_storage_connection_string%
 
 @REM At this point your target API Management service should contain the same content of the portal as the source service. To make the portal of the target service available to visitors, you still need to publish it and, in case of a self-hosted version, host the generated files.
