@@ -56,6 +56,23 @@ async function getContentItems(contentType) {
     return contentItems;
 }
 
+function checkPath() {
+    const folderSegments = dataFile.split("/");
+    let checkedPath = dataFile;
+    if (!folderSegments[0]) {
+        folderSegments.splice(0,1);
+        checkedPath = checkedPath.slice(1);
+    }
+    if (folderSegments.length > 1) {
+        folderSegments.splice(-1,1);
+        const folder = folderSegments.join("/");
+        if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder);
+        }
+    }
+    return checkedPath;
+}
+
 async function capture() {
     const result = {};
     const contentTypes = await getContentTypes();
@@ -70,7 +87,9 @@ async function capture() {
         });
     }
 
-    fs.writeFileSync(dataFile, JSON.stringify(result));
+    const checkedPath = checkPath();
+
+    fs.writeFileSync(checkedPath, JSON.stringify(result));
 }
 
 
