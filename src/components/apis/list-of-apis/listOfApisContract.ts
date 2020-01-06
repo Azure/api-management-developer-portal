@@ -17,6 +17,11 @@ export interface ListOfApisContract extends Contract {
     allowSelection: boolean;
 
     /**
+     * Default GroupByTag to enabled.
+     */
+    defaultGroupByTagToEnabled?: boolean;
+
+    /**
      * Link to a page that contains API details.
      */
     detailsPageHyperlink?: HyperlinkContract;
