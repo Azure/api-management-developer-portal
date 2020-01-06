@@ -18,6 +18,7 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
 
         viewModel.runtimeConfig(JSON.stringify({
             allowSelection: model.allowSelection,
+            defaultGroupByTagToEnabled: model.defaultGroupByTagToEnabled,
             detailsPageUrl: model.detailsPageHyperlink
                 ? model.detailsPageHyperlink.href
                 : undefined
