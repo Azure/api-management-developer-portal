@@ -149,7 +149,7 @@
         <div class="table-body">
             <!-- ko foreach: { data: definitions, as: 'definition' } -->
             <div class="table-row">
-                <div class="col-3">
+                <div class="col-3 text-truncate">
                     <a data-bind="text: definition.name, attr: { href: $component.getDefinitionReferenceUrl(definition) }"></a>
                 </div>
                 <div class="col-3" data-bind="markdown: definition.description"></div>
