@@ -183,6 +183,10 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                         case "array":
                             const prop = new TypeDefinitionPrimitiveProperty(propertyName, propertySchemaObject, isRequired, true);
 
+                            if (!propertySchemaObject.items) {
+                                return prop;
+                            }
+
                             if (propertySchemaObject.items.type) {
                                 prop.type = new TypeDefinitionPropertyType(propertySchemaObject.items.type, false, true);
                             }
