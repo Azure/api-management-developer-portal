@@ -10,12 +10,12 @@ function generateSasToken(container, connectionString) {
   const blobName = "";
   let blobService = azure.createBlobService(connectionString);
 
-  // Create a SAS token that expires in an hour
+  // Create a SAS token that expires in 60 days
   // Set start time to five minutes ago to avoid clock skew.
   let startDate = new Date();
   startDate.setMinutes(startDate.getMinutes() - 5);
   let expiryDate = new Date(startDate);
-  expiryDate.setHours(startDate.getHours() + 24 * 60); // 60 days expiration
+  expiryDate.setHours(startDate.getHours() + 24 * 60);
 
   permissions = azure.BlobUtilities.SharedAccessPermissions.READ +
     azure.BlobUtilities.SharedAccessPermissions.WRITE +
