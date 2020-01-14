@@ -5,11 +5,10 @@ import { ConfirmPasswordModel } from "../confirmPasswordModel";
 
 @Component({
     selector: "confirm-passwor-editor",
-    template: template,
-    injectable: "confirmPasswordEditor"
+    template: template
 })
 export class ConfirmPasswordEditor {
-    constructor() {}
+    constructor() { }
 
     @Param()
     public model: ConfirmPasswordModel;
@@ -18,7 +17,7 @@ export class ConfirmPasswordEditor {
     public onChange: (model: ConfirmPasswordModel) => void;
 
     @OnMounted()
-    public async initialize(): Promise<void> {}
+    public async initialize(): Promise<void> { }
 
     private applyChanges(): void {
         this.onChange(this.model);

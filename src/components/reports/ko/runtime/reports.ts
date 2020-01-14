@@ -18,8 +18,7 @@ import { MapChartConfig } from "../../mapChart/mapChartConfig";
 @RuntimeComponent({ selector: "reports-runtime" })
 @Component({
     selector: "reports-runtime",
-    template: template,
-    injectable: "reports"
+    template: template
 })
 export class Reports {
     private chartUpdateTimeout: number;

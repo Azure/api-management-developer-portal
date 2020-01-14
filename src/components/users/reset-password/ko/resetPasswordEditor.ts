@@ -5,8 +5,7 @@ import { ResetPasswordModel } from "../resetPasswordModel";
 
 @Component({
     selector: "reset-password-editor",
-    template: template,
-    injectable: "resetPasswordEditor"
+    template: template
 })
 export class ResetPasswordEditor {
     public requireHipCaptcha: ko.Observable<boolean>;

@@ -13,8 +13,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 @RuntimeComponent({ selector: "operation-list" })
 @Component({
     selector: "operation-list",
-    template: template,
-    injectable: "operationList"
+    template: template
 })
 export class OperationList {
     private searchRequest: SearchQuery;

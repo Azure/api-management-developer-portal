@@ -12,8 +12,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 @RuntimeComponent({ selector: "product-apis-runtime" })
 @Component({
     selector: "product-apis-runtime",
-    template: template,
-    injectable: "productApis"
+    template: template
 })
 export class ProductApis {
     public readonly apis: ko.ObservableArray<Api>;

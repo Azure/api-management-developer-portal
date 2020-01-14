@@ -5,8 +5,7 @@ import { OperationDetailsModel } from "../operationDetailsModel";
 
 @Component({
     selector: "operation-details-editor",
-    template: template,
-    injectable: "operationDetailsEditor"
+    template: template
 })
 export class OperationDetailsEditor {
     public readonly enableConsole: ko.Observable<boolean>;

@@ -1,3 +1,5 @@
+@import "../animations.scss";
+
 .collapsible-container {
     flex-wrap: wrap;
 }
@@ -13,8 +15,8 @@
     flex: 1;
     min-width: 1px;
 
-    .hamburger {
-        display: none;
+    .collapsible-panel-toggle {
+        display: block;
         border: none;
         background: none;
         padding: 10px;
@@ -23,53 +25,65 @@
         cursor: pointer;
         position: absolute;
         right: 0; // TODO: Should be configurable
-        z-index: 9000;
     }
 }
 
-.collapsible-dropdown {
-    position: absolute;
-    background: #fff;
-    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.5);
-    z-index: 9000;
-    padding: 20px;
-    width: 100%;
-    top: 100%;
+.backdrop {
+    opacity: 0;
+    position: fixed;
+    top: 0;
     left: 0;
     right: 0;
+    bottom: 0;
+    background: #000000c9;
+    z-index: 8500;
+    display: none;
+    animation: fadeIn 0.2s linear forwards;
 }
 
 @media (min-width: $breakpoint-md) {
     .collapsible-panel {
-        > .collapsible-content {
+        & > .collapsible-content {
             display: flex;
+        }
+
+        .collapsible-panel-toggle {
+            display: none;
         }
     }
 }
 
-.collapsible.expanded > .collapsible-content {
-    display: flex;
-    position: absolute;
-    top: 100%;
-
-    z-index: 9000;
-    border: 1px solid #ccc;
+.collapsible.expanded {
+    & > .collapsible-content {
+        display: flex;
+        position: absolute;
+    }
 }
 
-.collapsible-panel.collapsible.expanded > .collapsible-content {
-    left: 0;
-    right: 0;
+.collapsible-panel.collapsible.expanded {
+    & > .collapsible-content {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 9000;
+        position: fixed;
+        animation: slideInRight 0.2s linear forwards;
+
+        & > .collapsible-panel-toggle {
+            display: block;
+            top: 0;
+            right: 0;
+        }
+    }
+
+    .backdrop {
+        display: block;
+    }
 }
 
 @media (max-width: $breakpoint-md) {
     .collapsible-panel {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-
-        .hamburger {
+        .collapsible-panel-toggle {
             display: block;
         }
     }

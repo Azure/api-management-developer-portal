@@ -1,7 +1,5 @@
 import * as ko from "knockout";
-import * as Constants from "../../../../../constants";
 import template from "./signin-aad.html";
-import { Router } from "@paperbits/common/routing";
 import { Component, RuntimeComponent, Param } from "@paperbits/common/ko/decorators";
 import { AadService } from "../../../../../services";
 import { EventManager } from "@paperbits/common/events";
@@ -13,8 +11,7 @@ import { ValidationReport } from "../../../../../contracts/validationReport";
 })
 @Component({
     selector: "signin-aad",
-    template: template,
-    injectable: "signInAad"
+    template: template
 })
 export class SignInAad {
     constructor(

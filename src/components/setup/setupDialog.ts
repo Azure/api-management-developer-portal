@@ -6,8 +6,7 @@ import { ProvisionService } from "../../services/provisioningService";
 
 @Component({
     selector: "setup-dialog",
-    template: template,
-    injectable: "setupDialog"
+    template: template
 })
 export class SetupDialog {
 
