@@ -6,8 +6,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 
 @Component({
     selector: "type-definition",
-    template: template,
-    injectable: "typeDefinition"
+    template: template
 })
 export class TypeDefinitionViewModel {
     public readonly name: ko.Observable<string>;

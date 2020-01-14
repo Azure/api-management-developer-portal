@@ -12,8 +12,7 @@ import { Utils } from "../../../../../utils";
 @RuntimeComponent({ selector: "api-history" })
 @Component({
     selector: "api-history",
-    template: template,
-    injectable: "apiHistory"
+    template: template
 })
 export class ApiHistory {
     public api: ko.Observable<Api> = null;

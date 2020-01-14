@@ -13,8 +13,7 @@ import { ValidationReport } from "../../../../../contracts/validationReport";
 })
 @Component({
     selector: "user-signin",
-    template: template,
-    injectable: "userSignin"
+    template: template
 })
 export class UserSignin {
     public readonly username: ko.Observable<string>;

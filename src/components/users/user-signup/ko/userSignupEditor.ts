@@ -5,8 +5,7 @@ import { UserSignupModel } from "../userSignupModel";
 
 @Component({
     selector: "user-signup-editor",
-    template: template,
-    injectable: "userSignupEditor"
+    template: template
 })
 export class UserSignupEditor {
     public requireHipCaptcha: ko.Observable<boolean>;

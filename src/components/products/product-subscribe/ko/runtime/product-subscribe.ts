@@ -15,8 +15,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 @RuntimeComponent({ selector: "product-subscribe-runtime" })
 @Component({
     selector: "product-subscribe-runtime",
-    template: template,
-    injectable: "productSubscribe"
+    template: template
 })
 export class ProductSubscribe {
     public readonly working: ko.Observable<boolean>;

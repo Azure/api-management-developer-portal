@@ -5,8 +5,7 @@ import { Component, Param } from "@paperbits/common/ko/decorators";
 
 @Component({
     selector: "file-input",
-    template: template,
-    injectable: "fileInput"
+    template: template
 })
 export class FileInput {
     private readonly input: HTMLInputElement;

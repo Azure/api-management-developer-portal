@@ -8,8 +8,7 @@ import { ValidationReport } from "../../../../../contracts/validationReport";
 @RuntimeComponent({ selector: "validation-summary" })
 @Component({
     selector: "validation-summary",
-    template: template,
-    injectable: "validationSummary"
+    template: template
 })
 
 export class ValidationSummary {

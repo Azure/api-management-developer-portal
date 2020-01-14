@@ -10,8 +10,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 @RuntimeComponent({ selector: "product-subscriptions-runtime" })
 @Component({
     selector: "product-subscriptions-runtime",
-    template: template,
-    injectable: "productSubscriptions"
+    template: template
 })
 export class ProductSubscriptions {
     public readonly isUserSignedIn: ko.Observable<boolean>;

@@ -4,8 +4,7 @@ import { Component } from "@paperbits/common/ko/decorators";
 
 @Component({
     selector: "user-signup",
-    template: template,
-    injectable: "userSignup"
+    template: template
 })
 export class UserSignupViewModel {
     public readonly runtimeConfig: ko.Observable<string>;

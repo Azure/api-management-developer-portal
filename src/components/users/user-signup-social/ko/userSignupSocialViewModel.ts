@@ -4,11 +4,6 @@ import { Component } from "@paperbits/common/ko/decorators";
 
 @Component({
     selector: "user-signup-social",
-    template: template,
-    injectable: "userSignupSocial"
+    template: template
 })
-export class UserSignupSocialViewModel {
-
-    constructor() {
-    }
-}
+export class UserSignupSocialViewModel { }

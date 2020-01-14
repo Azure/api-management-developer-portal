@@ -9,8 +9,7 @@ const startupError = `Unable to start the portal`;
 
 @Component({
     selector: "app",
-    template: template,
-    injectable: "app"
+    template: template
 })
 export class App {
     constructor(

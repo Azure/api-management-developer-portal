@@ -7,8 +7,7 @@ import { ProductListModel } from "../productListModel";
 
 @Component({
     selector: "product-list-editor",
-    template: template,
-    injectable: "productListEditor"
+    template: template
 })
 export class ProductListEditor {
     public readonly allowSelection: ko.Observable<boolean>;

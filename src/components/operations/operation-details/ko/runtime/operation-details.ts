@@ -16,8 +16,7 @@ import { Utils } from "../../../../../utils";
 @RuntimeComponent({ selector: "operation-details" })
 @Component({
     selector: "operation-details",
-    template: template,
-    injectable: "operationDetails"
+    template: template
 })
 export class OperationDetails {
     private readonly definitions: ko.ObservableArray<TypeDefinition>;
