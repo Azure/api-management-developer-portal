@@ -7,8 +7,7 @@ import { ListOfApisModel } from "../listOfApisModel";
 
 @Component({
     selector: "list-of-apis-editor",
-    template: template,
-    injectable: "listOfApisEditor"
+    template: template
 })
 export class ListOfApisEditor {
     public readonly itemStyles: ko.ObservableArray<any>;

@@ -19,8 +19,7 @@ import { IAuthenticator } from "./../../../../../authentication/IAuthenticator";
 })
 @Component({
     selector: "user-signup-social-runtime",
-    template: template,
-    injectable: "userSignupSocial"
+    template: template
 })
 export class UserSignupSocial {
     public readonly email: ko.Observable<string>;

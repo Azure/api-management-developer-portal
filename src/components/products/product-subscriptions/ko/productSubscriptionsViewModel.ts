@@ -3,7 +3,6 @@ import { Component } from "@paperbits/common/ko/decorators/component.decorator";
 
 @Component({
     selector: "product-subscriptions",
-    template: template,
-    injectable: "productSubscriptions"
+    template: template
 })
 export class ProductSubscriptionsViewModel { }

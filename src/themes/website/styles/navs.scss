@@ -5,13 +5,15 @@
     .nav-item {
         padding: 0;
         margin: 0;
+        flex-grow: 1;
     }
 
     .nav-link {
         color: inherit;
+        cursor: pointer;
     }
 
-    .nav { // nested
+    .nav {
         margin-left: 20px;
     }
 
@@ -22,7 +24,6 @@
 
         .nav-item {
             white-space: nowrap;
-            flex-grow: 1;
         }
     }
 }
@@ -59,6 +60,16 @@
             > .nav-link::after {
                 transform: rotate(180deg);
             }
+        }
+
+        .dropdown {
+            z-index: 1;
+        }
+    }
+    
+    @media (max-width: $breakpoint-md) {
+        .nav-item {
+            flex-basis: 100%;
         }
     }
 }

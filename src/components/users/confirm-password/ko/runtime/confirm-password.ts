@@ -11,8 +11,7 @@ import { ValidationReport } from "../../../../../contracts/validationReport";
 @RuntimeComponent({ selector: "confirm-password" })
 @Component({
     selector: "confirm-password",
-    template: template,
-    injectable: "confirmPassword"
+    template: template
 })
 export class ConfirmPassword {
     private queryParams: URLSearchParams;

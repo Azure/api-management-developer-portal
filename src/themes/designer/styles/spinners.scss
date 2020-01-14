@@ -1,17 +1,25 @@
-.viewport {
-    opacity: 1;
+.shutter {
+    opacity: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: block;
+    position: fixed;
+    background: $spinner-shutter-bg;
+    pointer-events: none;
     transition: opacity .5s ease-in-out;
 
-    &.shutter {
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: block;
-        position: fixed;
-        background: $spinner-shutter-bg;
-        pointer-events: none;
-        opacity: 0;
+    spinner {
+        display: none;
+    }
+
+    &.active {
+        opacity: 1;
+
+        spinner {
+            display: flex;
+        }
     }
 }
 

@@ -14,8 +14,7 @@ import { Utils } from "../../../../../utils";
 @RuntimeComponent({ selector: "user-details" })
 @Component({
     selector: "user-details",
-    template: template,
-    injectable: "userDetails"
+    template: template
 })
 export class UserDetails {
     public firstName: ko.Observable<string>;

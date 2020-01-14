@@ -58,7 +58,9 @@ section {
     flex: 1 1 auto;
 }
 
+layout,
 main {
-    flex-basis: 100%;
-    align-self: stretch;
+    flex: 1;
+    flex-direction: column;
+    display: flex;
 }

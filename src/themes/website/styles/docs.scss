@@ -304,13 +304,24 @@ api-list-tiles {
     flex-basis: 100%;
 }
 
+api-list-dropdown {
+    .collapsible-dropdown {
+        box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.5);
+        top: 100%;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        z-index: $z-index-dropdowns;
+    }
+}
+
 .line-clamp {
     text-align: left;
 }
 
 api-details,
-api-list,
 api-history,
+api-list,
 change-password-runtime,
 confirm-password,
 operation-details,
@@ -326,8 +337,8 @@ user-details,
 user-signin,
 user-signup-runtime,
 user-signup-social-runtime,
-validation-summary,
-user-subscriptions {
+user-subscriptions,
+validation-summary {
     flex-basis: 100%;
     max-width: 100%;
 }
