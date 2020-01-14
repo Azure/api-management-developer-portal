@@ -10,8 +10,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 @RuntimeComponent({ selector: "product-details-runtime" })
 @Component({
     selector: "product-details-runtime",
-    template: template,
-    injectable: "productDetails"
+    template: template
 })
 export class ProductDetails {
     public readonly product: ko.Observable<Product>;

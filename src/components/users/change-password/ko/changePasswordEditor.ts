@@ -5,8 +5,7 @@ import { ChangePasswordModel } from "../changePasswordModel";
 
 @Component({
     selector: "change-password-editor",
-    template: template,
-    injectable: "changePasswordEditor"
+    template: template
 })
 export class ChangePasswordEditor {
     public requireHipCaptcha: ko.Observable<boolean>;

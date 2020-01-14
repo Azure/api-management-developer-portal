@@ -7,6 +7,7 @@ import "./bindingHandlers/barChart";
 import "./bindingHandlers/mapChart";
 import "./bindingHandlers/minMaxAvgChart";
 import "./bindingHandlers/acceptChange";
+import "./themes/website/scripts";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.component";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.focus";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.activate";

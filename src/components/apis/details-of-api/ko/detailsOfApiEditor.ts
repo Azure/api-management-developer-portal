@@ -6,8 +6,7 @@ import { HyperlinkModel } from "@paperbits/common/permalinks";
 
 @Component({
     selector: "details-of-api-editor",
-    template: template,
-    injectable: "detailsOfApiEditor"
+    template: template
 })
 export class DetailsOfApiEditor {
     public readonly hyperlink: ko.Observable<HyperlinkModel>;

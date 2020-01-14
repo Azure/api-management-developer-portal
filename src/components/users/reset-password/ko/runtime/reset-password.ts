@@ -13,8 +13,7 @@ declare var WLSPHIP0;
 @RuntimeComponent({ selector: "reset-password-runtime" })
 @Component({
     selector: "reset-password-runtime",
-    template: template,
-    injectable: "resetPassword"
+    template: template
 })
 export class ResetPassword {
     public readonly email: ko.Observable<string>;

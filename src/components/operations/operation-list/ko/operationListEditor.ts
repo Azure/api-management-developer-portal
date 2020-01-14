@@ -6,8 +6,7 @@ import { HyperlinkModel } from "@paperbits/common/permalinks";
 
 @Component({
     selector: "operation-list-editor",
-    template: template,
-    injectable: "operationListEditor"
+    template: template
 })
 export class OperationListEditor {
     public readonly allowSelection: ko.Observable<boolean>;

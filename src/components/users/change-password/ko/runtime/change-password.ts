@@ -13,8 +13,7 @@ declare var WLSPHIP0;
 @RuntimeComponent({ selector: "change-password-runtime" })
 @Component({
     selector: "change-password-runtime",
-    template: template,
-    injectable: "changePassword"
+    template: template
 })
 export class ChangePassword {
     public readonly password: ko.Observable<string>;

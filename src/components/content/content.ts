@@ -8,8 +8,7 @@ import { IAuthenticator } from "../../authentication/IAuthenticator";
 
 @Component({
     selector: "content-workshop",
-    template: template,
-    injectable: "contentWorkshop"
+    template: template
 })
 export class ContentWorkshop {
     constructor(

@@ -5,7 +5,6 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { SubscriptionViewModel } from "./subscriptionViewModel";
 import { UsersService } from "../../../../../services/usersService";
 import { ProductService } from "../../../../../services/productService";
-import { SubscriptionState } from "../../../../../contracts/subscription";
 import { TenantService } from "../../../../../services/tenantService";
 import { BackendService } from "../../../../../services/backendService";
 import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
@@ -14,8 +13,7 @@ import { Utils } from "../../../../../utils";
 @RuntimeComponent({ selector: "user-subscriptions" })
 @Component({
     selector: "user-subscriptions",
-    template: template,
-    injectable: "userSubscriptions"
+    template: template
 })
 export class UserSubscriptions {
     public readonly subscriptions: ko.ObservableArray<SubscriptionViewModel>;

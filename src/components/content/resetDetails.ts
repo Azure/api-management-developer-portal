@@ -8,8 +8,7 @@ import { Logger } from "@paperbits/common/logging";
 
 @Component({
     selector: "reset-details-workshop",
-    template: template,
-    injectable: "resetDetailsWorkshop"
+    template: template
 })
 
 export class ResetDetailsWorkshop {
