@@ -71,7 +71,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <!-- ko if: parameter.options.length > 0 -->
-                    <select class="form-control" data-bind="value: parameter.value, options: parameter.options"></select>
+                    <select class="form-control" data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                     <!-- /ko -->
                     <!-- ko if: parameter.options.length === 0 -->
                     <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
@@ -92,7 +92,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <!-- ko if: parameter.options.length > 0 -->
-                    <select class="form-control" data-bind="value: parameter.value, options: parameter.options"></select>
+                    <select class="form-control" data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                     <!-- /ko -->
                     <!-- ko if: parameter.options.length === 0 -->
                     <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
@@ -127,7 +127,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <!-- ko if: header.options && header.options.length > 0 -->
-                    <select class="form-control" data-bind="value: header.value, options: header.options"></select>
+                    <select class="form-control" data-bind="value: header.value, options: header.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                     <!-- /ko -->
                     <!-- ko if: !header.options || header.options.length === 0 -->
                     <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"

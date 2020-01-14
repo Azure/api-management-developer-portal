@@ -149,27 +149,8 @@ export class OperationConsole {
 
         await this.loadSubscriptionKeys();
 
-        this.trackOptionsChanges();
         this.updateRequestSummary();
         this.working(false);
-    }
-
-    private trackOptionsChanges(): void {
-        if (this.consoleOperation()) {
-            const operation = this.consoleOperation();
-            const templateParams = operation.templateParameters;
-            if (templateParams) {
-                templateParams().map(p => p.options.length > 0 && p.value.subscribe(() => this.updateRequestSummary()));
-            }
-            const queryParams = operation.request.queryParameters();
-            if (queryParams) {
-                queryParams.map(p => p.options.length > 0 && p.value.subscribe(() => this.updateRequestSummary()));
-            }
-            const headers = operation.request.headers();
-            if (headers) {
-                headers.map(p => p.options.length > 0 && p.value.subscribe(() => this.updateRequestSummary()));
-            }
-        }
     }
 
     private setSoapHeaders(): void {
