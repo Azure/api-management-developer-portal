@@ -17,6 +17,7 @@ export class ListOfApisModelBinder implements IModelBinder<ListOfApisModel> {
         
         model.layout = contract.itemStyleView;
         model.allowSelection = contract.allowSelection;
+        model.defaultGroupByTagToEnabled = contract.defaultGroupByTagToEnabled === true;
 
         if (contract.detailsPageHyperlink) {
             model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromConfig(contract.detailsPageHyperlink);
@@ -34,6 +35,7 @@ export class ListOfApisModelBinder implements IModelBinder<ListOfApisModel> {
             type: "listOfApis",
             itemStyleView: model.layout,
             allowSelection: model.allowSelection,
+            defaultGroupByTagToEnabled: model.defaultGroupByTagToEnabled,
             detailsPageHyperlink: model.detailsPageHyperlink
                 ? {
                     target: model.detailsPageHyperlink.target,
