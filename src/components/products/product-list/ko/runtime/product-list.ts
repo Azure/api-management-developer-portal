@@ -15,8 +15,7 @@ import { Router } from "@paperbits/common/routing/router";
 })
 @Component({
     selector: "product-list-runtime",
-    template: template,
-    injectable: "productList"
+    template: template
 })
 export class ProductList {
     public readonly products: ko.ObservableArray<Product>;

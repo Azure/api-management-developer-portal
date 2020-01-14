@@ -110,6 +110,14 @@
     content: "\e922";
 }
 
+.icon-menu-8:before {
+    content: "\e90e";
+}
+
+.icon-simple-remove:before {
+    content: "\e90f";
+}
+
 .icon.icon-wadl {
     @include icon-18px();
     background-color: transparent;

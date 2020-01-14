@@ -4,8 +4,7 @@ import { Component } from "@paperbits/common/ko/decorators/component.decorator";
 
 @Component({
     selector: "product-apis",
-    template: template,
-    injectable: "productApis"
+    template: template
 })
 export class ProductApisViewModel {
     public readonly runtimeConfig: ko.Observable<string>;

@@ -3,7 +3,6 @@ import { Component } from "@paperbits/common/ko/decorators";
 
 @Component({
     selector: "spinner",
-    template: template,
-    injectable: "spinner"
+    template: template
 })
 export class Spinner { }

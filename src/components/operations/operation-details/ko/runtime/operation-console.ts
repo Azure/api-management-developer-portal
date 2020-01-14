@@ -25,8 +25,7 @@ import { TemplatingService } from "../../../../../services/templatingService";
 
 @Component({
     selector: "operation-console",
-    template: template,
-    injectable: "operationConsole"
+    template: template
 })
 export class OperationConsole {
     public readonly sendingRequest: ko.Observable<boolean>;

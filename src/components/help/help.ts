@@ -3,8 +3,7 @@ import { Component } from "@paperbits/common/ko/decorators";
 
 @Component({
     selector: "help-workshop",
-    template: template,
-    injectable: "helpWorkshop"
+    template: template
 })
 export class HelpWorkshop {
 }
