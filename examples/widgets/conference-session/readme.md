@@ -1,4 +1,4 @@
-# External widget: Conference Session
+# Community widget: Conference Session
 
 **Contributor's GitHub alias**: mikebudzynski
 
