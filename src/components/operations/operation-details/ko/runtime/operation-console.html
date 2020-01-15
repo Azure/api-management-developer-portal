@@ -70,9 +70,13 @@
             </div>
             <div class="col-6">
                 <div class="form-group">
+                    <!-- ko if: parameter.options.length > 0 -->
+                    <select class="form-control" data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
+                    <!-- /ko -->
+                    <!-- ko if: parameter.options.length === 0 -->
                     <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                        spellcheck="false"
-                        data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
+                            spellcheck="false" data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
+                    <!-- /ko -->
                 </div>
             </div>
         </div>
@@ -87,9 +91,13 @@
             </div>
             <div class="col-6">
                 <div class="form-group">
+                    <!-- ko if: parameter.options.length > 0 -->
+                    <select class="form-control" data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
+                    <!-- /ko -->
+                    <!-- ko if: parameter.options.length === 0 -->
                     <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                        spellcheck="false"
-                        data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
+                           spellcheck="false" data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
+                    <!-- /ko -->
                 </div>
             </div>
             <div class="col-2 button-remove">
@@ -118,9 +126,16 @@
             </div>
             <div class="col-6">
                 <div class="form-group">
+                    <!-- ko if: header.options && header.options.length > 0 -->
+                    <select class="form-control" data-bind="value: header.value, options: header.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
+                    <!-- /ko -->
+                    <!-- ko if: !header.options || header.options.length === 0 -->
                     <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
                         spellcheck="false"
                         data-bind="event: { keyup: $component.updateRequestSummary }, textInput: header.value, valueUpdate: 'keyup'">
+                    <!-- /ko -->
+
+                    
                 </div>
             </div>
             <div class="col-2 button-remove">
