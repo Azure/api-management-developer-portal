@@ -16,8 +16,7 @@
                     data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: currentApiVersion">
                 </select>
                 <!-- /ko -->
-                <select id="apiDefinitions" class="form-control" aria-label="API definitions"
-                    data-bind="value: downloadSelected, event: {change: onDownloadChange}">
+                <select id="apiDefinitions" class="form-control" aria-label="API definitions" data-bind="value: downloadSelected">
                     <option value="" disabled="disabled" selected="selected">API definition</option>
                     <option value="openapi">Open API 3 (YAML)</option>
                     <option value="openapi+json">Open API 3 (JSON)</option>
