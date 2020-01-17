@@ -99,6 +99,7 @@ export class Api {
         this.apiVersion = contract.properties.apiVersion;
         this.apiRevision = contract.properties.apiRevision;
         this.subscriptionKeyParameterNames = contract.properties.subscriptionKeyParameterNames;
+        this.type = contract.properties.type;
 
         if (contract.properties.apiVersionSet) {
             const nestedVersionSet = contract.properties.apiVersionSet;
