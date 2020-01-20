@@ -8,8 +8,7 @@ declare var fillHipData;
 
 @Component({
     selector: "hip-captcha",
-    template: template,
-    injectable: "hipCaptcha"
+    template: template
 })
 export class HipCaptcha {
     public encryptedFlowId: ko.Observable<string>;

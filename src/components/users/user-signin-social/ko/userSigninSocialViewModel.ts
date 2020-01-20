@@ -5,8 +5,7 @@ import { Component } from "@paperbits/common/ko/decorators";
 
 @Component({
     selector: "user-signin-social",
-    template: template,
-    injectable: "userSigninSocialViewModel"
+    template: template
 })
 export class UserSigninSocialViewModel {
     public readonly aadConfig: ko.Observable<string>;

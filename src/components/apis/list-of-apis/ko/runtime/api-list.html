@@ -42,6 +42,9 @@
                 <a href="#" role="listitem" class="text-truncate"
                     data-bind="attr: { href: $component.getReferenceUrl(item) }">
                     <span data-bind="text: item.displayName"></span>
+                    <!-- ko if: item.type === 'soap' -->
+                    <span class="badge badge-soap">SOAP</span>
+                    <!-- /ko -->
                     <!-- ko if: item.apiVersion -->
                     - <span data-bind="text: item.apiVersion"></span>
                     <!-- /ko -->
@@ -70,6 +73,9 @@
                 <a href="#" role="listitem" class="text-truncate"
                     data-bind="attr: { href: $component.getReferenceUrl(item) }">
                     <span data-bind="text: item.displayName"></span>
+                    <!-- ko if: item.type === 'soap' -->
+                    <span class="badge badge-soap">SOAP</span>
+                    <!-- /ko -->
                     <!-- ko if: item.apiVersion -->
                     - <span data-bind="text: item.apiVersion"></span>
                     <!-- /ko -->

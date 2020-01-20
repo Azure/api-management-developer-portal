@@ -5,12 +5,9 @@ import { ReportsModel } from "../reportsModel";
 
 @Component({
     selector: "reports-editor",
-    template: template,
-    injectable: "reportsEditor"
+    template: template
 })
 export class ReportsEditor {
-    constructor() { }
-
     @Param()
     public model: ReportsModel;
 

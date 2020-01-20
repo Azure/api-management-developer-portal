@@ -5,8 +5,7 @@ import { Component } from "@paperbits/common/ko/decorators";
 
 @Component({
     selector: "reset-password",
-    template: template,
-    injectable: "resetPassword"
+    template: template
 })
 export class ResetPasswordViewModel {
     public readonly runtimeConfig: ko.Observable<string>;

@@ -10,8 +10,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 @RuntimeComponent({ selector: "api-details" })
 @Component({
     selector: "api-details",
-    template: template,
-    injectable: "apiDetails"
+    template: template
 })
 export class ApiDetails {
     public readonly api: ko.Observable<Api>;
@@ -52,6 +51,7 @@ export class ApiDetails {
 
         this.router.addRouteChangeListener(this.onRouteChange);
         this.currentApiVersion.subscribe(this.onVersionChange);
+        this.downloadSelected.subscribe(this.onDownloadChange);
     }
 
     private async onRouteChange(): Promise<void> {
@@ -98,10 +98,10 @@ export class ApiDetails {
             let fileType = "application/json";
 
             switch (definitionType) {
-                case "wadl":
-                case "wsdl":
+                case "wsdl":                   
+                case "wadl": 
                     fileType = "text/xml";
-                    fileName = `${fileName}.xml`;
+                    fileName = `${fileName}.${definitionType}.xml`;
                     break;
                 case "openapi": // yaml 3.0
                     fileName = `${fileName}.yaml`;
@@ -114,32 +114,7 @@ export class ApiDetails {
             this.download(exportObject, fileName, fileType);
         }
 
-        this.downloadSelected("");
-    }
-
-    public async downloadDefinition(definitionType: "swagger" | "openapi" | "openapi+json" | "wadl" | "wsdl"): Promise<void> {
-        if (this.api() && this.api().id) {
-            let exportObject = await this.apiService.exportApi(this.api().id, definitionType);
-            let fileName = this.api().name;
-            let fileType = "application/json";
-
-            switch (definitionType) {
-                case "wadl":
-                case "wsdl":
-                    fileType = "text/xml";
-                    fileName = `${fileName}.xml`;
-                    break;
-                case "openapi": // yaml 3.0
-                    fileName = `${fileName}.yaml`;
-                    break;
-                default:
-                    fileName = `${fileName}.json`;
-                    exportObject = JSON.stringify(exportObject, null, 4);
-                    break;
-            }
-            this.download(exportObject, fileName, fileType);
-        }
-        return;
+        setTimeout(() => this.downloadSelected(""), 100);
     }
 
     private download(data: string, filename: string, type: string): void {

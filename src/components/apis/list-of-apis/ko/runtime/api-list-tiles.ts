@@ -14,8 +14,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 })
 @Component({
     selector: "api-list-tiles",
-    template: template,
-    injectable: "apiListTiles"
+    template: template
 })
 export class ApiListTiles {
     public readonly apis: ko.ObservableArray<Api>;

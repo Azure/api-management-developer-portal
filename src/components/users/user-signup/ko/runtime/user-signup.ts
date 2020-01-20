@@ -13,8 +13,7 @@ declare var WLSPHIP0;
 @RuntimeComponent({ selector: "user-signup-runtime" })
 @Component({
     selector: "user-signup-runtime",
-    template: template,
-    injectable: "userSignup"
+    template: template
 })
 export class UserSignup {
     public readonly email: ko.Observable<string>;

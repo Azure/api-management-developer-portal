@@ -13,8 +13,7 @@ import { Router } from "@paperbits/common/routing";
 @RuntimeComponent({ selector: "api-list-dropdown" })
 @Component({
     selector: "api-list-dropdown",
-    template: template,
-    injectable: "apiListDropdown"
+    template: template
 })
 export class ApiListDropdown {
     public readonly apiGroups: ko.ObservableArray<TagGroup<Api>>;

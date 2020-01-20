@@ -12,8 +12,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 @RuntimeComponent({ selector: "api-list" })
 @Component({
     selector: "api-list",
-    template: template,
-    injectable: "apiList"
+    template: template
 })
 export class ApiList {
     public readonly apis: ko.ObservableArray<Api>;
