@@ -25,7 +25,7 @@ node ./generate %target_management_endpoint% %target_access_token% %data_file%
 
 @REM Download the media files from the source portal
 md %media_folder%
-az storage blob download-batch --source %media_container% --destination %media_folder% --connection-string %source_storage_connection_string%
+call az storage blob download-batch --source %media_container% --destination %media_folder% --connection-string %source_storage_connection_string%
 
 @REM Upload the media files to the target portal
 az storage blob upload-batch --source %media_folder% --destination %media_container% --connection-string %target_storage_connection_string%
