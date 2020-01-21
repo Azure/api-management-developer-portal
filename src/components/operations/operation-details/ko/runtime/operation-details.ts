@@ -11,6 +11,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TenantService } from "../../../../../services/tenantService";
 import { SwaggerObject } from "./../../../../../contracts/swaggerObject";
 import { Utils } from "../../../../../utils";
+import { TypeOfApi } from "../../../../../constants";
 
 
 @RuntimeComponent({ selector: "operation-details" })
@@ -58,6 +59,11 @@ export class OperationDetails {
             const operation = this.operation();
             const hostname = this.primaryHostname();
             const apiPath = api.versionedPath;
+            
+            if (api.type === TypeOfApi.soap) {
+                return `https://${hostname}/${apiPath}`;
+            }
+
             const operationPath = operation.displayUrlTemplate;
 
             return `https://${hostname}/${apiPath}${operationPath}`;
