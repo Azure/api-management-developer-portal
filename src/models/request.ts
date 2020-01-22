@@ -16,7 +16,7 @@ export class Request {
     }
 
     public meaningfulRepresentations(): Representation[] {
-        return this.representations.filter(x => !!x.typeName || !!x.sample);
+        return this.representations.filter(x => !!x.typeName || !!x.example);
     }
 
     constructor(contract?: RequestContract) {

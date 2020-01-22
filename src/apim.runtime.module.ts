@@ -58,10 +58,12 @@ import { UnhandledErrorHandler } from "./bindingHandlers/unhandledErrorHandler";
 import { ProductListDropdown } from "./components/products/product-list/ko/runtime/product-list-dropdown";
 import { ValidationSummary } from "./components/users/validation-summary/ko/runtime/validation-summary";
 import { TypeDefinitionViewModel } from "./components/operations/operation-details/ko/runtime/type-definition";
+import { CodeSampleViewModel } from "./components/operations/operation-details/ko/runtime/code-sample";
 import { VisibilityGuard } from "@paperbits/common/user";
 import { StaticUserService } from "./services";
 import { SignOutRouteGuard } from "./routing/signOutRouteGuard";
 import { ProvisionService } from "./services/provisioningService";
+
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -82,6 +84,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationDetails", OperationDetails);
         injector.bind("operationConsole", OperationConsole);
         injector.bind("typeDefinition", TypeDefinitionViewModel);
+        injector.bind("codeSample", CodeSampleViewModel);
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);
         injector.bind("tagService", TagService);
