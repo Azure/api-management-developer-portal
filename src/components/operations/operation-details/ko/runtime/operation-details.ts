@@ -217,18 +217,9 @@ export class OperationDetails {
             definition.name = representation.typeName;
         }
 
-        if (representation.sample) {
-            definition.example = representation.sample;
-
-            if (representation.contentType.contains("/xml")) {
-                definition.example = Utils.formatXml(representation.sample);
-                definition.exampleFormat = "xml";
-            }
-
-            if (representation.contentType.contains("/json")) {
-                definition.example = Utils.formatJson(representation.sample);
-                definition.exampleFormat = "json";
-            }
+        if (representation.example) {
+            definition.example = representation.example;
+            definition.exampleFormat = representation.exampleFormat;
         }
 
         return definition;

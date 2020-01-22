@@ -1,0 +1,11 @@
+<div class="flex code-block code-block-bordered">
+    <div class="code-block-heading">
+        <span data-bind="text: language"></span>
+        <button class="code-block-command" data-bind="copyToClipboard: sample"
+            aria-label="Copy to clipboard">
+            <i class="icon icon-duplicate"></i>
+            Copy
+        </button>
+    </div>
+</div>
+<pre data-bind="syntaxHighlight: { code: content, language: language }"></pre>
