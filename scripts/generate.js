@@ -14,7 +14,7 @@ async function request(url, body) {
             headers: {
                 "If-Match": "*",
                 "Content-Type": "application/json",
-                "Content-Length": body.length,
+                "Content-Length": Buffer.byteLength(body),
                 "Authorization": accessToken
             }
         };
