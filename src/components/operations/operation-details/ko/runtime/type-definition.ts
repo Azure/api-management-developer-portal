@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import template from "./type-definition.html";
 import { Component, Param, OnMounted } from "@paperbits/common/ko/decorators";
-import { TypeDefinition, TypeDefinitionProperty } from "../../../../../models/typeDefinition";
+import { TypeDefinition } from "../../../../../models/typeDefinition";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
 @Component({
