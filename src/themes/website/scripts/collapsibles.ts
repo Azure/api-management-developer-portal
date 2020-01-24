@@ -4,6 +4,11 @@ const mousedown = (event: MouseEvent): void => {
     }
 
     const target = <HTMLElement>event.target;
+
+    if (!target.closest) {
+        return;
+    }
+
     const toggleElement = target.closest("[data-toggle]");
 
     if (!toggleElement) {
