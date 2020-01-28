@@ -20,9 +20,6 @@ const onClick = (event: MouseEvent) => {
     if (event.which !== 1) {
         return;
     }
-
-    event.preventDefault();
-    event.stopImmediatePropagation();
     onActivate();
 };
 
@@ -30,9 +27,6 @@ const onKeyDown = (event: KeyboardEvent) => {
     if (event.keyCode !== Keys.Enter && event.keyCode !== Keys.Space) {
         return;
     }
-
-    event.preventDefault();
-    event.stopImmediatePropagation();
     onActivate();
 };
 
