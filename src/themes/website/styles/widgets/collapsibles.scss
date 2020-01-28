@@ -41,6 +41,18 @@
     animation: fadeIn 0.2s linear forwards;
 }
 
+.collapsible-dropdown {
+    position: absolute;
+    background: #fff;
+    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.5);
+    z-index: 9000;
+    padding: 20px;
+    width: 100%;
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+
 @media (min-width: $breakpoint-md) {
     .collapsible-panel {
         & > .collapsible-content {
@@ -55,7 +67,8 @@
 
 .collapsible.expanded {
     & > .collapsible-content {
-        display: flex;
+        // display: flex;
+        display: block;
         position: absolute;
     }
 }

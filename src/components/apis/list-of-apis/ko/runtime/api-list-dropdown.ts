@@ -25,7 +25,6 @@ export class ApiListDropdown {
     public readonly hasPager: ko.Computed<boolean>;
     public readonly hasPrevPage: ko.Observable<boolean>;
     public readonly hasNextPage: ko.Observable<boolean>;
-    public readonly expanded: ko.Observable<boolean>;
     public readonly selection: ko.Computed<string>;
 
     constructor(
@@ -44,7 +43,6 @@ export class ApiListDropdown {
         this.hasNextPage = ko.observable();
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
         this.apiGroups = ko.observableArray();
-        this.expanded = ko.observable(false);
         this.selection = ko.computed(() => {
             const api = ko.unwrap(this.selectedApi);
             return api ? api.versionedDisplayName : "Select API";
@@ -138,10 +136,6 @@ export class ApiListDropdown {
     public nextPage(): void {
         this.page(this.page() + 1);
         this.loadPageOfApis();
-    }
-
-    public toggle(): void {
-        this.expanded(!this.expanded());
     }
 
     public getReferenceUrl(api: Api): string {
