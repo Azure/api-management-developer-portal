@@ -77,7 +77,7 @@
                         <div class="col-3" data-bind="text: header.name"></div>
                         <div class="col-1" data-bind="text: header.required"></div>
                         <div class="col-1" data-bind="text: header.type"></div>
-                        <div class="col-7" data-bind="text: header.description"></div>
+                        <div class="col-7" data-bind="markdown: header.description"></div>
                     </div>
                     <!-- /ko -->
                 </div>
@@ -115,7 +115,7 @@
             <!-- ko foreach: { data: operation().getMeaningfulResponses(), as: 'response' } -->
             <h3>Response: <span data-bind="text: response.statusCode"></span></h3>
             <!-- ko if: response.description -->
-            <p data-bind="text: response.description"></p>
+            <p data-bind="markdown: response.description"></p>
             <!-- /ko -->
 
             <!-- ko if: response.meaningfulRepresentations().length > 0 -->
