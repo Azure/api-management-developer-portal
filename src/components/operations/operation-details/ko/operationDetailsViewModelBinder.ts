@@ -11,19 +11,19 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
     public async modelToViewModel(model: OperationDetailsModel, viewModel?: OperationDetailsViewModel, bindingContext?: Bag<any>): Promise<OperationDetailsViewModel> {
         if (!viewModel) {
             viewModel = new OperationDetailsViewModel();
+
+            viewModel["widgetBinding"] = {
+                displayName: "Operation: details",
+                model: model,
+                editor: "operation-details-editor",
+                applyChanges: async (updatedModel: OperationDetailsModel) => {
+                    await this.modelToViewModel(updatedModel, viewModel, bindingContext);
+                    this.eventManager.dispatchEvent("onContentUpdate");
+                }
+            };
         }
 
         viewModel.config(JSON.stringify({ enableConsole: model.enableConsole }));
-
-        viewModel["widgetBinding"] = {
-            displayName: "Operation: Details",
-            model: model,
-            editor: "operation-details-editor",
-            applyChanges: async (updatedModel: OperationDetailsModel) => {
-                await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                this.eventManager.dispatchEvent("onContentUpdate");
-            }
-        };
 
         return viewModel;
     }

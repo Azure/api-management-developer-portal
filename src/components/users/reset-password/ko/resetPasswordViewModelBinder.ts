@@ -11,21 +11,15 @@ export class ResetPasswordViewModelBinder implements ViewModelBinder<ResetPasswo
     public async modelToViewModel(model: ResetPasswordModel, viewModel?: ResetPasswordViewModel, bindingContext?: Bag<any>): Promise<ResetPasswordViewModel> {
         if (!viewModel) {
             viewModel = new ResetPasswordViewModel();
+            viewModel["widgetBinding"] = {
+                displayName: "Password: reset form",
+                model: model
+            };
         }
 
         const useHipCaptcha = await this.settingsProvider.getSetting<boolean>("useHipCaptcha");
 
         viewModel.runtimeConfig(JSON.stringify({ requireHipCaptcha: useHipCaptcha === undefined ? true : useHipCaptcha }));
-
-        viewModel["widgetBinding"] = {
-            displayName: "Reset password",
-            model: model,
-            // editor: "reset-password-editor",
-            // applyChanges: async (updatedModel: ResetPasswordModel) => {
-            //     await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-            //     this.eventManager.dispatchEvent("onContentUpdate");
-            // }
-        };
 
         return viewModel;
     }

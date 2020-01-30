@@ -12,7 +12,9 @@ import { BackendService } from "../../../../../services/backendService";
 import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
-@RuntimeComponent({ selector: "product-subscribe-runtime" })
+@RuntimeComponent({
+    selector: "product-subscribe-runtime"
+})
 @Component({
     selector: "product-subscribe-runtime",
     template: template
