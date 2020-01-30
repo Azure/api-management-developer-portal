@@ -10,11 +10,8 @@ export class ProductDetailsViewModelBinder implements ViewModelBinder<ProductDet
         }
 
         viewModel["widgetBinding"] = {
-            displayName: "Product: Details",
-            model: model,
-            applyChanges: async (updatedModel: ProductDetailsModel) => {
-                this.modelToViewModel(updatedModel, viewModel, bindingContext);
-            }
+            displayName: "Product: details",
+            model: model
         };
 
         return viewModel;

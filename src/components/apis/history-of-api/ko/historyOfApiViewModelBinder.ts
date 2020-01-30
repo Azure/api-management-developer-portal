@@ -21,7 +21,7 @@ export class HistoryOfApiViewModelBinder implements ViewModelBinder<HistoryOfApi
         }));
 
         viewModel["widgetBinding"] = {
-            displayName: "API History",
+            displayName: "API: history",
             model: model,
             editor: "history-of-api-editor",
             applyChanges: async (updatedModel: HistoryOfApiModel) => {

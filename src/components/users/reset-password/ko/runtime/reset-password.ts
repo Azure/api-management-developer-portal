@@ -1,16 +1,18 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./reset-password.html";
+import { EventManager } from "@paperbits/common/events";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../../services/usersService";
 import { ResetRequest } from "../../../../../contracts/resetRequest";
-import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 import { BackendService } from "../../../../../services/backendService";
 
 declare var WLSPHIP0;
 
-@RuntimeComponent({ selector: "reset-password-runtime" })
+@RuntimeComponent({
+    selector: "reset-password-runtime"
+})
 @Component({
     selector: "reset-password-runtime",
     template: template
@@ -87,7 +89,7 @@ export class ResetPassword {
                     this.captcha("valid");
                     return;
                 }
-            }, '');
+            }, "");
         }
 
         const result = validation.group(validationGroup);
@@ -114,11 +116,12 @@ export class ResetPassword {
                     email: this.email()
                 };
                 await this.backendService.sendResetRequest(resetRequest);
-            } else {
+            }
+            else {
                 await this.usersService.createResetPasswordRequest(this.email());
             }
             this.isResetRequested(true);
-            
+
             const validationReport: ValidationReport = {
                 source: "resetpassword",
                 errors: []
@@ -149,6 +152,6 @@ export class ResetPassword {
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         }
-        
+
     }
 }

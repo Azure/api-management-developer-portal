@@ -7,7 +7,9 @@ import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
-@RuntimeComponent({ selector: "product-subscriptions-runtime" })
+@RuntimeComponent({
+    selector: "product-subscriptions-runtime"
+})
 @Component({
     selector: "product-subscriptions-runtime",
     template: template

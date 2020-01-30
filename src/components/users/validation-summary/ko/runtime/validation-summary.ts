@@ -1,11 +1,13 @@
 import * as ko from "knockout";
 import template from "./validation-summary.html";
-import { Component, OnMounted, RuntimeComponent} from "@paperbits/common/ko/decorators";
+import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { Bag } from "@paperbits/common";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
-@RuntimeComponent({ selector: "validation-summary" })
+@RuntimeComponent({
+    selector: "validation-summary"
+})
 @Component({
     selector: "validation-summary",
     template: template
@@ -30,7 +32,7 @@ export class ValidationSummary {
     private showValidationSummary(event: ValidationReport): void {
         this.errorGroups[event.source] = event.errors;
         var errSum = [];
-        Object.values(this.errorGroups).forEach(function(curGroup) {
+        Object.values(this.errorGroups).forEach(function (curGroup) {
             curGroup.forEach(x => {
                 errSum.push(x);
             })
@@ -38,7 +40,7 @@ export class ValidationSummary {
         this.errorMsgs(errSum);
         if (this.errorMsgs().length > 0) {
             this.hasErrors(true);
-        } else { 
+        } else {
             this.hasErrors(false);
         }
     }

@@ -10,7 +10,9 @@ import { TagGroup } from "../../../../../models/tagGroup";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
 
-@RuntimeComponent({ selector: "operation-list" })
+@RuntimeComponent({
+    selector: "operation-list"
+})
 @Component({
     selector: "operation-list",
     template: template

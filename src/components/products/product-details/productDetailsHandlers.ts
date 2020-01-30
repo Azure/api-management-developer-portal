@@ -6,7 +6,7 @@ export class ProductDetailsHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "productDetails",
             category: "Products",
-            displayName: "Product: Details",
+            displayName: "Product: details",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
             createModel: async () => new ProductDetailsModel()
