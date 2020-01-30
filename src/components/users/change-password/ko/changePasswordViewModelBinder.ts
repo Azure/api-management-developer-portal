@@ -11,21 +11,15 @@ export class ChangePasswordViewModelBinder implements ViewModelBinder<ChangePass
     public async modelToViewModel(model: ChangePasswordModel, viewModel?: ChangePasswordViewModel, bindingContext?: Bag<any>): Promise<ChangePasswordViewModel> {
         if (!viewModel) {
             viewModel = new ChangePasswordViewModel();
+            viewModel["widgetBinding"] = {
+                displayName: "Password: change form",
+                model: model
+            };
         }
 
         const useHipCaptcha = await this.settingsProvider.getSetting<boolean>("useHipCaptcha");
 
         viewModel.runtimeConfig(JSON.stringify({ requireHipCaptcha: useHipCaptcha === undefined ? true : useHipCaptcha }));
-
-        viewModel["widgetBinding"] = {
-            displayName: "Change password",
-            model: model,
-            // editor: "change-password-editor",
-            // applyChanges: async (updatedModel: ChangePasswordModel) => {
-            //     await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-            //     this.eventManager.dispatchEvent("onContentUpdate");
-            // }
-        };
 
         return viewModel;
     }

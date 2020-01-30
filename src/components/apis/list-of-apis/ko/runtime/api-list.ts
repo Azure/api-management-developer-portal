@@ -9,7 +9,9 @@ import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
 
-@RuntimeComponent({ selector: "api-list" })
+@RuntimeComponent({
+    selector: "api-list"
+})
 @Component({
     selector: "api-list",
     template: template
@@ -54,7 +56,7 @@ export class ApiList {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        
+
         this.groupByTag(this.defaultGroupByTagToEnabled());
 
         await this.resetSearch();

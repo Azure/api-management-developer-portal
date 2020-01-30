@@ -8,16 +8,12 @@ export class ValidationSummaryViewModelBinder implements ViewModelBinder<Validat
     public async modelToViewModel(model: ValidationSummaryModel, viewModel?: ValidationSummaryViewModel, bindingContext?: Bag<any>): Promise<ValidationSummaryViewModel> {
         if (!viewModel) {
             viewModel = new ValidationSummaryViewModel();
-        }
 
-        viewModel["widgetBinding"] = {
-            displayName: "Validation Summary",
-            model: model,
-            editor: "validation-summary-editor",
-            applyChanges: async (updatedModel: ValidationSummaryModel) => {
-                this.modelToViewModel(updatedModel, viewModel, bindingContext);
-            }
-        };
+            viewModel["widgetBinding"] = {
+                displayName: "Validation summary",
+                model: model
+            };
+        }
 
         return viewModel;
     }

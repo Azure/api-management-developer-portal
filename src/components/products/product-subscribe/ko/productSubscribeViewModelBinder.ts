@@ -10,7 +10,7 @@ export class ProductSubscribeViewModelBinder implements ViewModelBinder<ProductS
         }
 
         viewModel["widgetBinding"] = {
-            displayName: "Product: Subscribe form",
+            displayName: "Product: subscribe form",
             model: model,
             applyChanges: async (updatedModel: ProductSubscribeModel) => {
                 this.modelToViewModel(updatedModel, viewModel, bindingContext);

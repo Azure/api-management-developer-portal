@@ -9,7 +9,9 @@ import { Api } from "../../../../../models/api";
 import { ChangeLogContract } from "../../../../../contracts/apiChangeLog";
 import { Utils } from "../../../../../utils";
 
-@RuntimeComponent({ selector: "api-history" })
+@RuntimeComponent({
+    selector: "api-history"
+})
 @Component({
     selector: "api-history",
     template: template
@@ -49,7 +51,7 @@ export class ApiHistory {
 
     @Param()
     public detailsPageUrl: ko.Observable<string>;
-    
+
     @OnMounted()
     public async initialize(): Promise<void> {
         await this.loadApi();

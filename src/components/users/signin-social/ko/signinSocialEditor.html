@@ -1,0 +1,30 @@
+<fieldset class="form" data-bind="scrollable: true">
+    <div class="form-group">
+        <label class="form-label">
+            Label on AAD button
+            <button class="btn btn-info" type="button" title="Help" data-bind="tooltipToggle: 'Text on the button'"></button>
+        </label>
+        <input type="text" class="form-control" data-bind="textInput: aadLabel" maxlength="256" />
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">
+            Label on AAD B2C button
+            <button class="btn btn-info" type="button" title="Help" data-bind="tooltipToggle: 'Text on the button'"></button>
+        </label>
+        <input type="text" class="form-control" data-bind="textInput: aadB2CLabel" maxlength="256" />
+    </div>
+
+    <div class="form-group">
+        <label for="appearanceStyle" class="form-label">
+            Appearance
+            <button class="btn btn-info" type="button" title="Help" data-bind="tooltipToggle: 'Predefined appearance from style guide.'"></button>
+        </label>
+        <div class="input-group">
+            <a href="#" class="form-control" data-bind="text: appearanceStyle() && appearanceStyle().displayName, balloon: { component: { name: 'style-variation-selector', params: { snippetType: 'components/button', onSelect: $component.onVariationSelected } } }">
+            </a>
+        </div>
+    </div>
+
+    <role-input params="{ selection: model.roles, onChange: onRoleSelect }"></role-input>
+</fieldset>

@@ -15,7 +15,9 @@ import { MinMaxAvgChartRecord } from "../../minMaxAvgChart/minMaxAvgChartRecord"
 import { BarChartConfig, BarChartRecord } from "../../barChart/barChartConfig";
 import { MapChartConfig } from "../../mapChart/mapChartConfig";
 
-@RuntimeComponent({ selector: "reports-runtime" })
+@RuntimeComponent({
+    selector: "reports-runtime"
+})
 @Component({
     selector: "reports-runtime",
     template: template

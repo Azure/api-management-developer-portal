@@ -11,11 +11,7 @@ export class ReportsViewModelBinder implements ViewModelBinder<ReportsModel, Rep
 
         viewModel["widgetBinding"] = {
             displayName: "Reports",
-            model: model,
-            editor: "reports-editor",
-            applyChanges: async (updatedModel: ReportsModel) => {
-                this.modelToViewModel(updatedModel, viewModel, bindingContext);
-            }
+            model: model
         };
 
         return viewModel;
