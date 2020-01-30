@@ -8,7 +8,9 @@ import { UsersService } from "../../../../../services/usersService";
 import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
-@RuntimeComponent({ selector: "confirm-password" })
+@RuntimeComponent({
+    selector: "confirm-password"
+})
 @Component({
     selector: "confirm-password",
     template: template
@@ -65,7 +67,7 @@ export class ConfirmPassword {
                 source: "confirmpassword",
                 errors: ["Required params not found"]
             };
-            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
             return;
         }
 
@@ -91,7 +93,7 @@ export class ConfirmPassword {
                 source: "confirmpassword",
                 errors: clientErrors
             };
-            this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
             return;
         }
 
@@ -117,7 +119,7 @@ export class ConfirmPassword {
                         source: "confirmpassword",
                         errors: errorMessages
                     };
-                    this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+                    this.eventManager.dispatchEvent("onValidationErrors", validationReport);
                 }
             }
             else {
@@ -125,7 +127,7 @@ export class ConfirmPassword {
                     source: "confirmpassword",
                     errors: ["Server error. Unable to send request. Please try again later."]
                 };
-                this.eventManager.dispatchEvent("onValidationErrors",validationReport);
+                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
             }
         }
     }

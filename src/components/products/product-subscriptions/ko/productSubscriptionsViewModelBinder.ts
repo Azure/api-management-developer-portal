@@ -7,15 +7,12 @@ export class ProductSubscriptionsViewModelBinder implements ViewModelBinder<Prod
     public async modelToViewModel(model: ProductSubscriptionsModel, viewModel?: ProductSubscriptionsViewModel, bindingContext?: Bag<any>): Promise<ProductSubscriptionsViewModel> {
         if (!viewModel) {
             viewModel = new ProductSubscriptionsViewModel();
+            
+            viewModel["widgetBinding"] = {
+                displayName: "Product: subscriptions",
+                model: model
+            };
         }
-
-        viewModel["widgetBinding"] = {
-            displayName: "Product: Subscriptions",
-            model: model,
-            applyChanges: async (updatedModel: ProductSubscriptionsModel) => {
-                this.modelToViewModel(updatedModel, viewModel, bindingContext);
-            }
-        };
 
         return viewModel;
     }

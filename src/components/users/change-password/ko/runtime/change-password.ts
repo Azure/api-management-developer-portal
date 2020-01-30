@@ -10,7 +10,9 @@ import { ValidationReport } from "../../../../../contracts/validationReport";
 
 declare var WLSPHIP0;
 
-@RuntimeComponent({ selector: "change-password-runtime" })
+@RuntimeComponent({
+    selector: "change-password-runtime"
+})
 @Component({
     selector: "change-password-runtime",
     template: template

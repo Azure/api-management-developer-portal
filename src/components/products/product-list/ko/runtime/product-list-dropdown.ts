@@ -7,7 +7,9 @@ import { Product } from "../../../../../models/product";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
-@RuntimeComponent({ selector: "product-list-dropdown-runtime" })
+@RuntimeComponent({
+    selector: "product-list-dropdown-runtime"
+})
 @Component({
     selector: "product-list-dropdown-runtime",
     template: template

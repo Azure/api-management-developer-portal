@@ -6,7 +6,7 @@ export class ValidationSummaryHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "validation-summary",
             category: "User",
-            displayName: "Validation Summary",
+            displayName: "Validation summary",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
             createModel: async () => new ValidationSummaryModel()
