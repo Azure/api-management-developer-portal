@@ -7,7 +7,9 @@ import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
 
-@RuntimeComponent({ selector: "api-details" })
+@RuntimeComponent({
+    selector: "api-details"
+})
 @Component({
     selector: "api-details",
     template: template
@@ -98,8 +100,8 @@ export class ApiDetails {
             let fileType = "application/json";
 
             switch (definitionType) {
-                case "wsdl":                   
-                case "wadl": 
+                case "wsdl":
+                case "wadl":
                     fileType = "text/xml";
                     fileName = `${fileName}.${definitionType}.xml`;
                     break;

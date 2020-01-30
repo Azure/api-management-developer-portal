@@ -21,7 +21,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "productListDropdown",
             category: "Products",
-            displayName: "List of Products (dropdown)",
+            displayName: "List of products (dropdown)",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
             createModel: async () => new ProductListModel("dropdown")

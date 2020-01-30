@@ -10,7 +10,9 @@ import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { Router } from "@paperbits/common/routing";
 
 
-@RuntimeComponent({ selector: "api-list-dropdown" })
+@RuntimeComponent({
+    selector: "api-list-dropdown"
+})
 @Component({
     selector: "api-list-dropdown",
     template: template
@@ -123,7 +125,7 @@ export class ApiListDropdown {
     private checkSelection(apiGroups: TagGroup<Api>[]): void {
         const selectedApiName = this.routeHelper.getApiName();
         const selectedApi = apiGroups.map(group => group.items || []).flat().find(x => x.name === selectedApiName);
-        
+
         this.selectedApi(selectedApi);
         this.selectedApiName(selectedApiName);
     }

@@ -9,7 +9,9 @@ import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
 
-@RuntimeComponent({ selector: "product-apis-runtime" })
+@RuntimeComponent({
+    selector: "product-apis-runtime"
+})
 @Component({
     selector: "product-apis-runtime",
     template: template

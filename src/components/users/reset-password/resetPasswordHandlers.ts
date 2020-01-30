@@ -6,7 +6,7 @@ export class ResetPasswordHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "reset-password",
             category: "User",
-            displayName: "Reset password",
+            displayName: "Password: reset form",
             iconClass: "paperbits-cheque-3",
             requires: ["scripts"],
             createModel: async () => new ResetPasswordModel()
