@@ -88,6 +88,10 @@
             <!-- ko with: operation().request, as: 'request' -->
             <!-- ko if: request.isMeaningful() -->
             <h4>Request body</h4>
+            
+            <!-- ko if: request.description  -->
+            <div class="text-word-break" data-bind="markdown: request.description"></div>
+            <!-- /ko -->
 
             <!-- ko if: request.meaningfulRepresentations().length > 0 -->
             <div class="tabs" data-bind="foreach: { data: request.meaningfulRepresentations(), as: 'representation' }">
