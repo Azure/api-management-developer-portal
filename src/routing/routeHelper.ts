@@ -12,18 +12,32 @@ export class RouteHelper {
         return params.get(name);
     }
 
+    /**
+     * Returns ARM resource name of the API specified in hash parameter of the current route, e.g. "httpbin".
+     */
     public getApiName(): string {
         return this.getHashParameter("api");
     }
 
+    /**
+     * Returns ARM resource name of the operation specified in hash parameter of the current route, e.g. "status".
+     */
     public getOperationName(): string {
         return this.getHashParameter("operation");
     }
 
+    /**
+     * Returns ARM resource name of the product specified in hash parameter of the current route, e.g. "unlimited".
+     */
     public getProductName(): string {
         return this.getHashParameter("product");
     }
 
+    /**
+     * Returns URL of API details page depending on current route.
+     * @param apiName ARM resource name of the API.
+     * @param detailsPageUrl Relative URL of API details page.
+     */
     public getApiReferenceUrl(apiName: string, detailsPageUrl: string = ""): string {
         if (!apiName) {
             throw new Error(`Parameter "apiName" not specified.`);
@@ -43,10 +57,12 @@ export class RouteHelper {
         return `${path}#api=${apiName}`;
     }
 
-    public getReferenceUrl(apiName: string): string {
-        return `${Constants.pageUrlReference}#api=${apiName}`;
-    }
-
+    /**
+     * Returns URL of operation details page depending on current route.
+     * @param apiName ARM resource name of the API.
+     * @param operationName ARM resource name of the operation.
+     * @param detailsPageUrl Relative URL of operation details page.
+     */
     public getOperationReferenceUrl(apiName: string, operationName: string, detailsPageUrl: string = ""): string {
         if (!apiName) {
             throw new Error(`Parameter "apiName" not specified.`);
@@ -70,6 +86,12 @@ export class RouteHelper {
         return `${path}#api=${apiName}&operation=${operationName}`;
     }
 
+    /**
+     * Returns HTML element identifier for specified type definition.
+     * @param apiName ARM resource name of the API.
+     * @param operationName ARM resource name of the operation.
+     * @param definitionName Name of the definition.
+     */
     public getDefinitionReferenceId(apiName: string, operationName: string, definitionName: string): string {
         if (!apiName) {
             throw new Error(`Parameter "apiName" not specified.`);
@@ -86,6 +108,12 @@ export class RouteHelper {
         return `api=${apiName}&operation=${operationName}&definition=${definitionName}`;
     }
 
+    /**
+     * Returns HTML element anchor link for specified type definition.
+     * @param apiName ARM resource name of the API.
+     * @param operationName ARM resource name of the operation.
+     * @param definitionName Name of the definition.
+     */
     public getDefinitionAnchor(apiName: string, operationName: string, definitionName: string): string {
         if (!apiName) {
             throw new Error(`Parameter "apiName" not specified.`);
@@ -102,6 +130,11 @@ export class RouteHelper {
         return `#api=${apiName}&operation=${operationName}&definition=${definitionName}`;
     }
 
+    /**
+     * Returns URL of product details page depending on current route.
+     * @param productName ARM resource name of the product.
+     * @param detailsPageUrl Relative URL of product details page.
+     */
     public getProductReferenceUrl(productName: string, detailsPageUrl: string = ""): string {
         if (!productName) {
             throw new Error(`Parameter "productName" not specified.`);
@@ -121,6 +154,11 @@ export class RouteHelper {
         return `${path}#product=${productName}`;
     }
 
+    /**
+     * Returns ID token reference URL.
+     * @param provider ID token provider, e.g. "AadB2C".
+     * @param idToken ID token.
+     */
     public getIdTokenReferenceUrl(provider: string, idToken: string): string {
         if (!provider) {
             throw new Error(`Parameter "provider" not specified.`);
@@ -144,10 +182,16 @@ export class RouteHelper {
         return `${path}#provider=${provider}&token=${idToken}`;
     }
 
+    /**
+     * Returns ID token specified in hash parameter of the current route.
+     */
     public getIdToken(): string {
         return this.getHashParameter("token");
     }
 
+    /**
+     * Returns ID token provider specified in hash parameter of the current route.
+     */
     public getIdTokenProvider(): string {
         return this.getHashParameter("provider");
     }
