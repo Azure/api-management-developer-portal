@@ -1,6 +1,5 @@
-<div class="dropdown-container">
-    <div class="form-control" tabindex="0" role="listbox"
-        data-bind="activate: toggle, css: { expanded: expanded }, attr: { 'aria-expanded': expanded }">
+<div class="dropdown-container collapsible">
+    <div class="form-control" tabindex="0" role="button" aria-label="Products" data-toggle="collapsible">
         <div class="input-group">
             <div class="input" data-bind="text: selection"></div>
             <div class="input-group-append">
@@ -9,7 +8,7 @@
         </div>
     </div>
 
-    <div class="collapsible-dropdown" data-bind="visible: expanded">
+    <div class="collapsible-dropdown collapsible-content">
         <div class="search-input">
             <input type="search" role="searchbox" aria-label="Search" placeholder="Search products"
                 data-bind="textInput: pattern" />
