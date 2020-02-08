@@ -1,11 +1,13 @@
 import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./product-list-dropdown.html";
-import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, Param, OnDestroyed } from "@paperbits/common/ko/decorators";
+import { Router } from "@paperbits/common/routing";
 import { ProductService } from "../../../../../services/productService";
 import { Product } from "../../../../../models/product";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { RouteHelper } from "../../../../../routing/routeHelper";
+
 
 @RuntimeComponent({
     selector: "product-list-dropdown-runtime"
@@ -18,18 +20,19 @@ export class ProductListDropdown {
     public readonly products: ko.ObservableArray<Product>;
     public readonly working: ko.Observable<boolean>;
     public readonly selectedId: ko.Observable<string>;
+    public readonly selectedProduct: ko.Observable<Product>;
+    public readonly selectedProductName: ko.Observable<string>;
     public readonly pattern: ko.Observable<string>;
     public readonly page: ko.Observable<number>;
     public readonly hasPager: ko.Computed<boolean>;
     public readonly hasPrevPage: ko.Observable<boolean>;
     public readonly hasNextPage: ko.Observable<boolean>;
     public readonly expanded: ko.Observable<boolean>;
-    public readonly selectedProduct: ko.Observable<Product>;
     public readonly selection: ko.Computed<string>;
-    private productsDropdown: HTMLElement;
 
     constructor(
         private readonly productService: ProductService,
+        private readonly router: Router,
         private readonly routeHelper: RouteHelper
     ) {
         this.detailsPageUrl = ko.observable();
@@ -43,6 +46,7 @@ export class ProductListDropdown {
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
         this.products = ko.observableArray();
         this.selectedProduct = ko.observable();
+        this.selectedProductName = ko.observable();
         this.expanded = ko.observable(false);
         this.selection = ko.computed(() => {
             const product = ko.unwrap(this.selectedProduct);
@@ -51,59 +55,39 @@ export class ProductListDropdown {
     }
 
     @Param()
-    public allowSelection: ko.Observable<boolean>;
+    public readonly allowSelection: ko.Observable<boolean>;
 
     @Param()
-    public detailsPageUrl: ko.Observable<string>;
+    public readonly detailsPageUrl: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.loadPageOfProducts();
+        await this.resetSearch();
 
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
-            .subscribe(this.searchProducts);
+            .subscribe(this.resetSearch);
 
-        // TODO: Find out why and get rid of it.
-        document.addEventListener("click", this.checkClickOutside, false);
-
-        if (!this.productsDropdown) {
-            this.productsDropdown = document.getElementById("products-dropdown");
-        }
-
-        if (this.productsDropdown) {
-            this.productsDropdown.addEventListener("keyup", this.onKeyUp, false);
-        }
-    }
-
-    private checkClickOutside(event: any): void {
-        if (this.expanded() && this.productsDropdown) {
-            const inside = this.productsDropdown.contains(event.target);
-
-            if (!inside) {
-                this.toggle();
-            }
-        }
-    }
-
-    private onKeyUp(event: any): void {
-        if (this.expanded()) {
-            if (event && event.key === "Escape") {
-                this.toggle();
-            }
-        } else {
-            if (event && event.key === "Enter") {
-                this.expanded(true);
-            }
-        }
+        this.router.addRouteChangeListener(this.onRouteChange);
     }
 
     /**
      * Initiates searching Products.
      */
-    public async searchProducts(): Promise<void> {
+    public async resetSearch(): Promise<void> {
         this.page(1);
         this.loadPageOfProducts();
+    }
+
+    private async onRouteChange(): Promise<void> {
+        const productName = this.routeHelper.getProductName();
+
+        if (productName !== this.selectedProductName()) {
+            await this.resetSearch();
+            return;
+        }
+
+        await this.resetSearch();
     }
 
     /**
@@ -158,13 +142,9 @@ export class ProductListDropdown {
     public getProductUrl(product: Product): string {
         return this.routeHelper.getProductReferenceUrl(product.name, this.detailsPageUrl());
     }
-
+    
     @OnDestroyed()
     public dispose(): void {
-        document.removeEventListener("click", this.checkClickOutside, false);
-
-        if (this.productsDropdown) {
-            this.productsDropdown.removeEventListener("keyup", this.onKeyUp, false);
-        }
+        this.router.removeRouteChangeListener(this.onRouteChange);
     }
 }

@@ -80,7 +80,6 @@ export class ApiListDropdown {
         const apiName = this.routeHelper.getApiName();
 
         if (apiName !== this.selectedApiName()) {
-            // this.selectedApiName(apiName);
             await this.resetSearch();
             return;
         }
