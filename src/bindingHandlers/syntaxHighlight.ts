@@ -9,6 +9,7 @@ import "prismjs/components/prism-python";
 import "prismjs/components/prism-ruby";
 import "prismjs/components/prism-markup";
 import "prismjs/components/prism-bash";
+import "prismjs/components/prism-json";
 // import "prismjs/components/prism-php"; // broken!
 
 
@@ -59,7 +60,7 @@ ko.bindingHandlers["syntaxHighlight"] = {
                     highlightLanguage = "xml";
                     break;
                 case "json":
-                    highlightLanguage = "js";
+                    highlightLanguage = "json";
                     break;
                 default:
                     highlightLanguage = "plain";
