@@ -106,8 +106,11 @@
                     <type-definition params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation) }">
                     </type-definition>
                     <!-- /ko -->
+
+                    <!-- ko ifnot: representation.typeName -->
                     <!-- ko if: representation.example -->
                     <code-sample params="{ content: representation.example, language: representation.exampleFormat }"></code-sample>
+                    <!-- /ko -->
                     <!-- /ko -->
                 </div>
             </div>
@@ -136,8 +139,10 @@
                         params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation) }">
                     </type-definition>
                     <!-- /ko -->
+                    <!-- ko ifnot: representation.typeName -->
                     <!-- ko if: representation.example -->
                     <code-sample params="{ content: representation.example, language: representation.exampleFormat }"></code-sample>
+                    <!-- /ko -->
                     <!-- /ko -->
                 </div>
             </div>
