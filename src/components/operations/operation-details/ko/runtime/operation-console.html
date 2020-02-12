@@ -56,26 +56,34 @@
             </div>
         </div>
     </div>
-    
+
     <h4>Parameters</h4>
     <!-- ko if: (templateParameters && templateParameters().length > 0) || (request.queryParameters && request.queryParameters().length > 0) -->
     <div data-bind="foreach: { data: templateParameters, as: 'parameter' }">
         <div class="row flex flex-row">
             <div class="col-4">
                 <div class="form-group">
-                    <input type="text" readonly autocomplete="off" class="form-control form-control-sm"
-                        placeholder="name" spellcheck="false"
-                        data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.name, valueUpdate: 'keyup'">
+                    <div class="input-group">
+                        <input type="text" readonly autocomplete="off" class="form-control form-control-sm"
+                            placeholder="name" spellcheck="false"
+                            data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.name">
+                        <span class="invalid-feedback" data-bind="validationMessage: parameter.name"></span>
+                    </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <!-- ko if: parameter.options.length > 0 -->
-                    <select class="form-control" data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
+                    <select class="form-control"
+                        data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                     <!-- /ko -->
                     <!-- ko if: parameter.options.length === 0 -->
-                    <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                            spellcheck="false" data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
+                    <div class="input-group">
+                        <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
+                            spellcheck="false"
+                            data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value">
+                        <span class="invalid-feedback" data-bind="validationMessage: parameter.value"></span>
+                    </div>
                     <!-- /ko -->
                 </div>
             </div>
@@ -85,18 +93,23 @@
         <div class="row flex flex-row">
             <div class="col-4">
                 <div class="form-group">
-                    <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
-                        spellcheck="false" data-bind="textInput: parameter.name, valueUpdate: 'keyup'">
+                    <div class="input-group">
+                        <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
+                            spellcheck="false" data-bind="textInput: parameter.name">
+                        <span class="invalid-feedback" data-bind="validationMessage: parameter.name"></span>
+                    </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <!-- ko if: parameter.options.length > 0 -->
-                    <select class="form-control" data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
+                    <select class="form-control"
+                        data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                     <!-- /ko -->
                     <!-- ko if: parameter.options.length === 0 -->
                     <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                           spellcheck="false" data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value, valueUpdate: 'keyup'">
+                        spellcheck="false"
+                        data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value">
                     <!-- /ko -->
                 </div>
             </div>
@@ -111,7 +124,7 @@
         <i class="icon icon-plus"></i>
         Add parameter
     </a>
-    
+
 
     <!-- ko if: request.headers().length > 0 -->
     <h3>Headers</h3>
@@ -120,22 +133,29 @@
         <div class="row flex flex-row">
             <div class="col-4">
                 <div class="form-group">
-                    <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
-                        spellcheck="false" data-bind="textInput: header.name, valueUpdate: 'keyup'">
+                    <div class="input-group">
+                        <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
+                            spellcheck="false" data-bind="textInput: header.name">
+                        <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
+                    </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <!-- ko if: header.options && header.options.length > 0 -->
-                    <select class="form-control" data-bind="value: header.value, options: header.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
+                    <select class="form-control"
+                        data-bind="value: header.value, options: header.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                     <!-- /ko -->
                     <!-- ko if: !header.options || header.options.length === 0 -->
-                    <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                        spellcheck="false"
-                        data-bind="event: { keyup: $component.updateRequestSummary }, textInput: header.value, valueUpdate: 'keyup'">
+                    <div class="input-group">
+                        <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
+                            spellcheck="false"
+                            data-bind="event: { keyup: $component.updateRequestSummary }, textInput: header.value">
+                        <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
+                    </div>
                     <!-- /ko -->
 
-                    
+
                 </div>
             </div>
             <div class="col-2 button-remove">

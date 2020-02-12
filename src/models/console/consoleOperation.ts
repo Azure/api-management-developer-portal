@@ -54,7 +54,6 @@ export class ConsoleOperation {
         return uri + separator + paramString;
     }
 
-
     public setHeader(name: string, value: string, type: string = "string", description?: string): ConsoleHeader {
         const header = this.createHeader(name, value, type, description);
 
@@ -87,13 +86,14 @@ export class ConsoleOperation {
         parameters.forEach(parameter => {
             if (parameter.value()) {
                 const parameterPlaceholder = `{${parameter.name}}`;
+                const parameterName = encodeURIComponent(parameter.name());
                 const parameterValue = encodeURIComponent(parameter.value());
 
                 if (requestUrl.indexOf(parameterPlaceholder) > -1) {
                     requestUrl = requestUrl.replace(parameterPlaceholder, parameterValue);
                 }
                 else {
-                    requestUrl = this.addParam(requestUrl, parameter.name, parameterValue);
+                    requestUrl = this.addParam(requestUrl, parameterName, parameterValue);
                 }
             }
         });
@@ -104,4 +104,5 @@ export class ConsoleOperation {
 
         return `${this.api.path}${versionPath}${revision}${requestUrl}`;
     }
+
 }
