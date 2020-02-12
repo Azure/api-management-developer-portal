@@ -1,4 +1,5 @@
 import * as ko from "knockout";
+import * as validation from "knockout.validation";
 import * as _ from "lodash";
 import template from "./operation-console.html";
 import { Component, Param, OnMounted } from "@paperbits/common/ko/decorators";
@@ -77,8 +78,13 @@ export class OperationConsole {
         this.sendingRequest = ko.observable(false);
         this.codeSample = ko.observable();
         this.selectedProduct = ko.observable();
-    }
 
+        validation.init({
+            insertMessages: false,
+            errorElementClass: "is-invalid",
+            decorateInputElement: true
+        });
+    }
 
     @Param()
     public api: ko.Observable<Api>;
@@ -331,7 +337,18 @@ export class OperationConsole {
     }
 
     public async validateAndSendRequest(): Promise<void> {
-        // TODO: Add request validation.
+        const templateParameters = this.consoleOperation().templateParameters();
+        const queryParameters = this.consoleOperation().request.queryParameters();
+        const headers = this.consoleOperation().request.headers();
+        const parameters = [].concat(templateParameters, queryParameters, headers);
+        const validationGroup = validation.group(parameters.map(x => x.value), { live: true });
+        const clientErrors = validationGroup();
+
+        if (clientErrors.length > 0) {
+            validationGroup.showAllMessages();
+            return;
+        }
+
         this.sendRequest();
     }
 
