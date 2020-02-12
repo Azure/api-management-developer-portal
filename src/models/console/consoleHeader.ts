@@ -48,6 +48,12 @@ export class ConsoleHeader {
         this.type = contract.type;
         this.secret = false;
         this.inputTypeValue = this.secret && !this.revealed ? "password" : "text";
+
+        this.name.extend(<any>{ required: { message: `Name is required.` } });
+
+        if (this.required) {
+            this.value.extend(<any>{ required: { message: `Value is required.` } });
+        }
     }
 
     public toggleSecret(): void {
