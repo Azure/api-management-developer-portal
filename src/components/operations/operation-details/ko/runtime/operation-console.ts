@@ -42,8 +42,6 @@ export class OperationConsole {
     public readonly selectedLanguage: ko.Observable<string>;
     public readonly selectedProduct: ko.Observable<Product>;
     public readonly requestError: ko.Observable<string>;
-    public readonly bodySource: ko.Observable<string>;
-    public readonly attachment: ko.Observable<string>;
     public readonly codeSample: ko.Observable<string>;
     public masterKey: string;
     public isConsumptionMode: boolean;
@@ -59,8 +57,7 @@ export class OperationConsole {
     ) {
         this.templates = templates;
         this.products = ko.observable();
-        this.attachment = ko.observable();
-        this.bodySource = ko.observable("Raw");
+
         this.requestError = ko.observable();
         this.responseStatusCode = ko.observable();
         this.responseStatusText = ko.observable();
@@ -78,6 +75,7 @@ export class OperationConsole {
         this.sendingRequest = ko.observable(false);
         this.codeSample = ko.observable();
         this.selectedProduct = ko.observable();
+        this.onFileSelect = this.onFileSelect.bind(this);
 
         validation.init({
             insertMessages: false,
@@ -336,6 +334,15 @@ export class OperationConsole {
         this.codeSample(codeSample);
     }
 
+
+    public onFileSelect(file: File): void {
+        if (file) {
+            this.consoleOperation().request.binary(file);
+        }
+
+        this.updateRequestSummary();
+    }
+
     public async validateAndSendRequest(): Promise<void> {
         const templateParameters = this.consoleOperation().templateParameters();
         const queryParameters = this.consoleOperation().request.queryParameters();
@@ -365,14 +372,14 @@ export class OperationConsole {
 
         let payload;
 
-        switch (request.bodyFormat) {
+        switch (consoleOperation.request.bodyFormat()) {
             case "raw":
                 payload = request.body();
                 break;
 
             case "binary":
                 const formData = new FormData();
-                formData.append(request.binary.name, request.binary);
+                formData.append(request.binary().name, request.binary());
                 payload = formData;
                 break;
 
@@ -391,7 +398,6 @@ export class OperationConsole {
             };
 
             const response = await this.httpClient.send(request);
-
             this.responseHeadersString(response.headers.map(x => `${x.name}: ${x.value}`).join("\n"));
 
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);

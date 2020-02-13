@@ -1,6 +1,10 @@
 <div tabindex="0" class="form-inline" role="group">
-    <input class="form-control" type="text" disabled data-bind="value: selectedFileInfo">
-    <button type="button" class="button button-default" data-bind="click: onClick" [traceClick]="'Upload file'">
-        Upload file
-    </button>
+    <div tabindex="0" class="form-control" data-bind="activate: onClick">
+        <div class="input-group">
+            <input class="input" type="text" placeholder="Upload file" disabled data-bind="value: selectedFileInfo">
+            <div class="input-group-append">
+                <i class="icon icon-upload"></i>
+            </div>
+        </div>
+    </div>
 </div>
