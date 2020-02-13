@@ -336,10 +336,7 @@ export class OperationConsole {
 
 
     public onFileSelect(file: File): void {
-        if (file) {
-            this.consoleOperation().request.binary(file);
-        }
-
+        this.consoleOperation().request.binary(file);
         this.updateRequestSummary();
     }
 
