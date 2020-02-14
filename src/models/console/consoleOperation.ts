@@ -30,7 +30,7 @@ export class ConsoleOperation {
         this.request = new ConsoleRequest(operation.request);
         this.templateParameters = ko.observableArray(operation.templateParameters.map(parameterContract => new ConsoleParameter(parameterContract)));
         this.hasBody = !["GET", "HEAD", "TRACE"].includes(this.method);
-
+    
         if (operation.responses) {
             this.responses = operation.responses.map(x => new ConsoleResponse(x));
         }
@@ -61,6 +61,7 @@ export class ConsoleOperation {
 
         return header;
     }
+
 
     public createHeader(name: string, value: string, type: string, description: string): ConsoleHeader {
         const header = new ConsoleHeader();

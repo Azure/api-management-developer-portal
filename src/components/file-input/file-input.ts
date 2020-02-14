@@ -1,6 +1,7 @@
 import * as ko from "knockout";
 import template from "./file-input.html";
-import { Component, Param } from "@paperbits/common/ko/decorators";
+import { Utils } from "../../utils";
+import { Component, Event } from "@paperbits/common/ko/decorators";
 
 
 @Component({
@@ -9,14 +10,12 @@ import { Component, Param } from "@paperbits/common/ko/decorators";
 })
 export class FileInput {
     private readonly input: HTMLInputElement;
-
     public selectedFileInfo: ko.Observable<string>;
 
-    @Param()
-    public selectedFile: ko.Observable<File>;
+    @Event()
+    public onSelect: (file: File) => void;
 
     constructor() {
-        this.selectedFile = ko.observable<File>();
         this.selectedFileInfo = ko.observable<string>();
         this.input = document.createElement("input");
         this.input.type = "file";
@@ -35,15 +34,16 @@ export class FileInput {
         this.input.click();
     }
 
-    public onChange(event): void {
+    public onChange(event: any): void {
         if (event.target.files.length > 0) {
             const file: File = event.target.files[0];
-            this.selectedFileInfo(`${file.name} (${Math.floor(file.size/1024)} Kb)`);
+            
+            this.selectedFileInfo(`${file.name} (${Utils.formatBytes(file.size)})`);
 
-            this.selectedFile(file);
+            this.onSelect(file);
         }
         else {
-            this.selectedFile(null);
+            this.onSelect(null);
         }
     }
 }
