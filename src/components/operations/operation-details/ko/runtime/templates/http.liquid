@@ -3,6 +3,9 @@
 {% for header in request.meaningfulHeaders -%}
 {{ header.name }}: {{ header.value }}
 {% endfor %}
-{% if request.body -%}
+{% if request.body != blank and request.bodyFormat == "raw" -%}
 {{ request.body }}
+{% endif -%}
+{% if request.binary != blank and request.bodyFormat == "binary" -%}
+[ {{ request.binary.name }} ]
 {% endif -%}

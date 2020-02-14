@@ -12,8 +12,9 @@ export class ConsoleRequest {
     public readonly representations: ConsoleRepresentation[];
     public readonly description: string;
     public readonly body: ko.Observable<string>;
-    public readonly binary: File;
-    public readonly bodyFormat: string;
+    public readonly hasBody: boolean;
+    public readonly binary: ko.Observable<File>;
+    public readonly bodyFormat: ko.Observable<string>;
 
     constructor(request: Request) {
         this.description = request.description;
@@ -21,7 +22,9 @@ export class ConsoleRequest {
         this.queryParameters = ko.observableArray(request.queryParameters.map(parameter => new ConsoleParameter(parameter)));
         this.headers = ko.observableArray(request.headers.map(header => new ConsoleHeader(header)));
         this.body = ko.observable();
-        this.bodyFormat = "raw";
+        this.bodyFormat = ko.observable("raw");
+        this.binary = ko.observable();
+        this.binary.extend(<any>{ maxFileSize: 3 * 1024 * 1024 });
         this.meaningfulHeaders = ko.computed(() => this.headers().filter(x => !!x.value()));
 
         if (this.representations?.length === 0) {
