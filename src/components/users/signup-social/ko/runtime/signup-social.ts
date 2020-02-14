@@ -12,6 +12,7 @@ import { UserPropertiesContract } from "../../../../../contracts/user";
 import { Utils } from "../../../../../utils";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { IAuthenticator } from "./../../../../../authentication/IAuthenticator";
+import { MapiError } from "../../../../../services/mapiError";
 
 
 @RuntimeComponent({
@@ -65,7 +66,7 @@ export class SignupSocial {
         }
 
         const jwtToken = Utils.parseJwt(idToken);
-        
+
         this.firstName(jwtToken.given_name);
         this.lastName(jwtToken.family_name);
         this.email(jwtToken.email);
@@ -95,6 +96,10 @@ export class SignupSocial {
             ],
             body: JSON.stringify(user)
         });
+
+        if (!(response.statusCode >= 200 && response.statusCode <= 299)) {
+            throw MapiError.fromResponse(response);
+        }
 
         const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
 
