@@ -56,7 +56,6 @@ export class ApiList {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-
         this.groupByTag(this.defaultGroupByTagToEnabled());
 
         await this.resetSearch();
