@@ -77,6 +77,13 @@ export class OperationConsole {
         this.selectedProduct = ko.observable();
         this.onFileSelect = this.onFileSelect.bind(this);
 
+        validation.rules["maxFileSize"] = {
+            validator: (file: File, maxSize: number) => !file || file.size < maxSize,
+            message: (size) => `The file size cannot exceed ${Utils.formatBytes(size)}.`
+        };
+
+        validation.registerExtenders();
+
         validation.init({
             insertMessages: false,
             errorElementClass: "is-invalid",
@@ -334,18 +341,19 @@ export class OperationConsole {
         this.codeSample(codeSample);
     }
 
-
     public onFileSelect(file: File): void {
         this.consoleOperation().request.binary(file);
         this.updateRequestSummary();
     }
 
     public async validateAndSendRequest(): Promise<void> {
-        const templateParameters = this.consoleOperation().templateParameters();
-        const queryParameters = this.consoleOperation().request.queryParameters();
-        const headers = this.consoleOperation().request.headers();
+        const operation = this.consoleOperation();
+        const templateParameters = operation.templateParameters();
+        const queryParameters = operation.request.queryParameters();
+        const headers = operation.request.headers();
+        const binary = operation.request.binary;
         const parameters = [].concat(templateParameters, queryParameters, headers);
-        const validationGroup = validation.group(parameters.map(x => x.value), { live: true });
+        const validationGroup = validation.group(parameters.map(x => x.value).concat(binary), { live: true });
         const clientErrors = validationGroup();
 
         if (clientErrors.length > 0) {

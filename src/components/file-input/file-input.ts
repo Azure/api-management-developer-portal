@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import template from "./file-input.html";
+import { Utils } from "../../utils";
 import { Component, Event } from "@paperbits/common/ko/decorators";
 
 
@@ -36,7 +37,8 @@ export class FileInput {
     public onChange(event: any): void {
         if (event.target.files.length > 0) {
             const file: File = event.target.files[0];
-            this.selectedFileInfo(`${file.name} (${Math.floor(file.size / 1024)} Kb)`);
+            
+            this.selectedFileInfo(`${file.name} (${Utils.formatBytes(file.size)})`);
 
             this.onSelect(file);
         }
