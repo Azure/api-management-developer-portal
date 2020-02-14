@@ -1,5 +1,5 @@
 {
-  "managementApiUrl": "https://<service-name>.management.azure-api.net/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.ApiManagement/service/<service-name>",
+  "managementApiUrl": "https://<service-name>.management.azure-api.net",
   "managementApiVersion": "2018-06-01-preview",
   "managementApiAccessToken": "SharedAccessSignature ...",
   "managementApiUserId": "1",
