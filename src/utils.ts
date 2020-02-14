@@ -297,7 +297,7 @@ export class Utils {
             ? url.pathname.substring(0, url.pathname.length - 1)
             : url.pathname;
 
-        resourceUrl = `${protocol}//${hostname}/subscriptions/xxx/resourceGroups/xxx/providers/Microsoft.ApiManagement/service/xxx${pathname}`;
+        resourceUrl = `${protocol}//${hostname}/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid${pathname}`;
 
         return resourceUrl;
     }
