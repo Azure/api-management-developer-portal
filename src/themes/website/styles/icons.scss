@@ -22,11 +22,23 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-simple-remove:before {
+    content: "\e90f";
+}
+
+.icon-menu-8:before {
+    content: "\e90e";
+}
+
 .icon-duplicate:before {
     content: "\e90c";
 }
 
 .icon-download:before {
+    content: "\e90d";
+}
+
+.icon-upload:before {
     content: "\e906";
 }
 
@@ -108,14 +120,6 @@
 
 .icon-trash:before {
     content: "\e922";
-}
-
-.icon-menu-8:before {
-    content: "\e90e";
-}
-
-.icon-simple-remove:before {
-    content: "\e90f";
 }
 
 .icon.icon-wadl {
