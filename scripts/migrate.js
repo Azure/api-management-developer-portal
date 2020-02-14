@@ -14,12 +14,30 @@
  */
 
 const https = require('https');
+const moment = require('moment');
+const crypto = require('crypto');
 const mkdirSync = require('fs').mkdirSync;
 const execSync = require('child_process').execSync;
 
 const yargs = require('yargs')
-    .example('$0 --autoPublish --sourceName <name>.management.azure-api.net --sourceToken <token> --destName <name>.management.azure-api.net --destToken <token>\n', 'Managed')
-    .example('$0 --selfHosted --autoPublish --sourceName <name>.management.azure-api.net --sourceToken <token> --sourceStorage <connectionString> --destName <name.management.azure-api.net> --destToken <token> --destStorage <connectionString>', 'Self-Hosted')
+    .example('$0 --autoPublish \
+        --sourceName <name> \
+        --sourceToken <token> \
+        --destName <name>.management.azure-api.net \
+        --destToken <token>\n', 'Managed')
+    .example('$0 --selfHosted --autoPublish \
+        --sourceName <name>.management.azure-api.net \
+        --sourceToken <token> \
+        --sourceStorage <connectionString> \
+        --destName <name.management.azure-api.net> \
+        --destToken <token> \
+        --destStorage <connectionString>', 'Self-Hosted')
+    /*.option('interactive', {
+        alias: 'i',
+        type: 'boolean',
+        description: 'Whether to use interactive login',
+        conflicts: ['sourceToken', 'sourceId', 'sourceKey', 'destToken', 'destId', 'destKey']
+    })*/
     .option('selfHosted', {
         alias: 'h',
         type: 'boolean',
@@ -51,13 +69,14 @@ const yargs = require('yargs')
     })
     .option('sourceToken', {
         type: 'string',
-        example: '',
         description: 'A SAS token for the source portal',
+        example: 'SharedAccessSignature…',
         conflicts: ['sourceId, sourceToken']
     })
     .option('sourceStorage', {
         type: 'string',
         description: 'The connection string for self-hosted portals',
+        example: 'DefaultEndpointsProtocol=…',
         implies: 'selfHosted'
     })
     .option('destName', {
@@ -80,23 +99,26 @@ const yargs = require('yargs')
     })
     .option('destToken', {
         type: 'string',
-        example: '',
+        example: 'SharedAccessSignature…',
         description: 'A SAS token for the destination portal',
         conflicts: ['destId, destToken']
     })
     .option('destStorage', {
         type: 'string',
         description: 'The connection string for self-hosted portals',
+        example: 'DefaultEndpointsProtocol=…',
         implies: 'selfHosted'
     })
     .argv;
 
 async function run() {
-    const sourceName = yargs.sourceName;
+    // we just need the name of the resource, but allow the user to input <name>.management.azure-api.net
+    // for convenience / backwards compat.
+    const sourceName = yargs.sourceName.replace('.management.azure-api.net', '');
     const sourceToken = await getTokenOrThrow(yargs.sourceToken, yargs.sourceId, yargs.sourceKey);
     const sourceStorage = await getStorageConnectionOrThrow(yargs.sourceStorage, sourceName, sourceToken);
 
-    const destName = yargs.destName;
+    const destName = yargs.destName.replace('.management.azure-api.net', '');
     const destToken = await getTokenOrThrow(yargs.destToken, yargs.destId, yargs.destKey);
     const destStorage = await getStorageConnectionOrThrow(yargs.destStorage, destName, destToken);
 
@@ -106,28 +128,29 @@ async function run() {
     const mediaContainer = 'content';
 
     // capture the content of the source portal (excl. media)
-    execSync(`node ./capture ${sourceName} ${sourceToken} ${dataFile}`);
+    execSync(`node ./capture ${sourceName}.management.azure-api.net "${sourceToken}" ${dataFile}`);
 
     // remove all content of the target portal (incl. media)
-    execSync(`node ./cleanup ${destName} ${destToken} ${destStorage}`);
+    execSync(`node ./cleanup ${destName}.management.azure-api.net "${destToken}" "${destStorage}"`);
 
     // upload the content of the source portal (excl. media)
-    execSync(`node ./generate ${destName} ${destToken} ${dataFile}`);
+    execSync(`node ./generate ${destName}.management.azure-api.net "${destToken}" ${dataFile}`);
 
     // download media files from the source portal
-    mkdirSync(mediaFolder);
-    execSync(`az storage blob download-batch --source ${mediaContainer} --destination ${mediaFolder} --connection-string ${sourceStorage}`);
+    mkdirSync(mediaFolder, { recursive: true });
+    execSync(`az storage blob download-batch --source ${mediaContainer} --destination ${mediaFolder} --connection-string "${sourceStorage}"`);
 
     // upload media files to the target portal
-    execSync(`az storage blob upload-batch --source ${mediaFolder} --destination ${mediaContainer} --connection-string ${destStorage}`);
+    execSync(`az storage blob upload-batch --source ${mediaFolder} --destination ${mediaContainer} --connection-string "${destStorage}"`);
 
     if (yargs.autoPublish) {
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
         publish(destName, destToken);
     }
 }
 
 /**
- * A wrapper for making a request and returning its response body as a json object.
+ * A wrapper for making a request and returning its response body.
  * @param {Object} options https options
  */
 async function request(url, options) {
@@ -141,7 +164,7 @@ async function request(url, options) {
 
             resp.on('end', () => {
                 try {
-                    resolve(JSON.parse(data));
+                    resolve(data);
                 }
                 catch (e) {
                     reject(e);
@@ -170,7 +193,7 @@ async function getTokenOrThrow(token, id, key) {
         return token;
     }
     if (id && key) {
-        return generateSASToken(id, key);
+        return await generateSASToken(id, key);
     }
     throw Error('You need to specify either: token or id AND key');
 }
@@ -182,15 +205,26 @@ async function getTokenOrThrow(token, id, key) {
  * See https://docs.microsoft.com/en-us/rest/api/apimanagement/apimanagementrest/azure-api-management-rest-api-authentication#ManuallyCreateToken
  * @param {string} id The Management API identifier.
  * @param {string} key The Management API key (primary or secondary)
- * @param {number} expiresIn 
+ * @param {number} expiresIn The number of seconds in which the token should expire.
  */
 async function generateSASToken(id, key, expiresIn = 3600) {
-    const now = new Date();
-    const expiry = now.getTime() / 1000 + expiresIn; // seconds
+    const now = moment.utc(moment());
+    const expiry = now.clone().add(expiresIn, 'seconds');
+    const expiryString = expiry.format(`YYYY-MM-DD[T]HH:mm:ss.SSSSSSS[Z]`);
 
-    
+    const dataToSign = `${id}\n${expiryString}`;
+    const signedData = crypto.createHmac('sha512', key).update(dataToSign).digest('base64');
+    return `SharedAccessSignature uid=${id}&ex=${expiryString}&sn=${signedData}`;
 }
 
+/**
+ * Attempts to get a develoer portal storage connection string in two ways:
+ * 1) if the connection string is explicitly set by the user, use it.
+ * 2) retrieving the connection string from the management API using the instance name and SAS token
+ * @param {string} storage an optionally specified storage connection string
+ * @param {string} name the name of the management instance
+ * @param {string} token the SAS token
+ */
 async function getStorageConnectionOrThrow(storage, name, token) {
     if (storage) {
         return storage;
@@ -198,14 +232,16 @@ async function getStorageConnectionOrThrow(storage, name, token) {
     if (token) {
         // token should always be available, because we call
         // getTokenOrThrow before this
-        return getStorageConnection(name, token);    
+        return await getStorageConnection(name, token);
     }
     throw Error('Storage connection could not be retrieved');
 }
 
 /**
- * 
- * @param {string} token 
+ * Gets a storage connection string from the management API for the specified APIM instance and
+ * SAS token.
+ * @param {string} name the name of the management instance
+ * @param {string} token the SAS token
  */
 async function getStorageConnection(name, token) {
     const options = {
@@ -216,12 +252,27 @@ async function getStorageConnection(name, token) {
         }
     };
 
-    const body = await request(`https://${name}/tenant/settings?api-version=2018-01-01`, options);
+    const raw = await request(`https://${name}.management.azure-api.net/tenant/settings?api-version=2018-01-01`, options);
+    const body = JSON.parse(raw);
     return body.settings.PortalStorageConnectionString;
 }
 
+/**
+ * Publishes the content of the specified APIM instance using a SAS token.
+ * @param {string} name the name of the management instance
+ * @param {string} token the SAS token
+ */
 async function publish(name, token) {
+    const options = {
+        port: 443,
+        method: 'POST',
+        headers: {
+            'Authorization': token
+        }
+    };
 
+    // returns with literal OK (missing quotes), which is invalid json.
+    await request(`https://${name}.developer.azure-api.net/publish`, options);
 }
 
 run();
