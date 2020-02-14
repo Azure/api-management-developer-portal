@@ -172,32 +172,29 @@
 
     <!-- ko if: hasBody -->
     <h3>Body</h3>
-    <div class="row flex flex-row">
-        <!-- <div class="button-body" role="group">
-                <button type="button" class="button dropdown-toggle button-default" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                    <span data-bind="text: $component.bodySource"></span>
-                </button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#" data-bind="click: $component.bodySource.bind(this, 'Raw')">Raw</a>
-                    <a class="dropdown-item" href="#"
-                        data-bind="click: $component.bodySource.bind(this, 'Binary')">Binary</a>
-                </div>
-            </div> -->
-    </div>
 
-    <div class="row flex flex-row">
-        <div class="col-12">
-            <div class="form-group">
-                <!-- ko if: $component.bodySource() === 'Raw' -->
-                <textarea class="form-control form-control-sm" rows="9"
-                    data-bind="event: { keyup: $component.updateRequestSummary }, textInput: request.body, valueUpdate: 'keyup'"></textarea>
-                <!-- /ko -->
-                <!-- ko if: $component.bodySource() === 'Binary' -->
-                <file-input params="{ selectedFile: $component.attachement }"></file-input>
-                <!-- /ko -->
-            </div>
+    <div class="d-flex justify-content-end">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="bodyFormat" id="bodyFormatRaw" value="raw"
+                data-bind="checked: request.bodyFormat">
+            <label class="form-check-label" for="bodyFormatRaw">Raw</label>
         </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="bodyFormat" id="bodyFormatBinary" value="binary"
+                data-bind="checked: request.bodyFormat">
+            <label class="form-check-label" for="bodyFormatBinary">Binary</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <!-- ko if: request.bodyFormat() === 'raw' -->
+        <textarea class="form-control form-control-sm" rows="5"
+            data-bind="event: { keyup: $component.updateRequestSummary }, textInput: request.body, valueUpdate: 'keyup'"></textarea>
+        <!-- /ko -->
+        <!-- ko if: request.bodyFormat() === 'binary' -->
+        <file-input params="{ onSelect: $component.onFileSelect }" class="form-control" data-bind="css: { 'is-invalid': !request.binary.isValid() }"></file-input>
+        <span class="invalid-feedback"
+            data-bind="validationMessage: request.binary"></span>
+        <!-- /ko -->
     </div>
     <!-- /ko -->
 </div>
@@ -312,7 +309,6 @@
 <span data-bind="text: responseHeadersString"></span>
 
 <span data-bind="text: responseBody"></span></pre>
-
 
 </div>
 <!--/ko-->
