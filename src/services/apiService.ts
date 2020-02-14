@@ -45,7 +45,7 @@ export class ApiService {
 
             if (searchRequest.pattern) {
                 const pattern = Utils.escapeValueForODataFilter(searchRequest.pattern);
-                query = Utils.addQueryParameter(query, `$filter=contains(properties/name,'${encodeURIComponent(pattern)}')`);
+                query = Utils.addQueryParameter(query, `$filter=contains(properties/displayName,'${encodeURIComponent(pattern)}')`);
             }
         }
 
