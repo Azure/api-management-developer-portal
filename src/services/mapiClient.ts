@@ -144,6 +144,13 @@ export class MapiClient {
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
+        try {            
+            await this.authenticator.refreshAccessTokenFromHeader(response.headers);
+        }
+        catch (error) {
+            console.error("Refresh token error: ", error);
+        }
+
         return this.handleResponse<T>(response, httpRequest.url);
     }
 
