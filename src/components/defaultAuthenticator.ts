@@ -1,6 +1,7 @@
 import * as moment from "moment";
 import { Utils } from "../utils";
 import { IAuthenticator, AccessToken } from "./../authentication";
+import { HttpHeader } from "@paperbits/common/http/httpHeader";
 
 export class DefaultAuthenticator implements IAuthenticator {
     public async getAccessToken(): Promise<string> {
@@ -9,6 +10,26 @@ export class DefaultAuthenticator implements IAuthenticator {
 
     public async setAccessToken(accessToken: string): Promise<void> {
         sessionStorage.setItem("accessToken", accessToken);
+    }
+
+    public async refreshAccessTokenFromHeader(responseHeaders: HttpHeader[] = []): Promise<string> {
+        const accessTokenHeader = responseHeaders.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
+        if (accessTokenHeader && accessTokenHeader.value) {
+            const regex = /token=\"(.*)",refresh/gm;
+            const match = regex.exec(accessTokenHeader.value);
+
+            if (!match || match.length < 2) {
+                console.error(`Token format is not valid.`);
+            }
+
+            const accessToken = `SharedAccessSignature ${accessTokenHeader.value}`;
+            const current = sessionStorage.getItem("accessToken");
+            if (current !== accessToken) {
+                sessionStorage.setItem("accessToken", accessToken);                
+                return accessToken;
+            }
+        }
+        return undefined;
     }
 
     public async clearAccessToken(): Promise<void> {
@@ -33,7 +54,16 @@ export class DefaultAuthenticator implements IAuthenticator {
         return now < parsedToken.expires;
     }
 
-    private parseSharedAccessSignature(accessToken: string): AccessToken {
+    private parseSharedAccessSignature(fullAccessToken: string): AccessToken {
+        let accessToken = fullAccessToken;
+        const refreshRegex = /token=\"(.*)",refresh/gm;
+        const refreshMatch = refreshRegex.exec(fullAccessToken);
+        if (!refreshMatch || refreshMatch.length < 2) {
+            console.error(`Token is not full.`);
+        } else {
+            accessToken = refreshMatch[1];
+        }        
+
         const regex = /^[\w\-]*\&(\d*)\&/gm;
         const match = regex.exec(accessToken);
 
