@@ -52,19 +52,7 @@ export class UsersService {
             });
 
             const identity = response.toObject();
-            const accessTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
-
-            if (accessTokenHeader && accessTokenHeader.value) {
-                const regex = /token=\"(.*)",refresh/gm;
-                const match = regex.exec(accessTokenHeader.value);
-
-                if (!match || match.length < 2) {
-                    throw new Error(`Token format is not valid.`);
-                }
-
-                const accessToken = match[1];
-                await this.authenticator.setAccessToken(`SharedAccessSignature ${accessToken}`);
-            }
+            await this.authenticator.refreshAccessTokenFromHeader(response.headers);            
 
             if (identity && identity.id) {
                 return identity.id;
