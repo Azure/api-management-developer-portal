@@ -1,3 +1,13 @@
 <div class="flex flex-column fit">
-    <p>Go to <a href="https://aka.ms/apimdocs/portal" target="_blank">this documentation article</a> to learn more about the API Management developer portal</p>
+    <p>Go to <a href="https://aka.ms/apimdocs/portal" target="_blank">this documentation article</a> to learn more about
+        the API Management developer portal</p>
+
+    <div class="flex-item flex-item-grow list">
+        <!-- ko foreach: { data: hints, as: 'hint' } -->
+        <a href="#" class="list-item">
+            <i class="paperbits-icon paperbits-alert"></i>
+            <span data-bind="text: hint.issue, click: $component.selectHint"></span>
+        </a>
+        <!-- /ko -->
+    </div>
 </div>
