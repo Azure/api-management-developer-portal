@@ -122,8 +122,20 @@ export class ApiListDropdown {
     }
 
     private checkSelection(apiGroups: TagGroup<Api>[]): void {
+        if (!this.allowSelection()) {
+            return;
+        }
+
         const selectedApiName = this.routeHelper.getApiName();
-        const selectedApi = apiGroups.map(group => group.items || []).flat().find(x => x.name === selectedApiName);
+        const listOfApis = apiGroups.map(group => group.items || []).flat();
+        const selectedApi = listOfApis.find(x => x.name === selectedApiName);
+
+        if (!selectedApiName && listOfApis.length > 0) {
+            const firstApi = listOfApis[0];
+            const url = this.routeHelper.getApiReferenceUrl(firstApi.name, this.detailsPageUrl());
+
+            this.router.navigateTo(url);
+        }
 
         this.selectedApi(selectedApi);
         this.selectedApiName(selectedApiName);

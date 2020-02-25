@@ -70,13 +70,11 @@ export class OperationList {
         this.selectedApiName(apiName);
         this.selectedOperationName(operationName);
 
-        if (!this.selectedApiName()) {
-            return;
-        }
-
         this.groupByTag(this.defaultGroupByTagToEnabled());
 
-        await this.loadOperations();
+        if (this.selectedApiName()) {
+            await this.loadOperations();
+        }
 
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })

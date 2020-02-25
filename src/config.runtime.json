@@ -2,5 +2,6 @@
   "managementApiUrl": "https://<service-name>.management.azure-api.net",
   "managementApiVersion": "2018-06-01-preview",
   "environment": "runtime",
-  "backendUrl": "https://<service-name>.developer.azure-api.net"
+  "backendUrl": "https://<service-name>.developer.azure-api.net",
+  "proxyHostnames": "<service-name>.azure-api.net"
 }
