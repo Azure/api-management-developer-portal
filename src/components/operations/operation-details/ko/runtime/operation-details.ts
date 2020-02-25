@@ -82,17 +82,18 @@ export class OperationDetails {
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
 
-        this.router.addRouteChangeListener(this.onRouteChange.bind(this));
-
-        if (!apiName || !operationName) {
-            return;
-        }
-
         this.selectedApiName(apiName);
         this.selectedOperationName(operationName);
 
-        await this.loadApi(apiName);
-        await this.loadOperation(apiName, operationName);
+        if (apiName) {
+            await this.loadApi(apiName);
+        }
+
+        if (operationName) {
+            await this.loadOperation(apiName, operationName);
+        }
+
+        this.router.addRouteChangeListener(this.onRouteChange.bind(this));
     }
 
     private async onRouteChange(): Promise<void> {
