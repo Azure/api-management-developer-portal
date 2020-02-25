@@ -57,6 +57,7 @@ import { ValidationSummaryDesignModule} from "./components/users/validation-summ
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
+import { PolicyService } from "./services/policyService";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -116,6 +117,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("identityService", IdentityService);
+        injector.bindSingleton("policyService", PolicyService);
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
