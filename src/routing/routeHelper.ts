@@ -195,4 +195,10 @@ export class RouteHelper {
     public getIdTokenProvider(): string {
         return this.getHashParameter("provider");
     }
+
+    public getQueryParameter(name: string): string {
+        const queryParams = new URLSearchParams(location.search);
+
+        return queryParams.get(name);
+    }
 }

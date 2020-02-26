@@ -6,7 +6,8 @@ import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common
 import { UsersService } from "../../../../../services/usersService";
 import { MapiError } from "../../../../../services/mapiError";
 import { ValidationReport } from "../../../../../contracts/validationReport";
-
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { Router } from "@paperbits/common/routing/router";
 
 @RuntimeComponent({
     selector: "signin-runtime"
@@ -24,7 +25,9 @@ export class Signin {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly eventManager: EventManager
+        private readonly eventManager: EventManager,
+        private readonly routeHelper: RouteHelper,
+        private readonly router: Router
     ) {
 
         this.delegationUrl = ko.observable();
@@ -103,6 +106,12 @@ export class Signin {
             const userId = await this.usersService.signIn(this.username(), this.password());
 
             if (userId) {
+                const returnUrl = this.routeHelper.getQueryParameter("returnUrl");
+                if (returnUrl) {
+                    this.router.navigateTo(returnUrl);
+                    return;
+                }
+                
                 this.navigateToHome();
 
                 const validationReport: ValidationReport = {
