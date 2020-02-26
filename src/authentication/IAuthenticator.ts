@@ -28,7 +28,7 @@ export interface IAuthenticator {
     /**
      * Clears access token from current session.
      */
-    clearAccessToken(): Promise<void>;
+    clearAccessToken(cleanOnlyClient?: boolean): Promise<void>;
 
     /**
      * Checks if current user is signed in.

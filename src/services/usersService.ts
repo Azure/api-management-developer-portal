@@ -34,7 +34,7 @@ export class UsersService {
             return userId;
         }
         else {
-            await this.authenticator.clearAccessToken();
+            await this.authenticator.clearAccessToken(true);
             return undefined;
         }
     }
