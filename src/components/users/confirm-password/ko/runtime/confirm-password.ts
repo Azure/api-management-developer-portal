@@ -2,7 +2,6 @@ import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./confirm-password.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
-import { ResetPassword } from "../../../../../contracts/resetRequest";
 import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services/usersService";
 import { EventManager } from "@paperbits/common/events";
@@ -16,10 +15,7 @@ import { ValidationReport } from "../../../../../contracts/validationReport";
     template: template
 })
 export class ConfirmPassword {
-    private queryParams: URLSearchParams;
     private userId: string;
-    private ticket: string;
-    private ticketId: string;
     public readonly password: ko.Observable<string>;
     public readonly passwordConfirmation: ko.Observable<string>;
     public readonly isResetConfirmed: ko.Observable<boolean>;
@@ -60,9 +56,15 @@ export class ConfirmPassword {
             return;
         }
 
-        this.queryParams = new URLSearchParams(location.search);
+        this.userId = await this.usersService.getCurrentUserId();
 
-        if (!this.queryParams.has("userid") || !this.queryParams.has("ticketid") || !this.queryParams.has("ticket")) {
+        if (this.userId) {
+            return;
+        }
+
+        const queryParams = new URLSearchParams(location.search);
+
+        if (!queryParams.has("userid") || !queryParams.has("ticketid") || !queryParams.has("ticket")) {
             const validationReport: ValidationReport = {
                 source: "confirmpassword",
                 errors: ["Required params not found"]
@@ -71,9 +73,20 @@ export class ConfirmPassword {
             return;
         }
 
-        this.userId = this.queryParams.get("userid");
-        this.ticket = this.queryParams.get("ticket");
-        this.ticketId = this.queryParams.get("ticketid");
+        try {            
+            await this.usersService.activateUser(queryParams);
+            this.userId = await this.usersService.getCurrentUserId();
+
+            if (!this.userId) {
+                throw new Error("User not found.");
+            }
+        } catch (error) {
+            const validationReport: ValidationReport = {
+                source: "confirmpassword",
+                errors: ["Activate user error: " + error.message]
+            };
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+        }
     }
 
     /**
@@ -97,16 +110,12 @@ export class ConfirmPassword {
             return;
         }
 
-        const resetPswdRequest: ResetPassword = {
-            userid: this.userId,
-            ticketid: this.ticketId,
-            ticket: this.ticket,
-            password: this.password()
-        };
-
         try {
-            await this.backendService.sendConfirmRequest(resetPswdRequest);
+            await this.usersService.updatePassword(this.userId, this.password());
             this.isResetConfirmed(true);
+            setTimeout(() => {
+                this.usersService.navigateToHome();
+            }, 1000);
         }
         catch (error) {
             if (error.code === "ValidationError") {

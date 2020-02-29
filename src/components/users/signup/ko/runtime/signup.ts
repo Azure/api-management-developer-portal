@@ -94,9 +94,18 @@ export class Signup {
                 return;
             }
             else {
-                const redirectUrl = this.delegationUrl();
-                if (redirectUrl) {
-                    window.open(redirectUrl, "_self");
+                const queryParams = new URLSearchParams(location.search);
+
+                if (queryParams.has("userid") && queryParams.has("ticketid") && queryParams.has("ticket")) {
+                    await this.usersService.activateUser(queryParams);
+
+                    const userId = await this.usersService.getCurrentUserId();
+
+                    if (!userId) {
+                        console.error("Activate user error: User not found.");
+                    } else {
+                        this.usersService.navigateToHome();
+                    }
                 }
             }
         }

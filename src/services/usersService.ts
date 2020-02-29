@@ -14,6 +14,9 @@ import { MapiSignupRequest } from "../contracts/signupRequest";
  * A service for management operations with users.
  */
 export class UsersService {
+    private managementApiUrl: string;
+    private managementApiVersion: string;
+
     constructor(
         private readonly httpClient: HttpClient,
         private readonly mapiClient: MapiClient,
@@ -21,6 +24,12 @@ export class UsersService {
         private readonly authenticator: IAuthenticator,
         private readonly settingsProvider: ISettingsProvider
     ) { }
+
+    private async getRequestUrl(url: string): Promise<string> {
+        const apiUrl = this.managementApiUrl || await this.settingsProvider.getSetting(Constants.SettingNames.managementApiUrl);
+        const apiVersion = this.managementApiVersion || await this.settingsProvider.getSetting(Constants.SettingNames.managementApiVersion);
+        return `${apiUrl}${url}?api-version=${apiVersion}`
+    }
 
     /**
      * Initiates signing-in with Basic identity provider.
@@ -40,13 +49,12 @@ export class UsersService {
     }
 
     public async authenticate(username: string, password: string): Promise<string> {
-        const managementApiUrl = await this.settingsProvider.getSetting(Constants.SettingNames.managementApiUrl);
-        const managementApiVersion = await this.settingsProvider.getSetting(Constants.SettingNames.managementApiVersion);
         const credentials = `Basic ${btoa(`${username}:${password}`)}`;
+        const requestUrl = await this.getRequestUrl("/identity");
 
         try {
             const response = await this.httpClient.send<Identity>({
-                url: `${managementApiUrl}/identity?api-version=${managementApiVersion}`,
+                url: requestUrl,
                 method: HttpMethod.get,
                 headers: [{ name: "Authorization", value: credentials }]
             });
@@ -61,6 +69,21 @@ export class UsersService {
         catch (error) {
             return undefined;
         }
+    }
+
+    public async activateUser(parameters: URLSearchParams): Promise<void> {
+        const userId = parameters.get("userid");
+        const ticket = parameters.get("ticket");
+        const ticketId = parameters.get("ticketid");
+        const identity = parameters.get("identity");
+        const requestUrl = `/users/${userId}/identities/Basic/${identity}`;
+        const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
+        
+        await this.mapiClient.put<void>(requestUrl, [{ name: "Authorization", value: token }], {});
+    }
+
+    public async updatePassword(userId: string, newPassword: string): Promise<void> {
+        await this.mapiClient.patch(userId, undefined, { password: newPassword });
     }
 
     /**
@@ -79,24 +102,33 @@ export class UsersService {
      * Returns currently authenticated user ID.
      */
     public async getCurrentUserId(): Promise<string> {
+        const token = await this.authenticator.getAccessToken();
+        
+        if (!token) {
+            return null;
+        }
+
+        const requestUrl = await this.getRequestUrl("/identity");
+        
         try {
-            const identity = await this.mapiClient.get<Identity>("/identity");
+            const response = await this.httpClient.send<Identity>({
+                url: requestUrl,
+                method: HttpMethod.get,
+                headers: [{ name: "Authorization", value: token }]
+            });
+
+            await this.authenticator.refreshAccessTokenFromHeader(response.headers);
+
+            const identity = response.toObject();
 
             if (!identity || !identity.id) {
                 return null;
             }
 
             return `/users/${identity.id}`;
-
         }
         catch (error) {
-            if (error.code === "Unauthorized") {
-                return null;
-            }
-
-            if (error.code === "ResourceNotFound") {
-                return null;
-            }
+            return null;
         }
     }
 
