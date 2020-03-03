@@ -31,10 +31,9 @@ export class HelpWorkshop {
             });
         }
 
-
         const domains = await this.corsPolicyHelper.getConfiguredOrigins();
 
-        // if (domains.length === 0) {
+        if (domains.length === 0) {
             this.hints.push({
                 issue: `Setup CORS policy`,
                 suggestion: cors,
@@ -42,7 +41,7 @@ export class HelpWorkshop {
                     name: "cors-help-workshop",
                 }
             });
-        // }
+        }
     }
 
     public selectHint(hint: Hint): void {
