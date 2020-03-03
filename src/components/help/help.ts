@@ -1,4 +1,5 @@
-﻿import * as ko from "knockout";
+﻿import { RequestPolicy } from "./../../helpers/requestPolicy";
+import * as ko from "knockout";
 import cors from "./articles/cors.html";
 import domain from "./articles/domain.html";
 import { PolicyService } from "./../../services/policyService";
@@ -7,6 +8,8 @@ import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { View, ViewManager } from "@paperbits/common/ui";
 import { Hint } from "./hint";
 import { JObject } from "../../helpers/jObject";
+import { PolicyMap } from "../../helpers/policyMap";
+import { CorsPolicy } from "../../helpers/corsPolicy";
 
 
 @Component({
@@ -41,7 +44,12 @@ export class HelpWorkshop {
             });
         }
 
-        const obj = JObject.fromXml("<abc>Hello</abc>");
+        PolicyMap["cors"] = CorsPolicy;
+        PolicyMap["root"] = RequestPolicy;
+
+        const globalPolicyJObject = JObject.fromXml(globalPolicyXml);
+        const requestPolicy = RequestPolicy.fromConfig(globalPolicyJObject);
+        const corsPolicy = requestPolicy.findChildPolicy("cors");
 
         debugger;
     }

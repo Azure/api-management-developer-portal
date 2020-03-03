@@ -342,4 +342,8 @@ export class Utils {
     public static join(values: string[], separator: string): string {
         return values.filter(x => x && x !== "").join(separator);
     }
+
+    public static isExpression(value: string): boolean {
+        return value && value.toString().search(/@({|\()/) !== -1;
+    }
 }
