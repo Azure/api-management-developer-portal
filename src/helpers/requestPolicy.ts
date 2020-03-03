@@ -9,12 +9,12 @@ export class RequestPolicy extends PolicyFragment {
     private xml: string;
     private xmlIsParsable: boolean = true;
 
-    constructor(fromScratch: boolean = true) {
+    constructor() {
         super("root");
     }
 
-    public static fromConfig(config: JObject, policyScope?: string): RequestPolicy {
-        const policy = new RequestPolicy(false);
+    public static fromConfig(config: JObject): RequestPolicy {
+        const policy = new RequestPolicy();
 
         config.children.forEach(childPolicyConfig => {
             policy.policies.push(PolicyFragment.fromConfig(childPolicyConfig));
@@ -29,7 +29,7 @@ export class RequestPolicy extends PolicyFragment {
         return policy;
     }
 
-    public static fromXml(policyXml: string, policyScope: string): RequestPolicy {
+    public static fromXml(policyXml: string): RequestPolicy {
         try {
             const expressions = RequestPolicy.extractLiquid(policyXml).concat(RequestPolicy.extractRazor(policyXml)).concat(RequestPolicy.extractXsl(policyXml));
             const expressionsTable = {};
@@ -57,7 +57,8 @@ export class RequestPolicy extends PolicyFragment {
                 cdata: checkForExpression,
                 comment: checkForExpression
             });
-            const requestPolicy = <RequestPolicy>RequestPolicy.fromConfig(requestPolicyConfig, policyScope);
+
+            const requestPolicy = <RequestPolicy>RequestPolicy.fromConfig(requestPolicyConfig);
 
             return requestPolicy;
         }

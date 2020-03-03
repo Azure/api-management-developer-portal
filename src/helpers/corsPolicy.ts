@@ -35,8 +35,8 @@ export class CorsPolicy extends PolicyFragment {
     constructor() {
         super("cors");
 
-        this.allowedOrigins = ["*"];
-        this.allowedMethods = ["GET", "POST"];
+        this.allowedOrigins = [];
+        this.allowedMethods = ["GET", "POST", "PUT", "DELETE", "PATCH"];
         this.allowedHeaders = [];
         this.exposedHeaders = [];
     }

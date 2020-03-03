@@ -53,11 +53,13 @@ import { ChangePasswordModule } from "./components/users/change-password/ko/chan
 import { ChangePasswordEditorModule } from "./components/users/change-password/ko/changePasswordEditor.module";
 import { TenantService } from "./services/tenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/validationSummary.module";
-import { ValidationSummaryDesignModule} from "./components/users/validation-summary/validationSummary.design.module"
+import { ValidationSummaryDesignModule } from "./components/users/validation-summary/validationSummary.design.module"
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
 import { PolicyService } from "./services/policyService";
+import { CorsPolicyHelper } from "./helpers/corsPolicyHelper";
+import { CorsHelpWorkshop } from "./components/help/articles/cors";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -111,7 +113,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("blobStorage", AzureBlobStorage);
-        injector.bindSingleton("tenantService", TenantService);        
+        injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("roleService", StaticRoleService);
         injector.bindSingleton("tenantService", TenantService);
@@ -123,6 +125,10 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindToCollection("routeGuards", UnsavedChangesRouteGuard);
         injector.bindToCollection("trayCommands", SaveChangesToolButton);
-        injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);       
+        injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);
+
+        
+        injector.bindSingleton("corsPolicyHelper", CorsPolicyHelper);
+        injector.bindSingleton("corsHelpWorkshop", CorsHelpWorkshop);
     }
 }

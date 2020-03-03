@@ -96,7 +96,11 @@ export class MapiClient {
             httpRequest.body = JSON.stringify(httpRequest.body);
         }
 
-        httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${this.managementApiVersion}`);
+        const apiVersion = httpRequest.url.startsWith(`/contentTypes`)
+            ? "2018-06-01-preview"
+            : this.managementApiVersion;
+
+        httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${apiVersion}`);
 
         const call = () => this.makeRequest<T>(httpRequest);
         const requestKey = this.getRequestKey(httpRequest);
@@ -144,7 +148,7 @@ export class MapiClient {
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
-        try {            
+        try {
             await this.authenticator.refreshAccessTokenFromHeader(response.headers);
         }
         catch (error) {
