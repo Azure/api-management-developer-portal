@@ -338,4 +338,8 @@ export class Utils {
 
         return utc;
     }
+
+    public static join(values: string[], separator: string): string {
+        return values.filter(x => x && x !== "").join(separator);
+    }
 }

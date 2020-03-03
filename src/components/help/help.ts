@@ -6,6 +6,7 @@ import template from "./help.html";
 import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { View, ViewManager } from "@paperbits/common/ui";
 import { Hint } from "./hint";
+import { JObject } from "../../helpers/jObject";
 
 
 @Component({
@@ -39,6 +40,10 @@ export class HelpWorkshop {
                 suggestion: domain
             });
         }
+
+        const obj = JObject.fromXml("<abc>Hello</abc>");
+
+        debugger;
     }
 
     public selectHint(hint: Hint): void {
