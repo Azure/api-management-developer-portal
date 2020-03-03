@@ -26,19 +26,20 @@ export class ResetDetailsWorkshop {
 
     public async reset(): Promise<void> {
         try {
-            this.logger.traceEvent("Click: Reset website");
+            this.logger.traceEvent("Click: Reset portal");
 
-            this.viewManager.notifySuccess("Website reset", `The website is being reset...`);
+            this.viewManager.notifySuccess("Portal reset", `The portal is being reset...`);
+            this.viewManager.clearJourney();
 
             await this.provisioningService.cleanup();
             await this.provisioningService.provision();
 
-            this.logger.traceEvent("Success: Website reset");
+            this.logger.traceEvent("Success: Portal reset");
 
             window.location.reload();
         } 
         catch (error) {
-            this.viewManager.notifyError("Confirm", `Unable to reset website. Please try again later.`);
+            this.viewManager.notifyError("Confirm", `Unable to reset portal. Please try again later.`);
         }
     }
 }

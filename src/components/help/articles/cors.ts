@@ -16,6 +16,7 @@ export class CorsHelpWorkshop {
 
     public async setupCors(): Promise<void> {
         await this.corsPolicyHelper.configureOrigins();
-        this.viewManager.addToast("CORS policy", `CORS policy has been setup successfully.`);
+        this.viewManager.addToast("Portal setup", `CORS policy has been setup successfully.`);
+        this.viewManager.clearJourney();
     }
 }
