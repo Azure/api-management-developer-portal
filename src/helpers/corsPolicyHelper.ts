@@ -40,7 +40,7 @@ export class CorsPolicyHelper {
             return;
         }
 
-        const portalHostnames = ["alzalson.developer.azure-api.net"]; // TODO: Get from configuration.
+        const portalHostnames = [location.hostname]; // TODO: Get from configuration as well.
 
         const origins = portalHostnames
             .map(x => `https://${x}`)
