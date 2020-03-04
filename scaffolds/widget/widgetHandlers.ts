@@ -15,6 +15,7 @@ export class WidgetHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: widgetName,
             category: widgetCategory,
+            requires: [],
             displayName: widgetDisplayName,
             iconClass: "paperbits-puzzle-10",
 

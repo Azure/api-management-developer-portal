@@ -3,18 +3,18 @@ const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
     target: "web",
-    mode: "production",
+    mode: "development",
     optimization: {
         minimizer: [
-            new TerserPlugin({
-                sourceMap: false,
-                terserOptions: {
-                    mangle: false,
-                    output: {
-                        comments: false,
-                    }
-                }
-            })
+            // new TerserPlugin({
+            //     sourceMap: false,
+            //     terserOptions: {
+            //         mangle: false,
+            //         output: {
+            //             comments: false,
+            //         }
+            //     }
+            // })
         ]
     },
     entry: {

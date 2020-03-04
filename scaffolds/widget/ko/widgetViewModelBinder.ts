@@ -29,6 +29,7 @@ export class WidgetViewModelBinder implements ViewModelBinder<WidgetModel, Widge
                 readonly: bindingContext ? bindingContext.readonly : false,
                 model: model,
                 editor: widgetEditorSelector,
+                draggable: true,
                 applyChanges: async () => {
                     await this.updateViewModel(model, viewModel);
                     this.eventManager.dispatchEvent("onContentUpdate");

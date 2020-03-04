@@ -1,3 +1,42 @@
+$table-border-width: 1px;
+$table-border-color: #dee2e6;
+$spacer: 10px;
+$table-bg: none;
+$table-cell-padding: 10px;
+$body-bg: none;
+
+
+
+.table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: $spacer;
+    background-color: $table-bg; // Reset for nesting within parents with `background-color`.
+
+    td,
+    th {
+        padding: $table-cell-padding;
+        vertical-align: top;
+        border-top: $table-border-width solid $table-border-color;
+    }
+
+    thead th {
+        vertical-align: bottom;
+        border-bottom: (2 * $table-border-width) solid $table-border-color;
+    }
+
+    tbody + tbody {
+        border-top: (2 * $table-border-width) solid $table-border-color;
+    }
+
+    .table {
+        background-color: $body-bg;
+    }
+}
+
+
+
+
 .table {
     margin: 20px 0;
     overflow-x: auto;

@@ -47,6 +47,16 @@ $tip-width: 10px;
 .add-block-container {
     width: 100%;
     max-height: 600px;
+    .remove-block {
+        background-color: rgb(43, 135, 218);
+        background-repeat: no-repeat;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        .paperbits-icon {
+            padding: 0;
+        }
+    }
 }
 
 .zoom-selector-item {
