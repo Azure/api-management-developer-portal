@@ -2,12 +2,11 @@ import * as Constants from "./../constants";
 import { IAuthenticator } from "../authentication";
 import { MapiClient } from "./mapiClient";
 import { Router } from "@paperbits/common/routing";
-import { HttpHeader, HttpClient, HttpMethod } from "@paperbits/common/http";
+import { HttpHeader } from "@paperbits/common/http";
 import { User } from "../models/user";
 import { Utils } from "../utils";
 import { Identity } from "../contracts/identity";
 import { UserContract, } from "../contracts/user";
-import { ISettingsProvider } from "@paperbits/common/configuration";
 import { MapiSignupRequest } from "../contracts/signupRequest";
 
 /**
@@ -15,11 +14,9 @@ import { MapiSignupRequest } from "../contracts/signupRequest";
  */
 export class UsersService {
     constructor(
-        private readonly httpClient: HttpClient,
         private readonly mapiClient: MapiClient,
         private readonly router: Router,
         private readonly authenticator: IAuthenticator,
-        private readonly settingsProvider: ISettingsProvider
     ) { }
 
     /**
@@ -40,19 +37,10 @@ export class UsersService {
     }
 
     public async authenticate(username: string, password: string): Promise<string> {
-        const managementApiUrl = await this.settingsProvider.getSetting(Constants.SettingNames.managementApiUrl);
-        const managementApiVersion = await this.settingsProvider.getSetting(Constants.SettingNames.managementApiVersion);
         const credentials = `Basic ${btoa(`${username}:${password}`)}`;
 
-        try {
-            const response = await this.httpClient.send<Identity>({
-                url: `${managementApiUrl}/identity?api-version=${managementApiVersion}`,
-                method: HttpMethod.get,
-                headers: [{ name: "Authorization", value: credentials }]
-            });
-
-            const identity = response.toObject();
-            await this.authenticator.refreshAccessTokenFromHeader(response.headers);            
+        try {            
+            const identity = await this.mapiClient.get<Identity>("/identity", [{ name: "Authorization", value: credentials }]);
 
             if (identity && identity.id) {
                 return identity.id;
@@ -61,6 +49,21 @@ export class UsersService {
         catch (error) {
             return undefined;
         }
+    }
+
+    public async activateUser(parameters: URLSearchParams): Promise<void> {
+        const userId = parameters.get("userid");
+        const ticket = parameters.get("ticket");
+        const ticketId = parameters.get("ticketid");
+        const identity = parameters.get("identity");
+        const requestUrl = `/users/${userId}/identities/Basic/${identity}`;
+        const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
+        
+        await this.mapiClient.put<void>(requestUrl, [{ name: "Authorization", value: token }], {});
+    }
+
+    public async updatePassword(userId: string, newPassword: string): Promise<void> {
+        await this.mapiClient.patch(userId, undefined, { password: newPassword });
     }
 
     /**
@@ -79,6 +82,12 @@ export class UsersService {
      * Returns currently authenticated user ID.
      */
     public async getCurrentUserId(): Promise<string> {
+        const token = await this.authenticator.getAccessToken();
+        
+        if (!token) {
+            return null;
+        }
+        
         try {
             const identity = await this.mapiClient.get<Identity>("/identity");
 
@@ -87,16 +96,9 @@ export class UsersService {
             }
 
             return `/users/${identity.id}`;
-
         }
         catch (error) {
-            if (error.code === "Unauthorized") {
-                return null;
-            }
-
-            if (error.code === "ResourceNotFound") {
-                return null;
-            }
+            return null;
         }
     }
 
