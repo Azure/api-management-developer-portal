@@ -5,31 +5,41 @@ import { HttpHeader } from "@paperbits/common/http/httpHeader";
 
 export class DefaultAuthenticator implements IAuthenticator {
     public async getAccessToken(): Promise<string> {
-        return sessionStorage.getItem("accessToken");
+        return new Promise<string>((resolve) => {
+            const accessToken = sessionStorage.getItem("accessToken");
+            resolve(accessToken);
+        });
     }
 
-    public async setAccessToken(accessToken: string): Promise<void> {
-        sessionStorage.setItem("accessToken", accessToken);
+    public async setAccessToken(accessToken: string): Promise<void> {        
+        return new Promise<void>((resolve) => {
+            sessionStorage.setItem("accessToken", accessToken);
+            resolve();
+        });
     }
 
     public async refreshAccessTokenFromHeader(responseHeaders: HttpHeader[] = []): Promise<string> {
-        const accessTokenHeader = responseHeaders.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
-        if (accessTokenHeader && accessTokenHeader.value) {
-            const regex = /token=\"(.*)",refresh/gm;
-            const match = regex.exec(accessTokenHeader.value);
+        return new Promise<string>(async (resolve) => {
+            const accessTokenHeader = responseHeaders.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
+            if (accessTokenHeader && accessTokenHeader.value) {
+                const regex = /token=\"(.*)",refresh/gm;
+                const match = regex.exec(accessTokenHeader.value);
 
-            if (!match || match.length < 2) {
-                console.error(`Token format is not valid.`);
-            }
+                if (!match || match.length < 2) {
+                    console.error(`Token format is not valid.`);
+                }
 
-            const accessToken = `SharedAccessSignature ${accessTokenHeader.value}`;
-            const current = sessionStorage.getItem("accessToken");
-            if (current !== accessToken) {
-                sessionStorage.setItem("accessToken", accessToken);
-                return accessToken;
+                const accessToken = `SharedAccessSignature ${accessTokenHeader.value}`;
+                const current = sessionStorage.getItem("accessToken");
+                if (current !== accessToken) {
+                    sessionStorage.setItem("accessToken", accessToken);                
+                    resolve(accessToken);
+                    return;
+                }
             }
-        }
-        return undefined;
+            
+            resolve(undefined);
+        });
     }
 
     public async clearAccessToken(): Promise<void> {

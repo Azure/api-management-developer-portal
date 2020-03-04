@@ -114,7 +114,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("tenantService", TenantService);        
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("roleService", StaticRoleService);
-        injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("policyService", PolicyService);
