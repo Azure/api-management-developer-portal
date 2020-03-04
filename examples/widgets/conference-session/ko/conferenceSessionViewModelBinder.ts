@@ -23,6 +23,7 @@ export class ConferenceSessionViewModelBinder implements ViewModelBinder<Confere
                 displayName: widgetDisplayName,
                 readonly: bindingContext?.readonly,
                 model: model,
+                draggable: true,
                 editor: widgetEditorSelector,
                 applyChanges: async () => {
                     await this.updateViewModel(model, viewModel);

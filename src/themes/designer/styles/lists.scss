@@ -2,146 +2,136 @@
 @import "mixins.scss";
 @import "icons.scss";
 
-.list {
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    padding: 0;
-    margin: 0;
-    height: 100%;
+.list-item-group {
+    flex-basis: 100%;
     width: 100%;
 
     .list-item-group {
-        flex-basis: 100%;
-        width: 100%;
-
-        .list-item-group {
-            padding-left: 2.75em;
-        }
-
-        .list-item {
-            flex-basis: unset;
-        }
-
-        &.dragged {
-            pointer-events: none;
-            box-shadow: 0 0 2px 2px rgba(128, 128, 128, 0.4);
-            transform: scale(1.07);
-            transition: transform 0.1s ease-in-out;
-            min-width: 200px;
-            position: fixed;
-        }
-    }
-
-    .list-item-collapsible {
-        display: flex;
-        align-items: center;
-
-        .list-item-collapse {
-            display: block;
-            cursor: pointer;
-            background: none;
-            border: none;
-            margin-right: 5px;
-
-            .paperbits-icon {
-                color: $collapse-button-color;
-            }
-        }
+        padding-left: 2.75em;
     }
 
     .list-item {
-        line-height: $list-item-size;
-        position: relative;
-        cursor: pointer;
-        vertical-align: middle;
-        display: flex;
-        flex-wrap: wrap;
-        flex-basis: 100%;
-        text-decoration: none;
-        color: $color-base;
-
-        .paperbits-icon {
-            padding: 0 5px 0 10px;
-        }
-
-        .list-item-label {
-            padding: 0 5px;
-            flex: 1;
-            text-decoration: none;
-            color: $color-base;
-            @include text-overflow();
-        }
-
-        &:focus,
-        &:hover {
-            outline: none;
-        }
-
-        &:hover {
-            @include selection();
-        }
-
-        &:focus {
-            @include selection();
-        }
-
-        &.selected {
-            @include selection();
-        }
-
-        .list-item-handle {
-            cursor: pointer;
-            cursor: grab;
-        }
-
-        .list-item-thumbnail {
-            width: 30px;
-            height: 30px;
-            display: block;
-            border-radius: 50%;
-            background-color: $list-item-thumbnail-bg;
-            float: right;
-            box-shadow: inset -1px 1px 1px 0 rgba(0, 0, 0, 0.1);
-        }
-
-        &.list-item-image {
-            @include pseudo-transparent-bckg();
-            margin: 3px;
-            flex-basis: auto;
-        }
-
-        &.list-item-large {
-            display: block;
-            width: 130px;
-            text-align: center;
-            padding: 5px;
-            line-height: 1.5em;
-            margin-bottom: 15px;
-            flex-basis: auto;
-
-            a {
-                display: inline-block;
-            }
-
-            .paperbits-icon {
-                display: block;
-                padding: 0;
-                height: 1.5em;
-            }
-        }
+        flex-basis: unset;
     }
 
-    &.list-checkboxes {
-        .list-item {
-            padding-left: 25px;
+    &.dragged {
+        pointer-events: none;
+        box-shadow: 0 0 2px 2px rgba(128, 128, 128, 0.4);
+        transform: scale(1.07);
+        transition: transform 0.1s ease-in-out;
+        min-width: 200px;
+        position: fixed;
+    }
+}
 
-            &.list-item-checked::before {
-                @extend .paperbits-icon;
-                @extend .paperbits-check-2;
-                position: absolute;
-                left: 5px;
-            }
+.list-item-collapsible {
+    display: flex;
+    align-items: center;
+
+    .list-item-collapse {
+        display: block;
+        cursor: pointer;
+        background: none;
+        border: none;
+        margin-right: 5px;
+
+        .paperbits-icon {
+            color: $collapse-button-color;
+        }
+    }
+}
+
+.list-item {
+    // line-height: $list-item-size;
+    line-height: 2em;
+    position: relative;
+    cursor: pointer;
+    vertical-align: middle;
+    display: flex;
+    text-decoration: none;
+    color: $color-base;
+    margin-bottom: 5px;
+
+    .paperbits-icon {
+        padding: 0 5px 0 10px;
+    }
+
+    .list-item-label {
+        padding: 0 5px;
+        flex: 1;
+        text-decoration: none;
+        color: $color-base;
+        @include text-overflow();
+    }
+
+    &:focus,
+    &:hover {
+        outline: none;
+    }
+
+    &:hover {
+        @include selection();
+    }
+
+    &:focus {
+        @include selection();
+    }
+
+    &.selected {
+        @include selection();
+    }
+
+    .list-item-handle {
+        cursor: pointer;
+        cursor: grab;
+    }
+
+    .list-item-thumbnail {
+        width: 30px;
+        height: 30px;
+        display: block;
+        border-radius: 50%;
+        background-color: $list-item-thumbnail-bg;
+        float: right;
+        box-shadow: inset -1px 1px 1px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    &.list-item-image {
+        @include pseudo-transparent-bckg();
+        margin: 3px;
+        flex-basis: auto;
+    }
+
+    &.list-item-large {
+        display: inline-block;
+        width: 130px;
+        text-align: center;
+        padding: 5px;
+        line-height: 1.5em;
+        margin-bottom: 15px;
+        flex-basis: auto;
+
+        a {
+            display: inline-block;
+        }
+
+        .paperbits-icon {
+            display: block;
+            padding: 0;
+            height: 1.5em;
+        }
+    }
+}
+
+.list-checkboxes {
+    .list-item {
+        padding-left: 25px;
+
+        &.list-item-checked::before {
+            @extend .paperbits-icon;
+            @extend .paperbits-check-2;
+            position: absolute;
+            left: 5px;
         }
     }
 }

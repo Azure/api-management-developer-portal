@@ -68,11 +68,10 @@ export class DefaultAuthenticator implements IAuthenticator {
         let accessToken = fullAccessToken;
         const refreshRegex = /token=\"(.*)",refresh/gm;
         const refreshMatch = refreshRegex.exec(fullAccessToken);
-        if (!refreshMatch || refreshMatch.length < 2) {
-            console.error(`Token is not full.`);
-        } else {
+
+        if (refreshMatch && refreshMatch.length >= 2) {
             accessToken = refreshMatch[1];
-        }        
+        }
 
         const regex = /^[\w\-]*\&(\d*)\&/gm;
         const match = regex.exec(accessToken);
