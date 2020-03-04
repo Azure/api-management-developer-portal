@@ -1,9 +1,12 @@
-@font-face {
-    font-family: "paperbits";
-    src: url("fonts/paperbits-theme.eot");
-    src: url("fonts/paperbits-theme.eot") format("embedded-opentype"), url("fonts/paperbits-theme.woff2") format("woff2"), url("fonts/paperbits-theme.woff") format("woff"), url("fonts/paperbits-theme.ttf") format("truetype"), url("fonts/paperbits-theme.svg") format("svg");
-    font-weight: normal;
-    font-style: normal;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: $default-heading-font-weight;
+    line-height: $default-heading-line-height;
+    color: $default-heading-color;
 }
 
 pre {

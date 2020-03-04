@@ -81,7 +81,7 @@ textarea {
 
     &:focus {
         outline: none;
-        border: 1px solid $form-control-border-focused;
+        border: 1px solid $form-control-focus-color;
     }
 
     &.is-invalid {
