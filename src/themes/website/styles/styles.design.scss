@@ -1,5 +1,16 @@
 @import "styles.scss";
 
+@font-face {
+    font-family: 'icons';
+    src: url('fonts/icons.eot?a6lw2r');
+    src: url('fonts/icons.eot?a6lw2r#iefix') format('embedded-opentype'), 
+        url('fonts/icons.ttf?a6lw2r') format('truetype'), 
+        url('fonts/icons.woff?a6lw2r') format('woff'), 
+        url('fonts/icons.svg?a6lw2r#icons') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
 $style-guide-font-family: "Arial";
 $style-guide-font-size: 12px;
 $style-guide-color: #000;

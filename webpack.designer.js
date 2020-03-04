@@ -8,7 +8,7 @@ module.exports = {
     devtool: "inline-source-map",
     entry: {
         "editors/scripts/paperbits": ["./src/startup.design.ts"],
-        "editors/styles/paperbits": [`./src/themes/designer/styles/paperbits.scss`],
+        "editors/styles/paperbits": [`./src/themes/designer/styles/styles.scss`],
         "scripts/theme": ["./src/startup.runtime.ts"],
         "styles/theme": [`./src/themes/website/styles/styles.design.scss`]
     },
