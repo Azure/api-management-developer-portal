@@ -2,34 +2,22 @@ import * as Constants from "./../constants";
 import { IAuthenticator } from "../authentication";
 import { MapiClient } from "./mapiClient";
 import { Router } from "@paperbits/common/routing";
-import { HttpHeader, HttpClient, HttpMethod } from "@paperbits/common/http";
+import { HttpHeader } from "@paperbits/common/http";
 import { User } from "../models/user";
 import { Utils } from "../utils";
 import { Identity } from "../contracts/identity";
 import { UserContract, } from "../contracts/user";
-import { ISettingsProvider } from "@paperbits/common/configuration";
 import { MapiSignupRequest } from "../contracts/signupRequest";
 
 /**
  * A service for management operations with users.
  */
 export class UsersService {
-    private managementApiUrl: string;
-    private managementApiVersion: string;
-
     constructor(
-        private readonly httpClient: HttpClient,
         private readonly mapiClient: MapiClient,
         private readonly router: Router,
         private readonly authenticator: IAuthenticator,
-        private readonly settingsProvider: ISettingsProvider
     ) { }
-
-    private async getRequestUrl(url: string): Promise<string> {
-        const apiUrl = this.managementApiUrl || await this.settingsProvider.getSetting(Constants.SettingNames.managementApiUrl);
-        const apiVersion = this.managementApiVersion || await this.settingsProvider.getSetting(Constants.SettingNames.managementApiVersion);
-        return `${apiUrl}${url}?api-version=${apiVersion}`
-    }
 
     /**
      * Initiates signing-in with Basic identity provider.
@@ -50,17 +38,9 @@ export class UsersService {
 
     public async authenticate(username: string, password: string): Promise<string> {
         const credentials = `Basic ${btoa(`${username}:${password}`)}`;
-        const requestUrl = await this.getRequestUrl("/identity");
 
-        try {
-            const response = await this.httpClient.send<Identity>({
-                url: requestUrl,
-                method: HttpMethod.get,
-                headers: [{ name: "Authorization", value: credentials }]
-            });
-
-            const identity = response.toObject();
-            await this.authenticator.refreshAccessTokenFromHeader(response.headers);            
+        try {            
+            const identity = await this.mapiClient.get<Identity>("/identity", [{ name: "Authorization", value: credentials }]);
 
             if (identity && identity.id) {
                 return identity.id;
@@ -107,19 +87,9 @@ export class UsersService {
         if (!token) {
             return null;
         }
-
-        const requestUrl = await this.getRequestUrl("/identity");
         
         try {
-            const response = await this.httpClient.send<Identity>({
-                url: requestUrl,
-                method: HttpMethod.get,
-                headers: [{ name: "Authorization", value: token }]
-            });
-
-            await this.authenticator.refreshAccessTokenFromHeader(response.headers);
-
-            const identity = response.toObject();
+            const identity = await this.mapiClient.get<Identity>("/identity");
 
             if (!identity || !identity.id) {
                 return null;
