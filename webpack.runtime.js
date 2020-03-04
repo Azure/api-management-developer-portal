@@ -6,15 +6,15 @@ module.exports = {
     mode: "development",
     optimization: {
         minimizer: [
-            // new TerserPlugin({
-            //     sourceMap: false,
-            //     terserOptions: {
-            //         mangle: false,
-            //         output: {
-            //             comments: false,
-            //         }
-            //     }
-            // })
+            new TerserPlugin({
+                sourceMap: false,
+                terserOptions: {
+                    mangle: false,
+                    output: {
+                        comments: false,
+                    }
+                }
+            })
         ]
     },
     entry: {
