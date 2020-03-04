@@ -1,4 +1,19 @@
 .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
     padding: 0;
-    padding-bottom: 1rem
+    margin-bottom: 20px;
+    list-style: none;
+    background-color: none
+}
+
+.breadcrumb-item+.breadcrumb-item {
+    padding-left: .5rem;
+
+    &::before {
+        display: inline-block;
+        padding-right: .5rem;
+        color: #6c757d;
+        content: "/";
+    }
 }
