@@ -1,7 +1,7 @@
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod } from "@paperbits/common/http";
 import { CaptchaParams } from "../contracts/captchaParams";
 import { SignupRequest } from "../contracts/signupRequest";
-import { ResetRequest, ResetPassword, ChangePasswordRequest } from "../contracts/resetRequest";
+import { ResetRequest, ChangePasswordRequest } from "../contracts/resetRequest";
 import { IAuthenticator } from "../authentication";
 import { DelegationAction } from "../contracts/tenantSettings";
 import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
@@ -90,19 +90,6 @@ export class BackendService {
             } else {
                 throw Error(response.toText());
             }
-        }
-    }
-
-    public async sendConfirmRequest(resetPassword: ResetPassword): Promise<void> {
-        const response = await this.httpClient.send(
-            { 
-                url: await this.getUrl("/confirm/password"), 
-                method: HttpMethod.post,
-                headers: [{ name: "Content-Type", value: "application/json" }],
-                body: JSON.stringify(resetPassword)
-            });
-        if (response.statusCode !== 200) {
-            throw Error(response.toText());
         }
     }
 
