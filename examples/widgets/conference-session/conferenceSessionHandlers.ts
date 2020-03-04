@@ -10,6 +10,7 @@ export class ConferenceSessionHandlers implements IWidgetHandler {
             displayName: widgetDisplayName,
             category: widgetCategory,
             iconClass: "paperbits-puzzle-10",
+            requires: [],
             createModel: async () => {
                 const model = new ConferenceSessionModel();
                 model.sessionNumber = defaultSessionNumber;
