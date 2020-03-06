@@ -2,12 +2,16 @@
  * This script automates deployments between developer portal instances.
  * In order to run it, you need to:
  * 
- * 1) clone the api-management-developer-portal repository
- * 2) npm install in the root of the project
- * 3) install az-cli (https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
- * 4) run this script with a valid combination of arguments
+ * 1) Clone the api-management-developer-portal repository
+ * 2) `npm install` in the root of the project
+ * 3) Install az-cli (https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+ * 4) Run this script with a valid combination of arguments
  * 
- * If you run with the --selfHosted flag, you are expected to supply a sourceStorage and destStorage parameter.
+ * Managed portal command example:
+ * node migrate --sourceEndpoint from.management.azure-api.net --destEndpoint to.management.azure-api.net --publishEndpoint to.developer.azure-api.net --sourceToken "SharedAccessSignature integration&2020..." --destToken "SharedAccessSignature integration&2020..."
+ * 
+ * If you run with the --selfHosted flag, you are expected to supply a sourceStorage and destStorage parameters.
+ * Auto-publishing is not supported for self-hosted versions, so make sure you publish the portal (for example, locally) and upload the generated static files to your hosting after the migration is completed.
  * 
  * You can specify the SAS tokens directly (via sourceToken and destToken), or you can supply an identifier and key,
  * and the script will generate tokens that expire in 1 hour. (via sourceId, sourceKey, destId, destKey)
@@ -20,16 +24,17 @@ const mkdirSync = require('fs').mkdirSync;
 const execSync = require('child_process').execSync;
 
 const yargs = require('yargs')
-    .example('$0 --autoPublish \
-        --sourceName <name> \
+    .example('$0 \
+        --publishEndpoint <name.developer.azure-api.net> \
+        --sourceEndpoint <name.management.azure-api.net> \
         --sourceToken <token> \
-        --destName <name>.management.azure-api.net \
+        --destEndpoint <name.management.azure-api.net> \
         --destToken <token>\n', 'Managed')
-    .example('$0 --selfHosted --autoPublish \
-        --sourceName <name>.management.azure-api.net \
+    .example('$0 --selfHosted \
+        --sourceEndpoint <name.management.azure-api.net> \
         --sourceToken <token> \
         --sourceStorage <connectionString> \
-        --destName <name.management.azure-api.net> \
+        --destEndpoint <name.management.azure-api.net> \
         --destToken <token> \
         --destStorage <connectionString>', 'Self-Hosted')
     /*.option('interactive', {
@@ -44,15 +49,16 @@ const yargs = require('yargs')
         description: 'If the portal is self-hosted',
         implies: ['sourceStorage', 'destStorage']
     })
-    .option('autoPublish', {
+    .option('publishEndpoint', {
         alias: 'p',
-        type: 'boolean',
-        description: 'If set, publishes the destination portal'
-    })
-    .option('sourceName', {
         type: 'string',
-        description: 'The hostname of the source portal',
-        example: '<name>.management.azure-api.net',
+        description: 'Endpoint of the destination managed developer portal; if empty, destination portal will not be published; unsupported in self-hosted scenario',
+        example: '<name.developer.azure-api.net>'
+    })
+    .option('sourceEndpoint', {
+        type: 'string',
+        description: 'The hostname of the management endpoint of the source API Management service',
+        example: '<name.management.azure-api.net>',
         demandOption: true
     })
     .option('sourceId', {
@@ -79,10 +85,10 @@ const yargs = require('yargs')
         example: 'DefaultEndpointsProtocol=…',
         implies: 'selfHosted'
     })
-    .option('destName', {
+    .option('destEndpoint', {
         type: 'string',
-        description: 'The hostname of the destination portal',
-        example: '<name>.management.azure-api.net',
+        description: 'The hostname of the management endpoint of the destination API Management service',
+        example: '<name.management.azure-api.net>',
         demandOption: true
     })
     .option('destId', {
@@ -112,29 +118,28 @@ const yargs = require('yargs')
     .argv;
 
 async function run() {
-    // we just need the name of the resource, but allow the user to input <name>.management.azure-api.net
-    // for convenience / backwards compat.
-    const sourceName = yargs.sourceName.replace('.management.azure-api.net', '');
+    const sourceEndpoint = yargs.sourceEndpoint;
     const sourceToken = await getTokenOrThrow(yargs.sourceToken, yargs.sourceId, yargs.sourceKey);
-    const sourceStorage = await getStorageConnectionOrThrow(yargs.sourceStorage, sourceName, sourceToken);
+    const sourceStorage = await getStorageConnectionOrThrow(yargs.sourceStorage, sourceEndpoint, sourceToken);
 
-    const destName = yargs.destName.replace('.management.azure-api.net', '');
+    const destEndpoint = yargs.destEndpoint;
     const destToken = await getTokenOrThrow(yargs.destToken, yargs.destId, yargs.destKey);
-    const destStorage = await getStorageConnectionOrThrow(yargs.destStorage, destName, destToken);
-
+    const destStorage = await getStorageConnectionOrThrow(yargs.destStorage, destEndpoint, destToken);
+    const publishEndpoint = yargs.publishEndpoint;
+    
     // the rest of this mirrors migrate.bat, but since we're JS, we're platform-agnostic.
     const dataFile = '../dist/data.json';
     const mediaFolder = '../dist/content';
     const mediaContainer = 'content';
 
     // capture the content of the source portal (excl. media)
-    execSync(`node ./capture ${sourceName}.management.azure-api.net "${sourceToken}" ${dataFile}`);
+    execSync(`node ./capture ${sourceEndpoint} "${sourceToken}" ${dataFile}`);
 
     // remove all content of the target portal (incl. media)
-    execSync(`node ./cleanup ${destName}.management.azure-api.net "${destToken}" "${destStorage}"`);
+    execSync(`node ./cleanup ${destEndpoint} "${destToken}" "${destStorage}"`);
 
     // upload the content of the source portal (excl. media)
-    execSync(`node ./generate ${destName}.management.azure-api.net "${destToken}" ${dataFile}`);
+    execSync(`node ./generate ${destEndpoint} "${destToken}" ${dataFile}`);
 
     // download media files from the source portal
     mkdirSync(mediaFolder, { recursive: true });
@@ -143,9 +148,11 @@ async function run() {
     // upload media files to the target portal
     execSync(`az storage blob upload-batch --source ${mediaFolder} --destination ${mediaContainer} --connection-string "${destStorage}"`);
 
-    if (yargs.autoPublish) {
+    if (publishEndpoint && !yargs.selfHosted) {
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-        publish(destName, destToken);
+        publish(publishEndpoint, destToken);
+    } else if (publishEndpoint) {
+        console.warn("Auto-publishing self-hosted portal is not supported.");
     }
 }
 
@@ -220,19 +227,19 @@ async function generateSASToken(id, key, expiresIn = 3600) {
 /**
  * Attempts to get a develoer portal storage connection string in two ways:
  * 1) if the connection string is explicitly set by the user, use it.
- * 2) retrieving the connection string from the management API using the instance name and SAS token
+ * 2) retrieving the connection string from the management API using the instance endpoint and SAS token
  * @param {string} storage an optionally specified storage connection string
- * @param {string} name the name of the management instance
+ * @param {string} endpoint the management endpoint of service instance
  * @param {string} token the SAS token
  */
-async function getStorageConnectionOrThrow(storage, name, token) {
+async function getStorageConnectionOrThrow(storage, endpoint, token) {
     if (storage) {
         return storage;
     }
     if (token) {
         // token should always be available, because we call
         // getTokenOrThrow before this
-        return await getStorageConnection(name, token);
+        return await getStorageConnection(endpoint, token);
     }
     throw Error('Storage connection could not be retrieved');
 }
@@ -240,10 +247,10 @@ async function getStorageConnectionOrThrow(storage, name, token) {
 /**
  * Gets a storage connection string from the management API for the specified APIM instance and
  * SAS token.
- * @param {string} name the name of the management instance
+ * @param {string} endpoint the management endpoint of service instance
  * @param {string} token the SAS token
  */
-async function getStorageConnection(name, token) {
+async function getStorageConnection(endpoint, token) {
     const options = {
         port: 443,
         method: 'GET',
@@ -252,17 +259,17 @@ async function getStorageConnection(name, token) {
         }
     };
 
-    const raw = await request(`https://${name}.management.azure-api.net/tenant/settings?api-version=2018-01-01`, options);
+    const raw = await request(`https://${endpoint}/tenant/settings?api-version=2018-01-01`, options);
     const body = JSON.parse(raw);
     return body.settings.PortalStorageConnectionString;
 }
 
 /**
  * Publishes the content of the specified APIM instance using a SAS token.
- * @param {string} name the name of the management instance
+ * @param {string} endpoint the publishing endpoint of the destination developer portal instance
  * @param {string} token the SAS token
  */
-async function publish(name, token) {
+async function publish(endpoint, token) {
     const options = {
         port: 443,
         method: 'POST',
@@ -270,9 +277,11 @@ async function publish(name, token) {
             'Authorization': token
         }
     };
-
+    
+    const url = `https://${endpoint}/publish`;
+    
     // returns with literal OK (missing quotes), which is invalid json.
-    await request(`https://${name}.developer.azure-api.net/publish`, options);
+    await request(url, options);
 }
 
 run();
