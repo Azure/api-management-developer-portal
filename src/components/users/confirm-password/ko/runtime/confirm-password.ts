@@ -24,8 +24,7 @@ export class ConfirmPassword {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly eventManager: EventManager,
-        private readonly backendService: BackendService) {
+        private readonly eventManager: EventManager) {
         this.password = ko.observable();
         this.passwordConfirmation = ko.observable();
         this.isResetConfirmed = ko.observable(false);
@@ -49,13 +48,6 @@ export class ConfirmPassword {
      */
     @OnMounted()
     public async initialize(): Promise<void> {
-        const isUserSignedIn = await this.usersService.isUserSignedIn();
-
-        if (isUserSignedIn) {
-            this.usersService.navigateToHome();
-            return;
-        }
-
         this.userId = await this.usersService.getCurrentUserId();
 
         if (this.userId) {
