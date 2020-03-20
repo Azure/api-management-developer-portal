@@ -1,6 +1,7 @@
 import { VersionSet } from "./versionSet";
 import { ApiContract, SubscriptionKeyParameterName } from "../contracts/api";
 import { Utils } from "../utils";
+import { AuthenticationSettings } from "../contracts/authenticationSettings";
 
 /**
  * API model.
@@ -82,6 +83,8 @@ export class Api {
      */
     public type?: string;
 
+    public authenticationSettings: AuthenticationSettings;
+
     constructor(contract?: ApiContract) {
         if (contract.id) {
             this.id = Utils.getResourceName("apis", contract.id, "shortId");
@@ -100,6 +103,7 @@ export class Api {
         this.apiRevision = contract.properties.apiRevision;
         this.subscriptionKeyParameterNames = contract.properties.subscriptionKeyParameterNames;
         this.type = contract.properties.type;
+        this.authenticationSettings = contract.properties.authenticationSettings;
 
         if (contract.properties.apiVersionSet) {
             const nestedVersionSet = contract.properties.apiVersionSet;

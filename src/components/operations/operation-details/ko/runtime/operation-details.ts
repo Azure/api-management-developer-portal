@@ -1,3 +1,4 @@
+import { AuthorizationServer } from "./../../../../../models/authorizationServer";
 import { Representation } from "./../../../../../models/representation";
 import * as ko from "knockout";
 import template from "./operation-details.html";
@@ -34,6 +35,7 @@ export class OperationDetails {
     public readonly primaryHostname: ko.Observable<string>;
     public readonly hostnames: ko.Observable<string[]>;
     public readonly working: ko.Observable<boolean>;
+    public readonly associatedAuthServer: ko.Observable<AuthorizationServer>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -44,6 +46,7 @@ export class OperationDetails {
         this.working = ko.observable(false);
         this.primaryHostname = ko.observable();
         this.hostnames = ko.observable();
+        this.associatedAuthServer = ko.observable();
         this.api = ko.observable();
         this.schemas = ko.observableArray([]);
         this.tags = ko.observableArray([]);
@@ -74,6 +77,9 @@ export class OperationDetails {
 
     @Param()
     public enableConsole: boolean;
+
+    @Param()
+    public authorizationServers: AuthorizationServer[];
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -118,6 +124,13 @@ export class OperationDetails {
     public async loadApi(apiName: string): Promise<void> {
         const api = await this.apiService.getApi(`apis/${apiName}`);
         this.api(api);
+
+        if (this.authorizationServers) {
+            const associatedAuthServer = this.authorizationServers
+                .find(x => x.id === api.authenticationSettings?.oAuth2?.authorizationServerId);
+
+            this.associatedAuthServer(associatedAuthServer);
+        }
     }
 
     public async loadOperation(apiName: string, operationName: string): Promise<void> {

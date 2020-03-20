@@ -63,6 +63,7 @@ import { VisibilityGuard } from "@paperbits/common/user";
 import { StaticUserService } from "./services";
 import { SignOutRouteGuard } from "./routing/signOutRouteGuard";
 import { ProvisionService } from "./services/provisioningService";
+import { OAuthService } from "./services/oauthService";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -123,5 +124,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("routeHelper", RouteHelper);
         injector.bindSingleton("userService", StaticUserService);
         injector.bindSingleton("provisioningService", ProvisionService);
+        injector.bindSingleton("oauthService", OAuthService);
     }
 }
