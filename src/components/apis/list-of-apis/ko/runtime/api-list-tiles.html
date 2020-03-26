@@ -3,7 +3,7 @@
         <div class="search-input">
             <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
                 data-bind="textInput: pattern" />
-            <button type="button" class="search-button">
+            <button type="button" class="search-button" aria-label="Search APIs">
                 <i class="icon icon-magnifier"></i>
             </button>
         </div>
@@ -86,7 +86,7 @@
 
     <div class="cards-footer">
         <!-- ko if: hasPager -->
-        <ul class="pagination">
+        <ul class="pagination" role="navigation" aria-label="Pagination">
             <!-- ko if: hasPrevPage -->
             <li class="page-item">
                 <a href="#" class="page-link" role="button" aria-label="Previous page"
