@@ -2,7 +2,7 @@
     <div class="input-group">
         <input type="search" role="searchbox" aria-label="Search" placeholder="Search products"
             data-bind="textInput: pattern" />
-        <button type="button" class="search-button">
+        <button type="button" class="search-button" aria-label="Search products">
             <i class="icon icon-magnifier"></i>
         </button>
     </div>
@@ -49,7 +49,7 @@
     <!-- ko if: hasPager -->
     <!-- ko ifnot: working -->
     <div class="table-footer">
-        <ul class="pagination justify-content-center">
+        <ul class="pagination justify-content-center" role="navigation" aria-label="Pagination">
             <!-- ko if: hasPrevPage -->
             <li>
                 <a href="#" class="page-link" role="button" aria-label="Previous page"
