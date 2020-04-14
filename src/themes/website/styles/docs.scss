@@ -9,16 +9,6 @@
     background: #fff;
 }
 
-.close {
-    font-size: 15px;
-    float: right;
-    font-weight: 700;
-    line-height: 1;
-    color: #000;
-    border: none;
-    background: none;
-}
-
 aside {
     h1 {
         min-width: 200px;
@@ -106,13 +96,6 @@ aside {
             .btn {
                 margin: 0;
             }
-        }
-
-        .btn-no-border {
-            padding: 5px;
-            margin: 5px;
-            border: none;
-            background: none;
         }
 
         textarea {

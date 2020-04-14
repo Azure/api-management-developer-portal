@@ -19,7 +19,7 @@ export class ProductApisModelBinder implements IModelBinder<ProductApisModel> {
         const model = new ProductApisModel();
 
         if (contract.detailsPageHyperlink) {
-            model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromConfig(contract.detailsPageHyperlink);
+            model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.detailsPageHyperlink);
         }
 
         return model;

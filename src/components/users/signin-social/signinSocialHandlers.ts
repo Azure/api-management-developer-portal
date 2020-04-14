@@ -9,7 +9,7 @@ export class SigninSocialHandlers implements IWidgetHandler {
             category: "User",
             displayName: "Sign-in button: OAuth",
             iconClass: "paperbits-cheque-3",
-            requires: ["scripts"],
+            requires: ["html"],
             createModel: async () => {
                 const model = new SigninSocialModel();
                 model.aadLabel = "Azure Active Directory";

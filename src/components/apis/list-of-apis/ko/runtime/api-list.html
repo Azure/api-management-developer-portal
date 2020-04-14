@@ -1,11 +1,14 @@
 <div class="form-inline search-input">
-    <div class="input-group">
-        <input type="search" role="searchbox" aria-label="Search" placeholder="Search" data-bind="textInput: pattern" />
-        <button type="button" class="search-button" aria-label="Search APIs">
-            <i class="icon icon-magnifier"></i>
-        </button>
+    <div class="d-block flex-grow">
+        <div class="input-group">
+            <input type="search" role="searchbox" aria-label="Search APIs" placeholder="Search APIs" spellcheck="false" data-bind="textInput: pattern" />
+            <button type="button" class="search-button" aria-label="Search APIs">
+                <i class="icon icon-magnifier"></i>
+            </button>
+        </div>
+        <tag-input params="{ scope: 'apis', onChange: onTagsChange }"></tag-input>
     </div>
-    <div class="input-group">
+    <div class="form-group ml-auto">
         <label for="groupByTag">Group by tag
             <div class="switch">
                 <input id="groupByTag" type="checkbox" data-bind="checked: $component.groupByTag">
