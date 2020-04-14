@@ -60,3 +60,9 @@
     @extend .paperbits-icon;
     @extend .paperbits-alert-circle-i;
 }
+
+.btn-dismiss {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}

@@ -1,22 +1,20 @@
-<div class="row">
-    <div class="col-md-6">
-        <div class="search-input">
-            <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
-                data-bind="textInput: pattern" />
+<div class="form-inline search-input">
+    <div class="d-block flex-grow">
+        <div class="input-group">
+            <input type="search" role="searchbox" aria-label="Search APIs" placeholder="Search APIs" spellcheck="false" data-bind="textInput: pattern" />
             <button type="button" class="search-button" aria-label="Search APIs">
                 <i class="icon icon-magnifier"></i>
             </button>
         </div>
+        <tag-input params="{ scope: 'apis', onChange: onTagsChange }"></tag-input>
     </div>
-    <div class="col-md-4">
-        <div class="form-group form-group-inline">
-            <label for="groupByTag">Group by tag
-                <div class="switch">
-                    <input id="groupByTag" type="checkbox" data-bind="checked: $component.groupByTag">
-                    <span class="slider round"></span>
-                </div>
-            </label>
-        </div>
+    <div class="form-group ml-auto">
+        <label for="groupByTag">Group by tag
+            <div class="switch">
+                <input id="groupByTag" type="checkbox" data-bind="checked: $component.groupByTag">
+                <span class="slider round"></span>
+            </div>
+        </label>
     </div>
 </div>
 

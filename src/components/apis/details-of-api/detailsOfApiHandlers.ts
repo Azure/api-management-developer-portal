@@ -8,7 +8,7 @@ export class DetailsOfApiHandlers implements IWidgetHandler {
             category: "APIs",
             displayName: "API: details",
             iconClass: "paperbits-cheque-3",
-            requires: ["scripts"],
+            requires: ["html"],
             createModel: async () => new DetailsOfApiModel()
         };
 

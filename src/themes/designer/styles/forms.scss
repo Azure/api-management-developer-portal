@@ -115,12 +115,7 @@ input[type="range"].form-control {
 
     &::-webkit-slider-thumb {
         -webkit-appearance: none;
-        width: 17px;
-        height: 17px;
-        background: $form-control-slider-thumb-bg;
-        border: 2px solid $form-control-border;
-        cursor: pointer;
-        border-radius: 20px;
+        @include slider-thumb();
     }
 }
 
@@ -161,6 +156,8 @@ textarea {
     .form-control:active,
     .form-control:focus {
         border: none;
+        background: none;
+        outline: none;
     }
 
     .input-group-btn {

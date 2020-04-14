@@ -20,7 +20,7 @@ export class ListOfApisModelBinder implements IModelBinder<ListOfApisModel> {
         model.defaultGroupByTagToEnabled = contract.defaultGroupByTagToEnabled === true;
 
         if (contract.detailsPageHyperlink) {
-            model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromConfig(contract.detailsPageHyperlink);
+            model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.detailsPageHyperlink);
         }
 
         return model;
