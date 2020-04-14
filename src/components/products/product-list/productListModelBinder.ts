@@ -25,7 +25,7 @@ export class ProductListModelBinder implements IModelBinder<ProductListModel> {
         model.allowSelection = contract.allowSelection;
 
         if (contract.detailsPageHyperlink) {
-            model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromConfig(contract.detailsPageHyperlink);
+            model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.detailsPageHyperlink);
         }
 
         return model;

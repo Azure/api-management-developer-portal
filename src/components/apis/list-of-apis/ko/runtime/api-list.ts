@@ -7,6 +7,8 @@ import { ApiService } from "../../../../../services/apiService";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { RouteHelper } from "../../../../../routing/routeHelper";
+import { Tag } from "../../../../../models/tag";
+import { Utils } from "../../../../../utils";
 
 
 @RuntimeComponent({
@@ -21,6 +23,7 @@ export class ApiList {
     public readonly apiGroups: ko.ObservableArray<TagGroup<Api>>;
     public readonly working: ko.Observable<boolean>;
     public readonly pattern: ko.Observable<string>;
+    public readonly tags: ko.Observable<string[]>;
     public readonly page: ko.Observable<number>;
     public readonly hasPager: ko.Computed<boolean>;
     public readonly hasPrevPage: ko.Observable<boolean>;
@@ -36,6 +39,7 @@ export class ApiList {
         this.apis = ko.observableArray([]);
         this.working = ko.observable();
         this.pattern = ko.observable();
+        this.tags = ko.observable([]);
         this.page = ko.observable(1);
         this.hasPrevPage = ko.observable();
         this.hasNextPage = ko.observable();
@@ -64,6 +68,9 @@ export class ApiList {
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.resetSearch);
 
+        this.tags
+            .subscribe(this.resetSearch);
+
         this.groupByTag
             .subscribe(this.resetSearch);
     }
@@ -76,6 +83,7 @@ export class ApiList {
 
         const query: SearchQuery = {
             pattern: this.pattern(),
+            tags: this.tags(),
             skip: pageNumber * Constants.defaultPageSize,
             take: Constants.defaultPageSize
         };
@@ -129,5 +137,9 @@ export class ApiList {
     public async resetSearch(): Promise<void> {
         this.page(1);
         this.loadPageOfApis();
+    }
+
+    public async onTagsChange(tags: Tag[]): Promise<void> {
+        this.tags(tags.map(tag => Utils.getResourceName("tags", tag.id)));
     }
 }

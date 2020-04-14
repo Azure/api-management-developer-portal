@@ -125,6 +125,10 @@
     content: "\e922";
 }
 
+.icon-add-filter:before {
+    content: "\e910";
+}
+
 .icon.icon-wadl {
     @include icon-18px();
     background-color: transparent;

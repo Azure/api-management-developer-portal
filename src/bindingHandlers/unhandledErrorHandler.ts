@@ -7,11 +7,15 @@ export class UnhandledErrorHandler {
         private readonly logger: Logger,
         private readonly router: Router
     ) {
-        window.addEventListener("error", this.handlerError.bind(this), false);
+        window.addEventListener("error", this.handlerError.bind(this), true);
+        window.addEventListener("unhandledrejection", this.handlerPromiseRejection.bind(this), true);
     }
 
     public handlerError(event: ErrorEvent): void {
         this.logger.traceError(event.error);
-        this.router.navigateTo(pageUrl500);
+    }
+
+    public handlerPromiseRejection(event: PromiseRejectionEvent): void {
+        this.logger.traceError(event.reason);
     }
 }

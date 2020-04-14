@@ -8,7 +8,7 @@ export class OperationDetailsHandlers implements IWidgetHandler {
             category: "Operations",
             displayName: "Operation: details",
             iconClass: "paperbits-cheque-3",
-            requires: ["scripts"],
+            requires: ["html"],
             createModel: async () => new OperationDetailsModel()
         };
 

@@ -8,7 +8,7 @@ export class ResetPasswordHandlers implements IWidgetHandler {
             category: "User",
             displayName: "Password: reset form",
             iconClass: "paperbits-cheque-3",
-            requires: ["scripts"],
+            requires: ["html"],
             createModel: async () => new ResetPasswordModel()
         };
 

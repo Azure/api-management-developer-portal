@@ -8,6 +8,8 @@ import { ApiService } from "../../../../../services/apiService";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { Router } from "@paperbits/common/routing";
+import { Utils } from "../../../../../utils";
+import { Tag } from "../../../../../models/tag";
 
 
 @RuntimeComponent({
@@ -23,6 +25,7 @@ export class ApiListDropdown {
     public readonly selectedApiName: ko.Observable<string>;
     public readonly working: ko.Observable<boolean>;
     public readonly pattern: ko.Observable<string>;
+    public readonly tags: ko.Observable<string[]>;
     public readonly page: ko.Observable<number>;
     public readonly hasPager: ko.Computed<boolean>;
     public readonly hasPrevPage: ko.Observable<boolean>;
@@ -40,6 +43,7 @@ export class ApiListDropdown {
         this.selectedApi = ko.observable();
         this.selectedApiName = ko.observable();
         this.pattern = ko.observable();
+        this.tags = ko.observable([]);
         this.page = ko.observable(1);
         this.hasPrevPage = ko.observable();
         this.hasNextPage = ko.observable();
@@ -63,6 +67,9 @@ export class ApiListDropdown {
 
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
+            .subscribe(this.resetSearch);
+
+        this.tags
             .subscribe(this.resetSearch);
 
         this.router.addRouteChangeListener(this.onRouteChange);
@@ -98,6 +105,7 @@ export class ApiListDropdown {
 
             const query: SearchQuery = {
                 pattern: this.pattern(),
+                tags: this.tags(),
                 skip: pageNumber * Constants.defaultPageSize,
                 take: Constants.defaultPageSize
             };
@@ -153,6 +161,10 @@ export class ApiListDropdown {
 
     public getReferenceUrl(api: Api): string {
         return this.routeHelper.getApiReferenceUrl(api.name, this.detailsPageUrl());
+    }
+
+    public async onTagsChange(tags: Tag[]): Promise<void> {
+        this.tags(tags.map(tag => Utils.getResourceName("tags", tag.id)));
     }
 
     @OnDestroyed()
