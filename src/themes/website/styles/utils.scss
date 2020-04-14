@@ -1,3 +1,25 @@
 .hidden {
     display: none;
 }
+
+.no-border {
+    border: none;
+    background: none;
+    padding: unset;
+}
+
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
+.d-block {
+    display: block;
+}

@@ -8,7 +8,7 @@ export class ProductListHandlers implements IWidgetHandler {
             category: "Products",
             displayName: "List of products",
             iconClass: "paperbits-cheque-3",
-            requires: ["scripts"],
+            requires: ["html"],
             createModel: async () => new ProductListModel("list")
         };
 
@@ -23,7 +23,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
             category: "Products",
             displayName: "List of products (dropdown)",
             iconClass: "paperbits-cheque-3",
-            requires: ["scripts"],
+            requires: ["html"],
             createModel: async () => new ProductListModel("dropdown")
         };
 

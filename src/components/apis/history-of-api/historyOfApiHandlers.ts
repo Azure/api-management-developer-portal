@@ -8,7 +8,7 @@ export class HistoryOfApiHandlers implements IWidgetHandler {
             category: "APIs",
             displayName: "API: history",
             iconClass: "paperbits-cheque-3",
-            requires: ["scripts"],
+            requires: ["html"],
             createModel: async () => new HistoryOfApiModel()
         };
 

@@ -8,7 +8,7 @@ export class SigninHandlers implements IWidgetHandler {
             category: "User",
             displayName: "Sign-in form: basic",
             iconClass: "paperbits-cheque-3",
-            requires: ["scripts"],
+            requires: ["html"],
             createModel: async () => new SigninModel()
         };
 

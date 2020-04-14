@@ -8,7 +8,7 @@ export class ChangePasswordHandlers implements IWidgetHandler {
             category: "User",
             displayName: "Password: change form",
             iconClass: "paperbits-cheque-3",
-            requires: ["scripts"],
+            requires: ["html"],
             createModel: async () => new ChangePasswordModel()
         };
 

@@ -1,11 +1,14 @@
 <div class="form-inline search-input">
-    <div class="input-group">
-        <input type="search" role="searchbox" aria-label="Search" placeholder="Search" data-bind="textInput: pattern" />
-        <button type="button" class="search-button" aria-label="Search operations">
-            <i class="icon icon-magnifier"></i>
-        </button>
+    <div class="d-block flex-grow">
+        <div class="input-group">
+            <input type="search" role="searchbox" aria-label="Search operations" placeholder="Search operations" spellcheck="false" data-bind="textInput: pattern" />
+            <button type="button" class="search-button" aria-label="Search operations">
+                <i class="icon icon-magnifier"></i>
+            </button>
+        </div>
+        <tag-input params="{ scope: 'apis', onChange: onTagsChange }"></tag-input>
     </div>
-    <div class="input-group">
+    <div class="form-group ml-auto">
         <label for="groupByTag">Group by tag
             <div class="switch">
                 <input id="groupByTag" type="checkbox" data-bind="checked: $component.groupByTag">
@@ -88,25 +91,25 @@
 <!-- ko if: hasPager -->
 <!-- ko ifnot: working -->
 <ul class="pagination justify-content-center" role="navigation" aria-label="Pagination">
-        <!-- ko if: hasPrevPage -->
-        <li class="page-item">
-            <a href="#" class="page-link" role="button" aria-label="Previous page"
-                data-bind="click: prevPage, enable: hasPrePage">
-                <i class="icon icon-chevron-left"></i>
-            </a>
-        </li>
-        <!-- /ko -->
-        <li class="page-item">
-            <span class="page-link" data-bind="text: pageNumber"></span>
-        </li>
-        <!-- ko if: hasNextPage -->
-        <li class="page-item">
-            <a href="#" class="page-link" role="button" aria-label="Next page"
-                data-bind="click: nextPage, enable: hasNextPage">
-                <i class="icon icon-chevron-right"></i>
-            </a>
-        </li>
-        <!-- /ko -->
+    <!-- ko if: hasPrevPage -->
+    <li class="page-item">
+        <a href="#" class="page-link" role="button" aria-label="Previous page"
+            data-bind="click: prevPage, enable: hasPrePage">
+            <i class="icon icon-chevron-left"></i>
+        </a>
+    </li>
+    <!-- /ko -->
+    <li class="page-item">
+        <span class="page-link" data-bind="text: pageNumber"></span>
+    </li>
+    <!-- ko if: hasNextPage -->
+    <li class="page-item">
+        <a href="#" class="page-link" role="button" aria-label="Next page"
+            data-bind="click: nextPage, enable: hasNextPage">
+            <i class="icon icon-chevron-right"></i>
+        </a>
+    </li>
+    <!-- /ko -->
 </ul>
 <!-- /ko -->
 <!-- /ko -->

@@ -16,7 +16,7 @@ export class DetailsOfApiModelBinder implements IModelBinder<DetailsOfApiModel> 
         const model = new DetailsOfApiModel();
 
         if (contract.changeLogPageHyperlink) {
-            model.changeLogPageHyperlink = await this.permalinkResolver.getHyperlinkFromConfig(contract.changeLogPageHyperlink);
+            model.changeLogPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.changeLogPageHyperlink);
         }
 
         return model;

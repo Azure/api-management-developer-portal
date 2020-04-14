@@ -8,7 +8,7 @@ export class ProductApisHandlers implements IWidgetHandler {
             category: "Products",
             displayName: "Product: APIs",
             iconClass: "paperbits-cheque-3",
-            requires: ["scripts"],
+            requires: ["html"],
             createModel: async () => new ProductApisModel()
         };
 

@@ -1,12 +1,30 @@
 import { TagContract } from "../contracts/tag";
 import { PageContract } from "../contracts/page";
+import { Page } from "../models/page";
+import { Tag } from "../models/tag";
+import { Utils } from "../utils";
+import { MapiClient } from "./mapiClient";
 
 export class TagService {
-    public async createTag(id: string, name: string): Promise<TagContract> {
-        throw new Error("Not implemented.");
-    }
+    constructor(private readonly mapiClient: MapiClient) { }
+    
+    public async getTags(scope?: string, filter?: string): Promise<Page<Tag>> {
+        let query = "/tags";
 
-    public async getTags(scope?: string): Promise<PageContract<TagContract[]>> {
-        throw new Error("Not implemented.");
+        if (scope) {
+            query = Utils.addQueryParameter(query, `scope=${scope}`);
+        }
+
+        if (filter) {
+            query = Utils.addQueryParameter(query, `$filter=(startswith(properties/displayName,'${filter}'))`);
+        }
+
+        const pageOfTags = await this.mapiClient.get<PageContract<TagContract>>(query);
+
+        const page = new Page<Tag>();
+        page.value = pageOfTags.value.map(x => new Tag(x));
+        page.nextLink = pageOfTags.nextLink;
+
+        return page;
     }
 }

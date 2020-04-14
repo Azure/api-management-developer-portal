@@ -16,7 +16,7 @@ export class HistoryOfApiModelBinder implements IModelBinder<HistoryOfApiModel> 
         const model = new HistoryOfApiModel();
 
         if (contract.detailsPageHyperlink) {
-            model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromConfig(contract.detailsPageHyperlink);
+            model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.detailsPageHyperlink);
         }
 
         return model;
