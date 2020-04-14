@@ -7,6 +7,8 @@ import { Api } from "../../../../../models/api";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { RouteHelper } from "../../../../../routing/routeHelper";
+import { Tag } from "../../../../../models/tag";
+import { Utils } from "../../../../../utils";
 
 
 @RuntimeComponent({
@@ -22,6 +24,7 @@ export class ApiListTiles {
     public readonly selectedApiName: ko.Observable<string>;
     public readonly working: ko.Observable<boolean>;
     public readonly pattern: ko.Observable<string>;
+    public readonly tags: ko.Observable<string[]>;
     public readonly page: ko.Observable<number>;
     public readonly hasPager: ko.Computed<boolean>;
     public readonly hasPrevPage: ko.Observable<boolean>;
@@ -38,6 +41,7 @@ export class ApiListTiles {
         this.working = ko.observable();
         this.selectedApiName = ko.observable().extend(<any>{ acceptChange: this.allowSelection });
         this.pattern = ko.observable();
+        this.tags = ko.observable([]);
         this.page = ko.observable(1);
         this.hasPrevPage = ko.observable();
         this.hasNextPage = ko.observable();
@@ -65,6 +69,9 @@ export class ApiListTiles {
 
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
+            .subscribe(this.resetSearch);
+
+        this.tags
             .subscribe(this.resetSearch);
 
         this.groupByTag
@@ -100,6 +107,7 @@ export class ApiListTiles {
 
             const query: SearchQuery = {
                 pattern: this.pattern(),
+                tags: this.tags(),
                 skip: pageNumber * Constants.defaultPageSize,
                 take: Constants.defaultPageSize
             };
@@ -135,5 +143,9 @@ export class ApiListTiles {
 
     public getReferenceUrl(api: Api): string {
         return this.routeHelper.getApiReferenceUrl(api.name, this.detailsPageUrl());
+    }
+
+    public async onTagsChange(tags: Tag[]): Promise<void> {
+        this.tags(tags.map(tag => Utils.getResourceName("tags", tag.id)));
     }
 }

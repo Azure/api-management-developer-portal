@@ -7,7 +7,6 @@
 .form-inline .form-check {
     width: 100%;
 }
-
 @media (min-width: 576px) {
     .form-inline label {
         display: flex;
@@ -15,6 +14,7 @@
         justify-content: center;
         margin-bottom: 0;
     }
+
     .form-inline .form-group {
         display: flex;
         flex: 0 0 auto;
@@ -22,18 +22,22 @@
         align-items: center;
         margin-bottom: 0;
     }
+
     .form-inline .form-control {
         display: inline-block;
         width: auto;
         vertical-align: middle;
     }
+
     .form-inline .form-control-plaintext {
         display: inline-block;
     }
-    .form-inline .input-group,
-    .form-inline .custom-select {
+
+    .form-inline .custom-select,
+    .form-inline .input-group {
         width: auto;
     }
+
     .form-inline .form-check {
         display: flex;
         align-items: center;
@@ -41,11 +45,12 @@
         width: auto;
         padding-left: 0;
     }
+
     .form-inline .form-check-input {
         position: relative;
         flex-shrink: 0;
         margin-top: 0;
-        margin-right: 0.25rem;
+        margin-right: .25rem;
         margin-left: 0;
     }
 }
@@ -71,6 +76,7 @@
     padding-left: 0;
     margin-right: .75rem;
 }
+
 .form-check {
     position: relative;
     display: block;
@@ -80,15 +86,6 @@
 .form-group {
     margin-bottom: 1rem;
 }
-
-
-
-
-
-
-
-
-
 
 .form-group-inline {
     display: flex;
@@ -107,7 +104,6 @@ $switch-height: 30px;
 $switch-trigger-gap: 4px;
 $switch-trigger-size: $switch-height - $switch-trigger-gap * 2;
 
-
 .switch {
     position: relative;
     display: inline-block;
@@ -123,8 +119,8 @@ $switch-trigger-size: $switch-height - $switch-trigger-gap * 2;
         &:checked + .slider {
             background: $switch-background-color-on;
         }
-        
-         &:checked + .slider:before {
+
+        &:checked + .slider:before {
             transform: translateX(26px);
         }
     }
@@ -141,6 +137,7 @@ $switch-trigger-size: $switch-height - $switch-trigger-gap * 2;
 
         &.round {
             border-radius: 34px;
+
             &:before {
                 border-radius: 50%;
             }
@@ -156,9 +153,8 @@ $switch-trigger-size: $switch-height - $switch-trigger-gap * 2;
             background: #ffffff;
             transition: .4s;
         }
-    }   
+    }
 }
-
 
 $search-button-width: 30px;
 
@@ -191,17 +187,19 @@ $search-button-width: 30px;
     display: flex;
     flex: 1;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    align-items: flex-start;
     max-width: 500px;
+
+    tag-input {
+        display: block;
+        margin: 5px 0;
+        min-width: 300px;
+    }
 
     .input-group:first-child {
         border-bottom: 1px solid #a19f9d;
         min-width: 300px;
         flex: 1;
-    }
-
-    .input-group:last-child {
-        margin-left: 20px;
     }
 
     input[type=search] {
@@ -222,5 +220,8 @@ $search-button-width: 30px;
         bottom: 0;
         width: $search-button-width;
     }
-}
 
+    .switch {
+        margin: 0 10px;
+    }
+}

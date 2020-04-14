@@ -419,7 +419,7 @@ export class ApiService {
             throw new Error(`Parameter "apiId" not specified.`);
         }
 
-        let cachedApi = this.lastApiProducts[apiId];
+        const cachedApi = this.lastApiProducts[apiId];
 
         if (!cachedApi) {
             // clean cache if apiId changed

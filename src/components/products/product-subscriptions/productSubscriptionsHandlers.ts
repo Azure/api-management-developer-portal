@@ -8,7 +8,7 @@ export class ProductSubscriptionsHandlers implements IWidgetHandler {
             category: "Products",
             displayName: "Product: subscriptions",
             iconClass: "paperbits-cheque-3",
-            requires: ["scripts"],
+            requires: ["html"],
             createModel: async () => new ProductSubscriptionsModel()
         };
 

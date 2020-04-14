@@ -80,3 +80,12 @@
 .fit {
   @include fit(0);
 }
+
+@mixin slider-thumb {
+    width: $form-control-slider-thumb-size;
+    height: $form-control-slider-thumb-size;
+    background: $form-control-slider-thumb-bg;
+    border: 2px solid $form-control-border;
+    cursor: pointer;
+    border-radius: 20px;
+}
