@@ -8,7 +8,7 @@ export class ConfirmPasswordHandlers implements IWidgetHandler {
             category: "User",
             displayName: "Password: confirmation form",
             iconClass: "paperbits-cheque-3",
-            requires: ["scripts"],
+            requires: ["html"],
             createModel: async () => new ConfirmPasswordModel()
         };
 

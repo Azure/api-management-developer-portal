@@ -31,6 +31,8 @@ $list-group-link-color: #555 !default;
 $z-index-tooltips: 8900;
 $z-index-alerts: 9000;
 $z-index-dropdowns: 9100;
+$z-index-balloon: 9101;
+
 $badge-background-color: #e1e1e1;
 $list-item-selected: #def0fe;
 $tag-background-color: #797878;
@@ -41,3 +43,7 @@ $default-heading-font-weight: 500;
 $default-heading-line-height: 1.2;
 $default-heading-color: inherit;
 $default-navlink-padding:  0.5rem 1rem;
+$default-text-color: #555;
+
+$balloon-background: #fff;
+$balloon-border-radius: 0;
