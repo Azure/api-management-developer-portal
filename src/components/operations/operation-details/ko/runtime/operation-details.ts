@@ -1,4 +1,3 @@
-import { Representation } from "./../../../../../models/representation";
 import * as ko from "knockout";
 import template from "./operation-details.html";
 import { Router } from "@paperbits/common/routing";
@@ -6,7 +5,9 @@ import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@pap
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
-import { TypeDefinition, TypeDefinitionProperty } from "../../../../../models/typeDefinition";
+import { TypeDefinition, TypeDefinitionProperty, TypeDefinitionPropertyTypeReference } from "../../../../../models/typeDefinition";
+import { TypeDefinitionPropertyTypeCombination } from "./../../../../../models/typeDefinition";
+import { Representation } from "./../../../../../models/representation";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TenantService } from "../../../../../services/tenantService";
 import { SwaggerObject } from "./../../../../../contracts/swaggerObject";
@@ -157,17 +158,24 @@ export class OperationDetails {
                 }
             });
 
-        const typeNames = prepresentations.filter(p => !!p.typeName).map(p => p.typeName).filter((item, pos, self) => self.indexOf(item) === pos);
+        const typeNames = prepresentations
+            .filter(p => !!p.typeName)
+            .map(p => p.typeName)
+            .filter((item, pos, self) => self.indexOf(item) === pos);
 
         const schemasPromises = schemaIds.map(schemaId => this.apiService.getApiSchema(`${apiId}/${schemaId}`));
         const schemas = await Promise.all(schemasPromises);
         const definitions = schemas.map(x => x.definitions).flat();
 
         let lookupResult = [...typeNames];
+
         while (lookupResult.length > 0) {
             const references = definitions.filter(d => lookupResult.indexOf(d.name) !== -1);
 
-            lookupResult = references.length === 0 ? [] : this.lookupReferences(references, typeNames);
+            lookupResult = references.length === 0
+                ? []
+                : this.lookupReferences(references, typeNames);
+
             if (lookupResult.length > 0) {
                 typeNames.push(...lookupResult);
             }
@@ -178,7 +186,23 @@ export class OperationDetails {
 
     private lookupReferences(definitions: TypeDefinition[], skipNames: string[]): string[] {
         const objectDefinitions: TypeDefinitionProperty[] = definitions.map(r => r.properties).flat();
-        return objectDefinitions.filter(p => p && p.type && (p.type.isReference || p.kind === "indexer") && skipNames.indexOf(p.type.name) === -1).map(d => d.type.name);
+        const result = [];
+
+        objectDefinitions.forEach(definition => {
+            if (definition.kind === "indexed") {
+                result.push(definition.type["name"]);
+            }
+
+            if (definition.type instanceof TypeDefinitionPropertyTypeReference && !skipNames.includes(definition.type.name)) {
+                result.push(definition.type["name"]);
+            }
+
+            if (definition.type instanceof TypeDefinitionPropertyTypeCombination) {
+                result.push(...definition.type.combination.map(x => x["name"]));
+            }
+        });
+
+        return result;
     }
 
     public async loadGatewayInfo(): Promise<void> {

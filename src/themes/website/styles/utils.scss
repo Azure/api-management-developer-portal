@@ -23,3 +23,8 @@
 .d-block {
     display: block;
 }
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
