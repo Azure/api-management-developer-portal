@@ -34,11 +34,13 @@ export interface SchemaObjectContract extends ReferenceObjectContract {
 
     items?: SchemaObjectContract;
 
-    allOf?: SchemaObjectContract;
+    allOf?: SchemaObjectContract[];
 
-    anyOf?: SchemaObjectContract;
+    anyOf?: SchemaObjectContract[];
 
-    not?: SchemaObjectContract;
+    oneOf?: SchemaObjectContract[];
+
+    not?: SchemaObjectContract[];
 
     minimum?: number;
 
