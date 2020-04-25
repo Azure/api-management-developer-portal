@@ -126,6 +126,10 @@ aside {
                 flex: 1;
             }
         }
+
+        a {
+            color: $default-heading-color;
+        }
     }
 }
 
