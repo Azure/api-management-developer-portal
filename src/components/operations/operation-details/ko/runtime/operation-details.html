@@ -36,24 +36,24 @@
 
             <!-- ko if: operation().parameters.length > 0 -->
             <h4>Request parameters</h4>
-            <div class="table">
-                <div class="table-head">
-                    <div class="table-row">
-                        <div class="col-4">Name</div>
-                        <div class="col-1">In</div>
-                        <div class="col-1">Required</div>
-                        <div class="col-2">Type</div>
-                        <div class="col-4">Description</div>
+            <div class="table" role="table">
+                <div class="table-head" role="rowgroup">
+                    <div class="table-row" role="row">
+                        <div class="col-4" role="columnheader">Name</div>
+                        <div class="col-1" role="columnheader">In</div>
+                        <div class="col-1" role="columnheader">Required</div>
+                        <div class="col-2" role="columnheader">Type</div>
+                        <div class="col-4" role="columnheader">Description</div>
                     </div>
                 </div>
-                <div class="table-body">
+                <div class="table-body" role="rowgroup">
                     <!-- ko foreach: { data: operation().parameters, as: 'parameter' } -->
-                    <div class="table-row">
-                        <div class="col-4 monospace" data-bind="text: parameter.name"></div>
-                        <div class="col-1" data-bind="text: parameter.in"></div>
-                        <div class="col-1" data-bind="text: parameter.required"></div>
-                        <div class="col-2 monospace" data-bind="text: parameter.type"></div>
-                        <div class="col-4" data-bind="markdown: parameter.description"></div>
+                    <div class="table-row" role="row">
+                        <div role="cell" class="col-4 monospace" data-bind="text: parameter.name"></div>
+                        <div role="cell" class="col-1" data-bind="text: parameter.in"></div>
+                        <div role="cell" class="col-1" data-bind="text: parameter.required"></div>
+                        <div role="cell" class="col-2 monospace" data-bind="text: parameter.type"></div>
+                        <div role="cell" class="col-4" data-bind="markdown: parameter.description"></div>
                     </div>
                     <!-- /ko -->
                 </div>
@@ -62,22 +62,22 @@
 
             <!-- ko if: operation().request && operation().request.headers && operation().request.headers.length > 0 -->
             <h4>Request headers</h4>
-            <div class="table">
-                <div class="table-head">
-                    <div class="table-row">
-                        <div class="col-4">Name</div>
-                        <div class="col-1">Required</div>
-                        <div class="col-2">Type</div>
-                        <div class="col-4">Description</div>
+            <div class="table" role="table">
+                <div class="table-head" role="rowgroup">
+                    <div class="table-row" role="row">
+                        <div class="col-4" role="columnheader">Name</div>
+                        <div class="col-1" role="columnheader">Required</div>
+                        <div class="col-2" role="columnheader">Type</div>
+                        <div class="col-4" role="columnheader">Description</div>
                     </div>
                 </div>
-                <div class="table-body">
+                <div class="table-body" role="rowgroup">
                     <!-- ko foreach: { data: operation().request.headers, as: 'header' } -->
-                    <div class="table-row">
-                        <div class="col-4 monospace" data-bind="text: header.name"></div>
-                        <div class="col-1" data-bind="text: header.required"></div>
-                        <div class="col-2 monospace" data-bind="text: header.type"></div>
-                        <div class="col-4" data-bind="markdown: header.description"></div>
+                    <div class="table-row" role="row">
+                        <div role="cell" class="col-4 monospace" data-bind="text: header.name"></div>
+                        <div role="cell" class="col-1" data-bind="text: header.required"></div>
+                        <div role="cell" class="col-2 monospace" data-bind="text: header.type"></div>
+                        <div role="cell" class="col-4" data-bind="markdown: header.description"></div>
                     </div>
                     <!-- /ko -->
                 </div>
@@ -154,20 +154,20 @@
     <!-- ko if: $component.definitions().length > 0 -->
     <h3>Definitions</h3>
 
-    <div class="table">
-        <div class="table-head">
-            <div class="table-row">
-                <div class="col-4">Name</div>
-                <div class="col-8">Description</div>
+    <div class="table" role="table">
+        <div class="table-head" role="rowgroup">
+            <div class="table-row" role="row">
+                <div class="col-4" role="columnheader">Name</div>
+                <div class="col-8" role="columnheader">Description</div>
             </div>
         </div>
-        <div class="table-body">
+        <div class="table-body" role="rowgroup">
             <!-- ko foreach: { data: definitions, as: 'definition' } -->
-            <div class="table-row">
-                <div class="col-3 text-truncate">
+            <div class="table-row" role="row">
+                <div role="cell" class="col-3 text-truncate">
                     <a data-bind="text: definition.name, attr: { href: $component.getDefinitionReferenceUrl(definition) }"></a>
                 </div>
-                <div class="col-9" data-bind="markdown: definition.description"></div>
+                <div role="cell class="col-9" data-bind="markdown: definition.description"></div>
             </div>
             <!-- /ko -->
         </div>

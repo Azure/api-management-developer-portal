@@ -28,22 +28,22 @@
 
 <template id="typeDefinitionObject">
     <!-- ko if: definition.properties && definition.properties.length > 0 -->
-    <div class="table">
-        <div class="table-head">
-            <div class="table-row">
-                <div class="col-4">Name</div>
-                <div class="col-1">Required</div>
-                <div class="col-2">Type</div>
-                <div class="col-4">Description</div>
+    <div class="table" role="table">
+        <div class="table-head" role="rowgroup">
+            <div class="table-row" role="row">
+                <div role="cell" class="col-4">Name</div>
+                <div role="cell" class="col-1">Required</div>
+                <div role="cell" class="col-2">Type</div>
+                <div role="cell" class="col-4">Description</div>
             </div>
         </div>
-        <div class="table-body" data-bind="foreach: { data: definition.properties, as: 'property' }">
-            <div class="table-row">
-                <div class="col-4 text-truncate" data-bind="text: property.name, attr: { title: property.name }">
+        <div class="table-body" role="rowgroup"  data-bind="foreach: { data: definition.properties, as: 'property' }">
+            <div class="table-row" role="row">
+                <div role="cell" class="col-4 text-truncate" data-bind="text: property.name, attr: { title: property.name }">
                     <span class="monospace" data-bind="text: property.name, attr: { title: property.name }"></span>
                 </div>
-                <div class="col-1" data-bind="text: property.required"></div>
-                <div class="col-2 text-truncate">
+                <div role="cell" class="col-1" data-bind="text: property.required"></div>
+                <div role="cell" class="col-2 text-truncate">
                     <!-- ko if: property.type.displayAs === 'primitive' -->
                     <span class="monospace" data-bind="text: property.type.name, attr: { title: property.type.name }"></span>
                     <!-- /ko -->
@@ -78,7 +78,7 @@
 
                     <!-- /ko -->
                 </div>
-                <div class="col-4" data-bind="markdown: property.description"></div>
+                <div role="cell" class="col-4" data-bind="markdown: property.description"></div>
             </div>
         </div>
     </div>
@@ -91,18 +91,18 @@
 </template>
 
 <template id="typeDefinitionEnum">
-    <div class="table">
-        <div class="table-head">
-            <div class="table-row">
-                <div class="col-2">Type</div>
-                <div class="col-10">Values</div>
+    <div class="table" role="table">
+        <div class="table-head" role="rowgroup">
+            <div class="table-row" role="row">
+                <div class="col-2" role="cell">Type</div>
+                <div class="col-10" role="cell">Values</div>
             </div>
         </div>
-        <div class="table-body">
-            <div class="table-row">
-                <div class="col-2 text-truncate"
+        <div class="table-body" role="rowgroup">
+            <div class="table-row" role="row">
+                <div role="cell" class="col-2 text-truncate"
                     data-bind="markdown: definition.type.name, attr: { title: definition.type.name }"></div>
-                <div class="col-10">
+                <div role="cell" class="col-10">
                     <!-- ko foreach: { data: definition.enum, as: 'value' } -->
                     <!-- ko if: $index() > 0 -->,<!-- /ko -->
                     <code data-bind="text: value"></code><!-- /ko -->
@@ -113,20 +113,20 @@
 </template>
 
 <template id="typeDefinitionIndexer">
-    <div class="table">
-        <div class="table-head">
-            <div class="table-row">
-                <div class="col-4">Name</div>
-                <div class="col-2">Type</div>
-                <div class="col-6">Description</div>
+    <div class="table" role="table">
+        <div class="table-head" role="rowgroup">
+            <div class="table-row" role="row">
+                <div role="cell" class="col-4">Name</div>
+                <div role="cell" class="col-2">Type</div>
+                <div role="cell" class="col-6">Description</div>
             </div>
         </div>
-        <div class="table-body" data-bind="foreach: { data: definition.properties, as: 'property' }">
-            <div class="table-row">
-                <div class="col-4 text-truncate">
+        <div class="table-body" role="rowgroup" data-bind="foreach: { data: definition.properties, as: 'property' }">
+            <div class="table-row" role="row">
+                <div role="cell" class="col-4 text-truncate">
                     <code data-bind="text: property.name, attr: { title: property.name }"></code>
                 </div>
-                <div class="col-2 text-truncate">
+                <div role="cell" class="col-2 text-truncate">
                     <!-- ko if: property.type.displayAs === 'reference' -->
                     <code><a data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name), attr: { title: property.type.name } }"></a></code>
                     <!-- /ko -->
@@ -134,7 +134,7 @@
                     <code data-bind="text: property.type.name, attr: { title: property.type.name }"></code>
                     <!-- /ko -->
                 </div>
-                <div class="col-6" data-bind="markdown: property.description"></div>
+                <div role="cell" class="col-6" data-bind="markdown: property.description"></div>
             </div>
         </div>
     </div>
