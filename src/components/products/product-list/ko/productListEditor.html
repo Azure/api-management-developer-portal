@@ -13,7 +13,7 @@
                 data-bind="tooltipToggle: 'A link to be navigated on click.'"></button>
         </label>
         <div class="input-group">
-            <a href="#" class="form-control"
+            <a href="#" class="form-control" role="button"
                 data-bind="text: hyperlinkTitle, balloon: { component: { name: 'hyperlink-selector', params: { hyperlink: $component.hyperlink, onChange: $component.onHyperlinkChange } } }">
             </a>
             <div class="input-group-addon">
