@@ -36,7 +36,7 @@
                 </a>
             </div>
             <div class="col-7">
-                <div data-bind="markdown: item.description"></div>
+                <div data-bind="markdown: { source: item.description, truncateAt: 250 }"></div>
             </div>
         </div>
         <!-- /ko -->

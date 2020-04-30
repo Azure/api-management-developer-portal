@@ -54,7 +54,7 @@
                 </a>
             </div>
             <div class="col-7" role="cell">
-                <div tabindex="0" data-bind="markdown: item.description"></div>
+                <div tabindex="0" data-bind="markdown: { source: item.description, truncateAt: 250 }"></div>
             </div>
         </div>
         <!-- /ko -->
@@ -85,7 +85,7 @@
                 </a>
             </div>
             <div class="col-7" role="cell">
-                <div tabindex="0" data-bind="markdown: item.description"></div>
+                <div tabindex="0" data-bind="markdown: { source: item.description, truncateAt: 250 }"></div>
             </div>
         </div>
         <!-- /ko -->

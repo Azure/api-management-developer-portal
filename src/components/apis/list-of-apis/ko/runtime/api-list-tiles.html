@@ -42,7 +42,7 @@
                     - <span data-bind="text: item.apiVersion"></span>
                     <!-- /ko -->
                 </h3>
-                <p class="tile-content" data-bind="markdown: item.description"></p>
+                <p class="tile-content" data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
             </div>
         </a>
         <!-- /ko -->
@@ -67,7 +67,7 @@
                     <!-- /ko -->
                 </h3>
                 <div class="tile line-clamp">
-                    <p class="tile-content" data-bind="markdown: item.description"></p>
+                    <p class="tile-content" data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
                 </div>
             </div>
         </a>
