@@ -73,7 +73,7 @@ You're now ready to use the document-details widget in the developer portal.
 1. Execute the command `npm start`.
 1. When the application loads, place the new widget on a page. You can find it under the name `Document details` in the `Community` category in the widget selector.
 
-![Widget selector](document-details-widget.png)
+    ![Widget selector](document-details-widget.png)
 
 1. Save the page by pressing `Ctrl+S` (or `⌘+S` on Apple computers).
 
@@ -85,18 +85,18 @@ You would be able to see the default file content in the portal page.
 1. Select the document-details widget added to the page in the portal editor and click anywhere in the widget.
 You can see the text-editor block in the corner where you can enter the required file name.
 
-![Sample Document](sample_document.png)
+    ![Sample Document](sample_document.png)
 
 1.  Enter any file name (HTML document) stored in the storage account and it's content will be rendered in the page.
 
-![Sample Document 2](sample_document_2.png)
+    ![Sample Document 2](sample_document_2.png)
 
 
 ## Render the HTML document dynamically in the widget
 In real-time scenario, user would usually go to API list page in the portal and then go through the description of API and its documentation details. 
 In order to read the additional details for the API description in the portal, a link is provided in the API description which would redirect to additional details page in the same developer portal. The custom widget `Document details` is added to this page which would render the additional details for the respective API in the portal page.
 
-![API Description](api_description.png)
+    ![API Description](api_description.png)
 
 ### 1. Update link in the API description with following parameters:
 
@@ -136,9 +136,9 @@ If you want to replace the file name in documentation details page to API name, 
 
 1. Change the mode as 'Authenticated' in the portal editor to explore the APIs.
 
-![Authentication Mode](authentication_mode.png)
+    ![Authentication Mode](authentication_mode.png)
 
 1. Click on the link given in any of the API description to see additional details in the documentation page.
 
-![Echo-API description](Echo-api-document-details.png)
+    ![Echo-API description](Echo-api-document-details.png)
 
