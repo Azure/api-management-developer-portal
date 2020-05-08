@@ -1,7 +1,7 @@
 .flex {
     display: flex;
     justify-content: flex-start;
-    align-content: stretch;
+    align-content: flex-start;
     min-height: 0; // fixes issue with oveflow in Edge, FF and other browsers
 
     &.flex-row {

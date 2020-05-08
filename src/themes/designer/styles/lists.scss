@@ -3,7 +3,6 @@
 @import "icons.scss";
 
 .list-item-group {
-    flex-basis: 100%;
     width: 100%;
 
     .list-item-group {
@@ -39,6 +38,11 @@
             color: $collapse-button-color;
         }
     }
+}
+
+.list {
+    width: 300px;
+    height: 400px;
 }
 
 .list-item {
