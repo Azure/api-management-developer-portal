@@ -1,0 +1,101 @@
+@import "variables.scss";
+
+// Vars ---------------------------------------------------------------- //
+$basicLightbox__background: rgba(0, 0, 0, .8) !default;
+$basicLightbox__zIndex: 100000 !default;
+$basicLightbox__duration: .4s !default;
+$basicLightbox__timing: ease !default;
+
+// basicLightbox ------------------------------------------------------- //
+.basicLightbox {
+    font-family: $font-family-base;
+    font-size: $font-size-base;
+	position: fixed;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	background: $basicLightbox__background;
+	opacity: .01; // Start with .01 to avoid the repaint that happens from 0 to .01
+	transition: opacity $basicLightbox__duration $basicLightbox__timing;
+	z-index: $basicLightbox__zIndex;
+    will-change: opacity;
+    
+    .lightbox-title {
+        position: sticky;
+        top: 0px;
+        left: 0px;
+        font-size: 20px;
+        color: white;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .lightbox-img {
+
+        @include pseudo-transparent-bckg();
+        max-height: 80vh;
+        width: auto;
+    }
+
+	&--visible {
+		opacity: 1;
+	}
+
+	&__placeholder {
+		max-width: 100%;
+		transform: scale(.9);
+		transition: transform $basicLightbox__duration $basicLightbox__timing;
+		z-index: 1;
+		will-change: transform;
+
+		> img:first-child:last-child,
+		> video:first-child:last-child,
+		> iframe:first-child:last-child {
+			display: block;
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			margin: auto;
+			max-width: 95%;
+			max-height: 95%;
+		}
+
+		> video:first-child:last-child,
+		> iframe:first-child:last-child {
+			pointer-events: auto;
+		}
+
+		> img:first-child:last-child,
+		> video:first-child:last-child {
+			width: auto;
+			height: auto;
+		}
+	}
+
+	&--img &__placeholder,
+	&--video &__placeholder,
+	&--iframe &__placeholder {
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+	}
+
+	&--visible &__placeholder {
+		transform: scale(1);
+	}
+
+}
+
+.lightbox-image {
+    width: 100%; 
+    height: auto;
+    max-height: 100%;
+    cursor: pointer;
+    object-fit: cover;
+}
