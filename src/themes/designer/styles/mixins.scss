@@ -87,5 +87,7 @@
     background: $form-control-slider-thumb-bg;
     border: 2px solid $form-control-border;
     cursor: pointer;
+    cursor: -webkit-grabbing;
+    user-select: none;
     border-radius: 20px;
 }

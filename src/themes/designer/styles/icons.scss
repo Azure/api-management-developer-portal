@@ -147,7 +147,6 @@
 @function unicode($str) {
     @return unquote("\"\\#{$str}\"");
   }
-  
   $paperbits-layout-11: unicode(ea03);
   $paperbits-action-74: unicode(ea08);
   $paperbits-align-center: unicode(ea09);
@@ -186,7 +185,6 @@
   $paperbits-image-2: unicode(ea31);
   $paperbits-paint-bucket-40: unicode(ea32);
   $paperbits-palette: unicode(ea33);
-  $paperbits-transform-origin: unicode(ea34);
   $paperbits-menu-right: unicode(ea35);
   $paperbits-menu-34: unicode(ea36);
   $paperbits-menu-left: unicode(ea37);
@@ -245,6 +243,7 @@
   $paperbits-clapperboard: unicode(ea75);
   $paperbits-single-02: unicode(ea76);
   $paperbits-lightning: unicode(ea77);
+  $paperbits-l-search: unicode(ea78);
   
   .paperbits-layout-11::before {
     content: $paperbits-layout-11;
@@ -396,10 +395,6 @@
   
   .paperbits-palette::before {
     content: $paperbits-palette;
-  }
-  
-  .paperbits-transform-origin::before {
-    content: $paperbits-transform-origin;
   }
   
   .paperbits-menu-right::before {
@@ -633,4 +628,9 @@
   .paperbits-lightning::before {
     content: $paperbits-lightning;
   }
+  
+  .paperbits-l-search::before {
+    content: $paperbits-l-search;
+  }
+  
   
