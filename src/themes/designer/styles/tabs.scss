@@ -1,0 +1,37 @@
+
+.tabs {
+    border-bottom: 1px solid $form-control-border;
+    margin-bottom: 12px;
+    display: flex;
+    width: 100%;
+
+    .tab {
+        & > a {
+            min-width: 60px;
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 35px;
+            color: $color-base;
+            padding: 0 10px;
+            text-decoration: none;
+            font-weight: bold;
+
+            &:active,
+            &:focus,
+            &:hover {
+                outline: none;
+                @include selection();
+            }
+        }
+
+        &.tab-is-active {
+            border-bottom: 2px solid $tab-selected-color;
+        }
+    }
+}
+
+.tab-panel {
+    min-height: 200px;
+    max-height: 350px;
+}

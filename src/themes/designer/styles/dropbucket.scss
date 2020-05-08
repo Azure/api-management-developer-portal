@@ -9,6 +9,13 @@ dropbucket {
     position: fixed;
     z-index: $z-index-base;
 
+    .btn-dismiss {
+        padding: 0;
+        margin: 0;
+        top: 0;
+        right: 0;
+    }
+
     .droppedcontent {
         @include surface();
         @include animation-fadein();
