@@ -24,6 +24,7 @@ export interface IHttpBatchResponse {
 
 export class MapiClient {
     private managementApiUrl: string;
+    private managementApiUrlBase: string;
     private managementApiVersion: string;
     private environment: string;
     private initializePromise: Promise<void>;
@@ -52,6 +53,7 @@ export class MapiClient {
             throw new Error(`Management API URL ("${Constants.SettingNames.managementApiUrl}") setting is missing in configuration file.`);
         }
 
+        this.managementApiUrlBase = new URL(managementApiUrl).origin;
         this.managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
 
         const managementApiVersion = settings[Constants.SettingNames.managementApiVersion];
@@ -96,8 +98,6 @@ export class MapiClient {
             httpRequest.body = JSON.stringify(httpRequest.body);
         }
 
-        httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${this.managementApiVersion}`);
-
         const call = () => this.makeRequest<T>(httpRequest);
         const requestKey = this.getRequestKey(httpRequest);
 
@@ -133,7 +133,12 @@ export class MapiClient {
             }
         }
 
-        httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
+        const managementApiUrl = httpRequest.url.endsWith(`/hostnames`)
+            ? this.managementApiUrlBase
+            : this.managementApiUrl;
+
+        httpRequest.url = `${managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
+        httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${this.managementApiVersion}`);
 
         let response: HttpResponse<T>;
 
