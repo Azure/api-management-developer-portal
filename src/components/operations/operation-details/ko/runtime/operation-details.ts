@@ -32,7 +32,7 @@ export class OperationDetails {
     public readonly tags: ko.ObservableArray<string>;
     public readonly operation: ko.Observable<Operation>;
     public readonly requestUrlSample: ko.Computed<string>;
-    public readonly primaryHostname: ko.Observable<string>;
+    public readonly sampleHostname: ko.Observable<string>;
     public readonly hostnames: ko.Observable<string[]>;
     public readonly working: ko.Observable<boolean>;
 
@@ -43,7 +43,7 @@ export class OperationDetails {
         private readonly routeHelper: RouteHelper
     ) {
         this.working = ko.observable(false);
-        this.primaryHostname = ko.observable();
+        this.sampleHostname = ko.observable();
         this.hostnames = ko.observable();
         this.api = ko.observable();
         this.schemas = ko.observableArray([]);
@@ -60,7 +60,7 @@ export class OperationDetails {
 
             const api = this.api();
             const operation = this.operation();
-            const hostname = this.primaryHostname();
+            const hostname = this.sampleHostname();
             const apiPath = api.versionedPath;
 
             if (api.type === TypeOfApi.soap) {
@@ -78,8 +78,6 @@ export class OperationDetails {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.loadGatewayInfo();
-
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
 
@@ -87,6 +85,7 @@ export class OperationDetails {
         this.selectedOperationName(operationName);
 
         if (apiName) {
+            await this.loadGatewayInfo(apiName);
             await this.loadApi(apiName);
         }
 
@@ -205,19 +204,14 @@ export class OperationDetails {
         return result;
     }
 
-    public async loadGatewayInfo(): Promise<void> {
-        let hostnames = await this.tenantService.getProxyHostnames();
-
-        if (hostnames.length === 0) {
-            // TODO: Remove once setting backend serving the setting gets deployed.
-            hostnames = await this.getProxyHostnames();
-        }
+    public async loadGatewayInfo(apiName: string): Promise<void> {
+        const hostnames = await this.apiService.getApiHostnames(apiName);
 
         if (hostnames.length === 0) {
             throw new Error(`Unable to fetch gateway hostnames.`);
         }
 
-        this.primaryHostname(hostnames[0]);
+        this.sampleHostname(hostnames[0]);
         this.hostnames(hostnames);
     }
 
