@@ -15,13 +15,13 @@ import { MapiClient } from "./mapiClient";
 import { Utils } from "../utils";
 import { OperationContract } from "../contracts/operation";
 import { SchemaContract, SchemaType } from "../contracts/schema";
+import { Hostname } from "./../contracts/hostname";
 import { VersionSetContract } from "../contracts/apiVersionSet";
 import { HttpHeader } from "@paperbits/common/http/httpHeader";
 import { ChangeLogContract } from "../contracts/apiChangeLog";
 import { TagGroup } from "../models/tagGroup";
 import { Bag } from "@paperbits/common";
 import { Tag } from "../models/tag";
-
 
 export class ApiService {
     constructor(private readonly mapiClient: MapiClient) { }
@@ -402,9 +402,9 @@ export class ApiService {
 
     private getSchemasType(schemas: SchemaContract[]): SchemaType {
         if (schemas && schemas.length > 0) {
-            const is2 = !!schemas.find(item => item.properties.contentType === SchemaType.swagger) 
-                        &&
-                        !schemas.find(item => item.properties.contentType === SchemaType.openapi);
+            const is2 = !!schemas.find(item => item.properties.contentType === SchemaType.swagger)
+                &&
+                !schemas.find(item => item.properties.contentType === SchemaType.openapi);
             if (is2) {
                 return SchemaType.swagger;
             }
@@ -467,5 +467,13 @@ export class ApiService {
         page.nextLink = result.nextLink;
 
         return page;
+    }
+
+    public async getApiHostnames(apiName: string): Promise<string[]> {
+        const query = `apis/${apiName}/hostnames`;
+        const pageOfHostnames = await this.mapiClient.get<Page<Hostname>>(query);
+        const hostnameValues = pageOfHostnames.value.map(x => x.value);
+
+        return hostnameValues;
     }
 }
