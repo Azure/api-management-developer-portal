@@ -43,6 +43,8 @@ export class OperationConsole {
     public readonly selectedProduct: ko.Observable<Product>;
     public readonly requestError: ko.Observable<string>;
     public readonly codeSample: ko.Observable<string>;
+    public readonly requestHostname: ko.Observable<string>;
+    public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
     public masterKey: string;
     public isConsumptionMode: boolean;
     public templates: Object;
@@ -76,6 +78,8 @@ export class OperationConsole {
         this.codeSample = ko.observable();
         this.selectedProduct = ko.observable();
         this.onFileSelect = this.onFileSelect.bind(this);
+        this.requestHostname = ko.observable();
+        this.hostnameSelectionEnabled = ko.observable();
 
         validation.rules["maxFileSize"] = {
             validator: (file: File, maxSize: number) => !file || file.size < maxSize,
@@ -109,10 +113,10 @@ export class OperationConsole {
         this.masterKey = await this.tenantService.getServiceMasterKey();
         this.isConsumptionMode = skuName === ServiceSkuName.Consumption;
 
-        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey);
-
         await this.resetConsole();
 
+        this.requestHostname.subscribe(this.setHostname);
+        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey);
         this.api.subscribe(this.resetConsole);
         this.operation.subscribe(this.resetConsole);
         this.selectedLanguage.subscribe(this.updateRequestSummary);
@@ -140,9 +144,13 @@ export class OperationConsole {
         const consoleOperation = new ConsoleOperation(selectedApi, operation);
         this.consoleOperation(consoleOperation);
 
-        const proxyHostnames = this.hostnames();
-        const hostname = proxyHostnames[0]; // TODO: Take into account multiple hostnames.
+        const hostnames = this.hostnames();
+        this.hostnameSelectionEnabled(this.hostnames()?.length > 1);
 
+        const hostname = hostnames[0];
+        this.requestHostname(hostname);
+
+        this.hostnameSelectionEnabled(this.hostnames()?.length > 1);
         consoleOperation.host.hostname(hostname);
 
         if (this.api().type === TypeOfApi.soap) {
@@ -234,6 +242,11 @@ export class OperationConsole {
             const subscriptionKey = availableProducts[0].subscriptionKeys[0].value;
             this.selectedSubscriptionKey(subscriptionKey);
         }
+    }
+
+    private setHostname(hostname: string): void {
+        this.consoleOperation().host.hostname(hostname);
+        this.updateRequestSummary();
     }
 
     public addHeader(): void {
