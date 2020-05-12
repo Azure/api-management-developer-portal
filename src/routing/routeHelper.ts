@@ -50,10 +50,6 @@ export class RouteHelper {
             path = detailsPageUrl;
         }
 
-        if (currentPath.endsWith("/")) {
-            path = Utils.ensureTrailingSlash(path);
-        }
-
         return `${path}#api=${apiName}`;
     }
 
@@ -77,10 +73,6 @@ export class RouteHelper {
 
         if (currentPath !== detailsPageUrl) {
             path = detailsPageUrl;
-        }
-
-        if (currentPath.endsWith("/")) {
-            path = Utils.ensureTrailingSlash(path);
         }
 
         return `${path}#api=${apiName}&operation=${operationName}`;
@@ -147,10 +139,6 @@ export class RouteHelper {
             path = detailsPageUrl;
         }
 
-        if (currentPath.endsWith("/")) {
-            path = Utils.ensureTrailingSlash(path);
-        }
-
         return `${path}#product=${productName}`;
     }
 
@@ -173,10 +161,6 @@ export class RouteHelper {
 
         if (currentPath !== Constants.pageUrlSignUpOAuth) {
             path = Constants.pageUrlSignUpOAuth;
-        }
-
-        if (currentPath.endsWith("/")) {
-            path = Utils.ensureTrailingSlash(path);
         }
 
         return `${path}#provider=${provider}&token=${idToken}`;
