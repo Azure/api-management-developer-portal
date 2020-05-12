@@ -38,7 +38,6 @@ export class OperationDetails {
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly tenantService: TenantService,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
     ) {
@@ -184,8 +183,11 @@ export class OperationDetails {
     }
 
     private lookupReferences(definitions: TypeDefinition[], skipNames: string[]): string[] {
-        const objectDefinitions: TypeDefinitionProperty[] = definitions.map(r => r.properties).flat();
         const result = [];
+        const objectDefinitions: TypeDefinitionProperty[] = definitions
+            .map(definition => definition.properties)
+            .filter(definition => !!definition)
+            .flat();
 
         objectDefinitions.forEach(definition => {
             if (definition.kind === "indexed") {
@@ -257,17 +259,6 @@ export class OperationDetails {
         const operationName = this.operation().name;
 
         return this.routeHelper.getDefinitionAnchor(apiName, operationName, definition.name);
-    }
-
-    private async getProxyHostnames(): Promise<string[]> {
-        const apiName = this.routeHelper.getApiName();
-
-        if (!apiName) {
-            return [];
-        }
-
-        const apiDefinition: SwaggerObject = await this.apiService.exportApi(`apis/${apiName}`, "swagger");
-        return [apiDefinition.host];
     }
 
     @OnDestroyed()
