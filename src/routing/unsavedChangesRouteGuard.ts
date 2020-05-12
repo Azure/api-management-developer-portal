@@ -13,12 +13,13 @@ export class UnsavedChangesRouteGuard implements RouteGuard {
 
     public canActivate(route: Route): Promise<boolean> {
         return new Promise<boolean>(async (resolve) => {
-            if (!this.offlineObjectStorage.hasUnsavedChanges()) {
+            const hasUnsavedChanges = await this.offlineObjectStorage.hasUnsavedChanges();
+
+            if (!hasUnsavedChanges) {
                 resolve(true);
             }
 
             const path = route.path;
-
             const pathNotChanged = route.previous && route.previous.path === path;
 
             if (pathNotChanged) {
@@ -28,7 +29,9 @@ export class UnsavedChangesRouteGuard implements RouteGuard {
                     resolve(true);
                 }
 
-                if (this.offlineObjectStorage.hasUnsavedChangesAt(page.contentKey)) {
+                const hasUnsavedChanges = await this.offlineObjectStorage.hasUnsavedChangesAt(page.contentKey);
+
+                if (hasUnsavedChanges) {
                     const toast = this.viewManager.addToast("Unsaved changes", `You have unsaved changes. Do you want to save or discard them?`, [
                         {
                             title: "Save",

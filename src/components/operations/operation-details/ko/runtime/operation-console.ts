@@ -116,7 +116,7 @@ export class OperationConsole {
         await this.resetConsole();
 
         this.requestHostname.subscribe(this.setHostname);
-        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey);
+        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
         this.api.subscribe(this.resetConsole);
         this.operation.subscribe(this.resetConsole);
         this.selectedLanguage.subscribe(this.updateRequestSummary);
@@ -241,6 +241,7 @@ export class OperationConsole {
         if (availableProducts.length > 0) {
             const subscriptionKey = availableProducts[0].subscriptionKeys[0].value;
             this.selectedSubscriptionKey(subscriptionKey);
+            this.applySubscriptionKey(subscriptionKey);
         }
     }
 
