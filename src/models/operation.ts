@@ -43,7 +43,7 @@ export class Operation {
             ? contract.properties.responses.map(x => new Response(x))
             : [];
 
-        let connector = this.urlTemplate.contains("?") ? "&" : "?";
+        let connector = this.urlTemplate.includes("?") ? "&" : "?";
         
         const optionalQueryParameters = this.request.queryParameters
             .map((parameter, index) => {
