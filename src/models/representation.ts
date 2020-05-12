@@ -17,12 +17,12 @@ export class Representation {
         if (contract.sample) {
             this.example = contract.sample;
 
-            if (contract.contentType.contains("/xml")) {
+            if (contract.contentType.includes("/xml")) {
                 this.example = Utils.formatXml(contract.sample);
                 this.exampleFormat = "xml";
             }
 
-            if (contract.contentType.contains("/json")) {
+            if (contract.contentType.includes("/json")) {
                 this.example = Utils.formatJson(contract.sample);
                 this.exampleFormat = "json";
             }
