@@ -184,8 +184,11 @@ export class OperationDetails {
     }
 
     private lookupReferences(definitions: TypeDefinition[], skipNames: string[]): string[] {
-        const objectDefinitions: TypeDefinitionProperty[] = definitions.map(r => r.properties).flat();
         const result = [];
+        const objectDefinitions: TypeDefinitionProperty[] = definitions
+            .map(definition => definition.properties)
+            .filter(definition => !!definition)
+            .flat();
 
         objectDefinitions.forEach(definition => {
             if (definition.kind === "indexed") {
