@@ -38,7 +38,6 @@ export class OperationDetails {
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly tenantService: TenantService,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
     ) {
@@ -260,17 +259,6 @@ export class OperationDetails {
         const operationName = this.operation().name;
 
         return this.routeHelper.getDefinitionAnchor(apiName, operationName, definition.name);
-    }
-
-    private async getProxyHostnames(): Promise<string[]> {
-        const apiName = this.routeHelper.getApiName();
-
-        if (!apiName) {
-            return [];
-        }
-
-        const apiDefinition: SwaggerObject = await this.apiService.exportApi(`apis/${apiName}`, "swagger");
-        return [apiDefinition.host];
     }
 
     @OnDestroyed()
