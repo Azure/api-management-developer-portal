@@ -26,7 +26,7 @@ export class HelpWorkshop {
     public async initialize(): Promise<void> {
         const globalPolicyXml = await this.policyService.getPolicyXmlForGlobalScope();
 
-        if (!globalPolicyXml.toLowerCase().contains("<cors>")) {
+        if (!globalPolicyXml.toLowerCase().includes("<cors>")) {
             this.hints.push({
                 issue: `Setup CORS policy`,
                 suggestion: cors
