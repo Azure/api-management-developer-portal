@@ -240,8 +240,10 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                                 if (propertySchemaObject.enum) {
                                     props.push(new TypeDefinitionEnumerationProperty(propertyName, propertySchemaObject, isRequired));
                                 }
-
-                                props.push(new TypeDefinitionPrimitiveProperty(propertyName, propertySchemaObject, isRequired));
+                                else {
+                                    props.push(new TypeDefinitionPrimitiveProperty(propertyName, propertySchemaObject, isRequired));
+                                }
+                              
                                 break;
 
                             case "object":
