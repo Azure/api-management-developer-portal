@@ -30,7 +30,7 @@
         <!-- ko if: groupByTag -->
         <!-- ko foreach: { data: apiGroups, as: 'group' } -->
         <div class="tag-group">
-            <span class="tag" role="group" data-bind="text: group.tag"></span>
+            <span class="tag-item" role="group" data-bind="text: group.tag"></span>
         </div>
 
         <!-- ko foreach: { data: group.items, as: 'item' } -->

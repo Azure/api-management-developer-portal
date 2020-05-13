@@ -12,7 +12,7 @@
     <!-- ko ifnot: empty -->
     <div role="list" class="list" data-bind="foreach: { data: availableTags, as: 'tag' }">
         <div role="presentation" data-bind="activate: $parent.addTag">
-            <div tabindex="0" role="listitem" class="tag" data-bind="text: name"></div>
+            <div tabindex="0" role="listitem" class="tag-item" data-bind="text: name"></div>
         </div>
     </div>
     <!-- /ko -->

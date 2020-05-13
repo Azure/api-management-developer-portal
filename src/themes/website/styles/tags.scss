@@ -4,9 +4,9 @@
     flex-basis: 100%;
 }
 
-.tag,
-.tag:active,
-.tag:hover {
+.tag-item,
+.tag-item:active,
+.tag-item:hover {
     border: 1px solid #0078d4;
     padding: 2px 7px;
     border-radius: 3px;
@@ -19,7 +19,7 @@
     min-height: 2em;
 }
 
-.tag.tag-add {
+.tag-item.tag-add {
     cursor: pointer;
 }
 
@@ -30,7 +30,7 @@
 }
 
 .list {
-    .tag {
+    .tag-item {
         cursor: pointer;
     }
 }
