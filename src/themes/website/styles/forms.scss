@@ -1,3 +1,11 @@
+$switch-background-color-on: #0078d4;
+$switch-background-color-off: #ccc;
+$switch-handle-color: #fff;
+$switch-width: 55px;
+$switch-height: 30px;
+$switch-trigger-gap: 4px;
+$switch-trigger-size: $switch-height - $switch-trigger-gap * 2;
+
 .form-inline {
     display: flex;
     flex-flow: row wrap;
@@ -96,13 +104,13 @@
     }
 }
 
-$switch-background-color-on: #0078d4;
-$switch-background-color-off: #ccc;
-$switch-handle-color: #fff;
-$switch-width: 55px;
-$switch-height: 30px;
-$switch-trigger-gap: 4px;
-$switch-trigger-size: $switch-height - $switch-trigger-gap * 2;
+.invalid-feedback {
+    display: block;
+    flex-basis: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #dc3545;
+}
 
 .switch {
     position: relative;
@@ -160,6 +168,7 @@ $search-button-width: 30px;
 
 .input-group {
     display: flex;
+    flex-wrap: wrap;
 
     .input {
         border: none;
