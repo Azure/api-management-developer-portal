@@ -1,6 +1,22 @@
 .pagination {
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    border-radius: .25rem;
+    
     .page-link {
         border: none;
+        position: relative;
+        display: block;
+        padding: .5rem .75rem;
+        margin-left: -1px;
+        line-height: 1.25;
+        color: #007bff;
+        background-color: #fff;
+
+        &:hover {
+            text-decoration: none;
+        }  
 
         .icon {
             font-weight: 900;
