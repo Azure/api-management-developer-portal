@@ -99,7 +99,7 @@ export class OperationDetails {
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
 
-        if (apiName !== this.selectedApiName()) {
+        if (apiName && apiName !== this.selectedApiName()) {
             this.selectedApiName(apiName);
             this.loadApi(apiName);
         }
@@ -107,7 +107,7 @@ export class OperationDetails {
         if (apiName !== this.selectedApiName() || operationName !== this.selectedOperationName()) {
             this.operation(null);
 
-            if (operationName) {
+            if (apiName && operationName) {
                 this.selectedOperationName(operationName);
                 await this.loadOperation(apiName, operationName);
             }
