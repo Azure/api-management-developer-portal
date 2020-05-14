@@ -40,7 +40,7 @@ export class ContentWorkshop {
             component: {
                 name: "reset-details-workshop",
             }
-        }
+        };
         this.viewManager.openViewAsWorkshop(view);
     }
 }
