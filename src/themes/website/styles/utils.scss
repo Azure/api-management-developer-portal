@@ -34,7 +34,19 @@
     display: block;
 }
 
+.mt-auto {
+    margin-top: auto;
+} 
+
+.mb-auto {
+    margin-bottom: auto;
+}
+
 .text-truncate {
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.text-center {
+    text-align: center;
 }
