@@ -14,18 +14,20 @@
     </div>
 
     <div class="form-group">
-        <label class="form-label">
-            Link to API details page
-            <button class="btn btn-info" type="button" title="Help"
-                data-bind="tooltipToggle: 'A link to be navigated on click.'"></button>
-        </label>
+        <div class="label-group">
+            <label class="form-label">
+                Link to API details page
+            </label>
+            <button class="btn btn-info" type="button" title="Help" aria-label="Help"
+                data-bind="tooltipToggle: 'A link to be navigated on click.'">
+            </button>
+        </div>
         <div class="input-group">
-            <a href="#" class="form-control" role="button"
-                data-bind="text: hyperlinkTitle, balloon: { component: { name: 'hyperlink-selector', params: { hyperlink: $component.hyperlink, onChange: $component.onHyperlinkChange } } }">
-            </a>
-            <div class="input-group-addon">
+            <input id="hyperlink" class="form-control" readonly data-bind="value: hyperlinkTitle" />
+            <button class="btn input-group-btn" aria-label="Select hyperlink"
+                data-bind="balloon: { position: 'right', component: { name: 'hyperlink-selector', params: { hyperlink: $component.hyperlink, onChange: $component.onHyperlinkChange } } }">
                 <i class="paperbits-icon paperbits-link-69-2"></i>
-            </div>
+            </button>
         </div>
     </div>
 </fieldset>
