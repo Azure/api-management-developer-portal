@@ -24,6 +24,7 @@ export class DocumentDetailsViewModelBinder implements ViewModelBinder<DocumentD
                 readonly: bindingContext?.readonly,
                 model: model,
                 editor: widgetEditorSelector,
+                draggable: true,
                 applyChanges: async () => {
                     await this.updateViewModel(model, viewModel);
                     this.eventManager.dispatchEvent("onContentUpdate");

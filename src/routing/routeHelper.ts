@@ -5,7 +5,7 @@ import { Router } from "@paperbits/common/routing";
 export class RouteHelper {
     constructor(private readonly router: Router) { }
 
-    private getHashParameter(name: string): string {
+    public getHashParameter(name: string): string {
         const route = this.router.getCurrentRoute();
         const params = new URLSearchParams(`?${route.hash}`);
 

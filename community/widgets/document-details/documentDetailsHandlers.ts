@@ -10,6 +10,7 @@ export class DocumentDetailsHandlers implements IWidgetHandler {
             displayName: widgetDisplayName,
             category: widgetCategory,
             iconClass: "paperbits-puzzle-10",
+            requires: ["html"],
             createModel: async () => {
                 const model = new DocumentDetailsModel();
                 model.fileName = defaultFileName;

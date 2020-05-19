@@ -30,15 +30,14 @@ export class DocumentDetailsRuntime {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        //const fileName = this.fileName();
-        const fileName = this.routeHelper.getFileName(); // This is how you get filename from URL hash part.
+        const fileName = this.routeHelper.getHashParameter("fileName");
         const api = this.routeHelper.getApiName();
 
         const request: HttpRequest = {
             url: `${documentApiUrl}/${fileName}`,
             method: "GET"
         };
-        
+
         const response = await this.httpClient.send<string>(request);
         const sessionDescription = response.toText();
 
