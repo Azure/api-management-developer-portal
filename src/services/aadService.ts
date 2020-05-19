@@ -1,11 +1,13 @@
 import * as Msal from "msal";
 import * as AuthenticationContext from "adal-vanilla";
 import * as Constants from "../constants";
+import { Utils } from "../utils";
 import { IAuthenticator } from "../authentication";
 import { Router } from "@paperbits/common/routing";
 import { HttpClient } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { RouteHelper } from "../routing/routeHelper";
+import { UsersService } from "./usersService";
 
 
 /**
@@ -17,7 +19,8 @@ export class AadService {
         private readonly httpClient: HttpClient,
         private readonly settingsProvider: ISettingsProvider,
         private readonly router: Router,
-        private readonly routeHelper: RouteHelper
+        private readonly routeHelper: RouteHelper,
+        private readonly usersService: UsersService
     ) { }
 
     /**
@@ -39,8 +42,20 @@ export class AadService {
         const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
 
         if (!sasTokenHeader) { // User not registered with APIM.
-            const signupUrl = this.routeHelper.getIdTokenReferenceUrl(provider, idToken);
-            await this.router.navigateTo(signupUrl);
+            const jwtToken = Utils.parseJwt(idToken);
+            const firstName = jwtToken.given_name;
+            const lastName = jwtToken.family_name;
+            const email = jwtToken.email || jwtToken.emails?.[0];
+
+            if (firstName && lastName && email) {
+                await this.usersService.createUserWithOAuth(provider, idToken, firstName, lastName, email);
+                await this.router.navigateTo(Constants.pageUrlHome);
+            }
+            else {
+                const signupUrl = this.routeHelper.getIdTokenReferenceUrl(provider, idToken);
+                await this.router.navigateTo(signupUrl);
+            }
+
             return;
         }
 
@@ -77,16 +92,16 @@ export class AadService {
             scopes: ["openid", "email", "profile"]
         };
 
-        try {
+        // try {
             const response = await msalInstance.loginPopup(loginRequest);
 
             if (response.idToken && response.idToken.rawIdToken) {
                 await this.exchangeIdToken(response.idToken.rawIdToken, Constants.IdentityProviders.aad);
             }
-        }
-        catch (error) {
-            throw new Error(`Unable to obtain id_token with client ID: ${aadClientId}. Error: ${error.message}`);
-        }
+        // }
+        // catch (error) {
+        //     throw new Error(`Unable to obtain id_token with client ID: ${aadClientId}. Error: ${error.message}`);
+        // }
     }
 
     /**
@@ -156,16 +171,16 @@ export class AadService {
             scopes: ["openid", "email", "profile"]
         };
 
-        try {
+        // try {
             const response = await msalInstance.loginPopup(loginRequest);
 
             if (response.idToken && response.idToken.rawIdToken) {
                 await this.exchangeIdToken(response.idToken.rawIdToken, Constants.IdentityProviders.aadB2C);
             }
-        }
-        catch (error) {
-            throw new Error(`Unable to obtain id_token with client ID: ${clientId}. Error: ${error.message}`);
-        }
+        // }
+        // catch (error) {
+        //     throw new Error(`Unable to obtain id_token with client ID: ${clientId}. Error: ${error.message}`);
+        // }
     }
 
     /**

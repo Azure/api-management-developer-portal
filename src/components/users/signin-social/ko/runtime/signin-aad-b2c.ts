@@ -1,3 +1,4 @@
+import { MapiError } from "./../../../../../services/mapiError";
 import * as ko from "knockout";
 import template from "./signin-aad-b2c.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
@@ -59,10 +60,20 @@ export class SignInAadB2C {
             await this.aadService.signInWithAadB2C(this.clientId(), this.authority(), this.instance(), this.signInPolicy());
         }
         catch (error) {
+            let errorDetails;
+
+            if (error.code === "ValidationError") {
+                errorDetails = error.details?.map(detail => detail.message);
+            }
+            else {
+                errorDetails = [error.message];
+            }
+
             const validationReport: ValidationReport = {
                 source: "socialAcc",
-                errors: [error.message]
+                errors: errorDetails
             };
+
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         }
     }
