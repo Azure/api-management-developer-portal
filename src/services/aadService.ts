@@ -92,16 +92,11 @@ export class AadService {
             scopes: ["openid", "email", "profile"]
         };
 
-        // try {
-            const response = await msalInstance.loginPopup(loginRequest);
+        const response = await msalInstance.loginPopup(loginRequest);
 
-            if (response.idToken && response.idToken.rawIdToken) {
-                await this.exchangeIdToken(response.idToken.rawIdToken, Constants.IdentityProviders.aad);
-            }
-        // }
-        // catch (error) {
-        //     throw new Error(`Unable to obtain id_token with client ID: ${aadClientId}. Error: ${error.message}`);
-        // }
+        if (response.idToken && response.idToken.rawIdToken) {
+            await this.exchangeIdToken(response.idToken.rawIdToken, Constants.IdentityProviders.aad);
+        }
     }
 
     /**
@@ -154,7 +149,6 @@ export class AadService {
             throw new Error(`Authority not specified.`);
         }
 
-
         const auth = `https://${authority}/tfp/${instance}/${signInPolicy}`;
 
         const msalConfig = {
@@ -171,16 +165,11 @@ export class AadService {
             scopes: ["openid", "email", "profile"]
         };
 
-        // try {
-            const response = await msalInstance.loginPopup(loginRequest);
+        const response = await msalInstance.loginPopup(loginRequest);
 
-            if (response.idToken && response.idToken.rawIdToken) {
-                await this.exchangeIdToken(response.idToken.rawIdToken, Constants.IdentityProviders.aadB2C);
-            }
-        // }
-        // catch (error) {
-        //     throw new Error(`Unable to obtain id_token with client ID: ${clientId}. Error: ${error.message}`);
-        // }
+        if (response.idToken && response.idToken.rawIdToken) {
+            await this.exchangeIdToken(response.idToken.rawIdToken, Constants.IdentityProviders.aadB2C);
+        }
     }
 
     /**
