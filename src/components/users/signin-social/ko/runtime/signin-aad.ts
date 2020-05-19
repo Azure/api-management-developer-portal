@@ -46,10 +46,20 @@ export class SignInAad {
             await this.aadService.signInWithAadAdal(this.clientId(), this.signinTenant());
         }
         catch (error) {
+            let errorDetails;
+
+            if (error.code === "ValidationError") {
+                errorDetails = error.details?.map(detail => detail.message);
+            }
+            else {
+                errorDetails = [error.message];
+            }
+
             const validationReport: ValidationReport = {
                 source: "socialAcc",
-                errors: [error.message]
+                errors: errorDetails
             };
+
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         }
     }

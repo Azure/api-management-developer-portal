@@ -85,4 +85,9 @@ export interface JwtToken {
      * Email address.
      */
     email: string;
+
+    /**
+     * Array of email addresses, e.g. AAD B2C.
+     */
+    emails: string;
 }
