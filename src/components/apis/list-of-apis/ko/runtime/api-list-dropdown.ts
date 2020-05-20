@@ -2,12 +2,12 @@ import * as ko from "knockout";
 import * as Constants from "../../../../../constants";
 import template from "./api-list-dropdown.html";
 import { Component, RuntimeComponent, OnMounted, Param, OnDestroyed } from "@paperbits/common/ko/decorators";
-import { RouteHelper } from "./../../../../../routing/routeHelper";
+import { Router } from "@paperbits/common/routing";
+import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
-import { Router } from "@paperbits/common/routing";
 import { Utils } from "../../../../../utils";
 import { Tag } from "../../../../../models/tag";
 
@@ -86,12 +86,11 @@ export class ApiListDropdown {
     private async onRouteChange(): Promise<void> {
         const apiName = this.routeHelper.getApiName();
 
-        if (apiName !== this.selectedApiName()) {
-            await this.resetSearch();
+        if (apiName === this.selectedApiName()) {
             return;
         }
 
-        await this.resetSearch();
+        this.checkSelection();
     }
 
     /**
@@ -112,9 +111,7 @@ export class ApiListDropdown {
 
             const pageOfTagResources = await this.apiService.getApisByTags(query);
             const apiGroups = pageOfTagResources.value;
-
             this.apiGroups(apiGroups);
-            this.checkSelection(apiGroups);
 
             const nextLink = pageOfTagResources.nextLink;
 
@@ -129,13 +126,13 @@ export class ApiListDropdown {
         }
     }
 
-    private checkSelection(apiGroups: TagGroup<Api>[]): void {
+    private checkSelection(): void {
         if (!this.allowSelection()) {
             return;
         }
 
         const selectedApiName = this.routeHelper.getApiName();
-        const listOfApis = apiGroups.map(group => group.items || []).flat();
+        const listOfApis = this.apiGroups().map(group => group.items || []).flat();
         const selectedApi = listOfApis.find(x => x.name === selectedApiName);
 
         if (!selectedApiName && listOfApis.length > 0) {

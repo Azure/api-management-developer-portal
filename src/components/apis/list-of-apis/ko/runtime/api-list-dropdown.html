@@ -15,11 +15,13 @@
 
     <div class="collapsible-dropdown collapsible-content">
         <div class="search-input">
-            <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
-                data-bind="textInput: pattern" autofocus />
-            <button type="button" class="search-button" aria-label="Search APIs">
-                <i class="icon icon-magnifier"></i>
-            </button>
+            <div class="input-group">
+                <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
+                    data-bind="textInput: pattern" autofocus />
+                <button type="button" class="search-button" aria-label="Search APIs">
+                    <i class="icon icon-magnifier"></i>
+                </button>
+            </div>
         </div>
         <!-- <tag-input params="{ scope: 'apis', onChange: onTagsChange }"></tag-input> -->
         <div role="list">
@@ -33,24 +35,27 @@
                 <div class="tag-group">
                     <span class="tag-item" role="group" data-bind="text: group.tag"></span>
                 </div>
-                <div class="collapsible-container" role="list">
-                    <!-- ko foreach: { data: group.items, as: 'item' } -->
-                    <a href="#" role="listitem" class="nav-link text-truncate" data-bind="attr: { href: $component.getReferenceUrl(item) }">
-                        <span data-bind="text: item.displayName"></span>
-                        <!-- ko if: item.type === 'soap' -->
-                        <span class="badge badge-soap">SOAP</span>
+                <div class="collapsible-container">
+                    <div class="menu menu-vertical" role="list">
+                        <!-- ko foreach: { data: group.items, as: 'item' } -->
+                        <a href="#" role="listitem" class="nav-link text-truncate"
+                            data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedApiName() === item.name }">
+                            <span data-bind="text: item.displayName"></span>
+                            <!-- ko if: item.type === 'soap' -->
+                            <span class="badge badge-soap">SOAP</span>
+                            <!-- /ko -->
+                            <!-- ko if: item.apiVersion -->
+                            - <span data-bind="text: item.apiVersion"></span>
+                            <!-- /ko -->
+                        </a>
                         <!-- /ko -->
-                        <!-- ko if: item.apiVersion -->
-                        - <span data-bind="text: item.apiVersion"></span>
-                        <!-- /ko -->
-                    </a>
-                    <!-- /ko -->
+                    </div>
                 </div>
             </div>
             <!-- /ko -->
 
             <!-- ko if: apiGroups().length === 0 -->
-            <p>No APIs found</p>
+            <div class="list-item-empty">No APIs found</div>
             <!-- /ko -->
 
             <!-- ko if: hasPager -->
