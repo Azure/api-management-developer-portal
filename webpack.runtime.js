@@ -5,7 +5,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 
 const runtimeConfig = {
-    mode: "production",
+    mode: "none",
     target: "web",
     entry: {
         "scripts/theme": ["./src/startup.runtime.ts"]
