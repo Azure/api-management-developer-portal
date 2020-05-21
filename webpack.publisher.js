@@ -40,7 +40,11 @@ const publisherConfig = {
                 test: /\.html$/,
                 loader: "html-loader",
                 options: {
-                    esModule: true
+                    esModule: true,
+                    minimize: {
+                        removeComments: false,
+                        collapseWhitespace: false
+                    }
                 }
             },
             {
