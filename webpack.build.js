@@ -5,6 +5,7 @@ const publisherConfig = require("./webpack.publisher.js");
 
 
 const productionConfig = {
+    mode: "production",
     optimization: {
         minimizer: [
             new TerserPlugin({
