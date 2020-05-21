@@ -6,7 +6,7 @@ const runtimeConfig = require("./webpack.runtime.js");
 
 
 const designerConfig = {
-    mode: "production",
+    mode: "none",
     target: "web",
     entry: {
         "editors/scripts/paperbits": ["./src/startup.design.ts"],
