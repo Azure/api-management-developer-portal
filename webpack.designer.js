@@ -64,7 +64,8 @@ const designerConfig = {
         new CopyWebpackPlugin({
             patterns: [
                 { from: `./src/themes/designer/assets/index.html`, to: "index.html" },
-                { from: `./src/themes/designer/styles/fonts`, to: "editors/styles/fonts" }
+                { from: `./src/themes/designer/styles/fonts`, to: "editors/styles/fonts" }б
+                { from: `./scripts/data.json`, to: "editors/themes/default.json" }
             ]
         })
     ],
