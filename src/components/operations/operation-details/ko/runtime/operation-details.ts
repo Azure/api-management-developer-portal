@@ -63,12 +63,12 @@ export class OperationDetails {
             const apiPath = api.versionedPath;
 
             if (api.type === TypeOfApi.soap) {
-                return `https://${hostname}/${apiPath}`;
+                return `https://${hostname}${apiPath}`;
             }
 
             const operationPath = operation.displayUrlTemplate;
 
-            return `https://${hostname}/${apiPath}${operationPath}`;
+            return `https://${hostname}${apiPath}${operationPath}`;
         });
     }
 
