@@ -13,7 +13,7 @@ const productionConfig = {
                 terserOptions: {
                     mangle: false,
                     output: {
-                        comments: true
+                        comments: false
                     }
                 }
             })
