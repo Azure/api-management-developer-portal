@@ -44,6 +44,7 @@ export class ResetDetailsWorkshop {
         } 
         catch (error) {
             this.viewManager.notifyError("Confirm", `Unable to reset website. Please try again later.`);
+            this.logger.traceError(error);
         }
     }
 }
