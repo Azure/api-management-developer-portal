@@ -31,6 +31,7 @@ export class ContentWorkshop {
         }
         catch (error) {
             this.viewManager.notifyError("Operations", `Unable to schedule publishing. Please try again later.`);
+            this.logger.traceError(error);
         }
     }
 
