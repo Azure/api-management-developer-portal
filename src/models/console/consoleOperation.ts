@@ -88,10 +88,10 @@ export class ConsoleOperation {
                 const parameterPlaceholder = parameter.name() !== "*" ? `{${parameter.name()}}` : "*";
 
                 if (requestUrl.indexOf(parameterPlaceholder) > -1) {
-                    requestUrl = requestUrl.replace(parameterPlaceholder, encodeURI(parameter.value()));
+                    requestUrl = requestUrl.replace(parameterPlaceholder, encodeURIComponent(parameter.value()));
                 }
                 else {
-                    requestUrl = this.addParam(requestUrl, encodeURI(parameter.name()), encodeURI(parameter.value()));
+                    requestUrl = this.addParam(requestUrl, encodeURIComponent(parameter.name()), encodeURIComponent(parameter.value()));
                 }
             }
         });
