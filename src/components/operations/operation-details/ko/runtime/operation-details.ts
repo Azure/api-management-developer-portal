@@ -60,15 +60,14 @@ export class OperationDetails {
             const api = this.api();
             const operation = this.operation();
             const hostname = this.sampleHostname();
-            const apiPath = api.versionedPath;
 
-            if (api.type === TypeOfApi.soap) {
-                return `https://${hostname}/${apiPath}`;
+            let operationPath = api.versionedPath;
+
+            if (api.type !== TypeOfApi.soap) {
+                operationPath += operation.displayUrlTemplate;
             }
 
-            const operationPath = operation.displayUrlTemplate;
-
-            return `https://${hostname}/${apiPath}${operationPath}`;
+            return `https://${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
         });
     }
 
