@@ -56,6 +56,20 @@ export class UsersService {
         }
     }
 
+    public getTokenFromTiketParams(parameters: URLSearchParams): string {
+        const ticket = parameters.get("ticket");
+        const ticketId = parameters.get("ticketid");
+        const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
+
+        return token;
+    }
+
+    public getUserIdFromParams(parameters: URLSearchParams): string {
+        const userId = parameters.get("userid");
+
+        return userId ? `/users/${userId}` : undefined;
+    }
+
     public async activateUser(parameters: URLSearchParams): Promise<void> {
         const userId = parameters.get("userid");
         const ticket = parameters.get("ticket");
@@ -67,8 +81,9 @@ export class UsersService {
         await this.mapiClient.put<void>(requestUrl, [{ name: "Authorization", value: token }], {});
     }
 
-    public async updatePassword(userId: string, newPassword: string): Promise<void> {
-        await this.mapiClient.patch(userId, undefined, { password: newPassword });
+    public async updatePassword(userId: string, newPassword: string, token: string): Promise<void> {
+        const heasers = [{ name: "Authorization", value: token }];
+        await this.mapiClient.patch(userId, heasers, { password: newPassword });
     }
 
     /**
