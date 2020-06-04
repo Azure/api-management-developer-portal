@@ -9,6 +9,8 @@ import { ArmResource } from "../contracts/armResource";
 
 const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block"];
 const selectedLocale = "en_us";
+const reservedArmIds = ["containerId", "webContainerId"];
+const reservedPaperbitsIds = ["containerKey", "webContainerKey"];
 
 
 export class MapiObjectStorage implements IObjectStorage {
@@ -421,10 +423,12 @@ export class MapiObjectStorage implements IObjectStorage {
                 let convertedKey = propertyName;
                 let convertedValue = propertyValue;
 
-                convertedKey = propertyName
-                    .replace(/contentKey/gm, "documentId")
-                    .replace(/Key\b/gm, "Id")
-                    .replace(/\bkey\b/gm, "id");
+                if (!reservedPaperbitsIds.includes(convertedKey)) {
+                    convertedKey = propertyName
+                        .replace(/contentKey/gm, "documentId")
+                        .replace(/Key\b/gm, "Id")
+                        .replace(/\bkey\b/gm, "id");
+                }
 
                 if (typeof propertyValue === "string") {
                     if (propertyName !== convertedKey) {
@@ -485,10 +489,12 @@ export class MapiObjectStorage implements IObjectStorage {
                 let convertedKey = propertyName;
                 let convertedValue = propertyValue;
 
-                convertedKey = propertyName
-                    .replace(/documentId/gm, "contentKey")
-                    .replace(/Id\b/gm, "Key")
-                    .replace(/\bid\b/gm, "key");
+                if (!reservedArmIds.includes(propertyName)) {
+                    convertedKey = propertyName
+                        .replace(/documentId/gm, "contentKey")
+                        .replace(/Id\b/gm, "Key")
+                        .replace(/\bid\b/gm, "key");
+                }
 
                 if (typeof propertyValue === "string" && propertyValue.includes("contentType")) {
                     convertedValue = this.armResourceToPaperbitsKey(propertyValue);
