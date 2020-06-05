@@ -5,14 +5,18 @@ import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@pap
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
-import { TypeDefinition, TypeDefinitionProperty, TypeDefinitionPropertyTypeReference } from "../../../../../models/typeDefinition";
 import { TypeDefinitionPropertyTypeCombination } from "./../../../../../models/typeDefinition";
 import { Representation } from "./../../../../../models/representation";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { TenantService } from "../../../../../services/tenantService";
-import { SwaggerObject } from "./../../../../../contracts/swaggerObject";
 import { Utils } from "../../../../../utils";
 import { TypeOfApi } from "../../../../../constants";
+import {
+    TypeDefinition,
+    TypeDefinitionProperty,
+    TypeDefinitionPropertyTypeReference,
+    TypeDefinitionPropertyTypeArrayOfReference,
+    TypeDefinitionPropertyTypeArrayOfPrimitive
+} from "../../../../../models/typeDefinition";
 
 
 @RuntimeComponent({
@@ -141,12 +145,12 @@ export class OperationDetails {
         const schemaIds = [];
         const apiId = `apis/${this.selectedApiName()}/schemas`;
 
-        const prepresentations = operation.responses
+        const representations = operation.responses
             .map(response => response.representations)
             .concat(operation.request.representations)
             .flat();
 
-        prepresentations
+        representations
             .map(representation => representation.schemaId)
             .filter(schemaId => !!schemaId)
             .forEach(schemaId => {
@@ -155,7 +159,7 @@ export class OperationDetails {
                 }
             });
 
-        const typeNames = prepresentations
+        const typeNames = representations
             .filter(p => !!p.typeName)
             .map(p => p.typeName)
             .filter((item, pos, self) => self.indexOf(item) === pos);
@@ -167,7 +171,7 @@ export class OperationDetails {
         let lookupResult = [...typeNames];
 
         while (lookupResult.length > 0) {
-            const references = definitions.filter(d => lookupResult.indexOf(d.name) !== -1);
+            const references = definitions.filter(definition => lookupResult.indexOf(definition.name) !== -1);
 
             lookupResult = references.length === 0
                 ? []
@@ -193,8 +197,11 @@ export class OperationDetails {
                 result.push(definition.type["name"]);
             }
 
-            if (definition.type instanceof TypeDefinitionPropertyTypeReference && !skipNames.includes(definition.type.name)) {
-                result.push(definition.type["name"]);
+            if ((definition.type instanceof TypeDefinitionPropertyTypeReference
+                || definition.type instanceof TypeDefinitionPropertyTypeArrayOfPrimitive
+                || definition.type instanceof TypeDefinitionPropertyTypeArrayOfReference)
+                && !skipNames.includes(definition.type.name)) {
+                result.push(definition.type.name);
             }
 
             if (definition.type instanceof TypeDefinitionPropertyTypeCombination) {
