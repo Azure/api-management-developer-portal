@@ -8,7 +8,7 @@
 
 <div class="panel panel-dark animation-fade-in" data-bind="with: consoleOperation">
     <button type="button" class="no-border pull-right" data-dismiss="modal" aria-label="Close console"
-            data-bind="click: $parents[1].closeConsole">
+        data-bind="click: $parents[1].closeConsole">
         <i class="icon icon-simple-remove"></i>
     </button>
 
@@ -36,11 +36,13 @@
 
     <div class="row flex flex-row">
         <div class="col-4">
-            <input type="text" readonly class="form-control form-control-sm" value="Hostname" />
+            <label for="hostname" class="text-monospace form-label">
+                Hostname
+            </label>
         </div>
         <div class="col-6">
             <div class="form-group">
-                <select id="hostnames" class="form-control" data-bind="value: $component.requestHostname">
+                <select id="hostname" class="form-control" data-bind="value: $component.selectedHostname">
                     <!-- ko foreach: { data: $component.hostnames, as: 'hostname' } -->
                     <option data-bind="value: hostname, text: hostname"></option>
                     <!-- /ko -->
@@ -50,11 +52,30 @@
     </div>
     <!-- /ko -->
 
+    <!-- ko if: $component.isHostnameWildcarded -->
+    <div class="row flex flex-row">
+        <div class="col-4">
+            <label for="wildcardSegment" class="text-monospace form-label">
+                Wildcard segment
+            </label>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <input id="wildcardSegment" type="text" autocomplete="off" class="form-control form-control-sm"
+                    placeholder="name" spellcheck="false"
+                    data-bind="event: { keyup: $component.updateRequestSummary }, textInput: $component.wildcardSegment">
+            </div>
+        </div>
+    </div>
+    <!-- /ko -->
+
     <h3>Authorization</h3>
 
     <div class="row flex flex-row">
         <div class="col-4">
-            <input type="text" readonly class="form-control form-control-sm" value="Subscription key" />
+            <label for="subscriptionKey" class="text-monospace form-label">
+                Subscription key
+            </label>
         </div>
         <div class="col-6">
             <div class="form-group">
@@ -71,37 +92,31 @@
                 <!-- /ko -->
                 <!-- ko if: !$component.products() || $component.products().length === 0 -->
                 <input type="text" class="form-control" placeholder="subscription key"
-                       data-bind="textInput: $component.selectedSubscriptionKey" />
+                    data-bind="textInput: $component.selectedSubscriptionKey" />
                 <!-- /ko -->
             </div>
         </div>
     </div>
 
-    <h4>Parameters</h4>
+    <h3>Parameters</h3>
     <!-- ko if: (templateParameters && templateParameters().length > 0) || (request.queryParameters && request.queryParameters().length > 0) -->
     <div data-bind="foreach: { data: templateParameters, as: 'parameter' }">
         <div class="row flex flex-row">
             <div class="col-4">
-                <div class="form-group">
-                    <div class="input-group">
-                        <input type="text" readonly autocomplete="off" class="form-control form-control-sm"
-                               placeholder="name" spellcheck="false" aria-label="Parameter name"
-                               data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.name">
-                        <span class="invalid-feedback" data-bind="validationMessage: parameter.name"></span>
-                    </div>
-                </div>
+                <label class="text-monospace form-label" data-bind="text: parameter.name">
+                </label>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <!-- ko if: parameter.options.length > 0 -->
                     <select class="form-control" aria-label="Parameter value"
-                            data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
+                        data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                     <!-- /ko -->
                     <!-- ko if: parameter.options.length === 0 -->
                     <div class="input-group">
                         <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                               spellcheck="false" aria-label="Parameter value"
-                               data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value">
+                            spellcheck="false" aria-label="Parameter value"
+                            data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value">
                         <span class="invalid-feedback" data-bind="validationMessage: parameter.value"></span>
                     </div>
                     <!-- /ko -->
@@ -115,7 +130,7 @@
                 <div class="form-group">
                     <div class="input-group">
                         <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
-                               spellcheck="false" aria-label="Parameter name" data-bind="textInput: parameter.name">
+                            spellcheck="false" aria-label="Parameter name" data-bind="textInput: parameter.name">
                         <span class="invalid-feedback" data-bind="validationMessage: parameter.name"></span>
                     </div>
                 </div>
@@ -124,12 +139,12 @@
                 <div class="form-group">
                     <!-- ko if: parameter.options.length > 0 -->
                     <select class="form-control" aria-label="Parameter value"
-                            data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
+                        data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                     <!-- /ko -->
                     <!-- ko if: parameter.options.length === 0 -->
                     <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                           spellcheck="false" aria-label="Parameter value"
-                           data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value">
+                        spellcheck="false" aria-label="Parameter value"
+                        data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value">
                     <!-- /ko -->
                 </div>
             </div>
@@ -155,7 +170,7 @@
                 <div class="form-group">
                     <div class="input-group">
                         <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
-                               spellcheck="false" aria-label="Header name" data-bind="textInput: header.name">
+                            spellcheck="false" aria-label="Header name" data-bind="textInput: header.name">
                         <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
                     </div>
                 </div>
@@ -164,18 +179,16 @@
                 <div class="form-group">
                     <!-- ko if: header.options && header.options.length > 0 -->
                     <select class="form-control" aria-label="Header value"
-                            data-bind="value: header.value, options: header.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
+                        data-bind="value: header.value, options: header.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                     <!-- /ko -->
                     <!-- ko if: !header.options || header.options.length === 0 -->
                     <div class="input-group">
                         <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                               spellcheck="false" aria-label="Header value"
-                               data-bind="event: { keyup: $component.updateRequestSummary }, textInput: header.value">
+                            spellcheck="false" aria-label="Header value"
+                            data-bind="event: { keyup: $component.updateRequestSummary }, textInput: header.value">
                         <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
                     </div>
                     <!-- /ko -->
-
-
                 </div>
             </div>
             <div class="col-2">
@@ -196,24 +209,24 @@
     <div class="flex justify-content-end">
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="bodyFormat" id="bodyFormatRaw" value="raw"
-                   data-bind="checked: request.bodyFormat">
+                data-bind="checked: request.bodyFormat">
             <label class="form-check-label" for="bodyFormatRaw">Raw</label>
         </div>
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="bodyFormat" id="bodyFormatBinary" value="binary"
-                   data-bind="checked: request.bodyFormat">
+                data-bind="checked: request.bodyFormat">
             <label class="form-check-label" for="bodyFormatBinary">Binary</label>
         </div>
     </div>
     <div class="form-group">
         <!-- ko if: request.bodyFormat() === 'raw' -->
         <textarea class="form-control form-control-sm" rows="5"
-                  data-bind="event: { keyup: $component.updateRequestSummary }, textInput: request.body, valueUpdate: 'keyup'"></textarea>
+            data-bind="event: { keyup: $component.updateRequestSummary }, textInput: request.body, valueUpdate: 'keyup'"></textarea>
         <!-- /ko -->
         <!-- ko if: request.bodyFormat() === 'binary' -->
-        <file-input params="{ onSelect: $component.onFileSelect }" class="form-control" data-bind="css: { 'is-invalid': !request.binary.isValid() }"></file-input>
-        <span class="invalid-feedback"
-              data-bind="validationMessage: request.binary"></span>
+        <file-input params="{ onSelect: $component.onFileSelect }" class="form-control"
+            data-bind="css: { 'is-invalid': !request.binary.isValid() }"></file-input>
+        <span class="invalid-feedback" data-bind="validationMessage: request.binary"></span>
         <!-- /ko -->
     </div>
     <!-- /ko -->
@@ -223,55 +236,55 @@
     <ul class="nav" role="tablist">
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'http'), css: { 'nav-link-active': $component.selectedLanguage() === 'http' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'http'), css: { 'nav-link-active': $component.selectedLanguage() === 'http' }">
                 HTTP
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'curl'), css: { 'nav-link-active': $component.selectedLanguage() === 'curl' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'curl'), css: { 'nav-link-active': $component.selectedLanguage() === 'curl' }">
                 Curl
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'csharp'), css: { 'nav-link-active': $component.selectedLanguage() === 'csharp' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'csharp'), css: { 'nav-link-active': $component.selectedLanguage() === 'csharp' }">
                 C#
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'java'), css: { 'nav-link-active': $component.selectedLanguage() === 'java' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'java'), css: { 'nav-link-active': $component.selectedLanguage() === 'java' }">
                 Java
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'javascript'), css: { 'nav-link-active': $component.selectedLanguage() === 'javascript' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'javascript'), css: { 'nav-link-active': $component.selectedLanguage() === 'javascript' }">
                 JavaScript
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'php'), css: { 'nav-link-active': $component.selectedLanguage() === 'php' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'php'), css: { 'nav-link-active': $component.selectedLanguage() === 'php' }">
                 PHP
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'python'), css: { 'nav-link-active': $component.selectedLanguage() === 'python' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'python'), css: { 'nav-link-active': $component.selectedLanguage() === 'python' }">
                 Python
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'ruby'), css: { 'nav-link-active': $component.selectedLanguage() === 'ruby' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'ruby'), css: { 'nav-link-active': $component.selectedLanguage() === 'ruby' }">
                 Ruby
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'objc'), css: { 'nav-link-active': $component.selectedLanguage() === 'objc' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'objc'), css: { 'nav-link-active': $component.selectedLanguage() === 'objc' }">
                 Objective C
             </a>
         </li>
@@ -281,7 +294,7 @@
     <div class="code-block">
         <div class="code-block-heading">
             <button class="code-block-command" data-bind="copyToClipboard: $component.codeSample"
-                    aria-label="Copy to clipboard">
+                aria-label="Copy to clipboard">
                 <i class="icon icon-duplicate"></i> Copy
             </button>
         </div>

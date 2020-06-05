@@ -43,8 +43,10 @@ export class OperationConsole {
     public readonly selectedProduct: ko.Observable<Product>;
     public readonly requestError: ko.Observable<string>;
     public readonly codeSample: ko.Observable<string>;
-    public readonly requestHostname: ko.Observable<string>;
+    public readonly selectedHostname: ko.Observable<string>;
+    public readonly isHostnameWildcarded: ko.Computed<boolean>;
     public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
+    public readonly wildcardSegment: ko.Observable<string>;
     public masterKey: string;
     public isConsumptionMode: boolean;
     public templates: Object;
@@ -78,8 +80,11 @@ export class OperationConsole {
         this.codeSample = ko.observable();
         this.selectedProduct = ko.observable();
         this.onFileSelect = this.onFileSelect.bind(this);
-        this.requestHostname = ko.observable();
+        this.selectedHostname = ko.observable("");
         this.hostnameSelectionEnabled = ko.observable();
+        this.isHostnameWildcarded = ko.computed(() => this.selectedHostname().includes("*"));
+
+        this.wildcardSegment = ko.observable();
 
         validation.rules["maxFileSize"] = {
             validator: (file: File, maxSize: number) => !file || file.size < maxSize,
@@ -115,7 +120,14 @@ export class OperationConsole {
 
         await this.resetConsole();
 
-        this.requestHostname.subscribe(this.setHostname);
+        this.selectedHostname.subscribe(this.setHostname);
+        this.wildcardSegment.subscribe((wildcardSegment) => {
+            const hostname = wildcardSegment
+                ? this.selectedHostname().replace("*", wildcardSegment)
+                : this.selectedHostname();
+
+            this.setHostname(hostname);
+        });
         this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
         this.api.subscribe(this.resetConsole);
         this.operation.subscribe(this.resetConsole);
@@ -148,7 +160,7 @@ export class OperationConsole {
         this.hostnameSelectionEnabled(this.hostnames()?.length > 1);
 
         const hostname = hostnames[0];
-        this.requestHostname(hostname);
+        this.selectedHostname(hostname);
 
         this.hostnameSelectionEnabled(this.hostnames()?.length > 1);
         consoleOperation.host.hostname(hostname);
