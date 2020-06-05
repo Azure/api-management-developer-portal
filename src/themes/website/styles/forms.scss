@@ -63,6 +63,10 @@ $switch-trigger-size: $switch-height - $switch-trigger-gap * 2;
     }
 }
 
+.form-label {
+    padding: .375rem .75rem;
+}
+
 .form-control {
     display: block;
     width: 100%;
