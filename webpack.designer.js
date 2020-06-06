@@ -1,16 +1,16 @@
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const runtimeConfig = require("./webpack.runtime.js");
 
 
-module.exports = {
+const designerConfig = {
+    mode: "none",
     target: "web",
-    devtool: "inline-source-map",
     entry: {
         "editors/scripts/paperbits": ["./src/startup.design.ts"],
         "editors/styles/paperbits": [`./src/themes/designer/styles/styles.scss`],
-        "scripts/theme": ["./src/startup.runtime.ts"],
-        "styles/theme": [`./src/themes/website/styles/styles.design.scss`]
     },
     output: {
         filename: "./[name].js",
@@ -33,11 +33,21 @@ module.exports = {
             },
             {
                 test: /\.html$/,
-                loader: "html-loader?exportAsEs6Default"
+                loader: "html-loader",
+                options: {
+                    esModule: true,
+                    minimize: {
+                        removeComments: false,
+                        collapseWhitespace: false
+                    }
+                }
             },
             {
                 test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-                loader: "url-loader?limit=100000"
+                loader: "url-loader",
+                options: {
+                    limit: 10000
+                }
             },
             {
                 test: /\.liquid$/,
@@ -46,20 +56,22 @@ module.exports = {
         ]
     },
     plugins: [
+        new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
             filename: "[name].css",
             chunkFilename: "[id].css"
         }),
-        new CopyWebpackPlugin([
-            { from: `./src/themes/designer/assets/index.html`, to: "index.html" },
-            { from: `./src/themes/designer/styles/fonts`, to: "editors/styles/fonts" },
-            { from: `./src/themes/website/assets` },
-            { from: `./src/themes/website/styles/fonts`, to: "styles/fonts" },
-            { from: `./js/HipObject.js`, to: "scripts/js" },
-            { from: `./scripts/data.json`, to: "editors/themes/default.json" }
-        ])
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: `./src/themes/designer/assets/index.html`, to: "index.html" },
+                { from: `./src/themes/designer/styles/fonts`, to: "editors/styles/fonts" },
+                { from: `./scripts/data.json`, to: "editors/themes/default.json" }
+            ]
+        })
     ],
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"]
     }
 };
+
+module.exports = [runtimeConfig(true), designerConfig]

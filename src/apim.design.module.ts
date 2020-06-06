@@ -28,7 +28,6 @@ import { MapiClient, IdentityService } from "./services";
 import { AzureBlobStorage } from "@paperbits/azure";
 import { SetupModule } from "./components/setup/setup.module";
 import { ContentModule } from "./components/content";
-import { SaveChangesToolButton } from "./persistence/saveChangesToolbutton";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";
 import { OperationListEditorModule } from "./components/operations/operation-list/ko/operationListEditor.module";
 import { OperationDetailsDesignModule } from "./components/operations/operation-details/operationDetails.design.module";
@@ -120,7 +119,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindToCollection("routeGuards", UnsavedChangesRouteGuard);
-        injector.bindToCollection("trayCommands", SaveChangesToolButton);
         injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);       
         injector.bindSingleton("oauthService", OAuthService);
     }

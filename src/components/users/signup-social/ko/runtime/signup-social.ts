@@ -2,17 +2,13 @@ import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import * as Constants from "../../../../../constants";
 import template from "./signup-social.html";
-import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { Router } from "@paperbits/common/routing";
-import { HttpClient } from "@paperbits/common/http";
-import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ValidationReport } from "../../../../../contracts/validationReport";
-import { UserPropertiesContract } from "../../../../../contracts/user";
 import { Utils } from "../../../../../utils";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { IAuthenticator } from "./../../../../../authentication/IAuthenticator";
-import { MapiError } from "../../../../../services/mapiError";
+import { UsersService } from "../../../../../services";
 
 
 @RuntimeComponent({
@@ -30,11 +26,9 @@ export class SignupSocial {
 
     constructor(
         private readonly eventManager: EventManager,
-        private readonly httpClient: HttpClient,
-        private readonly settingsProvider: ISettingsProvider,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper,
-        private readonly authenticator: IAuthenticator
+        private readonly usersService: UsersService
     ) {
         this.email = ko.observable("");
         this.firstName = ko.observable("");
@@ -70,55 +64,6 @@ export class SignupSocial {
         this.firstName(jwtToken.given_name);
         this.lastName(jwtToken.family_name);
         this.email(jwtToken.email);
-    }
-
-    public async createUserWithOAuth(provider: string, idToken: string): Promise<void> {
-        const managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
-        const managementApiVersion = await this.settingsProvider.getSetting<string>("managementApiVersion");
-        const jwtToken = Utils.parseJwt(idToken);
-
-        const user: UserPropertiesContract = {
-            firstName: this.firstName(),
-            lastName: this.lastName(),
-            email: this.email(),
-            identities: [{
-                id: jwtToken.oid,
-                provider: provider
-            }]
-        };
-
-        const response = await this.httpClient.send({
-            url: `${managementApiUrl}/users?api-version=${managementApiVersion}`,
-            method: "POST",
-            headers: [
-                { name: "Content-Type", value: "application/json" },
-                { name: "Authorization", value: `${provider} id_token="${idToken}"` }
-            ],
-            body: JSON.stringify(user)
-        });
-
-        if (!(response.statusCode >= 200 && response.statusCode <= 299)) {
-            throw MapiError.fromResponse(response);
-        }
-
-        const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
-
-        if (!sasTokenHeader) { // User not registered with APIM.
-            throw new Error("Unable to authenticate.");
-            return;
-        }
-
-        const regex = /token=\"(.*==)\"/gm;
-        const matches = regex.exec(sasTokenHeader.value);
-
-        if (!matches || matches.length < 1) {
-            throw new Error("Authentication failed. Unable to parse access token.");
-        }
-
-        const sasToken = matches[1];
-        await this.authenticator.setAccessToken(`SharedAccessSignature ${sasToken}`);
-
-        this.router.navigateTo(Constants.pageUrlHome);
     }
 
     /**
@@ -159,9 +104,10 @@ export class SignupSocial {
                 errors: []
             };
 
-            await this.createUserWithOAuth(provider, idToken);
-
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+
+            await this.usersService.createUserWithOAuth(provider, idToken, this.firstName(), this.lastName(), this.email());
+            await this.router.navigateTo(Constants.pageUrlHome);
         }
         catch (error) {
             let errorMessages: string[];

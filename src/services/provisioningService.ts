@@ -47,7 +47,6 @@ export class ProvisionService {
         const dataUrl = `/editors/themes/default.json`;
 
         try {
-            this.viewManager.removeShutter();
             const dataObj = await this.fetchData(dataUrl);
             const keys = Object.keys(dataObj);
             const accessToken = await this.authenticator.getAccessToken();

@@ -1,8 +1,8 @@
 <div class="form-inline search-input">
     <div class="input-group">
-        <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
+        <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs" spellcheck="false"
             data-bind="textInput: pattern" />
-        <button type="button" class="search-button">
+        <button type="button" class="search-button" aria-label="Search products">
             <i class="icon icon-magnifier"></i>
         </button>
     </div>
@@ -36,7 +36,7 @@
                 </a>
             </div>
             <div class="col-7">
-                <div data-bind="markdown: item.description"></div>
+                <div data-bind="markdown: { source: item.description, truncateAt: 250 }"></div>
             </div>
         </div>
         <!-- /ko -->
@@ -52,7 +52,7 @@
     <!-- ko if: hasPager -->
     <!-- ko ifnot: working -->
     <div class="table-footer">
-        <ul class="pagination justify-content-center">
+        <ul class="pagination justify-content-center" role="navigation" aria-label="Pagination">
             <!-- ko if: hasPrevPage -->
             <li class="page-item">
                 <a href="#" class="page-link" role="button" aria-label="Previous page"

@@ -23,6 +23,19 @@
                 "NODE_ENV": "development"
             },
             "console": "internalConsole"
+        },
+        {
+            "name": "Publisher",
+            "type": "node",
+            "request": "launch",
+            "protocol": "inspector",
+            "program": "${workspaceFolder}/dist/publisher/index.js",
+            "cwd": "${workspaceRoot}",
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "console": "internalConsole",
+            "sourceMaps": true
         }
     ]
 }

@@ -82,7 +82,6 @@ export class TenantService {
 
     public async isSubscriptionDelegationEnabled(): Promise<boolean> {
         const tenantSettings = await this.getSettings();
-        const delegationEnabled = await this.isDelegationEnabled(tenantSettings);
-        return delegationEnabled && tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"] && tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"].toLowerCase() === "true";
+        return tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"] && tenantSettings["CustomPortalSettings.DelegatedSubscriptionEnabled"].toLowerCase() === "true";
     }
 }

@@ -46,6 +46,10 @@ export class OperationConsole {
     public readonly selectedProduct: ko.Observable<Product>;
     public readonly requestError: ko.Observable<string>;
     public readonly codeSample: ko.Observable<string>;
+    public readonly selectedHostname: ko.Observable<string>;
+    public readonly isHostnameWildcarded: ko.Computed<boolean>;
+    public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
+    public readonly wildcardSegment: ko.Observable<string>;
     public readonly selectedGrantType: ko.Observable<string>;
     public masterKey: string;
     public isConsumptionMode: boolean;
@@ -81,8 +85,13 @@ export class OperationConsole {
         this.codeSample = ko.observable();
         this.selectedProduct = ko.observable();
         this.onFileSelect = this.onFileSelect.bind(this);
+        this.selectedHostname = ko.observable("");
+        this.hostnameSelectionEnabled = ko.observable();
+        this.isHostnameWildcarded = ko.computed(() => this.selectedHostname().includes("*"));
         this.selectedGrantType = ko.observable();
         this.authorizationServer = ko.observable();
+
+        this.wildcardSegment = ko.observable();
 
         validation.rules["maxFileSize"] = {
             validator: (file: File, maxSize: number) => !file || file.size < maxSize,
@@ -119,10 +128,17 @@ export class OperationConsole {
         this.masterKey = await this.tenantService.getServiceMasterKey();
         this.isConsumptionMode = skuName === ServiceSkuName.Consumption;
 
-        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey);
-
         await this.resetConsole();
 
+        this.selectedHostname.subscribe(this.setHostname);
+        this.wildcardSegment.subscribe((wildcardSegment) => {
+            const hostname = wildcardSegment
+                ? this.selectedHostname().replace("*", wildcardSegment)
+                : this.selectedHostname();
+
+            this.setHostname(hostname);
+        });
+        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
         this.api.subscribe(this.resetConsole);
         this.operation.subscribe(this.resetConsole);
         this.selectedLanguage.subscribe(this.updateRequestSummary);
@@ -151,9 +167,13 @@ export class OperationConsole {
         const consoleOperation = new ConsoleOperation(selectedApi, operation);
         this.consoleOperation(consoleOperation);
 
-        const proxyHostnames = this.hostnames();
-        const hostname = proxyHostnames[0]; // TODO: Take into account multiple hostnames.
+        const hostnames = this.hostnames();
+        this.hostnameSelectionEnabled(this.hostnames()?.length > 1);
 
+        const hostname = hostnames[0];
+        this.selectedHostname(hostname);
+
+        this.hostnameSelectionEnabled(this.hostnames()?.length > 1);
         consoleOperation.host.hostname(hostname);
 
         if (this.api().type === TypeOfApi.soap) {
@@ -244,7 +264,13 @@ export class OperationConsole {
         if (availableProducts.length > 0) {
             const subscriptionKey = availableProducts[0].subscriptionKeys[0].value;
             this.selectedSubscriptionKey(subscriptionKey);
+            this.applySubscriptionKey(subscriptionKey);
         }
+    }
+
+    private setHostname(hostname: string): void {
+        this.consoleOperation().host.hostname(hostname);
+        this.updateRequestSummary();
     }
 
     public addHeader(): void {

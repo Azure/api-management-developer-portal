@@ -1,25 +1,15 @@
-import { RepresentationContract } from "../../contracts/representation";
+import { Representation } from "../representation";
 
 export class ConsoleRepresentation {
-    public sample: string;
-    public contentType: string;
-    public schemaId?: string;
-    public typeName?: string;
+    public readonly sample: string;
+    public readonly contentType: string;
+    public readonly schemaId?: string;
+    public readonly typeName?: string;
 
-    constructor(contract: RepresentationContract) {
-        this.sample = contract.sample;
+    constructor(contract: Representation) {
+        this.sample = contract.example;
         this.contentType = contract.contentType;
         this.schemaId = contract.schemaId;
         this.typeName = contract.typeName;
-    }
-
-    public toRepresentation(): RepresentationContract {
-        const representation: RepresentationContract = {
-            contentType: this.contentType,
-            sample: this.sample,
-            schemaId: this.schemaId,
-            typeName: this.typeName
-        };
-        return representation;
     }
 }

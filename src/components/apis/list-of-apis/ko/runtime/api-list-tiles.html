@@ -1,22 +1,20 @@
-<div class="row">
-    <div class="col-md-6">
-        <div class="search-input">
-            <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
-                data-bind="textInput: pattern" />
-            <button type="button" class="search-button">
+<div class="form-inline search-input">
+    <div class="d-block flex-grow">
+        <div class="input-group">
+            <input type="search" role="searchbox" aria-label="Search APIs" placeholder="Search APIs" spellcheck="false" data-bind="textInput: pattern" />
+            <button type="button" class="search-button" aria-label="Search APIs">
                 <i class="icon icon-magnifier"></i>
             </button>
         </div>
+        <tag-input params="{ scope: 'apis', onChange: onTagsChange }"></tag-input>
     </div>
-    <div class="col-md-4">
-        <div class="form-group form-group-inline">
-            <label for="groupByTag">Group by tag
-                <div class="switch">
-                    <input id="groupByTag" type="checkbox" data-bind="checked: $component.groupByTag">
-                    <span class="slider round"></span>
-                </div>
-            </label>
-        </div>
+    <div class="form-group ml-auto">
+        <label for="groupByTag">Group by tag
+            <div class="switch">
+                <input id="groupByTag" type="checkbox" data-bind="checked: $component.groupByTag">
+                <span class="slider round"></span>
+            </div>
+        </label>
     </div>
 </div>
 
@@ -32,7 +30,7 @@
         <!-- ko if: groupByTag -->
         <!-- ko foreach: { data: apiGroups, as: 'group' } -->
         <div class="tag-group">
-            <span class="tag" role="group" data-bind="text: group.tag"></span>
+            <span class="tag-item" role="group" data-bind="text: group.tag"></span>
         </div>
 
         <!-- ko foreach: { data: group.items, as: 'item' } -->
@@ -44,7 +42,7 @@
                     - <span data-bind="text: item.apiVersion"></span>
                     <!-- /ko -->
                 </h3>
-                <p class="tile-content" data-bind="markdown: item.description"></p>
+                <p class="tile-content" data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
             </div>
         </a>
         <!-- /ko -->
@@ -69,7 +67,7 @@
                     <!-- /ko -->
                 </h3>
                 <div class="tile line-clamp">
-                    <p class="tile-content" data-bind="markdown: item.description"></p>
+                    <p class="tile-content" data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
                 </div>
             </div>
         </a>
@@ -86,7 +84,7 @@
 
     <div class="cards-footer">
         <!-- ko if: hasPager -->
-        <ul class="pagination">
+        <ul class="pagination" role="navigation" aria-label="Pagination">
             <!-- ko if: hasPrevPage -->
             <li class="page-item">
                 <a href="#" class="page-link" role="button" aria-label="Previous page"

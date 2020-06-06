@@ -9,16 +9,6 @@
     background: #fff;
 }
 
-.close {
-    font-size: 15px;
-    float: right;
-    font-weight: 700;
-    line-height: 1;
-    color: #000;
-    border: none;
-    background: none;
-}
-
 aside {
     h1 {
         min-width: 200px;
@@ -108,13 +98,6 @@ aside {
             }
         }
 
-        .btn-no-border {
-            padding: 5px;
-            margin: 5px;
-            border: none;
-            background: none;
-        }
-
         textarea {
             resize: vertical;
             min-height: 100px;
@@ -142,6 +125,10 @@ aside {
             .form-control {
                 flex: 1;
             }
+        }
+
+        a {
+            color: $default-heading-color;
         }
     }
 }
@@ -246,7 +233,7 @@ pre {
     top: 0;
     bottom: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 1050;
     @media (min-width: $breakpoint-md) {
         max-width: 600px;
     }

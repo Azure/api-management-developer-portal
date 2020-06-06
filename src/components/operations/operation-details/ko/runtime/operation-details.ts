@@ -1,5 +1,3 @@
-import { AuthorizationServer } from "./../../../../../models/authorizationServer";
-import { Representation } from "./../../../../../models/representation";
 import * as ko from "knockout";
 import template from "./operation-details.html";
 import { Router } from "@paperbits/common/routing";
@@ -7,12 +5,19 @@ import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@pap
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
-import { TypeDefinition, TypeDefinitionProperty } from "../../../../../models/typeDefinition";
+import { TypeDefinitionPropertyTypeCombination } from "./../../../../../models/typeDefinition";
+import { AuthorizationServer } from "./../../../../../models/authorizationServer";
+import { Representation } from "./../../../../../models/representation";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { TenantService } from "../../../../../services/tenantService";
-import { SwaggerObject } from "./../../../../../contracts/swaggerObject";
 import { Utils } from "../../../../../utils";
 import { TypeOfApi } from "../../../../../constants";
+import {
+    TypeDefinition,
+    TypeDefinitionProperty,
+    TypeDefinitionPropertyTypeReference,
+    TypeDefinitionPropertyTypeArrayOfReference,
+    TypeDefinitionPropertyTypeArrayOfPrimitive
+} from "../../../../../models/typeDefinition";
 
 
 @RuntimeComponent({
@@ -32,19 +37,18 @@ export class OperationDetails {
     public readonly tags: ko.ObservableArray<string>;
     public readonly operation: ko.Observable<Operation>;
     public readonly requestUrlSample: ko.Computed<string>;
-    public readonly primaryHostname: ko.Observable<string>;
+    public readonly sampleHostname: ko.Observable<string>;
     public readonly hostnames: ko.Observable<string[]>;
     public readonly working: ko.Observable<boolean>;
     public readonly associatedAuthServer: ko.Observable<AuthorizationServer>;
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly tenantService: TenantService,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
     ) {
         this.working = ko.observable(false);
-        this.primaryHostname = ko.observable();
+        this.sampleHostname = ko.observable();
         this.hostnames = ko.observable();
         this.associatedAuthServer = ko.observable();
         this.api = ko.observable();
@@ -62,16 +66,15 @@ export class OperationDetails {
 
             const api = this.api();
             const operation = this.operation();
-            const hostname = this.primaryHostname();
-            const apiPath = api.versionedPath;
+            const hostname = this.sampleHostname();
 
-            if (api.type === TypeOfApi.soap) {
-                return `https://${hostname}/${apiPath}`;
+            let operationPath = api.versionedPath;
+
+            if (api.type !== TypeOfApi.soap) {
+                operationPath += operation.displayUrlTemplate;
             }
 
-            const operationPath = operation.displayUrlTemplate;
-
-            return `https://${hostname}/${apiPath}${operationPath}`;
+            return `https://${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
         });
     }
 
@@ -83,8 +86,6 @@ export class OperationDetails {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.loadGatewayInfo();
-
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
 
@@ -92,6 +93,7 @@ export class OperationDetails {
         this.selectedOperationName(operationName);
 
         if (apiName) {
+            await this.loadGatewayInfo(apiName);
             await this.loadApi(apiName);
         }
 
@@ -106,7 +108,7 @@ export class OperationDetails {
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
 
-        if (apiName !== this.selectedApiName()) {
+        if (apiName && apiName !== this.selectedApiName()) {
             this.selectedApiName(apiName);
             this.loadApi(apiName);
         }
@@ -114,7 +116,7 @@ export class OperationDetails {
         if (apiName !== this.selectedApiName() || operationName !== this.selectedOperationName()) {
             this.operation(null);
 
-            if (operationName) {
+            if (apiName && operationName) {
                 this.selectedOperationName(operationName);
                 await this.loadOperation(apiName, operationName);
             }
@@ -156,12 +158,12 @@ export class OperationDetails {
         const schemaIds = [];
         const apiId = `apis/${this.selectedApiName()}/schemas`;
 
-        const prepresentations = operation.responses
+        const representations = operation.responses
             .map(response => response.representations)
             .concat(operation.request.representations)
             .flat();
 
-        prepresentations
+        representations
             .map(representation => representation.schemaId)
             .filter(schemaId => !!schemaId)
             .forEach(schemaId => {
@@ -170,17 +172,24 @@ export class OperationDetails {
                 }
             });
 
-        const typeNames = prepresentations.filter(p => !!p.typeName).map(p => p.typeName).filter((item, pos, self) => self.indexOf(item) === pos);
+        const typeNames = representations
+            .filter(p => !!p.typeName)
+            .map(p => p.typeName)
+            .filter((item, pos, self) => self.indexOf(item) === pos);
 
         const schemasPromises = schemaIds.map(schemaId => this.apiService.getApiSchema(`${apiId}/${schemaId}`));
         const schemas = await Promise.all(schemasPromises);
         const definitions = schemas.map(x => x.definitions).flat();
 
         let lookupResult = [...typeNames];
-        while (lookupResult.length > 0) {
-            const references = definitions.filter(d => lookupResult.indexOf(d.name) !== -1);
 
-            lookupResult = references.length === 0 ? [] : this.lookupReferences(references, typeNames);
+        while (lookupResult.length > 0) {
+            const references = definitions.filter(definition => lookupResult.indexOf(definition.name) !== -1);
+
+            lookupResult = references.length === 0
+                ? []
+                : this.lookupReferences(references, typeNames);
+
             if (lookupResult.length > 0) {
                 typeNames.push(...lookupResult);
             }
@@ -190,23 +199,40 @@ export class OperationDetails {
     }
 
     private lookupReferences(definitions: TypeDefinition[], skipNames: string[]): string[] {
-        const objectDefinitions: TypeDefinitionProperty[] = definitions.map(r => r.properties).flat();
-        return objectDefinitions.filter(p => p && p.type && (p.type.isReference || p.kind === "indexer") && skipNames.indexOf(p.type.name) === -1).map(d => d.type.name);
+        const result = [];
+        const objectDefinitions: TypeDefinitionProperty[] = definitions
+            .map(definition => definition.properties)
+            .filter(definition => !!definition)
+            .flat();
+
+        objectDefinitions.forEach(definition => {
+            if (definition.kind === "indexed") {
+                result.push(definition.type["name"]);
+            }
+
+            if ((definition.type instanceof TypeDefinitionPropertyTypeReference
+                || definition.type instanceof TypeDefinitionPropertyTypeArrayOfPrimitive
+                || definition.type instanceof TypeDefinitionPropertyTypeArrayOfReference)
+                && !skipNames.includes(definition.type.name)) {
+                result.push(definition.type.name);
+            }
+
+            if (definition.type instanceof TypeDefinitionPropertyTypeCombination) {
+                result.push(...definition.type.combination.map(x => x["name"]));
+            }
+        });
+
+        return result;
     }
 
-    public async loadGatewayInfo(): Promise<void> {
-        let hostnames = await this.tenantService.getProxyHostnames();
-
-        if (hostnames.length === 0) {
-            // TODO: Remove once setting backend serving the setting gets deployed.
-            hostnames = await this.getProxyHostnames();
-        }
+    public async loadGatewayInfo(apiName: string): Promise<void> {
+        const hostnames = await this.apiService.getApiHostnames(apiName);
 
         if (hostnames.length === 0) {
             throw new Error(`Unable to fetch gateway hostnames.`);
         }
 
-        this.primaryHostname(hostnames[0]);
+        this.sampleHostname(hostnames[0]);
         this.hostnames(hostnames);
     }
 
@@ -252,17 +278,6 @@ export class OperationDetails {
         const operationName = this.operation().name;
 
         return this.routeHelper.getDefinitionAnchor(apiName, operationName, definition.name);
-    }
-
-    private async getProxyHostnames(): Promise<string[]> {
-        const apiName = this.routeHelper.getApiName();
-
-        if (!apiName) {
-            return [];
-        }
-
-        const apiDefinition: SwaggerObject = await this.apiService.exportApi(`apis/${apiName}`, "swagger");
-        return [apiDefinition.host];
     }
 
     @OnDestroyed()

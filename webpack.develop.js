@@ -3,7 +3,8 @@ const merge = require("webpack-merge");
 const designerConfig = require("./webpack.designer.js");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
-module.exports = merge(designerConfig, {
+
+const developmentConfig = {
     mode: "development",
     devtool: "inline-source-map",
     devServer: {
@@ -12,8 +13,14 @@ module.exports = merge(designerConfig, {
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
-        new CopyWebpackPlugin([
-            { from: `./src/config.design.json`, to: `./config.json` }
-        ])
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: `./src/config.design.json`, to: `./config.json` }
+            ]
+        })
     ]
-});
+}
+
+module.exports = []
+    .concat(designerConfig)
+    .map(x => merge(x, developmentConfig));

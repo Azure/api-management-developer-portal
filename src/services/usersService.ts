@@ -1,13 +1,16 @@
 import * as Constants from "./../constants";
+import { Router } from "@paperbits/common/routing";
+import { HttpHeader, HttpClient } from "@paperbits/common/http";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 import { IAuthenticator } from "../authentication";
 import { MapiClient } from "./mapiClient";
-import { Router } from "@paperbits/common/routing";
-import { HttpHeader } from "@paperbits/common/http";
 import { User } from "../models/user";
 import { Utils } from "../utils";
 import { Identity } from "../contracts/identity";
-import { UserContract, } from "../contracts/user";
+import { UserContract, UserPropertiesContract, } from "../contracts/user";
 import { MapiSignupRequest } from "../contracts/signupRequest";
+import { MapiError } from "./mapiError";
+
 
 /**
  * A service for management operations with users.
@@ -17,6 +20,8 @@ export class UsersService {
         private readonly mapiClient: MapiClient,
         private readonly router: Router,
         private readonly authenticator: IAuthenticator,
+        private readonly httpClient: HttpClient,
+        private readonly settingsProvider: ISettingsProvider
     ) { }
 
     /**
@@ -51,6 +56,20 @@ export class UsersService {
         }
     }
 
+    public getTokenFromTiketParams(parameters: URLSearchParams): string {
+        const ticket = parameters.get("ticket");
+        const ticketId = parameters.get("ticketid");
+        const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
+
+        return token;
+    }
+
+    public getUserIdFromParams(parameters: URLSearchParams): string {
+        const userId = parameters.get("userid");
+
+        return userId ? `/users/${userId}` : undefined;
+    }
+
     public async activateUser(parameters: URLSearchParams): Promise<void> {
         const userId = parameters.get("userid");
         const ticket = parameters.get("ticket");
@@ -62,8 +81,9 @@ export class UsersService {
         await this.mapiClient.put<void>(requestUrl, [{ name: "Authorization", value: token }], {});
     }
 
-    public async updatePassword(userId: string, newPassword: string): Promise<void> {
-        await this.mapiClient.patch(userId, undefined, { password: newPassword });
+    public async updatePassword(userId: string, newPassword: string, token: string): Promise<void> {
+        const heasers = [{ name: "Authorization", value: token }];
+        await this.mapiClient.patch(userId, heasers, { password: newPassword });
     }
 
     /**
@@ -156,8 +176,6 @@ export class UsersService {
         }
     }
 
-
-
     /**
      * Deletes specified user.
      * @param userId {string} Unique user identifier.
@@ -228,5 +246,54 @@ export class UsersService {
         ];
         const payload = { password: newPassword };
         await this.mapiClient.patch(userId, headers, payload);
+    }
+
+    public async createUserWithOAuth(provider: string, idToken: string, firstName: string, lastName: string, email: string): Promise<void> {
+        const managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
+        const managementApiVersion = await this.settingsProvider.getSetting<string>("managementApiVersion");
+        const jwtToken = Utils.parseJwt(idToken);
+
+        const user: UserPropertiesContract = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            identities: [{
+                id: jwtToken.oid,
+                provider: provider
+            }]
+        };
+
+        const response = await this.httpClient.send({
+            url: `${managementApiUrl}/users?api-version=${managementApiVersion}`,
+            method: "POST",
+            headers: [
+                { name: "Content-Type", value: "application/json" },
+                { name: "Authorization", value: `${provider} id_token="${idToken}"` }
+            ],
+            body: JSON.stringify(user)
+        });
+
+        if (!(response.statusCode >= 200 && response.statusCode <= 299)) {
+            throw MapiError.fromResponse(response);
+        }
+
+        const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
+
+        if (!sasTokenHeader) { // User not registered with APIM.
+            throw new Error("Unable to authenticate.");
+            return;
+        }
+
+        const regex = /token=\"(.*==)\"/gm;
+        const matches = regex.exec(sasTokenHeader.value);
+
+        if (!matches || matches.length < 1) {
+            throw new Error("Authentication failed. Unable to parse access token.");
+        }
+
+        const sasToken = matches[1];
+        await this.authenticator.setAccessToken(`SharedAccessSignature ${sasToken}`);
+
+        this.router.navigateTo(Constants.pageUrlHome);
     }
 }

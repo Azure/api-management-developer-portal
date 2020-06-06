@@ -1,0 +1,79 @@
+﻿@import "variables.scss";
+@import "mixins.scss";
+
+$tip-width: 10px;
+
+.balloon {
+    position: fixed;
+    background-color: $balloon-background;
+    z-index: $z-index-balloon;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, .15);
+    border-radius: $balloon-border-radius;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.15);
+    border-radius: $balloon-border-radius;
+    padding: 7px;
+    display: none;
+
+    &.balloon-is-active {
+        display: flex;
+    }
+}
+
+.add-block-container {
+    width: 100%;
+    max-height: 600px;
+    .remove-block {
+        background-color: rgb(43, 135, 218);
+        background-repeat: no-repeat;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        .paperbits-icon {
+            padding: 0;
+        }
+    }
+}
+
+.zoom-selector-item {
+    width: 100%;
+    height: 120px;
+    overflow: hidden;
+    margin: 8px 2px 2px 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+.zoom-item {
+    transform: scale(0.32);
+    transform-origin: 0% 0%;
+    transform-origin: top left;
+    pointer-events: none;
+}
+
+.balloon-tip {
+    position: fixed;
+    background-color: $balloon-background;
+    width: $tip-width;
+    height: $tip-width;
+    z-index: $z-index-balloon;
+    box-shadow: -2px -2px 2px rgba(0, 0, 0, 0.15);
+
+    &.balloon-top {
+        transform: rotate(45deg);
+        box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.15);
+    }
+
+    &.balloon-bottom {
+        transform: rotate(45deg);
+        box-shadow: -2px -2px 2px rgba(0, 0, 0, 0.15);
+    }
+
+    &.balloon-left {
+        transform: rotate(-45deg);
+        box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.15);
+    }
+
+    &.balloon-right {
+        transform: rotate(-45deg);
+        box-shadow: -2px -2px 2px rgba(0, 0, 0, 0.15);
+    }
+}

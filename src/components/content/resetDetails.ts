@@ -1,3 +1,4 @@
+import { OfflineObjectStorage } from "@paperbits/common/persistence";
 import * as ko from "knockout";
 import template from "./resetDetails.html";
 import { Component } from "@paperbits/common/ko/decorators";
@@ -18,6 +19,7 @@ export class ResetDetailsWorkshop {
     constructor (
         private readonly viewManager: ViewManager,
         private readonly provisioningService: ProvisionService,
+        private readonly offlineObjectStorage: OfflineObjectStorage,
         private readonly logger: Logger
     ) {
         this.response = ko.observable("");
@@ -28,10 +30,13 @@ export class ResetDetailsWorkshop {
         try {
             this.logger.traceEvent("Click: Reset website");
 
+            this.offlineObjectStorage.discardChanges();
+            this.viewManager.clearJourney();
+            this.viewManager.hideToolboxes();
             this.viewManager.notifySuccess("Website reset", `The website is being reset...`);
+            this.viewManager.setShutter();
 
             await this.provisioningService.cleanup();
-            await this.provisioningService.provision();
 
             this.logger.traceEvent("Success: Website reset");
 
@@ -39,6 +44,7 @@ export class ResetDetailsWorkshop {
         } 
         catch (error) {
             this.viewManager.notifyError("Confirm", `Unable to reset website. Please try again later.`);
+            this.logger.traceError(error);
         }
     }
 }

@@ -10,11 +10,13 @@
 
     <div class="collapsible-dropdown collapsible-content">
         <div class="search-input">
-            <input type="search" role="searchbox" aria-label="Search" placeholder="Search products"
-                data-bind="textInput: pattern" />
-            <button type="button" class="search-button">
-                <i class="icon icon-magnifier"></i>
-            </button>
+            <div class="input-group">
+                <input type="search" role="searchbox" aria-label="Search" placeholder="Search products"
+                    spellcheck="false" data-bind="textInput: pattern" />
+                <button type="button" class="search-button" aria-label="Search products">
+                    <i class="icon icon-magnifier"></i>
+                </button>
+            </div>
         </div>
 
         <div role="list">
@@ -34,7 +36,7 @@
             <!-- /ko -->
 
             <!-- ko if: hasPager -->
-            <ul class="pagination justify-content-center">
+            <ul class="pagination justify-content-center" role="navigation" aria-label="Pagination">
                 <!-- ko if: hasPrevPage -->
                 <li class="page-item">
                     <a href="#" class="page-link" role="button" aria-label="Previous page"

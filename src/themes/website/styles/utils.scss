@@ -1,3 +1,64 @@
 .hidden {
     display: none;
 }
+
+.empty-media {
+    width: 300px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #cccccc30;
+    padding: 10px;
+}
+
+.no-border {
+    border: none;
+    background: none;
+    padding: unset;
+}
+
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
+.d-block {
+    display: block;
+}
+
+.mt-auto {
+    margin-top: auto;
+} 
+
+.mb-auto {
+    margin-bottom: auto;
+}
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-hide {
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
+}
+
+.text-monospace {
+    font-family: monospace;
+}

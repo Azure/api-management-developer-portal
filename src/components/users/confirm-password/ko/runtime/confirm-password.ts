@@ -16,6 +16,7 @@ import { ValidationReport } from "../../../../../contracts/validationReport";
 })
 export class ConfirmPassword {
     private userId: string;
+    private token: string;
     public readonly password: ko.Observable<string>;
     public readonly passwordConfirmation: ko.Observable<string>;
     public readonly isResetConfirmed: ko.Observable<boolean>;
@@ -66,8 +67,8 @@ export class ConfirmPassword {
         }
 
         try {            
-            await this.usersService.activateUser(queryParams);
-            this.userId = await this.usersService.getCurrentUserId();
+            this.token = this.usersService.getTokenFromTiketParams(queryParams);
+            this.userId = this.usersService.getUserIdFromParams(queryParams);
 
             if (!this.userId) {
                 throw new Error("User not found.");
@@ -103,7 +104,7 @@ export class ConfirmPassword {
         }
 
         try {
-            await this.usersService.updatePassword(this.userId, this.password());
+            await this.usersService.updatePassword(this.userId, this.password(), this.token);
             this.isResetConfirmed(true);
             setTimeout(() => {
                 this.usersService.navigateToHome();

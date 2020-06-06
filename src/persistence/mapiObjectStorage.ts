@@ -9,6 +9,8 @@ import { ArmResource } from "../contracts/armResource";
 
 const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block"];
 const selectedLocale = "en_us";
+const reservedArmIds = ["containerId", "webContainerId"];
+const reservedPaperbitsIds = ["containerKey", "webContainerKey"];
 
 
 export class MapiObjectStorage implements IObjectStorage {
@@ -26,8 +28,32 @@ export class MapiObjectStorage implements IObjectStorage {
         throw new Error(`Could not determine content type by resource: ${resource}`);
     }
 
+    private delocalizeBlock(contract: any): void {
+        contract.contentKey = contract["locales"]["en-us"]["contentKey"];
+        contract.title = contract["locales"]["en-us"]["title"];
+        contract.description = contract["locales"]["en-us"]["description"];
+        contract.type = contract["locales"]["en-us"]["type"];
+
+        delete contract["locales"];
+    }
+
+    private localizeBlock(contract: any): void {
+        contract.locales = {
+            "en-us": {
+                contentKey: contract.contentKey,
+                title: contract.title,
+                description: contract.description,
+                type: contract.type
+            }
+        };
+
+        delete contract["contentKey"];
+        delete contract["title"];
+        delete contract["description"];
+    }
+
     public armResourceToPaperbitsKey(resource: string): string {
-        if (!resource.contains("contentTypes")) {
+        if (!resource.includes("contentTypes")) {
             return resource;
         }
 
@@ -160,6 +186,10 @@ export class MapiObjectStorage implements IObjectStorage {
                 mapiContentItem = contentItem;
                 break;
 
+            case "locales":
+                mapiContentType = "locales";
+                mapiContentItem = "en-us";
+                break;
 
             default:
                 // throw new Error(`Unknown content type: "${contentType}"`);
@@ -194,14 +224,25 @@ export class MapiObjectStorage implements IObjectStorage {
             const contentType = this.getContentTypeFromResource(resource);
             const isLocalized = localizedContentTypes.includes(contentType);
             const item = await this.mapiClient.get<T>(`${resource}`);
-
             const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
 
-            if (key.contains("settings") || key.contains("styles")) {
+            if (key.startsWith("blocks/")) {
+                this.delocalizeBlock(converted);
+            }
+
+            if (key === "locales") {
+                return <any>{
+                    key: `contentTypes/locales/contentItem/en_us`,
+                    code: "en-us",
+                    displayName: "English (US)"
+                };
+            }
+
+            if (key.includes("settings") || key.includes("styles")) {
                 return (<any>converted).nodes[0];
             }
 
-            if (key.contains("navigationItems")) {
+            if (key.includes("navigationItems")) {
                 return (<any>converted).nodes;
             }
 
@@ -211,7 +252,7 @@ export class MapiObjectStorage implements IObjectStorage {
             if (error && error.code === "ResourceNotFound") {
                 return null;
             }
-            
+
             throw new Error(`Could not get object '${key}'. Error: ${error.message}`);
         }
     }
@@ -234,29 +275,40 @@ export class MapiObjectStorage implements IObjectStorage {
         const resource = this.paperbitsKeyToArmResource(key);
         const contentType = this.getContentTypeFromResource(resource);
         const isLocalized = localizedContentTypes.includes(contentType);
-        let converted = this.convertPaperbitsContractToArmContract(dataObject, isLocalized);
+        let paperbitsContract;
 
         if (isLocalized) {
-            delete converted[selectedLocale]["id"];
+            const locale = selectedLocale.replace("_", "-");
+
+            if (key.startsWith("blocks/")) {
+                this.localizeBlock(dataObject);
+            }
+
+            paperbitsContract = {
+                [selectedLocale]: dataObject["locales"][locale]
+            };
         }
         else {
-            delete converted["id"]; // Delete top level ID (should be gone when switching to proper ARM contracts)
+            paperbitsContract = dataObject;
         }
+
+        let armContract = this.convertPaperbitsContractToArmContract(paperbitsContract);
+
+        delete armContract["id"];
 
         let exists: boolean;
 
         try {
-
-            if (key.contains("settings") || key.contains("styles")) {
-                converted = { nodes: [converted] };
+            if (key.includes("settings") || key.includes("styles")) {
+                armContract = { nodes: [armContract] };
             }
 
-            if (key.contains("navigationItems")) {
-                converted = { nodes: converted };
+            if (key.includes("navigationItems")) {
+                armContract = { nodes: armContract };
             }
 
-            if (key.contains("files")) {
-                delete converted["type"];
+            if (key.includes("files")) {
+                delete armContract["type"];
             }
 
             await this.mapiClient.head<T>(resource);
@@ -278,7 +330,7 @@ export class MapiObjectStorage implements IObjectStorage {
                 headers.push({ name: "If-Match", value: "*" });
             }
 
-            await this.mapiClient.put<T>(resource, headers, converted);
+            await this.mapiClient.put<T>(resource, headers, armContract);
         }
         catch (error) {
             throw new Error(`Could not update object '${key}'. Error: ${error.message}`);
@@ -300,13 +352,19 @@ export class MapiObjectStorage implements IObjectStorage {
                 for (const filter of query.filters) {
                     const operator = filter.operator;
 
+                    if (resource.startsWith("contentTypes/block/contentItems")) {
+                        filter.left = `en_us/${filter.left}`;
+                    }
+
+                    filter.left = filter.left.replace("locales/en-us/", "en_us/");
+
                     switch (operator) {
                         case Operator.equals:
-                            filterExpressions.push(`${localeSearchPrefix}${filter.left} eq '${filter.right}'`);
+                            filterExpressions.push(`${filter.left} eq '${filter.right}'`);
                             break;
 
                         case Operator.contains:
-                            filterExpressions.push(`contains(${localeSearchPrefix}${filter.left},'${filter.right}')`);
+                            filterExpressions.push(`contains(${filter.left},'${filter.right}')`);
                             break;
 
                         default:
@@ -317,10 +375,10 @@ export class MapiObjectStorage implements IObjectStorage {
                 filterQueryString = `&$filter=${filterExpressions.join(" and ")}`;
             }
 
-            if (key.contains("navigationItems")) {
-                const item = await this.mapiClient.get<any>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`);
-                const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
-                return converted.nodes;
+            if (key.includes("navigationItems")) {
+                const armContract = await this.mapiClient.get<any>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`);
+                const paperbitsContract = this.convertArmContractToPaperbitsContract(armContract, isLocalized);
+                return paperbitsContract.nodes;
             }
             else {
                 const pageOfTs = await this.mapiClient.get<Page<T>>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`);
@@ -328,6 +386,10 @@ export class MapiObjectStorage implements IObjectStorage {
 
                 for (const item of pageOfTs.value) {
                     const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
+
+                    if (resource.startsWith("contentTypes/block/contentItems")) {
+                        this.delocalizeBlock(converted);
+                    }
 
                     const segments = converted.key.split("/");
                     const key = segments[1];
@@ -343,7 +405,7 @@ export class MapiObjectStorage implements IObjectStorage {
         }
     }
 
-    public convertPaperbitsContractToArmContract(contract: any, isLocalized: boolean = false): any {
+    public convertPaperbitsContractToArmContract(contract: any): any {
         let converted;
 
         if (contract === null || contract === undefined) { // here we expect "false" as a value too
@@ -361,10 +423,12 @@ export class MapiObjectStorage implements IObjectStorage {
                 let convertedKey = propertyName;
                 let convertedValue = propertyValue;
 
-                convertedKey = propertyName
-                    .replace(/contentKey/gm, "documentId")
-                    .replace(/Key\b/gm, "Id")
-                    .replace(/\bkey\b/gm, "id");
+                if (!reservedPaperbitsIds.includes(convertedKey)) {
+                    convertedKey = propertyName
+                        .replace(/contentKey/gm, "documentId")
+                        .replace(/Key\b/gm, "Id")
+                        .replace(/\bkey\b/gm, "id");
+                }
 
                 if (typeof propertyValue === "string") {
                     if (propertyName !== convertedKey) {
@@ -382,9 +446,7 @@ export class MapiObjectStorage implements IObjectStorage {
             converted = contract;
         }
 
-        return isLocalized
-            ? { [selectedLocale]: converted }
-            : converted;
+        return converted;
     }
 
     public convertArmContractToPaperbitsContract(contractObject: ArmResource | any, isLocalized: boolean = false, isArm: boolean = true): any {
@@ -393,15 +455,21 @@ export class MapiObjectStorage implements IObjectStorage {
         }
 
         let contract: any;
-        
+
         if (isLocalized) {
-            contract = contractObject.properties[selectedLocale];
-            contract.id = contractObject.id;
-        } 
+            const locale = selectedLocale.replace("_", "-");
+
+            contract = {
+                key: contractObject.id,
+                locales: {
+                    [locale]: contractObject.properties[selectedLocale]
+                }
+            };
+        }
         else {
             if (isArm) {
                 contract = contractObject.properties;
-                contract.id = contractObject.id;
+                contract.key = contractObject.id;
             }
             else {
                 contract = contractObject;
@@ -421,12 +489,14 @@ export class MapiObjectStorage implements IObjectStorage {
                 let convertedKey = propertyName;
                 let convertedValue = propertyValue;
 
-                convertedKey = propertyName
-                    .replace(/documentId/gm, "contentKey")
-                    .replace(/Id\b/gm, "Key")
-                    .replace(/\bid\b/gm, "key");
+                if (!reservedArmIds.includes(propertyName)) {
+                    convertedKey = propertyName
+                        .replace(/documentId/gm, "contentKey")
+                        .replace(/Id\b/gm, "Key")
+                        .replace(/\bid\b/gm, "key");
+                }
 
-                if (typeof propertyValue === "string" && propertyValue.contains("contentType")) {
+                if (typeof propertyValue === "string" && propertyValue.includes("contentType")) {
                     convertedValue = this.armResourceToPaperbitsKey(propertyValue);
                 }
                 else {

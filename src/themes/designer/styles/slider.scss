@@ -1,0 +1,18 @@
+@import "variables.scss";
+
+.slider-display {
+    width: 100%; 
+    height: 25px;
+    margin-top: 15px;
+}
+
+.slider {
+    width: 100%; 
+    height: 15px;
+
+    .slider-thumb {
+        @include slider-thumb();
+        position: absolute; 
+        transform: translate(-$form-control-slider-thumb-size / 2, -$form-control-slider-thumb-size / 2);
+    }
+}

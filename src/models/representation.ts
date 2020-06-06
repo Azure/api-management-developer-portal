@@ -10,20 +10,18 @@ export class Representation {
 
     constructor(contract?: RepresentationContract) {
         this.contentType = contract.contentType;
-        this.example = contract.sample;
+        this.example = contract.sample || contract.generatedSample;
         this.schemaId = contract.schemaId;
         this.typeName = contract.typeName;
 
-        if (contract.sample) {
-            this.example = contract.sample;
-
-            if (contract.contentType.contains("/xml")) {
-                this.example = Utils.formatXml(contract.sample);
+        if (this.example) {
+            if (this.contentType.includes("/xml")) {
+                this.example = Utils.formatXml(this.example);
                 this.exampleFormat = "xml";
             }
 
-            if (contract.contentType.contains("/json")) {
-                this.example = Utils.formatJson(contract.sample);
+            if (this.contentType.includes("/json")) {
+                this.example = Utils.formatJson(this.example);
                 this.exampleFormat = "json";
             }
         }

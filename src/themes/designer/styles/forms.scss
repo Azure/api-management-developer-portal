@@ -4,14 +4,18 @@
 
 .form {
     margin: 0;
-    padding: 0 15px 0 0;
+    padding: 0;
     border: none;
+
+    &.ps {
+        // perfect-scrollbar
+        padding-right: 15px;
+    }
 }
 
 .form-group {
     display: block;
     margin-bottom: 20px;
-    overflow: hidden;
     width: 100%;
 
     .form-group {
@@ -115,12 +119,7 @@ input[type="range"].form-control {
 
     &::-webkit-slider-thumb {
         -webkit-appearance: none;
-        width: 17px;
-        height: 17px;
-        background: $form-control-slider-thumb-bg;
-        border: 2px solid $form-control-border;
-        cursor: pointer;
-        border-radius: 20px;
+        @include slider-thumb();
     }
 }
 
@@ -149,6 +148,15 @@ textarea {
     min-height: 100px;
 }
 
+.label-group {
+    display: flex;
+    align-items: center;
+
+    .form-label {
+        flex: 1;
+    }
+}
+
 .input-group {
     display: flex !important;
     border: 1px solid $form-control-border;
@@ -161,6 +169,8 @@ textarea {
     .form-control:active,
     .form-control:focus {
         border: none;
+        background: none;
+        outline: none;
     }
 
     .input-group-btn {
@@ -188,33 +198,9 @@ hr {
     margin: 12px 0;
 }
 
-.tabs {
-    border-bottom: 1px solid $form-control-border;
-    display: flex;
-    width: 100%;
-
-    .tab {
-        & > a {
-            min-width: 60px;
-            display: inline-block;
-            vertical-align: middle;
-            text-align: center;
-            line-height: 35px;
-            color: $color-base;
-            padding: 0 10px;
-            text-decoration: none;
-            font-weight: bold;
-
-            &:active,
-            &:focus,
-            &:hover {
-                outline: none;
-                @include selection();
-            }
-        }
-
-        &.tab-is-active {
-            border-bottom: 2px solid $tab-selected-color;
-        }
-    }
+.media-preview-box {
+    max-width: 450px;
+    max-height: 450px;
+    min-width: 150px;
+    min-height: 150px;
 }

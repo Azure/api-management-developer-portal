@@ -1,11 +1,10 @@
-const webpack = require("webpack");
 const merge = require("webpack-merge");
-const designerConfig = require("./webpack.designer.js");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const designerConfig = require("./webpack.designer.js");
+const publisherConfig = require("./webpack.publisher.js");
 
-module.exports = merge(designerConfig, {
+
+const productionConfig = {
     mode: "production",
     optimization: {
         minimizer: [
@@ -14,19 +13,14 @@ module.exports = merge(designerConfig, {
                 terserOptions: {
                     mangle: false,
                     output: {
-                        comments: false,
+                        comments: false
                     }
                 }
             })
         ]
-    },
-    plugins: [
-        new CleanWebpackPlugin(),
-        new CopyWebpackPlugin([
-            { from: `./src/config.design.json`, to: `./config.json` }
-        ]),
-        new webpack.DefinePlugin({
-            "process.env.NODE_ENV": JSON.stringify("production")
-        })
-    ]
-});
+    }
+}
+
+module.exports = []
+    .concat(designerConfig, publisherConfig)
+    .map(x => merge(x, productionConfig));
