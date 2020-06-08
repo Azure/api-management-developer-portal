@@ -23,6 +23,9 @@ import { ConsoleParameter } from "../../../../../models/console/consoleParameter
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TemplatingService } from "../../../../../services/templatingService";
+import { OAuthService } from "../../../../../services/oauthService";
+import { AuthorizationServer } from "../../../../../models/authorizationServer";
+
 
 @Component({
     selector: "operation-console",
@@ -47,6 +50,7 @@ export class OperationConsole {
     public readonly isHostnameWildcarded: ko.Computed<boolean>;
     public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
     public readonly wildcardSegment: ko.Observable<string>;
+    public readonly selectedGrantType: ko.Observable<string>;
     public masterKey: string;
     public isConsumptionMode: boolean;
     public templates: Object;
@@ -57,7 +61,8 @@ export class OperationConsole {
         private readonly usersService: UsersService,
         private readonly productService: ProductService,
         private readonly httpClient: HttpClient,
-        private readonly routeHelper: RouteHelper
+        private readonly routeHelper: RouteHelper,
+        private readonly oauthService: OAuthService
     ) {
         this.templates = templates;
         this.products = ko.observable();
@@ -83,6 +88,8 @@ export class OperationConsole {
         this.selectedHostname = ko.observable("");
         this.hostnameSelectionEnabled = ko.observable();
         this.isHostnameWildcarded = ko.computed(() => this.selectedHostname().includes("*"));
+        this.selectedGrantType = ko.observable();
+        this.authorizationServer = ko.observable();
 
         this.wildcardSegment = ko.observable();
 
@@ -112,6 +119,9 @@ export class OperationConsole {
     @Param()
     public hostnames: ko.Observable<string[]>;
 
+    @Param()
+    public authorizationServer: ko.Observable<AuthorizationServer>;
+
     @OnMounted()
     public async initialize(): Promise<void> {
         const skuName = await this.tenantService.getServiceSkuName();
@@ -132,6 +142,7 @@ export class OperationConsole {
         this.api.subscribe(this.resetConsole);
         this.operation.subscribe(this.resetConsole);
         this.selectedLanguage.subscribe(this.updateRequestSummary);
+        this.selectedGrantType.subscribe(this.authenticateOAuth);
     }
 
     private async resetConsole(): Promise<void> {
@@ -268,13 +279,7 @@ export class OperationConsole {
     }
 
     public removeHeader(header: ConsoleHeader): void {
-        const index = this.consoleOperation().request.headers().indexOf(header);
-
-        if (index < 0) {
-            return;
-        }
-
-        this.consoleOperation().request.headers.splice(index, 1);
+        this.consoleOperation().request.headers.remove(header);
         this.updateRequestSummary();
     }
 
@@ -337,6 +342,27 @@ export class OperationConsole {
         const keyHeader = new ConsoleHeader();
         keyHeader.name(subscriptionKeyHeaderName);
         keyHeader.value(subscriptionKey);
+        keyHeader.description = "Subscription key.";
+        keyHeader.secret = true;
+        keyHeader.inputTypeValue = "password";
+        keyHeader.type = "string";
+        keyHeader.required = true;
+
+        this.consoleOperation().request.headers.push(keyHeader);
+        this.updateRequestSummary();
+    }
+
+    private removeAuthorizationHeader(): void {
+        const authorizationHeader = this.findHeader(KnownHttpHeaders.Authorization);
+        this.removeHeader(authorizationHeader);
+    }
+
+    private setAuthorizationHeader(accessToken: string): void {
+        this.removeAuthorizationHeader();
+
+        const keyHeader = new ConsoleHeader();
+        keyHeader.name(KnownHttpHeaders.Authorization);
+        keyHeader.value(accessToken);
         keyHeader.description = "Subscription key.";
         keyHeader.secret = true;
         keyHeader.inputTypeValue = "password";
@@ -476,5 +502,22 @@ export class OperationConsole {
 
     public getApiReferenceUrl(): string {
         return this.routeHelper.getApiReferenceUrl(this.api().name);
+    }
+
+    /**
+     * Initiates specified authentication flow.
+     * @param grantType OAuth grant type, e.g. "implicit" or "authorizationCode".
+     */
+    public async authenticateOAuth(grantType: string): Promise<void> {
+        this.removeAuthorizationHeader();
+
+        if (!grantType) {
+            return;
+        }
+
+        const authorizationServer = this.authorizationServer();
+        const accessToken = await this.oauthService.authenticate(grantType, authorizationServer);
+
+        this.setAuthorizationHeader(accessToken);
     }
 }
