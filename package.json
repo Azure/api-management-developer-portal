@@ -70,6 +70,7 @@
         "@webcomponents/shadydom": "^1.7.3",
         "adal-vanilla": "^1.0.18",
         "applicationinsights-js": "^1.0.21",
+        "client-oauth2": "^4.2.5",
         "core-js": "^3.6.5",
         "d3": "^5.16.0",
         "google-maps": "^4.2.3",
