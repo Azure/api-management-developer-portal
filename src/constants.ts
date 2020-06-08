@@ -79,9 +79,33 @@ export const defaultInputDelayMs = 600;
 /**
  * Known setting names.
  */
-export const SettingNames = {
-    backendUrl: "backendUrl",
-    managementApiUrl: "managementApiUrl",
-    managementApiVersion: "managementApiVersion",
-    managementApiAccessToken: "managementApiAccessToken"
+export enum SettingNames {
+    backendUrl = "backendUrl",
+    managementApiUrl = "managementApiUrl",
+    managementApiVersion = "managementApiVersion",
+    managementApiAccessToken = "managementApiAccessToken"
 };
+
+/**
+ * The OAuth framework specifies several grant types for different use cases.
+ */
+export enum GrantTypes {
+    /**
+     * The Implicit flow was a simplified OAuth flow previously recommended for native apps and
+     * JavaScript apps where the access token was returned immediately without an extra
+     * authorization code exchange step.
+     */
+    implicit = "implicit",
+
+    /**
+     * The Authorization Code grant type is used by confidential and public clients to exchange
+     * an authorization code for an access token.
+     */
+    authorizationCode = "authorizationCode",
+
+    /**
+     * The Client Credentials grant type is used by clients to obtain an access token outside of
+     * the context of a user.
+     */
+    clientCredentials = "clientCredentials"
+}

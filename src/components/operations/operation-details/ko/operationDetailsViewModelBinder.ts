@@ -7,7 +7,7 @@ import { Bag } from "@paperbits/common";
 
 export class OperationDetailsViewModelBinder implements ViewModelBinder<OperationDetailsModel, OperationDetailsViewModel> {
     constructor(private readonly eventManager: EventManager) { }
-    
+
     public async modelToViewModel(model: OperationDetailsModel, viewModel?: OperationDetailsViewModel, bindingContext?: Bag<any>): Promise<OperationDetailsViewModel> {
         if (!viewModel) {
             viewModel = new OperationDetailsViewModel();
@@ -23,7 +23,12 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
             };
         }
 
-        viewModel.config(JSON.stringify({ enableConsole: model.enableConsole }));
+        const runtimeConfig = {
+            enableConsole: model.enableConsole,
+            authorizationServers: model.authorizationServers
+        };
+
+        viewModel.config(JSON.stringify(runtimeConfig));
 
         return viewModel;
     }

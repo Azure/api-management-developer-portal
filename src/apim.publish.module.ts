@@ -17,7 +17,7 @@ import { StaticRouter } from "./components/staticRouter";
 import { StaticUserService } from "./services/userService";
 import { StaticAuthenticator } from "./components/staticAuthenticator";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";
-import { OperationDetailsModule } from "./components/operations/operation-details/ko/operationDetails.module";
+import { OperationDetailsPublishModule } from "./components/operations/operation-details/operationDetails.publish.module";
 import { ProductListModule } from "./components/products/product-list/ko/productList.module";
 import { ProductSubscribeModule } from "./components/products/product-subscribe/ko/productSubscribe.module";
 import { ProductApisModule } from "./components/products/product-apis/ko/productApis.module";
@@ -32,6 +32,7 @@ import { ValidationSummaryModule } from "./components/users/validation-summary/v
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
+import { OAuthService } from "./services/oauthService";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -50,7 +51,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ProductSubscriptionsModule());
         injector.bindModule(new ProductSubscribeModule());
         injector.bindModule(new OperationListModule());
-        injector.bindModule(new OperationDetailsModule());
+        injector.bindModule(new OperationDetailsPublishModule());
         injector.bindModule(new ResetPasswordModule());
         injector.bindModule(new ConfirmPasswordModule());
         injector.bindModule(new ChangePasswordModule());
@@ -68,5 +69,6 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("logger", ConsoleLogger);
+        injector.bindSingleton("oauthService", OAuthService);
     }
 }
