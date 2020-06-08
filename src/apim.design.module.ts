@@ -30,8 +30,7 @@ import { SetupModule } from "./components/setup/setup.module";
 import { ContentModule } from "./components/content";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";
 import { OperationListEditorModule } from "./components/operations/operation-list/ko/operationListEditor.module";
-import { OperationDetailsModule } from "./components/operations/operation-details/ko/operationDetails.module";
-import { OperationDetailsEditorModule } from "./components/operations/operation-details/ko/operationDetailsEditor.module";
+import { OperationDetailsDesignModule } from "./components/operations/operation-details/operationDetails.design.module";
 import { ProductListModule } from "./components/products/product-list/ko/productList.module";
 import { ProductListEditorModule } from "./components/products/product-list/ko/productListEditor.module";
 import { ProductSubscribeModule } from "./components/products/product-subscribe/ko/productSubscribe.module";
@@ -57,6 +56,7 @@ import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
 import { PolicyService } from "./services/policyService";
+import { OAuthService } from "./services/oauthService";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -93,8 +93,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ContentModule());
         injector.bindModule(new OperationListModule());
         injector.bindModule(new OperationListEditorModule());
-        injector.bindModule(new OperationDetailsModule());
-        injector.bindModule(new OperationDetailsEditorModule());
+        injector.bindModule(new OperationDetailsDesignModule());
         injector.bindModule(new ReportsModule());
         injector.bindModule(new ReportsEditorModule());
         injector.bindModule(new ResetPasswordModule());
@@ -121,5 +120,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindToCollection("routeGuards", UnsavedChangesRouteGuard);
         injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);       
+        injector.bindSingleton("oauthService", OAuthService);
     }
 }
