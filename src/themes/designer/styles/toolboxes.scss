@@ -30,7 +30,7 @@ h2 {
     max-height: calc(100% - 40px);
 
     @include surface();
-    @include animation-fadein(.3s);
+    @include animation-fadein(0.3s);
 
     &.toolbox-horizontal {
         flex-direction: row;
@@ -112,18 +112,24 @@ h2 {
         a {
             display: inline-block;
             height: $toolbox-btn-size;
-            min-width: $toolbox-btn-size;
             line-height: $toolbox-btn-size;
             background-size: cover;
             outline: none;
             color: $color-base;
             text-decoration: none;
             width: 100%;
+            padding-left: 12px;
+            padding-right: 12px;
             @include tabable();
         }
 
         &[disabled] {
             opacity: 0.2;
+        }
+
+        .toolbox-btn-addon {
+            width: 15px;
+            left: 3px;
         }
     }
 
