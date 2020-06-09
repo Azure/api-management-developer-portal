@@ -64,7 +64,8 @@ export class App {
         try {
             /* Checking if settings were created, and if not, we consider the portal not initialized and launch setup dialog. */
 
-            const siteSettings = await this.siteService.getSiteSettings();
+            const siteSettings = await this.siteService.getSettings<any>();
+
 
             if (!siteSettings) {
                 this.viewManager.setHost({ name: "setup-dialog" });
