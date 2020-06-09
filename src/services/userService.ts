@@ -4,6 +4,10 @@ import { IAuthenticator } from "../authentication";
 export class StaticUserService implements UserService {
     constructor(private readonly authenticator: IAuthenticator) { }
 
+    public async getUserName(): Promise<string> {
+        return "";
+    }
+
     public async getUserPhotoUrl(): Promise<string> {
         return "";
     }
