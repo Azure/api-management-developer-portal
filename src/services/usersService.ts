@@ -82,11 +82,11 @@ export class UsersService {
     }
 
     public async updatePassword(userId: string, newPassword: string, token: string): Promise<void> {
-        const heasers = []
+        const headers = []
         if (token) {
-            heasers.push({ name: "Authorization", value: token });
+            headers.push({ name: "Authorization", value: token });
         }
-        await this.mapiClient.patch(userId, heasers, { password: newPassword });
+        await this.mapiClient.patch(userId, headers, { password: newPassword });
     }
 
     /**
