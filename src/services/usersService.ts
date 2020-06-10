@@ -56,7 +56,7 @@ export class UsersService {
         }
     }
 
-    public getTokenFromTiketParams(parameters: URLSearchParams): string {
+    public getTokenFromTicketParams(parameters: URLSearchParams): string {
         const ticket = parameters.get("ticket");
         const ticketId = parameters.get("ticketid");
         const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
@@ -82,7 +82,10 @@ export class UsersService {
     }
 
     public async updatePassword(userId: string, newPassword: string, token: string): Promise<void> {
-        const heasers = [{ name: "Authorization", value: token }];
+        const heasers = []
+        if (token) {
+            heasers.push({ name: "Authorization", value: token });
+        }
         await this.mapiClient.patch(userId, heasers, { password: newPassword });
     }
 
