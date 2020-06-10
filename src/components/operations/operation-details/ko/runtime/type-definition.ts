@@ -1,12 +1,20 @@
 import * as ko from "knockout";
 import template from "./type-definition.html";
+import typeDefinitionEnum from "./type-definition-enum.html";
+import typeDefinitionIndexer from "./type-definition-indexer.html";
+import typeDefinitionObject from "./type-definition-object.html";
 import { Component, Param, OnMounted } from "@paperbits/common/ko/decorators";
 import { TypeDefinition } from "../../../../../models/typeDefinition";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
 @Component({
     selector: "type-definition",
-    template: template
+    template: template,
+    childTemplates: {
+        typeDefinitionEnum: typeDefinitionEnum,
+        typeDefinitionIndexer: typeDefinitionIndexer,
+        typeDefinitionObject: typeDefinitionObject
+    }
 })
 export class TypeDefinitionViewModel {
     public readonly name: ko.Observable<string>;
@@ -14,13 +22,17 @@ export class TypeDefinitionViewModel {
     public readonly kind: ko.Observable<string>;
     public readonly example: ko.Observable<string>;
     public readonly exampleLanguage: ko.Observable<string>;
+    public readonly schemaObject: ko.Observable<string>;
+    public readonly view: ko.Observable<string>;
 
     constructor(private readonly routeHelper: RouteHelper) {
         this.name = ko.observable();
+        this.schemaObject = ko.observable();
         this.description = ko.observable();
         this.kind = ko.observable();
         this.example = ko.observable();
         this.exampleLanguage = ko.observable();
+        this.view = ko.observable("table");
     }
 
     @Param()
@@ -37,6 +49,7 @@ export class TypeDefinitionViewModel {
 
     @OnMounted()
     public initialize(): void {
+        this.schemaObject(JSON.stringify(this.definition.schemaObject, null, 4));
         this.name(this.definition.name);
         this.description(this.definition.description);
         this.kind(this.definition.kind);
@@ -53,5 +66,13 @@ export class TypeDefinitionViewModel {
 
     public getReferenceUrl(typeName: string): string {
         return this.routeHelper.getDefinitionAnchor(this.apiName, this.operationName, typeName);
+    }
+
+    public switchToTable(): void {
+        this.view("table");
+    }
+
+    public switchToRaw(): void {
+        this.view("raw");
     }
 }
