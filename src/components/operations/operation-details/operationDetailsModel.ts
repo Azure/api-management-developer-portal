@@ -7,6 +7,11 @@ export class OperationDetailsModel {
     public enableConsole?: boolean;
 
     /**
+     * Defines how schema gets presented in operation details by default, e.g. "table" or "raw".
+     */
+    public defaultSchemaView?: string;
+
+    /**
      * External OAuth servers associated with API of this operation.
      */
     public authorizationServers: AuthorizationServer[];

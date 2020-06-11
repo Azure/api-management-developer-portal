@@ -84,9 +84,11 @@ export abstract class TypeDefinitionProperty {
      */
     public enum: any[];
 
+    public schemaObject: SchemaObjectContract;
 
     constructor(name: string, contract: SchemaObjectContract, isRequired: boolean) {
         this.name = contract.title || name;
+        this.schemaObject = contract;
         this.description = contract.description;
         this.type = new TypeDefinitionPropertyTypePrimitive(contract.format || contract.type || "object");
 
