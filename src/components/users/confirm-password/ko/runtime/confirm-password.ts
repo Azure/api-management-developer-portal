@@ -67,7 +67,7 @@ export class ConfirmPassword {
         }
 
         try {            
-            this.token = this.usersService.getTokenFromTiketParams(queryParams);
+            this.token = this.usersService.getTokenFromTicketParams(queryParams);
             this.userId = this.usersService.getUserIdFromParams(queryParams);
 
             if (!this.userId) {
