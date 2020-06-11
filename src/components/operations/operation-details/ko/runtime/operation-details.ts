@@ -59,6 +59,7 @@ export class OperationDetails {
         this.selectedOperationName = ko.observable();
         this.consoleIsOpen = ko.observable();
         this.definitions = ko.observableArray<TypeDefinition>();
+        this.defaultSchemaView = ko.observable("table");
         this.requestUrlSample = ko.computed(() => {
             if (!this.api() || !this.operation()) {
                 return null;
@@ -83,6 +84,9 @@ export class OperationDetails {
 
     @Param()
     public authorizationServers: AuthorizationServer[];
+
+    @Param()
+    public defaultSchemaView: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {

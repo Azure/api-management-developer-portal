@@ -23,7 +23,7 @@ export class TypeDefinitionViewModel {
     public readonly example: ko.Observable<string>;
     public readonly exampleLanguage: ko.Observable<string>;
     public readonly schemaObject: ko.Observable<string>;
-    public readonly view: ko.Observable<string>;
+    public readonly schemaView: ko.Observable<string>;
 
     constructor(private readonly routeHelper: RouteHelper) {
         this.name = ko.observable();
@@ -32,7 +32,8 @@ export class TypeDefinitionViewModel {
         this.kind = ko.observable();
         this.example = ko.observable();
         this.exampleLanguage = ko.observable();
-        this.view = ko.observable("table");
+        this.schemaView = ko.observable();
+        this.defaultSchemaView = ko.observable();
     }
 
     @Param()
@@ -47,8 +48,12 @@ export class TypeDefinitionViewModel {
     @Param()
     public anchor: string;
 
+    @Param()
+    public defaultSchemaView: ko.Observable<string>;
+
     @OnMounted()
     public initialize(): void {
+        this.schemaView(this.defaultSchemaView() || "table");
         this.schemaObject(JSON.stringify(this.definition.schemaObject, null, 4));
         this.name(this.definition.name);
         this.description(this.definition.description);
@@ -69,10 +74,10 @@ export class TypeDefinitionViewModel {
     }
 
     public switchToTable(): void {
-        this.view("table");
+        this.schemaView("table");
     }
 
     public switchToRaw(): void {
-        this.view("raw");
+        this.schemaView("raw");
     }
 }
