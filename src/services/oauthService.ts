@@ -12,11 +12,7 @@ export class OAuthService {
         try {
             const pageOfAuthservers = await this.mapiClient.get<PageContract<AuthorizationServerContract>>("/authorizationServers");
 
-            return pageOfAuthservers
-                .value
-                .map(authServer => new AuthorizationServer(authServer))
-                // Temporarily filtering out other flows, until backend starts support them.
-                .filter(authServer => authServer.grantTypes.includes(GrantTypes.implicit)); 
+            return pageOfAuthservers.value.map(authServer => new AuthorizationServer(authServer));
         }
         catch (error) {
             throw new Error(`Unable to fetch configured authorization servers.`);
@@ -30,7 +26,7 @@ export class OAuthService {
             case GrantTypes.implicit:
                 accessToken = await this.authenticateImplicit(authorizationServer);
                 break;
-                
+
             case GrantTypes.authorizationCode:
                 accessToken = await this.authenticateCode(authorizationServer);
                 break;
@@ -47,11 +43,13 @@ export class OAuthService {
     }
 
     public authenticateImplicit(authorizationServer: AuthorizationServer): Promise<string> {
+        const redirectUri = `https://${location.hostname}/signin-oauth/implicit/callback`;
+
         const oauthClient = new ClientOAuth2({
             clientId: authorizationServer.clientId,
             accessTokenUri: authorizationServer.tokenEndpoint,
             authorizationUri: authorizationServer.authorizationEndpoint,
-            redirectUri: `https://${location.hostname}/signin-oauth/implicit/callback`,
+            redirectUri: redirectUri,
             scopes: authorizationServer.scopes
         });
 
@@ -59,14 +57,14 @@ export class OAuthService {
             window.open(oauthClient.token.getUri(), "_blank", "width=400,height=500");
 
             const receiveMessage = async (event: MessageEvent) => {
-                const uri = event.data["uri"];
+                const tokenHash = event.data["uri"];
 
-                if (!uri) {
+                if (!tokenHash) {
                     return;
                 }
 
-                const user = await oauthClient.token.getToken(uri);
-                resolve(`${user.tokenType} ${user.accessToken}`);
+                const oauthToken = await oauthClient.token.getToken(redirectUri + tokenHash);
+                resolve(`${oauthToken.tokenType} ${oauthToken.accessToken}`);
             };
 
             window.addEventListener("message", receiveMessage, false);
@@ -74,11 +72,13 @@ export class OAuthService {
     }
 
     public async authenticateCode(authorizationServer: AuthorizationServer): Promise<string> {
+        const redirectUri = `https://${location.hostname}/signin-oauth/code/callback/${authorizationServer.id}`;
+
         const oauthClient = new ClientOAuth2({
             clientId: authorizationServer.clientId,
             accessTokenUri: authorizationServer.tokenEndpoint,
             authorizationUri: authorizationServer.authorizationEndpoint,
-            redirectUri: `https://${location.hostname}/signin-oauth/code/callback/${authorizationServer.id}`,
+            redirectUri: redirectUri,
             scopes: authorizationServer.scopes
         });
 
