@@ -40,7 +40,8 @@ export class AadService {
 
         const response = await this.httpClient.send(request);
         const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
-
+        const returnUrl = this.routeHelper.getQueryParameter("returnUrl");
+                
         if (!sasTokenHeader) { // User not registered with APIM.
             const jwtToken = Utils.parseJwt(idToken);
             const firstName = jwtToken.given_name;
@@ -49,7 +50,7 @@ export class AadService {
 
             if (firstName && lastName && email) {
                 await this.usersService.createUserWithOAuth(provider, idToken, firstName, lastName, email);
-                await this.router.navigateTo(Constants.pageUrlHome);
+                await this.router.navigateTo(returnUrl || Constants.pageUrlHome);
             }
             else {
                 const signupUrl = this.routeHelper.getIdTokenReferenceUrl(provider, idToken);
@@ -68,7 +69,7 @@ export class AadService {
 
         const sasToken = matches[1];
         await this.authenticator.setAccessToken(`SharedAccessSignature ${sasToken}`);
-        await this.router.navigateTo(Constants.pageUrlHome);
+        await this.router.navigateTo(returnUrl || Constants.pageUrlHome);
     }
 
     /**
