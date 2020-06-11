@@ -111,6 +111,10 @@ export class DefaultAuthenticator implements IAuthenticator {
             return accessToken;
         }
 
-        throw new Error(`Access token format is not valid. Please use "Bearer" or "SharedAccessSignature".`);
+        accessToken = this.parseSharedAccessSignature(token);
+
+        if (!accessToken) {
+            throw new Error(`Access token format is not valid. Please use "Bearer" or "SharedAccessSignature".`);
+        }
     }
 }
