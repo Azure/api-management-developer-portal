@@ -1,0 +1,22 @@
+.nav-pills {
+    margin: 5px 0;
+
+    .nav-item {
+        margin: 1px;
+
+        .nav-link {
+            border-radius: .25rem;
+            font-size: 1.3em;
+            padding: 5px 10px;
+            border: 1px solid transparent;
+
+            &:hover {
+                background-color: #efefef;
+            }
+
+            &.active {
+                border-color: #ccc;
+            }
+        }
+    }
+}

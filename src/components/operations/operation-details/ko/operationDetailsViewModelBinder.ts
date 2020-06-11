@@ -25,7 +25,8 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
 
         const runtimeConfig = {
             enableConsole: model.enableConsole,
-            authorizationServers: model.authorizationServers
+            authorizationServers: model.authorizationServers,
+            defaultSchemaView: model.defaultSchemaView
         };
 
         viewModel.config(JSON.stringify(runtimeConfig));
