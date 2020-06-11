@@ -21,7 +21,6 @@ export class AuthorizationServer {
             ? contract.properties.defaultScope.split(" ")
             : [];
 
-        // Temporarily filtering out other flows, until backend starts support them.
-        this.grantTypes = contract.properties.grantTypes.filter(x => x === GrantTypes.implicit);
+        this.grantTypes = contract.properties.grantTypes;
     }
 }
