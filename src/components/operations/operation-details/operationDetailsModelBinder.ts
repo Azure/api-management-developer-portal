@@ -5,8 +5,7 @@ import { OperationDetailsModel } from "./operationDetailsModel";
 import { OperationDetailsContract } from "./operationDetailsContract";
 
 export class OperationDetailsModelBinder implements IModelBinder<OperationDetailsModel> {
-    constructor(private readonly oauthService: OAuthService) {
-    }
+    constructor(private readonly oauthService: OAuthService) { }
 
     public canHandleContract(contract: Contract): boolean {
         return contract.type === "operationDetails";
@@ -19,6 +18,7 @@ export class OperationDetailsModelBinder implements IModelBinder<OperationDetail
     public async contractToModel(contract: OperationDetailsContract): Promise<OperationDetailsModel> {
         const model = new OperationDetailsModel();
         model.enableConsole = contract.enableConsole === true || contract.enableConsole === undefined;
+        model.defaultSchemaView = contract.defaultSchemaView || "table";
         model.authorizationServers = await this.oauthService.getOAuthServers();
 
         return model;
@@ -27,7 +27,8 @@ export class OperationDetailsModelBinder implements IModelBinder<OperationDetail
     public modelToContract(model: OperationDetailsModel): Contract {
         const contract: OperationDetailsContract = {
             type: "operationDetails",
-            enableConsole: model.enableConsole
+            enableConsole: model.enableConsole,
+            defaultSchemaView: model.defaultSchemaView
         };
 
         return contract;

@@ -1,10 +1,7 @@
 @font-face {
     font-family: 'icons';
     src: url('/styles/fonts/icons.eot?a6lw2r');
-    src: url('/styles/fonts/icons.eot?a6lw2r#iefix') format('embedded-opentype'), 
-        url('/styles/fonts/icons.ttf?a6lw2r') format('truetype'), 
-        url('/styles/fonts/icons.woff?a6lw2r') format('woff'), 
-        url('/styles/fonts/icons.svg?a6lw2r#icons') format('svg');
+    src: url('/styles/fonts/icons.eot?a6lw2r#iefix') format('embedded-opentype'), url('/styles/fonts/icons.ttf?a6lw2r') format('truetype'), url('/styles/fonts/icons.woff?a6lw2r') format('woff'), url('/styles/fonts/icons.svg?a6lw2r#icons') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -195,4 +192,8 @@
 
 .icon-text {
     margin: 0 5px;
+}
+
+.icon.icon-brackets:before {
+    content: "\e911";
 }

@@ -103,7 +103,7 @@
 
                 <div class="tab-content">
                     <!-- ko if: representation.typeName -->
-                    <type-definition params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation) }">
+                    <type-definition params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation), defaultSchemaView: $component.defaultSchemaView }">
                     </type-definition>
                     <!-- /ko -->
 
@@ -136,7 +136,7 @@
                 <div class="tab-content">
                     <!-- ko if: representation.typeName -->
                     <type-definition
-                        params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation) }">
+                        params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation), defaultSchemaView: $component.defaultSchemaView }">
                     </type-definition>
                     <!-- /ko -->
                     <!-- ko ifnot: representation.typeName -->
@@ -175,7 +175,7 @@
 
     <!-- ko foreach: { data: definitions, as: 'definition' } -->
     <type-definition
-        params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: definition, anchor: true }">
+        params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: definition, anchor: true, defaultSchemaView: $component.defaultSchemaView }">
     </type-definition>
     <!-- /ko -->
     <!-- /ko -->
