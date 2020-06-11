@@ -159,8 +159,14 @@ export class OperationList {
     }
 
     private async loadPageOfOperations(): Promise<void> {
+        const apiName = this.selectedApiName();
+
+        if (!apiName) {
+            return;
+        }
+
         this.searchRequest.skip = (this.pageNumber() - 1) * Constants.defaultPageSize;
-        const pageOfOperations = await this.apiService.getOperations(`apis/${this.selectedApiName()}`, this.searchRequest);
+        const pageOfOperations = await this.apiService.getOperations(`apis/${apiName}`, this.searchRequest);
 
         this.operations(pageOfOperations.value);
 
