@@ -15,6 +15,7 @@ export interface TenantSettings {
 
 export enum DelegationAction {     
     signIn = "SignIn",
+    signUp = "SignUp",
     subscribe = "Subscribe",
     unsubscribe = "Unsubscribe",
     renew = "Renew",
