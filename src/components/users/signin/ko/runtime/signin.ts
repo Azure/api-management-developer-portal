@@ -106,7 +106,8 @@ export class Signin {
             const userId = await this.usersService.signIn(this.username(), this.password());
 
             if (userId) {
-                const returnUrl = this.routeHelper.getQueryParameter("returnUrl");
+                const clientReturnUrl = sessionStorage.getItem("returnUrl");
+                const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
                 if (returnUrl) {
                     this.router.navigateTo(returnUrl);
                     return;
