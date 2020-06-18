@@ -30,7 +30,7 @@ export class ProductService {
         }
 
         const pageOfSubscriptions = new Page<Subscription>();
-        const query = productId ? `?$filter=contains(properties/scope,'${productId}')` : "";
+        const query = productId ? `?$filter=properties/scope eq '${productId}'` : "";
 
         try {
             const pageContract = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`);
