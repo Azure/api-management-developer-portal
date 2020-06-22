@@ -515,7 +515,14 @@ export class OperationConsole {
             return;
         }
 
+        const api = this.api();
         const authorizationServer = this.authorizationServer();
+        const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
+
+        if (scopeOverride) {
+            authorizationServer.scopes = [scopeOverride];
+        }
+
         const accessToken = await this.oauthService.authenticate(grantType, authorizationServer);
 
         this.setAuthorizationHeader(accessToken);
