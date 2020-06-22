@@ -8,7 +8,7 @@ export class AuthorizationServer {
     public readonly authorizationEndpoint: string;
     public readonly tokenEndpoint: string;
     public readonly grantTypes: string[];
-    public readonly scopes: string[];
+    public scopes: string[];
 
 
     constructor(contract: AuthorizationServerContract) {
