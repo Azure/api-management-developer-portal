@@ -36,11 +36,12 @@
 
 .d-block {
     display: block;
+    max-width: 100%;
 }
 
 .mt-auto {
     margin-top: auto;
-} 
+}
 
 .mb-auto {
     margin-bottom: auto;
@@ -49,6 +50,7 @@
 .text-truncate {
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .text-center {
@@ -65,4 +67,15 @@
 
 .text-monospace {
     font-family: monospace;
+}
+
+.scrollable-x {
+    max-width: 100%;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+}
+
+.scrollable-y {
+    overflow-y: auto;
+    scroll-behavior: smooth;
 }

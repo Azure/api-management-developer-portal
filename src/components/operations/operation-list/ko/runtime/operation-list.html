@@ -1,5 +1,5 @@
 <div class="form-inline search-input">
-    <div class="d-block flex-grow">
+    <div class="d-block flex-grow mw-100">
         <div class="input-group">
             <input type="search" aria-label="Search operations" placeholder="Search operations" spellcheck="false" data-bind="textInput: pattern" />
             <button type="button" class="search-button" aria-label="Search operations">
@@ -19,7 +19,7 @@
 </div>
 
 <!-- ko if: groupByTag-->
-<div class="menu menu-vertical">
+<div class="menu menu-vertical d-block">
     <!-- ko if: working -->
     <spinner class="fit"></spinner>
     <!-- /ko -->
@@ -64,7 +64,7 @@
     <!-- /ko -->
 
     <!-- ko ifnot: working-->
-    <div class="menu menu-vertical flex-item flex-grow animation-fade-in">
+    <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
         <!-- ko if: operations -->
         <ul class="nav" role="list">
             <!-- ko foreach: { data: operations, as: 'item' } -->
