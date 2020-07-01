@@ -1,5 +1,3 @@
-
-
 <!-- ko if: working -->
 <spinner class="fit"></spinner>
 <!-- /ko -->
@@ -12,7 +10,8 @@
             <span data-bind="text: operation().displayName"></span>
         </h2>
         <!-- ko if: $component.enableConsole -->
-        <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i class="icon icon-play"></i>
+        <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i
+                class="icon icon-play"></i>
         </button>
         <!-- /ko -->
     </div>
@@ -32,63 +31,53 @@
     <div class="collapsible">
         <h3>Request</h3>
         <div class="collapsible-container">
-            <span class="monospace" data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
+            <span class="monospace"
+                data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
 
             <!-- ko if: operation().parameters.length > 0 -->
             <h4>Request parameters</h4>
-            <div class="table" role="table">
-                <div class="table-head" role="rowgroup">
-                    <div class="table-row" role="row">
-                        <div class="col-4 text-truncate" role="columnheader">Name</div>
-                        <div class="col-1 text-truncate" role="columnheader">In</div>
-                        <div class="col-1 text-truncate" role="columnheader">Required</div>
-                        <div class="col-2 text-truncate" role="columnheader">Type</div>
-                        <div class="col-4 text-truncate" role="columnheader">Description</div>
-                    </div>
-                </div>
-                <div class="table-body" role="rowgroup">
-                    <!-- ko foreach: { data: operation().parameters, as: 'parameter' } -->
-                    <div class="table-row" role="row">
-                        <div role="cell" class="col-4 monospace" data-bind="text: parameter.name"></div>
-                        <div role="cell" class="col-1" data-bind="text: parameter.in"></div>
-                        <div role="cell" class="col-1" data-bind="text: parameter.required"></div>
-                        <div role="cell" class="col-2 monospace" data-bind="text: parameter.type"></div>
-                        <div role="cell" class="col-4" data-bind="markdown: parameter.description"></div>
-                    </div>
-                    <!-- /ko -->
-                </div>
+
+            <div class="table-preset table-preset-params">
+                <div role="columnheader" class="table-preset-head text-truncate">Name</div>
+                <div role="columnheader" class="table-preset-head text-truncate">In</div>
+                <div role="columnheader" class="table-preset-head text-truncate">Required</div>
+                <div role="columnheader" class="table-preset-head text-truncate">Type</div>
+                <div role="columnheader" class="table-preset-head">Description</div>
+
+                <!-- ko foreach: { data: operation().parameters, as: 'parameter' } -->
+                <div role="cell" class="text-truncate monospace" data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
+                <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
+                <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
+                <div role="cell" class="text-truncate monospace" data-bind="text: parameter.type"></div>
+                <div role="cell" class="" data-bind="markdown: parameter.description"></div>
+                <!-- /ko -->
             </div>
             <!-- /ko -->
 
             <!-- ko if: operation().request && operation().request.headers && operation().request.headers.length > 0 -->
             <h4>Request headers</h4>
-            <div class="table" role="table">
-                <div class="table-head" role="rowgroup">
-                    <div class="table-row" role="row">
-                        <div class="col-4 text-truncate" role="columnheader">Name</div>
-                        <div class="col-1 text-truncate" role="columnheader">Required</div>
-                        <div class="col-2 text-truncate" role="columnheader">Type</div>
-                        <div class="col-4 text-truncate" role="columnheader">Description</div>
-                    </div>
-                </div>
-                <div class="table-body" role="rowgroup">
-                    <!-- ko foreach: { data: operation().request.headers, as: 'header' } -->
-                    <div class="table-row" role="row">
-                        <div role="cell" class="col-4 monospace" data-bind="text: header.name"></div>
-                        <div role="cell" class="col-1" data-bind="text: header.required"></div>
-                        <div role="cell" class="col-2 monospace" data-bind="text: header.type"></div>
-                        <div role="cell" class="col-4" data-bind="markdown: header.description"></div>
-                    </div>
-                    <!-- /ko -->
-                </div>
+
+            <div class="table-preset table-preset-headers">
+                <div role="columnheader" class="table-preset-head text-truncate">Name</div>
+                <div role="columnheader" class="table-preset-head text-truncate">Required</div>
+                <div role="columnheader" class="table-preset-head text-truncate">Type</div>
+                <div role="columnheader" class="table-preset-head">Description</div>
+
+                <!-- ko foreach: { data: operation().request.headers, as: 'header' } -->
+                <div role="cell" class="text-truncate monospace" data-bind="text: header.name, attr: { title: header.name }"></div>
+                <div role="cell" class="text-truncate" data-bind="text: header.required"></div>
+                <div role="cell" class="text-truncate monospace" data-bind="text: header.type, attr: { title: header.type }"></div>
+                <div role="cell" class="text-truncate" data-bind="markdown: header.description"></div>
+                <!-- /ko -->
             </div>
+
             <!-- /ko -->
 
 
             <!-- ko with: operation().request, as: 'request' -->
             <!-- ko if: request.isMeaningful() -->
             <h4>Request body</h4>
-            
+
             <!-- ko if: request.description  -->
             <div class="text-word-break" data-bind="markdown: request.description"></div>
             <!-- /ko -->
@@ -103,13 +92,15 @@
 
                 <div class="tab-content">
                     <!-- ko if: representation.typeName -->
-                    <type-definition params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation), defaultSchemaView: $component.defaultSchemaView }">
+                    <type-definition
+                        params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation), defaultSchemaView: $component.defaultSchemaView }">
                     </type-definition>
                     <!-- /ko -->
 
                     <!-- ko ifnot: representation.typeName -->
                     <!-- ko if: representation.example -->
-                    <code-sample params="{ content: representation.example, language: representation.exampleFormat }"></code-sample>
+                    <code-sample params="{ content: representation.example, language: representation.exampleFormat }">
+                    </code-sample>
                     <!-- /ko -->
                     <!-- /ko -->
                 </div>
@@ -141,7 +132,8 @@
                     <!-- /ko -->
                     <!-- ko ifnot: representation.typeName -->
                     <!-- ko if: representation.example -->
-                    <code-sample params="{ content: representation.example, language: representation.exampleFormat }"></code-sample>
+                    <code-sample params="{ content: representation.example, language: representation.exampleFormat }">
+                    </code-sample>
                     <!-- /ko -->
                     <!-- /ko -->
                 </div>
@@ -154,23 +146,16 @@
     <!-- ko if: $component.definitions().length > 0 -->
     <h3>Definitions</h3>
 
-    <div class="table" role="table">
-        <div class="table-head" role="rowgroup">
-            <div class="table-row" role="row">
-                <div class="col-4" role="columnheader">Name</div>
-                <div class="col-8" role="columnheader">Description</div>
-            </div>
+    <div class="table-preset table-preset-definitions">
+        <div class="table-preset-head text-truncate" role="columnheader">Name</div>
+        <div class="table-preset-head text-truncate" role="columnheader">Description</div>
+
+        <!-- ko foreach: { data: definitions, as: 'definition' } -->
+        <div role="cell" class="text-truncate">
+            <a data-bind="text: definition.name, attr: { title: definition.name, href: $component.getDefinitionReferenceUrl(definition) }"></a>
         </div>
-        <div class="table-body" role="rowgroup">
-            <!-- ko foreach: { data: definitions, as: 'definition' } -->
-            <div class="table-row" role="row">
-                <div role="cell" class="col-3 text-truncate">
-                    <a data-bind="text: definition.name, attr: { href: $component.getDefinitionReferenceUrl(definition) }"></a>
-                </div>
-                <div role="cell" class="col-9" data-bind="markdown: definition.description"></div>
-            </div>
-            <!-- /ko -->
-        </div>
+        <div role="cell" data-bind="markdown: definition.description"></div>
+        <!-- /ko -->
     </div>
 
     <!-- ko foreach: { data: definitions, as: 'definition' } -->
@@ -188,7 +173,8 @@
 
 <!-- ko if: $component.consoleIsOpen -->
 <div class="detachable-right scrollable flex-grow animation-fade-in">
-    <operation-console class="test flex flex-column" params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer }">
+    <operation-console class="test flex flex-column"
+        params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer }">
     </operation-console>
 </div>
 <!-- /ko -->

@@ -276,7 +276,7 @@ export class Reports {
     private async getReportsByApi(): Promise<void> {
         const startTime = this.startTime();
         const endTime = this.endTime();
-        const pageNumber = this.reportBySubscriptionPage() - 1;
+        const pageNumber = this.reportByApiPage() - 1;
         const orderBy = this.reportByApiOrder();
         const query: ReportQuery = {
             startTime: startTime,
