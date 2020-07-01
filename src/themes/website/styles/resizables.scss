@@ -1,0 +1,39 @@
+@import "variables.scss";
+
+.resize-handle {
+    background: transparent;
+    position: absolute;
+    z-index: $z-index-base + 1;
+
+    &.resize-handle-right {
+        cursor: e-resize;
+        width: 5px;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+
+    &.resize-handle-left {
+        cursor: w-resize;
+        width: 5px;
+        left: 0;
+        top: 0;
+        bottom: 0;
+    }
+
+    &.resize-handle-top {
+        cursor: n-resize;
+        height: 5px;
+        left: 0;
+        right: 0;
+        top: 0;
+    }
+
+    &.resize-handle-bottom {
+        cursor: s-resize;
+        height: 5px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+}
