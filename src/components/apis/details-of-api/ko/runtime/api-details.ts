@@ -75,6 +75,8 @@ export class ApiDetails {
 
         if (api.apiVersionSet && api.apiVersionSet.id) {
             const apis = await this.apiService.getApisInVersionSet(api.apiVersionSet.id);
+            apis.forEach(x => x.apiVersion = x.apiVersion || "Original");
+
             this.versionApis(apis || []);
         }
         else {
