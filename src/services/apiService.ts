@@ -28,25 +28,30 @@ export class ApiService {
 
     /**
      * Returns APIs matching search request (if specified).
-     * @param searchRequest 
+     * @param searchQuery 
      */
-    public async getApis(searchRequest?: SearchQuery): Promise<Page<Api>> {
-        const skip = searchRequest && searchRequest.skip || 0;
-        const take = searchRequest && searchRequest.take || Constants.defaultPageSize;
+    public async getApis(searchQuery?: SearchQuery): Promise<Page<Api>> {
+        const skip = searchQuery && searchQuery.skip || 0;
+        const take = searchQuery && searchQuery.take || Constants.defaultPageSize;
+        const odataFilterEntries = [`isCurrent eq true`];
 
         let query = `/apis?expandApiVersionSet=true&$top=${take}&$skip=${skip}`;
 
-        if (searchRequest) {
-            if (searchRequest.tags) {
-                searchRequest.tags.forEach((tag, index) => {
+        if (searchQuery) {
+            if (searchQuery.tags) {
+                searchQuery.tags.forEach((tag, index) => {
                     query = Utils.addQueryParameter(query, `tags[${index}]=${tag}`);
                 });
             }
 
-            if (searchRequest.pattern) {
-                const pattern = Utils.escapeValueForODataFilter(searchRequest.pattern);
-                query = Utils.addQueryParameter(query, `$filter=contains(properties/displayName,'${encodeURIComponent(pattern)}')`);
+            if (searchQuery.pattern) {
+                const pattern = Utils.escapeValueForODataFilter(searchQuery.pattern);
+                odataFilterEntries.push(`(contains(properties/displayName,'${encodeURIComponent(pattern)}'))`);
             }
+        }
+
+        if (odataFilterEntries.length > 0) {
+            query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
         }
 
         const pageOfApis = await this.mapiClient.get<Page<ApiContract>>(query);
@@ -67,9 +72,11 @@ export class ApiService {
             return null;
         }
 
-        const query = "/apis?expandApiVersionSet=true";
+        const query = "/apis?$filter=isCurrent eq true";
         const apisPage = await this.mapiClient.get<Page<ApiContract>>(query);
-        const result = apisPage.value.filter(x => x.properties.apiVersionSetId && Utils.getResourceName("api-version-sets", x.properties.apiVersionSetId, "shortId") === versionSetId).map(x => new Api(x));
+        const result = apisPage.value
+            .filter(x => x.properties.apiVersionSetId && Utils.getResourceName("api-version-sets", x.properties.apiVersionSetId, "shortId") === versionSetId)
+            .map(x => new Api(x));
 
         return result;
     }
@@ -87,7 +94,7 @@ export class ApiService {
         const take = searchQuery && searchQuery.take || Constants.defaultPageSize;
 
         let query = `apis/${apiId}/operationsByTags?includeNotTaggedOperations=true&$top=${take}&$skip=${skip}`;
-        const odataFilterEntries = [];
+        const odataFilterEntries = [`isCurrent eq true`];
 
         if (searchQuery) {
             if (searchQuery.tags && searchQuery.tags.length > 0) {
