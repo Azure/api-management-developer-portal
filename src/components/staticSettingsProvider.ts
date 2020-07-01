@@ -11,7 +11,7 @@ export class StaticSettingsProvider implements ISettingsProvider {
         this.configuration[name] = value;
     }
 
-    public async getSettings(): Promise<Object> {
-        return this.configuration;
+    public async getSettings<T>(): Promise<T> {
+        return <T>this.configuration;
     }
 }
