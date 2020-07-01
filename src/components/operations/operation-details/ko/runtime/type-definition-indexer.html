@@ -1,25 +1,27 @@
-<div class="table" role="table">
-    <div class="table-head" role="rowgroup">
-        <div class="table-row" role="row">
-            <div role="cell" class="col-4">Name</div>
-            <div role="cell" class="col-2">Type</div>
-            <div role="cell" class="col-6">Description</div>
+<div class="scrollable-x">
+    <div class="table" role="table">
+        <div class="table-head" role="rowgroup">
+            <div class="table-row" role="row">
+                <div role="cell" class="col-4">Name</div>
+                <div role="cell" class="col-2">Type</div>
+                <div role="cell" class="col-6">Description</div>
+            </div>
         </div>
-    </div>
-    <div class="table-body" role="rowgroup" data-bind="foreach: { data: definition.properties, as: 'property' }">
-        <div class="table-row" role="row">
-            <div role="cell" class="col-4 text-truncate">
-                <code data-bind="text: property.name, attr: { title: property.name }"></code>
+        <div class="table-body" role="rowgroup" data-bind="foreach: { data: definition.properties, as: 'property' }">
+            <div class="table-row" role="row">
+                <div role="cell" class="col-4 text-truncate">
+                    <code data-bind="text: property.name, attr: { title: property.name }"></code>
+                </div>
+                <div role="cell" class="col-2 text-truncate">
+                    <!-- ko if: property.type.displayAs === 'reference' -->
+                    <code><a data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name), attr: { title: property.type.name } }"></a></code>
+                    <!-- /ko -->
+                    <!-- ko if: property.type.displayAs === 'primitive' -->
+                    <code data-bind="text: property.type.name, attr: { title: property.type.name }"></code>
+                    <!-- /ko -->
+                </div>
+                <div role="cell" class="col-6" data-bind="markdown: property.description"></div>
             </div>
-            <div role="cell" class="col-2 text-truncate">
-                <!-- ko if: property.type.displayAs === 'reference' -->
-                <code><a data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name), attr: { title: property.type.name } }"></a></code>
-                <!-- /ko -->
-                <!-- ko if: property.type.displayAs === 'primitive' -->
-                <code data-bind="text: property.type.name, attr: { title: property.type.name }"></code>
-                <!-- /ko -->
-            </div>
-            <div role="cell" class="col-6" data-bind="markdown: property.description"></div>
         </div>
     </div>
 </div>

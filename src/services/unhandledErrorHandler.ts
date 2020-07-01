@@ -1,6 +1,6 @@
 import { Router } from "@paperbits/common/routing";
 import { Logger } from "@paperbits/common/logging";
-import { pageUrl500 } from "./../constants";
+import { pageUrl500 } from "../constants";
 
 export class UnhandledErrorHandler {
     constructor(
