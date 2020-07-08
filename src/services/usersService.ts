@@ -36,7 +36,7 @@ export class UsersService {
             return userId;
         }
         else {
-            await this.authenticator.clearAccessToken(true);
+            this.authenticator.clearAccessToken(true);
             return undefined;
         }
     }
@@ -93,8 +93,8 @@ export class UsersService {
      * Initiates signing-out with Basic identity provider.
      * @param withRedirect 
      */
-    public async signOut(withRedirect: boolean = true): Promise<void> {
-        await this.authenticator.clearAccessToken();
+    public signOut(withRedirect: boolean = true): void {
+        this.authenticator.clearAccessToken();
 
         if (withRedirect) {
             this.navigateToSignin();
@@ -194,7 +194,7 @@ export class UsersService {
 
             await this.mapiClient.delete<string>(query, [header]);
 
-            await this.signOut();
+            this.signOut();
         }
         catch (error) {
             this.navigateToSignin();
