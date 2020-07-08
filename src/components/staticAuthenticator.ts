@@ -32,7 +32,7 @@ export class StaticAuthenticator implements IAuthenticator {
         return undefined;
     }
 
-    public async clearAccessToken(): Promise<void> {
+    public clearAccessToken(): void {
         this.accessToken = undefined;
     }
 

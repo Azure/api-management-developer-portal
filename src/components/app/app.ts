@@ -39,7 +39,7 @@ export class App {
             if (!token) {
                 const managementApiAccessToken = settings["managementApiAccessToken"];
                 if (!managementApiAccessToken) {
-                    await this.authenticator.clearAccessToken();
+                    this.authenticator.clearAccessToken();
                     window.location.assign("/");
                     return;
                 }
@@ -49,7 +49,7 @@ export class App {
 
                 if (now >= accessToken.expires) {
                     this.viewManager.addToast(startupError, `Management API access token has expired. See setting <i>managementApiAccessToken</i> in the configuration file <i>config.design.json</i>`);
-                    await this.authenticator.clearAccessToken();
+                    this.authenticator.clearAccessToken();
                     return;
                 }
 
