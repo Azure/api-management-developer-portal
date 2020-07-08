@@ -42,7 +42,7 @@ export class DefaultAuthenticator implements IAuthenticator {
         });
     }
 
-    public async clearAccessToken(): Promise<void> {
+    public clearAccessToken(): void {
         sessionStorage.removeItem("accessToken");
     }
 
