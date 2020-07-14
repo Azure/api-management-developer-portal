@@ -94,7 +94,7 @@ export class ApiService {
         const take = searchQuery && searchQuery.take || Constants.defaultPageSize;
 
         let query = `apis/${apiId}/operationsByTags?includeNotTaggedOperations=true&$top=${take}&$skip=${skip}`;
-        const odataFilterEntries = [`isCurrent eq true`];
+        const odataFilterEntries = [];
 
         if (searchQuery) {
             if (searchQuery.tags && searchQuery.tags.length > 0) {
