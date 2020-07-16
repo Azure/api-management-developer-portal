@@ -133,7 +133,7 @@ export class OperationDetails {
 
         if (this.authorizationServers) {
             const associatedAuthServer = this.authorizationServers
-                .find(x => x.id === api.authenticationSettings?.oAuth2?.authorizationServerId);
+                .find(x => x.name === api.authenticationSettings?.oAuth2?.authorizationServerId);
 
             this.associatedAuthServer(associatedAuthServer);
         }
