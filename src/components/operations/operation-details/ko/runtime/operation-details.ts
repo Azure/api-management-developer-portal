@@ -131,9 +131,12 @@ export class OperationDetails {
         const api = await this.apiService.getApi(`apis/${apiName}`);
         this.api(api);
 
-        if (this.authorizationServers) {
+        const associatedServerId = api.authenticationSettings?.oAuth2?.authorizationServerId ||
+            api.authenticationSettings?.openid?.openidProviderId;
+
+        if (this.authorizationServers && associatedServerId) {
             const associatedAuthServer = this.authorizationServers
-                .find(x => x.name === api.authenticationSettings?.oAuth2?.authorizationServerId);
+                .find(x => x.name === associatedServerId);
 
             this.associatedAuthServer(associatedAuthServer);
         }

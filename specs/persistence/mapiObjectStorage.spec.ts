@@ -1,10 +1,10 @@
 import { MapiClient } from "./../../src/services/mapiClient";
 import { MapiObjectStorage } from "../../src/persistence/mapiObjectStorage";
-import { assert, expect } from "chai";
+import { expect } from "chai";
 
 describe("MAPI Object Storage", async () => {
     it("Correctly translates resources", async () => {
-        const mapiClient = new MapiClient(null, null, null, null);
+        const mapiClient = new MapiClient(null, null, null);
         const mapiObjectStorage = new MapiObjectStorage(mapiClient);
 
         const pageResource = mapiObjectStorage.paperbitsKeyToArmResource("pages/somepage");
