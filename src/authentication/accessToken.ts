@@ -5,7 +5,7 @@ export interface AccessToken {
     type: string;
 
     /**
-     * Token expiration date time.
+     * Token expiration date time (UTC).
      */
     expires: Date;
 

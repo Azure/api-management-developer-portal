@@ -1,14 +1,12 @@
 import * as _ from "lodash";
 import * as Constants from "./../constants";
-import { Router } from "@paperbits/common/routing";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Utils } from "../utils";
 import { TtlCache } from "./ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
 import { MapiError } from "./mapiError";
 import { IAuthenticator } from "../authentication/IAuthenticator";
-
-
+import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 
 export interface IHttpBatchResponses {
     responses: IHttpBatchResponse[];
@@ -33,8 +31,7 @@ export class MapiClient {
     constructor(
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator,
-        private readonly settingsProvider: ISettingsProvider,
-        private readonly router: Router,
+        private readonly settingsProvider: ISettingsProvider
     ) { }
 
     private async ensureInitialized(): Promise<void> {
@@ -123,13 +120,13 @@ export class MapiClient {
     }
 
     protected async makeRequest<T>(httpRequest: HttpRequest): Promise<T> {
-        const authHeader = httpRequest.headers.find(header => header.name === "Authorization");
+        const authHeader = httpRequest.headers.find(header => header.name === KnownHttpHeaders.Authorization);
 
         if (!authHeader || !authHeader.value) {
             const authToken = await this.authenticator.getAccessToken();
 
             if (authToken) {
-                httpRequest.headers.push({ name: "Authorization", value: `${authToken}` });
+                httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${authToken}` });
             }
         }
 
@@ -149,7 +146,7 @@ export class MapiClient {
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
-        try {            
+        try {
             await this.authenticator.refreshAccessTokenFromHeader(response.headers);
         }
         catch (error) {
@@ -199,7 +196,7 @@ export class MapiClient {
             }
 
             if (this.environment === "production") {
-                this.router.navigateTo("/signin");
+                window.location.assign("/signin");
                 return;
             }
         }
