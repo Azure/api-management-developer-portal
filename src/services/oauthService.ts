@@ -38,6 +38,7 @@ export class OAuthService {
 
             for (const provider of oicdServers) {
                 const authServer = await this.discoverOAuthServer(provider.metadataEndpoint);
+                authServer.name = provider.name;
                 authServer.clientId = provider.clientId;
                 authServer.displayName = provider.displayName;
                 authServer.description = provider.description;
@@ -161,7 +162,7 @@ export class OAuthService {
         server.scopes = metadata.scopes_supported || ["openid"];
 
         const supportedGrantTypes = Object.values(GrantTypes).map(x => x.toString());
-        
+
         server.grantTypes = metadata.grant_types_supported
             ? metadata.grant_types_supported.filter(grantType => supportedGrantTypes.includes(grantType))
             : [GrantTypes.authorizationCode];

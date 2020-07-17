@@ -4,6 +4,7 @@ import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ISiteService } from "@paperbits/common/sites";
 import { IAuthenticator } from "../../authentication";
+import { Utils } from "../../utils";
 
 const startupError = `Unable to start the portal`;
 
@@ -45,11 +46,12 @@ export class App {
                 }
 
                 const accessToken = this.authenticator.parseAccessToken(managementApiAccessToken);
-                const now = new Date();
+                const utcNow = Utils.getUtcDateTime();
 
-                if (now >= accessToken.expires) {
+                if (utcNow >= accessToken.expires) {
                     this.viewManager.addToast(startupError, `Management API access token has expired. See setting <i>managementApiAccessToken</i> in the configuration file <i>config.design.json</i>`);
                     this.authenticator.clearAccessToken();
+                    window.location.assign("/signout");
                     return;
                 }
 
@@ -65,7 +67,6 @@ export class App {
             /* Checking if settings were created, and if not, we consider the portal not initialized and launch setup dialog. */
 
             const siteSettings = await this.siteService.getSettings<any>();
-
 
             if (!siteSettings) {
                 this.viewManager.setHost({ name: "setup-dialog" });
