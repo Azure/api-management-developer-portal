@@ -161,11 +161,12 @@ export class OAuthService {
         server.tokenEndpoint = metadata.token_endpoint;
         server.scopes = metadata.scopes_supported || ["openid"];
 
-        const supportedGrantTypes = Object.values(GrantTypes).map(x => x.toString());
+        // Leaving only "implicit" grant flow until backend gets deployed.
+        const supportedGrantTypes = [GrantTypes.implicit.toString()];
 
         server.grantTypes = metadata.grant_types_supported
             ? metadata.grant_types_supported.filter(grantType => supportedGrantTypes.includes(grantType))
-            : [GrantTypes.authorizationCode];
+            : [GrantTypes.implicit];
 
         return server;
     }
