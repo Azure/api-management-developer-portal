@@ -4,7 +4,7 @@ import template from "./signin.html";
 import { EventManager } from "@paperbits/common/events";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../../services/usersService";
-import { MapiError } from "../../../../../services/mapiError";
+import { MapiError } from "../../../../../errors/mapiError";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Router } from "@paperbits/common/routing/router";
