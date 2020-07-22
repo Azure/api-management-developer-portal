@@ -231,7 +231,8 @@ export class ProductService {
         else {
             const data = {
                 scope: productId,
-                name: subscriptionName
+                name: subscriptionName,
+                appType: Constants.AppType
             };
             await this.mapiClient.put(userId + subscriptionId, null, data);
         }
@@ -284,6 +285,9 @@ export class ProductService {
             name: "If-Match",
             value: "*"
         };
+        if (body) {
+            body["appType"] = Constants.AppType;
+        }
 
         await this.mapiClient.patch(subscriptionId, [header], body);
     }
