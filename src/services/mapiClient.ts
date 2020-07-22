@@ -4,7 +4,7 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Utils } from "../utils";
 import { TtlCache } from "./ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
-import { MapiError } from "./mapiError";
+import { MapiError } from "../errors/mapiError";
 import { IAuthenticator } from "../authentication/IAuthenticator";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 
@@ -153,10 +153,10 @@ export class MapiClient {
             console.error("Refresh token error: ", error);
         }
 
-        return this.handleResponse<T>(response, httpRequest.url);
+        return await this.handleResponse<T>(response, httpRequest.url);
     }
 
-    private handleResponse<T>(response: HttpResponse<T>, url: string): T {
+    private async handleResponse<T>(response: HttpResponse<T>, url: string): Promise<T> {
         let contentType = "";
 
         if (response.headers) {
@@ -174,13 +174,13 @@ export class MapiClient {
                 return <any>text;
             }
         } else {
-            this.handleError(response, url);
+            await this.handleError(response, url);
         }
     }
 
-    private handleError(errorResponse: HttpResponse<any>, requestedUrl: string): void {
+    private async handleError(errorResponse: HttpResponse<any>, requestedUrl: string): Promise<void> {
         if (errorResponse.statusCode === 429) {
-            throw new MapiError("to_many_logins", "Too many attempts. Please try later.");
+            throw new MapiError("too_many_logins", "Too many attempts. Please try later.");
         }
 
         if (errorResponse.statusCode === 401) {
@@ -193,11 +193,6 @@ export class MapiClient {
                 if (authHeader.value.indexOf("invalid_identity") !== -1) {
                     throw new MapiError("invalid_identity", "Invalid email or password.");
                 }
-            }
-
-            if (this.environment === "production") {
-                window.location.assign("/signin");
-                return;
             }
         }
 

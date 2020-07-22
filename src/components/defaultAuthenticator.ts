@@ -11,11 +11,13 @@ export class DefaultAuthenticator implements IAuthenticator {
         });
     }
 
-    public async setAccessToken(accessToken: string): Promise<void> {        
-        return new Promise<void>((resolve) => {
-            sessionStorage.setItem("accessToken", accessToken);
-            resolve();
-        });
+    public async setAccessToken(accessToken: string): Promise<void> {
+        if (!this.isTokenValid(accessToken)) {
+            console.warn(`Cannot set invalid or expired access token.`);
+            return;
+        }
+
+        sessionStorage.setItem("accessToken", accessToken);
     }
 
     public async refreshAccessTokenFromHeader(responseHeaders: HttpHeader[] = []): Promise<string> {
@@ -32,12 +34,12 @@ export class DefaultAuthenticator implements IAuthenticator {
                 const accessToken = `SharedAccessSignature ${accessTokenHeader.value}`;
                 const current = sessionStorage.getItem("accessToken");
                 if (current !== accessToken) {
-                    sessionStorage.setItem("accessToken", accessToken);                
+                    sessionStorage.setItem("accessToken", accessToken);
                     resolve(accessToken);
                     return;
                 }
             }
-            
+
             resolve(undefined);
         });
     }
@@ -115,6 +117,18 @@ export class DefaultAuthenticator implements IAuthenticator {
 
         if (!accessToken) {
             throw new Error(`Access token format is not valid. Please use "Bearer" or "SharedAccessSignature".`);
+        }
+    }
+
+    private isTokenValid(accessToken: string): boolean {
+        try {
+            const parsedToken = this.parseAccessToken(accessToken);
+            const utcNow = Utils.getUtcDateTime();
+
+            return (utcNow < parsedToken.expires);
+        }
+        catch (error) {
+            return false;
         }
     }
 }
