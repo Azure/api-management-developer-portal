@@ -55,7 +55,7 @@ import { ResetPassword } from "./components/users/reset-password/ko/runtime/rese
 import { ConfirmPassword } from "./components/users/confirm-password/ko/runtime/confirm-password";
 import { ChangePassword } from "./components/users/change-password/ko/runtime/change-password";
 import { Reports } from "./components/reports/ko/runtime/reports";
-import { UnhandledErrorHandler } from "./services/unhandledErrorHandler";
+import { UnhandledErrorHandler } from "./errors/unhandledErrorHandler";
 import { ProductListDropdown } from "./components/products/product-list/ko/runtime/product-list-dropdown";
 import { ValidationSummary } from "./components/users/validation-summary/ko/runtime/validation-summary";
 import { TypeDefinitionViewModel } from "./components/operations/operation-details/ko/runtime/type-definition";

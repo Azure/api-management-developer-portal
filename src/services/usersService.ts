@@ -9,7 +9,7 @@ import { Utils } from "../utils";
 import { Identity } from "../contracts/identity";
 import { UserContract, UserPropertiesContract, } from "../contracts/user";
 import { MapiSignupRequest } from "../contracts/signupRequest";
-import { MapiError } from "./mapiError";
+import { MapiError } from "../errors/mapiError";
 import { AppType } from "./../constants";
 
 
