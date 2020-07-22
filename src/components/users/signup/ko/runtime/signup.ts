@@ -7,6 +7,7 @@ import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services/usersService";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
 import { ValidationReport } from "../../../../../contracts/validationReport";
+import { AppType } from "../../../../../constants";
 
 declare var WLSPHIP0;
 
@@ -193,7 +194,7 @@ export class Signup {
             lastName: this.lastName(),
             password: this.password(),
             confirmation: "signup",
-            appType: "developerPortal"
+            appType: AppType
         };
 
         try {
