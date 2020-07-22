@@ -5,11 +5,13 @@ import { CoreDesignModule } from "@paperbits/core/core.design.module";
 import { StylesDesignModule } from "@paperbits/styles/styles.design.module";
 import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
 import { OfflineModule } from "@paperbits/common/persistence/offline.module";
+import { SessionExpirationErrorHandler } from "./errors/sessionExpirationErrorHandler";
 import { ApimDesignModule } from "./apim.design.module";
 
 
 /* Initializing dependency injection container */
 const injector = new InversifyInjector();
+injector.bindToCollection("autostart", SessionExpirationErrorHandler);
 injector.bindModule(new CoreDesignModule());
 injector.bindModule(new StylesDesignModule());
 injector.bindModule(new ProseMirrorModule());
