@@ -77,6 +77,11 @@ export const defaultPageSize = 50;
 export const defaultInputDelayMs = 600;
 
 /**
+ * Developer portal appType for email notifications.
+ */
+export const AppType = "developerPortal";
+
+/**
  * Known setting names.
  */
 export enum SettingNames {
