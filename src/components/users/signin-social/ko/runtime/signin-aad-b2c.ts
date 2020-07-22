@@ -1,4 +1,3 @@
-import { MapiError } from "./../../../../../services/mapiError";
 import * as ko from "knockout";
 import template from "./signin-aad-b2c.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
