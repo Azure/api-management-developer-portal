@@ -9,6 +9,7 @@ import { AuthorizationServer } from "../models/authorizationServer";
 import { PageContract } from "../contracts/page";
 import { OpenIdConnectProviderContract } from "../contracts/openIdConnectProvider";
 import { OpenIdConnectProvider } from "./../models/openIdConnectProvider";
+import { AppError } from "../errors";
 
 export class OAuthService {
     constructor(
@@ -22,7 +23,7 @@ export class OAuthService {
             return pageOfAuthservers.value.map(authServer => new OpenIdConnectProvider(authServer));
         }
         catch (error) {
-            throw new Error(`Unable to fetch configured authorization servers.`);
+            throw new AppError(`Unable to fetch configured authorization servers.`, error);
         }
     }
 

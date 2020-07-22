@@ -5,6 +5,7 @@ import { MapiClient } from "../services/mapiClient";
 import { Page } from "../models/page";
 import { HttpHeader } from "@paperbits/common/http";
 import { ArmResource } from "../contracts/armResource";
+import { AppError } from "../errors";
 
 
 const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block"];
@@ -25,7 +26,7 @@ export class MapiObjectStorage implements IObjectStorage {
             return contentType;
         }
 
-        throw new Error(`Could not determine content type by resource: ${resource}`);
+        throw new AppError(`Could not determine content type by resource: ${resource}`);
     }
 
     private delocalizeBlock(contract: any): void {
@@ -112,7 +113,7 @@ export class MapiObjectStorage implements IObjectStorage {
                 break;
 
             default:
-                throw new Error(`Unknown content type: "${mapiContentType}"`);
+                throw new AppError(`Unknown content type: "${mapiContentType}"`);
         }
 
         let key = contentType;
@@ -192,7 +193,7 @@ export class MapiObjectStorage implements IObjectStorage {
                 break;
 
             default:
-                // throw new Error(`Unknown content type: "${contentType}"`);
+                // throw new AppError(`Unknown content type: "${contentType}"`);
                 return key;
         }
 
@@ -214,7 +215,7 @@ export class MapiObjectStorage implements IObjectStorage {
             await this.mapiClient.put<T>(resource, headers, converted);
         }
         catch (error) {
-            throw new Error(`Could not add object '${path}'. Error: ${error.message}`);
+            throw new AppError(`Could not add object '${path}'.`, error);
         }
     }
 
@@ -249,11 +250,11 @@ export class MapiObjectStorage implements IObjectStorage {
             return converted;
         }
         catch (error) {
-            if (error && error.code === "ResourceNotFound") {
+            if (error?.code === "ResourceNotFound") {
                 return null;
             }
 
-            throw new Error(`Could not get object '${key}'. Error: ${error.message}`);
+            throw new AppError(`Could not get object '${key}'.`, error);
         }
     }
 
@@ -267,7 +268,7 @@ export class MapiObjectStorage implements IObjectStorage {
             await this.mapiClient.delete(resource, headers);
         }
         catch (error) {
-            throw new Error(`Could not delete object '${path}'. Error: ${error.message}`);
+            throw new AppError(`Could not delete object '${path}'.`, error);
         }
     }
 
@@ -315,11 +316,11 @@ export class MapiObjectStorage implements IObjectStorage {
             exists = true;
         }
         catch (error) {
-            if (error && error.code === "ResourceNotFound") {
+            if (error?.code === "ResourceNotFound") {
                 exists = false;
             }
             else {
-                throw new Error(`Could not update object '${key}'. Error: ${error.message}`);
+                throw new AppError(`Could not update object '${key}'.`, error);
             }
         }
 
@@ -333,7 +334,7 @@ export class MapiObjectStorage implements IObjectStorage {
             await this.mapiClient.put<T>(resource, headers, armContract);
         }
         catch (error) {
-            throw new Error(`Could not update object '${key}'. Error: ${error.message}`);
+            throw new AppError(`Could not update object '${key}'.`, error);
         }
     }
 
@@ -368,7 +369,7 @@ export class MapiObjectStorage implements IObjectStorage {
                             break;
 
                         default:
-                            throw new Error(`Cannot translate operator into OData query.`);
+                            throw new AppError(`Cannot translate operator into OData query.`);
                     }
                 }
 
@@ -401,7 +402,7 @@ export class MapiObjectStorage implements IObjectStorage {
             }
         }
         catch (error) {
-            throw new Error(`Could not search object '${key}'. Error: ${error.message}`);
+            throw new AppError(`Could not search object '${key}'. Error: ${error.message}`, error);
         }
     }
 
