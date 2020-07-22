@@ -92,14 +92,10 @@ export class UsersService {
 
     /**
      * Initiates signing-out with Basic identity provider.
-     * @param withRedirect 
      */
-    public signOut(withRedirect: boolean = true): void {
+    public signOut(): void {
         this.authenticator.clearAccessToken();
-
-        if (withRedirect) {
-            this.navigateToSignin();
-        }
+        window.location.assign("/signout");
     }
 
     /**
