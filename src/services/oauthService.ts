@@ -1,5 +1,3 @@
-import { OpenIdConnectMetadata } from "./../contracts/openIdConnectMetadata";
-
 import * as ClientOAuth2 from "client-oauth2";
 import { HttpClient } from "@paperbits/common/http";
 import { GrantTypes } from "./../constants";
@@ -9,6 +7,7 @@ import { AuthorizationServer } from "../models/authorizationServer";
 import { PageContract } from "../contracts/page";
 import { OpenIdConnectProviderContract } from "../contracts/openIdConnectProvider";
 import { OpenIdConnectProvider } from "./../models/openIdConnectProvider";
+import { OpenIdConnectMetadata } from "./../contracts/openIdConnectMetadata";
 import { AppError } from "../errors";
 
 export class OAuthService {
