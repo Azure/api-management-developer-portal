@@ -10,6 +10,7 @@ import { Identity } from "../contracts/identity";
 import { UserContract, UserPropertiesContract, } from "../contracts/user";
 import { MapiSignupRequest } from "../contracts/signupRequest";
 import { MapiError } from "../errors/mapiError";
+import { AppType } from "./../constants";
 
 
 /**
@@ -75,7 +76,7 @@ export class UsersService {
         const ticket = parameters.get("ticket");
         const ticketId = parameters.get("ticketid");
         const identity = parameters.get("identity");
-        const requestUrl = `/users/${userId}/identities/Basic/${identity}`;
+        const requestUrl = `/users/${userId}/identities/Basic/${identity}?appType=developerPortal`;
         const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
         
         await this.mapiClient.put<void>(requestUrl, [{ name: "Authorization", value: token }], {});
@@ -86,7 +87,7 @@ export class UsersService {
         if (token) {
             headers.push({ name: "Authorization", value: token });
         }
-        await this.mapiClient.patch(userId, headers, { password: newPassword });
+        await this.mapiClient.patch(userId, headers, { password: newPassword, appType: AppType });
     }
 
     /**
@@ -163,6 +164,7 @@ export class UsersService {
                 name: "If-Match",
                 value: "*"
             };
+            updateUserData["appType"] = AppType;
             await this.mapiClient.patch<string>(`${userId}`, [header], updateUserData);
             const user = await this.mapiClient.get<UserContract>(userId);
 
@@ -232,8 +234,8 @@ export class UsersService {
     }
 
     public async createResetPasswordRequest(email: string): Promise<void> {
-        const payload = { to: email, appType: "developerPortal" };
-        await this.mapiClient.post("/confirmations/password", null, payload);
+        const payload = { to: email, appType: AppType };
+        await this.mapiClient.post(`/confirmations/password?appType=${AppType}`, null, payload);
     }
 
     public async changePassword(userId: string, newPassword: string): Promise<void> {
@@ -247,7 +249,7 @@ export class UsersService {
             { name: "Authorization", value: authToken },
             { name: "If-Match", value: "*" }
         ];
-        const payload = { password: newPassword };
+        const payload = { password: newPassword, appType: AppType };
         await this.mapiClient.patch(userId, headers, payload);
     }
 
