@@ -32,6 +32,10 @@ h2 {
     @include surface();
     @include animation-fadein(0.3s);
 
+    &.toolbox-popup {
+        z-index: $z-index-base + 1;
+    }
+
     &.toolbox-horizontal {
         flex-direction: row;
     }

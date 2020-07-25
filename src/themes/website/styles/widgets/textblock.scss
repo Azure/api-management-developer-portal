@@ -1,5 +1,27 @@
+[contenteditable]:focus {
+    outline: none;
+}
+
 p:empty {
     &:before {
         content: " ";
+    }
+}
+
+.ProseMirror {
+    position: relative;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    white-space: break-spaces;
+    -webkit-font-variant-ligatures: none;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0; /* the above doesn't seem to work in Edge */
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    li {
+        position: relative;
     }
 }
