@@ -74,11 +74,12 @@
     <!-- ko if: $component.authorizationServer -->
     <div class="row flex flex-row">
         <div class="col-4">
-            <input type="text" readonly class="form-control form-control-sm" data-bind="value: $component.authorizationServer().displayName" />
+            <label for="authServer" class="text-monospace form-label"
+                data-bind="text: $component.authorizationServer().displayName"></label>
         </div>
         <div class="col-6">
             <div class="form-group">
-                <select id="subscriptionKey" class="form-control"
+                <select id="authServer" class="form-control"
                     data-bind="options: $component.authorizationServer().grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
                 </select>
             </div>
@@ -106,7 +107,7 @@
                 </select>
                 <!-- /ko -->
                 <!-- ko if: !$component.products() || $component.products().length === 0 -->
-                <input type="text" class="form-control" placeholder="subscription key"
+                <input id="subscriptionKey" type="text" class="form-control" placeholder="subscription key"
                     data-bind="textInput: $component.selectedSubscriptionKey" />
                 <!-- /ko -->
             </div>

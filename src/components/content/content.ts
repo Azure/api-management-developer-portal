@@ -23,7 +23,7 @@ export class ContentWorkshop {
     }
 
     public async publish(): Promise<void> {
-        this.logger.traceEvent("Click: Publish website");
+        this.logger.trackEvent("Click: Publish website");
 
         if (!await this.authenticator.isAuthenticated()) {
             throw new AppError("Cannot publish website", new MapiError("Unauthorized", "You're not authorized."));
@@ -47,7 +47,7 @@ export class ContentWorkshop {
         }
         catch (error) {
             this.viewManager.notifyError("Operations", `Unable to schedule publishing. Please try again later.`);
-            this.logger.traceError(error);
+            this.logger.trackError(error);
         }
     }
 
