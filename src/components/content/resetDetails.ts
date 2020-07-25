@@ -28,7 +28,7 @@ export class ResetDetailsWorkshop {
 
     public async reset(): Promise<void> {
         try {
-            this.logger.traceEvent("Click: Reset website");
+            this.logger.trackEvent("Click: Reset website");
 
             this.offlineObjectStorage.discardChanges();
             this.viewManager.clearJourney();
@@ -38,13 +38,13 @@ export class ResetDetailsWorkshop {
 
             await this.provisioningService.cleanup();
 
-            this.logger.traceEvent("Success: Website reset");
+            this.logger.trackEvent("Success: Website reset");
 
             window.location.reload();
         } 
         catch (error) {
             this.viewManager.notifyError("Confirm", `Unable to reset website. Please try again later.`);
-            this.logger.traceError(error);
+            this.logger.trackError(error);
         }
     }
 }
