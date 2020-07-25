@@ -1,5 +1,5 @@
 const webpack = require("webpack");
-const merge = require("webpack-merge");
+const { merge } = require("webpack-merge");
 const designerConfig = require("./webpack.designer.js");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 

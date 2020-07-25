@@ -3,8 +3,8 @@ $switch-background-color-off: #ccc;
 $switch-handle-color: #fff;
 $switch-width: 55px;
 $switch-height: 30px;
-$switch-trigger-gap: 4px;
-$switch-trigger-size: $switch-height - $switch-trigger-gap * 2;
+$switch-trigger-gap: 2px;
+$switch-trigger-size: $switch-height - ($switch-trigger-gap * 4);
 
 .form-inline {
     display: flex;
@@ -135,11 +135,16 @@ $switch-trigger-size: $switch-height - $switch-trigger-gap * 2;
         &:checked + .slider:before {
             transform: translateX(26px);
         }
+
+        &:focus+.slider {
+            border: 2px solid #000;
+        }
     }
 
     .slider {
         position: absolute;
         cursor: pointer;
+        border: 2px solid transparent;
         top: 0;
         left: 0;
         right: 0;

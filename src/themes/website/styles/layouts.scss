@@ -358,7 +358,6 @@ html {
     }
 }
 
-
 .stretch {
     flex: 1;
     height: 100%;
@@ -403,6 +402,23 @@ main {
 .block {
     display: block;
     flex-basis: 100%;
+    max-width: 100%;
+
+    * {
+        max-width: 100%;
+        max-height: 100%;
+    }
+}
+
+.inline-block {
+    display: inline-block;
+    flex-basis: auto;
+    max-width: 100%;
+
+    * {
+        max-width: 100%;
+        max-height: 100%;
+    }
 }
 
 html:not([amp4ads]),
