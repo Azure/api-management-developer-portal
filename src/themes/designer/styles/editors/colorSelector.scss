@@ -12,6 +12,12 @@
     line-height: 30px;
 }
 
+.pseudo-transparent-bckg {
+    position: relative;
+    overflow: hidden;
+    @include pseudo-transparent-bckg();
+}
+
 .palette {
     list-style: none;
     padding: 0;

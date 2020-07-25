@@ -12,22 +12,30 @@ export class LogService implements Logger {
             console.warn("AppInsights instrumentation key wasn't specified or cannot be used in current environment.");
         }
 
-        this.traceSession();
+        this.trackSession();
     }
 
-    public async traceSession(): Promise<void> {
-        this.traceEvent(`Session started`);
+    public async trackSession(properties?: object): Promise<void> {
+        this.trackEvent(`Session started`);
     }
 
-    public async traceEvent(eventName: string, properties?: Bag<string>, measurments?: Bag<number>): Promise<void> {
-        AppInsights.trackEvent(eventName, properties, measurments);
+    public async trackEvent(eventName: string, properties?: Bag<string>): Promise<void> {
+        AppInsights.trackEvent(eventName, properties);
     }
 
-    public async traceError(error: Error, handledAt?: string): Promise<void> {
-        AppInsights.trackException(error, handledAt);
+    public async trackError(error: Error, properties?: Bag<string>): Promise<void> {
+        AppInsights.trackException(error);
     }
 
-    public async traceView(name: string): Promise<void> {
+    public async trackView(viewName: string, properties?: Bag<string>): Promise<void> {
         AppInsights.trackPageView(name);
+    }
+
+    public async trackMetric(metricName: string, properties?: Bag<string>): Promise<void> {
+        // Not implemented
+    }
+
+    public async trackDependency(name: string, properties?: Bag<string>): Promise<void> {
+        // Not implemented
     }
 }
