@@ -10,11 +10,11 @@ export class UnhandledErrorHandler {
     }
 
     public handlerError(event: ErrorEvent): void {
-        this.logger.traceError(event.error);
+        this.logger.trackError(event.error);
     }
 
     public handlerPromiseRejection(event: PromiseRejectionEvent): void {
         debugger;
-        this.logger.traceError(event.reason);
+        this.logger.trackError(event.reason);
     }
 }
