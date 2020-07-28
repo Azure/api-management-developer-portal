@@ -129,17 +129,26 @@ export class OperationDetails {
 
     public async loadApi(apiName: string): Promise<void> {
         const api = await this.apiService.getApi(`apis/${apiName}`);
+
+        if (!api) {
+            return;
+        }
+
         this.api(api);
+
+        this.closeConsole();
 
         const associatedServerId = api.authenticationSettings?.oAuth2?.authorizationServerId ||
             api.authenticationSettings?.openid?.openidProviderId;
 
-        if (this.authorizationServers && associatedServerId) {
-            const associatedAuthServer = this.authorizationServers
-                .find(x => x.name === associatedServerId);
+        let associatedAuthServer = null;
 
-            this.associatedAuthServer(associatedAuthServer);
+        if (this.authorizationServers && associatedServerId) {
+            associatedAuthServer = this.authorizationServers
+                .find(x => x.name === associatedServerId);
         }
+
+        this.associatedAuthServer(associatedAuthServer);
     }
 
     public async loadOperation(apiName: string, operationName: string): Promise<void> {
