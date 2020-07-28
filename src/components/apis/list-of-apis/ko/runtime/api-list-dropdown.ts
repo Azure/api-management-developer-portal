@@ -64,6 +64,7 @@ export class ApiListDropdown {
     @OnMounted()
     public async initialize(): Promise<void> {
         await this.resetSearch();
+        await this.checkSelection();
 
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
@@ -90,7 +91,7 @@ export class ApiListDropdown {
             return;
         }
 
-        this.checkSelection();
+        await this.checkSelection();
     }
 
     /**
@@ -126,24 +127,20 @@ export class ApiListDropdown {
         }
     }
 
-    private checkSelection(): void {
+    private async checkSelection(): Promise<void> {
         if (!this.allowSelection()) {
             return;
         }
 
-        const selectedApiName = this.routeHelper.getApiName();
-        const listOfApis = this.apiGroups().map(group => group.items || []).flat();
-        const selectedApi = listOfApis.find(x => x.name === selectedApiName);
+        const apiName = this.routeHelper.getApiName();
+        const api = await this.apiService.getApi(`apis/${apiName}`);
 
-        if (!selectedApiName && listOfApis.length > 0) {
-            const firstApi = listOfApis[0];
-            const url = this.routeHelper.getApiReferenceUrl(firstApi.name, this.detailsPageUrl());
-
-            this.router.navigateTo(url);
+        if (!api) {
+            return;
         }
 
-        this.selectedApi(selectedApi);
-        this.selectedApiName(selectedApiName);
+        this.selectedApi(api);
+        this.selectedApiName(apiName);
     }
 
     public prevPage(): void {
