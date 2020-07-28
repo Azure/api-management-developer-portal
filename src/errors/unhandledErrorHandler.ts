@@ -14,7 +14,6 @@ export class UnhandledErrorHandler {
     }
 
     public handlerPromiseRejection(event: PromiseRejectionEvent): void {
-        debugger;
         this.logger.trackError(event.reason);
     }
 }

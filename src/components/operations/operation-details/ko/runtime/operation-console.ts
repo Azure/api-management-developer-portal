@@ -25,7 +25,10 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TemplatingService } from "../../../../../services/templatingService";
 import { OAuthService } from "../../../../../services/oauthService";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
+import { SessionManager } from "./../../../../../authentication/defaultSessionManager";
+import { OAuthSession } from "./oauthSession";
 
+const oauthSessionKey = "oauthSession";
 
 @Component({
     selector: "operation-console",
@@ -62,7 +65,8 @@ export class OperationConsole {
         private readonly productService: ProductService,
         private readonly httpClient: HttpClient,
         private readonly routeHelper: RouteHelper,
-        private readonly oauthService: OAuthService
+        private readonly oauthService: OAuthService,
+        private readonly sessionManager: SessionManager
     ) {
         this.templates = templates;
         this.products = ko.observable();
@@ -188,6 +192,7 @@ export class OperationConsole {
             this.setVersionHeader();
         }
 
+        await this.setupOAuth();
         await this.loadSubscriptionKeys();
 
         this.updateRequestSummary();
@@ -285,7 +290,10 @@ export class OperationConsole {
 
     private findHeader(name: string): ConsoleHeader {
         const searchName = name.toLocaleLowerCase();
-        return this.consoleOperation().request.headers().find(x => x.name().toLocaleLowerCase() === searchName);
+
+        return this.consoleOperation().request
+            .headers()
+            .find(x => x.name()?.toLocaleLowerCase() === searchName);
     }
 
     public addQueryParameter(): void {
@@ -504,6 +512,58 @@ export class OperationConsole {
         return this.routeHelper.getApiReferenceUrl(this.api().name);
     }
 
+    private getSessionRecordKey(authorizationServerName: string, scopeOverride: string): string {
+        let recordKey = authorizationServerName;
+
+        if (scopeOverride) {
+            recordKey += `-${scopeOverride}`;
+        }
+
+        return recordKey;
+    }
+
+    private async setupOAuth(): Promise<void> {
+        const authorizationServer = this.authorizationServer();
+
+        if (!authorizationServer) {
+            this.selectedGrantType(null);
+            this.removeAuthorizationHeader();
+            return;
+        }
+
+        const api = this.api();
+        const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
+        const recordKey = this.getSessionRecordKey(authorizationServer.name, scopeOverride);
+        const oauthSession = await this.sessionManager.getItem<OAuthSession>(oauthSessionKey);
+        const record = oauthSession?.[recordKey];
+
+        if (record) {
+            this.selectedGrantType(record.grantType);
+            this.setAuthorizationHeader(record.accessToken);
+        }
+    }
+
+    private async getStoredCredentials(serverName: string, scopeOverride: string): Promise<string> {
+        const oauthSession = await this.sessionManager.getItem<OAuthSession>(oauthSessionKey);
+        const recordKey = this.getSessionRecordKey(serverName, scopeOverride);
+        const record = oauthSession?.[recordKey];
+        const accessToken = record?.accessToken;
+
+        return accessToken;
+    }
+
+    private async setStoredCredentials(serverName: string, scopeOverride: string, grantType: string, accessToken: string): Promise<void> {
+        const oauthSession = await this.sessionManager.getItem<OAuthSession>(oauthSessionKey) || {};
+        const recordKey = this.getSessionRecordKey(serverName, scopeOverride);
+
+        oauthSession[recordKey] = {
+            grantType: grantType,
+            accessToken: accessToken
+        };
+
+        await this.sessionManager.setItem<object>(oauthSessionKey, oauthSession);
+    }
+
     /**
      * Initiates specified authentication flow.
      * @param grantType OAuth grant type, e.g. "implicit" or "authorizationCode".
@@ -518,12 +578,20 @@ export class OperationConsole {
         const api = this.api();
         const authorizationServer = this.authorizationServer();
         const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
+        const serverName = authorizationServer.name;
+        const storedAccessToken = await this.getStoredCredentials(serverName, scopeOverride);
+
+        if (storedAccessToken) {
+            this.setAuthorizationHeader(storedAccessToken);
+            return;
+        }
 
         if (scopeOverride) {
             authorizationServer.scopes = [scopeOverride];
         }
 
         const accessToken = await this.oauthService.authenticate(grantType, authorizationServer);
+        await this.setStoredCredentials(serverName, scopeOverride, grantType, accessToken);
 
         this.setAuthorizationHeader(accessToken);
     }
