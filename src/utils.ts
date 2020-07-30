@@ -338,4 +338,16 @@ export class Utils {
 
         return utc;
     }
+    
+    public static readFileAsByteArray(file: File): Promise<Uint8Array> {
+        return new Promise<Uint8Array>(resolve => {
+            const reader = new FileReader();
+
+            reader.onload = (event: any) => {
+                resolve(event.target.result);
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+    }
 }
