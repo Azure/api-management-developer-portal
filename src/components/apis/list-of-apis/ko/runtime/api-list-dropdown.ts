@@ -133,6 +133,11 @@ export class ApiListDropdown {
         }
 
         const apiName = this.routeHelper.getApiName();
+
+        if (!apiName) {
+            return;
+        }
+
         const api = await this.apiService.getApi(`apis/${apiName}`);
 
         if (!api) {

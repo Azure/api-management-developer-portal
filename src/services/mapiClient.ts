@@ -5,7 +5,7 @@ import { Utils } from "../utils";
 import { TtlCache } from "./ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
 import { MapiError } from "../errors/mapiError";
-import { IAuthenticator } from "../authentication/IAuthenticator";
+import { IAuthenticator, AccessToken } from "../authentication";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 
 export interface IHttpBatchResponses {
@@ -64,7 +64,8 @@ export class MapiClient {
         const managementApiAccessToken = settings[Constants.SettingNames.managementApiAccessToken];
 
         if (managementApiAccessToken) {
-            await this.authenticator.setAccessToken(managementApiAccessToken);
+            const accessToken = AccessToken.parse(managementApiAccessToken);
+            await this.authenticator.setAccessToken(accessToken);
         }
         else if (this.environment === "development") {
             console.warn(`Development mode: Please specify ${Constants.SettingNames.managementApiAccessToken}" in configuration file.`);
@@ -213,10 +214,10 @@ export class MapiClient {
 
             case 401:
                 this.authenticator.clearAccessToken();
-                return new MapiError("Unauthorized", "You're not authorized.");
+                return new MapiError("Unauthorized", "Unauthorized request.");
 
             case 403:
-                return new MapiError("AuthorizationFailed", "You're not authorized to perform this operation.");
+                return new MapiError("Forbidden", "You're not authorized to perform this operation.");
 
             case 404:
                 return new MapiError("ResourceNotFound", `Resource not found: ${url}`);

@@ -65,16 +65,6 @@ export class TenantService {
         // return undefined;
     }
 
-    /**
-     * Returns gateway hostnames.
-     * TODO: Not implemented.
-     */
-    public async getProxyHostnames(): Promise<string[]> {
-        const setting = await this.settingsProvider.getSetting<string>("proxyHostnames");
-        const hostnames = setting ? setting.split(";") : [];
-        return hostnames;
-    }
-
     public async isDelegationEnabled(loadedSettings?: TenantSettings): Promise<boolean> {
         const tenantSettings = loadedSettings || await this.getSettings();
         return tenantSettings && tenantSettings["CustomPortalSettings.DelegationEnabled"] && tenantSettings["CustomPortalSettings.DelegationEnabled"].toLowerCase() === "true";
