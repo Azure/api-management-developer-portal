@@ -45,6 +45,7 @@ export class OperationConsole {
     public readonly responseHeadersString: ko.Observable<string>;
     public readonly products: ko.Observable<Product[]>;
     public readonly selectedSubscriptionKey: ko.Observable<string>;
+    public readonly subscriptionKeyRequired: ko.Observable<boolean>;
     public readonly selectedLanguage: ko.Observable<string>;
     public readonly selectedProduct: ko.Observable<Product>;
     public readonly requestError: ko.Observable<string>;
@@ -84,6 +85,7 @@ export class OperationConsole {
         this.consoleOperation = ko.observable();
         this.secretsRevealed = ko.observable();
         this.selectedSubscriptionKey = ko.observable();
+        this.subscriptionKeyRequired = ko.observable();
         this.working = ko.observable(true);
         this.sendingRequest = ko.observable(false);
         this.codeSample = ko.observable();
@@ -165,6 +167,7 @@ export class OperationConsole {
         this.responseStatusText(null);
         this.responseBody(null);
         this.selectedSubscriptionKey(null);
+        this.subscriptionKeyRequired(!!selectedApi.subscriptionRequired);
         this.selectedProduct(null);
 
         const operation = await this.apiService.getOperation(selectedOperation.id);
@@ -193,7 +196,10 @@ export class OperationConsole {
         }
 
         await this.setupOAuth();
-        await this.loadSubscriptionKeys();
+
+        if (selectedApi.subscriptionRequired) {
+            await this.loadSubscriptionKeys();
+        }
 
         this.updateRequestSummary();
         this.working(false);
@@ -443,9 +449,7 @@ export class OperationConsole {
                 break;
 
             case "binary":
-                const formData = new FormData();
-                formData.append(request.binary().name, request.binary());
-                payload = formData;
+                payload = await Utils.readFileAsByteArray(request.binary());
                 break;
 
             default:

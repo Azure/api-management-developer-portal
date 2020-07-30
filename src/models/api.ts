@@ -22,6 +22,9 @@ export class Api {
      */
     public displayName?: string;
 
+    /**
+     * Display name of API that includes version.
+     */
     public versionedDisplayName?: string;
 
     /**
@@ -74,16 +77,25 @@ export class Api {
      */
     public protocols?: string[];
 
+    /**
+     * Subscription key parameter names details.
+     */
     public subscriptionKeyParameterNames?: SubscriptionKeyParameterName;
-
-    public urlSuffix?: string;
 
     /**
      * Determines type of API, e.g. "soap".
      */
     public type?: string;
 
+    /**
+     * Information about associated authorization servers (OAuth 2 or OpenID Connect).
+     */
     public authenticationSettings: AuthenticationSettings;
+
+    /**
+     * Specifies whether an API or Product subscription is required for accessing the API.
+     */
+    public subscriptionRequired: boolean;
 
     constructor(contract?: ApiContract) {
         if (contract.id) {
@@ -98,12 +110,12 @@ export class Api {
         this.description = contract.properties.description;
         this.path = contract.properties.path;
         this.versionedPath = this.path;
-        this.urlSuffix = contract.properties.urlSuffix;
         this.apiVersion = contract.properties.apiVersion;
         this.apiRevision = contract.properties.apiRevision;
         this.subscriptionKeyParameterNames = contract.properties.subscriptionKeyParameterNames;
         this.type = contract.properties.type;
         this.authenticationSettings = contract.properties.authenticationSettings;
+        this.subscriptionRequired = contract.properties.subscriptionRequired;
 
         if (contract.properties.apiVersionSet) {
             const nestedVersionSet = contract.properties.apiVersionSet;

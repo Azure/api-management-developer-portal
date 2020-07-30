@@ -87,6 +87,7 @@
     </div>
     <!-- /ko -->
 
+    <!-- ko if: $component.subscriptionKeyRequired -->
     <div class="row flex flex-row">
         <div class="col-4">
             <label for="subscriptionKey" class="text-monospace form-label">
@@ -113,6 +114,7 @@
             </div>
         </div>
     </div>
+    <!-- /ko -->
 
     <h3>Parameters</h3>
     <!-- ko if: (templateParameters && templateParameters().length > 0) || (request.queryParameters && request.queryParameters().length > 0) -->
