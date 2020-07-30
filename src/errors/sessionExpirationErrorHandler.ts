@@ -8,11 +8,12 @@ export class SessionExpirationErrorHandler {
         window.addEventListener("unhandledrejection", this.handlerPromiseRejection.bind(this), true);
     }
 
-    private handleSessionExpiration(error: any): void {
-        if (error?.innerError?.code !== "Unauthorized") {
+    private handleSessionExpiration(error: Error): void {
+        if (!error.message?.includes("Unauthorized request.")) {
             return;
         }
 
+        event.preventDefault();
         event.stopImmediatePropagation();
         this.viewManager.hideToolboxes();
         this.viewManager.addToast("Session expired", `Please re-authenticate through Azure portal.`);
