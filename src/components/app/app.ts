@@ -1,3 +1,4 @@
+import { AccessToken } from "./../../authentication/accessToken";
 import template from "./app.html";
 import { ViewManager } from "@paperbits/common/ui";
 import { Component, OnMounted } from "@paperbits/common/ko/decorators";
@@ -39,13 +40,14 @@ export class App {
 
             if (!token) {
                 const managementApiAccessToken = settings["managementApiAccessToken"];
+
                 if (!managementApiAccessToken) {
                     this.authenticator.clearAccessToken();
                     window.location.assign("/");
                     return;
                 }
 
-                const accessToken = this.authenticator.parseAccessToken(managementApiAccessToken);
+                const accessToken = AccessToken.parse(managementApiAccessToken);
                 const utcNow = Utils.getUtcDateTime();
 
                 if (utcNow >= accessToken.expires) {
@@ -55,7 +57,7 @@ export class App {
                     return;
                 }
 
-                await this.authenticator.setAccessToken(accessToken.value);
+                await this.authenticator.setAccessToken(accessToken);
             }
         }
         catch (error) {

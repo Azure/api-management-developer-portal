@@ -128,6 +128,10 @@ export class OperationDetails {
     }
 
     public async loadApi(apiName: string): Promise<void> {
+        if (!apiName) {
+            return;
+        }
+
         const api = await this.apiService.getApi(`apis/${apiName}`);
 
         if (!api) {

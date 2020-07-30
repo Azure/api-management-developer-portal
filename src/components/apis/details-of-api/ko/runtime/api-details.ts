@@ -69,6 +69,10 @@ export class ApiDetails {
     }
 
     public async loadApi(apiName: string): Promise<void> {
+        if (!apiName) {
+            return;
+        }
+
         this.working(true);
 
         const api = await this.apiService.getApi(`apis/${apiName}`);
