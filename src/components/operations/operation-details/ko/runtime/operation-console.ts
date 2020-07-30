@@ -443,9 +443,7 @@ export class OperationConsole {
                 break;
 
             case "binary":
-                const formData = new FormData();
-                formData.append(request.binary().name, request.binary());
-                payload = formData;
+                payload =  await Utils.readFileAsByteArray(request.binary());
                 break;
 
             default:
