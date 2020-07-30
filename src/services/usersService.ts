@@ -1,3 +1,4 @@
+import { AccessToken } from "./../authentication/accessToken";
 import * as Constants from "./../constants";
 import { Router } from "@paperbits/common/routing";
 import { HttpHeader, HttpClient } from "@paperbits/common/http";
@@ -283,15 +284,8 @@ export class UsersService {
             return;
         }
 
-        const regex = /token=\"(.*==)\"/gm;
-        const matches = regex.exec(sasTokenHeader.value);
-
-        if (!matches || matches.length < 1) {
-            throw new Error("Authentication failed. Unable to parse access token.");
-        }
-
-        const sasToken = matches[1];
-        await this.authenticator.setAccessToken(`SharedAccessSignature ${sasToken}`);
+        const accessToken = AccessToken.parse(sasTokenHeader.value);
+        await this.authenticator.setAccessToken(accessToken);
 
         this.router.navigateTo(Constants.pageUrlHome);
     }

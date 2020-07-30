@@ -73,20 +73,18 @@ export class ApiHistory {
         try {
             this.apiWorking(true);
 
-            if (apiName) {
-                const api = await this.apiService.getApi(`apis/${apiName}`);
+            const api = await this.apiService.getApi(`apis/${apiName}`);
 
-                if (api && api.apiVersionSet && api.apiVersionSet.id) {
-                    const apis = await this.apiService.getApisInVersionSet(api.apiVersionSet.id);
-                    this.versionApis(apis || []);
-                }
-                else {
-                    this.versionApis([]);
-                }
-                this.selectedId(api.name);
-                this.api(api);
-                this.apiId = api.id;
+            if (api && api.apiVersionSet && api.apiVersionSet.id) {
+                const apis = await this.apiService.getApisInVersionSet(api.apiVersionSet.id);
+                this.versionApis(apis || []);
             }
+            else {
+                this.versionApis([]);
+            }
+            this.selectedId(api.name);
+            this.api(api);
+            this.apiId = api.id;
         }
         catch (error) {
             throw new Error(`Unable to load API Info. Error: ${error.message}`);
@@ -130,7 +128,7 @@ export class ApiHistory {
         }
     }
 
-    public getReferenceUrl() {
+    public getReferenceUrl(): string {
         return this.routeHelper.getApiReferenceUrl(this.selectedId(), this.detailsPageUrl());
     }
 }

@@ -2,7 +2,7 @@ import * as Msal from "msal";
 import * as AuthenticationContext from "adal-vanilla";
 import * as Constants from "../constants";
 import { Utils } from "../utils";
-import { IAuthenticator } from "../authentication";
+import { IAuthenticator, AccessToken } from "../authentication";
 import { Router } from "@paperbits/common/routing";
 import { HttpClient } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
@@ -60,15 +60,9 @@ export class AadService {
             return;
         }
 
-        const regex = /token=\"(.*==)\"/gm;
-        const matches = regex.exec(sasTokenHeader.value);
-
-        if (!matches || matches.length < 1) {
-            throw new Error("Authentication failed. Unable to parse access token.");
-        }
-
-        const sasToken = matches[1];
-        await this.authenticator.setAccessToken(`SharedAccessSignature ${sasToken}`);
+        const accessToken = AccessToken.parse(sasTokenHeader.value);
+        await this.authenticator.setAccessToken(accessToken);
+        
         await this.router.navigateTo(returnUrl || Constants.pageUrlHome);
     }
 
