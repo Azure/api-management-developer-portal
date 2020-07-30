@@ -16,5 +16,4 @@ export interface OpenIdAuthenticationSettings {
 export interface AuthenticationSettings {
     oAuth2?: OAuth2AuthenticationSettings;
     openid?: OpenIdAuthenticationSettings;
-    subscriptionKeyRequired?: boolean;
 }
