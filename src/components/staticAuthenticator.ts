@@ -1,5 +1,5 @@
-import { IAuthenticator } from "../authentication";
 import { HttpHeader } from "@paperbits/common/http/httpHeader";
+import { IAuthenticator, AccessToken } from "../authentication";
 
 export class StaticAuthenticator implements IAuthenticator {
     private accessToken: string;
@@ -8,27 +8,25 @@ export class StaticAuthenticator implements IAuthenticator {
         return this.accessToken;
     }
 
-    public async setAccessToken(token: string): Promise<void> {
-        this.accessToken = token;
+    public async setAccessToken(accessToken: AccessToken): Promise<void> {
+        this.accessToken = accessToken.toString();
     }
 
     public async refreshAccessTokenFromHeader(responseHeaders: HttpHeader[] = []): Promise<string> {
         const accessTokenHeader = responseHeaders.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
-        if (accessTokenHeader && accessTokenHeader.value) {
-            const regex = /token=\"(.*)",refresh/gm;
-            const match = regex.exec(accessTokenHeader.value);
 
-            if (!match || match.length < 2) {
-                console.error(`Token format is not valid.`);
-            }
+        if (accessTokenHeader?.value) {
+            const accessToken = AccessToken.parse(accessTokenHeader.value);
+            const accessTokenString = accessToken.toString();
 
-            const accessToken = `SharedAccessSignature ${accessTokenHeader.value}`;
-            const current = this.accessToken;
-            if (current !== accessToken) {
-                this.accessToken = accessToken;                
-                return accessToken;
+            const current = sessionStorage.getItem("accessToken");
+
+            if (current !== accessTokenString) {
+                sessionStorage.setItem("accessToken", accessTokenString);
+                return accessTokenString;
             }
         }
+
         return undefined;
     }
 
