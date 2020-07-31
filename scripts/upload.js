@@ -3,7 +3,7 @@ const path = require("path");
 const storage = require("azure-storage");
 const connectionString = process.argv[2];
 const mediaPath = process.argv[3];
-
+const container = process.argv[4];
 
 function listFilesInDirectory(dir) {
     const results = [];
@@ -24,7 +24,7 @@ function listFilesInDirectory(dir) {
 
 async function upload(fileName, blobName) {
     return new Promise((resolve, reject) => {
-        blobService.createBlockBlobFromLocalFile("content", blobName, fileName, function (error, result, response) {
+        blobService.createBlockBlobFromLocalFile(container, blobName, fileName, function (error, result, response) {
             if (!error) {
                 resolve();
             }
