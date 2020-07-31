@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import * as moment from "moment";
+import * as validation from "knockout.validation";
 import template from "./profile.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing/router";
@@ -10,6 +11,8 @@ import { TenantService } from "../../../../../services/tenantService";
 import { BackendService } from "../../../../../services/backendService";
 import { pageUrlChangePassword } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
+import { ValidationReport } from "../../../../../contracts/validationReport";
+import { EventManager } from "@paperbits/common/events/eventManager";
 
 
 @RuntimeComponent({
@@ -35,6 +38,7 @@ export class Profile {
         private readonly usersService: UsersService,
         private readonly tenantService: TenantService,
         private readonly backendService: BackendService,
+        private readonly eventManager: EventManager,
         private readonly router: Router) {
         this.user = ko.observable();
         this.firstName = ko.observable();
@@ -46,6 +50,15 @@ export class Profile {
         this.isBasicAccount = ko.observable(false);
         this.working = ko.observable(false);
         this.registrationDate = ko.computed(() => this.getRegistrationDate());
+
+        validation.init({
+            insertMessages: false,
+            errorElementClass: "is-invalid",
+            decorateInputElement: true
+        });
+
+        this.firstName.extend(<any>{ required: { message: `First name is required.` } });
+        this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
     }
 
     @OnMounted()
@@ -83,6 +96,15 @@ export class Profile {
         this.lastName = ko.observable(model.lastName);
         this.email = ko.observable(model.email);
     }
+    
+    private cleanValidationErrors(): void {
+        const validationReport: ValidationReport = {
+            source: "changeProfile",
+            errors: []
+        };
+
+        this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+    }
 
     public async toggleEdit(): Promise<void> {
         if (this.isEdit()) {
@@ -101,16 +123,35 @@ export class Profile {
 
     public async changeAccountInfo(): Promise<void> {
         if (this.isEdit()) {
+            this.cleanValidationErrors();
             this.working(true);
             const updateData = {
                 firstName: this.firstName(),
                 lastName: this.lastName()
             };
-
-            const user = await this.usersService.updateUser(this.user().id, updateData);
+            
+            try {
+                const user = await this.usersService.updateUser(this.user().id, updateData);
+                this.setUser(user);
+                this.toggleEdit();
+            } catch (error) {
+                let errorDetails;
+    
+                if (error.code === "ValidationError") {
+                    errorDetails = error.details?.map(detail => detail.message) || [error.message];
+                }
+                else {
+                    errorDetails = [error.message];
+                }
+    
+                const validationReport: ValidationReport = {
+                    source: "changeProfile",
+                    errors: errorDetails
+                };
+    
+                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            }
             this.working(false);
-            this.setUser(user);
-            this.toggleEdit();
         }
     }
 
