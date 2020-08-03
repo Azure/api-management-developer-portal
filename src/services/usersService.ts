@@ -154,25 +154,18 @@ export class UsersService {
      * @param updateUserData 
      */
     public async updateUser(userId: string, updateUserData: { firstName: string, lastName: string }): Promise<any> {
-        try {
-            const header: HttpHeader = {
-                name: "If-Match",
-                value: "*"
-            };
-            updateUserData["appType"] = Constants.AppType;
-            await this.mapiClient.patch<string>(`${userId}`, [header], updateUserData);
-            const user = await this.mapiClient.get<UserContract>(userId);
+        const header: HttpHeader = {
+            name: "If-Match",
+            value: "*"
+        };
+        await this.mapiClient.patch<string>(`${userId}?appType=${Constants.AppType}`, [header], updateUserData);
+        const user = await this.mapiClient.get<UserContract>(userId);
 
-            if (user) {
-                return new User(user);
-            }
-            else {
-                throw new Error("User was not updated with data: " + updateUserData);
-                return undefined;
-            }
-        }
-        catch (error) {
-            this.navigateToSignin();
+        if (user) {
+            return new User(user);
+        } else {
+            throw new Error("User was not updated with data: " + updateUserData);
+            return undefined;
         }
     }
 
