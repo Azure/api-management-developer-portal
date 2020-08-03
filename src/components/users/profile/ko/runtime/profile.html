@@ -34,15 +34,17 @@
         <div class="col-md-9" data-bind="text: user().email"></div>
     </div>
     <div class="row">
-        <div class="col-md-3">First name</div>
+        <div class="col-md-3"><label for="firstName">First name</label></div>
         <div class="col-md-9">
-            <input type="text" class="form-control" data-bind="textInput: firstName" />
+            <input type="text" class="form-control" aria-required="true" autofocus="autofocus" id="firstName" name="firstName"
+                autocomplete="first-name" data-bind="textInput: firstName" />
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3">Last name</div>
+        <div class="col-md-3"><label for="lastName">Last name</label></div>
         <div class="col-md-9">
-            <input type="text" class="form-control" data-bind="textInput: lastName" />
+            <input type="text" class="form-control" aria-required="true" id="lastName" name="lastName"
+                autocomplete="last-name" data-bind="textInput: lastName" />
         </div>
     </div>
     <div class="row">
