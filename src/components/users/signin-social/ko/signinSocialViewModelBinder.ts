@@ -45,6 +45,7 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
         if (aadIdentityProvider) {
             const aadConfig = {
                 clientId: aadIdentityProvider.clientId,
+                authority: aadIdentityProvider.authority,
                 signinTenant: aadIdentityProvider.signinTenant,
                 classNames: classNames,
                 label: model.aadLabel
