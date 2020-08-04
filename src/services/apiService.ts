@@ -40,7 +40,7 @@ export class ApiService {
         if (searchQuery) {
             if (searchQuery.tags) {
                 searchQuery.tags.forEach((tag, index) => {
-                    query = Utils.addQueryParameter(query, `tags[${index}]=${tag}`);
+                    query = Utils.addQueryParameter(query, `tags[${index}]=${tag.name}`);
                 });
             }
 
@@ -98,7 +98,7 @@ export class ApiService {
 
         if (searchQuery) {
             if (searchQuery.tags && searchQuery.tags.length > 0) {
-                const tagFilterEntries = searchQuery.tags.map((tag) => `tag/name eq '${tag}'`);
+                const tagFilterEntries = searchQuery.tags.map((tag) => `tag/id eq '${Utils.getResourceName("tags", tag.id)}'`);
                 odataFilterEntries.push(`(${tagFilterEntries.join(" or ")})`);
             }
 
@@ -157,7 +157,7 @@ export class ApiService {
 
         if (searchRequest) {
             if (searchRequest.tags && searchRequest.tags.length > 0) {
-                const tagFilterEntries = searchRequest.tags.map((tag) => `tag/name eq '${tag}'`);
+                const tagFilterEntries = searchRequest.tags.map((tag) => `tag/id eq '${Utils.getResourceName("tags", tag.id)}'`);
                 odataFilterEntries.push(`(${tagFilterEntries.join(" or ")})`);
             }
 
@@ -338,7 +338,7 @@ export class ApiService {
 
         if (searchQuery) {
             searchQuery.tags.forEach((tag, index) => {
-                query = Utils.addQueryParameter(query, `tags[${index}]=${tag}`);
+                query = Utils.addQueryParameter(query, `tags[${index}]=${tag.name}`);
             });
 
             if (searchQuery.pattern) {
@@ -363,32 +363,12 @@ export class ApiService {
         return page;
     }
 
-    private lastApiSchemas = {};
 
     public async getApiSchema(schemaId: string): Promise<Schema> {
-        const apiId = schemaId.split("/schemas").shift();
-        let cachedApi = this.lastApiSchemas[apiId];
+        const contract = await this.mapiClient.get<SchemaContract>(`${schemaId}`);
+        const model = new Schema(contract);
 
-        if (!cachedApi) {
-            // clean cache if apiId changed
-            if (Object.keys(this.lastApiSchemas).length > 0) {
-                this.lastApiSchemas = {};
-            }
-            this.lastApiSchemas[apiId] = {};
-            cachedApi = this.lastApiSchemas[apiId];
-        }
-
-        const cached = cachedApi && cachedApi[schemaId];
-        if (cached) {
-            return cached;
-        }
-
-        const schema = await this.mapiClient.get<SchemaContract>(`${schemaId}`);
-        const loaded = new Schema(schema);
-
-        cachedApi[schemaId] = loaded;
-
-        return loaded;
+        return model;
     }
 
     public async getSchemas(api: Api): Promise<Page<Schema>> {
@@ -419,24 +399,11 @@ export class ApiService {
         return SchemaType.openapi;
     }
 
-    private lastApiProducts = {};
-
     public async getAllApiProducts(apiId: string): Promise<Page<Product>> {
         if (!apiId) {
             throw new Error(`Parameter "apiId" not specified.`);
         }
-
-        const cachedApi = this.lastApiProducts[apiId];
-
-        if (!cachedApi) {
-            // clean cache if apiId changed
-            if (Object.keys(this.lastApiProducts).length > 0) {
-                this.lastApiProducts = {};
-            }
-        } else {
-            return cachedApi;
-        }
-
+      
         const result = [];
         const pageOfProducts = await this.mapiClient.get<Page<ProductContract>>(`${apiId}/products`);
 
@@ -447,9 +414,7 @@ export class ApiService {
         const page = new Page<Product>();
         page.value = result;
         page.count = pageOfProducts.count;
-        // page.nextPage = pageOfProductContracts.nextPage;
 
-        this.lastApiProducts[apiId] = page;
         return page;
     }
 
