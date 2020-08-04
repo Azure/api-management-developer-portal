@@ -87,7 +87,7 @@ export class UsersService {
         if (token) {
             headers.push({ name: "Authorization", value: token });
         }
-        await this.mapiClient.patch(userId, headers, { password: newPassword, appType: Constants.AppType });
+        await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, { password: newPassword });
     }
 
     /**
@@ -237,8 +237,8 @@ export class UsersService {
             { name: "Authorization", value: authToken },
             { name: "If-Match", value: "*" }
         ];
-        const payload = { password: newPassword, appType: Constants.AppType };
-        await this.mapiClient.patch(userId, headers, payload);
+        const payload = { password: newPassword };
+        await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
     }
 
     public async createUserWithOAuth(provider: string, idToken: string, firstName: string, lastName: string, email: string): Promise<void> {
