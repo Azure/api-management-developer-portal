@@ -25,7 +25,7 @@ export class ApiListDropdown {
     public readonly selectedApiName: ko.Observable<string>;
     public readonly working: ko.Observable<boolean>;
     public readonly pattern: ko.Observable<string>;
-    public readonly tags: ko.Observable<string[]>;
+    public readonly tags: ko.Observable<Tag[]>;
     public readonly page: ko.Observable<number>;
     public readonly hasPager: ko.Computed<boolean>;
     public readonly hasPrevPage: ko.Observable<boolean>;
@@ -163,7 +163,7 @@ export class ApiListDropdown {
     }
 
     public async onTagsChange(tags: Tag[]): Promise<void> {
-        this.tags(tags.map(tag => Utils.getResourceName("tags", tag.id)));
+        this.tags(tags);
     }
 
     @OnDestroyed()
