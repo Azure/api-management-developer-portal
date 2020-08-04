@@ -21,6 +21,7 @@ export class TagInput {
 
     constructor(private readonly tagService: TagService) {
         this.tags = ko.observableArray();
+        this.scope = ko.observable();
         this.pattern = ko.observable();
         this.selection = ko.observableArray([]);
         this.availableTags = ko.computed<Tag[]>(() => this.tags().filter(tag => !this.selection().map(x => x.id).includes(tag.id)));
@@ -29,7 +30,7 @@ export class TagInput {
     }
 
     @Param()
-    public scope: string;
+    public scope: ko.Observable<string>;
 
     @Event()
     public onChange: (tags: Tag[]) => void;
@@ -47,10 +48,13 @@ export class TagInput {
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.resetSearch);
+
+        this.scope
+            .subscribe(this.resetSearch);
     }
 
     public async loadPageOfTags(): Promise<void> {
-        const pageOfTags = await this.tagService.getTags(this.scope, this.pattern());
+        const pageOfTags = await this.tagService.getTags(this.scope(), this.pattern());
         const tags = pageOfTags.value.filter(tag => !this.selection().map(x => x.id).includes(tag.id));
 
         this.tags(tags);
