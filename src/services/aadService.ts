@@ -71,13 +71,13 @@ export class AadService {
      * @param aadClientId {string} Azure Active Directory client ID.
      * @param signinTenant {string} Azure Active Directory tenant used to signin.
      */
-    public async signInWithAadMsal(aadClientId: string, signinTenant: string): Promise<void> {
-        const auth = `https://${Constants.AadEndpoints.primary}/${signinTenant}`;
+    public async signInWithAadMsal(aadClientId: string, authority: string, signinTenant: string): Promise<void> {
+        const authorityUrl = `https://${authority}/${signinTenant}`;
 
         const msalConfig = {
             auth: {
                 clientId: aadClientId,
-                authority: auth,
+                authority: authorityUrl,
                 validateAuthority: true
             }
         };
@@ -99,7 +99,7 @@ export class AadService {
      * @param aadClientId {string} Azure Active Directory client ID.
      * @param signinTenant {string} Azure Active Directory tenant used to signin.
      */
-    public signInWithAadAdal(aadClientId: string, signinTenant: string): Promise<void> {
+    public signInWithAadAdal(aadClientId: string, instance: string, signinTenant: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             const callback = async (errorDescription: string, idToken: string, error: string, tokenType: string) => {
                 if (!idToken) {
@@ -118,6 +118,7 @@ export class AadService {
 
             const authContextConfig = {
                 tenant: signinTenant,
+                instance: `https://${instance}/`,
                 clientId: aadClientId,
                 popUp: true,
                 callback: callback
@@ -131,20 +132,20 @@ export class AadService {
     /**
      * Initiates signing-in with Azure Active Directory identity provider.
      * @param clientId {string} Azure Active Directory B2C client ID.
-     * @param authority {string} Tenant, e.g. "contoso.b2clogin.com".
+     * @param tenant {string} Tenant, e.g. "contoso.b2clogin.com".
      * @param instance {string} Instance, e.g. "contoso.onmicrosoft.com".
      * @param signInPolicy {string} Sign-in policy, e.g. "b2c_1_signinpolicy".
      */
-    public async signInWithAadB2C(clientId: string, authority: string, instance: string, signInPolicy: string): Promise<void> {
+    public async signInWithAadB2C(clientId: string, tenant: string, instance: string, signInPolicy: string): Promise<void> {
         if (!clientId) {
             throw new Error(`Client ID not specified.`);
         }
 
-        if (!authority) {
+        if (!tenant) {
             throw new Error(`Authority not specified.`);
         }
 
-        const auth = `https://${authority}/tfp/${instance}/${signInPolicy}`;
+        const auth = `https://${tenant}/tfp/${instance}/${signInPolicy}`;
 
         const msalConfig = {
             auth: {
