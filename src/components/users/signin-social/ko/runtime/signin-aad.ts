@@ -19,6 +19,7 @@ export class SignInAad {
         private readonly eventManager: EventManager
     ) {
         this.clientId = ko.observable();
+        this.authority = ko.observable();
         this.signinTenant = ko.observable();
         this.classNames = ko.observable();
         this.label = ko.observable();
@@ -26,6 +27,9 @@ export class SignInAad {
 
     @Param()
     public clientId: ko.Observable<string>;
+
+    @Param()
+    public authority: ko.Observable<string>;
 
     @Param()
     public signinTenant: ko.Observable<string>;
@@ -43,7 +47,7 @@ export class SignInAad {
         this.cleanValidationErrors();
 
         try {
-            await this.aadService.signInWithAadAdal(this.clientId(), this.signinTenant());
+            await this.aadService.signInWithAadAdal(this.clientId(), this.authority(), this.signinTenant());
         }
         catch (error) {
             let errorDetails;
