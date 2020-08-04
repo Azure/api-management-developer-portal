@@ -29,7 +29,7 @@ export class OperationList {
     public readonly groupByTag: ko.Observable<boolean>;
     public readonly operationGroups: ko.ObservableArray<TagGroup<Operation>>;
     public readonly pattern: ko.Observable<string>;
-    public readonly tags: ko.Observable<string[]>;
+    public readonly tags: ko.Observable<Tag[]>;
     public readonly pageNumber: ko.Observable<number>;
     public readonly hasPrevPage: ko.Observable<boolean>;
     public readonly hasNextPage: ko.Observable<boolean>;
@@ -235,7 +235,7 @@ export class OperationList {
     }
 
     public async onTagsChange(tags: Tag[]): Promise<void> {
-        this.tags(tags.map(tag => Utils.getResourceName("tags", tag.id)));
+        this.tags(tags);
     }
 
     @OnDestroyed()
