@@ -1,6 +1,6 @@
 {
   "managementApiUrl": "https://<service-name>.management.azure-api.net",
-  "managementApiVersion": "2018-06-01-preview",
+  "managementApiVersion": "2019-12-01",
   "environment": "runtime",
   "backendUrl": "https://<service-name>.developer.azure-api.net"
 }

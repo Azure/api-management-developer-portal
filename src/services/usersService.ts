@@ -45,7 +45,7 @@ export class UsersService {
     public async authenticate(username: string, password: string): Promise<string> {
         const credentials = `Basic ${btoa(`${username}:${password}`)}`;
 
-        try {            
+        try {
             const identity = await this.mapiClient.get<Identity>("/identity", [{ name: "Authorization", value: credentials }]);
 
             if (identity && identity.id) {
@@ -78,16 +78,24 @@ export class UsersService {
         const identity = parameters.get("identity");
         const requestUrl = `/users/${userId}/identities/Basic/${identity}?appType=developerPortal`;
         const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
-        
+
         await this.mapiClient.put<void>(requestUrl, [{ name: "Authorization", value: token }], {});
     }
 
     public async updatePassword(userId: string, newPassword: string, token: string): Promise<void> {
-        const headers = []
+        const headers = [];
+
         if (token) {
             headers.push({ name: "Authorization", value: token });
         }
-        await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, { password: newPassword });
+
+        const payload = {
+            properties: {
+                password: newPassword
+            }
+        };
+
+        await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
     }
 
     /**
@@ -102,11 +110,11 @@ export class UsersService {
      */
     public async getCurrentUserId(): Promise<string> {
         const token = await this.authenticator.getAccessToken();
-        
+
         if (!token) {
             return null;
         }
-        
+
         try {
             const identity = await this.mapiClient.get<Identity>("/identity");
 
@@ -153,19 +161,25 @@ export class UsersService {
      * @param userId {string} Unique user identifier.
      * @param updateUserData 
      */
-    public async updateUser(userId: string, updateUserData: { firstName: string, lastName: string }): Promise<any> {
+    public async updateUser(userId: string, firstName: string, lastName: string): Promise<User> {
         const header: HttpHeader = {
             name: "If-Match",
             value: "*"
         };
-        await this.mapiClient.patch<string>(`${userId}?appType=${Constants.AppType}`, [header], updateUserData);
+        const payload = {
+            properties: {
+                firstName: firstName,
+                lastName: lastName
+            }
+        };
+        await this.mapiClient.patch<string>(`${userId}?appType=${Constants.AppType}`, [header], payload);
         const user = await this.mapiClient.get<UserContract>(userId);
 
         if (user) {
             return new User(user);
-        } else {
-            throw new Error("User was not updated with data: " + updateUserData);
-            return undefined;
+        }
+        else {
+            throw new Error("Could not update user.");
         }
     }
 
@@ -237,7 +251,13 @@ export class UsersService {
             { name: "Authorization", value: authToken },
             { name: "If-Match", value: "*" }
         ];
-        const payload = { password: newPassword };
+
+        const payload = {
+            properties: {
+                password: newPassword
+            }
+        };
+        
         await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
     }
 
