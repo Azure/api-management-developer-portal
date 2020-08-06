@@ -89,7 +89,7 @@ export enum SettingNames {
     managementApiUrl = "managementApiUrl",
     managementApiVersion = "managementApiVersion",
     managementApiAccessToken = "managementApiAccessToken"
-};
+}
 
 /**
  * The OAuth framework specifies several grant types for different use cases.

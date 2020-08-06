@@ -444,7 +444,7 @@ export class ApiService {
     public async getApiHostnames(apiName: string): Promise<string[]> {
         const query = `apis/${apiName}/hostnames`;
         const pageOfHostnames = await this.mapiClient.get<Page<Hostname>>(query);
-        const hostnameValues = pageOfHostnames.value.map(x => x.value);
+        const hostnameValues = pageOfHostnames.value.map(x => x.properties.value);
 
         return hostnameValues;
     }

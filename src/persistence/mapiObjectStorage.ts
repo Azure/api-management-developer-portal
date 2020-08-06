@@ -212,7 +212,7 @@ export class MapiObjectStorage implements IObjectStorage {
 
         try {
             const headers: HttpHeader[] = [];
-            await this.mapiClient.put<T>(resource, headers, converted);
+            await this.mapiClient.put<T>(resource, headers, { properties: converted });
         }
         catch (error) {
             throw new AppError(`Could not add object '${path}'.`, error);
@@ -331,7 +331,7 @@ export class MapiObjectStorage implements IObjectStorage {
                 headers.push({ name: "If-Match", value: "*" });
             }
 
-            await this.mapiClient.put<T>(resource, headers, armContract);
+            await this.mapiClient.put<T>(resource, headers, { properties: armContract });
         }
         catch (error) {
             throw new AppError(`Could not update object '${key}'.`, error);
