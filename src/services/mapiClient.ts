@@ -131,11 +131,7 @@ export class MapiClient {
             }
         }
 
-        const managementApiUrl = httpRequest.url.endsWith(`/hostnames`)
-            ? this.managementApiUrlBase
-            : this.managementApiUrl;
-
-        httpRequest.url = `${managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
+        httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
         httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${this.managementApiVersion}`);
 
         let response: HttpResponse<T>;

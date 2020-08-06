@@ -10,7 +10,7 @@ export class VersionSet {
     public versionHeaderName: string;
 
     constructor(id: string, contract?: VersionSetContract) {
-        this.id = Utils.getResourceName("api-version-sets", id, "shortId");
+        this.id = Utils.getResourceName("apiVersionSets", id, "shortId");
 
         if (!contract) {
             return;
