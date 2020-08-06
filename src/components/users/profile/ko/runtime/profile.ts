@@ -96,7 +96,7 @@ export class Profile {
         this.lastName = ko.observable(model.lastName);
         this.email = ko.observable(model.email);
     }
-    
+
     private cleanValidationErrors(): void {
         const validationReport: ValidationReport = {
             source: "changeProfile",
@@ -122,37 +122,37 @@ export class Profile {
     }
 
     public async changeAccountInfo(): Promise<void> {
-        if (this.isEdit()) {
-            this.cleanValidationErrors();
-            this.working(true);
-            const updateData = {
-                firstName: this.firstName(),
-                lastName: this.lastName()
-            };
-            
-            try {
-                const user = await this.usersService.updateUser(this.user().id, updateData);
-                this.setUser(user);
-                this.toggleEdit();
-            } catch (error) {
-                let errorDetails;
-    
-                if (error.code === "ValidationError") {
-                    errorDetails = error.details?.map(detail => detail.message) || [error.message];
-                }
-                else {
-                    errorDetails = [error.message];
-                }
-    
-                const validationReport: ValidationReport = {
-                    source: "changeProfile",
-                    errors: errorDetails
-                };
-    
-                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-            }
-            this.working(false);
+        if (!this.isEdit()) {
+            return;
         }
+        
+        this.cleanValidationErrors();
+        this.working(true);
+
+        try {
+            const user = await this.usersService.updateUser(this.user().id, this.firstName(), this.lastName());
+            this.setUser(user);
+            this.toggleEdit();
+        }
+        catch (error) {
+            let errorDetails;
+
+            if (error.code === "ValidationError") {
+                errorDetails = error.details?.map(detail => detail.message) || [error.message];
+            }
+            else {
+                errorDetails = [error.message];
+            }
+
+            const validationReport: ValidationReport = {
+                source: "changeProfile",
+                errors: errorDetails
+            };
+
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+        }
+
+        this.working(false);
     }
 
     public async closeAccount(): Promise<void> {

@@ -9,6 +9,8 @@ import { HttpHeader } from "@paperbits/common/http";
 import * as Constants from "../constants";
 import { Utils } from "../utils";
 import { SearchQuery } from "../contracts/searchQuery";
+import { SubscriptionSecrets } from "../contracts/subscriptionSecrets";
+import { SubscriptionsModel } from "../components/users/subscriptions/subscriptionsModel";
 
 /**
  * A service for management operations with products.
@@ -34,16 +36,34 @@ export class ProductService {
 
         try {
             const pageContract = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`);
+            const promises: Promise<void>[] = [];
+            const subscriptions: Subscription[] = [];
 
-            pageOfSubscriptions.value = pageContract && pageContract.value
-                ? pageContract.value.map(item => new Subscription(item)) : [];
+            for (const subscriptionContract of pageContract.value) {
+                const subscription = new Subscription(subscriptionContract);
 
+                const secretPromise = this.mapiClient
+                    .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscriptionContract.name}/listSecrets`)
+                    .then(secrets => {
+                        subscription.primaryKey = secrets.primaryKey;
+                        subscription.secondaryKey = secrets.secondaryKey;
+                    });
+
+                promises.push(secretPromise);
+
+                subscriptions.push(subscription);
+            }
+
+            await Promise.all(promises);
+
+            pageOfSubscriptions.value = subscriptions;
             pageOfSubscriptions.count = pageContract.count;
             pageOfSubscriptions.nextLink = pageContract.nextLink;
+
             return pageOfSubscriptions;
         }
         catch (error) {
-            if (error && error.code === "ResourceNotFound") {
+            if (error?.code === "ResourceNotFound") {
                 return pageOfSubscriptions;
             }
 
@@ -88,19 +108,40 @@ export class ProductService {
         }
 
         const result = [];
-        const contracts = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
+        const pageOfSubscriptions = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
 
-        if (contracts && contracts.value) {
-            const products = await this.getProducts(true);
-
-            contracts.value
-                .map((item) => {
-                    const model = new Subscription(item);
-                    const product = products.find(p => model.scope.endsWith(p.id));
-                    model.productName = product && product.displayName;
-                    result.push(model);
-                });
+        if (!pageOfSubscriptions?.value) {
+            return result;
         }
+
+        const subscriptions = pageOfSubscriptions.value;
+        const promises = [];
+
+        for (const subscription of subscriptions) {
+            const subscriptionModel = new Subscription(subscription);
+            const productName = Utils.getResourceName("products", subscription.properties.scope);
+
+            const productPromise = this.mapiClient
+                .get<ProductContract>(`/products/${productName}`)
+                .then(product => {
+                    subscriptionModel.productName = product.name;
+                });
+
+            promises.push(productPromise);
+
+            const secretPromise = this.mapiClient
+                .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscription.name}/listSecrets`)
+                .then(secrets => {
+                    subscriptionModel.primaryKey = secrets.primaryKey;
+                    subscriptionModel.secondaryKey = secrets.secondaryKey;
+                });
+
+            promises.push(secretPromise);
+
+            result.push(subscriptionModel);
+        }
+
+        await Promise.all(promises);
 
         return result;
     }
@@ -121,9 +162,14 @@ export class ProductService {
             return null;
         }
 
-        if (contract) {
-            return new Subscription(contract);
-        }
+        const secrets = await this.mapiClient
+            .post<SubscriptionSecrets>(`${subscriptionId}/listSecrets`);
+
+        const subscripitonModel = new Subscription(contract);
+        subscripitonModel.primaryKey = secrets.primaryKey;
+        subscripitonModel.secondaryKey = secrets.secondaryKey;
+
+        return subscripitonModel;
     }
 
     /**
@@ -195,6 +241,7 @@ export class ProductService {
         }
 
         await this.mapiClient.post(`${subscriptionId}/regeneratePrimaryKey`);
+
         return await this.getSubscription(subscriptionId);
     }
 
@@ -229,12 +276,14 @@ export class ProductService {
             console.warn("Delegation enabled. Can't create subscription.");
         }
         else {
-            const data = {
-                scope: productId,
-                name: subscriptionName,
-                appType: Constants.AppType
+            const payload = {
+                properties: {
+                    scope: productId,
+                    name: subscriptionName,
+                    appType: Constants.AppType
+                }
             };
-            await this.mapiClient.put(userId + subscriptionId, null, data);
+            await this.mapiClient.put(userId + subscriptionId, null, payload);
         }
     }
 
@@ -247,12 +296,21 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        const isDelegation = await this.tenantService.isSubscriptionDelegationEnabled();
+        const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
 
-        if (isDelegation) {
+        if (isDelegationEnabled) {
             console.warn("Delegation enabled. Can't cancel subscription");
-        } else {
-            await this.updateSubscription(subscriptionId, { state: SubscriptionState.cancelled });
+        }
+        else {
+            const header: HttpHeader = { name: "If-Match", value: "*" };
+
+            const payload = {
+                properties: {
+                    state: SubscriptionState.cancelled
+                }
+            };
+
+            await this.mapiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, [header], payload);
         }
 
         return await this.getSubscription(subscriptionId);
@@ -261,35 +319,28 @@ export class ProductService {
     /**
      * Updates subscription name.
      * @param subscriptionId subscriptionId {string} Subscription unique identifier.
-     * @param newName {string} New subscription name.
+     * @param subscriptionName {string} New subscription name.
      */
-    public async renameSubscription(subscriptionId: string, newName: string): Promise<Subscription> {
+    public async renameSubscription(subscriptionId: string, subscriptionName: string): Promise<Subscription> {
         if (!subscriptionId) {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        if (newName) {
-            await this.updateSubscription(subscriptionId, { name: newName });
+        if (!subscriptionName) {
+            throw new Error(`Parameter "subscriptionName" not specified.`);
         }
+
+        const header: HttpHeader = { name: "If-Match", value: "*" };
+
+        const payload = {
+            properties: {
+                name: subscriptionName
+            }
+        };
+
+        await this.mapiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, [header], payload);
 
         return await this.getSubscription(subscriptionId);
-    }
-
-    /**
-     * Updates specified subscription.
-     * @param subscriptionId subscriptionId {string} Subscription unique identifier.
-     * @param body 
-     */
-    private async updateSubscription(subscriptionId: string, body?: object): Promise<void> {
-        const header: HttpHeader = {
-            name: "If-Match",
-            value: "*"
-        };
-        if (body) {
-            body["appType"] = Constants.AppType;
-        }
-
-        await this.mapiClient.patch(subscriptionId, [header], body);
     }
 
     /**
