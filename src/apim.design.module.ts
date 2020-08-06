@@ -16,6 +16,8 @@ import { SigninSocialModule } from "./components/users/signin-social/signinSocia
 import { SignupSocialModule } from "./components/users/signup-social/signupSocial.module";
 import { SigninSocialEditorModule } from "./components/users/signin-social/signinSocial.design.module";
 import { SignupSocialDesignModule } from "./components/users/signup-social/signupSocial.design.module";
+import { SignupModule as SignupCymruModule} from "./components/users/signup-cymru/signup.module";
+import { SignupDesignModule as SignupCymruDesignModule } from "./components/users/signup-cymru/signup.design.module";
 import { SignupModule } from "./components/users/signup/signup.module";
 import { SignupDesignModule } from "./components/users/signup/signup.design.module";
 import { ProfileModule } from "./components/users/profile/profile.module";
@@ -77,6 +79,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new SignupSocialDesignModule());
         injector.bindModule(new SignupModule());
         injector.bindModule(new SignupDesignModule());
+        injector.bindModule(new SignupCymruModule());
+        injector.bindModule(new SignupCymruDesignModule());
         injector.bindModule(new ProfileModule());
         injector.bindModule(new ProfileDesignModule());
         injector.bindModule(new SubscriptionsModule());
@@ -109,7 +113,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new SigninSocialEditorModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
-        injector.bindSingleton("tenantService", TenantService);
+        injector.bindSingleton("tenantService", TenantService);        
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("roleService", StaticRoleService);
         injector.bindSingleton("provisioningService", ProvisionService);
@@ -121,7 +125,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindToCollection("routeGuards", OldContentRouteGuard);
         injector.bindToCollection("routeGuards", UnsavedChangesRouteGuard);
-        injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);
+        injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);       
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindToCollection("autostart", HistoryRouteHandler);
     }
