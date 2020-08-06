@@ -105,7 +105,8 @@ export class Subscriptions {
             const updatedVM = new SubscriptionListItem(updated);
             this.syncSubscriptionLabelState(subscription, updatedVM);
             this.subscriptions.replace(subscription, updatedVM);
-        } catch (error) {
+        }
+        catch (error) {
             if (error.code === "Unauthorized") {
                 this.usersService.navigateToSignin();
                 return;
