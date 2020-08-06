@@ -6,6 +6,7 @@ import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.m
 import { DetailsOfApiModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
 import { HistoryOfApiModule } from "./components/apis/history-of-api/ko/historyOfApi.module";
 import { SigninModule } from "./components/users/signin/signin.module";
+import { SigninModule as SigninCymruModule } from "./components/users/signin-cymru/signin.module";
 import { SigninSocialModule } from "./components/users/signin-social/signinSocial.module";
 import { SignupModule as SignupCymruModule } from "./components/users/signup-cymru/signup.module";
 import { SignupModule } from "./components/users/signup/signup.module";
@@ -40,6 +41,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new DetailsOfApiModule());
         injector.bindModule(new HistoryOfApiModule());
         injector.bindModule(new SigninModule());
+        injector.bindModule(new SigninCymruModule());
         injector.bindModule(new SigninSocialModule());
         injector.bindModule(new SignupModule());
         injector.bindModule(new SignupCymruModule());

@@ -34,6 +34,7 @@ import { FileInput } from "./components/file-input/file-input";
 import { MapiClient } from "./services/mapiClient";
 import { UsersService } from "./services/usersService";
 import { Signin } from "./components/users/signin/ko/runtime/signin";
+import { Signin as SigninCymru } from "./components/users/signin-cymru/ko/runtime/signin";
 import { SignInAad } from "./components/users/signin-social/ko/runtime/signin-aad";
 import { SignInAadB2C } from "./components/users/signin-social/ko/runtime/signin-aad-b2c";
 import { Signup } from "./components/users/signup/ko/runtime/signup";
@@ -99,6 +100,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("productService", ProductService);
         injector.bind("analyticsService", AnalyticsService);
         injector.bind("signin", Signin);
+        injector.bind("signinCymru", SigninCymru)
         injector.bind("signInAad", SignInAad);
         injector.bind("signInAadB2C", SignInAadB2C);
         injector.bind("signup", Signup);
