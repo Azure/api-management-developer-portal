@@ -1,3 +1,32 @@
+<style>
+    .api-nav-tabs {
+        display:flex; 
+        align-items: stretch; 
+        margin-bottom:10px
+    }
+    .api-nav-tab {
+        flex-grow: 1;
+        display:block;  
+        padding: 8px 3px; 
+        text-align: center; 
+        border-radius:8px 8px 0 0; 
+        border-bottom: 1px solid #ced4da; 
+    }
+    .api-nav-tab-active {
+        border: 1px solid #ced4da;  border-bottom: 0
+    }
+    .api-nav-tab-disabled{
+        pointer-events: none;
+        cursor: default;
+        color: grey;
+    }
+</style>
+ 
+<div class="api-nav-tabs">
+    <a href="#" class="api-nav-tab api-nav-tab-active">Definition</a>
+    <a href="#" data-bind="attr: { href: $component.userGuideUrl }, css: { 'api-nav-tab-disabled': $component.userGuideUrl() === '' }" class="api-nav-tab">User Guide</a>
+</div>
+
 <div class="form-inline search-input">
     <div class="d-block flex-grow mw-100">
         <div class="input-group">

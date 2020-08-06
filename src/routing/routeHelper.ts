@@ -16,7 +16,12 @@ export class RouteHelper {
      * Returns ARM resource name of the API specified in hash parameter of the current route, e.g. "httpbin".
      */
     public getApiName(): string {
-        return this.getHashParameter("api");
+
+        const currentPath = this.router.getPath();
+        if (currentPath.startsWith("/api-guides/")) 
+            return currentPath.split("/")[2]
+        else 
+            return this.getHashParameter("api");
     }
 
     /**

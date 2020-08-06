@@ -1,5 +1,6 @@
 {
     "environment": "runtime",
     "managementApiUrl": "https://<service-name>.management.azure-api.net",
-    "backendUrl": "https://<service-name>.developer.azure-api.net"
+    "backendUrl": "https://<service-name>.developer.azure-api.net",
+    "apisWithGuides": []
 }
