@@ -42,8 +42,7 @@ export class App {
                 const managementApiAccessToken = settings["managementApiAccessToken"];
 
                 if (!managementApiAccessToken) {
-                    this.authenticator.clearAccessToken();
-                    window.location.assign("/");
+                    this.viewManager.addToast(startupError, `Management API access token is missing. See setting <i>managementApiAccessToken</i> in the configuration file <i>config.design.json</i>`);
                     return;
                 }
 
