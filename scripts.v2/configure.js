@@ -7,6 +7,8 @@ const fs = require('fs'),
 
 const apimServiceNameValue = process.argv[2];
 const apimAccountKey = process.argv[3];
+const hotJarId = process.argv[4];
+const appInsightsInstrumentationKey = process.argv[5];
 
 const managementEndpoint =  `${apimServiceNameValue}.management.azure-api.net`;
 const apimSasAccessTokenValue = createSharedAccessToken("integration", apimAccountKey, 14);
@@ -17,6 +19,8 @@ const apimServiceUrlValue = `https://${managementEndpoint}/subscriptions/00000/r
 const apimServiceParameter = "managementApiUrl";
 const apimSasAccessTokenParameter = "managementApiAccessToken";
 const backendUrlParameter = "backendUrl";
+const hotjarParameter = "hotJarId";
+const appInsightsParameter = "azureInsightsInstrumentationKey";
 
 fs.readFile(configDesignFile, { encoding: 'utf-8' }, function (err, data) {
     if (!err) {
@@ -39,6 +43,8 @@ fs.readFile(configPublishFile, { encoding: 'utf-8' }, function (err, data) {
         const obj = JSON.parse(data);
         obj[apimServiceParameter] = apimServiceUrlValue;
         obj[apimSasAccessTokenParameter] = apimSasAccessTokenValue;
+        obj[hotjarParameter] = hotJarId,
+        obj[appInsightsParameter] = appInsightsInstrumentationKey
         fs.writeFile(configPublishFile, JSON.stringify(obj, null, 4), function (errWrite) {
             if (errWrite) {
                 return console.log(errWrite);

@@ -34,6 +34,7 @@ import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
 import { OAuthService } from "./services/oauthService";
+import { NhsWalesPagePublisherPlugin } from "./publishing/NhsWalesPagePublisherPlugin";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -73,5 +74,6 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("oauthService", OAuthService);
+        injector.bindToCollection("htmlPagePublisherPlugins", NhsWalesPagePublisherPlugin);
     }
 }
