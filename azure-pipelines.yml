@@ -1,0 +1,36 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- nhs-customisations
+
+pool:
+  vmImage: 'windows-2019'
+
+steps:
+
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: '$(System.DefaultWorkingDirectory)'
+
+- task: NodeJSRunner@0
+  displayName: 'Configure'
+  inputs:
+    scriptPath: '$(System.DefaultWorkingDirectory)/scripts.v2/configure.js'
+    arguments: '$(apim-instance) $(apim-key)'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/scripts.v2'
+
+- task: Npm@1
+  displayName: 'Build Site Publisher'
+  inputs:
+    command: 'custom'
+    workingDir: '$(System.DefaultWorkingDirectory)'
+    customCommand: 'run build-publisher'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    path: $(System.DefaultWorkingDirectory)/dist/publisher
+    artifact: PortalPublisher
