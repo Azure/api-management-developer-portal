@@ -20,6 +20,15 @@ For **assistance requests**, submit a post [on Stack Overflow](http://aka.ms/api
 
 We welcome and appreciate **[community contributions](CONTRIBUTIONS.md)**. Refer to the **[contribution guidelines](https://github.com/Azure/api-management-developer-portal/wiki/Widget-contribution-guidelines)** for more information.
 
+##<a name="fix"></a> Fix Publish from localhost designer mode
+When opening localhost designer and trying to publish you may get CORS error: 
+Access to XMLHttpRequest at 'https://apimboris.developer.azure-api.net/publish' from origin 'http://localhost:8080' has been blocked by CORS policy: Request header field authorization is not allowed by Access-Control-Allow-Headers in preflight response.
+
+One way to solve this error while publishing from localhost:8080 is to disable CORS by passing parameters to Chrome via command line. For example, run the following command as administrator:
+```
+"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --disable-web-security --disable-gpu --user-data-dir=c:\users\cors-off
+```
+
 ## <a name="license"></a> License
 
 The developer portal is based on our own fork of the [Paperbits framework](http://paperbits.io/), which we enriched with API Management-specific features, and is published under [MIT license](license).
