@@ -6,20 +6,23 @@ import { Logger } from "@paperbits/common/logging";
 import { IAuthenticator } from "../../authentication/IAuthenticator";
 import { AppError } from "./../../errors/appError";
 import { MapiError } from "../../errors/mapiError";
-
+import { ISettingsProvider } from "@paperbits/common/configuration";
 
 @Component({
     selector: "content-workshop",
     template: template
 })
+
 export class ContentWorkshop {
     constructor(
         private readonly viewManager: ViewManager,
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator,
+        private readonly settingsProvider: ISettingsProvider,
         private readonly logger: Logger
     ) {
-        this.viewManager = viewManager;
+		this.viewManager = viewManager;
+		alert("content constructor - OK")
     }
 
     public async publish(): Promise<void> {
@@ -30,10 +33,11 @@ export class ContentWorkshop {
         }
 
         try {
-            const accessToken = await this.authenticator.getAccessToken();
+			const accessToken = await this.authenticator.getAccessToken();
 
+			const publishRootUrl = await this.settingsProvider.getSetting<string>("backendUrl"); 
             const response = await this.httpClient.send({
-                url: "/publish",
+                url: publishRootUrl + "/publish",
                 method: "POST",
                 headers: [{ name: "Authorization", value: accessToken }]
             });
