@@ -263,16 +263,22 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
 
                                 if (propertySchemaObject.items.$ref) {
                                     arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfReference(getTypeNameFromRef(propertySchemaObject.items.$ref));
+                                    props.push(arrayProperty);
+                                }
+                                else if (propertySchemaObject.items.properties) { 
+                                    const objectProperty = new TypeDefinitionObjectProperty(propertyName, propertySchemaObject.items, isRequired, true);
+                                    const flattenObjects = this.flattenNestedObjects(objectProperty, propertyName + "[]");
+                                    props.push(...flattenObjects);
                                 }
                                 else if (propertySchemaObject.items.type) {
                                     arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfPrimitive(propertySchemaObject.items.type);
+                                    props.push(arrayProperty);
                                 }
                                 else {
                                     const objectProperty = new TypeDefinitionObjectProperty(propertyName + "[]", propertySchemaObject.items, isRequired, true);
                                     props.push(objectProperty);
                                 }
 
-                                props.push(arrayProperty);
                                 break;
 
                             case "combination":
