@@ -97,7 +97,6 @@ export class OperationDetails {
         this.selectedOperationName(operationName);
 
         if (apiName) {
-            await this.loadGatewayInfo(apiName);
             await this.loadApi(apiName);
         }
 
@@ -137,6 +136,8 @@ export class OperationDetails {
         if (!api) {
             return;
         }
+
+        await this.loadGatewayInfo(apiName);
 
         this.api(api);
 
