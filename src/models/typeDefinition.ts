@@ -245,7 +245,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                             case "object":
                                 const objectProperty = new TypeDefinitionObjectProperty(propertyName, propertySchemaObject, isRequired, true);
 
-                                if (!propertySchemaObject.$ref && !nested) {
+                                if (!propertySchemaObject.$ref && propertySchemaObject.properties && !nested) {
                                     const flattenObjects = this.flattenNestedObjects(objectProperty, propertyName);
                                     props.push(...flattenObjects);
                                 }
@@ -263,16 +263,22 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
 
                                 if (propertySchemaObject.items.$ref) {
                                     arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfReference(getTypeNameFromRef(propertySchemaObject.items.$ref));
+                                    props.push(arrayProperty);
+                                }
+                                else if (propertySchemaObject.items.properties) { 
+                                    const objectProperty = new TypeDefinitionObjectProperty(propertyName, propertySchemaObject.items, isRequired, true);
+                                    const flattenObjects = this.flattenNestedObjects(objectProperty, propertyName + "[]");
+                                    props.push(...flattenObjects);
                                 }
                                 else if (propertySchemaObject.items.type) {
                                     arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfPrimitive(propertySchemaObject.items.type);
+                                    props.push(arrayProperty);
                                 }
                                 else {
                                     const objectProperty = new TypeDefinitionObjectProperty(propertyName + "[]", propertySchemaObject.items, isRequired, true);
                                     props.push(objectProperty);
                                 }
 
-                                props.push(arrayProperty);
                                 break;
 
                             case "combination":
@@ -292,14 +298,14 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         }
     }
 
-    private flattenNestedObjects(nested: TypeDefinitionProperty, prefix: string): TypeDefinitionProperty[] {
+    private flattenNestedObjects(nested: TypeDefinitionObjectProperty, prefix: string): TypeDefinitionProperty[] {
         const result = [];
 
-        if (!nested["properties"]) {
+        if (!nested.properties) {
             return result;
         }
 
-        nested["properties"].forEach(property => {
+        nested.properties.forEach(property => {
             if (property instanceof TypeDefinitionObjectProperty) {
                 result.push(...this.flattenNestedObjects(<TypeDefinitionObjectProperty>property, prefix + "." + property.name));
             }
