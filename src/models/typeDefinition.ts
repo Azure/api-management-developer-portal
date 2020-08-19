@@ -245,7 +245,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                             case "object":
                                 const objectProperty = new TypeDefinitionObjectProperty(propertyName, propertySchemaObject, isRequired, true);
 
-                                if (!propertySchemaObject.$ref && !nested) {
+                                if (!propertySchemaObject.$ref && propertySchemaObject.properties && !nested) {
                                     const flattenObjects = this.flattenNestedObjects(objectProperty, propertyName);
                                     props.push(...flattenObjects);
                                 }
@@ -292,14 +292,14 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         }
     }
 
-    private flattenNestedObjects(nested: TypeDefinitionProperty, prefix: string): TypeDefinitionProperty[] {
+    private flattenNestedObjects(nested: TypeDefinitionObjectProperty, prefix: string): TypeDefinitionProperty[] {
         const result = [];
 
-        if (!nested["properties"]) {
+        if (!nested.properties) {
             return result;
         }
 
-        nested["properties"].forEach(property => {
+        nested.properties.forEach(property => {
             if (property instanceof TypeDefinitionObjectProperty) {
                 result.push(...this.flattenNestedObjects(<TypeDefinitionObjectProperty>property, prefix + "." + property.name));
             }
