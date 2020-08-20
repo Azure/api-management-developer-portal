@@ -9,7 +9,6 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { RouteHelper } from "../routing/routeHelper";
 import { UsersService } from "./usersService";
 
-
 /**
  * Service for operations with Azure Active Directory identity provider.
  */
@@ -29,7 +28,8 @@ export class AadService {
      * @param provider {string} Provider type, "Aad" or "AadB2C".
      */
     private async exchangeIdToken(idToken: string, provider: string): Promise<void> {
-        const managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
+        let managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
+        managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
         const managementApiVersion = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiVersion);
 
         const request = {
