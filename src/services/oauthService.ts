@@ -37,12 +37,17 @@ export class OAuthService {
             const oicdServers = pageOfOicdServers.value.map(authServer => new OpenIdConnectProvider(authServer));
 
             for (const provider of oicdServers) {
-                const authServer = await this.discoverOAuthServer(provider.metadataEndpoint);
-                authServer.name = provider.name;
-                authServer.clientId = provider.clientId;
-                authServer.displayName = provider.displayName;
-                authServer.description = provider.description;
-                authorizationServers.push(authServer);
+                try {
+                    const authServer = await this.discoverOAuthServer(provider.metadataEndpoint);
+                    authServer.name = provider.name;
+                    authServer.clientId = provider.clientId;
+                    authServer.displayName = provider.displayName;
+                    authServer.description = provider.description;
+                    authorizationServers.push(authServer);
+                }
+                catch (error) {
+                    // Swallow discovery errors until publishing-related notification channel gets implemented.
+                }
             }
 
             return authorizationServers;
