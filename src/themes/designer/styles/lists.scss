@@ -82,7 +82,7 @@
     }
 
     &.selected {
-        @include selection();
+        font-weight: bold;
     }
 
     .list-item-handle {
@@ -110,7 +110,7 @@
         display: inline-block;
         width: 130px;
         text-align: center;
-        padding: 5px;
+        padding: 15px 5px;
         line-height: 1.5em;
         margin-bottom: 15px;
         flex-basis: auto;
