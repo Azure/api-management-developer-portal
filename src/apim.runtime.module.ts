@@ -17,7 +17,7 @@ import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { DefaultEventManager } from "@paperbits/common/events";
 import { XmlHttpRequestClient } from "@paperbits/common/http";
 import { SettingsProvider } from "@paperbits/common/configuration";
-import { DefaultRouter } from "@paperbits/common/routing";
+import { DefaultRouter, LocationRouteHandler, HistoryRouteHandler } from "@paperbits/common/routing";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { KnockoutRegistrationLoaders } from "@paperbits/core/ko/knockout.loaders";
 import { ApiList, ApiListDropdown, ApiListTiles } from "./components/apis/list-of-apis/ko/runtime";
@@ -134,5 +134,8 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("viewStack", ViewStack);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("tagInput", TagInput);
+        injector.bindToCollection("autostart", location.href.includes("designtime=true")
+            ? HistoryRouteHandler
+            : LocationRouteHandler);
     }
 }
