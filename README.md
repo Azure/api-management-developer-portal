@@ -12,11 +12,9 @@ The `master` branch of this repository is used for daily development purposes an
 
 ## <a name="feedback"></a> Interactions
 
-You can **report bugs** through [the repository's Issues section](https://github.com/Azure/api-management-developer-portal/issues).
+You can **report bugs** or **submit feature requests** in [the repository's Issues section](https://github.com/Azure/api-management-developer-portal/issues).
 
-If you'd like to provide feedback and help us shape the product, we're looking for your opinion on [the Issues marked with the *community* label](https://github.com/Azure/api-management-developer-portal/issues?q=is%3Aopen+is%3Aissue+label%3Acommunity). **Feature requests** can be raised [on the Azure Feedback Forum for API Management](https://aka.ms/apimwish).
-
-For **assistance requests**, submit a post [on Stack Overflow](http://aka.ms/apimso) or contact Azure support. **We don't provide support through GitHub Issues**.
+Microsoft Azure Support assistance is limited to the managed portal and the initial setup of the self-hosted portal ([documented in the Wiki](https://github.com/Azure/api-management-developer-portal/wiki/Self-hosting-the-portal)). For other assistance requests (for example, 3rd party widgets integration, network configuration, development environment), submit a post [on Stack Overflow](https://aka.ms/apimso) and label it with the `azure-api-management` tag. **We don't provide support through GitHub Issues**.
 
 We welcome and appreciate **[community contributions](CONTRIBUTIONS.md)**. Refer to the **[contribution guidelines](https://github.com/Azure/api-management-developer-portal/wiki/Widget-contribution-guidelines)** for more information.
 
