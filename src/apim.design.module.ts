@@ -57,6 +57,7 @@ import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
 import { PolicyService } from "./services/policyService";
 import { OAuthService } from "./services/oauthService";
+import { HistoryRouteHandler } from "@paperbits/common/routing";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -121,5 +122,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindToCollection("routeGuards", UnsavedChangesRouteGuard);
         injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);
         injector.bindSingleton("oauthService", OAuthService);
+        injector.bindToCollection("autostart", HistoryRouteHandler);
     }
 }
