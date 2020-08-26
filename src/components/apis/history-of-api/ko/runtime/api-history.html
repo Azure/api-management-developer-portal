@@ -26,7 +26,7 @@
                 <div data-bind="foreach: { data: currentPageLog, as: 'hist' }">
                     <div class="table-row">
                         <div class="col-3" data-bind="text: hist.properties.updatedDateTime"></div>
-                        <div class="col-9" data-bind="text: hist.properties.notes"></div>
+                        <div class="col-9" data-bind="markdown: hist.properties.notes"></div>
                     </div>
                 </div>
                 <!-- /ko -->
