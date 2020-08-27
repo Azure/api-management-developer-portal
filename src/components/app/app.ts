@@ -30,11 +30,6 @@ export class App {
             return;
         }
 
-        if (!settings["managementApiVersion"]) {
-            this.viewManager.addToast(startupError, `Management API version is missing. See setting <i>managementApiVersion</i> in the configuration file <i>config.design.json</i>`);
-            return;
-        }
-
         try {
             const token = await this.authenticator.getAccessToken();
 

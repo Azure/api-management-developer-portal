@@ -87,7 +87,6 @@ export const AppType = "developerPortal";
 export enum SettingNames {
     backendUrl = "backendUrl",
     managementApiUrl = "managementApiUrl",
-    managementApiVersion = "managementApiVersion",
     managementApiAccessToken = "managementApiAccessToken"
 }
 
@@ -114,3 +113,5 @@ export enum GrantTypes {
      */
     clientCredentials = "clientCredentials"
 }
+
+export const managementApiVersion = "2019-12-01";
