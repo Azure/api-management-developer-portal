@@ -57,7 +57,7 @@ export class ProvisionService {
                         { name: "Content-Type", value: "application/json" },
                         { name: "Authorization", value: accessToken }
                     ],
-                    body: JSON.stringify(contentItem)
+                    body: JSON.stringify({ properties: contentItem })
                 };
 
                 const response = await this.httpClient.send(request);
