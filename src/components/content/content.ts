@@ -20,7 +20,7 @@ export class ContentWorkshop {
         private readonly authenticator: IAuthenticator,
         private readonly settingsProvider: ISettingsProvider,
         private readonly logger: Logger
-    ) {}
+    ) { }
 
     public async publish(): Promise<void> {
         this.logger.trackEvent("Click: Publish website");
@@ -30,9 +30,10 @@ export class ContentWorkshop {
         }
 
         try {
-			const accessToken = await this.authenticator.getAccessToken();
+            const accessToken = await this.authenticator.getAccessToken();
 
-			const publishRootUrl = await this.settingsProvider.getSetting<string>("backendUrl"); 
+            const publishRootUrl = await this.settingsProvider.getSetting<string>("backendUrl") || "";
+
             const response = await this.httpClient.send({
                 url: publishRootUrl + "/publish",
                 method: "POST",
