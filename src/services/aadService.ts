@@ -30,10 +30,9 @@ export class AadService {
     private async exchangeIdToken(idToken: string, provider: string): Promise<void> {
         let managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
         managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
-        const managementApiVersion = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiVersion);
 
         const request = {
-            url: `${managementApiUrl}/identity?api-version=${managementApiVersion}`,
+            url: `${managementApiUrl}/identity?api-version=${Constants.managementApiVersion}`,
             method: "GET",
             headers: [{ name: "Authorization", value: `${provider} id_token="${idToken}"` }]
         };
