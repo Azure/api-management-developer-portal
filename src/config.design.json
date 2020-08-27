@@ -1,8 +1,6 @@
 {
   "managementApiUrl": "https://<service-name>.management.azure-api.net",
-  "managementApiVersion": "2019-12-01",
   "managementApiAccessToken": "SharedAccessSignature ...",
-  "managementApiUserId": "1",
   "blobStorageContainer": "content",
   "blobStorageUrl": "https://<account>.blob.core.windows.net?st=...",
   "environment": "development",

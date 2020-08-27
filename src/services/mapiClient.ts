@@ -22,8 +22,6 @@ export interface IHttpBatchResponse {
 
 export class MapiClient {
     private managementApiUrl: string;
-    private managementApiUrlBase: string;
-    private managementApiVersion: string;
     private environment: string;
     private initializePromise: Promise<void>;
     private requestCache: TtlCache = new TtlCache();
@@ -50,16 +48,7 @@ export class MapiClient {
             throw new Error(`Management API URL ("${Constants.SettingNames.managementApiUrl}") setting is missing in configuration file.`);
         }
 
-        this.managementApiUrlBase = new URL(managementApiUrl).origin;
         this.managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
-
-        const managementApiVersion = settings[Constants.SettingNames.managementApiVersion];
-
-        if (!managementApiVersion) {
-            throw new Error(`Management API version ("${Constants.SettingNames.managementApiVersion}") setting is missing in configuration file.`);
-        }
-
-        this.managementApiVersion = managementApiVersion;
 
         const managementApiAccessToken = settings[Constants.SettingNames.managementApiAccessToken];
 
@@ -132,7 +121,7 @@ export class MapiClient {
         }
 
         httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
-        httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${this.managementApiVersion}`);
+        httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${Constants.managementApiVersion}`);
 
         let response: HttpResponse<T>;
 
