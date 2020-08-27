@@ -76,6 +76,12 @@ export class AccessToken {
             return AccessToken.parseHeaderValue(token);
         }
 
+        const result = AccessToken.parseSharedAccessSignature(token);
+
+        if (result) {
+            return result;
+        }
+        
         throw new Error(`Access token format is not valid. Please use "Bearer" or "SharedAccessSignature".`);
     }
 
