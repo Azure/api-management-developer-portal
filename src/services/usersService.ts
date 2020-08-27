@@ -263,7 +263,6 @@ export class UsersService {
 
     public async createUserWithOAuth(provider: string, idToken: string, firstName: string, lastName: string, email: string): Promise<void> {
         const managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
-        const managementApiVersion = await this.settingsProvider.getSetting<string>("managementApiVersion");
         const jwtToken = Utils.parseJwt(idToken);
 
         const user: UserPropertiesContract = {
@@ -277,7 +276,7 @@ export class UsersService {
         };
 
         const response = await this.httpClient.send({
-            url: `${managementApiUrl}/users?api-version=${managementApiVersion}`,
+            url: `${managementApiUrl}/users?api-version=${Constants.managementApiVersion}`,
             method: "POST",
             headers: [
                 { name: "Content-Type", value: "application/json" },

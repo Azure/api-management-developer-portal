@@ -32,18 +32,8 @@ export class ProvisionService {
         return Utils.ensureUrlArmified(managementApiUrl);
     }
 
-    private async getManagementApiVersion(): Promise<string> {
-        const settings = await this.settingsProvider.getSettings();
-        const managementApiVersion = settings[Constants.SettingNames.managementApiVersion];
-        if (!managementApiVersion) {
-            throw new Error(`Management API version ("managementApiVersion") setting is missing in configuration file.`);
-        }
-        return managementApiVersion;
-    }
-
     public async provision(): Promise<void> {
         const managementApiUrl = await this.getManagementUrl();
-        const managementApiVersion = await this.getManagementApiVersion();
         const dataUrl = `/editors/themes/default.json`;
 
         try {
@@ -57,7 +47,7 @@ export class ProvisionService {
 
             for (const key of keys) {
                 const contentItem = dataObj[key];
-                const url = `${managementApiUrl}${Utils.ensureLeadingSlash(key)}?api-version=${managementApiVersion}`;
+                const url = `${managementApiUrl}${Utils.ensureLeadingSlash(key)}?api-version=${Constants.managementApiVersion}`;
 
                 const request: HttpRequest = {
                     url: url,
@@ -87,8 +77,7 @@ export class ProvisionService {
 
     private async cleanupContent(): Promise<void> {
         const managementApiUrl = await this.getManagementUrl();
-        const managementApiVersion = await this.getManagementApiVersion();
-        const url = `${managementApiUrl}/contentTypes?api-version=${managementApiVersion}`;
+        const url = `${managementApiUrl}/contentTypes?api-version=${Constants.managementApiVersion}`;
         const accessToken = await this.authenticator.getAccessToken();
 
         try {
@@ -106,7 +95,7 @@ export class ProvisionService {
             for (const contentType of contentTypes) {
                 const contentTypeName = contentType["name"];
                 const curReq: HttpRequest = {
-                    url: `${managementApiUrl}/contentTypes/${contentTypeName}/contentItems?api-version=${managementApiVersion}`,
+                    url: `${managementApiUrl}/contentTypes/${contentTypeName}/contentItems?api-version=${Constants.managementApiVersion}`,
                     method: "GET",
                     headers: [
                         { name: "If-Match", value: "*" },
@@ -118,7 +107,7 @@ export class ProvisionService {
                 const items = Object.values(itemsResponse["value"]);
                 for (const item of items) {
                     const itemReq: HttpRequest = {
-                        url: `${managementApiUrl}${item["id"]}?api-version=${managementApiVersion}`,
+                        url: `${managementApiUrl}${item["id"]}?api-version=${Constants.managementApiVersion}`,
                         method: "DELETE",
                         headers: [
                             { name: "If-Match", value: "*" },
