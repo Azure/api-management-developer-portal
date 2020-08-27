@@ -1,6 +1,5 @@
 import * as fs from "fs";
 import * as path from "path";
-import * as mkdirp from "mkdirp";
 import { IBlobStorage } from "@paperbits/common/persistence";
 
 export class FileSystemBlobStorage implements IBlobStorage {
@@ -10,25 +9,16 @@ export class FileSystemBlobStorage implements IBlobStorage {
         this.basePath = basePath;
     }
 
-    public uploadBlob(blobPath: string, content: Uint8Array): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            const fullpath = `${this.basePath}/${blobPath}`.replace("//", "/");
+    public async uploadBlob(blobPath: string, content: Uint8Array): Promise<void> {
+        const fullpath = `${this.basePath}/${blobPath}`.replace("//", "/");
 
-            mkdirp(path.dirname(fullpath), (error) => {
-                if (error) {
-                    reject(error);
-                    throw error;
-                }
-                else {
-                    fs.writeFile(fullpath, Buffer.from(content), error => {
-                        if (error) {
-                            reject(error);
-                        }
-                        resolve();
-                    });
-                }
-            });
-        });
+        try {
+            await fs.promises.mkdir(path.dirname(fullpath), { recursive: true });
+            await fs.promises.writeFile(fullpath, Buffer.from(content.buffer));
+        }
+        catch (error) {
+            console.error(error);
+        }
     }
 
     public downloadBlob(blobPath: string): Promise<Uint8Array> {
@@ -83,30 +73,7 @@ export class FileSystemBlobStorage implements IBlobStorage {
         throw new Error("Not supported");
     }
 
-    public async deleteBlob(filename?: string): Promise<void> {
-        const deletePath = filename && `${this.basePath}/${filename}`.replace("//", "/") || this.basePath;
-        if (fs.existsSync(deletePath)) {
-            if (fs.lstatSync(deletePath).isFile()) {
-                fs.unlinkSync(deletePath);
-            } else {
-                this.deleteFolderRecursive(deletePath);
-            }
-        }
-    }
-
-    private deleteFolderRecursive(path: string) {
-        if (fs.existsSync(path)) {
-            fs.readdirSync(path).forEach((file) => {
-                const curPath = path + "/" + file;
-
-                if (fs.lstatSync(curPath).isDirectory()) { // recurse      
-                    this.deleteFolderRecursive(curPath);
-                } else { // delete file      
-                    fs.unlinkSync(curPath);
-                }
-            });
-
-            fs.rmdirSync(path);
-        }
+    public async deleteBlob(filename: string): Promise<void> {
+        return null;
     }
 }
