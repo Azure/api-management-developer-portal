@@ -10,18 +10,16 @@
  * Managed portal command example:
  * node migrate --sourceEndpoint from.management.azure-api.net --destEndpoint to.management.azure-api.net --publishEndpoint to.developer.azure-api.net --sourceToken "SharedAccessSignature integration&2020..." --destToken "SharedAccessSignature integration&2020..."
  * 
- * If you run with the --selfHosted flag, you are expected to supply a sourceStorage and destStorage parameters.
  * Auto-publishing is not supported for self-hosted versions, so make sure you publish the portal (for example, locally) and upload the generated static files to your hosting after the migration is completed.
  * 
  * You can specify the SAS tokens directly (via sourceToken and destToken), or you can supply an identifier and key,
  * and the script will generate tokens that expire in 1 hour. (via sourceId, sourceKey, destId, destKey)
  */
 
-const https = require('https');
 const moment = require('moment');
 const crypto = require('crypto');
-const mkdirSync = require('fs').mkdirSync;
 const execSync = require('child_process').execSync;
+const { request } = require('./utils.js');
 
 const yargs = require('yargs')
     .example('$0 \
@@ -33,10 +31,8 @@ const yargs = require('yargs')
     .example('$0 --selfHosted \
         --sourceEndpoint <name.management.azure-api.net> \
         --sourceToken <token> \
-        --sourceStorage <connectionString> \
         --destEndpoint <name.management.azure-api.net> \
-        --destToken <token> \
-        --destStorage <connectionString>', 'Self-Hosted')
+        --destToken <token>')
     /*.option('interactive', {
         alias: 'i',
         type: 'boolean',
@@ -46,8 +42,7 @@ const yargs = require('yargs')
     .option('selfHosted', {
         alias: 'h',
         type: 'boolean',
-        description: 'If the portal is self-hosted',
-        implies: ['sourceStorage', 'destStorage']
+        description: 'If the portal is self-hosted'
     })
     .option('publishEndpoint', {
         alias: 'p',
@@ -79,12 +74,6 @@ const yargs = require('yargs')
         example: 'SharedAccessSignature…',
         conflicts: ['sourceId, sourceToken']
     })
-    .option('sourceStorage', {
-        type: 'string',
-        description: 'The connection string for self-hosted portals',
-        example: 'DefaultEndpointsProtocol=…',
-        implies: 'selfHosted'
-    })
     .option('destEndpoint', {
         type: 'string',
         description: 'The hostname of the management endpoint of the destination API Management service',
@@ -109,83 +98,37 @@ const yargs = require('yargs')
         description: 'A SAS token for the destination portal',
         conflicts: ['destId, destToken']
     })
-    .option('destStorage', {
-        type: 'string',
-        description: 'The connection string for self-hosted portals',
-        example: 'DefaultEndpointsProtocol=…',
-        implies: 'selfHosted'
-    })
     .argv;
 
 async function run() {
-    const sourceEndpoint = yargs.sourceEndpoint;
-    const sourceToken = await getTokenOrThrow(yargs.sourceToken, yargs.sourceId, yargs.sourceKey);
-    const sourceStorage = await getStorageConnectionOrThrow(yargs.sourceStorage, sourceEndpoint, sourceToken);
+    const sourceManagementApiEndpoint = yargs.sourceEndpoint;
+    const sourceManagementApiAccessToken = await getTokenOrThrow(yargs.sourceToken, yargs.sourceId, yargs.sourceKey);
 
-    const destEndpoint = yargs.destEndpoint;
-    const destToken = await getTokenOrThrow(yargs.destToken, yargs.destId, yargs.destKey);
-    const destStorage = await getStorageConnectionOrThrow(yargs.destStorage, destEndpoint, destToken);
+    const destManagementApiEndpoint = yargs.destEndpoint;
+    const destManagementApiAccessToken = await getTokenOrThrow(yargs.destToken, yargs.destId, yargs.destKey);
     const publishEndpoint = yargs.publishEndpoint;
     
     // the rest of this mirrors migrate.bat, but since we're JS, we're platform-agnostic.
-    const dataFile = '../dist/data.json';
-    const mediaFolder = '../dist/content';
-    const mediaContainer = 'content';
+    const snapshotFolder = '../dist/snapshot';
 
     // capture the content of the source portal (excl. media)
-    execSync(`node ./capture ${sourceEndpoint} "${sourceToken}" ${dataFile}`);
+    execSync(`node ./capture ${sourceManagementApiEndpoint} "${sourceManagementApiAccessToken}" ${snapshotFolder}`);
 
     // remove all content of the target portal (incl. media)
-    execSync(`node ./cleanup ${destEndpoint} "${destToken}" "${destStorage}"`);
+    execSync(`node ./cleanup ${destManagementApiEndpoint} "${destManagementApiAccessToken}"`);
 
     // upload the content of the source portal (excl. media)
-    execSync(`node ./generate ${destEndpoint} "${destToken}" ${dataFile}`);
-
-    // download media files from the source portal
-    mkdirSync(mediaFolder, { recursive: true });
-    execSync(`az storage blob download-batch --source ${mediaContainer} --destination ${mediaFolder} --connection-string "${sourceStorage}"`);
-
-    // upload media files to the target portal
-    execSync(`az storage blob upload-batch --source ${mediaFolder} --destination ${mediaContainer} --connection-string "${destStorage}"`);
+    execSync(`node ./generate ${destManagementApiEndpoint} "${destManagementApiAccessToken}" ${snapshotFolder}`);
 
     if (publishEndpoint && !yargs.selfHosted) {
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-        publish(publishEndpoint, destToken);
-    } else if (publishEndpoint) {
+        publish(publishEndpoint, destManagementApiAccessToken);
+    } 
+    else if (publishEndpoint) {
         console.warn("Auto-publishing self-hosted portal is not supported.");
     }
 }
 
-/**
- * A wrapper for making a request and returning its response body.
- * @param {Object} options https options
- */
-async function request(url, options) {
-    return new Promise((resolve, reject) => {
-        const req = https.request(url, options, (resp) => {
-            let data = '';
-
-            resp.on('data', (chunk) => {
-                data += chunk;
-            });
-
-            resp.on('end', () => {
-                try {
-                    resolve(data);
-                }
-                catch (e) {
-                    reject(e);
-                }
-            });
-        });
-
-        req.on('error', (e) => {
-            reject(e);
-        });
-
-        req.end();
-    });
-}
 
 /**
  * Attempts to get a SAS token in two ways:
@@ -224,45 +167,7 @@ async function generateSASToken(id, key, expiresIn = 3600) {
     return `SharedAccessSignature uid=${id}&ex=${expiryString}&sn=${signedData}`;
 }
 
-/**
- * Attempts to get a develoer portal storage connection string in two ways:
- * 1) if the connection string is explicitly set by the user, use it.
- * 2) retrieving the connection string from the management API using the instance endpoint and SAS token
- * @param {string} storage an optionally specified storage connection string
- * @param {string} endpoint the management endpoint of service instance
- * @param {string} token the SAS token
- */
-async function getStorageConnectionOrThrow(storage, endpoint, token) {
-    if (storage) {
-        return storage;
-    }
-    if (token) {
-        // token should always be available, because we call
-        // getTokenOrThrow before this
-        return await getStorageConnection(endpoint, token);
-    }
-    throw Error('Storage connection could not be retrieved');
-}
 
-/**
- * Gets a storage connection string from the management API for the specified APIM instance and
- * SAS token.
- * @param {string} endpoint the management endpoint of service instance
- * @param {string} token the SAS token
- */
-async function getStorageConnection(endpoint, token) {
-    const options = {
-        port: 443,
-        method: 'GET',
-        headers: {
-            'Authorization': token
-        }
-    };
-
-    const raw = await request(`https://${endpoint}/tenant/settings?api-version=2018-01-01`, options);
-    const body = JSON.parse(raw);
-    return body.settings.PortalStorageConnectionString;
-}
 
 /**
  * Publishes the content of the specified APIM instance using a SAS token.
@@ -270,18 +175,10 @@ async function getStorageConnection(endpoint, token) {
  * @param {string} token the SAS token
  */
 async function publish(endpoint, token) {
-    const options = {
-        port: 443,
-        method: 'POST',
-        headers: {
-            'Authorization': token
-        }
-    };
-    
     const url = `https://${endpoint}/publish`;
     
     // returns with literal OK (missing quotes), which is invalid json.
-    await request(url, options);
+    await request("POST", url, token);
 }
 
 run();

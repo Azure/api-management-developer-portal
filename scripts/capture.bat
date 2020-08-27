@@ -1,7 +1,7 @@
-@REM Capture the content of an API Management portal into data_file - incl. pages, layouts, configuration, etc. but excluding media files
+@REM Capture the content of an API Management portal into dest_folder - incl. pages, layouts, configuration, etc. but excluding media files
 
 set management_endpoint="< service name >.management.azure-api.net"
 set access_token="SharedAccessSignature ..."
-set data_file="../dist/data.json"
+set dest_folder="../dist/snapshot"
 
-node ./capture %management_endpoint% %access_token% %data_file%
+node ./capture %management_endpoint% %access_token% %dest_folder%

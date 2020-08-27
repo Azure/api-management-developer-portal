@@ -1,79 +1,26 @@
 const fs = require("fs");
-const https = require("https");
-const managementEndpoint = process.argv[2];
-const accessToken = process.argv[3];
-const dataFile = process.argv[4];
+const path = require("path");
+const { request, downloadBlobs, getStorageSasTokenOrThrow } = require("./utils");
+const managementApiEndpoint = process.argv[2];
+const managementApiAccessToken = process.argv[3];
+const destinationFolder = process.argv[4];
 
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
-
-var options = {
-    port: 443,
-    method: "GET",
-    headers: {
-        "Authorization": accessToken
-    }
-};
-
-async function request(url) {
-    return new Promise((resolve, reject) => {
-        const req = https.request(url, options, (resp) => {
-            let data = "";
-
-            resp.on("data", (chunk) => {
-                data += chunk;
-            });
-
-            resp.on("end", () => {
-                try {
-                    resolve(JSON.parse(data));
-                }
-                catch (e) {
-                    reject(e);
-                    console.log(url);
-                }
-            });
-        });
-
-        req.on("error", (e) => {
-            reject(e);
-        });
-
-        req.end();
-    });
-}
 
 async function getContentTypes() {
-    const data = await request(`https://${managementEndpoint}/contentTypes?api-version=2018-06-01-preview`);
+    const data = await request("GET", `https://${managementApiEndpoint}/contentTypes?api-version=2018-06-01-preview`, managementApiAccessToken);
     const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
 
     return contentTypes;
 }
 
 async function getContentItems(contentType) {
-    const data = await request(`https://${managementEndpoint}/contentTypes/${contentType}/contentItems?api-version=2018-06-01-preview`);
+    const data = await request("GET", `https://${managementApiEndpoint}/contentTypes/${contentType}/contentItems?api-version=2018-06-01-preview`, managementApiAccessToken);
     const contentItems = data.value;
 
     return contentItems;
 }
 
-function checkPath() {
-    const folderSegments = dataFile.split("/");
-    let checkedPath = dataFile;
-    if (!folderSegments[0]) {
-        folderSegments.splice(0,1);
-        checkedPath = checkedPath.slice(1);
-    }
-    if (folderSegments.length > 1) {
-        folderSegments.splice(-1,1);
-        const folder = folderSegments.join("/");
-        if (!fs.existsSync(folder)) {
-            fs.mkdirSync(folder);
-        }
-    }
-    return checkedPath;
-}
-
-async function capture() {
+async function captureJson() {
     const result = {};
     const contentTypes = await getContentTypes();
 
@@ -82,17 +29,27 @@ async function capture() {
 
         contentItems.forEach(contentItem => {
             result[contentItem.id] = contentItem;
-
             delete contentItem.id;
         });
     }
 
-    const checkedPath = checkPath();
+    await fs.promises.mkdir(path.resolve(destinationFolder), { recursive: true });
 
-    fs.writeFileSync(checkedPath, JSON.stringify(result));
+    fs.writeFileSync(`${destinationFolder}/data.json`, JSON.stringify(result));
 }
 
+async function capture() {
+    const blobStorageUrl = await getStorageSasTokenOrThrow(managementApiEndpoint, managementApiAccessToken);
+    const localMediaFolder = `./${destinationFolder}/content`;
 
-capture().then(() => {
-    console.log("DONE");
-})
+    await captureJson();
+    await downloadBlobs(blobStorageUrl, localMediaFolder);
+}
+
+capture()
+    .then(() => {
+        console.log("DONE");
+    })
+    .catch(error => {
+        console.log(error);
+    })
