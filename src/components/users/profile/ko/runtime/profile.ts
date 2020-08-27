@@ -8,12 +8,10 @@ import { User } from "../../../../../models/user";
 import { UsersService } from "../../../../../services/usersService";
 import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import { TenantService } from "../../../../../services/tenantService";
-import { BackendService } from "../../../../../services/backendService";
 import { pageUrlChangePassword } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 import { EventManager } from "@paperbits/common/events/eventManager";
-
 
 @RuntimeComponent({
     selector: "profile-runtime"
@@ -36,8 +34,7 @@ export class Profile {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly tenantService: TenantService,
-        private readonly backendService: BackendService,
+        private readonly tenantService: TenantService,        
         private readonly eventManager: EventManager,
         private readonly router: Router) {
         this.user = ko.observable();
@@ -70,20 +67,19 @@ export class Profile {
         this.setUser(model);
     }
 
-    private async isDelegation(action: DelegationAction): Promise<void> {
+    private async isDelegationEnabled(action: DelegationAction): Promise<boolean> {
         if (!this.user()) {
-            return;
+            return false;
         }
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
         if (isDelegationEnabled) {
-            const delegationParam = {};
-            delegationParam[DelegationParameters.UserId] = Utils.getResourceName("users", this.user().id);
+            const delegation = new URLSearchParams();
+            delegation.append(DelegationParameters.UserId, Utils.getResourceName("users", this.user().id));
+            this.router.navigateTo(`/${action}?${delegation.toString()}`);
 
-            const delegationUrl = await this.backendService.getDelegationUrl(action, delegationParam);
-            if (delegationUrl) {
-                window.open(delegationUrl, "_self");
-            }
+            return true;
         }
+        return false;
     }
 
     private setUser(model: User): any {
@@ -107,17 +103,23 @@ export class Profile {
     }
 
     public async toggleEdit(): Promise<void> {
+        const isDelegationEnabled = await this.isDelegationEnabled(DelegationAction.changeProfile);
+        if (isDelegationEnabled) {
+            return;
+        }
         if (this.isEdit()) {
             this.firstName(this.user().firstName);
             this.lastName(this.user().lastName);
-        } else {
-            await this.isDelegation(DelegationAction.changeProfile);
         }
+
         this.isEdit(!this.isEdit());
     }
 
     public async toggleEditPassword(): Promise<void> {
-        await this.isDelegation(DelegationAction.changePassword);
+        const isDelegationEnabled = await this.isDelegationEnabled(DelegationAction.changePassword);
+        if (isDelegationEnabled) {
+            return;
+        }
         await this.router.navigateTo(pageUrlChangePassword);
     }
 
@@ -156,7 +158,10 @@ export class Profile {
     }
 
     public async closeAccount(): Promise<void> {
-        await this.isDelegation(DelegationAction.closeAccount);
+        const isDelegationEnabled = await this.isDelegationEnabled(DelegationAction.closeAccount);
+        if (isDelegationEnabled) {
+            return;
+        }
         const confirmed = window.confirm(`Dear ${this.user().firstName} ${this.user().lastName}, \nYou are about to close your account associated with email address ${this.user().email}.\nYou will not be able to sign in to or restore your closed account. Are you sure you want to close your account?`);
 
         if (confirmed) {
