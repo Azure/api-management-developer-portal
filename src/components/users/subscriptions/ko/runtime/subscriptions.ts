@@ -6,9 +6,9 @@ import { SubscriptionListItem } from "./subscriptionListItem";
 import { UsersService } from "../../../../../services/usersService";
 import { ProductService } from "../../../../../services/productService";
 import { TenantService } from "../../../../../services/tenantService";
-import { BackendService } from "../../../../../services/backendService";
 import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import { Utils } from "../../../../../utils";
+import { Router } from "@paperbits/common/routing/router";
 
 @RuntimeComponent({
     selector: "subscriptions-runtime"
@@ -23,7 +23,7 @@ export class Subscriptions {
     constructor(
         private readonly usersService: UsersService,
         private readonly tenantService: TenantService,
-        private readonly backendService: BackendService,
+        private readonly router: Router,
         private readonly productService: ProductService
     ) {
         this.subscriptions = ko.observableArray();
@@ -97,8 +97,8 @@ export class Subscriptions {
         subscription.isSRegenerating(true);
 
         try {
-            const isDelegation = await this.isDelegation(subscriptionId);
-            if (isDelegation) {
+            const isDelegationEnabled = await this.isDelegationEnabled(subscriptionId);
+            if (isDelegationEnabled) {
                 return;
             }
             const updated = await this.productService.cancelSubscription(subscriptionId);
@@ -118,16 +118,13 @@ export class Subscriptions {
         }
     }
 
-    private async isDelegation(subscriptionId: string): Promise<boolean> {
+    private async isDelegationEnabled(subscriptionId: string): Promise<boolean> {
         const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
         if (isDelegationEnabled) {
-            const delegationParam = {};
-            delegationParam[DelegationParameters.SubscriptionId] = Utils.getResourceName("subscriptions", subscriptionId);
+            const delegation = new URLSearchParams();
+            delegation.append(DelegationParameters.SubscriptionId, Utils.getResourceName("subscriptions", subscriptionId));
+            this.router.navigateTo(`/${DelegationAction.unsubscribe}?${delegation.toString()}`);
 
-            const delegationUrl = await this.backendService.getDelegationUrl(DelegationAction.unsubscribe, delegationParam);
-            if (delegationUrl) {
-                window.open(delegationUrl, "_self");
-            }
             return true;
         }
 

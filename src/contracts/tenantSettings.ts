@@ -14,15 +14,15 @@ export interface TenantSettings {
 }
 
 export enum DelegationAction {     
-    signIn = "SignIn",
-    signUp = "SignUp",
-    subscribe = "Subscribe",
-    unsubscribe = "Unsubscribe",
-    renew = "Renew",
-    changeProfile = "ChangeProfile",
-    changePassword = "ChangePassword",
-    closeAccount = "CloseAccount",
-    signOut = "SignOut",   
+    signIn = "signin",
+    signUp = "signup",
+    subscribe = "delegation-subscribe",
+    unsubscribe = "delegation-unsubscribe",
+    renew = "delegation-renew",
+    changeProfile = "delegation-changeProfile",
+    changePassword = "change-password",
+    closeAccount = "delegation-closeAccount",
+    signOut = "signout"
 }
   
 export enum DelegationParameters { 
