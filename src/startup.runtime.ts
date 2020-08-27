@@ -15,5 +15,6 @@ window.onbeforeunload = () => {
         const rest = location.href.split(location.pathname)[1];
         const returnUrl = location.pathname + rest;
         sessionStorage.setItem("returnUrl", returnUrl);
+        document.cookie = `returnUrl=${returnUrl}`; // for delegation
     } 
 };

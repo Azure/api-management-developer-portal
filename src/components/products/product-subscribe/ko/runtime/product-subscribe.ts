@@ -8,7 +8,6 @@ import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { TenantService } from "../../../../../services/tenantService";
-import { BackendService } from "../../../../../services/backendService";
 import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
@@ -34,7 +33,6 @@ export class ProductSubscribe {
     constructor(
         private readonly usersService: UsersService,
         private readonly tenantService: TenantService,
-        private readonly backendService: BackendService,
         private readonly productService: ProductService,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
@@ -118,17 +116,14 @@ export class ProductSubscribe {
         this.limitReached(limitReached);
     }
 
-    private async isDelegation(userId: string, productId: string): Promise<boolean> {
+    private async isDelegationEnabled(userId: string, productId: string): Promise<boolean> {
         const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
         if (isDelegationEnabled) {
-            const delegationParam = {};
-            delegationParam[DelegationParameters.UserId] = Utils.getResourceName("users", userId);
-            delegationParam[DelegationParameters.ProductId] = Utils.getResourceName("products", productId);
+            const delegation = new URLSearchParams();
+            delegation.append(DelegationParameters.ProductId, Utils.getResourceName("products", productId));
+            delegation.append(DelegationParameters.UserId, Utils.getResourceName("users", userId));
+            this.router.navigateTo(`/${DelegationAction.subscribe}?${delegation.toString()}`);
 
-            const delegationUrl = await this.backendService.getDelegationUrl(DelegationAction.subscribe, delegationParam);
-            if (delegationUrl) {
-                window.open(delegationUrl, "_self");
-            }
             return true;
         }
 
@@ -156,9 +151,8 @@ export class ProductSubscribe {
         this.working(true);
 
         try {
-
-            const isDelegation = await this.isDelegation(userId, productId);
-            if (isDelegation) {
+            const isDelegationEnabled = await this.isDelegationEnabled(userId, productId);
+            if (isDelegationEnabled) {
                 return;
             }
 
