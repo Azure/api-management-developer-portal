@@ -41,7 +41,12 @@ export class NhsWalesPagePublisherPlugin implements HtmlPagePublisherPlugin {
                     }
                     
                     document.head.appendChild(scriptTag);
-                }
+                } 
+                
+                //add cache busting query parameter to local resources
+                const publishTimestamp = `v=${new Date().toISOString().replace(/[^\d]/g,'')}`;
+                document.querySelectorAll("script[src^='/']").forEach(scriptTag => scriptTag.setAttribute("src", this.addQueryParam(scriptTag["src"], publishTimestamp)))
+                document.querySelectorAll("link[href^='/']").forEach(linkTag => linkTag.setAttribute("href",this.addQueryParam(linkTag["href"], publishTimestamp)))
                 
                 setTimeout(resolve, 500);
 
@@ -50,5 +55,13 @@ export class NhsWalesPagePublisherPlugin implements HtmlPagePublisherPlugin {
                 reject(`Unable to apply knockout bindings to a template: ${error}`);
             }
         });
+    }
+
+    private addQueryParam(url:string, param:string){
+        let q = "?"
+        if (url.indexOf("?") > -1 ){
+            q = "&" //TODO: Figure out why this is being turned into &amp; in the published site
+        }
+        return url + q + param
     }
 }
