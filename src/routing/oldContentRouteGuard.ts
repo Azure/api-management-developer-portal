@@ -21,7 +21,7 @@ export class OldContentRouteGuard implements RouteGuard {
                 this.toast = this.viewManager.addToast("Deprecated content detected", `Your developer portal's content is based off the pre-production version of default content. <a href="https://aka.ms/apimdocs/portal#preview-to-ga" target="_blank">Learn about the problems it may cause and how to switch to the production version of content</a>.`);
                 setTimeout(() => {
                     this.viewManager.removeToast(this.toast);
-                    sessionStorage.setItem("OldContent", "showed");
+                    sessionStorage.setItem("OldContent", "shown");
                 }, 15000);
             }
         }
