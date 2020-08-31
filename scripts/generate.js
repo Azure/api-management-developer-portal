@@ -21,7 +21,7 @@ async function generateJson() {
 
 async function generate() {
     const blobStorageUrl = await getStorageSasTokenOrThrow(managementApiEndpoint, managementApiAccessToken);
-    const localMediaFolder = `./${sourceFolder}/content`;
+    const localMediaFolder = `./${sourceFolder}/media`;
 
     await generateJson();
     await uploadBlobs(blobStorageUrl, localMediaFolder);

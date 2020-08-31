@@ -40,7 +40,7 @@ async function captureJson() {
 
 async function capture() {
     const blobStorageUrl = await getStorageSasTokenOrThrow(managementApiEndpoint, managementApiAccessToken);
-    const localMediaFolder = `./${destinationFolder}/content`;
+    const localMediaFolder = `./${destinationFolder}/media`;
 
     await captureJson();
     await downloadBlobs(blobStorageUrl, localMediaFolder);
