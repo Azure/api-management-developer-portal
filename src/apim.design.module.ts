@@ -58,6 +58,7 @@ import { ProvisionService } from "./services/provisioningService";
 import { PolicyService } from "./services/policyService";
 import { OAuthService } from "./services/oauthService";
 import { HistoryRouteHandler } from "@paperbits/common/routing";
+import { OldContentRouteGuard } from "./routing/oldContentRouteGuard";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -119,6 +120,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
+        injector.bindToCollection("routeGuards", OldContentRouteGuard);
         injector.bindToCollection("routeGuards", UnsavedChangesRouteGuard);
         injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);
         injector.bindSingleton("oauthService", OAuthService);
