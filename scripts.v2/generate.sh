@@ -2,12 +2,7 @@
 
 export management_endpoint="< service name >.management.azure-api.net"
 export access_token="SharedAccessSignature ..."
-export storage_connection_string="DefaultEndpointsProtocol=..."
-export container="content"
-export data_file="./data.json"
-export media_folder="./media"
-
+export source_folder="../dist/snapshot"
 
 # make sure to double quote the $access_token variable so it handles the space correctly
 node ./generate $management_endpoint "$access_token" $data_file
-node ./upload $storage_connection_string $media_folder $container

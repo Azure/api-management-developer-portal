@@ -7,18 +7,14 @@ cd scripts
 set apimServiceName="<service-name>"
 set management_endpoint="<service-name>.management.azure-api.net/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.ApiManagement/service/<service-name>"
 set access_token="SharedAccessSignature integration&..."
-set storage_sas_url="https://portalstorage.blob.core.windows.net/?..."
-set storage_connection_string="DefaultEndpointsProtocol=https;AccountName=portalstorage;AccountKey=...;EndpointSuffix=core.windows.net"
 set portalUrl="https://portalstorage.../"
 set backendUrl="https://<service-name>.developer.azure-api.net"
 
-set data_file="./data.json"
-set media_folder="./media"
+set source_folder="../dist/snapshot"
 
-node ./cleanup %management_endpoint% %access_token% %storage_connection_string%
-node ./configure %management_endpoint% %access_token% %storage_sas_url% %storage_connection_string% %backendUrl% %apimServiceName%
-node ./generate %management_endpoint% %access_token% %data_file%
-node ./upload %storage_connection_string% %media_folder%
+node ./cleanup %management_endpoint% %access_token%
+node ./configure %management_endpoint% %access_token% %backendUrl% %apimServiceName%
+node ./generate %management_endpoint% %access_token% %source_folder%
 
 cd ..
 
