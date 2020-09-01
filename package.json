@@ -23,6 +23,7 @@
         "postinstall": "npm rebuild node-sass"
     },
     "devDependencies": {
+        "@azure/storage-blob": "12.1.2",
         "@types/chai": "^4.2.12",
         "@types/google-maps": "^3.2.2",
         "@types/knockout": "^3.4.68",
@@ -61,11 +62,11 @@
         "webpack-merge": "^5.1.2"
     },
     "dependencies": {
-        "@paperbits/azure": "0.1.313",
-        "@paperbits/common": "0.1.313",
-        "@paperbits/core": "0.1.313",
-        "@paperbits/prosemirror": "0.1.313",
-        "@paperbits/styles": "0.1.313",
+        "@paperbits/azure": "0.1.314",
+        "@paperbits/common": "0.1.314",
+        "@paperbits/core": "0.1.314",
+        "@paperbits/prosemirror": "0.1.314",
+        "@paperbits/styles": "0.1.314",
         "@webcomponents/custom-elements": "1.4.2",
         "@webcomponents/shadydom": "^1.7.4",
         "adal-vanilla": "^1.0.18",
