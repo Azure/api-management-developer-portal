@@ -42,11 +42,11 @@ async function getStorageSasTokenOrThrow(managementApiEndpoint, managementApiAcc
 /**
  * Gets a storage connection string from the management API for the specified APIM instance and
  * SAS token.
- * @param {string} endpoint the management endpoint of service instance
- * @param {string} token the SAS token
+ * @param {string} managementApiEndpoint the management endpoint of service instance
+ * @param {string} managementApiAccessToken the SAS token
  */
-async function getStorageSasToken(endpoint, token) {
-    const response = await request("POST", `https://${endpoint}/portalSettings/mediaContent/listSecrets?api-version=2018-01-01`, token);
+async function getStorageSasToken(managementApiEndpoint, managementApiAccessToken) {
+    const response = await request("POST", `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/portalSettings/mediaContent/listSecrets?api-version=2019-12-01`, managementApiAccessToken);
     return response.containerSasUrl;
 }
 
@@ -140,7 +140,7 @@ async function deleteBlobs(blobStorageUrl) {
 
     for await (const blob of blobs) {
         const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-        await blockBlobClient.deleteIfExists();
+        await blockBlobClient.delete();
     }
 }
 

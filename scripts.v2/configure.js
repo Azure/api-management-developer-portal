@@ -8,7 +8,7 @@ const managementEndpoint = process.argv[2];
 const apimSasAccessTokenValue = process.argv[3];
 const backendUrlValue = process.argv[4];
 const apimServiceNameValue = process.argv[5];
-const apimServiceUrlValue = `https://${managementEndpoint}/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/${apimServiceNameValue}`;
+const apimServiceUrlValue = `https://${managementEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/${apimServiceNameValue}`;
 
 const apimServiceParameter = "managementApiUrl";
 const apimSasAccessTokenParameter = "managementApiAccessToken";

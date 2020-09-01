@@ -107,23 +107,23 @@ async function run() {
     const destManagementApiEndpoint = yargs.destEndpoint;
     const destManagementApiAccessToken = await getTokenOrThrow(yargs.destToken, yargs.destId, yargs.destKey);
     const publishEndpoint = yargs.publishEndpoint;
-    
+
     // the rest of this mirrors migrate.bat, but since we're JS, we're platform-agnostic.
     const snapshotFolder = '../dist/snapshot';
 
     // capture the content of the source portal (excl. media)
-    execSync(`node ./capture ${sourceManagementApiEndpoint} "${sourceManagementApiAccessToken}" ${snapshotFolder}`);
+    execSync(`node ./capture ${sourceManagementApiEndpoint} "${sourceManagementApiAccessToken}" "${snapshotFolder}"`);
 
     // remove all content of the target portal (incl. media)
     execSync(`node ./cleanup ${destManagementApiEndpoint} "${destManagementApiAccessToken}"`);
 
     // upload the content of the source portal (excl. media)
-    execSync(`node ./generate ${destManagementApiEndpoint} "${destManagementApiAccessToken}" ${snapshotFolder}`);
+    execSync(`node ./generate ${destManagementApiEndpoint} "${destManagementApiAccessToken}" "${snapshotFolder}"`);
 
     if (publishEndpoint && !yargs.selfHosted) {
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
         publish(publishEndpoint, destManagementApiAccessToken);
-    } 
+    }
     else if (publishEndpoint) {
         console.warn("Auto-publishing self-hosted portal is not supported.");
     }
@@ -167,8 +167,6 @@ async function generateSASToken(id, key, expiresIn = 3600) {
     return `SharedAccessSignature uid=${id}&ex=${expiryString}&sn=${signedData}`;
 }
 
-
-
 /**
  * Publishes the content of the specified APIM instance using a SAS token.
  * @param {string} endpoint the publishing endpoint of the destination developer portal instance
@@ -176,9 +174,15 @@ async function generateSASToken(id, key, expiresIn = 3600) {
  */
 async function publish(endpoint, token) {
     const url = `https://${endpoint}/publish`;
-    
+
     // returns with literal OK (missing quotes), which is invalid json.
     await request("POST", url, token);
 }
 
-run();
+run()
+    .then(() => {
+        console.log("DONE");
+    })
+    .catch(error => {
+        console.log(error);
+    });

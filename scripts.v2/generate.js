@@ -13,7 +13,7 @@ async function generateJson() {
     for (const key of keys) {
         await request(
             "PUT",
-            `https://${managementApiEndpoint}${key}?api-version=2018-06-01-preview`,
+            `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/${key}?api-version=2019-12-01`,
             managementApiAccessToken,
             JSON.stringify(dataObj[key]));
     }
