@@ -21,7 +21,6 @@ export class ConfirmPassword {
     public readonly passwordConfirmation: ko.Observable<string>;
     public readonly isResetConfirmed: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
-    public readonly canSubmit: ko.Computed<boolean>;
 
     constructor(
         private readonly usersService: UsersService,
@@ -30,9 +29,6 @@ export class ConfirmPassword {
         this.passwordConfirmation = ko.observable();
         this.isResetConfirmed = ko.observable(false);
         this.working = ko.observable(false);
-        this.canSubmit = ko.pureComputed(() => {
-            return this.password() === this.passwordConfirmation();
-        });
 
         validation.init({
             insertMessages: false,
