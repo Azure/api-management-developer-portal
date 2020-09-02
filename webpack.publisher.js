@@ -68,7 +68,8 @@ const publisherConfig = {
         new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" }),
         new CopyWebpackPlugin({
             patterns: [
-                { from: `./src/config.publish.json`, to: `config.json` }
+                { from: `./src/config.publish.json`, to: `config.json` },
+                { from: `./src/config.runtime.json`, to: `assets/config.json` }
             ]
         })
     ],
