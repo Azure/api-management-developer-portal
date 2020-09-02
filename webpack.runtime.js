@@ -57,7 +57,6 @@ const runtimeConfig = {
         new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" }),
         new CopyWebpackPlugin({
             patterns: [
-                { from: `./src/config.runtime.json`, to: `config.json` },
                 { from: `./src/themes/website/styles/fonts`, to: "styles/fonts" },
                 { from: `./src/themes/website/assets` },
                 { from: `./js/HipObject.js`, to: "scripts/js" }
