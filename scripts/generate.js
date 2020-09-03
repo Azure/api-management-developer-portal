@@ -1,3 +1,7 @@
+/*
+ * Important: this script is no longer maintained; new scripts are located in the scripts.v2 folder.
+*/
+
 const fs = require("fs");
 const https = require("https");
 const managementEndpoint = process.argv[2]
