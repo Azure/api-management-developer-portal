@@ -2,25 +2,52 @@ import { MapiClient } from "./../services/mapiClient";
 import { IBlobStorage } from "@paperbits/common/persistence";
 import { AzureBlobStorage } from "@paperbits/azure";
 import { StaticSettingsProvider } from "../components/staticSettingsProvider";
+import { ISettingsProvider } from "@paperbits/common/configuration";
+
+
+const defaultContainerName = "content";
 
 export class MapiBlobStorage implements IBlobStorage {
     private storageClient: AzureBlobStorage;
 
-    constructor(private readonly mapiClient: MapiClient) { }
+    constructor(
+        private readonly mapiClient: MapiClient,
+        private readonly settingsProvider: ISettingsProvider
+    ) { }
 
     private async getStorageClient(): Promise<AzureBlobStorage> {
         if (this.storageClient) {
             return this.storageClient;
         }
 
-        const result = await this.mapiClient.post<any>(`/portalSettings/mediaContent/listSecrets`);
-        const blobStorageUrl = result.containerSasUrl;
+        let storageSettingsProvider: ISettingsProvider;
 
-        const settingsProvider = new StaticSettingsProvider({
-            blobStorageUrl: blobStorageUrl
-        });
+        const blobStorageContainer = await this.settingsProvider.getSetting<string>("blobStorageContainer");
+        const blobStorageConnectionString = await this.settingsProvider.getSetting<string>("blobStorageConnectionString");
+        const blobStorageUrl = await this.settingsProvider.getSetting<string>("blobStorageUrl");
 
-        this.storageClient = new AzureBlobStorage(settingsProvider);
+        if (blobStorageConnectionString) {
+            storageSettingsProvider = new StaticSettingsProvider({
+                blobStorageConnectionString: blobStorageConnectionString,
+                blobStorageContainer: blobStorageContainer || defaultContainerName
+            });
+        }
+        else if (blobStorageUrl) {
+            storageSettingsProvider = new StaticSettingsProvider({
+                blobStorageUrl: blobStorageUrl,
+                blobStorageContainer: blobStorageContainer || defaultContainerName
+            });
+        }
+        else {
+            const result = await this.mapiClient.post<any>(`/portalSettings/mediaContent/listSecrets`);
+            const blobStorageUrl = result.containerSasUrl;
+
+            storageSettingsProvider = new StaticSettingsProvider({
+                blobStorageUrl: blobStorageUrl
+            });
+        }
+
+        this.storageClient = new AzureBlobStorage(storageSettingsProvider);
 
         return this.storageClient;
     }
