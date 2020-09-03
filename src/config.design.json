@@ -1,9 +1,7 @@
 {
-  "managementApiUrl": "https://<service-name>.management.azure-api.net",
-  "managementApiAccessToken": "SharedAccessSignature ...",
-  "blobStorageContainer": "content",
-  "blobStorageUrl": "https://<account>.blob.core.windows.net?st=...",
-  "environment": "development",
-  "backendUrl": "https://<service-name>.developer.azure-api.net",
-  "useHipCaptcha": false
+    "environment": "development",
+    "managementApiUrl": "https://<service-name>.management.azure-api.net",
+    "managementApiAccessToken": "SharedAccessSignature ...",
+    "backendUrl": "https://<service-name>.developer.azure-api.net",
+    "useHipCaptcha": false
 }

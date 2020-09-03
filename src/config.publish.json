@@ -1,8 +1,6 @@
 {
-  "managementApiUrl": "https://<service-name>.management.azure-api.net",
-  "managementApiAccessToken": "SharedAccessSignature...",
-  "blobStorageContainer": "content",
-  "blobStorageConnectionString": "DefaultEndpointsProtocol=...",
-  "environment": "publishing",
-  "useHipCaptcha": false
+    "environment": "publishing",
+    "managementApiUrl": "https://<service-name>.management.azure-api.net",
+    "managementApiAccessToken": "SharedAccessSignature...",
+    "useHipCaptcha": false
 }

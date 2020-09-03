@@ -1,6 +1,6 @@
 import * as Constants from "./constants";
 import { UnsavedChangesRouteGuard } from "./routing/unsavedChangesRouteGuard";
-import { MapiObjectStorage } from "./persistence/mapiObjectStorage";
+import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
@@ -25,7 +25,6 @@ import { SubscriptionsDesignModule } from "./components/users/subscriptions/subs
 import { ProductDetailsModule } from "./components/products/product-details/productDetails.module";
 import { ProductDetailsDesignModule } from "./components/products/product-details/productDetails.design.module";
 import { MapiClient, IdentityService } from "./services";
-import { AzureBlobStorage } from "@paperbits/azure";
 import { SetupModule } from "./components/setup/setup.module";
 import { ContentModule } from "./components/content";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";
@@ -110,7 +109,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new SigninSocialEditorModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
-        injector.bindSingleton("blobStorage", AzureBlobStorage);
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("roleService", StaticRoleService);
@@ -120,6 +118,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
+        injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindToCollection("routeGuards", OldContentRouteGuard);
         injector.bindToCollection("routeGuards", UnsavedChangesRouteGuard);
         injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);
