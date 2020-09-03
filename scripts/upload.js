@@ -1,3 +1,7 @@
+/*
+ * Important: this script is no longer maintained; new scripts are located in the scripts.v2 folder.
+*/
+
 const fs = require("fs");
 const path = require("path");
 const storage = require("azure-storage");

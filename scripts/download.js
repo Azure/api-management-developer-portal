@@ -1,3 +1,7 @@
+/*
+ * Important: this script is no longer maintained; new scripts are located in the scripts.v2 folder.
+*/
+
 const mkdirp = require("mkdirp");
 const storage = require("azure-storage");
 const containerName = "content";
