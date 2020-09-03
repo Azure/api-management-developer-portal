@@ -124,7 +124,7 @@ export class ProductService {
             const productPromise = this.mapiClient
                 .get<ProductContract>(`/products/${productName}`)
                 .then(product => {
-                    subscriptionModel.productName = product.name;
+                    subscriptionModel.productName = product.properties.displayName;
                 });
 
             promises.push(productPromise);
