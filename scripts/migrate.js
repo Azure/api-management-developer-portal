@@ -1,4 +1,6 @@
 /**
+ * Important: this script is no longer maintained. It can automate deployments of self-hosted portals with explicitly-defined Storage Accounts only. Refer to documentation for more details. New scripts are located in the scripts.v2 folder.
+ * 
  * This script automates deployments between developer portal instances.
  * In order to run it, you need to:
  * 
