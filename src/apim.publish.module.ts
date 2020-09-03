@@ -1,8 +1,7 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
-import { AzureBlobStorage } from "@paperbits/azure";
 import { MapiClient } from "./services/mapiClient";
-import { MapiObjectStorage } from "./persistence/mapiObjectStorage";
+import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
 import { DetailsOfApiModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
 import { HistoryOfApiModule } from "./components/apis/history-of-api/ko/historyOfApi.module";
@@ -56,8 +55,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ConfirmPasswordModule());
         injector.bindModule(new ChangePasswordModule());
         injector.bindModule(new ReportsModule());
-        injector.bindModule(new ValidationSummaryModule());
-        injector.bindSingleton("blobStorage", AzureBlobStorage);
+        injector.bindModule(new ValidationSummaryModule());        
         injector.bindSingleton("tenantService", TenantService);        
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("userService", StaticUserService);
@@ -68,6 +66,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("authenticator", StaticAuthenticator);
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
+        injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("oauthService", OAuthService);
     }

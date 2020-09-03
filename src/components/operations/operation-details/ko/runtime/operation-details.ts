@@ -233,8 +233,7 @@ export class OperationDetails {
 
             if ((definition.type instanceof TypeDefinitionPropertyTypeReference
                 || definition.type instanceof TypeDefinitionPropertyTypeArrayOfPrimitive
-                || definition.type instanceof TypeDefinitionPropertyTypeArrayOfReference)
-                && !skipNames.includes(definition.type.name)) {
+                || definition.type instanceof TypeDefinitionPropertyTypeArrayOfReference)) {
                 result.push(definition.type.name);
             }
 
@@ -243,7 +242,7 @@ export class OperationDetails {
             }
         });
 
-        return result;
+        return result.filter(x => !skipNames.includes(x));
     }
 
     public async loadGatewayInfo(apiName: string): Promise<void> {
