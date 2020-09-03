@@ -1,3 +1,4 @@
+@REM Important: this script is no longer maintained; new scripts are located in the scripts.v2 folder.
 @REM Reprovision an existing API Management portal deployment - clean all the content, autogenerate new content, upload it, publish the portal, and host it
 
 cd ..
