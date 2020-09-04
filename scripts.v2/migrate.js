@@ -184,5 +184,6 @@ run()
         console.log("DONE");
     })
     .catch(error => {
-        console.log(error);
+        console.error(error);
+        process.exitCode = 1;
     });
