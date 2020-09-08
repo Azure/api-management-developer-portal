@@ -6,6 +6,8 @@ import { AadService } from "../../../../../services";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
 
+const aadb2cResetPasswordErrorCode = "AADB2C90118";
+
 @RuntimeComponent({
     selector: "signin-aad-b2c"
 })
@@ -22,6 +24,7 @@ export class SignInAadB2C {
         this.authority = ko.observable();
         this.instance = ko.observable();
         this.signInPolicy = ko.observable();
+        this.passwordResetPolicyName = ko.observable();
         this.classNames = ko.observable();
         this.label = ko.observable();
     }
@@ -39,6 +42,9 @@ export class SignInAadB2C {
     public signInPolicy: ko.Observable<string>;
 
     @Param()
+    public passwordResetPolicyName: ko.Observable<string>;
+
+    @Param()
     public classNames: ko.Observable<string>;
 
     @Param()
@@ -50,15 +56,25 @@ export class SignInAadB2C {
     }
 
     /**
-     * Initiates signing-in with Azure Active Directory.
+     * Initiates signing-in with Azure Active Directory B2C.
      */
     public async signIn(): Promise<void> {
         this.cleanValidationErrors();
 
         try {
-            await this.aadService.signInWithAadB2C(this.clientId(), this.authority(), this.instance(), this.signInPolicy());
+            await this.aadService.runAadB2CUserFlow(this.clientId(), this.authority(), this.instance(), this.signInPolicy());
         }
         catch (error) {
+            if (this.passwordResetPolicyName() && error.message.includes(aadb2cResetPasswordErrorCode)) { // Reset password requested
+                try {
+                    await this.aadService.runAadB2CUserFlow(this.clientId(), this.authority(), this.instance(), this.passwordResetPolicyName());
+                    return;
+                }
+                catch (resetpasswordError) {
+                    error = resetpasswordError;
+                }
+            }
+
             let errorDetails;
 
             if (error.code === "ValidationError") {
