@@ -122,7 +122,7 @@ async function run() {
 
     if (publishEndpoint && !yargs.selfHosted) {
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-        publish(publishEndpoint, destManagementApiAccessToken);
+        await publish(publishEndpoint, destManagementApiAccessToken);
     }
     else if (publishEndpoint) {
         console.warn("Auto-publishing self-hosted portal is not supported.");
