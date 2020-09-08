@@ -37,9 +37,19 @@ export class IdentityProvider {
     public signinTenant: string;
 
     /**
-     * Signup Policy Name. Only applies to AAD B2C Identity Provider.
+     * Sign-in policy name. Only applies to AAD B2C identity provider.
      */
     public signinPolicyName: string;
+
+    /**
+     * Sign-up policy name. Only applies to AAD B2C identity provider.
+     */
+    public signupPolicyName: string;
+
+    /**
+     * Password reset policy name. Only applies to AAD B2C identity provider.
+     */
+    public passwordResetPolicyName: string;
 
     constructor(contract?: IdentityProviderContract) {
         if (!contract) {
@@ -53,5 +63,7 @@ export class IdentityProvider {
         this.allowedTenants = contract.properties.allowedTenants;
         this.signinTenant = contract.properties.signinTenant;
         this.signinPolicyName = contract.properties.signinPolicyName;
+        this.signupPolicyName = contract.properties.signupPolicyName;
+        this.passwordResetPolicyName = contract.properties.passwordResetPolicyName;
     }
 }
