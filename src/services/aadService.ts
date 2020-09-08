@@ -40,7 +40,7 @@ export class AadService {
         const response = await this.httpClient.send(request);
         const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
         const returnUrl = this.routeHelper.getQueryParameter("returnUrl");
-                
+
         if (!sasTokenHeader) { // User not registered with APIM.
             const jwtToken = Utils.parseJwt(idToken);
             const firstName = jwtToken.given_name;
@@ -61,7 +61,7 @@ export class AadService {
 
         const accessToken = AccessToken.parse(sasTokenHeader.value);
         await this.authenticator.setAccessToken(accessToken);
-        
+
         await this.router.navigateTo(returnUrl || Constants.pageUrlHome);
     }
 
@@ -129,13 +129,13 @@ export class AadService {
     }
 
     /**
-     * Initiates signing-in with Azure Active Directory identity provider.
+     * Runc Azure Active Directory B2C user flow.
      * @param clientId {string} Azure Active Directory B2C client ID.
      * @param tenant {string} Tenant, e.g. "contoso.b2clogin.com".
      * @param instance {string} Instance, e.g. "contoso.onmicrosoft.com".
-     * @param signInPolicy {string} Sign-in policy, e.g. "b2c_1_signinpolicy".
+     * @param userFlow {string} User flow, e.g. "B2C_1_signinsignup".
      */
-    public async signInWithAadB2C(clientId: string, tenant: string, instance: string, signInPolicy: string): Promise<void> {
+    public async runAadB2CUserFlow(clientId: string, tenant: string, instance: string, userFlow: string): Promise<void> {
         if (!clientId) {
             throw new Error(`Client ID not specified.`);
         }
@@ -144,7 +144,7 @@ export class AadService {
             throw new Error(`Authority not specified.`);
         }
 
-        const auth = `https://${tenant}/tfp/${instance}/${signInPolicy}`;
+        const auth = `https://${tenant}/tfp/${instance}/${userFlow}`;
 
         const msalConfig = {
             auth: {

@@ -41,7 +41,17 @@ export interface IdentityProviderProperties {
     signinTenant: string;
 
     /**
-     * Signup Policy Name. Only applies to AAD B2C Identity Provider.
+     * Sign-in policy name. Only applies to AAD B2C identity provider.
      */
     signinPolicyName: string;
+
+    /**
+     * Sign-up policy name. Only applies to AAD B2C identity provider.
+     */
+    signupPolicyName: string;
+
+    /**
+     * Password reset policy name. Only applies to AAD B2C identity provider.
+     */
+    passwordResetPolicyName: string;
 }
