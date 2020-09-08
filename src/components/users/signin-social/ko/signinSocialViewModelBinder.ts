@@ -67,6 +67,7 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
                 authority: aadB2CIdentityProvider.authority,
                 instance: signinTenant,
                 signInPolicy: aadB2CIdentityProvider.signinPolicyName,
+                passwordResetPolicyName: aadB2CIdentityProvider.passwordResetPolicyName,
                 classNames: classNames,
                 label: model.aadB2CLabel
             };
