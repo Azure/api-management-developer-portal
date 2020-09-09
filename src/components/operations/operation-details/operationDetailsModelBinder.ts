@@ -18,6 +18,7 @@ export class OperationDetailsModelBinder implements IModelBinder<OperationDetail
     public async contractToModel(contract: OperationDetailsContract): Promise<OperationDetailsModel> {
         const model = new OperationDetailsModel();
         model.enableConsole = contract.enableConsole === true || contract.enableConsole === undefined;
+        model.enableScrollTo = contract.enableScrollTo === true || contract.enableScrollTo === undefined;
         model.defaultSchemaView = contract.defaultSchemaView || "table";
         model.authorizationServers = await this.oauthService.getOAuthServers();
 
@@ -28,6 +29,7 @@ export class OperationDetailsModelBinder implements IModelBinder<OperationDetail
         const contract: OperationDetailsContract = {
             type: "operationDetails",
             enableConsole: model.enableConsole,
+            enableScrollTo: model.enableScrollTo,
             defaultSchemaView: model.defaultSchemaView
         };
 
