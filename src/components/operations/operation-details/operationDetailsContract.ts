@@ -10,4 +10,9 @@ export interface OperationDetailsContract extends Contract {
      * Defines how schema gets presented in operation details by default, e.g. "table" or "raw".
      */
     defaultSchemaView?: string;
+
+    /**
+     * Indicates whether operation details should appear in the visible area (for example if API details is too long).
+     */
+    enableScrollTo?: boolean;
 }
