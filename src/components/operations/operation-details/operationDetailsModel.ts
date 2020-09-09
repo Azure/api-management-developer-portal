@@ -16,7 +16,13 @@ export class OperationDetailsModel {
      */
     public authorizationServers: AuthorizationServer[];
 
+    /**
+     * Indicates whether operation details should appear in the visible area (for example if API details is too long).
+     */
+    public enableScrollTo?: boolean;
+
     constructor() {
         this.enableConsole = true;
+        this.enableScrollTo = true;
     }
 }
