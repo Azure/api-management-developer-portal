@@ -83,6 +83,9 @@ export class OperationDetails {
     public enableConsole: boolean;
 
     @Param()
+    public enableScrollTo: boolean;
+
+    @Param()
     public authorizationServers: AuthorizationServer[];
 
     @Param()
@@ -173,6 +176,11 @@ export class OperationDetails {
         this.tags(operationTags.map(tag => tag.name));
 
         this.working(false);
+
+        if (this.enableScrollTo) {
+            const headerElement = document.querySelector(".operation-header");
+            headerElement && headerElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
+        }
     }
 
     public async loadDefinitions(operation: Operation): Promise<void> {
