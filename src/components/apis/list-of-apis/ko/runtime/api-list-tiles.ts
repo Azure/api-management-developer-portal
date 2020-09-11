@@ -62,7 +62,6 @@ export class ApiListTiles {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-
         this.groupByTag(this.defaultGroupByTagToEnabled());
 
         await this.resetSearch();
@@ -80,12 +79,12 @@ export class ApiListTiles {
 
     public prevPage(): void {
         this.page(this.page() - 1);
-        this.resetSearch(/*  */);
+        this.loadPageOfApis();
     }
 
     public nextPage(): void {
         this.page(this.page() + 1);
-        this.resetSearch();
+        this.loadPageOfApis();
     }
 
     /**
