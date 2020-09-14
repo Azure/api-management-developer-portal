@@ -30,8 +30,6 @@ export class SignOutRouteGuard implements RouteGuard {
                     const identity = await this.mapiClient.get<Identity>("/identity");
 
                     if (identity) {
-                        const response = await this.backendService.getCaptchaParams();
-                        
                         const redirectUrl = await this.backendService.getDelegationUrl(DelegationAction.signOut, { userId: identity.id});
                         if (redirectUrl) {
                             window.open(redirectUrl, "_self");
