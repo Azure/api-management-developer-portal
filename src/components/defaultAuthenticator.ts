@@ -4,7 +4,17 @@ import { HttpHeader } from "@paperbits/common/http/httpHeader";
 
 export class DefaultAuthenticator implements IAuthenticator {
     public async getAccessToken(): Promise<string> {
-        const accessToken = sessionStorage.getItem("accessToken");
+        let accessToken = sessionStorage.getItem("accessToken");
+        if (!accessToken && window.location.pathname.startsWith("/signin-sso")) {
+            const url = new URL(location.href);
+            const queryParams = new URLSearchParams(url.search);
+            const token = queryParams.get("token");
+            const returnUrl = queryParams.get("returnUrl") || "/";
+            accessToken = `SharedAccessSignature ${token}`;
+            sessionStorage.setItem("accessToken", accessToken);
+            
+            window.location.assign(returnUrl);
+        }
         return accessToken;
     }
 
