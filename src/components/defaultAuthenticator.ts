@@ -8,11 +8,11 @@ export class DefaultAuthenticator implements IAuthenticator {
         if (!accessToken && window.location.pathname.startsWith("/signin-sso")) {
             const url = new URL(location.href);
             const queryParams = new URLSearchParams(url.search);
-            const token = queryParams.get("token");
-            const returnUrl = queryParams.get("returnUrl") || "/";
-            accessToken = `SharedAccessSignature ${token}`;
-            sessionStorage.setItem("accessToken", accessToken);
+            const tokenValue = queryParams.get("token");
+            const token = AccessToken.parse(`SharedAccessSignature ${tokenValue}`);
+            await this.setAccessToken(token);
             
+            const returnUrl = queryParams.get("returnUrl") || "/";
             window.location.assign(returnUrl);
         }
         return accessToken;
