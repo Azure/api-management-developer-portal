@@ -30,7 +30,7 @@ export class SignOutRouteGuard implements RouteGuard {
                     const identity = await this.mapiClient.get<Identity>("/identity");
 
                     if (identity) {
-                        const redirectUrl = await this.backendService.getDelegationUrl(DelegationAction.signOut, { userId: identity.id});
+                        const redirectUrl = await this.backendService.getDelegationUrl(DelegationAction.signOut, { userId: identity.id });
                         if (redirectUrl) {
                             window.open(redirectUrl, "_self");
                         }
@@ -39,7 +39,7 @@ export class SignOutRouteGuard implements RouteGuard {
                 catch (error) {
                     const errorMessage: string = error.message;
                     const requestedUrl: string = error.requestedUrl;
-                    if(errorMessage.startsWith("Could not complete the request.") && requestedUrl.endsWith("/delegation-url")) {
+                    if (errorMessage.startsWith("Could not complete the request.") && requestedUrl.endsWith("/delegation-url")) {
                         console.error("Delegation CORS error: self-hosted portal and Dev portal must have the same domain");
                     }
                     return true;
