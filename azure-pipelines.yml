@@ -16,13 +16,6 @@ steps:
     command: 'install'
     workingDir: '$(System.DefaultWorkingDirectory)'
 
-- task: NodeJSRunner@0
-  displayName: 'Configure'
-  inputs:
-    scriptPath: '$(System.DefaultWorkingDirectory)/scripts.v2/configure.js'
-    arguments: '$(apim-instance) $(apim-key)'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/scripts.v2'
-
 - task: Npm@1
   displayName: 'Build Site Publisher'
   inputs:
@@ -32,5 +25,10 @@ steps:
 
 - task: PublishPipelineArtifact@1
   inputs:
-    path: $(System.DefaultWorkingDirectory)/dist/publisher
+    path: $(System.DefaultWorkingDirectory)/dist/publisher      
     artifact: PortalPublisher
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    path: $(System.DefaultWorkingDirectory)/scripts.v2/reconfigure-publisher.js
+    artifact: Reconfigurator
