@@ -40,7 +40,7 @@ export class SignOutRouteGuard implements RouteGuard {
                     const errorMessage: string = error.message;
                     const requestedUrl: string = error.requestedUrl;
                     if (errorMessage.startsWith("Could not complete the request.") && requestedUrl.endsWith("/delegation-url")) {
-                        console.error("Delegation CORS error: self-hosted portal and Dev portal must have the same domain");
+                        alert("Delegation CORS error: self-hosted portal and Dev portal must have the same domain");
                     }
                     return true;
                 }
