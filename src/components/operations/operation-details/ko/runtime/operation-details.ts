@@ -98,6 +98,7 @@ export class OperationDetails {
 
         this.selectedApiName(apiName);
         this.selectedOperationName(operationName);
+        this.router.addRouteChangeListener(this.onRouteChange.bind(this));
 
         if (apiName) {
             await this.loadApi(apiName);
@@ -106,8 +107,6 @@ export class OperationDetails {
         if (operationName) {
             await this.loadOperation(apiName, operationName);
         }
-
-        this.router.addRouteChangeListener(this.onRouteChange.bind(this));
     }
 
     private async onRouteChange(): Promise<void> {
@@ -120,11 +119,14 @@ export class OperationDetails {
         }
 
         if (apiName !== this.selectedApiName() || operationName !== this.selectedOperationName()) {
-            this.operation(null);
-
             if (apiName && operationName) {
                 this.selectedOperationName(operationName);
                 await this.loadOperation(apiName, operationName);
+            } else {
+                if (!operationName) {    
+                    this.selectedOperationName(null);                
+                    this.operation(null);
+                }
             }
         }
     }
