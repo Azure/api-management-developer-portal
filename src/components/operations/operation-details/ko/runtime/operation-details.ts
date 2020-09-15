@@ -115,7 +115,7 @@ export class OperationDetails {
 
         if (apiName && apiName !== this.selectedApiName()) {
             this.selectedApiName(apiName);
-            this.loadApi(apiName);
+            await this.loadApi(apiName);
         }
 
         if (apiName !== this.selectedApiName() || operationName !== this.selectedOperationName()) {
