@@ -122,14 +122,15 @@ export class OperationDetails {
             return;
         }
 
+        if (!operationName) {    
+            this.selectedOperationName(null);                
+            this.operation(null);
+            return;
+        }
+
         if (apiName && operationName) {
             this.selectedOperationName(operationName);
             await this.loadOperation(apiName, operationName);
-        } else {
-            if (!operationName) {    
-                this.selectedOperationName(null);                
-                this.operation(null);
-            }
         }
     }
 
