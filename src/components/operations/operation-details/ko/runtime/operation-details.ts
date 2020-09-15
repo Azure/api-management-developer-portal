@@ -118,15 +118,17 @@ export class OperationDetails {
             await this.loadApi(apiName);
         }
 
-        if (apiName !== this.selectedApiName() || operationName !== this.selectedOperationName()) {
-            if (apiName && operationName) {
-                this.selectedOperationName(operationName);
-                await this.loadOperation(apiName, operationName);
-            } else {
-                if (!operationName) {    
-                    this.selectedOperationName(null);                
-                    this.operation(null);
-                }
+        if (apiName === this.selectedApiName() && operationName === this.selectedOperationName()) {
+            return;
+        }
+
+        if (apiName && operationName) {
+            this.selectedOperationName(operationName);
+            await this.loadOperation(apiName, operationName);
+        } else {
+            if (!operationName) {    
+                this.selectedOperationName(null);                
+                this.operation(null);
             }
         }
     }
