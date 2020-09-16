@@ -10,7 +10,6 @@ import * as Constants from "../constants";
 import { Utils } from "../utils";
 import { SearchQuery } from "../contracts/searchQuery";
 import { SubscriptionSecrets } from "../contracts/subscriptionSecrets";
-import { SubscriptionsModel } from "../components/users/subscriptions/subscriptionsModel";
 
 /**
  * A service for management operations with products.

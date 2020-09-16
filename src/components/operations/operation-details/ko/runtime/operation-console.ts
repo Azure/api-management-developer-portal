@@ -55,7 +55,6 @@ export class OperationConsole {
     public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
     public readonly wildcardSegment: ko.Observable<string>;
     public readonly selectedGrantType: ko.Observable<string>;
-    public masterKey: string;
     public isConsumptionMode: boolean;
     public templates: Object;
 
@@ -131,7 +130,6 @@ export class OperationConsole {
     @OnMounted()
     public async initialize(): Promise<void> {
         const skuName = await this.tenantService.getServiceSkuName();
-        this.masterKey = await this.tenantService.getServiceMasterKey();
         this.isConsumptionMode = skuName === ServiceSkuName.Consumption;
 
         await this.resetConsole();
@@ -385,14 +383,6 @@ export class OperationConsole {
 
         this.consoleOperation().request.headers.push(keyHeader);
         this.updateRequestSummary();
-    }
-
-    private setMasterSubsciptionKeyHeader(): void {
-        const subscriptionKey = this.selectedProduct
-            ? `${this.masterKey};product=${this.selectedProduct}`
-            : this.masterKey;
-
-        this.setSubscriptionKeyHeader(subscriptionKey);
     }
 
     private removeSubscriptionKeyHeader(): void {

@@ -28,7 +28,7 @@
     "editor.tabSize": 4,
     "editor.detectIndentation": false,
     "typescript.tsdk": "node_modules/typescript/lib",
-    "mochaExplorer.files": "specs/**/*.spec.ts",
+    "mochaExplorer.files": ["tests/**/*.spec.ts", "src/**/*.spec.ts"],
     "mochaExplorer.require": "./mocha",
     "mochaExplorer.timeout": 30000,
     "sfmt.insize": 4
