@@ -205,6 +205,10 @@ export class ApiService {
         return page;
     }
 
+    /**
+     * Returns tags associated with specified operation.
+     * @param operationId {string} ARM-formatted operation identifier.
+     */
     public async getOperationTags(operationId: string): Promise<Tag[]> {
         if (!operationId) {
             throw new Error(`Parameter "operationId" not specified.`);
@@ -363,7 +367,10 @@ export class ApiService {
         return page;
     }
 
-
+    /**
+     * Returns API schema with sepcified identifier.
+     * @param schemaId {string} ARM-formatted schema identifier.
+     */
     public async getApiSchema(schemaId: string): Promise<Schema> {
         const contract = await this.mapiClient.get<SchemaContract>(`${schemaId}`);
         const model = new Schema(contract);
