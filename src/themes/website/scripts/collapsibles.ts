@@ -1,6 +1,6 @@
 import { Keys } from "@paperbits/common";
 
-const collapsibleContentSelector = ".collapsible-content";
+const dropDownCollapsibleContentSelector = ".collapsible-dropdown.collapsible-content";
 const paginationSelector = ".pagination";
 const collapsibleSelector = ".collapsible";
 const collapsibleToggleSelector = "[data-toggle]";
@@ -43,7 +43,7 @@ const onActivate = (): void => {
         if (!toggleElement && target.nodeName !== "INPUT") {
             const pagerElement = target.closest(paginationSelector);
             if (!pagerElement) {
-                toggleElement = target.closest(collapsibleContentSelector)?.parentElement.querySelector(collapsibleToggleSelector);
+                toggleElement = target.closest(dropDownCollapsibleContentSelector)?.parentElement.querySelector(collapsibleToggleSelector);
             }
         }
     }
