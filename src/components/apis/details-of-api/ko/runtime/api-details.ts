@@ -151,7 +151,7 @@ export class ApiDetails {
         this.router.navigateTo(apiUrl);
     }
 
-    public getChanglogUrl() {
+    public getChangeLogUrl(): string {
         return this.routeHelper.getApiReferenceUrl(this.selectedApiName(), this.changeLogPageUrl());
     }
 
