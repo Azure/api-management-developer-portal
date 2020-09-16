@@ -1,17 +1,11 @@
-import { TenantSettings, DelegationParameters, DelegationAction } from "../contracts/tenantSettings";
+import { TenantSettings } from "../contracts/tenantSettings";
 import { MapiClient } from "./mapiClient";
-import { ISettingsProvider } from "@paperbits/common/configuration";
-import { HttpClient } from "@paperbits/common/http/httpClient";
 
 /**
  * A service for management operations with API Management tenant.
  */
 export class TenantService {
-    constructor(
-        private readonly mapiClient: MapiClient,
-        private readonly httpClient: HttpClient,
-        private readonly settingsProvider: ISettingsProvider
-    ) { }
+    constructor(private readonly mapiClient: MapiClient) { }
 
     /**
      * Returns tenant settings.
@@ -22,47 +16,11 @@ export class TenantService {
     }
 
     /**
-     * Returns API Management service name.
-     */
-    public async getServiceName(): Promise<string> {
-        return location.hostname;
-
-        // /* TODO: User proper service container */
-        // const managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
-        // const regex = /https:\/\/([\w\-]*)\./gm;
-        // const match = regex.exec(managementApiUrl);
-
-        // if (match && match.length > 0) {
-        //     const serviceName = match[1];
-        //     return serviceName;
-        // }
-        // else {
-        //     return "";
-        // }
-    }
-
-    /**
      * Returns API Management service SKU name.
      * TODO: Not implemented.
      */
     public async getServiceSkuName(): Promise<string> {
         return "Developer";
-    }
-
-    /**
-     * Returns API Management service master key.
-     * TODO: Not implemented.
-     */
-    public async getServiceMasterKey(): Promise<string> {
-        return undefined;
-
-        // const service = await this.getServiceDescription();
-
-        // if (service.sku.name === ServiceSkuName.Consumption) {
-        //     const subscription = await this.mapiClient.executeGet<Subscription>(`${service.id}/subscriptions/master`);
-        //     return subscription && subscription.primaryKey;
-        // }
-        // return undefined;
     }
 
     public async isDelegationEnabled(loadedSettings?: TenantSettings): Promise<boolean> {
