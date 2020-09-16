@@ -4,8 +4,7 @@
  * 
  * 1) Clone the api-management-developer-portal repository
  * 2) `npm install` in the root of the project
- * 3) Install az-cli (https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
- * 4) Run this script with a valid combination of arguments
+ * 3) Run this script with a valid combination of arguments
  * 
  * Managed portal command example:
  * node migrate --sourceEndpoint from.management.azure-api.net --destEndpoint to.management.azure-api.net --publishEndpoint to.developer.azure-api.net --sourceToken "SharedAccessSignature integration&2020..." --destToken "SharedAccessSignature integration&2020..."
@@ -111,13 +110,13 @@ async function run() {
     // the rest of this mirrors migrate.bat, but since we're JS, we're platform-agnostic.
     const snapshotFolder = '../dist/snapshot';
 
-    // capture the content of the source portal (excl. media)
+    // capture the content of the source portal
     execSync(`node ./capture ${sourceManagementApiEndpoint} "${sourceManagementApiAccessToken}" "${snapshotFolder}"`);
 
-    // remove all content of the target portal (incl. media)
+    // remove all content of the target portal
     execSync(`node ./cleanup ${destManagementApiEndpoint} "${destManagementApiAccessToken}"`);
 
-    // upload the content of the source portal (excl. media)
+    // upload the content of the source portal
     execSync(`node ./generate ${destManagementApiEndpoint} "${destManagementApiAccessToken}" "${snapshotFolder}"`);
 
     if (publishEndpoint && !yargs.selfHosted) {
