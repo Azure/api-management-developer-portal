@@ -41,8 +41,8 @@
         </div>
         <!-- ko foreach: { data: group.items, as: 'item' } -->
         <div class="table-row" role="row">
-            <div class="col-5" role="cell">
-                <a href="#" class="text-truncate"
+            <div class="col-5 text-truncate" role="cell">
+                <a href="#"
                     data-bind="attr: { href: $component.getReferenceUrl(item) }">
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.type === 'soap' -->
