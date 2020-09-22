@@ -43,7 +43,7 @@
         <div class="table-row" role="row">
             <div class="col-5 text-truncate" role="cell">
                 <a href="#"
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }">
+                    data-bind="attr: { href: $component.getReferenceUrl(item), title: item.displayName }">
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.type === 'soap' -->
                     <span class="badge badge-soap">SOAP</span>
@@ -72,9 +72,9 @@
         <!-- ko ifnot: groupByTag -->
         <!-- ko foreach: { data: apis, as: 'item' } -->
         <div class="table-row" role="row">
-            <div class="col-5" role="cell">
-                <a href="#" class="text-truncate"
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }">
+            <div class="col-5 text-truncate" role="cell">
+                <a href="#"
+                    data-bind="attr: { href: $component.getReferenceUrl(item), title: item.displayName }">
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.type === 'soap' -->
                     <span class="badge badge-soap">SOAP</span>
