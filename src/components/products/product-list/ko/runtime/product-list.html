@@ -26,7 +26,7 @@
     <div class="table-body animation-fade-in">
         <!-- ko foreach: { data: products, as: 'product' } -->
         <div class="table-row">
-            <div class="col-5">
+            <div class="col-5 text-truncate">
                 <a data-bind="attr: { href: $component.getProductUrl(product) }, text: product.displayName"></a>
             </div>
             <div class="col-7">
