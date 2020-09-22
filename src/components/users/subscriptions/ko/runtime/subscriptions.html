@@ -1,123 +1,130 @@
-<div class="table">
-    <div class="table-head">
-        <div class="table-row">
-            <div class="col-8 text-truncate">Subscription details</div>
-            <div class="col-2 text-truncate">Product</div>
-            <div class="col-1 text-truncate">State</div>
-            <div class="col-1 text-truncate">Action</div>
+<div role="table" class="table">
+    <div role="rowgroup" class="table-head">
+        <div role="row" class="table-row">
+            <div role="cell" class="col-8 text-truncate">Subscription details</div>
+            <div role="cell" class="col-2 text-truncate">Product</div>
+            <div role="cell" class="col-1 text-truncate">State</div>
+            <div role="cell" class="col-1 text-truncate">Action</div>
         </div>
     </div>
-    <div class="table-body">
+    <div role="rowgroup" class="table-body">
         <!-- ko if: subscriptions().length === 0 -->
-        <div class="table-row">
-            <div class="col-12" colspan="4">
+        <div role="row" class="table-row">
+            <div role="cell" class="col-12" colspan="4">
                 You don't have subscriptions.
             </div>
         </div>
         <!-- /ko -->
         <!-- ko if: subscriptions().length > 0 -->
         <!-- ko foreach: subscriptions -->
-        <div class="table-row">
-            <div class="col-8">
-                <div class="row">
-                    <label class="col-md-3">Name</label>
-                    <div class="col-md-6">
-                        <!-- ko ifnot: $data.isEdit -->
-                        <span data-bind="text: model.name"></span>
-                        <!-- /ko -->
-
-                        <!-- ko if: $data.isEdit -->
-                        <input type="text" class="form-control" data-bind="value: editName" />
-                        <!-- /ko -->
-                    </div>
-                    <div class="col-md-3">
-                        <!-- ko ifnot: $data.isEdit -->
-                        <a class="btn-link" href="#" data-bind="click: toggleEdit"
-                            aria-label="Rename subscription">Rename</a>
-                        <!-- /ko -->
-                        <!-- ko if: $data.isEdit -->
-                        <a class="btn-link" href="#" data-bind="click: $parent.renameSubscription"
-                            aria-label="Save subscription name">Save</a> |
-                        <a class="btn-link" href="#" data-bind="click: toggleEdit"
-                            aria-label="Cancel subscription rename">Cancel</a>
-                        <!-- /ko -->
-
-                    </div>
-                </div>
-
-                <!-- ko if: $data.model.isAwaitingApproval -->
-                <div class="row">
-                    <label class="col-lg-3">Requested on</label>
-                    <div class="col-lg-6">
-                        <span data-bind="text: $parent.timeToString(model.createdDate)"></span>
-                    </div>
-                </div>
-                <!-- /ko -->
-
-                <!-- ko ifnot: $data.model.isRejected -->
-                <!-- ko if: $data.model.startDate  -->
-                <div class="row">
-                    <label class="col-lg-3">Started on</label>
-                    <div class="col-lg-6">
-                        <span data-bind="text: $parent.timeToString(model.startDate)"></span>
-                    </div>
-                </div>
-                <!-- /ko -->
-
-                <div class="row">
-                    <label class="col-md-3">Primary key</label>
-                    <div class="col-md-6">
-                        <code data-bind="text: primaryKey"></code>
-                    </div>
-                    <div class="col-md-3 nowrap">
-                        <!-- ko ifnot: $data.isPRegenerating  -->
-                        <a href="#" class="btn-link"
-                            data-bind="click: togglePrimaryKey, text: primaryKeyBtnLabel, attr: { 'aria-label': primaryKeyBtnLabel() + ' primary key'}"></a>
-                        |
-                        <a href="#" class="btn-link"
-                            data-bind="click: $parent.regeneratePKey, hasFocus: $data.changedItem() === 'primaryKey'"
-                            aria-label="Regenerate primary key">Regenerate</a>
-                        <!-- /ko -->
-                        <!-- ko if: $data.isPRegenerating  -->
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                                aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+        <div role="row" class="table-row">
+            <div role="cell" class="col-8">
+                <div role="table">
+                    <div role="row" class="row">
+                        <div role="cell" class="col-md-3">
+                            Name
                         </div>
-                        <!-- /ko -->
-                    </div>
-                </div>
+                        <div role="cell" class="col-md-6">
+                            <!-- ko ifnot: $data.isEdit -->
+                            <span data-bind="text: model.name"></span>
+                            <!-- /ko -->
 
-                <div class="row">
-                    <label class="col-md-3">Secondary key</label>
-                    <div class="col-md-6">
-                        <code data-bind="text: secondaryKey"></code>
-                    </div>
-                    <div class="col-md-3 nowrap">
-                        <!-- ko ifnot: $data.isSRegenerating  -->
-                        <a href="#" class="btn-link"
-                            data-bind="click: toggleSecondaryKey, text: secondaryKeyBtnLabel, attr: { 'aria-label': secondaryKeyBtnLabel() + ' Secondary key'}"></a>
-                        |
-                        <a href="#" class="btn-link"
-                            data-bind="click: $parent.regenerateSKey, hasFocus: $data.changedItem() === 'secondaryKey'"
-                            aria-label="Regenerate Secondary key">Regenerate</a>
-                        <!-- /ko -->
-                        <!-- ko if: $data.isSRegenerating  -->
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                                aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                            <!-- ko if: $data.isEdit -->
+                            <input type="text" class="form-control" data-bind="value: editName" />
+                            <!-- /ko -->
                         </div>
-                        <!-- /ko -->
+                        <div role="cell" class="col-md-3">
+                            <!-- ko ifnot: $data.isEdit -->
+                            <a role="button" class="btn-link" href="#" data-bind="click: toggleEdit"
+                                aria-label="Rename subscription">Rename</a>
+                            <!-- /ko -->
+                            <!-- ko if: $data.isEdit -->
+                            <a role="button" class="btn-link" href="#" data-bind="click: $parent.renameSubscription"
+                                aria-label="Save subscription name">Save</a> |
+                            <a role="button" class="btn-link" href="#" data-bind="click: toggleEdit"
+                                aria-label="Cancel subscription rename">Cancel</a>
+                            <!-- /ko -->
+                        </div>
                     </div>
+
+                    <!-- ko if: $data.model.isAwaitingApproval -->
+                    <div role="row" class="row">
+                        <label class="col-lg-3">Requested on</label>
+                        <div class="col-lg-6">
+                            <span data-bind="text: $parent.timeToString(model.createdDate)"></span>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+
+                    <!-- ko ifnot: $data.model.isRejected -->
+                    <!-- ko if: $data.model.startDate  -->
+                    <div role="row" class="row">
+                        <div role="cell" class="col-lg-3">
+                            Started on
+                        </div>
+                        <div role="cell" class="col-lg-6">
+                            <span data-bind="text: $parent.timeToString(model.startDate)"></span>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+
+                    <div role="row" class="row">
+                        <div role="cell" class="col-md-3">
+                            Primary key
+                        </div>
+                        <div role="cell" class="col-md-6">
+                            <code data-bind="text: primaryKey"></code>
+                        </div>
+                        <div role="cell" class="col-md-3 nowrap">
+                            <!-- ko ifnot: $data.isPRegenerating  -->
+                            <a href="#" role="button" class="btn-link"
+                                data-bind="click: togglePrimaryKey, text: primaryKeyBtnLabel, attr: { 'aria-label': primaryKeyBtnLabel() + ' primary key'}"></a>
+                            |
+                            <a href="#" role="button" class="btn-link"
+                                data-bind="click: $parent.regeneratePKey, hasFocus: $data.changedItem() === 'primaryKey'"
+                                aria-label="Regenerate primary key">Regenerate</a>
+                            <!-- /ko -->
+                            <!-- ko if: $data.isPRegenerating  -->
+                            <div class="progress" role="presentation">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                    aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
+
+                    <div role="row" class="row">
+                        <div role="cell" class="col-md-3">Secondary key</div>
+                        <div role="cell" class="col-md-6">
+                            <code data-bind="text: secondaryKey"></code>
+                        </div>
+                        <div role="cell" class="col-md-3 nowrap">
+                            <!-- ko ifnot: $data.isSRegenerating  -->
+                            <a href="#" role="button" class="btn-link"
+                                data-bind="click: toggleSecondaryKey, text: secondaryKeyBtnLabel, attr: { 'aria-label': secondaryKeyBtnLabel() + ' Secondary key'}"></a>
+                            |
+                            <a href="#" role="button" class="btn-link"
+                                data-bind="click: $parent.regenerateSKey, hasFocus: $data.changedItem() === 'secondaryKey'"
+                                aria-label="Regenerate Secondary key">Regenerate</a>
+                            <!-- /ko -->
+                            <!-- ko if: $data.isSRegenerating  -->
+                            <div class="progress" role="presentation">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                    aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                    <!-- /ko -->
                 </div>
-                <!-- /ko -->
             </div>
-            <div class="col-2">
+            <div role="cell" class="col-2">
                 <span data-bind="text: model.productName"></span>
             </div>
-            <div class="col-1">
+            <div role="cell" class="col-1">
                 <span data-bind="text: model.state"></span>
             </div>
-            <div class="col-1">
+            <div role="cell" class="col-1">
                 <!-- ko if: $data.model.canBeCancelled() -->
                 <a class="btn-link" href="#" data-bind="click: $parent.cancelSubscription"
                     aria-label="Cancel subscription">
