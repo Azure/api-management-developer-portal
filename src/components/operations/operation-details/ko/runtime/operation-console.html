@@ -236,11 +236,11 @@
     </div>
     <div class="form-group">
         <!-- ko if: request.bodyFormat() === 'raw' -->
-        <textarea class="form-control form-control-sm" rows="5"
+        <textarea class="form-control form-control-sm" rows="5" aria-label="Request body"
             data-bind="event: { keyup: $component.updateRequestSummary }, textInput: request.body, valueUpdate: 'keyup'"></textarea>
         <!-- /ko -->
         <!-- ko if: request.bodyFormat() === 'binary' -->
-        <file-input params="{ onSelect: $component.onFileSelect }" class="form-control"
+        <file-input params="{ onSelect: $component.onFileSelect }" class="form-control" aria-label="Request body"
             data-bind="css: { 'is-invalid': !request.binary.isValid() }"></file-input>
         <span class="invalid-feedback" data-bind="validationMessage: request.binary"></span>
         <!-- /ko -->
