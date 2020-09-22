@@ -41,7 +41,6 @@ $body-bg: none;
         > div {
             padding: .75rem;
             vertical-align: top;
-            min-width: 150px;
         }
     }
 
@@ -62,7 +61,6 @@ $body-bg: none;
     }
 }
 
-
 .table-preset {
     display: grid;
     max-width: 100%;
@@ -70,7 +68,7 @@ $body-bg: none;
     margin: 20px 0;
 }
 
-.table-preset > div {
+.table-preset > .d-contents > .d-contents > div {
     padding: 8px 4px;
 }
 
@@ -92,7 +90,7 @@ $body-bg: none;
     grid-template-columns: minmax(150px, 350px) 100px 200px minmax(350px, 1fr);
 }
 
-.table-preset-schema { 
+.table-preset-schema {
     grid-template-columns: minmax(150px, 350px) 100px 200px minmax(350px, 1fr);
 }
 
