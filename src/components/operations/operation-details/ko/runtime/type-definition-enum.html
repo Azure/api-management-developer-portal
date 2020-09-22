@@ -1,14 +1,21 @@
 <div class="table-preset table-preset-enum">
-    <div class="table-preset-head text-truncate" role="columnheader">Type</div>
-    <div class="table-preset-head text-truncate" role="columnheader">Values</div>
+    <div class="d-contents" role="rowgroup">
+        <div class="d-contents" role="row">
+            <div class="table-preset-head text-truncate" role="columnheader">Type</div>
+            <div class="table-preset-head text-truncate" role="columnheader">Values</div>
+        </div>
+    </div>
+    <div class="d-contents" role="rowgroup">
+        <div class="d-contents" role="row">
+            <div role="cell" class="text-truncate"
+                data-bind="markdown: definition.type.name, attr: { title: definition.type.name }"></div>
 
-    <div role="cell" class="text-truncate"
-        data-bind="markdown: definition.type.name, attr: { title: definition.type.name }"></div>
-
-    <div role="cell">
-        <!-- ko foreach: { data: definition.enum, as: 'value' } -->
-        <!-- ko if: $index() > 0 -->,
-        <!-- /ko -->
-        <code data-bind="text: value"></code><!-- /ko -->
+            <div role="cell">
+                <!-- ko foreach: { data: definition.enum, as: 'value' } -->
+                <!-- ko if: $index() > 0 -->,
+                <!-- /ko -->
+                <code data-bind="text: value"></code><!-- /ko -->
+            </div>
+        </div>
     </div>
 </div>

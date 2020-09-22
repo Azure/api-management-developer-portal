@@ -1,58 +1,66 @@
 <!-- ko if: definition.properties && definition.properties.length > 0 -->
 
 <div class="table-preset table-preset-schema">
-    <div role="cell" class="table-preset-head text-truncate">Name</div>
-    <div role="cell" class="table-preset-head text-truncate">Required</div>
-    <div role="cell" class="table-preset-head text-truncate">Type</div>
-    <div role="cell" class="table-preset-head">Description</div>
-
-
-    <!-- ko foreach: { data: definition.properties, as: 'property' } -->
-    <div role="cell" class="text-truncate" data-bind="text: property.name, attr: { title: property.name }">
-        <span class="monospace" data-bind="text: property.name, attr: { title: property.name }"></span>
-    </div>
-    <div role="cell" data-bind="text: property.required"></div>
-    <div role="cell" class="text-truncate">
-        <!-- ko if: property.type.displayAs === 'primitive' -->
-        <span class="monospace" data-bind="text: property.type.name, attr: { title: property.type.name }"></span>
-        <!-- /ko -->
-
-        <!-- ko if: property.type.displayAs === 'arrayOfPrimitive' -->
-        <span class="monospace" data-bind="text: property.type.name, attr: { title: property.type.name }"></span>[]
-        <!-- /ko -->
-
-        <!-- ko if: property.type.displayAs === 'reference' -->
-        <a class="monospace"
-            data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name), title: property.type.name }"></a>
-        <!-- /ko -->
-
-        <!-- ko if: property.type.displayAs === 'arrayOfReference' -->
-        <a class="monospace"
-            data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name), title: property.type.name }"></a>[]
-        <!-- /ko -->
-
-        <!-- ko if: property.type.displayAs === 'combination' -->
-        <div>
-            <span data-bind="text: property.type.combinationType"></span>:
+    <div class="d-contents" role="rowgroup">
+        <div class="d-contents" role="row">
+            <div role="cell" class="table-preset-head text-truncate">Name</div>
+            <div role="cell" class="table-preset-head text-truncate">Required</div>
+            <div role="cell" class="table-preset-head text-truncate">Type</div>
+            <div role="cell" class="table-preset-head">Description</div>
         </div>
-        <!-- ko foreach: { data: property.type.combination, as: 'item' } -->
-        <!-- ko if: $index() > 0 -->,
-        <!-- /ko -->
-        <!-- ko if: item.displayAs === 'reference' -->
-        <a class="monospace"
-            data-bind="text: item.name, attr: { href: $component.getReferenceUrl(item.name), title: item.name }"></a>
-        <!-- /ko -->
+    </div>
+    <div class="d-contents" role="rowgroup">
+        <!-- ko foreach: { data: definition.properties, as: 'property' } -->
+        <div class="d-contents" role="row">
+            <div role="cell" class="text-truncate" data-bind="text: property.name, attr: { title: property.name }">
+                <span class="monospace" data-bind="text: property.name, attr: { title: property.name }"></span>
+            </div>
+            <div role="cell" data-bind="text: property.required"></div>
+            <div role="cell" class="text-truncate">
+                <!-- ko if: property.type.displayAs === 'primitive' -->
+                <span class="monospace"
+                    data-bind="text: property.type.name, attr: { title: property.type.name }"></span>
+                <!-- /ko -->
 
-        <!-- ko if: item.displayAs === 'primitive' -->
-        <span class="monospace" data-bind="text: item, attr: { title: item.name }"></span>
-        <!-- /ko -->
+                <!-- ko if: property.type.displayAs === 'arrayOfPrimitive' -->
+                <span class="monospace"
+                    data-bind="text: property.type.name, attr: { title: property.type.name }"></span>[]
+                <!-- /ko -->
 
-        <!-- /ko -->
+                <!-- ko if: property.type.displayAs === 'reference' -->
+                <a class="monospace"
+                    data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name), title: property.type.name }"></a>
+                <!-- /ko -->
 
+                <!-- ko if: property.type.displayAs === 'arrayOfReference' -->
+                <a class="monospace"
+                    data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name), title: property.type.name }"></a>[]
+                <!-- /ko -->
+
+                <!-- ko if: property.type.displayAs === 'combination' -->
+                <div>
+                    <span data-bind="text: property.type.combinationType"></span>:
+                </div>
+                <!-- ko foreach: { data: property.type.combination, as: 'item' } -->
+                <!-- ko if: $index() > 0 -->,
+                <!-- /ko -->
+                <!-- ko if: item.displayAs === 'reference' -->
+                <a class="monospace"
+                    data-bind="text: item.name, attr: { href: $component.getReferenceUrl(item.name), title: item.name }"></a>
+                <!-- /ko -->
+
+                <!-- ko if: item.displayAs === 'primitive' -->
+                <span class="monospace" data-bind="text: item, attr: { title: item.name }"></span>
+                <!-- /ko -->
+
+                <!-- /ko -->
+
+                <!-- /ko -->
+            </div>
+            <div role="cell" data-bind="markdown: property.description"></div>
+        </div>
         <!-- /ko -->
     </div>
-    <div role="cell" data-bind="markdown: property.description"></div>
-    <!-- /ko -->
 </div>
 
 <!-- /ko -->
