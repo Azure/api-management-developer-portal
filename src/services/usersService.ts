@@ -299,7 +299,5 @@ export class UsersService {
 
         const accessToken = AccessToken.parse(sasTokenHeader.value);
         await this.authenticator.setAccessToken(accessToken);
-
-        this.router.navigateTo(Constants.pageUrlHome);
     }
 }
