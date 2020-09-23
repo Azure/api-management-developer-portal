@@ -4,7 +4,8 @@ import { HttpHeader } from "@paperbits/common/http/httpHeader";
 
 export class DefaultAuthenticator implements IAuthenticator {
     public async getAccessToken(): Promise<string> {
-        let accessToken = sessionStorage.getItem("accessToken");
+        const accessToken = sessionStorage.getItem("accessToken");
+        
         if (!accessToken && window.location.pathname.startsWith("/signin-sso")) {
             const url = new URL(location.href);
             const queryParams = new URLSearchParams(url.search);

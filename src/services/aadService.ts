@@ -39,9 +39,13 @@ export class AadService {
 
         const response = await this.httpClient.send(request);
         const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
-        const returnUrl = this.routeHelper.getQueryParameter("returnUrl");
+        const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || Constants.pageUrlHome;
 
-        if (!sasTokenHeader) { // User not registered with APIM.
+        if (sasTokenHeader) {
+            const accessToken = AccessToken.parse(sasTokenHeader.value);
+            await this.authenticator.setAccessToken(accessToken);
+        }
+        else { // User not registered with APIM.
             const jwtToken = Utils.parseJwt(idToken);
             const firstName = jwtToken.given_name;
             const lastName = jwtToken.family_name;
@@ -49,20 +53,17 @@ export class AadService {
 
             if (firstName && lastName && email) {
                 await this.usersService.createUserWithOAuth(provider, idToken, firstName, lastName, email);
-                await this.router.navigateTo(returnUrl || Constants.pageUrlHome);
             }
             else {
                 const signupUrl = this.routeHelper.getIdTokenReferenceUrl(provider, idToken);
                 await this.router.navigateTo(signupUrl);
+                return;
             }
-
-            return;
         }
 
-        const accessToken = AccessToken.parse(sasTokenHeader.value);
-        await this.authenticator.setAccessToken(accessToken);
-
-        await this.router.navigateTo(returnUrl || Constants.pageUrlHome);
+        this.router.getCurrentUrl() === returnUrl
+            ? location.reload()
+            : await this.router.navigateTo(returnUrl);
     }
 
     /**
