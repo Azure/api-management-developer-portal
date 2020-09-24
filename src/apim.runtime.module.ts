@@ -68,7 +68,7 @@ import { BalloonBindingHandler, ResizableBindingHandler } from "@paperbits/core/
 import { TagInput } from "./components/tag-input/tag-input";
 import { ViewStack } from "@paperbits/core/ko/ui/viewStack";
 import { OAuthService } from "./services/oauthService";
-import { DefaultSessionManager } from "./authentication/sessionManager";
+import { DefaultSessionManager } from "./authentication/defaultSessionManager";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {

@@ -2,6 +2,7 @@ import { ArmResource } from "./contracts/armResource";
 import { NameValuePair } from "request";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
+import { off } from "process";
 
 export class Utils {
     public static getResourceName(resource: string, fullId: string, resultType: string = "name"): string {
@@ -270,8 +271,24 @@ export class Utils {
     public static parseJwt(jwtToken: string): JwtToken {
         const base64Url = jwtToken.split(".")[1];
         const base64 = base64Url.replace("-", "+").replace("_", "/");
+        const decodedToken = JSON.parse(window.atob(base64));
 
-        return JSON.parse(window.atob(base64));
+        const now = new Date();
+        const offset = now.getTimezoneOffset() * 60000 * 1000;
+
+        if (decodedToken.exp) {
+            decodedToken.exp = new Date(decodedToken.exp + offset);
+        }
+
+        if (decodedToken.nfb) {
+            decodedToken.nfb = new Date(decodedToken.nfb + offset);
+        }
+
+        if (decodedToken.iat) {
+            decodedToken.iat = new Date(decodedToken.iat + offset);
+        }
+
+        return decodedToken;
     }
 
     public static scrollTo(id: string): void {
@@ -338,7 +355,7 @@ export class Utils {
 
         return utc;
     }
-    
+
     public static readFileAsByteArray(file: File): Promise<Uint8Array> {
         return new Promise<Uint8Array>(resolve => {
             const reader = new FileReader();
