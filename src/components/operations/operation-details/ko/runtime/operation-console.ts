@@ -25,7 +25,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TemplatingService } from "../../../../../services/templatingService";
 import { OAuthService } from "../../../../../services/oauthService";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
-import { SessionManager } from "./../../../../../authentication/defaultSessionManager";
+import { SessionManager } from "../../../../../authentication/sessionManager";
 import { OAuthSession, StoredCredentials } from "./oauthSession";
 
 const oauthSessionKey = "oauthSession";
