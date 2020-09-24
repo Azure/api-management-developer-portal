@@ -11,4 +11,10 @@ export interface SessionManager {
      * @param value {T} Stored value.
      */
     setItem<T>(key: string, value: T): Promise<void>;
+
+    /**
+     * Removed value with specified key.
+     * @param key {string} Stored value key.
+     */
+    removeItem(key: string): Promise<void>;
 }
