@@ -9,7 +9,7 @@ import { PageContract } from "../contracts/page";
 import { OpenIdConnectProviderContract } from "../contracts/openIdConnectProvider";
 import { OpenIdConnectProvider } from "./../models/openIdConnectProvider";
 import { OpenIdConnectMetadata } from "./../contracts/openIdConnectMetadata";
-import { AppError } from "../errors";
+
 
 export class OAuthService {
     constructor(
