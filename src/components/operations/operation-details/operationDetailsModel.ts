@@ -23,6 +23,5 @@ export class OperationDetailsModel {
 
     constructor() {
         this.enableConsole = true;
-        this.enableScrollTo = true;
     }
 }
