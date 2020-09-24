@@ -25,8 +25,8 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TemplatingService } from "../../../../../services/templatingService";
 import { OAuthService } from "../../../../../services/oauthService";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
-import { SessionManager } from "./../../../../../authentication/defaultSessionManager";
-import { OAuthSession } from "./oauthSession";
+import { SessionManager } from "../../../../../authentication/sessionManager";
+import { OAuthSession, StoredCredentials } from "./oauthSession";
 
 const oauthSessionKey = "oauthSession";
 
@@ -527,23 +527,34 @@ export class OperationConsole {
 
         const api = this.api();
         const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
-        const recordKey = this.getSessionRecordKey(authorizationServer.name, scopeOverride);
-        const oauthSession = await this.sessionManager.getItem<OAuthSession>(oauthSessionKey);
-        const record = oauthSession?.[recordKey];
+        const storedCredentials = await this.getStoredCredentials(authorizationServer.name, scopeOverride);
 
-        if (record) {
-            this.selectedGrantType(record.grantType);
-            this.setAuthorizationHeader(record.accessToken);
+        if (storedCredentials) {
+            this.selectedGrantType(storedCredentials.grantType);
+            this.setAuthorizationHeader(storedCredentials.accessToken);
         }
     }
 
-    private async getStoredCredentials(serverName: string, scopeOverride: string): Promise<string> {
+    private async getStoredCredentials(serverName: string, scopeOverride: string): Promise<StoredCredentials> {
         const oauthSession = await this.sessionManager.getItem<OAuthSession>(oauthSessionKey);
         const recordKey = this.getSessionRecordKey(serverName, scopeOverride);
-        const record = oauthSession?.[recordKey];
-        const accessToken = record?.accessToken;
+        const storedCredentials = oauthSession?.[recordKey];
 
-        return accessToken;
+        try {
+            /* Trying to check if it's a JWT token and, if yes, whether it got expired. */
+            const jwtToken = Utils.parseJwt(storedCredentials.accessToken.replace(/^bearer /i, ""));
+            const now = Utils.getUtcDateTime();
+
+            if (now > jwtToken.exp) {
+                await this.clearStoredCredentials();
+                return null;
+            }
+        }
+        catch (error) {
+            // do nothing
+        }
+
+        return storedCredentials;
     }
 
     private async setStoredCredentials(serverName: string, scopeOverride: string, grantType: string, accessToken: string): Promise<void> {
@@ -558,12 +569,17 @@ export class OperationConsole {
         await this.sessionManager.setItem<object>(oauthSessionKey, oauthSession);
     }
 
+    private async clearStoredCredentials(): Promise<void> {
+        await this.sessionManager.removeItem(oauthSessionKey);
+        this.removeAuthorizationHeader();
+    }
+
     /**
      * Initiates specified authentication flow.
      * @param grantType OAuth grant type, e.g. "implicit" or "authorizationCode".
      */
     public async authenticateOAuth(grantType: string): Promise<void> {
-        this.removeAuthorizationHeader();
+        await this.clearStoredCredentials();
 
         if (!grantType) {
             return;
@@ -573,10 +589,10 @@ export class OperationConsole {
         const authorizationServer = this.authorizationServer();
         const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
         const serverName = authorizationServer.name;
-        const storedAccessToken = await this.getStoredCredentials(serverName, scopeOverride);
+        const storedCredentials = await this.getStoredCredentials(serverName, scopeOverride);
 
-        if (storedAccessToken) {
-            this.setAuthorizationHeader(storedAccessToken);
+        if (storedCredentials) {
+            this.setAuthorizationHeader(storedCredentials.accessToken);
             return;
         }
 

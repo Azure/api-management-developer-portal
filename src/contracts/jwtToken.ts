@@ -4,8 +4,6 @@ export interface JwtToken {
      */
     acr: string;
 
-    aio: string;
-
     /**
      * Authentication methods array
      */
@@ -16,19 +14,15 @@ export interface JwtToken {
      */
     appid: string;
 
-    appidacr: string;
-
     /**
      * Audience (who or what the token is intended for)
      */
     aud: string;
 
-    deviceid: string;
-
     /**
-     * Expiration time (seconds since Unix epoch)
+     * Expiration time (UTC)
      */
-    exp: number;
+    exp: Date;
 
     /**
      * Family name of the user
@@ -40,12 +34,10 @@ export interface JwtToken {
      */
     given_name: string;
 
-    hasgroups: string;
-
     /**
-     * Issued at (seconds since Unix epoch)
+     * Issued at (UTC)
      */
-    iat: number;
+    iat: Date;
 
     /**
      * IP address
@@ -56,30 +48,21 @@ export interface JwtToken {
      * Issuer (who created and signed this token)
      */
     iss: string;
-    name: string;
 
     /**
-     * Not valid before (seconds since Unix epoch)
+     * Not valid before (UTC).
      */
-    nbf: number;
+    nbf: Date;
 
     /**
      * Object ID.
      */
     oid: string;
-    onprem_sid: string;
-    puid: string;
-    scp: string;
 
     /**
      * Subject (whom the token refers to)
      */
     sub: string;
-    tid: string;
-    unique_name: string;
-    upn: string;
-    uti: string;
-    ver: string;
 
     /**
      * Email address.

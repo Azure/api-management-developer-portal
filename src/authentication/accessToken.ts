@@ -54,9 +54,7 @@ export class AccessToken {
 
     private static parseBearerToken(value: string): AccessToken {
         const decodedToken = Utils.parseJwt(value);
-        const exp = moment(decodedToken.exp).toDate();
-
-        return new AccessToken("Bearer", value, exp);
+        return new AccessToken("Bearer", value, decodedToken.exp);
     }
 
     public static parse(token: string): AccessToken {

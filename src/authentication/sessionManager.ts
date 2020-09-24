@@ -1,10 +1,20 @@
-export class DefaultSessionManager {
-    public async getItem<T>(key: string): Promise<T> {
-        const value = sessionStorage.getItem(key);
-        return JSON.parse(value);
-    }
+export interface SessionManager {
+    /**
+     * Returns stored value.
+     * @param key 
+     */
+    getItem<T>(key: string): Promise<T>;
 
-    public async setItem<T>(key: string, value: T): Promise<void> {
-        sessionStorage.setItem(key, JSON.stringify(value));
-    }
+    /**
+     * Stores value with specified key.
+     * @param key {string} Stored value key.
+     * @param value {T} Stored value.
+     */
+    setItem<T>(key: string, value: T): Promise<void>;
+
+    /**
+     * Removes value with specified key.
+     * @param key {string} Stored value key.
+     */
+    removeItem(key: string): Promise<void>;
 }
