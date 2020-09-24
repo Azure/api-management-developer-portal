@@ -1,6 +1,8 @@
+export interface StoredCredentials {
+    grantType: string;
+    accessToken: string;
+}
+
 export interface OAuthSession {
-    [apiName: string]: {
-        grantType: string;
-        accessToken: string;
-    };
+    [apiName: string]: StoredCredentials;
 }
