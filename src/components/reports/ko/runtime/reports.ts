@@ -444,7 +444,7 @@ export class Reports {
                 color: "#a0cef5"
             },
             {
-                displayName: "Successfull requests",
+                displayName: "Successful requests",
                 key: "callCountSuccess",
                 color: "#7fba00"
             },
