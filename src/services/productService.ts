@@ -118,15 +118,19 @@ export class ProductService {
 
         for (const subscription of subscriptions) {
             const subscriptionModel = new Subscription(subscription);
-            const productName = Utils.getResourceName("products", subscription.properties.scope);
+            if (subscription.properties.scope.endsWith("/apis")) {
+                subscriptionModel.productName = "All APIs";
+            } else {
+                const productName = Utils.getResourceName("products", subscription.properties.scope);
 
-            const productPromise = this.mapiClient
-                .get<ProductContract>(`/products/${productName}`)
-                .then(product => {
-                    subscriptionModel.productName = product.properties.displayName;
-                });
+                const productPromise = this.mapiClient
+                    .get<ProductContract>(`/products/${productName}`)
+                    .then(product => {
+                        subscriptionModel.productName = product.properties.displayName;
+                    });
 
-            promises.push(productPromise);
+                promises.push(productPromise);
+            }            
 
             const secretPromise = this.mapiClient
                 .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscription.name}/listSecrets`)
