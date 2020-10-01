@@ -6,6 +6,7 @@ import { Utils } from "../utils";
 import { AzureBlobStorage } from "@paperbits/azure";
 import * as Constants from "../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
+import { MapiClient } from "./mapiClient";
 
 export class ProvisionService {
     constructor(
@@ -55,7 +56,8 @@ export class ProvisionService {
                     headers: [
                         { name: "If-Match", value: "*" },
                         { name: "Content-Type", value: "application/json" },
-                        { name: "Authorization", value: accessToken }
+                        { name: "Authorization", value: accessToken },
+                        MapiClient.getPortalHeader("provision")
                     ],
                     body: JSON.stringify({ properties: contentItem })
                 };
@@ -87,7 +89,8 @@ export class ProvisionService {
                 headers: [
                     { name: "If-Match", value: "*" },
                     { name: "Content-Type", value: "application/json" },
-                    { name: "Authorization", value: accessToken }
+                    { name: "Authorization", value: accessToken },
+                    MapiClient.getPortalHeader()
                 ],
             };
             const response = await this.sendRequest(request);
@@ -100,7 +103,8 @@ export class ProvisionService {
                     headers: [
                         { name: "If-Match", value: "*" },
                         { name: "Content-Type", value: "application/json" },
-                        { name: "Authorization", value: accessToken }
+                        { name: "Authorization", value: accessToken },
+                        MapiClient.getPortalHeader()
                     ],
                 };
                 const itemsResponse = await this.sendRequest(curReq);
@@ -112,7 +116,8 @@ export class ProvisionService {
                         headers: [
                             { name: "If-Match", value: "*" },
                             { name: "Content-Type", value: "application/json" },
-                            { name: "Authorization", value: accessToken }
+                            { name: "Authorization", value: accessToken },
+                            MapiClient.getPortalHeader("reset")
                         ],
                     };
                     await this.sendRequest(itemReq);
