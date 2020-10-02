@@ -7,6 +7,7 @@ import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@
 import { MapiError } from "../errors/mapiError";
 import { IAuthenticator, AccessToken } from "../authentication";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
+import { developerPortalType, portalHeaderName } from "./../constants";
 
 export interface IHttpBatchResponses {
     responses: IHttpBatchResponse[];
@@ -118,6 +119,11 @@ export class MapiClient {
             if (authToken) {
                 httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${authToken}` });
             }
+        }
+
+        const portalHeader = httpRequest.headers.find(header => header.name === portalHeaderName);
+        if (!portalHeader) {
+            httpRequest.headers.push(MapiClient.getPortalHeader());
         }
 
         httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
@@ -270,5 +276,16 @@ export class MapiClient {
             url: url,
             headers: headers
         });
+    }
+
+    public static getPortalHeader(eventName?: string): HttpHeader {
+        let host = "";
+        try {
+            host = window.location.host;
+        } catch (error){
+            host = "publishing";
+        }
+
+        return { name: portalHeaderName, value: `${developerPortalType}|${host}|${eventName || ""}` };
     }
 }

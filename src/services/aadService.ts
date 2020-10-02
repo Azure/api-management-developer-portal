@@ -8,6 +8,7 @@ import { HttpClient } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { RouteHelper } from "../routing/routeHelper";
 import { UsersService } from "./usersService";
+import { MapiClient } from "./mapiClient";
 
 /**
  * Service for operations with Azure Active Directory identity provider.
@@ -34,7 +35,10 @@ export class AadService {
         const request = {
             url: `${managementApiUrl}/identity?api-version=${Constants.managementApiVersion}`,
             method: "GET",
-            headers: [{ name: "Authorization", value: `${provider} id_token="${idToken}"` }]
+            headers: [
+                { name: "Authorization", value: `${provider} id_token="${idToken}"` }, 
+                MapiClient.getPortalHeader()
+            ]
         };
 
         const response = await this.httpClient.send(request);

@@ -211,7 +211,7 @@ export class MapiObjectStorage implements IObjectStorage {
         const resource = this.paperbitsKeyToArmResource(path);
 
         try {
-            const headers: HttpHeader[] = [];
+            const headers: HttpHeader[] = [MapiClient.getPortalHeader("addObject")];
             await this.mapiClient.put<T>(resource, headers, { properties: converted });
         }
         catch (error) {
@@ -263,7 +263,7 @@ export class MapiObjectStorage implements IObjectStorage {
 
         try {
             const headers: HttpHeader[] = [];
-            headers.push({ name: "If-Match", value: "*" });
+            headers.push({ name: "If-Match", value: "*" }, MapiClient.getPortalHeader("deleteObject"));
 
             await this.mapiClient.delete(resource, headers);
         }
@@ -325,7 +325,7 @@ export class MapiObjectStorage implements IObjectStorage {
         }
 
         try {
-            const headers: HttpHeader[] = [];
+            const headers: HttpHeader[] = [MapiClient.getPortalHeader("updateObject")];
 
             if (exists) {
                 headers.push({ name: "If-Match", value: "*" });
