@@ -286,7 +286,7 @@ export class ProductService {
                     appType: Constants.AppType
                 }
             };
-            await this.mapiClient.put(userId + subscriptionId, null, payload);
+            await this.mapiClient.put(userId + subscriptionId, [MapiClient.getPortalHeader("createSubscription")], payload);
         }
     }
 
@@ -305,7 +305,7 @@ export class ProductService {
             console.warn("Delegation enabled. Can't cancel subscription");
         }
         else {
-            const header: HttpHeader = { name: "If-Match", value: "*" };
+            const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, MapiClient.getPortalHeader("cancelSubscription")];
 
             const payload = {
                 properties: {
@@ -313,7 +313,7 @@ export class ProductService {
                 }
             };
 
-            await this.mapiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, [header], payload);
+            await this.mapiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, headers, payload);
         }
 
         return await this.getSubscription(subscriptionId);
@@ -333,7 +333,7 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionName" not specified.`);
         }
 
-        const header: HttpHeader = { name: "If-Match", value: "*" };
+        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, MapiClient.getPortalHeader("renameSubscription")];
 
         const payload = {
             properties: {
@@ -341,7 +341,7 @@ export class ProductService {
             }
         };
 
-        await this.mapiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, [header], payload);
+        await this.mapiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, headers, payload);
 
         return await this.getSubscription(subscriptionId);
     }
