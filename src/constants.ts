@@ -115,3 +115,13 @@ export enum GrantTypes {
 }
 
 export const managementApiVersion = "2019-12-01";
+
+/**
+ * Developer portal type (self-hosted or managed).
+ */
+export const developerPortalType = "self-hosted-portal";
+
+/**
+ * Header name to track developer portal type.
+ */
+export const portalHeaderName = "x-ms-apim-client";
