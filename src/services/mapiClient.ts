@@ -286,6 +286,6 @@ export class MapiClient {
             host = "publishing";
         }
 
-        return { name: portalHeaderName, value: `${developerPortalType}|host:${host}|${eventName || ""}` };
+        return { name: portalHeaderName, value: `${developerPortalType}|${host}|${eventName || ""}` };
     }
 }
