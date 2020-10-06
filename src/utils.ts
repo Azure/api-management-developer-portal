@@ -1,8 +1,8 @@
-import { ArmResource } from "./contracts/armResource";
 import { NameValuePair } from "request";
+import { ArmResource } from "./contracts/armResource";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
-import { off } from "process";
+
 
 export class Utils {
     public static getResourceName(resource: string, fullId: string, resultType: string = "name"): string {
