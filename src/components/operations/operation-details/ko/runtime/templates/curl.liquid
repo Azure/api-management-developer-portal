@@ -1,11 +1,9 @@
-@ECHO OFF
-
 curl -v -X {{method}} "{{requestUrl}}"
 {% for header in request.meaningfulHeaders -%}
 -H "{{ header.name }}: {{ header.value }}"
 {% endfor -%}
 {% if request.body != blank and request.bodyFormat == "raw" -%}
---data-ascii "{{ request.body | replace:'"','^"' }}"
+--data-raw '{{ request.body }}'
 {% endif -%}
 {% if request.binary != blank and request.bodyFormat == "binary" -%}
 --data-binary "@path/to/{{request.binary.name}}"
