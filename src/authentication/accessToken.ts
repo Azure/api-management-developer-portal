@@ -90,6 +90,6 @@ export class AccessToken {
     }
 
     public toString(): string {
-        return `${this.type} ${this.value}`;
+        return `${this.type} token="${this.value}",refresh="true"`;
     }
 }
