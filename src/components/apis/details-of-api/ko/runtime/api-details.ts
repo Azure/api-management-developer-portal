@@ -20,6 +20,7 @@ export class ApiDetails {
     public readonly currentApiVersion: ko.Observable<string>;
     public readonly versionApis: ko.ObservableArray<Api>;
     public readonly working: ko.Observable<boolean>;
+    public readonly errorMessage: ko.Observable<string>;
     public readonly downloadSelected: ko.Observable<string>;
 
     constructor(
@@ -32,6 +33,7 @@ export class ApiDetails {
         this.selectedApiName = ko.observable();
         this.versionApis = ko.observableArray([]);
         this.working = ko.observable(false);
+        this.errorMessage = ko.observable();
         this.currentApiVersion = ko.observable();
         this.downloadSelected = ko.observable("");
         this.loadApi = this.loadApi.bind(this);
@@ -73,10 +75,13 @@ export class ApiDetails {
             return;
         }
 
-        this.working(true);
-
         const api = await this.apiService.getApi(`apis/${apiName}`);
+        if (!api) {
+            this.api(null);
+            return;
+        }
 
+        this.working(true);
         if (api.apiVersionSet && api.apiVersionSet.id) {
             const apis = await this.apiService.getApisInVersionSet(api.apiVersionSet.id);
             apis.forEach(x => x.apiVersion = x.apiVersion || "Original");
@@ -148,7 +153,7 @@ export class ApiDetails {
 
     private onVersionChange(selectedApiName: string): void {
         const apiName = this.routeHelper.getApiName();
-        if(apiName !== selectedApiName) {
+        if (apiName !== selectedApiName) {
             const apiUrl = this.routeHelper.getApiReferenceUrl(selectedApiName);
             this.router.navigateTo(apiUrl);
         }

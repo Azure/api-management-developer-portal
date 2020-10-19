@@ -253,12 +253,14 @@ export class OperationConsole {
                 }
 
                 keys.push({
-                    name: `Primary-${subscription.primaryKey.substr(0, 4)}`,
+                    name: `Primary-${subscription.name}`,
+                    //name: `Primary-${subscription.primaryKey.substr(0, 4)}`,
                     value: subscription.primaryKey
                 });
 
                 keys.push({
-                    name: `Secondary-${subscription.secondaryKey.substr(0, 4)}`,
+                    name: `Secondary-${subscription.name}`,
+                    //name: `Secondary-${subscription.secondaryKey.substr(0, 4)}`,
                     value: subscription.secondaryKey
                 });
             });
