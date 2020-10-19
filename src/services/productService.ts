@@ -10,6 +10,7 @@ import * as Constants from "../constants";
 import { Utils } from "../utils";
 import { SearchQuery } from "../contracts/searchQuery";
 import { SubscriptionSecrets } from "../contracts/subscriptionSecrets";
+import { ApiContract } from "../contracts/api";
 
 /**
  * A service for management operations with products.
@@ -118,19 +119,31 @@ export class ProductService {
 
         for (const subscription of subscriptions) {
             const subscriptionModel = new Subscription(subscription);
+
             if (subscription.properties.scope.endsWith("/apis")) {
                 subscriptionModel.productName = "All APIs";
-            } else {
-                const productName = Utils.getResourceName("products", subscription.properties.scope);
+            } else
+                if (subscription.properties.scope.includes("/apis/")) {
+                    const apiName = Utils.getResourceName("apis", subscription.properties.scope);
 
-                const productPromise = this.mapiClient
-                    .get<ProductContract>(`/products/${productName}`)
-                    .then(product => {
-                        subscriptionModel.productName = product.properties.displayName;
-                    });
+                    const apiPromise = this.mapiClient
+                        .get<ApiContract>(`/apis/${apiName}`)
+                        .then(api => {
+                            subscriptionModel.productName = `API: ${api.properties.displayName}`;
+                        });
 
-                promises.push(productPromise);
-            }            
+                    promises.push(apiPromise);
+                } else {
+                    const productName = Utils.getResourceName("products", subscription.properties.scope);
+
+                    const productPromise = this.mapiClient
+                        .get<ProductContract>(`/products/${productName}`)
+                        .then(product => {
+                            subscriptionModel.productName = product.properties.displayName;
+                        });
+
+                    promises.push(productPromise);
+                }
 
             const secretPromise = this.mapiClient
                 .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscription.name}/listSecrets`)
