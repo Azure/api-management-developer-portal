@@ -20,7 +20,6 @@ export class ApiDetails {
     public readonly currentApiVersion: ko.Observable<string>;
     public readonly versionApis: ko.ObservableArray<Api>;
     public readonly working: ko.Observable<boolean>;
-    public readonly errorMessage: ko.Observable<string>;
     public readonly downloadSelected: ko.Observable<string>;
 
     constructor(
@@ -33,7 +32,6 @@ export class ApiDetails {
         this.selectedApiName = ko.observable();
         this.versionApis = ko.observableArray([]);
         this.working = ko.observable(false);
-        this.errorMessage = ko.observable();
         this.currentApiVersion = ko.observable();
         this.downloadSelected = ko.observable("");
         this.loadApi = this.loadApi.bind(this);
