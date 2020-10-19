@@ -123,7 +123,7 @@ export class ProductService {
             if (subscription.properties.scope.endsWith("/apis")) {
                 subscriptionModel.productName = "All APIs";
             } else
-                if (subscription.properties.scope.indexOf("/apis/") !== -1) {
+                if (subscription.properties.scope.includes("/apis/")) {
                     const apiName = Utils.getResourceName("apis", subscription.properties.scope);
 
                     const apiPromise = this.mapiClient
