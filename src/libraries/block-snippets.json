@@ -1,0 +1,1631 @@
+{
+    "blocks": {
+        "6ef8e090-2961-c892-3a13-c3f35bfcacda": {
+            "type": "layout-section",
+            "key": "blocks/6ef8e090-2961-c892-3a13-c3f35bfcacda",
+            "title": "Feature block 3",
+            "description": "",
+            "contentKey": "files/6f21de91-7e76-7f24-972c-cdc190161ff0"
+        },
+        "1c2445c4-6fe3-a32c-0433-f3dfbd7bd7cd": {
+            "type": "layout-section",
+            "key": "blocks/1c2445c4-6fe3-a32c-0433-f3dfbd7bd7cd",
+            "title": "Feature block 4",
+            "description": "",
+            "contentKey": "files/2b662b7f-9921-5e71-b227-8e9e13c792d0"
+        },
+        "624d7993-cb41-1814-035e-ee29005d7330": {
+            "type": "layout-section",
+            "key": "blocks/624d7993-cb41-1814-035e-ee29005d7330",
+            "title": "Feature block 1",
+            "description": "",
+            "contentKey": "files/dd7a5447-04be-cb62-4f38-889662e99a3f"
+        },
+        "86c03180-33be-3569-c296-460f07e687fa": {
+            "type": "layout-section",
+            "key": "blocks/86c03180-33be-3569-c296-460f07e687fa",
+            "title": "Feature block 2",
+            "description": "",
+            "contentKey": "files/928e21ee-5f8b-c01b-3375-69db03b9382b"
+        },
+        "3a0c15dc-34fe-17a0-0d13-7a55b552c145": {
+            "type": "layout-section",
+            "key": "blocks/3a0c15dc-34fe-17a0-0d13-7a55b552c145",
+            "title": "Feature block 5",
+            "description": "",
+            "contentKey": "files/aa94cd9f-a76f-5ba7-ef20-086214290999"
+        }
+    },
+    "files": {
+        "dd7a5447-04be-cb62-4f38-889662e99a3f": {
+            "type": "layout-section",
+            "nodes": [
+                {
+                    "type": "grid",
+                    "nodes": [
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "picture",
+                                    "width": 50,
+                                    "height": 50
+                                }
+                            ],
+                            "role": "aside",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "lg": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "start"
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "start"
+                                            }
+                                        }
+                                    },
+                                    "key": "pic-cell-1"
+                                }
+                            }
+                        },
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "text-block",
+                                    "nodes": [
+                                        {
+                                            "type": "heading4",
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Feature 1"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "paragraph",
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "role": "article",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "lg": {
+                                            "position": {
+                                                "col": 2,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 2,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            }
+                                        }
+                                    },
+                                    "key": "tposvereoj",
+                                    "padding": {
+                                        "xs": {
+                                            "top": 10,
+                                            "left": 10,
+                                            "right": 10,
+                                            "bottom": 10
+                                        },
+                                        "lg": {
+                                            "top": 15,
+                                            "left": 15,
+                                            "right": 15,
+                                            "bottom": 15
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "picture",
+                                    "width": 50,
+                                    "height": 50
+                                }
+                            ],
+                            "role": "aside",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "lg": {
+                                            "position": {
+                                                "col": 3,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "start"
+                                            },
+                                            "padding": {
+                                                "top": 20
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 2
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "start"
+                                            }
+                                        }
+                                    },
+                                    "key": "pic-cell-2"
+                                }
+                            }
+                        },
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "text-block",
+                                    "nodes": [
+                                        {
+                                            "type": "heading4",
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Feature 2"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "paragraph",
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "role": "article",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "lg": {
+                                            "position": {
+                                                "col": 4,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 2,
+                                                "row": 2
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            }
+                                        }
+                                    },
+                                    "key": "sbedpikqxt",
+                                    "padding": {
+                                        "xs": {
+                                            "top": 10,
+                                            "left": 10,
+                                            "right": 10,
+                                            "bottom": 10
+                                        },
+                                        "lg": {
+                                            "top": 15,
+                                            "left": 15,
+                                            "right": 15,
+                                            "bottom": 15
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "picture",
+                                    "width": 50,
+                                    "height": 50
+                                }
+                            ],
+                            "role": "aside",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "lg": {
+                                            "position": {
+                                                "col": 5,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "start"
+                                            },
+                                            "padding": {
+                                                "top": 20
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 3
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "start"
+                                            }
+                                        }
+                                    },
+                                    "key": "pic-cell-3"
+                                }
+                            }
+                        },
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "text-block",
+                                    "nodes": [
+                                        {
+                                            "type": "heading4",
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Feature 3"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "paragraph",
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "role": "article",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "lg": {
+                                            "position": {
+                                                "col": 6,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 2,
+                                                "row": 3
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            }
+                                        }
+                                    },
+                                    "key": "wstqpnzhqu",
+                                    "padding": {
+                                        "xs": {
+                                            "top": 10,
+                                            "left": 10,
+                                            "right": 10,
+                                            "bottom": 10
+                                        },
+                                        "lg": {
+                                            "top": 15,
+                                            "left": 15,
+                                            "right": 15,
+                                            "bottom": 15
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "styles": {
+                        "instance": {
+                            "grid": {
+                                "lg": {
+                                    "rows": [
+                                        "auto"
+                                    ],
+                                    "cols": [
+                                        "70px",
+                                        "1fr",
+                                        "70px",
+                                        "1fr",
+                                        "70px",
+                                        "1fr"
+                                    ]
+                                },
+                                "xs": {
+                                    "rows": [
+                                        "auto",
+                                        "auto",
+                                        "auto"
+                                    ],
+                                    "cols": [
+                                        "70px",
+                                        "1fr"
+                                    ]
+                                }
+                            },
+                            "key": "flihsihcas",
+                            "size": {
+                                "sm": {
+                                    "maxWidth": 540
+                                },
+                                "lg": {
+                                    "maxWidth": 720
+                                },
+                                "lg": {
+                                    "maxWidth": 960
+                                },
+                                "xl": {
+                                    "maxWidth": 1140
+                                }
+                            },
+                            "margin": {
+                                "xs": {
+                                    "top": 10,
+                                    "left": "auto",
+                                    "right": "auto",
+                                    "bottom": 10
+                                },
+                                "lg": {
+                                    "top": 15,
+                                    "bottom": 15
+                                },
+                                "xl": {
+                                    "top": 25,
+                                    "bottom": 25
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "928e21ee-5f8b-c01b-3375-69db03b9382b": {
+            "type": "layout-section",
+            "nodes": [
+                {
+                    "type": "grid",
+                    "nodes": [
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "picture",
+                                    "caption": "Picture",
+                                    "width": "80",
+                                    "height": "80",
+                                    "styles": {
+                                        "appearance": "components/picture/default"
+                                    }
+                                },
+                                {
+                                    "type": "text-block",
+                                    "nodes": [
+                                        {
+                                            "type": "heading3",
+                                            "attrs": {
+                                                "styles": {
+                                                    "alignment": {
+                                                        "xl": "utils/text/alignCenter",
+                                                        "xs": "utils/text/alignCenter"
+                                                    }
+                                                }
+                                            },
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Feature 1"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "paragraph",
+                                            "attrs": {
+                                                "styles": {
+                                                    "alignment": {
+                                                        "xl": "utils/text/alignCenter",
+                                                        "xs": "utils/text/alignCenter"
+                                                    }
+                                                }
+                                            },
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "role": "article",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "md": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            }
+                                        }
+                                    },
+                                    "key": "vyipykpype",
+                                    "padding": {
+                                        "xs": {
+                                            "top": 5,
+                                            "left": 5,
+                                            "right": 5,
+                                            "bottom": 5
+                                        },
+                                        "md": {
+                                            "top": 15,
+                                            "left": 15,
+                                            "right": 15,
+                                            "bottom": 15
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "picture",
+                                    "caption": "Picture",
+                                    "width": "80",
+                                    "height": "80",
+                                    "styles": {
+                                        "appearance": "components/picture/default"
+                                    }
+                                },
+                                {
+                                    "type": "text-block",
+                                    "nodes": [
+                                        {
+                                            "type": "heading3",
+                                            "attrs": {
+                                                "styles": {
+                                                    "alignment": {
+                                                        "xl": "utils/text/alignCenter",
+                                                        "xs": "utils/text/alignCenter"
+                                                    }
+                                                }
+                                            },
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Feature 2"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "paragraph",
+                                            "attrs": {
+                                                "styles": {
+                                                    "alignment": {
+                                                        "xs": "utils/text/alignCenter"
+                                                    }
+                                                }
+                                            },
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "role": "article",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "md": {
+                                            "position": {
+                                                "col": 2,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 2
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            }
+                                        }
+                                    },
+                                    "key": "tkexthlmvi",
+                                    "padding": {
+                                        "xs": {
+                                            "top": 5,
+                                            "left": 5,
+                                            "right": 5,
+                                            "bottom": 5
+                                        },
+                                        "md": {
+                                            "top": 15,
+                                            "left": 15,
+                                            "right": 15,
+                                            "bottom": 15
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "picture",
+                                    "caption": "Picture",
+                                    "width": "80",
+                                    "height": "80",
+                                    "styles": {
+                                        "appearance": "components/picture/default"
+                                    }
+                                },
+                                {
+                                    "type": "text-block",
+                                    "nodes": [
+                                        {
+                                            "type": "heading3",
+                                            "attrs": {
+                                                "styles": {
+                                                    "alignment": {
+                                                        "xl": "utils/text/alignCenter",
+                                                        "xs": "utils/text/alignCenter"
+                                                    }
+                                                }
+                                            },
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Feature 3"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "paragraph",
+                                            "attrs": {
+                                                "styles": {
+                                                    "alignment": {
+                                                        "xl": "utils/text/alignCenter",
+                                                        "xs": "utils/text/alignCenter"
+                                                    }
+                                                }
+                                            },
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "role": "article",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "md": {
+                                            "position": {
+                                                "col": 3,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 3
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            }
+                                        }
+                                    },
+                                    "key": "rwecujswjm",
+                                    "padding": {
+                                        "xs": {
+                                            "top": 5,
+                                            "left": 5,
+                                            "right": 5,
+                                            "bottom": 5
+                                        },
+                                        "md": {
+                                            "top": 15,
+                                            "left": 15,
+                                            "right": 15,
+                                            "bottom": 15
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "styles": {
+                        "instance": {
+                            "grid": {
+                                "md": {
+                                    "rows": [
+                                        "auto"
+                                    ],
+                                    "cols": [
+                                        "1fr",
+                                        "1fr",
+                                        "1fr"
+                                    ]
+                                },
+                                "xs": {
+                                    "rows": [
+                                        "auto",
+                                        "auto",
+                                        "auto"
+                                    ],
+                                    "cols": [
+                                        "1fr"
+                                    ]
+                                }
+                            },
+                            "key": "bztuxvknlo",
+                            "size": {
+                                "sm": {
+                                    "maxWidth": 540
+                                },
+                                "md": {
+                                    "maxWidth": 720
+                                },
+                                "lg": {
+                                    "maxWidth": 960
+                                },
+                                "xl": {
+                                    "maxWidth": 1140
+                                }
+                            },
+                            "margin": {
+                                "xs": {
+                                    "top": 10,
+                                    "left": "auto",
+                                    "right": "auto",
+                                    "bottom": 10
+                                },
+                                "md": {
+                                    "top": 15,
+                                    "bottom": 15
+                                },
+                                "xl": {
+                                    "top": 25,
+                                    "bottom": 25
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "6f21de91-7e76-7f24-972c-cdc190161ff0": {
+            "type": "layout-section",
+            "nodes": [
+                {
+                    "type": "grid",
+                    "nodes": [
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "picture",
+                                    "caption": "Picture",
+                                    "width": "400",
+                                    "height": "300",
+                                    "styles": {
+                                        "appearance": "components/picture/default"
+                                    }
+                                }
+                            ],
+                            "role": "aside",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "md": {
+                                            "position": {
+                                                "col": 2,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        }
+                                    },
+                                    "key": "lgebulchhk",
+                                    "padding": {
+                                        "xs": {
+                                            "top": 5,
+                                            "left": 5,
+                                            "right": 5,
+                                            "bottom": 5
+                                        },
+                                        "md": {
+                                            "top": 15,
+                                            "left": 15,
+                                            "right": 15,
+                                            "bottom": 15
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "text-block",
+                                    "nodes": [
+                                        {
+                                            "type": "heading2",
+                                            "attrs": {
+                                                "styles": {
+                                                    "alignment": {
+                                                        "xl": "utils/text/alignRight"
+                                                    }
+                                                }
+                                            },
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Important feature"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "paragraph",
+                                            "attrs": {
+                                                "styles": {
+                                                    "alignment": {
+                                                        "xl": "utils/text/alignRight"
+                                                    }
+                                                }
+                                            },
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "button",
+                                    "label": "Call to action",
+                                    "styles": {
+                                        "appearance": "components/button/default"
+                                    }
+                                }
+                            ],
+                            "role": "article",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "md": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 2
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        },
+                                        "xl": {
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "end"
+                                            }
+                                        }
+                                    },
+                                    "key": "wwqgpzlfpw",
+                                    "padding": {
+                                        "xs": {
+                                            "top": 5,
+                                            "left": 5,
+                                            "right": 5,
+                                            "bottom": 5
+                                        },
+                                        "md": {
+                                            "top": 15,
+                                            "left": 15,
+                                            "right": 15,
+                                            "bottom": 15
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "styles": {
+                        "instance": {
+                            "grid": {
+                                "md": {
+                                    "rows": [
+                                        "auto"
+                                    ],
+                                    "cols": [
+                                        "1fr",
+                                        "1fr"
+                                    ]
+                                },
+                                "xs": {
+                                    "rows": [
+                                        "auto",
+                                        "auto"
+                                    ],
+                                    "cols": [
+                                        "1fr"
+                                    ]
+                                }
+                            },
+                            "key": "bpecbpeaiu",
+                            "size": {
+                                "sm": {
+                                    "maxWidth": 540
+                                },
+                                "md": {
+                                    "maxWidth": 720
+                                },
+                                "lg": {
+                                    "maxWidth": 960
+                                },
+                                "xl": {
+                                    "maxWidth": 1140
+                                }
+                            },
+                            "margin": {
+                                "xs": {
+                                    "top": 10,
+                                    "left": "auto",
+                                    "right": "auto",
+                                    "bottom": 10
+                                },
+                                "md": {
+                                    "top": 15,
+                                    "bottom": 15
+                                },
+                                "xl": {
+                                    "top": 25,
+                                    "bottom": 25
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "2b662b7f-9921-5e71-b227-8e9e13c792d0": {
+            "type": "layout-section",
+            "nodes": [
+                {
+                    "type": "grid",
+                    "nodes": [
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "picture",
+                                    "caption": "Picture",
+                                    "width": "400",
+                                    "height": "300",
+                                    "styles": {
+                                        "appearance": "components/picture/default"
+                                    }
+                                }
+                            ],
+                            "role": "aside",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "md": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        }
+                                    },
+                                    "key": "kwqyzvtkzq",
+                                    "padding": {
+                                        "xs": {
+                                            "top": 5,
+                                            "left": 5,
+                                            "right": 5,
+                                            "bottom": 5
+                                        },
+                                        "md": {
+                                            "top": 15,
+                                            "left": 15,
+                                            "right": 15,
+                                            "bottom": 15
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "text-block",
+                                    "nodes": [
+                                        {
+                                            "type": "heading2",
+                                            "attrs": {
+                                                "styles": {
+                                                    "alignment": {
+                                                        "xl": "utils/text/alignLeft"
+                                                    }
+                                                }
+                                            },
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Important feature"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "paragraph",
+                                            "attrs": {
+                                                "styles": {
+                                                    "alignment": {
+                                                        "xl": "utils/text/alignLeft"
+                                                    }
+                                                }
+                                            },
+                                            "nodes": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "button",
+                                    "label": "Call to action",
+                                    "styles": {
+                                        "appearance": "components/button/default"
+                                    }
+                                }
+                            ],
+                            "role": "article",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "md": {
+                                            "position": {
+                                                "col": 2,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 2
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        },
+                                        "xl": {
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "start"
+                                            }
+                                        }
+                                    },
+                                    "key": "crgobxyqjh",
+                                    "padding": {
+                                        "xs": {
+                                            "top": 5,
+                                            "left": 5,
+                                            "right": 5,
+                                            "bottom": 5
+                                        },
+                                        "md": {
+                                            "top": 15,
+                                            "left": 15,
+                                            "right": 15,
+                                            "bottom": 15
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "styles": {
+                        "instance": {
+                            "grid": {
+                                "md": {
+                                    "rows": [
+                                        "auto"
+                                    ],
+                                    "cols": [
+                                        "1fr",
+                                        "1fr"
+                                    ]
+                                },
+                                "xs": {
+                                    "rows": [
+                                        "auto",
+                                        "auto"
+                                    ],
+                                    "cols": [
+                                        "1fr"
+                                    ]
+                                }
+                            },
+                            "key": "snuwuvyggu",
+                            "size": {
+                                "sm": {
+                                    "maxWidth": 540
+                                },
+                                "md": {
+                                    "maxWidth": 720
+                                },
+                                "lg": {
+                                    "maxWidth": 960
+                                },
+                                "xl": {
+                                    "maxWidth": 1140
+                                }
+                            },
+                            "margin": {
+                                "xs": {
+                                    "top": 10,
+                                    "left": "auto",
+                                    "right": "auto",
+                                    "bottom": 10
+                                },
+                                "md": {
+                                    "top": 15,
+                                    "bottom": 15
+                                },
+                                "xl": {
+                                    "top": 25,
+                                    "bottom": 25
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "aa94cd9f-a76f-5ba7-ef20-086214290999": {
+            "type": "layout-section",
+            "nodes": [
+                {
+                    "type": "grid",
+                    "nodes": [
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "card",
+                                    "styles": {
+                                        "appearance": "components/card/default"
+                                    },
+                                    "nodes": [
+                                        {
+                                            "type": "picture",
+                                            "caption": "Feature 1",
+                                            "width": 300,
+                                            "height": 200,
+                                            "styles": {
+                                                "appearance": "components/picture/default"
+                                            }
+                                        },
+                                        {
+                                            "type": "text-block",
+                                            "nodes": [
+                                                {
+                                                    "type": "heading3",
+                                                    "nodes": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "Feature 1"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "paragraph",
+                                                    "nodes": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor..."
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "role": "article",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "md": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            }
+                                        }
+                                    },
+                                    "key": "ixjdhkvbqw",
+                                    "padding": {
+                                        "xs": {
+                                            "top": 5,
+                                            "left": 5,
+                                            "right": 5,
+                                            "bottom": 5
+                                        },
+                                        "md": {
+                                            "top": 15,
+                                            "left": 15,
+                                            "right": 15,
+                                            "bottom": 15
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "card",
+                                    "styles": {
+                                        "appearance": "components/card/default"
+                                    },
+                                    "nodes": [
+                                        {
+                                            "type": "picture",
+                                            "caption": "Feature 2",
+                                            "width": 300,
+                                            "height": 200,
+                                            "styles": {
+                                                "appearance": "components/picture/default"
+                                            }
+                                        },
+                                        {
+                                            "type": "text-block",
+                                            "nodes": [
+                                                {
+                                                    "type": "heading3",
+                                                    "nodes": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "Feature 2"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "paragraph",
+                                                    "nodes": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor..."
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "role": "article",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "md": {
+                                            "position": {
+                                                "col": 2,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 2
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            }
+                                        }
+                                    },
+                                    "key": "pvnjfbsrqi",
+                                    "padding": {
+                                        "xs": {
+                                            "top": 5,
+                                            "left": 5,
+                                            "right": 5,
+                                            "bottom": 5
+                                        },
+                                        "md": {
+                                            "top": 15,
+                                            "left": 15,
+                                            "right": 15,
+                                            "bottom": 15
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "card",
+                                    "styles": {
+                                        "appearance": "components/card/default"
+                                    },
+                                    "nodes": [
+                                        {
+                                            "type": "picture",
+                                            "caption": "Feature 3",
+                                            "width": 300,
+                                            "height": 200,
+                                            "styles": {
+                                                "appearance": "components/picture/default"
+                                            }
+                                        },
+                                        {
+                                            "type": "text-block",
+                                            "nodes": [
+                                                {
+                                                    "type": "heading3",
+                                                    "nodes": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "Feature 3"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "paragraph",
+                                                    "nodes": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor..."
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "role": "article",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "md": {
+                                            "position": {
+                                                "col": 3,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "center"
+                                            }
+                                        },
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 3
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            }
+                                        }
+                                    },
+                                    "key": "oaqpulcbbz",
+                                    "padding": {
+                                        "xs": {
+                                            "top": 5,
+                                            "left": 5,
+                                            "right": 5,
+                                            "bottom": 5
+                                        },
+                                        "md": {
+                                            "top": 15,
+                                            "left": 15,
+                                            "right": 15,
+                                            "bottom": 15
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "styles": {
+                        "instance": {
+                            "grid": {
+                                "md": {
+                                    "rows": [
+                                        "auto"
+                                    ],
+                                    "cols": [
+                                        "1fr",
+                                        "1fr",
+                                        "1fr"
+                                    ]
+                                },
+                                "xs": {
+                                    "rows": [
+                                        "auto",
+                                        "auto",
+                                        "auto"
+                                    ],
+                                    "cols": [
+                                        "1fr"
+                                    ]
+                                }
+                            },
+                            "key": "tzhggvhxxk",
+                            "size": {
+                                "sm": {
+                                    "maxWidth": 540
+                                },
+                                "md": {
+                                    "maxWidth": 720
+                                },
+                                "lg": {
+                                    "maxWidth": 960
+                                },
+                                "xl": {
+                                    "maxWidth": 1140
+                                }
+                            },
+                            "margin": {
+                                "xs": {
+                                    "top": 10,
+                                    "left": "auto",
+                                    "right": "auto",
+                                    "bottom": 10
+                                },
+                                "md": {
+                                    "top": 15,
+                                    "bottom": 15
+                                },
+                                "xl": {
+                                    "top": 25,
+                                    "bottom": 25
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
