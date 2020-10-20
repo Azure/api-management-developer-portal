@@ -73,10 +73,13 @@ export class ApiDetails {
             return;
         }
 
-        this.working(true);
-
         const api = await this.apiService.getApi(`apis/${apiName}`);
+        if (!api) {
+            this.api(null);
+            return;
+        }
 
+        this.working(true);
         if (api.apiVersionSet && api.apiVersionSet.id) {
             const apis = await this.apiService.getApisInVersionSet(api.apiVersionSet.id);
             apis.forEach(x => x.apiVersion = x.apiVersion || "Original");
@@ -148,7 +151,7 @@ export class ApiDetails {
 
     private onVersionChange(selectedApiName: string): void {
         const apiName = this.routeHelper.getApiName();
-        if(apiName !== selectedApiName) {
+        if (apiName !== selectedApiName) {
             const apiUrl = this.routeHelper.getApiReferenceUrl(selectedApiName);
             this.router.navigateTo(apiUrl);
         }
