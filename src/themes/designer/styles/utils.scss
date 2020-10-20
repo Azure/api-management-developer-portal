@@ -19,6 +19,10 @@
     text-overflow: ellipsis;
 }
 
+.no-overflow {
+    overflow: hidden;
+}
+
 .d-none {
     display: none !important;
 }
