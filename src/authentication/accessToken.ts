@@ -38,6 +38,10 @@ export class AccessToken {
     }
 
     private static parseSharedAccessSignature(value: string): AccessToken {
+        if (value.startsWith("token=")) {
+            return this.parseHeaderValue(value);
+        }
+
         const regex = /^[\w\-]*\&(\d*)\&/gm;
         const match = regex.exec(value);
 
@@ -79,7 +83,7 @@ export class AccessToken {
         if (result) {
             return result;
         }
-        
+
         throw new Error(`Access token format is not valid. Please use "Bearer" or "SharedAccessSignature".`);
     }
 
