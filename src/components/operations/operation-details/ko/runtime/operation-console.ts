@@ -521,7 +521,6 @@ export class OperationConsole {
 
         if (!authorizationServer) {
             this.selectedGrantType(null);
-            this.removeAuthorizationHeader();
             return;
         }
 
