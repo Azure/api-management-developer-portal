@@ -106,6 +106,21 @@
         flex-basis: auto;
     }
 
+    &.list-item-icon {
+        float: left;
+        padding: 5px;
+        display: block;
+        text-align: center;
+        line-height: 1em;
+        width: 90px;
+        height: 90px;
+
+        .icon {
+            font-size: 18px;
+            padding: 20px;
+        }
+    }
+
     &.list-item-large {
         display: inline-block;
         width: 130px;
@@ -125,6 +140,13 @@
             height: 1.5em;
         }
     }
+}
+
+.list-edge {
+    display: block;
+    flex-basis: 100%;
+    min-height: 10px;
+    min-width: 10px;
 }
 
 .list-checkboxes {
