@@ -69,9 +69,11 @@
     </div>
     <!-- /ko -->
 
-    <!-- ko if: $component.authorizationServer -->
+    <!-- ko if: $component.authorizationServer() || $component.subscriptionKeyRequired() -->
     <h3>Authorization</h3>
+    <!-- /ko -->
 
+    <!-- ko if: $component.authorizationServer -->
     <div class="row flex flex-row">
         <div class="col-4">
             <label for="authServer" class="text-monospace form-label"
