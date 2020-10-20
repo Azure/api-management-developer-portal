@@ -24,7 +24,7 @@ export class AccessToken {
         public readonly userId?: string) {
     }
 
-    private static parseHeaderValue(value: string): AccessToken {
+    private static parseExtendedSharedAccessSignature(value: string): AccessToken {
         const regex = /token=\"(.*==)\"/gm;
         const match = regex.exec(value);
 
@@ -38,10 +38,6 @@ export class AccessToken {
     }
 
     private static parseSharedAccessSignature(value: string): AccessToken {
-        if (value.startsWith("token=")) {
-            return this.parseHeaderValue(value);
-        }
-
         const regex = /^[\w\-]*\&(\d*)\&/gm;
         const match = regex.exec(value);
 
@@ -71,11 +67,18 @@ export class AccessToken {
         }
 
         if (token.startsWith("SharedAccessSignature ")) {
-            return AccessToken.parseSharedAccessSignature(token.replace("SharedAccessSignature ", ""));
+            const value = token.replace("SharedAccessSignature ", "");
+
+            if (value.startsWith("token=")) {
+                return AccessToken.parseExtendedSharedAccessSignature(value);
+            }
+            else {
+                return AccessToken.parseSharedAccessSignature(value);
+            }
         }
 
         if (token.startsWith("token=")) {
-            return AccessToken.parseHeaderValue(token);
+            return AccessToken.parseExtendedSharedAccessSignature(token);
         }
 
         const result = AccessToken.parseSharedAccessSignature(token);
