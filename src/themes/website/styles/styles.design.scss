@@ -50,10 +50,10 @@ $style-guide-color: #000;
         cursor: default;
         color: $style-guide-color;
         user-select: none;
+        min-width: 100px;
 
         .style-card-body {
-            padding: 5px;
-            border-radius: 10px;
+            padding: 10px;
         }
 
         &.transparent {
@@ -69,8 +69,6 @@ $style-guide-color: #000;
         }
 
         &.style-card-framed {
-            padding: 20px 20px;
-            min-width: 100px;
             text-align: center;
         }
 
@@ -340,4 +338,11 @@ body {
 
 .design-menu-horizontal {
     padding-bottom: 110px;
+}
+
+.preview {
+    text-transform: uppercase;
+    font-size: 10px;
+    position: absolute;
+    margin: 0 5px;
 }

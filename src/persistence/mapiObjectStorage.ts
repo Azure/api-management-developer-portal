@@ -1,11 +1,12 @@
 import * as _ from "lodash";
 import * as Objects from "@paperbits/common";
-import { IObjectStorage, Query, Operator } from "@paperbits/common/persistence";
+import { IObjectStorage, Query, Operator, Page } from "@paperbits/common/persistence";
 import { MapiClient } from "../services/mapiClient";
-import { Page } from "../models/page";
 import { HttpHeader } from "@paperbits/common/http";
 import { ArmResource } from "../contracts/armResource";
 import { AppError } from "../errors";
+import { defaultPageSize } from "../constants";
+import { PageContract } from "../contracts/page";
 
 
 const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block"];
@@ -338,7 +339,36 @@ export class MapiObjectStorage implements IObjectStorage {
         }
     }
 
-    public async searchObjects<T>(key: string, query: Query<T>): Promise<T[]> {
+    private async loadNextPage<T>(resource: string, localeSearchPrefix: string, filterQueryString: string, skip: number, isLocalized: boolean): Promise<Page<T>> {
+        const url = `${resource}?$skip=${skip}&$top=${defaultPageSize}&$orderby=${localeSearchPrefix}title${filterQueryString}`;
+        const pageOfTs = await this.mapiClient.get<PageContract<T>>(url);
+        const searchResult = [];
+
+        for (const item of pageOfTs.value) {
+            const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
+
+            if (resource.startsWith("contentTypes/block/contentItems")) {
+                this.delocalizeBlock(converted);
+            }
+
+            searchResult.push(converted);
+        }
+
+        const resultPage: Page<T> = {
+            value: searchResult,
+            takeNext: async (): Promise<Page<T>> => {
+                return await this.loadNextPage(resource, localeSearchPrefix, filterQueryString, skip + defaultPageSize, isLocalized);
+            }
+        };
+
+        if (!pageOfTs.nextLink) {
+            resultPage.takeNext = null;
+        }
+
+        return resultPage;
+    }
+
+    public async searchObjects<T>(key: string, query: Query<T>): Promise<Page<T>> {
         const resource = this.paperbitsKeyToArmResource(key);
         const contentType = this.getContentTypeFromResource(resource);
         const isLocalized = localizedContentTypes.includes(contentType);
@@ -382,23 +412,8 @@ export class MapiObjectStorage implements IObjectStorage {
                 return paperbitsContract.nodes;
             }
             else {
-                const pageOfTs = await this.mapiClient.get<Page<T>>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`);
-                const searchResult = {};
+               return await this.loadNextPage(resource, localeSearchPrefix, filterQueryString, 0, isLocalized);
 
-                for (const item of pageOfTs.value) {
-                    const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
-
-                    if (resource.startsWith("contentTypes/block/contentItems")) {
-                        this.delocalizeBlock(converted);
-                    }
-
-                    const segments = converted.key.split("/");
-                    const key = segments[1];
-
-                    searchResult[key] = converted;
-                }
-
-                return <any>searchResult;
             }
         }
         catch (error) {
