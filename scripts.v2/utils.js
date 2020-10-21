@@ -3,6 +3,7 @@ const path = require("path");
 const https = require("https");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
+const mime = require("mime-types");
 
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
@@ -116,7 +117,14 @@ async function downloadBlobs(blobStorageUrl, localMediaFolder) {
 
     for await (const blob of blobs) {
         const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-        await blockBlobClient.downloadToFile(`${localMediaFolder}/${blob.name}`);
+        const extension = mime.extension(blob.properties.contentType);
+
+        if (extension != null) {
+            await blockBlobClient.downloadToFile(`${localMediaFolder}/${blob.name}.${extension}`);
+        }
+        else {
+            await blockBlobClient.downloadToFile(`${localMediaFolder}/${blob.name}`);
+        }
     }
 }
 
@@ -127,8 +135,15 @@ async function uploadBlobs(blobStorageUrl, localMediaFolder) {
 
     for (const fileName of fileNames) {
         const blobName = path.basename(fileName).split(".")[0];
+        const contentType = mime.lookup(path.extname(fileName));
+
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-        await blockBlobClient.uploadFile(fileName)
+
+        await blockBlobClient.uploadFile(fileName, {
+            blobHTTPHeaders: {
+                blobContentType: contentType
+            }
+        });
     }
 }
 
