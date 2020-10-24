@@ -43,7 +43,7 @@ import { Subscriptions } from "./components/users/subscriptions/ko/runtime/subsc
 import { ProductList } from "./components/products/product-list/ko/runtime/product-list";
 import { ProductDetails } from "./components/products/product-details/ko/runtime/product-details";
 import { ProductSubscribe } from "./components/products/product-subscribe/ko/runtime/product-subscribe";
-import { DefaultAuthenticator } from "./components/defaultAuthenticator";
+import { DefaultAuthenticator } from "./authentication/defaultAuthenticator";
 import { Spinner } from "./components/spinner/spinner";
 import { ProductApis } from "./components/products/product-apis/ko/runtime/product-apis";
 import { OperationList } from "./components/operations/operation-list/ko/runtime/operation-list";

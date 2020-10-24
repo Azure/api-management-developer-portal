@@ -1,7 +1,7 @@
 import * as Constants from "./constants";
 import { UnsavedChangesRouteGuard } from "./routing/unsavedChangesRouteGuard";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
-import { DefaultAuthenticator } from "./components/defaultAuthenticator";
+import { DefaultAuthenticator } from "./authentication/defaultAuthenticator";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
@@ -58,6 +58,7 @@ import { PolicyService } from "./services/policyService";
 import { OAuthService } from "./services/oauthService";
 import { HistoryRouteHandler } from "@paperbits/common/routing";
 import { OldContentRouteGuard } from "./routing/oldContentRouteGuard";
+import { ArmAuthenticator } from "./authentication/armAuthenticator";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -116,7 +117,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("policyService", PolicyService);
         injector.bindSingleton("mapiClient", MapiClient);
-        injector.bindSingleton("authenticator", DefaultAuthenticator);
+        injector.bindSingleton("authenticator", ArmAuthenticator);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindToCollection("routeGuards", OldContentRouteGuard);
@@ -124,5 +125,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindToCollection("autostart", HistoryRouteHandler);
+
+
     }
 }

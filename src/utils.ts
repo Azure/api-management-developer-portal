@@ -2,6 +2,7 @@ import { NameValuePair } from "request";
 import { ArmResource } from "./contracts/armResource";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
+import { resolve } from "path";
 
 
 export class Utils {
@@ -365,6 +366,12 @@ export class Utils {
             };
 
             reader.readAsArrayBuffer(file);
+        });
+    }
+
+    public static async delay(ms: number): Promise<void> {
+        return new Promise<void>(resolve => {
+            setTimeout(resolve, ms);
         });
     }
 }

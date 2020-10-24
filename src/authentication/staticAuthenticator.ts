@@ -1,5 +1,5 @@
 import { HttpHeader } from "@paperbits/common/http/httpHeader";
-import { IAuthenticator, AccessToken } from "../authentication";
+import { IAuthenticator, AccessToken } from ".";
 
 export class StaticAuthenticator implements IAuthenticator {
     private accessToken: string;

@@ -30,6 +30,7 @@ export class ResetDetailsWorkshop {
         try {
             this.logger.trackEvent("Click: Reset website");
 
+            localStorage.clear();
             this.offlineObjectStorage.discardChanges();
             this.viewManager.clearJourney();
             this.viewManager.hideToolboxes();

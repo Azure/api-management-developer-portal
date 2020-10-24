@@ -14,7 +14,7 @@ import { SubscriptionsModule } from "./components/users/subscriptions/subscripti
 import { ProductDetailsModule } from "./components/products/product-details/productDetails.module";
 import { StaticRouter } from "./components/staticRouter";
 import { StaticUserService } from "./services/userService";
-import { StaticAuthenticator } from "./components/staticAuthenticator";
+import { StaticAuthenticator } from "./authentication/staticAuthenticator";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";
 import { OperationDetailsPublishModule } from "./components/operations/operation-details/operationDetails.publish.module";
 import { ProductListModule } from "./components/products/product-list/ko/productList.module";

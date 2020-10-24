@@ -1,22 +1,58 @@
+import * as Msal from "msal";
+import { HttpClient } from "@paperbits/common/http";
 import { Utils } from "../utils";
-import { IAuthenticator, AccessToken } from "./../authentication";
+import { IAuthenticator, AccessToken } from ".";
 import { HttpHeader } from "@paperbits/common/http/httpHeader";
 
-export class DefaultAuthenticator implements IAuthenticator {
+
+const aadClientId = "bece2c2c-99d7-4c1b-91a4-1acf323eae0e"; // test app
+const scopes = ["https://management.azure.com/user_impersonation"];
+
+export class ArmAuthenticator implements IAuthenticator {
+    private msalInstance: Msal.UserAgentApplication;
+
+    private loginRequest: Msal.AuthenticationParameters = {
+        scopes: scopes
+    };
+
+    private renewIdTokenRequest: Msal.AuthenticationParameters = {
+        scopes: scopes
+    };
+
+    constructor(private readonly httpClient: HttpClient) {
+        const msalConfig: Msal.Configuration = {
+            auth: {
+                clientId: aadClientId,
+            }
+        };
+
+        this.msalInstance = new Msal.UserAgentApplication(msalConfig);
+    }
+
     public async getAccessToken(): Promise<string> {
-        const accessToken = sessionStorage.getItem("accessToken");
-        
-        if (!accessToken && window.location.pathname.startsWith("/signin-sso")) {
-            const url = new URL(location.href);
-            const queryParams = new URLSearchParams(url.search);
-            const tokenValue = queryParams.get("token");
-            const token = AccessToken.parse(`SharedAccessSignature ${tokenValue}`);
-            await this.setAccessToken(token);
-            
-            const returnUrl = queryParams.get("returnUrl") || "/";
-            window.location.assign(returnUrl);
+        if (sessionStorage["token"]) {
+            return sessionStorage["token"];
         }
-        return accessToken;
+
+        // TODO: Check expiration and do acquireTokenSilent.
+
+        let response: Msal.AuthResponse;
+
+        if (this.msalInstance.getAccount()) {
+            response = await this.msalInstance.acquireTokenSilent(this.renewIdTokenRequest);
+        }
+        else {
+            response = await this.msalInstance.loginPopup(this.loginRequest);
+        }
+
+        await Utils.delay(1);
+
+        if (response.accessToken) {
+            const token = `Bearer ${response.accessToken}`;
+
+            sessionStorage["token"] = token;
+            return token;
+        }
     }
 
     public async setAccessToken(accessToken: AccessToken): Promise<void> {

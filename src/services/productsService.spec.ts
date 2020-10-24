@@ -4,7 +4,7 @@ import { describe, it } from "mocha";
 import { ProductService } from "./productService";
 import { MapiClient } from "./mapiClient";
 import { MockHttpClient, starterProduct } from "../../tests/mocks";
-import { StaticAuthenticator } from "../components/staticAuthenticator";
+import { StaticAuthenticator } from "../authentication/staticAuthenticator";
 import { StaticSettingsProvider } from "../components/staticSettingsProvider";
 
 const settingsProvider = new StaticSettingsProvider({
