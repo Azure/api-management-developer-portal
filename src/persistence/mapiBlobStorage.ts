@@ -1,7 +1,7 @@
 import { MapiClient } from "./../services/mapiClient";
 import { IBlobStorage } from "@paperbits/common/persistence";
 import { AzureBlobStorage } from "@paperbits/azure";
-import { StaticSettingsProvider } from "../components/staticSettingsProvider";
+import { StaticSettingsProvider } from "../configuration/staticSettingsProvider";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 
 

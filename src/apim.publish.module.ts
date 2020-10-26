@@ -12,7 +12,7 @@ import { SignupSocialModule } from "./components/users/signup-social/signupSocia
 import { ProfileModule } from "./components/users/profile/profile.module";
 import { SubscriptionsModule } from "./components/users/subscriptions/subscriptions.module";
 import { ProductDetailsModule } from "./components/products/product-details/productDetails.module";
-import { StaticRouter } from "./components/staticRouter";
+import { StaticRouter } from "./routing/staticRouter";
 import { StaticUserService } from "./services/userService";
 import { StaticAuthenticator } from "./authentication/staticAuthenticator";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";

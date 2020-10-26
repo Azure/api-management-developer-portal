@@ -8,7 +8,7 @@ import { CorePublishModule } from "@paperbits/core/core.publish.module";
 import { ApimPublishModule } from "../../../../src/apim.publish.module";
 import { StyleModule } from "@paperbits/styles/styles.module";
 import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
-import { StaticSettingsProvider } from "../../../../src/components/staticSettingsProvider";
+import { StaticSettingsProvider } from "../../../../src/configuration/staticSettingsProvider";
 
 
 export async function publish(): Promise<void> {

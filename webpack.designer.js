@@ -63,11 +63,12 @@ const designerConfig = {
         }),
         new CopyWebpackPlugin({
             patterns: [
+                { from: `./scripts/data.json`, to: "editors/themes/default.json" },
                 { from: `./src/themes/designer/assets/index.html`, to: "index.html" },
                 { from: `./src/themes/designer/styles/fonts`, to: "editors/styles/fonts" },
                 { from: `./src/libraries`, to: "data" },
-                { from: `./scripts/data.json`, to: "editors/themes/default.json" },
-                { from: "./src/config.design.json", to: "config.json" }
+                { from: "./src/config.design.json" },
+                { from: "./src/config.runtime.json" }
             ]
         })
     ],

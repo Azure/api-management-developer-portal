@@ -43,26 +43,19 @@ export interface ServiceProperties {
     createdAtUtc: string;
 
     /**
-     * Example: https://aztest.azure-api.net
+     * Gateway endpoint, e.g. https://contoso.azure-api.net
      */
     gatewayUrl: string;
 
     /**
-     * Example: https://aztest.portal.azure-api.net
-     */
-    portalUrl: string;
-
-    /**
-     * Example: https://aztest.management.azure-api.net
+     * Direct management API endpoint, e.g. https://contoso.management.azure-api.net
      */
     managementApiUrl: string;
 
     /**
-     * Example: https://aztest.scm.azure-api.net
+     * Example: https://contoso.scm.azure-api.net
      */
     scmUrl: string;
-
-    addresserEmail: string;
 
     hostnameConfigurations: HostnameConfiguration[];
 
@@ -77,7 +70,7 @@ export interface ServiceProperties {
 
 export interface ServiceDescriptionContract {
     /**
-     * Example: /subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/Api-Default-West-US/providers/Microsoft.ApiManagement/service/aztest
+     * Example: /subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/Api-Default-West-US/providers/Microsoft.ApiManagement/service/contoso
      */
     id: string;
 

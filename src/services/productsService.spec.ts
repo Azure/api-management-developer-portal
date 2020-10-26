@@ -5,7 +5,7 @@ import { ProductService } from "./productService";
 import { MapiClient } from "./mapiClient";
 import { MockHttpClient, starterProduct } from "../../tests/mocks";
 import { StaticAuthenticator } from "../authentication/staticAuthenticator";
-import { StaticSettingsProvider } from "../components/staticSettingsProvider";
+import { StaticSettingsProvider } from "../configuration/staticSettingsProvider";
 
 const settingsProvider = new StaticSettingsProvider({
     managementApiUrl: "https://contoso.management.azure-api.net",

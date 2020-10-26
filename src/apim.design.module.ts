@@ -59,6 +59,8 @@ import { OAuthService } from "./services/oauthService";
 import { HistoryRouteHandler } from "@paperbits/common/routing";
 import { OldContentRouteGuard } from "./routing/oldContentRouteGuard";
 import { ArmAuthenticator } from "./authentication/armAuthenticator";
+import { DefaultSettingsProvider } from "./configuration";
+import { DefaultSessionManager } from "./authentication/defaultSessionManager";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -125,7 +127,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindToCollection("autostart", HistoryRouteHandler);
-
-
+        injector.bindInstance("configFileUri", "/config.design.json");
+        injector.bindSingleton("settingsProvider", DefaultSettingsProvider);
+        injector.bindSingleton("sessionManager", DefaultSessionManager);
     }
 }

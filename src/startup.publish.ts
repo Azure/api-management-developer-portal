@@ -6,7 +6,7 @@ import { CoreModule } from "@paperbits/core/core.module";
 import { CorePublishModule } from "@paperbits/core/core.publish.module";
 import { StyleModule } from "@paperbits/styles/styles.module";
 import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
-import { StaticSettingsProvider } from "./components/staticSettingsProvider";
+import { StaticSettingsProvider } from "./configuration/staticSettingsProvider";
 import { FileSystemBlobStorage } from "./components/filesystemBlobStorage";
 import { ApimPublishModule } from "./apim.publish.module";
 

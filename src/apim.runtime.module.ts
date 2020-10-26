@@ -16,7 +16,7 @@ import { RouteHelper } from "./routing/routeHelper";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { DefaultEventManager } from "@paperbits/common/events";
 import { XmlHttpRequestClient } from "@paperbits/common/http";
-import { DefaultSettingsProvider } from "@paperbits/common/configuration";
+import { DefaultSettingsProvider, StaticSettingsProvider } from "./configuration";
 import { DefaultRouter, LocationRouteHandler, HistoryRouteHandler } from "@paperbits/common/routing";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { KnockoutRegistrationLoaders } from "@paperbits/core/ko/knockout.loaders";
@@ -125,7 +125,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("aadService", AadService);
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("httpClient", XmlHttpRequestClient);
-        injector.bindSingleton("settingsProvider", DefaultSettingsProvider);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("routeHelper", RouteHelper);
         injector.bindSingleton("userService", StaticUserService);
@@ -134,8 +133,22 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("viewStack", ViewStack);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("tagInput", TagInput);
-        injector.bindToCollection("autostart", location.href.includes("designtime=true")
-            ? HistoryRouteHandler
-            : LocationRouteHandler);
+
+
+        if (location.href.includes("designtime=true")) {
+            // TODO: Review. We should be able to pass instance of settings provider, not just strings
+            injector.bindToCollection("autostart", HistoryRouteHandler);
+            const designTimeSettings = JSON.parse(sessionStorage.getItem("designTimeSettings"));
+            const settingsProvider = new StaticSettingsProvider({
+                managementApiUrl: designTimeSettings["managementApiUrl"],
+                managementApiAccessToken: designTimeSettings["managementApiAccessToken"]
+            });
+            injector.bindInstance("settingsProvider", settingsProvider);
+        }
+        else {
+            injector.bindToCollection("autostart", LocationRouteHandler);
+            injector.bindInstance("configFileUri", "/config.runtime.json");
+            injector.bindSingleton("settingsProvider", DefaultSettingsProvider);
+        }
     }
 }
