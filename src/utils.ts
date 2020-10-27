@@ -278,15 +278,15 @@ export class Utils {
         const offset = now.getTimezoneOffset() * 60000 * 1000;
 
         if (decodedToken.exp) {
-            decodedToken.exp = new Date(decodedToken.exp + offset);
+            decodedToken.exp = new Date(decodedToken.exp * 1000 + offset);
         }
 
         if (decodedToken.nfb) {
-            decodedToken.nfb = new Date(decodedToken.nfb + offset);
+            decodedToken.nfb = new Date(decodedToken.nfb * 1000 + offset);
         }
 
         if (decodedToken.iat) {
-            decodedToken.iat = new Date(decodedToken.iat + offset);
+            decodedToken.iat = new Date(decodedToken.iat * 1000 + offset);
         }
 
         return decodedToken;

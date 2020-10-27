@@ -2,8 +2,6 @@ import * as moment from "moment";
 import { Utils } from "../utils";
 
 export class AccessToken {
-    private fullToken: string;
-
     constructor(
         /**
          * Type of token, i.e. Bearer or SharedAccessSignature.
