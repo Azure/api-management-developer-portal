@@ -3,7 +3,7 @@ import template from "./signin-aad.html";
 import { EventManager } from "@paperbits/common/events";
 import { Component, RuntimeComponent, Param } from "@paperbits/common/ko/decorators";
 import { ValidationReport } from "../../../../../contracts/validationReport";
-import { AadService } from "../../../../../services";
+import { AzureActiveDirectoryService } from "../../../../../services";
 
 
 @RuntimeComponent({
@@ -15,7 +15,7 @@ import { AadService } from "../../../../../services";
 })
 export class SignInAad {
     constructor(
-        private readonly aadService: AadService,
+        private readonly aadService: AzureActiveDirectoryService,
         private readonly eventManager: EventManager
     ) {
         this.clientId = ko.observable();

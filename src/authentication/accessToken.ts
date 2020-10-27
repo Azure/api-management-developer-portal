@@ -2,6 +2,8 @@ import * as moment from "moment";
 import { Utils } from "../utils";
 
 export class AccessToken {
+    private fullToken: string;
+
     constructor(
         /**
          * Type of token, i.e. Bearer or SharedAccessSignature.
@@ -29,7 +31,7 @@ export class AccessToken {
         const match = regex.exec(value);
 
         if (match && match.length >= 2) {
-            const tokenValue = match[1];
+            const tokenValue = `token="${match[1]}",refresh="true"`;
 
             return AccessToken.parseSharedAccessSignature(tokenValue);
         }
@@ -97,6 +99,6 @@ export class AccessToken {
     }
 
     public toString(): string {
-        return `${this.type} token="${this.value}",refresh="true"`;
+        return `${this.type} ${this.value}`;
     }
 }

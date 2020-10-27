@@ -61,6 +61,7 @@ import { OldContentRouteGuard } from "./routing/oldContentRouteGuard";
 import { ArmAuthenticator } from "./authentication/armAuthenticator";
 import { DefaultSettingsProvider } from "./configuration";
 import { DefaultSessionManager } from "./authentication/defaultSessionManager";
+import { AzureResourceManagementService } from "./services/armService";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -130,5 +131,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindInstance("configFileUri", "/config.design.json");
         injector.bindSingleton("settingsProvider", DefaultSettingsProvider);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
+        injector.bindSingleton("armService", AzureResourceManagementService);
     }
 }

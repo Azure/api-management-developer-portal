@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import template from "./signin-aad-b2c.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { EventManager } from "@paperbits/common/events";
-import { AadService } from "../../../../../services";
+import { AzureActiveDirectoryService } from "../../../../../services";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
 
@@ -17,7 +17,7 @@ const aadb2cResetPasswordErrorCode = "AADB2C90118";
 })
 export class SignInAadB2C {
     constructor(
-        private readonly aadService: AadService,
+        private readonly aadService: AzureActiveDirectoryService,
         private readonly eventManager: EventManager
     ) {
         this.clientId = ko.observable();

@@ -13,7 +13,7 @@ import { MapiClient } from "./mapiClient";
 /**
  * Service for operations with Azure Active Directory identity provider.
  */
-export class AadService {
+export class AzureActiveDirectoryService {
     constructor(
         private readonly authenticator: IAuthenticator,
         private readonly httpClient: HttpClient,

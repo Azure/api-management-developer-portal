@@ -1,4 +1,3 @@
-import { Utils } from "../utils";
 import { IAuthenticator, AccessToken } from ".";
 import { HttpHeader } from "@paperbits/common/http/httpHeader";
 

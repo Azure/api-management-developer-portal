@@ -1,5 +1,4 @@
 import * as Msal from "msal";
-import { HttpClient } from "@paperbits/common/http";
 import { Utils } from "../utils";
 import { IAuthenticator, AccessToken } from ".";
 import { HttpHeader } from "@paperbits/common/http/httpHeader";
@@ -9,17 +8,10 @@ const aadClientId = "bece2c2c-99d7-4c1b-91a4-1acf323eae0e"; // test app
 const scopes = ["https://management.azure.com/user_impersonation"];
 
 export class ArmAuthenticator implements IAuthenticator {
+    private accessToken: AccessToken;
     private msalInstance: Msal.UserAgentApplication;
 
-    private loginRequest: Msal.AuthenticationParameters = {
-        scopes: scopes
-    };
-
-    private renewIdTokenRequest: Msal.AuthenticationParameters = {
-        scopes: scopes
-    };
-
-    constructor(private readonly httpClient: HttpClient) {
+    constructor() {
         const msalConfig: Msal.Configuration = {
             auth: {
                 clientId: aadClientId,
@@ -29,30 +21,48 @@ export class ArmAuthenticator implements IAuthenticator {
         this.msalInstance = new Msal.UserAgentApplication(msalConfig);
     }
 
-    public async getAccessToken(): Promise<string> {
-        if (sessionStorage["token"]) {
-            return sessionStorage["token"];
-        }
-
-        // TODO: Check expiration and do acquireTokenSilent.
-
+    private async tryAcquireToken(): Promise<AccessToken> {
         let response: Msal.AuthResponse;
+        const loginRequest: Msal.AuthenticationParameters = { scopes: scopes };
 
         if (this.msalInstance.getAccount()) {
-            response = await this.msalInstance.acquireTokenSilent(this.renewIdTokenRequest);
+            response = await this.msalInstance.acquireTokenSilent(loginRequest);
         }
         else {
-            response = await this.msalInstance.loginPopup(this.loginRequest);
+            response = await this.msalInstance.loginPopup(loginRequest);
         }
 
         await Utils.delay(1);
 
-        if (response.accessToken) {
-            const token = `Bearer ${response.accessToken}`;
-
-            sessionStorage["token"] = token;
-            return token;
+        if (!response.accessToken) {
+            throw new Error(`Unable to acquire ARM token.`);
         }
+
+        const accessToken = AccessToken.parse(`Bearer ${response.accessToken}`);
+        this.setAccessToken(accessToken);
+
+        setTimeout(this.tryAcquireToken.bind(this), 30 * 60 * 1000);  // scheduling token refresh in 30 min
+
+        return accessToken;
+    }
+
+    public async getAccessToken(): Promise<string> {
+        if (this.accessToken && !this.accessToken.isExpired()) {
+            return this.accessToken.value;
+        }
+
+        const storedAccessToken = sessionStorage.getItem("accessToken");
+
+        if (storedAccessToken) {
+            const parsedToken = AccessToken.parse(storedAccessToken);
+
+            if (!parsedToken.isExpired()) {
+                return parsedToken.value;
+            }
+        }
+
+        const accessToken = await this.tryAcquireToken();
+        return accessToken.value;
     }
 
     public async setAccessToken(accessToken: AccessToken): Promise<void> {
@@ -61,6 +71,7 @@ export class ArmAuthenticator implements IAuthenticator {
             return;
         }
 
+        this.accessToken = accessToken;
         sessionStorage.setItem("accessToken", accessToken.toString());
     }
 

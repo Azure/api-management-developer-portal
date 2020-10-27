@@ -48,7 +48,7 @@ import { Spinner } from "./components/spinner/spinner";
 import { ProductApis } from "./components/products/product-apis/ko/runtime/product-apis";
 import { OperationList } from "./components/operations/operation-list/ko/runtime/operation-list";
 import { ProductSubscriptions } from "./components/products/product-subscriptions/ko/runtime/product-subscriptions";
-import { AadService } from "./services/aadService";
+import { AzureActiveDirectoryService } from "./services/aadService";
 import { BackendService } from "./services/backendService";
 import { HipCaptcha } from "./components/users/runtime/hip-captcha/hip-captcha";
 import { ResetPassword } from "./components/users/reset-password/ko/runtime/reset-password";
@@ -122,7 +122,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("spinner", Spinner);
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
-        injector.bindSingleton("aadService", AadService);
+        injector.bindSingleton("aadService", AzureActiveDirectoryService);
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("httpClient", XmlHttpRequestClient);
         injector.bindSingleton("authenticator", DefaultAuthenticator);

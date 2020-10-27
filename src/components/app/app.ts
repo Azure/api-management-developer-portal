@@ -1,3 +1,4 @@
+import { AzureResourceManagementService } from "./../../services/armService";
 import { SessionManager } from "./../../authentication/sessionManager";
 import { KnownHttpHeaders } from "./../../models/knownHttpHeaders";
 import { HttpClient } from "@paperbits/common/http";
@@ -9,8 +10,6 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ISiteService } from "@paperbits/common/sites";
 import { IAuthenticator } from "../../authentication";
 import { Utils } from "../../utils";
-import * as Constants from "../../constants";
-import { ServiceDescriptionContract } from "../../contracts/service";
 import { Bag } from "@paperbits/common";
 
 const startupError = `Unable to start the portal`;
@@ -25,55 +24,15 @@ export class App {
         private readonly authenticator: IAuthenticator,
         private readonly viewManager: ViewManager,
         private readonly siteService: ISiteService,
-        private readonly httpClient: HttpClient,
+        private readonly armService: AzureResourceManagementService,
         private readonly sessionManager: SessionManager
     ) { }
 
-    private async getServiceDescription(azureManagementApiUrl: string): Promise<ServiceDescriptionContract> {
-        const armAccessToken = await this.authenticator.getAccessToken();
-
-        const serviceDescriptionResponse = await this.httpClient.send<ServiceDescriptionContract>({
-            url: `${azureManagementApiUrl}?api-version=${Constants.managementApiVersion}`,
-            headers: [{
-                name: KnownHttpHeaders.Authorization,
-                value: armAccessToken
-            }]
-        });
-
-        return serviceDescriptionResponse.toObject();
-    }
-
-    private async getUserAccessToken(userId: string, azureManagementApiUrl: string): Promise<string> {
-        const armAccessToken = await this.authenticator.getAccessToken();
-        const exp = new Date(new Date().valueOf() + 60 * 60 * 1000);
-        const userTokenResponse = await this.httpClient.send<ServiceDescriptionContract>({
-            url: `${azureManagementApiUrl}/users/${userId}/token?api-version=${Constants.managementApiVersion}`,
-            method: "POST",
-            headers: [{
-                name: KnownHttpHeaders.Authorization,
-                value: armAccessToken
-            },
-            {
-                name: KnownHttpHeaders.ContentType,
-                value: "application/json"
-            }],
-            body: JSON.stringify({
-                keyType: "primary",
-                expiry: exp.toISOString()
-            })
-        });
-
-        const userToken = userTokenResponse.toObject();
-        const userTokenValue = userToken["value"];
-
-        return userTokenValue;
-    }
-
-    private async getRuntimeSettings(azureManagementApiUrl: string): Promise<Bag<string>> {
-        const serviceDescription = await this.getServiceDescription(azureManagementApiUrl);
+    private async getRuntimeSettings(): Promise<Bag<string>> {
+        const serviceDescription = await this.armService.getServiceDescription();
 
         const userId = "1";
-        const userTokenValue = await this.getUserAccessToken(userId, azureManagementApiUrl);
+        const userTokenValue = await this.armService.getUserAccessToken(userId);
 
         return {
             managementApiUrl: serviceDescription.properties.managementApiUrl,
@@ -89,8 +48,11 @@ export class App {
         const azureManagementApiUrl = settings["azureManagementApiUrl"];
 
         if (azureManagementApiUrl) {
-            const runtimeSettings = this.getRuntimeSettings(azureManagementApiUrl);
+            const runtimeSettings = await this.getRuntimeSettings();
             this.sessionManager.setItem("designTimeSettings", runtimeSettings);
+
+            this.viewManager.setHost({ name: "page-host" });
+            this.viewManager.showToolboxes();
 
             return;
         }
