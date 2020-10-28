@@ -139,7 +139,12 @@ export class MapiClient {
         }
 
         try {
-            await this.authenticator.refreshAccessTokenFromHeader(response.headers);
+            const accessTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
+
+            if (accessTokenHeader?.value) {
+                const newAccessToken = AccessToken.parse(accessTokenHeader.value);
+                await this.authenticator.setAccessToken(newAccessToken);
+            }
         }
         catch (error) {
             console.error("Refresh token error: ", error);
@@ -282,7 +287,7 @@ export class MapiClient {
         let host = "";
         try {
             host = window.location.host;
-        } catch (error){
+        } catch (error) {
             host = "publishing";
         }
 

@@ -1,7 +1,6 @@
 import * as Msal from "msal";
 import { Utils } from "../utils";
 import { IAuthenticator, AccessToken } from ".";
-import { HttpHeader } from "@paperbits/common/http/httpHeader";
 
 
 const aadClientId = "bece2c2c-99d7-4c1b-91a4-1acf323eae0e"; // test app
@@ -51,7 +50,7 @@ export class ArmAuthenticator implements IAuthenticator {
             return this.accessToken.toString();
         }
 
-        const storedAccessToken = sessionStorage.getItem("accessToken");
+        const storedAccessToken = sessionStorage.getItem("armAccessToken");
 
         if (storedAccessToken) {
             const parsedToken = AccessToken.parse(storedAccessToken);
@@ -72,25 +71,7 @@ export class ArmAuthenticator implements IAuthenticator {
         }
 
         this.accessToken = accessToken;
-        sessionStorage.setItem("accessToken", accessToken.toString());
-    }
-
-    public async refreshAccessTokenFromHeader(responseHeaders: HttpHeader[] = []): Promise<string> {
-        const accessTokenHeader = responseHeaders.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
-
-        if (accessTokenHeader?.value) {
-            const accessToken = AccessToken.parse(accessTokenHeader.value);
-            const accessTokenString = accessToken.toString();
-
-            const current = sessionStorage.getItem("accessToken");
-
-            if (current !== accessTokenString) {
-                sessionStorage.setItem("accessToken", accessTokenString);
-                return accessTokenString;
-            }
-        }
-
-        return undefined;
+        sessionStorage.setItem("armAccessToken", accessToken.toString());
     }
 
     public clearAccessToken(): void {
