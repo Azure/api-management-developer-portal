@@ -27,6 +27,7 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
         viewModel["widgetBinding"] = {
             displayName: "List of APIs",
             model: model,
+            draggable: true,
             editor: "list-of-apis-editor",
             applyChanges: async (updatedModel: ListOfApisModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);
