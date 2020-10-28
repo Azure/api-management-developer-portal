@@ -15,6 +15,7 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
             viewModel["widgetBinding"] = {
                 displayName: "Operation: details",
                 model: model,
+                draggable: true,
                 editor: "operation-details-editor",
                 applyChanges: async (updatedModel: OperationDetailsModel) => {
                     await this.modelToViewModel(updatedModel, viewModel, bindingContext);
