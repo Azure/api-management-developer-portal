@@ -204,11 +204,11 @@ export class OAuthService {
         server.scopes = metadata.scopes_supported || ["openid"];
 
         // Leaving only "implicit" grant flow until backend gets deployed.
-        const supportedGrantTypes = [GrantTypes.implicit.toString()];
+        const supportedGrantTypes = [GrantTypes.implicit.toString(), GrantTypes.authorizationCode.toString()];
 
         server.grantTypes = metadata.grant_types_supported
             ? metadata.grant_types_supported.filter(grantType => supportedGrantTypes.includes(grantType))
-            : [GrantTypes.implicit];
+            : [GrantTypes.implicit, GrantTypes.authorizationCode];
 
         return server;
     }
