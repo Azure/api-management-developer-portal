@@ -577,7 +577,7 @@ export class OperationConsole {
 
     /**
      * Initiates specified authentication flow.
-     * @param grantType OAuth grant type, e.g. "implicit" or "authorizationCode".
+     * @param grantType OAuth grant type, e.g. "implicit" or "authorization_code".
      */
     public async authenticateOAuth(grantType: string): Promise<void> {
         await this.clearStoredCredentials();
