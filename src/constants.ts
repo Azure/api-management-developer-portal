@@ -105,13 +105,13 @@ export enum GrantTypes {
      * The Authorization Code grant type is used by confidential and public clients to exchange
      * an authorization code for an access token.
      */
-    authorizationCode = "authorizationCode",
+    authorizationCode = "authorization_code",
 
     /**
      * The Client Credentials grant type is used by clients to obtain an access token outside of
      * the context of a user.
      */
-    clientCredentials = "clientCredentials"
+    clientCredentials = "client_credentials"
 }
 
 export const managementApiVersion = "2019-12-01";
