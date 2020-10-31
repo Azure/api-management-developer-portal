@@ -22,17 +22,17 @@ async function request(url) {
                 data += chunk;
             });
             resp.on("end", () => {
-				// reject on bad status
-				if (resp.statusCode != 200) {
-				  console.log('url: ' + url);	
-                  return reject(new Error('statusCode=' + resp.statusCode + ' for URL: ' + url));
+                // reject on bad status
+                if (resp.statusCode != 200) {
+                    console.log('url: ' + url);
+                    return reject(new Error('statusCode=' + resp.statusCode + ' for URL: ' + url));
                 }
                 try {
                     resolve(JSON.parse(data));
                 }
-                catch (e) {;
+                catch (e) {
                     reject(e);
-					console.log(url);
+                    console.log(url);
                 }
             });
         });
@@ -64,11 +64,11 @@ function checkPath() {
     const folderSegments = dataFile.split("/");
     let checkedPath = dataFile;
     if (!folderSegments[0]) {
-        folderSegments.splice(0,1);
+        folderSegments.splice(0, 1);
         checkedPath = checkedPath.slice(1);
     }
     if (folderSegments.length > 1) {
-        folderSegments.splice(-1,1);
+        folderSegments.splice(-1, 1);
         const folder = folderSegments.join("/");
         if (!fs.existsSync(folder)) {
             fs.mkdirSync(folder);
@@ -100,8 +100,8 @@ async function capture() {
 capture().then(() => {
     console.log("DONE");
 }).catch((err) => {
-    console.log(err);  
-}); 
+    console.log(err);
+});
 
 
 
