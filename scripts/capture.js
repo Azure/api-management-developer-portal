@@ -1,7 +1,3 @@
-/*
- * Important: this script is no longer maintained; new scripts are located in the scripts.v2 folder.
-*/
-
 const fs = require("fs");
 const https = require("https");
 const managementEndpoint = process.argv[2];
@@ -22,12 +18,15 @@ async function request(url) {
     return new Promise((resolve, reject) => {
         const req = https.request(url, options, (resp) => {
             let data = "";
-
             resp.on("data", (chunk) => {
                 data += chunk;
             });
-
             resp.on("end", () => {
+                // reject on bad status
+                if (resp.statusCode != 200) {
+                    console.log('url: ' + url);
+                    return reject(new Error('statusCode=' + resp.statusCode + ' for URL: ' + url));
+                }
                 try {
                     resolve(JSON.parse(data));
                 }
@@ -45,6 +44,7 @@ async function request(url) {
         req.end();
     });
 }
+
 
 async function getContentTypes() {
     const data = await request(`https://${managementEndpoint}/contentTypes?api-version=2018-06-01-preview`);
@@ -64,11 +64,11 @@ function checkPath() {
     const folderSegments = dataFile.split("/");
     let checkedPath = dataFile;
     if (!folderSegments[0]) {
-        folderSegments.splice(0,1);
+        folderSegments.splice(0, 1);
         checkedPath = checkedPath.slice(1);
     }
     if (folderSegments.length > 1) {
-        folderSegments.splice(-1,1);
+        folderSegments.splice(-1, 1);
         const folder = folderSegments.join("/");
         if (!fs.existsSync(folder)) {
             fs.mkdirSync(folder);
@@ -99,4 +99,11 @@ async function capture() {
 
 capture().then(() => {
     console.log("DONE");
-})
+}).catch((err) => {
+    console.log(err);
+});
+
+
+
+
+
