@@ -4,13 +4,13 @@
         <span data-bind="text: tag.name"></span>
 
         <button class="no-border tag-remove" aria-label="Remove tag" data-bind="activate: $component.removeTag">
-            <i class="icon icon-simple-remove"></i>
+            <i class="icon-emb icon-emb-simple-remove"></i>
         </button>
     </div>
     <!-- /ko -->
     
     <div tabindex="0" class="tag-item tag-add" role="button" title="Add tags to search query"
         data-bind="balloon: { template: { name: 'tagList', data: $component }, closeOn: $component.onDismiss }">
-        <i class="icon icon-add-filter"></i>
+        <i class="icon-emb icon-emb-add-filter"></i>
     </div>
 </div>
