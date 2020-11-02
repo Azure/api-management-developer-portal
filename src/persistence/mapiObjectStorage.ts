@@ -11,7 +11,7 @@ import { PageContract } from "../contracts/page";
 
 const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block"];
 const selectedLocale = "en_us";
-const reservedArmIds = ["containerId", "webContainerId"];
+const reservedArmIds = ["containerId", "webContainerId", "appId", "accountId"];
 const reservedPaperbitsIds = ["containerKey", "webContainerKey"];
 
 
