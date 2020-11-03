@@ -14,8 +14,21 @@ async function getContentTypes() {
 }
 
 async function getContentItems(contentType) {
-    const data = await request("GET", `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/contentTypes/${contentType}/contentItems?api-version=2019-12-01`, managementApiAccessToken);
-    const contentItems = data.value;
+    const contentItems = [];
+    let nextPageUrl = `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/contentTypes/${contentType}/contentItems?api-version=2019-12-01`;
+
+    do {
+        const data = await request("GET", nextPageUrl, managementApiAccessToken);
+        contentItems.push(...data.value);
+
+        if (data.value.length > 0 && data.nextLink) {
+            nextPageUrl = data.nextLink;
+        }
+        else {
+            nextPageUrl = null;
+        }
+    }
+    while (nextPageUrl)
 
     return contentItems;
 }
