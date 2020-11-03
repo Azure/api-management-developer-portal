@@ -222,6 +222,14 @@ export class MapiObjectStorage implements IObjectStorage {
 
     public async getObject<T>(key: string): Promise<T> {
         try {
+            if (key === "locales") {
+                return <any>{
+                    key: `contentTypes/locales/contentItem/en_us`,
+                    code: "en-us",
+                    displayName: "English (US)"
+                };
+            }
+            
             const resource = this.paperbitsKeyToArmResource(key);
             const contentType = this.getContentTypeFromResource(resource);
             const isLocalized = localizedContentTypes.includes(contentType);
@@ -230,14 +238,6 @@ export class MapiObjectStorage implements IObjectStorage {
 
             if (key.startsWith("blocks/")) {
                 this.delocalizeBlock(converted);
-            }
-
-            if (key === "locales") {
-                return <any>{
-                    key: `contentTypes/locales/contentItem/en_us`,
-                    code: "en-us",
-                    displayName: "English (US)"
-                };
             }
 
             if (key.includes("settings") || key.includes("styles")) {
@@ -412,7 +412,7 @@ export class MapiObjectStorage implements IObjectStorage {
                 return paperbitsContract.nodes;
             }
             else {
-               return await this.loadNextPage(resource, localeSearchPrefix, filterQueryString, 0, isLocalized);
+                return await this.loadNextPage(resource, localeSearchPrefix, filterQueryString, 0, isLocalized);
 
             }
         }
