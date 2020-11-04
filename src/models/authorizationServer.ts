@@ -26,6 +26,19 @@ export class AuthorizationServer {
             ? contract.properties.defaultScope.split(" ")
             : [];
 
-        this.grantTypes = contract.properties.grantTypes;
+        if (contract.properties.grantTypes) {
+            this.grantTypes = contract.properties.grantTypes.map(grantType => {
+                switch (grantType) {
+                    case "authorizationCode":
+                        return "authorization_code";
+                    case "implicit":
+                        return "implicit";
+                    case "clientCredentials":
+                        return "client_credentials";
+                    case "resourceOwnerPassword":
+                        return "password";
+                }
+            });
+        }
     }
 }

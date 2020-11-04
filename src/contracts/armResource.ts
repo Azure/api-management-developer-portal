@@ -1,6 +1,6 @@
 export interface ArmResource {
-    id: string;
+    id?: string;
     type?: string;
-    name: string;
+    name?: string;
     properties: any;
 }
