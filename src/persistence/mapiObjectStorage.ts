@@ -229,7 +229,7 @@ export class MapiObjectStorage implements IObjectStorage {
                     displayName: "English (US)"
                 };
             }
-            
+
             const resource = this.paperbitsKeyToArmResource(key);
             const contentType = this.getContentTypeFromResource(resource);
             const isLocalized = localizedContentTypes.includes(contentType);
@@ -339,8 +339,8 @@ export class MapiObjectStorage implements IObjectStorage {
         }
     }
 
-    private async loadNextPage<T>(resource: string, localeSearchPrefix: string, filterQueryString: string, skip: number, isLocalized: boolean): Promise<Page<T>> {
-        const url = `${resource}?$skip=${skip}&$top=${defaultPageSize}&$orderby=${localeSearchPrefix}title${filterQueryString}`;
+    private async loadNextPage<T>(resource: string, localeSearchPrefix: string, filterQueryString: string, orderQueryString: string, skip: number, isLocalized: boolean): Promise<Page<T>> {
+        const url = `${resource}?$skip=${skip}&$top=${defaultPageSize}${filterQueryString}${orderQueryString}`;
         const pageOfTs = await this.mapiClient.get<PageContract<T>>(url);
         const searchResult = [];
 
@@ -357,11 +357,11 @@ export class MapiObjectStorage implements IObjectStorage {
         const resultPage: Page<T> = {
             value: searchResult,
             takeNext: async (): Promise<Page<T>> => {
-                return await this.loadNextPage(resource, localeSearchPrefix, filterQueryString, skip + defaultPageSize, isLocalized);
+                return await this.loadNextPage(resource, localeSearchPrefix, filterQueryString, orderQueryString, skip + defaultPageSize, isLocalized);
             }
         };
 
-        if (!pageOfTs.nextLink) {
+        if (!pageOfTs.nextLink || pageOfTs.value.length === 0) {
             resultPage.takeNext = null;
         }
 
@@ -376,8 +376,9 @@ export class MapiObjectStorage implements IObjectStorage {
 
         try {
             let filterQueryString = "";
+            let orderQueryString = "";
 
-            if (query && query.filters.length > 0) {
+            if (query?.filters.length > 0) {
                 const filterExpressions = [];
 
                 for (const filter of query.filters) {
@@ -406,13 +407,18 @@ export class MapiObjectStorage implements IObjectStorage {
                 filterQueryString = `&$filter=${filterExpressions.join(" and ")}`;
             }
 
+            if (query?.orderingBy) {
+                query.orderingBy = query.orderingBy.replace("locales/en-us/", localeSearchPrefix);
+                orderQueryString = `&$orderby=${query.orderingBy}`;
+            }
+
             if (key.includes("navigationItems")) {
                 const armContract = await this.mapiClient.get<any>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`);
                 const paperbitsContract = this.convertArmContractToPaperbitsContract(armContract, isLocalized);
                 return paperbitsContract.nodes;
             }
             else {
-                return await this.loadNextPage(resource, localeSearchPrefix, filterQueryString, 0, isLocalized);
+                return await this.loadNextPage(resource, localeSearchPrefix, filterQueryString, orderQueryString, 0, isLocalized);
 
             }
         }
