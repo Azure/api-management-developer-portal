@@ -36,7 +36,7 @@
             <!-- ko foreach: { data: group.items, as: 'item' } -->
             <li class="nav-item" role="presentation">
                 <a href="#" role="listitem" class="nav-link text-truncate"
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
+                    data-bind="attr: { title: item.displayName, href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
                     <span data-bind="attr: { 'data-method': method }"></span>
                     <span class="operation-name" data-bind="text: item.displayName"></span>
                 </a>
@@ -70,7 +70,7 @@
             <!-- ko foreach: { data: operations, as: 'item' } -->
             <li class="nav-item" role="presentation">
                 <a href="#" role="listitem" class="nav-link text-truncate"
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
+                    data-bind="attr: { title: item.displayName, href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
                     <span data-bind="attr: { 'data-method': method }"></span>
                     <span class="operation-name" data-bind="text: item.displayName"></span>
                 </a>
