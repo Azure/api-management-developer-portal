@@ -272,7 +272,7 @@ export class Utils {
     public static parseJwt(jwtToken: string): JwtToken {
         const base64Url = jwtToken.split(".")[1];
         const base64 = base64Url.replace("-", "+").replace("_", "/");
-        const decodedToken = JSON.parse(window.atob(base64));
+        const decodedToken = JSON.parse(Buffer.from(base64, "base64").toString());
 
         const now = new Date();
         const offset = now.getTimezoneOffset() * 60000 * 1000;

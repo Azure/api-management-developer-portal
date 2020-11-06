@@ -19,7 +19,7 @@
         "build-function": "webpack --config webpack.function.js",
         "test": "node node_modules/mocha/bin/_mocha -r mocha.js src/**/*.spec.ts tests/e2e/**/*.spec.ts --timeout 30000",
         "deploy-function": "npm run build-function && cd dist/function && func azure functionapp publish < function app name >",
-        "publish": "webpack --config webpack.publisher.js && token",
+        "publish": "webpack --config webpack.publisher.js && publish",
         "postinstall": "npm rebuild node-sass"
     },
     "devDependencies": {
