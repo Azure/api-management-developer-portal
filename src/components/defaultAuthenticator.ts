@@ -1,6 +1,4 @@
-import { Utils } from "../utils";
 import { IAuthenticator, AccessToken } from "./../authentication";
-import { HttpHeader } from "@paperbits/common/http/httpHeader";
 
 export class DefaultAuthenticator implements IAuthenticator {
     public async getAccessToken(): Promise<string> {
@@ -26,24 +24,6 @@ export class DefaultAuthenticator implements IAuthenticator {
         }
 
         sessionStorage.setItem("accessToken", accessToken.toString());
-    }
-
-    public async refreshAccessTokenFromHeader(responseHeaders: HttpHeader[] = []): Promise<string> {
-        const accessTokenHeader = responseHeaders.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
-
-        if (accessTokenHeader?.value) {
-            const accessToken = AccessToken.parse(accessTokenHeader.value);
-            const accessTokenString = accessToken.toString();
-
-            const current = sessionStorage.getItem("accessToken");
-
-            if (current !== accessTokenString) {
-                sessionStorage.setItem("accessToken", accessTokenString);
-                return accessTokenString;
-            }
-        }
-
-        return undefined;
     }
 
     public clearAccessToken(): void {
