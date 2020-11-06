@@ -1,10 +1,9 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./confirm-password.html";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
-import { BackendService } from "../../../../../services/backendService";
-import { UsersService } from "../../../../../services/usersService";
 import { EventManager } from "@paperbits/common/events";
+import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { UsersService } from "../../../../../services/usersService";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
 @RuntimeComponent({
