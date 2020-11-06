@@ -16,11 +16,11 @@ export class AzureResourceManagementService {
      * Returns API Management service description.
      */
     public async getServiceDescription(): Promise<ServiceDescriptionContract> {
-        const azureManagementApiUrl = await this.settingsProvider.getSetting<string>("azureManagementApiUrl");
+        const managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
         const armAccessToken = await this.authenticator.getAccessToken();
  
         const serviceDescriptionResponse = await this.httpClient.send<ServiceDescriptionContract>({
-            url: `${azureManagementApiUrl}?api-version=${Constants.managementApiVersion}`,
+            url: `${managementApiUrl}?api-version=${Constants.managementApiVersion}`,
             headers: [{
                 name: KnownHttpHeaders.Authorization,
                 value: armAccessToken
@@ -35,12 +35,12 @@ export class AzureResourceManagementService {
      * @param userName {string} User Identitfier, e.g. johndoe.
      */
     public async getUserAccessToken(userName: string): Promise<string> {
-        const azureManagementApiUrl = await this.settingsProvider.getSetting<string>("azureManagementApiUrl");
+        const managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
         const armAccessToken = await this.authenticator.getAccessToken();
         const exp = new Date(new Date().valueOf() + 60 * 60 * 1000);
 
         const userTokenResponse = await this.httpClient.send<ServiceDescriptionContract>({
-            url: `${azureManagementApiUrl}/users/${userName}/token?api-version=${Constants.managementApiVersion}`,
+            url: `${managementApiUrl}/users/${userName}/token?api-version=${Constants.managementApiVersion}`,
             method: "POST",
             headers: [{
                 name: KnownHttpHeaders.Authorization,

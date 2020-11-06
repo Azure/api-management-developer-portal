@@ -11,6 +11,7 @@ import { ISiteService } from "@paperbits/common/sites";
 import { IAuthenticator } from "../../authentication";
 import { Utils } from "../../utils";
 import { Bag } from "@paperbits/common";
+import { SettingNames } from "../../constants";
 
 const startupError = `Unable to start the portal`;
 
@@ -44,20 +45,23 @@ export class App {
     public async initialize(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
 
-        // TODO: Make ARM -switch
-        const azureManagementApiUrl = settings["azureManagementApiUrl"];
+        const subscriptionId = settings["subscriptionId"];
+        const resourceGroupName = settings[SettingNames.resourceGroupName];
+        const serviceName = settings[SettingNames.serviceName];
+        const armEndpoint = settings[SettingNames.armEndpoint] || "management.azure.com";
 
-        if (azureManagementApiUrl) {
-            const runtimeSettings = await this.getRuntimeSettings();
-            this.sessionManager.setItem("designTimeSettings", runtimeSettings);
-
-            this.viewManager.setHost({ name: "page-host" });
-            this.viewManager.showToolboxes();
-
-            return;
+        if (subscriptionId && resourceGroupName && serviceName) {
+            const managementApiUrl = `https://${armEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
+            await this.settingsProvider.setSetting(SettingNames.managementApiUrl, managementApiUrl);
         }
 
-        if (!settings["managementApiUrl"]) {
+        const runtimeSettings = await this.getRuntimeSettings();
+        this.sessionManager.setItem("designTimeSettings", runtimeSettings);
+        this.viewManager.setHost({ name: "page-host" });
+        this.viewManager.showToolboxes();
+
+
+        if (!settings[SettingNames.managementApiUrl]) {
             this.viewManager.addToast(startupError, `Management API URL is missing. See setting <i>managementApiUrl</i> in the configuration file <i>config.design.json</i>`);
             return;
         }

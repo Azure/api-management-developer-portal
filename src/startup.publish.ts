@@ -9,19 +9,23 @@ import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
 import { StaticSettingsProvider } from "./configuration/staticSettingsProvider";
 import { FileSystemBlobStorage } from "./components/filesystemBlobStorage";
 import { ApimPublishModule } from "./apim.publish.module";
+import { SettingNames } from "./constants";
 
 /* Reading settings from configuration file */
 const configFile = path.resolve(__dirname, "./config.json");
 const configuration = JSON.parse(fs.readFileSync(configFile, "utf8").toString());
 
 if (process.argv[2]) {
-    configuration["managementApiAccessToken"] = process.argv[2];
+    const subscriptionId = configuration[SettingNames.managementApiUrl];
+    const resourceGroupName = configuration[SettingNames.resourceGroupName];
+    const serviceName = configuration[SettingNames.serviceName];
+    const armEndpoint = configuration[SettingNames.armEndpoint] || "management.azure.com";
+
+    configuration[SettingNames.managementApiUrl] = `https://${armEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
+    configuration[SettingNames.managementApiAccessToken] = process.argv[2];
 }
 
-console.log(configuration);
-
 const settingsProvider = new StaticSettingsProvider(configuration);
-
 
 /* Storage where the website get published */
 const outputBlobStorage = new FileSystemBlobStorage("./dist/website");
@@ -45,12 +49,12 @@ const publisher = injector.resolve<IPublisher>("sitePublisher");
 
 
 // /* Running actual publishing */
-// publisher.publish()
-//     .then(() => {
-//         console.log("DONE.");
-//         process.exit();
-//     })
-//     .catch((error) => {
-//         console.log(error);
-//         process.exit();
-//     });
+publisher.publish()
+    .then(() => {
+        console.log("DONE.");
+        process.exit();
+    })
+    .catch((error) => {
+        console.log(error);
+        process.exit();
+    });

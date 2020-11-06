@@ -260,7 +260,7 @@ export class UsersService {
     }
 
     public async createUserWithOAuth(provider: string, idToken: string, firstName: string, lastName: string, email: string): Promise<void> {
-        let managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
+        let managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
         managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
         const jwtToken = Utils.parseJwt(idToken);
 

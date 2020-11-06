@@ -69,6 +69,7 @@ import { TagInput } from "./components/tag-input/tag-input";
 import { ViewStack } from "@paperbits/core/ko/ui/viewStack";
 import { OAuthService } from "./services/oauthService";
 import { DefaultSessionManager } from "./authentication/defaultSessionManager";
+import { SettingNames } from "./constants";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -140,8 +141,8 @@ export class ApimRuntimeModule implements IInjectorModule {
             injector.bindToCollection("autostart", HistoryRouteHandler);
             const designTimeSettings = JSON.parse(sessionStorage.getItem("designTimeSettings"));
             const settingsProvider = new StaticSettingsProvider({
-                managementApiUrl: designTimeSettings["managementApiUrl"],
-                managementApiAccessToken: designTimeSettings["managementApiAccessToken"]
+                managementApiUrl: designTimeSettings[SettingNames.managementApiUrl],
+                managementApiAccessToken: designTimeSettings[SettingNames.managementApiAccessToken]
             });
             injector.bindInstance("settingsProvider", settingsProvider);
         }
