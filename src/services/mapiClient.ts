@@ -1,13 +1,14 @@
 import * as _ from "lodash";
 import * as Constants from "./../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
+import { Logger } from "@paperbits/common/logging";
 import { Utils } from "../utils";
 import { TtlCache } from "./ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
 import { MapiError } from "../errors/mapiError";
 import { IAuthenticator, AccessToken } from "../authentication";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
-import { developerPortalType, portalHeaderName } from "./../constants";
+
 
 export interface IHttpBatchResponses {
     responses: IHttpBatchResponse[];
@@ -30,7 +31,8 @@ export class MapiClient {
     constructor(
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly logger: Logger
     ) { }
 
     private async ensureInitialized(): Promise<void> {
@@ -121,7 +123,7 @@ export class MapiClient {
             }
         }
 
-        const portalHeader = httpRequest.headers.find(header => header.name === portalHeaderName);
+        const portalHeader = httpRequest.headers.find(header => header.name === Constants.portalHeaderName);
         if (!portalHeader) {
             httpRequest.headers.push(MapiClient.getPortalHeader());
         }
@@ -138,11 +140,16 @@ export class MapiClient {
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
-        try {
-            await this.authenticator.refreshAccessTokenFromHeader(response.headers);
-        }
-        catch (error) {
-            console.error("Refresh token error: ", error);
+        const accessTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
+
+        if (accessTokenHeader) {
+            try {
+                const accessToken = AccessToken.parse(accessTokenHeader.value);
+                this.authenticator.setAccessToken(accessToken);
+            }
+            catch (error) {
+                 this.logger.trackError(error, { message: "Unable to refresh access token." });
+            }
         }
 
         return await this.handleResponse<T>(response, httpRequest.url);
@@ -282,10 +289,10 @@ export class MapiClient {
         let host = "";
         try {
             host = window.location.host;
-        } catch (error){
+        } catch (error) {
             host = "publishing";
         }
 
-        return { name: portalHeaderName, value: `${developerPortalType}|${host}|${eventName || ""}` };
+        return { name: Constants.portalHeaderName, value: `${Constants.developerPortalType}|${host}|${eventName || ""}` };
     }
 }

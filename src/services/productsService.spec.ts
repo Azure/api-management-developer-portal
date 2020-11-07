@@ -1,11 +1,13 @@
 import { TenantService } from "./tenantService";
 import { expect } from "chai";
 import { describe, it } from "mocha";
+import { ConsoleLogger } from "@paperbits/common/logging";
 import { ProductService } from "./productService";
 import { MapiClient } from "./mapiClient";
 import { MockHttpClient, starterProduct } from "../../tests/mocks";
 import { StaticAuthenticator } from "../components/staticAuthenticator";
 import { StaticSettingsProvider } from "../components/staticSettingsProvider";
+
 
 const settingsProvider = new StaticSettingsProvider({
     managementApiUrl: "https://contoso.management.azure-api.net",
@@ -17,12 +19,13 @@ const authenticator = new StaticAuthenticator();
 describe("Product service", async () => {
     it("Returns list of products", async () => {
         const httpClient = new MockHttpClient();
+        const logger = new ConsoleLogger();
 
         httpClient.mock()
             .get("/products")
             .reply(200, { value: [starterProduct] });
 
-        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider);
+        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider, logger);
         const tenantService = new TenantService(mapiClient);
 
         const productService = new ProductService(mapiClient, tenantService);
@@ -33,12 +36,13 @@ describe("Product service", async () => {
 
     it("Returns specific product", async () => {
         const httpClient = new MockHttpClient();
+        const logger = new ConsoleLogger();
 
         httpClient.mock()
             .get("/products/starter")
             .reply(200, starterProduct);
 
-        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider);
+        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider, logger);
         const tenantService = new TenantService(mapiClient);
 
         const productService = new ProductService(mapiClient, tenantService);
