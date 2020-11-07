@@ -15,7 +15,7 @@ export interface IAuthenticator {
     /**
      * Clears access token from current session.
      */
-    clearAccessToken(cleanOnlyClient?: boolean): void;
+    clearAccessToken(): void;
 
     /**
      * Checks if current user is signed in.
