@@ -253,14 +253,12 @@ export class OperationConsole {
                 }
 
                 keys.push({
-                    name: `Primary: ${((subscription.name == null) || (subscription.name.trim()) ? subscription.name : subscription.primaryKey.substr(0, 4))}`,
-                    //name: `Primary-${subscription.primaryKey.substr(0, 4)}`,
+                    name: `Primary: ${subscription.name?.trim() || subscription.primaryKey.substr(0, 4)}`,
                     value: subscription.primaryKey
                 });
 
                 keys.push({
-                    name: `Secondary: ${((subscription.name == null) || (subscription.name.trim()) ? subscription.name : subscription.secondaryKey.substr(0, 4))}`,
-                    //name: `Secondary-${subscription.secondaryKey.substr(0, 4)}`,
+                    name: `Secondary: ${subscription.name?.trim() || subscription.secondaryKey.substr(0, 4)}`,
                     value: subscription.secondaryKey
                 });
             });

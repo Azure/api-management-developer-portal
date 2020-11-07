@@ -1,5 +1,4 @@
 import { AccessToken } from "./accessToken";
-import { HttpHeader } from "@paperbits/common/http/httpHeader";
 
 export interface IAuthenticator {
     /**
@@ -14,15 +13,9 @@ export interface IAuthenticator {
     setAccessToken(accessToken: AccessToken): Promise<void>;
 
     /**
-     * Sets new token for the session from response header and return refreshed value
-     * @param responseHeaders {HttpHeader[]} Response headers.
-     */
-    refreshAccessTokenFromHeader(responseHeaders: HttpHeader[]): Promise<string>;
-
-    /**
      * Clears access token from current session.
      */
-    clearAccessToken(cleanOnlyClient?: boolean): void;
+    clearAccessToken(): void;
 
     /**
      * Checks if current user is signed in.
