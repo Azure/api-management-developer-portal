@@ -8,7 +8,6 @@ import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@
 import { MapiError } from "../errors/mapiError";
 import { IAuthenticator, AccessToken } from "../authentication";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
-import { assert } from "console";
 
 
 export interface IHttpBatchResponses {
