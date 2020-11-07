@@ -3,6 +3,7 @@ import { IBlobStorage } from "@paperbits/common/persistence";
 import { AzureBlobStorage } from "@paperbits/azure";
 import { StaticSettingsProvider } from "../components/staticSettingsProvider";
 import { ISettingsProvider } from "@paperbits/common/configuration";
+import { Utils } from "../utils";
 
 
 const defaultContainerName = "content";
@@ -33,9 +34,16 @@ export class MapiBlobStorage implements IBlobStorage {
             });
         }
         else if (blobStorageUrl) {
+            const parsedUrl = new URL(blobStorageUrl);
+
+            const containerSegment = !!blobStorageContainer
+                ? blobStorageContainer
+                : defaultContainerName;
+
+            const normalizedBlobStorageUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${Utils.ensureLeadingSlash(containerSegment)}${parsedUrl.search}`;
+
             storageSettingsProvider = new StaticSettingsProvider({
-                blobStorageUrl: blobStorageUrl,
-                blobStorageContainer: blobStorageContainer || defaultContainerName
+                blobStorageUrl: normalizedBlobStorageUrl
             });
         }
         else {
