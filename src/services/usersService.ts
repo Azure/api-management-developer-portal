@@ -37,7 +37,7 @@ export class UsersService {
             return userId;
         }
         else {
-            this.authenticator.clearAccessToken(true);
+            this.authenticator.clearAccessToken();
             return undefined;
         }
     }
