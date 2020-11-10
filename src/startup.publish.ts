@@ -16,7 +16,7 @@ const configFile = path.resolve(__dirname, "./config.json");
 const configuration = JSON.parse(fs.readFileSync(configFile, "utf8").toString());
 
 if (process.argv[2]) {
-    const subscriptionId = configuration[SettingNames.managementApiUrl];
+    const subscriptionId = configuration[SettingNames.subscriptionId];
     const resourceGroupName = configuration[SettingNames.resourceGroupName];
     const serviceName = configuration[SettingNames.serviceName];
     const armEndpoint = configuration[SettingNames.armEndpoint] || "management.azure.com";
