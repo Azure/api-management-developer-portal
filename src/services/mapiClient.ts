@@ -1,12 +1,14 @@
 import * as _ from "lodash";
 import * as Constants from "./../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
+import { Logger } from "@paperbits/common/logging";
 import { Utils } from "../utils";
 import { TtlCache } from "./ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
 import { MapiError } from "../errors/mapiError";
 import { IAuthenticator, AccessToken } from "../authentication";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
+
 
 export interface IHttpBatchResponses {
     responses: IHttpBatchResponse[];
@@ -29,7 +31,8 @@ export class MapiClient {
     constructor(
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly logger: Logger
     ) { }
 
     private async ensureInitialized(): Promise<void> {
@@ -138,16 +141,16 @@ export class MapiClient {
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
-        try {
-            const accessTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
+        const accessTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
 
-            if (accessTokenHeader?.value) {
-                const newAccessToken = AccessToken.parse(accessTokenHeader.value);
-                await this.authenticator.setAccessToken(newAccessToken);
+        if (accessTokenHeader) {
+            try {
+                const accessToken = AccessToken.parse(accessTokenHeader.value);
+                this.authenticator.setAccessToken(accessToken);
             }
-        }
-        catch (error) {
-            console.error("Refresh token error: ", error);
+            catch (error) {
+                 this.logger.trackError(error, { message: "Unable to refresh access token." });
+            }
         }
 
         return await this.handleResponse<T>(response, httpRequest.url);

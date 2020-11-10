@@ -1,5 +1,4 @@
 import { AccessToken } from "./accessToken";
-import { HttpHeader } from "@paperbits/common/http/httpHeader";
 
 export interface IAuthenticator {
     /**
@@ -16,7 +15,7 @@ export interface IAuthenticator {
     /**
      * Clears access token from current session.
      */
-    clearAccessToken(cleanOnlyClient?: boolean): void;
+    clearAccessToken(): void;
 
     /**
      * Checks if current user is signed in.
