@@ -1,5 +1,3 @@
-import * as fs from "fs";
-import * as path from "path";
 import { InversifyInjector } from "@paperbits/common/injection";
 import { IPublisher } from "@paperbits/common/publishing";
 import { CoreModule } from "@paperbits/core/core.module";
@@ -9,20 +7,13 @@ import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
 import { StaticSettingsProvider } from "./configuration/staticSettingsProvider";
 import { FileSystemBlobStorage } from "./components/filesystemBlobStorage";
 import { ApimPublishModule } from "./apim.publish.module";
-import { SettingNames } from "./constants";
+import { useArmConfiguration } from "./configuration/settingsHelper";
 
-/* Reading settings from configuration file */
-const configFile = path.resolve(__dirname, "./config.json");
-const configuration = JSON.parse(fs.readFileSync(configFile, "utf8").toString());
 
-if (process.argv[2]) {
-    const subscriptionId = configuration[SettingNames.subscriptionId];
-    const resourceGroupName = configuration[SettingNames.resourceGroupName];
-    const serviceName = configuration[SettingNames.serviceName];
-    const armEndpoint = configuration[SettingNames.armEndpoint] || "management.azure.com";
+const configuration = useArmConfiguration();
 
-    configuration[SettingNames.managementApiUrl] = `https://${armEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
-    configuration[SettingNames.managementApiAccessToken] = process.argv[2];
+if (!configuration) {
+    process.exit();
 }
 
 const settingsProvider = new StaticSettingsProvider(configuration);

@@ -17,7 +17,7 @@
 
 const moment = require('moment');
 const crypto = require('crypto');
-const execSync = require('child_process').execSync;
+const { execSync } = require('child_process');
 const { request } = require('./utils.js');
 
 const yargs = require('yargs')
