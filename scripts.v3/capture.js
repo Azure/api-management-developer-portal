@@ -1,13 +1,10 @@
 const fs = require("fs");
 const path = require("path");
-const { request, downloadBlobs, getStorageSasTokenOrThrow } = require("./utils");
-const managementApiEndpoint = process.argv[2];
-const managementApiAccessToken = process.argv[3];
-const destinationFolder = process.argv[4];
+const { sendRequest: request, downloadBlobs, getStorageSasTokenOrThrow } = require("./utils");
 
 
 async function getContentTypes() {
-    const data = await request("GET", `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/contentTypes?api-version=2019-12-01`, managementApiAccessToken);
+    const data = await request("GET", `/contentTypes`, managementApiAccessToken);
     const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
 
     return contentTypes;
@@ -15,7 +12,7 @@ async function getContentTypes() {
 
 async function getContentItems(contentType) {
     const contentItems = [];
-    let nextPageUrl = `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/contentTypes/${contentType}/contentItems?api-version=2019-12-01`;
+    let nextPageUrl = `/contentTypes/${contentType}/contentItems`;
 
     do {
         const data = await request("GET", nextPageUrl, managementApiAccessToken);
@@ -51,7 +48,7 @@ async function captureJson() {
     fs.writeFileSync(`${destinationFolder}/data.json`, JSON.stringify(result));
 }
 
-async function capture() {
+async function capture(managementApiEndpoint, managementApiAccessToken, destinationFolder) {
     const blobStorageUrl = await getStorageSasTokenOrThrow(managementApiEndpoint, managementApiAccessToken);
     const localMediaFolder = `./${destinationFolder}/media`;
 
@@ -59,10 +56,18 @@ async function capture() {
     await downloadBlobs(blobStorageUrl, localMediaFolder);
 }
 
-capture()
-    .then(() => {
-        console.log("DONE");
-    })
-    .catch(error => {
-        console.log(error);
-    });
+async function run() {
+    const managementApiEndpoint = process.argv[2];
+    const managementApiAccessToken = process.argv[3];
+    const destinationFolder = process.argv[4];
+
+    capture(managementApiEndpoint, managementApiAccessToken, destinationFolder)
+}
+
+run()
+    .then(() => console.log("DONE"))
+    .catch(error => console.log(error));
+
+module.exports = {
+    capture
+}

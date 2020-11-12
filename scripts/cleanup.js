@@ -9,8 +9,6 @@ const accessToken = process.argv[3];
 const connectionString = process.argv[4];
 const containerName = "content";
 
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
-
 var options = {
     port: 443,
     method: "GET",

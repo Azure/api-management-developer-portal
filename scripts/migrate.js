@@ -151,7 +151,6 @@ async function run() {
     execSync(`az storage blob upload-batch --source ${mediaFolder} --destination ${mediaContainer} --connection-string "${destStorage}"`);
 
     if (publishEndpoint && !yargs.selfHosted) {
-        process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
         publish(publishEndpoint, destToken);
     } else if (publishEndpoint) {
         console.warn("Auto-publishing self-hosted portal is not supported.");

@@ -1,11 +1,13 @@
 const fs = require("fs");
 const path = require("path");
 const https = require("https");
+const moment = require('moment');
+const crypto = require('crypto');
 const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
 const mime = require("mime-types");
+const apiVersion = "2021-01-01-preview";
 
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
 function listFilesInDirectory(dir) {
     const results = [];
@@ -31,11 +33,11 @@ function listFilesInDirectory(dir) {
  * @param {string} managementApiEndpoint the management endpoint of service instance
  * @param {string} managementApiAccessToken the SAS token
  */
-async function getStorageSasTokenOrThrow(managementApiEndpoint, managementApiAccessToken) {
+async function getStorageSasTokenOrThrow(managementApiAccessToken) {
     if (managementApiAccessToken) {
         // token should always be available, because we call
         // getTokenOrThrow before this
-        return await getStorageSasToken(managementApiEndpoint, managementApiAccessToken);
+        return await getStorageSasToken(managementApiAccessToken);
     }
     throw Error('Storage connection could not be retrieved');
 }
@@ -43,19 +45,40 @@ async function getStorageSasTokenOrThrow(managementApiEndpoint, managementApiAcc
 /**
  * Gets a storage connection string from the management API for the specified APIM instance and
  * SAS token.
- * @param {string} managementApiEndpoint the management endpoint of service instance
  * @param {string} managementApiAccessToken the SAS token
  */
-async function getStorageSasToken(managementApiEndpoint, managementApiAccessToken) {
-    const response = await request("POST", `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/portalSettings/mediaContent/listSecrets?api-version=2019-12-01`, managementApiAccessToken);
+async function getStorageSasToken(managementApiAccessToken) {
+    const response = await sendRequest("POST", `/portalSettings/mediaContent/listSecrets`, managementApiAccessToken);
     return response.containerSasUrl;
 }
 
 /**
- * A wrapper for making a request and returning its response body.
- * @param {Object} options https options
+ * Returns base URL for ARM manegement endpoint.
+ * @param {string} managementApiEndpoint Management API endpoint, e.g. management.azure.com.
+ * @param {string} subscriptionId Subscription ID, e.g. afe3f3e0-6609-4bee-ad97-85d92c698c5c.
+ * @param {string} resourceGroupName Resource group name, e.g. MyResourceGroup.
+ * @param {string} serviceName Service name, e.g. "myservice".
  */
-async function request(method, url, accessToken, body) {
+function getBaseUrl(managementApiEndpoint = "management.azure.com", subscriptionId = "00000", resourceGroupName = "00000", serviceName = "00000") {
+    `https://${managementApiEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`
+}
+
+/**
+ * A wrapper for making a request and returning its response body.
+ * @param {string} method Http method, e.g. GET.
+ * @param {string} url Relative resource URL, e.g. /contentTypes.
+ * @param {string} accessToken Access token, e.g. Bearer eyJhbGciOi...
+ * @param {string} body Request body.
+ */
+async function sendRequest(method, url, accessToken, body) {
+    const baseUrl = getBaseUrl();
+    const normalizedUrl = url.startsWith("/") ? url : `/${url}`;
+    const requestUrl = new URL(baseUrl + normalizedUrl);
+
+    if (!requestUrl.searchParams.has("api-version")) {
+        requestUrl.searchParams.append("api-version", apiVersion);
+    }
+
     const headers = {
         "If-Match": "*",
         "Content-Type": "application/json",
@@ -63,6 +86,10 @@ async function request(method, url, accessToken, body) {
     };
 
     if (body) {
+        body = {
+            properties: body
+        }
+
         headers["Content-Length"] = Buffer.byteLength(body);
     }
 
@@ -73,7 +100,7 @@ async function request(method, url, accessToken, body) {
     };
 
     return new Promise((resolve, reject) => {
-        const req = https.request(url, options, (resp) => {
+        const req = https.request(requestUrl.toString(), options, (resp) => {
             let data = '';
 
             resp.on('data', (chunk) => {
@@ -159,10 +186,49 @@ async function deleteBlobs(blobStorageUrl) {
     }
 }
 
+/**
+ * Attempts to get a SAS token in two ways:
+ * 1) if the token is explicitly set by the user, use that token.
+ * 2) if the id and key are specified, manually generate a SAS token.
+ * @param {string} token an optionally specified token
+ * @param {string} id the Management API identifier
+ * @param {string} key the Management API key
+ */
+async function getTokenOrThrow(token, id, key) {
+    if (token) {
+        return token;
+    }
+    if (id && key) {
+        return await generateSASToken(id, key);
+    }
+    throw Error('You need to specify either: token or id AND key');
+}
+
+/**
+ * Generates a SAS token from the specified Management API id and key.  Optionally
+ * specify the expiry time, in seconds.
+ * See https://docs.microsoft.com/en-us/rest/api/apimanagement/apimanagementrest/azure-api-management-rest-api-authentication#ManuallyCreateToken
+ * @param {string} id The Management API identifier.
+ * @param {string} key The Management API key (primary or secondary)
+ * @param {number} expiresIn The number of seconds in which the token should expire.
+ */
+async function generateSASToken(id, key, expiresIn = 3600) {
+    const now = moment.utc(moment());
+    const expiry = now.clone().add(expiresIn, 'seconds');
+    const expiryString = expiry.format(`YYYY-MM-DD[T]HH:mm:ss.SSSSSSS[Z]`);
+
+    const dataToSign = `${id}\n${expiryString}`;
+    const signedData = crypto.createHmac('sha512', key).update(dataToSign).digest('base64');
+    return `SharedAccessSignature uid=${id}&ex=${expiryString}&sn=${signedData}`;
+}
+
+
 module.exports = {
-    request,
+    getBaseUrl,
+    sendRequest,
     downloadBlobs,
     uploadBlobs,
     deleteBlobs,
-    getStorageSasTokenOrThrow
+    getStorageSasTokenOrThrow,
+    getTokenOrThrow
 };

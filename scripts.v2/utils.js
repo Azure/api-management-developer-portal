@@ -5,7 +5,6 @@ const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
 const mime = require("mime-types");
 
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
 function listFilesInDirectory(dir) {
     const results = [];

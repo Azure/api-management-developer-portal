@@ -8,8 +8,6 @@ const managementEndpoint = process.argv[2]
 const accessToken = process.argv[3]
 const dataFile = process.argv[4];
 
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
-
 async function request(url, body) {
     return new Promise((resolve, reject) => {
         var options = {

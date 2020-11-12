@@ -4,8 +4,6 @@ const managementEndpoint = process.argv[2];
 const accessToken = process.argv[3];
 const dataFile = process.argv[4];
 
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
-
 var options = {
     port: 443,
     method: "GET",

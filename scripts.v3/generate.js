@@ -1,8 +1,5 @@
 const fs = require("fs");
 const { request, uploadBlobs, getStorageSasTokenOrThrow } = require("./utils");
-const managementApiEndpoint = process.argv[2]
-const managementApiAccessToken = process.argv[3]
-const sourceFolder = process.argv[4];
 
 
 async function generateJson() {
@@ -11,15 +8,11 @@ async function generateJson() {
     const keys = Object.keys(dataObj);
 
     for (const key of keys) {
-        await request(
-            "PUT",
-            `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/${key}?api-version=2019-12-01`,
-            managementApiAccessToken,
-            JSON.stringify(dataObj[key]));
+        await request("PUT", key, managementApiAccessToken, JSON.stringify(dataObj[key]));
     }
 }
 
-async function generate() {
+async function generate(managementApiEndpoint, managementApiAccessToken, sourceFolder) {
     const blobStorageUrl = await getStorageSasTokenOrThrow(managementApiEndpoint, managementApiAccessToken);
     const localMediaFolder = `./${sourceFolder}/media`;
 
@@ -27,7 +20,12 @@ async function generate() {
     await uploadBlobs(blobStorageUrl, localMediaFolder);
 }
 
-generate()
+
+const managementApiEndpoint = process.argv[2]
+const managementApiAccessToken = process.argv[3]
+const sourceFolder = process.argv[4];
+
+generate(managementApiEndpoint, managementApiAccessToken, sourceFolder)
     .then(() => {
         console.log("DONE");
     })

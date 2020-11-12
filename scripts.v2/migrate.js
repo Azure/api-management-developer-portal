@@ -120,7 +120,6 @@ async function run() {
     execSync(`node ./generate ${destManagementApiEndpoint} "${destManagementApiAccessToken}" "${snapshotFolder}"`);
 
     if (publishEndpoint && !yargs.selfHosted) {
-        process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
         await publish(publishEndpoint, destManagementApiAccessToken);
     }
     else if (publishEndpoint) {
