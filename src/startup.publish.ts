@@ -32,8 +32,6 @@ injector.bindInstance("settingsProvider", settingsProvider);
 injector.bindInstance("outputBlobStorage", outputBlobStorage);
 injector.resolve("autostart");
 
-/* Allowing self-signed certificates for HTTP requests */
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 
 /* Bulding dependency injection container */
 const publisher = injector.resolve<IPublisher>("sitePublisher");

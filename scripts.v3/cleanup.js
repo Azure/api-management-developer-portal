@@ -1,46 +1,37 @@
-const { sendRequest: request, deleteBlobs, getStorageSasTokenOrThrow } = require("./utils");
+const { HttpClient, ImporterExporter } = require("./utils");
 
-async function getContentTypes() {
-    const data = await request("GET", `/contentTypes`, managementApiAccessToken);
-    const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
+const yargs = require('yargs')
+    .example('$0 \
+        --subscriptionId <bla bla> \
+        --resourceGroupName <MyResourceGroup> \
+        --serviceName <myservice>\n')
+    .option('subscriptionId', {
+        type: 'string',
+        description: 'Azure subscription ID.',
+        example: '<bla bla>',
+        demandOption: true
+    })
+    .option('resourceGroupName', {
+        type: 'string',
+        description: 'Azure resource group name.'
+    })
+    .option('serviceName', {
+        type: 'string',
+        description: 'API Management service name.',
+    })
+    .argv;
 
-    return contentTypes;
+async function cleanup() {
+    const subscriptionId = yargs.subscriptionId;
+    const resourceGroupName = yargs.resourceGroupName;
+    const serviceName = yargs.serviceName;
+    const httpClient = new HttpClient(subscriptionId, resourceGroupName, serviceName);
+    const importerExporter = new ImporterExporter(httpClient);
+
+    await importerExporter.cleanup();
 }
 
-async function getContentItems(contentType) {
-    const data = await request("GET", `/contentTypes/${contentType}/contentItems`, managementApiAccessToken);
-    const contentItems = data.value;
-
-    return contentItems;
-}
-
-async function deleteContent() {
-    const contentTypes = await getContentTypes();
-
-    for (const contentType of contentTypes) {
-        const contentItems = await getContentItems(contentType);
-
-        for (const contentItem of contentItems) {
-            await request("DELETE", `/${contentItem.id}`, managementApiAccessToken);
-        }
-    }
-}
-
-async function cleanup(managementApiEndpoint, managementApiAccessToken) {
-    const blobStorageUrl = await getStorageSasTokenOrThrow(managementApiAccessToken);
-
-    await deleteContent();
-    await deleteBlobs(blobStorageUrl);
-}
-
-async function run() {
-    const managementApiEndpoint = process.argv[2];
-    const managementApiAccessToken = process.argv[3];
-
-    await cleanup(managementApiEndpoint, managementApiAccessToken)
-}
-
-run()
+cleanup()
     .then(() => console.log("DONE"))
     .catch(error => console.log(error));
 

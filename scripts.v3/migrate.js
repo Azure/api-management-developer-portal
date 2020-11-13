@@ -15,8 +15,12 @@
  * and the script will generate tokens that expire in 1 hour. (via sourceId, sourceKey, destId, destKey)
  */
 
+// az login
+// az login -u <username> -p <password>
+// az login --service-principal -u <app-url> -p <password-or-cert> --tenant <tenant>
 
-const { sendRequest: request, getTokenOrThrow } = require('./utils.js');
+
+const { sendRequest, getTokenOrThrow } = require('./utils.js');
 import { capture } from "./capture";
 import { cleanup } from "./cleanup";
 
@@ -28,28 +32,11 @@ const yargs = require('yargs')
         --sourceToken <token> \
         --destEndpoint <name.management.azure-api.net> \
         --destToken <token>\n', 'Managed')
-    .example('$0 --selfHosted \
+    .example('$0 \
         --sourceEndpoint <name.management.azure-api.net> \
         --sourceToken <token> \
         --destEndpoint <name.management.azure-api.net> \
         --destToken <token>')
-    /*.option('interactive', {
-        alias: 'i',
-        type: 'boolean',
-        description: 'Whether to use interactive login',
-        conflicts: ['sourceToken', 'sourceId', 'sourceKey', 'destToken', 'destId', 'destKey']
-    })*/
-    .option('selfHosted', {
-        alias: 'h',
-        type: 'boolean',
-        description: 'If the portal is self-hosted'
-    })
-    .option('publishEndpoint', {
-        alias: 'p',
-        type: 'string',
-        description: 'Endpoint of the destination managed developer portal; if empty, destination portal will not be published; unsupported in self-hosted scenario',
-        example: '<name.developer.azure-api.net>'
-    })
     .option('sourceEndpoint', {
         type: 'string',
         description: 'The hostname of the management endpoint of the source API Management service',
@@ -106,7 +93,6 @@ async function run() {
 
     const destManagementApiEndpoint = yargs.destEndpoint;
     const destManagementApiAccessToken = await getTokenOrThrow(yargs.destToken, yargs.destId, yargs.destKey);
-    const publishEndpoint = yargs.publishEndpoint;
 
     // the rest of this mirrors migrate.bat, but since we're JS, we're platform-agnostic.
     const snapshotFolder = '../dist/snapshot';
@@ -120,12 +106,7 @@ async function run() {
     // upload the content of the source portal
     await generate(destManagementApiEndpoint, destManagementApiAccessToken, snapshotFolder);
 
-    if (publishEndpoint && !yargs.selfHosted) {
-        await publish(publishEndpoint, destManagementApiAccessToken);
-    }
-    else if (publishEndpoint) {
-        console.warn("Auto-publishing self-hosted portal is not supported.");
-    }
+    await publish(destManagementApiEndpoint, destManagementApiAccessToken);
 }
 
 
@@ -143,7 +124,7 @@ async function publish(token) {
         isCurrent: true
     }
 
-    await request("PUT", url, token, body);
+    await sendRequest("PUT", url, token, body);
 }
 
 run()

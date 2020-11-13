@@ -3,11 +3,230 @@ const path = require("path");
 const https = require("https");
 const moment = require('moment');
 const crypto = require('crypto');
+const { execSync } = require("child_process");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
 const mime = require("mime-types");
-const apiVersion = "2021-01-01-preview";
+const { request } = require("http");
+const apiVersion = "2019-01-01"; // "2021-01-01-preview"; 
+const managementApiEndpoint = "management.azure.com";
 
+
+class HttpClient {
+    constructor(subscriptionId, resourceGroupName, serviceName) {
+        this.subscriptionId = subscriptionId;
+        this.resourceGroupName = resourceGroupName;
+        this.serviceName = serviceName;
+        this.baseUrl = `https://${managementApiEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
+        this.accessToken = getAccessToken();
+    }
+
+    /**
+     * A wrapper for making a request and returning its response body.
+     * @param {string} method Http method, e.g. GET.
+     * @param {string} url Relative resource URL, e.g. /contentTypes.
+     * @param {string} accessToken Access token, e.g. Bearer eyJhbGciOi...
+     * @param {string} body Request body.
+    */
+    async sendRequest(method, url, body) {
+        let requestUrl;
+
+        if (url.startsWith("https://")) {
+            requestUrl = new URL(url);
+        }
+        else {
+            const normalizedUrl = url.startsWith("/") ? url : `/${url}`;
+            requestUrl = new URL(this.baseUrl + normalizedUrl);
+        }
+
+
+        if (!requestUrl.searchParams.has("api-version")) {
+            requestUrl.searchParams.append("api-version", apiVersion);
+        }
+
+        const headers = {
+            "If-Match": "*",
+            "Content-Type": "application/json",
+            "Authorization": this.accessToken
+        };
+
+        if (body) {
+            body = {
+                properties: body
+            }
+
+            headers["Content-Length"] = Buffer.byteLength(body);
+        }
+
+        const options = {
+            port: 443,
+            method: method,
+            headers: headers
+        };
+
+        return new Promise((resolve, reject) => {
+            const req = https.request(requestUrl.toString(), options, (resp) => {
+                let data = '';
+
+                resp.on('data', (chunk) => {
+                    data += chunk;
+                });
+
+                resp.on('end', () => {
+                    try {
+                        if (data && data.startsWith("{")) {
+                            resolve(JSON.parse(data));
+                        }
+                        else {
+                            resolve(data);
+                        }
+                    }
+                    catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+
+            req.on('error', (e) => {
+                reject(e);
+            });
+
+            if (body) {
+                req.write(body);
+            }
+
+            req.end();
+        });
+    }
+}
+
+class ImporterExporter {
+    constructor(httpClient, snapshotFolder = "../dist/snapshot") {
+        this.httpClient = httpClient;
+        this.snapshotFolder = snapshotFolder
+    }
+
+    async getContentTypes() {
+        const data = await this.httpClient.sendRequest("GET", `/contentTypes`);
+        console.log(data);
+        const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
+        return contentTypes;
+    }
+
+    async getContentItems(contentType) {
+        const contentItems = [];
+        let nextPageUrl = `/contentTypes/${contentType}/contentItems`;
+
+        do {
+            const data = await this.httpClient.sendRequest("GET", nextPageUrl);
+            contentItems.push(...data.value);
+
+            if (data.value.length > 0 && data.nextLink) {
+                nextPageUrl = data.nextLink;
+            }
+            else {
+                nextPageUrl = null;
+            }
+        }
+        while (nextPageUrl)
+
+        return contentItems;
+    }
+
+    async captureJson() {
+        const result = {};
+        const contentTypes = await this.getContentTypes();
+
+        for (const contentType of contentTypes) {
+            const contentItems = await this.getContentItems(contentType);
+
+            contentItems.forEach(contentItem => {
+                result[contentItem.id] = contentItem;
+                delete contentItem.id;
+            });
+        }
+
+        await fs.promises.mkdir(path.resolve(this.snapshotFolder), { recursive: true });
+
+        fs.writeFileSync(`${this.snapshotFolder}/data.json`, JSON.stringify(result));
+    }
+
+    async downloadBlobs(blobStorageUrl, localMediaFolder) {
+        const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
+        const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
+
+        let blobs = containerClient.listBlobsFlat();
+
+        for await (const blob of blobs) {
+            const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
+            const extension = mime.extension(blob.properties.contentType);
+            let pathToFile;
+
+            if (extension != null) {
+                pathToFile = `${localMediaFolder}/${blob.name}.${extension}`;
+            }
+            else {
+                pathToFile = `${localMediaFolder}/${blob.name}`;
+            }
+
+            const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
+            await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
+
+            await blockBlobClient.downloadToFile(pathToFile);
+        }
+    }
+
+    async deleteBlobs() {
+        const blobStorageUrl = await this.getStorageSasUrl();
+        const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
+        const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
+
+        let blobs = containerClient.listBlobsFlat();
+
+        for await (const blob of blobs) {
+            const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
+            await blockBlobClient.delete();
+        }
+    }
+
+    async deleteContent() {
+        const contentTypes = await this.getContentTypes();
+
+        for (const contentType of contentTypes) {
+            const contentItems = await this.getContentItems(contentType);
+
+            for (const contentItem of contentItems) {
+                await this.httpClient.sendRequest("DELETE", `/${contentItem.id}`);
+            }
+        }
+    }
+
+    async cleanup() {
+        await this.deleteContent();
+        await this.deleteBlobs();
+    }
+
+    /**
+     * Gets a storage SAS URL.
+     */
+    async getStorageSasUrl() {
+        const response = await this.httpClient.sendRequest("POST", `/portalSettings/mediaContent/listSecrets`);
+        return response.containerSasUrl;
+    }
+
+    async export() {
+        const blobStorageUrl = await this.getStorageSasUrl();
+        const mediaFolder = `./${this.snapshotFolder}/media`;
+
+        await this.captureJson();
+        await this.downloadBlobs(blobStorageUrl, mediaFolder);
+    }
+}
+
+function getAccessToken() {
+    const accessToken = execSync(`az account get-access-token --resource-type arm --output tsv --query accessToken`).toString().trim();
+    return `Bearer ${accessToken}`;
+}
 
 function listFilesInDirectory(dir) {
     const results = [];
@@ -173,33 +392,20 @@ async function uploadBlobs(blobStorageUrl, localMediaFolder) {
         });
     }
 }
-
-async function deleteBlobs(blobStorageUrl) {
-    const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
-    const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
-
-    let blobs = containerClient.listBlobsFlat();
-
-    for await (const blob of blobs) {
-        const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-        await blockBlobClient.delete();
-    }
-}
-
 /**
  * Attempts to get a SAS token in two ways:
  * 1) if the token is explicitly set by the user, use that token.
  * 2) if the id and key are specified, manually generate a SAS token.
  * @param {string} token an optionally specified token
- * @param {string} id the Management API identifier
+ * @param {string} userId the Management API identifier
  * @param {string} key the Management API key
  */
-async function getTokenOrThrow(token, id, key) {
+async function getTokenOrThrow(token, userId, key) {
     if (token) {
         return token;
     }
-    if (id && key) {
-        return await generateSASToken(id, key);
+    if (userId && key) {
+        return await generateSASToken(userId, key);
     }
     throw Error('You need to specify either: token or id AND key');
 }
@@ -208,18 +414,18 @@ async function getTokenOrThrow(token, id, key) {
  * Generates a SAS token from the specified Management API id and key.  Optionally
  * specify the expiry time, in seconds.
  * See https://docs.microsoft.com/en-us/rest/api/apimanagement/apimanagementrest/azure-api-management-rest-api-authentication#ManuallyCreateToken
- * @param {string} id The Management API identifier.
+ * @param {string} userId The Management API identifier.
  * @param {string} key The Management API key (primary or secondary)
  * @param {number} expiresIn The number of seconds in which the token should expire.
  */
-async function generateSASToken(id, key, expiresIn = 3600) {
+async function generateSASToken(userId, key, expiresIn = 3600) {
     const now = moment.utc(moment());
     const expiry = now.clone().add(expiresIn, 'seconds');
     const expiryString = expiry.format(`YYYY-MM-DD[T]HH:mm:ss.SSSSSSS[Z]`);
 
-    const dataToSign = `${id}\n${expiryString}`;
+    const dataToSign = `${userId}\n${expiryString}`;
     const signedData = crypto.createHmac('sha512', key).update(dataToSign).digest('base64');
-    return `SharedAccessSignature uid=${id}&ex=${expiryString}&sn=${signedData}`;
+    return `SharedAccessSignature uid=${userId}&ex=${expiryString}&sn=${signedData}`;
 }
 
 
@@ -228,7 +434,8 @@ module.exports = {
     sendRequest,
     downloadBlobs,
     uploadBlobs,
-    deleteBlobs,
     getStorageSasTokenOrThrow,
-    getTokenOrThrow
+    getTokenOrThrow,
+    HttpClient,
+    ImporterExporter
 };
