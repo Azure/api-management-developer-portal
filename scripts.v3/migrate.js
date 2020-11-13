@@ -20,118 +20,146 @@
 // az login --service-principal -u <app-url> -p <password-or-cert> --tenant <tenant>
 
 
-const { sendRequest, getTokenOrThrow } = require('./utils.js');
-import { capture } from "./capture";
-import { cleanup } from "./cleanup";
+const { HttpClient, ImporterExporter } = require('./utils.js');
+
+
+// const yargs = require('yargs')
+//     // .example('$0 \
+//     //     --publishEndpoint <name.developer.azure-api.net> \
+//     //     --sourceEndpoint <name.management.azure-api.net> \
+//     //     --sourceToken <token> \
+//     //     --destEndpoint <name.management.azure-api.net> \
+//     //     --destToken <token>\n', 'Managed')
+//     // .example('$0 \
+//     //     --sourceEndpoint <name.management.azure-api.net> \
+//     //     --sourceToken <token> \
+//     //     --destEndpoint <name.management.azure-api.net> \
+//     //     --destToken <token>')
+//     // .option('sourceEndpoint', {
+//     //     type: 'string',
+//     //     description: 'The hostname of the management endpoint of the source API Management service',
+//     //     example: '<name.management.azure-api.net>',
+//     //     demandOption: true
+//     // })
+//     // .option('sourceId', {
+//     //     type: 'string',
+//     //     description: 'The management API identifier',
+//     //     implies: 'sourceKey',
+//     //     conflicts: 'sourceToken'
+//     // })
+//     // .option('sourceKey', {
+//     //     type: 'string',
+//     //     description: 'The management API key (primary or secondary)',
+//     //     implies: 'sourceId',
+//     //     conflicts: 'sourceToken'
+//     // })
+//     // .option('sourceToken', {
+//     //     type: 'string',
+//     //     description: 'A SAS token for the source portal',
+//     //     example: 'SharedAccessSignature…',
+//     //     conflicts: ['sourceId, sourceToken']
+//     // })
+//     // .option('destEndpoint', {
+//     //     type: 'string',
+//     //     description: 'The hostname of the management endpoint of the destination API Management service',
+//     //     example: '<name.management.azure-api.net>',
+//     //     demandOption: true
+//     // })
+//     // .option('destId', {
+//     //     type: 'string',
+//     //     description: 'The management API identifier',
+//     //     implies: 'destKey',
+//     //     conflicts: 'destToken'
+//     // })
+//     // .option('destKey', {
+//     //     type: 'string',
+//     //     description: 'The management API key (primary or secondary)',
+//     //     implies: 'destId',
+//     //     conflicts: 'destToken'
+//     // })
+//     // .option('destToken', {
+//     //     type: 'string',
+//     //     example: 'SharedAccessSignature…',
+//     //     description: 'A SAS token for the destination portal',
+//     //     conflicts: ['destId, destToken']
+//     // })
+//     // .argv;
 
 
 const yargs = require('yargs')
     .example('$0 \
-        --publishEndpoint <name.developer.azure-api.net> \
-        --sourceEndpoint <name.management.azure-api.net> \
-        --sourceToken <token> \
-        --destEndpoint <name.management.azure-api.net> \
-        --destToken <token>\n', 'Managed')
-    .example('$0 \
-        --sourceEndpoint <name.management.azure-api.net> \
-        --sourceToken <token> \
-        --destEndpoint <name.management.azure-api.net> \
-        --destToken <token>')
-    .option('sourceEndpoint', {
+        --subscriptionId <bla bla> \
+        --resourceGroupName <MyResourceGroup> \
+        --serviceName <myservice>\n')
+    .option('sourceSubscriptionId', {
         type: 'string',
-        description: 'The hostname of the management endpoint of the source API Management service',
-        example: '<name.management.azure-api.net>',
+        description: 'Azure subscription ID.',
+        example: '<bla bla>',
         demandOption: true
     })
-    .option('sourceId', {
+    .option('sourceResourceGroupName', {
         type: 'string',
-        description: 'The management API identifier',
-        implies: 'sourceKey',
-        conflicts: 'sourceToken'
+        description: 'Azure resource group name.'
     })
-    .option('sourceKey', {
+    .option('sourceServiceName', {
         type: 'string',
-        description: 'The management API key (primary or secondary)',
-        implies: 'sourceId',
-        conflicts: 'sourceToken'
+        description: 'API Management service name.',
     })
-    .option('sourceToken', {
+    .option('destSubscriptionId', {
         type: 'string',
-        description: 'A SAS token for the source portal',
-        example: 'SharedAccessSignature…',
-        conflicts: ['sourceId, sourceToken']
-    })
-    .option('destEndpoint', {
-        type: 'string',
-        description: 'The hostname of the management endpoint of the destination API Management service',
-        example: '<name.management.azure-api.net>',
+        description: 'Azure subscription ID.',
+        example: '<bla bla>',
         demandOption: true
     })
-    .option('destId', {
+    .option('destResourceGroupName', {
         type: 'string',
-        description: 'The management API identifier',
-        implies: 'destKey',
-        conflicts: 'destToken'
+        description: 'Azure resource group name.'
     })
-    .option('destKey', {
+    .option('destServiceName', {
         type: 'string',
-        description: 'The management API key (primary or secondary)',
-        implies: 'destId',
-        conflicts: 'destToken'
-    })
-    .option('destToken', {
-        type: 'string',
-        example: 'SharedAccessSignature…',
-        description: 'A SAS token for the destination portal',
-        conflicts: ['destId, destToken']
+        description: 'API Management service name.',
     })
     .argv;
 
-async function run() {
-    const sourceManagementApiEndpoint = yargs.sourceEndpoint;
-    const sourceManagementApiAccessToken = await getTokenOrThrow(yargs.sourceToken, yargs.sourceId, yargs.sourceKey);
+async function migrate() {
+    // const sourceManagementApiEndpoint = yargs.sourceEndpoint;
+    // const sourceManagementApiAccessToken = await getTokenOrThrow(yargs.sourceToken, yargs.sourceId, yargs.sourceKey);
 
-    const destManagementApiEndpoint = yargs.destEndpoint;
-    const destManagementApiAccessToken = await getTokenOrThrow(yargs.destToken, yargs.destId, yargs.destKey);
+    // const destManagementApiEndpoint = yargs.destEndpoint;
+    // const destManagementApiAccessToken = await getTokenOrThrow(yargs.destToken, yargs.destId, yargs.destKey);
 
-    // the rest of this mirrors migrate.bat, but since we're JS, we're platform-agnostic.
-    const snapshotFolder = '../dist/snapshot';
+    // // the rest of this mirrors migrate.bat, but since we're JS, we're platform-agnostic.
+    // const snapshotFolder = '../dist/snapshot';
 
-    // capture the content of the source portal
-    await capture(sourceManagementApiEndpoint, sourceManagementApiAccessToken, snapshotFolder);
+    // // capture the content of the source portal
+    // await capture(sourceManagementApiEndpoint, sourceManagementApiAccessToken, snapshotFolder);
 
-    // remove all content of the target portal
-    await cleanup(destManagementApiEndpoint, destManagementApiAccessToken);
+    // // remove all content of the target portal
+    // await cleanup(destManagementApiEndpoint, destManagementApiAccessToken);
 
-    // upload the content of the source portal
-    await generate(destManagementApiEndpoint, destManagementApiAccessToken, snapshotFolder);
+    // // upload the content of the source portal
+    // await generate(destManagementApiEndpoint, destManagementApiAccessToken, snapshotFolder);
 
-    await publish(destManagementApiEndpoint, destManagementApiAccessToken);
+    // await publish(destManagementApiEndpoint, destManagementApiAccessToken);
+
+    const sourceHttpClient = new HttpClient(yargs.sourceSubscriptionId, yargs.sourceResourceGroupName, yargs.sourceServiceName);
+    const sourceImporterExporter = new ImporterExporter(sourceHttpClient);
+    await sourceImporterExporter.export();
+
+    const destHttpClient = new HttpClient(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName);
+    const destIimporterExporter = new ImporterExporter(destHttpClient);
+    await destIimporterExporter.cleanup();
+    await destIimporterExporter.import();
+
+    // await publish(destManagementApiEndpoint, destManagementApiAccessToken);
 }
 
-
-
-/**
- * Publishes the content of the specified APIM instance using a SAS token.
- * @param {string} token the SAS token
- */
-async function publish(token) {
-    const timeStamp = new Date();
-    const revision = timeStamp.toISOString().replace(/[\-\:\T]/g, "").substr(0, 14);
-    const url = `/portalRevisions/${revision}`;
-    const body = {
-        description: `Migration from ${sourceManagementApiEndpoint} to ${destManagementApiEndpoint}.`,
-        isCurrent: true
-    }
-
-    await sendRequest("PUT", url, token, body);
-}
-
-run()
+migrate()
     .then(() => {
         console.log("DONE");
+        process.exit(0);
     })
     .catch(error => {
         console.error(error);
-        process.exitCode = 1;
+        process.exit(1);
     });

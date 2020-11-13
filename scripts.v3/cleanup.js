@@ -32,9 +32,14 @@ async function cleanup() {
 }
 
 cleanup()
-    .then(() => console.log("DONE"))
-    .catch(error => console.log(error))
-    .finally(()=>process.exit());
+    .then(() => {
+        console.log("DONE");
+        process.exit(0);
+    })
+    .catch(error => {
+        console.error(error);
+        process.exit(1);
+    });
 
 module.exports = {
     cleanup

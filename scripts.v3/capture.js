@@ -25,16 +25,22 @@ async function capture() {
     const subscriptionId = yargs.subscriptionId;
     const resourceGroupName = yargs.resourceGroupName;
     const serviceName = yargs.serviceName;
-    const snapshotFolder = '../dist/snapshot';
     const httpClient = new HttpClient(subscriptionId, resourceGroupName, serviceName);
-    const importerExporter = new ImporterExporter(httpClient, snapshotFolder);
+    const importerExporter = new ImporterExporter(httpClient);
 
     await importerExporter.export();
 }
 
 capture()
-    .then(() => console.log("DONE"))
-    .catch(error => console.log(error));
+    .then(() => {
+        console.log("DONE");
+        process.exit(0);
+    })
+    .catch(error => {
+        console.error(error);
+        process.exit(1);
+    });
+
 
 module.exports = {
     capture
