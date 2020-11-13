@@ -33,7 +33,8 @@ async function cleanup() {
 
 cleanup()
     .then(() => console.log("DONE"))
-    .catch(error => console.log(error));
+    .catch(error => console.log(error))
+    .finally(()=>process.exit());
 
 module.exports = {
     cleanup

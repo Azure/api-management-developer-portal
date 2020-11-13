@@ -1,34 +1,41 @@
-const fs = require("fs");
-const { request, uploadBlobs, getStorageSasTokenOrThrow } = require("./utils");
+const { HttpClient, ImporterExporter } = require("./utils");
 
-
-async function generateJson() {
-    const data = fs.readFileSync(`${sourceFolder}/data.json`);
-    const dataObj = JSON.parse(data);
-    const keys = Object.keys(dataObj);
-
-    for (const key of keys) {
-        await request("PUT", key, managementApiAccessToken, JSON.stringify(dataObj[key]));
-    }
-}
-
-async function generate(managementApiEndpoint, managementApiAccessToken, sourceFolder) {
-    const blobStorageUrl = await getStorageSasTokenOrThrow(managementApiEndpoint, managementApiAccessToken);
-    const localMediaFolder = `./${sourceFolder}/media`;
-
-    await generateJson();
-    await uploadBlobs(blobStorageUrl, localMediaFolder);
-}
-
-
-const managementApiEndpoint = process.argv[2]
-const managementApiAccessToken = process.argv[3]
-const sourceFolder = process.argv[4];
-
-generate(managementApiEndpoint, managementApiAccessToken, sourceFolder)
-    .then(() => {
-        console.log("DONE");
+const yargs = require('yargs')
+    .example('$0 \
+        --subscriptionId <bla bla> \
+        --resourceGroupName <MyResourceGroup> \
+        --serviceName <myservice>\n')
+    .option('subscriptionId', {
+        type: 'string',
+        description: 'Azure subscription ID.',
+        example: '<bla bla>',
+        demandOption: true
     })
-    .catch(error => {
-        console.log(error);
-    });
+    .option('resourceGroupName', {
+        type: 'string',
+        description: 'Azure resource group name.'
+    })
+    .option('serviceName', {
+        type: 'string',
+        description: 'API Management service name.',
+    })
+    .argv;
+
+async function generate() {
+    const subscriptionId = yargs.subscriptionId;
+    const resourceGroupName = yargs.resourceGroupName;
+    const serviceName = yargs.serviceName;
+    const httpClient = new HttpClient(subscriptionId, resourceGroupName, serviceName);
+    const importerExporter = new ImporterExporter(httpClient);
+
+    await importerExporter.import();
+}
+
+generate()
+    .then(() => console.log("DONE"))
+    .catch(error => console.log(error))
+    .finally(()=>process.exit());
+
+module.exports = {
+    generate
+}

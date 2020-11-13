@@ -7,7 +7,6 @@ const { execSync } = require("child_process");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
 const mime = require("mime-types");
-const { request } = require("http");
 const apiVersion = "2019-01-01"; // "2021-01-01-preview"; 
 const managementApiEndpoint = "management.azure.com";
 
@@ -30,6 +29,7 @@ class HttpClient {
     */
     async sendRequest(method, url, body) {
         let requestUrl;
+        let requestBody;
 
         if (url.startsWith("https://")) {
             requestUrl = new URL(url);
@@ -51,11 +51,13 @@ class HttpClient {
         };
 
         if (body) {
-            body = {
-                properties: body
+            if (!body.properties) {
+                body = {
+                    properties: body
+                }
             }
-
-            headers["Content-Length"] = Buffer.byteLength(body);
+            requestBody = JSON.stringify(body);
+            headers["Content-Length"] = Buffer.byteLength(requestBody);
         }
 
         const options = {
@@ -91,8 +93,8 @@ class HttpClient {
                 reject(e);
             });
 
-            if (body) {
-                req.write(body);
+            if (requestBody) {
+                req.write(requestBody);
             }
 
             req.end();
@@ -108,7 +110,6 @@ class ImporterExporter {
 
     async getContentTypes() {
         const data = await this.httpClient.sendRequest("GET", `/contentTypes`);
-        console.log(data);
         const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
         return contentTypes;
     }
@@ -151,7 +152,9 @@ class ImporterExporter {
         fs.writeFileSync(`${this.snapshotFolder}/data.json`, JSON.stringify(result));
     }
 
-    async downloadBlobs(blobStorageUrl, localMediaFolder) {
+    async downloadBlobs() {
+        const snapshotMediaFolder = `./${this.snapshotFolder}/media`;
+        const blobStorageUrl = await this.getStorageSasUrl();
         const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
         const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
 
@@ -163,16 +166,37 @@ class ImporterExporter {
             let pathToFile;
 
             if (extension != null) {
-                pathToFile = `${localMediaFolder}/${blob.name}.${extension}`;
+                pathToFile = `${snapshotMediaFolder}/${blob.name}.${extension}`;
             }
             else {
-                pathToFile = `${localMediaFolder}/${blob.name}`;
+                pathToFile = `${snapshotMediaFolder}/${blob.name}`;
             }
 
             const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
             await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
 
             await blockBlobClient.downloadToFile(pathToFile);
+        }
+    }
+
+    async uploadBlobs() {
+        const snapshotMediaFolder = `./${this.snapshotFolder}/media`;
+        const blobStorageUrl = await this.getStorageSasUrl();
+        const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
+        const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
+        const fileNames = this.listFilesInDirectory(snapshotMediaFolder);
+
+        for (const fileName of fileNames) {
+            const blobName = path.basename(fileName).split(".")[0];
+            const contentType = mime.lookup(path.extname(fileName));
+
+            const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+            await blockBlobClient.uploadFile(fileName, {
+                blobHTTPHeaders: {
+                    blobContentType: contentType
+                }
+            });
         }
     }
 
@@ -189,6 +213,7 @@ class ImporterExporter {
         }
     }
 
+
     async deleteContent() {
         const contentTypes = await this.getContentTypes();
 
@@ -198,6 +223,33 @@ class ImporterExporter {
             for (const contentItem of contentItems) {
                 await this.httpClient.sendRequest("DELETE", `/${contentItem.id}`);
             }
+        }
+    }
+
+    listFilesInDirectory(dir) {
+        const results = [];
+
+        fs.readdirSync(dir).forEach((file) => {
+            file = dir + "/" + file;
+            const stat = fs.statSync(file);
+
+            if (stat && stat.isDirectory()) {
+                results.push(...this.listFilesInDirectory(file));
+            } else {
+                results.push(file);
+            }
+        });
+
+        return results;
+    }
+
+    async generateJson() {
+        const data = fs.readFileSync(`${this.snapshotFolder}/data.json`);
+        const dataObj = JSON.parse(data);
+        const keys = Object.keys(dataObj);
+
+        for (const key of keys) {
+            await this.httpClient.sendRequest("PUT", key, dataObj[key]);
         }
     }
 
@@ -215,11 +267,13 @@ class ImporterExporter {
     }
 
     async export() {
-        const blobStorageUrl = await this.getStorageSasUrl();
-        const mediaFolder = `./${this.snapshotFolder}/media`;
-
         await this.captureJson();
-        await this.downloadBlobs(blobStorageUrl, mediaFolder);
+        await this.downloadBlobs();
+    }
+
+    async import() {
+        await this.generateJson();
+        await this.uploadBlobs();
     }
 }
 
@@ -228,22 +282,7 @@ function getAccessToken() {
     return `Bearer ${accessToken}`;
 }
 
-function listFilesInDirectory(dir) {
-    const results = [];
 
-    fs.readdirSync(dir).forEach((file) => {
-        file = dir + "/" + file;
-        const stat = fs.statSync(file);
-
-        if (stat && stat.isDirectory()) {
-            results.push(...this.listAllFilesInDirectory(file));
-        } else {
-            results.push(file);
-        }
-    });
-
-    return results;
-}
 
 /**
  * Attempts to get a develoer portal storage connection string in two ways:
@@ -374,24 +413,6 @@ async function downloadBlobs(blobStorageUrl, localMediaFolder) {
     }
 }
 
-async function uploadBlobs(blobStorageUrl, localMediaFolder) {
-    const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
-    const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
-    const fileNames = listFilesInDirectory(localMediaFolder);
-
-    for (const fileName of fileNames) {
-        const blobName = path.basename(fileName).split(".")[0];
-        const contentType = mime.lookup(path.extname(fileName));
-
-        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-
-        await blockBlobClient.uploadFile(fileName, {
-            blobHTTPHeaders: {
-                blobContentType: contentType
-            }
-        });
-    }
-}
 /**
  * Attempts to get a SAS token in two ways:
  * 1) if the token is explicitly set by the user, use that token.
@@ -430,12 +451,6 @@ async function generateSASToken(userId, key, expiresIn = 3600) {
 
 
 module.exports = {
-    getBaseUrl,
-    sendRequest,
-    downloadBlobs,
-    uploadBlobs,
-    getStorageSasTokenOrThrow,
-    getTokenOrThrow,
     HttpClient,
     ImporterExporter
 };
