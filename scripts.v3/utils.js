@@ -22,7 +22,6 @@ class HttpClient {
      * A wrapper for making a request and returning its response body.
      * @param {string} method Http method, e.g. GET.
      * @param {string} url Relative resource URL, e.g. /contentTypes.
-     * @param {string} accessToken Access token, e.g. Bearer eyJhbGciOi...
      * @param {string} body Request body.
     */
     async sendRequest(method, url, body) {
