@@ -15,7 +15,7 @@ class HttpClient {
         this.resourceGroupName = resourceGroupName;
         this.serviceName = serviceName;
         this.baseUrl = `https://${managementApiEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
-        this.accessToken = getAccessToken();
+        this.accessToken = this.getAccessToken();
     }
 
     /**
@@ -98,11 +98,16 @@ class HttpClient {
             req.end();
         });
     }
+
+    getAccessToken() {
+        const accessToken = execSync(`az account get-access-token --resource-type arm --output tsv --query accessToken`).toString().trim();
+        return `Bearer ${accessToken}`;
+    }
 }
 
 class ImporterExporter {
-    constructor(httpClient, snapshotFolder = "../dist/snapshot") {
-        this.httpClient = httpClient;
+    constructor(subscriptionId, resourceGroupName, serviceName, snapshotFolder = "../dist/snapshot") {
+        this.httpClient = new HttpClient(subscriptionId, resourceGroupName, serviceName);
         this.snapshotFolder = snapshotFolder
     }
 
@@ -293,12 +298,6 @@ class ImporterExporter {
     }
 }
 
-function getAccessToken() {
-    const accessToken = execSync(`az account get-access-token --resource-type arm --output tsv --query accessToken`).toString().trim();
-    return `Bearer ${accessToken}`;
-}
-
 module.exports = {
-    HttpClient,
     ImporterExporter
 };
