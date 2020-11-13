@@ -1,6 +1,7 @@
-@REM Delete the content of an API Management portal - incl. pages, layouts, configuration, media files, etc.
+@REM Delete the content (incl. pages, media files, configuration, etc.) of API Management developer portal.
+@REM Make sure you're logged-in with `az login` command before running the script.
 
-set management_endpoint="< service name >.management.azure-api.net"
-set access_token="SharedAccessSignature ..."
-
-node ./cleanup %management_endpoint% %access_token%
+node ./cleanup ^
+--subscriptionId "< your subscription ID >" ^
+--resourceGroupName "< your resource group name >" ^
+--serviceName "< your service name >"

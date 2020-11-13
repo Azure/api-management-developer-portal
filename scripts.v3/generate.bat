@@ -1,7 +1,7 @@
-@REM Generate and provision default content of an API Management portal - incl. pages, layouts, configuration, media files, etc.
+@REM Generate content (incl. pages, media files, configuration, etc.) of API Management developer portal from ./dist/snapshot folder.
+@REM Make sure you're logged-in with `az login` command before running the script.
 
-set management_endpoint="< service name >.management.azure-api.net"
-set access_token="SharedAccessSignature ..."
-set source_folder="../dist/snapshot"
-
-node ./generate %management_endpoint% %access_token% %source_folder%
+node ./generate ^
+--subscriptionId "< your subscription ID >" ^
+--resourceGroupName "< your resource group name >" ^
+--serviceName "< your service name >"

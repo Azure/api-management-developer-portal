@@ -1,7 +1,7 @@
-@REM Capture the content of an API Management portal into dest_folder - incl. pages, layouts, configuration, etc. but excluding media files
+@REM Capture the content (incl. pages, media files, configuration, etc.) of API Management developer portal into ./dist/snapshot folder.
+@REM @REM Make sure you're logged-in with `az login` command before running the script.
 
-set management_endpoint="< service name >.management.azure-api.net"
-set access_token="SharedAccessSignature ..."
-set dest_folder="../dist/snapshot"
-
-node ./capture %management_endpoint% %access_token% %dest_folder%
+node ./capture ^
+--subscriptionId "< your subscription ID >" ^
+--resourceGroupName "< your resource group name >" ^
+--serviceName "< your service name >"
