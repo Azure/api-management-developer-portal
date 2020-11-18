@@ -73,7 +73,8 @@ class HttpClient {
                 resp.on('end', () => {
                     switch (resp.statusCode) {
                         case 200:
-                            resolve(JSON.parse(data));
+                        case 201:
+                            data.startsWith("{") ? resolve(JSON.parse(data)) : resolve(data);
                             break;
                         case 404:
                             reject({ code: "NotFound", message: `Resource not found: ${requestUrl}` });
@@ -85,7 +86,7 @@ class HttpClient {
                             reject({ code: "Forbidden", message: `Looks like you are not allowed to perform this operation. Please check with your administrator.` });
                             break;
                         default:
-                            reject({ code: "UnhandledError", message: `Could not complete request to ${requestUrl}.` });
+                            reject({ code: "UnhandledError", message: `Could not complete request to ${requestUrl}. Status: ${resp.statusCode} ${resp.statusMessage}` });
                     }
                 });
             });
