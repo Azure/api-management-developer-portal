@@ -49,7 +49,6 @@ async function capture() {
         yargs.resourceGroupName,
         yargs.serviceName
     );
-
     await importerExporter.export();
 
     console.log(`The content captured in "./dist/snapshot" folder.`);
@@ -61,7 +60,7 @@ capture()
         process.exit(0);
     })
     .catch(error => {
-        console.error(error);
+        console.error(error.message);
         process.exit(1);
     });
 
