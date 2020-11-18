@@ -130,7 +130,7 @@ export class ProductService {
                         .get<ApiContract>(`/apis/${apiName}`)
                         .then(api => {
                             subscriptionModel.productName = `API: ${api.properties.displayName}`;
-                        });
+                        }).catch(error => console.log(`Get API error: ${error.message}`));
 
                     promises.push(apiPromise);
                 } else {
@@ -140,7 +140,7 @@ export class ProductService {
                         .get<ProductContract>(`/products/${productName}`)
                         .then(product => {
                             subscriptionModel.productName = product.properties.displayName;
-                        });
+                        }).catch(error => console.log(`Get product error: ${error.message}`));
 
                     promises.push(productPromise);
                 }
