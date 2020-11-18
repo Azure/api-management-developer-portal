@@ -71,11 +71,6 @@ class HttpClient {
                 });
 
                 resp.on('end', () => {
-                    if (resp.statusCode === 200) {
-                        resolve(JSON.parse(data));
-                        return;
-                    }
-
                     switch (resp.statusCode) {
                         case 200:
                             resolve(JSON.parse(data));
@@ -92,8 +87,6 @@ class HttpClient {
                         default:
                             reject({ code: "UnhandledError", message: `Could not complete request to ${requestUrl}.` });
                     }
-
-                    reject(resp.data);
                 });
             });
 
