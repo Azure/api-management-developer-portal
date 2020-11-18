@@ -7,56 +7,76 @@ const destinationFolder = process.argv[4];
 
 
 async function getContentTypes() {
-    const data = await request("GET", `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/contentTypes?api-version=2019-12-01`, managementApiAccessToken);
-    const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
+    try {
+        const data = await request("GET", `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/contentTypes?api-version=2019-12-01`, managementApiAccessToken);
+        const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
 
-    return contentTypes;
+        return contentTypes;
+    }
+    catch (error) {
+        throw new Error(`Unable to fetch content types. ${error.message}`);
+    }
 }
 
 async function getContentItems(contentType) {
-    const contentItems = [];
-    let nextPageUrl = `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/contentTypes/${contentType}/contentItems?api-version=2019-12-01`;
+    try {
+        const contentItems = [];
+        let nextPageUrl = `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/contentTypes/${contentType}/contentItems?api-version=2019-12-01`;
 
-    do {
-        const data = await request("GET", nextPageUrl, managementApiAccessToken);
-        contentItems.push(...data.value);
+        do {
+            const data = await request("GET", nextPageUrl, managementApiAccessToken);
+            contentItems.push(...data.value);
 
-        if (data.value.length > 0 && data.nextLink) {
-            nextPageUrl = data.nextLink;
+            if (data.value.length > 0 && data.nextLink) {
+                nextPageUrl = data.nextLink;
+            }
+            else {
+                nextPageUrl = null;
+            }
         }
-        else {
-            nextPageUrl = null;
-        }
+        while (nextPageUrl)
+
+        return contentItems;
     }
-    while (nextPageUrl)
-
-    return contentItems;
+    catch (error) {
+        throw new Error(`Unable to fetch content items. ${error.message}`);
+    }
 }
 
 async function captureJson() {
-    const result = {};
-    const contentTypes = await getContentTypes();
+    try {
+        const result = {};
+        const contentTypes = await getContentTypes();
 
-    for (const contentType of contentTypes) {
-        const contentItems = await getContentItems(contentType);
+        for (const contentType of contentTypes) {
+            const contentItems = await getContentItems(contentType);
 
-        contentItems.forEach(contentItem => {
-            result[contentItem.id] = contentItem;
-            delete contentItem.id;
-        });
+            contentItems.forEach(contentItem => {
+                result[contentItem.id] = contentItem;
+                delete contentItem.id;
+            });
+        }
+
+        await fs.promises.mkdir(path.resolve(destinationFolder), { recursive: true });
+
+        fs.writeFileSync(`${destinationFolder}/data.json`, JSON.stringify(result));
     }
-
-    await fs.promises.mkdir(path.resolve(destinationFolder), { recursive: true });
-
-    fs.writeFileSync(`${destinationFolder}/data.json`, JSON.stringify(result));
+    catch (error) {
+        throw new Error(`Unable to capture content. ${error.message}`);
+    }
 }
 
 async function capture() {
-    const blobStorageUrl = await getStorageSasTokenOrThrow(managementApiEndpoint, managementApiAccessToken);
-    const localMediaFolder = `./${destinationFolder}/media`;
+    try {
+        const blobStorageUrl = await getStorageSasTokenOrThrow(managementApiEndpoint, managementApiAccessToken);
+        const localMediaFolder = `./${destinationFolder}/media`;
 
-    await captureJson();
-    await downloadBlobs(blobStorageUrl, localMediaFolder);
+        await captureJson();
+        await downloadBlobs(blobStorageUrl, localMediaFolder);
+    }
+    catch (error) {
+        throw new Error(`Unable to complete export. ${error.message}`);
+    }
 }
 
 capture()
@@ -64,5 +84,5 @@ capture()
         console.log("DONE");
     })
     .catch(error => {
-        console.log(error);
+        console.log(error.message);
     });
