@@ -100,31 +100,36 @@ const yargs = require('yargs')
     .argv;
 
 async function run() {
-    const sourceManagementApiEndpoint = yargs.sourceEndpoint;
-    const sourceManagementApiAccessToken = await getTokenOrThrow(yargs.sourceToken, yargs.sourceId, yargs.sourceKey);
+    try {
+        const sourceManagementApiEndpoint = yargs.sourceEndpoint;
+        const sourceManagementApiAccessToken = await getTokenOrThrow(yargs.sourceToken, yargs.sourceId, yargs.sourceKey);
 
-    const destManagementApiEndpoint = yargs.destEndpoint;
-    const destManagementApiAccessToken = await getTokenOrThrow(yargs.destToken, yargs.destId, yargs.destKey);
-    const publishEndpoint = yargs.publishEndpoint;
+        const destManagementApiEndpoint = yargs.destEndpoint;
+        const destManagementApiAccessToken = await getTokenOrThrow(yargs.destToken, yargs.destId, yargs.destKey);
+        const publishEndpoint = yargs.publishEndpoint;
 
-    // the rest of this mirrors migrate.bat, but since we're JS, we're platform-agnostic.
-    const snapshotFolder = '../dist/snapshot';
+        // the rest of this mirrors migrate.bat, but since we're JS, we're platform-agnostic.
+        const snapshotFolder = '../dist/snapshot';
 
-    // capture the content of the source portal
-    execSync(`node ./capture ${sourceManagementApiEndpoint} "${sourceManagementApiAccessToken}" "${snapshotFolder}"`);
+        // capture the content of the source portal
+        execSync(`node ./capture ${sourceManagementApiEndpoint} "${sourceManagementApiAccessToken}" "${snapshotFolder}"`);
 
-    // remove all content of the target portal
-    execSync(`node ./cleanup ${destManagementApiEndpoint} "${destManagementApiAccessToken}"`);
+        // remove all content of the target portal
+        execSync(`node ./cleanup ${destManagementApiEndpoint} "${destManagementApiAccessToken}"`);
 
-    // upload the content of the source portal
-    execSync(`node ./generate ${destManagementApiEndpoint} "${destManagementApiAccessToken}" "${snapshotFolder}"`);
+        // upload the content of the source portal
+        execSync(`node ./generate ${destManagementApiEndpoint} "${destManagementApiAccessToken}" "${snapshotFolder}"`);
 
-    if (publishEndpoint && !yargs.selfHosted) {
-        process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-        await publish(publishEndpoint, destManagementApiAccessToken);
+        if (publishEndpoint && !yargs.selfHosted) {
+            process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+            await publish(publishEndpoint, destManagementApiAccessToken);
+        }
+        else if (publishEndpoint) {
+            console.warn("Auto-publishing self-hosted portal is not supported.");
+        }
     }
-    else if (publishEndpoint) {
-        console.warn("Auto-publishing self-hosted portal is not supported.");
+    catch (error) {
+        throw new Error(`Unable to complete migration. ${error.message}`);
     }
 }
 
@@ -172,10 +177,15 @@ async function generateSASToken(id, key, expiresIn = 3600) {
  * @param {string} token the SAS token
  */
 async function publish(endpoint, token) {
-    const url = `https://${endpoint}/publish`;
+    try {
+        const url = `https://${endpoint}/publish`;
 
-    // returns with literal OK (missing quotes), which is invalid json.
-    await request("POST", url, token);
+        // returns with literal OK (missing quotes), which is invalid json.
+        await request("POST", url, token);
+    }
+    catch (error) {
+        throw new Error(`Unable to schedule website publishing. ${error.message}`);
+    }
 }
 
 run()
@@ -183,6 +193,6 @@ run()
         console.log("DONE");
     })
     .catch(error => {
-        console.error(error);
+        console.error(error.message);
         process.exitCode = 1;
     });
