@@ -219,7 +219,7 @@ class ImporterExporter {
     async uploadBlobs() {
         try {
             const snapshotMediaFolder = `./${this.snapshotFolder}/media`;
-            const blobStorageUrl = "https://aaaa.ccc" // await this.getStorageSasUrl();
+            const blobStorageUrl = await this.getStorageSasUrl();
             const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
             const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
             const fileNames = this.listFilesInDirectory(snapshotMediaFolder);
