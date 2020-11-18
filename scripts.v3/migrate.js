@@ -68,15 +68,20 @@ const yargs = require('yargs')
     .argv;
 
 async function migrate() {
-    const sourceImporterExporter = new ImporterExporter(yargs.sourceSubscriptionId, yargs.sourceResourceGroupName, yargs.sourceServiceName);
-    await sourceImporterExporter.export();
-
-    const destIimporterExporter = new ImporterExporter(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName);
-    await destIimporterExporter.cleanup();
-    await destIimporterExporter.import();
-
-    /* New publishing endpoint is not deployed to production yet. */
-    // await destIimporterExporter.publish();
+    try {
+        const sourceImporterExporter = new ImporterExporter(yargs.sourceSubscriptionId, yargs.sourceResourceGroupName, yargs.sourceServiceName);
+        await sourceImporterExporter.export();
+    
+        const destIimporterExporter = new ImporterExporter(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName);
+        await destIimporterExporter.cleanup();
+        await destIimporterExporter.import();
+    
+        /* New publishing endpoint is not deployed to production yet. */
+        // await destIimporterExporter.publish();
+    }
+    catch (error) {
+        throw new Error(`Unable to complete migration. ${error.message}`);
+    }
 }
 
 migrate()
@@ -85,6 +90,6 @@ migrate()
         process.exit(0);
     })
     .catch(error => {
-        console.error(error);
+        console.error(error.message);
         process.exit(1);
     });
