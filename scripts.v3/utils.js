@@ -36,7 +36,6 @@ class HttpClient {
             requestUrl = new URL(this.baseUrl + normalizedUrl);
         }
 
-
         if (!requestUrl.searchParams.has("api-version")) {
             requestUrl.searchParams.append("api-version", apiVersion);
         }
@@ -72,16 +71,22 @@ class HttpClient {
                 });
 
                 resp.on('end', () => {
-                    try {
-                        if (data && data.startsWith("{")) {
-                            resolve(JSON.parse(data));
-                        }
-                        else {
-                            resolve(data);
-                        }
-                    }
-                    catch (e) {
-                        reject(e);
+                    switch (resp.statusCode) {
+                        case 200:
+                        case 201:
+                            data.startsWith("{") ? resolve(JSON.parse(data)) : resolve(data);
+                            break;
+                        case 404:
+                            reject({ code: "NotFound", message: `Resource not found: ${requestUrl}` });
+                            break;
+                        case 401:
+                            reject({ code: "Unauthorized", message: `Unauthorized. Make sure you're logged-in with "az login" command before running the script.` });
+                            break;
+                        case 403:
+                            reject({ code: "Forbidden", message: `Looks like you are not allowed to perform this operation. Please check with your administrator.` });
+                            break;
+                        default:
+                            reject({ code: "UnhandledError", message: `Could not complete request to ${requestUrl}. Status: ${resp.statusCode} ${resp.statusMessage}` });
                     }
                 });
             });
@@ -134,9 +139,15 @@ class ImporterExporter {
      * Returns list of content types.
      */
     async getContentTypes() {
-        const data = await this.httpClient.sendRequest("GET", `/contentTypes`);
-        const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
-        return contentTypes;
+        try {
+            const data = await this.httpClient.sendRequest("GET", `/contentTypes`);
+            const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
+
+            return contentTypes;
+        }
+        catch (error) {
+            throw new Error(`Unable to fetch content types. ${error.message}`);
+        }
     }
 
     /**
@@ -144,52 +155,62 @@ class ImporterExporter {
      * @param {string} contentType Content type, e.g. "page".
      */
     async getContentItems(contentType) {
-        const contentItems = [];
-        let nextPageUrl = `/contentTypes/${contentType}/contentItems`;
+        try {
+            const contentItems = [];
+            let nextPageUrl = `/contentTypes/${contentType}/contentItems`;
 
-        do {
-            const data = await this.httpClient.sendRequest("GET", nextPageUrl);
-            contentItems.push(...data.value);
+            do {
+                const data = await this.httpClient.sendRequest("GET", nextPageUrl);
+                contentItems.push(...data.value);
 
-            if (data.value.length > 0 && data.nextLink) {
-                nextPageUrl = data.nextLink;
+                if (data.value.length > 0 && data.nextLink) {
+                    nextPageUrl = data.nextLink;
+                }
+                else {
+                    nextPageUrl = null;
+                }
             }
-            else {
-                nextPageUrl = null;
-            }
+            while (nextPageUrl)
+
+            return contentItems;
         }
-        while (nextPageUrl)
-
-        return contentItems;
+        catch (error) {
+            throw new Error(`Unable to fetch content items. ${error.message}`);
+        }
     }
- 
+
     /**
      * Downloads media files from storage of specified API Management service.
      */
     async downloadBlobs() {
-        const snapshotMediaFolder = `./${this.snapshotFolder}/media`;
-        const blobStorageUrl = await this.getStorageSasUrl();
-        const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
-        const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
+        try {
+            const snapshotMediaFolder = `./${this.snapshotFolder}/media`;
+            const blobStorageUrl = await this.getStorageSasUrl();
+            const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
+            const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
 
-        let blobs = containerClient.listBlobsFlat();
+            let blobs = containerClient.listBlobsFlat();
 
-        for await (const blob of blobs) {
-            const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-            const extension = mime.extension(blob.properties.contentType);
-            let pathToFile;
+            for await (const blob of blobs) {
+                const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
+                const extension = mime.extension(blob.properties.contentType);
+                let pathToFile;
 
-            if (extension != null) {
-                pathToFile = `${snapshotMediaFolder}/${blob.name}.${extension}`;
+                if (extension != null) {
+                    pathToFile = `${snapshotMediaFolder}/${blob.name}.${extension}`;
+                }
+                else {
+                    pathToFile = `${snapshotMediaFolder}/${blob.name}`;
+                }
+
+                const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
+                await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
+
+                await blockBlobClient.downloadToFile(pathToFile);
             }
-            else {
-                pathToFile = `${snapshotMediaFolder}/${blob.name}`;
-            }
-
-            const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
-            await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
-
-            await blockBlobClient.downloadToFile(pathToFile);
+        }
+        catch (error) {
+            throw new Error(`Unable to download media files. ${error.message}`);
         }
     }
 
@@ -197,23 +218,28 @@ class ImporterExporter {
      * Uploads media files to storage of specified API Management service.
      */
     async uploadBlobs() {
-        const snapshotMediaFolder = `./${this.snapshotFolder}/media`;
-        const blobStorageUrl = await this.getStorageSasUrl();
-        const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
-        const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
-        const fileNames = this.listFilesInDirectory(snapshotMediaFolder);
+        try {
+            const snapshotMediaFolder = `./${this.snapshotFolder}/media`;
+            const blobStorageUrl = await this.getStorageSasUrl();
+            const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
+            const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
+            const fileNames = this.listFilesInDirectory(snapshotMediaFolder);
 
-        for (const fileName of fileNames) {
-            const blobName = path.basename(fileName).split(".")[0];
-            const contentType = mime.lookup(path.extname(fileName));
+            for (const fileName of fileNames) {
+                const blobName = path.basename(fileName).split(".")[0];
+                const contentType = mime.lookup(path.extname(fileName));
 
-            const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+                const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
-            await blockBlobClient.uploadFile(fileName, {
-                blobHTTPHeaders: {
-                    blobContentType: contentType
-                }
-            });
+                await blockBlobClient.uploadFile(fileName, {
+                    blobHTTPHeaders: {
+                        blobContentType: contentType
+                    }
+                });
+            }
+        }
+        catch (error) {
+            throw new Error(`Unable to upload media files. ${error.message}`);
         }
     }
 
@@ -221,15 +247,20 @@ class ImporterExporter {
      * Deletes media files from storage of specified API Management service.
      */
     async deleteBlobs() {
-        const blobStorageUrl = await this.getStorageSasUrl();
-        const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
-        const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
+        try {
+            const blobStorageUrl = await this.getStorageSasUrl();
+            const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
+            const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
 
-        let blobs = containerClient.listBlobsFlat();
+            let blobs = containerClient.listBlobsFlat();
 
-        for await (const blob of blobs) {
-            const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-            await blockBlobClient.delete();
+            for await (const blob of blobs) {
+                const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
+                await blockBlobClient.delete();
+            }
+        }
+        catch (error) {
+            throw new Error(`Unable to delete media files. ${error.message}`);
         }
     }
 
@@ -237,35 +268,45 @@ class ImporterExporter {
      * Captures the content of specified API Management service into snapshot.
      */
     async captureContent() {
-        const result = {};
-        const contentTypes = await this.getContentTypes();
+        try {
+            const result = {};
+            const contentTypes = await this.getContentTypes();
 
-        for (const contentType of contentTypes) {
-            const contentItems = await this.getContentItems(contentType);
+            for (const contentType of contentTypes) {
+                const contentItems = await this.getContentItems(contentType);
 
-            contentItems.forEach(contentItem => {
-                result[contentItem.id] = contentItem;
-                delete contentItem.id;
-            });
+                contentItems.forEach(contentItem => {
+                    result[contentItem.id] = contentItem;
+                    delete contentItem.id;
+                });
+            }
+
+            await fs.promises.mkdir(path.resolve(this.snapshotFolder), { recursive: true });
+
+            fs.writeFileSync(`${this.snapshotFolder}/data.json`, JSON.stringify(result));
         }
-
-        await fs.promises.mkdir(path.resolve(this.snapshotFolder), { recursive: true });
-
-        fs.writeFileSync(`${this.snapshotFolder}/data.json`, JSON.stringify(result));
+        catch (error) {
+            throw new Error(`Unable to capture content. ${error.message}`);
+        }
     }
 
     /**
      * Deletes the content in specified API Management service.
      */
     async deleteContent() {
-        const contentTypes = await this.getContentTypes();
+        try {
+            const contentTypes = await this.getContentTypes();
 
-        for (const contentType of contentTypes) {
-            const contentItems = await this.getContentItems(contentType);
+            for (const contentType of contentTypes) {
+                const contentItems = await this.getContentItems(contentType);
 
-            for (const contentItem of contentItems) {
-                await this.httpClient.sendRequest("DELETE", `/${contentItem.id}`);
+                for (const contentItem of contentItems) {
+                    await this.httpClient.sendRequest("DELETE", `/${contentItem.id}`);
+                }
             }
+        }
+        catch (error) {
+            throw new Error(`Unable to delete content. ${error.message}`);
         }
     }
 
@@ -273,12 +314,23 @@ class ImporterExporter {
      * Generates the content in specified API Management service from snapshot.
      */
     async generateContent() {
-        const data = fs.readFileSync(`${this.snapshotFolder}/data.json`);
-        const dataObj = JSON.parse(data);
-        const keys = Object.keys(dataObj);
+        const snapshotFilePath = `${this.snapshotFolder}/data.json`;
 
-        for (const key of keys) {
-            await this.httpClient.sendRequest("PUT", key, dataObj[key]);
+        try {
+            if (!fs.existsSync(snapshotFilePath)) {
+                throw new Error(`Snapshot file ${snapshotFilePath} not found.`);
+            }
+
+            const data = fs.readFileSync(snapshotFilePath);
+            const dataObj = JSON.parse(data);
+            const keys = Object.keys(dataObj);
+
+            for (const key of keys) {
+                await this.httpClient.sendRequest("PUT", key, dataObj[key]);
+            }
+        }
+        catch (error) {
+            throw new Error(`Unable to generate the content. ${error.message}`);
         }
     }
 
@@ -295,8 +347,14 @@ class ImporterExporter {
      */
     async cleanup() {
         console.log("Cleaning up...")
-        await this.deleteContent();
-        await this.deleteBlobs();
+
+        try {
+            await this.deleteContent();
+            await this.deleteBlobs();
+        }
+        catch (error) {
+            throw new Error(`Unable to complete cleanup. ${error.message}`);
+        }
     }
 
     /**
@@ -304,8 +362,14 @@ class ImporterExporter {
      */
     async export() {
         console.log("Exporting...")
-        await this.captureContent();
-        await this.downloadBlobs();
+
+        try {
+            await this.captureContent();
+            await this.downloadBlobs();
+        }
+        catch (error) {
+            throw new Error(`Unable to complete export. ${error.message}`);
+        }
     }
 
     /**
@@ -313,8 +377,14 @@ class ImporterExporter {
      */
     async import() {
         console.log("Importing...")
-        await this.generateContent();
-        await this.uploadBlobs();
+
+        try {
+            await this.generateContent();
+            await this.uploadBlobs();
+        }
+        catch (error) {
+            throw new Error(`Unable to complete import. ${error.message}`);
+        }
     }
 
     /**
@@ -322,15 +392,20 @@ class ImporterExporter {
      * @param {string} token the SAS token
      */
     async publish() {
-        const timeStamp = new Date();
-        const revision = timeStamp.toISOString().replace(/[\-\:\T]/g, "").substr(0, 14);
-        const url = `/portalRevisions/${revision}`;
-        const body = {
-            description: `Migration.`,
-            isCurrent: true
-        }
+        try {
+            const timeStamp = new Date();
+            const revision = timeStamp.toISOString().replace(/[\-\:\T]/g, "").substr(0, 14);
+            const url = `/portalRevisions/${revision}`;
+            const body = {
+                description: `Migration ${revision}.`,
+                isCurrent: true
+            }
 
-        await this.httpClient.sendRequest("PUT", url, body);
+            await this.httpClient.sendRequest("PUT", url, body);
+        }
+        catch (error) {
+            throw new Error(`Unable to schedule website publishing. ${error.message}`);
+        }
     }
 }
 
