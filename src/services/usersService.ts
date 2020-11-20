@@ -79,7 +79,7 @@ export class UsersService {
         const requestUrl = `/users/${userId}/identities/Basic/${identity}?appType=developerPortal`;
         const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
 
-        await this.mapiClient.put<void>(requestUrl, [{ name: "Authorization", value: token }, MapiClient.getPortalHeader("activateUser")], {});
+        await this.mapiClient.put<void>(requestUrl, [{ name: "Authorization", value: token }, MapiClient.getPortalHeader("activateUser")]);
     }
 
     public async updatePassword(userId: string, newPassword: string, token: string): Promise<void> {
