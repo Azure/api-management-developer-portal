@@ -219,8 +219,8 @@ export class OperationConsole {
                     .find(header => header.name().toLowerCase() === KnownHttpHeaders.ContentType.toLowerCase());
 
                 if (contentHeader) {
-                    const contentType = `${contentHeader.value};action="${consoleOperation.urlTemplate.split("=")[1]}"`;
-                    consoleOperation.setHeader(KnownHttpHeaders.ContentType, contentType);
+                    const contentType = `${contentHeader.value()};action="${consoleOperation.urlTemplate.split("=")[1]}"`;
+                    contentHeader.value(contentType);
                 }
             }
         }
