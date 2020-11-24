@@ -32,7 +32,7 @@ fs.readFile(configPublishFile, { encoding: 'utf-8' }, function (err, data) {
         obj[managementApiUrlParameter] = managementApiUrlValue;
         obj[managementApiAccessTokenParameter] = managementApiAccessTokenValue;
         obj[environmentParameter] = "publishing";
-        obj[useHipCaptchaParameter] = "false";
+        obj[useHipCaptchaParameter] = false;
         obj[hotJarIdParameter] = hotJarIdValue;
         obj[azureInsightsInstrumentationKeyParameter] = azureInsightsInstrumentationKeyValue;
 
