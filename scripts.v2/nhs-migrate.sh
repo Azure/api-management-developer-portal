@@ -2,6 +2,7 @@
 
 if [ "$#" -ne 4 ]; then
     echo "Usage: $0 sourceInstance sourceKey destinationInstance desinationKey"
+    exit 1
 fi
 
 # function for creating SAS tokens in the format needed by API Management
