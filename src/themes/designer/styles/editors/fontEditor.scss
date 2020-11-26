@@ -1,0 +1,15 @@
+.font-variant-item {
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .font-variant-display {
+        text-decoration: none;
+        color: $color-base;
+        font-size: 40px;
+        overflow: hidden;
+    }
+}
