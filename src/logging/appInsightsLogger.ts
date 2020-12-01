@@ -3,13 +3,13 @@ import { Logger } from "@paperbits/common/logging";
 import { AppInsights } from "applicationinsights-js";
 
 
-export class LogService implements Logger {
+export class AppInsightsLogger implements Logger {
     constructor(private readonly instrumentationKey: string) {
-        if (this.instrumentationKey && location.hostname.endsWith(".net")) {
+        if (this.instrumentationKey) {
             AppInsights.downloadAndSetup({ instrumentationKey: this.instrumentationKey });
         }
         else {
-            console.warn("AppInsights instrumentation key wasn't specified or cannot be used in current environment.");
+            console.warn("AppInsights instrumentation key wasn't specified.");
         }
 
         this.trackSession();
