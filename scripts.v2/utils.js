@@ -113,25 +113,31 @@ async function request(method, url, accessToken, body) {
     });
 }
 
-async function downloadBlobs(blobStorageUrl, localMediaFolder) {
+async function downloadBlobs(blobStorageUrl, snapshotMediaFolder) {
     try {
         const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
         const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
 
-        await fs.promises.mkdir(path.resolve(localMediaFolder), { recursive: true });
+        await fs.promises.mkdir(path.resolve(snapshotMediaFolder), { recursive: true });
 
         let blobs = containerClient.listBlobsFlat();
 
         for await (const blob of blobs) {
             const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
             const extension = mime.extension(blob.properties.contentType);
+            let pathToFile;
 
             if (extension != null) {
-                await blockBlobClient.downloadToFile(`${localMediaFolder}/${blob.name}.${extension}`);
+                pathToFile = `${snapshotMediaFolder}/${blob.name}.${extension}`;
             }
             else {
-                await blockBlobClient.downloadToFile(`${localMediaFolder}/${blob.name}`);
+                pathToFile = `${snapshotMediaFolder}/${blob.name}`;
             }
+
+            const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
+            await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
+
+            await blockBlobClient.downloadToFile(pathToFile);
         }
     }
     catch (error) {
