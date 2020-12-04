@@ -136,7 +136,6 @@ async function downloadBlobs(blobStorageUrl, snapshotMediaFolder) {
 
             const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
             await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
-
             await blockBlobClient.downloadToFile(pathToFile);
         }
     }
@@ -152,10 +151,9 @@ async function uploadBlobs(blobStorageUrl, localMediaFolder) {
         const fileNames = listFilesInDirectory(localMediaFolder);
 
         for (const fileName of fileNames) {
-            const blobName = path.basename(fileName).split(".")[0];
-            const contentType = mime.lookup(path.extname(fileName));
-
-            const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+            const blobKey = fileName.replace(localMediaFolder + "/", "").split(".")[0];
+            const contentType = mime.lookup(fileName) || "application/octet-stream";
+            const blockBlobClient = containerClient.getBlockBlobClient(blobKey);
 
             await blockBlobClient.uploadFile(fileName, {
                 blobHTTPHeaders: {
