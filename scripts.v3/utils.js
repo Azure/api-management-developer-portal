@@ -226,10 +226,9 @@ class ImporterExporter {
             const fileNames = this.listFilesInDirectory(snapshotMediaFolder);
 
             for (const fileName of fileNames) {
-                const blobName = path.basename(fileName).split(".")[0];
-                const contentType = mime.lookup(path.extname(fileName));
-
-                const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+                const blobKey = fileName.replace(snapshotMediaFolder + "/", "").split(".")[0];
+                const contentType = mime.lookup(fileName) || "application/octet-stream";
+                const blockBlobClient = containerClient.getBlockBlobClient(blobKey);
 
                 await blockBlobClient.uploadFile(fileName, {
                     blobHTTPHeaders: {
