@@ -1,3 +1,5 @@
+@import "variables.scss";
+
 $switch-background-color-on: #0078d4;
 $switch-background-color-off: #ccc;
 $switch-handle-color: #fff;
@@ -81,9 +83,7 @@ $switch-trigger-size: $switch-height - ($switch-trigger-gap * 4);
 }
 
 .form-check-inline {
-    display: -ms-inline-flexbox;
     display: inline-flex;
-    -ms-flex-align: center;
     align-items: center;
     padding-left: 0;
     margin-right: .75rem;
