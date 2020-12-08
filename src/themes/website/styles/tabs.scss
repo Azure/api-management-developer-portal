@@ -1,7 +1,5 @@
 .tabs {
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
   }
   
@@ -23,7 +21,6 @@
     margin-top: -1px;
     padding: 1em;
     border: 1px solid #ddd;
-    -webkit-order: 1;
     order: 1;
   }
   
