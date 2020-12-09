@@ -84,3 +84,30 @@ div.collapsible-content > button > i.icon.icon-simple-remove{
 main main {
     display: block;
 }
+
+
+/*
+    Custom Table Border formating
+
+*/
+
+.userguide-content table {
+    border-collapse: collapse; 
+    margin-bottom: 10px;
+
+  
+  th {
+      background-color:#2C3E72 !important;
+      border: solid thin black;
+      padding:0.4em;
+      font-size: 1.1em;
+      background-color: transparent;
+      color: white;
+  } 
+  
+  td { 
+    border: solid thin;
+    padding: 0.4rem;
+    text-align: left;
+  }
+}
