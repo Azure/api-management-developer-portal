@@ -201,7 +201,7 @@ export class OAuthService {
         const server = new AuthorizationServer();
         server.authorizationEndpoint = metadata.authorization_endpoint;
         server.tokenEndpoint = metadata.token_endpoint;
-        server.scopes = metadata.scopes_supported || ["openid"];
+        server.scopes = ["openid"];
 
         // Leaving only "implicit" grant flow until backend gets deployed.
         const supportedGrantTypes = [GrantTypes.implicit.toString(), GrantTypes.authorizationCode.toString()];
