@@ -1,4 +1,5 @@
 import * as ClientOAuth2 from "client-oauth2";
+import * as Utils from "@paperbits/common";
 import { HttpClient } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { GrantTypes } from "./../constants";
@@ -89,13 +90,22 @@ export class OAuthService {
      */
     public authenticateImplicit(backendUrl: string, authorizationServer: AuthorizationServer): Promise<string> {
         const redirectUri = `${backendUrl}/signin-oauth/implicit/callback`;
+        const query = {
+            state: Utils.guid()
+        };
+
+        if (authorizationServer.scopes.includes("openid")) {
+            query["nonce"] = Utils.guid();
+            query["response_type"] = "id_token";
+        }
 
         const oauthClient = new ClientOAuth2({
             clientId: authorizationServer.clientId,
             accessTokenUri: authorizationServer.tokenEndpoint,
             authorizationUri: authorizationServer.authorizationEndpoint,
             redirectUri: redirectUri,
-            scopes: authorizationServer.scopes
+            scopes: authorizationServer.scopes,
+            query: query
         });
 
         return new Promise((resolve, reject) => {
