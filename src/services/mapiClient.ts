@@ -145,7 +145,7 @@ export class MapiClient {
         if (accessTokenHeader) {
             try {
                 const accessToken = AccessToken.parse(accessTokenHeader.value);
-                this.authenticator.setAccessToken(accessToken);
+                await this.authenticator.setAccessToken(accessToken);
             }
             catch (error) {
                  this.logger.trackError(error, { message: "Unable to refresh access token." });
