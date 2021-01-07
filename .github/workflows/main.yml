@@ -14,16 +14,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        
       - name: NPM install
         uses: bahmutov/npm-install@v1.6.0
         
-      - name: Azure Blob Storage Upload
-        uses: bacongobbler/azure-blob-storage-upload@v1.1.1
-        env:
-          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+      - name: Deploy to Azure Storage
+        uses: TravisSpomer/deploy-to-azure-storage@v1.3.0
         with:
-          connection_string: $AZURE_STORAGE_CONNECTION_STRING
-          container_name: $web
-          source_dir: /dist/website
+          source-path: /dist/website
+          sas-url: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
