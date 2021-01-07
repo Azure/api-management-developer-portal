@@ -26,6 +26,8 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Azure Static Web Apps Deploy
+        env:
+          AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
         uses: Azure/static-web-apps-deploy@v0.0.1-preview
         with:
           # Action to perform
@@ -33,6 +35,6 @@ jobs:
           # Directory location of the application source code
           app_location: $web
           # Required token
-          azure_static_web_apps_api_token: ${{secrets.AZURE_STATIC_WEB_APPS_API_TOKEN}}
+          azure_static_web_apps_api_token: $AZURE_STATIC_WEB_APPS_API_TOKEN
           # Directory location of the compiled application code after building
           app_artifact_location: /dist
