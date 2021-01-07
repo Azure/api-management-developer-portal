@@ -16,8 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         
-      - name: NPM install
-        uses: bahmutov/npm-install@v1.6.0
+      - name: Run a yarn or npm command
+        uses: Adzz/yarn_command_action@v1.0.0
+        with:
+          package-manager: npm
+          command: instakk
         
       - name: Run a yarn or npm command
         uses: Adzz/yarn_command_action@v1.0.0
