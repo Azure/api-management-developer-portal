@@ -15,8 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Build on Node.js
-        uses: actions/setup-node@v1
         
       - run: npm install
       
