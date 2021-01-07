@@ -1,10 +1,5 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
-
-# Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ develop ]
   pull_request:
@@ -13,22 +8,15 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    environment: Dev
-    # The type of runner that the job will run on
+    environment: dev
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: NPM or Yarn install with caching
-        # You may pin to the exact commit or the version.
-        # uses: bahmutov/npm-install@44b9e76df0949f3df6616b334af42e055ce24831
+      - name: NPM install
         uses: bahmutov/npm-install@v1.6.0
         
       - name: Azure Blob Storage Upload
@@ -36,9 +24,6 @@ jobs:
         env:
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
         with:
-          # The connection string for the storage account
           connection_string: $AZURE_STORAGE_CONNECTION_STRING
-          # The name of the storage account container these assets will be uploaded to
           container_name: $web
-          # The name of the directory you want to upload
           source_dir: /dist/website
