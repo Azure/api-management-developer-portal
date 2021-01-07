@@ -15,25 +15,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Build on Node.js
+        uses: actions/setup-node@v1
         
-      - name: Run a yarn or npm command
-        uses: Adzz/yarn_command_action@v1.0.0
-        with:
-          package-manager: npm
-          command: install
+      - run: npm install
       
-      - name: Run a yarn or npm command
-        uses: Adzz/yarn_command_action@v1.0.0
-        with:
-          package-manager: npm
-          command: rebuild node-sass
-                  
-      - name: Run a yarn or npm command
-        uses: Adzz/yarn_command_action@v1.0.0
-        with:
-          package-manager: npm
-          command: run publish
-
+      - run: npm run publish
+        
       - name: Deploy to Azure Storage
         uses: TravisSpomer/deploy-to-azure-storage@v1.3.0
         with:
