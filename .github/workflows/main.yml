@@ -21,7 +21,13 @@ jobs:
         with:
           package-manager: npm
           command: install
-        
+      
+      - name: Run a yarn or npm command
+        uses: Adzz/yarn_command_action@v1.0.0
+        with:
+          package-manager: npm
+          command: rebuild node-sass
+                  
       - name: Run a yarn or npm command
         uses: Adzz/yarn_command_action@v1.0.0
         with:
