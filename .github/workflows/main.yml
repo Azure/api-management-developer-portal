@@ -20,10 +20,13 @@ jobs:
         
       - uses: cschleiden/replace-tokens@v1
         env:
-          AZURE_APIM_MANAGEMENT_URL:  ${{ secrets.AZURE_APIM_MANAGEMENT_URL }}
+          AZURE_APIM_DEVELOPER_PORTAL_URL: ${{ secrets.AZURE_APIM_DEVELOPER_PORTAL_URL }}
+          AZURE_APIM_ID: ${{ secrets.AZURE_APIM_ID }}
           AZURE_APIM_MANAGEMENT_SAS_ACCESS_TOKEN:  ${{ secrets.AZURE_APIM_MANAGEMENT_SAS_ACCESS_TOKEN }}
+          AZURE_APIM_MANAGEMENT_URL:  ${{ secrets.AZURE_APIM_MANAGEMENT_URL }}
+          AZURE_STORAGE_SAS_URL: ${{ secrets.AZURE_STORAGE_SAS_URL }}
         with:
-          files: '["src/config.publish.json"]'
+          files: '["**/config.*.json"]'
       
       - run: npm run publish
         
