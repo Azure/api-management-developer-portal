@@ -86,6 +86,7 @@
         "mime-types": "^2.1.27",
         "moment": "^2.29.1",
         "msal": "^1.4.1",
+        "node-gyp": "^3.8.0",
         "prismjs": "^1.22.0",
         "remark": "^13.0.0",
         "remark-html": "^13.0.1",

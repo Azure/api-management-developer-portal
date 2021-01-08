@@ -1,6 +1,6 @@
 {
     "environment": "publishing",
-    "managementApiUrl": "https://<service-name>.management.azure-api.net",
-    "managementApiAccessToken": "SharedAccessSignature...",
+    "managementApiUrl": "#{AZURE_APIM_MANAGEMENT_URL}#",
+    "managementApiAccessToken": "#{AZURE_APIM_MANAGEMENT_SAS_ACCESS_TOKEN}#",
     "useHipCaptcha": false
 }
