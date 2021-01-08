@@ -15,8 +15,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        name: Checkout
         
       - run: npm install
+        name: Npm install
                 
       - uses: cschleiden/replace-tokens@v1
         name: Replace token
@@ -30,6 +32,12 @@ jobs:
           files: '["**/config.*.json"]'
       
       - run: npm run publish
+        name: Publish
+        
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2.2.2
+        with: 
+          path: dist/website
         
   dev:
     name: Dev
@@ -39,6 +47,9 @@ jobs:
     runs-on: ubuntu-latest
         
     steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v2.0.8
+    
       - name: Deploy to Azure Storage
         uses: TravisSpomer/deploy-to-azure-storage@v1.3.0
         with:
