@@ -82,17 +82,3 @@ jobs:
         with:
           source-path: dist/website
           sas-url: ${{ secrets.AZURE_STORAGE_SAS_URL }}
-          
-  prd:
-    name: Prd
-    needs: build
-    if: github.head_ref == 'master/**'
-    environment: prd
-    runs-on: ubuntu-latest
-        
-    steps:
-      - name: Deploy to Azure Storage
-        uses: TravisSpomer/deploy-to-azure-storage@v1.3.0
-        with:
-          source-path: dist/website
-          sas-url: ${{ secrets.AZURE_STORAGE_SAS_URL }}
