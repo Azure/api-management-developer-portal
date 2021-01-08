@@ -37,7 +37,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2.2.2
         with: 
-          path: artifact
+          path: dist/website
         
   dev:
     name: Dev
@@ -53,7 +53,7 @@ jobs:
       - name: Deploy to Azure Storage
         uses: TravisSpomer/deploy-to-azure-storage@v1.3.0
         with:
-          source-path: dist/website
+          source-path: artifact
           sas-url: ${{ secrets.AZURE_STORAGE_SAS_URL }}
           
   uat:
@@ -80,5 +80,5 @@ jobs:
       - name: Deploy to Azure Storage
         uses: TravisSpomer/deploy-to-azure-storage@v1.3.0
         with:
-          source-path: dist/website
+          source-path: artifact
           sas-url: ${{ secrets.AZURE_STORAGE_SAS_URL }}
