@@ -33,6 +33,7 @@ jobs:
         
   dev:
     name: Dev
+    needs: build
     if: github.head_ref == 'develop'
     environment: dev
     runs-on: ubuntu-latest
