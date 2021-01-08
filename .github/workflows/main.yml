@@ -33,7 +33,6 @@ jobs:
         
   dev:
     name: Dev
-    needs: build
     if: github.head_ref == 'develop'
     environment: dev
     runs-on: ubuntu-latest
@@ -47,7 +46,7 @@ jobs:
           
   uat:
     name: Uat
-    needs: build
+    needs: [build, dev]
     environment: uat
     runs-on: ubuntu-latest
         
