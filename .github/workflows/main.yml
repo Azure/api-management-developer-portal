@@ -17,8 +17,9 @@ jobs:
       - uses: actions/checkout@v2
         
       - run: npm install
-        
+                
       - uses: cschleiden/replace-tokens@v1
+        name: Replace token
         env:
           AZURE_APIM_DEVELOPER_PORTAL_URL: ${{ secrets.AZURE_APIM_DEVELOPER_PORTAL_URL }}
           AZURE_APIM_ID: ${{ secrets.AZURE_APIM_ID }}
