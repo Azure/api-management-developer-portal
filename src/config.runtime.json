@@ -1,5 +1,5 @@
 {
     "environment": "runtime",
-    "managementApiUrl": "https://<service-name>.management.azure-api.net",
-    "backendUrl": "https://<service-name>.developer.azure-api.net"
+    "managementApiUrl": "#{AZURE_APIM_MANAGEMENT_URL}#",
+    "backendUrl": "#{AZURE_APIM_DEVELOPER_PORTAL_URL}#"
 }
