@@ -58,6 +58,7 @@ import { PolicyService } from "./services/policyService";
 import { OAuthService } from "./services/oauthService";
 import { HistoryRouteHandler } from "@paperbits/common/routing";
 import { OldContentRouteGuard } from "./routing/oldContentRouteGuard";
+import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -124,5 +125,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindToCollection("autostart", HistoryRouteHandler);
+        injector.bindToCollection("autostart", AccessTokenRefrsher);
     }
 }
