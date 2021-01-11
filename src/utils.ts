@@ -200,14 +200,19 @@ export class Utils {
         let suffix = " ms";
         let divider = 1;
 
-        if (milliseconds > 1000) {
+        if (milliseconds >= 1000) {
             suffix = " s";
             divider = 1000;
         }
-
-        if (milliseconds > 1000 * 60) {
-            suffix = " h";
+   
+        if (milliseconds >= 1000 * 60) {
+            suffix = " m";
             divider = 1000 * 60;
+        }
+        
+        if (milliseconds >= 1000 * 60 * 60) {
+            suffix = " h";
+            divider = 1000 * 60 * 60;
         }
 
         return `${(milliseconds / divider).toFixed(0)}${suffix}`;
@@ -271,21 +276,18 @@ export class Utils {
     public static parseJwt(jwtToken: string): JwtToken {
         const base64Url = jwtToken.split(".")[1];
         const base64 = base64Url.replace("-", "+").replace("_", "/");
-        const decodedToken = JSON.parse(window.atob(base64));
-
-        const now = new Date();
-        const offset = now.getTimezoneOffset() * 60000 * 1000;
+        const decodedToken = JSON.parse(Buffer.from(base64, "base64").toString());
 
         if (decodedToken.exp) {
-            decodedToken.exp = new Date(decodedToken.exp + offset);
+            decodedToken.exp = new Date(parseInt(decodedToken.exp) * 1000);
         }
 
         if (decodedToken.nfb) {
-            decodedToken.nfb = new Date(decodedToken.nfb + offset);
+            decodedToken.nfb = new Date(parseInt(decodedToken.nfb) * 1000);
         }
 
         if (decodedToken.iat) {
-            decodedToken.iat = new Date(decodedToken.iat + offset);
+            decodedToken.iat = new Date(parseInt(decodedToken.iat) * 1000);
         }
 
         return decodedToken;
@@ -347,13 +349,6 @@ export class Utils {
 
     public static clone<T>(obj: T): T {
         return JSON.parse(JSON.stringify(obj));
-    }
-
-    public static getUtcDateTime(): Date {
-        const now = new Date();
-        const utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
-
-        return utc;
     }
 
     public static readFileAsByteArray(file: File): Promise<Uint8Array> {
