@@ -20,7 +20,7 @@ export interface JwtToken {
     aud: string;
 
     /**
-     * Expiration time (UTC)
+     * Expiration time.
      */
     exp: Date;
 
@@ -35,7 +35,7 @@ export interface JwtToken {
     given_name: string;
 
     /**
-     * Issued at (UTC)
+     * Issued at.
      */
     iat: Date;
 
@@ -50,7 +50,7 @@ export interface JwtToken {
     iss: string;
 
     /**
-     * Not valid before (UTC).
+     * Not valid before.
      */
     nbf: Date;
 
