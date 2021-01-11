@@ -542,7 +542,7 @@ export class OperationConsole {
         try {
             /* Trying to check if it's a JWT token and, if yes, whether it got expired. */
             const jwtToken = Utils.parseJwt(storedCredentials.accessToken.replace(/^bearer /i, ""));
-            const now = Utils.getUtcDateTime();
+            const now = new Date();
 
             if (now > jwtToken.exp) {
                 await this.clearStoredCredentials();
