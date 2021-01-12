@@ -115,15 +115,16 @@ export class MapiClient {
     protected async makeRequest<T>(httpRequest: HttpRequest): Promise<T> {
         const authHeader = httpRequest.headers.find(header => header.name === KnownHttpHeaders.Authorization);
 
-        if (!authHeader || !authHeader.value) {
-            const authToken = await this.authenticator.getAccessToken();
+        if (!authHeader?.value) {
+            const accessToken = await this.authenticator.getAccessToken();
 
-            if (authToken) {
-                httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${authToken}` });
+            if (accessToken) {
+                httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${accessToken}` });
             }
         }
 
         const portalHeader = httpRequest.headers.find(header => header.name === Constants.portalHeaderName);
+
         if (!portalHeader) {
             httpRequest.headers.push(MapiClient.getPortalHeader());
         }
@@ -138,18 +139,6 @@ export class MapiClient {
         }
         catch (error) {
             throw new Error(`Unable to complete request. Error: ${error.message}`);
-        }
-
-        const accessTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
-
-        if (accessTokenHeader) {
-            try {
-                const accessToken = AccessToken.parse(accessTokenHeader.value);
-                await this.authenticator.setAccessToken(accessToken);
-            }
-            catch (error) {
-                 this.logger.trackError(error, { message: "Unable to refresh access token." });
-            }
         }
 
         return await this.handleResponse<T>(response, httpRequest.url);

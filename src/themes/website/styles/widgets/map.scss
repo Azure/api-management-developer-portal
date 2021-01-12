@@ -1,16 +1,4 @@
-﻿.paperbits-googlemaps {
-    width: 100%;
-    min-height: 200px;
-    border: 0;
-    position: relative;
-    
-
-    & > div {
-        pointer-events: none;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
+﻿map,
+map-runtime {
+    display: block;
 }

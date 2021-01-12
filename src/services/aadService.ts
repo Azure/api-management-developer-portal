@@ -29,27 +29,10 @@ export class AadService {
      * @param provider {string} Provider type, "Aad" or "AadB2C".
      */
     private async exchangeIdToken(idToken: string, provider: string): Promise<void> {
-        let managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
-        managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
+        const credentials = `${provider} id_token="${idToken}"`;
+        const userId = await this.usersService.authenticate(credentials);
 
-        const request = {
-            url: `${managementApiUrl}/identity?api-version=${Constants.managementApiVersion}`,
-            method: "GET",
-            headers: [
-                { name: "Authorization", value: `${provider} id_token="${idToken}"` }, 
-                MapiClient.getPortalHeader()
-            ]
-        };
-
-        const response = await this.httpClient.send(request);
-        const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
-        const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || Constants.pageUrlHome;
-
-        if (sasTokenHeader) {
-            const accessToken = AccessToken.parse(sasTokenHeader.value);
-            await this.authenticator.setAccessToken(accessToken);
-        }
-        else { // User not registered with APIM.
+        if (!userId) { // User not registered with APIM.
             const jwtToken = Utils.parseJwt(idToken);
             const firstName = jwtToken.given_name;
             const lastName = jwtToken.family_name;
@@ -64,6 +47,8 @@ export class AadService {
                 return;
             }
         }
+
+        const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || Constants.pageUrlHome;
 
         this.router.getCurrentUrl() === returnUrl
             ? location.reload()

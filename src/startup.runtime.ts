@@ -1,8 +1,10 @@
 import { InversifyInjector } from "@paperbits/common/injection";
+import { CoreRuntimeModule } from "@paperbits/core/core.runtime.module";
 import { ApimRuntimeModule } from "./apim.runtime.module";
 
 
 const injector = new InversifyInjector();
+injector.bindModule(new CoreRuntimeModule());
 injector.bindModule(new ApimRuntimeModule());
 
 document.addEventListener("DOMContentLoaded", () => {
