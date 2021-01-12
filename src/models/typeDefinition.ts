@@ -206,6 +206,10 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                     try {
                         const propertySchemaObject = contract.properties[propertyName];
 
+                        if (propertySchemaObject.readOnly) {
+                            return;
+                        }
+
                         if (!propertySchemaObject) {
                             return;
                         }
@@ -265,7 +269,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                                     arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfReference(getTypeNameFromRef(propertySchemaObject.items.$ref));
                                     props.push(arrayProperty);
                                 }
-                                else if (propertySchemaObject.items.properties) { 
+                                else if (propertySchemaObject.items.properties) {
                                     const objectProperty = new TypeDefinitionObjectProperty(propertyName, propertySchemaObject.items, isRequired, true);
                                     const flattenObjects = this.flattenNestedObjects(objectProperty, propertyName + "[]");
                                     props.push(...flattenObjects);
