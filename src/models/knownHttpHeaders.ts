@@ -7,4 +7,4 @@ export const KnownHttpHeaders = {
     OcpApimTraceLocation: "Ocp-Apim-Trace-Location",
     OcpApimSasToken: "Ocp-Apim-Sas-Token",
     SoapAction: "SOAPAction",
-}
+};

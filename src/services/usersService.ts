@@ -1,3 +1,4 @@
+import { KnownHttpHeaders } from "./../models/knownHttpHeaders";
 import { AccessToken } from "./../authentication/accessToken";
 import * as Constants from "./../constants";
 import { Router } from "@paperbits/common/routing";
@@ -31,26 +32,46 @@ export class UsersService {
      * @param password {string} Password.
      */
     public async signIn(username: string, password: string): Promise<string> {
-        const userId = await this.authenticate(username, password);
+        const credentials = `Basic ${btoa(`${username}:${password}`)}`;
+        const userId = await this.authenticate(credentials);
 
         if (userId) {
             return userId;
         }
-        else {
-            this.authenticator.clearAccessToken();
-            return undefined;
-        }
+
+        this.authenticator.clearAccessToken();
+        return undefined;
     }
 
-    public async authenticate(username: string, password: string): Promise<string> {
-        const credentials = `Basic ${btoa(`${username}:${password}`)}`;
-
+    /**
+     * Authenticates user with specified credentilas and returns user identifier.
+     * @param credentials {string} User credentials passed in "Authorization" header.
+     * @returns {string} User identifier.
+     */
+    public async authenticate(credentials: string): Promise<string> {
         try {
-            const identity = await this.mapiClient.get<Identity>("/identity", [{ name: "Authorization", value: credentials }, MapiClient.getPortalHeader("authenticate")]);
+            let managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
+            managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
 
-            if (identity && identity.id) {
-                return identity.id;
+            const request = {
+                url: `${managementApiUrl}/identity?api-version=${Constants.managementApiVersion}`,
+                method: "GET",
+                headers: [
+                    { name: "Authorization", value: credentials },
+                    MapiClient.getPortalHeader()
+                ]
+            };
+
+            const response = await this.httpClient.send<Identity>(request);
+            const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
+
+            if (sasTokenHeader) {
+                const accessToken = AccessToken.parse(sasTokenHeader.value);
+                await this.authenticator.setAccessToken(accessToken);
             }
+
+            const identity = response.toObject();
+            return identity?.id;
         }
         catch (error) {
             return undefined;
@@ -246,7 +267,7 @@ export class UsersService {
 
         const headers = [
             { name: "Authorization", value: authToken },
-            { name: "If-Match", value: "*" }, 
+            { name: "If-Match", value: "*" },
             MapiClient.getPortalHeader("changePassword")
         ];
 
@@ -255,7 +276,7 @@ export class UsersService {
                 password: newPassword
             }
         };
-        
+
         await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
     }
 
@@ -289,9 +310,9 @@ export class UsersService {
             throw MapiError.fromResponse(response);
         }
 
-        const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
+        const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
 
-        if (!sasTokenHeader) { // User not registered with APIM.
+        if (!sasTokenHeader) { // User still not registered with APIM.
             throw new Error("Unable to authenticate.");
             return;
         }
