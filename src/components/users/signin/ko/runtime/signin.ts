@@ -108,6 +108,7 @@ export class Signin {
             if (userId) {
                 const clientReturnUrl = sessionStorage.getItem("returnUrl");
                 const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
+                
                 if (returnUrl) {
                     this.router.navigateTo(returnUrl);
                     return;
