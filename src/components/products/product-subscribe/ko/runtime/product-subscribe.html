@@ -24,18 +24,20 @@
 <form>
     <div class="table">        
         <div class="table-row">
+            <!-- ko ifnot: delegationEnabled -->
             <div class="col-5">
                 <input type="text" class="form-control" placeholder="Your new product subscription name" data-bind="textInput: subscriptionName" />
             </div>
+            <!-- /ko -->
+            <!-- ko if: termsOfUse -->
             <div class="col-4 form-inline">
-                <!-- ko if: termsOfUse -->
                 <div class="form-check">
                     <input id="consentCheckbox" type="checkbox" class="form-check-input" data-bind="checked: consented" />
                     <label for="consentCheckbox" class="form-check-label"> I agree to the Terms of Use. &nbsp;<a href="#" data-bind="click: toggleTermsOfUser, text: showHideLabel"></a></label>
                 </div>
-                <!-- /ko -->
             </div>
-            <div class="col-3">
+            <!-- /ko -->
+            <div class="col-3" >
                 <button class="button button-primary" data-bind="click: $component.subscribe, enable: canSubscribe">Subscribe</button>
             </div>
         </div>
