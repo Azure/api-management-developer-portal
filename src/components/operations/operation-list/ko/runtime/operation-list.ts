@@ -138,6 +138,8 @@ export class OperationList {
             this.searchRequest = { pattern: this.pattern(), tags: this.tags(), grouping: "none" };
         }
 
+        this.searchRequest.propertyName = this.showUrlPath() ? 'urlTemplate' : undefined;
+
         try {
             this.working(true);
 
