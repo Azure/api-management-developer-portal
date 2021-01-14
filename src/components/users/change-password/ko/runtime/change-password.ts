@@ -118,13 +118,13 @@ export class ChangePassword {
         }
 
         const user = await this.usersService.getCurrentUser();
-
-        let userId = await this.usersService.authenticate(user.email, this.password());
+        const credentials = `Basic ${btoa(`${user.email}:${this.password()}`)}`;
+        let userId = await this.usersService.authenticate(credentials);
 
         if (!userId) {
             const validationReport: ValidationReport = {
                 source: "changepassword",
-                errors: ["Password is not valid"]
+                errors: ["Incorrect user name or password"]
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
             return;
