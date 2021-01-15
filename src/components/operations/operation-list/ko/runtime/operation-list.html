@@ -16,9 +16,20 @@
             </div>
         </label>
     </div>
+    <!-- ko if: showToggleUrlPath -->
+    <div class="form-group ml-auto">
+        <label for="showUrlPath">Show URL path
+            <div class="switch">
+                <input id="showUrlPath" type="checkbox" data-bind="checked: $component.showUrlPath">
+                <span class="slider round"></span>
+            </div>
+        </label>
+    </div>
+    <!-- /ko -->
 </div>
 
-<!-- ko if: groupByTag-->
+
+<!-- ko if: groupByTag -->
 <div class="menu menu-vertical d-block">
     <!-- ko if: working -->
     <spinner class="fit"></spinner>
@@ -35,10 +46,12 @@
         <ul class="nav" role="list">
             <!-- ko foreach: { data: group.items, as: 'item' } -->
             <li class="nav-item" role="presentation">
-                <a href="#" role="listitem" class="nav-link text-truncate"
+                <a href="#" role="listitem" class="nav-link"
                     data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
-                    <span data-bind="attr: { 'data-method': method }"></span>
-                    <span class="operation-name" data-bind="text: item.displayName"></span>
+                    <div class="row">
+                        <span class="col-md-2" data-bind="attr: { 'data-method': method }"></span>
+                        <span class="col-md-9" data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
+                    </div>
                 </a>
             </li>
             <!-- /ko -->
@@ -69,10 +82,12 @@
         <ul class="nav" role="list">
             <!-- ko foreach: { data: operations, as: 'item' } -->
             <li class="nav-item" role="presentation">
-                <a href="#" role="listitem" class="nav-link text-truncate"
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
-                    <span data-bind="attr: { 'data-method': method }"></span>
-                    <span class="operation-name" data-bind="text: item.displayName"></span>
+                <a href="#" role="listitem" class="nav-link"
+                    data-bind="attr: { href: $component.getReferenceUrl(item)}, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
+                    <div class="row">
+                        <span class="col-md-2" data-bind="attr: { 'data-method': method }"></span>
+                        <span class="col-md-9" data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
+                    </div>
                 </a>
             </li>
             <!-- /ko -->
