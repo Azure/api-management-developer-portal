@@ -14,6 +14,9 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
 
         viewModel.runtimeConfig(JSON.stringify({
             allowSelection: model.allowSelection,
+            wrapText: model.wrapText,
+            showToggleUrlPath: model.showToggleUrlPath,
+            defaultShowUrlPath: model.defaultShowUrlPath,
             defaultGroupByTagToEnabled: model.defaultGroupByTagToEnabled,
             detailsPageUrl: model.detailsPageHyperlink
                 ? model.detailsPageHyperlink.href
