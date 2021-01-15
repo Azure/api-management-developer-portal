@@ -104,7 +104,7 @@ export class ApiService {
 
             if (searchQuery.pattern) {
                 const pattern = Utils.escapeValueForODataFilter(searchQuery.pattern);
-                odataFilterEntries.push(`(contains(operation/name,'${encodeURIComponent(pattern)}'))`);
+                odataFilterEntries.push(`(contains(operation/${searchQuery.propertyName || 'name'},'${encodeURIComponent(pattern)}'))`);
             }
         }
 
@@ -347,7 +347,7 @@ export class ApiService {
 
             if (searchQuery.pattern) {
                 const pattern = Utils.escapeValueForODataFilter(searchQuery.pattern);
-                query = Utils.addQueryParameter(query, `$filter=contains(properties/displayName,'${encodeURIComponent(pattern)}')`);
+                query = Utils.addQueryParameter(query, `$filter=contains(properties/${searchQuery.propertyName || 'displayName'},'${encodeURIComponent(pattern)}')`);
             }
 
             top = searchQuery && searchQuery.take || Constants.defaultPageSize;
