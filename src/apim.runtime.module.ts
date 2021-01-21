@@ -69,6 +69,8 @@ import { TagInput } from "./components/tag-input/tag-input";
 import { ViewStack } from "@paperbits/core/ko/ui/viewStack";
 import { OAuthService } from "./services/oauthService";
 import { DefaultSessionManager } from "./authentication/defaultSessionManager";
+import { ApiProducts } from "./components/apis/api-products/ko/runtime/api-products";
+import { ApiProductsTiles } from "./components/apis/api-products/ko/runtime/api-products-tiles";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -86,6 +88,8 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("apiList", ApiList);
         injector.bind("apiListDropdown", ApiListDropdown);
         injector.bind("apiListTiles", ApiListTiles);
+        injector.bind("apiProducts", ApiProducts);
+        injector.bind("apiProductsTiles", ApiProductsTiles);
         injector.bind("apiDetails", ApiDetails);
         injector.bind("apiHistory", ApiHistory);
         injector.bind("operationDetails", OperationDetails);

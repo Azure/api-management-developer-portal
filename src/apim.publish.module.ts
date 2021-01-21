@@ -32,10 +32,12 @@ import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
 import { OAuthService } from "./services/oauthService";
+import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts.module";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindModule(new ListOfApisModule());
+        injector.bindModule(new ApiProductsModule());
         injector.bindModule(new DetailsOfApiModule());
         injector.bindModule(new HistoryOfApiModule());
         injector.bindModule(new SigninModule());
