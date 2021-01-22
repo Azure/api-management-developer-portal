@@ -20,7 +20,7 @@
 
         <!-- ko foreach: { data: products, as: 'item' } -->
         <a href="#" data-bind="attr: { href: $component.getProductUrl(item) }">
-            <div class="card card-default">
+            <div class="card item-tile">
                 <h3>
                     <span data-bind="text: item.displayName"></span>
                 </h3>
