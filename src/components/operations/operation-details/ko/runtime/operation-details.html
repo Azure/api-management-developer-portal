@@ -102,10 +102,10 @@
             <!-- ko if: request.meaningfulRepresentations().length > 0 -->
             <div class="tabs" data-bind="foreach: { data: request.meaningfulRepresentations(), as: 'representation' }">
                 <input class="tab-radio" type="radio" name="requestContentType"
-                    data-bind="attr : { id: 'request' + representation.contentType, checked: $index() === 0 }">
+                    data-bind="attr : { id: 'request' + representation.contentType + '_' + $index(), checked: $index() === 0 }">
 
                 <label class="tab-label"
-                    data-bind="attr : { for: 'request' + representation.contentType }, text: representation.contentType"></label>
+                    data-bind="attr : { for: 'request' + representation.contentType + '_' + $index() }, text: representation.contentType"></label>
 
                 <div class="tab-content">
                     <!-- ko if: representation.typeName -->
@@ -164,10 +164,10 @@
             <!-- ko if: response.meaningfulRepresentations().length > 0 -->
             <div class="tabs" data-bind="foreach: { data: meaningfulRepresentations(), as: 'representation' }">
                 <input class="tab-radio" type="radio"
-                    data-bind="attr: { id: response.identifier + representation.contentType, name: response.identifier, checked: $index() === 0 }">
+                    data-bind="attr: { id: response.identifier + '_' + $index(), name: response.identifier, checked: $index() === 0 }">
 
                 <label class="tab-label"
-                    data-bind="attr: { for: response.identifier + representation.contentType }, text: representation.contentType"></label>
+                    data-bind="attr: { for: response.identifier + '_' + $index() }, text: representation.contentType"></label>
 
                 <div class="tab-content">
                     <!-- ko if: representation.typeName -->
