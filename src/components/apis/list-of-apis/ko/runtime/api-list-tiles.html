@@ -35,7 +35,7 @@
 
         <!-- ko foreach: { data: group.items, as: 'item' } -->
         <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
-            <div class="card card-default">
+            <div class="card item-tile">
                 <h3>
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.apiVersion -->
@@ -59,7 +59,7 @@
 
         <!-- ko foreach: { data: apis, as: 'item' } -->
         <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
-            <div class="card card-default">
+            <div class="card item-tile">
                 <h3>
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.apiVersion -->

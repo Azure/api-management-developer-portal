@@ -2,4 +2,8 @@
     flex-direction: row;
     flex-wrap: wrap;
     flex-basis: 100%;
+    &.item-tile {
+        margin-left: 0;
+        margin-right: 0;
+    }
 }
