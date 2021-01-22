@@ -5,7 +5,7 @@ import { HyperlinkModel } from "@paperbits/common/permalinks";
  */
 export class ApiProductsModel {
     /**
-     * List layout.
+     * List layout. "list" or "tiles"
      */
     public layout?: string;
 
@@ -14,7 +14,7 @@ export class ApiProductsModel {
      */
     public detailsPageHyperlink: HyperlinkModel;
 
-    constructor(layout?: string) {
+    constructor(layout?: "list"|"tiles") {
         this.layout = layout;
     }
 }

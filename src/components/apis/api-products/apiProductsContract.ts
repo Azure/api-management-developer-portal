@@ -6,7 +6,7 @@ import { HyperlinkContract } from "@paperbits/common/editing";
  */
 export interface ApiProductsContract extends Contract {
     /**
-     * List layout.
+     * List layout. "list" or "tiles"
      */
     itemStyleView?: string;
 
