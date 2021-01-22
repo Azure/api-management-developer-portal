@@ -1,0 +1,7 @@
+<!-- ko if: layout() === 'list' -->
+<api-products-runtime data-bind="attr: { params: runtimeConfig }"></api-products-runtime>
+<!-- /ko -->
+
+<!-- ko if: layout() === 'tiles' -->
+<api-products-tiles-runtime data-bind="attr: { params: runtimeConfig }"></api-products-tiles-runtime>
+<!-- /ko -->
