@@ -424,6 +424,26 @@ export class ApiService {
 
         return page;
     }
+    
+    /**
+     * Returns page of API products filtered by name.
+     */
+    public async getApiProductsPage(apiName: string, filter: SearchQuery): Promise<Page<Product>> {
+        const skip = filter.skip || 0;
+        const take = filter.take || Constants.defaultPageSize;
+        let query = `/apis/${apiName}/products?$top=${take}&$skip=${skip}`;
+
+        if (filter.pattern) {
+            query = Utils.addQueryParameter(query, `$filter=(contains(properties/displayName,'${encodeURIComponent(filter.pattern)}'))`);
+        }
+
+        const page = await this.mapiClient.get<Page<ProductContract>>(query);
+        const result = new Page<Product>();
+        result.count = page.count;
+        result.nextLink = page.nextLink;
+        result.value = page.value.map(item => new Product(item));
+        return result;
+    }
 
     public async getProductApis(productId: string, searchQuery: SearchQuery): Promise<Page<Api>> {
         let query = `${productId}/apis`;

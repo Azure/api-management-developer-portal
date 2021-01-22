@@ -59,6 +59,8 @@ import { OAuthService } from "./services/oauthService";
 import { HistoryRouteHandler } from "@paperbits/common/routing";
 import { OldContentRouteGuard } from "./routing/oldContentRouteGuard";
 import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
+import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts.module";
+import { ApiProductsEditorModule } from "./components/apis/api-products/ko/apiProductsEditor.module";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -66,6 +68,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new SetupModule());
         injector.bindModule(new ListOfApisModule());
         injector.bindModule(new ListOfApisEditorModule());
+        injector.bindModule(new ApiProductsModule());
+        injector.bindModule(new ApiProductsEditorModule());
         injector.bindModule(new DetailsOfApiModule());
         injector.bindModule(new DetailsOfApiEditorModule());
         injector.bindModule(new HistoryOfApiModule());
