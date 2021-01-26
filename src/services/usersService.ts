@@ -212,11 +212,12 @@ export class UsersService {
                 value: "*"
             };
 
-            const query = Utils.addQueryParameter(userId, "deleteSubscriptions=true&notify=true");
+            const query = Utils.addQueryParameter(userId, `deleteSubscriptions=true&notify=true&appType=${Constants.AppType}`);
 
             await this.mapiClient.delete<string>(query, [header, MapiClient.getPortalHeader("deleteUser")]);
 
-            this.signOut();
+            this.authenticator.clearAccessToken();
+            location.assign("/");
         }
         catch (error) {
             this.navigateToSignin();
