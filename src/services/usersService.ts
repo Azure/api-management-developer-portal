@@ -216,7 +216,8 @@ export class UsersService {
 
             await this.mapiClient.delete<string>(query, [header, MapiClient.getPortalHeader("deleteUser")]);
 
-            this.signOut();
+            this.authenticator.clearAccessToken();
+            location.assign("/");
         }
         catch (error) {
             this.navigateToSignin();
