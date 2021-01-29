@@ -245,13 +245,8 @@ export class JObject {
 
     public getAttributeAsNumber(attributeName: string): number {
         const value = this.getAttribute(attributeName);
-
-        try {
-            return parseInt(value);
-        }
-        catch (error) {
-            return undefined;
-        }
+        const result = +value;
+        return isNaN(+value) ? undefined : result;
     }
 
     public setAttribute(attributeName: string, attributeValue: string): void {

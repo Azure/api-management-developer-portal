@@ -99,7 +99,7 @@ export abstract class TypeDefinitionProperty {
         this.type = new TypeDefinitionPropertyTypePrimitive(contract.format || contract.type || "object");
         this.required = isRequired;
 
-        if (contract.rawSchema) {
+        if (contract.rawSchemaFormat) {
             this.rawSchema = contract.rawSchema;
             this.rawSchemaFormat = contract.rawSchemaFormat;
         }
@@ -108,12 +108,14 @@ export abstract class TypeDefinitionProperty {
             this.rawSchemaFormat = "json";
         }
 
-        if (contract.example) {
+        if (contract.exampleFormat) {
             this.example = contract.example;
             this.exampleFormat = contract.exampleFormat;
         }
         else { // fallback to JSON
-            this.example = JSON.stringify(contract.example, null, 4);
+            this.example = typeof contract.example === "object"
+                ? JSON.stringify(contract.example, null, 4)
+                : contract.example;
             this.exampleFormat = "json";
         }
     }
