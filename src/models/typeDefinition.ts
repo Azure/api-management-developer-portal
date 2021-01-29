@@ -1,6 +1,5 @@
 import { SchemaObjectContract } from "../contracts/schema";
 
-
 export abstract class TypeDefinitionPropertyType {
     public displayAs: string;
 
@@ -84,24 +83,39 @@ export abstract class TypeDefinitionProperty {
      */
     public enum: any[];
 
-    public schemaObject: SchemaObjectContract;
+    /**
+     * Raw schema representation.
+     */
+    public rawSchema: string;
+
+    /**
+     *  Raw schema format. It is used for syntax highlighting.
+     */
+    public rawSchemaFormat: string;
 
     constructor(name: string, contract: SchemaObjectContract, isRequired: boolean) {
         this.name = contract.title || name;
-        this.schemaObject = contract;
         this.description = contract.description;
         this.type = new TypeDefinitionPropertyTypePrimitive(contract.format || contract.type || "object");
+        this.required = isRequired;
 
-        if (contract.example) {
-            if (typeof contract.example === "object") {
-                this.example = JSON.stringify(contract.example, null, 4);
-            }
-            else {
-                this.example = contract.example;
-            }
+        if (contract.rawSchema) {
+            this.rawSchema = contract.rawSchema;
+            this.rawSchemaFormat = contract.rawSchemaFormat;
+        }
+        else { // fallback to JSON
+            this.rawSchema = JSON.stringify(contract, null, 4);
+            this.rawSchemaFormat = "json";
         }
 
-        this.required = isRequired;
+        if (contract.example) {
+            this.example = contract.example;
+            this.exampleFormat = contract.exampleFormat;
+        }
+        else { // fallback to JSON
+            this.example = JSON.stringify(contract.example, null, 4);
+            this.exampleFormat = "json";
+        }
     }
 }
 
@@ -339,7 +353,6 @@ export class TypeDefinitionIndexerProperty extends TypeDefinitionObjectProperty 
 export class TypeDefinition extends TypeDefinitionObjectProperty {
     constructor(name: string, contract: SchemaObjectContract) {
         super(name, contract, true);
-
         this.name = name;
     }
 

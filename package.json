@@ -89,6 +89,7 @@
         "prismjs": "^1.22.0",
         "remark": "^13.0.0",
         "remark-html": "^13.0.1",
+        "saxen": "^8.1.2",
         "slick": "^1.12.2",
         "topojson-client": "^3.1.0",
         "truncate-html": "^1.0.3",
