@@ -21,17 +21,19 @@ export class TypeDefinitionViewModel {
     public readonly description: ko.Observable<string>;
     public readonly kind: ko.Observable<string>;
     public readonly example: ko.Observable<string>;
-    public readonly exampleLanguage: ko.Observable<string>;
-    public readonly schemaObject: ko.Observable<string>;
+    public readonly exampleFormat: ko.Observable<string>;
+    public readonly rawSchema: ko.Observable<string>;
+    public readonly rawSchemaFormat: ko.Observable<string>;
     public readonly schemaView: ko.Observable<string>;
 
     constructor(private readonly routeHelper: RouteHelper) {
         this.name = ko.observable();
-        this.schemaObject = ko.observable();
         this.description = ko.observable();
         this.kind = ko.observable();
         this.example = ko.observable();
-        this.exampleLanguage = ko.observable();
+        this.exampleFormat = ko.observable();
+        this.rawSchema = ko.observable();
+        this.rawSchemaFormat = ko.observable();
         this.schemaView = ko.observable();
         this.defaultSchemaView = ko.observable();
     }
@@ -54,13 +56,15 @@ export class TypeDefinitionViewModel {
     @OnMounted()
     public initialize(): void {
         this.schemaView(this.defaultSchemaView() || "table");
-        this.schemaObject(JSON.stringify(this.definition.schemaObject, null, 4));
+        this.rawSchema(this.definition.rawSchema);
+        this.rawSchemaFormat(this.definition.rawSchemaFormat);
+
         this.name(this.definition.name);
         this.description(this.definition.description);
         this.kind(this.definition.kind);
 
         if (this.definition.example) {
-            this.exampleLanguage(this.definition.exampleFormat);
+            this.exampleFormat(this.definition.exampleFormat);
             this.example(this.definition.example);
         }
     }
