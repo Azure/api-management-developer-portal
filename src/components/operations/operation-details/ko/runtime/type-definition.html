@@ -25,7 +25,7 @@
 </ul>
 
 <!-- ko if: schemaView() == 'raw' -->
-<code-sample params="{ content: $component.schemaObject, language: 'json' }"></code-sample>
+<code-sample params="{ content: $component.rawSchema, language: $component.rawSchemaFormat }"></code-sample>
 <!-- /ko -->
 
 <!-- ko if: schemaView() == 'table' -->

@@ -26,8 +26,12 @@ export class AuthorizationServer {
             ? contract.properties.defaultScope.split(" ")
             : [];
 
-        if (contract.properties.grantTypes) {
-            this.grantTypes = contract.properties.grantTypes.map(grantType => {
+        if (!contract.properties.grantTypes) {
+            return;
+        }
+
+        this.grantTypes = contract.properties.grantTypes
+            .map(grantType => {
                 switch (grantType) {
                     case "authorizationCode":
                         return "authorization_code";
@@ -37,8 +41,11 @@ export class AuthorizationServer {
                         return "client_credentials";
                     case "resourceOwnerPassword":
                         return "password";
+                    default:
+                        console.log(`Unsupported grant type ${grantType}`);
+                        return null;
                 }
-            });
-        }
+            })
+            .filter(grantType => !!grantType);
     }
 }
