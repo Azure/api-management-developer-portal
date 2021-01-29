@@ -122,8 +122,8 @@ export class OperationDetails {
             return;
         }
 
-        if (!operationName) {    
-            this.selectedOperationName(null);                
+        if (!operationName) {
+            this.selectedOperationName(null);
             this.operation(null);
             return;
         }
@@ -229,7 +229,7 @@ export class OperationDetails {
             }
         }
 
-        this.definitions(definitions.filter(d => typeNames.indexOf(d.name) !== -1));
+        this.definitions(definitions.filter(definition => typeNames.indexOf(definition.name) !== -1));
     }
 
     private lookupReferences(definitions: TypeDefinition[], skipNames: string[]): string[] {
