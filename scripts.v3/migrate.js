@@ -13,7 +13,7 @@
  *    --sourceSubscriptionId "< your subscription ID >" ^
  *    --sourceResourceGroupName "< your resource group name >" ^
  *    --sourceServiceName "< your service name >" ^
- *    --sourceTenantid "< your service name >" ^
+ *    --sourceTenantid "< source tenant id >" ^
  *    --sourceServiceprincipal "< source serviceprincipal or user name. >" ^
  *    --sourceSecret "< secret or password for service principal or az login for the source apim. >" ^
  *    --destSubscriptionId "< your subscription ID >" ^
@@ -37,7 +37,7 @@ const yargs = require('yargs')
     *    --sourceSubscriptionId "< your subscription ID > \r
     *    --sourceResourceGroupName "< your resource group name > \r
     *    --sourceServiceName "< your service name > \r
-    *    --sourceTenantid "< your service name > \r
+    *    --sourceTenantid "< source tenant id > \r
     *    --sourceServiceprincipal "< source serviceprincipal or user name. > \r
     *    --sourceSecret "< secret or password for service principal or az login for the source apim. > \r
     *    --destSubscriptionId "< your subscription ID > \r
