@@ -13,9 +13,15 @@
  *    --sourceSubscriptionId "< your subscription ID >" ^
  *    --sourceResourceGroupName "< your resource group name >" ^
  *    --sourceServiceName "< your service name >" ^
+ *    --sourceTenantid "< your service name >" ^
+ *    --sourceServiceprincipal "< source serviceprincipal or user name. >" ^
+ *    --sourceSecret "< secret or password for service principal or az login for the source apim. >" ^
  *    --destSubscriptionId "< your subscription ID >" ^
  *    --destResourceGroupName "< your resource group name >" ^
  *    --destServiceName "< your service name >"
+ *    --destTenantid "<  destination tenantid >"
+ *    --destServiceprincipal "<destination serviceprincipal or user name. >"
+ *    --destSecret "< secret or password for service principal or az login for the destination. >"
  * 
  * Auto-publishing is not supported for self-hosted versions, so make sure you publish the portal (for example, locally)
  * and upload the generated static files to your hosting after the migration is completed.
@@ -28,12 +34,18 @@ const { ImporterExporter } = require('./utils.js');
 
 const yargs = require('yargs')
     .example(`node ./migrate ^ \r
-        --sourceSubscriptionId "< your subscription ID > ^ \r
-        --sourceResourceGroupName "< your resource group name >" ^ \r
-        --sourceServiceName "< your service name >" ^ \r
-        --destSubscriptionId "< your subscription ID >" ^ \r
-        --destResourceGroupName "< your resource group name >" ^ \r
-        --destServiceName "< your service name >"\n`)
+    *    --sourceSubscriptionId "< your subscription ID > \r
+    *    --sourceResourceGroupName "< your resource group name > \r
+    *    --sourceServiceName "< your service name > \r
+    *    --sourceTenantid "< your service name > \r
+    *    --sourceServiceprincipal "< source serviceprincipal or user name. > \r
+    *    --sourceSecret "< secret or password for service principal or az login for the source apim. > \r
+    *    --destSubscriptionId "< your subscription ID > \r
+    *    --destResourceGroupName "< your resource group name > \r
+    *    --destServiceName "< your service name > \r
+    *    --destTenantid "<  destination tenantid > \r
+    *    --destServiceprincipal "<destination serviceprincipal or user name. > \r
+    *    --destSecret "< secret or password for service principal or az login for the destination. >\n`)
     .option('sourceSubscriptionId', {
         type: 'string',
         description: 'Azure subscription ID.',
@@ -48,6 +60,21 @@ const yargs = require('yargs')
         type: 'string',
         description: 'API Management service name.',
         demandOption: true
+    })
+    .option('sourceTenantid', {
+        type: 'string',
+        description: 'source tenantid.',
+        demandOption: false
+    })
+    .option('sourceServiceprincipal', {
+        type: 'string',
+        description: 'source serviceprincipal or user name.',
+        demandOption: false
+    })
+    .option('sourceSecret', {
+        type: 'string',
+        description: 'secret or password for service principal or az login for the source apim.',
+        demandOption: false
     })
     .option('destSubscriptionId', {
         type: 'string',
@@ -64,15 +91,30 @@ const yargs = require('yargs')
         description: 'API Management service name.',
         demandOption: true
     })
+    .option('destTenantid', {
+        type: 'string',
+        description: ' destination tenantid.',
+        demandOption: false
+    })
+    .option('destServiceprincipal', {
+        type: 'string',
+        description: 'destination serviceprincipal or user name.',
+        demandOption: false
+    })
+    .option('destSecret', {
+        type: 'string',
+        description: 'secret or password for service principal or az login for the destination.',
+        demandOption: false
+    })
     .help()
     .argv;
 
 async function migrate() {
     try {
-        const sourceImporterExporter = new ImporterExporter(yargs.sourceSubscriptionId, yargs.sourceResourceGroupName, yargs.sourceServiceName);
+        const sourceImporterExporter = new ImporterExporter(yargs.sourceSubscriptionId, yargs.sourceResourceGroupName, yargs.sourceServiceName, yargs.sourceTenantid, yargs.sourceServiceprincipal, yargs.sourceSecret);
         await sourceImporterExporter.export();
     
-        const destIimporterExporter = new ImporterExporter(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName);
+        const destIimporterExporter = new ImporterExporter(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName, yargs.destTenantid, yargs.destServiceprincipal, yargs.destSecret);
         await destIimporterExporter.cleanup();
         await destIimporterExporter.import();
     
