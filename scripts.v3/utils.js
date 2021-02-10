@@ -10,12 +10,12 @@ const managementApiEndpoint = "management.azure.com";
 
 
 class HttpClient {
-    constructor(subscriptionId, resourceGroupName, serviceName) {
+    constructor(subscriptionId, resourceGroupName, serviceName, tenantid, serviceprincipal, secret) {
         this.subscriptionId = subscriptionId;
         this.resourceGroupName = resourceGroupName;
         this.serviceName = serviceName;
         this.baseUrl = `https://${managementApiEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
-        this.accessToken = this.getAccessToken();
+        this.accessToken = this.getAccessToken(tenantid, serviceprincipal, secret);
     }
 
     /**
@@ -103,14 +103,20 @@ class HttpClient {
         });
     }
 
-    getAccessToken() {
+    getAccessToken(tenantid, serviceprincipal, secret) {
+
+        if (tenantid != "" && tenantid != null)
+        {
+            execSync(`az login --service-principal --username ` + serviceprincipal + ` --password ` + secret + ` --tenant ` + tenantid);
+        }
+
         const accessToken = execSync(`az account get-access-token --resource-type arm --output tsv --query accessToken`).toString().trim();
         return `Bearer ${accessToken}`;
     }
 }
 class ImporterExporter {
-    constructor(subscriptionId, resourceGroupName, serviceName, snapshotFolder = "../dist/snapshot") {
-        this.httpClient = new HttpClient(subscriptionId, resourceGroupName, serviceName);
+    constructor(subscriptionId, resourceGroupName, serviceName, tenantid, serviceprincipal, secret, snapshotFolder = "../dist/snapshot") {
+        this.httpClient = new HttpClient(subscriptionId, resourceGroupName, serviceName, tenantid, serviceprincipal, secret);
         this.snapshotFolder = snapshotFolder
     }
 
