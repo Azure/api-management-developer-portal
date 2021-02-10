@@ -13,15 +13,15 @@
  *    --sourceSubscriptionId "< your subscription ID >" ^
  *    --sourceResourceGroupName "< your resource group name >" ^
  *    --sourceServiceName "< your service name >" ^
- *    --sourceTenantid "< source tenant id >" ^
- *    --sourceServiceprincipal "< source serviceprincipal or user name. >" ^
- *    --sourceSecret "< secret or password for service principal or az login for the source apim. >" ^
+ *    --sourceTenantid "< optional (needed if source and destination is in different subscription) source tenant id >" ^
+ *    --sourceServiceprincipal "< optional (needed if source and destination is in different subscription) source serviceprincipal or user name. >" ^
+ *    --sourceSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the source apim. >" ^
  *    --destSubscriptionId "< your subscription ID >" ^
  *    --destResourceGroupName "< your resource group name >" ^
  *    --destServiceName "< your service name >"
- *    --destTenantid "<  destination tenantid >"
- *    --destServiceprincipal "<destination serviceprincipal or user name. >"
- *    --destSecret "< secret or password for service principal or az login for the destination. >"
+ *    --destTenantid "< optional (needed if source and destination is in different subscription) destination tenantid >"
+ *    --destServiceprincipal "< optional (needed if source and destination is in different subscription)destination serviceprincipal or user name. >"
+ *    --destSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the destination. >"
  * 
  * Auto-publishing is not supported for self-hosted versions, so make sure you publish the portal (for example, locally)
  * and upload the generated static files to your hosting after the migration is completed.
@@ -37,15 +37,15 @@ const yargs = require('yargs')
     *    --sourceSubscriptionId "< your subscription ID > \r
     *    --sourceResourceGroupName "< your resource group name > \r
     *    --sourceServiceName "< your service name > \r
-    *    --sourceTenantid "< source tenant id > \r
-    *    --sourceServiceprincipal "< source serviceprincipal or user name. > \r
-    *    --sourceSecret "< secret or password for service principal or az login for the source apim. > \r
+    *    --sourceTenantid "< optional (needed if source and destination is in different subscription) source tenant id > \r
+    *    --sourceServiceprincipal "< optional (needed if source and destination is in different subscription) source serviceprincipal or user name. > \r
+    *    --sourceSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the source apim. > \r
     *    --destSubscriptionId "< your subscription ID > \r
     *    --destResourceGroupName "< your resource group name > \r
     *    --destServiceName "< your service name > \r
-    *    --destTenantid "<  destination tenantid > \r
-    *    --destServiceprincipal "<destination serviceprincipal or user name. > \r
-    *    --destSecret "< secret or password for service principal or az login for the destination. >\n`)
+    *    --destTenantid "< optional (needed if source and destination is in different subscription) destination tenantid > \r
+    *    --destServiceprincipal "< optional (needed if source and destination is in different subscription) destination serviceprincipal or user name. > \r
+    *    --destSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the destination. >\n`)
     .option('sourceSubscriptionId', {
         type: 'string',
         description: 'Azure subscription ID.',
