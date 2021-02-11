@@ -58,7 +58,7 @@ export class UsersService {
                 method: "GET",
                 headers: [
                     { name: "Authorization", value: credentials },
-                    MapiClient.getPortalHeader()
+                    MapiClient.getPortalHeader("authenticate")
                 ]
             };
 
@@ -137,7 +137,7 @@ export class UsersService {
         }
 
         try {
-            const identity = await this.mapiClient.get<Identity>("/identity");
+            const identity = await this.mapiClient.get<Identity>("/identity", [MapiClient.getPortalHeader("getCurrentUserId")]);
 
             if (!identity || !identity.id) {
                 return null;
@@ -168,7 +168,7 @@ export class UsersService {
                 return null;
             }
 
-            const user = await this.mapiClient.get<UserContract>(userId);
+            const user = await this.mapiClient.get<UserContract>(userId, [MapiClient.getPortalHeader("getCurrentUser")]);
 
             return new User(user);
         }

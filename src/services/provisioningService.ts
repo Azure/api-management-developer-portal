@@ -79,18 +79,17 @@ export class ProvisionService {
 
     private async cleanupContent(): Promise<void> {
         const managementApiUrl = await this.getManagementUrl();
-        const url = `${managementApiUrl}/contentTypes?api-version=${Constants.managementApiVersion}`;
         const accessToken = await this.authenticator.getAccessToken();
 
         try {
             const request: HttpRequest = {
-                url: url,
+                url: `${managementApiUrl}/contentTypes?api-version=${Constants.managementApiVersion}`,
                 method: "GET",
                 headers: [
                     { name: "If-Match", value: "*" },
                     { name: "Content-Type", value: "application/json" },
                     { name: "Authorization", value: accessToken },
-                    MapiClient.getPortalHeader()
+                    MapiClient.getPortalHeader("getContentTypes")
                 ],
             };
             const response = await this.sendRequest(request);
@@ -104,7 +103,7 @@ export class ProvisionService {
                         { name: "If-Match", value: "*" },
                         { name: "Content-Type", value: "application/json" },
                         { name: "Authorization", value: accessToken },
-                        MapiClient.getPortalHeader()
+                        MapiClient.getPortalHeader("getContentItems")
                     ],
                 };
                 const itemsResponse = await this.sendRequest(curReq);
@@ -117,7 +116,7 @@ export class ProvisionService {
                             { name: "If-Match", value: "*" },
                             { name: "Content-Type", value: "application/json" },
                             { name: "Authorization", value: accessToken },
-                            MapiClient.getPortalHeader("reset")
+                            MapiClient.getPortalHeader("resetContent")
                         ],
                     };
                     await this.sendRequest(itemReq);
