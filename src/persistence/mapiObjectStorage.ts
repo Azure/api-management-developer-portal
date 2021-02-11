@@ -233,7 +233,7 @@ export class MapiObjectStorage implements IObjectStorage {
             const resource = this.paperbitsKeyToArmResource(key);
             const contentType = this.getContentTypeFromResource(resource);
             const isLocalized = localizedContentTypes.includes(contentType);
-            const item = await this.mapiClient.get<T>(`${resource}`);
+            const item = await this.mapiClient.get<T>(`${resource}`, [MapiClient.getPortalHeader("getObject")]);
             const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
 
             if (key.startsWith("blocks/")) {
@@ -341,7 +341,7 @@ export class MapiObjectStorage implements IObjectStorage {
 
     private async loadNextPage<T>(resource: string, localeSearchPrefix: string, filterQueryString: string, orderQueryString: string, skip: number, isLocalized: boolean): Promise<Page<T>> {
         const url = `${resource}?$skip=${skip}&$top=${defaultPageSize}${filterQueryString}${orderQueryString}`;
-        const pageOfTs = await this.mapiClient.get<PageContract<T>>(url);
+        const pageOfTs = await this.mapiClient.get<PageContract<T>>(url, [MapiClient.getPortalHeader("getPageData")]);
         const searchResult = [];
 
         for (const item of pageOfTs.value) {
@@ -413,7 +413,7 @@ export class MapiObjectStorage implements IObjectStorage {
             }
 
             if (key.includes("navigationItems")) {
-                const armContract = await this.mapiClient.get<any>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`);
+                const armContract = await this.mapiClient.get<any>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`, [MapiClient.getPortalHeader("searchObjects")]);
                 const paperbitsContract = this.convertArmContractToPaperbitsContract(armContract, isLocalized);
                 return paperbitsContract.nodes;
             }

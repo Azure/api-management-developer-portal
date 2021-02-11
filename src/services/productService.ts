@@ -35,7 +35,7 @@ export class ProductService {
         const query = productId ? `?$filter=properties/scope eq '${productId}'` : "";
 
         try {
-            const pageContract = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`);
+            const pageContract = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`, [MapiClient.getPortalHeader("getSubscriptions")]);
             const promises: Promise<void>[] = [];
             const subscriptions: Subscription[] = [];
 
@@ -43,7 +43,7 @@ export class ProductService {
                 const subscription = new Subscription(subscriptionContract);
 
                 const secretPromise = this.mapiClient
-                    .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscriptionContract.name}/listSecrets`)
+                    .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscriptionContract.name}/listSecrets`, [MapiClient.getPortalHeader("getSubscriptionSecrets")])
                     .then(secrets => {
                         subscription.primaryKey = secrets.primaryKey;
                         subscription.secondaryKey = secrets.secondaryKey;
@@ -108,7 +108,7 @@ export class ProductService {
         }
 
         const result = [];
-        const pageOfSubscriptions = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
+        const pageOfSubscriptions = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`, [MapiClient.getPortalHeader("getUserSubscriptions")]);
 
         if (!pageOfSubscriptions?.value) {
             return result;
@@ -172,14 +172,14 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        const contract = await this.mapiClient.get<SubscriptionContract>(subscriptionId);
+        const contract = await this.mapiClient.get<SubscriptionContract>(subscriptionId, [MapiClient.getPortalHeader("getSubscription")]);
 
         if (!contract) {
             return null;
         }
 
         const secrets = await this.mapiClient
-            .post<SubscriptionSecrets>(`${subscriptionId}/listSecrets`);
+            .post<SubscriptionSecrets>(`${subscriptionId}/listSecrets`, [MapiClient.getPortalHeader("getSubscriptionSecrets")]);
 
         const subscripitonModel = new Subscription(contract);
         subscripitonModel.primaryKey = secrets.primaryKey;
@@ -194,7 +194,7 @@ export class ProductService {
      */
     public async getProducts(getAll: boolean = false): Promise<Product[]> {
         const result = [];
-        const contracts = await this.mapiClient.get<Page<ProductContract>>(`/products`);
+        const contracts = await this.mapiClient.get<Page<ProductContract>>(`/products`, [MapiClient.getPortalHeader("getProducts")]);
 
         if (contracts && contracts.value) {
             if (getAll) {
@@ -222,7 +222,7 @@ export class ProductService {
             query = Utils.addQueryParameter(query, `$filter=(contains(properties/displayName,'${encodeURIComponent(filter.pattern)}'))`);
         }
 
-        const page = await this.mapiClient.get<Page<ProductContract>>(query);
+        const page = await this.mapiClient.get<Page<ProductContract>>(query, [MapiClient.getPortalHeader("getProductsPage")]);
         const result = new Page<Product>();
         result.count = page.count;
         result.nextLink = page.nextLink;
@@ -239,7 +239,7 @@ export class ProductService {
             throw new Error(`Parameter "productId" not specified.`);
         }
 
-        const contract = await this.mapiClient.get<ProductContract>(productId);
+        const contract = await this.mapiClient.get<ProductContract>(productId, [MapiClient.getPortalHeader("getProduct")]);
 
         if (contract) {
             return new Product(contract);
@@ -256,7 +256,7 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        await this.mapiClient.post(`${subscriptionId}/regeneratePrimaryKey`);
+        await this.mapiClient.post(`${subscriptionId}/regeneratePrimaryKey`, [MapiClient.getPortalHeader("regeneratePrimaryKey")]);
 
         return await this.getSubscription(subscriptionId);
     }
@@ -266,7 +266,7 @@ export class ProductService {
      * @param subscriptionId {string} Subscription unique identifier.
      */
     public async regenerateSecondaryKey(subscriptionId: string): Promise<Subscription> {
-        await this.mapiClient.post(`${subscriptionId}/regenerateSecondaryKey`);
+        await this.mapiClient.post(`${subscriptionId}/regenerateSecondaryKey`, [MapiClient.getPortalHeader("regenerateSecondaryKey")]);
         return await this.getSubscription(subscriptionId);
     }
 

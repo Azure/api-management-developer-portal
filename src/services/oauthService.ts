@@ -25,11 +25,11 @@ export class OAuthService {
     public async getOAuthServers(): Promise<AuthorizationServer[]> {
         try {
             const authorizationServers = [];
-            const pageOfOAuthServers = await this.mapiClient.get<PageContract<AuthorizationServerContract>>("/authorizationServers");
+            const pageOfOAuthServers = await this.mapiClient.get<PageContract<AuthorizationServerContract>>("/authorizationServers", [MapiClient.getPortalHeader("getAuthorizationServers")]);
             const oauthServers = pageOfOAuthServers.value.map(authServer => new AuthorizationServer(authServer));
             authorizationServers.push(...oauthServers);
 
-            const pageOfOicdServers = await this.mapiClient.get<PageContract<OpenIdConnectProviderContract>>("/openidConnectProviders");
+            const pageOfOicdServers = await this.mapiClient.get<PageContract<OpenIdConnectProviderContract>>("/openidConnectProviders", [MapiClient.getPortalHeader("getOpenidConnectProviders")]);
             const oicdServers = pageOfOicdServers.value.map(authServer => new OpenIdConnectProvider(authServer));
 
             for (const provider of oicdServers) {

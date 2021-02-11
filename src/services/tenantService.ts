@@ -11,7 +11,7 @@ export class TenantService {
      * Returns tenant settings.
      */
     public async getSettings(): Promise<TenantSettings> {
-        const result = await this.mapiClient.get("/tenant/settings");
+        const result = await this.mapiClient.get("/tenant/settings", [MapiClient.getPortalHeader("getSettings")]);
         return result && result["settings"];
     }
 
