@@ -19,7 +19,7 @@ export class TagService {
             query = Utils.addQueryParameter(query, `$filter=(startswith(properties/displayName,'${filter}'))`);
         }
 
-        const pageOfTags = await this.mapiClient.get<PageContract<TagContract>>(query);
+        const pageOfTags = await this.mapiClient.get<PageContract<TagContract>>(query, [MapiClient.getPortalHeader("getTags")]);
 
         const page = new Page<Tag>();
         page.value = pageOfTags.value.map(x => new Tag(x));

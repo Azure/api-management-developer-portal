@@ -114,18 +114,23 @@ export class MapiClient {
 
     protected async makeRequest<T>(httpRequest: HttpRequest): Promise<T> {
         const authHeader = httpRequest.headers.find(header => header.name === KnownHttpHeaders.Authorization);
+        const portalHeader = httpRequest.headers.find(header => header.name === Constants.portalHeaderName);
 
         if (!authHeader?.value) {
             const accessToken = await this.authenticator.getAccessToken();
 
             if (accessToken) {
                 httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${accessToken}` });
+            } else {
+                if (!portalHeader) {
+                    httpRequest.headers.push(MapiClient.getPortalHeader("unauthorized"));
+                } else {
+                    portalHeader.value = `${portalHeader.value}-unauthorized`;
+                }
             }
         }
-
-        const portalHeader = httpRequest.headers.find(header => header.name === Constants.portalHeaderName);
-
-        if (!portalHeader) {
+        
+        if (!portalHeader && httpRequest.method !== HttpMethod.head) {
             httpRequest.headers.push(MapiClient.getPortalHeader());
         }
 

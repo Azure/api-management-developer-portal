@@ -31,13 +31,7 @@ export class FileSystemBlobStorage implements IBlobStorage {
                     return;
                 }
 
-                const arrayBuffer = new ArrayBuffer(buffer.length);
-                const unit8Array = new Uint8Array(arrayBuffer);
-
-                for (let i = 0; i < buffer.length; ++i) {
-                    unit8Array[i] = buffer[i];
-                }
-
+                const unit8Array = new Uint8Array(buffer.buffer);
                 resolve(unit8Array);
             });
         });
