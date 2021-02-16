@@ -43,4 +43,5 @@ generate()
     })
     .catch(error => {
         console.log(error.message);
+        process.exitCode = 1;
     });
