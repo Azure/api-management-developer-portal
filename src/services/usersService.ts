@@ -97,7 +97,7 @@ export class UsersService {
         const ticket = parameters.get("ticket");
         const ticketId = parameters.get("ticketid");
         const identity = parameters.get("identity");
-        const requestUrl = `/users/${userId}/identities/Basic/${identity}?appType=developerPortal`;
+        const requestUrl = `/users/${userId}/identities/Basic/${identity}?appType=${Constants.AppType}`;
         const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
 
         await this.mapiClient.put<void>(requestUrl, [{ name: "Authorization", value: token }, MapiClient.getPortalHeader("activateUser")]);
@@ -297,7 +297,7 @@ export class UsersService {
         };
 
         const response = await this.httpClient.send({
-            url: `${managementApiUrl}/users?api-version=${Constants.managementApiVersion}`,
+            url: `${managementApiUrl}/users?api-version=${Constants.managementApiVersion}&appType=${Constants.AppType}`,
             method: "POST",
             headers: [
                 { name: "Content-Type", value: "application/json" },
