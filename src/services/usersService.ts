@@ -293,11 +293,12 @@ export class UsersService {
             identities: [{
                 id: jwtToken.oid,
                 provider: provider
-            }]
+            }],
+            appType: Constants.AppType
         };
 
         const response = await this.httpClient.send({
-            url: `${managementApiUrl}/users?api-version=${Constants.managementApiVersion}&appType=${Constants.AppType}`,
+            url: `${managementApiUrl}/users?api-version=${Constants.managementApiVersion}`,
             method: "POST",
             headers: [
                 { name: "Content-Type", value: "application/json" },
