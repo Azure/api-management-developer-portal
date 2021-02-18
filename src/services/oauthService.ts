@@ -139,12 +139,17 @@ export class OAuthService {
     public async authenticateCode(backendUrl: string, authorizationServer: AuthorizationServer): Promise<string> {
         const redirectUri = `${backendUrl}/signin-oauth/code/callback/${authorizationServer.name}`;
 
+        const query = {
+            state: Utils.guid()
+        };
+
         const oauthClient = new ClientOAuth2({
             clientId: authorizationServer.clientId,
             accessTokenUri: authorizationServer.tokenEndpoint,
             authorizationUri: authorizationServer.authorizationEndpoint,
             redirectUri: redirectUri,
-            scopes: authorizationServer.scopes
+            scopes: authorizationServer.scopes,
+            query: query
         });
 
         return new Promise<string>((resolve, reject) => {
