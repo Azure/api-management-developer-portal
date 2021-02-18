@@ -2,7 +2,7 @@ import { KnownHttpHeaders } from "./../models/knownHttpHeaders";
 import { AccessToken } from "./../authentication/accessToken";
 import * as Constants from "./../constants";
 import { Router } from "@paperbits/common/routing";
-import { HttpHeader, HttpClient } from "@paperbits/common/http";
+import { HttpHeader, HttpClient, HttpResponse } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { IAuthenticator } from "../authentication";
 import { MapiClient } from "./mapiClient";
@@ -100,7 +100,16 @@ export class UsersService {
         const requestUrl = `/users/${userId}/identities/Basic/${identity}?appType=${Constants.AppType}`;
         const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
 
-        await this.mapiClient.put<void>(requestUrl, [{ name: "Authorization", value: token }, MapiClient.getPortalHeader("activateUser")]);
+        let managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
+        managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
+
+        const response = await this.httpClient.send({
+            url: `${managementApiUrl}${requestUrl}&api-version=${Constants.managementApiVersion}`,
+            method: "PUT",
+            headers: [{ name: "Authorization", value: token }, MapiClient.getPortalHeader("activateUser")]
+        });
+
+        await this.getTokenFromResponse(response);
     }
 
     public async updatePassword(userId: string, newPassword: string, token: string): Promise<void> {
@@ -308,6 +317,10 @@ export class UsersService {
             body: JSON.stringify(user)
         });
 
+        await this.getTokenFromResponse(response);
+    }
+
+    private async getTokenFromResponse(response: HttpResponse<unknown>) {
         if (!(response.statusCode >= 200 && response.statusCode <= 299)) {
             throw MapiError.fromResponse(response);
         }
