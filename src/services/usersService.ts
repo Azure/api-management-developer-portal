@@ -320,7 +320,7 @@ export class UsersService {
         await this.getTokenFromResponse(response);
     }
 
-    private async getTokenFromResponse(response: HttpResponse<unknown>) {
+    private async getTokenFromResponse(response: HttpResponse<any>) {
         if (!(response.statusCode >= 200 && response.statusCode <= 299)) {
             throw MapiError.fromResponse(response);
         }
