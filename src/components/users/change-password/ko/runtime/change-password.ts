@@ -133,6 +133,8 @@ export class ChangePassword {
         userId = `/users/${userId}`;
 
         try {
+            this.working(true);
+
             if (isCaptcha) {
                 const resetRequest: ChangePasswordRequest = {
                     solution: captchaSolution,
@@ -155,7 +157,7 @@ export class ChangePassword {
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         } catch (error) {
             if (isCaptcha) {
-                setTimeout(() => WLSPHIP0.reloadHIP(), 1000);
+                WLSPHIP0.reloadHIP();
             }
 
             let errorMessages: string[];
@@ -177,6 +179,8 @@ export class ChangePassword {
                 errors: errorMessages
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+        } finally {
+            this.working(false);
         }
     }
 }

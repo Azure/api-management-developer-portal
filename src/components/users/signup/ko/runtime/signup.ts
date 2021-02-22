@@ -222,10 +222,9 @@ export class Signup {
                 errors: []
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        }
-        catch (error) {
+        } catch (error) {
             if (isCaptchaRequired) {
-                setTimeout(() => WLSPHIP0.reloadHIP(), 1000);
+                WLSPHIP0.reloadHIP();
             }
 
             let errorMessages: string[];
@@ -247,8 +246,7 @@ export class Signup {
             };
 
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        }
-        finally {
+        } finally {
             this.working(false);
         }
     }
