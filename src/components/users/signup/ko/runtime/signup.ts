@@ -222,8 +222,7 @@ export class Signup {
                 errors: []
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        }
-        catch (error) {
+        } catch (error) {
             if (isCaptchaRequired) {
                 WLSPHIP0.reloadHIP();
             }
@@ -247,8 +246,7 @@ export class Signup {
             };
 
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        }
-        finally {
+        } finally {
             this.working(false);
         }
     }
