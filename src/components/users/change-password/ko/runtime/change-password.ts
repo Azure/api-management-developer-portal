@@ -133,6 +133,8 @@ export class ChangePassword {
         userId = `/users/${userId}`;
 
         try {
+            this.working(true);
+
             if (isCaptcha) {
                 const resetRequest: ChangePasswordRequest = {
                     solution: captchaSolution,
@@ -177,6 +179,8 @@ export class ChangePassword {
                 errors: errorMessages
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+        } finally {
+            this.working(false);
         }
     }
 }
