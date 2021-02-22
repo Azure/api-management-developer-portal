@@ -87,7 +87,7 @@ async function request(method, url, accessToken, body) {
                         data.startsWith("{") ? resolve(JSON.parse(data)) : resolve(data);
                         break;
                     case 404:
-                        reject({ code: "NotFound", message: `Resource not found: ${requestUrl}` });
+                        reject({ code: "NotFound", message: `Resource not found: ${url}` });
                         break;
                     case 401:
                         reject({ code: "Unauthorized", message: `Unauthorized. Make sure you correctly specified management API access token before running the script.` });
@@ -96,7 +96,7 @@ async function request(method, url, accessToken, body) {
                         reject({ code: "Forbidden", message: `Looks like you are not allowed to perform this operation. Please check with your administrator.` });
                         break;
                     default:
-                        reject({ code: "UnhandledError", message: `Could not complete request to ${requestUrl}. Status: ${resp.statusCode} ${resp.statusMessage}` });
+                        reject({ code: "UnhandledError", message: `Could not complete request to ${url}. Status: ${resp.statusCode} ${resp.statusMessage}` });
                 }
             });
         });
