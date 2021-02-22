@@ -2,11 +2,9 @@
 <p id="confirmationMessage">Follow the instructions from the email to verify your account.</p>
 <!-- /ko -->
 
-
-<!-- ko ifnot: working -->
 <!-- ko ifnot: isUserRequested -->
 <form data-bind="submit: signup">
-    <fieldset>
+    <fieldset data-bind="attr: { disabled: working}">
         <div class="form-group">
             <label for="email">Email</label>
             <input aria-required="true" autofocus="autofocus" spellcheck="false" class="form-control" id="email" name="email"
@@ -72,5 +70,4 @@
         </div>
     </fieldset>
 </form>
-<!-- /ko -->
 <!-- /ko -->
