@@ -225,7 +225,7 @@ export class Signup {
         }
         catch (error) {
             if (isCaptchaRequired) {
-                WLSPHIP0.reloadHIP();
+                setTimeout(() => WLSPHIP0.reloadHIP(), 1000);
             }
 
             let errorMessages: string[];

@@ -155,7 +155,7 @@ export class ChangePassword {
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         } catch (error) {
             if (isCaptcha) {
-                WLSPHIP0.reloadHIP();
+                setTimeout(() => WLSPHIP0.reloadHIP(), 1000);
             }
 
             let errorMessages: string[];
