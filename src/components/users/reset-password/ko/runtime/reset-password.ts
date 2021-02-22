@@ -107,6 +107,8 @@ export class ResetPassword {
         }
 
         try {
+            this.working(true);
+            
             if (isCaptcha) {
                 const resetRequest: ResetRequest = {
                     solution: captchaSolution,
@@ -127,8 +129,7 @@ export class ResetPassword {
                 errors: []
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        }
-        catch (error) {
+        } catch (error) {
             if (isCaptcha) {
                 WLSPHIP0.reloadHIP();
             }
@@ -151,7 +152,8 @@ export class ResetPassword {
                 errors: errorMessages
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+        } finally {
+            this.working(false);
         }
-
     }
 }
