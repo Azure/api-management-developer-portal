@@ -1,0 +1,72 @@
+<div class="form-inline search-input">
+    <div class="input-group">
+        <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs" spellcheck="false"
+            data-bind="textInput: pattern" />
+        <button type="button" class="search-button" aria-label="Search products">
+            <i class="icon-emb icon-emb-magnifier"></i>
+        </button>
+    </div>
+</div>
+
+<div class="cards">
+    <!-- ko if: working -->
+    <div class="cards-body">
+        <spinner class="fit"></spinner>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko ifnot: working -->
+    <div class="cards-body animation-fade-in">
+
+        <!-- ko foreach: { data: apis, as: 'item' } -->
+        <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
+            <div class="card item-tile">
+                <h3>
+                    <span data-bind="text: item.displayName"></span>
+                    <!-- ko if: item.type === 'soap' -->
+                    <span class="badge badge-soap">SOAP</span>
+                    <!-- /ko -->
+                    <!-- ko if: item.apiVersion -->
+                    - <span data-bind="text: item.apiVersion"></span>
+                    <!-- /ko -->
+                </h3>
+                <div class="tile line-clamp">
+                    <p class="tile-content" data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
+                </div>
+            </div>
+        </a>
+        <!-- /ko -->
+
+        <!-- ko if: apis().length === 0 -->
+        <p>This product doesn't have APIs.</p>
+        <!-- /ko -->
+
+    </div>
+    <!-- /ko -->
+
+    <div class="cards-footer">
+        <!-- ko if: hasPager -->
+        <ul class="pagination" role="navigation" aria-label="Pagination">
+            <!-- ko if: hasPrevPage -->
+            <li class="page-item">
+                <a href="#" class="page-link" role="button" aria-label="Previous page"
+                    data-bind="click: prevPage, enable: hasPrevPage">
+                    <i class="icon-emb icon-emb-chevron-left"></i>
+                </a>
+            </li>
+            <!-- /ko -->
+            <li class="page-item">
+                <span class="page-link" data-bind="text: page"></span>
+            </li>
+            <!-- ko if: hasNextPage -->
+            <li class="page-item">
+                <a href="#" class="page-link" role="button" aria-label="Next page"
+                    data-bind="click: nextPage, enable: hasNextPage">
+                    <i class="icon-emb icon-emb-chevron-right"></i>
+                </a>
+            </li>
+            <!-- /ko -->
+        </ul>
+        <!-- /ko -->
+    </div>
+</div>

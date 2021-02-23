@@ -21,7 +21,7 @@ export class ApiProductsViewModelBinder implements ViewModelBinder<ApiProductsMo
         }));
 
         viewModel["widgetBinding"] = {
-            displayName: "API: products",
+            displayName: "API: products" + (model.layout === "list" ? "" : ` (${model.layout})`),
             model: model,
             draggable: true,
             editor: "api-products-editor",

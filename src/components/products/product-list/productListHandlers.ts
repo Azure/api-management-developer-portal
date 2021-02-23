@@ -30,3 +30,18 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
         return widgetOrder;
     }
 }
+
+export class ProductListTilesHandlers implements IWidgetHandler {
+    public async getWidgetOrder(): Promise<IWidgetOrder> {
+        const widgetOrder: IWidgetOrder = {
+            name: "productListTiles",
+            category: "Products",
+            displayName: "List of products (tiles)",
+            iconClass: "paperbits-cheque-3",
+            requires: ["html"],
+            createModel: async () => new ProductListModel("tiles")
+        };
+
+        return widgetOrder;
+    }
+}

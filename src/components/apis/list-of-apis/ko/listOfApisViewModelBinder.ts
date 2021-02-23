@@ -25,7 +25,7 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
         }));
 
         viewModel["widgetBinding"] = {
-            displayName: "List of APIs",
+            displayName: "List of APIs" + (model.layout === "list" ? "" : ` (${model.layout})`),
             model: model,
             draggable: true,
             editor: "list-of-apis-editor",
