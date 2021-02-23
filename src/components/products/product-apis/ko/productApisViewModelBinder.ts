@@ -12,6 +12,8 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
             viewModel = new ProductApisViewModel();
         }
 
+        viewModel.layout(model.layout);
+
         viewModel.runtimeConfig(JSON.stringify({
             detailsPageUrl: model.detailsPageHyperlink
                 ? model.detailsPageHyperlink.href
@@ -19,7 +21,7 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
         }));
 
         viewModel["widgetBinding"] = {
-            displayName: "Product: APIs",
+            displayName: "Product: APIs" + (model.layout === "list" ? "" : ` (${model.layout})`),
             model: model,
             draggable: true,
             editor: "product-apis-editor",
