@@ -46,6 +46,7 @@ import { ProductSubscribe } from "./components/products/product-subscribe/ko/run
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";
 import { Spinner } from "./components/spinner/spinner";
 import { ProductApis } from "./components/products/product-apis/ko/runtime/product-apis";
+import { ProductApisTiles } from "./components/products/product-apis/ko/runtime/product-apis-tiles";
 import { OperationList } from "./components/operations/operation-list/ko/runtime/operation-list";
 import { ProductSubscriptions } from "./components/products/product-subscriptions/ko/runtime/product-subscriptions";
 import { AadService } from "./services/aadService";
@@ -71,6 +72,7 @@ import { OAuthService } from "./services/oauthService";
 import { DefaultSessionManager } from "./authentication/defaultSessionManager";
 import { ApiProducts } from "./components/apis/api-products/ko/runtime/api-products";
 import { ApiProductsTiles } from "./components/apis/api-products/ko/runtime/api-products-tiles";
+import { ProductListTiles } from "./components/products/product-list/ko/runtime/product-list-tiles";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -110,11 +112,13 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("subscriptions", Subscriptions);
         injector.bind("productList", ProductList);
         injector.bind("productListDropdown", ProductListDropdown);
+        injector.bind("productListTiles", ProductListTiles);
         injector.bind("validationSummary", ValidationSummary);
         injector.bind("productDetails", ProductDetails);
         injector.bind("productSubscribe", ProductSubscribe);
         injector.bind("productSubscriptions", ProductSubscriptions);
         injector.bind("productApis", ProductApis);
+        injector.bind("productApisTiles", ProductApisTiles);
         injector.bind("operationList", OperationList);
         injector.bind("operationDetails", OperationDetails);
         injector.bind("usersService", UsersService);

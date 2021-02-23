@@ -17,6 +17,7 @@ export class ProductApisModelBinder implements IModelBinder<ProductApisModel> {
 
     public async contractToModel(contract: ProductApisContract): Promise<ProductApisModel> {
         const model = new ProductApisModel();
+        model.layout = contract.itemStyleView || "list";
 
         if (contract.detailsPageHyperlink) {
             model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.detailsPageHyperlink);
@@ -28,6 +29,7 @@ export class ProductApisModelBinder implements IModelBinder<ProductApisModel> {
     public modelToContract(model: ProductApisModel): ProductApisContract {
         const contract: ProductApisContract = {
             type: "product-apis",
+            itemStyleView: model.layout,
             detailsPageHyperlink: model.detailsPageHyperlink
             ? {
                 target: model.detailsPageHyperlink.target,

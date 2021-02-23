@@ -9,7 +9,7 @@ export class ApiProductsHandlers implements IWidgetHandler {
             displayName: "API: products",
             iconClass: "paperbits-cheque-3",
             requires: ["html"],
-            createModel: async () => new ApiProductsModel()
+            createModel: async () => new ApiProductsModel("list")
         };
 
         return widgetOrder;

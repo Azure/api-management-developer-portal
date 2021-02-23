@@ -5,7 +5,7 @@ import { HyperlinkModel } from "@paperbits/common/permalinks";
  */
 export class ProductListModel {
     /**
-     * Product list layout, e.g. "list", "dropdown".
+     * Product list layout, e.g. "list", "dropdown", "tiles".
      */
     public layout?: string;
 

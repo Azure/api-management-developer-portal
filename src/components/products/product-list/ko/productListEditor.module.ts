@@ -1,5 +1,5 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { ProductListHandlers, ProductListDropdownHandlers } from "../productListHandlers";
+import { ProductListHandlers, ProductListDropdownHandlers, ProductListTilesHandlers } from "../productListHandlers";
 import { ProductListEditor } from "./productListEditor";
 
 export class ProductListEditorModule implements IInjectorModule {
@@ -7,5 +7,6 @@ export class ProductListEditorModule implements IInjectorModule {
         injector.bind("productListEditor", ProductListEditor);
         injector.bindToCollection("widgetHandlers", ProductListHandlers, "productListHandlers");
         injector.bindToCollection("widgetHandlers", ProductListDropdownHandlers, "productListDropdownHandlers");
+        injector.bindToCollection("widgetHandlers", ProductListTilesHandlers, "productListTilesHandlers");
     }
 }
