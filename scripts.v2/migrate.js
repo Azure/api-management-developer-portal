@@ -95,7 +95,7 @@ const yargs = require('yargs')
         type: 'string',
         example: 'SharedAccessSignature…',
         description: 'A SAS token for the destination portal',
-        conflicts: ['destId, destToken']
+        conflicts: ['destId, destKey']
     })
     .argv;
 
