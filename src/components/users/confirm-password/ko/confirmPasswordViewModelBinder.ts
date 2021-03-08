@@ -14,7 +14,9 @@ export class ConfirmPassworViewModelBinder implements ViewModelBinder<ConfirmPas
             viewModel = new ConfirmPasswordViewModel();
             viewModel["widgetBinding"] = {
                 displayName: "Password: confirmation form",
-                model: model
+                model: model,
+                flow: "block",
+                draggable: true
             };
         }
 

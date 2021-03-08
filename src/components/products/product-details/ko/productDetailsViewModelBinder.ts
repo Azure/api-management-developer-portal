@@ -11,7 +11,9 @@ export class ProductDetailsViewModelBinder implements ViewModelBinder<ProductDet
 
         viewModel["widgetBinding"] = {
             displayName: "Product: details",
-            model: model
+            model: model,
+            draggable: true,
+            flow: "block",
         };
 
         return viewModel;

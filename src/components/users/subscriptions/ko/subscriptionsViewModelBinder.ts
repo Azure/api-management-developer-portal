@@ -12,6 +12,8 @@ export class SubscriptionsViewModelBinder implements ViewModelBinder<Subscriptio
             viewModel["widgetBinding"] = {
                 displayName: "User: Subscriptions",
                 model: model,
+                flow: "block",
+                draggable: true,
                 applyChanges: async (updatedModel: SubscriptionsModel) => {
                     this.modelToViewModel(updatedModel, viewModel, bindingContext);
                 }
