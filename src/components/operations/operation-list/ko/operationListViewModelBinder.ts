@@ -27,6 +27,7 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
             displayName: "List of operations",
             model: model,
             draggable: true,
+            flow: "block",
             editor: "operation-list-editor",
             applyChanges: async (updatedModel: OperationListModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);

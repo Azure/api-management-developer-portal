@@ -24,6 +24,7 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
                 draggable: true,
                 editor: "signin-social-editor",
                 model: model,
+                flow: "block",
                 applyChanges: () => {
                     this.modelToViewModel(model, viewModel, bindingContext);
                     this.eventManager.dispatchEvent("onContentUpdate");

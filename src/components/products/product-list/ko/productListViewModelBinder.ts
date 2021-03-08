@@ -27,6 +27,7 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
             displayName: "List of products" + (model.layout === "list" ? "" : ` (${model.layout})`),
             model: model,
             draggable: true,
+            flow: "block",
             editor: "product-list-editor",
             applyChanges: async (updatedModel: ProductListModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);

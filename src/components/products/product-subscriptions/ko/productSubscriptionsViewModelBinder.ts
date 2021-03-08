@@ -10,7 +10,9 @@ export class ProductSubscriptionsViewModelBinder implements ViewModelBinder<Prod
             
             viewModel["widgetBinding"] = {
                 displayName: "Product: subscriptions",
-                model: model
+                model: model,
+                flow: "block",
+                draggable: true
             };
         }
 
