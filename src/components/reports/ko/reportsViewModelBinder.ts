@@ -11,7 +11,9 @@ export class ReportsViewModelBinder implements ViewModelBinder<ReportsModel, Rep
 
         viewModel["widgetBinding"] = {
             displayName: "Reports",
-            model: model
+            model: model,
+            flow: "block",
+            draggable: true
         };
 
         return viewModel;

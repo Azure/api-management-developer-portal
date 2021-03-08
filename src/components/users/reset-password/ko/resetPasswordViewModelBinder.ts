@@ -13,7 +13,9 @@ export class ResetPasswordViewModelBinder implements ViewModelBinder<ResetPasswo
             viewModel = new ResetPasswordViewModel();
             viewModel["widgetBinding"] = {
                 displayName: "Password: reset form",
-                model: model
+                model: model,
+                flow: "block",
+                draggale: true
             };
         }
 

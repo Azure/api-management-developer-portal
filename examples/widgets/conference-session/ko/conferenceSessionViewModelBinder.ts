@@ -18,12 +18,13 @@ export class ConferenceSessionViewModelBinder implements ViewModelBinder<Confere
         if (!viewModel) {
             viewModel = new ConferenceSessionViewModel();
 
-            const binding: IWidgetBinding<ConferenceSessionModel> = {
+            const binding: IWidgetBinding<ConferenceSessionModel, ConferenceSessionViewModel> = {
                 name: widgetName,
                 displayName: widgetDisplayName,
                 readonly: bindingContext?.readonly,
                 model: model,
                 draggable: true,
+                flow: "block",
                 editor: widgetEditorSelector,
                 applyChanges: async () => {
                     await this.updateViewModel(model, viewModel);
