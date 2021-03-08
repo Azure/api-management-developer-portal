@@ -396,7 +396,10 @@ export class MapiObjectStorage implements IObjectStorage {
                             break;
 
                         case Operator.contains:
-                            filterExpressions.push(`contains(${filter.left},'${filter.right}')`);
+                            if (filter.left !== "mimeType") { // Need to make this field indexable in content type first.
+                                filterExpressions.push(`contains(${filter.left},'${filter.right}')`);
+                            }
+
                             break;
 
                         default:
@@ -404,7 +407,9 @@ export class MapiObjectStorage implements IObjectStorage {
                     }
                 }
 
-                filterQueryString = `&$filter=${filterExpressions.join(" and ")}`;
+                if (filterExpressions.length > 0) {
+                    filterQueryString = `&$filter=${filterExpressions.join(" and ")}`;
+                }
             }
 
             if (query?.orderingBy) {

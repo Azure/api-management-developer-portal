@@ -24,6 +24,7 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
             displayName: "Product: APIs" + (model.layout === "list" ? "" : ` (${model.layout})`),
             model: model,
             draggable: true,
+            flow: "block",
             editor: "product-apis-editor",
             applyChanges: async (updatedModel: ProductApisModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);

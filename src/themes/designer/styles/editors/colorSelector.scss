@@ -25,23 +25,23 @@
 
     .color-box {
         float: left;
+        position: relative;
+
+        &.selected:before {
+            position: absolute;
+            content: "";
+            border: 2px solid #4c5866;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            pointer-events: none;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
 
         &:hover {
             @include selection(10px);
-        }
-
-        &.selected {
-            .color:before {
-                position: absolute;
-                content: '';
-                border: 2px solid #4c5866;
-                border-radius: 50%;
-                width: 36px;
-                height: 36px;
-                top: -3px;
-                left: -3px;
-                pointer-events: none;
-            }
         }
     }
 }

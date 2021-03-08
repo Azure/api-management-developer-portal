@@ -1,5 +1,3 @@
-@import "variables.scss";
-
 .nav {
     display: flex;
     flex-wrap: wrap;
@@ -65,7 +63,6 @@
 
     .nav-item {
         flex: 100%;
-        max-width: 100%;
     }
 }
 

@@ -18,11 +18,12 @@ export class DocumentDetailsViewModelBinder implements ViewModelBinder<DocumentD
         if (!viewModel) {
             viewModel = new DocumentDetailsViewModel();
 
-            const binding: IWidgetBinding<DocumentDetailsModel> = {
+            const binding: IWidgetBinding<DocumentDetailsModel, DocumentDetailsViewModel> = {
                 name: widgetName,
                 displayName: widgetDisplayName,
                 readonly: bindingContext?.readonly,
                 model: model,
+                flow: "block",
                 editor: widgetEditorSelector,
                 draggable: true,
                 applyChanges: async () => {
