@@ -4,8 +4,9 @@
 
 .toasts {
     position: fixed;
-    right: 0;
-    bottom: 100px;
+    right: 40px;
+    bottom: 50px;
+    z-index: $z-index-popup;
 
     .toast {
         @include surface();
@@ -14,7 +15,7 @@
 
         align-items: center;
         justify-content: center;
-        max-width: 400px;
+        max-width: 350px;
 
         .toast-indicator {
             width: 30px;
@@ -53,6 +54,7 @@
         .toast-container {
             flex-basis: 100%;
             line-height: 1.5em;
+            padding: 17px;
         }
 
         .toast-header {
