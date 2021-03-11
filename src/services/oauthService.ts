@@ -88,7 +88,7 @@ export class OAuthService {
      * @param backendUrl {string} Portal backend URL.
      * @param authorizationServer {AuthorizationServer} Authorization server details.
      */
-    public authenticateImplicit(backendUrl: string, authorizationServer: AuthorizationServer): Promise<string> {
+     public authenticateImplicit(backendUrl: string, authorizationServer: AuthorizationServer): Promise<string> {
         const redirectUri = `${backendUrl}/signin-oauth/implicit/callback`;
         const query = {
             state: Utils.guid()
@@ -120,7 +120,13 @@ export class OAuthService {
                     }
 
                     const oauthToken = await oauthClient.token.getToken(redirectUri + tokenHash);
-                    resolve(`${oauthToken.tokenType} ${oauthToken.accessToken}`);
+
+                    if (oauthToken.accessToken) {
+                        resolve(`${oauthToken.tokenType} ${oauthToken.accessToken}`);
+                    }
+                    else if (oauthToken.data?.id_token) {
+                        resolve(`Bearer ${oauthToken.data.id_token}`);
+                    }
                 };
 
                 window.addEventListener("message", receiveMessage, false);
