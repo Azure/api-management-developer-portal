@@ -7,6 +7,7 @@ import { ArmResource } from "../contracts/armResource";
 import { AppError } from "../errors";
 import { defaultPageSize } from "../constants";
 import { PageContract } from "../contracts/page";
+import { LocaleModel } from "@paperbits/common/localization";
 
 
 const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block"];
@@ -374,6 +375,18 @@ export class MapiObjectStorage implements IObjectStorage {
         const isLocalized = localizedContentTypes.includes(contentType);
         const localeSearchPrefix = isLocalized ? `${selectedLocale}/` : "";
 
+        if (key === "locales") {
+            const pageOfLocales: Page<LocaleModel> = {
+                value: [{
+                    key: `contentTypes/locales/contentItem/en_us`,
+                    code: "en-us",
+                    displayName: "English (US)"
+                }] 
+            };
+
+            return <any>pageOfLocales;
+        }
+
         try {
             let filterQueryString = "";
             let orderQueryString = "";
@@ -422,10 +435,8 @@ export class MapiObjectStorage implements IObjectStorage {
                 const paperbitsContract = this.convertArmContractToPaperbitsContract(armContract, isLocalized);
                 return paperbitsContract.nodes;
             }
-            else {
-                return await this.loadNextPage(resource, localeSearchPrefix, filterQueryString, orderQueryString, 0, isLocalized);
 
-            }
+            return await this.loadNextPage(resource, localeSearchPrefix, filterQueryString, orderQueryString, 0, isLocalized);
         }
         catch (error) {
             throw new AppError(`Could not search object '${key}'. Error: ${error.message}`, error);
