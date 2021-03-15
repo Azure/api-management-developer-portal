@@ -63,7 +63,7 @@
         "webpack-merge": "^5.2.0"
     },
     "dependencies": {
-        "@paperbits/azure": "^0.1.384",
+        "@paperbits/azure": "0.1.356-hotfix",
         "@paperbits/common": "0.1.382",
         "@paperbits/core": "0.1.382",
         "@paperbits/prosemirror": "0.1.382",
