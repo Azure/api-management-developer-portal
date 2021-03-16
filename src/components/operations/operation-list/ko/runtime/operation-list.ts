@@ -93,6 +93,8 @@ export class OperationList {
         this.selectedOperationName(operationName);
 
         this.groupByTag(this.defaultGroupByTagToEnabled());
+        this.tags.subscribe(this.resetSearch);
+
         this.showUrlPath(this.defaultShowUrlPath());
 
         if (this.selectedApiName()) {
@@ -101,9 +103,6 @@ export class OperationList {
 
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
-            .subscribe(this.resetSearch);
-
-        this.tags
             .subscribe(this.resetSearch);
 
         this.groupByTag
