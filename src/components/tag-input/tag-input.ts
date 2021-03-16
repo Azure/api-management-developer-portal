@@ -5,6 +5,9 @@ import tagListTemplate from "./tag-list.html";
 import { Component, Event, Param, OnMounted } from "@paperbits/common/ko/decorators";
 import { Tag } from "../../models/tag";
 import { TagService } from "../../services/tagService";
+import { RouteHelper } from "../../routing/routeHelper";
+import { TagContract } from "../../contracts/tag";
+import { Utils } from "../../utils";
 
 @Component({
     selector: "tag-input",
@@ -19,7 +22,10 @@ export class TagInput {
     public readonly canAddTags: ko.Computed<boolean>;
     public readonly availableTags: ko.Computed<Tag[]>;
 
-    constructor(private readonly tagService: TagService) {
+    constructor(
+        private readonly tagService: TagService,
+        private readonly routeHelper: RouteHelper
+        ) {
         this.tags = ko.observableArray();
         this.scope = ko.observable();
         this.pattern = ko.observable();
@@ -43,6 +49,8 @@ export class TagInput {
             return;
         }
 
+        this.initTagsFilter();
+
         await this.resetSearch();
 
         this.pattern
@@ -51,6 +59,31 @@ export class TagInput {
 
         this.scope
             .subscribe(this.resetSearch);
+    }
+
+    private initTagsFilter() {        
+        const tagsValue = this.routeHelper.getTags();
+        
+        if (tagsValue) {
+            const tags = tagsValue.split("|");
+            const tagItems = [];
+            if (tags && tags.length > 0) {
+                for (let i = 0; i < tags.length; i++) {
+                    const tag = tags[i];
+                    const tagContract: TagContract = Utils.armifyContract("tags", {
+                        id: `/tags/${tag}`,
+                        name: tag
+                    });
+                    tagItems.push(new Tag(tagContract));
+                    
+                }
+                this.selection(tagItems);
+                if (this.onChange) {
+                    this.onChange(this.selection());
+                    this.onDismiss.notifySubscribers();
+                }
+            }
+        }
     }
 
     public async loadPageOfTags(): Promise<void> {
@@ -66,6 +99,7 @@ export class TagInput {
 
     public addTag(tag: Tag): void {
         this.selection.push(tag);
+        this.routeHelper.setHashParameter("tags", this.selection().map(t => t.name).join("|"));
 
         if (this.onChange) {
             this.onChange(this.selection());
@@ -75,6 +109,7 @@ export class TagInput {
 
     public removeTag(tag: Tag): void {
         this.selection.remove(tag);
+        this.routeHelper.setHashParameter("tags", this.selection().map(t => t.name).join("|"));
 
         if (this.onChange) {
             this.onChange(this.selection());
