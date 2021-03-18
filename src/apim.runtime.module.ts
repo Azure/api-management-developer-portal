@@ -67,7 +67,7 @@ import { SignOutRouteGuard } from "./routing/signOutRouteGuard";
 import { ProvisionService } from "./services/provisioningService";
 import { BalloonBindingHandler, ResizableBindingHandler } from "@paperbits/core/ko/bindingHandlers";
 import { TagInput } from "./components/tag-input/tag-input";
-import { ViewStack } from "@paperbits/core/ko/ui/viewStack";
+import { ViewStack } from "@paperbits/common/ui/viewStack";
 import { OAuthService } from "./services/oauthService";
 import { DefaultSessionManager } from "./authentication/defaultSessionManager";
 import { ApiProducts } from "./components/apis/api-products/ko/runtime/api-products";
