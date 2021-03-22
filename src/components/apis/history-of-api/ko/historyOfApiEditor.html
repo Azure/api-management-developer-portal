@@ -1,17 +1,16 @@
 <fieldset class="form flex-item flex-item-grow" data-bind="scrollable: {}">
     <div class="form-group">
-        <label class="form-label">
+        <label for="hyperlink" class="form-label">
             Link to API details page
             <button class="btn btn-info" type="button" title="Help"
-                data-bind="tooltipToggle: 'A link to be navigated on click.'"></button>
+                data-bind="tooltip: 'A link to be navigated on click.'"></button>
         </label>
         <div class="input-group">
-            <a href="#" class="form-control" role="button"
-                data-bind="text: hyperlinkTitle, balloon: { component: { name: 'hyperlink-selector', params: { hyperlink: $component.hyperlink, onChange: $component.onHyperlinkChange } } }">
-            </a>
-            <div class="input-group-addon">
+            <input id="hyperlink" type="text" class="form-control" readonly data-bind="value: hyperlinkTitle" />
+            <button class="btn input-group-btn" title="Select hyperlink" aria-label="Select hyperlink"
+                data-bind="balloon: { position: 'right', component: { name: 'hyperlink-selector', params: { hyperlink: $component.hyperlink, onChange: $component.onHyperlinkChange } } }">
                 <i class="paperbits-icon paperbits-link-69-2"></i>
-            </div>
+            </button>
         </div>
     </div>    
 </fieldset>
