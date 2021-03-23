@@ -176,6 +176,8 @@ textarea {
         border: none;
         line-height: inherit;
         cursor: pointer;
+        display: inline-block;
+        line-height: 2em;
     }
 
     .input-group-addon {
