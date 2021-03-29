@@ -5,7 +5,7 @@ const { execSync } = require("child_process");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
 const mime = require("mime-types");
-const apiVersion = "2019-01-01"; // "2021-01-01-preview"; 
+const apiVersion = "2020-06-01-preview"; // "2021-01-01-preview"; 
 const managementApiEndpoint = "management.azure.com";
 
 
