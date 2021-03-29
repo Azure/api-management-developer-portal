@@ -18,6 +18,7 @@ import {
     TypeDefinitionPropertyTypeArrayOfReference,
     TypeDefinitionPropertyTypeArrayOfPrimitive
 } from "../../../../../models/typeDefinition";
+import { OAuthService } from "../../../../../services/oauthService";
 
 
 @RuntimeComponent({
@@ -44,6 +45,7 @@ export class OperationDetails {
 
     constructor(
         private readonly apiService: ApiService,
+        private readonly oauthService: OAuthService,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
     ) {
@@ -84,9 +86,6 @@ export class OperationDetails {
 
     @Param()
     public enableScrollTo: boolean;
-
-    @Param()
-    public authorizationServers: AuthorizationServer[];
 
     @Param()
     public defaultSchemaView: ko.Observable<string>;
@@ -150,15 +149,15 @@ export class OperationDetails {
         this.api(api);
 
         this.closeConsole();
-
-        const associatedServerId = api.authenticationSettings?.oAuth2?.authorizationServerId ||
-            api.authenticationSettings?.openid?.openidProviderId;
-
+        
         let associatedAuthServer = null;
 
-        if (this.authorizationServers && associatedServerId) {
-            associatedAuthServer = this.authorizationServers
-                .find(x => x.name === associatedServerId);
+        if (api.authenticationSettings?.oAuth2?.authorizationServerId) {
+            associatedAuthServer = await this.oauthService.getOAuthServer(api.authenticationSettings?.oAuth2?.authorizationServerId);
+        } else {
+            if (api.authenticationSettings?.openid?.openidProviderId) {
+                associatedAuthServer = await this.oauthService.getOpenIdConnectProvider(api.authenticationSettings?.openid?.openidProviderId);
+            }
         }
 
         this.associatedAuthServer(associatedAuthServer);
