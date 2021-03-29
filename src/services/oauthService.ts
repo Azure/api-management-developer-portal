@@ -54,6 +54,47 @@ export class OAuthService {
     }
 
     /**
+     * Returns configured OAuth 2.0 provider.
+     */
+    public async getOAuthServer(serverName: string): Promise<AuthorizationServer> {
+        try {
+            const authServer = await this.mapiClient.get<AuthorizationServerContract>(`/authorizationServers/${serverName}`, [MapiClient.getPortalHeader("getAuthorizationServers")]);
+            return new AuthorizationServer(authServer);
+        }
+        catch (error) {
+            throw new Error(`Unable to fetch configured authorization server. ${error.stack}`);
+        }
+    }
+
+    /**
+     * Returns configured OpenId Connect Provider.
+     */
+    public async getOpenIdConnectProvider(providerName: string): Promise<AuthorizationServer> {
+        try {
+            const providerData = await this.mapiClient.get<OpenIdConnectProviderContract>(`/openidConnectProviders/${providerName}`, [MapiClient.getPortalHeader("getOpenidConnectProviders")]);
+            if (!providerData) {
+                return null;
+            }
+            
+            const provider = new OpenIdConnectProvider(providerData);
+            const authServer = await this.discoverOAuthServer(provider.metadataEndpoint);
+
+            if (!authServer) {
+                return null;
+            }
+
+            authServer.name = provider.name;
+            authServer.clientId = provider.clientId;
+            authServer.displayName = provider.displayName;
+            authServer.description = provider.description;
+            return authServer;
+        }
+        catch (error) {
+            throw new Error(`Unable to fetch configured OpenId Connect Provider. ${error.stack}`);
+        }
+    }
+
+    /**
      * Acquires access token using specified grant flow.
      * @param grantType {string} Requested grant type.
      * @param authorizationServer {AuthorizationServer} Authorization server details.
