@@ -87,7 +87,41 @@
             </div>
         </div>
     </div>
+    <!-- ko if: $component.selectedGrantType() === 'password' && !$component.authenticated() -->
+    <div class="row flex flex-row">
+        <div class="col-4">
+            <label for="username" class="text-monospace form-label">Username</label>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <input type="text" id="username" class="form-control" data-bind="textInput: $component.username" />
+            </div>
+        </div>
+    </div>
+    <div class="row flex flex-row">
+        <div class="col-4">
+            <label for="password" class="text-monospace form-label">Password</label>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <input type="password" id="password" class="form-control" data-bind="textInput: $component.password" />
+                <span class="invalid-feedback" data-bind="text: $component.authorizationError"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row flex flex-row">
+        <div class="col-4">
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <button class="button button-primary" data-bind="click: $component.authenticateOAuthWithPassword">Authorize</button>
+            </div>
+        </div>
+    </div>
     <!-- /ko -->
+    <!-- /ko -->
+
+
 
     <!-- ko if: $component.subscriptionKeyRequired -->
     <div class="row flex flex-row">

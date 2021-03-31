@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import * as Constants from "./../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Logger } from "@paperbits/common/logging";
@@ -160,7 +159,7 @@ export class MapiClient {
         const text = response.toText();
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
-            if (_.includes(contentType, "json") && text.length > 0) {
+            if (contentType.includes("json") && text.length > 0) {
                 return JSON.parse(text) as T;
             }
             else {

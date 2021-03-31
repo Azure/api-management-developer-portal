@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import * as Objects from "@paperbits/common";
 import { IObjectStorage, Query, Operator, Page } from "@paperbits/common/persistence";
 import { MapiClient } from "../services/mapiClient";
