@@ -1,6 +1,5 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
-import * as _ from "lodash";
 import template from "./operation-console.html";
 import { Component, Param, OnMounted } from "@paperbits/common/ko/decorators";
 import { Operation } from "../../../../../models/operation";
