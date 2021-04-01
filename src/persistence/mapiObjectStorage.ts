@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import * as Objects from "@paperbits/common";
 import { IObjectStorage, Query, Operator, Page } from "@paperbits/common/persistence";
 import { MapiClient } from "../services/mapiClient";
@@ -8,6 +7,7 @@ import { AppError } from "../errors";
 import { defaultPageSize } from "../constants";
 import { PageContract } from "../contracts/page";
 import { LocaleModel } from "@paperbits/common/localization";
+import { PopupModel } from "@paperbits/core/popup";
 
 
 const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block"];
@@ -194,6 +194,11 @@ export class MapiObjectStorage implements IObjectStorage {
                 mapiContentItem = "en-us";
                 break;
 
+            case "popups":
+                mapiContentType = "popups";
+                mapiContentItem = contentItem;
+                break;
+
             default:
                 // throw new AppError(`Unknown content type: "${contentType}"`);
                 return key;
@@ -375,13 +380,21 @@ export class MapiObjectStorage implements IObjectStorage {
         const isLocalized = localizedContentTypes.includes(contentType);
         const localeSearchPrefix = isLocalized ? `${selectedLocale}/` : "";
 
+        if (key === "popups") {
+            const pageOfPopups: Page<PopupModel> = {
+                value: []
+            };
+
+            return <any>pageOfPopups;
+        }
+
         if (key === "locales") {
             const pageOfLocales: Page<LocaleModel> = {
                 value: [{
                     key: `contentTypes/locales/contentItem/en_us`,
                     code: "en-us",
                     displayName: "English (US)"
-                }] 
+                }]
             };
 
             return <any>pageOfLocales;

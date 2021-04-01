@@ -23,7 +23,7 @@
     }
 
     &.form-group-collapsible {
-        .form-label {
+        & > .form-label {
             position: unset;
         }
 
