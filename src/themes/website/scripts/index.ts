@@ -6,4 +6,4 @@
  * found in the LICENSE file and at https://paperbits.io/license/mit.
  */
 
-import "./collapsibles";
+import "./toggles";
