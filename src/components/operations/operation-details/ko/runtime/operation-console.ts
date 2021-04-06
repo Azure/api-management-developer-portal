@@ -2,6 +2,7 @@ import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./operation-console.html";
 import { Component, Param, OnMounted } from "@paperbits/common/ko/decorators";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
 import { ConsoleOperation } from "../../../../../models/console/consoleOperation";
@@ -57,6 +58,7 @@ export class OperationConsole {
     public readonly selectedGrantType: ko.Observable<string>;
     public isConsumptionMode: boolean;
     public templates: Object;
+    public backendUrl: string;
 
     constructor(
         private readonly apiService: ApiService,
@@ -66,7 +68,8 @@ export class OperationConsole {
         private readonly httpClient: HttpClient,
         private readonly routeHelper: RouteHelper,
         private readonly oauthService: OAuthService,
-        private readonly sessionManager: SessionManager
+        private readonly sessionManager: SessionManager,
+        private readonly settingsProvider: ISettingsProvider
     ) {
         this.templates = templates;
         this.products = ko.observable();
@@ -95,7 +98,7 @@ export class OperationConsole {
         this.isHostnameWildcarded = ko.computed(() => this.selectedHostname().includes("*"));
         this.selectedGrantType = ko.observable();
         this.authorizationServer = ko.observable();
-
+        this.useCorsProxy = ko.observable(false);
         this.wildcardSegment = ko.observable();
 
         validation.rules["maxFileSize"] = {
@@ -127,10 +130,14 @@ export class OperationConsole {
     @Param()
     public authorizationServer: ko.Observable<AuthorizationServer>;
 
+    @Param()
+    public useCorsProxy: ko.Observable<boolean>;
+
     @OnMounted()
     public async initialize(): Promise<void> {
         const skuName = await this.tenantService.getServiceSkuName();
         this.isConsumptionMode = skuName === ServiceSkuName.Consumption;
+        this.backendUrl = await this.settingsProvider.getSetting<string>("backendUrl");
 
         await this.resetConsole();
 
@@ -425,7 +432,7 @@ export class OperationConsole {
         return response;
     }
 
-    public async sendFromProxy<T>(apiName: string, request: HttpRequest): Promise<HttpResponse<T>> {
+    public async sendFromProxy<T>(request: HttpRequest): Promise<HttpResponse<T>> {
         if (request.body) {
             request.body = Buffer.from(request.body);
         }
@@ -434,8 +441,11 @@ export class OperationConsole {
         const requestPackage = new Blob([JSON.stringify(request)], { type: "application/json" });
         formData.append("requestPackage", requestPackage);
 
+        const baseProxyUrl = this.backendUrl || "";
+        const apiName = this.api().name;
+
         const proxiedRequest: HttpRequest = {
-            url: "/send",
+            url: `${baseProxyUrl}/send`,
             method: "POST",
             headers: [{ name: "X-Ms-Api-Name", value: apiName }],
             body: formData
@@ -495,8 +505,9 @@ export class OperationConsole {
                 body: payload
             };
 
-            const response = await this.sendFromProxy(this.api().name, request);
-            // const response = await this.httpClient.send(request);
+            const response = this.useCorsProxy()
+                ? await this.sendFromProxy(request)
+                : await this.sendFromBrowser(request);
 
             this.responseHeadersString(response.headers.map(x => `${x.name}: ${x.value}`).join("\n"));
 
