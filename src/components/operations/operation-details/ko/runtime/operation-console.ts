@@ -15,7 +15,7 @@ import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { TenantService } from "../../../../../services/tenantService";
 import { ServiceSkuName, TypeOfApi } from "../../../../../constants";
-import { HttpClient, HttpRequest } from "@paperbits/common/http";
+import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import { Revision } from "../../../../../models/revision";
 import { templates } from "./templates/templates";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
@@ -26,6 +26,7 @@ import { OAuthService } from "../../../../../services/oauthService";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { SessionManager } from "../../../../../authentication/sessionManager";
 import { OAuthSession, StoredCredentials } from "./oauthSession";
+import { ResponsePackage } from "./responsePackage";
 
 const oauthSessionKey = "oauthSession";
 
@@ -419,6 +420,45 @@ export class OperationConsole {
         this.sendRequest();
     }
 
+    public async sendFromBrowser<T>(request: HttpRequest): Promise<HttpResponse<T>> {
+        const response = await this.httpClient.send<any>(request);
+        return response;
+    }
+
+    public async sendFromProxy<T>(apiName: string, request: HttpRequest): Promise<HttpResponse<T>> {
+        if (request.body) {
+            request.body = Buffer.from(request.body);
+        }
+
+        const formData = new FormData();
+        const requestPackage = new Blob([JSON.stringify(request)], { type: "application/json" });
+        formData.append("requestPackage", requestPackage);
+
+        const proxiedRequest: HttpRequest = {
+            url: "/send",
+            method: "POST",
+            headers: [{ name: "X-Ms-Api-Name", value: apiName }],
+            body: formData
+        };
+
+        const proxiedResponse = await this.httpClient.send<ResponsePackage>(proxiedRequest);
+        const responsePackage = proxiedResponse.toObject();
+
+        const responseBodyBuffer = responsePackage.body
+            ? Buffer.from(responsePackage.body.data)
+            : null;
+
+        const response: any = {
+            headers: responsePackage.headers,
+            statusCode: responsePackage.statusCode,
+            statusText: responsePackage.statusMessage,
+            body: responseBodyBuffer,
+            toText: () => responseBodyBuffer.toString("utf8")
+        };
+
+        return response;
+    }
+
     private async sendRequest(): Promise<void> {
         this.requestError(null);
         this.sendingRequest(true);
@@ -455,7 +495,9 @@ export class OperationConsole {
                 body: payload
             };
 
-            const response = await this.httpClient.send(request);
+            const response = await this.sendFromProxy(this.api().name, request);
+            // const response = await this.httpClient.send(request);
+
             this.responseHeadersString(response.headers.map(x => `${x.name}: ${x.value}`).join("\n"));
 
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
