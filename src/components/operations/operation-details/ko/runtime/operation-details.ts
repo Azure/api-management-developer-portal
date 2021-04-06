@@ -153,10 +153,10 @@ export class OperationDetails {
         let associatedAuthServer = null;
 
         if (api.authenticationSettings?.oAuth2?.authorizationServerId) {
-            associatedAuthServer = await this.oauthService.getOAuthServer(api.authenticationSettings?.oAuth2?.authorizationServerId);
+            associatedAuthServer = await this.oauthService.getOAuthServer(api.name);
         } else {
             if (api.authenticationSettings?.openid?.openidProviderId) {
-                associatedAuthServer = await this.oauthService.getOpenIdConnectProvider(api.authenticationSettings?.openid?.openidProviderId);
+                associatedAuthServer = await this.oauthService.getOpenIdConnectProvider(api.name);
             }
         }
 

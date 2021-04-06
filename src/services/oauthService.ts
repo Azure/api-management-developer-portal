@@ -56,9 +56,9 @@ export class OAuthService {
     /**
      * Returns configured OAuth 2.0 provider.
      */
-    public async getOAuthServer(serverName: string): Promise<AuthorizationServer> {
+    public async getOAuthServer(apiId: string): Promise<AuthorizationServer> {
         try {
-            const authServer = await this.mapiClient.get<AuthorizationServerContract>(`/authorizationServers/${serverName}`, [MapiClient.getPortalHeader("getAuthorizationServers")]);
+            const authServer = await this.mapiClient.get<AuthorizationServerContract>(`/apis/${apiId}/authenticationSettings/oAuth2/authorizationServer`, [MapiClient.getPortalHeader("getAuthorizationServers")]);
             return new AuthorizationServer(authServer);
         }
         catch (error) {
@@ -69,9 +69,9 @@ export class OAuthService {
     /**
      * Returns configured OpenId Connect Provider.
      */
-    public async getOpenIdConnectProvider(providerName: string): Promise<AuthorizationServer> {
+    public async getOpenIdConnectProvider(apiId: string): Promise<AuthorizationServer> {
         try {
-            const providerData = await this.mapiClient.get<OpenIdConnectProviderContract>(`/openidConnectProviders/${providerName}`, [MapiClient.getPortalHeader("getOpenidConnectProviders")]);
+            const providerData = await this.mapiClient.get<OpenIdConnectProviderContract>(`/apis/${apiId}/authenticationSettings/openIdConnect/provider`, [MapiClient.getPortalHeader("getOpenidConnectProviders")]);
             if (!providerData) {
                 return null;
             }
