@@ -60,6 +60,7 @@ export class OperationDetails {
         this.consoleIsOpen = ko.observable();
         this.definitions = ko.observableArray<TypeDefinition>();
         this.defaultSchemaView = ko.observable("table");
+        this.useCorsProxy = ko.observable();
         this.requestUrlSample = ko.computed(() => {
             if (!this.api() || !this.operation()) {
                 return null;
@@ -81,6 +82,9 @@ export class OperationDetails {
 
     @Param()
     public enableConsole: boolean;
+
+    @Param()
+    public useCorsProxy: ko.Observable<boolean>;
 
     @Param()
     public enableScrollTo: boolean;

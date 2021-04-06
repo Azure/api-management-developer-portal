@@ -29,7 +29,8 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
             enableConsole: model.enableConsole,
             enableScrollTo: model.enableScrollTo,
             authorizationServers: model.authorizationServers,
-            defaultSchemaView: model.defaultSchemaView
+            defaultSchemaView: model.defaultSchemaView,
+            useCorsProxy: model.useCorsProxy
         };
 
         viewModel.config(JSON.stringify(runtimeConfig));
