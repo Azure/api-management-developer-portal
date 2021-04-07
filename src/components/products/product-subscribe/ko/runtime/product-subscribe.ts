@@ -8,7 +8,7 @@ import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { TenantService } from "../../../../../services/tenantService";
-import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
+import { DelegationParameters, DelegationActionPath } from "../../../../../contracts/tenantSettings";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
 @RuntimeComponent({
@@ -149,7 +149,7 @@ export class ProductSubscribe {
                 const delegation = new URLSearchParams();
                 delegation.append(DelegationParameters.ProductId, Utils.getResourceName("products", productId));
                 delegation.append(DelegationParameters.UserId, Utils.getResourceName("users", userId));
-                await this.router.navigateTo(`/${DelegationAction.subscribe}?${delegation.toString()}`);
+                await this.router.navigateTo(`/${DelegationActionPath.subscribe}?${delegation.toString()}`);
                 return;
             }
 
