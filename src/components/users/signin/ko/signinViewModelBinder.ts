@@ -3,7 +3,7 @@ import { SigninViewModel } from "./signinViewModel";
 import { SigninModel } from "../signinModel";
 import { Bag } from "@paperbits/common";
 import { TenantService } from "../../../../services/tenantService";
-import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
+import { DelegationAction, DelegationActionPath, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { BackendService } from "../../../../services/backendService";
 import { EventManager } from "@paperbits/common/events";
 
