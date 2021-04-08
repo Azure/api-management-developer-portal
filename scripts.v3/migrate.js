@@ -113,13 +113,11 @@ async function migrate() {
     try {
         const sourceImporterExporter = new ImporterExporter(yargs.sourceSubscriptionId, yargs.sourceResourceGroupName, yargs.sourceServiceName, yargs.sourceTenantid, yargs.sourceServiceprincipal, yargs.sourceSecret);
         await sourceImporterExporter.export();
-    
+
         const destIimporterExporter = new ImporterExporter(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName, yargs.destTenantid, yargs.destServiceprincipal, yargs.destSecret);
         await destIimporterExporter.cleanup();
         await destIimporterExporter.import();
-    
-        /* New publishing endpoint is not deployed to production yet. */
-        // await destIimporterExporter.publish();
+        await destIimporterExporter.publish();
     }
     catch (error) {
         throw new Error(`Unable to complete migration. ${error.message}`);
