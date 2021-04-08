@@ -402,8 +402,7 @@ class ImporterExporter {
             const revision = timeStamp.toISOString().replace(/[\-\:\T]/g, "").substr(0, 14);
             const url = `/portalRevisions/${revision}`;
             const body = {
-                description: `Migration ${revision}.`,
-                isCurrent: true
+                description: `Migration ${revision}.`
             }
 
             await this.httpClient.sendRequest("PUT", url, body);
