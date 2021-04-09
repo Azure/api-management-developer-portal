@@ -14,6 +14,7 @@ export class ArmAuthenticator implements IAuthenticator {
         const msalConfig: Msal.Configuration = {
             auth: {
                 clientId: aadClientId,
+                authority: "https://login.windows-ppe.net/common"
             }
         };
 
@@ -35,7 +36,7 @@ export class ArmAuthenticator implements IAuthenticator {
 
 
         console.log("2");
-        await Utils.delay(1);
+        // await Utils.delay(1);
 
         if (!response.accessToken) {
             throw new Error(`Unable to acquire ARM token.`);

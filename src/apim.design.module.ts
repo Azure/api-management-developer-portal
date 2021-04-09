@@ -62,6 +62,8 @@ import { ArmAuthenticator } from "./authentication/armAuthenticator";
 import { DefaultSettingsProvider } from "./configuration";
 import { DefaultSessionManager } from "./authentication/defaultSessionManager";
 import { AzureResourceManagementService } from "./services/armService";
+import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts.module";
+import { ApiProductsEditorModule } from "./components/apis/api-products/ko/apiProductsEditor.module";
 
 
 export class ApimDesignModule implements IInjectorModule {
