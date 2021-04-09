@@ -192,7 +192,7 @@ export class OperationConsole {
             this.setSoapHeaders();
         }
 
-        if (!this.isConsumptionMode) {
+        if (!this.isConsumptionMode && this.api().type !== TypeOfApi.webSocket) {
             this.setNoCacheHeader();
         }
 

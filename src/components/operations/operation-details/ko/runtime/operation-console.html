@@ -22,13 +22,18 @@
                 <span data-bind="text: api.apiVersion"></span>
             </li>
             <!-- /ko -->
+
+            <!-- ko ifnot: api.type === 'websocket' -->
             <li class="breadcrumb-item">
                 <span data-bind="text: name"></span>
             </li>
+            <!-- /ko -->
         </ol>
     </nav>
 
-    <div class="monospace" data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
+    <!-- ko ifnot: api.type === 'websocket' -->
+        <div class="monospace" data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
+    <!-- /ko -->
 
 
     <!-- ko if: $component.hostnameSelectionEnabled -->

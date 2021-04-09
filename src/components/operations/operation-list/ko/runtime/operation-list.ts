@@ -9,7 +9,7 @@ import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Tag } from "../../../../../models/tag";
-import { Utils } from "../../../../../utils";
+import { Api } from "../../../../../models/api";
 
 
 @RuntimeComponent({
@@ -36,6 +36,7 @@ export class OperationList {
     public readonly hasPager: ko.Computed<boolean>;
     public readonly tagScope: ko.Computed<string>;
     public readonly showUrlPath: ko.Observable<boolean>;
+    public readonly apiType: ko.Observable<string>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -64,6 +65,7 @@ export class OperationList {
         this.hasPrevPage = ko.observable();
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
         this.tagScope = ko.computed(() => this.selectedApiName() ? `apis/${this.selectedApiName()}`: "");
+        this.apiType = ko.observable();
     }
 
     @Param()
@@ -128,6 +130,7 @@ export class OperationList {
     }
 
     public async loadOperations(): Promise<void> {
+
         if (this.groupByTag()) {
             this.operationGroups([]);
             this.searchRequest = { pattern: this.pattern(), tags: this.tags(), grouping: "tag" };
@@ -141,16 +144,21 @@ export class OperationList {
 
         try {
             this.working(true);
-
-            if (this.groupByTag()) {
-                await this.loadOfOperationsByTag();
-            }
-            else {
+            const apiType = await this.getApiType();
+            if (apiType === "websocket") {
                 await this.loadPageOfOperations();
-            }
-
-            if (this.allowSelection() && !this.selectedOperationName()) {
                 this.selectFirstOperation();
+            } else {
+                if (this.groupByTag()) {
+                    await this.loadOfOperationsByTag();
+                }
+                else {
+                    await this.loadPageOfOperations();
+                }
+
+                if (this.allowSelection() && !this.selectedOperationName()) {
+                    this.selectFirstOperation();
+                }
             }
         }
         catch (error) {
@@ -159,6 +167,18 @@ export class OperationList {
         finally {
             this.working(false);
         }
+    }
+
+    private async getApiType(): Promise<string> {
+        const apiName = this.selectedApiName();
+
+        if (!apiName) {
+            return;
+        }
+        const api = await this.apiService.getApi(`apis/${apiName}`);
+        this.apiType(api?.type);
+
+        return api?.type;
     }
 
     private async loadOfOperationsByTag(): Promise<void> {

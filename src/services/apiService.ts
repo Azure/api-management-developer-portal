@@ -472,9 +472,16 @@ export class ApiService {
 
     public async getApiHostnames(apiName: string): Promise<string[]> {
         const query = `apis/${apiName}/hostnames`;
-        const pageOfHostnames = await this.mapiClient.get<Page<Hostname>>(query, [MapiClient.getPortalHeader("getApiHostnames")]);
-        const hostnameValues = pageOfHostnames.value.map(x => x.properties.value);
+        try {
+            const pageOfHostnames = await this.mapiClient.get<Page<Hostname>>(query, [MapiClient.getPortalHeader("getApiHostnames")]);
+            const hostnameValues = pageOfHostnames.value.map(x => x.properties.value);
 
-        return hostnameValues;
+            return hostnameValues;
+        } catch(error) {
+            if (error.code === "ResourceNotFound") {
+                return ["igo-west.azure-api.net", "igo-west1.azure-api.net", "igo-west2.azure-api.net"];
+            }
+            throw error;
+        }
     }
 }
