@@ -1,8 +1,8 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
-import * as _ from "lodash";
 import template from "./operation-console.html";
 import { Component, Param, OnMounted } from "@paperbits/common/ko/decorators";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
 import { ConsoleOperation } from "../../../../../models/console/consoleOperation";
@@ -16,7 +16,7 @@ import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { TenantService } from "../../../../../services/tenantService";
 import { ServiceSkuName, TypeOfApi } from "../../../../../constants";
-import { HttpClient, HttpRequest } from "@paperbits/common/http";
+import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import { Revision } from "../../../../../models/revision";
 import { templates } from "./templates/templates";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
@@ -27,6 +27,7 @@ import { OAuthService } from "../../../../../services/oauthService";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { SessionManager } from "../../../../../authentication/sessionManager";
 import { OAuthSession, StoredCredentials } from "./oauthSession";
+import { ResponsePackage } from "./responsePackage";
 
 const oauthSessionKey = "oauthSession";
 
@@ -57,6 +58,7 @@ export class OperationConsole {
     public readonly selectedGrantType: ko.Observable<string>;
     public isConsumptionMode: boolean;
     public templates: Object;
+    public backendUrl: string;
 
     constructor(
         private readonly apiService: ApiService,
@@ -66,7 +68,8 @@ export class OperationConsole {
         private readonly httpClient: HttpClient,
         private readonly routeHelper: RouteHelper,
         private readonly oauthService: OAuthService,
-        private readonly sessionManager: SessionManager
+        private readonly sessionManager: SessionManager,
+        private readonly settingsProvider: ISettingsProvider
     ) {
         this.templates = templates;
         this.products = ko.observable();
@@ -95,7 +98,7 @@ export class OperationConsole {
         this.isHostnameWildcarded = ko.computed(() => this.selectedHostname().includes("*"));
         this.selectedGrantType = ko.observable();
         this.authorizationServer = ko.observable();
-
+        this.useCorsProxy = ko.observable(false);
         this.wildcardSegment = ko.observable();
 
         validation.rules["maxFileSize"] = {
@@ -127,10 +130,14 @@ export class OperationConsole {
     @Param()
     public authorizationServer: ko.Observable<AuthorizationServer>;
 
+    @Param()
+    public useCorsProxy: ko.Observable<boolean>;
+
     @OnMounted()
     public async initialize(): Promise<void> {
         const skuName = await this.tenantService.getServiceSkuName();
         this.isConsumptionMode = skuName === ServiceSkuName.Consumption;
+        this.backendUrl = await this.settingsProvider.getSetting<string>("backendUrl");
 
         await this.resetConsole();
 
@@ -219,8 +226,8 @@ export class OperationConsole {
                     .find(header => header.name().toLowerCase() === KnownHttpHeaders.ContentType.toLowerCase());
 
                 if (contentHeader) {
-                    const contentType = `${contentHeader.value};action="${consoleOperation.urlTemplate.split("=")[1]}"`;
-                    consoleOperation.setHeader(KnownHttpHeaders.ContentType, contentType);
+                    const contentType = `${contentHeader.value()};action="${consoleOperation.urlTemplate.split("=")[1]}"`;
+                    contentHeader.value(contentType);
                 }
             }
         }
@@ -420,6 +427,48 @@ export class OperationConsole {
         this.sendRequest();
     }
 
+    public async sendFromBrowser<T>(request: HttpRequest): Promise<HttpResponse<T>> {
+        const response = await this.httpClient.send<any>(request);
+        return response;
+    }
+
+    public async sendFromProxy<T>(request: HttpRequest): Promise<HttpResponse<T>> {
+        if (request.body) {
+            request.body = Buffer.from(request.body);
+        }
+
+        const formData = new FormData();
+        const requestPackage = new Blob([JSON.stringify(request)], { type: "application/json" });
+        formData.append("requestPackage", requestPackage);
+
+        const baseProxyUrl = this.backendUrl || "";
+        const apiName = this.api().name;
+
+        const proxiedRequest: HttpRequest = {
+            url: `${baseProxyUrl}/send`,
+            method: "POST",
+            headers: [{ name: "X-Ms-Api-Name", value: apiName }],
+            body: formData
+        };
+
+        const proxiedResponse = await this.httpClient.send<ResponsePackage>(proxiedRequest);
+        const responsePackage = proxiedResponse.toObject();
+
+        const responseBodyBuffer = responsePackage.body
+            ? Buffer.from(responsePackage.body.data)
+            : null;
+
+        const response: any = {
+            headers: responsePackage.headers,
+            statusCode: responsePackage.statusCode,
+            statusText: responsePackage.statusMessage,
+            body: responseBodyBuffer,
+            toText: () => responseBodyBuffer.toString("utf8")
+        };
+
+        return response;
+    }
+
     private async sendRequest(): Promise<void> {
         this.requestError(null);
         this.sendingRequest(true);
@@ -456,7 +505,10 @@ export class OperationConsole {
                 body: payload
             };
 
-            const response = await this.httpClient.send(request);
+            const response = this.useCorsProxy()
+                ? await this.sendFromProxy(request)
+                : await this.sendFromBrowser(request);
+
             this.responseHeadersString(response.headers.map(x => `${x.name}: ${x.value}`).join("\n"));
 
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
@@ -542,7 +594,7 @@ export class OperationConsole {
         try {
             /* Trying to check if it's a JWT token and, if yes, whether it got expired. */
             const jwtToken = Utils.parseJwt(storedCredentials.accessToken.replace(/^bearer /i, ""));
-            const now = Utils.getUtcDateTime();
+            const now = new Date();
 
             if (now > jwtToken.exp) {
                 await this.clearStoredCredentials();

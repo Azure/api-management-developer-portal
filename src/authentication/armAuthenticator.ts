@@ -3,7 +3,7 @@ import { Utils } from "../utils";
 import { IAuthenticator, AccessToken } from ".";
 
 
-const aadClientId = "bece2c2c-99d7-4c1b-91a4-1acf323eae0e"; // test app
+const aadClientId = "4c6edb5e-d0fb-4ca1-ac29-8c181c1a9522"; // test app
 const scopes = ["https://management.azure.com/user_impersonation"];
 
 export class ArmAuthenticator implements IAuthenticator {
@@ -24,6 +24,8 @@ export class ArmAuthenticator implements IAuthenticator {
         let response: Msal.AuthResponse;
         const loginRequest: Msal.AuthenticationParameters = { scopes: scopes };
 
+        console.log("1");
+
         if (this.msalInstance.getAccount()) {
             response = await this.msalInstance.acquireTokenSilent(loginRequest);
         }
@@ -31,6 +33,8 @@ export class ArmAuthenticator implements IAuthenticator {
             response = await this.msalInstance.loginPopup(loginRequest);
         }
 
+
+        console.log("2");
         await Utils.delay(1);
 
         if (!response.accessToken) {

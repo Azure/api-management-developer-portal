@@ -23,11 +23,12 @@ export class WidgetViewModelBinder implements ViewModelBinder<WidgetModel, Widge
         if (!viewModel) {
             viewModel = new WidgetViewModel();
 
-            const binding: IWidgetBinding<WidgetModel> = {
+            const binding: IWidgetBinding<WidgetModel, WidgetViewModel> = {
                 name: widgetName,
                 displayName: widgetDisplayName,
                 readonly: bindingContext ? bindingContext.readonly : false,
                 model: model,
+                flow: "block",
                 editor: widgetEditorSelector,
                 draggable: true,
                 applyChanges: async () => {

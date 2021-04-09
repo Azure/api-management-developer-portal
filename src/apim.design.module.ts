@@ -69,6 +69,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new SetupModule());
         injector.bindModule(new ListOfApisModule());
         injector.bindModule(new ListOfApisEditorModule());
+        injector.bindModule(new ApiProductsModule());
+        injector.bindModule(new ApiProductsEditorModule());
         injector.bindModule(new DetailsOfApiModule());
         injector.bindModule(new DetailsOfApiEditorModule());
         injector.bindModule(new HistoryOfApiModule());

@@ -4,4 +4,8 @@
 node ./capture ^
 --subscriptionId "< your subscription ID >" ^
 --resourceGroupName "< your resource group name >" ^
+<<<<<<< HEAD
 --serviceName "< your service name >"
+=======
+--serviceName "< your service name >"
+>>>>>>> master

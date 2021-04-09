@@ -20,7 +20,7 @@ export class ProductListModelBinder implements IModelBinder<ProductListModel> {
     public async contractToModel(contract: ProductListContract): Promise<ProductListModel> {
         const model = new ProductListModel();
 
-        model.layout = contract.itemStyleView;
+        model.layout = contract.itemStyleView || "list";
 
         model.allowSelection = contract.allowSelection;
 

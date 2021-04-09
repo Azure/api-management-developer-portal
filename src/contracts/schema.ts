@@ -30,6 +30,8 @@ export interface SchemaObjectContract extends ReferenceObjectContract {
      */
     required?: string[];
 
+    readOnly?: boolean;
+
     properties?: Bag<SchemaObjectContract>;
 
     items?: SchemaObjectContract;
@@ -72,7 +74,25 @@ export interface SchemaObjectContract extends ReferenceObjectContract {
 
     minProperties?: number;
 
+    /**
+     * Example of the payload represented by this schema object.
+     */
     example?: string;
+
+    /**
+     * Format of payload example represented by this schema object. It is used for syntax highlighting.
+     */
+    exampleFormat?: string;
+
+    /**
+     * Raw schema representation.
+     */
+    rawSchema?: string;
+
+    /**
+     * Raw schema format. It is used for syntax highlighting.
+     */
+    rawSchemaFormat?: string;
 }
 
 /**
@@ -122,17 +142,23 @@ export interface OpenApiSchemaContract {
     };
 }
 
+export interface XsdSchemaContract {
+    value: string;
+}
+
+
 /**
  * 
  */
-export interface SchemaContract extends ArmResource  {
+export interface SchemaContract extends ArmResource {
     properties: {
         contentType: string;
-        document?: SwaggerSchemaContract | OpenApiSchemaContract;
+        document?: SwaggerSchemaContract | OpenApiSchemaContract | XsdSchemaContract;
     };
 }
 
 export enum SchemaType {
     swagger = "application/vnd.ms-azure-apim.swagger.definitions+json",
-    openapi = "application/vnd.oai.openapi.components+json"
+    openapi = "application/vnd.oai.openapi.components+json",
+    xsd = "application/vnd.ms-azure-apim.xsd+xml"
 }

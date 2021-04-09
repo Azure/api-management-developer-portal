@@ -1,4 +1,3 @@
-import * as moment from "moment";
 import { Utils } from "../utils";
 
 export class AccessToken {
@@ -46,8 +45,13 @@ export class AccessToken {
         }
 
         const dateTime = match[1];
-        const dateTimeIso = `${dateTime.substr(0, 8)} ${dateTime.substr(8, 4)}`;
-        const expirationDateUtc = moment(dateTimeIso).toDate();
+        const year = dateTime.substr(0, 4);
+        const month = dateTime.substr(4, 2);
+        const day = dateTime.substr(6, 2);
+        const hour = dateTime.substr(8, 2);
+        const minute = dateTime.substr(10, 2);
+        const dateTimeIso = `${year}-${month}-${day}T${hour}:${minute}:00.000Z`;
+        const expirationDateUtc = new Date(dateTimeIso);
 
         return new AccessToken("SharedAccessSignature", value, expirationDateUtc);
     }
@@ -91,9 +95,12 @@ export class AccessToken {
     }
 
     public isExpired(): boolean {
-        const utcNow = Utils.getUtcDateTime();
+        const now = new Date();
+        return now > this.expires;
+    }
 
-        return utcNow > this.expires;
+    public expiresInMs(): number {
+        return this.expires.getTime() - (new Date()).getTime();
     }
 
     public toString(): string {

@@ -27,7 +27,9 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
             viewModel = new SignupViewModel();
             viewModel["widgetBinding"] = {
                 displayName: "Sign-up form: basic",
-                model: model
+                model: model,
+                flow: "block",
+                draggable: true
             };
         }
 

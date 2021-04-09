@@ -22,6 +22,16 @@
     cursor: default;
 }
 
+.dropdown {
+    display: none;
+    position: absolute;
+    z-index: 9000;
+
+    &.show {
+        display: block;
+    }
+}
+
 .nav {
     display: flex;
     flex-wrap: wrap;
@@ -29,6 +39,7 @@
     .nav-item {
         padding: 0;
         margin: 0;
+        max-width: 100%;
     }
 
     .nav-link {
@@ -63,7 +74,6 @@
 
     .nav-item {
         flex: 100%;
-        max-width: 100%;
     }
 }
 
@@ -80,7 +90,7 @@
             border-left: 0.3em solid transparent;
         }
 
-        &.expanded {
+        &.show {
             > .nav-link::after {
                 transform: rotate(180deg);
             }

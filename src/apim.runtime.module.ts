@@ -7,7 +7,6 @@ import "./bindingHandlers/barChart";
 import "./bindingHandlers/mapChart";
 import "./bindingHandlers/minMaxAvgChart";
 import "./bindingHandlers/acceptChange";
-import "./themes/website/scripts";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.component";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.focus";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.activate";
@@ -46,6 +45,7 @@ import { ProductSubscribe } from "./components/products/product-subscribe/ko/run
 import { DefaultAuthenticator } from "./authentication/defaultAuthenticator";
 import { Spinner } from "./components/spinner/spinner";
 import { ProductApis } from "./components/products/product-apis/ko/runtime/product-apis";
+import { ProductApisTiles } from "./components/products/product-apis/ko/runtime/product-apis-tiles";
 import { OperationList } from "./components/operations/operation-list/ko/runtime/operation-list";
 import { ProductSubscriptions } from "./components/products/product-subscriptions/ko/runtime/product-subscriptions";
 import { AzureActiveDirectoryService } from "./services/aadService";
@@ -66,9 +66,12 @@ import { SignOutRouteGuard } from "./routing/signOutRouteGuard";
 import { ProvisionService } from "./services/provisioningService";
 import { BalloonBindingHandler, ResizableBindingHandler } from "@paperbits/core/ko/bindingHandlers";
 import { TagInput } from "./components/tag-input/tag-input";
-import { ViewStack } from "@paperbits/core/ko/ui/viewStack";
+import { ViewStack } from "@paperbits/common/ui/viewStack";
 import { OAuthService } from "./services/oauthService";
 import { DefaultSessionManager } from "./authentication/defaultSessionManager";
+import { ApiProducts } from "./components/apis/api-products/ko/runtime/api-products";
+import { ApiProductsTiles } from "./components/apis/api-products/ko/runtime/api-products-tiles";
+import { ProductListTiles } from "./components/products/product-list/ko/runtime/product-list-tiles";
 import { SettingNames } from "./constants";
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -87,6 +90,8 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("apiList", ApiList);
         injector.bind("apiListDropdown", ApiListDropdown);
         injector.bind("apiListTiles", ApiListTiles);
+        injector.bind("apiProducts", ApiProducts);
+        injector.bind("apiProductsTiles", ApiProductsTiles);
         injector.bind("apiDetails", ApiDetails);
         injector.bind("apiHistory", ApiHistory);
         injector.bind("operationDetails", OperationDetails);
@@ -107,11 +112,13 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("subscriptions", Subscriptions);
         injector.bind("productList", ProductList);
         injector.bind("productListDropdown", ProductListDropdown);
+        injector.bind("productListTiles", ProductListTiles);
         injector.bind("validationSummary", ValidationSummary);
         injector.bind("productDetails", ProductDetails);
         injector.bind("productSubscribe", ProductSubscribe);
         injector.bind("productSubscriptions", ProductSubscriptions);
         injector.bind("productApis", ProductApis);
+        injector.bind("productApisTiles", ProductApisTiles);
         injector.bind("operationList", OperationList);
         injector.bind("operationDetails", OperationDetails);
         injector.bind("usersService", UsersService);

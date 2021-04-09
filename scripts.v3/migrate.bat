@@ -7,4 +7,8 @@ node ./migrate ^
 --sourceServiceName "< your service name >" ^
 --destSubscriptionId "< your subscription ID >" ^
 --destResourceGroupName "< your resource group name >" ^
+<<<<<<< HEAD
 --destServiceName "< your service name >"
+=======
+--destServiceName "< your service name >"
+>>>>>>> master

@@ -29,7 +29,7 @@ export class ResetDetailsWorkshop {
     public async reset(): Promise<void> {
         try {
             this.logger.trackEvent("Click: Reset website");
-
+            
             localStorage.clear();
             this.offlineObjectStorage.discardChanges();
             this.viewManager.clearJourney();

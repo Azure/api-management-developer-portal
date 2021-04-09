@@ -60,6 +60,7 @@ export class OperationDetails {
         this.consoleIsOpen = ko.observable();
         this.definitions = ko.observableArray<TypeDefinition>();
         this.defaultSchemaView = ko.observable("table");
+        this.useCorsProxy = ko.observable();
         this.requestUrlSample = ko.computed(() => {
             if (!this.api() || !this.operation()) {
                 return null;
@@ -81,6 +82,9 @@ export class OperationDetails {
 
     @Param()
     public enableConsole: boolean;
+
+    @Param()
+    public useCorsProxy: ko.Observable<boolean>;
 
     @Param()
     public enableScrollTo: boolean;
@@ -122,8 +126,8 @@ export class OperationDetails {
             return;
         }
 
-        if (!operationName) {    
-            this.selectedOperationName(null);                
+        if (!operationName) {
+            this.selectedOperationName(null);
             this.operation(null);
             return;
         }
@@ -229,7 +233,7 @@ export class OperationDetails {
             }
         }
 
-        this.definitions(definitions.filter(d => typeNames.indexOf(d.name) !== -1));
+        this.definitions(definitions.filter(definition => typeNames.indexOf(definition.name) !== -1));
     }
 
     private lookupReferences(definitions: TypeDefinition[], skipNames: string[]): string[] {

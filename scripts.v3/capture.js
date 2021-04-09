@@ -1,3 +1,26 @@
+<<<<<<< HEAD
+=======
+/**
+ * This script automates capturing the content of API Management developer portals into snapshot.
+ * In order to run it, you need to:
+ * 
+ * 1) Clone the api-management-developer-portal repository:
+ *    git clone https://github.com/Azure/api-management-developer-portal.git
+ * 
+ * 2) Install NPM  packages:
+ *    npm install
+ * 
+ * 3) Run this script with a valid combination of arguments:
+ *    node ./capture ^
+ *    --sourceSubscriptionId "< your subscription ID >" ^
+ *    --sourceResourceGroupName "< your resource group name >" ^
+ *    --sourceServiceName "< your service name >" ^
+ *    --destSubscriptionId "< your subscription ID >" ^
+ *    --destResourceGroupName "< your resource group name >" ^
+ *    --destServiceName "< your service name >"
+ */
+
+>>>>>>> master
 const { ImporterExporter } = require("./utils");
 
 const yargs = require('yargs')
@@ -20,6 +43,10 @@ const yargs = require('yargs')
         description: 'API Management service name.',
         demandOption: true
     })
+<<<<<<< HEAD
+=======
+    .help()
+>>>>>>> master
     .argv;
 
 async function capture() {
@@ -28,8 +55,14 @@ async function capture() {
         yargs.resourceGroupName,
         yargs.serviceName
     );
+<<<<<<< HEAD
 
     await importerExporter.export();
+=======
+    await importerExporter.export();
+
+    console.log(`The content captured in "./dist/snapshot" folder.`);
+>>>>>>> master
 }
 
 capture()
@@ -38,11 +71,19 @@ capture()
         process.exit(0);
     })
     .catch(error => {
+<<<<<<< HEAD
         console.error(error);
+=======
+        console.error(error.message);
+>>>>>>> master
         process.exit(1);
     });
 
 
 module.exports = {
     capture
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> master

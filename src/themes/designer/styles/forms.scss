@@ -23,7 +23,7 @@
     }
 
     &.form-group-collapsible {
-        .form-label {
+        & > .form-label {
             position: unset;
         }
 
@@ -175,6 +175,9 @@ textarea {
         min-width: 1.5em;
         border: none;
         line-height: inherit;
+        cursor: pointer;
+        display: inline-block;
+        line-height: 2em;
     }
 
     .input-group-addon {

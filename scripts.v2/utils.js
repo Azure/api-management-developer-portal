@@ -14,7 +14,7 @@ function listFilesInDirectory(dir) {
         const stat = fs.statSync(file);
 
         if (stat && stat.isDirectory()) {
-            results.push(...this.listAllFilesInDirectory(file));
+            results.push(...listFilesInDirectory(file));
         } else {
             results.push(file);
         }
@@ -80,16 +80,22 @@ async function request(method, url, accessToken, body) {
             });
 
             resp.on('end', () => {
-                try {
-                    if (data && data.startsWith("{")) {
-                        resolve(JSON.parse(data));
-                    }
-                    else {
-                        resolve(data);
-                    }
-                }
-                catch (e) {
-                    reject(e);
+                switch (resp.statusCode) {
+                    case 200:
+                    case 201:
+                        data.startsWith("{") ? resolve(JSON.parse(data)) : resolve(data);
+                        break;
+                    case 404:
+                        reject({ code: "NotFound", message: `Resource not found: ${url}` });
+                        break;
+                    case 401:
+                        reject({ code: "Unauthorized", message: `Unauthorized. Make sure you correctly specified management API access token before running the script.` });
+                        break;
+                    case 403:
+                        reject({ code: "Forbidden", message: `Looks like you are not allowed to perform this operation. Please check with your administrator.` });
+                        break;
+                    default:
+                        reject({ code: "UnhandledError", message: `Could not complete request to ${url}. Status: ${resp.statusCode} ${resp.statusMessage}` });
                 }
             });
         });
@@ -106,55 +112,74 @@ async function request(method, url, accessToken, body) {
     });
 }
 
-async function downloadBlobs(blobStorageUrl, localMediaFolder) {
-    const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
-    const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
+async function downloadBlobs(blobStorageUrl, snapshotMediaFolder) {
+    try {
+        const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
+        const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
 
-    await fs.promises.mkdir(path.resolve(localMediaFolder), { recursive: true });
+        await fs.promises.mkdir(path.resolve(snapshotMediaFolder), { recursive: true });
 
-    let blobs = containerClient.listBlobsFlat();
+        let blobs = containerClient.listBlobsFlat();
 
-    for await (const blob of blobs) {
-        const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-        const extension = mime.extension(blob.properties.contentType);
+        for await (const blob of blobs) {
+            const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
+            const extension = mime.extension(blob.properties.contentType);
+            let pathToFile;
 
-        if (extension != null) {
-            await blockBlobClient.downloadToFile(`${localMediaFolder}/${blob.name}.${extension}`);
+            if (extension != null) {
+                pathToFile = `${snapshotMediaFolder}/${blob.name}.${extension}`;
+            }
+            else {
+                pathToFile = `${snapshotMediaFolder}/${blob.name}`;
+            }
+
+            const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
+            await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
+            await blockBlobClient.downloadToFile(pathToFile);
         }
-        else {
-            await blockBlobClient.downloadToFile(`${localMediaFolder}/${blob.name}`);
-        }
+    }
+    catch (error) {
+        throw new Error(`Unable to download media files. ${error.message}`);
     }
 }
 
 async function uploadBlobs(blobStorageUrl, localMediaFolder) {
-    const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
-    const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
-    const fileNames = listFilesInDirectory(localMediaFolder);
+    try {
+        const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
+        const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
+        const fileNames = listFilesInDirectory(localMediaFolder);
 
-    for (const fileName of fileNames) {
-        const blobName = path.basename(fileName).split(".")[0];
-        const contentType = mime.lookup(path.extname(fileName));
+        for (const fileName of fileNames) {
+            const blobKey = fileName.replace(localMediaFolder + "/", "").split(".")[0];
+            const contentType = mime.lookup(fileName) || "application/octet-stream";
+            const blockBlobClient = containerClient.getBlockBlobClient(blobKey);
 
-        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-
-        await blockBlobClient.uploadFile(fileName, {
-            blobHTTPHeaders: {
-                blobContentType: contentType
-            }
-        });
+            await blockBlobClient.uploadFile(fileName, {
+                blobHTTPHeaders: {
+                    blobContentType: contentType
+                }
+            });
+        }
+    }
+    catch (error) {
+        throw new Error(`Unable to upload media files. ${error.message}`);
     }
 }
 
 async function deleteBlobs(blobStorageUrl) {
-    const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
-    const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
+    try {
+        const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
+        const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
 
-    let blobs = containerClient.listBlobsFlat();
+        let blobs = containerClient.listBlobsFlat();
 
-    for await (const blob of blobs) {
-        const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-        await blockBlobClient.delete();
+        for await (const blob of blobs) {
+            const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
+            await blockBlobClient.delete();
+        }
+    }
+    catch (error) {
+        throw new Error(`Unable to delete media files. ${error.message}`);
     }
 }
 

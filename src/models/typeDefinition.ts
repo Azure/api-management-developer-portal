@@ -1,6 +1,5 @@
 import { SchemaObjectContract } from "../contracts/schema";
 
-
 export abstract class TypeDefinitionPropertyType {
     public displayAs: string;
 
@@ -84,24 +83,41 @@ export abstract class TypeDefinitionProperty {
      */
     public enum: any[];
 
-    public schemaObject: SchemaObjectContract;
+    /**
+     * Raw schema representation.
+     */
+    public rawSchema: string;
+
+    /**
+     *  Raw schema format. It is used for syntax highlighting.
+     */
+    public rawSchemaFormat: string;
 
     constructor(name: string, contract: SchemaObjectContract, isRequired: boolean) {
         this.name = contract.title || name;
-        this.schemaObject = contract;
         this.description = contract.description;
         this.type = new TypeDefinitionPropertyTypePrimitive(contract.format || contract.type || "object");
+        this.required = isRequired;
 
-        if (contract.example) {
-            if (typeof contract.example === "object") {
-                this.example = JSON.stringify(contract.example, null, 4);
-            }
-            else {
-                this.example = contract.example;
-            }
+        if (contract.rawSchemaFormat) {
+            this.rawSchema = contract.rawSchema;
+            this.rawSchemaFormat = contract.rawSchemaFormat;
+        }
+        else { // fallback to JSON
+            this.rawSchema = JSON.stringify(contract, null, 4);
+            this.rawSchemaFormat = "json";
         }
 
-        this.required = isRequired;
+        if (contract.exampleFormat) {
+            this.example = contract.example;
+            this.exampleFormat = contract.exampleFormat;
+        }
+        else { // fallback to JSON
+            this.example = typeof contract.example === "object"
+                ? JSON.stringify(contract.example, null, 4)
+                : contract.example;
+            this.exampleFormat = "json";
+        }
     }
 }
 
@@ -206,6 +222,10 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                     try {
                         const propertySchemaObject = contract.properties[propertyName];
 
+                        if (propertySchemaObject.readOnly) {
+                            return;
+                        }
+
                         if (!propertySchemaObject) {
                             return;
                         }
@@ -265,7 +285,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                                     arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfReference(getTypeNameFromRef(propertySchemaObject.items.$ref));
                                     props.push(arrayProperty);
                                 }
-                                else if (propertySchemaObject.items.properties) { 
+                                else if (propertySchemaObject.items.properties) {
                                     const objectProperty = new TypeDefinitionObjectProperty(propertyName, propertySchemaObject.items, isRequired, true);
                                     const flattenObjects = this.flattenNestedObjects(objectProperty, propertyName + "[]");
                                     props.push(...flattenObjects);
@@ -335,7 +355,6 @@ export class TypeDefinitionIndexerProperty extends TypeDefinitionObjectProperty 
 export class TypeDefinition extends TypeDefinitionObjectProperty {
     constructor(name: string, contract: SchemaObjectContract) {
         super(name, contract, true);
-
         this.name = name;
     }
 

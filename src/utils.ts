@@ -2,7 +2,6 @@ import { NameValuePair } from "request";
 import { ArmResource } from "./contracts/armResource";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
-import { resolve } from "path";
 
 
 export class Utils {
@@ -201,14 +200,19 @@ export class Utils {
         let suffix = " ms";
         let divider = 1;
 
-        if (milliseconds > 1000) {
+        if (milliseconds >= 1000) {
             suffix = " s";
             divider = 1000;
         }
-
-        if (milliseconds > 1000 * 60) {
-            suffix = " h";
+   
+        if (milliseconds >= 1000 * 60) {
+            suffix = " m";
             divider = 1000 * 60;
+        }
+        
+        if (milliseconds >= 1000 * 60 * 60) {
+            suffix = " h";
+            divider = 1000 * 60 * 60;
         }
 
         return `${(milliseconds / divider).toFixed(0)}${suffix}`;
@@ -274,19 +278,16 @@ export class Utils {
         const base64 = base64Url.replace("-", "+").replace("_", "/");
         const decodedToken = JSON.parse(Buffer.from(base64, "base64").toString());
 
-        const now = new Date();
-        const offset = now.getTimezoneOffset() * 60000 * 1000;
-
         if (decodedToken.exp) {
-            decodedToken.exp = new Date(decodedToken.exp * 1000 + offset);
+            decodedToken.exp = new Date(parseInt(decodedToken.exp) * 1000);
         }
 
         if (decodedToken.nfb) {
-            decodedToken.nfb = new Date(decodedToken.nfb * 1000 + offset);
+            decodedToken.nfb = new Date(parseInt(decodedToken.nfb) * 1000);
         }
 
         if (decodedToken.iat) {
-            decodedToken.iat = new Date(decodedToken.iat * 1000 + offset);
+            decodedToken.iat = new Date(parseInt(decodedToken.iat) * 1000);
         }
 
         return decodedToken;
@@ -350,13 +351,6 @@ export class Utils {
         return JSON.parse(JSON.stringify(obj));
     }
 
-    public static getUtcDateTime(): Date {
-        const now = new Date();
-        const utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
-
-        return utc;
-    }
-
     public static readFileAsByteArray(file: File): Promise<Uint8Array> {
         return new Promise<Uint8Array>(resolve => {
             const reader = new FileReader();
@@ -366,12 +360,6 @@ export class Utils {
             };
 
             reader.readAsArrayBuffer(file);
-        });
-    }
-
-    public static async delay(ms: number): Promise<void> {
-        return new Promise<void>(resolve => {
-            setTimeout(resolve, ms);
         });
     }
 }

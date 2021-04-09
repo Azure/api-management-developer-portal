@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import * as Objects from "@paperbits/common";
 import { IObjectStorage, Query, Operator, Page } from "@paperbits/common/persistence";
 import { MapiClient } from "../services/mapiClient";
@@ -7,6 +6,8 @@ import { ArmResource } from "../contracts/armResource";
 import { AppError } from "../errors";
 import { defaultPageSize } from "../constants";
 import { PageContract } from "../contracts/page";
+import { LocaleModel } from "@paperbits/common/localization";
+import { PopupModel } from "@paperbits/core/popup";
 
 
 const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block"];
@@ -193,6 +194,11 @@ export class MapiObjectStorage implements IObjectStorage {
                 mapiContentItem = "en-us";
                 break;
 
+            case "popups":
+                mapiContentType = "popups";
+                mapiContentItem = contentItem;
+                break;
+
             default:
                 // throw new AppError(`Unknown content type: "${contentType}"`);
                 return key;
@@ -233,7 +239,7 @@ export class MapiObjectStorage implements IObjectStorage {
             const resource = this.paperbitsKeyToArmResource(key);
             const contentType = this.getContentTypeFromResource(resource);
             const isLocalized = localizedContentTypes.includes(contentType);
-            const item = await this.mapiClient.get<T>(`${resource}`);
+            const item = await this.mapiClient.get<T>(`${resource}`, [MapiClient.getPortalHeader("getObject")]);
             const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
 
             if (key.startsWith("blocks/")) {
@@ -341,7 +347,7 @@ export class MapiObjectStorage implements IObjectStorage {
 
     private async loadNextPage<T>(resource: string, localeSearchPrefix: string, filterQueryString: string, orderQueryString: string, skip: number, isLocalized: boolean): Promise<Page<T>> {
         const url = `${resource}?$skip=${skip}&$top=${defaultPageSize}${filterQueryString}${orderQueryString}`;
-        const pageOfTs = await this.mapiClient.get<PageContract<T>>(url);
+        const pageOfTs = await this.mapiClient.get<PageContract<T>>(url, [MapiClient.getPortalHeader("getPageData")]);
         const searchResult = [];
 
         for (const item of pageOfTs.value) {
@@ -374,6 +380,26 @@ export class MapiObjectStorage implements IObjectStorage {
         const isLocalized = localizedContentTypes.includes(contentType);
         const localeSearchPrefix = isLocalized ? `${selectedLocale}/` : "";
 
+        if (key === "popups") {
+            const pageOfPopups: Page<PopupModel> = {
+                value: []
+            };
+
+            return <any>pageOfPopups;
+        }
+
+        if (key === "locales") {
+            const pageOfLocales: Page<LocaleModel> = {
+                value: [{
+                    key: `contentTypes/locales/contentItem/en_us`,
+                    code: "en-us",
+                    displayName: "English (US)"
+                }]
+            };
+
+            return <any>pageOfLocales;
+        }
+
         try {
             let filterQueryString = "";
             let orderQueryString = "";
@@ -396,7 +422,10 @@ export class MapiObjectStorage implements IObjectStorage {
                             break;
 
                         case Operator.contains:
-                            filterExpressions.push(`contains(${filter.left},'${filter.right}')`);
+                            if (filter.left !== "mimeType") { // Need to make this field indexable in content type first.
+                                filterExpressions.push(`contains(${filter.left},'${filter.right}')`);
+                            }
+
                             break;
 
                         default:
@@ -404,7 +433,9 @@ export class MapiObjectStorage implements IObjectStorage {
                     }
                 }
 
-                filterQueryString = `&$filter=${filterExpressions.join(" and ")}`;
+                if (filterExpressions.length > 0) {
+                    filterQueryString = `&$filter=${filterExpressions.join(" and ")}`;
+                }
             }
 
             if (query?.orderingBy) {
@@ -413,14 +444,12 @@ export class MapiObjectStorage implements IObjectStorage {
             }
 
             if (key.includes("navigationItems")) {
-                const armContract = await this.mapiClient.get<any>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`);
+                const armContract = await this.mapiClient.get<any>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`, [MapiClient.getPortalHeader("searchObjects")]);
                 const paperbitsContract = this.convertArmContractToPaperbitsContract(armContract, isLocalized);
                 return paperbitsContract.nodes;
             }
-            else {
-                return await this.loadNextPage(resource, localeSearchPrefix, filterQueryString, orderQueryString, 0, isLocalized);
 
-            }
+            return await this.loadNextPage(resource, localeSearchPrefix, filterQueryString, orderQueryString, 0, isLocalized);
         }
         catch (error) {
             throw new AppError(`Could not search object '${key}'. Error: ${error.message}`, error);

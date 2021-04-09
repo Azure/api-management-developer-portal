@@ -11,6 +11,8 @@ export class ProfileViewModelBinder implements ViewModelBinder<ProfileModel, Pro
             viewModel["widgetBinding"] = {
                 displayName: "User: profile",
                 model: model,
+                flow: "block",
+                draggable: true,
                 applyChanges: async (updatedModel: ProfileModel) => {
                     this.modelToViewModel(updatedModel, viewModel, bindingContext);
                 }

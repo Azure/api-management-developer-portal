@@ -35,6 +35,7 @@ export class OperationList {
     public readonly hasNextPage: ko.Observable<boolean>;
     public readonly hasPager: ko.Computed<boolean>;
     public readonly tagScope: ko.Computed<string>;
+    public readonly showUrlPath: ko.Observable<boolean>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -43,6 +44,12 @@ export class OperationList {
     ) {
         this.detailsPageUrl = ko.observable();
         this.allowSelection = ko.observable(false);
+        this.wrapText = ko.observable();
+
+        this.showUrlPath = ko.observable();
+        this.defaultShowUrlPath = ko.observable();
+        this.showToggleUrlPath = ko.observable();
+
         this.operations = ko.observableArray();
         this.operationGroups = ko.observableArray();
         this.selectedApiName = ko.observable();
@@ -56,14 +63,20 @@ export class OperationList {
         this.hasNextPage = ko.observable();
         this.hasPrevPage = ko.observable();
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
-        this.tagScope = ko.computed(() =>
-            this.selectedApiName()
-                ? `apis/${this.selectedApiName()}`
-                : "");
+        this.tagScope = ko.computed(() => this.selectedApiName() ? `apis/${this.selectedApiName()}`: "");
     }
 
     @Param()
     public allowSelection: ko.Observable<boolean>;
+
+    @Param()
+    public wrapText: ko.Observable<boolean>;
+
+    @Param()
+    public defaultShowUrlPath: ko.Observable<boolean>;
+
+    @Param()
+    public showToggleUrlPath: ko.Observable<boolean>;
 
     @Param()
     public defaultGroupByTagToEnabled: ko.Observable<boolean>;
@@ -80,6 +93,9 @@ export class OperationList {
         this.selectedOperationName(operationName);
 
         this.groupByTag(this.defaultGroupByTagToEnabled());
+        this.tags.subscribe(this.resetSearch);
+
+        this.showUrlPath(this.defaultShowUrlPath());
 
         if (this.selectedApiName()) {
             await this.loadOperations();
@@ -87,9 +103,6 @@ export class OperationList {
 
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
-            .subscribe(this.resetSearch);
-
-        this.tags
             .subscribe(this.resetSearch);
 
         this.groupByTag
@@ -123,6 +136,8 @@ export class OperationList {
             this.operations([]);
             this.searchRequest = { pattern: this.pattern(), tags: this.tags(), grouping: "none" };
         }
+
+        this.searchRequest.propertyName = this.showUrlPath() ? 'urlTemplate' : undefined;
 
         try {
             this.working(true);

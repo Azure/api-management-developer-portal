@@ -38,8 +38,8 @@
     }
 }
 
-.backdrop {
-    opacity: 0;
+.collapsible-backdrop {
+    opacity: 0.5;
     position: fixed;
     top: 0;
     left: 0;
@@ -63,14 +63,14 @@
     }
 }
 
-.collapsible.expanded {
+.collapsible-panel.show {
     & > .collapsible-content {
-        display: block;
+        display: flex;
         position: absolute;
     }
 }
 
-.collapsible-panel.collapsible.expanded {
+.collapsible-panel.show {
     & > .collapsible-content {
         top: 0;
         right: 0;
@@ -86,7 +86,7 @@
         }
     }
 
-    .backdrop {
+    .collapsible-backdrop {
         display: block;
     }
 }
@@ -98,7 +98,6 @@
         }
     }
 }
-
 
 .collapsible-dropdown {
     position: absolute;

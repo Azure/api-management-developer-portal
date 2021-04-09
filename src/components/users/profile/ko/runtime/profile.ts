@@ -6,7 +6,7 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { Router } from "@paperbits/common/routing/router";
 import { User } from "../../../../../models/user";
 import { UsersService } from "../../../../../services/usersService";
-import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
+import { DelegationParameters, DelegationActionPath } from "../../../../../contracts/tenantSettings";
 import { TenantService } from "../../../../../services/tenantService";
 import { pageUrlChangePassword } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
@@ -67,7 +67,7 @@ export class Profile {
         this.setUser(model);
     }
 
-    private async isDelegationEnabled(action: DelegationAction): Promise<boolean> {
+    private async isDelegationEnabled(action: DelegationActionPath): Promise<boolean> {
         if (!this.user()) {
             return false;
         }
@@ -103,7 +103,7 @@ export class Profile {
     }
 
     public async toggleEdit(): Promise<void> {
-        const isDelegationEnabled = await this.isDelegationEnabled(DelegationAction.changeProfile);
+        const isDelegationEnabled = await this.isDelegationEnabled(DelegationActionPath.changeProfile);
         if (isDelegationEnabled) {
             return;
         }
@@ -116,7 +116,7 @@ export class Profile {
     }
 
     public async toggleEditPassword(): Promise<void> {
-        const isDelegationEnabled = await this.isDelegationEnabled(DelegationAction.changePassword);
+        const isDelegationEnabled = await this.isDelegationEnabled(DelegationActionPath.changePassword);
         if (isDelegationEnabled) {
             return;
         }
@@ -158,7 +158,7 @@ export class Profile {
     }
 
     public async closeAccount(): Promise<void> {
-        const isDelegationEnabled = await this.isDelegationEnabled(DelegationAction.closeAccount);
+        const isDelegationEnabled = await this.isDelegationEnabled(DelegationActionPath.closeAccount);
         if (isDelegationEnabled) {
             return;
         }

@@ -78,12 +78,11 @@ export class App {
                 }
 
                 const accessToken = AccessToken.parse(managementApiAccessToken);
-                const utcNow = Utils.getUtcDateTime();
+                const now = new Date();
 
-                if (utcNow >= accessToken.expires) {
+                if (now >= accessToken.expires) {
                     this.viewManager.addToast(startupError, `Management API access token has expired. See setting <i>managementApiAccessToken</i> in the configuration file <i>config.design.json</i>`);
                     this.authenticator.clearAccessToken();
-                    window.location.assign("/signout");
                     return;
                 }
 
