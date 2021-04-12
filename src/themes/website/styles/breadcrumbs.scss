@@ -4,7 +4,10 @@
     padding: 0;
     margin-bottom: 20px;
     list-style: none;
-    background-color: none
+    background-color: none;
+    a {
+        text-decoration: underline;
+    }
 }
 
 .breadcrumb-item+.breadcrumb-item {
