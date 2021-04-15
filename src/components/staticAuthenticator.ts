@@ -1,14 +1,18 @@
 import { IAuthenticator, AccessToken } from "../authentication";
 
 export class StaticAuthenticator implements IAuthenticator {
-    private accessToken: string;
+    private accessToken: AccessToken;
 
-    public async getAccessToken(): Promise<string> {
+    public async getAccessToken(): Promise<AccessToken> {
         return this.accessToken;
     }
 
+    public async getAccessTokenAsString(): Promise<string> {
+        return this.accessToken.toString();
+    }
+
     public async setAccessToken(accessToken: AccessToken): Promise<void> {
-        this.accessToken = accessToken.toString();
+        this.accessToken = accessToken;
     }
 
     public clearAccessToken(): void {
@@ -16,7 +20,7 @@ export class StaticAuthenticator implements IAuthenticator {
     }
 
     public async isAuthenticated(): Promise<boolean> {
-        const accessToken = await this.getAccessToken();
+        const accessToken = await this.getAccessTokenAsString();
         return !!accessToken;
     }
 }

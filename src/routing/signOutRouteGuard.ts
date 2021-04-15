@@ -23,7 +23,7 @@ export class SignOutRouteGuard implements RouteGuard {
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
 
         if (isDelegationEnabled) {
-            const token = await this.authenticator.getAccessToken();
+            const token = await this.authenticator.getAccessTokenAsString();
 
             if (token) {
                 try {
