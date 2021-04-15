@@ -4,20 +4,44 @@ import { IAuthenticator, AccessToken } from "./../authentication";
 export class DefaultAuthenticator implements IAuthenticator {
     constructor(private readonly eventManager: EventManager) { }
 
-    public async getAccessToken(): Promise<string> {
-        const accessToken = sessionStorage.getItem("accessToken");
-
-        if (!accessToken && window.location.pathname.startsWith("/signin-sso")) {
+    private runSsoFlow(): Promise<void> {
+        return new Promise<void>(async () => {
             const url = new URL(location.href);
             const queryParams = new URLSearchParams(url.search);
             const tokenValue = queryParams.get("token");
-            const token = AccessToken.parse(`SharedAccessSignature ${tokenValue}`);
+            const tokenString = `SharedAccessSignature ${tokenValue}`;
+            const token = AccessToken.parse(tokenString);
+
             await this.setAccessToken(token);
 
             const returnUrl = queryParams.get("returnUrl") || "/";
+
+            // wait for redirect to happen, deliberatly not resolving the promise
             window.location.assign(returnUrl);
+        });
+    }
+
+    public async getAccessToken(): Promise<AccessToken> {
+        if (location.pathname.startsWith("/signin-sso")) {
+            await this.runSsoFlow();
         }
-        return accessToken;
+
+        const storedToken = sessionStorage.getItem("accessToken");
+
+        if (storedToken) {
+            const accessToken = AccessToken.parse(storedToken);
+
+            if (!accessToken.isExpired()) {
+                return accessToken;
+            }
+        }
+
+        return null;
+    }
+
+    public async getAccessTokenAsString(): Promise<string> {
+        const accessToken = await this.getAccessToken();
+        return accessToken?.toString();
     }
 
     public async setAccessToken(accessToken: AccessToken): Promise<void> {
@@ -27,19 +51,6 @@ export class DefaultAuthenticator implements IAuthenticator {
         }
 
         sessionStorage.setItem("accessToken", accessToken.toString());
-
-        const expiresInMs = accessToken.expiresInMs();
-        const refreshBufferMs = 5 * 60 * 1000; // 5 min
-        const nextRefreshInMs = expiresInMs - refreshBufferMs;
-
-        if (expiresInMs < refreshBufferMs) {
-            // Refresh immediately
-            this.eventManager.dispatchEvent("authenticated"); 
-        }
-        else {
-            // Schedule refresh 5 min before expiration.
-            setTimeout(() => this.eventManager.dispatchEvent("authenticated"), nextRefreshInMs);
-        }
     }
 
     public clearAccessToken(): void {
@@ -47,7 +58,7 @@ export class DefaultAuthenticator implements IAuthenticator {
     }
 
     public async isAuthenticated(): Promise<boolean> {
-        const accessToken = await this.getAccessToken();
+        const accessToken = await this.getAccessTokenAsString();
 
         if (!accessToken) {
             return false;
