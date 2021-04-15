@@ -30,7 +30,7 @@ export class ContentWorkshop {
         }
 
         try {
-            const accessToken = await this.authenticator.getAccessToken();
+            const accessToken = await this.authenticator.getAccessTokenAsString();
 
             const publishRootUrl = await this.settingsProvider.getSetting<string>("backendUrl") || "";
 
