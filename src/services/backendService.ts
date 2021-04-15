@@ -70,7 +70,7 @@ export class BackendService {
     }
 
     public async sendChangePassword(changePasswordRequest: ChangePasswordRequest): Promise<void> {
-        const authToken = await this.authenticator.getAccessToken();
+        const authToken = await this.authenticator.getAccessTokenAsString();
 
         if (!authToken) {
             throw Error("Auth token not found");
@@ -94,7 +94,7 @@ export class BackendService {
     }
 
     public async getDelegationUrl(action: DelegationAction, delegationParameters: {}): Promise<string> {
-        const authToken = await this.authenticator.getAccessToken();
+        const authToken = await this.authenticator.getAccessTokenAsString();
 
         if (!authToken) {
             throw Error("Auth token not found");
