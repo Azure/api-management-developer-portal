@@ -2,9 +2,14 @@ import { AccessToken } from "./accessToken";
 
 export interface IAuthenticator {
     /**
+     * Returns access token as a string.
+     */
+    getAccessTokenAsString(): Promise<string>;
+
+    /**
      * Returns access token for current session.
      */
-    getAccessToken(): Promise<string>;
+    getAccessToken(): Promise<AccessToken>;
 
     /**
      * Sets new token for the session.
