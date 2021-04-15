@@ -1,6 +1,5 @@
 import * as Constants from "./../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { EventManager } from "@paperbits/common/events";
 import { HttpClient } from "@paperbits/common/http";
 import { Logger } from "@paperbits/common/logging";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
@@ -10,13 +9,13 @@ import { AccessToken, IAuthenticator } from "./../authentication";
 
 export class AccessTokenRefrsher {
     constructor(
-        eventManager: EventManager,
         private readonly settingsProvider: ISettingsProvider,
         private readonly authenticator: IAuthenticator,
         private readonly httpClient: HttpClient,
         private readonly logger: Logger
     ) {
-        eventManager.addEventListener("authenticated", this.refreshToken.bind(this));
+        this.refreshToken = this.refreshToken.bind(this);
+        setInterval(() => this.refreshToken(), 60 * 1000);
     }
 
     private async refreshToken(): Promise<void> {
@@ -37,10 +36,17 @@ export class AccessTokenRefrsher {
                 return;
             }
 
+            const expiresInMs = accessToken.expiresInMs();
+            const refreshBufferMs = 5 * 60 * 1000; // 5 min
+
+            if (expiresInMs > refreshBufferMs) {
+                return;
+            }
+
             const response = await this.httpClient.send({
                 method: "GET",
                 url: `${managementApiUrl}${Utils.ensureLeadingSlash("/identity")}?api-version=${Constants.managementApiVersion}`,
-                headers: [{ name: "Authorization", value: accessToken }]
+                headers: [{ name: "Authorization", value: accessToken.toString() }]
             });
 
             const accessTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
