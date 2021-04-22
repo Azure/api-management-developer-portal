@@ -1,6 +1,7 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./operation-console.html";
+import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import { Component, Param, OnMounted } from "@paperbits/common/ko/decorators";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Operation } from "../../../../../models/operation";
@@ -16,7 +17,6 @@ import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { TenantService } from "../../../../../services/tenantService";
 import { ServiceSkuName, TypeOfApi } from "../../../../../constants";
-import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import { Revision } from "../../../../../models/revision";
 import { templates } from "./templates/templates";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
@@ -27,6 +27,8 @@ import { OAuthService } from "../../../../../services/oauthService";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { SessionManager } from "../../../../../authentication/sessionManager";
 import { OAuthSession, StoredCredentials } from "./oauthSession";
+import { UnauthorizedError } from "../../../../../errors/unauthorizedError";
+import { GrantTypes } from "./../../../../../constants";
 import { ResponsePackage } from "./responsePackage";
 
 const oauthSessionKey = "oauthSession";
@@ -56,6 +58,10 @@ export class OperationConsole {
     public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
     public readonly wildcardSegment: ko.Observable<string>;
     public readonly selectedGrantType: ko.Observable<string>;
+    public readonly username: ko.Observable<string>;
+    public readonly password: ko.Observable<string>;
+    public readonly authorizationError: ko.Observable<string>;
+    public readonly authenticated: ko.Observable<boolean>;
     public isConsumptionMode: boolean;
     public templates: Object;
     public backendUrl: string;
@@ -98,6 +104,11 @@ export class OperationConsole {
         this.isHostnameWildcarded = ko.computed(() => this.selectedHostname().includes("*"));
         this.selectedGrantType = ko.observable();
         this.authorizationServer = ko.observable();
+        this.username = ko.observable();
+        this.password = ko.observable();
+        this.authorizationError = ko.observable();
+        this.authenticated = ko.observable(false);
+
         this.useCorsProxy = ko.observable(false);
         this.wildcardSegment = ko.observable();
 
@@ -153,7 +164,7 @@ export class OperationConsole {
         this.api.subscribe(this.resetConsole);
         this.operation.subscribe(this.resetConsole);
         this.selectedLanguage.subscribe(this.updateRequestSummary);
-        this.selectedGrantType.subscribe(this.authenticateOAuth);
+        this.selectedGrantType.subscribe(this.onGrantTypeChange);
     }
 
     private async resetConsole(): Promise<void> {
@@ -374,6 +385,7 @@ export class OperationConsole {
     private removeAuthorizationHeader(): void {
         const authorizationHeader = this.findHeader(KnownHttpHeaders.Authorization);
         this.removeHeader(authorizationHeader);
+        this.authenticated(false);
     }
 
     private setAuthorizationHeader(accessToken: string): void {
@@ -390,6 +402,7 @@ export class OperationConsole {
 
         this.consoleOperation().request.headers.push(keyHeader);
         this.updateRequestSummary();
+        this.authenticated(true);
     }
 
     private removeSubscriptionKeyHeader(): void {
@@ -625,27 +638,53 @@ export class OperationConsole {
         this.removeAuthorizationHeader();
     }
 
+    public async authenticateOAuthWithPassword(): Promise<void> {
+        try {
+            this.authorizationError(null);
+
+            const api = this.api();
+            const authorizationServer = this.authorizationServer();
+            const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
+            const serverName = authorizationServer.name;
+
+            if (scopeOverride) {
+                authorizationServer.scopes = [scopeOverride];
+            }
+
+            const accessToken = await this.oauthService.authenticatePassword(this.username(), this.password(), authorizationServer);
+            await this.setStoredCredentials(serverName, scopeOverride, GrantTypes.password, accessToken);
+
+            this.setAuthorizationHeader(accessToken);
+        }
+        catch (error) {
+            if (error instanceof UnauthorizedError) {
+                this.authorizationError(error.message);
+                return;
+            }
+
+            this.authorizationError("Oops, something went wrong. Try again later.");
+        }
+    }
+
+    private async onGrantTypeChange(grantType: string): Promise<void> {
+        await this.clearStoredCredentials();
+
+        if (!grantType || grantType === GrantTypes.password) {
+            return;
+        }
+
+        await this.authenticateOAuth(grantType);
+    }
+
     /**
      * Initiates specified authentication flow.
      * @param grantType OAuth grant type, e.g. "implicit" or "authorization_code".
      */
     public async authenticateOAuth(grantType: string): Promise<void> {
-        await this.clearStoredCredentials();
-
-        if (!grantType) {
-            return;
-        }
-
         const api = this.api();
         const authorizationServer = this.authorizationServer();
         const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
         const serverName = authorizationServer.name;
-        const storedCredentials = await this.getStoredCredentials(serverName, scopeOverride);
-
-        if (storedCredentials) {
-            this.setAuthorizationHeader(storedCredentials.accessToken);
-            return;
-        }
 
         if (scopeOverride) {
             authorizationServer.scopes = [scopeOverride];
