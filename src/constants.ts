@@ -111,7 +111,13 @@ export enum GrantTypes {
      * The Client Credentials grant type is used by clients to obtain an access token outside of
      * the context of a user.
      */
-    clientCredentials = "client_credentials"
+    clientCredentials = "client_credentials",
+
+    /**
+     * The Resource owner password grant type is used to exchange a username and password for an access
+     * token directly. 
+     */
+    password = "password"
 }
 
 export const managementApiVersion = "2019-12-01";
