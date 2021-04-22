@@ -51,9 +51,9 @@ export class ArmAuthenticator implements IAuthenticator {
         return accessToken;
     }
 
-    public async getAccessToken(): Promise<string> {
+    public async getAccessToken(): Promise<AccessToken> {
         if (this.accessToken && !this.accessToken.isExpired()) {
-            return this.accessToken.toString();
+            return this.accessToken;
         }
 
         const storedAccessToken = sessionStorage.getItem("armAccessToken");
@@ -62,11 +62,16 @@ export class ArmAuthenticator implements IAuthenticator {
             const parsedToken = AccessToken.parse(storedAccessToken);
 
             if (!parsedToken.isExpired()) {
-                return parsedToken.toString();
+                return parsedToken;
             }
         }
 
         const accessToken = await this.tryAcquireToken();
+        return accessToken;
+    }
+
+    public async getAccessTokenAsString(): Promise<string> {
+        const accessToken = await this.getAccessToken();
         return accessToken.toString();
     }
 
@@ -91,12 +96,6 @@ export class ArmAuthenticator implements IAuthenticator {
             return false;
         }
 
-        const parsedToken = AccessToken.parse(accessToken);
-
-        if (!parsedToken) {
-            return false;
-        }
-
-        return !parsedToken.isExpired();
+        return !accessToken.isExpired();
     }
 }

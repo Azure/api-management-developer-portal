@@ -17,7 +17,7 @@ export class AzureResourceManagementService {
      */
     public async getServiceDescription(): Promise<ServiceDescriptionContract> {
         const managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
-        const armAccessToken = await this.authenticator.getAccessToken();
+        const armAccessToken = await this.authenticator.getAccessTokenAsString();
  
         const serviceDescriptionResponse = await this.httpClient.send<ServiceDescriptionContract>({
             url: `${managementApiUrl}?api-version=${Constants.managementApiVersion}`,
@@ -36,7 +36,7 @@ export class AzureResourceManagementService {
      */
     public async getUserAccessToken(userName: string): Promise<string> {
         const managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
-        const armAccessToken = await this.authenticator.getAccessToken();
+        const armAccessToken = await this.authenticator.getAccessTokenAsString();
         const exp = new Date(new Date().valueOf() + 60 * 60 * 1000);
 
         const userTokenResponse = await this.httpClient.send<ServiceDescriptionContract>({
