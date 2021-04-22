@@ -106,6 +106,7 @@ class HttpClient {
                     switch (resp.statusCode) {
                         case 200:
                         case 201:
+                        case 202:
                             data.startsWith("{") ? resolve(JSON.parse(data)) : resolve(data);
                             break;
                         case 404:

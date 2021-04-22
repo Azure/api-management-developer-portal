@@ -139,7 +139,7 @@ export class UsersService {
      * Returns currently authenticated user ID.
      */
     public async getCurrentUserId(): Promise<string> {
-        const token = await this.authenticator.getAccessToken();
+        const token = await this.authenticator.getAccessTokenAsString();
 
         if (!token) {
             return null;
@@ -269,7 +269,7 @@ export class UsersService {
     }
 
     public async changePassword(userId: string, newPassword: string): Promise<void> {
-        const authToken = await this.authenticator.getAccessToken();
+        const authToken = await this.authenticator.getAccessTokenAsString();
 
         if (!authToken) {
             throw Error("Auth token not found");

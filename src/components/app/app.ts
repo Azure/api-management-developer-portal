@@ -67,7 +67,7 @@ export class App {
         }
 
         try {
-            const token = await this.authenticator.getAccessToken();
+            const token = await this.authenticator.getAccessTokenAsString();
 
             if (!token) {
                 const managementApiAccessToken = settings["managementApiAccessToken"];
