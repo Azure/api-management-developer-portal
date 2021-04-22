@@ -66,7 +66,7 @@ const designerConfig = {
                 { from: `./src/themes/designer/assets/index.html`, to: "index.html" },
                 { from: `./src/themes/designer/styles/fonts`, to: "editors/styles/fonts" },
                 { from: `./src/libraries`, to: "data" },
-                { from: `./scripts/data.json`, to: "editors/themes/default.json" },
+                { from: `./scripts.v3/data.json`, to: "editors/themes/default.json" },
                 { from: "./src/config.design.json", to: "config.json" }
             ]
         })
