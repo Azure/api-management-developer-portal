@@ -3,7 +3,7 @@ import { Utils } from "../utils";
 import { IAuthenticator, AccessToken } from ".";
 
 
-const aadClientId = "4c6edb5e-d0fb-4ca1-ac29-8c181c1a9522"; // test app
+const aadClientId = "73a510c3-9946-46dd-b5ae-a8f0ae68fd04"; // test app
 const scopes = ["https://management.azure.com/user_impersonation"];
 
 export class ArmAuthenticator implements IAuthenticator {
@@ -14,7 +14,8 @@ export class ArmAuthenticator implements IAuthenticator {
         const msalConfig: Msal.Configuration = {
             auth: {
                 clientId: aadClientId,
-                authority: "https://login.windows-ppe.net/common"
+                authority: "https://login.microsoftonline.com/common",
+                redirectUri: "https://apimanagement-cors-proxy-df.azure-api.net/portal/signin-aad",
             }
         };
 
