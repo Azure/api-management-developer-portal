@@ -116,7 +116,7 @@ export class MapiClient {
         const portalHeader = httpRequest.headers.find(header => header.name === Constants.portalHeaderName);
 
         if (!authHeader?.value) {
-            const accessToken = await this.authenticator.getAccessToken();
+            const accessToken = await this.authenticator.getAccessTokenAsString();
 
             if (accessToken) {
                 httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${accessToken}` });
@@ -128,7 +128,7 @@ export class MapiClient {
                 }
             }
         }
-        
+
         if (!portalHeader && httpRequest.method !== HttpMethod.head) {
             httpRequest.headers.push(MapiClient.getPortalHeader());
         }

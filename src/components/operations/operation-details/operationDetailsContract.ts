@@ -15,4 +15,9 @@ export interface OperationDetailsContract extends Contract {
      * Indicates whether operation details should appear in the visible area (for example if API details is too long).
      */
     enableScrollTo?: boolean;
+
+    /**
+     * Indicates whether the Test console should use CORS proxy vs direct calls from the browser.
+     */
+    useCorsProxy?: boolean;
 }

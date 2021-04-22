@@ -6,7 +6,7 @@ import { SubscriptionListItem } from "./subscriptionListItem";
 import { UsersService } from "../../../../../services/usersService";
 import { ProductService } from "../../../../../services/productService";
 import { TenantService } from "../../../../../services/tenantService";
-import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
+import { DelegationParameters, DelegationActionPath } from "../../../../../contracts/tenantSettings";
 import { Utils } from "../../../../../utils";
 import { Router } from "@paperbits/common/routing/router";
 
@@ -123,7 +123,7 @@ export class Subscriptions {
         if (isDelegationEnabled) {
             const delegation = new URLSearchParams();
             delegation.append(DelegationParameters.SubscriptionId, Utils.getResourceName("subscriptions", subscriptionId));
-            this.router.navigateTo(`/${DelegationAction.unsubscribe}?${delegation.toString()}`);
+            this.router.navigateTo(`/${DelegationActionPath.unsubscribe}?${delegation.toString()}`);
 
             return true;
         }

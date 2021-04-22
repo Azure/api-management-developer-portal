@@ -5,7 +5,7 @@ const { execSync } = require("child_process");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
 const mime = require("mime-types");
-const apiVersion = "2019-01-01"; // "2021-01-01-preview"; 
+const apiVersion = "2020-06-01-preview"; // "2021-01-01-preview"; 
 const managementApiEndpoint = "management.azure.com";
 
 
@@ -74,6 +74,7 @@ class HttpClient {
                     switch (resp.statusCode) {
                         case 200:
                         case 201:
+                        case 202:
                             data.startsWith("{") ? resolve(JSON.parse(data)) : resolve(data);
                             break;
                         case 404:
@@ -402,8 +403,7 @@ class ImporterExporter {
             const revision = timeStamp.toISOString().replace(/[\-\:\T]/g, "").substr(0, 14);
             const url = `/portalRevisions/${revision}`;
             const body = {
-                description: `Migration ${revision}.`,
-                isCurrent: true
+                description: `Migration ${revision}.`
             }
 
             await this.httpClient.sendRequest("PUT", url, body);
