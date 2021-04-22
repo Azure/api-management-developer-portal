@@ -159,7 +159,7 @@ export class MapiClient {
         const text = response.toText();
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
-            if ((contentType.includes("json")) && text.length > 0) {
+            if (contentType.includes("json") && text.length > 0) {
                 return JSON.parse(text) as T;
             }
             else {

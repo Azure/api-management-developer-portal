@@ -1,6 +1,7 @@
+import { UnauthorizedError } from "./../errors/unauthorizedError";
 import * as ClientOAuth2 from "client-oauth2";
 import * as Utils from "@paperbits/common";
-import { HttpClient } from "@paperbits/common/http";
+import { HttpClient, HttpMethod } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { GrantTypes } from "./../constants";
 import { MapiClient } from "./mapiClient";
@@ -88,7 +89,7 @@ export class OAuthService {
      * @param backendUrl {string} Portal backend URL.
      * @param authorizationServer {AuthorizationServer} Authorization server details.
      */
-     public authenticateImplicit(backendUrl: string, authorizationServer: AuthorizationServer): Promise<string> {
+    public authenticateImplicit(backendUrl: string, authorizationServer: AuthorizationServer): Promise<string> {
         const redirectUri = `${backendUrl}/signin-oauth/implicit/callback`;
         const query = {
             state: Utils.guid()
@@ -213,6 +214,30 @@ export class OAuthService {
                 reject(error);
             }
         });
+    }
+
+    public async authenticatePassword(username: string, password: string, authorizationServer: AuthorizationServer): Promise<string> {
+        const backendUrl = await this.settingsProvider.getSetting<string>("backendUrl") || `https://${location.hostname}`;
+        let uri = `${backendUrl}/signin-oauth/password/${authorizationServer.name}`;
+
+        if (authorizationServer.scopes) {
+            const scopesString = authorizationServer.scopes.join(" ");
+            uri += `?scopes=${encodeURIComponent(scopesString)}`;
+        }
+
+        const response = await this.httpClient.send<any>({
+            method: HttpMethod.post,
+            url: uri,
+            body: JSON.stringify({ username: username, password: password })
+        });
+
+        if (response.statusCode === 401) {
+            throw new UnauthorizedError("Unable to authenticate. Verify the credentials you entered are correct.");
+        }
+
+        const tokenInfo = response.toObject();
+
+        return `${tokenInfo.accessTokenType} ${tokenInfo.accessToken}`;
     }
 
     public async discoverOAuthServer(metadataEndpoint: string): Promise<AuthorizationServer> {
