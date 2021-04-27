@@ -15,6 +15,7 @@ export class ConsoleOperation {
     public readonly method: string;
     public readonly host: ConsoleHost;
     public readonly requestUrl: ko.Computed<string>;
+    public readonly wsUrl: ko.Computed<string>;
     public readonly templateParameters: ko.ObservableArray<ConsoleParameter>;
     public readonly responses?: ConsoleResponse[];
     public readonly hasBody: boolean;
@@ -40,6 +41,14 @@ export class ConsoleOperation {
 
         this.requestUrl = ko.computed(() => {
             const protocol = this.api.protocols.indexOf("https") !== -1 ? "https" : "http";
+            const urlTemplate = this.getRequestPath();
+            const result = `${protocol}://${this.host.hostname()}${Utils.ensureLeadingSlash(urlTemplate)}`;
+
+            return result;
+        });
+
+        this.wsUrl = ko.computed(() => {
+            const protocol = this.api.protocols.indexOf("wss") !== -1 ? "wss" : "wss";
             const urlTemplate = this.getRequestPath();
             const result = `${protocol}://${this.host.hostname()}${Utils.ensureLeadingSlash(urlTemplate)}`;
 

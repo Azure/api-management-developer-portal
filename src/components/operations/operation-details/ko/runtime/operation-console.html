@@ -187,6 +187,11 @@
 
     <h3>Headers</h3>
 
+    <!-- ko if: api.type === 'websocket' -->
+    <span>WebSocket headers aren't supported in web browsers.</span>
+    <!-- /ko -->
+    
+    <!-- ko ifnot: api.type === 'websocket' -->
     <!-- ko if: request.headers().length > 0 -->
     <div data-bind="foreach: { data: request.headers, as: 'header' }">
         <div class="row flex flex-row">
@@ -225,6 +230,7 @@
     <a href="#" role="button" data-bind="click: $component.addHeader">
         <i class="icon-emb icon-emb-plus"></i> Add header
     </a>
+    <!-- /ko -->
 
     <!-- ko if: hasBody -->
     <h3>Body</h3>
@@ -255,6 +261,7 @@
     <!-- /ko -->
 </div>
 
+<!-- ko ifnot: api().type === 'websocket' -->
 <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
     <ul class="nav" role="tablist">
         <li class="nav-item" role="presentation">
@@ -342,6 +349,129 @@
         </div>
     </div>
 </div>
+<!-- /ko -->
+
+<!-- ko if: api().type === 'websocket' -->
+<div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
+    <ul class="nav" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="#" role="tab"
+                data-bind="click: $component.selectedLanguage.bind(this, 'ws_wscat'), css: { 'nav-link-active': $component.selectedLanguage() === 'ws_wscat' }, attr: { 'aria-selected': $component.selectedLanguage() === 'ws_wscat' }">
+                wscat
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="#" role="tab"
+                data-bind="click: $component.selectedLanguage.bind(this, 'ws_csharp'), css: { 'nav-link-active': $component.selectedLanguage() === 'ws_csharp' }, attr: { 'aria-selected': $component.selectedLanguage() === 'ws_csharp' }">
+                C#
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="#" role="tab"
+                data-bind="click: $component.selectedLanguage.bind(this, 'ws_javascript'), css: { 'nav-link-active': $component.selectedLanguage() === 'ws_javascript' }, attr: { 'aria-selected': $component.selectedLanguage() === 'ws_javascript' }">
+                JavaScript
+            </a>
+        </li>
+    </ul>
+
+    <h3>WebSocket request</h3>
+    <div class="code-block">
+        <div class="code-block-heading">
+            <button class="code-block-command" data-bind="copyToClipboard: $component.codeSample"
+                aria-label="Copy to clipboard">
+                <i class="icon-emb icon-emb-duplicate"></i> Copy
+            </button>
+        </div>
+    </div>
+
+    <!-- ko if: $component.codeSample -->
+    <pre data-bind="syntaxHighlight: { code: $component.codeSample, language: $component.selectedLanguage }"></pre>
+    <!-- /ko -->
+
+    <div class="flex flex-column align-items-end">
+        <div class="btn-group" role="group">
+            <!-- ko ifnot: wsConnected -->
+            <button type="button" class="button button-primary btn-sm" data-bind="click: wsConnect, attr: { disabled: wsConnecting }, text: wsStatus">
+                Connect
+            </button>
+            <!-- /ko -->
+            <!-- ko if: wsConnected -->
+            <button type="button" class="button button-primary btn-sm" data-bind="click: wsDisconnect, attr: { disabled: wsSending }">
+                Disconnect
+            </button>
+            <button type="button" class="button button-primary btn-sm" data-bind="click: wsSendData, attr: { disabled: wsSending }, text: wsSendStatus">
+                Send
+            </button>
+            <!-- /ko -->
+        </div>
+    </div>
+
+    <!-- ko if: wsConnected -->
+    <h3>Payload</h3>
+
+    <div class="flex justify-content-end">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="wsDataFormat" id="wsDataFormatRaw" value="raw"
+                data-bind="checked: wsDataFormat">
+            <label class="form-check-label" for="wsDataFormatRaw">Raw</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="wsDataFormat" id="wsDataFormatBinary" value="binary"
+                data-bind="checked: wsDataFormat">
+            <label class="form-check-label" for="wsDataFormatBinary">Binary</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <!-- ko if: wsDataFormat() === 'raw' -->
+        <textarea class="form-control form-control-sm" rows="5" aria-label="Payload"
+            data-bind="event: { keyup: $component.updateRequestSummary }, textInput: wsPayload, valueUpdate: 'keyup'"></textarea>
+        <!-- /ko -->
+        <!-- ko if: wsDataFormat() === 'binary' -->
+        <file-input params="{ onSelect: $component.onFileSelect }" class="form-control" aria-label="Payload"
+            data-bind="css: { 'is-invalid': !consoleOperation().request.binary.isValid() }"></file-input>
+        <span class="invalid-feedback" data-bind="validationMessage: consoleOperation().request.binary"></span>
+        <!-- /ko -->
+    </div>
+
+    <!-- /ko -->
+
+    <h3>Logs</h3>
+    <div class="table ws-logs">
+        <div class="table-head">
+            <div class="table-row">
+                <div class="col-3">Time</div>
+                <div class="col-9">Data</div>
+            </div>
+        </div>
+
+        <!-- ko if: wsSending -->
+        <div class="table-body">
+            <spinner></spinner>
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: wsLogItems().length > 0 -->
+        <div class="table-body ws-logs-items animation-fade-in">
+            <!-- ko foreach: { data: wsLogItems, as: 'item' } -->
+            <div class="table-row">
+                <span class="col-3" data-bind="attr: { 'ws-log-type': item.logType }, text: item.logTime"></span>
+                <span class="col-9 text-truncate" data-bind="attr: { 'ws-log-type': item.logType }, text: item.logData"></span>
+            </div>
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: wsLogItems().length === 0 -->
+        <div class="table-body">
+            <div class="table-row">
+                <span class="col-12">No data</span>
+            </div>
+        </div>
+        <!-- /ko -->
+
+    </div>
+</div>
+<!-- /ko -->
 
 <!-- ko if: sendingRequest -->
 <div class="panel panel-dark" data-bind="scrollintoview: {}">

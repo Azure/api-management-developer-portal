@@ -223,6 +223,32 @@ pre {
     color: #e30012;
 }
 
+[ws-log-type="SendData"] {
+    color: #13c20f;
+}
+
+[ws-log-type="GetData"] {
+    color: #2392f7;
+}
+
+[ws-log-type="Connection"] {
+    color: black;
+}
+
+[ws-log-type="Error"] {
+    color: #e30012;
+}
+
+.ws-logs {    
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.ws-logs-items {    
+    max-height: 250px;
+    overflow-y: auto;
+}
+
 .monospace {
     font-family: monospace;
 }

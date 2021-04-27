@@ -1,0 +1,136 @@
+using System;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Net.Http;
+using System.Web;
+
+namespace CSHttpClientSample
+{
+    static class Program
+    {
+        static void Main()
+        {
+            MakeRequest();
+            Console.WriteLine("Hit ENTER to exit...");
+            Console.ReadLine();
+        }
+        
+        static async void MakeRequest()
+        {
+            var client = new HttpClient();
+            var queryString = HttpUtility.ParseQueryString(string.Empty);
+
+{% if meaningfulHeaders.size > 0 -%}
+            // Request headers
+{% for header in request.meaningfulHeaders -%}
+{% case header.Name -%}
+{% when "Accept"%}
+            client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("{{header.value}}"));
+{% when "Accept-Charset" -%}
+            client.DefaultRequestHeaders.AcceptCharset.Add(StringWithQualityHeaderValue.Parse("{{header.value}}"));
+{% when "Accept-Encoding" -%}
+            client.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("{{header.value}}"));
+{% when "Accept-Language" -%}
+            client.DefaultRequestHeaders.AcceptLanguage.Add(StringWithQualityHeaderValue.Parse("{{header.value}}"));
+{% when "Cache-Control" -%}
+            client.DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("{{header.value}}");
+{% when "Connection" -%}
+            client.DefaultRequestHeaders.Connection.Add("{{header.value}}");
+{% when "Date" -%}
+            client.DefaultRequestHeaders.Date = DateTimeOffset.Parse("{{header.value}}");
+{% when "Expect" -%}
+            client.DefaultRequestHeaders.Expect.Add(NameValueWithParametersHeaderValue.Parse("{{header.value}}"));
+{% when "If-Match" -%}
+            client.DefaultRequestHeaders.IfMatch.Add(EntityTagHeaderValue.Parse("{{header.value}}"));
+{% when "If-Modified-Since" -%}
+            client.DefaultRequestHeaders.IfModifiedSince = DateTimeOffset.Parse("{{header.value}}");
+{% when "If-None-Match" -%}
+            client.DefaultRequestHeaders.IfNoneMatch.Add(EntityTagHeaderValue.Parse("{{header.value}}"));
+{% when "If-Range" -%}
+            client.DefaultRequestHeaders.IfRange = RangeConditionHeaderValue.Parse("{{header.value}}");
+{% when "If-Unmodified-Since" -%}
+            client.DefaultRequestHeaders.IfUnmodifiedSince = DateTimeOffset.Parse("{{header.value}}");
+{% when "Max-Forwards" -%}
+            client.DefaultRequestHeaders.MaxForwards = int.Parse("{{header.value}}");
+{% when "Pragma" -%}
+            client.DefaultRequestHeaders.Pragma.Add(NameValueHeaderValue.Parse("{{header.value}}"));
+{% when "Range" -%}
+            client.DefaultRequestHeaders.Range = RangeHeaderValue.Parse("{{header.value}}");
+{% when "Referer" -%}
+            client.DefaultRequestHeaders.Referrer = new Uri("{{header.value}}");
+{% when "TE" -%}
+            client.DefaultRequestHeaders.TE.Add(TransferCodingWithQualityHeaderValue.Parse("{{header.value}}"));
+{% when "Transfer-Encoding" -%}
+            client.DefaultRequestHeaders.TransferEncoding.Add(TransferCodingHeaderValue.Parse("{{header.value}}"));
+{% when "Upgrade" -%}
+            client.DefaultRequestHeaders.Upgrade.Add(ProductHeaderValue.Parse("{{header.value}}"));
+{% when "User-Agent" -%}
+            client.DefaultRequestHeaders.UserAgent.Add(ProductInfoHeaderValue.Parse("{{header.value}}"));
+{% when "Via" -%}              
+            client.DefaultRequestHeaders.Via.Add(ViaHeaderValue.Parse("{{header.value}}"));
+{% when "Warning" -%}
+            client.DefaultRequestHeaders.Warning.Add(WarningHeaderValue.Parse("{{header.value}}"));
+{% when "Content-Type" -%}
+{% else -%}
+            client.DefaultRequestHeaders.Add("{{header.Name}}", "{{header.value}}");
+{% endcase -%}
+{% endfor -%}
+{% endif -%}
+
+{% if request.parameters.size > 0 -%}
+            // Request parameters
+{% for parameter in request.parameters -%}
+            queryString["{{parameter.Name}}"] = "{{parameter.Value}}";
+{% endfor -%}
+{% endif -%}
+            var uri = "{{requestUrl}}{% if path contains '?' %}&{% else %}?{% endif %}" + queryString;
+
+{% case method -%}
+
+{% when "POST" -%}
+            HttpResponseMessage response;
+
+            // Request body
+            byte[] byteData = Encoding.UTF8.GetBytes("{{ body | replace:'"','\"'}}");
+
+            using (var content = new ByteArrayContent(byteData))
+            {
+{% if body -%}
+               content.Headers.ContentType = new MediaTypeHeaderValue("< your content type, i.e. application/json >");
+{% endif -%}
+               response = await client.PostAsync(uri, content);
+            }
+
+{% when "GET" -%}
+            var response = await client.GetAsync(uri);
+{% when "DELETE" -%}
+            var response = await client.DeleteAsync(uri);
+{% when "PUT" -%}
+            HttpResponseMessage response;
+
+            // Request body
+            byte[] byteData = Encoding.UTF8.GetBytes("{{ body | replace:'"','\"'}}");
+
+            using (var content = new ByteArrayContent(byteData))
+            {
+{% if body -%}
+                content.Headers.ContentType = new MediaTypeHeaderValue("< your content type, i.e. application/json >");
+{% endif -%}
+                response = await client.PutAsync(uri, content);
+            }
+{% when "HEAD" -%}
+            var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, uri));
+{% when "OPTIONS" -%}
+            var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Options, uri));
+{% when "TRACE" -%}
+            var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Trace, uri));
+
+            if (response.Content != null)
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(responseString);    
+            }
+{% endcase -%}
+        }
+    }
+}	
