@@ -1,7 +1,7 @@
 /**
  * APIM service SKU names.
  */
- export enum ServiceSkuName {
+export enum ServiceSkuName {
     Developer = "Developer",
     Basic = "Basic",
     Standard = "Standard",
