@@ -225,8 +225,8 @@ export class UsersService {
 
             await this.mapiClient.delete<string>(query, [header, MapiClient.getPortalHeader("deleteUser")]);
 
-            this.authenticator.clearAccessToken();
-            location.assign("/");
+            sessionStorage.setItem(Constants.closeAccount, "true");
+            this.signOut();
         }
         catch (error) {
             this.navigateToSignin();
