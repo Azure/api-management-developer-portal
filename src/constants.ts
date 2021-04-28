@@ -32,6 +32,7 @@ export enum AadEndpoints {
     legacy = "login.windows.net"
 }
 
+export const closeAccount = "close-account";
 export const hashSignOut = "signout";
 export const pageUrlSignIn = "/signin";
 export const pageUrlSignInSso = "/signinsso";
@@ -112,7 +113,13 @@ export enum GrantTypes {
      * The Client Credentials grant type is used by clients to obtain an access token outside of
      * the context of a user.
      */
-    clientCredentials = "client_credentials"
+    clientCredentials = "client_credentials",
+
+    /**
+     * The Resource owner password grant type is used to exchange a username and password for an access
+     * token directly. 
+     */
+    password = "password"
 }
 
 export const managementApiVersion = "2021-01-01-preview";
