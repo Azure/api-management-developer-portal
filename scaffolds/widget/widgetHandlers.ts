@@ -17,7 +17,7 @@ export class WidgetHandlers implements IWidgetHandler {
             category: widgetCategory,
             requires: [],
             displayName: widgetDisplayName,
-            iconClass: "paperbits-puzzle-10",
+            iconClass: "widget-icon widget-icon-component",
 
             /**
              * This method invoked when the widget gets added to the content.

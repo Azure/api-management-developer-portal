@@ -12,7 +12,7 @@ export class ChangePasswordViewModelBinder implements ViewModelBinder<ChangePass
         if (!viewModel) {
             viewModel = new ChangePasswordViewModel();
             viewModel["widgetBinding"] = {
-                displayName: "Password: change form",
+                displayName: "Password: Change form",
                 model: model,
                 flow: "block",
                 draggable: true

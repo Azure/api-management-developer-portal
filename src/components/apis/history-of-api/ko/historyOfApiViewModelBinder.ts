@@ -21,7 +21,7 @@ export class HistoryOfApiViewModelBinder implements ViewModelBinder<HistoryOfApi
         }));
 
         viewModel["widgetBinding"] = {
-            displayName: "API: history",
+            displayName: "API: Change history",
             model: model,
             draggable: true,
             flow: "block",

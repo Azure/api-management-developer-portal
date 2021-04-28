@@ -6,8 +6,8 @@ export class HistoryOfApiHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "apiHistory",
             category: "APIs",
-            displayName: "API: history",
-            iconClass: "paperbits-cheque-3",
+            displayName: "API: Change history",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new HistoryOfApiModel()
         };
