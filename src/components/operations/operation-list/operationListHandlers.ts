@@ -7,7 +7,7 @@ export class OperationListHandlers implements IWidgetHandler {
             name: "operationList",
             category: "Operations",
             displayName: "List of operations",
-            iconClass: "paperbits-cheque-3",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new OperationListModel()
         };

@@ -8,7 +8,7 @@ export class SigninSocialHandlers implements IWidgetHandler {
             name: "signinSocial",
             category: "User",
             displayName: "Sign-in button: OAuth",
-            iconClass: "paperbits-cheque-3",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => {
                 const model = new SigninSocialModel();

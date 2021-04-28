@@ -7,7 +7,7 @@ export class ListOfApisHandlers implements IWidgetHandler {
             name: "listOfApis",
             category: "APIs",
             displayName: "List of APIs",
-            iconClass: "paperbits-cheque-3",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new ListOfApisModel("list")
         };
@@ -21,7 +21,7 @@ export class ListOfApisTilesHandlers implements IWidgetHandler {
             name: "listOfApisTiles",
             category: "APIs",
             displayName: "List of APIs (tiles)",
-            iconClass: "paperbits-cheque-3",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new ListOfApisModel("tiles")
         };
@@ -35,7 +35,7 @@ export class ListOfApisDropdownHandlers implements IWidgetHandler {
             name: "listOfApisDropdown",
             category: "APIs",
             displayName: "List of APIs (dropdown)",
-            iconClass: "paperbits-cheque-3",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new ListOfApisModel("dropdown")
         };
