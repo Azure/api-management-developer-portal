@@ -34,6 +34,7 @@ $body-bg: none;
 
 .table {
     margin: 20px 0;
+    overflow-x: auto;
 
     .table-row {
         display: flex;

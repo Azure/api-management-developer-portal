@@ -6,8 +6,8 @@ export class ProductSubscribeHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "productSubscribe",
             category: "Products",
-            displayName: "Product: subscribe form",
-            iconClass: "paperbits-cheque-3",
+            displayName: "Product: Subscribe form",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new ProductSubscribeModel()
         };

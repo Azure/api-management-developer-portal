@@ -7,7 +7,7 @@ export class ReportsHandlers implements IWidgetHandler {
             name: "reports",
             category: "Analytics",
             displayName: "Reports",
-            iconClass: "paperbits-cheque-3",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new ReportsModel()
         };
