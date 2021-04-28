@@ -6,8 +6,8 @@ export class ConfirmPasswordHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "confirmPassword",
             category: "User",
-            displayName: "Password: confirmation form",
-            iconClass: "paperbits-cheque-3",
+            displayName: "Password: Confirmation form",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new ConfirmPasswordModel()
         };

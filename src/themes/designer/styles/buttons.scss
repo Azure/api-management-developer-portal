@@ -64,7 +64,7 @@
 .btn-group {
     .btn-default {
         margin-top: 15px;
-        margin-right: 15px;
+        margin-right: 5px;
     }
 }
 
@@ -81,8 +81,10 @@
     @extend .paperbits-icon;
     @extend .paperbits-alert-circle-i;
 
-    &:focus {
-        @include selection(5px);
+    &:active,
+    &:focus,
+    &:hover {
+        @include selection(7px, -5px);
         outline: none;
     }
 }

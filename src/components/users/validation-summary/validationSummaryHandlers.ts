@@ -7,7 +7,7 @@ export class ValidationSummaryHandlers implements IWidgetHandler {
             name: "validation-summary",
             category: "User",
             displayName: "Validation summary",
-            iconClass: "paperbits-cheque-3",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new ValidationSummaryModel()
         };

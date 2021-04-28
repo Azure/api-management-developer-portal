@@ -6,8 +6,8 @@ export class ChangePasswordHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "change-password",
             category: "User",
-            displayName: "Password: change form",
-            iconClass: "paperbits-cheque-3",
+            displayName: "Password: Change form",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new ChangePasswordModel()
         };

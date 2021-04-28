@@ -13,7 +13,7 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
             viewModel = new OperationDetailsViewModel();
 
             viewModel["widgetBinding"] = {
-                displayName: "Operation: details",
+                displayName: "Operation: Details",
                 model: model,
                 draggable: true,
                 flow: "block",

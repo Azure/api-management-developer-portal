@@ -6,8 +6,8 @@ export class ApiProductsHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "api-products",
             category: "APIs",
-            displayName: "API: products",
-            iconClass: "paperbits-cheque-3",
+            displayName: "API: Products",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new ApiProductsModel("list")
         };
@@ -21,8 +21,8 @@ export class ApiProductsTilesHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "api-products-tiles",
             category: "APIs",
-            displayName: "API: products (tiles)",
-            iconClass: "paperbits-cheque-3",
+            displayName: "API: Products (tiles)",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new ApiProductsModel("tiles")
         };
