@@ -7,7 +7,7 @@ export class SignupSocialHandlers implements IWidgetHandler {
             name: "signup",
             category: "User",
             displayName: "Sign-up form: OAuth",
-            iconClass: "paperbits-cheque-3",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new SignupSocialModel()
         };

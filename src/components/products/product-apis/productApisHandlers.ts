@@ -7,7 +7,7 @@ export class ProductApisHandlers implements IWidgetHandler {
             name: "product-apis",
             category: "Products",
             displayName: "Product: APIs",
-            iconClass: "paperbits-cheque-3",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new ProductApisModel("list")
         };
@@ -22,7 +22,7 @@ export class ProductApisTilesHandlers implements IWidgetHandler {
             name: "product-apis-tiles",
             category: "Products",
             displayName: "Product: APIs (tiles)",
-            iconClass: "paperbits-cheque-3",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new ProductApisModel("tiles")
         };

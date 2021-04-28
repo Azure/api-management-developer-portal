@@ -21,7 +21,7 @@ export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApi
         }));
 
         viewModel["widgetBinding"] = {
-            displayName: "API: details",
+            displayName: "API: Details",
             model: model,
             draggable: true,
             flow: "block",
