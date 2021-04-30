@@ -12,6 +12,7 @@ import "@paperbits/core/ko/bindingHandlers/bindingHandlers.component";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.focus";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.activate";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.scrollable";
+import "@paperbits/core/ko/bindingHandlers/bindingHandlers.dialog";
 import { RouteHelper } from "./routing/routeHelper";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { DefaultEventManager } from "@paperbits/common/events";
