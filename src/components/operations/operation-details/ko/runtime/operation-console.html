@@ -114,7 +114,8 @@
         </div>
         <div class="col-6">
             <div class="form-group">
-                <button class="button button-primary" data-bind="click: $component.authenticateOAuthWithPassword">Authorize</button>
+                <button class="button button-primary"
+                    data-bind="click: $component.authenticateOAuthWithPassword">Authorize</button>
             </div>
         </div>
     </div>
@@ -288,55 +289,55 @@
     <ul class="nav" role="tablist">
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'http'), css: { 'nav-link-active': $component.selectedLanguage() === 'http' }, attr: { 'aria-selected': $component.selectedLanguage() === 'http' }">
+               data-bind="click: $component.selectedLanguage.bind(this, 'http'), tab: { isSelected: $component.selectedLanguage() === 'http' }">
                 HTTP
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'curl'), css: { 'nav-link-active': $component.selectedLanguage() === 'curl' }, attr: { 'aria-selected': $component.selectedLanguage() === 'curl' }">
+               data-bind="click: $component.selectedLanguage.bind(this, 'curl'), tab: { isSelected: $component.selectedLanguage() === 'curl' }">
                 Curl
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'csharp'), css: { 'nav-link-active': $component.selectedLanguage() === 'csharp' }, attr: { 'aria-selected': $component.selectedLanguage() === 'csharp' }">
+               data-bind="click: $component.selectedLanguage.bind(this, 'csharp'), tab: { isSelected: $component.selectedLanguage() === 'csharp' }">
                 C#
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'java'), css: { 'nav-link-active': $component.selectedLanguage() === 'java' }, attr: { 'aria-selected': $component.selectedLanguage() === 'java' }">
+               data-bind="click: $component.selectedLanguage.bind(this, 'java'), tab: { isSelected: $component.selectedLanguage() === 'java' }">
                 Java
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'javascript'), css: { 'nav-link-active': $component.selectedLanguage() === 'javascript' }, attr: { 'aria-selected': $component.selectedLanguage() === 'javascript' }">
+               data-bind="click: $component.selectedLanguage.bind(this, 'javascript'), tab: { isSelected:  $component.selectedLanguage() === 'javascript' }">
                 JavaScript
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'php'), css: { 'nav-link-active': $component.selectedLanguage() === 'php' }, attr: { 'aria-selected': $component.selectedLanguage() === 'php' }">
+               data-bind="click: $component.selectedLanguage.bind(this, 'php'), tab: { isSelected: $component.selectedLanguage() === 'php' }">
                 PHP
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'python'), css: { 'nav-link-active': $component.selectedLanguage() === 'python' }, attr: { 'aria-selected': $component.selectedLanguage() === 'python' }">
+               data-bind="click: $component.selectedLanguage.bind(this, 'python'), tab: { isSelected:  $component.selectedLanguage() === 'python' }">
                 Python
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'ruby'), css: { 'nav-link-active': $component.selectedLanguage() === 'ruby' }, attr: { 'aria-selected': $component.selectedLanguage() === 'ruby' }">
+               data-bind="click: $component.selectedLanguage.bind(this, 'ruby'), tab: { isSelected:  $component.selectedLanguage() === 'ruby' }">
                 Ruby
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'objc'), css: { 'nav-link-active': $component.selectedLanguage() === 'objc' }, attr: { 'aria-selected': $component.selectedLanguage() === 'objc' }">
+               data-bind="click: $component.selectedLanguage.bind(this, 'objc'), tab: { isSelected:  $component.selectedLanguage() === 'objc' }">
                 Objective C
             </a>
         </li>
@@ -346,7 +347,7 @@
     <div class="code-block">
         <div class="code-block-heading">
             <button class="code-block-command" data-bind="copyToClipboard: $component.codeSample"
-                aria-label="Copy to clipboard">
+                    aria-label="Copy to clipboard">
                 <i class="icon-emb icon-emb-duplicate"></i> Copy
             </button>
         </div>

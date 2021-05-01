@@ -225,7 +225,7 @@
 
 <!-- ko if: $component.consoleIsOpen -->
 <div class="detachable-right scrollable flex-grow animation-fade-in">
-    <operation-console class="test flex flex-column"
+    <operation-console class="test flex flex-column" data-bind="dialog: {}"
         params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
     </operation-console>
 </div>
