@@ -223,7 +223,7 @@
     <h3>Headers</h3>
 
     <!-- ko if: api.type === 'websocket' -->
-    <span>WebSocket headers aren't supported in web browsers.</span>
+    <span>Web browsers don't support headers for WebSocket APIs.</span>
     <!-- /ko -->
     
     <!-- ko ifnot: api.type === 'websocket' -->
@@ -434,16 +434,12 @@
             <button type="button" class="button button-primary btn-sm" data-bind="click: wsDisconnect, attr: { disabled: wsSending }">
                 Disconnect
             </button>
-            <button type="button" class="button button-primary btn-sm" data-bind="click: wsSendData, attr: { disabled: wsSending }, text: wsSendStatus">
-                Send
-            </button>
             <!-- /ko -->
         </div>
     </div>
 
     <!-- ko if: wsConnected -->
     <h3>Payload</h3>
-
     <div class="flex justify-content-end">
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="wsDataFormat" id="wsDataFormatRaw" value="raw"
@@ -468,9 +464,24 @@
         <!-- /ko -->
     </div>
 
+    <div class="flex flex-column align-items-end">
+        <div class="btn-group" role="group">
+            <button type="button" class="button button-primary btn-sm" data-bind="click: wsSendData, attr: { disabled: wsSending }, text: wsSendStatus">
+                Send
+            </button>
+        </div>
+    </div>
+
     <!-- /ko -->
 
     <h3>Logs</h3>
+    <div class="code-block">
+        <div class="code-block-heading">
+            <button class="code-block-command" data-bind="click: $component.clearLogs" aria-label="Clear logs">
+                <i class="icon-emb icon-emb-trash"></i> Clear
+            </button>
+        </div>
+    </div>
     <div class="table ws-logs">
         <div class="table-head">
             <div class="table-row">

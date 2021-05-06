@@ -55,6 +55,9 @@ export class WebsocketClient {
     
     public clearLogs(): void {
         this.logs = [];
+        if (this.onLogItem) {
+            this.onLogItem(null);
+        }
     }
 
     public send(data: string | ArrayBufferLike | Blob | ArrayBufferView): void {

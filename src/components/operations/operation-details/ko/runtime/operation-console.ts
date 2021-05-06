@@ -223,6 +223,10 @@ export class OperationConsole {
             this.setSoapHeaders();
         }
 
+        if (this.api().type === TypeOfApi.webSocket) {
+            this.selectedLanguage("ws_wscat");
+        }
+
         if (!this.isConsumptionMode && this.api().type !== TypeOfApi.webSocket) {
             this.setNoCacheHeader();
         }
@@ -644,6 +648,10 @@ export class OperationConsole {
         }
 
         this.sendWsConnect();
+    }
+
+    public clearLogs(): void {
+        this.ws?.clearLogs();
     }
 
     public async wsDisconnect(): Promise<void> {
