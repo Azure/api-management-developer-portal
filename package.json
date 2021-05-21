@@ -73,7 +73,7 @@
         "adal-vanilla": "^1.0.18",
         "applicationinsights-js": "^1.0.21",
         "client-oauth2": "4.3.3",
-        "core-js": "^3.6.5",
+        "core-js": "^3.11.1",
         "d3": "^5.11.0",
         "google-maps": "^4.3.3",
         "js-beautify": "^1.13.0",
