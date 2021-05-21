@@ -82,7 +82,7 @@
         "knockout.validation": "^2.0.4",
         "liquidjs": "^9.16.1",
         "lunr": "^2.3.9",
-        "mime-types": "^2.1.27",
+        "mime-types": "^2.1.30",
         "moment": "^2.29.1",
         "msal": "^1.4.1",
         "prismjs": "^1.22.0",
