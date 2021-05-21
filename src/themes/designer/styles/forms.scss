@@ -16,6 +16,7 @@
 .form-group {
     display: block;
     margin-bottom: 20px;
+    padding: 1px;
     width: 100%;
 
     .form-group {
@@ -84,8 +85,7 @@ textarea {
     }
 
     &:focus {
-        outline: none;
-        border: 1px solid $form-control-focus-color;
+        outline: 1px solid $form-control-focus-color;
     }
 
     &.is-invalid {
@@ -161,7 +161,7 @@ textarea {
     border: 1px solid $form-control-border;
 
     &:focus-within {
-        border: 1px solid $form-control-border-focused;
+        outline: 1px solid $form-control-focus-color;
     }
 
     .form-control,
