@@ -80,7 +80,7 @@
         "knockout": "^3.5.1",
         "knockout-mapping": "^2.6.0",
         "knockout.validation": "^2.0.4",
-        "liquidjs": "^9.16.1",
+        "liquidjs": "^9.23.4",
         "lunr": "^2.3.9",
         "mime-types": "^2.1.27",
         "moment": "^2.29.1",
