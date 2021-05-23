@@ -76,7 +76,7 @@
         "core-js": "^3.6.5",
         "d3": "^5.11.0",
         "google-maps": "^4.3.3",
-        "js-beautify": "^1.13.0",
+        "js-beautify": "^1.13.13",
         "knockout": "^3.5.1",
         "knockout-mapping": "^2.6.0",
         "knockout.validation": "^2.0.4",
