@@ -15,12 +15,8 @@ import "@paperbits/core/ko/bindingHandlers/bindingHandlers.scrollable";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.dialog";
 import { RouteHelper } from "./routing/routeHelper";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
-import { DefaultEventManager } from "@paperbits/common/events";
-import { XmlHttpRequestClient } from "@paperbits/common/http";
 import { DefaultSettingsProvider } from "@paperbits/common/configuration";
-import { DefaultRouter, LocationRouteHandler, HistoryRouteHandler } from "@paperbits/common/routing";
 import { ConsoleLogger } from "@paperbits/common/logging";
-import { KnockoutRegistrationLoaders } from "@paperbits/core/ko/knockout.loaders";
 import { ApiList, ApiListDropdown, ApiListTiles } from "./components/apis/list-of-apis/ko/runtime";
 import { ApiService } from "./services/apiService";
 import { TagService } from "./services/tagService";
@@ -45,7 +41,6 @@ import { ProductList } from "./components/products/product-list/ko/runtime/produ
 import { ProductDetails } from "./components/products/product-details/ko/runtime/product-details";
 import { ProductSubscribe } from "./components/products/product-subscribe/ko/runtime/product-subscribe";
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";
-import { Spinner } from "./components/spinner/spinner";
 import { ProductApis } from "./components/products/product-apis/ko/runtime/product-apis";
 import { ProductApisTiles } from "./components/products/product-apis/ko/runtime/product-apis-tiles";
 import { OperationList } from "./components/operations/operation-list/ko/runtime/operation-list";
@@ -62,7 +57,6 @@ import { ProductListDropdown } from "./components/products/product-list/ko/runti
 import { ValidationSummary } from "./components/users/validation-summary/ko/runtime/validation-summary";
 import { TypeDefinitionViewModel } from "./components/operations/operation-details/ko/runtime/type-definition";
 import { CodeSampleViewModel } from "./components/operations/operation-details/ko/runtime/code-sample";
-import { VisibilityGuard } from "@paperbits/common/user";
 import { StaticUserService } from "./services";
 import { SignOutRouteGuard } from "./routing/signOutRouteGuard";
 import { ProvisionService } from "./services/provisioningService";
@@ -77,17 +71,11 @@ import { ProductListTiles } from "./components/products/product-list/ko/runtime/
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bindModule(new KnockoutRegistrationLoaders());
-        injector.bindSingleton("eventManager", DefaultEventManager);
         injector.bindSingleton("logger", ConsoleLogger);
-        injector.bindCollection("autostart");
         injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindToCollection("autostart", BalloonBindingHandler);
         injector.bindToCollection("autostart", ResizableBindingHandler);
-        injector.bindCollection("routeGuards");
         injector.bindToCollection("routeGuards", SignOutRouteGuard);
-        injector.bindToCollection("autostart", VisibilityGuard);
-        injector.bindSingleton("router", DefaultRouter);
         injector.bind("apiList", ApiList);
         injector.bind("apiListDropdown", ApiListDropdown);
         injector.bind("apiListTiles", ApiListTiles);
@@ -128,12 +116,10 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("resetPassword", ResetPassword);
         injector.bind("confirmPassword", ConfirmPassword);
         injector.bind("changePassword", ChangePassword);
-        injector.bind("spinner", Spinner);
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("aadService", AadService);
         injector.bindSingleton("mapiClient", MapiClient);
-        injector.bindSingleton("httpClient", XmlHttpRequestClient);
         injector.bindSingleton("settingsProvider", DefaultSettingsProvider);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("routeHelper", RouteHelper);
@@ -143,8 +129,5 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("viewStack", ViewStack);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("tagInput", TagInput);
-        injector.bindToCollection("autostart", location.href.includes("designtime=true")
-            ? HistoryRouteHandler
-            : LocationRouteHandler);
     }
 }
