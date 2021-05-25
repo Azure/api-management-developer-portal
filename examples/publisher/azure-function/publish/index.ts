@@ -8,6 +8,7 @@ import { CorePublishModule } from "@paperbits/core/core.publish.module";
 import { ApimPublishModule } from "../../../../src/apim.publish.module";
 import { StylePublishModule } from "@paperbits/styles/styles.publish.module";
 import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
+import { ConsoleLogger } from "@paperbits/common/logging";
 import { StaticSettingsProvider } from "../../../../src/components/staticSettingsProvider";
 
 
@@ -31,7 +32,8 @@ export async function publish(): Promise<void> {
     });
 
     /* Storage where the website get published */
-    const outputBlobStorage = new AzureBlobStorage(outputSettingsProvider);
+    const logger = new ConsoleLogger();
+    const outputBlobStorage = new AzureBlobStorage(outputSettingsProvider, logger);
 
     const injector = new InversifyInjector();
     injector.bindModule(new CoreModule());
