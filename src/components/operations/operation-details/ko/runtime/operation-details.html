@@ -3,6 +3,8 @@
 <!-- /ko -->
 
 <!-- ko ifnot: working -->
+
+<!-- ko ifnot: apiType() === 'websocket' -->
 <!-- ko if: operation -->
 <div class="animation-fade-in">
     <div class="operation-header">
@@ -218,9 +220,48 @@
     <!-- /ko -->
 </div>
 <!-- /ko -->
+
 <!-- ko ifnot: operation -->
 <p>No operation selected.</p>
 <!-- /ko -->
+<!-- /ko -->
+
+<!-- ko if: apiType() === 'websocket' -->
+<!-- ko if: operation -->
+<div class="animation-fade-in">
+    <div class="operation-header">
+        <h2 class="operation-name"></h2>
+        <!-- ko if: $component.enableConsole -->
+        <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i
+                class="icon-emb icon-emb-play"></i>
+        </button>
+        <!-- /ko -->
+    </div>
+
+    <!-- ko if: tags().length > 0 -->
+    <div class="tag-group">
+        <!-- ko foreach: { data: $component.tags, as: 'tag' } -->
+        <span class="tag-item" role="group" data-bind="text: tag"></span>
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+
+    <div class="collapsible">
+        <h3>Socket URL</h3>
+        <div class="collapsible-container">
+            <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
+        </div>
+
+        <h3>Protocol</h3>
+        <div class="collapsible-container">
+            <span class="monospace" data-bind="text: $component.protocol"></span>
+        </div>
+    </div>
+    
+</div>
+<!-- /ko -->
+<!-- /ko -->
+
 <!-- /ko -->
 
 <!-- ko if: $component.consoleIsOpen -->

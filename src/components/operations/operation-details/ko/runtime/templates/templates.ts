@@ -8,6 +8,10 @@ import * as objc from "./objc.liquid";
 import * as python from "./python.liquid";
 import * as ruby from "./ruby.liquid";
 
+import * as ws_wscat from "./ws_wscat.liquid";
+import * as ws_csharp from "./ws_csharp.liquid";
+import * as ws_javascript from "./ws_javascript.liquid";
+
 export const templates = {
     curl: curl.default,
     csharp: csharp.default,
@@ -17,5 +21,10 @@ export const templates = {
     php: php.default,
     objc: objc.default,
     python: python.default,
-    ruby: ruby.default
+    ruby: ruby.default,
+
+    ws_wscat: ws_wscat.default,
+    ws_csharp: ws_csharp.default,
+    ws_javascript: ws_javascript.default,
+
 };
