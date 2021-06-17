@@ -134,7 +134,12 @@ export class MapiClient {
         }
 
         httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
-        httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${Constants.managementApiVersion}`);
+
+        const url = new URL(httpRequest.url);
+        
+        if (!url.searchParams.has("api-version")) {
+            httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${Constants.managementApiVersion}`);
+        }
 
         let response: HttpResponse<T>;
 

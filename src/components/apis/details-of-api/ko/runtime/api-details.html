@@ -24,6 +24,7 @@
                     data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: currentApiVersion">
                 </select>
                 <!-- /ko -->
+                <!-- ko if: api().type !== 'websocket' -->
                 <select id="apiDefinitions" class="form-control" aria-label="API definitions"
                     data-bind="value: downloadSelected">
                     <option value="" disabled="disabled" selected="selected">API definition</option>
@@ -38,6 +39,7 @@
                 <a href="#" class="nav-link text-truncate" data-bind="attr: { href: $component.getChangeLogUrl()} ">
                     Changelog
                 </a>
+                <!-- /ko -->
             </div>
         </div>
 

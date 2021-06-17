@@ -32,7 +32,7 @@
     </nav>
 
     <!-- ko ifnot: api.type === 'websocket' -->
-        <div class="monospace" data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
+    <div class="monospace" data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
     <!-- /ko -->
 
 
@@ -223,9 +223,9 @@
     <h3>Headers</h3>
 
     <!-- ko if: api.type === 'websocket' -->
-    <span>Web browsers don't support headers for WebSocket APIs.</span>
+    <span>Headers are not supported in the test console for WebSocket APIs.</span>
     <!-- /ko -->
-    
+
     <!-- ko ifnot: api.type === 'websocket' -->
     <!-- ko if: request.headers().length > 0 -->
     <div data-bind="foreach: { data: request.headers, as: 'header' }">
@@ -301,55 +301,55 @@
     <ul class="nav" role="tablist">
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'http'), tab: { isSelected: $component.selectedLanguage() === 'http' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'http'), tab: { isSelected: $component.selectedLanguage() === 'http' }">
                 HTTP
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'curl'), tab: { isSelected: $component.selectedLanguage() === 'curl' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'curl'), tab: { isSelected: $component.selectedLanguage() === 'curl' }">
                 Curl
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'csharp'), tab: { isSelected: $component.selectedLanguage() === 'csharp' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'csharp'), tab: { isSelected: $component.selectedLanguage() === 'csharp' }">
                 C#
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'java'), tab: { isSelected: $component.selectedLanguage() === 'java' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'java'), tab: { isSelected: $component.selectedLanguage() === 'java' }">
                 Java
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'javascript'), tab: { isSelected:  $component.selectedLanguage() === 'javascript' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'javascript'), tab: { isSelected:  $component.selectedLanguage() === 'javascript' }">
                 JavaScript
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'php'), tab: { isSelected: $component.selectedLanguage() === 'php' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'php'), tab: { isSelected: $component.selectedLanguage() === 'php' }">
                 PHP
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'python'), tab: { isSelected:  $component.selectedLanguage() === 'python' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'python'), tab: { isSelected:  $component.selectedLanguage() === 'python' }">
                 Python
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'ruby'), tab: { isSelected:  $component.selectedLanguage() === 'ruby' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'ruby'), tab: { isSelected:  $component.selectedLanguage() === 'ruby' }">
                 Ruby
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" href="#" role="tab"
-               data-bind="click: $component.selectedLanguage.bind(this, 'objc'), tab: { isSelected:  $component.selectedLanguage() === 'objc' }">
+                data-bind="click: $component.selectedLanguage.bind(this, 'objc'), tab: { isSelected:  $component.selectedLanguage() === 'objc' }">
                 Objective C
             </a>
         </li>
@@ -359,7 +359,7 @@
     <div class="code-block">
         <div class="code-block-heading">
             <button class="code-block-command" data-bind="copyToClipboard: $component.codeSample"
-                    aria-label="Copy to clipboard">
+                aria-label="Copy to clipboard">
                 <i class="icon-emb icon-emb-duplicate"></i> Copy
             </button>
         </div>
@@ -426,12 +426,14 @@
     <div class="flex flex-column align-items-end">
         <div class="btn-group" role="group">
             <!-- ko ifnot: wsConnected -->
-            <button type="button" class="button button-primary btn-sm" data-bind="click: wsConnect, attr: { disabled: wsConnecting }, text: wsStatus">
+            <button type="button" class="button button-primary btn-sm"
+                data-bind="click: wsConnect, attr: { disabled: wsConnecting }, text: wsStatus">
                 Connect
             </button>
             <!-- /ko -->
             <!-- ko if: wsConnected -->
-            <button type="button" class="button button-primary btn-sm" data-bind="click: wsDisconnect, attr: { disabled: wsSending }">
+            <button type="button" class="button button-primary btn-sm"
+                data-bind="click: wsDisconnect, attr: { disabled: wsSending }">
                 Disconnect
             </button>
             <!-- /ko -->
@@ -466,7 +468,8 @@
 
     <div class="flex flex-column align-items-end">
         <div class="btn-group" role="group">
-            <button type="button" class="button button-primary btn-sm" data-bind="click: wsSendData, attr: { disabled: wsSending }, text: wsSendStatus">
+            <button type="button" class="button button-primary btn-sm"
+                data-bind="click: wsSendData, attr: { disabled: wsSending }, text: wsSendStatus">
                 Send
             </button>
         </div>
@@ -474,48 +477,44 @@
 
     <!-- /ko -->
 
-    <h3>Logs</h3>
+    <h3>Output</h3>
+    <!-- ko if: wsLogItems().length > 0 -->
     <div class="code-block">
         <div class="code-block-heading">
-            <button class="code-block-command" data-bind="click: $component.clearLogs" aria-label="Clear logs">
+            <button class="code-block-command" data-bind="click: $component.clearLogs, disabled: wsSending" aria-label="Clear logs">
                 <i class="icon-emb icon-emb-trash"></i> Clear
             </button>
         </div>
     </div>
-    <div class="table ws-logs">
-        <div class="table-head">
-            <div class="table-row">
-                <div class="col-3">Time</div>
-                <div class="col-9">Data</div>
+
+    <div class="table-preset table-preset-ws-logs ws-logs-items">
+        <div class="d-contents" role="rowgroup">
+            <div class="d-contents" role="row">
+                <div role="columnheader" class="table-preset-head">Name</div>
+                <div role="columnheader" class="table-preset-head"></div>
+                <div role="columnheader" class="table-preset-head">Data</div>
             </div>
         </div>
-
-        <!-- ko if: wsSending -->
-        <div class="table-body">
-            <spinner></spinner>
-        </div>
-        <!-- /ko -->
-
-        <!-- ko if: wsLogItems().length > 0 -->
-        <div class="table-body ws-logs-items animation-fade-in">
+        <div class="d-contents table-preset-v-scroll" role="rowgroup">
             <!-- ko foreach: { data: wsLogItems, as: 'item' } -->
-            <div class="table-row">
-                <span class="col-3" data-bind="attr: { 'ws-log-type': item.logType }, text: item.logTime"></span>
-                <span class="col-9 text-truncate" data-bind="attr: { 'ws-log-type': item.logType }, text: item.logData"></span>
+            <div class="d-contents" role="row">
+                <div role="cell" data-bind="text: item.logTime">
+                </div>
+                <div role="cell">
+                    <i data-bind="attr: { 'ws-log-type': item.logType }"></i>
+                </div>
+                <div role="cell" class="text-truncate" data-bind="text: item.logData">
+                </div>
             </div>
             <!-- /ko -->
         </div>
-        <!-- /ko -->
-
-        <!-- ko if: wsLogItems().length === 0 -->
-        <div class="table-body">
-            <div class="table-row">
-                <span class="col-12">No data</span>
-            </div>
-        </div>
-        <!-- /ko -->
-
     </div>
+    <!-- /ko -->
+
+    <!-- ko if: wsLogItems().length === 0 -->
+    <p>Sent and received messages will appear here. Send a payload to begin.</p>
+    <!-- /ko -->
+
 </div>
 <!-- /ko -->
 
