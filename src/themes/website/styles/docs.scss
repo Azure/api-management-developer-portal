@@ -1,4 +1,5 @@
 @import "variables.scss";
+@import "icons.scss";
 
 .full-screen {
     position: fixed;
@@ -220,6 +221,37 @@ pre {
 }
 
 [data-code^="5"] {
+    color: #e30012;
+}
+
+[ws-log-type] {
+    &::before {
+        content: "";
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        background-repeat: no-repeat;
+    }
+}
+
+[ws-log-type="SendData"] {
+    &::before {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2313c20f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cline x1='12' y1='19' x2='12' y2='5'%3E%3C/line%3E%3Cpolyline points='5 12 12 5 19 12'%3E%3C/polyline%3E%3C/svg%3E");
+    }
+}
+
+[ws-log-type="GetData"] {
+    &::before {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232392f7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cline x1='12' y1='19' x2='12' y2='5'%3E%3C/line%3E%3Cpolyline points='5 12 12 5 19 12'%3E%3C/polyline%3E%3C/svg%3E");
+        transform: rotate(180deg);
+    }
+}
+
+[ws-log-type="Connection"] {
+    color: black;
+}
+
+[ws-log-type="Error"] {
     color: #e30012;
 }
 

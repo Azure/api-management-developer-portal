@@ -17,6 +17,11 @@ export interface ListOfApisContract extends Contract {
     allowSelection: boolean;
 
     /**
+     * Show API type.
+     */
+    showApiType: boolean;
+
+    /**
      * Default GroupByTag to enabled.
      */
     defaultGroupByTagToEnabled?: boolean;
