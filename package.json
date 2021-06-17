@@ -62,11 +62,11 @@
         "webpack-merge": "^5.2.0"
     },
     "dependencies": {
-        "@paperbits/azure": "0.1.419",
-        "@paperbits/common": "0.1.419",
-        "@paperbits/core": "0.1.419",
-        "@paperbits/prosemirror": "0.1.419",
-        "@paperbits/styles": "0.1.419",
+        "@paperbits/azure": "0.1.424",
+        "@paperbits/common": "0.1.424",
+        "@paperbits/core": "0.1.424",
+        "@paperbits/prosemirror": "0.1.424",
+        "@paperbits/styles": "0.1.424",
         "@webcomponents/custom-elements": "1.4.2",
         "@webcomponents/shadydom": "^1.7.4",
         "adal-vanilla": "^1.0.18",
@@ -88,9 +88,7 @@
         "remark": "^13.0.0",
         "remark-html": "^13.0.1",
         "saxen": "^8.1.2",
-        "slick": "^1.12.2",
         "topojson-client": "^3.1.0",
-        "truncate-html": "^1.0.3",
-        "xhr2": "^0.2.0"
+        "truncate-html": "^1.0.3"
     }
 }

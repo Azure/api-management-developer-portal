@@ -2,21 +2,17 @@ import * as Msal from "msal";
 import * as AuthenticationContext from "adal-vanilla";
 import * as Constants from "../constants";
 import { Utils } from "../utils";
-import { IAuthenticator, AccessToken } from "../authentication";
 import { Router } from "@paperbits/common/routing";
-import { HttpClient } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { RouteHelper } from "../routing/routeHelper";
 import { UsersService } from "./usersService";
-import { MapiClient } from "./mapiClient";
+import { AadB2CClientConfig } from "../contracts/aadB2CClientConfig";
 
 /**
  * Service for operations with Azure Active Directory identity provider.
  */
 export class AadService {
     constructor(
-        private readonly authenticator: IAuthenticator,
-        private readonly httpClient: HttpClient,
         private readonly settingsProvider: ISettingsProvider,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper,
@@ -63,7 +59,7 @@ export class AadService {
     public async signInWithAadMsal(aadClientId: string, authority: string, signinTenant: string): Promise<void> {
         const authorityUrl = `https://${authority}/${signinTenant}`;
 
-        const msalConfig = {
+        const msalConfig: Msal.Configuration = {
             auth: {
                 clientId: aadClientId,
                 authority: authorityUrl,
@@ -88,9 +84,9 @@ export class AadService {
      * @param aadClientId {string} Azure Active Directory client ID.
      * @param signinTenant {string} Azure Active Directory tenant used to signin.
      */
-    public signInWithAadAdal(aadClientId: string, instance: string, signinTenant: string): Promise<void> {
+    public signInWithAadAdal(aadClientId: string, instance: string, signinTenant: string, replyUrl?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            const callback = async (errorDescription: string, idToken: string, error: string, tokenType: string) => {
+            const callback = async (errorDescription: string, idToken: string, error: string) => {
                 if (!idToken) {
                     reject(new Error(`Authentication failed.`));
                     console.error(`Unable to obtain id_token with client ID: ${aadClientId}. Error: ${error}. Details: ${errorDescription}.`);
@@ -105,13 +101,17 @@ export class AadService {
                 }
             };
 
-            const authContextConfig = {
+            const authContextConfig: any = {
                 tenant: signinTenant,
                 instance: `https://${instance}/`,
                 clientId: aadClientId,
                 popUp: true,
                 callback: callback
             };
+
+            if (replyUrl) {
+                authContextConfig.redirectUri = replyUrl;
+            }
 
             const authContext = new AuthenticationContext(authContextConfig);
             authContext.login();
@@ -124,8 +124,9 @@ export class AadService {
      * @param tenant {string} Tenant, e.g. "contoso.b2clogin.com".
      * @param instance {string} Instance, e.g. "contoso.onmicrosoft.com".
      * @param userFlow {string} User flow, e.g. "B2C_1_signinsignup".
+     * @param replyUrl {string} Reply URL, e.g. "/signin".
      */
-    public async runAadB2CUserFlow(clientId: string, tenant: string, instance: string, userFlow: string): Promise<void> {
+    public async runAadB2CUserFlow(clientId: string, tenant: string, instance: string, userFlow: string, replyUrl?: string): Promise<void> {
         if (!clientId) {
             throw new Error(`Client ID not specified.`);
         }
@@ -136,13 +137,17 @@ export class AadService {
 
         const auth = `https://${tenant}/tfp/${instance}/${userFlow}`;
 
-        const msalConfig = {
+        const msalConfig: Msal.Configuration = {
             auth: {
                 clientId: clientId,
                 authority: auth,
-                validateAuthority: false
+                validateAuthority: false,
             }
         };
+
+        if (replyUrl) {
+            msalConfig.auth.redirectUri = replyUrl;
+        }
 
         const msalInstance = new Msal.UserAgentApplication(msalConfig);
 
@@ -155,6 +160,19 @@ export class AadService {
         if (response.idToken && response.idToken.rawIdToken) {
             await this.exchangeIdToken(response.idToken.rawIdToken, Constants.IdentityProviders.aadB2C);
         }
+    }
+
+    public async signOutAadB2C(): Promise<void> {
+        const config = await this.settingsProvider.getSetting<AadB2CClientConfig>(Constants.SettingNames.aadClientConfig);
+
+        const msalConfig: Msal.Configuration = {
+            auth: {
+                clientId: config.clientId,
+            }
+        };
+
+        const msalInstance = new Msal.UserAgentApplication(msalConfig);
+        msalInstance.logout();
     }
 
     /**
