@@ -12,6 +12,11 @@ export class ListOfApisModel {
     public allowSelection: boolean;
 
     /**
+     * Show API type.
+     */
+    public showApiType: boolean;
+
+    /**
      * Default GroupByTag to enabled.
      */
     public defaultGroupByTagToEnabled: boolean;
