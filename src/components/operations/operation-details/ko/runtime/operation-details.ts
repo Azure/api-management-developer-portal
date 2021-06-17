@@ -41,6 +41,8 @@ export class OperationDetails {
     public readonly hostnames: ko.Observable<string[]>;
     public readonly working: ko.Observable<boolean>;
     public readonly associatedAuthServer: ko.Observable<AuthorizationServer>;
+    public readonly apiType: ko.Observable<string>;
+    public readonly protocol: ko.Computed<string>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -76,8 +78,22 @@ export class OperationDetails {
                 operationPath += operation.displayUrlTemplate;
             }
 
+            if (api.type === TypeOfApi.webSocket) {
+                return `${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
+            }
+
             return `https://${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
         });
+        this.protocol = ko.computed(() => {
+            const api = this.api();
+            
+            if (!api) {
+                return null;
+            }
+
+            return api.protocols?.join(", ");
+        });
+        this.apiType = ko.observable();
     }
 
     @Param()
@@ -150,7 +166,7 @@ export class OperationDetails {
         }
 
         await this.loadGatewayInfo(apiName);
-
+        this.apiType(api?.type);
         this.api(api);
 
         this.closeConsole();

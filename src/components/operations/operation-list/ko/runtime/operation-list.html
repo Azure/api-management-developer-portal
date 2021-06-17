@@ -1,3 +1,18 @@
+<!-- ko if: apiType() === 'websocket' -->
+<div class="flex flex-row">
+    <!-- ko if: working-->
+    <div class="flex-item flex-grow">
+        <spinner class="fit"></spinner>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko ifnot: working-->
+    <p>WebSocket APIs don’t expose API operations.</p>
+    <!-- /ko -->
+</div>
+<!-- /ko -->
+
+<!-- ko ifnot: apiType() === 'websocket' -->
 <div class="form-inline search-input">
     <div class="d-block flex-grow mw-100">
         <div class="input-group">
@@ -127,4 +142,6 @@
     <!-- /ko -->
 </ul>
 <!-- /ko -->
+<!-- /ko -->
+
 <!-- /ko -->
