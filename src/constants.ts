@@ -89,7 +89,9 @@ export const AppType = "developerPortal";
 export enum SettingNames {
     backendUrl = "backendUrl",
     managementApiUrl = "managementApiUrl",
-    managementApiAccessToken = "managementApiAccessToken"
+    managementApiAccessToken = "managementApiAccessToken",
+    aadClientConfig = "aad",
+    aadB2CClientConfig = "aadB2C"
 }
 
 /**
