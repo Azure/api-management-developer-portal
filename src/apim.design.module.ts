@@ -4,6 +4,7 @@ import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
+import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSessionManager";
 import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
 import { ListOfApisEditorModule } from "./components/apis/list-of-apis/ko/listOfApisEditor.module";
 import { DetailsOfApiModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
@@ -61,6 +62,7 @@ import { OldContentRouteGuard } from "./routing/oldContentRouteGuard";
 import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts.module";
 import { ApiProductsEditorModule } from "./components/apis/api-products/ko/apiProductsEditor.module";
+import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -130,5 +132,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindToCollection("autostart", HistoryRouteHandler);
         injector.bindToCollection("autostart", AccessTokenRefrsher);
+        injector.bindToCollection("autostart", RuntimeConfigurator);
+        injector.bindSingleton("sessionManager", DefaultSessionManager);
     }
 }

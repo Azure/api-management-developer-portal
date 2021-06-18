@@ -1,3 +1,4 @@
+import { AadConfigPublisher } from "./publishing/aadConfigPublisher";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { MapiClient } from "./services/mapiClient";
@@ -33,6 +34,8 @@ import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
 import { OAuthService } from "./services/oauthService";
 import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts.module";
+import { RuntimeConfigPublisher } from "./publishing/runtimeConfigPublisher";
+import { RuntimeConfigBuilder } from "./publishing/runtimeConfigBuilder";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -71,5 +74,10 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("oauthService", OAuthService);
+
+        injector.bindSingleton("runtimeConfigBuilder", RuntimeConfigBuilder);
+        injector.bindToCollection("publishers", AadConfigPublisher);
+        injector.bindToCollection("publishers", RuntimeConfigPublisher);
+        
     }
 }

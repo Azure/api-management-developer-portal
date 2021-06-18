@@ -1,30 +1,74 @@
-<fieldset class="form" data-bind="scrollable: true">
-    <div class="form-group">
+<div class="form" data-bind="scrollable: true">
+    <div class="form-group form-group-collapsible">
         <label class="form-label">
-            Label on AAD button
-            <button class="btn btn-info" type="button" title="Help" data-bind="tooltip: 'Text on the button'"></button>
+            <a href="#" class="form-group-toggle" title="Toggle section" data-bind="collapse: '#aadCollapse'"></a>
+            <b>AAD</b>
         </label>
-        <input type="text" class="form-control" data-bind="textInput: aadLabel" maxlength="256" />
-    </div>
-
-    <div class="form-group">
-        <label class="form-label">
-            Label on AAD B2C button
-            <button class="btn btn-info" type="button" title="Help" data-bind="tooltip: 'Text on the button'"></button>
-        </label>
-        <input type="text" class="form-control" data-bind="textInput: aadB2CLabel" maxlength="256" />
-    </div>
-
-    <div class="form-group">
-        <label for="appearanceStyle" class="form-label">
-            Appearance
-            <button class="btn btn-info" type="button" title="Help" data-bind="tooltip: 'Predefined appearance from style guide.'"></button>
-        </label>
-        <div class="input-group">
-            <a href="#" class="form-control" data-bind="text: appearanceStyle() && appearanceStyle().displayName, balloon: { component: { name: 'style-variation-selector', params: { snippetType: 'components/button', onSelect: $component.onVariationSelected } } }">
-            </a>
+        <div id="aadCollapse" class="collapse form-group-collapse">
+            <div class="form-group">
+                <label class="form-label">
+                    Label on AAD button
+                    <button class="btn btn-info" type="button" title="Help"
+                        data-bind="tooltip: 'Text on the button'"></button>
+                </label>
+                <input type="text" class="form-control" placeholder="Sign in" data-bind="textInput: aadLabel"
+                    maxlength="256" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">
+                    Custom reply URL
+                    <button class="btn btn-info" type="button" title="Help"
+                        data-bind="tooltip: 'Custom reply URL. If not specified, current page URL will be used.'"></button>
+                </label>
+                <input type="text" class="form-control" placeholder="e.g. https://contoso.com/signin" data-bind="textInput: aadReplyUrl"
+                    maxlength="2000" />
+            </div>
         </div>
     </div>
-
-    <role-input params="{ selection: model.roles, onChange: onRoleSelect }"></role-input>
-</fieldset>
+    <div class="form-group form-group-collapsible">
+        <label class="form-label">
+            <a href="#" class="form-group-toggle" title="Toggle section" data-bind="collapse: '#aadB2CCollapse'"></a>
+            <b>AAD B2C</b>
+        </label>
+        <div id="aadB2CCollapse" class="collapse form-group-collapse">
+            <div class="form-group">
+                <label class="form-label">
+                    Label on AAD B2C button
+                    <button class="btn btn-info" type="button" title="Help"
+                        data-bind="tooltip: 'Text on the button'"></button>
+                </label>
+                <input type="text" class="form-control" placeholder="Sign in" data-bind="textInput: aadB2CLabel"
+                    maxlength="256" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">
+                    Custom reply URL
+                    <button class="btn btn-info" type="button" title="Help"
+                        data-bind="tooltip: 'Custom reply URL. If not specified, current page URL will be used.'"></button>
+                </label>
+                <input type="text" class="form-control" placeholder="e.g. https://contoso.com/signin" data-bind="textInput: aadB2CReplyUrl"
+                    maxlength="2000" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group form-group-collapsible">
+        <label class="form-label">
+            <a href="#" class="form-group-toggle" title="Toggle section" data-bind="collapse: '#miscellaneous'"></a>
+            <b>Miscellaneous</b>
+        </label>
+        <div id="miscellaneous" class="collapse form-group-collapse">
+            <div class="form-group">
+                <label for="appearanceStyle" class="form-label">
+                    Appearance
+                    <button class="btn btn-info" type="button" title="Help"
+                        data-bind="tooltip: 'Predefined appearance from style guide.'"></button>
+                </label>
+                <div class="input-group">
+                    <select id="appearanceStyle" class="form-control"
+                        data-bind="options: appearanceStyles, value: appearanceStyle, optionsText: 'displayName', optionsValue: 'key'"></select>
+                </div>
+            </div>
+            <role-input params="{ selection: model.roles, onChange: onRoleSelect }"></role-input>
+        </div>
+    </div>
+</div>
