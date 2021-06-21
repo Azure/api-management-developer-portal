@@ -63,6 +63,6 @@ export class RuntimeConfigurator {
             designTimeSettings[SettingNames.aadB2CClientConfig] = aadB2CConfig;
         }
 
-        this.sessionManager.setItem("designTimeSettings", JSON.stringify(designTimeSettings));
+        this.sessionManager.setItem("designTimeSettings", designTimeSettings);
     }
 }
