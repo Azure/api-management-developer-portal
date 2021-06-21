@@ -16,6 +16,6 @@ export class RuntimeConfigPublisher implements IPublisher {
         const configuration = this.runtimeConfigBuilder.build();
         const content = Utils.stringToUnit8Array(JSON.stringify(configuration));
 
-        await this.outputBlobStorage.uploadBlob("/config.json", content);
+        await this.outputBlobStorage.uploadBlob("/config-apim.json", content);
     }
 }

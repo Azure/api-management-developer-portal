@@ -13,14 +13,10 @@ import { RuntimeConfigBuilder } from "./runtimeConfigBuilder";
 export class AadConfigPublisher implements IPublisher {
     constructor(
         private readonly runtimeConfigBuilder: RuntimeConfigBuilder,
-        private readonly identityService: IdentityService,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly identityService: IdentityService
     ) { }
 
     public async publish(): Promise<void> {
-        const managementApiUrl = await this.settingsProvider.getSetting(SettingNames.managementApiUrl);
-        this.runtimeConfigBuilder.addSetting(SettingNames.managementApiUrl, managementApiUrl);
-
         const identityProviders = await this.identityService.getIdentityProviders();
 
         const aadIdentityProvider = identityProviders.find(x => x.type === SettingNames.aadClientConfig);
