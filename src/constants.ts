@@ -135,3 +135,5 @@ export const developerPortalType = "self-hosted-portal";
  * Header name to track developer portal type.
  */
 export const portalHeaderName = "x-ms-apim-client";
+
+export const releaseNameFormat = "YYYYMMDDHHmm";

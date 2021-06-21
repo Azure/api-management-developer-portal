@@ -1,9 +1,9 @@
+import "./polyfills";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.activate";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.component";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.dialog";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.focus";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.scrollable";
-import { DefaultSettingsProvider } from "@paperbits/common/configuration";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSessionManager";
@@ -53,7 +53,6 @@ import { Signup } from "./components/users/signup/ko/runtime/signup";
 import { Subscriptions } from "./components/users/subscriptions/ko/runtime/subscriptions";
 import { ValidationSummary } from "./components/users/validation-summary/ko/runtime/validation-summary";
 import { UnhandledErrorHandler } from "./errors/unhandledErrorHandler";
-import "./polyfills";
 import { AadSignOutRouteGuard } from "./routing/aadSignoutRouteGuard";
 import { RouteHelper } from "./routing/routeHelper";
 import { SignOutRouteGuard } from "./routing/signOutRouteGuard";
@@ -69,6 +68,7 @@ import { ProvisionService } from "./services/provisioningService";
 import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
+import { ApimSettingsProvider } from "./configuration/apimSettingsProvider";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -122,7 +122,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("aadService", AadService);
         injector.bindSingleton("mapiClient", MapiClient);
-        injector.bindSingleton("settingsProvider", DefaultSettingsProvider);
+        injector.bindSingleton("settingsProvider", ApimSettingsProvider);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("routeHelper", RouteHelper);
         injector.bindSingleton("userService", StaticUserService);
