@@ -1,3 +1,4 @@
+import { EventManager } from "@paperbits/common/events";
 import { AccessToken } from "./../../authentication/accessToken";
 import template from "./app.html";
 import { ViewManager } from "@paperbits/common/ui";
@@ -5,7 +6,6 @@ import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ISiteService } from "@paperbits/common/sites";
 import { IAuthenticator } from "../../authentication";
-import { Utils } from "../../utils";
 
 const startupError = `Unable to start the portal`;
 
@@ -18,7 +18,8 @@ export class App {
         private readonly settingsProvider: ISettingsProvider,
         private readonly authenticator: IAuthenticator,
         private readonly viewManager: ViewManager,
-        private readonly siteService: ISiteService
+        private readonly siteService: ISiteService,
+        private readonly eventManager: EventManager
     ) { }
 
     @OnMounted()
@@ -70,6 +71,11 @@ export class App {
 
             this.viewManager.setHost({ name: "page-host" });
             this.viewManager.showToolboxes();
+
+            setTimeout(() => this.eventManager.dispatchEvent("displayHint", {
+                key: "a69b",
+                content: `When you're in the administrative view, you still can navigate any website hyperlink by clicking on it holding Ctrl (Windows) or ⌘ (Mac) key.`
+            }), 5000);
         }
         catch (error) {
             this.viewManager.addToast(startupError, `Check if the settings specified in the configuration file <i>config.design.json</i> are correct or refer to the <a href="http://aka.ms/apimdocs/portal#faq" target="_blank">frequently asked questions</a>.`);
