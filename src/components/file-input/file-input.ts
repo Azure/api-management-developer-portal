@@ -1,8 +1,7 @@
 import * as ko from "knockout";
 import template from "./file-input.html";
 import { Utils } from "../../utils";
-import { Component, Event } from "@paperbits/common/ko/decorators";
-
+import { Component, Event, Param } from "@paperbits/common/ko/decorators";
 
 @Component({
     selector: "file-input",
@@ -14,6 +13,9 @@ export class FileInput {
 
     @Event()
     public onSelect: (file: File) => void;
+
+    @Param()
+    public containerItem: {binary: ko.Observable<File>};
 
     constructor() {
         this.selectedFileInfo = ko.observable<string>();
@@ -39,11 +41,11 @@ export class FileInput {
             const file: File = event.target.files[0];
             
             this.selectedFileInfo(`${file.name} (${Utils.formatBytes(file.size)})`);
-
-            this.onSelect(file);
+            this.containerItem && this.containerItem.binary(file);
+            this.onSelect && this.onSelect(file);
         }
         else {
-            this.onSelect(null);
+            this.onSelect && this.onSelect(null);
         }
     }
 }
