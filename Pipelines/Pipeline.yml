@@ -23,11 +23,6 @@ jobs:
           command: "install"
 
       - pwsh: |        
-          node ./migrate --sourceSubscriptionId "$(sourceSubscriptionId)" --sourceResourceGroupName  "$(sourceResourceGroupName)" --sourceServiceName "$(sourceAPIMName)" --destServiceName "$(destinationAPIMName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --sourceTenantid "$(sourceAzure_Tenant)" --sourceServiceprincipal "$(sourceServicePrincipal)" --sourceSecret "$(sourceAzureDevOps-ServicePrincipal-Secret)"  --destTenantid "$(Azure_Tenant)" --destServiceprincipal "$(ServicePrincipal)" --destSecret "$(AzureDevOps-ServicePrincipal-Secret)"
+          node ./migrate --sourceSubscriptionId "$(sourceSubscriptionId)" --sourceResourceGroupName  "$(sourceResourceGroupName)" --sourceServiceName "$(sourceAPIMName)" --destServiceName "$(destinationAPIMName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --sourceTenantid "$(sourceAzure_Tenant)" --sourceServiceprincipal "$(sourceServicePrincipal)" --sourceSecret "$(sourceAzureDevOps-ServicePrincipal-Secret)"  --destTenantid "$(Azure_Tenant)" --destServiceprincipal "$(ServicePrincipal)" --destSecret "$(AzureDevOps-ServicePrincipal-Secret)" --existingEnvUrls "$(existingEnvUrls)" --destEnvUrls  "$(destEnvUrls)"
         workingDirectory: "$(System.DefaultWorkingDirectory)/scripts.v3"
         displayName: Run Migrate cmd from $(sourceAPIMName) to $(destinationAPIMName)
-
-      - pwsh: |        
-          node ./migrateenvurl --existingEnvUrls "$(existingEnvUrls)" --destEnvUrls  "$(destEnvUrls)" --destServiceName "$(destinationAPIMName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --destTenantid "$(Azure_Tenant)" --destServiceprincipal "$(ServicePrincipal)" --destSecret "$(AzureDevOps-ServicePrincipal-Secret)"
-        workingDirectory: "$(System.DefaultWorkingDirectory)/Pipelines/scripts"
-        displayName: Update urls for  $(destinationAPIMName)
