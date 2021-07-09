@@ -15,6 +15,13 @@ export class Request {
         return !!this.description || this.representations.some(x => !!x.typeName);
     }
 
+    /**
+     * Returns "true" if this request has multipart body.
+     */
+    public isFormData(): boolean {
+        return this.representations.some(x => x.typeName === "formData");
+    }
+
     public meaningfulRepresentations(): Representation[] {
         return this.representations.filter(x => !!x.typeName || !!x.example);
     }
