@@ -195,7 +195,7 @@ class ImporterExporter {
      */
     async downloadBlobs() {
         try {
-            const snapshotMediaFolder = `./${this.snapshotFolder}/media`;
+            const snapshotMediaFolder = `${this.snapshotFolder}/media`;
             const blobStorageUrl = await this.getStorageSasUrl();
             const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
             const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
@@ -225,7 +225,7 @@ class ImporterExporter {
      */
     async uploadBlobs() {
         try {
-            const snapshotMediaFolder = `./${this.snapshotFolder}/media`;
+            const snapshotMediaFolder = `${this.snapshotFolder}/media`;
             const blobStorageUrl = await this.getStorageSasUrl();
             const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
             const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
