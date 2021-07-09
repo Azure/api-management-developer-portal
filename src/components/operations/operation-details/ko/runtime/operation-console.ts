@@ -4,7 +4,7 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
-import { ServiceSkuName, TypeOfApi } from "../../../../../constants";
+import { RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { UnauthorizedError } from "../../../../../errors/unauthorizedError";
 import { Api } from "../../../../../models/api";
@@ -31,6 +31,7 @@ import template from "./operation-console.html";
 import { ResponsePackage } from "./responsePackage";
 import { templates } from "./templates/templates";
 import { LogItem, WebsocketClient } from "./websocketClient";
+import { FormDataItem } from "../../../../../models/console/formDataItem";
 
 const oauthSessionKey = "oauthSession";
 
@@ -563,12 +564,16 @@ export class OperationConsole {
         let payload;
 
         switch (consoleOperation.request.bodyFormat()) {
-            case "raw":
+            case RequestBodyType.raw:
                 payload = request.body();
                 break;
 
-            case "binary":
+            case RequestBodyType.binary:
                 payload = await Utils.readFileAsByteArray(request.binary());
+                break;
+
+            case RequestBodyType.form:
+                payload = request.getFormDataPayload();
                 break;
 
             default:
