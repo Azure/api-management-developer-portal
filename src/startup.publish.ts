@@ -9,6 +9,7 @@ import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
 import { StaticSettingsProvider } from "./components/staticSettingsProvider";
 import { FileSystemBlobStorage } from "./components/filesystemBlobStorage";
 import { ApimPublishModule } from "./apim.publish.module";
+import { PublishingCacheModule } from "./persistence/publishingCacheModule";
 
 /* Reading settings from configuration file */
 const configFile = path.resolve(__dirname, "./config.json");
@@ -27,6 +28,7 @@ injector.bindModule(new ProseMirrorModule());
 injector.bindModule(new ApimPublishModule());
 injector.bindInstance("settingsProvider", settingsProvider);
 injector.bindInstance("outputBlobStorage", outputBlobStorage);
+injector.bindModule(new PublishingCacheModule());
 injector.resolve("autostart");
 
 /* Allowing self-signed certificates for HTTP requests */
