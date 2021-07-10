@@ -22,6 +22,8 @@
  *    --destTenantid "< optional (needed if source and destination is in different subscription) destination tenantid >"
  *    --destServiceprincipal "< optional (needed if source and destination is in different subscription)destination serviceprincipal or user name. >"
  *    --destSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the destination. >"
+ *    --existingEnvUrls "< optional (urls used in the developer portal from source apim to replace - if we have multiple urls then comma separated values to be given.) >"
+ *    --destEnvUrls "< optional (urls to be replaced in the developer portal in destination apim in same order - if we have multiple urls then comma separated values to be given.) >"
  * 
  * Auto-publishing is not supported for self-hosted versions, so make sure you publish the portal (for example, locally)
  * and upload the generated static files to your hosting after the migration is completed.
@@ -45,7 +47,9 @@ const yargs = require('yargs')
     *    --destServiceName "< your service name > \r
     *    --destTenantid "< optional (needed if source and destination is in different subscription) destination tenantid > \r
     *    --destServiceprincipal "< optional (needed if source and destination is in different subscription) destination serviceprincipal or user name. > \r
-    *    --destSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the destination. >\n`)
+    *    --destSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the destination. >\r 
+    *    --existingEnvUrls "< optional (urls used in the developer portal from source apim to replace - if we have multiple urls then comma separated values to be given.) > \r
+    *    --destEnvUrls "< optional (urls to be replaced in the developer portal in destination apim in same order - if we have multiple urls then comma separated values to be given.) > \n`)
     .option('sourceSubscriptionId', {
         type: 'string',
         description: 'Azure subscription ID.',
@@ -106,6 +110,16 @@ const yargs = require('yargs')
         description: 'secret or password for service principal or az login for the destination.',
         demandOption: false
     })
+    .option('existingEnvUrls', {
+        type: 'string',
+        description: 'urls used in the developer portal from source apim to replace - if we have multiple urls then comma separated values to be given.',
+        demandOption: true
+    })
+    .option('destEnvUrls', {
+        type: 'string',
+        description: 'urls to be replaced in the developer portal in destination apim in same order - if we have multiple urls then comma separated values to be given.',
+        demandOption: true
+    })
     .help()
     .argv;
 
@@ -117,6 +131,8 @@ async function migrate() {
         const destIimporterExporter = new ImporterExporter(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName, yargs.destTenantid, yargs.destServiceprincipal, yargs.destSecret);
         await destIimporterExporter.cleanup();
         await destIimporterExporter.import();
+        await destIUpdateUrl.updateContentUrl(yargs.existingEnvUrls.split(','), yargs.destEnvUrls.split(','));
+    
         await destIimporterExporter.publish();
     }
     catch (error) {
