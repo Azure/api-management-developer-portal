@@ -1,6 +1,8 @@
 import { Bag } from "@paperbits/common";
 import { HttpClient, HttpHeader, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import * as ExtUtils from "@paperbits/common/utils";
+import { KnownHttpHeaders } from "../../src/models/knownHttpHeaders";
+import { KnownMimeTypes } from "../../src/models/knownMimeTypes";
 import { Utils } from "../../src/utils";
 
 class HttpMockRequestBuilder {
@@ -13,7 +15,7 @@ class HttpMockRequestBuilder {
             this.response.body = ExtUtils.stringToUnit8Array(JSON.stringify(body));
         }
 
-        const responseHeaders = { "Content-Type": "application/json" };
+        const responseHeaders = { [KnownHttpHeaders.ContentType]: KnownMimeTypes.Json };
 
         if (headers) {
             Object.assign(responseHeaders, headers);

@@ -56,6 +56,8 @@ async function getStorageSasToken(managementApiEndpoint, managementApiAccessToke
  * @param {Object} options https options
  */
 async function request(method, url, accessToken, body) {
+    let requestBody;
+
     const headers = {
         "If-Match": "*",
         "Content-Type": "application/json",
@@ -63,7 +65,13 @@ async function request(method, url, accessToken, body) {
     };
 
     if (body) {
-        headers["Content-Length"] = Buffer.byteLength(body);
+        if (!body.properties) {
+            body = {
+                properties: body
+            }
+        }
+        requestBody = JSON.stringify(body);
+        headers["Content-Length"] = Buffer.byteLength(requestBody);
     }
 
     const options = {
@@ -105,8 +113,8 @@ async function request(method, url, accessToken, body) {
             reject(e);
         });
 
-        if (body) {
-            req.write(body);
+        if (requestBody) {
+            req.write(requestBody);
         }
 
         req.end();
