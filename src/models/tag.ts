@@ -1,8 +1,8 @@
 import { TagContract } from "../contracts/tag";
 
 export class Tag {
-    public id: string;
-    public name: string;
+    public readonly id: string;
+    public readonly name: string;
 
     constructor(contract: TagContract) {
         this.id = contract.id;

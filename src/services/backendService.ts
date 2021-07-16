@@ -6,15 +6,17 @@ import { IAuthenticator } from "../authentication";
 import { DelegationAction } from "../contracts/tenantSettings";
 import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
 import { SettingNames } from "../constants";
+import { KnownMimeTypes } from "../models/knownMimeTypes";
+import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 
 export class BackendService {
-    private portalUrl;
+    private portalUrl: string;
 
     constructor(
         private readonly settingsProvider: ISettingsProvider,
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator
-    ) {}
+    ) { }
 
     public async getCaptchaParams(): Promise<CaptchaParams> {
         let response: HttpResponse<CaptchaParams>;
@@ -35,10 +37,10 @@ export class BackendService {
 
     public async sendSignupRequest(signupRequest: SignupRequest): Promise<void> {
         const response = await this.httpClient.send(
-            { 
-                url: await this.getUrl("/signup"), 
+            {
+                url: await this.getUrl("/signup"),
                 method: HttpMethod.post,
-                headers: [{ name: "Content-Type", value: "application/json" }],
+                headers: [{ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
                 body: JSON.stringify(signupRequest)
             });
         if (response.statusCode !== 200) {
@@ -53,10 +55,10 @@ export class BackendService {
 
     public async sendResetRequest(resetRequest: ResetRequest): Promise<void> {
         const response = await this.httpClient.send(
-            { 
-                url: await this.getUrl("/reset-password-request"), 
+            {
+                url: await this.getUrl("/reset-password-request"),
                 method: HttpMethod.post,
-                headers: [{ name: "Content-Type", value: "application/json" }],
+                headers: [{ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
                 body: JSON.stringify(resetRequest)
             });
         if (response.statusCode !== 200) {
@@ -77,10 +79,10 @@ export class BackendService {
         }
 
         const response = await this.httpClient.send(
-            { 
-                url: await this.getUrl("/change-password"), 
+            {
+                url: await this.getUrl("/change-password"),
                 method: HttpMethod.post,
-                headers: [{ name: "Authorization", value: authToken }, { name: "Content-Type", value: "application/json" }],
+                headers: [{ name: KnownHttpHeaders.Authorization, value: authToken }, { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
                 body: JSON.stringify(changePasswordRequest)
             });
         if (response.statusCode !== 200) {
@@ -105,10 +107,10 @@ export class BackendService {
             delegationParameters: delegationParameters
         }
         const response = await this.httpClient.send(
-            { 
-                url: await this.getUrl("/delegation-url"), 
+            {
+                url: await this.getUrl("/delegation-url"),
                 method: HttpMethod.post,
-                headers: [{ name: "Authorization", value: authToken }, { name: "Content-Type", value: "application/json" }],
+                headers: [{ name: KnownHttpHeaders.Authorization, value: authToken }, { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
                 body: JSON.stringify(payload)
             });
         if (response.statusCode === 200) {

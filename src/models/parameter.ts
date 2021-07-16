@@ -4,37 +4,37 @@ export class Parameter {
     /**
      * Parameter name, e.g. api-version.
      */
-    public name: string;
+    public readonly name: string;
 
     /**
      * Parameter description.
      */
-    public description: string;
+    public readonly description: string;
 
     /**
      * Parameter placement, e.g. "query", "template", "header", "body".
      */
-    public in: string;
+    public readonly in: string;
 
     /**
      * Parameter type, e.g. "string", "int64", etc.
      */
-    public type: string;
+    public readonly type: string;
 
     /**
      * Parameter default value, e.g. "2018-06-01-preview".
      */
-    public defaultValue: string;
+    public readonly defaultValue: string;
 
     /**
      * Parameter value suggestions, e.g. ["2016-07-07","2016-10-10", "2018-06-01-preview"]
      */
-    public values: string[];
+    public readonly values: string[];
 
     /**
      * Indicates if the parameter is required to make a request.
      */
-    public required: boolean;
+    public readonly required: boolean;
 
     constructor(placement: string, contract?: ParameterContract) {
         this.name = contract.name;
