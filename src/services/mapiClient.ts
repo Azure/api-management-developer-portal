@@ -7,6 +7,7 @@ import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@
 import { MapiError } from "../errors/mapiError";
 import { IAuthenticator, AccessToken } from "../authentication";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
+import { KnownMimeTypes } from "../models/knownMimeTypes";
 
 
 export interface IHttpBatchResponses {
@@ -75,8 +76,8 @@ export class MapiClient {
 
         httpRequest.headers = httpRequest.headers || [];
 
-        if (httpRequest.body && !httpRequest.headers.some(x => x.name === "Content-Type")) {
-            httpRequest.headers.push({ name: "Content-Type", value: "application/json" });
+        if (httpRequest.body && !httpRequest.headers.some(x => x.name === KnownHttpHeaders.ContentType)) {
+            httpRequest.headers.push({ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json });
         }
 
         if (!httpRequest.headers.some(x => x.name === "Accept")) {
@@ -136,7 +137,7 @@ export class MapiClient {
         httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
 
         const url = new URL(httpRequest.url);
-        
+
         if (!url.searchParams.has("api-version")) {
             httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${Constants.managementApiVersion}`);
         }
