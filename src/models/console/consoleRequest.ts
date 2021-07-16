@@ -5,6 +5,7 @@ import { ConsoleRepresentation } from "./consoleRepresentation";
 import { Request } from "../request";
 import { RequestBodyType } from "../../constants";
 import { FormDataItem } from "./formDataItem";
+import { KnownHttpHeaders } from "../knownHttpHeaders";
 
 export class ConsoleRequest {
     public readonly queryParameters: ko.ObservableArray<ConsoleParameter>;
@@ -18,7 +19,6 @@ export class ConsoleRequest {
     public readonly bodyFormat: ko.Observable<RequestBodyType>;
     public readonly bodyDataItems: ko.ObservableArray<FormDataItem>;
     public readonly representationContentType: string;
-    
     public readonly readonlyBodyFormat: boolean;
 
     constructor(request: Request) {
@@ -30,7 +30,7 @@ export class ConsoleRequest {
 
         this.body = ko.observable();
         this.binary = ko.observable();
-        this.binary.extend(<any>{ maxFileSize: 3 * 1024 * 1024 });        
+        this.binary.extend(<any>{ maxFileSize: 3 * 1024 * 1024 });
         this.bodyFormat = ko.observable(RequestBodyType.raw);
         this.bodyDataItems = ko.observableArray([]);
 
@@ -47,44 +47,46 @@ export class ConsoleRequest {
         // do not convert formParameters for contentType = application/x-www-form-urlencoded
         // do not add Content-Type header for multipart/form-data
         const bodyRepresentation = this.representationContentType === "multipart/form-data" && request.representations.find(r => r.formParameters?.length > 0);
+
         if (bodyRepresentation) {
             this.hasBody = true;
             this.readonlyBodyFormat = true;
             this.bodyFormat(RequestBodyType.form);
-            const dataItems = bodyRepresentation.formParameters.map(p => {
+
+            const dataItems = bodyRepresentation.formParameters.map(parameter => {
                 const item = new FormDataItem();
-                item.name(p.name);
-                item.type(p.type);
-                item.description(p.description);
-                item.required(p.required);
+                item.name(parameter.name);
+                item.type(parameter.type);
+                item.description(parameter.description);
+                item.required(parameter.required);
                 return item;
             });
             this.bodyDataItems(dataItems);
-        } else {
-            if (this.representationContentType && this.headers().find(h => h.name() === "Content-Type") === undefined) {
-                const consoleHeader = new ConsoleHeader();
-                consoleHeader.name("Content-Type");
-                consoleHeader.value(this.representationContentType);
-                this.headers.push(consoleHeader);
-            }
         }
-
+        else if (this.representationContentType && this.headers().find(h => h.name() === KnownHttpHeaders.ContentType) === undefined) {
+            const consoleHeader = new ConsoleHeader();
+            consoleHeader.name(KnownHttpHeaders.ContentType);
+            consoleHeader.value(this.representationContentType);
+            this.headers.push(consoleHeader);
+        }
     }
 
     public getFormDataPayload(): FormData {
         const formData = new FormData();
         const items = this.bodyDataItems();
-        for (let i = 0; i < items.length; i++) {
-            const item = items[i];
+
+        for (const item of items) {
             if (item.bodyFormat() === RequestBodyType.binary) {
                 const file = item.binary();
+
                 if (file) {
                     formData.append(item.name(), file, file.name);
-                } else {
+                }
+                else {
                     formData.append(item.name(), "");
                 }
-                
-            } else {
+            }
+            else {
                 formData.append(item.name(), item.body() || "");
             }
         }

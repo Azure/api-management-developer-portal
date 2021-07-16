@@ -31,7 +31,7 @@ import template from "./operation-console.html";
 import { ResponsePackage } from "./responsePackage";
 import { templates } from "./templates/templates";
 import { LogItem, WebsocketClient } from "./websocketClient";
-import { FormDataItem } from "../../../../../models/console/formDataItem";
+import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 
 const oauthSessionKey = "oauthSession";
 
@@ -67,13 +67,13 @@ export class OperationConsole {
     public isConsumptionMode: boolean;
     public templates: Object;
     public backendUrl: string;
-    
+
     public readonly wsConnected: ko.Observable<boolean>;
     public readonly wsConnecting: ko.Observable<boolean>;
     public readonly wsStatus: ko.Observable<string>;
     public readonly wsSending: ko.Observable<boolean>;
     public readonly wsSendStatus: ko.Observable<string>;
-    public readonly wsPayload: ko.Observable<string|File>;
+    public readonly wsPayload: ko.Observable<string | File>;
     public readonly wsDataFormat: ko.Observable<string>;
     public readonly wsLogItems: ko.ObservableArray<LogItem>;
 
@@ -375,7 +375,7 @@ export class OperationConsole {
     }
 
     private getSubscriptionKeyHeaderName(): string {
-        let subscriptionKeyHeaderName = KnownHttpHeaders.OcpApimSubscriptionKey;
+        let subscriptionKeyHeaderName: string = KnownHttpHeaders.OcpApimSubscriptionKey;
 
         if (this.api().subscriptionKeyParameterNames && this.api().subscriptionKeyParameterNames.header) {
             subscriptionKeyHeaderName = this.api().subscriptionKeyParameterNames.header;
@@ -402,7 +402,7 @@ export class OperationConsole {
     }
 
     private setSubscriptionKeyParameter(subscriptionKey: string): void {
-        const subscriptionKeyParam = this.getSubscriptionKeyParam();        
+        const subscriptionKeyParam = this.getSubscriptionKeyParam();
         this.removeQueryParameter(subscriptionKeyParam);
 
         if (!subscriptionKey) {
@@ -519,7 +519,7 @@ export class OperationConsole {
         }
 
         const formData = new FormData();
-        const requestPackage = new Blob([JSON.stringify(request)], { type: "application/json" });
+        const requestPackage = new Blob([JSON.stringify(request)], { type: KnownMimeTypes.Json });
         formData.append("requestPackage", requestPackage);
 
         const baseProxyUrl = this.backendUrl || "";
@@ -717,7 +717,7 @@ export class OperationConsole {
         this.responseStatusCode(null);
 
         const consoleOperation = this.consoleOperation();
-        const url = consoleOperation.wsUrl(); 
+        const url = consoleOperation.wsUrl();
 
         this.initWebSocket();
         this.wsStatus("Connecting...");
