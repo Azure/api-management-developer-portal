@@ -23,7 +23,7 @@ export class AadSignOutRouteGuard implements RouteGuard {
         const config = await this.settingsProvider.getSetting<AadB2CClientConfig>(Constants.SettingNames.aadB2CClientConfig);
 
         if (!config) {
-            return;
+            return true;
         }
 
         const msalConfig = {
