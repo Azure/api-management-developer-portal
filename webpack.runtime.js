@@ -27,7 +27,10 @@ const runtimeConfig = {
             },
             {
                 test: /\.tsx?$/,
-                loader: "awesome-typescript-loader"
+                loader: "ts-loader",
+                options: {
+                    allowTsInNodeModules: true
+                }
             },
             {
                 test: /\.html$/,
