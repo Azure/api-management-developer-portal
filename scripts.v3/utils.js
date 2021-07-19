@@ -423,6 +423,39 @@ class ImporterExporter {
             throw new Error(`Unable to schedule website publishing. ${error.message}`);
         }
     }
+    
+    /**
+     * Updates the url links of specified API Management service into updated url in destination.
+     */
+     async updateContentUrl(existingUrls, replaceableUrls) {
+        try {
+            const contentItems = await this.getContentItems("url");
+
+            console.log("urls found in portal: " + contentItems.length);
+
+            for (const contentItem of contentItems) {
+                var count = 0;
+                console.log("url found in portal: " + contentItem.properties.permalink);
+
+                for (const existingUrl of existingUrls) {
+                    if (contentItem.properties.permalink == existingUrl) {
+                        contentItem.properties.permalink = replaceableUrls[count];
+                        contentItem.properties.title = replaceableUrls[count];
+                        console.log("updating url content..." + contentItem.properties.permalink);
+                        console.log(" updated url content : " + JSON.stringify(contentItem));
+                        const response = await this.httpClient.sendRequest("PUT", contentItem.id + "?api-version=2019-12-01", contentItem);
+
+                        console.log(" resp: " + JSON.stringify(response));
+                    }
+                    count++;
+                };
+            };
+
+        }
+        catch (error) {
+            throw new Error(`Unable to update url content. ${error.message}`);
+        }
+    }
 }
 
 module.exports = {
