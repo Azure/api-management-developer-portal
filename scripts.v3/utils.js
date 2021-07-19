@@ -4,7 +4,7 @@ const https = require("https");
 const { execSync } = require("child_process");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
-const mime = require("mime-types");
+const mime = require("mime");
 const apiVersion = "2020-06-01-preview"; // "2021-01-01-preview"; 
 const managementApiEndpoint = "management.azure.com";
 const metadataFileExt = ".info";
@@ -243,7 +243,7 @@ class ImporterExporter {
                 }
                 else {
                     blobKey = blobKey.split(".")[0];
-                    contentType = mime.lookup(fileName) || "application/octet-stream";
+                    contentType = mime.getType(fileName) || "application/octet-stream";
                 }
 
                 const blockBlobClient = containerClient.getBlockBlobClient(blobKey);
