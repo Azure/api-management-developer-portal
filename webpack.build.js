@@ -9,7 +9,6 @@ const productionConfig = {
     optimization: {
         minimizer: [
             new TerserPlugin({
-                sourceMap: false,
                 terserOptions: {
                     mangle: false,
                     output: {
