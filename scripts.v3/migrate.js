@@ -113,12 +113,12 @@ const yargs = require('yargs')
     .option('existingEnvUrls', {
         type: 'string',
         description: 'urls used in the developer portal from source apim to replace - if we have multiple urls then comma separated values to be given.',
-        demandOption: true
+        demandOption: false
     })
     .option('destEnvUrls', {
         type: 'string',
         description: 'urls to be replaced in the developer portal in destination apim in same order - if we have multiple urls then comma separated values to be given.',
-        demandOption: true
+        demandOption: false
     })
     .help()
     .argv;
@@ -131,11 +131,13 @@ async function migrate() {
         const destIimporterExporter = new ImporterExporter(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName, yargs.destTenantid, yargs.destServiceprincipal, yargs.destSecret);
         await destIimporterExporter.cleanup();
         await destIimporterExporter.import();
-        await destIUpdateUrl.updateContentUrl(yargs.existingEnvUrls.split(','), yargs.destEnvUrls.split(','));
-    
+
+        if (yargs.existingEnvUrls != "" && yargs.destEnvUrls != "") {
+            await destIUpdateUrl.updateContentUrl(yargs.existingEnvUrls.split(','), yargs.destEnvUrls.split(','));
+        }
+
         await destIimporterExporter.publish();
-    }
-    catch (error) {
+    } catch (error) {
         throw new Error(`Unable to complete migration. ${error.message}`);
     }
 }
