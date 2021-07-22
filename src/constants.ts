@@ -19,6 +19,16 @@ export enum TypeOfApi {
 }
 
 /**
+ * Types of body format.
+ */
+export enum RequestBodyType {
+    raw = "raw",
+    string = "string",
+    binary = "binary",
+    form = "form"
+}
+
+/**
  * Types of identity providers (values are case-sensitive).
  */
 export enum IdentityProviders {

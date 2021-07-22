@@ -4,7 +4,7 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
-import { ServiceSkuName, TypeOfApi } from "../../../../../constants";
+import { RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { UnauthorizedError } from "../../../../../errors/unauthorizedError";
 import { Api } from "../../../../../models/api";
@@ -31,6 +31,7 @@ import template from "./operation-console.html";
 import { ResponsePackage } from "./responsePackage";
 import { templates } from "./templates/templates";
 import { LogItem, WebsocketClient } from "./websocketClient";
+import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 
 const oauthSessionKey = "oauthSession";
 
@@ -66,13 +67,13 @@ export class OperationConsole {
     public isConsumptionMode: boolean;
     public templates: Object;
     public backendUrl: string;
-    
+
     public readonly wsConnected: ko.Observable<boolean>;
     public readonly wsConnecting: ko.Observable<boolean>;
     public readonly wsStatus: ko.Observable<string>;
     public readonly wsSending: ko.Observable<boolean>;
     public readonly wsSendStatus: ko.Observable<string>;
-    public readonly wsPayload: ko.Observable<string|File>;
+    public readonly wsPayload: ko.Observable<string | File>;
     public readonly wsDataFormat: ko.Observable<string>;
     public readonly wsLogItems: ko.ObservableArray<LogItem>;
 
@@ -374,7 +375,7 @@ export class OperationConsole {
     }
 
     private getSubscriptionKeyHeaderName(): string {
-        let subscriptionKeyHeaderName = KnownHttpHeaders.OcpApimSubscriptionKey;
+        let subscriptionKeyHeaderName: string = KnownHttpHeaders.OcpApimSubscriptionKey;
 
         if (this.api().subscriptionKeyParameterNames && this.api().subscriptionKeyParameterNames.header) {
             subscriptionKeyHeaderName = this.api().subscriptionKeyParameterNames.header;
@@ -401,7 +402,7 @@ export class OperationConsole {
     }
 
     private setSubscriptionKeyParameter(subscriptionKey: string): void {
-        const subscriptionKeyParam = this.getSubscriptionKeyParam();        
+        const subscriptionKeyParam = this.getSubscriptionKeyParam();
         this.removeQueryParameter(subscriptionKeyParam);
 
         if (!subscriptionKey) {
@@ -518,7 +519,7 @@ export class OperationConsole {
         }
 
         const formData = new FormData();
-        const requestPackage = new Blob([JSON.stringify(request)], { type: "application/json" });
+        const requestPackage = new Blob([JSON.stringify(request)], { type: KnownMimeTypes.Json });
         formData.append("requestPackage", requestPackage);
 
         const baseProxyUrl = this.backendUrl || "";
@@ -563,12 +564,16 @@ export class OperationConsole {
         let payload;
 
         switch (consoleOperation.request.bodyFormat()) {
-            case "raw":
+            case RequestBodyType.raw:
                 payload = request.body();
                 break;
 
-            case "binary":
+            case RequestBodyType.binary:
                 payload = await Utils.readFileAsByteArray(request.binary());
+                break;
+
+            case RequestBodyType.form:
+                payload = request.getFormDataPayload();
                 break;
 
             default:
@@ -712,7 +717,7 @@ export class OperationConsole {
         this.responseStatusCode(null);
 
         const consoleOperation = this.consoleOperation();
-        const url = consoleOperation.wsUrl(); 
+        const url = consoleOperation.wsUrl();
 
         this.initWebSocket();
         this.wsStatus("Connecting...");
