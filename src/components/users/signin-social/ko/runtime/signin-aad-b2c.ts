@@ -4,7 +4,7 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { EventManager } from "@paperbits/common/events";
 import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { SettingNames } from "../../../../../constants";
-import { AadB2CClientConfig } from "../../../../../contracts/aadB2cClientConfig";
+import { AadB2CClientConfig } from "../../../../../contracts/aadB2CClientConfig";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 import { AadService } from "../../../../../services";
 
