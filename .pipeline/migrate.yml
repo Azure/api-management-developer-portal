@@ -1,18 +1,16 @@
-name: CD-ApiMDeveloperPortal-Build
+name: CD-ApiMDeveloperPortal-Migration-Pipeline
 
 trigger: none
 
 variables:
   - name: poolName
     value: "agentpoolName"
-  - name: location
-    value: West US
 
 jobs:
 
   # All tasks on APIM Developer portal pipeline
-  - job: Deploy_APIM_Developer_Portal
-    displayName: Deploy APIM Developer portal from one APIM instance to another APIM instance Migration 
+  - job: Migrate_APIM_Developer_Portal
+    displayName: Migrate APIM Developer portal from one APIM instance to another APIM instance Migration 
     pool:
       name: $(poolName)
     timeoutInMinutes: 90

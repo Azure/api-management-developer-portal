@@ -6,6 +6,7 @@ const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
 const mime = require("mime");
 const apiVersion = "2020-06-01-preview"; // "2021-01-01-preview"; 
+const apiVersion2019 = "2019-12-01";
 const managementApiEndpoint = "management.azure.com";
 const metadataFileExt = ".info";
 const defaultFileEncoding = "utf8";
@@ -416,22 +417,27 @@ class ImporterExporter {
      */
     async updateContentUrl(existingUrls, replaceableUrls) {
         try {
+            if (existingUrls.Count != replaceableUrls.Count) {
+                console.log("error: Existing url and Replaceable urls count mismatch.");
+                throw new Error(`Existing url and Replaceable urls count mismatch.`);
+            }
+
             const contentItems = await this.getContentItems("url");
 
-            console.log("urls found in portal: " + contentItems.length);
+            console.log("Number of urls found in portal: " + contentItems.length);
 
             for (const contentItem of contentItems) {
                 var count = 0;
-                console.log("url found in portal: " + contentItem.properties.permalink);
+                console.log(" url found in portal: " + contentItem.properties.permalink);
 
                 for (const existingUrl of existingUrls) {
                     if (contentItem.properties.permalink == existingUrl) {
                         contentItem.properties.permalink = replaceableUrls[count];
-                        console.log("updating url content..." + contentItem.properties.permalink);
-                        console.log(" updated url content : " + JSON.stringify(contentItem));
-                        const response = await this.httpClient.sendRequest("PUT", contentItem.id + "?api-version=2019-12-01", contentItem);
+                        console.log("updating url content... for no. " + count + " link: " + contentItem.properties.permalink);
+                        console.log(" updated url content : for no. " + count + " content item: " + JSON.stringify(contentItem));
+                        const response = await this.httpClient.sendRequest("PUT", contentItem.id + "?api-version=" + apiVersion2019, contentItem);
 
-                        console.log(" resp: " + JSON.stringify(response));
+                        console.log(" response : " + JSON.stringify(response));
                     }
                     count++;
                 };
