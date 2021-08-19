@@ -14,6 +14,14 @@
     vertical-align: middle;
     @include no-select;
 
+    &:disabled {
+        opacity: 0.2;
+    }
+}
+
+.btn-default {
+    padding: 2px 12px;
+
     &:focus,
     &:hover {
         @include selection(5px);
@@ -21,9 +29,23 @@
         color: $color-base;
         cursor: pointer;
     }
+}
 
-    &:disabled {
-        opacity: 0.2;
+.btn-round {
+    border: 1px dashed #ccc;
+    border-radius: 20px;
+    padding: 2px 12px;
+
+    &:focus {
+        @include selection(5px, -2px);
+        outline: none;
+    }
+
+    &:hover {
+        background: rgb(238, 238, 238);
+        outline: none;
+        color: $color-base;
+        cursor: pointer;
     }
 }
 
@@ -40,29 +62,52 @@
 }
 
 .btn-group {
-    padding-top: 15px;
-
-    .btn {
-        margin-right: 15px;
+    .btn-default {
+        margin-top: 15px;
+        margin-right: 5px;
     }
 }
 
-.btn-info,
-.btn-info:hover,
-.btn-info:active {
+.btn-info {
     min-width: initial;
     border: none;
     padding: 0;
     position: absolute;
+    top: 8px;
     right: 0;
     color: $collapse-button-color;
+    cursor: pointer;
     z-index: 99999;
     @extend .paperbits-icon;
     @extend .paperbits-alert-circle-i;
+
+    &:active,
+    &:focus,
+    &:hover {
+        @include selection(7px, -5px);
+        outline: none;
+    }
 }
 
 .btn-dismiss {
     position: absolute;
     right: 5px;
     top: 5px;
+
+    &:focus,
+    &:hover {
+        @include selection(5px);
+        outline: none;
+        color: $color-base;
+        cursor: pointer;
+    }
+}
+
+.btn-help {
+    font-size: 0.9em;
+    border: none;
+    background: none;
+    cursor: pointer;
+    vertical-align: middle;
+    color: $color-info;
 }

@@ -19,8 +19,10 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
             viewModel = new SigninViewModel();
             viewModel["widgetBinding"] = {
                 name: "signin",
-                displayName: "Sign-in form: basic",
+                displayName: "Sign-in form: Basic",
                 model: model,
+                flow: "block",
+                draggable: true,
                 applyChanges: async (updatedModel: SigninModel) => {
                     this.modelToViewModel(updatedModel, viewModel, bindingContext);
                     this.eventManager.dispatchEvent("onContentUpdate");

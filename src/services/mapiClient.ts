@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import * as Constants from "./../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Logger } from "@paperbits/common/logging";
@@ -8,6 +7,7 @@ import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@
 import { MapiError } from "../errors/mapiError";
 import { IAuthenticator, AccessToken } from "../authentication";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
+import { KnownMimeTypes } from "../models/knownMimeTypes";
 
 
 export interface IHttpBatchResponses {
@@ -76,8 +76,8 @@ export class MapiClient {
 
         httpRequest.headers = httpRequest.headers || [];
 
-        if (httpRequest.body && !httpRequest.headers.some(x => x.name === "Content-Type")) {
-            httpRequest.headers.push({ name: "Content-Type", value: "application/json" });
+        if (httpRequest.body && !httpRequest.headers.some(x => x.name === KnownHttpHeaders.ContentType)) {
+            httpRequest.headers.push({ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json });
         }
 
         if (!httpRequest.headers.some(x => x.name === "Accept")) {
@@ -114,22 +114,33 @@ export class MapiClient {
 
     protected async makeRequest<T>(httpRequest: HttpRequest): Promise<T> {
         const authHeader = httpRequest.headers.find(header => header.name === KnownHttpHeaders.Authorization);
+        const portalHeader = httpRequest.headers.find(header => header.name === Constants.portalHeaderName);
 
-        if (!authHeader || !authHeader.value) {
-            const authToken = await this.authenticator.getAccessToken();
+        if (!authHeader?.value) {
+            const accessToken = await this.authenticator.getAccessTokenAsString();
 
-            if (authToken) {
-                httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${authToken}` });
+            if (accessToken) {
+                httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${accessToken}` });
+            } else {
+                if (!portalHeader) {
+                    httpRequest.headers.push(MapiClient.getPortalHeader("unauthorized"));
+                } else {
+                    portalHeader.value = `${portalHeader.value}-unauthorized`;
+                }
             }
         }
 
-        const portalHeader = httpRequest.headers.find(header => header.name === Constants.portalHeaderName);
-        if (!portalHeader) {
+        if (!portalHeader && httpRequest.method !== HttpMethod.head) {
             httpRequest.headers.push(MapiClient.getPortalHeader());
         }
 
         httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
-        httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${Constants.managementApiVersion}`);
+
+        const url = new URL(httpRequest.url);
+
+        if (!url.searchParams.has("api-version")) {
+            httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${Constants.managementApiVersion}`);
+        }
 
         let response: HttpResponse<T>;
 
@@ -138,18 +149,6 @@ export class MapiClient {
         }
         catch (error) {
             throw new Error(`Unable to complete request. Error: ${error.message}`);
-        }
-
-        const accessTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
-
-        if (accessTokenHeader) {
-            try {
-                const accessToken = AccessToken.parse(accessTokenHeader.value);
-                this.authenticator.setAccessToken(accessToken);
-            }
-            catch (error) {
-                 this.logger.trackError(error, { message: "Unable to refresh access token." });
-            }
         }
 
         return await this.handleResponse<T>(response, httpRequest.url);
@@ -166,7 +165,7 @@ export class MapiClient {
         const text = response.toText();
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
-            if (_.includes(contentType, "json") && text.length > 0) {
+            if (contentType.includes("json") && text.length > 0) {
                 return JSON.parse(text) as T;
             }
             else {

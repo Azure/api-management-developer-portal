@@ -13,6 +13,10 @@
     flex-direction: column;
 }
 
+.flex-vertical-center {
+    align-items: center;
+}
+
 .flex-item {
     flex: 0 1 auto;
     align-self: auto;

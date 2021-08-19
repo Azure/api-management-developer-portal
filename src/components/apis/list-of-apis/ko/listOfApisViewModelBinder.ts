@@ -18,6 +18,7 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
 
         viewModel.runtimeConfig(JSON.stringify({
             allowSelection: model.allowSelection,
+            showApiType: model.showApiType,
             defaultGroupByTagToEnabled: model.defaultGroupByTagToEnabled,
             detailsPageUrl: model.detailsPageHyperlink
                 ? model.detailsPageHyperlink.href
@@ -25,9 +26,10 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
         }));
 
         viewModel["widgetBinding"] = {
-            displayName: "List of APIs",
+            displayName: "List of APIs" + (model.layout === "list" ? "" : ` (${model.layout})`),
             model: model,
             draggable: true,
+            flow: "block",
             editor: "list-of-apis-editor",
             applyChanges: async (updatedModel: ListOfApisModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);

@@ -3,7 +3,7 @@ const path = require("path");
 const https = require("https");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
-const mime = require("mime-types");
+const mime = require("mime");
 
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
@@ -56,6 +56,8 @@ async function getStorageSasToken(managementApiEndpoint, managementApiAccessToke
  * @param {Object} options https options
  */
 async function request(method, url, accessToken, body) {
+    let requestBody;
+
     const headers = {
         "If-Match": "*",
         "Content-Type": "application/json",
@@ -63,7 +65,13 @@ async function request(method, url, accessToken, body) {
     };
 
     if (body) {
-        headers["Content-Length"] = Buffer.byteLength(body);
+        if (!body.properties) {
+            body = {
+                properties: body
+            }
+        }
+        requestBody = JSON.stringify(body);
+        headers["Content-Length"] = Buffer.byteLength(requestBody);
     }
 
     const options = {
@@ -87,7 +95,7 @@ async function request(method, url, accessToken, body) {
                         data.startsWith("{") ? resolve(JSON.parse(data)) : resolve(data);
                         break;
                     case 404:
-                        reject({ code: "NotFound", message: `Resource not found: ${requestUrl}` });
+                        reject({ code: "NotFound", message: `Resource not found: ${url}` });
                         break;
                     case 401:
                         reject({ code: "Unauthorized", message: `Unauthorized. Make sure you correctly specified management API access token before running the script.` });
@@ -96,7 +104,7 @@ async function request(method, url, accessToken, body) {
                         reject({ code: "Forbidden", message: `Looks like you are not allowed to perform this operation. Please check with your administrator.` });
                         break;
                     default:
-                        reject({ code: "UnhandledError", message: `Could not complete request to ${requestUrl}. Status: ${resp.statusCode} ${resp.statusMessage}` });
+                        reject({ code: "UnhandledError", message: `Could not complete request to ${url}. Status: ${resp.statusCode} ${resp.statusMessage}` });
                 }
             });
         });
@@ -105,8 +113,8 @@ async function request(method, url, accessToken, body) {
             reject(e);
         });
 
-        if (body) {
-            req.write(body);
+        if (requestBody) {
+            req.write(requestBody);
         }
 
         req.end();
@@ -124,7 +132,7 @@ async function downloadBlobs(blobStorageUrl, snapshotMediaFolder) {
 
         for await (const blob of blobs) {
             const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-            const extension = mime.extension(blob.properties.contentType);
+            const extension = mime.getExtension(blob.properties.contentType);
             let pathToFile;
 
             if (extension != null) {
@@ -152,7 +160,7 @@ async function uploadBlobs(blobStorageUrl, localMediaFolder) {
 
         for (const fileName of fileNames) {
             const blobKey = fileName.replace(localMediaFolder + "/", "").split(".")[0];
-            const contentType = mime.lookup(fileName) || "application/octet-stream";
+            const contentType = mime.getType(fileName) || "application/octet-stream";
             const blockBlobClient = containerClient.getBlockBlobClient(blobKey);
 
             await blockBlobClient.uploadFile(fileName, {

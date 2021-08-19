@@ -1,7 +1,8 @@
+import { KnownHttpHeaders } from "./../models/knownHttpHeaders";
 import { AccessToken } from "./../authentication/accessToken";
 import * as Constants from "./../constants";
 import { Router } from "@paperbits/common/routing";
-import { HttpHeader, HttpClient } from "@paperbits/common/http";
+import { HttpHeader, HttpClient, HttpResponse, HttpMethod } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { IAuthenticator } from "../authentication";
 import { MapiClient } from "./mapiClient";
@@ -11,6 +12,7 @@ import { Identity } from "../contracts/identity";
 import { UserContract, UserPropertiesContract, } from "../contracts/user";
 import { MapiSignupRequest } from "../contracts/signupRequest";
 import { MapiError } from "../errors/mapiError";
+import { KnownMimeTypes } from "../models/knownMimeTypes";
 
 
 /**
@@ -31,26 +33,46 @@ export class UsersService {
      * @param password {string} Password.
      */
     public async signIn(username: string, password: string): Promise<string> {
-        const userId = await this.authenticate(username, password);
+        const credentials = `Basic ${btoa(`${username}:${password}`)}`;
+        const userId = await this.authenticate(credentials);
 
         if (userId) {
             return userId;
         }
-        else {
-            this.authenticator.clearAccessToken();
-            return undefined;
-        }
+
+        this.authenticator.clearAccessToken();
+        return undefined;
     }
 
-    public async authenticate(username: string, password: string): Promise<string> {
-        const credentials = `Basic ${btoa(`${username}:${password}`)}`;
-
+    /**
+     * Authenticates user with specified credentilas and returns user identifier.
+     * @param credentials {string} User credentials passed in "Authorization" header.
+     * @returns {string} User identifier.
+     */
+    public async authenticate(credentials: string): Promise<string> {
         try {
-            const identity = await this.mapiClient.get<Identity>("/identity", [{ name: "Authorization", value: credentials }, MapiClient.getPortalHeader("authenticate")]);
+            let managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
+            managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
 
-            if (identity && identity.id) {
-                return identity.id;
+            const request = {
+                url: `${managementApiUrl}/identity?api-version=${Constants.managementApiVersion}`,
+                method: "GET",
+                headers: [
+                    { name: "Authorization", value: credentials },
+                    MapiClient.getPortalHeader("authenticate")
+                ]
+            };
+
+            const response = await this.httpClient.send<Identity>(request);
+            const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
+
+            if (sasTokenHeader) {
+                const accessToken = AccessToken.parse(sasTokenHeader.value);
+                await this.authenticator.setAccessToken(accessToken);
             }
+
+            const identity = response.toObject();
+            return identity?.id;
         }
         catch (error) {
             return undefined;
@@ -76,10 +98,19 @@ export class UsersService {
         const ticket = parameters.get("ticket");
         const ticketId = parameters.get("ticketid");
         const identity = parameters.get("identity");
-        const requestUrl = `/users/${userId}/identities/Basic/${identity}?appType=developerPortal`;
+        const requestUrl = `/users/${userId}/identities/Basic/${identity}?appType=${Constants.AppType}`;
         const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
 
-        await this.mapiClient.put<void>(requestUrl, [{ name: "Authorization", value: token }, MapiClient.getPortalHeader("activateUser")]);
+        let managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
+        managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
+
+        const response = await this.httpClient.send({
+            url: `${managementApiUrl}${requestUrl}&api-version=${Constants.managementApiVersion}`,
+            method: "PUT",
+            headers: [{ name: "Authorization", value: token }, MapiClient.getPortalHeader("activateUser")]
+        });
+
+        await this.getTokenFromResponse(response);
     }
 
     public async updatePassword(userId: string, newPassword: string, token: string): Promise<void> {
@@ -109,14 +140,14 @@ export class UsersService {
      * Returns currently authenticated user ID.
      */
     public async getCurrentUserId(): Promise<string> {
-        const token = await this.authenticator.getAccessToken();
+        const token = await this.authenticator.getAccessTokenAsString();
 
         if (!token) {
             return null;
         }
 
         try {
-            const identity = await this.mapiClient.get<Identity>("/identity");
+            const identity = await this.mapiClient.get<Identity>("/identity", [MapiClient.getPortalHeader("getCurrentUserId")]);
 
             if (!identity || !identity.id) {
                 return null;
@@ -147,7 +178,7 @@ export class UsersService {
                 return null;
             }
 
-            const user = await this.mapiClient.get<UserContract>(userId);
+            const user = await this.mapiClient.get<UserContract>(userId, [MapiClient.getPortalHeader("getCurrentUser")]);
 
             return new User(user);
         }
@@ -191,10 +222,11 @@ export class UsersService {
                 value: "*"
             };
 
-            const query = Utils.addQueryParameter(userId, "deleteSubscriptions=true&notify=true");
+            const query = Utils.addQueryParameter(userId, `deleteSubscriptions=true&notify=true&appType=${Constants.AppType}`);
 
             await this.mapiClient.delete<string>(query, [header, MapiClient.getPortalHeader("deleteUser")]);
 
+            sessionStorage.setItem(Constants.closeAccount, "true");
             this.signOut();
         }
         catch (error) {
@@ -238,7 +270,7 @@ export class UsersService {
     }
 
     public async changePassword(userId: string, newPassword: string): Promise<void> {
-        const authToken = await this.authenticator.getAccessToken();
+        const authToken = await this.authenticator.getAccessTokenAsString();
 
         if (!authToken) {
             throw Error("Auth token not found");
@@ -246,7 +278,7 @@ export class UsersService {
 
         const headers = [
             { name: "Authorization", value: authToken },
-            { name: "If-Match", value: "*" }, 
+            { name: "If-Match", value: "*" },
             MapiClient.getPortalHeader("changePassword")
         ];
 
@@ -255,7 +287,7 @@ export class UsersService {
                 password: newPassword
             }
         };
-        
+
         await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
     }
 
@@ -271,27 +303,32 @@ export class UsersService {
             identities: [{
                 id: jwtToken.oid,
                 provider: provider
-            }]
+            }],
+            appType: Constants.AppType
         };
 
         const response = await this.httpClient.send({
             url: `${managementApiUrl}/users?api-version=${Constants.managementApiVersion}`,
-            method: "POST",
+            method: HttpMethod.post,
             headers: [
-                { name: "Content-Type", value: "application/json" },
-                { name: "Authorization", value: `${provider} id_token="${idToken}"` },
+                { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
+                { name: KnownHttpHeaders.Authorization, value: `${provider} id_token="${idToken}"` },
                 MapiClient.getPortalHeader("createUserWithOAuth")
             ],
             body: JSON.stringify(user)
         });
 
+        await this.getTokenFromResponse(response);
+    }
+
+    private async getTokenFromResponse(response: HttpResponse<any>): Promise<void> {
         if (!(response.statusCode >= 200 && response.statusCode <= 299)) {
             throw MapiError.fromResponse(response);
         }
 
-        const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === "ocp-apim-sas-token");
+        const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
 
-        if (!sasTokenHeader) { // User not registered with APIM.
+        if (!sasTokenHeader) { // User still not registered with APIM.
             throw new Error("Unable to authenticate.");
             return;
         }

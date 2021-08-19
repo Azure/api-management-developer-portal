@@ -1,0 +1,115 @@
+$carousel-control-width: 20px;
+$carousel-control-color: #ccc;
+$carousel-control-opacity: 0.5;
+$carousel-control-icon-size: 50px;
+$carousel-indicator-size: 10px;
+$carousel-indicator-spacer: 20px;
+$carousel-indicator-active-bg: #fff;
+
+.carousel {
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel.pointer-event {
+    touch-action: pan-y;
+}
+
+.carousel-items {
+    display: flex;
+    position: relative;
+    transform: translateX(calc(-100% * var(--slide)));
+    width: 100%;
+
+    .carousel-item {
+        display: flex;
+        min-width: 100%;
+    }
+}
+
+.carousel-item.active,
+.carousel-item-next,
+.carousel-item-prev {
+    display: flex;
+    flex: 1;
+}
+
+.carousel-item-next:not(.carousel-item-left),
+.active.carousel-item-right {
+    transform: translateX(100%);
+}
+
+.carousel-item-prev:not(.carousel-item-right),
+.active.carousel-item-left {
+    transform: translateX(-100%);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $carousel-control-color;
+    text-align: center;
+    opacity: $carousel-control-opacity;
+    background: none;
+    border: none;
+}
+.carousel-control-prev {
+    left: 20px;
+}
+.carousel-control-next {
+    right: 20px;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    display: block;
+}
+.carousel-control-prev-icon {
+    font-size: $carousel-control-icon-size;
+}
+.carousel-control-next-icon {
+    font-size: $carousel-control-icon-size;
+}
+
+.carousel-indicators {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 15;
+    display: flex;
+    justify-content: center;
+    padding-left: 0;
+    margin-right: $carousel-control-width;
+    margin-left: $carousel-control-width;
+    list-style: none;
+    pointer-events: none;
+
+    .carousel-indicator {
+        box-sizing: content-box;
+        flex: 0 1 auto;
+        width: $carousel-indicator-size;
+        height: $carousel-indicator-size;
+        margin-right: $carousel-indicator-spacer;
+        margin-left: $carousel-indicator-spacer;
+        text-indent: -999px;
+        cursor: pointer;
+        background-color: none;
+        background-clip: padding-box;
+        opacity: 0.5;
+        border: 2px solid #cccccc85;
+        border-radius: $carousel-indicator-size;
+
+        &.active {
+            opacity: 1;
+            background-color: #cccccc85;
+        }
+    }
+}

@@ -4,6 +4,7 @@ import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
+import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSessionManager";
 import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
 import { ListOfApisEditorModule } from "./components/apis/list-of-apis/ko/listOfApisEditor.module";
 import { DetailsOfApiModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
@@ -58,13 +59,19 @@ import { PolicyService } from "./services/policyService";
 import { OAuthService } from "./services/oauthService";
 import { HistoryRouteHandler } from "@paperbits/common/routing";
 import { OldContentRouteGuard } from "./routing/oldContentRouteGuard";
-
+import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
+import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts.module";
+import { ApiProductsEditorModule } from "./components/apis/api-products/ko/apiProductsEditor.module";
+import { RuntimeConfigurator } from "./services/runtimeConfigurator";
+import { BemoNavbarDesignModule } from "../community/widgets/bemo-navbar/bemo-navbar.design.module";
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindModule(new SetupModule());
         injector.bindModule(new ListOfApisModule());
         injector.bindModule(new ListOfApisEditorModule());
+        injector.bindModule(new ApiProductsModule());
+        injector.bindModule(new ApiProductsEditorModule());
         injector.bindModule(new DetailsOfApiModule());
         injector.bindModule(new DetailsOfApiEditorModule());
         injector.bindModule(new HistoryOfApiModule());
@@ -107,7 +114,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ValidationSummaryDesignModule());
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new SigninSocialEditorModule());
-        injector.bindSingleton("app", App);
+		injector.bindModule(new BemoNavbarDesignModule());
+		injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
@@ -124,5 +132,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindToCollection("autostart", HistoryRouteHandler);
+        injector.bindToCollection("autostart", AccessTokenRefrsher);
+        injector.bindToCollection("autostart", RuntimeConfigurator);
+        injector.bindSingleton("sessionManager", DefaultSessionManager);
     }
 }

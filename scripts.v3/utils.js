@@ -4,18 +4,20 @@ const https = require("https");
 const { execSync } = require("child_process");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
-const mime = require("mime-types");
-const apiVersion = "2019-01-01"; // "2021-01-01-preview"; 
+const mime = require("mime");
+const apiVersion = "2020-06-01-preview"; // "2021-01-01-preview"; 
 const managementApiEndpoint = "management.azure.com";
+const metadataFileExt = ".info";
+const defaultFileEncoding = "utf8";
 
 
 class HttpClient {
-    constructor(subscriptionId, resourceGroupName, serviceName) {
+    constructor(subscriptionId, resourceGroupName, serviceName, tenantid, serviceprincipal, secret) {
         this.subscriptionId = subscriptionId;
         this.resourceGroupName = resourceGroupName;
         this.serviceName = serviceName;
         this.baseUrl = `https://${managementApiEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
-        this.accessToken = this.getAccessToken();
+        this.accessToken = this.getAccessToken(tenantid, serviceprincipal, secret);
     }
 
     /**
@@ -74,6 +76,7 @@ class HttpClient {
                     switch (resp.statusCode) {
                         case 200:
                         case 201:
+                        case 202:
                             data.startsWith("{") ? resolve(JSON.parse(data)) : resolve(data);
                             break;
                         case 404:
@@ -103,14 +106,18 @@ class HttpClient {
         });
     }
 
-    getAccessToken() {
+    getAccessToken(tenantid, serviceprincipal, secret) {
+        if (tenantid != "" && tenantid != null) {
+            execSync(`az login --service-principal --username ` + serviceprincipal + ` --password ` + secret + ` --tenant ` + tenantid);
+        }
+
         const accessToken = execSync(`az account get-access-token --resource-type arm --output tsv --query accessToken`).toString().trim();
         return `Bearer ${accessToken}`;
     }
 }
 class ImporterExporter {
-    constructor(subscriptionId, resourceGroupName, serviceName, snapshotFolder = "../dist/snapshot") {
-        this.httpClient = new HttpClient(subscriptionId, resourceGroupName, serviceName);
+    constructor(subscriptionId, resourceGroupName, serviceName, tenantid, serviceprincipal, secret, snapshotFolder = "../dist/snapshot") {
+        this.httpClient = new HttpClient(subscriptionId, resourceGroupName, serviceName, tenantid, serviceprincipal, secret);
         this.snapshotFolder = snapshotFolder
     }
 
@@ -122,6 +129,10 @@ class ImporterExporter {
         const results = [];
 
         fs.readdirSync(dir).forEach((file) => {
+            if (file.endsWith(".info")) {
+                return;
+            }
+
             file = dir + "/" + file;
             const stat = fs.statSync(file);
 
@@ -184,7 +195,7 @@ class ImporterExporter {
      */
     async downloadBlobs() {
         try {
-            const snapshotMediaFolder = `./${this.snapshotFolder}/media`;
+            const snapshotMediaFolder = `${this.snapshotFolder}/media`;
             const blobStorageUrl = await this.getStorageSasUrl();
             const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
             const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
@@ -193,20 +204,15 @@ class ImporterExporter {
 
             for await (const blob of blobs) {
                 const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-                const extension = mime.extension(blob.properties.contentType);
-                let pathToFile;
-
-                if (extension != null) {
-                    pathToFile = `${snapshotMediaFolder}/${blob.name}.${extension}`;
-                }
-                else {
-                    pathToFile = `${snapshotMediaFolder}/${blob.name}`;
-                }
-
+                const pathToFile = `${snapshotMediaFolder}/${blob.name}`;
                 const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
-                await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
 
+                await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
                 await blockBlobClient.downloadToFile(pathToFile);
+
+                const metadata = { contentType: blob.properties.contentType };
+                const metadataFile = JSON.stringify(metadata);
+                await fs.promises.writeFile(pathToFile + metadataFileExt, metadataFile);
             }
         }
         catch (error) {
@@ -219,15 +225,27 @@ class ImporterExporter {
      */
     async uploadBlobs() {
         try {
-            const snapshotMediaFolder = `./${this.snapshotFolder}/media`;
+            const snapshotMediaFolder = `${this.snapshotFolder}/media`;
             const blobStorageUrl = await this.getStorageSasUrl();
             const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
             const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
             const fileNames = this.listFilesInDirectory(snapshotMediaFolder);
 
             for (const fileName of fileNames) {
-                const blobKey = fileName.replace(snapshotMediaFolder + "/", "").split(".")[0];
-                const contentType = mime.lookup(fileName) || "application/octet-stream";
+                let contentType;
+                let blobKey = fileName.replace(snapshotMediaFolder + "/", "")
+                const metadataFilePath = fileName + metadataFileExt;
+
+                if (fs.existsSync(metadataFilePath)) {
+                    const metadataFile = await fs.promises.readFile(metadataFilePath, defaultFileEncoding);
+                    const metadata = JSON.parse(metadataFile);
+                    contentType = metadata.contentType
+                }
+                else {
+                    blobKey = blobKey.split(".")[0];
+                    contentType = mime.getType(fileName) || "application/octet-stream";
+                }
+
                 const blockBlobClient = containerClient.getBlockBlobClient(blobKey);
 
                 await blockBlobClient.uploadFile(fileName, {
@@ -396,8 +414,7 @@ class ImporterExporter {
             const revision = timeStamp.toISOString().replace(/[\-\:\T]/g, "").substr(0, 14);
             const url = `/portalRevisions/${revision}`;
             const body = {
-                description: `Migration ${revision}.`,
-                isCurrent: true
+                description: `Migration ${revision}.`
             }
 
             await this.httpClient.sendRequest("PUT", url, body);

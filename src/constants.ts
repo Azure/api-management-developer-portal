@@ -13,8 +13,19 @@ export enum ServiceSkuName {
  * Types of API.
  */
 export enum TypeOfApi {
+    webSocket = "websocket",
     soap = "soap",
     http = "http"
+}
+
+/**
+ * Types of body format.
+ */
+export enum RequestBodyType {
+    raw = "raw",
+    string = "string",
+    binary = "binary",
+    form = "form"
 }
 
 /**
@@ -31,6 +42,7 @@ export enum AadEndpoints {
     legacy = "login.windows.net"
 }
 
+export const closeAccount = "close-account";
 export const hashSignOut = "signout";
 export const pageUrlSignIn = "/signin";
 export const pageUrlSignInSso = "/signinsso";
@@ -87,7 +99,9 @@ export const AppType = "developerPortal";
 export enum SettingNames {
     backendUrl = "backendUrl",
     managementApiUrl = "managementApiUrl",
-    managementApiAccessToken = "managementApiAccessToken"
+    managementApiAccessToken = "managementApiAccessToken",
+    aadClientConfig = "aad",
+    aadB2CClientConfig = "aadB2C"
 }
 
 /**
@@ -111,10 +125,16 @@ export enum GrantTypes {
      * The Client Credentials grant type is used by clients to obtain an access token outside of
      * the context of a user.
      */
-    clientCredentials = "client_credentials"
+    clientCredentials = "client_credentials",
+
+    /**
+     * The Resource owner password grant type is used to exchange a username and password for an access
+     * token directly. 
+     */
+    password = "password"
 }
 
-export const managementApiVersion = "2019-12-01";
+export const managementApiVersion = "2021-01-01-preview";
 
 /**
  * Developer portal type (self-hosted or managed).
@@ -125,3 +145,5 @@ export const developerPortalType = "self-hosted-portal";
  * Header name to track developer portal type.
  */
 export const portalHeaderName = "x-ms-apim-client";
+
+export const releaseNameFormat = "YYYYMMDDHHmm";

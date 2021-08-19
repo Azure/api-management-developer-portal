@@ -22,7 +22,14 @@
     <div class="table-head" role="rowgroup">
         <div class="table-row" role="row">
             <div tabindex="0" class="col-5" role="columnheader">Name</div>
+
+            <!-- ko if: showApiType -->
+            <div tabindex="0" class="col-5" role="columnheader">Description</div>
+            <div tabindex="0" class="col-2" role="columnheader">Type</div>
+            <!-- /ko -->
+            <!-- ko ifnot: showApiType -->
             <div tabindex="0" class="col-7" role="columnheader">Description</div>
+            <!-- /ko -->
         </div>
     </div>
 
@@ -45,17 +52,25 @@
                 <a href="#"
                     data-bind="attr: { href: $component.getReferenceUrl(item), title: item.displayName }">
                     <span data-bind="text: item.displayName"></span>
-                    <!-- ko if: item.type === 'soap' -->
-                    <span class="badge badge-soap">SOAP</span>
-                    <!-- /ko -->
                     <!-- ko if: item.apiVersion -->
                     - <span data-bind="text: item.apiVersion"></span>
                     <!-- /ko -->
                 </a>
             </div>
+
+            <!-- ko if: $component.showApiType -->
+            <div class="col-5" role="cell">
+                <div tabindex="0" data-bind="markdown: { source: item.description, truncateAt: 250 }"></div>
+            </div>
+            <div class="col-2" role="cell">
+                <span data-bind="text: item.typeName"></span>
+            </div>
+            <!-- /ko -->
+            <!-- ko ifnot: $component.showApiType -->
             <div class="col-7" role="cell">
                 <div tabindex="0" data-bind="markdown: { source: item.description, truncateAt: 250 }"></div>
             </div>
+            <!-- /ko -->            
         </div>
         <!-- /ko -->
         <!-- /ko -->
@@ -76,17 +91,24 @@
                 <a href="#"
                     data-bind="attr: { href: $component.getReferenceUrl(item), title: item.displayName }">
                     <span data-bind="text: item.displayName"></span>
-                    <!-- ko if: item.type === 'soap' -->
-                    <span class="badge badge-soap">SOAP</span>
-                    <!-- /ko -->
                     <!-- ko if: item.apiVersion -->
                     - <span data-bind="text: item.apiVersion"></span>
                     <!-- /ko -->
                 </a>
             </div>
+            <!-- ko if: $component.showApiType -->
+            <div class="col-5" role="cell">
+                <div tabindex="0" data-bind="markdown: { source: item.description, truncateAt: 250 }"></div>
+            </div>
+            <div class="col-2" role="cell">
+                <span data-bind="text: item.typeName"></span>
+            </div>
+            <!-- /ko -->
+            <!-- ko ifnot: $component.showApiType -->
             <div class="col-7" role="cell">
                 <div tabindex="0" data-bind="markdown: { source: item.description, truncateAt: 250 }"></div>
             </div>
+            <!-- /ko -->
         </div>
         <!-- /ko -->
 

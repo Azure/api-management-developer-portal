@@ -6,8 +6,8 @@ export class OperationDetailsHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "operationDetails",
             category: "Operations",
-            displayName: "Operation: details",
-            iconClass: "paperbits-cheque-3",
+            displayName: "Operation: Details",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new OperationDetailsModel()
         };

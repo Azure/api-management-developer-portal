@@ -5,7 +5,7 @@ export class PolicyService {
 
     public async getPolicyXmlForGlobalScope(): Promise<string> {
         try {
-            const policyXml = await this.mapiClient.get<string>(`/policies/policy?format=rawxml`);
+            const policyXml = await this.mapiClient.get<string>(`/policies/policy?format=rawxml`, [MapiClient.getPortalHeader("getPolicyXmlForGlobalScope")]);
             return policyXml;
         }
         catch (error) {

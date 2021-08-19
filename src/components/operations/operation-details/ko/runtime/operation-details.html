@@ -3,10 +3,12 @@
 <!-- /ko -->
 
 <!-- ko ifnot: working -->
+
+<!-- ko ifnot: apiType() === 'websocket' -->
 <!-- ko if: operation -->
 <div class="animation-fade-in">
     <div class="operation-header">
-        <h2 class="operation-name" data-bind="click: $component.openConsole">
+        <h2 class="operation-name">
             <span data-bind="text: operation().displayName"></span>
         </h2>
         <!-- ko if: $component.enableConsole -->
@@ -102,16 +104,42 @@
             <!-- ko if: request.meaningfulRepresentations().length > 0 -->
             <div class="tabs" data-bind="foreach: { data: request.meaningfulRepresentations(), as: 'representation' }">
                 <input class="tab-radio" type="radio" name="requestContentType"
-                    data-bind="attr : { id: 'request' + representation.contentType, checked: $index() === 0 }">
+                    data-bind="attr : { id: 'request' + representation.contentType + '_' + $index(), checked: $index() === 0 }">
 
                 <label class="tab-label"
-                    data-bind="attr : { for: 'request' + representation.contentType }, text: representation.contentType"></label>
+                    data-bind="attr : { for: 'request' + representation.contentType + '_' + $index() }, text: representation.contentType"></label>
 
                 <div class="tab-content">
                     <!-- ko if: representation.typeName -->
                     <type-definition
                         params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation), defaultSchemaView: $component.defaultSchemaView }">
                     </type-definition>
+                    <!-- /ko -->
+
+                    <!-- ko if: representation.formParameters?.length > 0 -->
+                    <div role="table" class="table-preset table-preset-params">
+                        <div class="d-contents" role="rowgroup">
+                            <div class="d-contents" role="row">
+                                <div role="columnheader" class="table-preset-head text-truncate">Name</div>
+                                <div role="columnheader" class="table-preset-head text-truncate">In</div>
+                                <div role="columnheader" class="table-preset-head text-truncate">Required</div>
+                                <div role="columnheader" class="table-preset-head text-truncate">Type</div>
+                                <div role="columnheader" class="table-preset-head">Description</div>
+                            </div>
+                        </div>
+                        <div class="d-contents" role="rowgroup">
+                            <!-- ko foreach: { data: representation.formParameters, as: 'parameter' } -->
+                            <div class="d-contents" role="row">
+                                <div role="cell" class="text-truncate monospace"
+                                    data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
+                                <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
+                                <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
+                                <div role="cell" class="text-truncate monospace" data-bind="text: parameter.type"></div>
+                                <div role="cell" data-bind="markdown: parameter.description"></div>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
                     <!-- /ko -->
 
                     <!-- ko ifnot: representation.typeName -->
@@ -133,13 +161,41 @@
             <p data-bind="markdown: response.description"></p>
             <!-- /ko -->
 
+            <!-- ko if: response.headers && response.headers.length > 0 -->
+            <h4>Response headers</h4>
+
+            <div role="table" class="table-preset table-preset-headers">
+                <div class="d-contents" role="rowgroup">
+                    <div class="d-contents" role="row">
+                        <div role="columnheader" class="table-preset-head text-truncate">Name</div>
+                        <div role="columnheader" class="table-preset-head text-truncate">Required</div>
+                        <div role="columnheader" class="table-preset-head text-truncate">Type</div>
+                        <div role="columnheader" class="table-preset-head">Description</div>
+                    </div>
+                </div>
+                <div class="d-contents" role="rowgroup">
+                    <!-- ko foreach: { data: response.headers, as: 'header' } -->
+                    <div class="d-contents" role="row">
+                        <div role="cell" class="text-truncate monospace"
+                            data-bind="text: header.name, attr: { title: header.name }"></div>
+                        <div role="cell" class="text-truncate" data-bind="text: header.required"></div>
+                        <div role="cell" class="text-truncate monospace"
+                            data-bind="text: header.type, attr: { title: header.type }"></div>
+                        <div role="cell" data-bind="markdown: header.description"></div>
+                    </div>
+                    <!-- /ko -->
+                </div>
+            </div>
+
+            <!-- /ko -->
+
             <!-- ko if: response.meaningfulRepresentations().length > 0 -->
             <div class="tabs" data-bind="foreach: { data: meaningfulRepresentations(), as: 'representation' }">
                 <input class="tab-radio" type="radio"
-                    data-bind="attr: { id: response.identifier + representation.contentType, name: response.identifier, checked: $index() === 0 }">
+                    data-bind="attr: { id: response.identifier + '_' + $index(), name: response.identifier, checked: $index() === 0 }">
 
                 <label class="tab-label"
-                    data-bind="attr: { for: response.identifier + representation.contentType }, text: representation.contentType"></label>
+                    data-bind="attr: { for: response.identifier + '_' + $index() }, text: representation.contentType"></label>
 
                 <div class="tab-content">
                     <!-- ko if: representation.typeName -->
@@ -190,15 +246,54 @@
     <!-- /ko -->
 </div>
 <!-- /ko -->
+
 <!-- ko ifnot: operation -->
 <p>No operation selected.</p>
 <!-- /ko -->
 <!-- /ko -->
 
+<!-- ko if: apiType() === 'websocket' -->
+<!-- ko if: operation -->
+<div class="animation-fade-in">
+    <div class="operation-header">
+        <h2 class="operation-name"></h2>
+        <!-- ko if: $component.enableConsole -->
+        <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i
+                class="icon-emb icon-emb-play"></i>
+        </button>
+        <!-- /ko -->
+    </div>
+
+    <!-- ko if: tags().length > 0 -->
+    <div class="tag-group">
+        <!-- ko foreach: { data: $component.tags, as: 'tag' } -->
+        <span class="tag-item" role="group" data-bind="text: tag"></span>
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+
+    <div class="collapsible">
+        <h3>Socket URL</h3>
+        <div class="collapsible-container">
+            <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
+        </div>
+
+        <h3>Protocol</h3>
+        <div class="collapsible-container">
+            <span class="monospace" data-bind="text: $component.protocol"></span>
+        </div>
+    </div>
+
+</div>
+<!-- /ko -->
+<!-- /ko -->
+
+<!-- /ko -->
+
 <!-- ko if: $component.consoleIsOpen -->
 <div class="detachable-right scrollable flex-grow animation-fade-in">
-    <operation-console class="test flex flex-column"
-        params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer }">
+    <operation-console class="test flex flex-column" data-bind="dialog: {}"
+        params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
     </operation-console>
 </div>
 <!-- /ko -->

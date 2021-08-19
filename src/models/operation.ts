@@ -5,18 +5,18 @@ import { Response } from "./response";
 import { Utils } from "../utils";
 
 export class Operation {
-    public id: string;
-    public name: string;
-    public displayName: string;
-    public description: string;
-    public urlTemplate: string;
-    public templateParameters: Parameter[];
-    public parameters: Parameter[];
-    public method: string;
-    public version?: string;
-    public request?: Request;
-    public responses?: Response[];
-    public displayUrlTemplate: string;
+    public readonly id: string;
+    public readonly name: string;
+    public readonly displayName: string;
+    public readonly description: string;
+    public readonly urlTemplate: string;
+    public readonly templateParameters: Parameter[];
+    public readonly parameters: Parameter[];
+    public readonly method: string;
+    public readonly version: string;
+    public readonly request: Request;
+    public readonly responses: Response[];
+    public readonly displayUrlTemplate: string;
 
     public getMeaningfulResponses(): Response[] {
         return this.responses.filter(x => x.isMeaningful());
@@ -44,7 +44,7 @@ export class Operation {
             : [];
 
         let connector = this.urlTemplate.includes("?") ? "&" : "?";
-        
+
         const optionalQueryParameters = this.request.queryParameters
             .map((parameter, index) => {
                 if (index > 0) {

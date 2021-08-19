@@ -1,6 +1,7 @@
+import { UnauthorizedError } from "./../errors/unauthorizedError";
 import * as ClientOAuth2 from "client-oauth2";
 import * as Utils from "@paperbits/common";
-import { HttpClient } from "@paperbits/common/http";
+import { HttpClient, HttpMethod } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { GrantTypes } from "./../constants";
 import { MapiClient } from "./mapiClient";
@@ -25,11 +26,11 @@ export class OAuthService {
     public async getOAuthServers(): Promise<AuthorizationServer[]> {
         try {
             const authorizationServers = [];
-            const pageOfOAuthServers = await this.mapiClient.get<PageContract<AuthorizationServerContract>>("/authorizationServers");
+            const pageOfOAuthServers = await this.mapiClient.get<PageContract<AuthorizationServerContract>>("/authorizationServers", [MapiClient.getPortalHeader("getAuthorizationServers")]);
             const oauthServers = pageOfOAuthServers.value.map(authServer => new AuthorizationServer(authServer));
             authorizationServers.push(...oauthServers);
 
-            const pageOfOicdServers = await this.mapiClient.get<PageContract<OpenIdConnectProviderContract>>("/openidConnectProviders");
+            const pageOfOicdServers = await this.mapiClient.get<PageContract<OpenIdConnectProviderContract>>("/openidConnectProviders", [MapiClient.getPortalHeader("getOpenidConnectProviders")]);
             const oicdServers = pageOfOicdServers.value.map(authServer => new OpenIdConnectProvider(authServer));
 
             for (const provider of oicdServers) {
@@ -49,7 +50,7 @@ export class OAuthService {
             return authorizationServers;
         }
         catch (error) {
-            throw new Error(`Unable to fetch configured authorization servers.`);
+            throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);
         }
     }
 
@@ -120,7 +121,13 @@ export class OAuthService {
                     }
 
                     const oauthToken = await oauthClient.token.getToken(redirectUri + tokenHash);
-                    resolve(`${oauthToken.tokenType} ${oauthToken.accessToken}`);
+
+                    if (oauthToken.accessToken) {
+                        resolve(`${oauthToken.tokenType} ${oauthToken.accessToken}`);
+                    }
+                    else if (oauthToken.data?.id_token) {
+                        resolve(`Bearer ${oauthToken.data.id_token}`);
+                    }
                 };
 
                 window.addEventListener("message", receiveMessage, false);
@@ -139,12 +146,17 @@ export class OAuthService {
     public async authenticateCode(backendUrl: string, authorizationServer: AuthorizationServer): Promise<string> {
         const redirectUri = `${backendUrl}/signin-oauth/code/callback/${authorizationServer.name}`;
 
+        const query = {
+            state: Utils.guid()
+        };
+
         const oauthClient = new ClientOAuth2({
             clientId: authorizationServer.clientId,
             accessTokenUri: authorizationServer.tokenEndpoint,
             authorizationUri: authorizationServer.authorizationEndpoint,
             redirectUri: redirectUri,
-            scopes: authorizationServer.scopes
+            scopes: authorizationServer.scopes,
+            query: query
         });
 
         return new Promise<string>((resolve, reject) => {
@@ -202,6 +214,30 @@ export class OAuthService {
                 reject(error);
             }
         });
+    }
+
+    public async authenticatePassword(username: string, password: string, authorizationServer: AuthorizationServer): Promise<string> {
+        const backendUrl = await this.settingsProvider.getSetting<string>("backendUrl") || `https://${location.hostname}`;
+        let uri = `${backendUrl}/signin-oauth/password/${authorizationServer.name}`;
+
+        if (authorizationServer.scopes) {
+            const scopesString = authorizationServer.scopes.join(" ");
+            uri += `?scopes=${encodeURIComponent(scopesString)}`;
+        }
+
+        const response = await this.httpClient.send<any>({
+            method: HttpMethod.post,
+            url: uri,
+            body: JSON.stringify({ username: username, password: password })
+        });
+
+        if (response.statusCode === 401) {
+            throw new UnauthorizedError("Unable to authenticate. Verify the credentials you entered are correct.");
+        }
+
+        const tokenInfo = response.toObject();
+
+        return `${tokenInfo.accessTokenType} ${tokenInfo.accessToken}`;
     }
 
     public async discoverOAuthServer(metadataEndpoint: string): Promise<AuthorizationServer> {

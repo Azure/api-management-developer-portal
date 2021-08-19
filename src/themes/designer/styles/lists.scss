@@ -121,14 +121,19 @@
         }
     }
 
+    .list-item-widget-icon {
+        margin: 7px;
+    }
+
     &.list-item-large {
         display: inline-block;
-        width: 130px;
+        width: 140px;
         text-align: center;
         padding: 15px 5px;
         line-height: 1.5em;
         margin-bottom: 15px;
         flex-basis: auto;
+        vertical-align: top;
 
         a {
             display: inline-block;

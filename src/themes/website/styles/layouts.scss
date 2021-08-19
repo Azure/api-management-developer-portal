@@ -4,8 +4,8 @@
 
 body,
 html {
-    min-height: 100%;
-    min-width: 100%;
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -93,7 +93,6 @@ html {
     flex-wrap: wrap;
     margin-right: -15px;
     margin-left: -15px;
-    padding-bottom: 10px;
 }
 
 .col-1,
@@ -405,9 +404,8 @@ main {
     flex-basis: 100%;
     max-width: 100%;
 
-    * {
+    & > * {
         max-width: 100%;
-        max-height: 100%;
     }
 }
 
@@ -416,10 +414,13 @@ main {
     flex-basis: auto;
     max-width: 100%;
 
-    * {
+    & > * {
         max-width: 100%;
-        max-height: 100%;
     }
+}
+
+.legacy {
+    flex: 1;
 }
 
 html:not([amp4ads]),

@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-        name: Checkout
+      - name: Checkout
+        uses: actions/checkout@v2
         
-      - run: npm install
-        name: Npm install
+      - name: Npm install
+        run: npm install
                 
-      - uses: cschleiden/replace-tokens@v1
-        name: Replace token
+      - name: Replace token
+        uses: cschleiden/replace-tokens@v1
         env:
           AZURE_APIM_DEVELOPER_PORTAL_URL: ${{ secrets.AZURE_APIM_DEVELOPER_PORTAL_URL }}
           AZURE_APIM_ID: ${{ secrets.AZURE_APIM_ID }}
@@ -31,8 +31,8 @@ jobs:
         with:
           files: '["**/config.*.json"]'
       
-      - run: npm run publish
-        name: Publish
+      - name: Publish
+        run: npm run publish
         
       - name: Upload artifact
         uses: actions/upload-artifact@v2.2.2
@@ -42,7 +42,7 @@ jobs:
   dev:
     name: Dev
     needs: build
-    # if: github.head_ref == 'develop'
+    if: github.head_ref == 'develop'
     environment: dev
     runs-on: ubuntu-latest
         

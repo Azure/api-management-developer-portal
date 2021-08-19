@@ -1,3 +1,4 @@
+import { AadConfigPublisher } from "./publishing/aadConfigPublisher";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { MapiClient } from "./services/mapiClient";
@@ -32,10 +33,15 @@ import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
 import { OAuthService } from "./services/oauthService";
+import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts.module";
+import { RuntimeConfigPublisher } from "./publishing/runtimeConfigPublisher";
+import { RuntimeConfigBuilder } from "./publishing/runtimeConfigBuilder";
+import { BemoNavbarPublishModule } from "../community/widgets/bemo-navbar/bemo-navbar.publish.module";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindModule(new ListOfApisModule());
+        injector.bindModule(new ApiProductsModule());
         injector.bindModule(new DetailsOfApiModule());
         injector.bindModule(new HistoryOfApiModule());
         injector.bindModule(new SigninModule());
@@ -55,8 +61,9 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ConfirmPasswordModule());
         injector.bindModule(new ChangePasswordModule());
         injector.bindModule(new ReportsModule());
-        injector.bindModule(new ValidationSummaryModule());        
-        injector.bindSingleton("tenantService", TenantService);        
+        injector.bindModule(new ValidationSummaryModule());
+        injector.bindModule(new BemoNavbarPublishModule());
+		injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("userService", StaticUserService);
         injector.bindSingleton("roleService", StaticRoleService);
@@ -69,5 +76,10 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("oauthService", OAuthService);
+
+        injector.bindSingleton("runtimeConfigBuilder", RuntimeConfigBuilder);
+        injector.bindToCollection("publishers", AadConfigPublisher);
+        injector.bindToCollection("publishers", RuntimeConfigPublisher);
+        
     }
 }

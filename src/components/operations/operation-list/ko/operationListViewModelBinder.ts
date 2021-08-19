@@ -14,6 +14,9 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
 
         viewModel.runtimeConfig(JSON.stringify({
             allowSelection: model.allowSelection,
+            wrapText: model.wrapText,
+            showToggleUrlPath: model.showToggleUrlPath,
+            defaultShowUrlPath: model.defaultShowUrlPath,
             defaultGroupByTagToEnabled: model.defaultGroupByTagToEnabled,
             detailsPageUrl: model.detailsPageHyperlink
                 ? model.detailsPageHyperlink.href
@@ -24,6 +27,7 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
             displayName: "List of operations",
             model: model,
             draggable: true,
+            flow: "block",
             editor: "operation-list-editor",
             applyChanges: async (updatedModel: OperationListModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);

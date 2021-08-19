@@ -9,8 +9,10 @@ export class ProfileViewModelBinder implements ViewModelBinder<ProfileModel, Pro
             viewModel = new ProfileViewModel();
             
             viewModel["widgetBinding"] = {
-                displayName: "User: profile",
+                displayName: "User: Profile",
                 model: model,
+                flow: "block",
+                draggable: true,
                 applyChanges: async (updatedModel: ProfileModel) => {
                     this.modelToViewModel(updatedModel, viewModel, bindingContext);
                 }

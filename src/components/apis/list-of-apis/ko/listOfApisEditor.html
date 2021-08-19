@@ -5,6 +5,12 @@
             Allow selection
         </label>
     </div>
+    <div class="form-group">
+        <label for="showApiType" class="form-label">
+            <input type="checkbox" id="showApiType" name="showApiType" data-bind="checked: showApiType" />
+            Show API type
+        </label>
+    </div>
 
     <div class="form-group">
         <label for="defaultGroupByTagToEnabled" class="form-label">
@@ -18,8 +24,8 @@
             <label class="form-label">
                 Link to API details page
             </label>
-            <button class="btn btn-info" type="button" title="Help" aria-label="Help"
-                data-bind="tooltipToggle: 'A link to be navigated on click.'">
+            <button class="btn btn-info" type="button" aria-hidden="true" role="tooltip" aria-label="A link to be navigated on click"
+                data-bind="tooltip: 'A link to be navigated on click.'">
             </button>
         </div>
         <div class="input-group">

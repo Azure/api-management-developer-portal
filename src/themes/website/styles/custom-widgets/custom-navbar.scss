@@ -1,0 +1,130 @@
+@use "@material/list/mdc-list";
+@use "@material/menu-surface/mdc-menu-surface";
+@use "@material/menu/mdc-menu";
+@use "@material/icon-button";
+
+.p-0 {
+	padding: 0 !important;
+}
+
+.navbar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	height: 72px;
+	width: 100vw;
+}
+
+.navbar-infos {
+	margin-right: 4rem;
+	display: flex;
+	align-items: center;
+	margin-left: 4rem;
+
+
+	a {
+
+		// Be:Mo logo
+		img {
+			width: 200px;
+			height: 38px;
+		}
+	}
+
+	// Portal description
+	span {
+		font-family: 'Source Code Pro', monospace;
+		font-size: 16px;
+		color: #3B4874;
+		margin-left: 2rem;
+	}
+}
+
+.navbar-navigation {
+	display: flex;
+	align-items: center;
+
+	nav {
+		a {
+			font-family: 'Source Code Pro', monospace;
+			color: #3B4874;
+			margin-right: 2rem;
+			margin-left: 2rem;
+			font-size: 16px;
+			text-transform: uppercase;
+
+			:after {
+				display: none;
+			}
+		}
+	}
+}
+
+.navbar-avatar-button {
+    margin-right: 4rem;
+    border-radius: 50%;
+    background-color: #FFFFFF !important;
+    border: 1px solid darkgrey !important;
+    height: 42px !important;
+    width: 42px !important;
+    font-size: 12px !important;
+    padding: 0px !important;
+}
+
+.avatar-menu {
+    position: absolute !important;
+    width: 129px;
+    border: 0.5px solid #E0E0E0;
+    background-color: #FFFFFF !important;
+    box-shadow: 2px 2px 10px #00000029 !important;
+    right: 22px !important;
+    top: 80px !important;
+    display: flex !important;
+    flex-direction: column;
+    overflow: unset !important;
+
+	.menu-divider {
+		border: 1px solid #E0E0E0;
+		opacity: 0.3;
+	}
+
+	// Avatar menu item
+	.menu-nav-link {
+		font: normal normal normal 14px 'Roboto', sans-serif;
+		letter-spacing: 0.24px;
+		text-decoration: none;
+		color: #363131;
+		padding: 1rem !important;
+		display: flex !important;
+		align-items: center !important;
+		cursor: pointer !important;
+
+		:hover {
+			color: #363131 !important;
+			background-color: #F5F7FF !important;
+		}
+
+		.menu-nav-link-icon {
+			color: #3E66FB;
+			font-size: 13px !important;
+			margin-right: .75rem;
+		}
+	}
+}
+
+// Triangle above the menu
+.avatar-menu:before,
+.avatar-menu:after {
+	content: '';
+	position: absolute;
+	bottom: 100%;
+	left: 54px;
+	border: 11px solid transparent;
+	border-bottom-color: #dddddd;
+}
+
+.avatar-menu:after {
+	left: 54px;
+	border: 10px solid transparent !important;
+	border-bottom-color: #ffffff !important;
+}

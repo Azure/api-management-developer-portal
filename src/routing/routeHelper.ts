@@ -12,11 +12,31 @@ export class RouteHelper {
         return params.get(name);
     }
 
+    public setHashParameter(name: string, value: string): void {
+        const route = this.router.getCurrentRoute();
+        const params = new URLSearchParams(route.hash ? `?${route.hash}` : "");
+
+        if(value) {
+            params.set(name, value);
+        } else {
+            params.delete(name);
+        }
+        
+        this.router.navigateTo(`#${params.toString()}`);
+    }
+
     /**
      * Returns ARM resource name of the API specified in hash parameter of the current route, e.g. "httpbin".
      */
     public getApiName(): string {
         return this.getHashParameter("api");
+    }
+
+    /**
+     * Returns ARM resource name of the API specified in hash parameter of the current route, e.g. "httpbin".
+     */
+    public getTags(): string {
+        return this.getHashParameter("tags");
     }
 
     /**

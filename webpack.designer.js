@@ -22,14 +22,22 @@ const designerConfig = {
                 test: /\.scss$/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    { loader: "css-loader", options: { url: false } },
+                    {
+                        loader: "css-loader",
+                        options: {
+                            url: (url) => /\/icon-.*\.svg$/.test(url)
+                        }
+                    },
                     { loader: "postcss-loader" },
                     { loader: "sass-loader" }
                 ]
             },
             {
                 test: /\.tsx?$/,
-                loader: "awesome-typescript-loader"
+                loader: "ts-loader",
+                options: {
+                    allowTsInNodeModules: true
+                }
             },
             {
                 test: /\.html$/,
@@ -66,7 +74,6 @@ const designerConfig = {
                 { from: `./src/themes/designer/assets/index.html`, to: "index.html" },
                 { from: `./src/themes/designer/styles/fonts`, to: "editors/styles/fonts" },
                 { from: `./src/libraries`, to: "data" },
-                { from: `./scripts/data.json`, to: "editors/themes/default.json" },
                 { from: "./src/config.design.json", to: "config.json" }
             ]
         })

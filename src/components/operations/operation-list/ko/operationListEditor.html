@@ -7,6 +7,26 @@
     </div>
 
     <div class="form-group">
+        <label for="wrapText" class="form-label">
+            <input type="checkbox" id="wrapText" name="wrapText" data-bind="checked: wrapText" />
+            Wrap operation names to new lines
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label for="showToggleUrlPath" class="form-label">
+            <input type="checkbox" id="showToggleUrlPath" name="showToggleUrlPath" data-bind="checked: showToggleUrlPath" />
+            Allow switching between URL paths and operation names
+        </label>
+    </div>
+    <div class="form-group">
+        <label for="defaultShowUrlPath" class="form-label">
+            <input type="checkbox" id="defaultShowUrlPath" name="defaultShowUrlPath" data-bind="checked: defaultShowUrlPath" />
+            Show URL paths instead of operation names by default
+        </label>
+    </div>
+
+    <div class="form-group">
         <label for="defaultGroupByTagToEnabled" class="form-label">
             <input type="checkbox" id="defaultGroupByTagToEnabled" name="defaultGroupByTagToEnabled" data-bind="checked: defaultGroupByTagToEnabled" />
             Default Group by tag to enabled
@@ -14,18 +34,17 @@
     </div>
 
     <div class="form-group">
-        <label class="form-label">
+        <label for="hyperlink" class="form-label">
             Link to operation details page
             <button class="btn btn-info" type="button" title="Help"
-                data-bind="tooltipToggle: 'A link to be navigated on click.'"></button>
+                data-bind="tooltip: 'A link to be navigated on click.'"></button>
         </label>
         <div class="input-group">
-            <a href="#" class="form-control" role="button"
-                data-bind="text: hyperlinkTitle, balloon: { component: { name: 'hyperlink-selector', params: { hyperlink: $component.hyperlink, onChange: $component.onHyperlinkChange } } }">
-            </a>
-            <div class="input-group-addon">
+            <input id="hyperlink" type="text" class="form-control" readonly data-bind="value: hyperlinkTitle" />
+            <button class="btn input-group-btn" title="Select hyperlink" aria-label="Select hyperlink"
+                data-bind="balloon: { position: 'right', component: { name: 'hyperlink-selector', params: { hyperlink: $component.hyperlink, onChange: $component.onHyperlinkChange } } }">
                 <i class="paperbits-icon paperbits-link-69-2"></i>
-            </div>
+            </button>
         </div>
     </div>
 </fieldset>

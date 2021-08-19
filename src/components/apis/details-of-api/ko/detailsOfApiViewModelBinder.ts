@@ -21,9 +21,10 @@ export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApi
         }));
 
         viewModel["widgetBinding"] = {
-            displayName: "API: details",
+            displayName: "API: Details",
             model: model,
             draggable: true,
+            flow: "block",
             editor: "details-of-api-editor",
             applyChanges: async (updatedModel: DetailsOfApiModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);

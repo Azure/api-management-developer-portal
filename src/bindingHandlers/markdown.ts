@@ -17,7 +17,7 @@ interface MarkdownConfig {
 
 
 ko.bindingHandlers["markdown"] = {
-    init: (element: HTMLElement, valueAccessor: () => string | MarkdownConfig): void => {
+    update: (element: HTMLElement, valueAccessor: () => string | MarkdownConfig): void => {
         const config = ko.unwrap(valueAccessor());
         const htmlObservable = ko.observable();
 
