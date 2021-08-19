@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [ release/** ]
+    branches: [ develop, release/**, feature/** ]
   pull_request:
     branches: [ develop, master ]
 
@@ -42,7 +42,7 @@ jobs:
   dev:
     name: Dev
     needs: build
-    if: github.head_ref == 'develop'
+    # if:  success() && github.ref == 'refs/heads/develop'
     environment: dev
     runs-on: ubuntu-latest
         
