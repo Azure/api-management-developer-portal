@@ -191,6 +191,43 @@ class ImporterExporter {
     }
 
     /**
+     * Returns a single content item of specified content type.
+     * @param {string} contentType Content type, e.g. "page".
+     * @param {string} contentItem Content item, e.g. "configuration".
+     */
+    async getContentItem(contentType, contentItem) {
+        try {
+            const url = `/contentTypes/${contentType}/contentItems/${contentItem}`;
+            
+            const data = await this.httpClient.sendRequest("GET", url);
+
+            return data;
+        }
+        catch (error) {
+            throw new Error(`Unable to fetch content item. ${error.message}`);
+        }
+    }
+
+    /**
+     * Updates a single content item of specified content type.
+     * @param {string} contentType Content type, e.g. "page".
+     * @param {string} contentItem Content item, e.g. "configuration".
+     * @param {object} body Request body .
+     */
+    async updateContentItem(contentType, contentItem, body) {
+        try {
+            const url = `/contentTypes/${contentType}/contentItems/${contentItem}`;
+            
+            const data = await this.httpClient.sendRequest("PUT", url, body);
+
+            return data;
+        }
+        catch (error) {
+            throw new Error(`Unable to update content item. ${error.message}`);
+        }
+    }
+
+    /**
      * Downloads media files from storage of specified API Management service.
      */
     async downloadBlobs() {
@@ -423,6 +460,32 @@ class ImporterExporter {
             throw new Error(`Unable to schedule website publishing. ${error.message}`);
         }
     }
+
+    /**
+     * Pushes the gtm tag to the specified APIM instance.
+     * @param {gtmTag} string the google tag manager Tag ID
+     */
+    async gtm(gtmTag) {
+        console.log("Applying GTM Tag...")
+        try {
+            const config = await this.getContentItem("document", "configuration");
+            const newNodes = config.properties.nodes.map((node) => {
+                return {...node, integration: {
+                    googleTagManager: {
+                        containerId: gtmTag
+                    }
+                }}
+            })
+            const newConfig = {...config, properties: {...config.properties, nodes: newNodes }}
+            
+            await this.updateContentItem("document", "configuration", newConfig)
+        }
+        catch (error) {
+            throw new Error(`Unable to apply gtm tag. ${error.message}`);
+        }
+    }
+
+
 }
 
 module.exports = {
