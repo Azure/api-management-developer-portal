@@ -1,3 +1,4 @@
+import * as ko from "knockout";
 import template from "./productSubscribe.html";
 import { Component } from "@paperbits/common/ko/decorators/component.decorator";
 
@@ -6,4 +7,10 @@ import { Component } from "@paperbits/common/ko/decorators/component.decorator";
     template: template
 })
 export class ProductSubscribeViewModel {
+	public readonly runtimeConfig: ko.Observable<string>;
+
+	constructor() {        
+        this.runtimeConfig = ko.observable();
+    }
+	
 }
