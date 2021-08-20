@@ -14,12 +14,17 @@ export class ProductSubscribeModelBinder implements IModelBinder<ProductSubscrib
     }
 
     public async contractToModel(contract: ProductSubscribeContract): Promise<ProductSubscribeModel> {
-        return new ProductSubscribeModel();
+		const model = new ProductSubscribeModel();
+		
+	    model.showTermsByDefault = contract.showTermsByDefault;
+			   
+	    return model;
     }
 
     public modelToContract(model: ProductSubscribeModel): Contract {
         const contract: ProductSubscribeContract = {
-            type: "product-subscribe"
+            type: "product-subscribe",
+			showTermsByDefault: model.showTermsByDefault
         };
 
         return contract;
