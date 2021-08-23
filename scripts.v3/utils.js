@@ -5,8 +5,7 @@ const { execSync } = require("child_process");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
 const mime = require("mime");
-const apiVersion = "2020-06-01-preview"; // "2021-01-01-preview"; 
-const apiVersion2019 = "2019-12-01";
+const apiVersion = "2020-06-01-preview"; // "2021-01-01-preview";
 const managementApiEndpoint = "management.azure.com";
 const metadataFileExt = ".info";
 const defaultFileEncoding = "utf8";
@@ -366,8 +365,7 @@ class ImporterExporter {
     /**
      * Exports the content and media files from specfied service.
      */
-    async
-    export () {
+    async export () {
         console.log("Exporting...")
 
         try {
@@ -381,8 +379,7 @@ class ImporterExporter {
     /**
      * Imports the content and media files into specfied service.
      */
-    async
-    import () {
+    async import () {
         console.log("Importing...")
 
         try {
@@ -435,7 +432,7 @@ class ImporterExporter {
                         contentItem.properties.permalink = replaceableUrls[count];
                         console.log("updating url content... for no. " + count + " link: " + contentItem.properties.permalink);
                         console.log(" updated url content : for no. " + count + " content item: " + JSON.stringify(contentItem));
-                        const response = await this.httpClient.sendRequest("PUT", contentItem.id + "?api-version=" + apiVersion2019, contentItem);
+                        const response = await this.httpClient.sendRequest("PUT", contentItem.id + "?api-version=" + apiVersion, contentItem);
 
                         console.log(" response : " + JSON.stringify(response));
                     }
