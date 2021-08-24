@@ -5,7 +5,7 @@ const { execSync } = require("child_process");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
 const mime = require("mime");
-const apiVersion = "2020-06-01-preview"; // "2021-01-01-preview"; 
+const apiVersion = "2020-06-01-preview"; // "2021-01-01-preview";
 const managementApiEndpoint = "management.azure.com";
 const metadataFileExt = ".info";
 const defaultFileEncoding = "utf8";
@@ -25,15 +25,14 @@ class HttpClient {
      * @param {string} method Http method, e.g. GET.
      * @param {string} url Relative resource URL, e.g. /contentTypes.
      * @param {string} body Request body.
-    */
+     */
     async sendRequest(method, url, body) {
         let requestUrl;
         let requestBody;
 
         if (url.startsWith("https://")) {
             requestUrl = new URL(url);
-        }
-        else {
+        } else {
             const normalizedUrl = url.startsWith("/") ? url : `/${url}`;
             requestUrl = new URL(this.baseUrl + normalizedUrl);
         }
@@ -155,8 +154,7 @@ class ImporterExporter {
             const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
 
             return contentTypes;
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error(`Unable to fetch content types. ${error.message}`);
         }
     }
@@ -176,16 +174,14 @@ class ImporterExporter {
 
                 if (data.value.length > 0 && data.nextLink) {
                     nextPageUrl = data.nextLink;
-                }
-                else {
+                } else {
                     nextPageUrl = null;
                 }
             }
             while (nextPageUrl)
 
             return contentItems;
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error(`Unable to fetch content items. ${error.message}`);
         }
     }
@@ -251,8 +247,7 @@ class ImporterExporter {
                 const metadataFile = JSON.stringify(metadata);
                 await fs.promises.writeFile(pathToFile + metadataFileExt, metadataFile);
             }
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error(`Unable to download media files. ${error.message}`);
         }
     }
@@ -277,8 +272,7 @@ class ImporterExporter {
                     const metadataFile = await fs.promises.readFile(metadataFilePath, defaultFileEncoding);
                     const metadata = JSON.parse(metadataFile);
                     contentType = metadata.contentType
-                }
-                else {
+                } else {
                     blobKey = blobKey.split(".")[0];
                     contentType = mime.getType(fileName) || "application/octet-stream";
                 }
@@ -291,8 +285,7 @@ class ImporterExporter {
                     }
                 });
             }
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error(`Unable to upload media files. ${error.message}`);
         }
     }
@@ -312,8 +305,7 @@ class ImporterExporter {
                 const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
                 await blockBlobClient.delete();
             }
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error(`Unable to delete media files. ${error.message}`);
         }
     }
@@ -338,8 +330,7 @@ class ImporterExporter {
             await fs.promises.mkdir(path.resolve(this.snapshotFolder), { recursive: true });
 
             fs.writeFileSync(`${this.snapshotFolder}/data.json`, JSON.stringify(result));
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error(`Unable to capture content. ${error.message}`);
         }
     }
@@ -358,8 +349,7 @@ class ImporterExporter {
                     await this.httpClient.sendRequest("DELETE", `/${contentItem.id}`);
                 }
             }
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error(`Unable to delete content. ${error.message}`);
         }
     }
@@ -382,8 +372,7 @@ class ImporterExporter {
             for (const key of keys) {
                 await this.httpClient.sendRequest("PUT", key, dataObj[key]);
             }
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error(`Unable to generate the content. ${error.message}`);
         }
     }
@@ -405,8 +394,7 @@ class ImporterExporter {
         try {
             await this.deleteContent();
             await this.deleteBlobs();
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error(`Unable to complete cleanup. ${error.message}`);
         }
     }
@@ -414,14 +402,13 @@ class ImporterExporter {
     /**
      * Exports the content and media files from specfied service.
      */
-    async export() {
+    async export () {
         console.log("Exporting...")
 
         try {
             await this.captureContent();
             await this.downloadBlobs();
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error(`Unable to complete export. ${error.message}`);
         }
     }
@@ -429,14 +416,13 @@ class ImporterExporter {
     /**
      * Imports the content and media files into specfied service.
      */
-    async import() {
+    async import () {
         console.log("Importing...")
 
         try {
             await this.generateContent();
             await this.uploadBlobs();
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error(`Unable to complete import. ${error.message}`);
         }
     }
@@ -455,13 +441,48 @@ class ImporterExporter {
             }
 
             await this.httpClient.sendRequest("PUT", url, body);
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error(`Unable to schedule website publishing. ${error.message}`);
         }
     }
 
     /**
+     * Updates the url links of specified API Management service into updated url in destination.
+     */
+    async updateContentUrl(existingUrls, replaceableUrls) {
+        try {
+            if (existingUrls.Count != replaceableUrls.Count) {
+                console.log("error: Existing url and Replaceable urls count mismatch.");
+                throw new Error(`Existing url and Replaceable urls count mismatch.`);
+            }
+
+            const contentItems = await this.getContentItems("url");
+
+            console.log("Number of urls found in portal: " + contentItems.length);
+
+            for (const contentItem of contentItems) {
+                var count = 0;
+                console.log(" url found in portal: " + contentItem.properties.permalink);
+
+                for (const existingUrl of existingUrls) {
+                    if (contentItem.properties.permalink == existingUrl) {
+                        contentItem.properties.permalink = replaceableUrls[count];
+                        console.log("updating url content... for no. " + count + " link: " + contentItem.properties.permalink);
+                        console.log(" updated url content : for no. " + count + " content item: " + JSON.stringify(contentItem));
+                        const response = await this.httpClient.sendRequest("PUT", contentItem.id + "?api-version=" + apiVersion, contentItem);
+
+                        console.log(" response : " + JSON.stringify(response));
+                    }
+                    count++;
+                };
+            };
+
+        } catch (error) {
+            throw new Error(`Unable to update url content. ${error.message}`);
+        }
+    }
+  
+  /*
      * Pushes the gtm tag to the specified APIM instance.
      * @param {gtmTag} string the google tag manager Tag ID
      */
