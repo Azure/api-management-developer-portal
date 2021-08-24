@@ -117,9 +117,9 @@ async function migrate() {
         const destIimporterExporter = new ImporterExporter(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName, yargs.destTenantid, yargs.destServiceprincipal, yargs.destSecret);
         await destIimporterExporter.cleanup();
         await destIimporterExporter.import();
+
         await destIimporterExporter.publish();
-    }
-    catch (error) {
+    } catch (error) {
         throw new Error(`Unable to complete migration. ${error.message}`);
     }
 }
