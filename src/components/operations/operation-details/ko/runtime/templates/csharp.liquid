@@ -14,16 +14,16 @@ namespace CSHttpClientSample
             Console.WriteLine("Hit ENTER to exit...");
             Console.ReadLine();
         }
-        
+
         static async void MakeRequest()
         {
             var client = new HttpClient();
             var queryString = HttpUtility.ParseQueryString(string.Empty);
 
-{% if meaningfulHeaders.size > 0 -%}
+{% if request.meaningfulHeaders.size > 0 -%}
             // Request headers
 {% for header in request.meaningfulHeaders -%}
-{% case header.Name -%}
+{% case header.name -%}
 {% when "Accept"%}
             client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("{{header.value}}"));
 {% when "Accept-Charset" -%}
@@ -66,13 +66,12 @@ namespace CSHttpClientSample
             client.DefaultRequestHeaders.Upgrade.Add(ProductHeaderValue.Parse("{{header.value}}"));
 {% when "User-Agent" -%}
             client.DefaultRequestHeaders.UserAgent.Add(ProductInfoHeaderValue.Parse("{{header.value}}"));
-{% when "Via" -%}              
+{% when "Via" -%}
             client.DefaultRequestHeaders.Via.Add(ViaHeaderValue.Parse("{{header.value}}"));
 {% when "Warning" -%}
             client.DefaultRequestHeaders.Warning.Add(WarningHeaderValue.Parse("{{header.value}}"));
-{% when "Content-Type" -%}
 {% else -%}
-            client.DefaultRequestHeaders.Add("{{header.Name}}", "{{header.value}}");
+            client.DefaultRequestHeaders.Add("{{header.name}}", "{{header.value}}");
 {% endcase -%}
 {% endfor -%}
 {% endif -%}
@@ -128,9 +127,9 @@ namespace CSHttpClientSample
             if (response.Content != null)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(responseString);    
+                Console.WriteLine(responseString);
             }
 {% endcase -%}
         }
     }
-}	
+}
