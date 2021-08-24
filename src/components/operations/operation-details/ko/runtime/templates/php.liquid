@@ -5,7 +5,7 @@ require_once 'HTTP/Request2.php';
 $request = new Http_Request2('{{requestUrl}}');
 $url = $request->getUrl();
 
-{% if meaningfulHeaders.size > 0 -%}
+{% if request.meaningfulHeaders.size > 0 -%}
 $headers = array(
     // Request headers
 {% for header in request.meaningfulHeaders -%}
