@@ -15,7 +15,7 @@
  *    --sourceServiceName "< your service name >" ^
  *    --sourceTenantId "< optional (needed if source and destination is in different subscription) source tenant ID >" ^
  *    --sourceServicePrincipal "< optional (needed if source and destination is in different subscription) source service principal or user name. >" ^
- *    --sourceSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the source apim. >" ^
+ *    --sourceServicePrincipalSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the source apim. >" ^
  *    --destSubscriptionId "< your subscription ID >" ^
  *    --destResourceGroupName "< your resource group name >" ^
  *    --destServiceName "< your service name >"
@@ -39,7 +39,7 @@ const yargs = require('yargs')
     *    --sourceServiceName "< your service name > \r
     *    --sourceTenantId "< optional (needed if source and destination is in different subscription) source tenant ID > \r
     *    --sourceServicePrincipal "< optional (needed if source and destination is in different subscription) source service principal or user name. > \r
-    *    --sourceSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the source apim. > \r
+    *    --sourceServicePrincipalSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the source apim. > \r
     *    --destSubscriptionId "< your subscription ID > \r
     *    --destResourceGroupName "< your resource group name > \r
     *    --destServiceName "< your service name > \r
