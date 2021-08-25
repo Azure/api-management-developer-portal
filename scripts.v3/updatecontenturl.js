@@ -13,8 +13,8 @@
  *    --destSubscriptionId "< your subscription ID >" ^
  *    --destResourceGroupName "< your resource group name >" ^
  *    --destServiceName "< your service name >"
- *    --destTenantid "< optional (needed if source and destination is in different subscription) destination tenantid >"
- *    --destServiceprincipal "< optional (needed if source and destination is in different subscription)destination serviceprincipal or user name. >"
+ *    --destTenantId "< optional (needed if source and destination is in different subscription) destination tenant ID >"
+ *    --destServicePrincipal "< optional (needed if source and destination is in different subscription)destination servicePrincipal or user name. >"
  *    --destSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the destination. >"
  *    --existingEnvUrls "< optional (urls used in the developer portal from source apim to replace - if we have multiple urls then comma separated values to be given.) >"
  *    --destEnvUrls "< optional (urls to be replaced in the developer portal in destination apim in same order - if we have multiple urls then comma separated values to be given.) >"
@@ -33,8 +33,8 @@ const yargs = require('yargs')
     *    --destSubscriptionId "< your subscription ID > \r
     *    --destResourceGroupName "< your resource group name > \r
     *    --destServiceName "< your service name > \r
-    *    --destTenantid "< optional (needed if source and destination is in different subscription) destination tenantid > \r
-    *    --destServiceprincipal "< optional (needed if source and destination is in different subscription) destination serviceprincipal or user name. > \r
+    *    --destTenantId "< optional (needed if source and destination is in different subscription) destination tenant ID > \r
+    *    --destServicePrincipal "< optional (needed if source and destination is in different subscription) destination servicePrincipal or user name. > \r
     *    --destSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the destination. >\r 
     *    --existingEnvUrls "< optional (urls used in the developer portal from source apim to replace - if we have multiple urls then comma separated values to be given.) > \r
     *    --destEnvUrls "< optional (urls to be replaced in the developer portal in destination apim in same order - if we have multiple urls then comma separated values to be given.) > \n`)
@@ -54,14 +54,14 @@ const yargs = require('yargs')
         description: 'API Management service name.',
         demandOption: true
     })
-    .option('destTenantid', {
+    .option('destTenantId', {
         type: 'string',
-        description: ' destination tenantid.',
+        description: ' destination tenant ID.',
         demandOption: false
     })
-    .option('destServiceprincipal', {
+    .option('destServicePrincipal', {
         type: 'string',
-        description: 'destination serviceprincipal or user name.',
+        description: 'destination servicePrincipal or user name.',
         demandOption: false
     })
     .option('destSecret', {
@@ -85,7 +85,7 @@ const yargs = require('yargs')
 async function updatecontenturl() {
     try {
         if (yargs.existingEnvUrls != "" && yargs.destEnvUrls != "") {
-            const destIUpdateUrl = new ImporterExporter(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName, yargs.destTenantid, yargs.destServiceprincipal, yargs.destSecret);
+            const destIUpdateUrl = new ImporterExporter(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName, yargs.destTenantId, yargs.destServicePrincipal, yargs.destSecret);
             await destIUpdateUrl.updateContentUrl(yargs.existingEnvUrls.split(','), yargs.destEnvUrls.split(','));
 
             await destIUpdateUrl.publish();

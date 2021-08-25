@@ -16,7 +16,6 @@
  *   --gtmContainerId < gtm container ID >
  */
 
- const path = require("path");
  const { ImporterExporter } = require("./utils");
  
  const yargs = require('yargs')
