@@ -1,4 +1,4 @@
-# Create your Pipeline
+# Create your pipeline
 In your Azure DevOps project pipelines section select new pipeline.
 
 Select your source code provider and repository in the first two tabs and in the Configure steps above. Scroll down to the bottom of the page and select Existing Azure Pipelines YAML file:
@@ -19,17 +19,17 @@ Then select Run. This saves and executes your pipeline for the fist time, seen b
 
 | Variable Name | Value Description  |
 |--|--|
-| sourceSubscriptionId | your source APIM resource subscription ID |
-| sourceResourceGroupName | your source APIM resource group name |
-| sourceAPIMName | your source APIM name |
-| destinationAPIMName | your destination APIM name |
-| destSubscriptionId | your destination APIM resource subscription ID |
-| destResourceGroupName | your destination APIM resource group name |
-| sourceAzure_Tenant | your source azure tenant id  |
-| sourceServicePrincipal | your source azure service principal |
-| sourceAzureDevOps-ServicePrincipal-Secret | your source azure service service principal secret |
-| Azure_Tenant | destination azure tenant id |
-| ServicePrincipal | destination azure service service principal|
-| AzureDevOps-ServicePrincipal-Secret |  destination azure service service service principal secret |
-| existingEnvUrls | existing environment urls (urls used in the developer portal from source apim to replace - if we have multiple urls then comma separated values to be given.) |
-| destEnvUrls | destination environment urls (urls used in the developer portal from destination apim to be replaced with - if we have multiple urls then comma separated values to be given in same order of source.) |
+| sourceSubscriptionId | Source APIM service resource subscription ID |
+| sourceResourceGroupName | Source APIM service resource group name |
+| sourceServiceName | Source APIM service name |
+| destServiceName | Destination APIM service name |
+| destSubscriptionId | Destination APIM service resource subscription ID |
+| destResourceGroupName | Destination APIM service resource group name |
+| sourceTenantId | Source Azure tenant ID  |
+| sourceServicePrincipal | Source Azure service principal |
+| sourceServicePrincipalSecret | Source Azure service principal secret |
+| destTenantId | Destination Azure tenant ID |
+| destServicePrincipal | Destination Azure service principal|
+| destServicePrincipalSecret | Destination Azure service principal secret |
+| existingEnvUrls | Existing environment URLs (URLs used in the developer portal from source APIM to replace, if we have multiple urls then comma separated values to be given.) |
+| destEnvUrls | Destination environment urls (urls used in the developer portal from destination APIM to be replaced with - if we have multiple urls then comma separated values to be given in same order of source.) |
