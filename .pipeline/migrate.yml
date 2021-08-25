@@ -21,11 +21,11 @@ jobs:
           command: "install"
 
       - pwsh: |        
-          node ./migrate --sourceSubscriptionId "$(sourceSubscriptionId)" --sourceResourceGroupName  "$(sourceResourceGroupName)" --sourceServiceName "$(sourceAPIMName)" --destServiceName "$(destinationAPIMName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --sourceTenantid "$(sourceAzure_Tenant)" --sourceServiceprincipal "$(sourceServicePrincipal)" --sourceSecret "$(sourceAzureDevOps-ServicePrincipal-Secret)"  --destTenantid "$(Azure_Tenant)" --destServiceprincipal "$(ServicePrincipal)" --destSecret "$(AzureDevOps-ServicePrincipal-Secret)"
+          node ./migrate --sourceSubscriptionId "$(sourceSubscriptionId)" --sourceResourceGroupName  "$(sourceResourceGroupName)" --sourceServiceName "$(sourceServiceName)" --destServiceName "$(destServiceName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --sourceTenantId "$(sourceAzureTenantId)" --sourceServicePrincipal "$(sourceServicePrincipal)" --sourceSecret "$(sourceServicePrincipalSecret)"  --destTenantId "$(sourceAzureTenantId)" --destServicePrincipal "$(destServicePrincipal)" --destSecret "$(destServicePrincipalSecret)"
         workingDirectory: "$(System.DefaultWorkingDirectory)/scripts.v3"
-        displayName: Run Migrate cmd from $(sourceAPIMName) to $(destinationAPIMName)
+        displayName: Run Migrate cmd from $(sourceServiceName) to $(destinationServiceName)
               
       - pwsh: |
-          node ./updatecontenturl --existingEnvUrls "$(existingEnvUrls)" --destEnvUrls  "$(destEnvUrls)" --destServiceName "$(destinationAPIMName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --destTenantid "$(Azure_Tenant)" --destServiceprincipal "$(ServicePrincipal)" --destSecret "$(AzureDevOps-ServicePrincipal-Secret)"
+          node ./updatecontenturl --existingEnvUrls "$(existingEnvUrls)" --destEnvUrls  "$(destEnvUrls)" --destServiceName "$(destinationServiceName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --destTenantId "$(destAzureTenantId)" --destServicePrincipal "$(destServicePrincipal)" --destSecret "$(destServicePrincipalSecret)"
         workingDirectory: '$(System.DefaultWorkingDirectory)/scripts.v3'
-        displayName: Update urls for  $(destinationAPIMName)
+        displayName: Update urls for  $(destinationServiceName)
