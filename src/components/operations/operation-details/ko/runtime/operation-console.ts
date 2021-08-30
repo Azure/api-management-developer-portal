@@ -67,6 +67,7 @@ export class OperationConsole {
     public isConsumptionMode: boolean;
     public templates: Object;
     public backendUrl: string;
+    public requestLanguages: Object[];
 
     public readonly wsConnected: ko.Observable<boolean>;
     public readonly wsConnecting: ko.Observable<boolean>;
@@ -169,6 +170,7 @@ export class OperationConsole {
         const skuName = await this.tenantService.getServiceSkuName();
         this.isConsumptionMode = skuName === ServiceSkuName.Consumption;
         this.backendUrl = await this.settingsProvider.getSetting<string>("backendUrl");
+        this.requestLanguages = (this.api().type === TypeOfApi.webSocket) ? this.loadRequestLanguagesWs() : this.loadRequestLanguagesRest();
 
         await this.resetConsole();
 
@@ -318,6 +320,28 @@ export class OperationConsole {
             this.selectedSubscriptionKey(subscriptionKey);
             this.applySubscriptionKey(subscriptionKey);
         }
+    }
+
+    private loadRequestLanguagesRest(): Object[] {
+        return [
+            {value: "http", text: "HTTP"},
+            {value: "csharp", text: "C#"},
+            {value: "curl", text: "Curl"},
+            {value: "java", text: "Java"},
+            {value: "javascript", text: "JavaScript"},
+            {value: "objc", text: "Objective C"}, 
+            {value: "php", text: "PHP"},
+            {value: "python", text: "Python"},
+            {value: "ruby", text: "Ruby"},
+        ];
+    }
+
+    private loadRequestLanguagesWs(): Object[] {
+        return [
+            {value: "ws_wscat", text: "wscat"},
+            {value: "ws_csharp", text: "C#"},
+            {value: "ws_javascript", text: "JavaScript"}
+        ];
     }
 
     private setHostname(hostname: string): void {
