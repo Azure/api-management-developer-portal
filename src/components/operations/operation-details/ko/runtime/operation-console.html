@@ -331,62 +331,11 @@
 <!-- ko ifnot: api().type === 'websocket' -->
 <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
     <!-- ko ifnot: operation().request.isFormData() -->
-    <ul class="nav" role="tablist">
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'http'), tab: { isSelected: $component.selectedLanguage() === 'http' }">
-                HTTP
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'curl'), tab: { isSelected: $component.selectedLanguage() === 'curl' }">
-                Curl
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'csharp'), tab: { isSelected: $component.selectedLanguage() === 'csharp' }">
-                C#
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'java'), tab: { isSelected: $component.selectedLanguage() === 'java' }">
-                Java
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'javascript'), tab: { isSelected:  $component.selectedLanguage() === 'javascript' }">
-                JavaScript
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'php'), tab: { isSelected: $component.selectedLanguage() === 'php' }">
-                PHP
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'python'), tab: { isSelected:  $component.selectedLanguage() === 'python' }">
-                Python
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'ruby'), tab: { isSelected:  $component.selectedLanguage() === 'ruby' }">
-                Ruby
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'objc'), tab: { isSelected:  $component.selectedLanguage() === 'objc' }">
-                Objective C
-            </a>
-        </li>
-    </ul>
+    <select id="requestLanguages" class="form-control" data-bind="value: $component.selectedLanguage">
+        <!-- ko foreach: { data: requestLanguages, as: 'requestLanguage' } -->
+        <option data-bind="value: requestLanguage.value, text: requestLanguage.text"></option>
+        <!-- /ko -->
+    </select>
 
     <h3>HTTP request</h3>
     <div class="code-block">
@@ -406,7 +355,7 @@
 
     <div class="flex flex-column align-items-end">
         <div class="btn-group" role="group">
-            <!-- ko ifnot: sendingRequest -->
+            <!-- ko if: !$component.sendingRequest() && $component.selectedLanguage() === 'http' -->
             <button type="button" class="button button-primary btn-sm" data-bind="click: validateAndSendRequest">
                 Send
             </button>
@@ -423,26 +372,11 @@
 
 <!-- ko if: api().type === 'websocket' -->
 <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
-    <ul class="nav" role="tablist">
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'ws_wscat'), css: { 'nav-link-active': $component.selectedLanguage() === 'ws_wscat' }, attr: { 'aria-selected': $component.selectedLanguage() === 'ws_wscat' }">
-                wscat
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'ws_csharp'), css: { 'nav-link-active': $component.selectedLanguage() === 'ws_csharp' }, attr: { 'aria-selected': $component.selectedLanguage() === 'ws_csharp' }">
-                C#
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" href="#" role="tab"
-                data-bind="click: $component.selectedLanguage.bind(this, 'ws_javascript'), css: { 'nav-link-active': $component.selectedLanguage() === 'ws_javascript' }, attr: { 'aria-selected': $component.selectedLanguage() === 'ws_javascript' }">
-                JavaScript
-            </a>
-        </li>
-    </ul>
+    <select id="requestLanguages" class="form-control" data-bind="value: $component.selectedLanguage">
+        <!-- ko foreach: { data: requestLanguages, as: 'requestLanguage' } -->
+        <option data-bind="value: requestLanguage.value, text: requestLanguage.text"></option>
+        <!-- /ko -->
+    </select>
 
     <h3>WebSocket request</h3>
     <div class="code-block">
@@ -559,6 +493,7 @@
 </div>
 <!-- /ko -->
 
+<!-- ko if: $component.selectedLanguage() === 'http' -->
 <!-- ko if: requestError -->
 <div class="panel panel-dark animation-fade-in" data-bind="scrollintoview: {}">
     <p>Unable to complete the request</p>
@@ -577,6 +512,7 @@
 <span data-bind="text: responseBody"></span></pre>
 
 </div>
+<!--/ko-->
 <!--/ko-->
 
 <!--/ko-->
