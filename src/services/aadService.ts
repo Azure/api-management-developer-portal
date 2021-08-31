@@ -1,28 +1,26 @@
 import * as Msal from "msal";
-import * as AuthenticationContext from "adal-vanilla";
 import * as Constants from "../constants";
-import { Utils } from "../utils";
+import { HttpClient } from "@paperbits/common/http";
 import { Router } from "@paperbits/common/routing";
-import { ISettingsProvider } from "@paperbits/common/configuration";
 import { RouteHelper } from "../routing/routeHelper";
+import { Utils } from "../utils";
 import { UsersService } from "./usersService";
-import { AadB2CClientConfig } from "../contracts/aadB2CClientConfig";
 
 /**
  * Service for operations with Azure Active Directory identity provider.
  */
 export class AadService {
     constructor(
-        private readonly settingsProvider: ISettingsProvider,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper,
-        private readonly usersService: UsersService
+        private readonly usersService: UsersService,
+        private readonly httpClient: HttpClient
     ) { }
 
     /**
      * Converts Azure Active Directory ID-token into MAPI Shared Access Signature.
-     * @param idToken {string} ID token.
-     * @param provider {string} Provider type, "Aad" or "AadB2C".
+     * @param {string} idToken - ID token.
+     * @param {string} provider - Provider type, `Aad` or `AadB2C`.
      */
     private async exchangeIdToken(idToken: string, provider: string): Promise<void> {
         const credentials = `${provider} id_token="${idToken}"`;
@@ -53,23 +51,33 @@ export class AadService {
 
     /**
      * Initiates signing-in with Azure Active Directory identity provider.
-     * @param aadClientId {string} Azure Active Directory client ID.
-     * @param signinTenant {string} Azure Active Directory tenant used to signin.
+     * @param {string} clientId - Azure Active Directory client ID.
+     * @param {string} authority - Tenant, e.g. `contoso.b2clogin.com`.
+     * @param {string} signinTenant - Azure Active Directory tenant used to signin, e.g. `contoso.onmicrosoft.com`.
+     * @param {string} replyUrl - Reply URL, e.g. `https://contoso.com/signin-aad`.
      */
-    public async signInWithAadMsal(aadClientId: string, authority: string, signinTenant: string): Promise<void> {
+    public async signInWithAad(clientId: string, authority: string, signinTenant: string, replyUrl?: string): Promise<void> {
         const authorityUrl = `https://${authority}/${signinTenant}`;
+        const metadataResponse = await this.httpClient.send({ url: `${authorityUrl}/.well-known/openid-configuration` });
+        const metadata = metadataResponse.toText();
 
         const msalConfig: Msal.Configuration = {
             auth: {
-                clientId: aadClientId,
+                clientId: clientId,
                 authority: authorityUrl,
-                validateAuthority: true
+                validateAuthority: true,
+                authorityMetadata: metadata
             }
         };
 
+        if (replyUrl) {
+            msalConfig.auth.redirectUri = replyUrl;
+        }
+
         const msalInstance = new Msal.UserAgentApplication(msalConfig);
+
         const loginRequest = {
-            scopes: ["openid", "email", "profile"]
+            scopes: []
         };
 
         const response = await msalInstance.loginPopup(loginRequest);
@@ -80,51 +88,12 @@ export class AadService {
     }
 
     /**
-     * Initiates signing-in with Azure Active Directory identity provider.
-     * @param aadClientId {string} Azure Active Directory client ID.
-     * @param signinTenant {string} Azure Active Directory tenant used to signin.
-     */
-    public signInWithAadAdal(aadClientId: string, instance: string, signinTenant: string, replyUrl?: string): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            const callback = async (errorDescription: string, idToken: string, error: string) => {
-                if (!idToken) {
-                    reject(new Error(`Authentication failed.`));
-                    console.error(`Unable to obtain id_token with client ID: ${aadClientId}. Error: ${error}. Details: ${errorDescription}.`);
-                }
-
-                try {
-                    await this.exchangeIdToken(idToken, Constants.IdentityProviders.aad);
-                    resolve();
-                }
-                catch (error) {
-                    reject(error);
-                }
-            };
-
-            const authContextConfig: any = {
-                tenant: signinTenant,
-                instance: `https://${instance}/`,
-                clientId: aadClientId,
-                popUp: true,
-                callback: callback
-            };
-
-            if (replyUrl) {
-                authContextConfig.redirectUri = replyUrl;
-            }
-
-            const authContext = new AuthenticationContext(authContextConfig);
-            authContext.login();
-        });
-    }
-
-    /**
      * Runc Azure Active Directory B2C user flow.
-     * @param clientId {string} Azure Active Directory B2C client ID.
-     * @param tenant {string} Tenant, e.g. "contoso.b2clogin.com".
-     * @param instance {string} Instance, e.g. "contoso.onmicrosoft.com".
-     * @param userFlow {string} User flow, e.g. "B2C_1_signinsignup".
-     * @param replyUrl {string} Reply URL, e.g. "/signin".
+     * @param {string} clientId - Azure Active Directory B2C client ID.
+     * @param {string} tenant - Tenant, e.g. `contoso.b2clogin.com`.
+     * @param {string} instance - Instance, e.g. `contoso.onmicrosoft.com`.
+     * @param {string} userFlow - User flow, e.g. `B2C_1_signinsignup`.
+     * @param {string} replyUrl - Reply URL, e.g. `https://contoso.com/signin`.
      */
     public async runAadB2CUserFlow(clientId: string, tenant: string, instance: string, userFlow: string, replyUrl?: string): Promise<void> {
         if (!clientId) {
@@ -160,19 +129,6 @@ export class AadService {
         if (response.idToken && response.idToken.rawIdToken) {
             await this.exchangeIdToken(response.idToken.rawIdToken, Constants.IdentityProviders.aadB2C);
         }
-    }
-
-    public async signOutAadB2C(): Promise<void> {
-        const config = await this.settingsProvider.getSetting<AadB2CClientConfig>(Constants.SettingNames.aadClientConfig);
-
-        const msalConfig: Msal.Configuration = {
-            auth: {
-                clientId: config.clientId,
-            }
-        };
-
-        const msalInstance = new Msal.UserAgentApplication(msalConfig);
-        msalInstance.logout();
     }
 
     /**

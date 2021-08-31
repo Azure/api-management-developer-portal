@@ -45,7 +45,7 @@ export class SignInAad {
 
         try {
             const config = await this.settingsProvider.getSetting<AadClientConfig>(SettingNames.aadClientConfig);
-            await this.aadService.signInWithAadAdal(config.clientId, config.authority, config.signinTenant, this.replyUrl());
+            await this.aadService.signInWithAad(config.clientId, config.authority, config.signinTenant, this.replyUrl());
         }
         catch (error) {
             let errorDetails;
