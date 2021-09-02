@@ -1,11 +1,12 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
+import * as Constants from "../../../../../constants";
 import template from "./change-password.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
+import { EventManager } from "@paperbits/common/events";
 import { ChangePasswordRequest } from "../../../../../contracts/resetRequest";
 import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services/usersService";
-import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 
 declare var WLSPHIP0;
@@ -171,7 +172,7 @@ export class ChangePassword {
                 }
             }
             else {
-                errorMessages = ["Server error. Unable to send request. Please try again later."];
+                errorMessages = [Constants.genericHttpRequestError];
             }
 
             const validationReport: ValidationReport = {
