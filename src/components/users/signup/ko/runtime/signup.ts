@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
+import * as Constants from "../../../../../constants";
 import template from "./signup.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { EventManager } from "@paperbits/common/events";
@@ -7,7 +8,6 @@ import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services/usersService";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
 import { ValidationReport } from "../../../../../contracts/validationReport";
-import { AppType } from "../../../../../constants";
 
 declare var WLSPHIP0;
 
@@ -158,7 +158,7 @@ export class Signup {
                     captchaSolution = solution;
                     captchaToken = token;
                     captchaType = WLSPHIP0.type;
-                    const flowIdElement = <HTMLInputElement>document.getElementById("FlowId")
+                    const flowIdElement = <HTMLInputElement>document.getElementById("FlowId");
                     captchaFlowId = flowIdElement.value;
                     this.captcha("valid");
                     return;
@@ -194,7 +194,7 @@ export class Signup {
             lastName: this.lastName(),
             password: this.password(),
             confirmation: "signup",
-            appType: AppType
+            appType: Constants.AppType
         };
 
         try {
@@ -222,7 +222,8 @@ export class Signup {
                 errors: []
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        } catch (error) {
+        }
+        catch (error) {
             if (isCaptchaRequired) {
                 WLSPHIP0.reloadHIP();
             }
@@ -237,7 +238,7 @@ export class Signup {
                 }
             }
             else {
-                errorMessages = ["Server error. Unable to send request. Please try again later."];
+                errorMessages = [Constants.genericHttpRequestError];
             }
 
             const validationReport: ValidationReport = {
@@ -246,7 +247,8 @@ export class Signup {
             };
 
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        } finally {
+        }
+        finally {
             this.working(false);
         }
     }

@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
+import * as Constants from "../../../../../constants";
 import template from "./confirm-password.html";
 import { EventManager } from "@paperbits/common/events";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
@@ -122,7 +123,7 @@ export class ConfirmPassword {
             else {
                 const validationReport: ValidationReport = {
                     source: "confirmpassword",
-                    errors: ["Server error. Unable to send request. Please try again later."]
+                    errors: [Constants.genericHttpRequestError]
                 };
                 this.eventManager.dispatchEvent("onValidationErrors", validationReport);
             }
