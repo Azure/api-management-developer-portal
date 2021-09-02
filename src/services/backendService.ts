@@ -1,3 +1,4 @@
+import { MapiError } from "./../errors/mapiError";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod } from "@paperbits/common/http";
 import { CaptchaParams } from "../contracts/captchaParams";
 import { SignupRequest } from "../contracts/signupRequest";
@@ -36,39 +37,43 @@ export class BackendService {
     }
 
     public async sendSignupRequest(signupRequest: SignupRequest): Promise<void> {
-        const response = await this.httpClient.send(
-            {
-                url: await this.getUrl("/signup"),
-                method: HttpMethod.post,
-                headers: [{ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
-                body: JSON.stringify(signupRequest)
-            });
-        if (response.statusCode !== 200) {
-            if (response.statusCode === 400) {
-                const responseObj = <any>response.toObject();
-                throw responseObj.error;
-            } else {
-                throw Error(response.toText());
-            }
+        const response = await this.httpClient.send({
+            url: await this.getUrl("/signup"),
+            method: HttpMethod.post,
+            headers: [{ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
+            body: JSON.stringify(signupRequest)
+        });
+
+        if (response.statusCode === 200) {
+            return;
         }
+
+        if (response.statusCode === 400) {
+            const responseObj = <any>response.toObject();
+            throw new MapiError(responseObj.code, responseObj.message, responseObj.details);
+        }
+
+        throw new MapiError("Unhandled", "Unable to complete sign up request.");
     }
 
     public async sendResetRequest(resetRequest: ResetRequest): Promise<void> {
-        const response = await this.httpClient.send(
-            {
-                url: await this.getUrl("/reset-password-request"),
-                method: HttpMethod.post,
-                headers: [{ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
-                body: JSON.stringify(resetRequest)
-            });
-        if (response.statusCode !== 200) {
-            if (response.statusCode === 400) {
-                const responseObj = <any>response.toObject();
-                throw responseObj.error;
-            } else {
-                throw Error(response.toText());
-            }
+        const response = await this.httpClient.send({
+            url: await this.getUrl("/reset-password-request"),
+            method: HttpMethod.post,
+            headers: [{ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
+            body: JSON.stringify(resetRequest)
+        });
+
+        if (response.statusCode === 200) {
+            return;
         }
+
+        if (response.statusCode === 400) {
+            const responseObj = <any>response.toObject();
+            throw new MapiError(responseObj.code, responseObj.message, responseObj.details);
+        }
+
+        throw new MapiError("Unhandled", "Unable to complete reset password request.");
     }
 
     public async sendChangePassword(changePasswordRequest: ChangePasswordRequest): Promise<void> {
@@ -78,21 +83,23 @@ export class BackendService {
             throw Error("Auth token not found");
         }
 
-        const response = await this.httpClient.send(
-            {
-                url: await this.getUrl("/change-password"),
-                method: HttpMethod.post,
-                headers: [{ name: KnownHttpHeaders.Authorization, value: authToken }, { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
-                body: JSON.stringify(changePasswordRequest)
-            });
-        if (response.statusCode !== 200) {
-            if (response.statusCode === 400) {
-                const responseObj = <any>response.toObject();
-                throw responseObj.error;
-            } else {
-                throw Error(response.toText());
-            }
+        const response = await this.httpClient.send({
+            url: await this.getUrl("/change-password"),
+            method: HttpMethod.post,
+            headers: [{ name: KnownHttpHeaders.Authorization, value: authToken }, { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
+            body: JSON.stringify(changePasswordRequest)
+        });
+
+        if (response.statusCode === 200) {
+            return;
         }
+
+        if (response.statusCode === 400) {
+            const responseObj = <any>response.toObject();
+            throw new MapiError(responseObj.code, responseObj.message, responseObj.details);
+        }
+
+        throw new MapiError("Unhandled", "Unable to complete change password request.");
     }
 
     public async getDelegationUrl(action: DelegationAction, delegationParameters: {}): Promise<string> {
@@ -105,7 +112,8 @@ export class BackendService {
         const payload = {
             delegationAction: action,
             delegationParameters: delegationParameters
-        }
+        };
+
         const response = await this.httpClient.send(
             {
                 url: await this.getUrl("/delegation-url"),
@@ -113,10 +121,12 @@ export class BackendService {
                 headers: [{ name: KnownHttpHeaders.Authorization, value: authToken }, { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
                 body: JSON.stringify(payload)
             });
+
         if (response.statusCode === 200) {
             const result = response.toObject();
             return result["url"];
-        } else {
+        } 
+        else {
             throw Error(response.toText());
         }
     }
