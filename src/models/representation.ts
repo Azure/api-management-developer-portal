@@ -1,5 +1,4 @@
 import { RepresentationExample } from "./representationExample";
-import { Utils } from "../utils";
 import { RepresentationContract } from "../contracts/representation";
 import { Parameter } from "./parameter";
 import { KnownMimeTypes } from "./knownMimeTypes";
