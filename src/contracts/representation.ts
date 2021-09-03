@@ -33,4 +33,6 @@ export interface RepresentationContract {
      * Description of the form parameters, if the representation has form-like payload.
      */
     formParameters?: ParameterContract[];
+
+    examples: object;
 }
