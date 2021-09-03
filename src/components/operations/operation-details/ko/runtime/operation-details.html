@@ -142,9 +142,9 @@
                     </div>
                     <!-- /ko -->
 
-                    <!-- ko ifnot: representation.typeName -->
-                    <!-- ko if: representation.example -->
-                    <code-sample params="{ content: representation.example, language: representation.exampleFormat }">
+                    <!-- ko if: representation.examples -->
+                    <!-- ko foreach: { data: representation.examples, as: 'example' } -->
+                    <code-sample params="{ title: example.title, content: example.value, language: representation.exampleFormat }">
                     </code-sample>
                     <!-- /ko -->
                     <!-- /ko -->
@@ -203,9 +203,10 @@
                         params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation), defaultSchemaView: $component.defaultSchemaView }">
                     </type-definition>
                     <!-- /ko -->
-                    <!-- ko ifnot: representation.typeName -->
-                    <!-- ko if: representation.example -->
-                    <code-sample params="{ content: representation.example, language: representation.exampleFormat }">
+                    
+                    <!-- ko if: representation.examples -->
+                    <!-- ko foreach: { data: representation.examples, as: 'example' } -->
+                    <code-sample params="{ title: example.title, content: example.value, language: representation.exampleFormat }">
                     </code-sample>
                     <!-- /ko -->
                     <!-- /ko -->
