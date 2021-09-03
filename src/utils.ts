@@ -122,6 +122,14 @@ export class Utils {
     }
 
     public static formatJson(json: string): string {
+        if (!json) {
+            return "";
+        }
+
+        if (typeof json === "object") {
+            json = JSON.stringify(json);
+        }
+
         const original = json;
 
         try {
@@ -204,12 +212,12 @@ export class Utils {
             suffix = " s";
             divider = 1000;
         }
-   
+
         if (milliseconds >= 1000 * 60) {
             suffix = " m";
             divider = 1000 * 60;
         }
-        
+
         if (milliseconds >= 1000 * 60 * 60) {
             suffix = " h";
             divider = 1000 * 60 * 60;
