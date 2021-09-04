@@ -291,9 +291,18 @@
 <!-- /ko -->
 
 <!-- ko if: $component.consoleIsOpen -->
+<!-- ko if: apiType() !== 'websocket' -->
 <div class="detachable-right scrollable flex-grow animation-fade-in">
     <operation-console class="test flex flex-column" data-bind="dialog: {}"
         params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
     </operation-console>
 </div>
+<!-- /ko -->
+<!-- ko if: apiType() === 'websocket' -->
+<div class="detachable-right graphql-console-width scrollable flex-grow animation-fade-in">
+    <graphql-console class="test flex flex-column" data-bind="dialog: {}"
+        params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
+    </graphql-console>
+</div>
+<!-- /ko -->
 <!-- /ko -->

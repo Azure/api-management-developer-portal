@@ -273,6 +273,12 @@ pre {
 
 }
 
+.graphql-console-width {
+    @media (min-width: $breakpoint-md) {
+        max-width: 1680px;
+    }
+}
+
 operation-console {
     height: 100%;
 
