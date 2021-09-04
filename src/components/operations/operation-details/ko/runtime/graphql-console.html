@@ -1,0 +1,191 @@
+<!-- ko if: working -->
+<div class="panel panel-dark fit">
+    <spinner class="fit"></spinner>
+</div>
+<!-- /ko -->
+
+<!-- ko ifnot: working -->
+
+<div class="panel panel-dark animation-fade-in">
+    <button type="button" class="no-border pull-right" data-dismiss="modal" aria-label="Close console"
+        data-bind="click: $parent.closeConsole">
+        <i class="icon-emb icon-emb-simple-remove"></i>
+    </button>
+
+    <nav aria-label="breadcrumb" style="margin-right: 20px">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#"
+                    data-bind="text: $component.api().displayName, attr: { href: $component.getApiReferenceUrl() }"></a>
+            </li>
+
+            <!-- ko if: $component.api().apiVersion -->
+            <li class="breadcrumb-item">
+                <span data-bind="text: $component.api().apiVersion"></span>
+            </li>
+            <!-- /ko -->
+        </ol>
+    </nav>
+
+    <!-- ko if: $component.authorizationServer() || $component.subscriptionKeyRequired() -->
+    <h3>Authorization</h3>
+    <!-- /ko -->
+
+    <!-- ko if: $component.authorizationServer -->
+    <div class="row flex flex-row">
+        <div class="col-4">
+            <label for="authServer" class="text-monospace form-label"
+                data-bind="text: $component.authorizationServer().displayName"></label>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <select id="authServer" class="form-control"
+                    data-bind="options: $component.authorizationServer().grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
+                </select>
+            </div>
+        </div>
+    </div>
+    <!-- ko if: $component.selectedGrantType() === 'password' && !$component.authenticated() -->
+    <div class="row flex flex-row">
+        <div class="col-4">
+            <label for="username" class="text-monospace form-label">Username</label>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <input type="text" id="username" class="form-control" data-bind="textInput: $component.username" />
+            </div>
+        </div>
+    </div>
+    <div class="row flex flex-row">
+        <div class="col-4">
+            <label for="password" class="text-monospace form-label">Password</label>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <input type="password" id="password" class="form-control" data-bind="textInput: $component.password" />
+                <span class="invalid-feedback" data-bind="text: $component.authorizationError"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row flex flex-row">
+        <div class="col-4">
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <button class="button button-primary"
+                    data-bind="click: $component.authenticateOAuthWithPassword">Authorize</button>
+            </div>
+        </div>
+    </div>
+    <!-- /ko -->
+    <!-- /ko -->
+
+    <!-- ko if: $component.subscriptionKeyRequired -->
+    <div class="row flex flex-row">
+        <div class="col-4">
+            <label for="subscriptionKey" class="text-monospace form-label">
+                Subscription key
+            </label>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <!-- ko if: $component.products() && $component.products().length > 0 -->
+                <select id="subscriptionKey" class="form-control" data-bind="value: $component.selectedSubscriptionKey">
+                    <!-- ko foreach: { data: $component.products, as: 'product' } -->
+                    <optgroup data-bind="attr: { label: product.name }">
+                        <!-- ko foreach: { data: product.subscriptionKeys, as: 'subscriptionKey' } -->
+                        <option data-bind="value: subscriptionKey.value, text: subscriptionKey.name"></option>
+                        <!-- /ko -->
+                    </optgroup>
+                    <!-- /ko -->
+                </select>
+                <!-- /ko -->
+                <!-- ko if: !$component.products() || $component.products().length === 0 -->
+                <input id="subscriptionKey" type="text" class="form-control" placeholder="subscription key"
+                    data-bind="textInput: $component.selectedSubscriptionKey" />
+                <!-- /ko -->
+            </div>
+        </div>
+    </div>
+    <!-- /ko -->
+
+    <h3>Headers</h3>
+    <!-- ko if: $component.headers().length > 0 -->
+    <div data-bind="foreach: { data: $component.headers, as: 'header' }">
+        <div class="row flex flex-row">
+            <div class="col-4">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
+                            spellcheck="false" aria-label="Header name" data-bind="textInput: header.name">
+                        <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <!-- ko if: header.options && header.options.length > 0 -->
+                    <select class="form-control" aria-label="Header value"
+                        data-bind="value: header.value, options: header.options"></select>
+                    <!-- /ko -->
+                    <!-- ko if: !header.options || header.options.length === 0 -->
+                    <div class="input-group">
+                        <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
+                            spellcheck="false" aria-label="Header value" data-bind="textInput: header.value">
+                        <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
+                    </div>
+                    <!-- /ko -->
+                </div>
+            </div>
+            <div class="col-2">
+                <a href="#" role="button" data-bind="click: $component.removeHeader">Remove</a>
+            </div>
+        </div>
+    </div>
+    <!-- /ko -->
+
+    <a href="#" role="button" data-bind="click: $component.addHeader">
+        <i class="icon-emb icon-emb-plus"></i> Add header
+    </a>
+
+</div>
+
+<div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
+
+    <div class="col-2">
+        <h4>Explorer</h4>
+    </div>
+    <div class="col-5">
+        <h4>
+            Query editor
+            <!-- Change the icon to info and configure the tooltip -->
+            <i class="icon-emb icon-emb-info" title="Select a query, mutation, or subscription from the explorer to add it to the test console or begin typing to compose a query."></i>
+        </h4>
+        <h4>
+            Query variables
+            <!-- Change the icon to info and configure the tooltip -->
+            <i class="icon-emb icon-emb-info" title="Use variables to reuse the same query or mutation to pass different values."></i>
+        </h4>
+    </div>
+    <div class="col-5">
+        <h4>Response</h4>
+    </div>
+
+
+    <div class="flex flex-column align-items-end">
+        <div class="btn-group" role="group">
+            <!-- ko ifnot: $component.sendingRequest()-->
+            <button type="button" class="button button-primary btn-sm" data-bind="click: validateAndSendRequest">
+                Send
+            </button>
+            <!-- /ko -->
+            <!-- ko if: sendingRequest -->
+            <button type="button" class="button button-primary btn-sm" disabled>
+                Sending...
+            </button>
+            <!-- /ko -->
+        </div>
+    </div>
+</div>
+
+<!--/ko-->
