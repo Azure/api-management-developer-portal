@@ -94,6 +94,36 @@ export const defaultInputDelayMs = 600;
 export const AppType = "developerPortal";
 
 /**
+ * Query Editor Settings - GraphQL Console
+ */
+ export const QueryEditorSettings = {
+    id: "queryEditor",
+    config: {
+        language: 'graphql',
+    }
+ }
+
+ /**
+ * Variables Editor Settings - GraphQL Console
+ */
+export const VariablesEditorSettings = {
+    id: "variablesEditor",
+    config: {
+        language: 'json',
+    }
+}
+
+/**
+ * Response Settings - GraphQL Console
+ */
+ export const ResponseSettings = {
+    id: "responseEditor",
+    config: {
+        language: 'json',
+    }
+ }
+
+/**
  * Known setting names.
  */
 export enum SettingNames {

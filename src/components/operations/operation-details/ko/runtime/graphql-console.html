@@ -152,40 +152,47 @@
 
 <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
 
-    <div class="col-2">
-        <h4>Explorer</h4>
-    </div>
-    <div class="col-5">
-        <h4>
-            Query editor
-            <!-- Change the icon to info and configure the tooltip -->
-            <i class="icon-emb icon-emb-info" title="Select a query, mutation, or subscription from the explorer to add it to the test console or begin typing to compose a query."></i>
-        </h4>
-        <h4>
-            Query variables
-            <!-- Change the icon to info and configure the tooltip -->
-            <i class="icon-emb icon-emb-info" title="Use variables to reuse the same query or mutation to pass different values."></i>
-        </h4>
-    </div>
-    <div class="col-5">
-        <h4>Response</h4>
-    </div>
-
-
-    <div class="flex flex-column align-items-end">
-        <div class="btn-group" role="group">
-            <!-- ko ifnot: $component.sendingRequest()-->
-            <button type="button" class="button button-primary btn-sm" data-bind="click: validateAndSendRequest">
-                Send
-            </button>
-            <!-- /ko -->
-            <!-- ko if: sendingRequest -->
-            <button type="button" class="button button-primary btn-sm" disabled>
-                Sending...
-            </button>
-            <!-- /ko -->
+    <div class="editors">
+        <div class="graphql-console explorer">
+            <h4>Explorer</h4>
+        </div>
+        <div class="graphql-console query">
+            <h4>
+                Query editor
+                <!-- Change the icon to info and configure the tooltip -->
+                <i class="icon-emb icon-emb-info"
+                    title="Select a query, mutation, or subscription from the explorer to add it to the test console or begin typing to compose a query."></i>
+            </h4>
+            <div class="query-editor" id="queryEditor"></div>
+            <h4>
+                Query variables
+                <!-- Change the icon to info and configure the tooltip -->
+                <i class="icon-emb icon-emb-info"
+                    title="Use variables to reuse the same query or mutation to pass different values."></i>
+            </h4>
+            <div class="query-variable" id="variablesEditor"></div>
+            <div class="flex flex-column align-items-end">
+                <div class="btn-group graphql-console-button" role="group">
+                    <!-- ko ifnot: $component.sendingRequest()-->
+                    <button type="button" class="button button-primary btn-sm" data-bind="click: validateAndSendRequest">
+                        Send
+                    </button>
+                    <!-- /ko -->
+                    <!-- ko if: sendingRequest -->
+                    <button type="button" class="button button-primary btn-sm" disabled>
+                        Sending...
+                    </button>
+                    <!-- /ko -->
+                </div>
+            </div>
+        </div>
+        <div class="graphql-console response">
+            <h4>Response</h4>
+            <div class="response" id="responseEditor"></div>
         </div>
     </div>
+
+    
 </div>
 
 <!--/ko-->
