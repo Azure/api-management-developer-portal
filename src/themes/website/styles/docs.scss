@@ -279,6 +279,44 @@ pre {
     }
 }
 
+.query-editor {
+    height: 408px;
+}
+
+.query-variable {
+    height: 168px;
+}
+
+.response {
+    height: 640px;
+}
+
+.editors {
+    width: 100%;
+}
+
+.graphql-console {
+    vertical-align: top;
+    display: inline-block;
+    padding: 0 10px;
+
+    &.explorer {
+        width: 20%;
+    }
+
+    &.query {
+        width: 40%;
+    }
+
+    &.response {
+        width: 39%;
+    }
+}
+
+.graphql-console-button {
+    margin-top: 30px;
+}
+
 operation-console {
     height: 100%;
 

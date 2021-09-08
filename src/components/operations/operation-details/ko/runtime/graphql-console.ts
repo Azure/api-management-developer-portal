@@ -3,7 +3,7 @@ import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import template from "./graphql-console.html";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { GrantTypes } from "./../../../../../constants";
+import { GrantTypes, QueryEditorSettings, VariablesEditorSettings, ResponseSettings } from "./../../../../../constants";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { OAuthService } from "../../../../../services/oauthService";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
@@ -16,6 +16,11 @@ import { ApiService } from "../../../../../services/apiService";
 import { ProductService } from "../../../../../services/productService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
+import { parse as parseGraphQLSchema } from "graphql";
+import * as _ from "lodash";
+import * as monaco from "monaco-editor";
+import { MonacoEditorLoader } from "./editor/monaco-loader";
+
 
 const oauthSessionKey = "oauthSession";
 
@@ -25,6 +30,9 @@ const oauthSessionKey = "oauthSession";
     template: template
 })
 export class GraphqlConsole {
+    private queryEditor: monaco.editor.IStandaloneCodeEditor;
+    private variablesEditor: monaco.editor.IStandaloneCodeEditor;
+    private responseEditor: monaco.editor.IStandaloneCodeEditor;
     public readonly sendingRequest: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
     public readonly subscriptionKeyRequired: ko.Observable<boolean>;
@@ -45,6 +53,7 @@ export class GraphqlConsole {
         private readonly apiService: ApiService,
         private readonly productService: ProductService,
         private readonly sessionManager: SessionManager,
+        private monacoEditorLoader: MonacoEditorLoader,
     ) {
         this.working = ko.observable(true);
         this.requestError = ko.observable();
@@ -72,6 +81,7 @@ export class GraphqlConsole {
     public async initialize(): Promise<void> {
         await this.resetConsole();
         this.api.subscribe(this.resetConsole);
+        await this.loadingMonaco();
         this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
         this.selectedGrantType.subscribe(this.onGrantTypeChange);
     }
@@ -342,5 +352,67 @@ export class GraphqlConsole {
         finally {
             this.sendingRequest(false);
         }
+    }
+
+    public loadingMonaco() {
+        this.monacoEditorLoader.waitForMonaco().then(() => {
+            this.initEditor(QueryEditorSettings);
+            this.initEditor(VariablesEditorSettings);
+            this.initEditor(ResponseSettings);
+        });
+    }
+
+    private initEditor(editorSettings): void {
+
+        const defaultSettings = {
+            value: "",
+            readOnly: false,
+            contextmenu: false,
+            lineHeight: 17,
+            automaticLayout: true,
+            ariaLabel: "test",
+            minimap: {
+                enabled: false
+            }
+        };
+
+        const settings = { ...defaultSettings, ...editorSettings.config }
+
+        this[editorSettings.id] = (<any>window).monaco.editor.create(document.getElementById(editorSettings.id), settings);
+
+        //this.schemaValidator = new SchemaValidator();
+
+        // const validateContent = new Subject<string>();
+        // this.parsingContentError = validateContent.debounceTime(750);
+        // this.parsingContentError.subscribe(() => {
+        //     this.tryParseContent();
+        //     this.onContentParsingErrors.emit(this.contentParseErrors);
+        // });
+
+        this[editorSettings.id].onDidChangeModelContent(() => {
+            //this.content = this.editor.getValue();
+
+            console.log("this.[editorSettings.id].getValue()")
+            console.log(this[editorSettings.id].getValue())
+            // clearTimeout(this.onContentChangeTimoutId);
+            // this.onContentChangeTimoutId = window.setTimeout(() => {
+            //     this.onContentChange.emit(this.content);
+            //     validateContent.next();
+            // }, 500)
+        });
+
+        // if (this.keyPathTrace) {
+        //     this.editor.onDidChangeCursorPosition(() => {
+        //         const position = this.editor.getPosition();
+        //         const offset = this.editor.getModel().getOffsetAt(position);
+        //         const keyPaths = Utils.getKeyPathFromJsonStringIndex(this.content, offset);
+                
+        //         this.swaggerPaths.emit(keyPaths);
+        //     });
+        // }
+        //this.onEditorReady.emit(this);
+
+        //this.onHighContrastChanged(this.snippetService.getCurrentHighContrast());
+        //this.snippetService.highContrastChange().subscribe(this.onHighContrastChanged.bind(this));
     }
 }
