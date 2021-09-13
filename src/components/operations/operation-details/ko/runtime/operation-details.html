@@ -57,7 +57,17 @@
                         <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
                         <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
                         <div role="cell" class="text-truncate monospace" data-bind="text: parameter.type"></div>
-                        <div role="cell" data-bind="markdown: parameter.description"></div>
+                        <div role="cell">
+                            <span data-bind="markdown: parameter.description"></span>
+
+                            <!-- ko foreach: { data: parameter.examples, as: 'example' } -->
+                            <p>
+                                <span data-bind="text: example.title"></span>:
+                                <span data-bind="text: example.value" class="monospace text-wrap"></span>
+                                <span data-bind="text: example.description" class="d-block"></span>
+                            </p>
+                            <!-- /ko -->
+                        </div>
                     </div>
                     <!-- /ko -->
                 </div>
@@ -84,7 +94,17 @@
                         <div role="cell" class="text-truncate" data-bind="text: header.required"></div>
                         <div role="cell" class="text-truncate monospace"
                             data-bind="text: header.type, attr: { title: header.type }"></div>
-                        <div role="cell" data-bind="markdown: header.description"></div>
+                        <div role="cell">
+                            <span data-bind="markdown: header.description"></span>
+
+                            <!-- ko foreach: { data: header.examples, as: 'example' } -->
+                            <p>
+                                <span data-bind="text: example.title"></span>:
+                                <span data-bind="text: example.value" class="monospace text-wrap"></span>
+                                <span data-bind="text: example.description" class="d-block"></span>
+                            </p>
+                            <!-- /ko -->
+                        </div>
                     </div>
                     <!-- /ko -->
                 </div>
@@ -203,7 +223,7 @@
                         params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation), defaultSchemaView: $component.defaultSchemaView }">
                     </type-definition>
                     <!-- /ko -->
-                    
+
                     <!-- ko if: representation.examples -->
                     <!-- ko foreach: { data: representation.examples, as: 'example' } -->
                     <code-sample params="{ title: example.title, content: example.value, language: representation.exampleFormat }">
