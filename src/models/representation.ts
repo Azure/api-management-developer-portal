@@ -5,7 +5,6 @@ import { KnownMimeTypes } from "./knownMimeTypes";
 
 export class Representation {
     public readonly contentType: string;
-    public readonly example: string;
     public readonly exampleFormat: string;
     public readonly schemaId: string;
     public readonly typeName: string;
@@ -14,34 +13,27 @@ export class Representation {
 
     constructor(contract?: RepresentationContract) {
         this.contentType = contract.contentType;
-        this.example = contract.sample || contract.generatedSample;
         this.schemaId = contract.schemaId;
         this.typeName = contract.typeName;
         this.examples = [];
 
-        if (this.contentType === KnownMimeTypes.FormData) {
-            if (contract.formParameters?.length > 0) {
-                this.formParameters = contract.formParameters.map(parameterContract => new Parameter("body", parameterContract));
-            }
+        if (this.contentType === KnownMimeTypes.FormData && contract.formParameters?.length > 0) {
+            this.formParameters = contract.formParameters.map(parameterContract => new Parameter("body", parameterContract));
         }
 
         if (contract.examples) {
             for (const key of Object.keys(contract.examples)) {
                 const exampleObject = contract.examples[key];
-                this.examples.push(new RepresentationExample(
-                    key,
-                    exampleObject.description,
-                    exampleObject.value,
-                    this.contentType));
+                this.examples.push(
+                    new RepresentationExample(key, exampleObject.description, exampleObject.value, this.contentType));
             }
-            this.example = null;
+            return;
         }
-        else if (this.example) {
-            this.examples.push(new RepresentationExample(
-                null,
-                "",
-                this.example,
-                this.contentType));
+
+        const example = contract.sample || contract.generatedSample;
+
+        if (example) {
+            this.examples.push(new RepresentationExample(null, "", example, this.contentType));
         }
     }
 }
