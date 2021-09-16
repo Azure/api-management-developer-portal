@@ -9,6 +9,8 @@ import { RouteHelper } from "../../routing/routeHelper";
 import { TagContract } from "../../contracts/tag";
 import { Utils } from "../../utils";
 
+const focusable = `[tabindex]:not([disabled]):not([tabindex="-1"])`;
+
 @Component({
     selector: "tag-input",
     template: template,
@@ -33,6 +35,9 @@ export class TagInput {
         this.availableTags = ko.computed<Tag[]>(() => this.tags().filter(tag => !this.selection().map(x => x.id).includes(tag.id)));
         this.empty = ko.computed(() => this.availableTags().length === 0);
         this.onDismiss = new ko.subscribable<Tag[]>();
+        this.onKeyDown = this.onKeyDown.bind(this);
+        this.onInputKeyDown = this.onInputKeyDown.bind(this);
+        this.onTagBtnKeyDown = this.onTagBtnKeyDown.bind(this);
     }
 
     @Param()
@@ -115,5 +120,43 @@ export class TagInput {
             this.onChange(this.selection());
             this.onDismiss.notifySubscribers();
         }
+    }
+
+    public onKeyDown(data: any, event: KeyboardEvent): boolean {
+        if (event.key === "Tab") {
+            if (!event.shiftKey) {
+                const item = document.activeElement.parentElement.parentElement;
+                const element = item.nextElementSibling;
+                if (element) {
+                    const focusableElements = element.querySelectorAll(focusable);
+                    const firstFocusableElement = <HTMLElement>focusableElements[0];
+                    firstFocusableElement && firstFocusableElement.focus();
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public onInputKeyDown(data: any, event: KeyboardEvent): boolean {
+        if (event.key === "Tab") {
+            if (event.shiftKey) {
+                const focusableElement = <HTMLElement>this.tagElement;
+                if (focusableElement) {
+                    focusableElement.focus();
+                    this.onDismiss.notifySubscribers();
+                    return false;
+                }
+            } 
+        }
+        return true;
+    }
+
+    private tagElement: Element;
+    public onTagBtnKeyDown(data: any, event: KeyboardEvent): boolean {
+        if (event.key === "Enter") {
+            this.tagElement = document.activeElement;
+        }
+        return true;
     }
 }

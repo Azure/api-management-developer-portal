@@ -2,8 +2,8 @@
     <div class="form-inline search-input">
         <div class="input-group">
             <input autofocus type="search" role="searchbox" aria-label="Search tags" placeholder="Search tags"
-                data-bind="textInput: pattern" />
-            <button type="button" class="search-button" aria-label="Search tags">
+                data-bind="textInput: pattern, event: { keydown: onInputKeyDown }" />
+            <button type="button" class="search-button" aria-label="Search tags" data-bind="event: { keydown: onKeyDown }">
                 <i class="icon-emb icon-emb-magnifier"></i>
             </button>
         </div>
