@@ -4,10 +4,13 @@ import * as topojson from "topojson-client";
 import { worldMapShapes, countryCodeMappings } from "../components/reports/mapChart/worldMapShapes";
 import { MapChartConfig } from "../components/reports/mapChart/mapChartConfig";
 
+const chartTitleAttribute = "chart-title";
+const chartDescAttribute = "chart-desc";
 
 ko.bindingHandlers["mapChart"] = {
-    update: (element: HTMLElement, valueAccessor: () => MapChartConfig): void => {
+    update: (element: HTMLElement, valueAccessor: () => MapChartConfig, allBindingsAccessor): void => {
         const configuration = ko.unwrap(valueAccessor());
+        const allBindings = allBindingsAccessor() || {};
 
         element.childNodes.forEach(x => x.remove());
 
@@ -40,10 +43,19 @@ ko.bindingHandlers["mapChart"] = {
 
         const path = d3.geoPath().projection(projection);
 
-        const svg = d3.select(element)
-            .append("svg")
-            .attr("viewBox", [offsetX, offsetY, width, height])
-            .append("g");
+        const svg = d3.select(element).append("svg");
+        
+        const chartTitle = allBindings[chartTitleAttribute];
+        const chartDesc = allBindings[chartDescAttribute];
+
+        if (chartTitle) {
+            svg.append("title").text(chartTitle);
+        }
+        if (chartDesc) {
+            svg.append("desc").text(chartDesc);
+        }
+
+        svg.attr("viewBox", [offsetX, offsetY, width, height]).append("g");
 
         const defs = svg.append("defs");
 
