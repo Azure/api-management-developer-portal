@@ -15,30 +15,30 @@
 <h2>API calls</h2>
 <div class="row">
     <div class="col-md-7">
-        <div data-bind="barChart: reportByCalls"></div>
+        <div data-bind="barChart: reportByCalls, chart-title: 'API calls bar chart by time', chart-desc: 'API calls bar chart by time'" ></div>
     </div>
     <div class="col-md-5">
-        <div data-bind="mapChart: reportByCallsGeo"></div>
+        <div data-bind="mapChart: reportByCallsGeo, chart-title: 'API calls map', chart-desc: 'API calls map by geo'" ></div>
     </div>
 </div>
 
 <h2>Data transfer</h2>
 <div class="row">
     <div class="col-md-7">
-        <div data-bind="barChart: reportByBandwidth"></div>
+        <div data-bind="barChart: reportByBandwidth, chart-title: 'Data transfer bar chart by time', chart-desc: 'Data transfer bar chart by time'"></div>
     </div>
     <div class="col-md-5">
-        <div data-bind="mapChart: reportByBandwidthGeo"></div>
+        <div data-bind="mapChart: reportByBandwidthGeo, chart-title: 'Data transfer map', chart-desc: 'Data transfer map by geo'"></div>
     </div>
 </div>
 
 <h2>API response times</h2>
 <div class="row">
     <div class="col-md-7">
-        <div data-bind="minMaxAvgChart: reportByLatency"></div>
+        <div data-bind="minMaxAvgChart: reportByLatency, chart-title: 'API response time bar chart by time', chart-desc: 'API response time bar chart by time'"></div>
     </div>
     <div class="col-md-5">
-        - <div data-bind="mapChart: reportByLatencyGeo"></div>
+        - <div data-bind="mapChart: reportByLatencyGeo, chart-title: 'API response time map', chart-desc: 'API response time map by geo'"></div>
     </div>
 </div>
 
