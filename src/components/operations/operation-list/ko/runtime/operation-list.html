@@ -23,6 +23,7 @@
         </div>
         <tag-input params="{ scope: $component.tagScope, onChange: onTagsChange }"></tag-input>
     </div>
+    <!-- ko ifnot: apiType() === 'graphql' -->
     <div class="form-group ml-auto">
         <label for="groupByTag">Group by tag
             <div class="switch">
@@ -31,6 +32,7 @@
             </div>
         </label>
     </div>
+    <!-- /ko -->
     <!-- ko if: showToggleUrlPath -->
     <div class="form-group ml-auto">
         <label for="showUrlPath">Show URL path
@@ -93,6 +95,7 @@
 
     <!-- ko ifnot: working-->
     <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
+        <!-- ko ifnot: apiType() === 'graphql' -->
         <!-- ko if: operations -->
         <ul class="nav" role="list">
             <!-- ko foreach: { data: operations, as: 'item' } -->
@@ -112,6 +115,7 @@
         <div class="list-placeholder list-group-placeholder">
             No operations found
         </div>
+        <!-- /ko -->
         <!-- /ko -->
     </div>
     <!-- /ko -->

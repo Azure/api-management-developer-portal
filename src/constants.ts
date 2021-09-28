@@ -15,7 +15,8 @@ export enum ServiceSkuName {
 export enum TypeOfApi {
     webSocket = "websocket",
     soap = "soap",
-    http = "http"
+    http = "http",
+    graphQL = "graphql"
 }
 
 /**
@@ -123,6 +124,15 @@ export const VariablesEditorSettings = {
     }
  }
 
+ /**
+ * Graphql operation types
+ */
+  export enum GraphqlOperationTypes {
+    query = "query",
+    mutation = "mutation",
+    subscription = "subscription"
+}
+
 /**
  * Known setting names.
  */
@@ -164,7 +174,7 @@ export enum GrantTypes {
     password = "password"
 }
 
-export const managementApiVersion = "2021-01-01-preview";
+export const managementApiVersion = "2021-04-01-preview";
 
 /**
  * Developer portal type (self-hosted or managed).

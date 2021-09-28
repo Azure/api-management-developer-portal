@@ -376,7 +376,6 @@ export class ApiService {
     public async getApiSchema(schemaId: string): Promise<Schema> {
         const contract = await this.mapiClient.get<SchemaContract>(schemaId, [MapiClient.getPortalHeader("getApiSchema")]);
         const model = new Schema(contract);
-
         return model;
     }
 
@@ -384,7 +383,7 @@ export class ApiService {
         const result = await this.mapiClient.get<Page<SchemaContract>>(`${api.id}/schemas`, [MapiClient.getPortalHeader("getSchemas")]);
         const schemaReferences = result.value;
         const schemaType = this.getSchemasType(schemaReferences);
-        const schemas = await Promise.all(schemaReferences.filter(schema => schema.properties.contentType === schemaType).map(schemaReference => this.getApiSchema(schemaReference.id)));
+        const schemas = await Promise.all(schemaReferences.filter(schema => schema.properties.contentType === schemaType).map(schemaReference => this.getApiSchema((schemaType === SchemaType.graphQL) ? `/apis/graphql-api/schemas/${schemaReference.name}` : schemaReference.id)));
 
         // return schemas;
         // const result = await this.mapiClient.get<Page<SchemaContract>>(`${api.id}/schemas?$top=20`, null);
@@ -398,6 +397,10 @@ export class ApiService {
 
     private getSchemasType(schemas: SchemaContract[]): SchemaType {
         if (schemas && schemas.length > 0) {
+
+            const gql = schemas.find(s => s.properties.contentType === SchemaType.graphQL);
+            if(gql) return SchemaType.graphQL;
+
             const is2 = !!schemas.find(item => item.properties.contentType === SchemaType.swagger)
                 &&
                 !schemas.find(item => item.properties.contentType === SchemaType.openapi);

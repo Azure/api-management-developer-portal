@@ -1,9 +1,10 @@
 import * as ko from "knockout";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
+import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import template from "./graphql-console.html";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { GrantTypes, QueryEditorSettings, VariablesEditorSettings, ResponseSettings } from "./../../../../../constants";
+import { GrantTypes, QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlOperationTypes } from "./../../../../../constants";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { OAuthService } from "../../../../../services/oauthService";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
@@ -16,13 +17,21 @@ import { ApiService } from "../../../../../services/apiService";
 import { ProductService } from "../../../../../services/productService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
-import { parse as parseGraphQLSchema } from "graphql";
+import * as GraphQL from "graphql";
 import * as _ from "lodash";
 import * as monaco from "monaco-editor";
-import { MonacoEditorLoader } from "./editor/monaco-loader";
+import { MonacoEditorLoader } from "./graphql-utilities/monaco-loader";
+import { GraphQLTreeNode, GraphQLOutputTreeNode, GraphQLInputTreeNode } from "./graphql-utilities/graphql-node-models";
 
 
 const oauthSessionKey = "oauthSession";
+
+function getType(type: GraphQL.GraphQLOutputType | GraphQL.GraphQLInputType) {
+    while ((type instanceof GraphQL.GraphQLList) || (type instanceof GraphQL.GraphQLNonNull)) {
+        type = type.ofType;
+    }
+    return type;
+}
 
 
 @Component({
@@ -30,9 +39,19 @@ const oauthSessionKey = "oauthSession";
     template: template
 })
 export class GraphqlConsole {
+
+    private queryNode: ko.Observable<GraphQLTreeNode>;
+    private mutationNode: ko.Observable<GraphQLTreeNode>;
+    private subscriptionNode: ko.Observable<GraphQLTreeNode>;
+
+    public node: ko.Observable<GraphQLTreeNode>;
+    public queryType: ko.Observable<string>;
+    public filter: ko.Observable<string>;
+
     private queryEditor: monaco.editor.IStandaloneCodeEditor;
     private variablesEditor: monaco.editor.IStandaloneCodeEditor;
     private responseEditor: monaco.editor.IStandaloneCodeEditor;
+
     public readonly sendingRequest: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
     public readonly subscriptionKeyRequired: ko.Observable<boolean>;
@@ -45,6 +64,8 @@ export class GraphqlConsole {
     public readonly selectedSubscriptionKey: ko.Observable<string>;
     public readonly requestError: ko.Observable<string>;
     public readonly authorizationError: ko.Observable<string>;
+    public readonly variables: ko.Observable<string>;
+    public readonly response: ko.Observable<string>;
 
     constructor(
         private readonly routeHelper: RouteHelper,
@@ -69,10 +90,23 @@ export class GraphqlConsole {
         this.authorizationError = ko.observable();
         this.selectedSubscriptionKey = ko.observable();
         this.products = ko.observable();
+        this.queryType = ko.observable(GraphqlOperationTypes.query);
+        this.document = ko.observable();
+        this.variables = ko.observable();
+        this.response = ko.observable();
+        this.filter = ko.observable("");
+
+        this.queryNode = ko.observable();
+        this.mutationNode = ko.observable();
+        this.subscriptionNode = ko.observable();
+        this.node = ko.observable();
     }
 
     @Param()
     public api: ko.Observable<Api>;
+
+    @Param()
+    public document: ko.Observable<string>;
 
     @Param()
     public authorizationServer: ko.Observable<AuthorizationServer>;
@@ -84,6 +118,8 @@ export class GraphqlConsole {
         await this.loadingMonaco();
         this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
         this.selectedGrantType.subscribe(this.onGrantTypeChange);
+        this.queryType.subscribe(this.onQueryTypeChange);
+        this.document.subscribe(this.onDocumentChange);
     }
 
     private async resetConsole(): Promise<void> {
@@ -102,6 +138,13 @@ export class GraphqlConsole {
             await this.loadSubscriptionKeys();
         }
 
+        const graphQLSchemas = await this.apiService.getSchemas(this.api());
+        const schema = graphQLSchemas.value.find(s => s.graphQLSchema);
+        await this.buildTree(schema.graphQLSchema);
+        this.node(this.queryNode());
+        this.node().toggle(true);
+        this.generateDocument();
+        this.documentToTree();
         this.working(false);
     }
 
@@ -117,6 +160,86 @@ export class GraphqlConsole {
         }
 
         await this.authenticateOAuth(grantType);
+    }
+
+    private async onQueryTypeChange(queryType: string): Promise<void> {
+        switch (queryType) {
+            case "query":
+                this.node(this.queryNode());
+                break;
+            case "mutation":
+                this.node(this.mutationNode());
+                break;
+            case "subscription":
+                this.node(this.subscriptionNode());
+                break;
+            default:
+                break;
+        }
+        this.node().toggle(true);
+        this.documentToTree();
+    }
+
+    private onDocumentChange(document: string): void {
+        this.queryEditor.setValue(document);
+    }
+
+    documentToTree() {
+        try {
+            const ast = GraphQL.parse(this.document(), { noLocation: true });
+            for (let child of this.node().children()) {
+                child.clear();
+            }
+            let curNode = this.node;
+            let variables = [];
+
+            // Go through every node in a new generated parsed graphQL, associate the node with the created tree from init and toggle checkmark.
+            GraphQL.visit(ast, {
+                enter(node) {
+                    if (node.kind === "Field" || node.kind === "Argument" || node.kind === "ObjectField") {
+                        let targetNode: GraphQLTreeNode;
+                        if (node.kind === "Field") {
+                            targetNode = curNode().children().find(n => !n.isInputNode() && n.label() === node.name.value);
+                        } else {
+                            let inputNode = <GraphQLInputTreeNode>curNode().children().find(n => n.isInputNode() && n.label() === node.name.value);
+                            if (node.kind === "Argument") {
+                                if (node.value.kind === "StringValue") {
+                                    inputNode.inputValue(`"${node.value.value}"`);
+                                } else if (node.value.kind === "BooleanValue" || node.value.kind === "IntValue" || node.value.kind === "FloatValue" || node.value.kind === "EnumValue") {
+                                    inputNode.inputValue(`${node.value.value}`);
+                                } else if (node.value.kind === "Variable") {
+                                    inputNode.inputValue(`$${node.value.name.value}`);
+                                }
+                            }
+                            targetNode = inputNode;
+                        }
+                        if (targetNode) {
+                            curNode(targetNode);
+                            curNode().toggle(true, false);
+                        }
+                    } else if (node.kind === "VariableDefinition" && (node.type.kind === "NamedType" || node.type.kind === "NonNullType")) {
+                        let typeString;
+                        if (node.type.kind === "NonNullType" && node.type.type.kind === "NamedType") {
+                            typeString = `${node.type.type.name.value}!`;
+                        } else if (node.type.kind === "NamedType") {
+                            typeString = node.type.name.value;
+                        }
+                        variables.push({
+                            name: node.variable.name.value,
+                            type: typeString
+                        });
+                    }
+                },
+                leave(node) {
+                    if (curNode && node.kind === "Field" || node.kind === "Argument" || node.kind === "ObjectField") {
+                        curNode(curNode().parent());
+                    }
+                }
+            });
+            (<GraphQLOutputTreeNode>this.node()).variables = variables;
+        } catch (err) {
+            // Do nothing here as the doc is invalidated
+        }
     }
 
     /**
@@ -342,7 +465,17 @@ export class GraphqlConsole {
         this.sendingRequest(true);
 
         try {
-            //TODO
+            // const request: HttpRequest = {
+            //     url: url,
+            //     method: method,
+            //     headers: headers
+            //         .map(x => { return { name: x.name(), value: x.value() ?? "" }; })
+            //         .filter(x => !!x.name && !!x.value)
+            // };
+
+            // const response = this.useCorsProxy()
+            //     ? await this.sendFromProxy(request)
+            //     : await this.sendFromBrowser(request);
         }
         catch (error) {
             if (error.code && error.code === "RequestError") {
@@ -356,16 +489,16 @@ export class GraphqlConsole {
 
     public loadingMonaco() {
         this.monacoEditorLoader.waitForMonaco().then(() => {
-            this.initEditor(QueryEditorSettings);
-            this.initEditor(VariablesEditorSettings);
-            this.initEditor(ResponseSettings);
+            this.initEditor(QueryEditorSettings, this.document);
+            this.initEditor(VariablesEditorSettings, this.variables);
+            this.initEditor(ResponseSettings, this.response);
         });
     }
 
-    private initEditor(editorSettings): void {
+    private initEditor(editorSettings, value: ko.Observable<string>): void {
 
         const defaultSettings = {
-            value: "",
+            value: value() || "",
             readOnly: false,
             contextmenu: false,
             lineHeight: 17,
@@ -376,7 +509,7 @@ export class GraphqlConsole {
             }
         };
 
-        const settings = { ...defaultSettings, ...editorSettings.config }
+        let settings = { ...defaultSettings, ...editorSettings.config }
 
         this[editorSettings.id] = (<any>window).monaco.editor.create(document.getElementById(editorSettings.id), settings);
 
@@ -392,8 +525,8 @@ export class GraphqlConsole {
         this[editorSettings.id].onDidChangeModelContent(() => {
             //this.content = this.editor.getValue();
 
-            console.log("this.[editorSettings.id].getValue()")
-            console.log(this[editorSettings.id].getValue())
+            // console.log("this.[editorSettings.id].getValue()")
+            // console.log(this[editorSettings.id].getValue())
             // clearTimeout(this.onContentChangeTimoutId);
             // this.onContentChangeTimoutId = window.setTimeout(() => {
             //     this.onContentChange.emit(this.content);
@@ -406,7 +539,7 @@ export class GraphqlConsole {
         //         const position = this.editor.getPosition();
         //         const offset = this.editor.getModel().getOffsetAt(position);
         //         const keyPaths = Utils.getKeyPathFromJsonStringIndex(this.content, offset);
-                
+
         //         this.swaggerPaths.emit(keyPaths);
         //     });
         // }
@@ -415,4 +548,111 @@ export class GraphqlConsole {
         //this.onHighContrastChanged(this.snippetService.getCurrentHighContrast());
         //this.snippetService.highContrastChange().subscribe(this.onHighContrastChanged.bind(this));
     }
+
+    private buildTree(content: string): void {
+        const schema = GraphQL.buildSchema(content);
+
+        this.queryNode(new GraphQLOutputTreeNode(GraphqlOperationTypes.query, <GraphQL.GraphQLField<any, any>>{
+            type: schema.getQueryType(),
+            args: []
+        }, () => this.generateDocument(), null));
+
+        this.mutationNode(new GraphQLOutputTreeNode(GraphqlOperationTypes.mutation, <GraphQL.GraphQLField<any, any>>{
+            type: schema.getMutationType(),
+            args: []
+        }, () => this.generateDocument(), null));
+
+        this.subscriptionNode(new GraphQLOutputTreeNode(GraphqlOperationTypes.subscription, <GraphQL.GraphQLField<any, any>>{
+            type: schema.getSubscriptionType(),
+            args: []
+        }, () => this.generateDocument(), null));
+    }
+
+    public generateDocument() {
+        const document = `${this.createFieldStringFromNodes([this.node()], 0)}`;
+        this.document(document);
+    }
+
+    /**
+     * 
+     * @param nodes list of root nodes to generate from
+     * @param level level for indent
+     * @returns string of generated node, for example:
+     * {
+     *    dragon
+     * }
+     */
+    private createFieldStringFromNodes(nodes: GraphQLTreeNode[], level: number): string {
+        let selectedNodes: string[] = [];
+        for (let node of nodes) {
+            let inputNodes: GraphQLInputTreeNode[] = []
+            let outputNodes: GraphQLTreeNode[] = [];
+            for (let child of node.children()) {
+                if (child instanceof GraphQLInputTreeNode) {
+                    inputNodes.push(child);
+                } else {
+                    outputNodes.push(child);
+                }
+            }
+            if (node.selected()) {
+                if (level === 0) {
+                    selectedNodes.push(node.label() + this.createVariableString(<GraphQLOutputTreeNode>node) + this.createFieldStringFromNodes(outputNodes, level + 1));
+                } else {
+                    selectedNodes.push(node.label() + this.createArgumentStringFromNode(inputNodes, true) + this.createFieldStringFromNodes(outputNodes, level + 1));
+                }
+            }
+        }
+        selectedNodes = selectedNodes.map(node => "\t".repeat(level) + node);
+        let result: string;
+        if (selectedNodes.length === 0) {
+            result = "";
+        } else {
+            if (level === 0) {
+                result = selectedNodes[0];
+            } else {
+                result = ` {\n${selectedNodes.join("\n")}\n${"\t".repeat(level - 1)}}`
+            }
+        }
+        return result;
+    }
+
+    /**
+    * 
+    * @param node root node, either query, mutation, or subscription
+    * @returns list of variable as string to parse in document. For example, ($lim: Int!)
+    */
+    private createVariableString(node: GraphQLOutputTreeNode): string {
+        if (node.variables.length > 0) {
+            return "(" + node.variables.map(v => `$${v.name}: ${v.type}`).join(", ") + ")";
+        }
+        return "";
+    }
+
+    /**
+     * Example: (limit: 10)
+     * @param nodes list of root nodes to generate from
+     * @param firstLevel true if this is the first level of object argument ({a: {b: 2}})
+     * @returns string of argument of the declaration. For example, (a : 1)
+     */
+    private createArgumentStringFromNode(nodes: GraphQLInputTreeNode[], firstLevel: boolean): string {
+        let selectedNodes: string[] = [];
+        for (let node of nodes) {
+            if (node.selected()) {
+                let type = getType(node.data.type);
+                if (node.isScalarType() || node.isEnumType()) {
+                    selectedNodes.push(`${node.label()}: ${node.inputValue()}`);
+                } else if (type instanceof GraphQL.GraphQLInputObjectType) {
+                    selectedNodes.push(`${node.label()}: { ${this.createArgumentStringFromNode(node.children(), false)} }`)
+                }
+            }
+        }
+        return selectedNodes.length > 0 ? (firstLevel ? `(${selectedNodes.join(", ")})` : selectedNodes.join(", ")) : "";
+    }
+
+    public operationName(name: string, isRequired: boolean, isInputNode: boolean): string {
+        let operationName = name += (isRequired) ? '*' : '';
+        operationName = operationName += (isInputNode) ? ':' : '';
+        return operationName;
+    }
+
 }
