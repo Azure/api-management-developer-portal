@@ -81,9 +81,9 @@
     <!-- /ko -->
 
     <!-- ko if: $component.subscriptionKeyRequired -->
-    <div class="row flex flex-row">
+    <div class="row flex flex-row col-5">
         <div class="col-4">
-            <label for="subscriptionKey" class="text-monospace form-label">
+            <label for="subscriptionKey" class="text-monospace form-label pad-12">
                 Subscription key
             </label>
         </div>
@@ -112,7 +112,7 @@
     <h3>Headers</h3>
     <!-- ko if: $component.headers().length > 0 -->
     <div data-bind="foreach: { data: $component.headers, as: 'header' }">
-        <div class="row flex flex-row">
+        <div class="row flex flex-row col-6">
             <div class="col-4">
                 <div class="form-group">
                     <div class="input-group">
@@ -137,7 +137,7 @@
                     <!-- /ko -->
                 </div>
             </div>
-            <div class="col-2">
+            <div class="col-2 pad-12">
                 <a href="#" role="button" data-bind="click: $component.removeHeader">Remove</a>
             </div>
         </div>
@@ -155,6 +155,24 @@
     <div class="editors">
         <div class="graphql-console explorer">
             <h4>Explorer</h4>
+            <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
+                <select id="operationType" class="form-control" data-bind="value: queryType">
+                    <option value="query">Query</option>
+                    <option value="mutation">Mutation</option>
+                    <option value="subscription">Subscription</option>
+                </select>
+                <div class="input-group">
+                    <input type="search" aria-label="Search operations" placeholder="Search operations"
+                        spellcheck="false" data-bind="textInput: filter" />
+                    <button type="button" class="search-button" aria-label="Search operations">
+                        <i class="icon-emb icon-emb-magnifier"></i>
+                    </button>
+                </div>
+
+                <div class="input-group"
+                    data-bind="template: { name: 'gql-Nodes', data: {operationNode: $component.node(), filter: filter()} }">
+                </div>
+            </div>
         </div>
         <div class="graphql-console query">
             <h4>
@@ -174,7 +192,8 @@
             <div class="flex flex-column align-items-end">
                 <div class="btn-group graphql-console-button" role="group">
                     <!-- ko ifnot: $component.sendingRequest()-->
-                    <button type="button" class="button button-primary btn-sm" data-bind="click: validateAndSendRequest">
+                    <button type="button" class="button button-primary btn-sm"
+                        data-bind="click: validateAndSendRequest">
                         Send
                     </button>
                     <!-- /ko -->
@@ -192,7 +211,45 @@
         </div>
     </div>
 
-    
+
 </div>
 
 <!--/ko-->
+
+<script type="text/html" id="gql-Nodes">
+    <ul role="list" class="list-group" style="list-style: none; padding-left: 10px;">
+        <!-- ko foreach: { data: operationNode.children(), as: 'nodeChild' } -->
+        <li role="presentation" class="list-group-item level-{{nodeChild.level}}" style="border-top: none">
+            <!-- ko if: nodeChild.label().includes($parent.filter) -->
+                <div role="presentation" data-bind="attr: {name: nodeChild.label()}, class: {  expanded: nodeChild.selected() }" class="list-group-item-container">
+                    <div role="presentation" class="list-group-item-heading flex-container" style="padding: 2px 10px;">
+                        <div role="presentation" class="list-group-item-label flex-item flex-grow">
+                            <label for="nodeChild-{{nodeChild.label()}}-{{nodeChild.id}}" class="control-label checkbox-inline" data-bind="style: { 'color': nodeChild.isInputNode() ? 'rgb(139, 43, 185)' : 'black'}">
+                                <!-- ko if: nodeChild.selected() -->
+                                <input id="nodeChild-{{nodeChild.label()}}-{{nodeChild.id}}" type="checkbox" data-bind="value: nodeChild.selected(), click: () => {nodeChild.toggle()}" checked/> <span data-bind="text: $component.operationName(nodeChild.label(), nodeChild.isRequired(), nodeChild.isInputNode())"></span>
+                                <!--/ko-->
+                                <!-- ko ifnot: nodeChild.selected() -->
+                                <input id="nodeChild-{{nodeChild.label()}}-{{nodeChild.id}}" type="checkbox" data-bind="value: nodeChild.selected(), click: () => {nodeChild.toggle()}"/> <span data-bind="text: $component.operationName(nodeChild.label(), nodeChild.isRequired(), nodeChild.isInputNode())"></span>
+                                <!--/ko-->
+                                <!-- ko if: nodeChild.isInputNode() && nodeChild.selected() -->
+                                <div class="inline-block">
+                                    <!-- ko if: nodeChild.isScalarType() -->
+                                    <input type="text" class="graphql-input" data-bind="value: nodeChild.inputValue(), valueUpdate: 'keyup', event: { keyup: nodeChild.changeInput()}"/>
+                                    <!--/ko-->
+                                    <!-- ko if: nodeChild.isEnumType() -->
+                                    <select style="background-color: white; color: rgb(11, 127, 199);" data-bind="options: nodeChild.options(), value: nodeChild.inputValue(), event: { change: nodeChild.changeInput()}"></select>
+                                    <!--/ko-->
+                                </div>
+                                <!--/ko-->
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- ko if: nodeChild.children() && nodeChild.children().length > 0 && nodeChild.selected() -->
+                    <div class="input-group" data-bind="template: { name: 'gql-Nodes', data: {operationNode: nodeChild, filter: ''} }"></div>
+                <!--/ko-->
+            <!--/ko-->
+        </li>
+        <!--/ko-->
+    </ul>
+ </script>

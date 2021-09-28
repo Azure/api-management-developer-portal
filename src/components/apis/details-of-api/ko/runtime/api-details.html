@@ -24,7 +24,7 @@
                     data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: currentApiVersion">
                 </select>
                 <!-- /ko -->
-                <!-- ko if: api().type !== 'websocket' -->
+                <!-- ko if: api().type !== 'websocket' && api().type !== 'graphql' -->
                 <select id="apiDefinitions" class="form-control" aria-label="API definitions"
                     data-bind="value: downloadSelected">
                     <option value="" disabled="disabled" selected="selected">API definition</option>

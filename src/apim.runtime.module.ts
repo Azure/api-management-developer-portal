@@ -61,7 +61,7 @@ import { StaticUserService } from "./services";
 import { AadService } from "./services/aadService";
 import { AnalyticsService } from "./services/analyticsService";
 import { ApiService } from "./services/apiService";
-import { MonacoEditorLoader } from "./components/operations/operation-details/ko/runtime/editor/monaco-loader";
+import { MonacoEditorLoader } from "./components/operations/operation-details/ko/runtime/graphql-utilities/monaco-loader";
 import { BackendService } from "./services/backendService";
 import { MapiClient } from "./services/mapiClient";
 import { OAuthService } from "./services/oauthService";

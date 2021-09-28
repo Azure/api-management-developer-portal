@@ -3,7 +3,7 @@ declare const require: any;
 export class MonacoEditorLoader {
     private loadPromise: Promise<void>;
 
-    public monacoPathVal = "node_modules/monaco-editor/min/vs";
+    public monacoPathVal = "assets/monaco-editor/vs";
 
     constructor() {
         this.loadPromise = new Promise<void>(resolve => {
