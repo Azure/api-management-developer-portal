@@ -30,7 +30,7 @@ export class Request {
         return this.representations.filter(representation =>
             !!representation.typeName // has type definition reference
             || representation.formParameters?.length > 0 // has form parameters
-            || !!representation.example // has an example
+            || representation.examples?.length > 0 // has examples
         );
     }
 

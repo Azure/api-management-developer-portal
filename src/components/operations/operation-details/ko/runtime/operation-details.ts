@@ -86,7 +86,7 @@ export class OperationDetails {
         });
         this.protocol = ko.computed(() => {
             const api = this.api();
-            
+
             if (!api) {
                 return null;
             }
@@ -318,8 +318,8 @@ export class OperationDetails {
             definition.name = representation.typeName;
         }
 
-        if (representation.example) {
-            definition.example = representation.example;
+        if (representation.examples?.length > 0) {
+            definition.example = representation.examples[0].value;
             definition.exampleFormat = representation.exampleFormat;
         }
 

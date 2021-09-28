@@ -1,3 +1,5 @@
+import { Bag } from "@paperbits/common";
+import { Example } from "./example";
 import { ParameterContract } from "./parameter";
 
 /**
@@ -33,4 +35,9 @@ export interface RepresentationContract {
      * Description of the form parameters, if the representation has form-like payload.
      */
     formParameters?: ParameterContract[];
+
+    /**
+     * Object containing examples of the representation.
+     */
+    examples: Bag<Example>;
 }

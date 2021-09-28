@@ -1,3 +1,6 @@
+import { Bag } from "@paperbits/common";
+import { Example } from "./example";
+
 /**
  * Model of API operation request parameter
  */
@@ -36,4 +39,9 @@ export interface ParameterContract {
      * Indicates if the parameter is required to make a request.
      */
     required: boolean;
+
+    /**
+     * Object containing examples of the parameter.
+     */
+    examples: Bag<Example>;
 }
