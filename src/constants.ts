@@ -187,3 +187,5 @@ export const developerPortalType = "self-hosted-portal";
 export const portalHeaderName = "x-ms-apim-client";
 
 export const releaseNameFormat = "YYYYMMDDHHmm";
+
+export const genericHttpRequestError = "Server error. Unable to send request. Please try again later.";

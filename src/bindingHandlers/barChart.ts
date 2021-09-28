@@ -2,10 +2,13 @@ import * as ko from "knockout";
 import * as d3 from "d3";
 import { BarChartConfig, BarChartRecord } from "../components/reports/barChart/barChartConfig";
 
+const chartTitleAttribute = "chart-title";
+const chartDescAttribute = "chart-desc";
 
 ko.bindingHandlers["barChart"] = {
-    update: (element: HTMLElement, valueAccessor: () => BarChartConfig): void => {
+    update: (element: HTMLElement, valueAccessor: () => BarChartConfig, allBindingsAccessor): void => {
         const configuration = ko.unwrap(valueAccessor());
+        const allBindings = allBindingsAccessor() || {};
 
         element.childNodes.forEach(x => x.remove());
 
@@ -33,6 +36,16 @@ ko.bindingHandlers["barChart"] = {
         const svg = d3
             .create("svg")
             .attr("viewBox", [0, 0, width, height]);
+        
+        const chartTitle = allBindings[chartTitleAttribute];
+        const chartDesc = allBindings[chartDescAttribute];
+
+        if (chartTitle) {
+            svg.append("title").text(chartTitle);
+        }
+        if (chartDesc) {
+            svg.append("desc").text(chartDesc);
+        }
 
         /* Axis X */
         const x = d3.scaleTime()
