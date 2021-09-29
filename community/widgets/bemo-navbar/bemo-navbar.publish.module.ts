@@ -8,7 +8,7 @@ import { BemoNavbarViewModelBinder } from "./ko/bemoNavbarViewModelBinder";
 */
 export class BemoNavbarPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bind("widget", BemoNavbarViewModel);
+        injector.bind("bemoNavbar", BemoNavbarViewModel);
         injector.bindToCollection("modelBinders", BemoNavbarModelBinder);
         injector.bindToCollection("viewModelBinders", BemoNavbarViewModelBinder);
     }

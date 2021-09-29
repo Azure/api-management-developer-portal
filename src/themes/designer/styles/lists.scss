@@ -46,15 +46,13 @@
 }
 
 .list-item {
-    // line-height: $list-item-size;
-    line-height: 2em;
+    line-height: 2.2em;
     position: relative;
     cursor: pointer;
     vertical-align: middle;
     display: flex;
     text-decoration: none;
     color: $color-base;
-    margin-bottom: 5px;
 
     .paperbits-icon {
         padding: 0 5px 0 10px;

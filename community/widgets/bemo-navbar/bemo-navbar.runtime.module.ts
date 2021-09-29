@@ -6,6 +6,6 @@ import { BemoNavbarRuntime } from "./ko/runtime/bemo-navbar-runtime";
  */
 export class BemoNavbarRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bind("widgetRuntime", BemoNavbarRuntime);
+        injector.bind("bemoNavbarRuntime", BemoNavbarRuntime);
     }
 }

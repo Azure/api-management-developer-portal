@@ -1,44 +1,55 @@
 <div class="mdc-layout-grid p-0">
 	<div class="navbar mdc-layout-grid__inner">
-		<div class="navbar-infos mdc-layout-grid__cell--span-3 p-0">
+		<div class="navbar-infos mdc-layout-grid__cell--span-2 p-0">
 			<a href="/">
 				<img src="../Logo.svg" alt="">
 			</a>
 			<span class="navbar-title">&#x3c;dev/portal&#x3e;</span>
 		</div>
-		<div class="navbar-navigation mdc-layout-grid__cell--span-7 mdc-layout-grid--align-right p-0">
+		<div class="navbar-navigation mdc-layout-grid__cell--span-9 mdc-layout-grid--align-right p-0">
 			<nav>
-				<a href="/">HOME</a>
-				<a href="/api">API</a>
-				<a href="/documentation">DOCUMENTATION</a>
+				<ul>
+					<li><a id="link-home" href="/">HOME</a></li>
+					<li><a id="link-api" href="/apis">API</a></li>
+					<li><a id="link-doc" href="/doc">DOCUMENTATION</a></li>
+				</ul>
 			</nav>
 		</div>
 		<!-- Avatar BUTTON -->
-		<div class="navbar-navigation mdc-layout-grid__cell--span-2 mdc-layout-grid--align-right mdc-menu-surface--anchor p-0">
-			<button class="navbar-avatar-button mdc-icon-button material-icons" data-bind="click: toggleMenu">
-				<div class="mdc-icon-button__ripple">
-					<span class="material-icons">perm_identity</span>
-				</div>
-			</button>
+		<div
+			class="navbar-navigation mdc-layout-grid__cell--span-1 mdc-layout-grid--align-right mdc-menu-surface--anchor p-0">
+			<div class="navbar-navigation-avatar-menu">
+                <button class="navbar-avatar-button mdc-icon-button material-icons" data-bind="click: toggleMenu">
+                    <div class="mdc-icon-button__ripple"></div>
+                    person
+                </button>
+                <button class="mdc-icon-button material-icons" data-bind="click: toggleMenu">
+                    expand_more
+                </button>
+            </div>
 			<!-- Avatar MENU -->
 			<div class="avatar-menu mdc-menu mdc-menu-surface">
-				<ul class="mdc-list p-0" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
-					<li class="menu-nav-link mdc-list-item" role="menuitem" href="/settings">
-						<span class="mdc-list-item__ripple"></span>
-                        <span class="menu-nav-link-icon material-icons">settings</span>
-						<span class="mdc-list-item__text">Settings</span>
+				<ul class="mdc-deprecated-list p-0" role="menu" aria-hidden="true" aria-orientation="vertical"
+					tabindex="-1">
+					<li class="menu-nav-link mdc-deprecated-list-item" role="menuitem" href="/profile">
+						<a href="/profile" class="p-0">
+							<span class="menu-nav-link-icon material-icons">settings</span>
+							<span class="mdc-deprecated-list-item__text">Settings</span>
+						</a>
 					</li>
-					<li class="menu-divider mdc-list-divider" role="separator"></li>
-					<li class="menu-nav-link mdc-list-item" role="menuitem" href="/team">
-						<span class="mdc-list-item__ripple"></span>
-                        <span class="menu-nav-link-icon material-icons">group</span>
-						<span class="mdc-list-item__text">Team</span>
+					<li class="menu-divider mdc-deprecated-list-divider" role="separator"></li>
+					<li class="menu-nav-link mdc-deprecated-list-item" role="menuitem">
+						<a href="/team" class="p-0">
+							<span class="menu-nav-link-icon material-icons">group</span>
+							<span class="mdc-deprecated-list-item__text">Team</span>
+						</a>
 					</li>
-                    <li class="mdc-list-divider" role="separator"></li>
-					<li class="menu-nav-link mdc-list-item" role="menuitem" href="#signout">
-						<span class="mdc-list-item__ripple"></span>
-                        <span class="menu-nav-link-icon material-icons">exit_to_app</span>
-						<span class="mdc-list-item__text">Log out</span>
+					<li class="menu-divider mdc-deprecated-list-divider" role="separator"></li>
+					<li class="menu-nav-link mdc-deprecated-list-item" role="menuitem">
+						<a href="#signout" class="p-0">
+							<span class="menu-nav-link-icon material-icons">exit_to_app</span>
+							<span class="mdc-deprecated-list-item__text">Log out</span>
+						</a>
 					</li>
 				</ul>
 			</div>

@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
+import * as Constants from "../../../../../constants";
 import template from "./reset-password.html";
 import { EventManager } from "@paperbits/common/events";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
@@ -129,7 +130,8 @@ export class ResetPassword {
                 errors: []
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        } catch (error) {
+        } 
+        catch (error) {
             if (isCaptcha) {
                 WLSPHIP0.reloadHIP();
             }
@@ -143,8 +145,9 @@ export class ResetPassword {
                     let message = "";
                     errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
                 }
-            } else {
-                errorMessages = ["Server error. Unable to send request. Please try again later."];
+            }
+            else {
+                errorMessages = [Constants.genericHttpRequestError];
             }
 
             const validationReport: ValidationReport = {
@@ -152,7 +155,8 @@ export class ResetPassword {
                 errors: errorMessages
             };
             this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        } finally {
+        } 
+        finally {
             this.working(false);
         }
     }

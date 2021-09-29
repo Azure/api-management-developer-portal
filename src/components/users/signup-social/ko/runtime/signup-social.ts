@@ -120,7 +120,7 @@ export class SignupSocial {
                 }
             }
             else {
-                errorMessages = ["Server error. Unable to send request. Please try again later."];
+                errorMessages = [Constants.genericHttpRequestError];
             }
 
             const validationReport: ValidationReport = {

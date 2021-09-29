@@ -6,21 +6,20 @@ import "@paperbits/core/ko/bindingHandlers/bindingHandlers.focus";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.scrollable";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
-import { KnockoutRegistrationLoaders } from "@paperbits/core/ko/knockout.loaders";
-import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSessionManager";
+import { ApiProductsTiles } from "./components/apis/api-products/ko/runtime/api-products-tiles";
+import { ApiProducts } from "./components/apis/api-products/ko/runtime/api-products";
+import "./bindingHandlers/tab";
+import "./bindingHandlers/syntaxHighlight";
+import "./bindingHandlers/scrollintoview";
+import "./bindingHandlers/minMaxAvgChart";
+import "./bindingHandlers/markdown";
+import "./bindingHandlers/mapChart";
+import "./bindingHandlers/barChart";
+import "./bindingHandlers/acceptChange";
+import "./bindingHandlers/copyToClipboard";
 import { ViewStack } from "@paperbits/common/ui/viewStack";
 import { BalloonBindingHandler, ResizableBindingHandler } from "@paperbits/core/ko/bindingHandlers";
-import "./bindingHandlers/acceptChange";
-import "./bindingHandlers/barChart";
-import "./bindingHandlers/copyToClipboard";
-import "./bindingHandlers/mapChart";
-import "./bindingHandlers/markdown";
-import "./bindingHandlers/minMaxAvgChart";
-import "./bindingHandlers/scrollintoview";
-import "./bindingHandlers/syntaxHighlight";
-import "./bindingHandlers/tab";
-import { ApiProducts } from "./components/apis/api-products/ko/runtime/api-products";
-import { ApiProductsTiles } from "./components/apis/api-products/ko/runtime/api-products-tiles";
+import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSessionManager";
 import { ApiDetails } from "./components/apis/details-of-api/ko/runtime/api-details";
 import { ApiHistory } from "./components/apis/history-of-api/ko/runtime/api-history";
 import { ApiList, ApiListDropdown, ApiListTiles } from "./components/apis/list-of-apis/ko/runtime";
@@ -74,7 +73,6 @@ import { BemoNavbarRuntimeModule } from "../community/widgets/bemo-navbar/bemo-n
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bindModule(new KnockoutRegistrationLoaders());
         injector.bindModule(new BemoNavbarRuntimeModule());
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindToCollection("autostart", UnhandledErrorHandler);

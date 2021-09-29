@@ -1,3 +1,20 @@
+// ------------------------------------------------------------
+// Material Design Web Components - Custom widgets style import
+// ------------------------------------------------------------
+
+@use "@material/icon-button";
+@use "@material/button/styles";
+@use "@material/list/mdc-list";
+@use "@material/menu-surface/mdc-menu-surface";
+@use "@material/menu/mdc-menu";
+@use "@material/layout-grid/mdc-layout-grid";
+
+@include icon-button.core-styles;
+
+// ------------------------------------------------------------
+//                     Paperbits widgets
+// ------------------------------------------------------------
+
 @import "reboot.scss";
 @import "mixins.scss";
 @import "layouts.scss";
@@ -25,6 +42,8 @@
 @import "pills.scss";
 @import "resizables.scss";
 
-// Custom widgets style import
-@import "custom-widgets/custom-material.scss";
+// ------------------------------------------------------------
+//              Material Design Web Components
+// ------------------------------------------------------------
+
 @import "custom-widgets/custom-navbar.scss";
