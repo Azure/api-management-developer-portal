@@ -1,12 +1,13 @@
+import * as ko from "knockout";
+import template from "./signin-aad.html";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { EventManager } from "@paperbits/common/events";
 import { Component, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
-import * as ko from "knockout";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 import { AadService } from "../../../../../services";
-import { SettingNames } from "./../../../../../constants";
+import { SettingNames, defaultAadTenantName } from "./../../../../../constants";
 import { AadClientConfig } from "./../../../../../contracts/aadClientConfig";
-import template from "./signin-aad.html";
+
 
 
 @RuntimeComponent({
@@ -45,7 +46,7 @@ export class SignInAad {
 
         try {
             const config = await this.settingsProvider.getSetting<AadClientConfig>(SettingNames.aadClientConfig);
-            await this.aadService.signInWithAad(config.clientId, config.authority, config.signinTenant, this.replyUrl());
+            await this.aadService.signInWithAad(config.clientId, config.authority, config.signinTenant || defaultAadTenantName, this.replyUrl());
         }
         catch (error) {
             let errorDetails;
