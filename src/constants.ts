@@ -42,6 +42,8 @@ export enum AadEndpoints {
     legacy = "login.windows.net"
 }
 
+export const defaultAadTenantName = "common";
+
 export const closeAccount = "close-account";
 export const hashSignOut = "signout";
 export const pageUrlSignIn = "/signin";
