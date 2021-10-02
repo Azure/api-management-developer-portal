@@ -4,6 +4,7 @@ import "@paperbits/core/ko/bindingHandlers/bindingHandlers.component";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.dialog";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.focus";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.scrollable";
+import "@paperbits/core/ko/bindingHandlers/bindingHandlers.listbox";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSessionManager";
