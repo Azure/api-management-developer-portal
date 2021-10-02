@@ -1,11 +1,9 @@
-import { OAuthService } from "./../../../services/oauthService";
 import { Contract } from "@paperbits/common";
 import { IModelBinder } from "@paperbits/common/editing";
 import { OperationDetailsModel } from "./operationDetailsModel";
 import { OperationDetailsContract } from "./operationDetailsContract";
 
 export class OperationDetailsModelBinder implements IModelBinder<OperationDetailsModel> {
-    constructor(private readonly oauthService: OAuthService) { }
 
     public canHandleContract(contract: Contract): boolean {
         return contract.type === "operationDetails";
@@ -20,7 +18,6 @@ export class OperationDetailsModelBinder implements IModelBinder<OperationDetail
         model.enableConsole = contract.enableConsole === true || contract.enableConsole === undefined;
         model.enableScrollTo = contract.enableScrollTo !== undefined && contract.enableScrollTo === true;
         model.defaultSchemaView = contract.defaultSchemaView || "table";
-        model.authorizationServers = await this.oauthService.getOAuthServers();
         model.useCorsProxy = contract.useCorsProxy;
 
         return model;
