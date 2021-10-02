@@ -30,6 +30,8 @@
 }
 
 .list {
+    overflow-y: auto;
+
     .tag-item {
         cursor: pointer;
     }
