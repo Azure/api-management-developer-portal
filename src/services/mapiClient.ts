@@ -8,6 +8,7 @@ import { MapiError } from "../errors/mapiError";
 import { IAuthenticator, AccessToken } from "../authentication";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
+import { Page } from "../models/page";
 
 
 export interface IHttpBatchResponses {
@@ -231,6 +232,33 @@ export class MapiClient {
             default:
                 return new MapiError("Unhandled", `Unexpected status code in SMAPI response: ${statusCode}.`);
         }
+    }
+
+    public async getAll<T>(url: string, headers?: HttpHeader[]): Promise<T[]> {
+        const allItems: T[] = [];
+        const call = (requestUrl: string) => this.makeRequest({
+            method: HttpMethod.get,
+            url: requestUrl,
+            headers: headers
+        });
+        
+        const takeResult = (result: Page<T>): Promise<T[]> => {
+            if (result) {
+                if (Array.isArray(result)) {
+                    return Promise.resolve(result);
+                }
+
+                if (result.value) {
+                    allItems.push(...result.value);
+                }
+                if (result.nextLink) {
+                    return call(result.nextLink).then(takeResult);
+                }
+            }
+            return Promise.resolve(allItems);
+        };
+
+        return this.get(url, headers).then(takeResult);
     }
 
     public get<TResponse>(url: string, headers?: HttpHeader[]): Promise<TResponse> {
