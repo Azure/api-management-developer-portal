@@ -4,7 +4,6 @@ import { OperationDetailsModel } from "./operationDetailsModel";
 import { OperationDetailsContract } from "./operationDetailsContract";
 
 export class OperationDetailsModelBinder implements IModelBinder<OperationDetailsModel> {
-    constructor() { }
 
     public canHandleContract(contract: Contract): boolean {
         return contract.type === "operationDetails";
