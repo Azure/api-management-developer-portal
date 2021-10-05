@@ -383,7 +383,7 @@ export class ApiService {
         const result = await this.mapiClient.get<Page<SchemaContract>>(`${api.id}/schemas`, [MapiClient.getPortalHeader("getSchemas")]);
         const schemaReferences = result.value;
         const schemaType = this.getSchemasType(schemaReferences);
-        const schemas = await Promise.all(schemaReferences.filter(schema => schema.properties.contentType === schemaType).map(schemaReference => this.getApiSchema((schemaType === SchemaType.graphQL) ? `/apis/graphql-api/schemas/${schemaReference.name}` : schemaReference.id)));
+        const schemas = await Promise.all(schemaReferences.filter(schema => schema.properties.contentType === schemaType).map(schemaReference => this.getApiSchema((schemaType === SchemaType.graphQL) ? `${api.id}/schemas/${schemaReference.name}` : schemaReference.id)));
 
         // return schemas;
         // const result = await this.mapiClient.get<Page<SchemaContract>>(`${api.id}/schemas?$top=20`, null);

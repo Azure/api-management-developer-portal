@@ -12,7 +12,7 @@
 </div>
 <!-- /ko -->
 
-<!-- ko ifnot: apiType() === 'websocket' -->
+<!-- ko ifnot: apiType() === 'websocket' || apiType() === 'graphql'-->
 <div class="form-inline search-input">
     <div class="d-block flex-grow mw-100">
         <div class="input-group">
@@ -23,7 +23,6 @@
         </div>
         <tag-input params="{ scope: $component.tagScope, onChange: onTagsChange }"></tag-input>
     </div>
-    <!-- ko ifnot: apiType() === 'graphql' -->
     <div class="form-group ml-auto">
         <label for="groupByTag">Group by tag
             <div class="switch">
@@ -32,7 +31,6 @@
             </div>
         </label>
     </div>
-    <!-- /ko -->
     <!-- ko if: showToggleUrlPath -->
     <div class="form-group ml-auto">
         <label for="showUrlPath">Show URL path

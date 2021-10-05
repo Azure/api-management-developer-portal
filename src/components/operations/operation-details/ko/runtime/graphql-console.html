@@ -156,17 +156,15 @@
         <div class="graphql-console explorer">
             <h4>Explorer</h4>
             <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
-                <select id="operationType" class="form-control" data-bind="value: queryType">
+                <select id="operationType" style="padding: 10px;" class="form-control" data-bind="value: queryType">
                     <option value="query">Query</option>
                     <option value="mutation">Mutation</option>
                     <option value="subscription">Subscription</option>
                 </select>
-                <div class="input-group">
-                    <input type="search" aria-label="Search operations" placeholder="Search operations"
+                <div style="margin-bottom: 10px;" class="input-icons">
+                    <i class="icon-emb icon-emb-magnifier icon"></i>
+                    <input class="input-field" type="search" aria-label="Search operations" placeholder="Search operations"
                         spellcheck="false" data-bind="textInput: filter" />
-                    <button type="button" class="search-button" aria-label="Search operations">
-                        <i class="icon-emb icon-emb-magnifier"></i>
-                    </button>
                 </div>
 
                 <div class="input-group"
@@ -197,7 +195,7 @@
                         Send
                     </button>
                     <!-- /ko -->
-                    <!-- ko if: sendingRequest -->
+                    <!-- ko if: $component.sendingRequest() -->
                     <button type="button" class="button button-primary btn-sm" disabled>
                         Sending...
                     </button>
@@ -226,15 +224,15 @@
                         <div role="presentation" class="list-group-item-label flex-item flex-grow">
                             <label for="nodeChild-{{nodeChild.label()}}-{{nodeChild.id}}" class="control-label checkbox-inline" data-bind="style: { 'color': nodeChild.isInputNode() ? 'rgb(139, 43, 185)' : 'black'}">
                                 <!-- ko if: nodeChild.selected() -->
-                                <input id="nodeChild-{{nodeChild.label()}}-{{nodeChild.id}}" type="checkbox" data-bind="value: nodeChild.selected(), click: () => {nodeChild.toggle()}" checked/> <span data-bind="text: $component.operationName(nodeChild.label(), nodeChild.isRequired(), nodeChild.isInputNode())"></span>
+                                <input id="nodeChild-{{nodeChild.label()}}-{{nodeChild.id}}" type="checkbox" data-bind="value: nodeChild.selected(), click: () => {nodeChild.toggle()}" checked/> <label style="color: #0F7EBD; margin-bottom: 0rem;" data-bind="text: $component.operationName(nodeChild.label(), nodeChild.isRequired(), nodeChild.isInputNode())"></label>
                                 <!--/ko-->
                                 <!-- ko ifnot: nodeChild.selected() -->
-                                <input id="nodeChild-{{nodeChild.label()}}-{{nodeChild.id}}" type="checkbox" data-bind="value: nodeChild.selected(), click: () => {nodeChild.toggle()}"/> <span data-bind="text: $component.operationName(nodeChild.label(), nodeChild.isRequired(), nodeChild.isInputNode())"></span>
+                                <input id="nodeChild-{{nodeChild.label()}}-{{nodeChild.id}}" type="checkbox" data-bind="value: nodeChild.selected(), click: () => {nodeChild.toggle()}"/> <label style="color: #0F7EBD; margin-bottom: 0rem;" data-bind="text: $component.operationName(nodeChild.label(), nodeChild.isRequired(), nodeChild.isInputNode())"></label>
                                 <!--/ko-->
                                 <!-- ko if: nodeChild.isInputNode() && nodeChild.selected() -->
                                 <div class="inline-block">
                                     <!-- ko if: nodeChild.isScalarType() -->
-                                    <input type="text" class="graphql-input" data-bind="value: nodeChild.inputValue(), valueUpdate: 'keyup', event: { keyup: nodeChild.changeInput()}"/>
+                                    <input type="text" class="graphql-input" data-bind="value: nodeChild.inputValue, valueUpdate: 'keyup', event: { keyup: nodeChild.changeInput()}"/>
                                     <!--/ko-->
                                     <!-- ko if: nodeChild.isEnumType() -->
                                     <select style="background-color: white; color: rgb(11, 127, 199);" data-bind="options: nodeChild.options(), value: nodeChild.inputValue(), event: { change: nodeChild.changeInput()}"></select>

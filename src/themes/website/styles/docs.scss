@@ -317,6 +317,24 @@ pre {
     margin-top: 30px;
 }
 
+.input-icons i {
+    position: absolute;
+    z-index: 2;
+}
+
+.icon {
+    padding: 10px;
+    color: #0078D4;
+    min-width: 50px;
+    text-align: center;
+}
+
+.input-field {
+    width: 100%;
+    padding: 5px;
+    text-align: center;
+}
+
 .pad-12 {
     padding-top: 12px !important;
 }
