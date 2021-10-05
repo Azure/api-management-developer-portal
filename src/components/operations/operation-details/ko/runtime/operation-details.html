@@ -325,7 +325,7 @@
     <div class="collapsible">
         <h3>GraphQL Endpoint</h3>
         <div class="collapsible-container">
-            <span class="monospace">https://jbtests-apimanagement.azure-api.net/spacex</span>
+            <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
         </div>
     </div>
 
@@ -345,7 +345,7 @@
 <!-- ko if: apiType() === 'graphql' -->
 <div class="detachable-right graphql-console-width scrollable flex-grow animation-fade-in">
     <graphql-console class="test flex flex-column" data-bind="dialog: {}"
-        params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
+        params="{ api: api, operationUrl: $component.requestUrlSample, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
     </graphql-console>
 </div>
 <!-- /ko -->

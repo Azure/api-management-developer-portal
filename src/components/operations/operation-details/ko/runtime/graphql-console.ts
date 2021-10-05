@@ -1,10 +1,14 @@
 import * as ko from "knockout";
+import * as validation from "knockout.validation";
+import * as GraphQL from "graphql";
+import * as _ from "lodash";
+import * as monaco from "monaco-editor";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import template from "./graphql-console.html";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { GrantTypes, QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlOperationTypes } from "./../../../../../constants";
+import { GrantTypes, QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlOperationTypes, SettingNames } from "./../../../../../constants";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { OAuthService } from "../../../../../services/oauthService";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
@@ -17,11 +21,12 @@ import { ApiService } from "../../../../../services/apiService";
 import { ProductService } from "../../../../../services/productService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
-import * as GraphQL from "graphql";
-import * as _ from "lodash";
-import * as monaco from "monaco-editor";
 import { MonacoEditorLoader } from "./graphql-utilities/monaco-loader";
 import { GraphQLTreeNode, GraphQLOutputTreeNode, GraphQLInputTreeNode } from "./graphql-utilities/graphql-node-models";
+import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
+import { ISettingsProvider } from "@paperbits/common/configuration";
+import { ResponsePackage } from "./responsePackage";
+import { Utils } from "../../../../../utils";
 
 
 const oauthSessionKey = "oauthSession";
@@ -52,6 +57,7 @@ export class GraphqlConsole {
     private variablesEditor: monaco.editor.IStandaloneCodeEditor;
     private responseEditor: monaco.editor.IStandaloneCodeEditor;
 
+    public readonly document: ko.Observable<string>;
     public readonly sendingRequest: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
     public readonly subscriptionKeyRequired: ko.Observable<boolean>;
@@ -66,6 +72,7 @@ export class GraphqlConsole {
     public readonly authorizationError: ko.Observable<string>;
     public readonly variables: ko.Observable<string>;
     public readonly response: ko.Observable<string>;
+    public backendUrl: string;
 
     constructor(
         private readonly routeHelper: RouteHelper,
@@ -75,6 +82,8 @@ export class GraphqlConsole {
         private readonly productService: ProductService,
         private readonly sessionManager: SessionManager,
         private monacoEditorLoader: MonacoEditorLoader,
+        private readonly httpClient: HttpClient,
+        private readonly settingsProvider: ISettingsProvider
     ) {
         this.working = ko.observable(true);
         this.requestError = ko.observable();
@@ -92,9 +101,11 @@ export class GraphqlConsole {
         this.products = ko.observable();
         this.queryType = ko.observable(GraphqlOperationTypes.query);
         this.document = ko.observable();
+        this.operationUrl = ko.observable();
         this.variables = ko.observable();
         this.response = ko.observable();
         this.filter = ko.observable("");
+        this.useCorsProxy = ko.observable(true);
 
         this.queryNode = ko.observable();
         this.mutationNode = ko.observable();
@@ -106,10 +117,13 @@ export class GraphqlConsole {
     public api: ko.Observable<Api>;
 
     @Param()
-    public document: ko.Observable<string>;
+    public operationUrl: ko.Observable<string>;
 
     @Param()
     public authorizationServer: ko.Observable<AuthorizationServer>;
+
+    @Param()
+    public useCorsProxy: ko.Observable<boolean>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -120,6 +134,8 @@ export class GraphqlConsole {
         this.selectedGrantType.subscribe(this.onGrantTypeChange);
         this.queryType.subscribe(this.onQueryTypeChange);
         this.document.subscribe(this.onDocumentChange);
+        this.response.subscribe(this.onResponseChange);
+        this.backendUrl = await this.settingsProvider.getSetting<string>("backendUrl");
     }
 
     private async resetConsole(): Promise<void> {
@@ -138,13 +154,17 @@ export class GraphqlConsole {
             await this.loadSubscriptionKeys();
         }
 
+        let defaultHeader = new ConsoleHeader();
+        defaultHeader.name("Content-Type");
+        defaultHeader.value("application/json");
+        this.headers.push(defaultHeader);
+
         const graphQLSchemas = await this.apiService.getSchemas(this.api());
         const schema = graphQLSchemas.value.find(s => s.graphQLSchema);
         await this.buildTree(schema.graphQLSchema);
         this.node(this.queryNode());
         this.node().toggle(true);
         this.generateDocument();
-        this.documentToTree();
         this.working(false);
     }
 
@@ -177,11 +197,15 @@ export class GraphqlConsole {
                 break;
         }
         this.node().toggle(true);
-        this.documentToTree();
     }
 
     private onDocumentChange(document: string): void {
         this.queryEditor.setValue(document);
+        //this.documentToTree();
+    }
+
+    private onResponseChange(response: string): void {
+        this.responseEditor.setValue(Utils.formatJson(response));
     }
 
     documentToTree() {
@@ -464,18 +488,29 @@ export class GraphqlConsole {
         this.requestError(null);
         this.sendingRequest(true);
 
-        try {
-            // const request: HttpRequest = {
-            //     url: url,
-            //     method: method,
-            //     headers: headers
-            //         .map(x => { return { name: x.name(), value: x.value() ?? "" }; })
-            //         .filter(x => !!x.name && !!x.value)
-            // };
+        let payload: string;
+        payload = JSON.stringify({
+            query: this.document(),
+            variables: this.variables() && this.variables().length > 0 ? JSON.parse(this.variables()) : null
+        })
 
-            // const response = this.useCorsProxy()
-            //     ? await this.sendFromProxy(request)
-            //     : await this.sendFromBrowser(request);
+        const request: HttpRequest = {
+            url: this.operationUrl(),
+            method: "POST",
+            headers: this.addSystemHeaders(),
+            body: payload
+        };
+
+        try {
+            let response;
+            if (this.useCorsProxy()) {
+                response = await this.sendFromProxy(request);
+            }
+            else {
+                response = await this.sendFromBrowser(request);
+            }
+            const responseStr = Buffer.from(response.body.buffer).toString();
+            this.response(responseStr);
         }
         catch (error) {
             if (error.code && error.code === "RequestError") {
@@ -485,6 +520,52 @@ export class GraphqlConsole {
         finally {
             this.sendingRequest(false);
         }
+    }
+
+    private addSystemHeaders() {
+        return this.headers().map(x => { return { name: x.name(), value: x.value() ?? "" }; }).filter(x => !!x.name && !!x.value);
+    }
+
+    public async sendFromProxy<T>(request: HttpRequest): Promise<HttpResponse<T>> {
+        if (request.body) {
+            request.body = Buffer.from(request.body);
+        }
+
+        const formData = new FormData();
+        const requestPackage = new Blob([JSON.stringify(request)], { type: KnownMimeTypes.Json });
+        formData.append("requestPackage", requestPackage);
+
+        const baseProxyUrl = this.backendUrl || "";
+        const apiName = this.api().name;
+
+        const proxiedRequest: HttpRequest = {
+            url: `${baseProxyUrl}/send`,
+            method: "POST",
+            headers: [{ name: "X-Ms-Api-Name", value: apiName }],
+            body: formData
+        };
+
+        const proxiedResponse = await this.httpClient.send<ResponsePackage>(proxiedRequest);
+        const responsePackage = proxiedResponse.toObject();
+
+        const responseBodyBuffer = responsePackage.body
+            ? Buffer.from(responsePackage.body.data)
+            : null;
+
+        const response: any = {
+            headers: responsePackage.headers,
+            statusCode: responsePackage.statusCode,
+            statusText: responsePackage.statusMessage,
+            body: responseBodyBuffer,
+            toText: () => responseBodyBuffer.toString("utf8")
+        };
+
+        return response;
+    }
+
+    public async sendFromBrowser<T>(request: HttpRequest): Promise<HttpResponse<T>> {
+        const response = await this.httpClient.send<any>(request);
+        return response;
     }
 
     public loadingMonaco() {
@@ -499,7 +580,6 @@ export class GraphqlConsole {
 
         const defaultSettings = {
             value: value() || "",
-            readOnly: false,
             contextmenu: false,
             lineHeight: 17,
             automaticLayout: true,
@@ -513,40 +593,21 @@ export class GraphqlConsole {
 
         this[editorSettings.id] = (<any>window).monaco.editor.create(document.getElementById(editorSettings.id), settings);
 
-        //this.schemaValidator = new SchemaValidator();
-
-        // const validateContent = new Subject<string>();
-        // this.parsingContentError = validateContent.debounceTime(750);
-        // this.parsingContentError.subscribe(() => {
-        //     this.tryParseContent();
-        //     this.onContentParsingErrors.emit(this.contentParseErrors);
-        // });
-
         this[editorSettings.id].onDidChangeModelContent(() => {
-            //this.content = this.editor.getValue();
-
-            // console.log("this.[editorSettings.id].getValue()")
-            // console.log(this[editorSettings.id].getValue())
+            const value = this[editorSettings.id].getValue();
+            if (editorSettings.id === QueryEditorSettings.id) {
+                this.document(value);
+                //this.documentToTree();
+            }
+            if (editorSettings.id === VariablesEditorSettings.id) {
+                this.variables(value);
+            }
             // clearTimeout(this.onContentChangeTimoutId);
             // this.onContentChangeTimoutId = window.setTimeout(() => {
             //     this.onContentChange.emit(this.content);
             //     validateContent.next();
             // }, 500)
         });
-
-        // if (this.keyPathTrace) {
-        //     this.editor.onDidChangeCursorPosition(() => {
-        //         const position = this.editor.getPosition();
-        //         const offset = this.editor.getModel().getOffsetAt(position);
-        //         const keyPaths = Utils.getKeyPathFromJsonStringIndex(this.content, offset);
-
-        //         this.swaggerPaths.emit(keyPaths);
-        //     });
-        // }
-        //this.onEditorReady.emit(this);
-
-        //this.onHighContrastChanged(this.snippetService.getCurrentHighContrast());
-        //this.snippetService.highContrastChange().subscribe(this.onHighContrastChanged.bind(this));
     }
 
     private buildTree(content: string): void {

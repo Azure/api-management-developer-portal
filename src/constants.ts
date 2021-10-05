@@ -101,6 +101,7 @@ export const AppType = "developerPortal";
     id: "queryEditor",
     config: {
         language: 'graphql',
+        readOnly: false,
     }
  }
 
@@ -111,6 +112,7 @@ export const VariablesEditorSettings = {
     id: "variablesEditor",
     config: {
         language: 'json',
+        readOnly: false,
     }
 }
 
@@ -121,6 +123,7 @@ export const VariablesEditorSettings = {
     id: "responseEditor",
     config: {
         language: 'json',
+        readOnly: true,
     }
  }
 
