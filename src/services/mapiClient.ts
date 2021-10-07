@@ -135,7 +135,10 @@ export class MapiClient {
             httpRequest.headers.push(MapiClient.getPortalHeader());
         }
 
-        httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
+        // Do nothing if absolute URL
+        if (!httpRequest.url.startsWith("https://") && !httpRequest.url.startsWith("http://")) {
+            httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
+        }        
 
         const url = new URL(httpRequest.url);
 
@@ -236,7 +239,7 @@ export class MapiClient {
 
     public async getAll<T>(url: string, headers?: HttpHeader[]): Promise<T[]> {
         const allItems: T[] = [];
-        const call = (requestUrl: string) => this.makeRequest({
+        const call = (requestUrl: string) => this.makeRequest<Page<T>>({
             method: HttpMethod.get,
             url: requestUrl,
             headers: headers
