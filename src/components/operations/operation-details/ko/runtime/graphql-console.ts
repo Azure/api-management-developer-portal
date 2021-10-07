@@ -27,6 +27,7 @@ import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ResponsePackage } from "./responsePackage";
 import { Utils } from "../../../../../utils";
+import { ConsoleLogger } from "@paperbits/common/logging";
 
 
 const oauthSessionKey = "oauthSession";
@@ -57,6 +58,9 @@ export class GraphqlConsole {
     private variablesEditor: monaco.editor.IStandaloneCodeEditor;
     private responseEditor: monaco.editor.IStandaloneCodeEditor;
 
+    private onContentChangeTimoutId: number = undefined;
+    private preventRec: boolean = false;
+
     public readonly document: ko.Observable<string>;
     public readonly sendingRequest: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
@@ -72,6 +76,8 @@ export class GraphqlConsole {
     public readonly authorizationError: ko.Observable<string>;
     public readonly variables: ko.Observable<string>;
     public readonly response: ko.Observable<string>;
+    public readonly isContentValid: ko.Observable<boolean>;
+    public readonly contentParseErrors: ko.Observable<string>;
     public backendUrl: string;
 
     constructor(
@@ -105,6 +111,8 @@ export class GraphqlConsole {
         this.variables = ko.observable();
         this.response = ko.observable();
         this.filter = ko.observable("");
+        this.isContentValid = ko.observable(true);
+        this.contentParseErrors = ko.observable(null);
         this.useCorsProxy = ko.observable(true);
 
         this.queryNode = ko.observable();
@@ -200,8 +208,9 @@ export class GraphqlConsole {
     }
 
     private onDocumentChange(document: string): void {
-        this.queryEditor.setValue(document);
-        //this.documentToTree();
+            console.log("onDocumentChange")
+            console.log(document)
+            this.queryEditor.setValue(document);
     }
 
     private onResponseChange(response: string): void {
@@ -214,8 +223,10 @@ export class GraphqlConsole {
             for (let child of this.node().children()) {
                 child.clear();
             }
-            let curNode = this.node;
+            let curNode = this.node();
             let variables = [];
+            console.log("ast")
+            console.log(ast)
 
             // Go through every node in a new generated parsed graphQL, associate the node with the created tree from init and toggle checkmark.
             GraphQL.visit(ast, {
@@ -223,9 +234,9 @@ export class GraphqlConsole {
                     if (node.kind === "Field" || node.kind === "Argument" || node.kind === "ObjectField") {
                         let targetNode: GraphQLTreeNode;
                         if (node.kind === "Field") {
-                            targetNode = curNode().children().find(n => !n.isInputNode() && n.label() === node.name.value);
+                            targetNode = curNode.children().find(n => !n.isInputNode() && n.label() === node.name.value);
                         } else {
-                            let inputNode = <GraphQLInputTreeNode>curNode().children().find(n => n.isInputNode() && n.label() === node.name.value);
+                            let inputNode = <GraphQLInputTreeNode>curNode.children().find(n => n.isInputNode() && n.label() === node.name.value);
                             if (node.kind === "Argument") {
                                 if (node.value.kind === "StringValue") {
                                     inputNode.inputValue(`"${node.value.value}"`);
@@ -238,8 +249,10 @@ export class GraphqlConsole {
                             targetNode = inputNode;
                         }
                         if (targetNode) {
-                            curNode(targetNode);
-                            curNode().toggle(true, false);
+                            curNode = targetNode;
+                            curNode.toggle(true, false);
+                            console.log("curNode")
+                            console.log(curNode)
                         }
                     } else if (node.kind === "VariableDefinition" && (node.type.kind === "NamedType" || node.type.kind === "NonNullType")) {
                         let typeString;
@@ -248,6 +261,11 @@ export class GraphqlConsole {
                         } else if (node.type.kind === "NamedType") {
                             typeString = node.type.name.value;
                         }
+                        console.log("VariableDefinition")
+                        console.log({
+                            name: node.variable.name.value,
+                            type: typeString
+                        })
                         variables.push({
                             name: node.variable.name.value,
                             type: typeString
@@ -256,15 +274,38 @@ export class GraphqlConsole {
                 },
                 leave(node) {
                     if (curNode && node.kind === "Field" || node.kind === "Argument" || node.kind === "ObjectField") {
-                        curNode(curNode().parent());
+                        console.log("Testing Leaving")
+                        console.log(curNode.parent())
+                        curNode = curNode.parent();
                     }
                 }
             });
             (<GraphQLOutputTreeNode>this.node()).variables = variables;
         } catch (err) {
+            console.log("ERROR")
+            console.log(err)
             // Do nothing here as the doc is invalidated
         }
     }
+
+    private tryParseGraphQLSchema(document: string): void {
+        try {
+            GraphQL.parse(document);
+        }
+        catch (error) {
+            this.isContentValid(false);
+
+            const message = error.message;
+            const location = error.locations.shift();
+
+            const position = !!location
+                ? ` Line: ${location.line}. Column: ${location.column}.`
+                : "";
+
+            this.contentParseErrors(`${message}${position}`);
+        }
+    }
+
 
     /**
      * Initiates specified authentication flow.
@@ -593,20 +634,27 @@ export class GraphqlConsole {
 
         this[editorSettings.id] = (<any>window).monaco.editor.create(document.getElementById(editorSettings.id), settings);
 
-        this[editorSettings.id].onDidChangeModelContent(() => {
-            const value = this[editorSettings.id].getValue();
-            if (editorSettings.id === QueryEditorSettings.id) {
-                this.document(value);
-                //this.documentToTree();
+        this[editorSettings.id].onDidChangeModelContent((e) => {
+            if(!e.isFlush) {
+                const value = this[editorSettings.id].getValue();
+                if (editorSettings.id === QueryEditorSettings.id) {
+                    console.log("onDidChangeModelContent")
+                    console.log(value)
+                    this.isContentValid(true);
+                    this.contentParseErrors(null);
+                    clearTimeout(this.onContentChangeTimoutId);
+                    this.onContentChangeTimoutId = window.setTimeout(() => {
+                        this.tryParseGraphQLSchema(value);
+                        if(this.isContentValid()) {
+                            this.document(value);
+                        }
+                        this.documentToTree();
+                    }, 500)
+                }
+                if (editorSettings.id === VariablesEditorSettings.id) {
+                    this.variables(value);
+                }
             }
-            if (editorSettings.id === VariablesEditorSettings.id) {
-                this.variables(value);
-            }
-            // clearTimeout(this.onContentChangeTimoutId);
-            // this.onContentChangeTimoutId = window.setTimeout(() => {
-            //     this.onContentChange.emit(this.content);
-            //     validateContent.next();
-            // }, 500)
         });
     }
 
