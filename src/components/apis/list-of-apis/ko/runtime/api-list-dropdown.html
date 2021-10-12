@@ -10,6 +10,9 @@
                     <!-- ko if: selectedApi().type === 'websocket' -->
                     <span class="badge badge-soap">WebSocket</span>
                     <!-- /ko -->
+                    <!-- ko if: selectedApi().type === 'graphql' -->
+                    <span class="badge badge-soap">GraphQL</span>
+                    <!-- /ko -->
                 <!-- /ko -->
             </div>
             <div class="input-group-append">
@@ -51,6 +54,9 @@
                             <!-- /ko -->
                             <!-- ko if: item.type === 'websocket' -->
                             <span class="badge badge-soap">WebSocket</span>
+                            <!-- /ko -->
+                            <!-- ko if: item.type === 'graphql' -->
+                            <span class="badge badge-soap">GraphQL</span>
                             <!-- /ko -->
                             <!-- ko if: item.apiVersion -->
                             - <span data-bind="text: item.apiVersion"></span>
