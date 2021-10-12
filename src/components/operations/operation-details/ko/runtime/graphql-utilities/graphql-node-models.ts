@@ -169,8 +169,8 @@ export class GraphQLInputTreeNode extends GraphQLTreeNode {
         if (type instanceof GraphQL.GraphQLInputObjectType && this.children().length === 0) {
             let fields = type.getFields();
             for (let name in fields) {
-                const inputTreeeNode = new GraphQLInputTreeNode(name, fields[name], this.generateDocument, this);
-                this.children().push(inputTreeeNode)
+                const inputTreeNode = new GraphQLInputTreeNode(name, fields[name], this.generateDocument, this);
+                this.children.push(inputTreeNode)
             }
         }
     }

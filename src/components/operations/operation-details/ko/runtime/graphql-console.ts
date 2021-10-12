@@ -28,6 +28,7 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ResponsePackage } from "./responsePackage";
 import { Utils } from "../../../../../utils";
 import { ConsoleLogger } from "@paperbits/common/logging";
+import { Console } from "console";
 
 
 const oauthSessionKey = "oauthSession";
@@ -50,6 +51,7 @@ export class GraphqlConsole {
     private mutationNode: ko.Observable<GraphQLTreeNode>;
     private subscriptionNode: ko.Observable<GraphQLTreeNode>;
 
+    private schema: string;
     public node: ko.Observable<GraphQLTreeNode>;
     public queryType: ko.Observable<string>;
     public filter: ko.Observable<string>;
@@ -59,7 +61,7 @@ export class GraphqlConsole {
     private responseEditor: monaco.editor.IStandaloneCodeEditor;
 
     private onContentChangeTimoutId: number = undefined;
-    private preventRec: boolean = false;
+    private editorUpdate: boolean = true;
 
     public readonly document: ko.Observable<string>;
     public readonly sendingRequest: ko.Observable<boolean>;
@@ -168,8 +170,8 @@ export class GraphqlConsole {
         this.headers.push(defaultHeader);
 
         const graphQLSchemas = await this.apiService.getSchemas(this.api());
-        const schema = graphQLSchemas.value.find(s => s.graphQLSchema);
-        await this.buildTree(schema.graphQLSchema);
+        this.schema = graphQLSchemas.value.find(s => s.graphQLSchema).graphQLSchema;
+        await this.buildTree(this.schema);
         this.node(this.queryNode());
         this.node().toggle(true);
         this.generateDocument();
@@ -208,9 +210,10 @@ export class GraphqlConsole {
     }
 
     private onDocumentChange(document: string): void {
-            console.log("onDocumentChange")
-            console.log(document)
-            this.queryEditor.setValue(document);
+            if(this.editorUpdate) {
+                this.queryEditor.setValue(document);
+            }
+            this.editorUpdate = true;
     }
 
     private onResponseChange(response: string): void {
@@ -225,8 +228,6 @@ export class GraphqlConsole {
             }
             let curNode = this.node();
             let variables = [];
-            console.log("ast")
-            console.log(ast)
 
             // Go through every node in a new generated parsed graphQL, associate the node with the created tree from init and toggle checkmark.
             GraphQL.visit(ast, {
@@ -251,8 +252,6 @@ export class GraphqlConsole {
                         if (targetNode) {
                             curNode = targetNode;
                             curNode.toggle(true, false);
-                            console.log("curNode")
-                            console.log(curNode)
                         }
                     } else if (node.kind === "VariableDefinition" && (node.type.kind === "NamedType" || node.type.kind === "NonNullType")) {
                         let typeString;
@@ -261,11 +260,6 @@ export class GraphqlConsole {
                         } else if (node.type.kind === "NamedType") {
                             typeString = node.type.name.value;
                         }
-                        console.log("VariableDefinition")
-                        console.log({
-                            name: node.variable.name.value,
-                            type: typeString
-                        })
                         variables.push({
                             name: node.variable.name.value,
                             type: typeString
@@ -274,16 +268,12 @@ export class GraphqlConsole {
                 },
                 leave(node) {
                     if (curNode && node.kind === "Field" || node.kind === "Argument" || node.kind === "ObjectField") {
-                        console.log("Testing Leaving")
-                        console.log(curNode.parent())
                         curNode = curNode.parent();
                     }
                 }
             });
             (<GraphQLOutputTreeNode>this.node()).variables = variables;
         } catch (err) {
-            console.log("ERROR")
-            console.log(err)
             // Do nothing here as the doc is invalidated
         }
     }
@@ -624,7 +614,6 @@ export class GraphqlConsole {
             contextmenu: false,
             lineHeight: 17,
             automaticLayout: true,
-            ariaLabel: "test",
             minimap: {
                 enabled: false
             }
@@ -638,14 +627,13 @@ export class GraphqlConsole {
             if(!e.isFlush) {
                 const value = this[editorSettings.id].getValue();
                 if (editorSettings.id === QueryEditorSettings.id) {
-                    console.log("onDidChangeModelContent")
-                    console.log(value)
                     this.isContentValid(true);
                     this.contentParseErrors(null);
                     clearTimeout(this.onContentChangeTimoutId);
                     this.onContentChangeTimoutId = window.setTimeout(() => {
                         this.tryParseGraphQLSchema(value);
                         if(this.isContentValid()) {
+                            this.editorUpdate = false;
                             this.document(value);
                         }
                         this.documentToTree();

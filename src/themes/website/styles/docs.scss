@@ -291,6 +291,23 @@ pre {
     height: 640px;
 }
 
+.explorer-operations {
+    height: 620px;
+    overflow: auto;
+}
+
+.gql-console-height {
+    height: 100%;
+}
+
+.gql-list-group {
+    list-style: none; 
+    padding-left: 10px;
+    li {
+        border-top: none
+    }
+}
+
 .editors {
     width: 100%;
 }
@@ -301,14 +318,17 @@ pre {
     padding: 0 10px;
 
     &.explorer {
+        min-width: 250px;
         width: 20%;
     }
 
     &.query {
+        min-width: 400px;
         width: 40%;
     }
 
     &.response {
+        min-width: 400px;
         width: 39%;
     }
 }
@@ -317,9 +337,17 @@ pre {
     margin-top: 30px;
 }
 
-.input-icons i {
-    position: absolute;
-    z-index: 2;
+.breadcrumb-gql {
+    margin-right: 20px
+}
+
+.input-icons {
+    margin-bottom: 10px;
+
+    i {
+        position: absolute;
+        z-index: 2;
+    }
 }
 
 .icon {
@@ -335,8 +363,28 @@ pre {
     text-align: center;
 }
 
-.pad-12 {
+.pad-top-12 {
     padding-top: 12px !important;
+}
+
+.pad-7 {
+    padding: 7px !important;
+}
+
+.presentation-item {
+    padding: 2px 10px;
+    label {
+        margin-bottom: 0px;
+    }
+    select {
+        background-color: white; 
+        color: rgb(15, 126, 189);
+    }
+}
+
+.headers-gql {
+    padding-left: 0px !important;
+    height: 60px;
 }
 
 operation-console {
