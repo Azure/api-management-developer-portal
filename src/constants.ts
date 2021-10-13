@@ -100,7 +100,7 @@ export const AppType = "developerPortal";
  export const QueryEditorSettings = {
     id: "queryEditor",
     config: {
-        language: 'graphql',
+        language: 'graphqlQuery',
         readOnly: false,
     }
  }

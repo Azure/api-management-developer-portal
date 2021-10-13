@@ -3,6 +3,7 @@ import * as validation from "knockout.validation";
 import * as GraphQL from "graphql";
 import * as _ from "lodash";
 import * as monaco from "monaco-editor";
+import loader from '@monaco-editor/loader';
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import template from "./graphql-console.html";
@@ -21,8 +22,8 @@ import { ApiService } from "../../../../../services/apiService";
 import { ProductService } from "../../../../../services/productService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
-import { MonacoEditorLoader } from "./graphql-utilities/monaco-loader";
 import { GraphQLTreeNode, GraphQLOutputTreeNode, GraphQLInputTreeNode } from "./graphql-utilities/graphql-node-models";
+import { setupGraphQLQueryIntellisense } from "./graphql-utilities/graphqlUtils";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ResponsePackage } from "./responsePackage";
@@ -89,7 +90,6 @@ export class GraphqlConsole {
         private readonly apiService: ApiService,
         private readonly productService: ProductService,
         private readonly sessionManager: SessionManager,
-        private monacoEditorLoader: MonacoEditorLoader,
         private readonly httpClient: HttpClient,
         private readonly settingsProvider: ISettingsProvider
     ) {
@@ -600,14 +600,19 @@ export class GraphqlConsole {
     }
 
     public loadingMonaco() {
-        this.monacoEditorLoader.waitForMonaco().then(() => {
-            this.initEditor(QueryEditorSettings, this.document);
+        loader.config({ paths: { vs: "assets/monaco-editor/vs" } });
+        loader.init().then(monaco => {
             this.initEditor(VariablesEditorSettings, this.variables);
             this.initEditor(ResponseSettings, this.response);
+            this.initEditor(QueryEditorSettings, this.document);
         });
     }
 
     private initEditor(editorSettings, value: ko.Observable<string>): void {
+
+        if (editorSettings.id === QueryEditorSettings.id) {
+            setupGraphQLQueryIntellisense(this.schema);
+        }
 
         const defaultSettings = {
             value: value() || "",

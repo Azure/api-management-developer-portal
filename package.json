@@ -62,6 +62,7 @@
         "webpack-merge": "^5.2.0"
     },
     "dependencies": {
+        "@monaco-editor/loader": "^1.2.0",
         "@paperbits/azure": "0.1.445",
         "@paperbits/common": "0.1.445",
         "@paperbits/core": "0.1.445",
@@ -71,9 +72,13 @@
         "@webcomponents/shadydom": "^1.7.4",
         "applicationinsights-js": "^1.0.21",
         "client-oauth2": "4.3.3",
+        "codemirror": "^5.62.3",
         "core-js": "^3.6.5",
         "d3": "^5.11.0",
         "google-maps": "^4.3.3",
+        "graphql": "15.5.0",
+        "graphql-config": "^4.0.1",
+        "graphql-language-service": "^3.1.4",
         "js-beautify": "^1.13.0",
         "knockout": "^3.5.1",
         "knockout-mapping": "^2.6.0",
@@ -82,14 +87,14 @@
         "lunr": "^2.3.9",
         "mime": "^2.5.2",
         "moment": "^2.29.1",
+        "monaco-editor": "^0.17.0",
         "msal": "^1.4.1",
+        "prettier": "^2.3.2",
         "prismjs": "^1.22.0",
         "remark": "^13.0.0",
         "remark-html": "^13.0.1",
         "saxen": "^8.1.2",
         "topojson-client": "^3.1.0",
-        "truncate-html": "^1.0.4",
-        "monaco-editor": "^0.17.0",
-        "graphql": "^15.5.1"
+        "truncate-html": "^1.0.4"
     }
 }

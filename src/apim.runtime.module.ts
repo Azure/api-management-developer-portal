@@ -61,7 +61,6 @@ import { StaticUserService } from "./services";
 import { AadService } from "./services/aadService";
 import { AnalyticsService } from "./services/analyticsService";
 import { ApiService } from "./services/apiService";
-import { MonacoEditorLoader } from "./components/operations/operation-details/ko/runtime/graphql-utilities/monaco-loader";
 import { BackendService } from "./services/backendService";
 import { MapiClient } from "./services/mapiClient";
 import { OAuthService } from "./services/oauthService";
@@ -94,7 +93,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("codeSample", CodeSampleViewModel);
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);
-        injector.bind("monacoEditorLoader", MonacoEditorLoader);
         injector.bind("tagService", TagService);
         injector.bind("productService", ProductService);
         injector.bind("analyticsService", AnalyticsService);
