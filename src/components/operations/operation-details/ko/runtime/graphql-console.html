@@ -27,11 +27,11 @@
     </nav>
 
     <!-- ko if: $component.authorizationServer() || $component.subscriptionKeyRequired() -->
-    <h3>Authorization</h3>
+    <h3 class="pad-top-0">Authorization</h3>
     <!-- /ko -->
 
     <!-- ko if: $component.authorizationServer -->
-    <div class="row flex flex-row">
+    <div class="row flex flex-row col-6">
         <div class="col-4">
             <label for="authServer" class="text-monospace form-label"
                 data-bind="text: $component.authorizationServer().displayName"></label>
@@ -45,7 +45,7 @@
         </div>
     </div>
     <!-- ko if: $component.selectedGrantType() === 'password' && !$component.authenticated() -->
-    <div class="row flex flex-row">
+    <div class="row flex flex-row col-6">
         <div class="col-4">
             <label for="username" class="text-monospace form-label">Username</label>
         </div>
@@ -55,7 +55,7 @@
             </div>
         </div>
     </div>
-    <div class="row flex flex-row">
+    <div class="row flex flex-row col-6">
         <div class="col-4">
             <label for="password" class="text-monospace form-label">Password</label>
         </div>
@@ -66,7 +66,7 @@
             </div>
         </div>
     </div>
-    <div class="row flex flex-row">
+    <div class="row flex flex-row col-6">
         <div class="col-4">
         </div>
         <div class="col-6">
@@ -80,8 +80,8 @@
     <!-- /ko -->
 
     <!-- ko if: $component.subscriptionKeyRequired -->
-    <div class="row flex flex-row col-5">
-        <div class="col-4">
+    <div class="row flex flex-row col-6 pad-left-0">
+        <div class="col-4 pad-left-0">
             <label for="subscriptionKey" class="text-monospace form-label pad-top-12">
                 Subscription key
             </label>
@@ -108,10 +108,10 @@
     </div>
     <!-- /ko -->
 
-    <h3>Headers</h3>
+    <h3 class="pad-top-0">Headers</h3>
     <!-- ko if: $component.headers().length > 0 -->
     <div data-bind="foreach: { data: $component.headers, as: 'header' }">
-        <div class="row flex flex-row col-6 headers-gql">
+        <div class="row flex flex-row col-6 headers-gql pad-left-0">
             <div class="col-4">
                 <div class="form-group">
                     <div class="input-group">
@@ -149,11 +149,22 @@
 
 </div>
 
-<div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
+<div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal graphql-console-overflow">
 
     <div class="editors">
         <div class="graphql-console explorer">
-            <h4>Explorer</h4>
+            <h4>Explorer
+                <a href="#" role="button" data-bind="click: $component.collapse">
+                    <!-- ko if: $component.collapsed() -->
+                    <i class="icon-emb icon-emb-chevron-down"></i>
+                    <!-- /ko -->
+                    <!-- ko ifnot: $component.collapsed() -->
+                    <i class="icon-emb icon-emb-chevron-up"></i>
+                    <!-- /ko -->
+                </a>
+            </h4>
+            
+            <!-- ko ifnot: $component.collapsed() -->
             <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
                 <select id="operationType" class="form-control pad-7" data-bind="value: queryType">
                     <option value="query">Query</option>
@@ -170,18 +181,17 @@
                     data-bind="template: { name: 'gql-Nodes', data: {operationNode: $component.node(), filter: filter()} }">
                 </div>
             </div>
+            <!-- /ko -->
         </div>
         <div class="graphql-console query">
             <h4>
                 Query editor
-                <!-- Change the icon to info and configure the tooltip -->
                 <i class="icon-emb icon-emb-info"
                     title="Select a query, mutation, or subscription from the explorer to add it to the test console or begin typing to compose a query."></i>
             </h4>
             <div class="query-editor" id="queryEditor"></div>
             <h4>
                 Query variables
-                <!-- Change the icon to info and configure the tooltip -->
                 <i class="icon-emb icon-emb-info"
                     title="Use variables to reuse the same query or mutation to pass different values."></i>
             </h4>

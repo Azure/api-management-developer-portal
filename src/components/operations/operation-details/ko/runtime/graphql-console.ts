@@ -13,7 +13,7 @@ import { GrantTypes, QueryEditorSettings, VariablesEditorSettings, ResponseSetti
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { OAuthService } from "../../../../../services/oauthService";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
-import { OAuthSession, StoredCredentials } from "./oauthSession";
+import { OAuthSession } from "./oauthSession";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { UnauthorizedError } from "../../../../../errors/unauthorizedError";
 import { Product } from "../../../../../models/product";
@@ -28,8 +28,6 @@ import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ResponsePackage } from "./responsePackage";
 import { Utils } from "../../../../../utils";
-import { ConsoleLogger } from "@paperbits/common/logging";
-import { Console } from "console";
 
 
 const oauthSessionKey = "oauthSession";
@@ -67,6 +65,7 @@ export class GraphqlConsole {
     public readonly document: ko.Observable<string>;
     public readonly sendingRequest: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
+    public readonly collapsed: ko.Observable<boolean>;
     public readonly subscriptionKeyRequired: ko.Observable<boolean>;
     public readonly selectedGrantType: ko.Observable<string>;
     public readonly authenticated: ko.Observable<boolean>;
@@ -94,6 +93,7 @@ export class GraphqlConsole {
         private readonly settingsProvider: ISettingsProvider
     ) {
         this.working = ko.observable(true);
+        this.collapsed = ko.observable(false);
         this.requestError = ko.observable();
         this.api = ko.observable<Api>();
         this.sendingRequest = ko.observable(false);
@@ -757,4 +757,7 @@ export class GraphqlConsole {
         return operationName;
     }
 
+    public collapse(): void {
+        this.collapsed(!this.collapsed());
+    }
 }
