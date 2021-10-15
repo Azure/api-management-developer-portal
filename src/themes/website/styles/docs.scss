@@ -279,6 +279,14 @@ pre {
     }
 }
 
+.graphql-console-overflow {
+    overflow: auto;
+}
+
+.overflowingContentWidgets {
+    position: initial;
+}
+
 .query-editor {
     height: 408px;
 }
@@ -367,6 +375,14 @@ pre {
     padding-top: 12px !important;
 }
 
+.pad-top-0 {
+    padding-top: 0px !important;
+}
+
+.pad-left-0 {
+    padding-left: 0px !important;
+}
+
 .pad-7 {
     padding: 7px !important;
 }
@@ -382,8 +398,7 @@ pre {
     }
 }
 
-.headers-gql {
-    padding-left: 0px !important;
+.headers-gql { 
     height: 60px;
 }
 
