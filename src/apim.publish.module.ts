@@ -1,6 +1,6 @@
-import { AadConfigPublisher } from "./publishing/aadConfigPublisher";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
+import { AadConfigPublisher } from "./publishing/aadConfigPublisher";
 import { MapiClient } from "./services/mapiClient";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
@@ -33,10 +33,12 @@ import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
 import { OAuthService } from "./services/oauthService";
+import { GithubService } from "./services/githubService";
 import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts.module";
 import { RuntimeConfigPublisher } from "./publishing/runtimeConfigPublisher";
 import { RuntimeConfigBuilder } from "./publishing/runtimeConfigBuilder";
 import { BemoNavbarPublishModule } from "../community/widgets/bemo-navbar/bemo-navbar.publish.module";
+import { BemoDocumentationPublishModule } from "../community/widgets/bemo-documentation/bemoDocumentation.publish.module";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -63,6 +65,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ReportsModule());
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new BemoNavbarPublishModule());
+        injector.bindModule(new BemoDocumentationPublishModule());
 		injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("userService", StaticUserService);
@@ -76,10 +79,10 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("oauthService", OAuthService);
+        injector.bindSingleton("githubService", GithubService);
 
         injector.bindSingleton("runtimeConfigBuilder", RuntimeConfigBuilder);
         injector.bindToCollection("publishers", AadConfigPublisher);
         injector.bindToCollection("publishers", RuntimeConfigPublisher);
-        
     }
 }

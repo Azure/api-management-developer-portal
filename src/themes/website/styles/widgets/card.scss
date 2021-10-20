@@ -2,8 +2,85 @@
     flex-direction: row;
     flex-wrap: wrap;
     flex-basis: 100%;
+    box-shadow: 0px 3px 6px #00000029 !important;
+
     &.item-tile {
         margin-left: 0;
         margin-right: 0;
     }
+}
+
+// ---------------------------------------
+// Custom style for Be:Mo Developer Portal
+// ---------------------------------------
+
+// Flex container including product api tiles
+.cards-body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+
+    // Flex item
+    .card {
+        flex: 0 0 30%;
+        margin: .8rem;
+        padding: 0 !important;
+    }
+}
+
+.card-content {
+    padding: .5rem 1rem 1.5rem 1rem !important;
+
+    h3 {
+        margin-top: 0 !important;
+    }
+
+    .tile {
+        margin-bottom: 1.5rem !important;
+    }
+}
+
+// "/" before api title
+.api-slash {
+    color: #3E66FB;
+    font-family: 'Roboto', sans-serif !important;
+}
+
+.api-title {
+    color: #3B4874 !important;
+    font-family: "Roboto", sans-serif !important;
+    font-weight: 400;
+    font-size: 18px;
+}
+
+.tile-content {
+    color: #363131;
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 12px;
+}
+
+.card-illustration {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // Dot background
+    background-color: rgba(59, 72, 116, 0.01);
+    background-image: radial-gradient(circle, rgba(62, 102, 251, 0.2) 1%, transparent 6%), radial-gradient(circle, rgba(62, 102, 251, 0.2) 1%, transparent 6%);
+    background-size: 15px 52px;
+    background-position: 50px 100px, 50px 125px;
+    min-height: 12rem;
+}
+
+.btn-discover {
+    background-color: #3E66FB;
+    color: #FFFFFF;
+    font-family: "Roboto", sans-serif !important;
+    font-weight: 300;
+    border-radius: 5px;
+    border: 0px;
+    font-size: 14px;
+    margin-top: .5rem;
+    padding: .3rem 1rem !important;
 }

@@ -2,29 +2,27 @@ import { Bag } from "@paperbits/common";
 import { EventManager } from "@paperbits/common/events";
 import { IWidgetBinding } from "@paperbits/common/editing";
 import { ViewModelBinder } from "@paperbits/common/widgets";
+import { BemoDocumentationViewModel } from "./bemoDocumentationViewModel";
 import { widgetName, widgetDisplayName, widgetEditorSelector } from "../constants";
-import { BemoNavbarViewModel } from "./bemoNavbarViewModel";
-import { BemoNavbarModel } from "../bemoNavbarModel";
+import { BemoDocumentationModel } from "../bemoDocumentationModel";
 
-/**
- * This class describes how the model needs to be presented (as a view model)
- * in a specific UI framework.
- */
-export class BemoNavbarViewModelBinder implements ViewModelBinder<BemoNavbarModel, BemoNavbarViewModel>  {
+export class BemoDocumentationViewModelBinder implements ViewModelBinder<BemoDocumentationModel, BemoDocumentationViewModel>  {
     constructor(private readonly eventManager: EventManager) { }
 
-    public async updateViewModel(model: BemoNavbarModel, viewModel: BemoNavbarViewModel): Promise<void> {
+    public async updateViewModel(model: BemoDocumentationModel, viewModel: BemoDocumentationViewModel): Promise<void> {
+        viewModel.runtimeConfig(JSON.stringify({ fileName: model.fileName }));
     }
 
-    public async modelToViewModel(model: BemoNavbarModel, viewModel?: BemoNavbarViewModel, bindingContext?: Bag<any>): Promise<BemoNavbarViewModel> {
+    public async modelToViewModel(model: BemoDocumentationModel, viewModel?: BemoDocumentationViewModel, bindingContext?: Bag<any>): Promise<BemoDocumentationViewModel> {
         if (!viewModel) {
-            viewModel = new BemoNavbarViewModel();
+            viewModel = new BemoDocumentationViewModel();
 
-            const binding: IWidgetBinding<BemoNavbarModel, BemoNavbarViewModel> = {
+            const binding: IWidgetBinding<BemoDocumentationModel, BemoDocumentationViewModel> = {
                 name: widgetName,
                 displayName: widgetDisplayName,
                 readonly: bindingContext?.readonly,
                 model: model,
+                flow: "block",
                 editor: widgetEditorSelector,
                 draggable: true,
                 applyChanges: async () => {
@@ -40,7 +38,7 @@ export class BemoNavbarViewModelBinder implements ViewModelBinder<BemoNavbarMode
         return viewModel;
     }
 
-    public canHandleModel(model: BemoNavbarModel): boolean {
-        return model instanceof BemoNavbarModel;
+    public canHandleModel(model: BemoDocumentationModel): boolean {
+        return model instanceof BemoDocumentationModel;
     }
 }

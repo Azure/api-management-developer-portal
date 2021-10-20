@@ -57,6 +57,7 @@ import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
 import { PolicyService } from "./services/policyService";
 import { OAuthService } from "./services/oauthService";
+import { GithubService } from "./services/githubService";
 import { HistoryRouteHandler } from "@paperbits/common/routing";
 import { OldContentRouteGuard } from "./routing/oldContentRouteGuard";
 import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
@@ -64,6 +65,7 @@ import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts
 import { ApiProductsEditorModule } from "./components/apis/api-products/ko/apiProductsEditor.module";
 import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { BemoNavbarDesignModule } from "../community/widgets/bemo-navbar/bemo-navbar.design.module";
+import { BemoDocumentationDesignModule } from "../community/widgets/bemo-documentation/bemoDocumentation.design.module";
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -115,6 +117,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new SigninSocialEditorModule());
 		injector.bindModule(new BemoNavbarDesignModule());
+        injector.bindModule(new BemoDocumentationDesignModule());
 		injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("tenantService", TenantService);
@@ -135,5 +138,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bindToCollection("autostart", RuntimeConfigurator);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
+        injector.bindSingleton("githubService", GithubService);
     }
 }

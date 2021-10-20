@@ -1,7 +1,6 @@
-import * as ko from "knockout";
 import template from "./bemoNavbarEditorView.html";
 import { WidgetEditor } from "@paperbits/common/widgets";
-import { Component, OnMounted, Param, Event, OnDestroyed } from "@paperbits/common/ko/decorators";
+import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
 import { BemoNavbarModel } from "../bemoNavbarModel";
 import { widgetEditorSelector } from "..";
 
@@ -10,6 +9,7 @@ import { widgetEditorSelector } from "..";
     template: template
 })
 export class BemoNavbarEditorViewModel implements WidgetEditor<BemoNavbarModel> {
+
     @Param()
     public model: BemoNavbarModel;
 
@@ -18,15 +18,9 @@ export class BemoNavbarEditorViewModel implements WidgetEditor<BemoNavbarModel> 
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        // Your initialization logic
     }
 
     private applyChanges(): void {
         this.onChange(this.model);
-    }
-
-    @OnDestroyed()
-    public async dispose(): Promise<void> {
-        // Your cleanup widget logic
     }
 }

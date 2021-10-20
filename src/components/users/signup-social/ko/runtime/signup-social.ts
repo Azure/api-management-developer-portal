@@ -55,7 +55,7 @@ export class SignupSocial {
         const idToken = this.routeHelper.getIdToken();
 
         if (!provider || !idToken) {
-            await this.router.navigateTo(Constants.pageUrlSignIn);
+            await this.router.navigateTo(Constants.pageUrlHome);
             return;
         }
 
@@ -95,7 +95,7 @@ export class SignupSocial {
             const idToken = this.routeHelper.getIdToken();
 
             if (!provider || !idToken) {
-                await this.router.navigateTo(Constants.pageUrlSignIn);
+                await this.router.navigateTo(Constants.pageUrlHome);
                 return;
             }
 

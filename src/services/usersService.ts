@@ -183,7 +183,7 @@ export class UsersService {
             return new User(user);
         }
         catch (error) {
-            this.navigateToSignin();
+            this.navigateToHome();
         }
     }
 
@@ -230,7 +230,7 @@ export class UsersService {
             this.signOut();
         }
         catch (error) {
-            this.navigateToSignin();
+            this.navigateToHome();
         }
     }
 
@@ -247,13 +247,13 @@ export class UsersService {
     }
 
     /**
-     * Check whether current user is authenticated and, if not, redirects to sign-in page.
+     * Check whether current user is authenticated and, if not, redirects to home page.
      */
     public async ensureSignedIn(): Promise<string> {
         const userId = await this.getCurrentUserId();
 
         if (!userId) {
-            this.navigateToSignin();
+            this.navigateToHome();
             return; // intentionally exiting without resolving the promise.
         }
 

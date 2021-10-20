@@ -1,0 +1,190 @@
+// Fonts import
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+// Material Icons import
+@font-face {
+	font-family: 'Material Icons';
+	font-style: normal;
+	font-weight: 400;
+	src: url(iconfont/MaterialIcons-Regular.eot);
+	/* For IE6-8 */
+	src: local('Material Icons'),
+		local('MaterialIcons-Regular'),
+		url(fonts/material-icons.woff2) format('woff2'),
+		url(iconfont/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+	font-family: 'Material Icons';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 24px;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: inline-block;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	-moz-font-feature-settings: 'liga';
+	-moz-osx-font-smoothing: grayscale;
+}
+
+// Font variables
+$robotoFont: 'Roboto', sans-serif;
+$sourceCodeProFont: 'Source Code Pro', monospace;
+
+// Extend to avoid copying
+%roboto {
+	font-family: $robotoFont !important;
+	src: url("/fonts/Roboto-Regular.ttf") !important;
+}
+
+%sourceCodePro {
+	font-family: $sourceCodeProFont !important;
+	src: url("/fonts/SourceCodePro-Bold.ttf") !important;
+}
+
+// Color variables
+$colors: (
+    blue: (
+        light: #3E66FB,
+        dark: #3B4874,
+        hover: rgba(62, 102, 251, 0.4)
+    ),
+    grey: (
+        border: #DEE2E6
+    ),
+    black: (
+        base: #363131
+    ),
+    white: (
+        base: #FFFFFF,
+        background: #F5F7FF
+    )
+);
+
+// Get color function
+// Usage: color: getColor(blue, hover)
+@function getColor($color, $tone) {
+	@if map-has-key($colors, $color) {
+		$color: map-get($colors, $color);
+
+		@if map-has-key($color, $tone) {
+			$tone: map-get($color, $tone);
+			@return $tone;
+		}
+		@return null;
+	}
+	@return null;
+}
+
+.p-0 {
+	padding: 0 !important;
+}
+
+// Avatar menu + arrow down
+.navbar-navigation-avatar-menu {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	margin-right: 2rem;
+
+	// Chevron down
+	button:last-of-type {
+		padding: 1.2rem 0rem !important;
+		width: 2rem !important;
+		font-size: 1.3rem;
+		color: getColor(black, base) !important;
+	}
+}
+
+.navbar-avatar-button {
+	border-radius: 50%;
+	background-color: getColor(white, base) !important;
+	border: 1px solid getColor(grey, border) !important;
+	height: 2.8rem !important;
+	width: 2.8rem !important;
+	padding: 0px !important;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	color: getColor(black, base) !important;
+    --mdc-ripple-left: -2px !important;
+    --mdc-ripple-top: -12px !important;
+}
+
+.avatar-menu {
+	position: absolute !important;
+	width: 8rem;
+	border: 0.5px solid getColor(grey, border);
+	background-color: getColor(white, base) !important;
+	box-shadow: 2px 2px 10px #00000029 !important;
+	left: unset !important;
+	right: 1rem !important;
+	top: 4rem !important;
+	display: flex !important;
+	flex-direction: column;
+	overflow: unset !important;
+
+	.menu-divider {
+		border: 1px solid #E0E0E0;
+		opacity: 0.3;
+		margin: 0 !important;
+	}
+
+	// Avatar menu item
+	.menu-nav-link {
+		letter-spacing: 0.24px;
+		text-decoration: none !important;
+		color: getColor(black, base);
+		padding: 1rem !important;
+		display: flex !important;
+		align-items: center !important;
+		cursor: pointer !important;
+
+		&:hover {
+			color: getColor(black, base) !important;
+			background-color: getColor(white, background) !important;
+			border-radius: unset !important;
+		}
+
+		a {
+			@extend %roboto;
+			font-size: 14px !important;
+
+			// Menu item - icon
+			.menu-nav-link-icon {
+				color: getColor(blue, light);
+				font-size: 13px !important;
+				margin-right: 1rem;
+			}
+
+			// Menu item - label
+			span:last-of-type {
+				color: getColor(black, base) !important;
+                font-size: 14px !important;
+			}
+		}
+	}
+}
+
+// Triangle above the menu
+.avatar-menu:before,
+.avatar-menu:after {
+	content: '';
+	position: absolute;
+	bottom: 100%;
+	left: 85px;
+	border: 11px solid transparent;
+	border-bottom-color: #dddddd;
+}
+
+.avatar-menu:after {
+	left: 85px;
+	border: 10px solid transparent !important;
+	border-bottom-color: #ffffff !important;
+}

@@ -86,7 +86,7 @@ export class ProductList {
         }
         catch (error) {
             if (error.code === "Unauthorized") {
-                this.usersService.navigateToSignin();
+                this.usersService.navigateToHome();
                 return;
             }
 

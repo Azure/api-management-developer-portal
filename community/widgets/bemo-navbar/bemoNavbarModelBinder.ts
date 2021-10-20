@@ -19,14 +19,12 @@ export class BemoNavbarModelBinder implements IModelBinder<BemoNavbarModel> {
 
     public async contractToModel(contract: BemoNavbarContract): Promise<BemoNavbarModel> {
         const model = new BemoNavbarModel();
-        // model.property = contract.property;
         return model;
     }
 
     public modelToContract(model: BemoNavbarModel): Contract {
         const contract: BemoNavbarContract = {
             type: widgetName,
-            // property: model.property
         };
 
         return contract;

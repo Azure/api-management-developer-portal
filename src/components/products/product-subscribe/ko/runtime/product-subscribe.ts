@@ -101,7 +101,7 @@ export class ProductSubscribe {
         }
         catch (error) {
             if (error.code === "Unauthorized") {
-                this.usersService.navigateToSignin();
+                this.usersService.navigateToHome();
                 return;
             }
 
@@ -169,7 +169,7 @@ export class ProductSubscribe {
             this.usersService.navigateToProfile();
         } catch (error) {
             if (error.code === "Unauthorized") {
-                this.usersService.navigateToSignin();
+                this.usersService.navigateToHome();
                 return;
             }
             throw new Error(`Unable to subscribe to a product. Error: ${error.message}`);

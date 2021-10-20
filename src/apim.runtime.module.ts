@@ -61,6 +61,7 @@ import { AadService } from "./services/aadService";
 import { AnalyticsService } from "./services/analyticsService";
 import { ApiService } from "./services/apiService";
 import { BackendService } from "./services/backendService";
+import { GithubService } from "./services/githubService";
 import { MapiClient } from "./services/mapiClient";
 import { OAuthService } from "./services/oauthService";
 import { ProductService } from "./services/productService";
@@ -70,10 +71,10 @@ import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
 import { ApimSettingsProvider } from "./configuration/apimSettingsProvider";
 import { BemoNavbarRuntimeModule } from "../community/widgets/bemo-navbar/bemo-navbar.runtime.module";
+import { BemoDocumentationRuntimeModule } from "../community/widgets/bemo-documentation/bemoDocumentation.runtime.module";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bindModule(new BemoNavbarRuntimeModule());
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindToCollection("autostart", BalloonBindingHandler);
@@ -132,6 +133,9 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindSingleton("viewStack", ViewStack);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
+        injector.bindSingleton("githubService", GithubService);
         injector.bind("tagInput", TagInput);
+        injector.bindModule(new BemoNavbarRuntimeModule());
+        injector.bindModule(new BemoDocumentationRuntimeModule());
     }
 }

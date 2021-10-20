@@ -1,6 +1,6 @@
-﻿import { widgetName, widgetDisplayName, widgetCategory } from "./constants";
-import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { BemoNavbarModel } from "./bemoNavbarModel";
+import { widgetName, widgetDisplayName, widgetCategory } from "./constants";
 
 /**
  * Handlers giving the editor required context to manupulate the widget. For example,
@@ -14,17 +14,16 @@ export class BemoNavbarHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
             name: widgetName,
+            displayName: widgetDisplayName,
             category: widgetCategory,
             requires: [],
-            displayName: widgetDisplayName,
-            iconClass: "paperbits-puzzle-10",
+            iconClass: "widget-icon widget-icon-component",
 
             /**
              * This method invoked when the widget gets added to the content.
              */
-            createModel: async () => { 
+            createModel: async () => {
                 const model = new BemoNavbarModel();
-                // model.property = "< initial value >";
                 return model;
             }
         };

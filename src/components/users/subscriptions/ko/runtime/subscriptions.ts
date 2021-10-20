@@ -108,7 +108,7 @@ export class Subscriptions {
         }
         catch (error) {
             if (error.code === "Unauthorized") {
-                this.usersService.navigateToSignin();
+                this.usersService.navigateToHome();
                 return;
             }
 

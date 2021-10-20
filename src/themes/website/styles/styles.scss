@@ -11,6 +11,8 @@
 
 @include icon-button.core-styles;
 
+@import "custom-navbar.scss";
+
 // ------------------------------------------------------------
 //                     Paperbits widgets
 // ------------------------------------------------------------
@@ -41,9 +43,3 @@
 @import "utils.scss";
 @import "pills.scss";
 @import "resizables.scss";
-
-// ------------------------------------------------------------
-//              Material Design Web Components
-// ------------------------------------------------------------
-
-@import "custom-widgets/custom-navbar.scss";

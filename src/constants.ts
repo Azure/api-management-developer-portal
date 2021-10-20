@@ -64,8 +64,8 @@ export const reservedPermalinks = [
     pageUrlHome,
     pageUrl404,
     pageUrl500,
-    pageUrlSignIn,
-    pageUrlSignInSso,
+    // pageUrlSignIn,
+    // pageUrlSignInSso,
     pageUrlSignUp,
     pageUrlSignUpOAuth,
     pageUrlProfile,
@@ -149,3 +149,8 @@ export const portalHeaderName = "x-ms-apim-client";
 export const releaseNameFormat = "YYYYMMDDHHmm";
 
 export const genericHttpRequestError = "Server error. Unable to send request. Please try again later.";
+
+export enum GithubType {
+    file = "file",
+    directory = "dir"
+}

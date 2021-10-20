@@ -1,0 +1,20 @@
+<h1><span data-bind="text: api"></span></h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Path</th>
+            <th>File name</th>
+            <th>URL</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: repoStructure">
+        <tr>
+            <td data-bind="text: path"></td>
+            <td data-bind="text: fileName"></td>
+            <td data-bind="text: url"></td>
+        </tr>
+    </tbody>
+</table>
+
+<p data-bind="html: sessionDescription"></p>

@@ -1,4 +1,4 @@
-<div class="form-inline search-input">
+<!-- <div class="form-inline search-input">
     <div class="d-block flex-grow">
         <div class="input-group">
             <input type="search" role="searchbox" aria-label="Search APIs" placeholder="Search APIs" spellcheck="false" data-bind="textInput: pattern" />
@@ -16,7 +16,7 @@
             </div>
         </label>
     </div>
-</div>
+</div> -->
 
 <div class="cards">
     <!-- ko if: working -->
@@ -58,19 +58,26 @@
         <!-- ko ifnot: groupByTag -->
 
         <!-- ko foreach: { data: apis, as: 'item' } -->
-        <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
             <div class="card item-tile">
-                <h3>
-                    <span data-bind="text: item.displayName"></span>
-                    <!-- ko if: item.apiVersion -->
-                    - <span data-bind="text: item.apiVersion"></span>
-                    <!-- /ko -->
-                </h3>
-                <div class="tile line-clamp">
-                    <p class="tile-content" data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
+                <!-- Illustration of the api -->
+                <div class="card-illustration">
+                    <span>lol</span>
+                </div>
+                <!-- Content and information about the api -->
+                <div class="card-content">
+                    <h3>
+                        <span class="api-slash">/</span>
+                        <span class="api-title" data-bind="text: item.displayName"></span>
+                        <!-- ko if: item.apiVersion -->
+                        <!-- - <span data-bind="text: item.apiVersion"></span> -->
+                        <!-- /ko -->
+                    </h3>
+                    <div class="tile line-clamp">
+                        <p class="tile-content" data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
+                    </div>
+                    <a href="#" class="btn-discover" data-bind="attr: { href: $component.getReferenceUrl(item) }">Discover</a>
                 </div>
             </div>
-        </a>
         <!-- /ko -->
 
 
