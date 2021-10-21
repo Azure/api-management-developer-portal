@@ -600,7 +600,7 @@ export class GraphqlConsole {
     }
 
     public loadingMonaco() {
-        loader.config({ paths: { vs: "assets/monaco-editor/vs" } });
+        loader.config({ paths: { vs: "/assets/monaco-editor/vs" } });
         loader.init().then(monaco => {
             this.initEditor(VariablesEditorSettings, this.variables);
             this.initEditor(ResponseSettings, this.response);
