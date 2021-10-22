@@ -3,7 +3,7 @@
     "urls": {
         "home": "https://contoso.com",
         "signin": "https://contoso.com/signin",
-        "signup": "https://contoso.com/signup/"
+        "signup": "https://contoso.com/signup"
     },
     "signin": {
         "firstName": "John",
