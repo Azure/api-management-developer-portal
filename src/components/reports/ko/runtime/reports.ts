@@ -15,6 +15,11 @@ import { MinMaxAvgChartRecord } from "../../minMaxAvgChart/minMaxAvgChartRecord"
 import { BarChartConfig, BarChartRecord } from "../../barChart/barChartConfig";
 import { MapChartConfig } from "../../mapChart/mapChartConfig";
 
+enum direction {
+    asc = 'asc',
+    desc = 'desc'
+}
+
 @RuntimeComponent({
     selector: "reports-runtime"
 })
@@ -37,6 +42,7 @@ export class Reports {
 
     public readonly reportByProduct: ko.Observable<ReportRecordByProductViewModel[]>;
     public readonly reportByProductOrder: ko.Observable<string>;
+    public readonly reportByProductOrderDirection: ko.Observable<direction>;
     public readonly reportByProductPage: ko.Observable<number>;
     public readonly reportByProductHasPager: ko.Computed<boolean>;
     public readonly reportByProductHasPrevPage: ko.Observable<boolean>;
@@ -46,6 +52,7 @@ export class Reports {
 
     public readonly reportBySubscription: ko.Observable<ReportRecordBySubscriptionViewModel[]>;
     public readonly reportBySubscriptionOrder: ko.Observable<string>;
+    public readonly reportBySubscriptionOrderDirection: ko.Observable<direction>;
     public readonly reportBySubscriptionPage: ko.Observable<number>;
     public readonly reportBySubscriptionHasPager: ko.Computed<boolean>;
     public readonly reportBySubscriptionHasPrevPage: ko.Observable<boolean>;
@@ -55,6 +62,7 @@ export class Reports {
 
     public readonly reportByApi: ko.Observable<ReportRecordByApiViewModel[]>;
     public readonly reportByApiOrder: ko.Observable<string>;
+    public readonly reportByApiOrderDirection: ko.Observable<direction>;
     public readonly reportByApiPage: ko.Observable<number>;
     public readonly reportByApiHasPager: ko.Computed<boolean>;
     public readonly reportByApiHasPrevPage: ko.Observable<boolean>;
@@ -64,6 +72,7 @@ export class Reports {
 
     public readonly reportByOperation: ko.Observable<ReportRecordByOperationViewModel[]>;
     public readonly reportByOperationOrder: ko.Observable<string>;
+    public readonly reportByOperationOrderDirection: ko.Observable<direction>;
     public readonly reportByOperationPage: ko.Observable<number>;
     public readonly reportByOperationHasPager: ko.Computed<boolean>;
     public readonly reportByOperationHasPrevPage: ko.Observable<boolean>;
@@ -85,6 +94,7 @@ export class Reports {
 
         this.reportByProduct = ko.observable([]);
         this.reportByProductOrder = ko.observable("callCountSuccess");
+        this.reportByProductOrderDirection = ko.observable(direction.desc);
         this.reportByProductPage = ko.observable(1);
         this.reportByProductHasPrevPage = ko.observable(false);
         this.reportByProductHasNextPage = ko.observable(false);
@@ -94,6 +104,7 @@ export class Reports {
 
         this.reportBySubscription = ko.observable([]);
         this.reportBySubscriptionOrder = ko.observable("callCountSuccess");
+        this.reportBySubscriptionOrderDirection = ko.observable(direction.desc);
         this.reportBySubscriptionPage = ko.observable(1);
         this.reportBySubscriptionHasPrevPage = ko.observable(false);
         this.reportBySubscriptionHasNextPage = ko.observable(false);
@@ -103,6 +114,7 @@ export class Reports {
 
         this.reportByApi = ko.observable([]);
         this.reportByApiOrder = ko.observable("callCountSuccess");
+        this.reportByApiOrderDirection = ko.observable(direction.desc);
         this.reportByApiPage = ko.observable(1);
         this.reportByApiHasPrevPage = ko.observable(false);
         this.reportByApiHasNextPage = ko.observable(false);
@@ -112,6 +124,7 @@ export class Reports {
 
         this.reportByOperation = ko.observable([]);
         this.reportByOperationOrder = ko.observable("callCountSuccess");
+        this.reportByOperationOrderDirection = ko.observable(direction.desc);
         this.reportByOperationPage = ko.observable(1);
         this.reportByOperationHasPrevPage = ko.observable(false);
         this.reportByOperationHasNextPage = ko.observable(false);
@@ -151,6 +164,11 @@ export class Reports {
         ]);
     }
 
+    private switchDirection(directionInput: direction): direction {
+        if (directionInput === direction.desc) return direction.asc
+        else return direction.desc
+    }
+
     /**
      * Creates a view model for metrics aggregated by product.
      */
@@ -159,11 +177,13 @@ export class Reports {
         const endTime = this.endTime();
         const pageNumber = this.reportByProductPage() - 1;
         const orderBy = this.reportByProductOrder();
+        const orderDirection = this.reportByProductOrderDirection();
         const query: ReportQuery = {
             startTime: startTime,
             endTime: endTime, skip: pageNumber * Constants.defaultPageSize,
             take: Constants.defaultPageSize,
-            orderBy: orderBy
+            orderBy: orderBy,
+            orderDirection: orderDirection
         };
 
         this.reportByProductWorking(true);
@@ -205,7 +225,11 @@ export class Reports {
     }
 
     public reportByProductOrderBy(fieldName: string): void {
-        this.reportByProductOrder(fieldName);
+        if (fieldName === this.reportByProductOrder()) {
+            this.reportByProductOrderDirection(this.switchDirection(this.reportByProductOrderDirection()))
+        } else {
+            this.reportByProductOrder(fieldName);
+        }
         this.getReportsByProduct();
     }
 
@@ -217,11 +241,13 @@ export class Reports {
         const endTime = this.endTime();
         const pageNumber = this.reportBySubscriptionPage() - 1;
         const orderBy = this.reportBySubscriptionOrder();
+        const orderDirection = this.reportBySubscriptionOrderDirection();
         const query: ReportQuery = {
             startTime: startTime,
             endTime: endTime, skip: pageNumber * Constants.defaultPageSize,
             take: Constants.defaultPageSize,
-            orderBy: orderBy
+            orderBy: orderBy,
+            orderDirection: orderDirection
         };
 
         this.reportBySubscriptionWorking(true);
@@ -266,7 +292,11 @@ export class Reports {
     }
 
     public reportBySubscriptionOrderBy(fieldName: string): void {
-        this.reportBySubscriptionOrder(fieldName);
+        if (fieldName === this.reportBySubscriptionOrder()) {
+            this.reportBySubscriptionOrderDirection(this.switchDirection(this.reportBySubscriptionOrderDirection()))
+        } else {
+            this.reportBySubscriptionOrder(fieldName);
+        }
         this.getReportsBySubscription();
     }
 
@@ -278,11 +308,13 @@ export class Reports {
         const endTime = this.endTime();
         const pageNumber = this.reportByApiPage() - 1;
         const orderBy = this.reportByApiOrder();
+        const orderDirection = this.reportByApiOrderDirection();
         const query: ReportQuery = {
             startTime: startTime,
             endTime: endTime, skip: pageNumber * Constants.defaultPageSize,
             take: Constants.defaultPageSize,
-            orderBy: orderBy
+            orderBy: orderBy,
+            orderDirection: orderDirection
         };
 
         this.reportByApiWorking(true);
@@ -324,7 +356,11 @@ export class Reports {
     }
 
     public reportByApiOrderBy(fieldName: string): void {
-        this.reportByApiOrder(fieldName);
+        if (fieldName === this.reportByApiOrder()) {
+            this.reportByApiOrderDirection(this.switchDirection(this.reportByApiOrderDirection()))
+        } else {
+            this.reportByApiOrder(fieldName);
+        }
         this.getReportsByApi();
     }
 
@@ -336,11 +372,13 @@ export class Reports {
         const endTime = this.endTime();
         const pageNumber = this.reportByOperationPage() - 1;
         const orderBy = this.reportByOperationOrder();
+        const orderDirection = this.reportByOperationOrderDirection();
         const query: ReportQuery = {
             startTime: startTime,
             endTime: endTime, skip: pageNumber * Constants.defaultPageSize,
             take: Constants.defaultPageSize,
-            orderBy: orderBy
+            orderBy: orderBy,
+            orderDirection: orderDirection
         };
 
         this.reportByOperationWorking(true);
@@ -381,7 +419,11 @@ export class Reports {
     }
 
     public reportByOperationOrderBy(fieldName: string): void {
-        this.reportByOperationOrder(fieldName);
+        if (fieldName === this.reportByOperationOrder()) {
+            this.reportByOperationOrderDirection(this.switchDirection(this.reportByOperationOrderDirection()))
+        } else {
+            this.reportByOperationOrder(fieldName);
+        }
         this.getReportsByOperation();
     }
 
