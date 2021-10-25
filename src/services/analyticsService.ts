@@ -57,7 +57,7 @@ export class AnalyticsService {
      */
     public async getReportsByProduct(reportQuery: ReportQuery): Promise<Page<ReportRecordByProduct>> {
         const orderBy = reportQuery.orderBy || "callCountSuccess";
-        const orderDirection = reportQuery.orderDirection || "desc";
+        const orderDirection = reportQuery.orderDirection || Constants.Direction.desc;
         const skip = reportQuery.skip || 0;
         const take = reportQuery.take || Constants.defaultPageSize;
         const startTime = reportQuery.startTime.toISOString();
@@ -78,7 +78,7 @@ export class AnalyticsService {
      */
     public async getReportsBySubscription(reportQuery: ReportQuery): Promise<Page<ReportRecordBySubscription>> {
         const orderBy = reportQuery.orderBy || "callCountTotal";
-        const orderDirection = reportQuery.orderDirection || "desc";
+        const orderDirection = reportQuery.orderDirection || Constants.Direction.desc;
         const skip = reportQuery.skip || 0;
         const take = reportQuery.take || Constants.defaultPageSize;
         const startTime = reportQuery.startTime.toISOString();
@@ -99,7 +99,7 @@ export class AnalyticsService {
      */
     public async getReportsByApi(reportQuery: ReportQuery): Promise<Page<ReportRecordByApi>> {
         const orderBy = reportQuery.orderBy || "callCountTotal";
-        const orderDirection = reportQuery.orderDirection || "desc";
+        const orderDirection = reportQuery.orderDirection || Constants.Direction.desc;
         const skip = reportQuery.skip || 0;
         const take = reportQuery.take || Constants.defaultPageSize;
         const startTime = reportQuery.startTime.toISOString();
@@ -120,7 +120,7 @@ export class AnalyticsService {
      */
     public async getReportsByOperation(reportQuery: ReportQuery): Promise<Page<ReportRecordByOperation>> {
         const orderBy = reportQuery.orderBy || "callCountTotal";
-        const orderDirection = reportQuery.orderDirection || "desc";
+        const orderDirection = reportQuery.orderDirection || Constants.Direction.desc;
         const skip = reportQuery.skip || 0;
         const take = reportQuery.take || Constants.defaultPageSize;
         const startTime = reportQuery.startTime.toISOString();

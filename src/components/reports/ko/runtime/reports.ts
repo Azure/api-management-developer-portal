@@ -15,11 +15,6 @@ import { MinMaxAvgChartRecord } from "../../minMaxAvgChart/minMaxAvgChartRecord"
 import { BarChartConfig, BarChartRecord } from "../../barChart/barChartConfig";
 import { MapChartConfig } from "../../mapChart/mapChartConfig";
 
-enum direction {
-    asc = 'asc',
-    desc = 'desc'
-}
-
 @RuntimeComponent({
     selector: "reports-runtime"
 })
@@ -42,7 +37,7 @@ export class Reports {
 
     public readonly reportByProduct: ko.Observable<ReportRecordByProductViewModel[]>;
     public readonly reportByProductOrder: ko.Observable<string>;
-    public readonly reportByProductOrderDirection: ko.Observable<direction>;
+    public readonly reportByProductOrderDirection: ko.Observable<Constants.Direction>;
     public readonly reportByProductPage: ko.Observable<number>;
     public readonly reportByProductHasPager: ko.Computed<boolean>;
     public readonly reportByProductHasPrevPage: ko.Observable<boolean>;
@@ -52,7 +47,7 @@ export class Reports {
 
     public readonly reportBySubscription: ko.Observable<ReportRecordBySubscriptionViewModel[]>;
     public readonly reportBySubscriptionOrder: ko.Observable<string>;
-    public readonly reportBySubscriptionOrderDirection: ko.Observable<direction>;
+    public readonly reportBySubscriptionOrderDirection: ko.Observable<Constants.Direction>;
     public readonly reportBySubscriptionPage: ko.Observable<number>;
     public readonly reportBySubscriptionHasPager: ko.Computed<boolean>;
     public readonly reportBySubscriptionHasPrevPage: ko.Observable<boolean>;
@@ -62,7 +57,7 @@ export class Reports {
 
     public readonly reportByApi: ko.Observable<ReportRecordByApiViewModel[]>;
     public readonly reportByApiOrder: ko.Observable<string>;
-    public readonly reportByApiOrderDirection: ko.Observable<direction>;
+    public readonly reportByApiOrderDirection: ko.Observable<Constants.Direction>;
     public readonly reportByApiPage: ko.Observable<number>;
     public readonly reportByApiHasPager: ko.Computed<boolean>;
     public readonly reportByApiHasPrevPage: ko.Observable<boolean>;
@@ -72,7 +67,7 @@ export class Reports {
 
     public readonly reportByOperation: ko.Observable<ReportRecordByOperationViewModel[]>;
     public readonly reportByOperationOrder: ko.Observable<string>;
-    public readonly reportByOperationOrderDirection: ko.Observable<direction>;
+    public readonly reportByOperationOrderDirection: ko.Observable<Constants.Direction>;
     public readonly reportByOperationPage: ko.Observable<number>;
     public readonly reportByOperationHasPager: ko.Computed<boolean>;
     public readonly reportByOperationHasPrevPage: ko.Observable<boolean>;
@@ -94,7 +89,7 @@ export class Reports {
 
         this.reportByProduct = ko.observable([]);
         this.reportByProductOrder = ko.observable("callCountSuccess");
-        this.reportByProductOrderDirection = ko.observable(direction.desc);
+        this.reportByProductOrderDirection = ko.observable(Constants.Direction.desc);
         this.reportByProductPage = ko.observable(1);
         this.reportByProductHasPrevPage = ko.observable(false);
         this.reportByProductHasNextPage = ko.observable(false);
@@ -104,7 +99,7 @@ export class Reports {
 
         this.reportBySubscription = ko.observable([]);
         this.reportBySubscriptionOrder = ko.observable("callCountSuccess");
-        this.reportBySubscriptionOrderDirection = ko.observable(direction.desc);
+        this.reportBySubscriptionOrderDirection = ko.observable(Constants.Direction.desc);
         this.reportBySubscriptionPage = ko.observable(1);
         this.reportBySubscriptionHasPrevPage = ko.observable(false);
         this.reportBySubscriptionHasNextPage = ko.observable(false);
@@ -114,7 +109,7 @@ export class Reports {
 
         this.reportByApi = ko.observable([]);
         this.reportByApiOrder = ko.observable("callCountSuccess");
-        this.reportByApiOrderDirection = ko.observable(direction.desc);
+        this.reportByApiOrderDirection = ko.observable(Constants.Direction.desc);
         this.reportByApiPage = ko.observable(1);
         this.reportByApiHasPrevPage = ko.observable(false);
         this.reportByApiHasNextPage = ko.observable(false);
@@ -124,7 +119,7 @@ export class Reports {
 
         this.reportByOperation = ko.observable([]);
         this.reportByOperationOrder = ko.observable("callCountSuccess");
-        this.reportByOperationOrderDirection = ko.observable(direction.desc);
+        this.reportByOperationOrderDirection = ko.observable(Constants.Direction.desc);
         this.reportByOperationPage = ko.observable(1);
         this.reportByOperationHasPrevPage = ko.observable(false);
         this.reportByOperationHasNextPage = ko.observable(false);
@@ -164,9 +159,9 @@ export class Reports {
         ]);
     }
 
-    private switchDirection(directionInput: direction): direction {
-        if (directionInput === direction.desc) return direction.asc
-        else return direction.desc
+    private switchDirection(directionInput: Constants.Direction): Constants.Direction {
+        if (directionInput === Constants.Direction.desc) return Constants.Direction.asc
+        else return Constants.Direction.desc
     }
 
     /**
