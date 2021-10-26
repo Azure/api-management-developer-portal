@@ -1,15 +1,4 @@
-// ------------------------------------------------------------
-// Material Design Web Components - Custom widgets style import
-// ------------------------------------------------------------
-
-@use "@material/icon-button";
-@use "@material/button/styles";
-@use "@material/list/mdc-list";
-@use "@material/menu-surface/mdc-menu-surface";
-@use "@material/menu/mdc-menu";
-@use "@material/layout-grid/mdc-layout-grid";
-
-@include icon-button.core-styles;
+@import "./custom-widgets/custom-navbar.scss";
 
 @import "custom-navbar.scss";
 

@@ -1,68 +1,44 @@
-import * as ko from "knockout";
 import { Octokit } from "octokit";
-import { GithubType } from "../constants";
+import { GithubRepository } from "../constants";
 import { MapiError } from "../errors/mapiError";
-import { GithubFile } from "../models/githubFile";
 
 /**
  * Service to get data from Github repository for documentation
  */
 export class GithubService {
     private octokit: Octokit;
-    private repoStructure: Array<GithubFile> = new Array<GithubFile>();
-    private github = {
-        owner: 'phfrc',
-        repo: 'documentation-test',
-        baseUrl: 'https://api.github.com'
-    };
 
     constructor() {
-        this.octokit = new Octokit({
-            baseUrl: this.github.baseUrl
-        });
+        this.octokit = new Octokit();
     }
 
-    public async getRepositoryStructure(): Promise<Array<GithubFile>> {
-       const repositoryLoop = async (data: Array<GithubFile>) => {
-            for (const datum of data) {
-                // File: Add to repository structure
-                if (datum['type'] === GithubType.file) {
-                    this.repoStructure.push(new GithubFile({
-                        fileName: datum['name'],
-                        path: datum['path'],
-                        url: datum['url']
-                    }));
-                } else if (datum['type'] === GithubType.directory) {    // Folder: Request content of folder and store in structure
-                    await this.octokit.request("GET /repos/{owner}/{repo}/contents/{path}/", {
-                        owner: this.github.owner,
-                        repo: this.github.repo,
-                        path: datum['path']
-                    }).then(async response => {
-                        await repositoryLoop(response.data);
-                    }).catch(error => {
-                        throw new MapiError(error.status, '[Documentation Service] Getting (sub) folder structure failed: ' + error.message);
-                    });
-                }
+    public async getRepositoryTree() {
+        try {
+            const commitResponse = await this.octokit.request('GET /repos/{owner}/{repo}/branches/main', {
+                owner: GithubRepository.owner,
+                repo: GithubRepository.repo
+            });
+
+            if (commitResponse.status === 200) {
+                console.log('COMMIT sha: ', commitResponse.data['commit']['sha']);
+                return await this.octokit.request('GET /repos/{owner}/{repo}/git/trees/{tree_sha}', {
+                    owner: GithubRepository.owner,
+                    repo: GithubRepository.repo,
+                    tree_sha: commitResponse.data['commit']['sha'],
+                    recursive: 'true'
+                });
             }
+        } catch (error) {
+            throw new Error('[Documentation service] Getting data from Github API failed: ' + error.message);
         }
-
-        await this.octokit.request("GET /repos/{owner}/{repo}/contents", {
-            owner: this.github.owner,
-            repo: this.github.repo
-        }).then(async response => {
-            await repositoryLoop(response.data);
-        }).catch(error => {
-            throw new MapiError(error.status, '[Documentation Service] getRepositoryStructure failed: ' + error.message);
-        });
-
-        return this.repoStructure;
     }
 
     // Request: Get markdown content (base64)
     public async getMarkdown(path: string): Promise<void> {
         await this.octokit.request("GET /repos/{owner}/{repo}/contents/{path}?ref=main", {
-            owner: this.github.owner,
-            repo: this.github.repo,
+            owner: GithubRepository.owner,
+            repo: GithubRepository.repo,
+
             path: path
         }).then(async response => {
             await this.renderMarkdown(atob(response.data['content']));

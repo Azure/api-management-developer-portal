@@ -61,6 +61,7 @@ const runtimeConfig = {
         new CopyWebpackPlugin({
             patterns: [
                 { from: `./src/themes/website/styles/fonts`, to: "styles/fonts" },
+                { from: `./src/themes/website/styles/svgs/api`, to: "styles/svgs" },
                 { from: `./src/themes/website/assets` },
                 { from: `./js/HipObject.js`, to: "scripts/js" }
             ]

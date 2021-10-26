@@ -150,7 +150,16 @@ export const releaseNameFormat = "YYYYMMDDHHmm";
 
 export const genericHttpRequestError = "Server error. Unable to send request. Please try again later.";
 
+export const GithubRepository = {
+    owner: 'phfrc',
+    repo: 'documentation-test'
+};
+
 export enum GithubType {
     file = "file",
-    directory = "dir"
+    directory = "dir",
+    blob = 'blob',
+    tree = 'tree'
 }
+
+export const StoredDocumentation = 'github-documentation';

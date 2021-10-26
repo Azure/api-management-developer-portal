@@ -1,116 +1,7 @@
-// Fonts import
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-
-// Material Icons import
-@font-face {
-	font-family: 'Material Icons';
-	font-style: normal;
-	font-weight: 400;
-	src: url(iconfont/MaterialIcons-Regular.eot);
-	/* For IE6-8 */
-	src: local('Material Icons'),
-		local('MaterialIcons-Regular'),
-		url(fonts/material-icons.woff2) format('woff2'),
-		url(iconfont/MaterialIcons-Regular.ttf) format('truetype');
-}
-
-.material-icons {
-	font-family: 'Material Icons';
-	font-weight: normal;
-	font-style: normal;
-	font-size: 24px;
-	line-height: 1;
-	letter-spacing: normal;
-	text-transform: none;
-	display: inline-block;
-	white-space: nowrap;
-	word-wrap: normal;
-	direction: ltr;
-	-moz-font-feature-settings: 'liga';
-	-moz-osx-font-smoothing: grayscale;
-}
-
-// Font variables
-$robotoFont: 'Roboto', sans-serif;
-$sourceCodeProFont: 'Source Code Pro', monospace;
-
-// Extend to avoid copying
-%roboto {
-	font-family: $robotoFont !important;
-	src: url("/fonts/Roboto-Regular.ttf") !important;
-}
-
-%sourceCodePro {
-	font-family: $sourceCodeProFont !important;
-	src: url("/fonts/SourceCodePro-Bold.ttf") !important;
-}
-
-// Color variables
-$colors: (
-    blue: (
-        light: #3E66FB,
-        dark: #3B4874,
-        hover: rgba(62, 102, 251, 0.4)
-    ),
-    grey: (
-        border: #DEE2E6
-    ),
-    black: (
-        base: #363131
-    ),
-    white: (
-        base: #FFFFFF,
-        background: #F5F7FF
-    )
-);
-
-// Get color function
-// Usage: color: getColor(blue, hover)
-@function getColor($color, $tone) {
-	@if map-has-key($colors, $color) {
-		$color: map-get($colors, $color);
-
-		@if map-has-key($color, $tone) {
-			$tone: map-get($color, $tone);
-			@return $tone;
-		}
-		@return null;
-	}
-	@return null;
-}
+@import "./custom-style.scss"; 
 
 .p-0 {
 	padding: 0 !important;
-}
-
-.navbar {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	height: 4rem;
-	width: 100vw;
-}
-
-.navbar-infos {
-	margin-right: 4rem;
-	display: flex;
-	align-items: center;
-	margin-left: 4rem;
-
-	// Be:Mo logo
-	img {
-		width: 10rem;
-		height: 2.5rem;
-	}
-
-	// Portal description
-	span {
-		@extend %sourceCodePro;
-		font-size: 16px;
-		color: getColor(blue, dark);
-		margin-left: 4rem;
-	}
 }
 
 // Avatar menu + arrow down
@@ -130,47 +21,6 @@ $colors: (
 	}
 }
 
-.navbar-navigation {
-	display: flex;
-	align-items: center;
-	flex-direction: column;
-
-	nav {
-		ul {
-			all: unset;
-		}
-
-		li {
-			display: inline-block;
-		}
-
-		a {
-            @extend %sourceCodePro;
-			color: getColor(blue, dark);
-			margin-right: 2rem;
-			margin-left: 2rem;
-			font-size: 14px !important;
-			text-transform: uppercase;
-
-			&:after {
-				display: none;
-			}
-
-			&:hover {
-				color: getColor(blue, light) !important;
-				text-decoration: none !important;
-			}
-
-			&:active {
-				color: getColor(blue, light);
-				border-bottom: 2px solid getColor(blue, light);
-				padding-bottom: 1.6rem;
-			}
-		}
-
-	}
-}
-
 .navbar-avatar-button {
 	border-radius: 50%;
 	background-color: getColor(white, base) !important;
@@ -178,9 +28,14 @@ $colors: (
 	height: 2.8rem !important;
 	width: 2.8rem !important;
 	padding: 0px !important;
-
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
 	.mdc-icon-button__ripple {
-		--mdc-ripple-top: 0 !important;
+		--mdc-ripple-left: 8px !important;
+		--mdc-ripple-top: 0px !important;
 	}
 }
 
@@ -206,7 +61,6 @@ $colors: (
 	// Avatar menu item
 	.menu-nav-link {
 		letter-spacing: 0.24px;
-		text-decoration: none !important;
 		color: getColor(black, base);
 		padding: 1rem !important;
 		display: flex !important;
@@ -233,24 +87,29 @@ $colors: (
 			// Menu item - label
 			span:last-of-type {
 				color: getColor(black, base) !important;
+                font-size: 14px !important;
 			}
+
+            &:hover {
+		        text-decoration: none !important;
+            }
 		}
 	}
 }
 
 // Triangle above the menu
-// .avatar-menu:before,
-// .avatar-menu:after {
-// 	content: '';
-// 	position: absolute;
-// 	bottom: 100%;
-// 	left: 90px;
-// 	border: 11px solid transparent;
-// 	border-bottom-color: #dddddd;
-// }
+.avatar-menu:before,
+.avatar-menu:after {
+	content: '';
+	position: absolute;
+	bottom: 100%;
+	left: 85px;
+	border: 11px solid transparent;
+	border-bottom-color: #dddddd;
+}
 
-// .avatar-menu:after {
-// 	left: 90px;
-// 	border: 10px solid transparent !important;
-// 	border-bottom-color: #ffffff !important;
-// }
+.avatar-menu:after {
+	left: 85px;
+	border: 10px solid transparent !important;
+	border-bottom-color: #ffffff !important;
+}
