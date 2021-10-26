@@ -54,10 +54,10 @@
                     <a href="#" role="button" data-bind="click: reportByProductOrderBy.bind(this, 'callCountSuccess')">
                         Successful calls
                     </a>
-                    <!-- ko if: reportByProductOrder() == 'callCountSuccess' && reportByProductOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByProductOrder() == 'callCountSuccess' && !reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByProductOrder() == 'callCountSuccess' && reportByProductOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByProductOrder() == 'callCountSuccess' && reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -65,10 +65,10 @@
                     <a href="#" role="button" data-bind="click: reportByProductOrderBy.bind(this, 'callCountBlocked')">
                         Blocked calls
                     </a>
-                    <!-- ko if: reportByProductOrder() == 'callCountBlocked' && reportByProductOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByProductOrder() == 'callCountBlocked' && !reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByProductOrder() == 'callCountBlocked' && reportByProductOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByProductOrder() == 'callCountBlocked' && reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -76,10 +76,10 @@
                     <a href="#" role="button" data-bind="click: reportByProductOrderBy.bind(this, 'callCountFailed')">
                         Failed calls
                     </a>
-                    <!-- ko if: reportByProductOrder() == 'callCountFailed' && reportByProductOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByProductOrder() == 'callCountFailed' && !reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByProductOrder() == 'callCountFailed' && reportByProductOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByProductOrder() == 'callCountFailed' && reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -87,10 +87,10 @@
                     <a href="#" role="button" data-bind="click: reportByProductOrderBy.bind(this, 'callCountOther')">
                         Other calls
                     </a>
-                    <!-- ko if: reportByProductOrder() == 'callCountOther' && reportByProductOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByProductOrder() == 'callCountOther' && !reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByProductOrder() == 'callCountOther' && reportByProductOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByProductOrder() == 'callCountOther' && reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -98,10 +98,10 @@
                     <a href="#" role="button" data-bind="click: reportByProductOrderBy.bind(this, 'callCountTotal')">
                         Total calls
                     </a>
-                    <!-- ko if: reportByProductOrder() == 'callCountTotal' && reportByProductOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByProductOrder() == 'callCountTotal' && !reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByProductOrder() == 'callCountTotal' && reportByProductOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByProductOrder() == 'callCountTotal' && reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -109,10 +109,10 @@
                     <a href="#" role="button" data-bind="click: reportByProductOrderBy.bind(this, 'apiTimeAvg')">
                         Average response time
                     </a>
-                    <!-- ko if: reportByProductOrder() == 'apiTimeAvg' && reportByProductOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByProductOrder() == 'apiTimeAvg' && !reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByProductOrder() == 'apiTimeAvg' && reportByProductOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByProductOrder() == 'apiTimeAvg' && reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -120,10 +120,10 @@
                     <a href="#" role="button" data-bind="click: reportByProductOrderBy.bind(this, 'bandwidth')">
                         Bandwidth
                     </a>
-                    <!-- ko if: reportByProductOrder() == 'bandwidth' && reportByProductOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByProductOrder() == 'bandwidth' && !reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByProductOrder() == 'bandwidth' && reportByProductOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByProductOrder() == 'bandwidth' && reportByProductOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -198,10 +198,10 @@
                         data-bind="click: reportBySubscriptionOrderBy.bind(this, 'callCountSuccess')">
                         Successful calls
                     </a>
-                    <!-- ko if: reportBySubscriptionOrder() == 'callCountSuccess' && reportBySubscriptionOrderDirection() == 'desc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'callCountSuccess' && !reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportBySubscriptionOrder() == 'callCountSuccess' && reportBySubscriptionOrderDirection() == 'asc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'callCountSuccess' && reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -210,10 +210,10 @@
                         data-bind="click: reportBySubscriptionOrderBy.bind(this, 'callCountBlocked')">
                         Blocked calls
                     </a>
-                    <!-- ko if: reportBySubscriptionOrder() == 'callCountBlocked' && reportBySubscriptionOrderDirection() == 'desc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'callCountBlocked' && !reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportBySubscriptionOrder() == 'callCountBlocked' && reportBySubscriptionOrderDirection() == 'asc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'callCountBlocked' && reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -222,10 +222,10 @@
                         data-bind="click: reportBySubscriptionOrderBy.bind(this, 'callCountFailed')">
                         Failed calls
                     </a>
-                    <!-- ko if: reportBySubscriptionOrder() == 'callCountFailed' && reportBySubscriptionOrderDirection() == 'desc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'callCountFailed' && !reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportBySubscriptionOrder() == 'callCountFailed' && reportBySubscriptionOrderDirection() == 'asc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'callCountFailed' && reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -234,10 +234,10 @@
                         data-bind="click: reportBySubscriptionOrderBy.bind(this, 'callCountOther')">
                         Other calls
                     </a>
-                    <!-- ko if: reportBySubscriptionOrder() == 'callCountOther' && reportBySubscriptionOrderDirection() == 'desc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'callCountOther' && !reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportBySubscriptionOrder() == 'callCountOther' && reportBySubscriptionOrderDirection() == 'asc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'callCountOther' && reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -246,10 +246,10 @@
                         data-bind="click: reportBySubscriptionOrderBy.bind(this, 'callCountTotal')">
                         Total calls
                     </a>
-                    <!-- ko if: reportBySubscriptionOrder() == 'callCountTotal' && reportBySubscriptionOrderDirection() == 'desc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'callCountTotal' && !reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportBySubscriptionOrder() == 'callCountTotal' && reportBySubscriptionOrderDirection() == 'asc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'callCountTotal' && reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -257,10 +257,10 @@
                     <a href="#" role="button" data-bind="click: reportBySubscriptionOrderBy.bind(this, 'apiTimeAvg')">
                         Average response time
                     </a>
-                    <!-- ko if: reportBySubscriptionOrder() == 'apiTimeAvg' && reportBySubscriptionOrderDirection() == 'desc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'apiTimeAvg' && !reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportBySubscriptionOrder() == 'apiTimeAvg' && reportBySubscriptionOrderDirection() == 'asc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'apiTimeAvg' && reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -268,10 +268,10 @@
                     <a href="#" role="button" data-bind="click: reportBySubscriptionOrderBy.bind(this, 'bandwidth')">
                         Bandwidth
                     </a>
-                    <!-- ko if: reportBySubscriptionOrder() == 'bandwidth' && reportBySubscriptionOrderDirection() == 'desc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'bandwidth' && !reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportBySubscriptionOrder() == 'bandwidth' && reportBySubscriptionOrderDirection() == 'asc' -->
+                    <!-- ko if: reportBySubscriptionOrder() == 'bandwidth' && reportBySubscriptionOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -343,10 +343,10 @@
                     <a href="#" role="button" data-bind="click: reportByApiOrderBy.bind(this, 'callCountSuccess')">
                         Successful calls
                     </a>
-                    <!-- ko if: reportByApiOrder() == 'callCountSuccess' && reportByApiOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByApiOrder() == 'callCountSuccess' && !reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByApiOrder() == 'callCountSuccess' && reportByApiOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByApiOrder() == 'callCountSuccess' && reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -354,10 +354,10 @@
                     <a href="#" role="button" data-bind="click: reportByApiOrderBy.bind(this, 'callCountBlocked')">
                         Blocked calls
                     </a>
-                    <!-- ko if: reportByApiOrder() == 'callCountBlocked' && reportByApiOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByApiOrder() == 'callCountBlocked' && !reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByApiOrder() == 'callCountBlocked' && reportByApiOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByApiOrder() == 'callCountBlocked' && reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -365,10 +365,10 @@
                     <a href="#" role="button" data-bind="click: reportByApiOrderBy.bind(this, 'callCountFailed')">
                         Failed calls
                     </a>
-                    <!-- ko if: reportByApiOrder() == 'callCountFailed' && reportByApiOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByApiOrder() == 'callCountFailed' && !reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByApiOrder() == 'callCountFailed' && reportByApiOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByApiOrder() == 'callCountFailed' && reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -376,10 +376,10 @@
                     <a href="#" role="button" data-bind="click: reportByApiOrderBy.bind(this, 'callCountOther')">
                         Other calls
                     </a>
-                    <!-- ko if: reportByApiOrder() == 'callCountOther' && reportByApiOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByApiOrder() == 'callCountOther' && !reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByApiOrder() == 'callCountOther' && reportByApiOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByApiOrder() == 'callCountOther' && reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -387,10 +387,10 @@
                     <a href="#" role="button" data-bind="click: reportByApiOrderBy.bind(this, 'callCountTotal')">
                         Total calls
                     </a>
-                    <!-- ko if: reportByApiOrder() == 'callCountTotal' && reportByApiOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByApiOrder() == 'callCountTotal' && !reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByApiOrder() == 'callCountTotal' && reportByApiOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByApiOrder() == 'callCountTotal' && reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -398,10 +398,10 @@
                     <a href="#" role="button" data-bind="click: reportByApiOrderBy.bind(this, 'apiTimeAvg')">
                         Average response time
                     </a>
-                    <!-- ko if: reportByApiOrder() == 'apiTimeAvg' && reportByApiOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByApiOrder() == 'apiTimeAvg' && !reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByApiOrder() == 'apiTimeAvg' && reportByApiOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByApiOrder() == 'apiTimeAvg' && reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -409,10 +409,10 @@
                     <a href="#" role="button" data-bind="click: reportByApiOrderBy.bind(this, 'bandwidth')">
                         Bandwidth
                     </a>
-                    <!-- ko if: reportByApiOrder() == 'bandwidth' && reportByApiOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByApiOrder() == 'bandwidth' && !reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByApiOrder() == 'bandwidth' && reportByApiOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByApiOrder() == 'bandwidth' && reportByApiOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -486,10 +486,10 @@
                         data-bind="click: reportByOperationOrderBy.bind(this, 'callCountSuccess')">
                         Successful calls
                     </a>
-                    <!-- ko if: reportByOperationOrder() == 'callCountSuccess' && reportByOperationOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByOperationOrder() == 'callCountSuccess' && !reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByOperationOrder() == 'callCountSuccess' && reportByOperationOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByOperationOrder() == 'callCountSuccess' && reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -498,10 +498,10 @@
                         data-bind="click: reportByOperationOrderBy.bind(this, 'callCountBlocked')">
                         Blocked calls
                     </a>
-                    <!-- ko if: reportByOperationOrder() == 'callCountBlocked' && reportByOperationOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByOperationOrder() == 'callCountBlocked' && !reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByOperationOrder() == 'callCountBlocked' && reportByOperationOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByOperationOrder() == 'callCountBlocked' && reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -509,10 +509,10 @@
                     <a href="#" role="button" data-bind="click: reportByOperationOrderBy.bind(this, 'callCountFailed')">
                         Failed calls
                     </a>
-                    <!-- ko if: reportByOperationOrder() == 'callCountFailed' && reportByOperationOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByOperationOrder() == 'callCountFailed' && !reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByOperationOrder() == 'callCountFailed' && reportByOperationOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByOperationOrder() == 'callCountFailed' && reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -520,10 +520,10 @@
                     <a href="#" role="button" data-bind="click: reportByOperationOrderBy.bind(this, 'callCountOther')">
                         Other calls
                     </a>
-                    <!-- ko if: reportByOperationOrder() == 'callCountOther' && reportByOperationOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByOperationOrder() == 'callCountOther' && !reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByOperationOrder() == 'callCountOther' && reportByOperationOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByOperationOrder() == 'callCountOther' && reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -531,10 +531,10 @@
                     <a href="#" role="button" data-bind="click: reportByOperationOrderBy.bind(this, 'callCountTotal')">
                         Total calls
                     </a>
-                    <!-- ko if: reportByOperationOrder() == 'callCountTotal' && reportByOperationOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByOperationOrder() == 'callCountTotal' && !reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByOperationOrder() == 'callCountTotal' && reportByOperationOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByOperationOrder() == 'callCountTotal' && reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -542,10 +542,10 @@
                     <a href="#" role="button" data-bind="click: reportByOperationOrderBy.bind(this, 'apiTimeAvg')">
                         Average response time
                     </a>
-                    <!-- ko if: reportByOperationOrder() == 'apiTimeAvg' && reportByOperationOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByOperationOrder() == 'apiTimeAvg' && !reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByOperationOrder() == 'apiTimeAvg' && reportByOperationOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByOperationOrder() == 'apiTimeAvg' && reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
@@ -553,10 +553,10 @@
                     <a href="#" role="button" data-bind="click: reportByOperationOrderBy.bind(this, 'bandwidth')">
                         Bandwidth
                     </a>
-                    <!-- ko if: reportByOperationOrder() == 'bandwidth' && reportByOperationOrderDirection() == 'desc' -->
+                    <!-- ko if: reportByOperationOrder() == 'bandwidth' && !reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
-                    <!-- ko if: reportByOperationOrder() == 'bandwidth' && reportByOperationOrderDirection() == 'asc' -->
+                    <!-- ko if: reportByOperationOrder() == 'bandwidth' && reportByOperationOrderAscending() -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
                 </div>
