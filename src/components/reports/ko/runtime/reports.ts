@@ -37,6 +37,7 @@ export class Reports {
 
     public readonly reportByProduct: ko.Observable<ReportRecordByProductViewModel[]>;
     public readonly reportByProductOrder: ko.Observable<string>;
+    public readonly reportByProductOrderAscending: ko.Observable<boolean>;
     public readonly reportByProductPage: ko.Observable<number>;
     public readonly reportByProductHasPager: ko.Computed<boolean>;
     public readonly reportByProductHasPrevPage: ko.Observable<boolean>;
@@ -46,6 +47,7 @@ export class Reports {
 
     public readonly reportBySubscription: ko.Observable<ReportRecordBySubscriptionViewModel[]>;
     public readonly reportBySubscriptionOrder: ko.Observable<string>;
+    public readonly reportBySubscriptionOrderAscending: ko.Observable<boolean>;
     public readonly reportBySubscriptionPage: ko.Observable<number>;
     public readonly reportBySubscriptionHasPager: ko.Computed<boolean>;
     public readonly reportBySubscriptionHasPrevPage: ko.Observable<boolean>;
@@ -55,6 +57,7 @@ export class Reports {
 
     public readonly reportByApi: ko.Observable<ReportRecordByApiViewModel[]>;
     public readonly reportByApiOrder: ko.Observable<string>;
+    public readonly reportByApiOrderAscending: ko.Observable<boolean>;
     public readonly reportByApiPage: ko.Observable<number>;
     public readonly reportByApiHasPager: ko.Computed<boolean>;
     public readonly reportByApiHasPrevPage: ko.Observable<boolean>;
@@ -64,6 +67,7 @@ export class Reports {
 
     public readonly reportByOperation: ko.Observable<ReportRecordByOperationViewModel[]>;
     public readonly reportByOperationOrder: ko.Observable<string>;
+    public readonly reportByOperationOrderAscending: ko.Observable<boolean>;
     public readonly reportByOperationPage: ko.Observable<number>;
     public readonly reportByOperationHasPager: ko.Computed<boolean>;
     public readonly reportByOperationHasPrevPage: ko.Observable<boolean>;
@@ -85,6 +89,7 @@ export class Reports {
 
         this.reportByProduct = ko.observable([]);
         this.reportByProductOrder = ko.observable("callCountSuccess");
+        this.reportByProductOrderAscending = ko.observable(false);
         this.reportByProductPage = ko.observable(1);
         this.reportByProductHasPrevPage = ko.observable(false);
         this.reportByProductHasNextPage = ko.observable(false);
@@ -94,6 +99,7 @@ export class Reports {
 
         this.reportBySubscription = ko.observable([]);
         this.reportBySubscriptionOrder = ko.observable("callCountSuccess");
+        this.reportBySubscriptionOrderAscending = ko.observable(false);
         this.reportBySubscriptionPage = ko.observable(1);
         this.reportBySubscriptionHasPrevPage = ko.observable(false);
         this.reportBySubscriptionHasNextPage = ko.observable(false);
@@ -103,6 +109,7 @@ export class Reports {
 
         this.reportByApi = ko.observable([]);
         this.reportByApiOrder = ko.observable("callCountSuccess");
+        this.reportByApiOrderAscending = ko.observable(false);
         this.reportByApiPage = ko.observable(1);
         this.reportByApiHasPrevPage = ko.observable(false);
         this.reportByApiHasNextPage = ko.observable(false);
@@ -112,6 +119,7 @@ export class Reports {
 
         this.reportByOperation = ko.observable([]);
         this.reportByOperationOrder = ko.observable("callCountSuccess");
+        this.reportByOperationOrderAscending = ko.observable(false);
         this.reportByOperationPage = ko.observable(1);
         this.reportByOperationHasPrevPage = ko.observable(false);
         this.reportByOperationHasNextPage = ko.observable(false);
@@ -159,11 +167,13 @@ export class Reports {
         const endTime = this.endTime();
         const pageNumber = this.reportByProductPage() - 1;
         const orderBy = this.reportByProductOrder();
+        const orderAscending = this.reportByProductOrderAscending();
         const query: ReportQuery = {
             startTime: startTime,
             endTime: endTime, skip: pageNumber * Constants.defaultPageSize,
             take: Constants.defaultPageSize,
-            orderBy: orderBy
+            orderBy: orderBy,
+            orderDirection: orderAscending ? Constants.Direction.asc : Constants.Direction.desc
         };
 
         this.reportByProductWorking(true);
@@ -205,7 +215,11 @@ export class Reports {
     }
 
     public reportByProductOrderBy(fieldName: string): void {
-        this.reportByProductOrder(fieldName);
+        if (fieldName === this.reportByProductOrder()) {
+            this.reportByProductOrderAscending(!this.reportByProductOrderAscending())
+        } else {
+            this.reportByProductOrder(fieldName);
+        }
         this.getReportsByProduct();
     }
 
@@ -217,11 +231,13 @@ export class Reports {
         const endTime = this.endTime();
         const pageNumber = this.reportBySubscriptionPage() - 1;
         const orderBy = this.reportBySubscriptionOrder();
+        const orderAscending = this.reportBySubscriptionOrderAscending();
         const query: ReportQuery = {
             startTime: startTime,
             endTime: endTime, skip: pageNumber * Constants.defaultPageSize,
             take: Constants.defaultPageSize,
-            orderBy: orderBy
+            orderBy: orderBy,
+            orderDirection: orderAscending ? Constants.Direction.asc : Constants.Direction.desc
         };
 
         this.reportBySubscriptionWorking(true);
@@ -266,7 +282,11 @@ export class Reports {
     }
 
     public reportBySubscriptionOrderBy(fieldName: string): void {
-        this.reportBySubscriptionOrder(fieldName);
+        if (fieldName === this.reportBySubscriptionOrder()) {
+            this.reportBySubscriptionOrderAscending(!this.reportBySubscriptionOrderAscending())
+        } else {
+            this.reportBySubscriptionOrder(fieldName);
+        }
         this.getReportsBySubscription();
     }
 
@@ -278,11 +298,13 @@ export class Reports {
         const endTime = this.endTime();
         const pageNumber = this.reportByApiPage() - 1;
         const orderBy = this.reportByApiOrder();
+        const orderAscending = this.reportByApiOrderAscending();
         const query: ReportQuery = {
             startTime: startTime,
             endTime: endTime, skip: pageNumber * Constants.defaultPageSize,
             take: Constants.defaultPageSize,
-            orderBy: orderBy
+            orderBy: orderBy,
+            orderDirection: orderAscending ? Constants.Direction.asc : Constants.Direction.desc
         };
 
         this.reportByApiWorking(true);
@@ -324,7 +346,11 @@ export class Reports {
     }
 
     public reportByApiOrderBy(fieldName: string): void {
-        this.reportByApiOrder(fieldName);
+        if (fieldName === this.reportByApiOrder()) {
+            this.reportByApiOrderAscending(!this.reportByApiOrderAscending())
+        } else {
+            this.reportByApiOrder(fieldName);
+        }
         this.getReportsByApi();
     }
 
@@ -336,11 +362,13 @@ export class Reports {
         const endTime = this.endTime();
         const pageNumber = this.reportByOperationPage() - 1;
         const orderBy = this.reportByOperationOrder();
+        const orderAscending = this.reportByOperationOrderAscending();
         const query: ReportQuery = {
             startTime: startTime,
             endTime: endTime, skip: pageNumber * Constants.defaultPageSize,
             take: Constants.defaultPageSize,
-            orderBy: orderBy
+            orderBy: orderBy,
+            orderDirection: orderAscending ? Constants.Direction.asc : Constants.Direction.desc
         };
 
         this.reportByOperationWorking(true);
@@ -381,7 +409,11 @@ export class Reports {
     }
 
     public reportByOperationOrderBy(fieldName: string): void {
-        this.reportByOperationOrder(fieldName);
+        if (fieldName === this.reportByOperationOrder()) {
+            this.reportByOperationOrderAscending(!this.reportByOperationOrderAscending())
+        } else {
+            this.reportByOperationOrder(fieldName);
+        }
         this.getReportsByOperation();
     }
 

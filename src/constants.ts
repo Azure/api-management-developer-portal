@@ -42,6 +42,14 @@ export enum AadEndpoints {
     legacy = "login.windows.net"
 }
 
+/**
+ * Types of direction (e.g. for sorting of elements in a table)
+ */
+export enum Direction {
+    asc = 'asc',
+    desc = 'desc'
+}
+
 export const defaultAadTenantName = "common";
 
 export const closeAccount = "close-account";
