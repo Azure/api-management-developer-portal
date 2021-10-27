@@ -121,3 +121,16 @@ $body-bg: none;
         vertical-align: middle;
     }
 }
+
+table {
+    width: 100%;
+
+    thead {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    th,
+    td {
+        padding: 8px 4px;
+    }
+}
