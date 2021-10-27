@@ -1,6 +1,7 @@
 import * as ko from "knockout";
-import * as remark from "remark";
-import * as html from "remark-html";
+import { remark } from "remark";
+import html from "remark-html";
+import gfm from "remark-gfm";
 import * as truncateHtml from "truncate-html";
 
 interface MarkdownConfig {
@@ -39,6 +40,7 @@ ko.bindingHandlers["markdown"] = {
         ko.applyBindingsToNode(element, { html: htmlObservable }, null);
 
         remark()
+            .use(gfm)
             .use(html)
             .process(markdown, (err: any, html: any) => {
                 html = truncateHtml.default(html, { length: length, reserveLastWord: true });
