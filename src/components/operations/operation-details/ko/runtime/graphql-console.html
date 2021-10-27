@@ -15,7 +15,8 @@
     <nav aria-label="breadcrumb" class="breadcrumb-gql">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="#" data-bind="text: $component.api().displayName, attr: { href: $component.getApiReferenceUrl() }"></a>
+                <a href="#"
+                    data-bind="text: $component.api().displayName, attr: { href: $component.getApiReferenceUrl() }"></a>
             </li>
 
             <!-- ko if: $component.api().apiVersion -->
@@ -110,35 +111,33 @@
 
     <h3 class="pad-top-0">Headers</h3>
     <!-- ko if: $component.headers().length > 0 -->
-    <div data-bind="foreach: { data: $component.headers, as: 'header' }">
-        <div class="row flex flex-row col-6 headers-gql pad-left-0">
-            <div class="col-4">
-                <div class="form-group">
-                    <div class="input-group">
-                        <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
-                            spellcheck="false" aria-label="Header name" data-bind="textInput: header.name">
-                        <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
-                    </div>
+    <div class="row flex flex-row col-6 headers-gql pad-left-0" data-bind="foreach: { data: $component.headers, as: 'header' }">
+        <div class="col-4">
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
+                        spellcheck="false" aria-label="Header name" data-bind="textInput: header.name">
+                    <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <!-- ko if: header.options && header.options.length > 0 -->
-                    <select class="form-control" aria-label="Header value"
-                        data-bind="value: header.value, options: header.options"></select>
-                    <!-- /ko -->
-                    <!-- ko if: !header.options || header.options.length === 0 -->
-                    <div class="input-group">
-                        <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                            spellcheck="false" aria-label="Header value" data-bind="textInput: header.value">
-                        <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
-                    </div>
-                    <!-- /ko -->
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <!-- ko if: header.options && header.options.length > 0 -->
+                <select class="form-control" aria-label="Header value"
+                    data-bind="value: header.value, options: header.options"></select>
+                <!-- /ko -->
+                <!-- ko if: !header.options || header.options.length === 0 -->
+                <div class="input-group">
+                    <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
+                        spellcheck="false" aria-label="Header value" data-bind="textInput: header.value">
+                    <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
                 </div>
+                <!-- /ko -->
             </div>
-            <div class="col-2 pad-top-12">
-                <a href="#" role="button" data-bind="click: $component.removeHeader">Remove</a>
-            </div>
+        </div>
+        <div class="col-2 pad-top-12">
+            <a href="#" role="button" data-bind="click: $component.removeHeader">Remove</a>
         </div>
     </div>
     <!-- /ko -->
@@ -149,12 +148,11 @@
 
 </div>
 
-<div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal graphql-console-overflow">
-
-    <div class="editors">
-        <div class="graphql-console explorer">
+<div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
+    <div class="row col-12">
+        <div class="col-2 explorer-min-width">
             <h4>Explorer
-                <a href="#" role="button" data-bind="click: $component.collapse">
+                <a href="#" role="button" class="visible-collapse" data-bind="click: $component.collapse">
                     <!-- ko if: $component.collapsed() -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
@@ -163,27 +161,29 @@
                     <!-- /ko -->
                 </a>
             </h4>
-            
+
             <!-- ko ifnot: $component.collapsed() -->
             <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
-                <select id="operationType" class="form-control pad-7" data-bind="value: queryType">
+                <select id="operationType" class="form-control" data-bind="value: queryType">
                     <option value="query">Query</option>
                     <option value="mutation">Mutation</option>
                     <option value="subscription">Subscription</option>
                 </select>
                 <div class="input-icons">
                     <i class="icon-emb icon-emb-magnifier icon"></i>
-                    <input class="input-field" type="search" aria-label="Search" placeholder="Search" spellcheck="false"
-                        data-bind="textInput: filter" />
+                    <input class="form-control search" type="search" aria-label="Search" placeholder="Search"
+                        spellcheck="false" data-bind="textInput: filter" />
                 </div>
 
-                <div class="input-group explorer-operations"
-                    data-bind="template: { name: 'gql-Nodes', data: {operationNode: $component.node(), filter: filter()} }">
+                
+                <div class="input-group explorer-operations scrollable">
+                    <!-- ko template: { name: 'graphqlExplorer', data: {operationNode: $component.node(), filter: filter()} } -->
+                    <!-- /ko -->
                 </div>
             </div>
             <!-- /ko -->
         </div>
-        <div class="graphql-console query">
+        <div class="col-5 query-min-width">
             <h4>
                 Query editor
                 <i class="icon-emb icon-emb-info"
@@ -199,8 +199,7 @@
             <div class="flex flex-column align-items-end">
                 <div class="btn-group graphql-console-button" role="group">
                     <!-- ko ifnot: $component.sendingRequest()-->
-                    <button type="button" class="button button-primary btn-sm"
-                        data-bind="click: validateAndSendRequest">
+                    <button type="button" class="button button-primary btn-sm" data-bind="click: validateAndSendRequest">
                         Send
                     </button>
                     <!-- /ko -->
@@ -212,49 +211,10 @@
                 </div>
             </div>
         </div>
-        <div class="graphql-console response">
+        <div class="col-5 response-min-width">
             <h4>Response</h4>
-            <div class="response" id="responseEditor"></div>
+            <div class="response-editor" id="responseEditor"></div>
         </div>
     </div>
-
-
 </div>
-
 <!--/ko-->
-
-<script type="text/html" id="gql-Nodes">
-    <ul role="list" class="gql-list-group">
-        <!-- ko foreach: { data: operationNode.children(), as: 'nodeChild' } -->
-        <li role="presentation">
-            <!-- ko if: nodeChild.label().includes($parent.filter) -->
-                <div role="presentation" data-bind="attr: {name: nodeChild.label()}" class="presentation-item">
-                    <label data-bind="style: { 'color': nodeChild.isInputNode() ? 'rgb(139, 43, 185)' : '#0F7EBD'}">
-                        <!-- ko if: nodeChild.selected() -->
-                        <input type="checkbox" data-bind="value: nodeChild.selected(), click: () => {nodeChild.toggle()}" checked/> 
-                        <label data-bind="text: $component.operationName(nodeChild.label(), nodeChild.isRequired(), nodeChild.isInputNode())"></label>
-                        <!--/ko-->
-                        <!-- ko ifnot: nodeChild.selected() -->
-                        <input type="checkbox" data-bind="value: nodeChild.selected(), click: () => {nodeChild.toggle()}"/> 
-                        <label data-bind="text: $component.operationName(nodeChild.label(), nodeChild.isRequired(), nodeChild.isInputNode())"></label>
-                        <!--/ko-->
-                        <!-- ko if: nodeChild.isInputNode() && nodeChild.selected() -->
-                        <div class="inline-block">
-                            <!-- ko if: nodeChild.isScalarType() -->
-                            <input type="text" data-bind="value: nodeChild.inputValue, valueUpdate: 'input', event: { input: nodeChild.changeInput}"/>
-                            <!--/ko-->
-                            <!-- ko if: nodeChild.isEnumType() -->
-                            <select data-bind="options: nodeChild.options(), value: nodeChild.inputValue, event: { change: nodeChild.changeInput}"></select>
-                            <!--/ko-->
-                        </div>
-                        <!--/ko-->
-                    </label>
-                </div>
-                <!-- ko if: nodeChild.children() && nodeChild.children().length > 0 && nodeChild.selected() -->
-                    <div class="input-group" data-bind="template: { name: 'gql-Nodes', data: {operationNode: nodeChild, filter: ''} }"></div>
-                <!--/ko-->
-            <!--/ko-->
-        </li>
-        <!--/ko-->
-    </ul>
- </script>

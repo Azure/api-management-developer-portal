@@ -138,7 +138,7 @@ export class GraphQLInputTreeNode extends GraphQLTreeNode {
         } else if (type instanceof GraphQL.GraphQLScalarType) {
             switch (type.name) {
                 case "String":
-                    this.inputValue("\"string\"");
+                    this.inputValue(`"string"`);
                     break;
                 case "Int":
                     this.inputValue("10");
@@ -150,10 +150,10 @@ export class GraphQLInputTreeNode extends GraphQLTreeNode {
                     this.inputValue("false");
                     break;
                 case "ID":
-                    this.inputValue("\"id\"");
+                    this.inputValue(`"id"`);
                     break;
                 default:
-                    this.inputValue("\"\"")
+                    this.inputValue(`""`)
                     break;
             }
         }

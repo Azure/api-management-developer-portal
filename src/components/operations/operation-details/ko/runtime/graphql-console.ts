@@ -1,15 +1,15 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import * as GraphQL from "graphql";
-import * as _ from "lodash";
 import * as monaco from "monaco-editor";
 import loader from '@monaco-editor/loader';
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import template from "./graphql-console.html";
+import graphqlExplorer from "./graphql-explorer.html";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { GrantTypes, QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlOperationTypes, SettingNames } from "./../../../../../constants";
+import { GrantTypes, QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlOperationTypes } from "./../../../../../constants";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { OAuthService } from "../../../../../services/oauthService";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
@@ -42,7 +42,10 @@ function getType(type: GraphQL.GraphQLOutputType | GraphQL.GraphQLInputType) {
 
 @Component({
     selector: "graphql-console",
-    template: template
+    template: template,
+    childTemplates: {
+        graphqlExplorer: graphqlExplorer,
+    }
 })
 export class GraphqlConsole {
 
@@ -751,10 +754,10 @@ export class GraphqlConsole {
         return selectedNodes.length > 0 ? (firstLevel ? `(${selectedNodes.join(", ")})` : selectedNodes.join(", ")) : "";
     }
 
-    public operationName(name: string, isRequired: boolean, isInputNode: boolean): string {
-        let operationName = name += (isRequired) ? '*' : '';
-        operationName = operationName += (isInputNode) ? ':' : '';
-        return operationName;
+    public gqlFieldName(name: string, isRequired: boolean, isInputNode: boolean): string {
+        let gqlFieldName = name += (isRequired) ? '*' : '';
+        gqlFieldName = gqlFieldName += (isInputNode) ? ':' : '';
+        return gqlFieldName;
     }
 
     public collapse(): void {

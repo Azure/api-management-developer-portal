@@ -68,6 +68,12 @@ aside {
         .form-control {
             font-family: monospace;
 
+            &.search {
+                padding: 5px;
+                text-align: left;
+                padding-left: 40px;
+            }
+
             &[readonly] {
                 background: none;
                 border: none;
@@ -279,8 +285,10 @@ pre {
     }
 }
 
-.graphql-console-overflow {
-    overflow: auto;
+.visible-collapse {
+    @media (min-width: 768px) {
+        visibility: hidden;
+    }
 }
 
 .overflowingContentWidgets {
@@ -288,20 +296,39 @@ pre {
 }
 
 .query-editor {
-    height: 408px;
+    @media (max-height: 1200px) {
+        height: 375px;
+    }
+    @media (min-height: 1201px) {
+        height: 538px;
+    }
 }
 
 .query-variable {
-    height: 168px;
+    @media (max-height: 1200px) {
+        height: 151px;
+    }
+    @media (min-height: 1201px) {
+        height: 228px;
+    }
 }
 
-.response {
-    height: 640px;
+.response-editor {
+    @media (max-height: 1200px) {
+        height: 590px;
+    }
+    @media (min-height: 1201px) {
+        height: 830px;
+    }
 }
 
 .explorer-operations {
-    height: 620px;
-    overflow: auto;
+    @media (max-height: 1200px) {
+        height: 479px;
+    }
+    @media (min-height: 1201px) {
+        height: 719px;
+    }
 }
 
 .gql-console-height {
@@ -316,29 +343,16 @@ pre {
     }
 }
 
-.editors {
-    width: 100%;
+.explorer-min-width {
+    min-width: 250px;
 }
 
-.graphql-console {
-    vertical-align: top;
-    display: inline-block;
-    padding: 0 10px;
+.query-min-width {
+    min-width: 400px;
+}
 
-    &.explorer {
-        min-width: 250px;
-        width: 20%;
-    }
-
-    &.query {
-        min-width: 400px;
-        width: 40%;
-    }
-
-    &.response {
-        min-width: 400px;
-        width: 39%;
-    }
+.response-min-width {
+    min-width: 400px;
 }
 
 .graphql-console-button {
@@ -358,16 +372,18 @@ pre {
     }
 }
 
+.input-node-color {
+    color: rgb(139, 43, 185);
+}
+
+.not-input-node-color {
+    color: #0F7EBD;
+}
+
 .icon {
     padding: 10px;
     color: #0078D4;
     min-width: 50px;
-    text-align: center;
-}
-
-.input-field {
-    width: 100%;
-    padding: 5px;
     text-align: center;
 }
 
@@ -381,10 +397,6 @@ pre {
 
 .pad-left-0 {
     padding-left: 0px !important;
-}
-
-.pad-7 {
-    padding: 7px !important;
 }
 
 .presentation-item {
