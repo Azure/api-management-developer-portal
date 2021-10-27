@@ -1,0 +1,36 @@
+<ul role="list" class="gql-list-group">
+    <!-- ko foreach: { data: operationNode.children(), as: 'nodeChild' } -->
+    <li role="presentation">
+        <!-- ko if: nodeChild.label().includes($parent.filter) -->
+            <div role="presentation" data-bind="attr: {name: nodeChild.label()}" class="presentation-item">
+                <label data-bind="class: nodeChild.isInputNode() ? 'input-node-color' : 'not-input-node-color'">
+                    <!-- ko if: nodeChild.selected() -->
+                    <input type="checkbox" data-bind="value: nodeChild.selected(), click: nodeChild.toggle" checked/> 
+                    <label data-bind="text: $component.gqlFieldName(nodeChild.label(), nodeChild.isRequired(), nodeChild.isInputNode())"></label>
+                    <!--/ko-->
+                    <!-- ko ifnot: nodeChild.selected() -->
+                    <input type="checkbox" data-bind="value: nodeChild.selected(), click: nodeChild.toggle"/> 
+                    <label data-bind="text: $component.gqlFieldName(nodeChild.label(), nodeChild.isRequired(), nodeChild.isInputNode())"></label>
+                    <!--/ko-->
+                    <!-- ko if: nodeChild.isInputNode() && nodeChild.selected() -->
+                    <div class="inline-block">
+                        <!-- ko if: nodeChild.isScalarType() -->
+                        <input type="text" data-bind="value: nodeChild.inputValue, valueUpdate: 'input', event: { input: nodeChild.changeInput}"/>
+                        <!--/ko-->
+                        <!-- ko if: nodeChild.isEnumType() -->
+                        <select data-bind="options: nodeChild.options(), value: nodeChild.inputValue, event: { change: nodeChild.changeInput}"></select>
+                        <!--/ko-->
+                    </div>
+                    <!--/ko-->
+                </label>
+            </div>
+            <!-- ko if: nodeChild.children() && nodeChild.children().length > 0 && nodeChild.selected() -->
+                <div class="input-group">
+                    <!-- ko template: { name: 'graphqlExplorer', data: {operationNode: nodeChild, filter: ''} } -->
+                    <!-- /ko -->
+                </div>
+            <!--/ko-->
+        <!--/ko-->
+    </li>
+    <!--/ko-->
+</ul>
