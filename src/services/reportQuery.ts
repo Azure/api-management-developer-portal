@@ -1,3 +1,5 @@
+import * as Constants from "../constants";
+
 /**
  * Query object used for making queries to Analtics service.
  */
@@ -30,5 +32,5 @@ export interface ReportQuery {
     /**
      * Order direction.
      */
-    orderDirection?: string;
+    orderDirection?: Constants.Direction;
 }
