@@ -68,7 +68,8 @@ export class GraphqlConsole {
     public readonly document: ko.Observable<string>;
     public readonly sendingRequest: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
-    public readonly collapsed: ko.Observable<boolean>;
+    public readonly collapsedExplorer: ko.Observable<boolean>;
+    public readonly collapsedHeaders: ko.Observable<boolean>;
     public readonly subscriptionKeyRequired: ko.Observable<boolean>;
     public readonly selectedGrantType: ko.Observable<string>;
     public readonly authenticated: ko.Observable<boolean>;
@@ -96,7 +97,8 @@ export class GraphqlConsole {
         private readonly settingsProvider: ISettingsProvider
     ) {
         this.working = ko.observable(true);
-        this.collapsed = ko.observable(false);
+        this.collapsedExplorer = ko.observable(true);
+        this.collapsedHeaders = ko.observable(true);
         this.requestError = ko.observable();
         this.api = ko.observable<Api>();
         this.sendingRequest = ko.observable(false);
@@ -760,7 +762,7 @@ export class GraphqlConsole {
         return gqlFieldName;
     }
 
-    public collapse(): void {
-        this.collapsed(!this.collapsed());
+    public collapse(collapsible: string): void {
+        this[collapsible](!this[collapsible]());
     }
 }
