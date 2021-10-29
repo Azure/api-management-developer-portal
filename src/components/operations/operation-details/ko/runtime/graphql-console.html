@@ -161,8 +161,8 @@
 </div>
 
 <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
-    <div class="row col-12">
-        <div class="col-2 explorer-min-width">
+    <div class="gql-container">
+        <div class="gql-explorer-grid">
             <h4>Explorer
                 <a href="#" role="button" class="visible-collapse" data-bind="click: $component.collapse('collapsedExplorer')">
                     <!-- ko if: $component.collapsedExplorer -->
@@ -195,21 +195,21 @@
             </div>
             <!-- /ko -->
         </div>
-        <div class="col-5 query-min-width">
+        <div class="gql-query-grid">
             <h4>
                 Query editor
                 <i class="icon-emb icon-emb-info"
                     title="Select a query, mutation, or subscription from the explorer to add it to the test console or begin typing to compose a query."></i>
             </h4>
             <div class="query-editor" id="queryEditor"></div>
-            <h4>
+            <h4 class="margin-top-variables">
                 Query variables
                 <i class="icon-emb icon-emb-info"
                     title="Use variables to reuse the same query or mutation to pass different values."></i>
             </h4>
             <div class="query-variable" id="variablesEditor"></div>
             <div class="flex flex-column align-items-end">
-                <div class="btn-group graphql-console-button" role="group">
+                <div class="btn-group margin-top-send" role="group">
                     <!-- ko ifnot: $component.sendingRequest()-->
                     <button type="button" class="button button-primary btn-sm" data-bind="click: validateAndSendRequest">
                         Send
@@ -223,7 +223,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-5 response-min-width">
+        <div class="gql-response-grid">
             <h4>Response</h4>
             <div class="response-editor" id="responseEditor"></div>
         </div>
