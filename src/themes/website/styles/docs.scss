@@ -286,7 +286,7 @@ pre {
 }
 
 .visible-collapse {
-    @media (min-width: 768px) {
+    @media (min-width: $breakpoint-md) {
         visibility: hidden;
     }
 }
@@ -297,37 +297,55 @@ pre {
 
 .query-editor {
     @media (max-height: 1200px) {
-        height: 375px;
+        height: 390px;
+        @media (max-width: 1200px) and (min-width: 769px) {
+            height: 150px;
+        }
     }
     @media (min-height: 1201px) {
-        height: 538px;
+        height: 553px;
+        @media (max-width: 1200px) and (min-width: 769px) {
+            height: 303px;
+        }
     }
 }
 
 .query-variable {
     @media (max-height: 1200px) {
-        height: 151px;
+        height: 166px;
+        @media (max-width: 1200px) and (min-width: 769px) {
+            height: 100px;
+        }
     }
     @media (min-height: 1201px) {
-        height: 228px;
+        height: 243px;
+        @media (max-width: 1200px) and (min-width: 769px) {
+            height: 103px;
+        }
     }
 }
 
 .response-editor {
     @media (max-height: 1200px) {
-        height: 590px;
+        height: 620px;
+        @media (max-width: 1200px) and (min-width: 769px) {
+            height: 168px;
+        }
     }
     @media (min-height: 1201px) {
-        height: 830px;
+        height: 860px;
+        @media (max-width: 1200px) and (min-width: 769px) {
+            height: 254px;
+        }
     }
 }
 
 .explorer-operations {
     @media (max-height: 1200px) {
-        height: 479px;
+        height: 510px;
     }
     @media (min-height: 1201px) {
-        height: 719px;
+       height: 750px;
     }
 }
 
@@ -343,20 +361,12 @@ pre {
     }
 }
 
-.explorer-min-width {
-    min-width: 250px;
+.margin-top-variables {
+    margin-top: 30px !important;
 }
 
-.query-min-width {
-    min-width: 400px;
-}
-
-.response-min-width {
-    min-width: 400px;
-}
-
-.graphql-console-button {
-    margin-top: 30px;
+.margin-top-send {
+    margin-top: 25px;
 }
 
 .breadcrumb-gql {
@@ -567,4 +577,82 @@ operation-console {
     vertical-align: middle;
     display: inline;
     line-height: 1.7em;
+}
+
+.gql-container {
+    display: grid;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 100%;
+        @media (max-height: 1200px) {
+            grid-template-rows: auto repeat(2, 730px)
+        }
+        @media (min-height: 1201px) {
+            grid-template-rows: auto repeat(2, 970px)
+        }
+        grid-template-areas: 
+            "explorer"
+            "query"
+            "response";
+    }
+    @media (max-width: 1200px) and (min-width: 769px) {
+        @media (max-height: 1200px) {
+            grid-template-rows: 452px 248px;
+        }
+        @media (min-height: 1201px) {
+            grid-template-rows: 607px 333px;
+        }
+        grid-template-columns: 30% 70%;
+        grid-template-areas: 
+            "explorer query"
+            ". response";
+    }
+    @media (min-width: 1201px) {
+        @media (max-height: 1200px) {
+            grid-template-rows: 730px;
+        }
+        @media (min-height: 1201px) {
+            grid-template-rows: 970px;
+        }
+        grid-template-columns: 20% 40% 40%;
+        grid-template-areas: 
+            "explorer query response";
+    }
+}
+
+.gql-explorer-grid {
+    grid-area: explorer;
+    @media (max-width: 1200px) and (min-width: 769px) {
+        grid-column: 1;
+        grid-row: 1 / 3;
+    }
+    h4 {
+        margin-top: 0px;
+    }
+    @media (min-width: 769px) {
+        padding-right: 20px;
+    }
+    @media (max-width: 768px) {
+        margin-bottom: 20px;
+    }
+}
+
+.gql-query-grid {
+    grid-area: query;
+    @media (min-width: 1201px) {
+        padding-right: 20px;
+    }
+    h4 {
+        margin-top: 0px;
+    }
+}
+
+.gql-response-grid {
+    grid-area: response;
+    h4 {
+        margin-top: 0px;
+    }
+    @media (max-width: 768px) {
+        margin-top: 20px;
+    }
 }
