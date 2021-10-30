@@ -273,6 +273,24 @@ export class Utils {
         return value;
     }
 
+    private static reservedURIComponentCharactersTuples = [
+        ['&', '%26'],
+    ]
+    /**
+     * Encodes reserved URI character not encoded by the native encodeURI function
+     * (encodeURIComponent encodes many characters, which are desired unencoded)
+     * 
+     * @param uri string to be encoded
+     * @returns encoded string
+     */
+    public static encodeURICustomized(uri: string): string {
+        let encoded = encodeURI(uri)
+        this.reservedURIComponentCharactersTuples.forEach(([char, charEncoded]) => {
+            encoded = encoded.replaceAll(char, charEncoded)
+        })
+        return encoded
+    }
+    
     public static getBsonObjectId(): string {
         const timestamp = (new Date().getTime() / 1000 | 0).toString(16);
 
