@@ -131,6 +131,9 @@ export class Api {
                 case TypeOfApi.webSocket:
                     this.typeName = "WebSocket";
                     break;
+                case TypeOfApi.graphQL:
+                    this.typeName = "GraphQL";
+                    break;
                 default:
                     this.typeName = "REST";
                     break;
