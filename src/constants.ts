@@ -105,6 +105,23 @@ export const defaultInputDelayMs = 600;
 export const AppType = "developerPortal";
 
 /**
+ * HTML Editor Settings - HTML injection widget editor
+ */
+ export const HtmlEditorSettings = {
+    id: "htmlEditor",
+    config: {
+        language: 'html',
+        readOnly: false,
+
+        lineHeight: 17,
+        automaticLayout: true,
+        minimap: {
+            enabled: true
+        },
+    }
+ }
+
+/**
  * Query Editor Settings - GraphQL Console
  */
 export const QueryEditorSettings = {

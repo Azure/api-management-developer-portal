@@ -1,0 +1,29 @@
+<fieldset class="form flex-item flex-item-grow">
+    <div class="form-group" style="display: flex; flex-direction: column; height: 100%;">
+        <label for="height" class="form-label">
+            Height (px)
+            <button class="btn btn-info" type="button" title="Help"
+                data-bind="tooltip: 'Height in px of the <code>iframe</code> element the HTML code will be injected to.'"></button>
+        </label>
+        <div class="input-group">
+            <input id="height" type="number" class="form-control" placeholder="(Default of the browser)"
+                data-bind="textInput: htmlCodeHeight" />
+        </div>
+        <label for="htmlCode" class="form-label">
+            HTML code
+        </label>
+        <div class="input-group" style="height: 100%;">
+            <!-- ko if: editorLoading() -->
+            <spinner class="fit"></spinner>
+            <!-- /ko -->
+            <style>
+                /* fix for positioning of the IntelliSense window of Monaco Editor */
+                #htmlEditor .overflowingContentWidgets {
+                    position: absolute;
+                    top: 0;
+                }
+            </style>
+            <div id="htmlEditor" style="width: 100%;"></div>
+        </div>
+    </div>
+</fieldset>

@@ -36,6 +36,7 @@ import { OAuthService } from "./services/oauthService";
 import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts.module";
 import { RuntimeConfigPublisher } from "./publishing/runtimeConfigPublisher";
 import { RuntimeConfigBuilder } from "./publishing/runtimeConfigBuilder";
+import { HtmlInjectionPublishModule } from "./components/html-injection/widget.publish.module";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -60,7 +61,8 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ConfirmPasswordModule());
         injector.bindModule(new ChangePasswordModule());
         injector.bindModule(new ReportsModule());
-        injector.bindModule(new ValidationSummaryModule());        
+        injector.bindModule(new ValidationSummaryModule());
+        injector.bindModule(new HtmlInjectionPublishModule());
         injector.bindSingleton("tenantService", TenantService);        
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("userService", StaticUserService);

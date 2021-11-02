@@ -63,7 +63,7 @@ import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts.module";
 import { ApiProductsEditorModule } from "./components/apis/api-products/ko/apiProductsEditor.module";
 import { RuntimeConfigurator } from "./services/runtimeConfigurator";
-
+import { HtmlInjectionDesignModule } from "./components/html-injection/widget.design.module";
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -114,6 +114,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ValidationSummaryDesignModule());
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new SigninSocialEditorModule());
+        injector.bindModule(new HtmlInjectionDesignModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("tenantService", TenantService);
