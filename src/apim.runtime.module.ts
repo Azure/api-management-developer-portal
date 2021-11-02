@@ -72,6 +72,7 @@ import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
 import { ApimSettingsProvider } from "./configuration/apimSettingsProvider";
+import { HtmlInjectionRuntimeModule } from "../community/widgets/html-injection/widget.runtime.module";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -136,5 +137,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("viewStack", ViewStack);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("tagInput", TagInput);
+        injector.bindModule(new HtmlInjectionRuntimeModule());
     }
 }
