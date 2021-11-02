@@ -222,11 +222,11 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                     try {
                         const propertySchemaObject = contract.properties[propertyName];
 
-                        if (propertySchemaObject.readOnly) {
+                        if (!propertySchemaObject) {
                             return;
                         }
 
-                        if (!propertySchemaObject) {
+                        if (propertySchemaObject.readOnly) {
                             return;
                         }
 
@@ -322,6 +322,8 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         const result = [];
 
         if (!nested.properties) {
+            nested.name = prefix;
+            result.push(nested);
             return result;
         }
 
