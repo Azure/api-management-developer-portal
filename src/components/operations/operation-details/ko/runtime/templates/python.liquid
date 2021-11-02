@@ -5,7 +5,7 @@ headers = {
 {% if request.meaningfulHeaders.size > 0 -%}
     # Request headers
 {% for header in request.meaningfulHeaders -%}
-    '{{header.name}}': '{{header.value}}',
+    '{{header.name}}': '{{header.displayedValue}}',
 {% endfor -%}
 {% endif -%}
 }
@@ -43,7 +43,7 @@ headers = {
 {% if request.meaningfulHeaders.size > 0 -%}
     # Request headers
 {% for header in request.meaningfulHeaders -%}
-    '{{header.name}}': '{{header.value}}',
+    '{{header.name}}': '{{header.displayedValue}}',
 {% endfor -%}
 {% endif -%}
 }

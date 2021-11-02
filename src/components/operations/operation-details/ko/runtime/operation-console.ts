@@ -32,6 +32,7 @@ import { ResponsePackage } from "./responsePackage";
 import { templates } from "./templates/templates";
 import { LogItem, WebsocketClient } from "./websocketClient";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
+import { cloneDeep } from "lodash";
 
 const oauthSessionKey = "oauthSession";
 
@@ -324,23 +325,23 @@ export class OperationConsole {
 
     private loadRequestLanguagesRest(): Object[] {
         return [
-            {value: "http", text: "HTTP"},
-            {value: "csharp", text: "C#"},
-            {value: "curl", text: "Curl"},
-            {value: "java", text: "Java"},
-            {value: "javascript", text: "JavaScript"},
-            {value: "objc", text: "Objective C"}, 
-            {value: "php", text: "PHP"},
-            {value: "python", text: "Python"},
-            {value: "ruby", text: "Ruby"},
+            { value: "http", text: "HTTP" },
+            { value: "csharp", text: "C#" },
+            { value: "curl", text: "Curl" },
+            { value: "java", text: "Java" },
+            { value: "javascript", text: "JavaScript" },
+            { value: "objc", text: "Objective C" },
+            { value: "php", text: "PHP" },
+            { value: "python", text: "Python" },
+            { value: "ruby", text: "Ruby" },
         ];
     }
 
     private loadRequestLanguagesWs(): Object[] {
         return [
-            {value: "ws_wscat", text: "wscat"},
-            {value: "ws_csharp", text: "C#"},
-            {value: "ws_javascript", text: "JavaScript"}
+            { value: "ws_wscat", text: "wscat" },
+            { value: "ws_csharp", text: "C#" },
+            { value: "ws_javascript", text: "JavaScript" }
         ];
     }
 
@@ -463,12 +464,11 @@ export class OperationConsole {
 
         const keyHeader = new ConsoleHeader();
         keyHeader.name(subscriptionKeyHeaderName);
-        keyHeader.value(subscriptionKey);
         keyHeader.description = "Subscription key.";
         keyHeader.secret = true;
-        keyHeader.inputTypeValue = "password";
         keyHeader.type = "string";
         keyHeader.required = true;
+        keyHeader.value(subscriptionKey);
 
         this.consoleOperation().request.headers.push(keyHeader);
         this.updateRequestSummary();
@@ -485,12 +485,11 @@ export class OperationConsole {
 
         const keyHeader = new ConsoleHeader();
         keyHeader.name(KnownHttpHeaders.Authorization);
-        keyHeader.value(accessToken);
         keyHeader.description = "Subscription key.";
         keyHeader.secret = true;
-        keyHeader.inputTypeValue = "password";
         keyHeader.type = "string";
         keyHeader.required = true;
+        keyHeader.value(accessToken);
 
         this.consoleOperation().request.headers.push(keyHeader);
         this.updateRequestSummary();
@@ -749,7 +748,27 @@ export class OperationConsole {
     }
 
     public toggleRequestSummarySecrets(): void {
+        if (!this.secretsRevealed()) {
+            this.consoleOperation().request.meaningfulHeaders().forEach(header => header.revealed(true));
+        }
+        else {
+            this.consoleOperation().request.meaningfulHeaders().forEach(header => header.revealed(false));
+        }
+
         this.secretsRevealed(!this.secretsRevealed());
+        this.updateRequestSummary();
+    }
+
+    public toggleSecretHeader(header: ConsoleHeader): void {
+        header.toggleRevealed();
+    }
+
+    public async getPlainTextCodeSample(): Promise<string> {
+        const clonedConsoleOperation = cloneDeep(this.consoleOperation());
+        clonedConsoleOperation.request.meaningfulHeaders().forEach(header => header.revealed(true));
+
+        const template = templates[this.selectedLanguage()];
+        return await TemplatingService.render(template, ko.toJS(clonedConsoleOperation));
     }
 
     public getApiReferenceUrl(): string {
