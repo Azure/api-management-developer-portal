@@ -12,7 +12,7 @@
 </div>
 <!-- /ko -->
 
-<!-- ko ifnot: apiType() === 'websocket' -->
+<!-- ko ifnot: apiType() === 'websocket' || apiType() === 'graphql'-->
 <div class="form-inline search-input">
     <div class="d-block flex-grow mw-100">
         <div class="input-group">
@@ -93,6 +93,7 @@
 
     <!-- ko ifnot: working-->
     <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
+        <!-- ko ifnot: apiType() === 'graphql' -->
         <!-- ko if: operations -->
         <ul class="nav" role="list">
             <!-- ko foreach: { data: operations, as: 'item' } -->
@@ -112,6 +113,7 @@
         <div class="list-placeholder list-group-placeholder">
             No operations found
         </div>
+        <!-- /ko -->
         <!-- /ko -->
     </div>
     <!-- /ko -->

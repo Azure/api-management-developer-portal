@@ -66,13 +66,19 @@ export class OperationDetails {
         this.defaultSchemaView = ko.observable("table");
         this.useCorsProxy = ko.observable();
         this.requestUrlSample = ko.computed(() => {
+
+            const api = this.api();
+            const hostname = this.sampleHostname();
+            
+            if (api?.type === TypeOfApi.graphQL) {
+                return `https://${hostname}/${api.path}`;
+            }
+
             if (!this.api() || !this.operation()) {
                 return null;
             }
 
-            const api = this.api();
             const operation = this.operation();
-            const hostname = this.sampleHostname();
 
             let operationPath = api.versionedPath;
 
