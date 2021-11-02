@@ -146,6 +146,9 @@ export interface XsdSchemaContract {
     value: string;
 }
 
+export interface GraphQLSchemaContract {
+    value: string;
+}
 
 /**
  * 
@@ -153,12 +156,13 @@ export interface XsdSchemaContract {
 export interface SchemaContract extends ArmResource {
     properties: {
         contentType: string;
-        document?: SwaggerSchemaContract | OpenApiSchemaContract | XsdSchemaContract;
+        document?: SwaggerSchemaContract | OpenApiSchemaContract | XsdSchemaContract | GraphQLSchemaContract;
     };
 }
 
 export enum SchemaType {
     swagger = "application/vnd.ms-azure-apim.swagger.definitions+json",
     openapi = "application/vnd.oai.openapi.components+json",
-    xsd = "application/vnd.ms-azure-apim.xsd+xml"
+    xsd = "application/vnd.ms-azure-apim.xsd+xml",
+    graphQL  = "application/vnd.ms-azure-apim.graphql.schema"
 }
