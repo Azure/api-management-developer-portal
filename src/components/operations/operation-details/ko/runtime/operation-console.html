@@ -341,7 +341,7 @@
                 data-bind="event: { keyup: $component.updateRequestSummary }, textInput: item.body, valueUpdate: 'keyup'"></textarea>
             <!-- /ko -->
             <!-- ko if: item.bodyFormat() === 'binary' -->
-            <file-input params="{ containerItem: item }" class="form-control" aria-label="Request body"
+            <file-input params="{ containerItem: item, onSelect: $component.onFileSelect }" class="form-control" aria-label="Request body"
                 data-bind="css: { 'is-invalid': !item.binary.isValid() }"></file-input>
             <span class="invalid-feedback" data-bind="validationMessage: item.binary"></span>
             <!-- /ko -->

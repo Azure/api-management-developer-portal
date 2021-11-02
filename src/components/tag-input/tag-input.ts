@@ -25,7 +25,7 @@ export class TagInput {
     constructor(
         private readonly tagService: TagService,
         private readonly routeHelper: RouteHelper
-        ) {
+    ) {
         this.tags = ko.observableArray();
         this.scope = ko.observable();
         this.pattern = ko.observable();
@@ -61,27 +61,31 @@ export class TagInput {
             .subscribe(this.resetSearch);
     }
 
-    private initTagsFilter() {        
+    private initTagsFilter(): void {
         const tagsValue = this.routeHelper.getTags();
-        
-        if (tagsValue) {
-            const tags = tagsValue.split("|");
-            const tagItems = [];
-            if (tags && tags.length > 0) {
-                for (let i = 0; i < tags.length; i++) {
-                    const tag = tags[i];
-                    const tagContract: TagContract = Utils.armifyContract("tags", {
-                        id: `/tags/${tag}`,
-                        name: tag
-                    });
-                    tagItems.push(new Tag(tagContract));
-                    
-                }
-                this.selection(tagItems);
-                if (this.onChange) {
-                    this.onChange(this.selection());
-                    this.onDismiss.notifySubscribers();
-                }
+
+        if (!tagsValue) {
+            return;
+        }
+
+        const tags = tagsValue.split("|");
+        const tagItems = [];
+
+        if (tags && tags.length > 0) {
+            for (const tag of tags) {
+                const tagContract: TagContract = Utils.armifyContract("tags", {
+                    id: `/tags/${tag}`,
+                    name: tag
+                });
+                tagItems.push(new Tag(tagContract));
+
+            }
+            
+            this.selection(tagItems);
+
+            if (this.onChange) {
+                this.onChange(this.selection());
+                this.onDismiss.notifySubscribers();
             }
         }
     }

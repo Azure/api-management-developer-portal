@@ -4,7 +4,6 @@ import { HttpClient } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
 
-
 export class ApimSettingsProvider implements ISettingsProvider {
     private configuration: Object;
     private initializePromise: Promise<void>;
@@ -39,6 +38,12 @@ export class ApimSettingsProvider implements ISettingsProvider {
                 const apimConfiguration = apimsConfigurationResponse.toObject();
                 Object.assign(commonConfiguration, apimConfiguration);
             }
+        }
+        
+        const authServersRequest = await this.httpClient.send<any>({ url: "/auth-servers.json" });
+        if (authServersRequest.statusCode === 200) {
+            const authServers = authServersRequest.toObject();
+            commonConfiguration["authServers"] = authServers;
         }
 
         this.configuration = commonConfiguration;
