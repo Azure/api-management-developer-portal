@@ -3,6 +3,7 @@ import { DetailsOfApiViewModel } from "./detailsOfApiViewModel";
 import { DetailsOfApiModel } from "../detailsOfApiModel";
 import { Bag } from "@paperbits/common";
 import { EventManager } from "@paperbits/common/events";
+import { ComponentFlow } from "@paperbits/common/editing";
 
 
 export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApiModel, DetailsOfApiViewModel> {
@@ -24,7 +25,7 @@ export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApi
             displayName: "API: Details",
             model: model,
             draggable: true,
-            flow: "block",
+            flow: ComponentFlow.Block,
             editor: "details-of-api-editor",
             applyChanges: async (updatedModel: DetailsOfApiModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);
