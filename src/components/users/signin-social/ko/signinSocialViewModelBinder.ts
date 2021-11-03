@@ -1,3 +1,4 @@
+import { ComponentFlow } from "@paperbits/common/editing";
 import { Bag } from "@paperbits/common";
 import { EventManager } from "@paperbits/common/events";
 import { StyleCompiler } from "@paperbits/common/styles";
@@ -24,7 +25,7 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
                 draggable: true,
                 editor: "signin-social-editor",
                 model: model,
-                flow: "inline",
+                flow: ComponentFlow.Inline,
                 applyChanges: () => {
                     this.modelToViewModel(model, viewModel, bindingContext);
                     this.eventManager.dispatchEvent("onContentUpdate");

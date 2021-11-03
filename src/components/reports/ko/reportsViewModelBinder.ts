@@ -2,6 +2,7 @@ import { ViewModelBinder } from "@paperbits/common/widgets";
 import { ReportsViewModel } from "./reportsViewModel";
 import { ReportsModel } from "../reportsModel";
 import { Bag } from "@paperbits/common";
+import { ComponentFlow } from "@paperbits/common/editing";
 
 export class ReportsViewModelBinder implements ViewModelBinder<ReportsModel, ReportsViewModel> {
     public async modelToViewModel(model: ReportsModel, viewModel?: ReportsViewModel, bindingContext?: Bag<any>): Promise<ReportsViewModel> {
@@ -12,7 +13,7 @@ export class ReportsViewModelBinder implements ViewModelBinder<ReportsModel, Rep
         viewModel["widgetBinding"] = {
             displayName: "Reports",
             model: model,
-            flow: "block",
+            flow: ComponentFlow.Block,
             draggable: true
         };
 

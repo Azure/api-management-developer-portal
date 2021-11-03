@@ -1,7 +1,8 @@
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { SignupSocialViewModel } from "./signupSocialViewModel";
-import { SignupSocialModel } from "../signupSocialModel";
 import { Bag } from "@paperbits/common";
+import { ComponentFlow } from "@paperbits/common/editing";
+import { ViewModelBinder } from "@paperbits/common/widgets";
+import { SignupSocialModel } from "../signupSocialModel";
+import { SignupSocialViewModel } from "./signupSocialViewModel";
 
 export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocialModel, SignupSocialViewModel> {
     public async modelToViewModel(model: SignupSocialModel, viewModel?: SignupSocialViewModel, bindingContext?: Bag<any>): Promise<SignupSocialViewModel> {
@@ -12,7 +13,7 @@ export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocial
         viewModel["widgetBinding"] = {
             displayName: "Sign-up form: OAuth",
             model: model,
-            flow: "block",
+            flow: ComponentFlow.Block,
             draggable: true
         };
 
