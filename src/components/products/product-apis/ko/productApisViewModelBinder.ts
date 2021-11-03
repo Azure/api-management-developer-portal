@@ -3,6 +3,7 @@ import { EventManager } from "@paperbits/common/events";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { ProductApisViewModel } from "./productApisViewModel";
 import { ProductApisModel } from "../productApisModel";
+import { ComponentFlow } from "@paperbits/common/editing";
 
 export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisModel, ProductApisViewModel> {
     constructor(private readonly eventManager: EventManager) { }
@@ -24,7 +25,7 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
             displayName: "Product: APIs" + (model.layout === "list" ? "" : ` (${model.layout})`),
             model: model,
             draggable: true,
-            flow: "block",
+            flow: ComponentFlow.Block,
             editor: "product-apis-editor",
             applyChanges: async (updatedModel: ProductApisModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);
