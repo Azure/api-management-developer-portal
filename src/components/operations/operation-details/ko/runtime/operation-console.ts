@@ -213,6 +213,7 @@ export class OperationConsole {
         const operation = await this.apiService.getOperation(selectedOperation.id);
         const consoleOperation = new ConsoleOperation(selectedApi, operation);
         this.consoleOperation(consoleOperation);
+        this.consoleOperation().request.meaningfulHeaders().forEach(header => header.value.subscribe(_ => this.updateRequestSummary()));
 
         const hostnames = this.hostnames();
         this.hostnameSelectionEnabled(this.hostnames()?.length > 1);
@@ -351,7 +352,10 @@ export class OperationConsole {
     }
 
     public addHeader(): void {
-        this.consoleOperation().request.headers.push(new ConsoleHeader());
+        var newHeader = new ConsoleHeader();
+        this.consoleOperation().request.headers.push(newHeader);
+        newHeader.value.subscribe(_ => this.updateRequestSummary());
+
         this.updateRequestSummary();
     }
 
@@ -466,6 +470,7 @@ export class OperationConsole {
         keyHeader.name(subscriptionKeyHeaderName);
         keyHeader.description = "Subscription key.";
         keyHeader.secret = true;
+        keyHeader.inputTypeValue("password");
         keyHeader.type = "string";
         keyHeader.required = true;
         keyHeader.value(subscriptionKey);
@@ -748,14 +753,9 @@ export class OperationConsole {
     }
 
     public toggleRequestSummarySecrets(): void {
-        if (!this.secretsRevealed()) {
-            this.consoleOperation().request.meaningfulHeaders().forEach(header => header.revealed(true));
-        }
-        else {
-            this.consoleOperation().request.meaningfulHeaders().forEach(header => header.revealed(false));
-        }
-
         this.secretsRevealed(!this.secretsRevealed());
+        this.consoleOperation().request.meaningfulHeaders().forEach(header => header.revealed(this.secretsRevealed()));
+
         this.updateRequestSummary();
     }
 

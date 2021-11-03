@@ -7,6 +7,7 @@ export class ConsoleHeader {
     public readonly readonly: boolean;
     public readonly custom: boolean;
     public readonly options: string[];
+    public inputTypeValue: ko.Observable<string>;
     public required: boolean;
     public secret: boolean;
     public revealed: ko.Observable<boolean>;
@@ -16,6 +17,7 @@ export class ConsoleHeader {
 
     public toggleRevealed(): void {
         this.revealed(!this.revealed());
+        this.inputTypeValue(this.secret && !this.revealed() ? "password" : "text");
     }
 
     public canRename(): boolean {
@@ -27,6 +29,7 @@ export class ConsoleHeader {
         this.value = ko.observable();
         this.revealed = ko.observable(false);
         this.displayedValue = ko.observable();
+        this.inputTypeValue = ko.observable("text");
         this.options = [];
         this.required = false;
         this.readonly = false;
@@ -39,6 +42,7 @@ export class ConsoleHeader {
         });
         this.revealed.subscribe(() => {
             this.displayedValue((this.secret && !this.revealed()) ? this.value().replace(/./g, '•') : this.value());
+            this.inputTypeValue(this.secret && !this.revealed() ? "password" : "text");
         });
 
         if (!contract) {
@@ -53,6 +57,7 @@ export class ConsoleHeader {
         this.description = contract.description ? contract.description : "";
         this.type = contract.type;
         this.secret = false;
+        this.inputTypeValue(this.secret && !this.revealed() ? "password" : "text");
 
         this.name.extend(<any>{ required: { message: `Name is required.` } });
 
