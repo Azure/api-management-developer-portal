@@ -45,7 +45,7 @@ export class ApiService {
             }
 
             if (searchQuery.pattern) {
-                const pattern = Utils.encodeURICustomized(searchQuery.pattern);
+                const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
                 odataFilterEntries.push(`(contains(properties/displayName,'${pattern}'))`);
             }
         }
@@ -103,7 +103,7 @@ export class ApiService {
             }
 
             if (searchQuery.pattern) {
-                const pattern = Utils.encodeURICustomized(searchQuery.pattern);
+                const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
                 odataFilterEntries.push(`(contains(operation/${searchQuery.propertyName || 'name'},'${pattern}'))`);
             }
         }
@@ -162,7 +162,7 @@ export class ApiService {
             }
 
             if (searchRequest.pattern) {
-                const pattern = Utils.encodeURICustomized(searchRequest.pattern);
+                const pattern = Utils.encodeURICustomized(searchRequest.pattern, Constants.reservedCharTuplesForOData);
                 odataFilterEntries.push(`(contains(api/name,'${pattern}'))`);
             }
         }
@@ -348,7 +348,7 @@ export class ApiService {
             });
 
             if (searchQuery.pattern) {
-                const pattern = Utils.encodeURICustomized(searchQuery.pattern);
+                const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
                 query = Utils.addQueryParameter(query, `$filter=contains(properties/${searchQuery.propertyName || 'displayName'},'${pattern}')`);
             }
 
@@ -451,7 +451,7 @@ export class ApiService {
         let query = `${productId}/apis`;
 
         if (searchQuery.pattern) {
-            const pattern = Utils.encodeURICustomized(searchQuery.pattern);
+            const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
             query = Utils.addQueryParameter(query, `$filter=contains(properties/displayName,'${pattern}')`);
         }
 
