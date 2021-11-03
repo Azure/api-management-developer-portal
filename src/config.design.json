@@ -1,7 +1,7 @@
 {
     "environment": "development",
-    "managementApiUrl": "https://<service-name>.management.azure-api.net",
-    "managementApiAccessToken": "SharedAccessSignature ...",
-    "backendUrl": "https://<service-name>.developer.azure-api.net",
+    "managementApiUrl": "https://jbtests-apimanagement.management.azure-api.net",
+    "managementApiAccessToken": "SharedAccessSignature integration&202111211609&2U/mu9/5i8T2kd85FrBFPMooM6Akr/QcgK2V0q1vDAgJDGRKxLaLzEFCdwkhK/mGQiR5hK31LUkvstMnIauYbw==",
+    "backendUrl": "https://jbtests-apimanagement.developer.azure-api.net",
     "useHipCaptcha": false
 }

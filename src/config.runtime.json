@@ -1,5 +1,5 @@
 {
     "environment": "runtime",
-    "managementApiUrl": "https://<service-name>.management.azure-api.net",
-    "backendUrl": "https://<service-name>.developer.azure-api.net"
+    "managementApiUrl": "https://jbtests-apimanagement.management.azure-api.net",
+    "backendUrl": "https://jbtests-apimanagement.developer.azure-api.net"
 }
