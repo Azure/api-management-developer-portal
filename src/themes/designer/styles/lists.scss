@@ -53,9 +53,10 @@
     display: flex;
     text-decoration: none;
     color: $color-base;
+    padding: 0 5px;
 
     .paperbits-icon {
-        padding: 0 5px 0 10px;
+        padding: 0 5px;
     }
 
     .list-item-label {

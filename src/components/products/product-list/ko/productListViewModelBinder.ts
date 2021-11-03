@@ -3,6 +3,7 @@ import { ViewModelBinder } from "@paperbits/common/widgets";
 import { EventManager } from "@paperbits/common/events";
 import { ProductListViewModel } from "./productListViewModel";
 import { ProductListModel } from "../productListModel";
+import { ComponentFlow } from "@paperbits/common/editing";
 
 
 export class ProductListViewModelBinder implements ViewModelBinder<ProductListModel, ProductListViewModel> {
@@ -27,7 +28,7 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
             displayName: "List of products" + (model.layout === "list" ? "" : ` (${model.layout})`),
             model: model,
             draggable: true,
-            flow: "block",
+            flow: ComponentFlow.Block,
             editor: "product-list-editor",
             applyChanges: async (updatedModel: ProductListModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);
