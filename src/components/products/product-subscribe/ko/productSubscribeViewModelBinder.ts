@@ -3,32 +3,30 @@ import { ProductSubscribeViewModel } from "./productSubscribeViewModel";
 import { ProductSubscribeModel } from "../productSubscribeModel";
 import { Bag } from "@paperbits/common";
 import { EventManager } from "@paperbits/common/events";
+import { ComponentFlow } from "@paperbits/common/editing";
 
 
 
 export class ProductSubscribeViewModelBinder implements ViewModelBinder<ProductSubscribeModel, ProductSubscribeViewModel> {
-	constructor(private readonly eventManager: EventManager) { }
-		
+    constructor(private readonly eventManager: EventManager) { }
+
     public async modelToViewModel(model: ProductSubscribeModel, viewModel?: ProductSubscribeViewModel, bindingContext?: Bag<any>): Promise<ProductSubscribeViewModel> {
         if (!viewModel) {
             viewModel = new ProductSubscribeViewModel();
         }
-		
-	   viewModel.runtimeConfig(JSON.stringify({
+
+        viewModel.runtimeConfig(JSON.stringify({
             showTermsByDefault: model.showTermsByDefault
         }));
-		
-		
-
 
         viewModel["widgetBinding"] = {
             displayName: "Product: Subscribe form",
             model: model,
-            flow: "block",
-			editor: "product-subscribe-editor",
+            flow: ComponentFlow.Block,
+            editor: "product-subscribe-editor",
             applyChanges: async (updatedModel: ProductSubscribeModel) => {
                 this.modelToViewModel(updatedModel, viewModel, bindingContext);
-			    this.eventManager.dispatchEvent("onContentUpdate");
+                this.eventManager.dispatchEvent("onContentUpdate");
             }
         };
 

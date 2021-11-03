@@ -1,7 +1,8 @@
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { SubscriptionsViewModel } from "./subscriptionsViewModel";
-import { SubscriptionsModel } from "../subscriptionsModel";
 import { Bag } from "@paperbits/common";
+import { ComponentFlow } from "@paperbits/common/editing";
+import { ViewModelBinder } from "@paperbits/common/widgets";
+import { SubscriptionsModel } from "../subscriptionsModel";
+import { SubscriptionsViewModel } from "./subscriptionsViewModel";
 
 
 export class SubscriptionsViewModelBinder implements ViewModelBinder<SubscriptionsModel, SubscriptionsViewModel> {
@@ -12,7 +13,7 @@ export class SubscriptionsViewModelBinder implements ViewModelBinder<Subscriptio
             viewModel["widgetBinding"] = {
                 displayName: "User: Subscriptions",
                 model: model,
-                flow: "block",
+                flow: ComponentFlow.Block,
                 draggable: true,
                 applyChanges: async (updatedModel: SubscriptionsModel) => {
                     this.modelToViewModel(updatedModel, viewModel, bindingContext);
