@@ -1,3 +1,5 @@
-<fieldset class="form" data-bind="scrollable: true">
-    <input type="text" class="form-control" data-bind="textInput: sessionNumber" />
-</fieldset>
+<input data-bind="textInput: htmlCodeHeight" type="number" />
+<textarea
+    data-bind="textInput: htmlCode"
+    style="width: 100%; height: calc(100% - 53px); margin: 0; padding: 0; font-family: monospace; resize: none;"
+></textarea>

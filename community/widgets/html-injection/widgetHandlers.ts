@@ -1,6 +1,7 @@
 ﻿import { widgetName, widgetDisplayName, widgetCategory } from "./constants";
 import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { WidgetModel } from "./widgetModel";
+import { htmlCodeInitial } from "./ko/constants"
 
 /**
  * Handlers giving the editor required context to manupulate the widget. For example,
@@ -24,7 +25,8 @@ export class WidgetHandlers implements IWidgetHandler {
              */
             createModel: async () => { 
                 const model = new WidgetModel();
-                model.sessionNumber = "107";
+                model.htmlCode = htmlCodeInitial;
+                model.htmlCodeHeight = 150;
                 return model;
             }
         };

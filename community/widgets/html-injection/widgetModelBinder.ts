@@ -3,6 +3,7 @@ import { IModelBinder } from "@paperbits/common/editing";
 import { WidgetModel } from "./widgetModel";
 import { Contract } from "@paperbits/common";
 import { WidgetContract } from "./widgetContract";
+import { htmlCodeInitial } from "./ko/constants";
 
 /**
  * This is a class that helps to prepare the model using data described
@@ -19,14 +20,16 @@ export class WidgetModelBinder implements IModelBinder<WidgetModel> {
 
     public async contractToModel(contract: WidgetContract): Promise<WidgetModel> {
         const model = new WidgetModel();
-        model.sessionNumber = contract.sessionNumber || "107";
+        model.htmlCode = contract.htmlCode ?? htmlCodeInitial;
+        model.htmlCodeHeight = contract.htmlCodeHeight ?? 150;
         return model;
     }
 
     public modelToContract(model: WidgetModel): Contract {
         const contract: WidgetContract = {
             type: widgetName,
-            sessionNumber: model.sessionNumber,
+            htmlCode: model.htmlCode,
+            htmlCodeHeight: model.htmlCodeHeight,
         };
 
         return contract;

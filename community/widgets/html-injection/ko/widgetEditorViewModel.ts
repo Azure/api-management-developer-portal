@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import template from "./widgetEditorView.html";
 import { WidgetEditor } from "@paperbits/common/widgets";
-import { Component, OnMounted, Param, Event, OnDestroyed } from "@paperbits/common/ko/decorators";
+import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
 import { WidgetModel } from "../widgetModel";
 import { widgetEditorSelector } from "..";
 
@@ -10,10 +10,12 @@ import { widgetEditorSelector } from "..";
     template: template
 })
 export class WidgetEditorViewModel implements WidgetEditor<WidgetModel> {
-    public readonly sessionNumber: ko.Observable<string>;
+    public readonly htmlCode: ko.Observable<string>;
+    public readonly htmlCodeHeight: ko.Observable<number>;
 
     constructor() {
-        this.sessionNumber = ko.observable();
+        this.htmlCode = ko.observable();
+        this.htmlCodeHeight = ko.observable();
     }
 
     @Param()
@@ -24,12 +26,14 @@ export class WidgetEditorViewModel implements WidgetEditor<WidgetModel> {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        this.sessionNumber(this.model.sessionNumber);
-        this.sessionNumber.subscribe(this.applyChanges);
+        this.htmlCode(this.model.htmlCode);
+        this.htmlCode.subscribe(() => this.applyChanges('htmlCode'));
+        this.htmlCodeHeight(this.model.htmlCodeHeight);
+        this.htmlCodeHeight.subscribe(() => this.applyChanges('htmlCodeHeight'));
     }
 
-    private applyChanges(): void {
-        this.model.sessionNumber = this.sessionNumber();
+    private applyChanges(key: string): void {
+        this.model[key] = this[key]();
         this.onChange(this.model);
     }
 }

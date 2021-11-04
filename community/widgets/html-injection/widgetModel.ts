@@ -3,5 +3,6 @@
  * which gets updated by editors and rendered by the presentation layer.
  */
 export class WidgetModel { 
-    public sessionNumber: string;
+    public htmlCode: string;
+    public htmlCodeHeight: number;
 }

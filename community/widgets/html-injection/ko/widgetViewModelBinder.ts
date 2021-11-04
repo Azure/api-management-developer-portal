@@ -6,8 +6,6 @@ import { WidgetViewModel } from "./widgetViewModel";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { WidgetModel } from "../widgetModel";
 
-
-
 /**
  * This class describes how the model needs to be presented (as a view model)
  * in a specific UI framework.
@@ -17,7 +15,8 @@ export class WidgetViewModelBinder implements ViewModelBinder<WidgetModel, Widge
 
     public async updateViewModel(model: WidgetModel, viewModel: WidgetViewModel): Promise<void> {
         viewModel.runtimeConfig(JSON.stringify({
-            sessionNumber: model.sessionNumber
+            htmlCode: model.htmlCode,
+            htmlCodeHeight: model.htmlCodeHeight,
         }));
     }
 
