@@ -97,10 +97,10 @@ export class ConsoleOperation {
                 const parameterPlaceholder = parameter.name() !== "*" ? `{${parameter.name()}}` : "*";
 
                 if (requestUrl.indexOf(parameterPlaceholder) > -1) {
-                    requestUrl = requestUrl.replace(parameterPlaceholder, encodeURIComponent(parameter.value()));
+                    requestUrl = requestUrl.replace(parameterPlaceholder, Utils.encodeURICustomized(parameter.value()));
                 }
                 else {
-                    requestUrl = this.addParam(requestUrl, encodeURIComponent(parameter.name()), encodeURIComponent(parameter.value()));
+                    requestUrl = this.addParam(requestUrl, Utils.encodeURICustomized(parameter.name()), Utils.encodeURICustomized(parameter.value()));
                 }
             }
         });
