@@ -45,8 +45,8 @@ export class ApiService {
             }
 
             if (searchQuery.pattern) {
-                const pattern = Utils.escapeValueForODataFilter(searchQuery.pattern);
-                odataFilterEntries.push(`(contains(properties/displayName,'${encodeURIComponent(pattern)}'))`);
+                const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
+                odataFilterEntries.push(`(contains(properties/displayName,'${pattern}'))`);
             }
         }
 
@@ -103,8 +103,8 @@ export class ApiService {
             }
 
             if (searchQuery.pattern) {
-                const pattern = Utils.escapeValueForODataFilter(searchQuery.pattern);
-                odataFilterEntries.push(`(contains(operation/${searchQuery.propertyName || 'name'},'${encodeURIComponent(pattern)}'))`);
+                const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
+                odataFilterEntries.push(`(contains(operation/${searchQuery.propertyName || 'name'},'${pattern}'))`);
             }
         }
 
@@ -162,8 +162,8 @@ export class ApiService {
             }
 
             if (searchRequest.pattern) {
-                const pattern = Utils.escapeValueForODataFilter(searchRequest.pattern);
-                odataFilterEntries.push(`(contains(api/name,'${encodeURIComponent(pattern)}'))`);
+                const pattern = Utils.encodeURICustomized(searchRequest.pattern, Constants.reservedCharTuplesForOData);
+                odataFilterEntries.push(`(contains(api/name,'${pattern}'))`);
             }
         }
 
@@ -348,8 +348,8 @@ export class ApiService {
             });
 
             if (searchQuery.pattern) {
-                const pattern = Utils.escapeValueForODataFilter(searchQuery.pattern);
-                query = Utils.addQueryParameter(query, `$filter=contains(properties/${searchQuery.propertyName || 'displayName'},'${encodeURIComponent(pattern)}')`);
+                const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
+                query = Utils.addQueryParameter(query, `$filter=contains(properties/${searchQuery.propertyName || 'displayName'},'${pattern}')`);
             }
 
             top = searchQuery && searchQuery.take || Constants.defaultPageSize;
@@ -454,8 +454,8 @@ export class ApiService {
         let query = `${productId}/apis`;
 
         if (searchQuery.pattern) {
-            const pattern = Utils.escapeValueForODataFilter(searchQuery.pattern);
-            query = Utils.addQueryParameter(query, `$filter=contains(properties/displayName,'${encodeURIComponent(pattern)}')`);
+            const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
+            query = Utils.addQueryParameter(query, `$filter=contains(properties/displayName,'${pattern}')`);
         }
 
         if (searchQuery.skip) {
