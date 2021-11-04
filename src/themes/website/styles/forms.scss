@@ -193,8 +193,8 @@ $search-button-width: 30px;
         align-items: center;
     }
     
-    .input-div {
-        width: 100%;
+    .input-password {
+        padding-right: 30px;
     }
 }
 
@@ -253,4 +253,12 @@ $search-button-width: 30px;
     .item-label {
         padding-right: 5px;
     }
+}
+
+.input-password::-ms-clear {
+    display: none;
+    
+}
+.input-password::-ms-reveal {
+    display: none;
 }

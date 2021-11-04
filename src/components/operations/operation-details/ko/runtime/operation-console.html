@@ -253,17 +253,14 @@
                             data-bind="event: { keyup: $component.updateRequestSummary }, textInput: header.value">
                         <!-- /ko -->
                         <!-- ko if: header.secret -->
-                        <div class="input-div">
-                            <input autocomplete="off"
-                                class="form-control form-control-sm password-input" placeholder="value"
-                                spellcheck="false" aria-label="Header value"
-                                data-bind="attr: {type: header.inputTypeValue}, textInput: header.value">
-                            <button data-bind="click: () => $component.toggleSecretHeader(header)"
-                                class="toggle-secrets-button">
-                                <i
-                                    data-bind="class: header.revealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
-                            </button>
-                        </div>
+                        <input autocomplete="off" class="form-control form-control-sm input-password"
+                            placeholder="value" spellcheck="false" aria-label="Header value"
+                            data-bind="attr: {type: header.inputTypeValue}, textInput: header.value">
+                        <button data-bind="click: () => $component.toggleSecretHeader(header)"
+                            class="toggle-secrets-button">
+                            <i
+                                data-bind="class: header.revealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
+                        </button>
                         <!-- /ko -->
                         <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
                     </div>

@@ -352,7 +352,7 @@ export class OperationConsole {
     }
 
     public addHeader(): void {
-        var newHeader = new ConsoleHeader();
+        const newHeader = new ConsoleHeader();
         this.consoleOperation().request.headers.push(newHeader);
         newHeader.value.subscribe(_ => this.updateRequestSummary());
 
