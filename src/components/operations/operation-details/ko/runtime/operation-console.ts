@@ -52,6 +52,7 @@ export class OperationConsole {
     public readonly selectedSubscriptionKey: ko.Observable<string>;
     public readonly subscriptionKeyRequired: ko.Observable<boolean>;
     public readonly selectedLanguage: ko.Observable<string>;
+    public readonly selectedRepresentation: ko.Observable<string>;
     public readonly selectedProduct: ko.Observable<Product>;
     public readonly requestError: ko.Observable<string>;
     public readonly codeSample: ko.Observable<string>;
@@ -98,6 +99,7 @@ export class OperationConsole {
         this.responseHeadersString = ko.observable();
         this.responseBody = ko.observable();
         this.selectedLanguage = ko.observable("http");
+        this.selectedRepresentation = ko.observable("");
         this.api = ko.observable<Api>();
         this.revision = ko.observable();
         this.operation = ko.observable();
@@ -186,6 +188,7 @@ export class OperationConsole {
         this.api.subscribe(this.resetConsole);
         this.operation.subscribe(this.resetConsole);
         this.selectedLanguage.subscribe(this.updateRequestSummary);
+        this.selectedRepresentation.subscribe(this.updateRequestSummary);
         this.selectedGrantType.subscribe(this.onGrantTypeChange);
     }
 
@@ -575,6 +578,8 @@ export class OperationConsole {
     }
 
     private async sendRequest(): Promise<void> {
+        
+        console.log(this.selectedRepresentation())
         this.requestError(null);
         this.sendingRequest(true);
         this.responseStatusCode(null);
