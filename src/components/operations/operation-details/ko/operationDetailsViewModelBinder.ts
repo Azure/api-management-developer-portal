@@ -3,6 +3,7 @@ import { EventManager } from "@paperbits/common/events";
 import { OperationDetailsViewModel } from "./operationDetailsViewModel";
 import { OperationDetailsModel } from "../operationDetailsModel";
 import { Bag } from "@paperbits/common";
+import { ComponentFlow } from "@paperbits/common/editing";
 
 
 export class OperationDetailsViewModelBinder implements ViewModelBinder<OperationDetailsModel, OperationDetailsViewModel> {
@@ -16,7 +17,7 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
                 displayName: "Operation: Details",
                 model: model,
                 draggable: true,
-                flow: "block",
+                flow: ComponentFlow.Block,
                 editor: "operation-details-editor",
                 applyChanges: async (updatedModel: OperationDetailsModel) => {
                     await this.modelToViewModel(updatedModel, viewModel, bindingContext);
