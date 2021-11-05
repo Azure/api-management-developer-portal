@@ -11,7 +11,7 @@ import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
 import { ConsoleOperation } from "../../../../../models/console/consoleOperation";
 import { templates } from "./templates/templates";
 import { TemplatingService } from "../../../../../services/templatingService";
-import { GrantTypes, TypeOfApi } from "./../../../../../constants";
+import { GrantTypes, TypeOfApi, oauthSessionKey } from "./../../../../../constants";
 import { OAuthService } from "../../../../../services/oauthService";
 import { Product } from "../../../../../models/product";
 import { UnauthorizedError } from "../../../../../errors/unauthorizedError";
@@ -20,8 +20,6 @@ import { ApiService } from "../../../../../services/apiService";
 import { ProductService } from "../../../../../services/productService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
-
-const oauthSessionKey = "oauthSession";
 
 @Component({
     selector: "authorization",
@@ -38,6 +36,8 @@ export class Authorization {
     public readonly authorizationError: ko.Observable<string>;
     public readonly products: ko.Observable<Product[]>;
     public readonly selectedSubscriptionKey: ko.Observable<string>;
+    public readonly gqlConsole: ko.Observable<boolean>;
+    public readonly collapsedAuth: ko.Observable<boolean>;
     
 
     constructor(
@@ -47,9 +47,11 @@ export class Authorization {
         private readonly apiService: ApiService,
         private readonly productService: ProductService,
     ) {
+        this.collapsedAuth = ko.observable(false);
         this.authorizationServer = ko.observable();
         this.selectedGrantType = ko.observable();
         this.api = ko.observable<Api>();
+        this.gqlHeaders = ko.observableArray<ConsoleHeader>();;
         this.consoleOperation = ko.observable<ConsoleOperation>();
         this.templates = templates;
         this.codeSample = ko.observable<string>();
@@ -61,6 +63,7 @@ export class Authorization {
         this.authorizationError = ko.observable();
         this.products = ko.observable();
         this.selectedSubscriptionKey = ko.observable();
+        this.gqlConsole = ko.observable(false);
     }
 
     @Param()
@@ -73,6 +76,9 @@ export class Authorization {
     public consoleOperation: ko.Observable<ConsoleOperation>;
 
     @Param()
+    public gqlHeaders: ko.ObservableArray<ConsoleHeader>; 
+
+    @Param()
     public codeSample: ko.Observable<string>;
 
     @Param()
@@ -81,6 +87,7 @@ export class Authorization {
 
     @OnMounted()
     public async initialize(): Promise<void> {
+        this.gqlConsole(this.isGraphQL());
         this.subscriptionKeyRequired(!!this.api().subscriptionRequired);
         this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
         this.selectedGrantType.subscribe(this.onGrantTypeChange);
@@ -89,6 +96,10 @@ export class Authorization {
         if (this.api().subscriptionRequired) {
             await this.loadSubscriptionKeys();
         }
+    }
+
+    private isGraphQL(): boolean {
+        return this.api().type === TypeOfApi.graphQL;
     }
 
     private async setupOAuth(): Promise<void> {
@@ -143,8 +154,14 @@ export class Authorization {
         keyHeader.type = "string";
         keyHeader.required = true;
 
-        this.consoleOperation().request.headers.push(keyHeader);
-        this.updateRequestSummary();
+        if(!this.gqlConsole()) {
+            this.consoleOperation().request.headers.push(keyHeader);
+            this.updateRequestSummary();
+        }
+        else {
+            this.gqlHeaders.push(keyHeader);
+        }
+        
         this.authenticated(true);
     }
 
@@ -181,8 +198,13 @@ export class Authorization {
         keyHeader.type = "string";
         keyHeader.required = true;
 
-        this.consoleOperation().request.headers.push(keyHeader);
-        this.updateRequestSummary();
+        if(!this.gqlConsole()) {
+            this.consoleOperation().request.headers.push(keyHeader);
+            this.updateRequestSummary();
+        }
+        else {
+            this.gqlHeaders.push(keyHeader);
+        }
     }
 
 
@@ -236,9 +258,9 @@ export class Authorization {
     private findHeader(name: string): ConsoleHeader {
         const searchName = name.toLocaleLowerCase();
 
-        return this.consoleOperation().request
-            .headers()
-            .find(x => x.name()?.toLocaleLowerCase() === searchName);
+        const headers = (this.gqlConsole()) ? this.gqlHeaders() : this.consoleOperation().request.headers()
+
+        return headers.find(x => x.name()?.toLocaleLowerCase() === searchName);
     }
 
     private getSubscriptionKeyHeaderName(): string {
@@ -257,8 +279,13 @@ export class Authorization {
     }
 
     public removeHeader(header: ConsoleHeader): void {
-        this.consoleOperation().request.headers.remove(header);
-        this.updateRequestSummary();
+        if(!this.gqlConsole()) {
+            this.consoleOperation().request.headers.remove(header);
+            this.updateRequestSummary();
+        }
+        else {
+            this.gqlHeaders.remove(header);
+        }
     }
     
     private async setStoredCredentials(serverName: string, scopeOverride: string, grantType: string, accessToken: string): Promise<void> {
@@ -348,7 +375,7 @@ export class Authorization {
     }
 
     private applySubscriptionKey(subscriptionKey: string): void {
-        if (!this.consoleOperation()) {
+        if (!this.consoleOperation() && !this.gqlConsole()) {
             return;
         }
 
@@ -357,7 +384,10 @@ export class Authorization {
         } else {
             this.setSubscriptionKeyHeader(subscriptionKey);
         }
-        this.updateRequestSummary();
+        
+        if(!this.gqlConsole()) {
+            this.updateRequestSummary();
+        }
     }
 
     private setSubscriptionKeyParameter(subscriptionKey: string): void {
@@ -402,5 +432,9 @@ export class Authorization {
     public removeQueryParameter(parameter: ConsoleParameter): void {
         this.consoleOperation().request.queryParameters.remove(parameter);
         this.updateRequestSummary();
+    }
+
+    public collapseAuth(): void {
+        this.collapsedAuth(!this.collapsedAuth());
     }
 }
