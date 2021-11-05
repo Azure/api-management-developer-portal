@@ -1,6 +1,6 @@
 import { Bag } from "@paperbits/common";
 import { EventManager } from "@paperbits/common/events";
-import { IWidgetBinding } from "@paperbits/common/editing";
+import { ComponentFlow, IWidgetBinding } from "@paperbits/common/editing";
 import { widgetName, widgetDisplayName, widgetEditorSelector } from "../constants";
 import { WidgetViewModel } from "./widgetViewModel";
 import { ViewModelBinder } from "@paperbits/common/widgets";
@@ -28,7 +28,7 @@ export class WidgetViewModelBinder implements ViewModelBinder<WidgetModel, Widge
                 displayName: widgetDisplayName,
                 readonly: bindingContext ? bindingContext.readonly : false,
                 model: model,
-                flow: "block",
+                flow: ComponentFlow.Block,
                 editor: widgetEditorSelector,
                 draggable: true,
                 applyChanges: async () => {

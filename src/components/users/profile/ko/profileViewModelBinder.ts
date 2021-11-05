@@ -1,7 +1,9 @@
+import { Bag } from "@paperbits/common";
 import { ViewModelBinder } from "@paperbits/common/widgets";
+import { ComponentFlow } from "@paperbits/common/editing";
 import { ProfileViewModel } from "./profileViewModel";
 import { ProfileModel } from "../profileModel";
-import { Bag } from "@paperbits/common";
+
 
 export class ProfileViewModelBinder implements ViewModelBinder<ProfileModel, ProfileViewModel> {
     public async modelToViewModel(model: ProfileModel, viewModel?: ProfileViewModel, bindingContext?: Bag<any>): Promise<ProfileViewModel> {
@@ -11,7 +13,7 @@ export class ProfileViewModelBinder implements ViewModelBinder<ProfileModel, Pro
             viewModel["widgetBinding"] = {
                 displayName: "User: Profile",
                 model: model,
-                flow: "block",
+                flow: ComponentFlow.Block,
                 draggable: true,
                 applyChanges: async (updatedModel: ProfileModel) => {
                     this.modelToViewModel(updatedModel, viewModel, bindingContext);

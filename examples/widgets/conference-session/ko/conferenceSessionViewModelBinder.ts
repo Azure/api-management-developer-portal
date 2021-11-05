@@ -1,6 +1,6 @@
 import { Bag } from "@paperbits/common";
 import { EventManager } from "@paperbits/common/events";
-import { IWidgetBinding } from "@paperbits/common/editing";
+import { ComponentFlow, IWidgetBinding } from "@paperbits/common/editing";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { ConferenceSessionViewModel } from "./conferenceSessionViewModel";
 import { widgetName, widgetDisplayName, widgetEditorSelector } from "../constants";
@@ -24,7 +24,7 @@ export class ConferenceSessionViewModelBinder implements ViewModelBinder<Confere
                 readonly: bindingContext?.readonly,
                 model: model,
                 draggable: true,
-                flow: "block",
+                flow: ComponentFlow.Block,
                 editor: widgetEditorSelector,
                 applyChanges: async () => {
                     await this.updateViewModel(model, viewModel);
