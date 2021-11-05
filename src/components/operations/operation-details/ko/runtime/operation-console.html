@@ -74,7 +74,7 @@
     </div>
     <!-- /ko -->
 
-    <authorization params="{ api: api, authorizationServer: authorizationServer, consoleOperation: consoleOperation, codeSample: codeSample, selectedLanguage: selectedLanguage}"></authorization>
+    <authorization params="{ api: $component.api, authorizationServer: $component.authorizationServer, consoleOperation: $component.consoleOperation, codeSample: $component.codeSample, selectedLanguage: $component.selectedLanguage}"></authorization>
     
     <h3>Parameters</h3>
     <!-- ko if: (templateParameters && templateParameters().length > 0) || (request.queryParameters && request.queryParameters().length > 0) -->

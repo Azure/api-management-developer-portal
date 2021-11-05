@@ -202,3 +202,5 @@ export const portalHeaderName = "x-ms-apim-client";
 export const releaseNameFormat = "YYYYMMDDHHmm";
 
 export const genericHttpRequestError = "Server error. Unable to send request. Please try again later.";
+
+export const oauthSessionKey = "oauthSession";
