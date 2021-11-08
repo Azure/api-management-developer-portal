@@ -11,7 +11,7 @@ export class ConsoleRequest {
     public readonly queryParameters: ko.ObservableArray<ConsoleParameter>;
     public readonly headers: ko.ObservableArray<ConsoleHeader>;
     public readonly meaningfulHeaders: ko.Computed<ConsoleHeader[]>;
-    public readonly representations: ConsoleRepresentation[];
+    public readonly representation: ConsoleRepresentation;
     public readonly description: string;
     public readonly body: ko.Observable<string>;
     public readonly hasBody: boolean;
@@ -23,7 +23,6 @@ export class ConsoleRequest {
 
     constructor(request: Request) {
         this.description = request.description;
-        this.representations = request.representations.map(representation => new ConsoleRepresentation(representation));
         this.queryParameters = ko.observableArray(request.queryParameters.map(parameter => new ConsoleParameter(parameter)));
         this.headers = ko.observableArray(request.headers.map(header => new ConsoleHeader(header)));
         this.meaningfulHeaders = ko.computed(() => this.headers().filter(x => !!x.value()));
@@ -34,15 +33,9 @@ export class ConsoleRequest {
         this.bodyFormat = ko.observable(RequestBodyType.raw);
         this.bodyDataItems = ko.observableArray([]);
 
-        if (this.representations?.length === 0) {
-            return;
-        }
+        this.body(this.representation?.sample);
 
-        const representation = this.representations[0];
-
-        this.body(representation.sample);
-
-        this.representationContentType = representation.contentType;
+        this.representationContentType = this.representation?.contentType;
 
         // do not convert formParameters for contentType = application/x-www-form-urlencoded
         // do not add Content-Type header for multipart/form-data
