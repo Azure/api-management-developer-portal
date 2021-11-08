@@ -36,7 +36,6 @@ export class Authorization {
     public readonly authorizationError: ko.Observable<string>;
     public readonly products: ko.Observable<Product[]>;
     public readonly selectedSubscriptionKey: ko.Observable<string>;
-    public readonly gqlConsole: ko.Observable<boolean>;
     public readonly collapsedAuth: ko.Observable<boolean>;
     
 
@@ -51,7 +50,7 @@ export class Authorization {
         this.authorizationServer = ko.observable();
         this.selectedGrantType = ko.observable();
         this.api = ko.observable<Api>();
-        this.gqlHeaders = ko.observableArray<ConsoleHeader>();;
+        this.headers = ko.observableArray<ConsoleHeader>();;
         this.consoleOperation = ko.observable<ConsoleOperation>();
         this.templates = templates;
         this.codeSample = ko.observable<string>();
@@ -63,7 +62,6 @@ export class Authorization {
         this.authorizationError = ko.observable();
         this.products = ko.observable();
         this.selectedSubscriptionKey = ko.observable();
-        this.gqlConsole = ko.observable(false);
     }
 
     @Param()
@@ -76,7 +74,7 @@ export class Authorization {
     public consoleOperation: ko.Observable<ConsoleOperation>;
 
     @Param()
-    public gqlHeaders: ko.ObservableArray<ConsoleHeader>; 
+    public headers: ko.ObservableArray<ConsoleHeader>; 
 
     @Param()
     public codeSample: ko.Observable<string>;
@@ -87,7 +85,6 @@ export class Authorization {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        this.gqlConsole(this.isGraphQL());
         this.subscriptionKeyRequired(!!this.api().subscriptionRequired);
         this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
         this.selectedGrantType.subscribe(this.onGrantTypeChange);
@@ -154,12 +151,12 @@ export class Authorization {
         keyHeader.type = "string";
         keyHeader.required = true;
 
-        if(!this.gqlConsole()) {
+        if(!this.isGraphQL()) {
             this.consoleOperation().request.headers.push(keyHeader);
             this.updateRequestSummary();
         }
         else {
-            this.gqlHeaders.push(keyHeader);
+            this.headers.push(keyHeader);
         }
         
         this.authenticated(true);
@@ -198,12 +195,12 @@ export class Authorization {
         keyHeader.type = "string";
         keyHeader.required = true;
 
-        if(!this.gqlConsole()) {
+        if(!this.isGraphQL()) {
             this.consoleOperation().request.headers.push(keyHeader);
             this.updateRequestSummary();
         }
         else {
-            this.gqlHeaders.push(keyHeader);
+            this.headers.push(keyHeader);
         }
     }
 
@@ -258,7 +255,7 @@ export class Authorization {
     private findHeader(name: string): ConsoleHeader {
         const searchName = name.toLocaleLowerCase();
 
-        const headers = (this.gqlConsole()) ? this.gqlHeaders() : this.consoleOperation().request.headers()
+        const headers = (this.isGraphQL()) ? this.headers() : this.consoleOperation().request.headers()
 
         return headers.find(x => x.name()?.toLocaleLowerCase() === searchName);
     }
@@ -279,12 +276,12 @@ export class Authorization {
     }
 
     public removeHeader(header: ConsoleHeader): void {
-        if(!this.gqlConsole()) {
+        if(!this.isGraphQL()) {
             this.consoleOperation().request.headers.remove(header);
             this.updateRequestSummary();
         }
         else {
-            this.gqlHeaders.remove(header);
+            this.headers.remove(header);
         }
     }
     
@@ -375,7 +372,7 @@ export class Authorization {
     }
 
     private applySubscriptionKey(subscriptionKey: string): void {
-        if (!this.consoleOperation() && !this.gqlConsole()) {
+        if (!this.consoleOperation() && !this.isGraphQL()) {
             return;
         }
 
@@ -385,7 +382,7 @@ export class Authorization {
             this.setSubscriptionKeyHeader(subscriptionKey);
         }
         
-        if(!this.gqlConsole()) {
+        if(!this.isGraphQL()) {
             this.updateRequestSummary();
         }
     }

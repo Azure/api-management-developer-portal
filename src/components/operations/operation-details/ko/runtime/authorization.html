@@ -1,5 +1,5 @@
 <!-- ko if: $component.authorizationServer() || $component.subscriptionKeyRequired() -->
-<h3 data-bind="css: { 'pad-top-0': $component.gqlConsole()}">Authorization 
+<h3 class="pad-top-0">Authorization 
     <a href="#" role="button" data-bind="click: $component.collapseAuth">
         <!-- ko if: $component.collapsedAuth -->
         <i class="icon-emb icon-emb-chevron-down"></i>
@@ -12,7 +12,7 @@
 
 <!-- ko ifnot: $component.collapsedAuth -->
 <!-- ko if: $component.authorizationServer -->
-<div class="row flex flex-row" data-bind="css: { 'col-6': $component.gqlConsole()}">
+<div class="row flex flex-row">
     <div class="col-4">
         <label for="authServer" class="text-monospace form-label"
             data-bind="text: $component.authorizationServer().displayName"></label>
@@ -26,7 +26,7 @@
     </div>
 </div>
 <!-- ko if: $component.selectedGrantType() === 'password' && !$component.authenticated() -->
-<div class="row flex flex-row" data-bind="css: { 'col-6': $component.gqlConsole()}">
+<div class="row flex flex-row">
     <div class="col-4">
         <label for="username" class="text-monospace form-label">Username</label>
     </div>
@@ -36,7 +36,7 @@
         </div>
     </div>
 </div>
-<div class="row flex flex-row" data-bind="css: { 'col-6': $component.gqlConsole()}">
+<div class="row flex flex-row">
     <div class="col-4">
         <label for="password" class="text-monospace form-label">Password</label>
     </div>
@@ -47,7 +47,7 @@
         </div>
     </div>
 </div>
-<div class="row flex flex-row" data-bind="css: { 'col-6': $component.gqlConsole()}">
+<div class="row flex flex-row">
     <div class="col-4">
     </div>
     <div class="col-6">
@@ -63,9 +63,9 @@
 
 
 <!-- ko if: $component.subscriptionKeyRequired -->
-<div class="row flex flex-row" data-bind="css: { 'col-6 pad-left-0': $component.gqlConsole()}">
-    <div class="col-4" data-bind="css: { 'pad-left-0': $component.gqlConsole()}">
-        <label for="subscriptionKey" class="text-monospace form-label" data-bind="css: { 'pad-top-12': $component.gqlConsole()}">
+<div class="row flex flex-row">
+    <div class="col-4">
+        <label for="subscriptionKey" class="text-monospace form-label">
             Subscription key
         </label>
     </div>

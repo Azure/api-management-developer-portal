@@ -361,6 +361,17 @@ pre {
     }
 }
 
+.resp-menu {
+    @media (max-width: 900px) {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    @media (min-width: 901px) {
+        flex: 0 0 66.666667%;
+        max-width: 66.666667%;
+    }
+}
+
 .margin-top-variables {
     margin-top: 30px !important;
 }
