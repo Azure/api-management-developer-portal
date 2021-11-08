@@ -30,7 +30,7 @@
 
 <!-- ko if: schemaView() == 'table' -->
 
-<!-- ko if: $component.kind() === 'object' -->
+<!-- ko if: $component.kind() === 'object' || $component.kind() === 'array' -->
 <!-- ko template: { name: 'typeDefinitionObject', data: $component } -->
 <!-- /ko -->
 <!-- /ko -->
