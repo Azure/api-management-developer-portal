@@ -201,11 +201,25 @@
                     <select class="form-control" aria-label="Parameter value"
                         data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                     <!-- /ko -->
-                    <!-- ko if: parameter.options.length === 0 -->
-                    <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                        spellcheck="false" aria-label="Parameter value"
-                        data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value">
-                    <!-- /ko -->
+                    <div class="input-group">
+                        <!-- ko if: parameter.options.length === 0 -->
+                        <!-- ko if: !parameter.secret-->
+                        <input type="text" autocomplete="off" class="form-control form-control-sm input-password"
+                            placeholder="value" spellcheck="false" aria-label="Parameter value"
+                            data-bind="textInput: parameter.value">
+                        <!-- /ko -->
+                        <!-- ko if: parameter.secret-->
+                        <input autocomplete="off" class="form-control form-control-sm input-password"
+                            placeholder="value" spellcheck="false" aria-label="Parameter value"
+                            data-bind=" attr: {type: parameter.inputType}, textInput: parameter.value">
+                        <button data-bind="click: () => $component.toggleSecretParameter(parameter)"
+                            class="input-toggle-btn">
+                            <i
+                                data-bind="class: parameter.revealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
+                        </button>
+                        <!-- /ko -->
+                        <!-- /ko -->
+                    </div>
                 </div>
             </div>
             <div class="col-2">
@@ -249,15 +263,14 @@
                     <div class="input-group">
                         <!-- ko if: !header.secret -->
                         <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                            spellcheck="false" aria-label="Header value"
-                            data-bind="event: { keyup: $component.updateRequestSummary }, textInput: header.value">
+                            spellcheck="false" aria-label="Header value" data-bind="textInput: header.value">
                         <!-- /ko -->
                         <!-- ko if: header.secret -->
                         <input autocomplete="off" class="form-control form-control-sm input-password"
                             placeholder="value" spellcheck="false" aria-label="Header value"
                             data-bind="attr: {type: header.inputTypeValue}, textInput: header.value">
                         <button data-bind="click: () => $component.toggleSecretHeader(header)"
-                            class="toggle-secrets-button">
+                            class="input-toggle-btn">
                             <i
                                 data-bind="class: header.revealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
                         </button>
@@ -305,7 +318,7 @@
     <div class="form-group">
         <!-- ko if: request.bodyFormat() === 'raw' -->
         <textarea class="form-control form-control-sm" rows="5" aria-label="Request body"
-            data-bind="event: { keyup: $component.updateRequestSummary }, textInput: request.body, valueUpdate: 'keyup'"></textarea>
+            data-bind="textInput: request.body"></textarea>
         <!-- /ko -->
         <!-- ko if: request.bodyFormat() === 'binary' -->
         <file-input params="{ onSelect: $component.onFileSelect }" class="form-control" aria-label="Request body"
@@ -324,12 +337,12 @@
             <!-- ko if: item.bodyFormat() === 'string' -->
             <div class="input-group">
                 <input type="text" autocomplete="off" class="form-control form-control-sm" spellcheck="false"
-                    data-bind="event: { keyup: $component.updateRequestSummary }, textInput: item.body">
+                    data-bind="textInput: item.body">
             </div>
             <!-- /ko -->
             <!-- ko if: item.bodyFormat() === 'raw' -->
             <textarea class="form-control form-control-sm" rows="5" aria-label="Request body"
-                data-bind="event: { keyup: $component.updateRequestSummary }, textInput: item.body, valueUpdate: 'keyup'"></textarea>
+                data-bind="textInput: item.body"></textarea>
             <!-- /ko -->
             <!-- ko if: item.bodyFormat() === 'binary' -->
             <file-input params="{ containerItem: item, onSelect: $component.onFileSelect }" class="form-control"
@@ -405,7 +418,16 @@
     <h3>WebSocket request</h3>
     <div class="code-block">
         <div class="code-block-heading">
-            <button class="code-block-command" data-bind="copyToClipboard: $component.codeSample"
+            <button class="code-block-command" data-bind="click: toggleRequestSummarySecrets"
+                aria-label="Toggle secrets">
+                <!-- ko if: $component.secretsRevealed  -->
+                <i class="icon-emb icon-emb-eye-fill"></i> Hide
+                <!-- /ko -->
+                <!-- ko ifnot: $component.secretsRevealed  -->
+                <i class="icon-emb icon-emb-eye"></i> Show
+                <!-- /ko -->
+            </button>
+            <button class="code-block-command" data-bind="copyToClipboard: $component.getPlainTextCodeSample"
                 aria-label="Copy to clipboard">
                 <i class="icon-emb icon-emb-duplicate"></i> Copy
             </button>
