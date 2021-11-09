@@ -63,7 +63,6 @@
     },
     "dependencies": {
         "@monaco-editor/loader": "^1.2.0",
-        "codemirror": "^5.63.3",
         "@paperbits/azure": "0.1.461",
         "@paperbits/common": "0.1.461",
         "@paperbits/core": "0.1.461",

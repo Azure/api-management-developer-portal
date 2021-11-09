@@ -4,6 +4,8 @@ import { WidgetEditor } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
 import { WidgetModel } from "../widgetModel";
 import { widgetEditorSelector } from "..";
+import loader from '@monaco-editor/loader';
+import { HtmlEditorSettings } from "../../../../src/constants";
 
 @Component({
     selector: widgetEditorSelector,
@@ -30,10 +32,28 @@ export class WidgetEditorViewModel implements WidgetEditor<WidgetModel> {
         this.htmlCode.subscribe(() => this.applyChanges('htmlCode'));
         this.htmlCodeHeight(this.model.htmlCodeHeight);
         this.htmlCodeHeight.subscribe(() => this.applyChanges('htmlCodeHeight'));
+        this.initMonaco();
     }
 
     private applyChanges(key: string): void {
         this.model[key] = this[key]();
         this.onChange(this.model);
+    }
+
+    public async initMonaco() {
+        loader.config({ paths: { vs: "/assets/monaco-editor/vs" } });
+        loader.init().then(() => {
+            const settings = HtmlEditorSettings.config
+            settings['value'] = this.htmlCode() || '';
+
+            this[HtmlEditorSettings.id] = (<any>window).monaco.editor.create(document.getElementById(HtmlEditorSettings.id), settings);
+
+            this[HtmlEditorSettings.id].onDidChangeModelContent((e) => {
+                if(!e.isFlush) {
+                    this.htmlCode(this[HtmlEditorSettings.id].getValue());
+                    this.applyChanges('htmlCode');
+                }
+            });
+        });
     }
 }
