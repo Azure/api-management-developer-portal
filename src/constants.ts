@@ -203,4 +203,5 @@ export const releaseNameFormat = "YYYYMMDDHHmm";
 
 export const genericHttpRequestError = "Server error. Unable to send request. Please try again later.";
 
+export const oauthSessionKey = "oauthSession";
 export const reservedCharTuplesForOData: [string, string][] = [["'", "''"]];

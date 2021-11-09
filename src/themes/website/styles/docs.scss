@@ -361,6 +361,16 @@ pre {
     }
 }
 
+.mw-600 {
+    flex: 0 0 100%;
+    max-width: 100%;
+
+    @media (min-width: 901px) {
+        flex: 0 0 600px;
+        max-width: 600px;
+    }
+}
+
 .margin-top-variables {
     margin-top: 30px !important;
 }
