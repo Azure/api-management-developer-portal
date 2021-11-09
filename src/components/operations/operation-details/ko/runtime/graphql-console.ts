@@ -9,19 +9,10 @@ import template from "./graphql-console.html";
 import graphqlExplorer from "./graphql-explorer.html";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { GrantTypes, QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlOperationTypes } from "./../../../../../constants";
+import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlOperationTypes } from "./../../../../../constants";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
-import { OAuthService } from "../../../../../services/oauthService";
-import { SessionManager } from "@paperbits/common/persistence/sessionManager";
-import { OAuthSession } from "./oauthSession";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
-import { UnauthorizedError } from "../../../../../errors/unauthorizedError";
-import { Product } from "../../../../../models/product";
-import { UsersService } from "../../../../../services/usersService";
 import { ApiService } from "../../../../../services/apiService";
-import { ProductService } from "../../../../../services/productService";
-import { SubscriptionState } from "../../../../../contracts/subscription";
-import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
 import { GraphQLTreeNode, GraphQLOutputTreeNode, GraphQLInputTreeNode } from "./graphql-utilities/graphql-node-models";
 import { setupGraphQLQueryIntellisense } from "./graphql-utilities/graphqlUtils";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
@@ -29,16 +20,12 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ResponsePackage } from "./responsePackage";
 import { Utils } from "../../../../../utils";
 
-
-const oauthSessionKey = "oauthSession";
-
 function getType(type: GraphQL.GraphQLOutputType | GraphQL.GraphQLInputType) {
     while ((type instanceof GraphQL.GraphQLList) || (type instanceof GraphQL.GraphQLNonNull)) {
         type = type.ofType;
     }
     return type;
 }
-
 
 @Component({
     selector: "graphql-console",
@@ -70,16 +57,8 @@ export class GraphqlConsole {
     public readonly working: ko.Observable<boolean>;
     public readonly collapsedExplorer: ko.Observable<boolean>;
     public readonly collapsedHeaders: ko.Observable<boolean>;
-    public readonly subscriptionKeyRequired: ko.Observable<boolean>;
-    public readonly selectedGrantType: ko.Observable<string>;
-    public readonly authenticated: ko.Observable<boolean>;
     public readonly headers: ko.ObservableArray<ConsoleHeader>;
-    public readonly username: ko.Observable<string>;
-    public readonly password: ko.Observable<string>;
-    public readonly products: ko.Observable<Product[]>;
-    public readonly selectedSubscriptionKey: ko.Observable<string>;
     public readonly requestError: ko.Observable<string>;
-    public readonly authorizationError: ko.Observable<string>;
     public readonly variables: ko.Observable<string>;
     public readonly response: ko.Observable<string>;
     public readonly isContentValid: ko.Observable<boolean>;
@@ -88,11 +67,7 @@ export class GraphqlConsole {
 
     constructor(
         private readonly routeHelper: RouteHelper,
-        private readonly oauthService: OAuthService,
-        private readonly usersService: UsersService,
         private readonly apiService: ApiService,
-        private readonly productService: ProductService,
-        private readonly sessionManager: SessionManager,
         private readonly httpClient: HttpClient,
         private readonly settingsProvider: ISettingsProvider
     ) {
@@ -103,15 +78,7 @@ export class GraphqlConsole {
         this.api = ko.observable<Api>();
         this.sendingRequest = ko.observable(false);
         this.authorizationServer = ko.observable();
-        this.subscriptionKeyRequired = ko.observable();
-        this.selectedGrantType = ko.observable();
-        this.authenticated = ko.observable(false);
         this.headers = ko.observableArray();
-        this.username = ko.observable();
-        this.password = ko.observable();
-        this.authorizationError = ko.observable();
-        this.selectedSubscriptionKey = ko.observable();
-        this.products = ko.observable();
         this.queryType = ko.observable(GraphqlOperationTypes.query);
         this.document = ko.observable();
         this.operationUrl = ko.observable();
@@ -143,10 +110,7 @@ export class GraphqlConsole {
     @OnMounted()
     public async initialize(): Promise<void> {
         await this.resetConsole();
-        this.api.subscribe(this.resetConsole);
         await this.loadingMonaco();
-        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
-        this.selectedGrantType.subscribe(this.onGrantTypeChange);
         this.queryType.subscribe(this.onQueryTypeChange);
         this.document.subscribe(this.onDocumentChange);
         this.response.subscribe(this.onResponseChange);
@@ -162,12 +126,6 @@ export class GraphqlConsole {
 
         this.working(true);
         this.sendingRequest(false);
-        this.selectedSubscriptionKey(null);
-        this.subscriptionKeyRequired(!!selectedApi.subscriptionRequired);
-
-        if (selectedApi.subscriptionRequired) {
-            await this.loadSubscriptionKeys();
-        }
 
         let defaultHeader = new ConsoleHeader();
         defaultHeader.name("Content-Type");
@@ -175,7 +133,7 @@ export class GraphqlConsole {
         this.headers.push(defaultHeader);
 
         const graphQLSchemas = await this.apiService.getSchemas(this.api());
-        this.schema = graphQLSchemas.value.find(s => s.graphQLSchema).graphQLSchema;
+        this.schema = graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema;
         await this.buildTree(this.schema);
         this.node(this.queryNode());
         this.node().toggle(true);
@@ -185,16 +143,6 @@ export class GraphqlConsole {
 
     public getApiReferenceUrl(): string {
         return this.routeHelper.getApiReferenceUrl(this.api().name);
-    }
-
-    private async onGrantTypeChange(grantType: string): Promise<void> {
-        await this.clearStoredCredentials();
-
-        if (!grantType || grantType === GrantTypes.password) {
-            return;
-        }
-
-        await this.authenticateOAuth(grantType);
     }
 
     private async onQueryTypeChange(queryType: string): Promise<void> {
@@ -301,205 +249,8 @@ export class GraphqlConsole {
         }
     }
 
-
-    /**
-     * Initiates specified authentication flow.
-     * @param grantType OAuth grant type, e.g. "implicit" or "authorization_code".
-     */
-    public async authenticateOAuth(grantType: string): Promise<void> {
-        const api = this.api();
-        const authorizationServer = this.authorizationServer();
-        const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
-        const serverName = authorizationServer.name;
-
-        if (scopeOverride) {
-            authorizationServer.scopes = [scopeOverride];
-        }
-
-        const accessToken = await this.oauthService.authenticate(grantType, authorizationServer);
-        await this.setStoredCredentials(serverName, scopeOverride, grantType, accessToken);
-
-        this.setAuthorizationHeader(accessToken);
-    }
-
-    private async clearStoredCredentials(): Promise<void> {
-        await this.sessionManager.removeItem(oauthSessionKey);
-        this.removeAuthorizationHeader();
-    }
-
-    private async setStoredCredentials(serverName: string, scopeOverride: string, grantType: string, accessToken: string): Promise<void> {
-        const oauthSession = await this.sessionManager.getItem<OAuthSession>(oauthSessionKey) || {};
-        const recordKey = this.getSessionRecordKey(serverName, scopeOverride);
-
-        oauthSession[recordKey] = {
-            grantType: grantType,
-            accessToken: accessToken
-        };
-
-        await this.sessionManager.setItem<object>(oauthSessionKey, oauthSession);
-    }
-
-    private setAuthorizationHeader(accessToken: string): void {
-        this.removeAuthorizationHeader();
-
-        const keyHeader = new ConsoleHeader();
-        keyHeader.name(KnownHttpHeaders.Authorization);
-        keyHeader.value(accessToken);
-        keyHeader.description = "Subscription key.";
-        keyHeader.secret = true;
-        keyHeader.inputTypeValue("password");
-        keyHeader.type = "string";
-        keyHeader.required = true;
-
-        this.headers.push(keyHeader);
-
-        this.authenticated(true);
-    }
-
-    private removeAuthorizationHeader(): void {
-        const authorizationHeader = this.findHeader(KnownHttpHeaders.Authorization);
-        this.removeHeader(authorizationHeader);
-        this.authenticated(false);
-    }
-
-    private getSessionRecordKey(authorizationServerName: string, scopeOverride: string): string {
-        let recordKey = authorizationServerName;
-
-        if (scopeOverride) {
-            recordKey += `-${scopeOverride}`;
-        }
-
-        return recordKey;
-    }
-
-    private findHeader(name: string): ConsoleHeader {
-        const searchName = name.toLocaleLowerCase();
-
-        return this.headers()
-            .find(x => x.name()?.toLocaleLowerCase() === searchName);
-    }
-
     public removeHeader(header: ConsoleHeader): void {
         this.headers.remove(header);
-    }
-
-    public async authenticateOAuthWithPassword(): Promise<void> {
-        try {
-            this.authorizationError(null);
-
-            const api = this.api();
-            const authorizationServer = this.authorizationServer();
-            const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
-            const serverName = authorizationServer.name;
-
-            if (scopeOverride) {
-                authorizationServer.scopes = [scopeOverride];
-            }
-
-            const accessToken = await this.oauthService.authenticatePassword(this.username(), this.password(), authorizationServer);
-            await this.setStoredCredentials(serverName, scopeOverride, GrantTypes.password, accessToken);
-
-            this.setAuthorizationHeader(accessToken);
-        }
-        catch (error) {
-            if (error instanceof UnauthorizedError) {
-                this.authorizationError(error.message);
-                return;
-            }
-
-            this.authorizationError("Oops, something went wrong. Try again later.");
-        }
-    }
-
-    private async loadSubscriptionKeys(): Promise<void> {
-        const userId = await this.usersService.getCurrentUserId();
-
-        if (!userId) {
-            return;
-        }
-
-        const pageOfProducts = await this.apiService.getAllApiProducts(this.api().id);
-        const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
-        const pageOfSubscriptions = await this.productService.getSubscriptions(userId);
-        const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === SubscriptionState.active);
-        const availableProducts = [];
-
-        products.forEach(product => {
-            const keys = [];
-
-            subscriptions.forEach(subscription => {
-                if (!this.productService.isScopeSuitable(subscription.scope, this.api().name, product.name)) {
-                    return;
-                }
-
-                keys.push({
-                    name: `Primary: ${subscription.name?.trim() || subscription.primaryKey.substr(0, 4)}`,
-                    value: subscription.primaryKey
-                });
-
-                keys.push({
-                    name: `Secondary: ${subscription.name?.trim() || subscription.secondaryKey.substr(0, 4)}`,
-                    value: subscription.secondaryKey
-                });
-            });
-
-            if (keys.length > 0) {
-                availableProducts.push({ name: product.displayName, subscriptionKeys: keys });
-            }
-        });
-
-        this.products(availableProducts);
-
-        if (availableProducts.length > 0) {
-            const subscriptionKey = availableProducts[0].subscriptionKeys[0].value;
-            this.selectedSubscriptionKey(subscriptionKey);
-            this.applySubscriptionKey(subscriptionKey);
-        }
-    }
-
-    private applySubscriptionKey(subscriptionKey: string): void {
-        this.setSubscriptionKeyHeader(subscriptionKey);
-    }
-
-    private setSubscriptionKeyHeader(subscriptionKey: string): void {
-        this.removeSubscriptionKeyHeader();
-
-        if (!subscriptionKey) {
-            return;
-        }
-
-        const subscriptionKeyHeaderName = this.getSubscriptionKeyHeaderName();
-
-        const keyHeader = new ConsoleHeader();
-        keyHeader.name(subscriptionKeyHeaderName);
-        keyHeader.value(subscriptionKey);
-        keyHeader.description = "Subscription key.";
-        keyHeader.secret = true;
-        keyHeader.inputTypeValue("password");
-        keyHeader.type = "string";
-        keyHeader.required = true;
-
-        this.headers.push(keyHeader);
-    }
-
-    private removeSubscriptionKeyHeader(): void {
-        const subscriptionKeyHeader = this.getSubscriptionKeyHeader();
-        this.removeHeader(subscriptionKeyHeader);
-    }
-
-    private getSubscriptionKeyHeaderName(): string {
-        let subscriptionKeyHeaderName: string = KnownHttpHeaders.OcpApimSubscriptionKey;
-
-        if (this.api().subscriptionKeyParameterNames && this.api().subscriptionKeyParameterNames.header) {
-            subscriptionKeyHeaderName = this.api().subscriptionKeyParameterNames.header;
-        }
-
-        return subscriptionKeyHeaderName;
-    }
-
-    private getSubscriptionKeyHeader(): ConsoleHeader {
-        const subscriptionKeyHeaderName = this.getSubscriptionKeyHeaderName();
-        return this.findHeader(subscriptionKeyHeaderName);
     }
 
     public addHeader(): void {

@@ -27,6 +27,7 @@ import { ApiList, ApiListDropdown, ApiListTiles } from "./components/apis/list-o
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";
 import { FileInput } from "./components/file-input/file-input";
 import { CodeSampleViewModel } from "./components/operations/operation-details/ko/runtime/code-sample";
+import { Authorization } from "./components/operations/operation-details/ko/runtime/authorization";
 import { OperationConsole } from "./components/operations/operation-details/ko/runtime/operation-console";
 import { GraphqlConsole } from "./components/operations/operation-details/ko/runtime/graphql-console";
 import { OperationDetails } from "./components/operations/operation-details/ko/runtime/operation-details";
@@ -90,6 +91,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationDetails", OperationDetails);
         injector.bind("operationConsole", OperationConsole);
         injector.bind("graphqlConsole", GraphqlConsole);
+        injector.bind("authorization", Authorization);
         injector.bind("typeDefinition", TypeDefinitionViewModel);
         injector.bind("codeSample", CodeSampleViewModel);
         injector.bind("fileInput", FileInput);
