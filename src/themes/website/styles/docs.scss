@@ -530,16 +530,14 @@ operation-console {
         padding: 5px 10px;
         width: 100%;
         min-height: 2em;
+        display: flex;
+        justify-content: flex-end;
     }
 
     .code-block-command {
         background: none;
         border: none;
         cursor: pointer;
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
 
         &:hover {
             background: #ccc;

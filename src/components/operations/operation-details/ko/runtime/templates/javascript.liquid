@@ -6,7 +6,7 @@ $.ajax({
     // Request headers
     beforeSend: function(xhrObj) {
         {% for header in request.meaningfulHeaders -%}
-        xhrObj.setRequestHeader("{{header.name}}", "{{header.value}}");
+        xhrObj.setRequestHeader("{{header.name}}", "{{header.displayedValue}}");
         {% endfor -%}
     },
     {% endif -%}

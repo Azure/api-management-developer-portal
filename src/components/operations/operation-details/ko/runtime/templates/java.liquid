@@ -27,7 +27,7 @@ public class JavaSample
             URI uri = builder.build();
             Http{{ method | downcase | capitalize }} request = new Http{{ method | downcase | capitalize }}(uri);
 {% for header in request.meaningfulHeaders -%}
-            request.setHeader("{{header.name}}", "{{header.value}}");
+            request.setHeader("{{header.name}}", "{{header.displayedValue}}");
 {% endfor %}
 
 {% if body -%}
