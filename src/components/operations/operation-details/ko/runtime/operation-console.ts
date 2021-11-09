@@ -189,7 +189,10 @@ export class OperationConsole {
         this.api.subscribe(this.resetConsole);
         this.operation.subscribe(this.resetConsole);
         this.selectedLanguage.subscribe(this.updateRequestSummary);
-        this.selectedRepresentation.subscribe(this.updateRequestSummary);
+        this.selectedRepresentation.subscribe(representation => {
+            this.consoleOperation().request.selectedRepresentation(representation)
+            this.updateRequestSummary();
+        });
         this.selectedGrantType.subscribe(this.onGrantTypeChange);
     }
 
@@ -588,9 +591,6 @@ export class OperationConsole {
         const url = consoleOperation.requestUrl();
         const method = consoleOperation.method;
         const headers = [...request.headers()];
-
-        console.log(request.representations)
-        console.log(request.body())
         
         let payload;
 
