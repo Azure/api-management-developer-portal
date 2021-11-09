@@ -589,6 +589,7 @@ export class OperationConsole {
         const method = consoleOperation.method;
         const headers = [...request.headers()];
 
+        console.log(request.representations)
         console.log(request.body())
         
         let payload;

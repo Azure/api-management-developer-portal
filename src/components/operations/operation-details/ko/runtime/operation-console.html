@@ -272,13 +272,15 @@
 
     <div class="flex justify-content-end">
         
-        <!-- ko if: request.bodyFormat() === 'raw' -->
-        <select id="requestRepresentations" style="height: 70%;" class="form-control" data-bind="value: $component.selectedRepresentation">
-            <!-- ko foreach: { data: request.representations, as: 'representation' } -->
-            <option data-bind="value: representation, text: 'Example ' + ($index() + 1)"></option>
+        <div style="width: 100%;">
+            <!-- ko if: request.bodyFormat() === 'raw' -->
+            <select id="requestRepresentations" style="height: 70%;" class="form-control" data-bind="value: $component.selectedRepresentation">
+                <!-- ko foreach: { data: request.representations, as: 'representation' } -->
+                <option data-bind="value: representation, text: 'Example ' + ($index() + 1)"></option>
+                <!-- /ko -->
+            </select>
             <!-- /ko -->
-        </select>
-        <!-- /ko -->
+        </div>
 
         <!-- ko if: request.readonlyBodyFormat -->
         <div class="form-check form-check-inline">
