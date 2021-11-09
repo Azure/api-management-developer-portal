@@ -147,7 +147,7 @@ export class Authorization {
         keyHeader.value(accessToken);
         keyHeader.description = "Subscription key.";
         keyHeader.secret = true;
-        keyHeader.inputTypeValue = "password";
+        keyHeader.inputTypeValue("password");
         keyHeader.type = "string";
         keyHeader.required = true;
 
@@ -191,7 +191,7 @@ export class Authorization {
         keyHeader.value(subscriptionKey);
         keyHeader.description = "Subscription key.";
         keyHeader.secret = true;
-        keyHeader.inputTypeValue = "password";
+        keyHeader.inputTypeValue("password");
         keyHeader.type = "string";
         keyHeader.required = true;
 
@@ -404,6 +404,7 @@ export class Authorization {
         keyParameter.type = "string";
         keyParameter.canRename = false;
         keyParameter.required = true;
+        keyParameter.inputType("password");
 
         this.consoleOperation().request.queryParameters.push(keyParameter);
         this.updateRequestSummary();

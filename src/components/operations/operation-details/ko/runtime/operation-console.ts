@@ -23,6 +23,7 @@ import { ResponsePackage } from "./responsePackage";
 import { templates } from "./templates/templates";
 import { LogItem, WebsocketClient } from "./websocketClient";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
+import { cloneDeep } from "lodash";
 
 @Component({
     selector: "operation-console",
@@ -200,6 +201,10 @@ export class OperationConsole {
             this.setVersionHeader();
         }
 
+        this.consoleOperation().request.meaningfulHeaders().forEach(header => header.value.subscribe(_ => this.updateRequestSummary()));
+        this.consoleOperation().request.body.subscribe(_ => this.updateRequestSummary());
+        this.consoleOperation().request.queryParameters().forEach(parameter => parameter.value.subscribe(_ => this.updateRequestSummary()));
+
         this.updateRequestSummary();
         this.working(false);
     }
@@ -234,23 +239,23 @@ export class OperationConsole {
 
     private loadRequestLanguagesRest(): Object[] {
         return [
-            {value: "http", text: "HTTP"},
-            {value: "csharp", text: "C#"},
-            {value: "curl", text: "Curl"},
-            {value: "java", text: "Java"},
-            {value: "javascript", text: "JavaScript"},
-            {value: "objc", text: "Objective C"}, 
-            {value: "php", text: "PHP"},
-            {value: "python", text: "Python"},
-            {value: "ruby", text: "Ruby"},
+            { value: "http", text: "HTTP" },
+            { value: "csharp", text: "C#" },
+            { value: "curl", text: "Curl" },
+            { value: "java", text: "Java" },
+            { value: "javascript", text: "JavaScript" },
+            { value: "objc", text: "Objective C" },
+            { value: "php", text: "PHP" },
+            { value: "python", text: "Python" },
+            { value: "ruby", text: "Ruby" },
         ];
     }
 
     private loadRequestLanguagesWs(): Object[] {
         return [
-            {value: "ws_wscat", text: "wscat"},
-            {value: "ws_csharp", text: "C#"},
-            {value: "ws_javascript", text: "JavaScript"}
+            { value: "ws_wscat", text: "wscat" },
+            { value: "ws_csharp", text: "C#" },
+            { value: "ws_javascript", text: "JavaScript" }
         ];
     }
 
@@ -260,7 +265,10 @@ export class OperationConsole {
     }
 
     public addHeader(): void {
-        this.consoleOperation().request.headers.push(new ConsoleHeader());
+        const newHeader = new ConsoleHeader();
+        this.consoleOperation().request.headers.push(newHeader);
+        newHeader.value.subscribe(_ => this.updateRequestSummary());
+
         this.updateRequestSummary();
     }
 
@@ -270,7 +278,10 @@ export class OperationConsole {
     }
 
     public addQueryParameter(): void {
-        this.consoleOperation().request.queryParameters.push(new ConsoleParameter());
+        const newParameter = new ConsoleParameter();
+        this.consoleOperation().request.queryParameters.push(newParameter);
+        newParameter.value.subscribe(_ => this.updateRequestSummary());
+
         this.updateRequestSummary();
     }
 
@@ -535,6 +546,32 @@ export class OperationConsole {
 
     public toggleRequestSummarySecrets(): void {
         this.secretsRevealed(!this.secretsRevealed());
+        this.consoleOperation().request.meaningfulHeaders().forEach(header => header.revealed(this.secretsRevealed()));
+        this.consoleOperation().request.queryParameters().forEach(header => header.revealed(this.secretsRevealed()));
+
+        this.updateRequestSummary();
+    }
+
+    public toggleSecretHeader(header: ConsoleHeader): void {
+        header.toggleRevealed();
+    }
+
+    public toggleSecretParameter(parameter: ConsoleParameter): void {
+        parameter.toggleRevealed();
+    }
+
+    public async getPlainTextCodeSample(): Promise<string> {
+        const clonedConsoleOperation = cloneDeep(this.consoleOperation());
+        clonedConsoleOperation.request.meaningfulHeaders()
+            .filter(header => header.secret)
+            .forEach(header => header.revealed(true));
+
+        clonedConsoleOperation.request.queryParameters()
+            .filter(parameter => parameter.secret)
+            .forEach(parameter => parameter.revealed(true));
+
+        const template = templates[this.selectedLanguage()];
+        return await TemplatingService.render(template, ko.toJS(clonedConsoleOperation));
     }
 
     public getApiReferenceUrl(): string {

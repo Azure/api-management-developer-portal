@@ -163,10 +163,10 @@ export class GraphqlConsole {
     }
 
     private onDocumentChange(document: string): void {
-            if(this.editorUpdate) {
-                this.queryEditor.setValue(document);
-            }
-            this.editorUpdate = true;
+        if (this.editorUpdate) {
+            this.queryEditor.setValue(document);
+        }
+        this.editorUpdate = true;
     }
 
     private onResponseChange(response: string): void {
@@ -385,7 +385,7 @@ export class GraphqlConsole {
         this[editorSettings.id] = (<any>window).monaco.editor.create(document.getElementById(editorSettings.id), settings);
 
         this[editorSettings.id].onDidChangeModelContent((e) => {
-            if(!e.isFlush) {
+            if (!e.isFlush) {
                 const value = this[editorSettings.id].getValue();
                 if (editorSettings.id === QueryEditorSettings.id) {
                     this.isContentValid(true);
@@ -393,7 +393,7 @@ export class GraphqlConsole {
                     clearTimeout(this.onContentChangeTimoutId);
                     this.onContentChangeTimoutId = window.setTimeout(() => {
                         this.tryParseGraphQLSchema(value);
-                        if(this.isContentValid()) {
+                        if (this.isContentValid()) {
                             this.editorUpdate = false;
                             this.document(value);
                         }

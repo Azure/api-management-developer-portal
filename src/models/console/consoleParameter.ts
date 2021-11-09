@@ -10,19 +10,26 @@ export class ConsoleParameter {
     public type: string;
     public secret: boolean;
     public custom: boolean;
-    public inputType: string;
+    public inputType: ko.Observable<string>;
     public canRename: boolean;
     public error: ko.Observable<string>;
+    public revealed: ko.Observable<boolean>;
+
+    public toggleRevealed(): void {
+        this.revealed(!this.revealed());
+        this.inputType(this.secret && !this.revealed() ? "password" : "text");
+    }
 
     constructor(contract?: Parameter) {
         this.name = ko.observable();
         this.value = ko.observable();
-        this.inputType = "text";
+        this.inputType = ko.observable("text");
         this.required = false;
         this.options = [];
         this.custom = true;
         this.type = "string";
         this.error = ko.observable();
+        this.revealed = ko.observable(false);
 
         if (contract) {
             this.custom = false;
@@ -32,7 +39,7 @@ export class ConsoleParameter {
             this.options = contract.values;
             this.type = contract.type;
             this.secret = false;
-            this.inputType = this.secret ? "password" : "text";
+            this.inputType(this.secret ? "password" : "text");
         }
 
         this.canRename = !this.required && this.custom;
