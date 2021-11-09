@@ -9,7 +9,7 @@ $url = $request->getUrl();
 $headers = array(
     // Request headers
 {% for header in request.meaningfulHeaders -%}
-    '{{header.name}}' => '{{header.value}}',
+    '{{header.name}}' => '{{header.displayedValue}}',
 {% endfor -%}
 );
 
