@@ -21,6 +21,7 @@ export class ConsoleOperation {
     public readonly hasBody: boolean;
     public readonly request: ConsoleRequest;
     public urlTemplate: string;
+    public readonly displayedWsUrl: ko.Computed<string>;
 
     constructor(api: Api, operation: Operation) {
         this.api = api;
@@ -31,7 +32,7 @@ export class ConsoleOperation {
         this.request = new ConsoleRequest(operation.request);
         this.templateParameters = ko.observableArray(operation.templateParameters.map(parameterContract => new ConsoleParameter(parameterContract)));
         this.hasBody = !["GET", "HEAD", "TRACE"].includes(this.method);
-    
+
         if (operation.responses) {
             this.responses = operation.responses.map(x => new ConsoleResponse(x));
         }
@@ -50,6 +51,14 @@ export class ConsoleOperation {
         this.wsUrl = ko.computed(() => {
             const protocol = this.api.protocols.indexOf("wss") !== -1 ? "wss" : "wss";
             const urlTemplate = this.getRequestPath();
+            const result = `${protocol}://${this.host.hostname()}${Utils.ensureLeadingSlash(urlTemplate)}`;
+
+            return result;
+        });
+
+        this.displayedWsUrl = ko.computed(() => {
+            const protocol = this.api.protocols.indexOf("wss") !== -1 ? "wss" : "wss";
+            const urlTemplate = this.getRequestPath(true);
             const result = `${protocol}://${this.host.hostname()}${Utils.ensureLeadingSlash(urlTemplate)}`;
 
             return result;
@@ -82,7 +91,7 @@ export class ConsoleOperation {
         return header;
     }
 
-    private getRequestPath(): string {
+    private getRequestPath(getHidden: boolean = false): string {
         let versionPath = "";
 
         if (this.api.apiVersionSet && this.api.apiVersion && this.api.apiVersionSet.versioningScheme === "Segment") {
@@ -97,10 +106,14 @@ export class ConsoleOperation {
                 const parameterPlaceholder = parameter.name() !== "*" ? `{${parameter.name()}}` : "*";
 
                 if (requestUrl.indexOf(parameterPlaceholder) > -1) {
-                    requestUrl = requestUrl.replace(parameterPlaceholder, Utils.encodeURICustomized(parameter.value()));
+                    requestUrl = requestUrl.replace(parameterPlaceholder,
+                        !getHidden || !parameter.secret ? Utils.encodeURICustomized(parameter.value())
+                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, '•')));
                 }
                 else {
-                    requestUrl = this.addParam(requestUrl, Utils.encodeURICustomized(parameter.name()), Utils.encodeURICustomized(parameter.value()));
+                    requestUrl = this.addParam(requestUrl, Utils.encodeURICustomized(parameter.name()),
+                        !getHidden || !parameter.secret ? Utils.encodeURICustomized(parameter.value())
+                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, '•')));
                 }
             }
         });
@@ -111,5 +124,5 @@ export class ConsoleOperation {
 
         return `${this.api.path}${versionPath}${requestUrl}`;
     }
-
+    
 }

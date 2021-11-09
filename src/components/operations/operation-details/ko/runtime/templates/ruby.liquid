@@ -21,7 +21,7 @@ end
 request = Net::HTTP::{{ method | downcase | capitalize }}.new(uri.request_uri)
 # Request headers
 {% for header in request.meaningfulHeaders -%}
-request['{{header.name}}'] = '{{header.value}}'
+request['{{header.name}}'] = '{{header.displayedValue}}'
 {% endfor -%}
 {% if body -%}
 # Request body

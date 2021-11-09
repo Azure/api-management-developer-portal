@@ -25,7 +25,7 @@ int main(int argc, const char * argv[])
 {% if request.meaningfulHeaders.size > 0 -%}
     // Request headers
 {% for header in request.meaningfulHeaders -%}
-    [_request setValue:@"{{header.value}}" forHTTPHeaderField:@"{{header.name}}"];
+    [_request setValue:@"{{header.displayedValue}}" forHTTPHeaderField:@"{{header.name}}"];
 {% endfor -%}
 {% endif -%}
 {% if body -%}
