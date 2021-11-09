@@ -254,7 +254,7 @@ export class OperationConsole {
 
     private setSoapHeaders(): void {
         const consoleOperation = this.consoleOperation();
-        const representation = consoleOperation.request.representations[0];
+        const representation = consoleOperation.request.representation;
 
         if (representation) {
             if (representation.contentType.toLowerCase() === "text/xml".toLowerCase()) {
@@ -579,8 +579,6 @@ export class OperationConsole {
     }
 
     private async sendRequest(): Promise<void> {
-        
-        console.log(this.selectedRepresentation())
         this.requestError(null);
         this.sendingRequest(true);
         this.responseStatusCode(null);
@@ -591,6 +589,8 @@ export class OperationConsole {
         const method = consoleOperation.method;
         const headers = [...request.headers()];
 
+        console.log(request.body())
+        
         let payload;
 
         switch (consoleOperation.request.bodyFormat()) {
