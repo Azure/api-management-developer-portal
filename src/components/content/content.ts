@@ -33,7 +33,7 @@ export class ContentWorkshop {
             const revisionName = moment.utc().format(Constants.releaseNameFormat);
 
             await this.mapiClient.put(`/portalRevisions/${revisionName}`, null, {
-                properties: { description: "" }
+                properties: { description: "", isCurrent: true }
             });
 
             this.viewManager.notifySuccess("Operations", `The website is being published...`);

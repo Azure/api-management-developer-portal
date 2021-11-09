@@ -3,6 +3,7 @@ import { ListOfApisViewModel } from "./listOfApisViewModel";
 import { ListOfApisModel } from "../listOfApisModel";
 import { Bag } from "@paperbits/common";
 import { EventManager } from "@paperbits/common/events";
+import { ComponentFlow } from "@paperbits/common/editing";
 
 
 export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisModel, ListOfApisViewModel> {
@@ -29,7 +30,7 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
             displayName: "List of APIs" + (model.layout === "list" ? "" : ` (${model.layout})`),
             model: model,
             draggable: true,
-            flow: "block",
+            flow: ComponentFlow.Block,
             editor: "list-of-apis-editor",
             applyChanges: async (updatedModel: ListOfApisModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);

@@ -268,8 +268,10 @@
 </div>
 <!-- /ko -->
 
+<!-- ko ifnot: apiType() === 'graphql' -->
 <!-- ko ifnot: operation -->
 <p>No operation selected.</p>
+<!-- /ko -->
 <!-- /ko -->
 <!-- /ko -->
 
@@ -309,12 +311,42 @@
 <!-- /ko -->
 <!-- /ko -->
 
+<!-- ko if: apiType() === 'graphql' -->
+<div class="animation-fade-in">
+    <div class="operation-header">
+        <h2 class="operation-name"></h2>
+        <!-- ko if: $component.enableConsole -->
+        <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i
+                class="icon-emb icon-emb-play"></i>
+        </button>
+        <!-- /ko -->
+    </div>
+
+    <div class="collapsible">
+        <h3>GraphQL Endpoint</h3>
+        <div class="collapsible-container">
+            <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
+        </div>
+    </div>
+
+</div>
+<!-- /ko -->
+
 <!-- /ko -->
 
 <!-- ko if: $component.consoleIsOpen -->
+<!-- ko ifnot: apiType() === 'graphql' -->
 <div class="detachable-right scrollable flex-grow animation-fade-in">
     <operation-console class="test flex flex-column" data-bind="dialog: {}"
         params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
     </operation-console>
 </div>
+<!-- /ko -->
+<!-- ko if: apiType() === 'graphql' -->
+<div class="detachable-right graphql-console-width scrollable flex-grow animation-fade-in">
+    <graphql-console class="gql-console-height flex flex-column" data-bind="dialog: {}"
+        params="{ api: api, operationUrl: $component.requestUrlSample, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
+    </graphql-console>
+</div>
+<!-- /ko -->
 <!-- /ko -->

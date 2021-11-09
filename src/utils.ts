@@ -260,17 +260,29 @@ export class Utils {
         return uri;
     }
 
-    public static escapeValueForODataFilter(value: string): string {
-        value = value
-            .replace(/\%/g, "%25")
-            .replace(/\"/g, `"`)
-            .replace(/\+/g, "%2B")
-            .replace(/\//g, "%2F")
-            .replace(/\?/g, "%3F")
-            .replace(/#/g, "%23")
-            .replace(/\&/g, "%26");
-
-        return value;
+    private static reservedURIComponentCharactersTuples = [
+        ['&', '%26'],
+        ['+', '%2B'],
+        ['/', '%2F'],
+        ['?', '%3F'],
+        ['#', '%23'],
+    ];
+    /**
+     * Encodes reserved URI character not encoded by the native encodeURI function
+     * (encodeURIComponent encodes many characters, which are desired unencoded)
+     * 
+     * @param uri string to be encoded
+     * @param additionalReservedTuples optional array of additional reserved tuples to replace
+     * @returns encoded string
+     */
+    public static encodeURICustomized(uri: string, additionalReservedTuples?: [string, string][]): string {
+        let encoded = encodeURI(uri);
+        const iterateReplace = ([char, charEncoded]: [string, string]) => {
+            encoded = encoded.replaceAll(char, charEncoded);
+        }
+        this.reservedURIComponentCharactersTuples.forEach(iterateReplace);
+        if (additionalReservedTuples) additionalReservedTuples.forEach(iterateReplace);
+        return encoded;
     }
 
     public static getBsonObjectId(): string {

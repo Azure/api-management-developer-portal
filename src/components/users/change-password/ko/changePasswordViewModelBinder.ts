@@ -2,7 +2,8 @@ import { ViewModelBinder } from "@paperbits/common/widgets";
 import { ChangePasswordViewModel } from "./changePasswordViewModel";
 import { ChangePasswordModel } from "../changePasswordModel";
 import { Bag } from "@paperbits/common";
-import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
+import { ISettingsProvider } from "@paperbits/common/configuration";
+import { ComponentFlow } from "@paperbits/common/editing";
 
 export class ChangePasswordViewModelBinder implements ViewModelBinder<ChangePasswordModel, ChangePasswordViewModel> {
 
@@ -14,7 +15,7 @@ export class ChangePasswordViewModelBinder implements ViewModelBinder<ChangePass
             viewModel["widgetBinding"] = {
                 displayName: "Password: Change form",
                 model: model,
-                flow: "block",
+                flow: ComponentFlow.Block,
                 draggable: true
             };
         }

@@ -107,13 +107,13 @@ export class ConsoleOperation {
 
                 if (requestUrl.indexOf(parameterPlaceholder) > -1) {
                     requestUrl = requestUrl.replace(parameterPlaceholder,
-                        !getHidden || !parameter.secret ? encodeURIComponent(parameter.value())
-                            : (parameter.revealed() ? encodeURIComponent(parameter.value()) : parameter.value().replace(/./g, '•')));
+                        !getHidden || !parameter.secret ? Utils.encodeURICustomized(parameter.value())
+                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, '•')));
                 }
                 else {
-                    requestUrl = this.addParam(requestUrl, encodeURIComponent(parameter.name()),
-                        !getHidden || !parameter.secret ? encodeURIComponent(parameter.value())
-                            : (parameter.revealed() ? encodeURIComponent(parameter.value()) : parameter.value().replace(/./g, '•')));
+                    requestUrl = this.addParam(requestUrl, Utils.encodeURICustomized(parameter.name()),
+                        !getHidden || !parameter.secret ? Utils.encodeURICustomized(parameter.value())
+                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, '•')));
                 }
             }
         });
