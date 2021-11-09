@@ -254,7 +254,7 @@ export class OperationConsole {
 
     private setSoapHeaders(): void {
         const consoleOperation = this.consoleOperation();
-        const representation = consoleOperation.request.representation;
+        const representation = consoleOperation.request.representations[0];
 
         if (representation) {
             if (representation.contentType.toLowerCase() === "text/xml".toLowerCase()) {
