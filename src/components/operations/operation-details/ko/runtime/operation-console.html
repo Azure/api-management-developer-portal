@@ -272,7 +272,7 @@
 
     <div class="row flex flex-row" style="margin-bottom: 3%;">
         <div class="col-4">
-            <!-- ko if: request.bodyFormat() === 'raw' -->
+            <!-- ko if: request.bodyFormat() === 'raw' && request.representations?.length > 0 -->
             <select id="requestRepresentations" class="form-control" style="width: auto;" data-bind="value: $component.selectedRepresentation">
                 <!-- ko foreach: { data: request.representations, as: 'representation' } -->
                 <option data-bind="value: representation, text: 'Example ' + ($index() + 1)"></option>
