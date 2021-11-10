@@ -214,8 +214,9 @@
     <h3>Body</h3>
 
     <div class="row flex flex-row form-group">
-        <div class="col-4">
+        <div class="col-6">
             <!-- ko if: request.bodyFormat() === 'raw' && request.representations?.length > 0 -->
+            <label class="form-check-label">Select a sample request body</label>
             <select id="requestRepresentations" class="form-control" style="width: auto;" data-bind="value: $component.selectedRepresentation">
                 <!-- ko foreach: { data: request.representations, as: 'representation' } -->
                 <option data-bind="value: representation, text: !!representation.typeName ? representation.typeName : ('Example ' + ($index() + 1))"></option>
@@ -223,7 +224,7 @@
             </select>
             <!-- /ko -->
         </div>
-        <div class="col-8 flex justify-content-end">
+        <div class="col-6 flex justify-content-end">
 
             <!-- ko if: request.readonlyBodyFormat -->
         <div class="form-check form-check-inline">
