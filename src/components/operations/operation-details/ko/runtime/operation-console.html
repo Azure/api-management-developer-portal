@@ -213,7 +213,7 @@
     <!-- ko if: hasBody -->
     <h3>Body</h3>
 
-    <div class="row flex flex-row" style="margin-bottom: 3%;">
+    <div class="row flex flex-row form-group">
         <div class="col-4">
             <!-- ko if: request.bodyFormat() === 'raw' && request.representations?.length > 0 -->
             <select id="requestRepresentations" class="form-control" style="width: auto;" data-bind="value: $component.selectedRepresentation">
