@@ -218,7 +218,7 @@
             <!-- ko if: request.bodyFormat() === 'raw' && request.representations?.length > 0 -->
             <select id="requestRepresentations" class="form-control" style="width: auto;" data-bind="value: $component.selectedRepresentation">
                 <!-- ko foreach: { data: request.representations, as: 'representation' } -->
-                <option data-bind="value: representation, text: 'Example ' + ($index() + 1)"></option>
+                <option data-bind="value: representation, text: !!representation.typeName ? representation.typeName : ('Example ' + ($index() + 1))"></option>
                 <!-- /ko -->
             </select>
             <!-- /ko -->
