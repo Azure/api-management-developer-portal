@@ -81,10 +81,18 @@ export class OperationDetails {
             const operation = this.operation();
 
             let operationPath = api.versionedPath;
+            let versionPath = "";
 
             if (api.type !== TypeOfApi.soap) {
                 operationPath += operation.displayUrlTemplate;
             }
+
+            if (api.apiVersionSet && api.apiVersion && api.apiVersionSet.versioningScheme === "Query") {
+                const separator = operationPath.indexOf("?") >= 0 ? "&" : "?";
+                versionPath = `${separator}${api.apiVersionSet.versionQueryName}=${api.apiVersion}`;
+            }
+            
+            operationPath += versionPath;
 
             if (api.type === TypeOfApi.webSocket) {
                 return `${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
