@@ -43,10 +43,10 @@ export class WidgetEditorViewModel implements WidgetEditor<WidgetModel> {
     public async initMonaco() {
         loader.config({ paths: { vs: "/assets/monaco-editor/vs" } });
         loader.init().then(() => {
-            const settings = HtmlEditorSettings.config
-            settings['value'] = this.htmlCode() || '';
+            const settings: Record<string, unknown> = HtmlEditorSettings.config
+            settings.value = this.htmlCode() || '';
 
-            this[HtmlEditorSettings.id] = (<any>window).monaco.editor.create(document.getElementById(HtmlEditorSettings.id), settings);
+            this[HtmlEditorSettings.id] = (window as any).monaco.editor.create(document.getElementById(HtmlEditorSettings.id), settings);
 
             this[HtmlEditorSettings.id].onDidChangeModelContent((e) => {
                 if(!e.isFlush) {
