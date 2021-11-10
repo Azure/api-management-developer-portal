@@ -26,8 +26,6 @@ import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ConsoleRepresentation } from "../../../../../models/console/consoleRepresentation";
 import { cloneDeep } from "lodash";
 
-const oauthSessionKey = "oauthSession";
-
 @Component({
     selector: "operation-console",
     template: template
