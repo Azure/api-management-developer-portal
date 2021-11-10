@@ -361,6 +361,16 @@ pre {
     }
 }
 
+.mw-600 {
+    flex: 0 0 100%;
+    max-width: 100%;
+
+    @media (min-width: 901px) {
+        flex: 0 0 600px;
+        max-width: 600px;
+    }
+}
+
 .margin-top-variables {
     margin-top: 30px !important;
 }
@@ -530,16 +540,14 @@ operation-console {
         padding: 5px 10px;
         width: 100%;
         min-height: 2em;
+        display: flex;
+        justify-content: flex-end;
     }
 
     .code-block-command {
         background: none;
         border: none;
         cursor: pointer;
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
 
         &:hover {
             background: #ccc;

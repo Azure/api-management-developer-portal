@@ -16,7 +16,7 @@ namespace CSWebSocketClientSample
         static async Task StartWebSocketClient()
         {
             ClientWebSocket client = new ClientWebSocket();
-            Uri uri = new Uri("{{wsUrl}}");
+            Uri uri = new Uri("{{displayedWsUrl}}");
             var cts = new CancellationTokenSource();
             await client.ConnectAsync(uri, CancellationToken.None);
 
