@@ -86,11 +86,19 @@ export class OperationDetails {
                 operationPath += operation.displayUrlTemplate;
             }
 
+            let requestUrl = "";
+
             if (api.type === TypeOfApi.webSocket) {
-                return `${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
+                requestUrl = `${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
+            } else {
+                requestUrl = `https://${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
             }
 
-            return `https://${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
+            if (api.apiVersion && api.apiVersionSet?.versioningScheme === "Query") {
+                return Utils.addQueryParameter(requestUrl, api.apiVersionSet.versionQueryName, api.apiVersion);
+            }
+
+            return requestUrl;
         });
         this.protocol = ko.computed(() => {
             const api = this.api();
