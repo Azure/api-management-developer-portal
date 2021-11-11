@@ -36,7 +36,7 @@ import { OAuthService } from "./services/oauthService";
 import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts.module";
 import { RuntimeConfigPublisher } from "./publishing/runtimeConfigPublisher";
 import { RuntimeConfigBuilder } from "./publishing/runtimeConfigBuilder";
-import { HtmlInjectionPublishModule } from "../community/widgets/html-injection/widget.publish.module";
+import { HtmlInjectionPublishModule } from "./components/html-injection/widget.publish.module";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {

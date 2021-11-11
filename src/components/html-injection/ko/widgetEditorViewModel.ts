@@ -5,7 +5,7 @@ import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorat
 import { WidgetModel } from "../widgetModel";
 import { widgetEditorSelector } from "..";
 import loader from '@monaco-editor/loader';
-import { HtmlEditorSettings } from "../../../../src/constants";
+import { HtmlEditorSettings } from "../../../constants";
 
 @Component({
     selector: widgetEditorSelector,

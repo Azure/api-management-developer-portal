@@ -1,4 +1,4 @@
-﻿import { widgetName, widgetDisplayName, widgetCategory } from "./constants";
+﻿import { widgetName, widgetDisplayName, widgetCategory, widgetIconClass } from "./constants";
 import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { WidgetModel } from "./widgetModel";
 import { htmlCodeInitial } from "./ko/constants"
@@ -18,7 +18,7 @@ export class WidgetHandlers implements IWidgetHandler {
             category: widgetCategory,
             requires: [],
             displayName: widgetDisplayName,
-            iconClass: "widget-icon widget-icon-component",
+            iconClass: widgetIconClass,
 
             /**
              * This method invoked when the widget gets added to the content.
