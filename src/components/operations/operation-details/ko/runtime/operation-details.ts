@@ -94,7 +94,7 @@ export class OperationDetails {
                 requestUrl = `https://${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
             }
 
-            if (api.apiVersionSet && api.apiVersion && api.apiVersionSet.versioningScheme === "Query") {
+            if (api.apiVersion && api.apiVersionSet?.versioningScheme === "Query") {
                 return Utils.addQueryParameter(requestUrl, api.apiVersionSet.versionQueryName, api.apiVersion);
             }
 
