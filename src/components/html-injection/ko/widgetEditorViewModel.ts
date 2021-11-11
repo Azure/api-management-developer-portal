@@ -14,10 +14,12 @@ import { HtmlEditorSettings } from "../../../constants";
 export class WidgetEditorViewModel implements WidgetEditor<WidgetModel> {
     public readonly htmlCode: ko.Observable<string>;
     public readonly htmlCodeHeight: ko.Observable<number>;
+    public readonly editorLoading: ko.Observable<boolean>;
 
     constructor() {
         this.htmlCode = ko.observable();
         this.htmlCodeHeight = ko.observable();
+        this.editorLoading = ko.observable(true);
     }
 
     @Param()
@@ -49,11 +51,11 @@ export class WidgetEditorViewModel implements WidgetEditor<WidgetModel> {
             this[HtmlEditorSettings.id] = (window as any).monaco.editor.create(document.getElementById(HtmlEditorSettings.id), settings);
 
             this[HtmlEditorSettings.id].onDidChangeModelContent((e) => {
-                if(!e.isFlush) {
+                if (!e.isFlush) {
                     this.htmlCode(this[HtmlEditorSettings.id].getValue());
                     this.applyChanges('htmlCode');
                 }
             });
-        });
+        }).finally(() => this.editorLoading(false));
     }
 }
