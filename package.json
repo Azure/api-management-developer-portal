@@ -63,6 +63,7 @@
         "webpack-merge": "^5.2.0"
     },
     "dependencies": {
+        "@azure/msal-browser": "^2.19.0",
         "@paperbits/azure": "0.1.356-hotfix",
         "@paperbits/common": "0.1.396",
         "@paperbits/core": "0.1.396",

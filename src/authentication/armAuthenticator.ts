@@ -1,14 +1,16 @@
-import * as Msal from "msal";
+import * as Msal from "@azure/msal-browser";
 import { Utils } from "../utils";
 import { IAuthenticator, AccessToken } from ".";
 
 
-const aadClientId = "73a510c3-9946-46dd-b5ae-a8f0ae68fd04"; // test app
+const aadClientId = "a962e1ed-5694-4abe-9e9b-d08d35877efc"; // test app
 const scopes = ["https://management.azure.com/user_impersonation"];
+const loginRequest = { scopes: ["openid", "profile", "https://management.azure.com/user_impersonation"] };
+
 
 export class ArmAuthenticator implements IAuthenticator {
     private accessToken: AccessToken;
-    private msalInstance: Msal.UserAgentApplication;
+    private msalInstance: Msal.PublicClientApplication;
 
     constructor() {
         const msalConfig: Msal.Configuration = {
@@ -16,39 +18,118 @@ export class ArmAuthenticator implements IAuthenticator {
                 clientId: aadClientId,
                 authority: "https://login.microsoftonline.com/common",
                 redirectUri: "https://apimanagement-cors-proxy-df.azure-api.net/portal/signin-aad",
+            },
+            cache: {
+                cacheLocation: "sessionStorage", // This configures where your cache will be stored
+                storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
             }
         };
 
-        this.msalInstance = new Msal.UserAgentApplication(msalConfig);
+        this.msalInstance = new Msal.PublicClientApplication(msalConfig);
+        this.checkCallbacks();
     }
 
-    private async tryAcquireToken(): Promise<AccessToken> {
-        let response: Msal.AuthResponse;
-        const loginRequest: Msal.AuthenticationParameters = { scopes: scopes };
+    public async checkCallbacks(): Promise<void> {
+        try {
+            const response = await this.msalInstance.handleRedirectPromise();
 
-        console.log("1");
+            debugger;
 
-        if (this.msalInstance.getAccount()) {
-            response = await this.msalInstance.acquireTokenSilent(loginRequest);
+            if (response !== null) {
+                // sessionStorage[tokenKey] = response.idToken;
+                // this.onLogin.next(true);
+
+                // this.checkToken();
+            }
         }
-        else {
-            response = await this.msalInstance.loginPopup(loginRequest);
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+
+
+    private async getTokenRedirect(request): Promise<Msal.AuthenticationResult> {
+        const account = this.getAccount();
+
+        if (!account) {
+            await this.msalInstance.acquireTokenRedirect(request);
+            return;
+        }
+
+        request.account = account;
+
+        try {
+            return await this.msalInstance.acquireTokenSilent(request);
+        }
+        catch (error) {
+            console.warn("silent token acquisition fails. acquiring token using redirect");
+
+            if (error instanceof Msal.InteractionRequiredAuthError) {
+                // fallback to interaction when silent call fails
+                await this.msalInstance.acquireTokenRedirect(request);
+            }
+            else {
+                console.warn(error);
+            }
+        }
+    }
+
+    private getAccount(): Msal.AccountInfo {
+        const accounts = this.msalInstance.getAllAccounts();
+
+        if (accounts.length === 0) {
+            return null;
+        }
+
+        return accounts[0];
+    }
+
+    private async tryAcquireToken(request: any): Promise<any> {
+        const account = this.getAccount();
+
+        if (!account) {
+            await this.msalInstance.acquireTokenRedirect(request);
+            return;
+        }
+
+        request.account = account;
+
+        try {
+            const result = await this.msalInstance.acquireTokenSilent(request);
+            debugger;
+        }
+        catch (error) {
+            console.warn("silent token acquisition fails. acquiring token using redirect");
+
+            if (error instanceof Msal.InteractionRequiredAuthError) {
+                // fallback to interaction when silent call fails
+                await this.msalInstance.acquireTokenRedirect(request);
+            }
+            else {
+                console.warn(error);
+            }
         }
 
 
         console.log("2");
         // await Utils.delay(1);
 
-        if (!response.accessToken) {
-            throw new Error(`Unable to acquire ARM token.`);
-        }
+        // if (!response.accessToken) {
+        //     throw new Error(`Unable to acquire ARM token.`);
+        // }
 
-        const accessToken = AccessToken.parse(`Bearer ${response.accessToken}`);
-        this.setAccessToken(accessToken);
+        // const accessToken = AccessToken.parse(`Bearer ${response.accessToken}`);
+        // this.setAccessToken(accessToken);
 
-        setTimeout(this.tryAcquireToken.bind(this), 30 * 60 * 1000);  // scheduling token refresh in 30 min
 
-        return accessToken;
+
+        // setTimeout(this.tryAcquireToken.bind(this), 30 * 60 * 1000);  // scheduling token refresh in 30 min
+
+        // return accessToken;
+
+
+        return null;
     }
 
     public async getAccessToken(): Promise<AccessToken> {
@@ -66,7 +147,7 @@ export class ArmAuthenticator implements IAuthenticator {
             }
         }
 
-        const accessToken = await this.tryAcquireToken();
+        const accessToken = await this.tryAcquireToken(loginRequest);
         return accessToken;
     }
 
