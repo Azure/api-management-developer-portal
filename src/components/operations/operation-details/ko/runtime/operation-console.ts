@@ -279,6 +279,10 @@ export class OperationConsole {
         this.updateRequestSummary();
     }
 
+    public revertBody(): void {
+        this.consoleOperation().request.body(this.selectedRepresentation().sample)
+    }
+
     public removeHeader(header: ConsoleHeader): void {
         this.consoleOperation().request.headers.remove(header);
         this.updateRequestSummary();

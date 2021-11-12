@@ -214,18 +214,10 @@
     <h3>Body</h3>
 
     <div class="row flex flex-row form-group">
-        <div class="col-6">
-            <!-- ko if: request.bodyFormat() === 'raw' && request.representations?.length > 0 -->
-            <label class="form-check-label">Select a sample request body</label>
-            <select id="requestRepresentations" class="form-control" style="width: auto;" data-bind="value: $component.selectedRepresentation">
-                <!-- ko foreach: { data: request.representations, as: 'representation' } -->
-                <option data-bind="value: representation, text: !!representation.typeName ? representation.typeName : ('Example ' + ($index() + 1))"></option>
-                <!-- /ko -->
-            </select>
-            <!-- /ko -->
+        <div class="col-5">
+            <label class="form-check-label">Request body format</label>
         </div>
-        <div class="col-6 flex justify-content-end">
-
+        <div class="col-7 flex">
             <!-- ko if: request.readonlyBodyFormat -->
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="bodyFormat" id="bodyFormatForm" value="form"
@@ -245,6 +237,33 @@
         </div>
         </div>
     </div>
+
+            <!-- ko if: request.bodyFormat() === 'raw' && request.representations?.length > 0 -->
+    <div class="row flex flex-row form-group">
+
+        <div class="col-5">
+            <label class="form-check-label">Sample request body</label>
+        </div>
+        <div class="col-5">
+            <div class="flex form-check form-check-inline">
+                <select id="requestRepresentations" class="form-control" style="width: auto;" data-bind="value: $component.selectedRepresentation">
+                    <!-- ko foreach: { data: request.representations, as: 'representation' } -->
+                    <option data-bind="value: representation, text: !!representation.typeName ? representation.typeName : ('Example ' + ($index() + 1))"></option>
+                    <!-- /ko -->
+                </select>
+            </div>
+        </div>
+        <div class="col-2">
+            <!-- ko if: request.isBodyEdited() -->
+            <label 
+            style="cursor: pointer;"
+            data-bind="click: $component.revertBody"
+            class="form-check-label">Revert</label>
+            <!-- /ko -->
+        </div>
+    </div>
+
+    <!-- /ko -->
 
     <!-- ko ifnot: request.readonlyBodyFormat -->
     <div class="form-group">
