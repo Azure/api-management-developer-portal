@@ -434,14 +434,6 @@ pre {
     height: 60px;
 }
 
-operation-console {
-    height: 100%;
-
-    .form-control {
-        margin: 0;
-    }
-}
-
 .apis-section {
     padding: 0;
 
@@ -490,6 +482,7 @@ api-list-tiles {
 api-list-dropdown {
     .collapsible-dropdown {
         box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.5);
+        border: 1px solid #ffffff;
         top: 100%;
         left: 0;
         right: 0;
@@ -530,6 +523,12 @@ validation-summary {
 
 operation-console {
     background: #fafafa;
+    min-height: 100%;
+    border-left: 1px solid #dee2e6;
+    
+    .form-control {
+        margin: 0;
+    }
 }
 
 .code-block {
