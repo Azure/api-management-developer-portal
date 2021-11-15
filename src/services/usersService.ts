@@ -135,6 +135,10 @@ export class UsersService {
     public signOut(): void {
         this.router.navigateTo(`#${Constants.hashSignOut}`);
     }
+    
+    public forceSignOut(): void {
+        this.router.navigateTo(`#${Constants.hashForceSignOut}`);
+    }
 
     /**
      * Returns currently authenticated user ID.
@@ -226,8 +230,7 @@ export class UsersService {
 
             await this.mapiClient.delete<string>(query, [header, MapiClient.getPortalHeader("deleteUser")]);
 
-            sessionStorage.setItem(Constants.closeAccount, "true");
-            this.signOut();
+            this.forceSignOut();
         }
         catch (error) {
             this.navigateToSignin();

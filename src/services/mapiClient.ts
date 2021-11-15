@@ -10,7 +10,6 @@ import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { Page } from "../models/page";
 
-
 export interface IHttpBatchResponses {
     responses: IHttpBatchResponse[];
 }

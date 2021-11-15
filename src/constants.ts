@@ -53,8 +53,8 @@ export enum Direction {
 
 export const defaultAadTenantName = "common";
 
-export const closeAccount = "close-account";
 export const hashSignOut = "signout";
+export const hashForceSignOut = "forceSignout";
 export const pageUrlSignIn = "/signin";
 export const pageUrlSignInSso = "/signinsso";
 export const pageUrlSignUp = "/signup";
@@ -67,6 +67,7 @@ export const pageUrlChangePassword = "/change-password";
 export const pageUrlConfirmPassword = "/confirm-password";
 export const pageUrlResetPassword = "/reset-password";
 export const pageUrlReference = "/api-details";
+export const navigateTo = "navigateTo";
 
 /**
  * Permalinks pointing to resources that cannot be added, modified or modified.
@@ -107,17 +108,17 @@ export const AppType = "developerPortal";
 /**
  * Query Editor Settings - GraphQL Console
  */
- export const QueryEditorSettings = {
+export const QueryEditorSettings = {
     id: "queryEditor",
     config: {
         language: 'graphqlQuery',
         readOnly: false,
     }
- }
+}
 
- /**
- * Variables Editor Settings - GraphQL Console
- */
+/**
+* Variables Editor Settings - GraphQL Console
+*/
 export const VariablesEditorSettings = {
     id: "variablesEditor",
     config: {
@@ -129,18 +130,18 @@ export const VariablesEditorSettings = {
 /**
  * Response Settings - GraphQL Console
  */
- export const ResponseSettings = {
+export const ResponseSettings = {
     id: "responseEditor",
     config: {
         language: 'json',
         readOnly: true,
     }
- }
+}
 
- /**
- * Graphql operation types
- */
-  export enum GraphqlOperationTypes {
+/**
+* Graphql operation types
+*/
+export enum GraphqlOperationTypes {
     query = "query",
     mutation = "mutation",
     subscription = "subscription"
