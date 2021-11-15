@@ -30,6 +30,7 @@ import { CodeSampleViewModel } from "./components/operations/operation-details/k
 import { Authorization } from "./components/operations/operation-details/ko/runtime/authorization";
 import { OperationConsole } from "./components/operations/operation-details/ko/runtime/operation-console";
 import { GraphqlConsole } from "./components/operations/operation-details/ko/runtime/graphql-console";
+import { GraphqlDocumentation } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-documentation";
 import { OperationDetails } from "./components/operations/operation-details/ko/runtime/operation-details";
 import { TypeDefinitionViewModel } from "./components/operations/operation-details/ko/runtime/type-definition";
 import { OperationList } from "./components/operations/operation-list/ko/runtime/operation-list";
@@ -91,6 +92,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationDetails", OperationDetails);
         injector.bind("operationConsole", OperationConsole);
         injector.bind("graphqlConsole", GraphqlConsole);
+        injector.bind("graphqlDocumentation", GraphqlDocumentation);
         injector.bind("authorization", Authorization);
         injector.bind("typeDefinition", TypeDefinitionViewModel);
         injector.bind("codeSample", CodeSampleViewModel);

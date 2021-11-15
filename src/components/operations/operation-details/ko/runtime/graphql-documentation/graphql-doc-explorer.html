@@ -1,0 +1,16 @@
+<ul role="list" class="gql-list-group">
+    <!-- ko foreach: { data: operationNode.children(), as: 'nodeChild' } -->
+    <li role="presentation">
+        <!-- ko if: nodeChild.label().includes($parent.filter) -->
+            <div role="presentation" data-bind="attr: {name: nodeChild.label()}" class="presentation-item">
+                <a href="#" role="listitem" class="nav-link"
+                    data-bind="attr: { href: $component.getReferenceUrl(nodeChild.label())}">
+                    <div class="row">
+                        <span data-bind="text: nodeChild.label(), attr: { title: nodeChild.label() }"></span>
+                    </div>
+                </a>
+            </div>
+        <!--/ko-->
+    </li>
+    <!--/ko-->
+</ul>

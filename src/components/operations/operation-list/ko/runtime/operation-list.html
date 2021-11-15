@@ -12,6 +12,10 @@
 </div>
 <!-- /ko -->
 
+<!-- ko if: apiType() === 'graphql' -->
+<graphql-documentation params="{ apiName: $component.selectedApiName, detailsPageUrl: $component.detailsPageUrl }"></graphql-documentation>
+<!-- /ko -->
+
 <!-- ko ifnot: apiType() === 'websocket' || apiType() === 'graphql'-->
 <div class="form-inline search-input">
     <div class="d-block flex-grow mw-100">
