@@ -193,7 +193,14 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         }
 
         if (contract.type === "array") {
-            this.properties = this.processProperties(contract.items, nested, "[]");
+            if (contract.items.$ref) {
+                const arrayProperty = new TypeDefinitionPrimitiveProperty("[]", contract, isRequired);
+                arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfReference(getTypeNameFromRef(contract.items.$ref));
+                this.properties = [arrayProperty];
+            } else if (contract.items.properties) {
+                this.properties = this.processProperties(contract.items, nested, "[]");
+            }
+
             this.kind = "array";
             return;
         }
