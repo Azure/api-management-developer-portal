@@ -192,7 +192,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
             return;
         }
 
-        if (contract.type === "array") {
+        if (contract.type === "array" && contract.items) {
             if (contract.items.$ref) {
                 const arrayProperty = new TypeDefinitionPrimitiveProperty("[]", contract, isRequired);
                 arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfReference(getTypeNameFromRef(contract.items.$ref));
