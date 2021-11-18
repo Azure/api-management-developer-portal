@@ -38,9 +38,9 @@ export class DefaultAuthenticator implements IAuthenticator {
                 return accessToken;
             }
             else {
-                sessionStorage.setItem(Constants.navigateTo, Constants.pageUrlSignIn);
-                window.location.assign(`#${Constants.hashForceSignOut}`);
+                this.clearAccessToken();
                 alert("You session expired. Please sign-in again.");
+                window.location.assign(Constants.pageUrlSignIn);
             }
         }
 

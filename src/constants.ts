@@ -53,8 +53,8 @@ export enum Direction {
 
 export const defaultAadTenantName = "common";
 
+export const closeAccount = "close-account";
 export const hashSignOut = "signout";
-export const hashForceSignOut = "forceSignout";
 export const pageUrlSignIn = "/signin";
 export const pageUrlSignInSso = "/signinsso";
 export const pageUrlSignUp = "/signup";

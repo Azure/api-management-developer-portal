@@ -16,11 +16,13 @@ export class SignOutRouteGuard implements RouteGuard {
     ) { }
 
     public async canActivate(route: Route): Promise<boolean> {
-        if (route.hash !== Constants.hashSignOut && route.hash !== Constants.hashForceSignOut) {
+        if (route.hash !== Constants.hashSignOut) {
             return true;
         }
 
-        if (route.hash !== Constants.hashForceSignOut) {
+        const isSignOutAfterClose = sessionStorage.getItem(Constants.closeAccount);
+
+        if (isSignOutAfterClose !== "true") {
             const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
 
             if (isDelegationEnabled) {
@@ -47,16 +49,11 @@ export class SignOutRouteGuard implements RouteGuard {
                     }
                 }
             }
+        } else {
+            sessionStorage.removeItem(Constants.closeAccount);
         }
 
         this.authenticator.clearAccessToken();
-        const navigateTo = sessionStorage.getItem(Constants.navigateTo);
-        if (navigateTo) {
-            sessionStorage.removeItem(Constants.navigateTo);
-            window.location.assign(navigateTo);
-        }
-        else {
-            location.assign("/");
-        }
+        location.assign("/");
     }
 }
