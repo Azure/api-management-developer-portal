@@ -53,8 +53,8 @@ export enum Direction {
 
 export const defaultAadTenantName = "common";
 
+export const closeAccount = "close-account";
 export const hashSignOut = "signout";
-export const hashForceSignOut = "forceSignout";
 export const pageUrlSignIn = "/signin";
 export const pageUrlSignInSso = "/signinsso";
 export const pageUrlSignUp = "/signup";
@@ -67,7 +67,6 @@ export const pageUrlChangePassword = "/change-password";
 export const pageUrlConfirmPassword = "/confirm-password";
 export const pageUrlResetPassword = "/reset-password";
 export const pageUrlReference = "/api-details";
-export const navigateTo = "navigateTo";
 
 /**
  * Permalinks pointing to resources that cannot be added, modified or modified.

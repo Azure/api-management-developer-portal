@@ -18,7 +18,7 @@ export class AadSignOutRouteGuard implements RouteGuard {
     ) { }
 
     public async canActivate(route: Route): Promise<boolean> {
-        if (route.hash !== Constants.hashSignOut && route.hash !== Constants.hashForceSignOut) {
+        if (route.hash !== Constants.hashSignOut) {
             return true;
         }
 
