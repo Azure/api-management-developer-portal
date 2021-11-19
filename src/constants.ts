@@ -107,17 +107,17 @@ export const AppType = "developerPortal";
 /**
  * Query Editor Settings - GraphQL Console
  */
- export const QueryEditorSettings = {
+export const QueryEditorSettings = {
     id: "queryEditor",
     config: {
         language: 'graphqlQuery',
         readOnly: false,
     }
- }
+}
 
- /**
- * Variables Editor Settings - GraphQL Console
- */
+/**
+* Variables Editor Settings - GraphQL Console
+*/
 export const VariablesEditorSettings = {
     id: "variablesEditor",
     config: {
@@ -129,18 +129,18 @@ export const VariablesEditorSettings = {
 /**
  * Response Settings - GraphQL Console
  */
- export const ResponseSettings = {
+export const ResponseSettings = {
     id: "responseEditor",
     config: {
         language: 'json',
         readOnly: true,
     }
- }
+}
 
- /**
- * Graphql operation types
- */
-  export enum GraphqlOperationTypes {
+/**
+* Graphql operation types
+*/
+export enum GraphqlOperationTypes {
     query = "query",
     mutation = "mutation",
     subscription = "subscription"
