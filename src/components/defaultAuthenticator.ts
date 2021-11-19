@@ -1,4 +1,5 @@
 import { IAuthenticator, AccessToken } from "./../authentication";
+import * as Constants from "./../constants";
 
 export class DefaultAuthenticator implements IAuthenticator {
     constructor() { }
@@ -9,7 +10,7 @@ export class DefaultAuthenticator implements IAuthenticator {
             let tokenValue = url.searchParams.get("token");
             let returnUrl = url.searchParams.get("returnUrl") || "/";
             if (!tokenValue && url.hash.startsWith("#token=")) {
-                const hashParams = new URLSearchParams(url.hash.replace(/#/g,"?"));
+                const hashParams = new URLSearchParams(url.hash.replace(/#/g, "?"));
                 tokenValue = hashParams.get("token");
                 returnUrl = hashParams.get("returnUrl") || returnUrl || "/";
             }
@@ -35,6 +36,11 @@ export class DefaultAuthenticator implements IAuthenticator {
 
             if (!accessToken.isExpired()) {
                 return accessToken;
+            }
+            else {
+                this.clearAccessToken();
+                alert("You session expired. Please sign-in again.");
+                window.location.assign(Constants.pageUrlSignIn);
             }
         }
 
