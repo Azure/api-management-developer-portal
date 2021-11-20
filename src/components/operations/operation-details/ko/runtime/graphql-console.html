@@ -33,14 +33,14 @@
         </authorization>
     
         <h3 class="pad-top-0">Headers
-            <a href="#" role="button" data-bind="click: $component.collapse('collapsedHeaders')">
+            <button class="no-border" data-bind="click: $component.collapse('collapsedHeaders')">
                 <!-- ko if: $component.collapsedHeaders -->
                 <i class="icon-emb icon-emb-chevron-down"></i>
                 <!-- /ko -->
                 <!-- ko ifnot: $component.collapsedHeaders -->
                 <i class="icon-emb icon-emb-chevron-up"></i>
                 <!-- /ko -->
-            </a>
+            </button>
         </h3>
         <!-- ko ifnot: $component.collapsedHeaders -->
         <!-- ko if: $component.headers().length > 0 -->
@@ -88,14 +88,14 @@
     <div class="gql-container">
         <div class="gql-explorer-grid">
             <h4>Explorer
-                <a href="#" role="button" class="visible-collapse" data-bind="click: $component.collapse('collapsedExplorer')">
+                <button class="no-border visible-collapse" data-bind="click: $component.collapse('collapsedExplorer')">
                     <!-- ko if: $component.collapsedExplorer -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
                     <!-- ko ifnot: $component.collapsedExplorer -->
                     <i class="icon-emb icon-emb-chevron-up"></i>
                     <!-- /ko -->
-                </a>
+                </button>
             </h4>
 
             <!-- ko ifnot: $component.collapsedExplorer -->
