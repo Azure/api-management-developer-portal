@@ -52,8 +52,6 @@ export class GraphqlDocumentation {
         const graphQLSchemas = await this.apiService.getSchemas(this.api());
         const schema = graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema;
         this.graphDocModel(new GraphDocModel(schema));
-        console.log("this.graphDocModel")
-        console.log(this.graphDocModel)
         this.working(false);
     }
 

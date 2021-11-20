@@ -478,6 +478,11 @@ operation-console {
             color: #128930;
             background-color: white;
         }
+
+        &.graph {
+            margin-top: 40px;
+            float: right;
+        }
     }
 }
 
