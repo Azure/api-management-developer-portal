@@ -235,12 +235,12 @@ $search-button-width: 30px;
     tag-input {
         display: block;
         margin: 5px 0;
-        width: 300px;
+        max-width: 300px;
     }
 
     .input-group:first-child {
         border-bottom: 1px solid #a19f9d;
-        width: 300px;
+        max-width: 300px;
         flex: 1;
     }
 
