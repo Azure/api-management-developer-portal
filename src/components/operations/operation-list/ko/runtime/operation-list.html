@@ -14,7 +14,7 @@
 
 <!-- ko ifnot: apiType() === 'websocket' || apiType() === 'graphql'-->
 <div class="form-inline search-input">
-    <div class="d-block flex-grow mw-100">
+    <div class="d-block flex-grow mw-170">
         <div class="input-group">
             <input type="search" aria-label="Search operations" placeholder="Search operations" spellcheck="false" data-bind="textInput: pattern" />
             <button type="button" class="search-button" aria-label="Search operations">
@@ -64,7 +64,7 @@
                 <a href="#" role="listitem" class="nav-link"
                     data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
                     <div class="row">
-                        <span class="col-md-2" data-bind="attr: { 'data-method': method }"></span>
+                        <span class="col-md-2 mw-60" data-bind="attr: { 'data-method': method }"></span>
                         <span class="col-md-9" data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
                     </div>
                 </a>
@@ -101,7 +101,7 @@
                 <a href="#" role="listitem" class="nav-link"
                     data-bind="attr: { href: $component.getReferenceUrl(item)}, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
                     <div class="row">
-                        <span class="col-md-2" data-bind="attr: { 'data-method': method }"></span>
+                        <span class="col-md-2 mw-60" data-bind="attr: { 'data-method': method }"></span>
                         <span class="col-md-9" data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
                     </div>
                 </a>
