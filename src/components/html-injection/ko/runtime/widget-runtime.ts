@@ -10,7 +10,7 @@ import * as ko from "knockout";
     selector: widgetRuntimeSelector,
     template: template
 })
-export class WidgetRuntime {
+export class HTMLInjectionWidgetRuntime {
     @Param()
     public readonly htmlCode: ko.Observable<string>;
 

@@ -1,6 +1,6 @@
 ﻿import { widgetName, widgetDisplayName, widgetCategory, widgetIconClass } from "./constants";
 import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
-import { WidgetModel } from "./widgetModel";
+import { HTMLInjectionWidgetModel } from "./widgetModel";
 import { htmlCodeInitial } from "./ko/constants"
 
 /**
@@ -8,7 +8,7 @@ import { htmlCodeInitial } from "./ko/constants"
  * it describes how the widget gets created, how it responds to drag'n'drop events,
  * what contextual commands is supports, etc.
  */
-export class WidgetHandlers implements IWidgetHandler {
+export class HTMLInjectionWidgetHandlers implements IWidgetHandler {
     /**
      * This method invoked when the widget gets added to the content.
      */
@@ -24,7 +24,7 @@ export class WidgetHandlers implements IWidgetHandler {
              * This method invoked when the widget gets added to the content.
              */
             createModel: async () => { 
-                const model = new WidgetModel();
+                const model = new HTMLInjectionWidgetModel();
                 model.htmlCode = htmlCodeInitial;
                 model.htmlCodeHeight = 150;
                 return model;

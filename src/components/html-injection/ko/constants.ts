@@ -9,7 +9,7 @@ export const htmlCodeInitial =
     </style>
 </head>
 <body>
-    <h1>HTML injection widget</h1>
+    <h1>Custom HTML widget</h1>
     <p>Write your HTML here!</p>
 </body>
 </html>`;

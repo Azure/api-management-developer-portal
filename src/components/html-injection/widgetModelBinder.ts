@@ -1,32 +1,32 @@
 import { widgetName } from "./constants";
 import { IModelBinder } from "@paperbits/common/editing";
-import { WidgetModel } from "./widgetModel";
+import { HTMLInjectionWidgetModel } from "./widgetModel";
 import { Contract } from "@paperbits/common";
-import { WidgetContract } from "./widgetContract";
+import { HTMLInjectionWidgetContract } from "./widgetContract";
 import { htmlCodeInitial } from "./ko/constants";
 
 /**
  * This is a class that helps to prepare the model using data described
  * in the contract.
  */
-export class WidgetModelBinder implements IModelBinder<WidgetModel> {
+export class HTMLInjectionWidgetModelBinder implements IModelBinder<HTMLInjectionWidgetModel> {
     public canHandleContract(contract: Contract): boolean {
         return contract.type === widgetName;
     }
 
     public canHandleModel(model: any): boolean {
-        return model instanceof WidgetModel;
+        return model instanceof HTMLInjectionWidgetModel;
     }
 
-    public async contractToModel(contract: WidgetContract): Promise<WidgetModel> {
-        const model = new WidgetModel();
+    public async contractToModel(contract: HTMLInjectionWidgetContract): Promise<HTMLInjectionWidgetModel> {
+        const model = new HTMLInjectionWidgetModel();
         model.htmlCode = contract.htmlCode ?? htmlCodeInitial;
         model.htmlCodeHeight = contract.htmlCodeHeight ?? 150;
         return model;
     }
 
-    public modelToContract(model: WidgetModel): Contract {
-        const contract: WidgetContract = {
+    public modelToContract(model: HTMLInjectionWidgetModel): Contract {
+        const contract: HTMLInjectionWidgetContract = {
             type: widgetName,
             htmlCode: model.htmlCode,
             htmlCodeHeight: model.htmlCodeHeight,

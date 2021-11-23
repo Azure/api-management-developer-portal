@@ -1,5 +1,5 @@
-<fieldset class="form flex-item flex-item-grow">
-    <div class="form-group" style="display: flex; flex-direction: column; height: 100%;">
+<fieldset class="form flex flex-item flex-item-grow no-overflow">
+    <div class="form-group flex flex-column" style="display: flex; margin-bottom: 0;">
         <label for="height" class="form-label">
             Height (px)
             <button class="btn btn-info" type="button" title="Help"
@@ -12,13 +12,13 @@
         <label for="htmlCode" class="form-label">
             HTML code
         </label>
-        <div class="input-group" style="height: 100%;">
+        <div class="input-group flex-item flex-item-grow">
             <!-- ko if: editorLoading() -->
             <spinner class="fit"></spinner>
             <!-- /ko -->
             <style>
                 /* fix for positioning of the IntelliSense window of Monaco Editor */
-                #htmlEditor .overflowingContentWidgets {
+                #htmlEditor .monaco-editor .overflowingContentWidgets {
                     position: absolute;
                     top: 0;
                 }

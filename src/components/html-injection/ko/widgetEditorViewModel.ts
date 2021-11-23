@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import template from "./widgetEditorView.html";
 import { WidgetEditor } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
-import { WidgetModel } from "../widgetModel";
+import { HTMLInjectionWidgetModel } from "../widgetModel";
 import { widgetEditorSelector } from "..";
 import loader from '@monaco-editor/loader';
 import { HtmlEditorSettings } from "../../../constants";
@@ -11,7 +11,7 @@ import { HtmlEditorSettings } from "../../../constants";
     selector: widgetEditorSelector,
     template: template
 })
-export class WidgetEditorViewModel implements WidgetEditor<WidgetModel> {
+export class WidgetEditorViewModel implements WidgetEditor<HTMLInjectionWidgetModel> {
     public readonly htmlCode: ko.Observable<string>;
     public readonly htmlCodeHeight: ko.Observable<number>;
     public readonly editorLoading: ko.Observable<boolean>;
@@ -23,10 +23,10 @@ export class WidgetEditorViewModel implements WidgetEditor<WidgetModel> {
     }
 
     @Param()
-    public model: WidgetModel;
+    public model: HTMLInjectionWidgetModel;
 
     @Event()
-    public onChange: (model: WidgetModel) => void;
+    public onChange: (model: HTMLInjectionWidgetModel) => void;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -42,9 +42,10 @@ export class WidgetEditorViewModel implements WidgetEditor<WidgetModel> {
         this.onChange(this.model);
     }
 
-    public async initMonaco() {
+    public async initMonaco(): Promise<void> {
         loader.config({ paths: { vs: "/assets/monaco-editor/vs" } });
-        loader.init().then(() => {
+        try {
+            await loader.init();
             const settings: Record<string, unknown> = HtmlEditorSettings.config
             settings.value = this.htmlCode() || '';
 
@@ -56,6 +57,8 @@ export class WidgetEditorViewModel implements WidgetEditor<WidgetModel> {
                     this.applyChanges('htmlCode');
                 }
             });
-        }).finally(() => this.editorLoading(false));
+        } finally {
+            this.editorLoading(false);
+        }
     }
 }

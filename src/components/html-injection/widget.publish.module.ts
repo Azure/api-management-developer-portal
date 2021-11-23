@@ -1,6 +1,6 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
 import { WidgetViewModel } from "./ko/widgetViewModel";
-import { WidgetModelBinder } from "./widgetModelBinder";
+import { HTMLInjectionWidgetModelBinder } from "./widgetModelBinder";
 import { WidgetViewModelBinder } from "./ko/widgetViewModelBinder";
 
 
@@ -10,7 +10,7 @@ import { WidgetViewModelBinder } from "./ko/widgetViewModelBinder";
 export class HtmlInjectionPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {        
         injector.bind("widget", WidgetViewModel);
-        injector.bindToCollection("modelBinders", WidgetModelBinder);
+        injector.bindToCollection("modelBinders", HTMLInjectionWidgetModelBinder);
         injector.bindToCollection("viewModelBinders", WidgetViewModelBinder);
     }
 }
