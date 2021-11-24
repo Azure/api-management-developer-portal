@@ -4,6 +4,30 @@ import { Component, Event, OnMounted, Param } from "@paperbits/common/ko/decorat
 import loader from '@monaco-editor/loader';
 import { HtmlEditorSettings } from "../../constants";
 
+ko.bindingHandlers["codeEditor"] = {
+    init: (element, valueAccessor) => void (async () => {
+        const { editorContent, onChange, editorLoading } = valueAccessor();
+        try {
+            loader.config({ paths: { vs: "/assets/monaco-editor/vs" } });
+            await loader.init();
+
+            const settings: Record<string, unknown> = HtmlEditorSettings.config;
+            settings.value = editorContent() || '';
+
+            const editor = (window as any).monaco.editor.create(element, settings);
+            editor.onDidChangeModelContent((e) => {
+                if (!e.isFlush) {
+                    const value = editor.getValue()
+                    editorContent(value);
+                    onChange(value);
+                }
+            });
+        } finally {
+            editorLoading(false);
+        }
+    })()
+}
+
 @Component({
     selector: "code-editor",
     template: template
@@ -26,27 +50,5 @@ export class CodeEditor {
     @OnMounted()
     public async init(): Promise<void> {
         this.editorContent(this.code);
-        this.initMonaco();
-    }
-
-    public async initMonaco(): Promise<void> {
-        loader.config({ paths: { vs: "/assets/monaco-editor/vs" } });
-        try {
-            await loader.init();
-            const settings: Record<string, unknown> = HtmlEditorSettings.config
-            settings.value = this.editorContent() || '';
-
-            this[HtmlEditorSettings.id] = (window as any).monaco.editor.create(document.getElementById(HtmlEditorSettings.id), settings);
-
-            this[HtmlEditorSettings.id].onDidChangeModelContent((e) => {
-                if (!e.isFlush) {
-                    const value = this[HtmlEditorSettings.id].getValue()
-                    this.editorContent(value);
-                    this.onChange(value);
-                }
-            });
-        } finally {
-            this.editorLoading(false);
-        }
     }
 }

@@ -2,5 +2,5 @@
     <!-- ko if: editorLoading() -->
     <spinner class="fit"></spinner>
     <!-- /ko -->
-    <div id="htmlEditor" class="codeEditorRoot"></div>
+    <div data-bind="codeEditor: {editorContent, onChange, editorLoading}" class="codeEditorRoot"></div>
 </div>
