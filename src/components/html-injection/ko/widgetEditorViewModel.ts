@@ -2,6 +2,7 @@ import * as ko from "knockout";
 import template from "./widgetEditorView.html";
 import { WidgetEditor } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
+import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
 import { HTMLInjectionWidgetModel } from "../widgetModel";
 import { widgetEditorSelector } from "..";
 import loader from '@monaco-editor/loader';
@@ -13,12 +14,12 @@ import { HtmlEditorSettings } from "../../../constants";
 })
 export class WidgetEditorViewModel implements WidgetEditor<HTMLInjectionWidgetModel> {
     public readonly htmlCode: ko.Observable<string>;
-    public readonly htmlCodeHeight: ko.Observable<number>;
+    public readonly htmlCodeSizeStyles: ko.Observable<SizeStylePluginConfig>;
     public readonly editorLoading: ko.Observable<boolean>;
 
     constructor() {
         this.htmlCode = ko.observable();
-        this.htmlCodeHeight = ko.observable();
+        this.htmlCodeSizeStyles = ko.observable();
         this.editorLoading = ko.observable(true);
     }
 
@@ -32,8 +33,8 @@ export class WidgetEditorViewModel implements WidgetEditor<HTMLInjectionWidgetMo
     public async initialize(): Promise<void> {
         this.htmlCode(this.model.htmlCode);
         this.htmlCode.subscribe(() => this.applyChanges('htmlCode'));
-        this.htmlCodeHeight(this.model.htmlCodeHeight);
-        this.htmlCodeHeight.subscribe(() => this.applyChanges('htmlCodeHeight'));
+        this.htmlCodeSizeStyles(this.model.htmlCodeSizeStyles);
+        this.htmlCodeSizeStyles.subscribe(() => this.applyChanges('htmlCodeSizeStyles'));
         this.initMonaco();
     }
 
@@ -60,5 +61,9 @@ export class WidgetEditorViewModel implements WidgetEditor<HTMLInjectionWidgetMo
         } finally {
             this.editorLoading(false);
         }
+    }
+
+    public onContainerSizeUpdate(htmlCodeSizeStyles: SizeStylePluginConfig): void {
+        this.htmlCodeSizeStyles(htmlCodeSizeStyles);
     }
 }

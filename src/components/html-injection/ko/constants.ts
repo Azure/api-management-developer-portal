@@ -1,3 +1,5 @@
+import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
+
 export const htmlCodeInitial =
 `<html>
 <head>
@@ -13,3 +15,8 @@ export const htmlCodeInitial =
     <p>Write your HTML here!</p>
 </body>
 </html>`;
+
+export const htmlCodeSizeStylesInitial: SizeStylePluginConfig = {
+    height: '150px',
+    width: '100%',
+};

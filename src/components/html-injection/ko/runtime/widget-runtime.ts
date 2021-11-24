@@ -1,5 +1,6 @@
 import template from "./widget-runtime.html";
 import { Component, RuntimeComponent, OnDestroyed, Param } from "@paperbits/common/ko/decorators";
+import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
 import { widgetRuntimeSelector } from "../../constants";
 import * as ko from "knockout";
 
@@ -15,7 +16,7 @@ export class HTMLInjectionWidgetRuntime {
     public readonly htmlCode: ko.Observable<string>;
 
     @Param()
-    public readonly htmlCodeHeight: ko.Observable<number>;
+    public readonly htmlCodeSizeStyles: ko.Observable<SizeStylePluginConfig>;
 
     @OnDestroyed()
     public async dispose(): Promise<void> {

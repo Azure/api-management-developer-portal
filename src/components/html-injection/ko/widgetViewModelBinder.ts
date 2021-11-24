@@ -1,5 +1,5 @@
 import { Bag } from "@paperbits/common";
-import { EventManager } from "@paperbits/common/events";
+import { EventManager, Events } from "@paperbits/common/events";
 import { IWidgetBinding } from "@paperbits/common/editing";
 import { widgetName, widgetDisplayName, widgetEditorSelector } from "../constants";
 import { WidgetViewModel } from "./widgetViewModel";
@@ -16,7 +16,7 @@ export class WidgetViewModelBinder implements ViewModelBinder<HTMLInjectionWidge
     public async updateViewModel(model: HTMLInjectionWidgetModel, viewModel: WidgetViewModel): Promise<void> {
         viewModel.runtimeConfig(JSON.stringify({
             htmlCode: model.htmlCode,
-            htmlCodeHeight: model.htmlCodeHeight,
+            htmlCodeSizeStyles: model.htmlCodeSizeStyles,
         }));
     }
 
@@ -34,7 +34,7 @@ export class WidgetViewModelBinder implements ViewModelBinder<HTMLInjectionWidge
                 draggable: true,
                 applyChanges: async () => {
                     await this.updateViewModel(model, viewModel);
-                    this.eventManager.dispatchEvent("onContentUpdate");
+                    this.eventManager.dispatchEvent(Events.ContentUpdate);
                 }
             };
 

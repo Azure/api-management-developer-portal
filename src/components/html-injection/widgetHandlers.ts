@@ -1,7 +1,7 @@
 ﻿import { widgetName, widgetDisplayName, widgetCategory, widgetIconClass } from "./constants";
 import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { HTMLInjectionWidgetModel } from "./widgetModel";
-import { htmlCodeInitial } from "./ko/constants"
+import { htmlCodeInitial, htmlCodeSizeStylesInitial } from "./ko/constants"
 
 /**
  * Handlers giving the editor required context to manupulate the widget. For example,
@@ -26,7 +26,7 @@ export class HTMLInjectionWidgetHandlers implements IWidgetHandler {
             createModel: async () => { 
                 const model = new HTMLInjectionWidgetModel();
                 model.htmlCode = htmlCodeInitial;
-                model.htmlCodeHeight = 150;
+                model.htmlCodeSizeStyles = htmlCodeSizeStylesInitial;
                 return model;
             }
         };

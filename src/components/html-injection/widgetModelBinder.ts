@@ -3,7 +3,7 @@ import { IModelBinder } from "@paperbits/common/editing";
 import { HTMLInjectionWidgetModel } from "./widgetModel";
 import { Contract } from "@paperbits/common";
 import { HTMLInjectionWidgetContract } from "./widgetContract";
-import { htmlCodeInitial } from "./ko/constants";
+import { htmlCodeInitial, htmlCodeSizeStylesInitial } from "./ko/constants";
 
 /**
  * This is a class that helps to prepare the model using data described
@@ -21,7 +21,7 @@ export class HTMLInjectionWidgetModelBinder implements IModelBinder<HTMLInjectio
     public async contractToModel(contract: HTMLInjectionWidgetContract): Promise<HTMLInjectionWidgetModel> {
         const model = new HTMLInjectionWidgetModel();
         model.htmlCode = contract.htmlCode ?? htmlCodeInitial;
-        model.htmlCodeHeight = contract.htmlCodeHeight ?? 150;
+        model.htmlCodeSizeStyles = contract.htmlCodeSizeStyles ?? htmlCodeSizeStylesInitial;
         return model;
     }
 
@@ -29,7 +29,7 @@ export class HTMLInjectionWidgetModelBinder implements IModelBinder<HTMLInjectio
         const contract: HTMLInjectionWidgetContract = {
             type: widgetName,
             htmlCode: model.htmlCode,
-            htmlCodeHeight: model.htmlCodeHeight,
+            htmlCodeSizeStyles: model.htmlCodeSizeStyles,
         };
 
         return contract;
