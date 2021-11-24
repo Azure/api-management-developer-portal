@@ -27,6 +27,7 @@ export class ProductList {
     public readonly hasPager: ko.Computed<boolean>;
     public readonly hasPrevPage: ko.Observable<boolean>;
     public readonly hasNextPage: ko.Observable<boolean>;
+    public totalNoOfItems: ko.Observable<number>;   //pagination changes
 
     constructor(
         private readonly usersService: UsersService,
@@ -44,6 +45,7 @@ export class ProductList {
         this.hasPrevPage = ko.observable(false);
         this.hasNextPage = ko.observable(false);
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
+        this.totalNoOfItems = ko.observable();  //pagination changes
     }
 
     @Param()
@@ -79,7 +81,7 @@ export class ProductList {
             this.hasNextPage(!!itemsPage.nextLink);
 
             this.products(itemsPage.value);
-
+            this.totalNoOfItems(itemsPage.count);  //pagination changes
             if (this.allowSelection() && !this.selectedProductName()) {
                 this.selectFirstProduct();
             }
@@ -94,6 +96,40 @@ export class ProductList {
         }
         finally {
             this.working(false);
+        }
+    }
+
+     //Get total page count - pagination changes
+     public getPageTotal() : number {
+        var totalPages = Math.ceil(this.totalNoOfItems() / Constants.defaultPageSize);
+        if (this.page() > totalPages && totalPages > 0) {
+            this.page(totalPages);
+        }
+        return totalPages
+    }
+
+    //Navigate to page number - pagination changes
+    public changePageTo(newPage:string) {
+        return function() {
+          switch (newPage) {
+            case "last":
+                this.page(this.getPageTotal());
+              break;
+            case "first":
+                this.page(1);
+              break;
+            default:
+                this.page(newPage);
+          }
+          this.loadPageOfProducts();
+        }
+    }
+
+    //Change page by - pagination changes
+    public changePageBy(offset){
+        return function() {
+            this.page(this.page() + offset);
+            this.loadPageOfProducts();
         }
     }
 

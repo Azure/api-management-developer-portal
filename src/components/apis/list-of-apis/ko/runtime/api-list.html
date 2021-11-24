@@ -1,3 +1,15 @@
+<script type="text/html" id="PaginationTemplate">
+    <div class="pagination" style="cursor:pointer;margin-top:30px;align-content: center;">
+            <a href="#" aria-label="Previous" data-bind="click: changePageTo('first') , disabled: page() <= 1" >&laquo;</a>
+            <a  href="#" data-bind="text: page() -2, click: changePageBy(-2), visible: page() > 2 "> </a>
+            <a  href="#" data-bind="text: page() -1, click: changePageBy(-1), visible: page() > 1 "> </a>
+            <a  href="#" data-bind="text: page()" class="active"> </a>
+            <a href="#" data-bind="text: page() +1, click: changePageBy(1), visible: (getPageTotal() > page() +0)"></a>
+            <a href="#" data-bind="text: page() +2, click: changePageBy(2), visible: (getPageTotal() > page() +1)"></a>
+            <a href="#"  aria-label="Next" data-bind="click: changePageTo('last'), disabled: (getPageTotal() < page() +1)">&raquo;</a>
+    </div>
+</script>
+
 <div class="form-inline search-input">
     <div class="d-block flex-grow">
         <div class="input-group">
@@ -128,27 +140,31 @@
     <!-- ko ifnot: working -->
     <div class="table-footer" role="presentation">
         <ul class="pagination justify-content-center" role="navigation" aria-label="Pagination">
-            <!-- ko if: hasPrevPage -->
-            <li role="presentation">
-                <a href="#" class="page-link" role="button" aria-label="Previous page"
-                    data-bind="click: prevPage, enable: hasPrevPage">
-                    <i class="icon-emb icon-emb-chevron-left"></i>
-                </a>
-            </li>
-            <!-- /ko -->
-            <li role="presentation">
-                <span class="page-link" data-bind="text: page"></span>
-            </li>
-            <!-- ko if: hasNextPage -->
-            <li role="presentation">
-                <a href="#" class="page-link" role="button" aria-label="Next page"
-                    data-bind="click: nextPage, enable: hasNextPage">
-                    <i class="icon-emb icon-emb-chevron-right"></i>
-                </a>
-            </li>
-            <!-- /ko -->
+            <div data-bind="template: { name : 'PaginationTemplate' }">
         </ul>
     </div>
     <!-- /ko -->
     <!-- /ko -->
 </div>
+
+<style>
+    .pagination {
+      display: inline-block;
+    }
+    .pagination a {
+      color: black;
+      float: left;
+      padding: 8px 16px;
+      text-decoration: none;
+      transition: background-color .3s;
+      border: 1px solid #ddd;
+      margin: 0 4px;
+    }
+    
+    .pagination a.active {
+      background-color: #C9002E;
+      color: white;
+      border: 1px solid #C9002E;
+    }
+    .pagination a:hover:not(.active) {background-color: #ddd;}
+</style>

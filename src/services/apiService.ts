@@ -59,7 +59,7 @@ export class ApiService {
         const page = new Page<Api>();
         page.value = pageOfApis.value.map(x => new Api(x));
         page.nextLink = pageOfApis.nextLink;
-
+        page.count = pageOfApis.count;
         return page;
     }
 
@@ -201,7 +201,7 @@ export class ApiService {
 
         page.value = Object.keys(tagGroups).map(x => tagGroups[x]);
         page.nextLink = pageOfApiTagResources.nextLink;
-
+        page.count =pageOfApiTagResources.count;
         return page;
     }
 

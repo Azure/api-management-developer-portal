@@ -28,6 +28,7 @@ export class ApiList {
     public readonly hasPrevPage: ko.Observable<boolean>;
     public readonly hasNextPage: ko.Observable<boolean>;
     public readonly groupByTag: ko.Observable<boolean>;
+    public totalNoOfItems: ko.Observable<number>;   //pagination changes
 
     constructor(
         private readonly apiService: ApiService,
@@ -47,6 +48,7 @@ export class ApiList {
         this.apiGroups = ko.observableArray();
         this.groupByTag = ko.observable(false);
         this.defaultGroupByTagToEnabled = ko.observable(false);
+        this.totalNoOfItems = ko.observable();  //pagination changes
     }
 
     @Param()
@@ -100,6 +102,7 @@ export class ApiList {
                 this.apiGroups(apiGroups);
 
                 nextLink = pageOfTagResources.nextLink;
+                this.totalNoOfItems(pageOfTagResources.count);  //pagination changes
             }
             else {
                 const pageOfApis = await this.apiService.getApis(query);
@@ -107,6 +110,7 @@ export class ApiList {
                 this.apis(apis);
 
                 nextLink = pageOfApis.nextLink;
+                this.totalNoOfItems(pageOfApis.count);  //pagination changes
             }
 
             this.hasPrevPage(pageNumber > 0);
@@ -117,6 +121,40 @@ export class ApiList {
         }
         finally {
             this.working(false);
+        }
+    }
+
+    //Get total page count - pagination changes
+    public getPageTotal() : number {
+        var totalPages = Math.ceil(this.totalNoOfItems() / Constants.defaultPageSize);
+        if (this.page() > totalPages && totalPages > 0) {
+            this.page(totalPages);
+        }
+        return totalPages
+    }
+
+    //Navigate to page number - pagination changes
+    public changePageTo(newPage:string) {
+        return function() {
+          switch (newPage) {
+            case "last":
+                this.page(this.getPageTotal());
+              break;
+            case "first":
+                this.page(1);
+              break;
+            default:
+                this.page(newPage);
+          }
+          this.loadPageOfApis();
+        }
+    }
+
+    //Change page by - pagination changes
+    public changePageBy(offset){
+        return function() {
+            this.page(this.page() + offset);
+            this.loadPageOfApis();
         }
     }
 
