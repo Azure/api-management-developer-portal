@@ -1,16 +1,11 @@
 <fieldset class="form flex flex-item flex-item-grow no-overflow">
     <div class="form-group flex flex-column" style="display: flex; margin-bottom: 0;">
         <size-editor
-            params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: htmlCodeSizeStyles, onUpdate: onContainerSizeUpdate }">
+            params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: htmlCodeSizeStyles, onUpdate: htmlCodeSizeStyles }">
         </size-editor>
-        <label for="htmlCode" class="form-label">
+        <label class="form-label">
             HTML code
         </label>
-        <div class="input-group flex-item flex-item-grow">
-            <!-- ko if: editorLoading() -->
-            <spinner class="fit"></spinner>
-            <!-- /ko -->
-            <div id="htmlEditor" style="width: 100%;"></div>
-        </div>
+        <code-editor class="flex flex-item flex-item-grow" params="{ code: htmlCode, onChange: htmlCode }"></code-editor>
     </div>
 </fieldset>

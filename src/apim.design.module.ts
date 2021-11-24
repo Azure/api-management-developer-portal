@@ -64,6 +64,7 @@ import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts
 import { ApiProductsEditorModule } from "./components/apis/api-products/ko/apiProductsEditor.module";
 import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { HtmlInjectionDesignModule } from "./components/html-injection/widget.design.module";
+import { CodeEditor } from "./components/code-editor/code-editor";
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -135,5 +136,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bindToCollection("autostart", RuntimeConfigurator);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
+        injector.bind("CodeEditor", CodeEditor);
     }
 }

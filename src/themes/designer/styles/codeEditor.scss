@@ -1,5 +1,11 @@
 /* fix for positioning of the IntelliSense window of Monaco Editor */
-.monaco-editor .overflowingContentWidgets {
-    position: absolute;
-    top: 0;
+code-editor {
+    .codeEditorRoot {
+        width: 100%;
+    }
+
+    .monaco-editor .overflowingContentWidgets {
+        position: absolute;
+        top: 0;
+    }
 }
