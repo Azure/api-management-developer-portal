@@ -62,11 +62,6 @@ export class TypeDefinitionViewModel {
         this.name(this.definition.name);
         this.description(this.definition.description);
         this.kind(this.definition.kind);
-
-        if (this.definition.example) {
-            this.exampleFormat(this.definition.exampleFormat);
-            this.example(this.definition.example);
-        }
     }
 
     public getReferenceId(definition: TypeDefinition): string {
