@@ -124,39 +124,139 @@ export class ApiList {
         }
     }
 
-    //Get total page count - pagination changes
-    public getPageTotal() : number {
-        var totalPages = Math.ceil(this.totalNoOfItems() / Constants.defaultPageSize);
-        if (this.page() > totalPages && totalPages > 0) {
-            this.page(totalPages);
+     //-----pagination changes start ---------------------------- 
+     public pageCount() {
+        return Math.ceil(this.totalNoOfItems() / Constants.defaultPageSize);
+    };
+
+    public setCurrentPag(page) {
+        if (page < Constants.firstPage)
+            page = Constants.firstPage;
+
+        if (page > this.lastPage())
+            page = this.lastPage();
+
+        this.page(page);
+    };
+
+
+    public lastPage() {
+        return this.pageCount();
+    };
+
+    public nextPagePresent() {
+        var next = this.page() + 1;
+        if (next > this.lastPage())
+            return null;
+        return next;
+    };
+
+    public previousPage () {
+        var previous = this.page() - 1;
+        if (previous < Constants.firstPage)
+            return null;
+
+        return previous;
+    };
+
+    public needPaging() {
+        return this.pageCount() > 1;
+    };
+
+    public nextPageActive() {
+        return this.nextPagePresent() != null;
+    };
+
+    public previousPageActive() {
+        return this.previousPage() != null;
+    };
+
+    public lastPageActive() {
+        return (this.lastPage() != this.page());
+    };
+
+    public firstPageActive() {
+        return (Constants.firstPage != this.page());
+    };
+
+    public generateAllPages() {
+        var pages = [];
+        for (var i = Constants.firstPage; i <= this.lastPage() ; i++)
+            pages.push(i);
+
+        return pages;
+    };
+
+    public generateMaxPage() {
+        var current  = this.page();
+        var pageCount = this.pageCount();
+        var first = Constants.firstPage;
+
+        var upperLimit = current + (Constants.maxPageCount - 1) / 2;
+        var downLimit = current - (Constants.maxPageCount - 1) / 2;
+
+        while (upperLimit > pageCount) {
+            upperLimit--;
+            if (downLimit > first)
+                downLimit--;
         }
-        return totalPages
+
+        while (downLimit < first) {
+            downLimit++;
+            if (upperLimit < pageCount)
+                upperLimit++;
+        }
+
+        var pages = [];
+        for (var i = downLimit; i <= upperLimit; i++) {
+            pages.push(i);
+        }
+        return pages;
+    };
+
+    public getPages() {
+        this.page();
+        this.totalNoOfItems();
+
+        if (this.pageCount() <= Constants.maxPageCount) {
+            return ko.observableArray(this.generateAllPages());
+        } else {
+            return ko.observableArray(this.generateMaxPage());
+        }
+    };
+
+
+    public goToPage(page) {
+        if (page >= Constants.firstPage && page <= this.lastPage())
+        this.page(page);
+        this.loadPageOfApis();
     }
 
-    //Navigate to page number - pagination changes
-    public changePageTo(newPage:string) {
-        return function() {
-          switch (newPage) {
-            case "last":
-                this.page(this.getPageTotal());
-              break;
-            case "first":
-                this.page(1);
-              break;
-            default:
-                this.page(newPage);
-          }
-          this.loadPageOfApis();
-        }
-    }
+    public goToFirst() {
+        this.page(Constants.firstPage);
+        this.loadPageOfApis();
+    };
 
-    //Change page by - pagination changes
-    public changePageBy(offset){
-        return function() {
-            this.page(this.page() + offset);
-            this.loadPageOfApis();
-        }
-    }
+    public goToPrevious() {
+        var previous = this.previousPage();
+        if (previous != null)
+        this.page(previous);
+        this.loadPageOfApis();
+    };
+
+    public goToNext() {
+        var next = this.nextPagePresent();
+        if (next != null)
+        this.page(next);
+        this.loadPageOfApis();
+    };
+
+    public goToLast() {
+        this.page(this.lastPage());
+        this.loadPageOfApis();
+    };
+
+    //------pagination changes end ---------------------------
 
     public getReferenceUrl(api: Api): string {
         return this.routeHelper.getApiReferenceUrl(api.name, this.detailsPageUrl());

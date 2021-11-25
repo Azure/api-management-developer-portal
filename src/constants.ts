@@ -95,6 +95,17 @@ export const reservedPermalinks = [
 export const defaultPageSize = 50;
 
 /**
+ * Default value of first page in a paginated view.
+ */
+ export const firstPage = 1;
+
+ /**
+ * Maximum number of pages to show in a paginated view.
+ */
+export const maxPageCount = 5;
+
+
+/**
  * Default input delay before changes take effect.
  */
 export const defaultInputDelayMs = 600;

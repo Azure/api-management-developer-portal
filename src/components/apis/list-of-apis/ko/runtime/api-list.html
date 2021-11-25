@@ -1,14 +1,4 @@
-<script type="text/html" id="PaginationTemplate">
-    <div class="pagination" style="cursor:pointer;margin-top:30px;align-content: center;">
-            <a href="#" aria-label="Previous" data-bind="click: changePageTo('first') , disabled: page() <= 1" >&laquo;</a>
-            <a  href="#" data-bind="text: page() -2, click: changePageBy(-2), visible: page() > 2 "> </a>
-            <a  href="#" data-bind="text: page() -1, click: changePageBy(-1), visible: page() > 1 "> </a>
-            <a  href="#" data-bind="text: page()" class="active"> </a>
-            <a href="#" data-bind="text: page() +1, click: changePageBy(1), visible: (getPageTotal() > page() +0)"></a>
-            <a href="#" data-bind="text: page() +2, click: changePageBy(2), visible: (getPageTotal() > page() +1)"></a>
-            <a href="#"  aria-label="Next" data-bind="click: changePageTo('last'), disabled: (getPageTotal() < page() +1)">&raquo;</a>
-    </div>
-</script>
+
 
 <div class="form-inline search-input">
     <div class="d-block flex-grow">
@@ -139,8 +129,29 @@
     <!-- ko if: hasPager -->
     <!-- ko ifnot: working -->
     <div class="table-footer" role="presentation">
-        <ul class="pagination justify-content-center" role="navigation" aria-label="Pagination">
-            <div data-bind="template: { name : 'PaginationTemplate' }">
+        <ul data-bind="visible: needPaging" aria-label="Pagination" class="pagination">
+            <li data-bind="css: { disabled: !firstPageActive() }">
+                <a  data-bind="click: goToFirst">First</a>
+            </li>
+            <li data-bind="css: { disabled: !previousPageActive() }">
+                <a  data-bind="click: goToPrevious">Previous</a>
+            </li>
+        
+            <!-- ko foreach: getPages() -->
+            <li data-bind="css: { active: $component.page() === $data }">
+                <a data-bind="click: $component.goToPage, text: $data"></a>
+            </li>
+            <!-- /ko -->
+        
+            <li data-bind="css: { disabled: !nextPageActive() }">
+                <a  data-bind="click: goToNext">Next</a>
+            </li>
+            <li data-bind="css: { disabled: !lastPageActive() }">
+                <a  data-bind="click: goToLast">Last</a>
+            </li>
+            <li class="totalPages">
+                <span data-bind="text: 'Total Pages : ' + $component.page() + ' of ' + $component.pageCount() + ' Pages'"></span>
+            </li>
         </ul>
     </div>
     <!-- /ko -->
@@ -148,23 +159,38 @@
 </div>
 
 <style>
-    .pagination {
-      display: inline-block;
-    }
-    .pagination a {
+    .pagination li {
+      display: inline-block !important ;
       color: black;
-      float: left;
       padding: 8px 16px;
       text-decoration: none;
       transition: background-color .3s;
       border: 1px solid #ddd;
-      margin: 0 4px;
+      margin: 70px 4px;
+      cursor:pointer;
     }
-    
-    .pagination a.active {
+
+    .pagination .active {
       background-color: #C9002E;
       color: white;
       border: 1px solid #C9002E;
     }
-    .pagination a:hover:not(.active) {background-color: #ddd;}
+    .pagination .disabled {
+       pointer-events:none; 
+       opacity:0.6;         
+    }
+
+    .pagination .totalPages{
+        border: none;
+        margin-left: 150px;
+        color: black;
+        padding: 8px 16px;
+        text-decoration:none;
+        transition: background-color .3s;
+        font-size: medium;
+        font-weight: bold;
+    }
+
+    .pagination li:hover:not(.active):not(.totalPages) {background-color: #ddd;} 
+   
 </style>
