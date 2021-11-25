@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import template from "./code-editor.html";
 import { Component, Event, OnMounted, Param } from "@paperbits/common/ko/decorators";
-import loader from '@monaco-editor/loader';
+import loader from "@monaco-editor/loader";
 import { HtmlEditorSettings } from "../../constants";
 
 ko.bindingHandlers["codeEditor"] = {
@@ -12,12 +12,12 @@ ko.bindingHandlers["codeEditor"] = {
             await loader.init();
 
             const settings: Record<string, unknown> = HtmlEditorSettings.config;
-            settings.value = editorContent() || '';
+            settings.value = editorContent() || "";
 
             const editor = (window as any).monaco.editor.create(element, settings);
             editor.onDidChangeModelContent((e) => {
                 if (!e.isFlush) {
-                    const value = editor.getValue()
+                    const value = editor.getValue();
                     editorContent(value);
                     onChange(value);
                 }

@@ -1,7 +1,7 @@
 ﻿import { widgetName, widgetDisplayName, widgetCategory, widgetIconClass } from "./constants";
 import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { HTMLInjectionWidgetModel } from "./widgetModel";
-import { htmlCodeInitial, htmlCodeSizeStylesInitial } from "./ko/constants"
+import { htmlCodeInitial, htmlCodeSizeStylesInitial } from "./ko/constants";
 
 /**
  * Handlers giving the editor required context to manupulate the widget. For example,

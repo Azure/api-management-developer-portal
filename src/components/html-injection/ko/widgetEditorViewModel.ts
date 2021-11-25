@@ -28,9 +28,9 @@ export class WidgetEditorViewModel implements WidgetEditor<HTMLInjectionWidgetMo
     @OnMounted()
     public async initialize(): Promise<void> {
         this.htmlCode(this.model.htmlCode);
-        this.htmlCode.subscribe(() => this.applyChanges('htmlCode'));
+        this.htmlCode.subscribe(() => this.applyChanges("htmlCode"));
         this.htmlCodeSizeStyles(this.model.htmlCodeSizeStyles);
-        this.htmlCodeSizeStyles.subscribe(() => this.applyChanges('htmlCodeSizeStyles'));
+        this.htmlCodeSizeStyles.subscribe(() => this.applyChanges("htmlCodeSizeStyles"));
     }
 
     private applyChanges(key: string): void {
