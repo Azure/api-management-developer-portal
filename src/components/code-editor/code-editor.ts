@@ -26,7 +26,7 @@ ko.bindingHandlers["codeEditor"] = {
             editorLoading(false);
         }
     })()
-}
+};
 
 @Component({
     selector: "code-editor",
