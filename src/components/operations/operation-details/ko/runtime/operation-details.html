@@ -164,8 +164,8 @@
 
                     <!-- ko if: representation.examples -->
                     <!-- ko foreach: { data: representation.examples, as: 'example' } -->
-                    <code-sample params="{ title: example.title, content: example.value, language: representation.exampleFormat }">
-                    </code-sample>
+                    <code-snippet params="{ title: example.title, content: example.value, language: example.format }">
+                    </code-snippet>
                     <!-- /ko -->
                     <!-- /ko -->
                 </div>
@@ -226,8 +226,8 @@
 
                     <!-- ko if: representation.examples -->
                     <!-- ko foreach: { data: representation.examples, as: 'example' } -->
-                    <code-sample params="{ title: example.title, content: example.value, language: representation.exampleFormat }">
-                    </code-sample>
+                    <code-snippet params="{ title: example.title, content: example.value, language: example.format }">
+                    </code-snippet>
                     <!-- /ko -->
                     <!-- /ko -->
                 </div>

@@ -1,0 +1,11 @@
+<div class="flex code-snippet code-snippet-bordered">
+    <div class="code-snippet-heading">
+        <span class="code-snippet-title" data-bind="text: label"></span>
+        <button class="code-snippet-command" data-bind="copyToClipboard: content"
+            aria-label="Copy to clipboard">
+            <i class="icon-emb icon-emb-duplicate"></i>
+            Copy
+        </button>
+    </div>
+</div>
+<pre data-bind="syntaxHighlight: { code: content, language: language }"></pre>

@@ -284,9 +284,9 @@
     </select>
 
     <h3>HTTP request</h3>
-    <div class="code-block">
-        <div class="code-block-heading">
-            <button class="code-block-command" data-bind="click: toggleRequestSummarySecrets"
+    <div class="code-snippet">
+        <div class="code-snippet-heading">
+            <button class="code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
                 aria-label="Toggle secrets">
                 <!-- ko if: $component.secretsRevealed  -->
                 <i class="icon-emb icon-emb-eye-fill"></i> Hide
@@ -295,7 +295,7 @@
                 <i class="icon-emb icon-emb-eye"></i> Show
                 <!-- /ko -->
             </button>
-            <button class="code-block-command" data-bind="copyToClipboard: $component.getPlainTextCodeSample"
+            <button class="code-snippet-command" data-bind="copyToClipboard: $component.getPlainTextCodeSample"
                 aria-label="Copy to clipboard">
                 <i class="icon-emb icon-emb-duplicate"></i> Copy
             </button>
@@ -334,9 +334,9 @@
     </select>
 
     <h3>WebSocket request</h3>
-    <div class="code-block">
-        <div class="code-block-heading">
-            <button class="code-block-command" data-bind="click: toggleRequestSummarySecrets"
+    <div class="code-snippet">
+        <div class="code-snippet-heading">
+            <button class="code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
                 aria-label="Toggle secrets">
                 <!-- ko if: $component.secretsRevealed  -->
                 <i class="icon-emb icon-emb-eye-fill"></i> Hide
@@ -345,7 +345,7 @@
                 <i class="icon-emb icon-emb-eye"></i> Show
                 <!-- /ko -->
             </button>
-            <button class="code-block-command" data-bind="copyToClipboard: $component.getPlainTextCodeSample"
+            <button class="code-snippet-command" data-bind="copyToClipboard: $component.getPlainTextCodeSample"
                 aria-label="Copy to clipboard">
                 <i class="icon-emb icon-emb-duplicate"></i> Copy
             </button>
@@ -412,9 +412,9 @@
 
     <h3>Output</h3>
     <!-- ko if: wsLogItems().length > 0 -->
-    <div class="code-block">
-        <div class="code-block-heading">
-            <button class="code-block-command" data-bind="click: $component.clearLogs, disabled: wsSending"
+    <div class="code-snippet">
+        <div class="code-snippet-heading">
+            <button class="code-snippet-command" data-bind="click: $component.clearLogs, disabled: wsSending"
                 aria-label="Clear logs">
                 <i class="icon-emb icon-emb-trash"></i> Clear
             </button>
