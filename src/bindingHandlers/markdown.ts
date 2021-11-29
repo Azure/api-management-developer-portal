@@ -1,7 +1,11 @@
 import * as ko from "knockout";
 import { remark } from "remark";
-import html from "remark-html";
-import gfm from "remark-gfm";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkRehype from "remark-rehype";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeStringify from "rehype-stringify";
 import * as truncateHtml from "truncate-html";
 
 interface MarkdownConfig {
@@ -40,8 +44,12 @@ ko.bindingHandlers["markdown"] = {
         ko.applyBindingsToNode(element, { html: htmlObservable }, null);
 
         remark()
-            .use(gfm)
-            .use(html)
+            .use(remarkParse)
+            .use(remarkGfm)
+            .use(remarkRehype, { allowDangerousHtml: true })
+            .use(rehypeRaw)
+            .use(rehypeSanitize)
+            .use(rehypeStringify)
             .process(markdown, (err: any, html: any) => {
                 html = truncateHtml.default(html, { length: length, reserveLastWord: true });
                 htmlObservable(html);
