@@ -5,7 +5,6 @@ import { KnownMimeTypes } from "./knownMimeTypes";
 
 export class Representation {
     public readonly contentType: string;
-    public readonly exampleFormat: string;
     public readonly schemaId: string;
     public readonly typeName: string;
     public readonly formParameters: Parameter[];
@@ -24,6 +23,11 @@ export class Representation {
         if (contract.examples) {
             for (const key of Object.keys(contract.examples)) {
                 const exampleObject = contract.examples[key];
+
+                if (Object.keys(exampleObject).length === 0) {
+                    continue; // skipping empty examples
+                }
+
                 this.examples.push(
                     new RepresentationExample(key, exampleObject.description, exampleObject.value, this.contentType));
             }

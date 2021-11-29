@@ -330,11 +330,6 @@ export class OperationDetails {
             definition.name = representation.typeName;
         }
 
-        if (representation.examples?.length > 0) {
-            definition.example = representation.examples[0].value;
-            definition.exampleFormat = representation.exampleFormat;
-        }
-
         return definition;
     }
 
