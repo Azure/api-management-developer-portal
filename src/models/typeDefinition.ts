@@ -69,11 +69,6 @@ export abstract class TypeDefinitionProperty {
     public example?: string;
 
     /**
-     * Definition example format, mostly used for syntax highlight, e.g. "json", "xml", "plain".
-     */
-    public exampleFormat?: string = "json";
-
-    /**
      * Defines if this property is required.
      */
     public required?: boolean;
@@ -106,17 +101,6 @@ export abstract class TypeDefinitionProperty {
         else { // fallback to JSON
             this.rawSchema = JSON.stringify(contract, null, 4);
             this.rawSchemaFormat = "json";
-        }
-
-        if (contract.exampleFormat) {
-            this.example = contract.example;
-            this.exampleFormat = contract.exampleFormat;
-        }
-        else { // fallback to JSON
-            this.example = typeof contract.example === "object"
-                ? JSON.stringify(contract.example, null, 4)
-                : contract.example;
-            this.exampleFormat = "json";
         }
     }
 }
