@@ -12,12 +12,12 @@ export interface RepresentationContract {
     contentType: string;
 
     /**
-     * User created sample.
+     * @deprecated User created sample.
      */
     sample?: string;
 
     /**
-     * Sample generated during API import.
+     * @deprecated Sample generated during API import.
      */
     generatedSample?: string;
 

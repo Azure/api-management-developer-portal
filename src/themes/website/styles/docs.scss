@@ -531,35 +531,39 @@ operation-console {
     }
 }
 
-.code-block {
+.code-snippet {
     font-size: 11.5px;
 
-    .code-block-heading {
+    .code-snippet-heading {
         text-transform: uppercase;
         padding: 5px 10px;
         width: 100%;
         min-height: 2em;
         display: flex;
         justify-content: flex-end;
-    }
+     
+        .code-snippet-title {
+            flex: 1;
+        }
 
-    .code-block-command {
-        background: none;
-        border: none;
-        cursor: pointer;
-
-        &:hover {
-            background: #ccc;
+        .code-snippet-command {
+            background: none;
+            border: none;
+            cursor: pointer;
+    
+            &:hover {
+                background: #ccc;
+            }
         }
     }
 
-    &.code-block-bordered {
-        .code-block-heading {
+    &.code-snippet-bordered {
+        .code-snippet-heading {
             background: #EDEBE9;
             border: 1px solid #ccc;
         }
 
-        .code-block-command {
+        .code-snippet-command {
             border-left: 1px solid #ccc;
         }
     }
