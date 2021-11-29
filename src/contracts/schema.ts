@@ -75,16 +75,6 @@ export interface SchemaObjectContract extends ReferenceObjectContract {
     minProperties?: number;
 
     /**
-     * Example of the payload represented by this schema object.
-     */
-    example?: string;
-
-    /**
-     * Format of payload example represented by this schema object. It is used for syntax highlighting.
-     */
-    exampleFormat?: string;
-
-    /**
      * Raw schema representation.
      */
     rawSchema?: string;
