@@ -1,6 +1,6 @@
 ﻿@import "variables.scss";
 @import "mixins.scss";
-@import "icons.scss";
+@import "icons-toolboxes.scss";
 
 .form {
     margin: 0;
@@ -16,7 +16,6 @@
 .form-group {
     display: block;
     margin-bottom: 20px;
-    padding: 1px;
     width: 100%;
 
     .form-group {
@@ -85,7 +84,8 @@ textarea {
     }
 
     &:focus {
-        outline: 1px solid $form-control-focus-color;
+        outline: none;
+        border: 1px solid $form-control-focus-color;
     }
 
     &.is-invalid {
@@ -161,7 +161,7 @@ textarea {
     border: 1px solid $form-control-border;
 
     &:focus-within {
-        outline: 1px solid $form-control-focus-color;
+        border: 1px solid $form-control-border-focused;
     }
 
     .form-control,

@@ -10,7 +10,7 @@
 
     .toast {
         @include surface();
-        @include animation-slideleft();
+        @include animation-fadein();
         display: flex;
 
         align-items: center;
