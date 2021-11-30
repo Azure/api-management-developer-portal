@@ -1,0 +1,504 @@
+.paperbits-icon {
+    display: inline-block;
+    font: normal normal normal 1em/1 "paperbits";
+    font-size: 1.1em;
+    vertical-align: middle;
+    speak: none;
+    text-transform: none;
+    line-height: inherit;
+    /* Better Font Rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+/*------------------------
+    change icon size
+  -------------------------*/
+/* relative units */
+.paperbits-sm {
+    font-size: 0.8em;
+}
+
+
+/*------------------------
+	icons
+-------------------------*/
+@function unicode($str) {
+    @return unquote("\"\\#{$str}\"");
+  }
+  
+  $paperbits-layout-11: unicode(ea03);
+  $paperbits-action-74: unicode(ea08);
+  $paperbits-align-center: unicode(ea09);
+  $paperbits-align-justify: unicode(ea0a);
+  $paperbits-align-left-2: unicode(ea0b);
+  $paperbits-align-right-2: unicode(ea0c);
+  $paperbits-size: unicode(ea0d);
+  $paperbits-edit-2: unicode(ea0e);
+  $paperbits-code: unicode(ea0f);
+  $paperbits-list-bullet: unicode(ea10);
+  $paperbits-list-numbers: unicode(ea11);
+  $paperbits-bold: unicode(ea12);
+  $paperbits-audio-91: unicode(ea13);
+  $paperbits-alert-circle-i: unicode(ea17);
+  $paperbits-chat-45-2: unicode(ea18);
+  $paperbits-drop: unicode(ea1a);
+  $paperbits-m-location: unicode(ea1d);
+  $paperbits-mobile: unicode(ea1f);
+  $paperbits-desktop-screen: unicode(ea20);
+  $paperbits-mobile-landscape: unicode(ea22);
+  $paperbits-player-48: unicode(ea23);
+  $paperbits-tablet-2: unicode(ea24);
+  $paperbits-wifi-off: unicode(ea25);
+  $paperbits-wifi: unicode(ea26);
+  $paperbits-ban: unicode(ea27);
+  $paperbits-single-content-03: unicode(ea28);
+  $paperbits-single-copy-04: unicode(ea29);
+  $paperbits-mirror-2: unicode(ea2b);
+  $paperbits-slider: unicode(ea2c);
+  $paperbits-image-2: unicode(ea31);
+  $paperbits-paint-bucket-40: unicode(ea32);
+  $paperbits-palette: unicode(ea33);
+  $paperbits-menu-34: unicode(ea36);
+  $paperbits-check-2: unicode(ea38);
+  $paperbits-preferences-circle: unicode(ea39);
+  $paperbits-underline: unicode(ea3a);
+  $paperbits-link-69-2: unicode(ea3d);
+  $paperbits-capitalize: unicode(ea3e);
+  $paperbits-color: unicode(ea3f);
+  $paperbits-anchor: unicode(ea40);
+  $paperbits-italic: unicode(ea41);
+  $paperbits-square-upload: unicode(ea42);
+  $paperbits-square-download: unicode(ea43);
+  $paperbits-simple-add: unicode(ea44);
+  $paperbits-simple-remove: unicode(ea45);
+  $paperbits-circle-delete: unicode(ea47);
+  $paperbits-circle-add: unicode(ea48);
+  $paperbits-button-2: unicode(ea49);
+  $paperbits-enlarge-circle: unicode(ea4a);
+  $paperbits-align-bottom: unicode(ea4c);
+  $paperbits-align-right: unicode(ea4d);
+  $paperbits-align-top: unicode(ea4e);
+  $paperbits-align-center-horizontal: unicode(ea4f);
+  $paperbits-align-center-vertical: unicode(ea50);
+  $paperbits-align-left: unicode(ea51);
+  $paperbits-disperse: unicode(ea52);
+  $paperbits-zoom-out: unicode(ea53);
+  $paperbits-zoom-in: unicode(ea54);
+  $paperbits-trash-simple: unicode(ea55);
+  $paperbits-edit-72: unicode(ea56);
+  $paperbits-form: unicode(ea57);
+  $paperbits-zoom-99: unicode(ea58);
+  $paperbits-crop: unicode(ea59);
+  $paperbits-enlarge-vertical: unicode(ea5a);
+  $paperbits-enlarge-horizontal: unicode(ea5b);
+  $paperbits-rotate-right-2: unicode(ea5c);
+  $paperbits-rotate-left-2: unicode(ea5d);
+  $paperbits-margin-right: unicode(ea5e);
+  $paperbits-margin-left: unicode(ea5f);
+  $paperbits-alert: unicode(ea60);
+  $paperbits-at-sign: unicode(ea63);
+  $paperbits-gradient: unicode(ea64);
+  $paperbits-polaroid: unicode(ea65);
+  $paperbits-marker-2: unicode(ea67);
+  $paperbits-undo-25: unicode(ea68);
+  $paperbits-redo-26: unicode(ea69);
+  $paperbits-floppy-disk: unicode(ea6a);
+  $paperbits-upload: unicode(ea6b);
+  $paperbits-world: unicode(ea6e);
+  $paperbits-wireframe: unicode(ea6f);
+  $paperbits-send: unicode(ea70);
+  $paperbits-c-question: unicode(ea71);
+  $paperbits-layout-11-2: unicode(ea73);
+  $paperbits-clapperboard: unicode(ea75);
+  $paperbits-single-02: unicode(ea76);
+  $paperbits-lightning: unicode(ea77);
+  $paperbits-l-search: unicode(ea78);
+  $paperbits-small-down: unicode(ea79);
+  $paperbits-small-up: unicode(ea7a);
+  $paperbits-menu-4: unicode(ea7b);
+  $paperbits-tablet-2-2: unicode(ea7c);
+  $paperbits-strikethrough: unicode(ea7d);
+  $paperbits-divider: unicode(ea7e);
+  $paperbits-s-add: unicode(ea7f);
+  $paperbits-curved-arrow-left: unicode(ea80);
+  
+  .paperbits-layout-11::before {
+    content: $paperbits-layout-11;
+  }
+  
+  .paperbits-action-74::before {
+    content: $paperbits-action-74;
+  }
+  
+  .paperbits-align-center::before {
+    content: $paperbits-align-center;
+  }
+  
+  .paperbits-align-justify::before {
+    content: $paperbits-align-justify;
+  }
+  
+  .paperbits-align-left-2::before {
+    content: $paperbits-align-left-2;
+  }
+  
+  .paperbits-align-right-2::before {
+    content: $paperbits-align-right-2;
+  }
+  
+  .paperbits-size::before {
+    content: $paperbits-size;
+  }
+  
+  .paperbits-edit-2::before {
+    content: $paperbits-edit-2;
+  }
+  
+  .paperbits-code::before {
+    content: $paperbits-code;
+  }
+  
+  .paperbits-list-bullet::before {
+    content: $paperbits-list-bullet;
+  }
+  
+  .paperbits-list-numbers::before {
+    content: $paperbits-list-numbers;
+  }
+  
+  .paperbits-bold::before {
+    content: $paperbits-bold;
+  }
+  
+  .paperbits-audio-91::before {
+    content: $paperbits-audio-91;
+  }
+  
+  .paperbits-alert-circle-i::before {
+    content: $paperbits-alert-circle-i;
+  }
+  
+  .paperbits-chat-45-2::before {
+    content: $paperbits-chat-45-2;
+  }
+  
+  .paperbits-drop::before {
+    content: $paperbits-drop;
+  }
+  
+  .paperbits-m-location::before {
+    content: $paperbits-m-location;
+  }
+  
+  .paperbits-mobile::before {
+    content: $paperbits-mobile;
+  }
+  
+  .paperbits-desktop-screen::before {
+    content: $paperbits-desktop-screen;
+  }
+  
+  .paperbits-mobile-landscape::before {
+    content: $paperbits-mobile-landscape;
+  }
+  
+  .paperbits-player-48::before {
+    content: $paperbits-player-48;
+  }
+  
+  .paperbits-tablet-2::before {
+    content: $paperbits-tablet-2;
+  }
+  
+  .paperbits-wifi-off::before {
+    content: $paperbits-wifi-off;
+  }
+  
+  .paperbits-wifi::before {
+    content: $paperbits-wifi;
+  }
+  
+  .paperbits-ban::before {
+    content: $paperbits-ban;
+  }
+  
+  .paperbits-single-content-03::before {
+    content: $paperbits-single-content-03;
+  }
+  
+  .paperbits-single-copy-04::before {
+    content: $paperbits-single-copy-04;
+  }
+  
+  .paperbits-mirror-2::before {
+    content: $paperbits-mirror-2;
+  }
+  
+  .paperbits-slider::before {
+    content: $paperbits-slider;
+  }
+  
+  .paperbits-image-2::before {
+    content: $paperbits-image-2;
+  }
+  
+  .paperbits-paint-bucket-40::before {
+    content: $paperbits-paint-bucket-40;
+  }
+  
+  .paperbits-palette::before {
+    content: $paperbits-palette;
+  }
+  
+  .paperbits-menu-34::before {
+    content: $paperbits-menu-34;
+  }
+  
+  .paperbits-check-2::before {
+    content: $paperbits-check-2;
+  }
+  
+  .paperbits-preferences-circle::before {
+    content: $paperbits-preferences-circle;
+  }
+  
+  .paperbits-underline::before {
+    content: $paperbits-underline;
+  }
+  
+  .paperbits-link-69-2::before {
+    content: $paperbits-link-69-2;
+  }
+  
+  .paperbits-capitalize::before {
+    content: $paperbits-capitalize;
+  }
+  
+  .paperbits-color::before {
+    content: $paperbits-color;
+  }
+  
+  .paperbits-anchor::before {
+    content: $paperbits-anchor;
+  }
+  
+  .paperbits-italic::before {
+    content: $paperbits-italic;
+  }
+  
+  .paperbits-square-upload::before {
+    content: $paperbits-square-upload;
+  }
+  
+  .paperbits-square-download::before {
+    content: $paperbits-square-download;
+  }
+  
+  .paperbits-simple-add::before {
+    content: $paperbits-simple-add;
+  }
+  
+  .paperbits-simple-remove::before {
+    content: $paperbits-simple-remove;
+  }
+  
+  .paperbits-circle-delete::before {
+    content: $paperbits-circle-delete;
+  }
+  
+  .paperbits-circle-add::before {
+    content: $paperbits-circle-add;
+  }
+  
+  .paperbits-button-2::before {
+    content: $paperbits-button-2;
+  }
+  
+  .paperbits-enlarge-circle::before {
+    content: $paperbits-enlarge-circle;
+  }
+  
+  .paperbits-align-bottom::before {
+    content: $paperbits-align-bottom;
+  }
+  
+  .paperbits-align-right::before {
+    content: $paperbits-align-right;
+  }
+  
+  .paperbits-align-top::before {
+    content: $paperbits-align-top;
+  }
+  
+  .paperbits-align-center-horizontal::before {
+    content: $paperbits-align-center-horizontal;
+  }
+  
+  .paperbits-align-center-vertical::before {
+    content: $paperbits-align-center-vertical;
+  }
+  
+  .paperbits-align-left::before {
+    content: $paperbits-align-left;
+  }
+  
+  .paperbits-disperse::before {
+    content: $paperbits-disperse;
+  }
+  
+  .paperbits-zoom-out::before {
+    content: $paperbits-zoom-out;
+  }
+  
+  .paperbits-zoom-in::before {
+    content: $paperbits-zoom-in;
+  }
+  
+  .paperbits-trash-simple::before {
+    content: $paperbits-trash-simple;
+  }
+  
+  .paperbits-edit-72::before {
+    content: $paperbits-edit-72;
+  }
+  
+  .paperbits-form::before {
+    content: $paperbits-form;
+  }
+  
+  .paperbits-zoom-99::before {
+    content: $paperbits-zoom-99;
+  }
+  
+  .paperbits-crop::before {
+    content: $paperbits-crop;
+  }
+  
+  .paperbits-enlarge-vertical::before {
+    content: $paperbits-enlarge-vertical;
+  }
+  
+  .paperbits-enlarge-horizontal::before {
+    content: $paperbits-enlarge-horizontal;
+  }
+  
+  .paperbits-rotate-right-2::before {
+    content: $paperbits-rotate-right-2;
+  }
+  
+  .paperbits-rotate-left-2::before {
+    content: $paperbits-rotate-left-2;
+  }
+  
+  .paperbits-margin-right::before {
+    content: $paperbits-margin-right;
+  }
+  
+  .paperbits-margin-left::before {
+    content: $paperbits-margin-left;
+  }
+  
+  .paperbits-alert::before {
+    content: $paperbits-alert;
+  }
+  
+  .paperbits-at-sign::before {
+    content: $paperbits-at-sign;
+  }
+  
+  .paperbits-gradient::before {
+    content: $paperbits-gradient;
+  }
+  
+  .paperbits-polaroid::before {
+    content: $paperbits-polaroid;
+  }
+  
+  .paperbits-marker-2::before {
+    content: $paperbits-marker-2;
+  }
+  
+  .paperbits-undo-25::before {
+    content: $paperbits-undo-25;
+  }
+  
+  .paperbits-redo-26::before {
+    content: $paperbits-redo-26;
+  }
+  
+  .paperbits-floppy-disk::before {
+    content: $paperbits-floppy-disk;
+  }
+  
+  .paperbits-upload::before {
+    content: $paperbits-upload;
+  }
+  
+  .paperbits-world::before {
+    content: $paperbits-world;
+  }
+  
+  .paperbits-wireframe::before {
+    content: $paperbits-wireframe;
+  }
+  
+  .paperbits-send::before {
+    content: $paperbits-send;
+  }
+  
+  .paperbits-c-question::before {
+    content: $paperbits-c-question;
+  }
+  
+  .paperbits-layout-11-2::before {
+    content: $paperbits-layout-11-2;
+  }
+  
+  .paperbits-clapperboard::before {
+    content: $paperbits-clapperboard;
+  }
+  
+  .paperbits-single-02::before {
+    content: $paperbits-single-02;
+  }
+  
+  .paperbits-lightning::before {
+    content: $paperbits-lightning;
+  }
+  
+  .paperbits-l-search::before {
+    content: $paperbits-l-search;
+  }
+  
+  .paperbits-small-down::before {
+    content: $paperbits-small-down;
+  }
+  
+  .paperbits-small-up::before {
+    content: $paperbits-small-up;
+  }
+  
+  .paperbits-menu-4::before {
+    content: $paperbits-menu-4;
+  }
+  
+  .paperbits-tablet-2-2::before {
+    content: $paperbits-tablet-2-2;
+  }
+  
+  .paperbits-strikethrough::before {
+    content: $paperbits-strikethrough;
+  }
+  
+  .paperbits-divider::before {
+    content: $paperbits-divider;
+  }
+  
+  .paperbits-s-add::before {
+    content: $paperbits-s-add;
+  }
+  
+  .paperbits-curved-arrow-left::before {
+    content: $paperbits-curved-arrow-left;
+  }
+  
