@@ -20,7 +20,7 @@ export class ConsoleRequest {
     public readonly binary: ko.Observable<File>;
     public readonly bodyFormat: ko.Observable<RequestBodyType>;
     public readonly bodyDataItems: ko.ObservableArray<FormDataItem>;
-    public readonly representationContentType: ko.Observable<string>;
+    public representationContentType: string;
     public readonly readonlyBodyFormat: boolean;
 
     constructor(request: Request) {
@@ -32,7 +32,6 @@ export class ConsoleRequest {
 
         this.body = ko.observable();
         this.isBodyEdited= ko.observable(false)
-        this.representationContentType = ko.observable();
         this.binary = ko.observable();
         this.binary.extend(<any>{ maxFileSize: 3 * 1024 * 1024 });
         this.bodyFormat = ko.observable(RequestBodyType.raw);
@@ -41,7 +40,7 @@ export class ConsoleRequest {
         this.selectedRepresentation = ko.observable(this.representations[0]);
         this.selectedRepresentation.subscribe(representation => {
             this.body(representation.sample);
-            this.representationContentType(representation.contentType);
+            this.representationContentType = representation.contentType
         })
 
         this.body.subscribe(body => this.isBodyEdited(body !== this.selectedRepresentation().sample))
@@ -54,11 +53,11 @@ export class ConsoleRequest {
 
         this.body(representation.sample);
 
-        this.representationContentType(representation.contentType);
+        this.representationContentType = representation.contentType;
 
         // do not convert formParameters for contentType = application/x-www-form-urlencoded
         // do not add Content-Type header for multipart/form-data
-        const bodyRepresentation = this.representationContentType() === "multipart/form-data" && request.representations.find(r => r.formParameters?.length > 0);
+        const bodyRepresentation = this.representationContentType === "multipart/form-data" && request.representations.find(r => r.formParameters?.length > 0);
 
         if (bodyRepresentation) {
             this.hasBody = true;
@@ -78,7 +77,7 @@ export class ConsoleRequest {
         else if (this.representationContentType && this.headers().find(h => h.name() === KnownHttpHeaders.ContentType) === undefined) {
             const consoleHeader = new ConsoleHeader();
             consoleHeader.name(KnownHttpHeaders.ContentType);
-            consoleHeader.value(this.representationContentType());
+            consoleHeader.value(this.representationContentType);
             this.headers.push(consoleHeader);
         }
     }
