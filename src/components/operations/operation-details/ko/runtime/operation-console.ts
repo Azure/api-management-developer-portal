@@ -23,6 +23,7 @@ import { ResponsePackage } from "./responsePackage";
 import { templates } from "./templates/templates";
 import { LogItem, WebsocketClient } from "./websocketClient";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
+import { ConsoleRepresentation } from "../../../../../models/console/consoleRepresentation";
 import { cloneDeep } from "lodash";
 
 @Component({
@@ -39,6 +40,7 @@ export class OperationConsole {
     public readonly responseBody: ko.Observable<string>;
     public readonly responseHeadersString: ko.Observable<string>;
     public readonly selectedLanguage: ko.Observable<string>;
+    public readonly selectedRepresentation: ko.Observable<ConsoleRepresentation>;
     public readonly requestError: ko.Observable<string>;
     public readonly codeSample: ko.Observable<string>;
     public readonly selectedHostname: ko.Observable<string>;
@@ -74,6 +76,7 @@ export class OperationConsole {
         this.responseHeadersString = ko.observable();
         this.responseBody = ko.observable();
         this.selectedLanguage = ko.observable("http");
+        this.selectedRepresentation = ko.observable();
         this.api = ko.observable<Api>();
         this.revision = ko.observable();
         this.operation = ko.observable();
@@ -153,6 +156,10 @@ export class OperationConsole {
         this.api.subscribe(this.resetConsole);
         this.operation.subscribe(this.resetConsole);
         this.selectedLanguage.subscribe(this.updateRequestSummary);
+        this.selectedRepresentation.subscribe(representation => {
+            this.consoleOperation().request.selectedRepresentation(representation)
+            this.updateRequestSummary();
+        });
     }
 
     private async resetConsole(): Promise<void> {
@@ -272,6 +279,10 @@ export class OperationConsole {
         this.updateRequestSummary();
     }
 
+    public revertBody(): void {
+        this.consoleOperation().request.body(this.selectedRepresentation().sample)
+    }
+
     public removeHeader(header: ConsoleHeader): void {
         this.consoleOperation().request.headers.remove(header);
         this.updateRequestSummary();
@@ -380,7 +391,7 @@ export class OperationConsole {
         const url = consoleOperation.requestUrl();
         const method = consoleOperation.method;
         const headers = [...request.headers()];
-
+        
         let payload;
 
         switch (consoleOperation.request.bodyFormat()) {
