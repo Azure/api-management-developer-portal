@@ -1,1 +1,12 @@
+<!-- ko if: identityProvider -->
 <signup-social-runtime></signup-social-runtime>
+<!-- /ko -->
+
+<!-- ko ifnot: identityProvider -->
+<div class="description-text">This widget will display a sign-up form when you configure <a
+    href="https://docs.microsoft.com/en-us/azure/api-management/api-management-howto-aad" target="_blank"
+    alt="Azure Active Directory">Azure Active Directory</a> or <a
+    href="https://docs.microsoft.com/en-us/azure/api-management/api-management-howto-aad-b2c" target="_blank"
+    alt="Azure Active Directory B2C">Azure Active Directory B2C</a> integration in your API Management service.
+</div>
+<!-- /ko -->
