@@ -1,9 +1,9 @@
-import { IAuthenticator, AccessToken } from "./../authentication";
 import * as Constants from "./../constants";
+import { sanitizeUrl } from "@braintree/sanitize-url";
+import { AccessToken, IAuthenticator } from "./../authentication";
+
 
 export class DefaultAuthenticator implements IAuthenticator {
-    constructor() { }
-
     private runSsoFlow(): Promise<void> {
         return new Promise<void>(async () => {
             const url = new URL(location.href);
@@ -20,7 +20,7 @@ export class DefaultAuthenticator implements IAuthenticator {
             await this.setAccessToken(token);
 
             // wait for redirect to happen, deliberatly not resolving the promise
-            window.location.assign(returnUrl);
+            window.location.assign(sanitizeUrl(returnUrl));
         });
     }
 
