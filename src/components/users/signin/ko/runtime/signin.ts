@@ -1,13 +1,14 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./signin.html";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 import { EventManager } from "@paperbits/common/events";
-import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
-import { UsersService } from "../../../../../services/usersService";
-import { MapiError } from "../../../../../errors/mapiError";
-import { ValidationReport } from "../../../../../contracts/validationReport";
-import { RouteHelper } from "../../../../../routing/routeHelper";
+import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing/router";
+import { ValidationReport } from "../../../../../contracts/validationReport";
+import { MapiError } from "../../../../../errors/mapiError";
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { UsersService } from "../../../../../services/usersService";
 
 @RuntimeComponent({
     selector: "signin-runtime"
@@ -102,18 +103,18 @@ export class Signin {
 
         try {
             this.working(true);
-            
+
             const userId = await this.usersService.signIn(this.username(), this.password());
 
             if (userId) {
                 const clientReturnUrl = sessionStorage.getItem("returnUrl");
                 const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
-                
+
                 if (returnUrl) {
-                    this.router.navigateTo(returnUrl);
+                    await this.router.navigateTo(sanitizeUrl(returnUrl));
                     return;
                 }
-                
+
                 this.navigateToHome();
 
                 const validationReport: ValidationReport = {
@@ -130,7 +131,7 @@ export class Signin {
                     source: "signin",
                     errors: ["Please provide a valid email and password."]
                 };
-                
+
                 this.eventManager.dispatchEvent("onValidationErrors", validationReport);
             }
         }
