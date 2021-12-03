@@ -17,6 +17,6 @@ export const htmlCodeInitial =
 </html>`;
 
 export const htmlCodeSizeStylesInitial: SizeStylePluginConfig = {
-    height: "150px",
+    height: "500px",
     width: "100%",
 };

@@ -1,5 +1,5 @@
 export const widgetName = "html-injection";
-export const widgetDisplayName = "Custom HTML block";
+export const widgetDisplayName = "Custom HTML code";
 export const widgetCategory = "Advanced";
 export const widgetSelector = "widget";
 export const widgetRuntimeSelector = "widget-runtime";
