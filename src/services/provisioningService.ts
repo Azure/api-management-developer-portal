@@ -70,7 +70,7 @@ export class ProvisionService {
                     throw new Error("Unable to setup website.");
                 }
             }
-            this.router.navigateTo("/");
+            this.router.navigateTo(Constants.pageUrlHome);
             this.viewManager.setHost({ name: "page-host" });
             this.viewManager.showToolboxes();
         }
