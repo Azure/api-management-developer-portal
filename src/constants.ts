@@ -138,12 +138,18 @@ export const VariablesEditorSettings = {
  }
 
  /**
- * Graphql operation types
+ * Graphql types
  */
-  export enum GraphqlOperationTypes {
+  export enum GraphqlTypes {
     query = "query",
     mutation = "mutation",
-    subscription = "subscription"
+    subscription = "subscription",
+    objectType = "objectType",
+    inputObjectType = "inputObjectType",
+    enumType = "enumType",
+    scalarType = "scalarType",
+    unionType = "unionType",
+    interfaceType = "interfaceType"
 }
 
 /**

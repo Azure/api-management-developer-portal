@@ -30,7 +30,9 @@ import { CodeSampleViewModel } from "./components/operations/operation-details/k
 import { Authorization } from "./components/operations/operation-details/ko/runtime/authorization";
 import { OperationConsole } from "./components/operations/operation-details/ko/runtime/operation-console";
 import { GraphqlConsole } from "./components/operations/operation-details/ko/runtime/graphql-console";
-import { GraphqlDocumentation } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-documentation";
+import { GraphqlDocumentation } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc";
+import { GraphqlDetails } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc-details";
+import { GraphDocService } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc-service";
 import { OperationDetails } from "./components/operations/operation-details/ko/runtime/operation-details";
 import { TypeDefinitionViewModel } from "./components/operations/operation-details/ko/runtime/type-definition";
 import { OperationList } from "./components/operations/operation-list/ko/runtime/operation-list";
@@ -93,6 +95,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationConsole", OperationConsole);
         injector.bind("graphqlConsole", GraphqlConsole);
         injector.bind("graphqlDocumentation", GraphqlDocumentation);
+        injector.bind("graphqlDetails", GraphqlDetails);
         injector.bind("authorization", Authorization);
         injector.bind("typeDefinition", TypeDefinitionViewModel);
         injector.bind("codeSample", CodeSampleViewModel);
@@ -132,6 +135,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("settingsProvider", ApimSettingsProvider);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("routeHelper", RouteHelper);
+        injector.bindSingleton("graphDocService", GraphDocService);
         injector.bindSingleton("userService", StaticUserService);
         injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("oauthService", OAuthService);

@@ -16,18 +16,18 @@
 </div>
 
 <h4>Query</h4>
-<div class="input-group">
-    <!-- ko template: { name: 'graphqlDocExplorer', data: {operationNode: $component.graphDocModel().docGraphs.query(), filter: filter()} } -->
+<div class="menu">
+    <!-- ko template: { name: 'graphqlDocExplorer', data: {operationNode: $component.graphDocService.docGraphs.query(), filter: filter(), type: 'query'} } -->
     <!-- /ko -->
 </div>
 <h4>Mutation</h4>
-<div class="input-group">
-    <!-- ko template: { name: 'graphqlDocExplorer', data: {operationNode: $component.graphDocModel().docGraphs.mutation(), filter: filter()} } -->
+<div class="menu">
+    <!-- ko template: { name: 'graphqlDocExplorer', data: {operationNode: $component.graphDocService.docGraphs.mutation(), filter: filter(), type: 'mutation'} } -->
     <!-- /ko -->
 </div>
 <h4>Subscription</h4>
-<div class="input-group">
-    <!-- ko template: { name: 'graphqlDocExplorer', data: {operationNode: $component.graphDocModel().docGraphs.subscription(), filter: filter()} } -->
+<div class="menu">
+    <!-- ko template: { name: 'graphqlDocExplorer', data: {operationNode: $component.graphDocService.docGraphs.subscription(), filter: filter(), type: 'subscription'} } -->
     <!-- /ko -->
 </div>
 

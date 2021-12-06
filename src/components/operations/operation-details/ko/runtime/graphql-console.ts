@@ -9,7 +9,7 @@ import template from "./graphql-console.html";
 import graphqlExplorer from "./graphql-explorer.html";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlOperationTypes } from "./../../../../../constants";
+import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlTypes } from "./../../../../../constants";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { ApiService } from "../../../../../services/apiService";
@@ -79,7 +79,7 @@ export class GraphqlConsole {
         this.sendingRequest = ko.observable(false);
         this.authorizationServer = ko.observable();
         this.headers = ko.observableArray();
-        this.queryType = ko.observable(GraphqlOperationTypes.query);
+        this.queryType = ko.observable(GraphqlTypes.query);
         this.document = ko.observable();
         this.operationUrl = ko.observable();
         this.variables = ko.observable();
@@ -410,17 +410,17 @@ export class GraphqlConsole {
     private buildTree(content: string): void {
         const schema = GraphQL.buildSchema(content);
 
-        this.queryNode(new GraphQLOutputTreeNode(GraphqlOperationTypes.query, <GraphQL.GraphQLField<any, any>>{
+        this.queryNode(new GraphQLOutputTreeNode(GraphqlTypes.query, <GraphQL.GraphQLField<any, any>>{
             type: schema.getQueryType(),
             args: []
         }, () => this.generateDocument(), null));
 
-        this.mutationNode(new GraphQLOutputTreeNode(GraphqlOperationTypes.mutation, <GraphQL.GraphQLField<any, any>>{
+        this.mutationNode(new GraphQLOutputTreeNode(GraphqlTypes.mutation, <GraphQL.GraphQLField<any, any>>{
             type: schema.getMutationType(),
             args: []
         }, () => this.generateDocument(), null));
 
-        this.subscriptionNode(new GraphQLOutputTreeNode(GraphqlOperationTypes.subscription, <GraphQL.GraphQLField<any, any>>{
+        this.subscriptionNode(new GraphQLOutputTreeNode(GraphqlTypes.subscription, <GraphQL.GraphQLField<any, any>>{
             type: schema.getSubscriptionType(),
             args: []
         }, () => this.generateDocument(), null));
