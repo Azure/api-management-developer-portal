@@ -64,9 +64,17 @@
         <!-- /ko -->
 
         <div class="form-group">
-            <button type="button" id="signup" class="button button-primary" data-bind="click: signup, disable: working">
+            
+            <!-- ko ifnot: working -->
+            <button type="button" id="signup" class="button button-primary" data-bind="click: signup">
                 Sign up
             </button>
+            <!-- /ko -->
+
+            <!-- ko if: working -->
+            <spinner class="fit"></spinner>
+            <!-- /ko -->
+
         </div>
     </fieldset>
 </form>
