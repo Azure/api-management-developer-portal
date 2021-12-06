@@ -16,7 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 window.onbeforeunload = () => {
     if (!location.pathname.startsWith("/signin-sso") &&
-        !location.pathname.startsWith("/signup")) {
+        !location.pathname.startsWith("/signup") &&
+        !location.pathname.startsWith("/signin")) {
         const rest = location.href.split(location.pathname)[1];
         const returnUrl = location.pathname + rest;
         sessionStorage.setItem("returnUrl", returnUrl);
