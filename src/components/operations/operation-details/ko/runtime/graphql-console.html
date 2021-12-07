@@ -32,7 +32,7 @@
             params="{ api: $component.api, authorizationServer: $component.authorizationServer, headers: $component.headers}">
         </authorization>
     
-        <h3 class="pad-top-0">Headers
+        <h3 class="pt-0">Headers
             <button class="no-border" data-bind="click: $component.collapse('collapsedHeaders')">
                 <!-- ko if: $component.collapsedHeaders -->
                 <i class="icon-emb icon-emb-chevron-down"></i>
@@ -45,7 +45,7 @@
         <!-- ko ifnot: $component.collapsedHeaders -->
         <!-- ko if: $component.headers().length > 0 -->
         <div data-bind="foreach: { data: $component.headers, as: 'header' }">
-            <div class="row flex flex-row headers-gql pad-left-0">
+            <div class="row flex flex-row headers-gql pl-0">
                 <div class="col-4">
                     <div class="form-group">
                         <div class="input-group">
@@ -70,7 +70,7 @@
                         <!-- /ko -->
                     </div>
                 </div>
-                <div class="col-2 pad-top-12">
+                <div class="col-2 pt-12">
                     <a href="#" role="button" data-bind="click: $component.removeHeader">Remove</a>
                 </div>
             </div>
