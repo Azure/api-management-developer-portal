@@ -27,7 +27,7 @@ export class ProductList {
     public readonly hasPager: ko.Computed<boolean>;
     public readonly hasPrevPage: ko.Observable<boolean>;
     public readonly hasNextPage: ko.Observable<boolean>;
-    public totalNoOfItems: ko.Observable<number>;   //pagination changes
+    public totalNoOfItems: ko.Observable<number>;
 
     constructor(
         private readonly usersService: UsersService,
@@ -45,7 +45,7 @@ export class ProductList {
         this.hasPrevPage = ko.observable(false);
         this.hasNextPage = ko.observable(false);
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
-        this.totalNoOfItems = ko.observable();  //pagination changes
+        this.totalNoOfItems = ko.observable();  
     }
 
     @Param()
@@ -81,7 +81,7 @@ export class ProductList {
             this.hasNextPage(!!itemsPage.nextLink);
 
             this.products(itemsPage.value);
-            this.totalNoOfItems(itemsPage.count);  //pagination changes
+            this.totalNoOfItems(itemsPage.count);
             if (this.allowSelection() && !this.selectedProductName()) {
                 this.selectFirstProduct();
             }
@@ -99,12 +99,11 @@ export class ProductList {
         }
     }
 
-     //-----pagination changes start ---------------------------- 
-     public pageCount() {
+    public pageCount(): number {
         return Math.ceil(this.totalNoOfItems() / Constants.defaultPageSize);
     };
 
-    public setCurrentPag(page) {
+    public setCurrentPag(page: number): void {
         if (page < Constants.firstPage)
             page = Constants.firstPage;
 
@@ -115,18 +114,18 @@ export class ProductList {
     };
 
 
-    public lastPage() {
+    public lastPage(): number {
         return this.pageCount();
     };
 
-    public nextPagePresent() {
+    public nextPagePresent(): number {
         var next = this.page() + 1;
         if (next > this.lastPage())
             return null;
         return next;
     };
 
-    public previousPage () {
+    public previousPage(): number {
         var previous = this.page() - 1;
         if (previous < Constants.firstPage)
             return null;
@@ -134,36 +133,36 @@ export class ProductList {
         return previous;
     };
 
-    public needPaging() {
+    public needPaging(): boolean {
         return this.pageCount() > 1;
     };
 
-    public nextPageActive() {
+    public nextPageActive(): boolean {
         return this.nextPagePresent() != null;
     };
 
-    public previousPageActive() {
+    public previousPageActive(): boolean {
         return this.previousPage() != null;
     };
 
-    public lastPageActive() {
+    public lastPageActive(): boolean {
         return (this.lastPage() != this.page());
     };
 
-    public firstPageActive() {
+    public firstPageActive(): boolean {
         return (Constants.firstPage != this.page());
     };
 
-    public generateAllPages() {
+    public generateAllPages(): number[] {
         var pages = [];
-        for (var i = Constants.firstPage; i <= this.lastPage() ; i++)
+        for (var i = Constants.firstPage; i <= this.lastPage(); i++)
             pages.push(i);
 
         return pages;
     };
 
-    public generateMaxPage() {
-        var current  = this.page();
+    public generateMaxPage(): number[] {
+        var current = this.page();
         var pageCount = this.pageCount();
         var first = Constants.firstPage;
 
@@ -189,7 +188,7 @@ export class ProductList {
         return pages;
     };
 
-    public getPages() {
+    public getPages(): ko.ObservableArray {
         this.page();
         this.totalNoOfItems();
 
@@ -200,37 +199,35 @@ export class ProductList {
         }
     };
 
-    public goToPage(page) {
+    public goToPage(page: number): void {
         if (page >= Constants.firstPage && page <= this.lastPage())
-        this.page(page);
+            this.page(page);
         this.loadPageOfProducts();
     }
 
-    public goToFirst() {
+    public goToFirst(): void {
         this.page(Constants.firstPage);
         this.loadPageOfProducts();
     };
 
-    public goToPrevious() {
+    public goToPrevious(): void {
         var previous = this.previousPage();
         if (previous != null)
-        this.page(previous);
+            this.page(previous);
         this.loadPageOfProducts();
     };
 
-    public goToNext() {
+    public goToNext(): void {
         var next = this.nextPagePresent();
         if (next != null)
-        this.page(next);
+            this.page(next);
         this.loadPageOfProducts();
     };
 
-    public goToLast() {
+    public goToLast(): void {
         this.page(this.lastPage());
         this.loadPageOfProducts();
     };
-
-    //------pagination changes end ---------------------------
 
     public selectFirstProduct(): void {
         let productName;

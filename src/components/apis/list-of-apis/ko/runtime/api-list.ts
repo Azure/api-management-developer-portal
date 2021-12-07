@@ -28,7 +28,7 @@ export class ApiList {
     public readonly hasPrevPage: ko.Observable<boolean>;
     public readonly hasNextPage: ko.Observable<boolean>;
     public readonly groupByTag: ko.Observable<boolean>;
-    public totalNoOfItems: ko.Observable<number>;   //pagination changes
+    public totalNoOfItems: ko.Observable<number>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -48,7 +48,7 @@ export class ApiList {
         this.apiGroups = ko.observableArray();
         this.groupByTag = ko.observable(false);
         this.defaultGroupByTagToEnabled = ko.observable(false);
-        this.totalNoOfItems = ko.observable();  //pagination changes
+        this.totalNoOfItems = ko.observable();
     }
 
     @Param()
@@ -102,7 +102,7 @@ export class ApiList {
                 this.apiGroups(apiGroups);
 
                 nextLink = pageOfTagResources.nextLink;
-                this.totalNoOfItems(pageOfTagResources.count);  //pagination changes
+                this.totalNoOfItems(pageOfTagResources.count);
             }
             else {
                 const pageOfApis = await this.apiService.getApis(query);
@@ -110,7 +110,7 @@ export class ApiList {
                 this.apis(apis);
 
                 nextLink = pageOfApis.nextLink;
-                this.totalNoOfItems(pageOfApis.count);  //pagination changes
+                this.totalNoOfItems(pageOfApis.count);
             }
 
             this.hasPrevPage(pageNumber > 0);
@@ -124,12 +124,11 @@ export class ApiList {
         }
     }
 
-     //-----pagination changes start ---------------------------- 
-     public pageCount() {
+    public pageCount(): number {
         return Math.ceil(this.totalNoOfItems() / Constants.defaultPageSize);
     };
 
-    public setCurrentPag(page) {
+    public setCurrentPag(page: number): void {
         if (page < Constants.firstPage)
             page = Constants.firstPage;
 
@@ -140,18 +139,18 @@ export class ApiList {
     };
 
 
-    public lastPage() {
+    public lastPage(): number {
         return this.pageCount();
     };
 
-    public nextPagePresent() {
+    public nextPagePresent(): number {
         var next = this.page() + 1;
         if (next > this.lastPage())
             return null;
         return next;
     };
 
-    public previousPage () {
+    public previousPage(): number {
         var previous = this.page() - 1;
         if (previous < Constants.firstPage)
             return null;
@@ -159,36 +158,36 @@ export class ApiList {
         return previous;
     };
 
-    public needPaging() {
+    public needPaging(): boolean {
         return this.pageCount() > 1;
     };
 
-    public nextPageActive() {
+    public nextPageActive(): boolean {
         return this.nextPagePresent() != null;
     };
 
-    public previousPageActive() {
+    public previousPageActive(): boolean {
         return this.previousPage() != null;
     };
 
-    public lastPageActive() {
+    public lastPageActive(): boolean {
         return (this.lastPage() != this.page());
     };
 
-    public firstPageActive() {
+    public firstPageActive(): boolean {
         return (Constants.firstPage != this.page());
     };
 
-    public generateAllPages() {
+    public generateAllPages(): number[] {
         var pages = [];
-        for (var i = Constants.firstPage; i <= this.lastPage() ; i++)
+        for (var i = Constants.firstPage; i <= this.lastPage(); i++)
             pages.push(i);
 
         return pages;
     };
 
-    public generateMaxPage() {
-        var current  = this.page();
+    public generateMaxPage(): number[] {
+        var current = this.page();
         var pageCount = this.pageCount();
         var first = Constants.firstPage;
 
@@ -214,7 +213,7 @@ export class ApiList {
         return pages;
     };
 
-    public getPages() {
+    public getPages(): ko.ObservableArray {
         this.page();
         this.totalNoOfItems();
 
@@ -225,38 +224,35 @@ export class ApiList {
         }
     };
 
-
-    public goToPage(page) {
+    public goToPage(page: number): void {
         if (page >= Constants.firstPage && page <= this.lastPage())
-        this.page(page);
+            this.page(page);
         this.loadPageOfApis();
     }
 
-    public goToFirst() {
+    public goToFirst(): void {
         this.page(Constants.firstPage);
         this.loadPageOfApis();
     };
 
-    public goToPrevious() {
+    public goToPrevious(): void {
         var previous = this.previousPage();
         if (previous != null)
-        this.page(previous);
+            this.page(previous);
         this.loadPageOfApis();
     };
 
-    public goToNext() {
+    public goToNext(): void {
         var next = this.nextPagePresent();
         if (next != null)
-        this.page(next);
+            this.page(next);
         this.loadPageOfApis();
     };
 
-    public goToLast() {
+    public goToLast(): void {
         this.page(this.lastPage());
         this.loadPageOfApis();
     };
-
-    //------pagination changes end ---------------------------
 
     public getReferenceUrl(api: Api): string {
         return this.routeHelper.getApiReferenceUrl(api.name, this.detailsPageUrl());
