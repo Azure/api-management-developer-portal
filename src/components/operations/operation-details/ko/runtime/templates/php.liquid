@@ -1,20 +1,6 @@
 <?php
-// This sample uses the Apache HTTP client from HTTP Components (http://hc.apache.org/httpcomponents-client-ga/)
-require_once 'HTTP/Request2.php';
 
-$request = new Http_Request2('{{requestUrl}}');
-$url = $request->getUrl();
-
-{% if request.meaningfulHeaders.size > 0 -%}
-$headers = array(
-    // Request headers
-{% for header in request.meaningfulHeaders -%}
-    '{{header.name}}' => '{{header.displayedValue}}',
-{% endfor -%}
-);
-
-$request->setHeader($headers);
-{% endif -%}
+$url = "{{requestUrl}}";
 
 {% if request.parameters.size > 0 -%}
 $parameters = array(
@@ -23,25 +9,29 @@ $parameters = array(
     '{{parameter.name}}' => '{{parameter.value}}',
 {% endfor -%}
 );
-
-$url->setQueryVariables($parameters);
+$url .= $parameters;
 {% endif -%}
 
-$request->setMethod(HTTP_Request2::METHOD_{{method}});
+$curl = curl_init($url);
 
-{% if body -%}
+curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "{{method}}");
+curl_setopt($curl, CURLOPT_URL, $url);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+{% if request.meaningfulHeaders.size > 0 -%}
+// Request headers
+$headers = array(
+{%- for header in request.meaningfulHeaders %}
+    '{{header.name}}: {{header.displayedValue}}',
+{%- endfor -%});
+curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+{%- endif %}
+{% if request.body != blank and request.bodyFormat == "raw" %}
 // Request body
-$request->setBody("{{ body | replace:'"','\"' }}");
-{% endif -%}
-
-try
-{
-    $response = $request->send();
-    echo $response->getBody();
-}
-catch (HttpException $ex)
-{
-    echo $ex;
-}
-
+$request_body = '{{request.body}}';
+curl_setopt($curl, CURLOPT_POSTFIELDS, $request_body);
+{% endif %}
+$resp = curl_exec($curl);
+curl_close($curl);
+var_dump($resp);
 ?>
