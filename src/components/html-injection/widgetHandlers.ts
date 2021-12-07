@@ -27,6 +27,7 @@ export class HTMLInjectionWidgetHandlers implements IWidgetHandler {
                 const model = new HTMLInjectionWidgetModel();
                 model.htmlCode = htmlCodeInitial;
                 model.htmlCodeSizeStyles = htmlCodeSizeStylesInitial;
+                model.inheritStyling = false;
                 return model;
             }
         };

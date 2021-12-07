@@ -7,4 +7,5 @@ import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
 export class HTMLInjectionWidgetModel { 
     public htmlCode: string;
     public htmlCodeSizeStyles: SizeStylePluginConfig;
+    public inheritStyling: boolean;
 }

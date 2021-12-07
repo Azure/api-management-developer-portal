@@ -17,6 +17,7 @@ export class WidgetViewModelBinder implements ViewModelBinder<HTMLInjectionWidge
         viewModel.runtimeConfig(JSON.stringify({
             htmlCode: model.htmlCode,
             htmlCodeSizeStyles: model.htmlCodeSizeStyles,
+            inheritStyling: model.inheritStyling,
         }));
     }
 

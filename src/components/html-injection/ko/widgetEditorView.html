@@ -3,6 +3,12 @@
         <size-editor
             params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: htmlCodeSizeStyles, onUpdate: htmlCodeSizeStyles }">
         </size-editor>
+        <label for="inheritStyling" class="form-label">
+            <input type="checkbox" id="inheritStyling" name="inheritStyling" data-bind="checked: inheritStyling" />
+            Inherit Dev Portal styling
+            <button class="btn btn-info" type="button" title="Help"
+                data-bind="tooltip: 'Inherit Dev Portal styling.'"></button>
+        </label>
         <label class="form-label">
             HTML code
             <button class="btn btn-info" type="button" title="Help"

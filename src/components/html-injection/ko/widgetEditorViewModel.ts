@@ -13,10 +13,12 @@ import { widgetEditorSelector } from "..";
 export class WidgetEditorViewModel implements WidgetEditor<HTMLInjectionWidgetModel> {
     public readonly htmlCode: ko.Observable<string>;
     public readonly htmlCodeSizeStyles: ko.Observable<SizeStylePluginConfig>;
+    public readonly inheritStyling: ko.Observable<boolean>;
 
     constructor() {
         this.htmlCode = ko.observable();
         this.htmlCodeSizeStyles = ko.observable();
+        this.inheritStyling = ko.observable();
     }
 
     @Param()
@@ -31,6 +33,8 @@ export class WidgetEditorViewModel implements WidgetEditor<HTMLInjectionWidgetMo
         this.htmlCode.subscribe(() => this.applyChanges("htmlCode"));
         this.htmlCodeSizeStyles(this.model.htmlCodeSizeStyles);
         this.htmlCodeSizeStyles.subscribe(() => this.applyChanges("htmlCodeSizeStyles"));
+        this.inheritStyling(this.model.inheritStyling);
+        this.inheritStyling.subscribe(() => this.applyChanges("inheritStyling"));
     }
 
     private applyChanges(key: string): void {
