@@ -1,5 +1,5 @@
 import template from "./widget-runtime.html";
-import { Component, RuntimeComponent, OnDestroyed, Param, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnDestroyed, Param } from "@paperbits/common/ko/decorators";
 import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
 import { widgetRuntimeSelector } from "../../constants";
 import * as ko from "knockout";
