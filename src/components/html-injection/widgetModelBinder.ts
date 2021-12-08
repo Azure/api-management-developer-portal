@@ -22,7 +22,7 @@ export class HTMLInjectionWidgetModelBinder implements IModelBinder<HTMLInjectio
         const model = new HTMLInjectionWidgetModel();
         model.htmlCode = contract.htmlCode ?? htmlCodeInitial;
         model.htmlCodeSizeStyles = contract.htmlCodeSizeStyles ?? htmlCodeSizeStylesInitial;
-        model.inheritStyling = contract.inheritStyling ?? false;
+        model.inheritStyling = contract.inheritStyling ?? true;
         return model;
     }
 
