@@ -4,10 +4,12 @@ import { ViewModelBinder } from "@paperbits/common/widgets";
 import { IdentityService } from "../../../../services/identityService";
 import { SignupSocialModel } from "../signupSocialModel";
 import { SignupSocialViewModel } from "./signupSocialViewModel";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 
 export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocialModel, SignupSocialViewModel> {
     constructor(
-        private readonly identityService: IdentityService
+        private readonly identityService: IdentityService,
+        private readonly settingsProvider: ISettingsProvider
     ) { }
 
     public async modelToViewModel(model: SignupSocialModel, viewModel?: SignupSocialViewModel, bindingContext?: Bag<any>): Promise<SignupSocialViewModel> {
@@ -29,6 +31,9 @@ export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocial
         if (identityProvider) {
             viewModel.identityProvider(true);
         }
+
+        const settings = await this.settingsProvider.getSettings();
+        viewModel.mode(settings["environment"]);
 
         return viewModel;
     }
