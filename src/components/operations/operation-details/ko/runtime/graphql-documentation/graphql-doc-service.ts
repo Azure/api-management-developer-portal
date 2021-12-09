@@ -63,6 +63,7 @@ export class GraphDocService {
     }
 
     private async defaultValues(): Promise<void> {
+        this.navigation([]);
         await this.getApi(this.selectedApiName());
         const graphQLSchemas = await this.apiService.getSchemas(this.api());
         const content = graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema;
@@ -98,11 +99,13 @@ export class GraphDocService {
         })
 
         for (const type in GraphqlTypesForDocumentation) {
-            if (_.size(this.docGraphs[type]()) > 0) {
+            if (_.size(this.docGraphs[type]()) > 0 && !(this.currentSelected())) {
                 const selectedCollection = this.docGraphs[type]();
                 const selectedGraph = selectedCollection[Object.keys(selectedCollection)[0]];
                 this.select(selectedGraph, DocumentationActions.global);
-                break;
+            }
+            else if (_.size(this.docGraphs[type]()) === 0) {
+                delete this.docGraphs[type];
             }
         }
     }

@@ -24,7 +24,6 @@ export class GraphqlDetails {
         this.graphSelected = ko.observable();
     }
 
-
     @OnMounted()
     public async initialize(): Promise<void> {
         this.graphDocService.navigation.subscribe(this.onNavigationChange);
