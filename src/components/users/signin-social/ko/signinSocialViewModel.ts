@@ -15,6 +15,7 @@ export class SigninSocialViewModel {
     public readonly aadB2CLabel: ko.Observable<string>;
     public readonly styles: ko.Observable<StyleModel>;
     public readonly roles: ko.ObservableArray<string>;
+    public readonly mode: ko.Observable<string>;
 
     constructor() {
         this.aadConfig = ko.observable<string>();
@@ -23,5 +24,6 @@ export class SigninSocialViewModel {
         this.aadB2CLabel = ko.observable<string>();
         this.styles = ko.observable<StyleModel>();
         this.roles = ko.observableArray<string>();
+        this.mode = ko.observable<string>();
     }
 }

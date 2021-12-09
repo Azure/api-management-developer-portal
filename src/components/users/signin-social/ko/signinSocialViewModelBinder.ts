@@ -6,13 +6,15 @@ import { ViewModelBinder } from "@paperbits/common/widgets";
 import { IdentityService } from "../../../../services/identityService";
 import { SigninSocialModel } from "../signinSocialModel";
 import { SigninSocialViewModel } from "./signinSocialViewModel";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 
 
 export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocialModel, SigninSocialViewModel> {
     constructor(
         private readonly identityService: IdentityService,
         private readonly styleCompiler: StyleCompiler,
-        private readonly eventManager: EventManager
+        private readonly eventManager: EventManager,
+        private readonly settingsProvider: ISettingsProvider
     ) { }
 
     public async modelToViewModel(model: SigninSocialModel, viewModel?: SigninSocialViewModel, bindingContext?: Bag<any>): Promise<SigninSocialViewModel> {
@@ -66,6 +68,9 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
 
             viewModel.aadB2CConfig(JSON.stringify(aadB2CConfig));
         }
+
+        const settings = await this.settingsProvider.getSettings();
+        viewModel.mode(settings["environment"]);
 
         return viewModel;
     }
