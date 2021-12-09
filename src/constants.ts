@@ -144,12 +144,27 @@ export const VariablesEditorSettings = {
     query = "query",
     mutation = "mutation",
     subscription = "subscription",
-    objectType = "objectType",
-    inputObjectType = "inputObjectType",
-    enumType = "enumType",
-    scalarType = "scalarType",
-    unionType = "unionType",
-    interfaceType = "interfaceType"
+}
+
+ /**
+ * Graphql types for documentation
+ */
+export enum GraphqlTypesForDocumentation {
+    query = "Query",
+    mutation = "Mutation",
+    subscription = "Subscription",
+    objectType = "Object Type",
+    inputObjectType = "Input Object Type",
+    enumType = "Enum Type",
+    scalarType = "Scalar Type",
+    unionType = "Union Type",
+    interfaceType = "Interface Type"
+}
+
+export enum DocumentationActions {
+    global = "global",
+    details = "details",
+    back = "back"
 }
 
 /**

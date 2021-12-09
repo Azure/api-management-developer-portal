@@ -670,9 +670,18 @@ operation-console {
     }
 }
 
-.type-details-button {
+.details-button {
     padding: 0px;
     border: 0px;
     background: white;
     color: #0F7EBD;
+
+    &.selected {
+        font-weight: bold;
+    }
+}
+
+.gql-navigation {
+    margin-top: 40px; 
+    font-size: 20px;
 }

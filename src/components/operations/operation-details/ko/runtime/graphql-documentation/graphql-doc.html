@@ -15,20 +15,17 @@
     </div>
 </div>
 
-<h4>Query</h4>
+
+<!-- ko foreach: { data: $component.graphqlTypes(), as: 'type' } -->
+
+<h4 data-bind="text: type.name"></h4>
 <div class="menu">
-    <!-- ko template: { name: 'graphqlDocExplorer', data: {operationNode: $component.graphDocService.docGraphs.query(), filter: filter(), type: 'query'} } -->
+    <!-- ko template: { name: 'graphqlDocExplorer', data: {operationNode: $component.iteratorConverter(type.index), filter: $component.filter(), type: type.index} } -->
     <!-- /ko -->
 </div>
-<h4>Mutation</h4>
-<div class="menu">
-    <!-- ko template: { name: 'graphqlDocExplorer', data: {operationNode: $component.graphDocService.docGraphs.mutation(), filter: filter(), type: 'mutation'} } -->
-    <!-- /ko -->
-</div>
-<h4>Subscription</h4>
-<div class="menu">
-    <!-- ko template: { name: 'graphqlDocExplorer', data: {operationNode: $component.graphDocService.docGraphs.subscription(), filter: filter(), type: 'subscription'} } -->
-    <!-- /ko -->
-</div>
+<!-- /ko -->
+
+
+
 
 <!-- /ko -->

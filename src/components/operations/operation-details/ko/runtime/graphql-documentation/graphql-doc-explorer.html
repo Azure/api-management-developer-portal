@@ -3,8 +3,8 @@
     <li role="presentation">
         <!-- ko if: nodeChild.name.includes($parent.filter) -->
             <div role="presentation" data-bind="attr: {name: nodeChild.name}" class="presentation-item">
-                <a href="#" role="listitem" class="nav-link"
-                    data-bind="attr: { href: $component.getReferenceUrl($parent.type, nodeChild.name)}, css: { 'nav-link-active': nodeChild.isSelectedForDoc }">
+                <a class="details-button"
+                    data-bind="attr: { href: $component.getReferenceUrl($parent.type, nodeChild.name)}, css: { 'selected': nodeChild.isSelectedForDoc }">
                     <div class="row">
                         <span data-bind="text: nodeChild.name, attr: { title: nodeChild.name }"></span>
                     </div>
