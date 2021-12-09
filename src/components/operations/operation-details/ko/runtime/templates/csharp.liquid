@@ -18,7 +18,6 @@ namespace CSHttpClientSample
         static async void MakeRequest()
         {
             var client = new HttpClient();
-            var queryString = HttpUtility.ParseQueryString(string.Empty);
 
 {% if request.meaningfulHeaders.size > 0 %}
             // Request headers
@@ -96,13 +95,7 @@ namespace CSHttpClientSample
 {% endfor -%}
 {% endif -%}
 
-{% if request.parameters.size > 0 -%}
-            // Request parameters
-{% for parameter in request.parameters -%}
-            queryString["{{parameter.Name}}"] = "{{parameter.Value}}";
-{% endfor -%}
-{% endif -%}
-            var uri = "{{requestUrl}}{% if path contains '?' %}&{% else %}?{% endif %}" + queryString;
+            var uri = "{{requestUrl}}";
 
 {% case method -%}
 
@@ -111,7 +104,8 @@ namespace CSHttpClientSample
 
             // Request body
             {%- assign formattedBody = request.body | replace: '"','\\"' 
-            formattedBody = formattedBody | replace: '\r\n', ' ' 
+            formattedBody = formattedBody | replace: '\r\n', ' '  
+            formattedBody = formattedBody | replace: '\n', ' ' 
             formattedBody = formattedBody | replace: '     ', ' ' %}
             byte[] byteData = Encoding.UTF8.GetBytes("{{formattedBody}}");
 

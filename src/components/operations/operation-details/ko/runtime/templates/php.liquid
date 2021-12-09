@@ -1,17 +1,6 @@
 <?php
 
 $url = "{{requestUrl}}";
-
-{% if request.parameters.size > 0 -%}
-$parameters = array(
-    // Request parameters
-{% for parameter in request.parameters -%}
-    '{{parameter.name}}' => '{{parameter.value}}',
-{% endfor -%}
-);
-$url .= $parameters;
-{% endif -%}
-
 $curl = curl_init($url);
 
 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "{{method}}");

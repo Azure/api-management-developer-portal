@@ -11,25 +11,7 @@ public class HelloWorld {
 
   public static void main(String[] args) {
     try {
-        String urlString = "{{requestUrl}}{% if path contains '?' %}&{% else %}?{% endif %}";
-{% if request.parameters.size > 0 -%}
-        //Request parameters
-        Map<String, String> parameters = new HashMap<>();
-    {% for parameter in request.parameters -%}
-            parameters.put("{parameter.Name}", "{{parameter.Value}}");
-    {% endfor -%}
-
-        StringBuilder paramsStringBuilder = new StringBuilder();
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-            result.append("=");
-            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-            result.append("&");
-          }
-      
-          String parametersString = result.toString().substring(0, parametersString.length() - 1)
-          urlString += getParamsString(parameters);
-{%- endif %}
+        String urlString = "{{requestUrl}}";
         URL url = new URL(urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
