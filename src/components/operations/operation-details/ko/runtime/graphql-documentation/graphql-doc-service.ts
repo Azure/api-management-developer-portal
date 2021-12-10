@@ -67,7 +67,7 @@ export class GraphDocService {
         await this.getApi(this.selectedApiName());
         const graphQLSchemas = await this.apiService.getSchemas(this.api());
         const content = graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema;
-        const schema = GraphQL.buildSchema(content);
+        const schema = GraphQL.buildSchema(content, { commentDescriptions: true });
 
         this.docGraphs.query(schema.getQueryType().getFields());
         this.docGraphs.mutation(schema.getMutationType().getFields());
@@ -143,6 +143,7 @@ export class GraphDocService {
         else {
             this.select(this.docGraphs[graphType]()[graphName], from);
         }
+        console.log("HERE")
     }
 
     public currentSelected() {

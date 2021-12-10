@@ -5,70 +5,79 @@
 <!-- /ko -->
 
 <!-- ko ifnot: working -->
+<div class="explorer-operations scrollable">
+    <!-- ko if: multipleGraphs() -->
+    <div class="col-12 gql-navigation">
+        <i class="icon-emb icon-emb-chevron-left"></i>
+        <a class="details-button" data-bind="text: previousGraphName(), attr: { href: goBack()}"></a>
+    </div>
+    <!-- /ko -->
 
-<!-- ko if: multipleGraphs() -->
-<div class="col-12 gql-navigation">
-    <i class="icon-emb icon-emb-chevron-left"></i>
-    <a class="details-button" data-bind="text: previousGraphName(), attr: { href: goBack()}"></a>
-</div>
-<!-- /ko -->
-
-<div class="col-12">
-    <h3 data-bind="text: getName()"></h3>
-    <span data-bind="text: getDescription()"></span>
-</div>
+    <div class="col-12">
+        <h3 data-bind="text: getName()"></h3>
+        <span data-bind="text: getDescription()"></span>
+    </div>
 
 
-<!-- ko if: graphSelected().type -->
-<div class="col-12">
-    <h3>Type</h3>
-    <span data-bind="text: getType(graphSelected(), 'left')"></span>
-    <a class="details-button"
-        data-bind="text: getType(graphSelected(), 'name'), attr: { href: selectType(graphSelected())}"></a>
-    <span data-bind="text: getType(graphSelected(), 'right')"></span>
-</div>
-<!-- /ko -->
-
-<!-- ko if: hasField('args') -->
-<div class="col-12">
-    <h3>Arguments</h3>
-    <!-- ko foreach: { data: graphSelected()['args'], as: 'arg' } -->
-    <div>
-        <span data-bind="text: $component.keyName(arg.name)"></span>
-        <span data-bind="text: $component.getType(arg, 'left')"></span>
+    <!-- ko if: graphSelected().type -->
+    <div class="col-12">
+        <h3>Type</h3>
+        <span data-bind="text: getType(graphSelected(), 'left')"></span>
         <a class="details-button"
-            data-bind="text: $component.getType(arg, 'name'), attr: { href: $component.selectType(arg)}"></a>
-        <span data-bind="text: $component.getType(arg, 'right')"></span>
+            data-bind="text: getType(graphSelected(), 'name'), attr: { href: selectType(graphSelected())}"></a>
+        <span data-bind="text: getType(graphSelected(), 'right')"></span>
     </div>
     <!-- /ko -->
-</div>
-<!-- /ko -->
 
-<!-- ko if: hasField('_fields') -->
-<div class="col-12">
-    <h3>Fields</h3>
-    <!-- ko foreach: { data: fieldValues(graphSelected()['_fields']), as: 'field' } -->
-    <div>
-        <span data-bind="text: $component.keyName(field.name)"></span>
-        <span data-bind="text: $component.getType(field, 'left')"></span>
-        <a class="details-button"
-            data-bind="text: $component.getType(field, 'name'), attr: { href: $component.selectType(field)}"></a>
-        <span data-bind="text: $component.getType(field, 'right')"></span>
+    <!-- ko if: hasField('args') -->
+    <div class="col-12">
+        <h3>Arguments</h3>
+        <!-- ko foreach: { data: graphSelected()['args'], as: 'arg' } -->
+        <div>
+            <span data-bind="text: $component.keyName(arg.name)"></span>
+            <span data-bind="text: $component.getType(arg, 'left')"></span>
+            <a class="details-button"
+                data-bind="text: $component.getType(arg, 'name'), attr: { href: $component.selectType(arg)}"></a>
+            <span data-bind="text: $component.getType(arg, 'right')"></span>
+        </div>
+        <div class="description-text">
+            <span data-bind="text: arg.description"></span>
+        </div>
+        <!-- /ko -->
     </div>
     <!-- /ko -->
-</div>
-<!-- /ko -->
 
-<!-- ko if: hasField('_values') -->
-<div class="col-12">
-    <h3>Values</h3>
-    <!-- ko foreach: { data: fieldValues(graphSelected()['_values']), as: 'value' } -->
-    <div>
-        <span data-bind="text: value"></span>
+    <!-- ko if: hasField('_fields') -->
+    <div class="col-12">
+        <h3>Fields</h3>
+        <!-- ko foreach: { data: fieldValues(graphSelected()['_fields']), as: 'field' } -->
+        <div>
+            <span data-bind="text: $component.keyName(field.name)"></span>
+            <span data-bind="text: $component.getType(field, 'left')"></span>
+            <a class="details-button"
+                data-bind="text: $component.getType(field, 'name'), attr: { href: $component.selectType(field)}"></a>
+            <span data-bind="text: $component.getType(field, 'right')"></span>
+        </div>
+        <div class="description-text">
+            <span data-bind="text: field.description"></span>
+        </div>
+        <!-- /ko -->
     </div>
     <!-- /ko -->
+
+    <!-- ko if: hasField('_values') -->
+    <div class="col-12">
+        <h3>Values</h3>
+        <!-- ko foreach: { data: fieldValues(graphSelected()['_values']), as: 'graphValue' } -->
+        <div>
+            <span data-bind="text: graphValue.value"></span>
+        </div>
+        <div class="description-text">
+            <span data-bind="text: graphValue.description"></span>
+        </div>
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+
 </div>
-<!-- /ko -->
-
-
 <!-- /ko -->
