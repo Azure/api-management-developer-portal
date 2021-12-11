@@ -46,21 +46,21 @@ export class GraphqlDetails {
         return (description) ? description : "No Description";
     }
 
-    public getType(graph: object, side: string): string {
-        const fullTypeName = this.buildTypeName(graph['type']);
+    public getType(graph: object, side: string, isUnion = false): string {
+        const fullTypeName = this.buildTypeName((isUnion) ? graph : graph['type']);
         return fullTypeName[side];
     }
 
-    public selectType(graph: object): string {
-        const graphName = this.getType(graph, 'name');
-        const type = this.graphDocService.indexCollectionFromType(graph["type"]);
+    public selectType(graph: object, isUnion = false): string {
+        const graphName = this.getType(graph, 'name', isUnion);
+        const type = this.graphDocService.indexCollectionFromType((isUnion) ? graph : graph['type']);
         return this.graphDocService.routeHelper.getGraphReferenceUrl(this.graphDocService.selectedApiName(), type, graphName, DocumentationActions.details);
     }
 
     public multipleGraphs(): boolean {
         return (this.graphDocService.navigation().length > 1);
     }
-    
+
     public previousGraphName(): string {
         const previousGraph = this.previousGraph();
         return `${previousGraph['name']} (${previousGraph['collectionTypeForDoc']()})`;
@@ -79,7 +79,7 @@ export class GraphqlDetails {
     }
 
     private buildTypeName(type: GraphQL.GraphQLOutputType | GraphQL.GraphQLInputType): object {
-        let tracking = [], complement = [ "", "" ];
+        let tracking = [], complement = ["", ""];
         let fullTypeName = {};
         while ((type instanceof GraphQL.GraphQLList) || (type instanceof GraphQL.GraphQLNonNull)) {
             tracking.push(type instanceof GraphQL.GraphQLList);
@@ -88,7 +88,7 @@ export class GraphqlDetails {
         fullTypeName['name'] = type.name;
         tracking.reverse();
         tracking.forEach(element => {
-            if(element) {
+            if (element) {
                 complement[0] += '[';
                 complement[1] += ']'
             }
@@ -103,7 +103,7 @@ export class GraphqlDetails {
 
     public hasField(fieldName: string): boolean {
         let fields = this.graphSelected()[fieldName];
-        if(fieldName == '_fields') {
+        if (fieldName == '_fields') {
             fields = this.fieldValues(fields);
         }
         return (fields && fields.length > 0);

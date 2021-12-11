@@ -79,5 +79,22 @@
     </div>
     <!-- /ko -->
 
+    <!-- ko if: hasField('_types') -->
+    <div class="col-12">
+        <h3>Possible Types</h3>
+        <!-- ko foreach: { data: graphSelected()['_types'], as: 'possibleTypes' } -->
+        <div>
+            <span data-bind="text: $component.getType(possibleTypes, 'left', true)"></span>
+            <a class="details-button"
+                data-bind="text: $component.getType(possibleTypes, 'name', true), attr: { href: $component.selectType(possibleTypes, true)}"></a>
+            <span data-bind="text: $component.getType(possibleTypes, 'right', true)"></span>
+        </div>
+        <div class="description-text">
+            <span data-bind="text: possibleTypes.description"></span>
+        </div>
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+
 </div>
 <!-- /ko -->

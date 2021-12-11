@@ -1,7 +1,6 @@
 import * as GraphQL from "graphql";
 import * as ko from "knockout";
-import { GraphQLTreeNode, GraphQLOutputTreeNode } from "../graphql-utilities/graphql-node-models";
-import { GraphqlTypesForDocumentation, DocumentationActions } from "../../../../../../constants";
+import { GraphqlTypesForDocumentation, DocumentationActions, TypeOfApi } from "../../../../../../constants";
 import { Api } from "../../../../../../models/api";
 import { ApiService } from "../../../../../../services/apiService";
 import { RouteHelper } from "../../../../../../routing/routeHelper";
@@ -24,6 +23,8 @@ export class GraphDocService {
 
     public api: ko.Observable<Api>;
     public selectedApiName: ko.Observable<string>;
+    public readonly availableTypes: ko.ObservableArray<string>;
+    public readonly typeIndexer: ko.Observable<object>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -44,6 +45,8 @@ export class GraphDocService {
         };
         this.api = ko.observable<Api>();
         this.selectedApiName = ko.observable<string>();
+        this.typeIndexer = ko.observable();
+        this.availableTypes = ko.observableArray<string>();
     }
 
     public async initialize(): Promise<void> {
@@ -55,9 +58,6 @@ export class GraphDocService {
     }
 
     private async getApi(apiName: string): Promise<void> {
-        if (!apiName) {
-            return;
-        }
         const api = await this.apiService.getApi(`apis/${apiName}`);
         this.api(api)
     }
@@ -65,48 +65,50 @@ export class GraphDocService {
     private async defaultValues(): Promise<void> {
         this.navigation([]);
         await this.getApi(this.selectedApiName());
-        const graphQLSchemas = await this.apiService.getSchemas(this.api());
-        const content = graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema;
-        const schema = GraphQL.buildSchema(content, { commentDescriptions: true });
+        if (this.api().type === TypeOfApi.graphQL) {
+            const graphQLSchemas = await this.apiService.getSchemas(this.api());
+            const content = graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema;
+            const schema = GraphQL.buildSchema(content, { commentDescriptions: true });
 
-        this.docGraphs.query(schema.getQueryType().getFields());
-        this.docGraphs.mutation(schema.getMutationType().getFields());
-        this.docGraphs.subscription(schema.getSubscriptionType().getFields());
+            this.docGraphs.query(schema.getQueryType()?.getFields());
+            this.docGraphs.mutation(schema.getMutationType()?.getFields());
+            this.docGraphs.subscription(schema.getSubscriptionType()?.getFields());
 
-        const typeMap = schema.getTypeMap();
-        this.docGraphs.objectType(_.pickBy(typeMap, (t) => {
-            return (t instanceof GraphQL.GraphQLObjectType);
-        }));
-        this.docGraphs.inputObjectType(_.pickBy(typeMap, (t) => {
-            return (t instanceof GraphQL.GraphQLInputObjectType);
-        }));
-        this.docGraphs.enumType(_.pickBy(typeMap, (t) => {
-            return (t instanceof GraphQL.GraphQLEnumType);
-        }));
-        this.docGraphs.scalarType(_.pickBy(typeMap, (t) => {
-            return (t instanceof GraphQL.GraphQLScalarType);
-        }));
-        this.docGraphs.unionType(_.pickBy(typeMap, (t) => {
-            return (t instanceof GraphQL.GraphQLUnionType);
-        }));
-        this.docGraphs.interfaceType(_.pickBy(typeMap, (t) => {
-            return (t instanceof GraphQL.GraphQLInterfaceType);
-        }));
+            const typeMap = schema.getTypeMap();
+            this.docGraphs.objectType(_.pickBy(typeMap, (t) => {
+                return (t instanceof GraphQL.GraphQLObjectType);
+            }));
+            this.docGraphs.inputObjectType(_.pickBy(typeMap, (t) => {
+                return (t instanceof GraphQL.GraphQLInputObjectType);
+            }));
+            this.docGraphs.enumType(_.pickBy(typeMap, (t) => {
+                return (t instanceof GraphQL.GraphQLEnumType);
+            }));
+            this.docGraphs.scalarType(_.pickBy(typeMap, (t) => {
+                return (t instanceof GraphQL.GraphQLScalarType);
+            }));
+            this.docGraphs.unionType(_.pickBy(typeMap, (t) => {
+                return (t instanceof GraphQL.GraphQLUnionType);
+            }));
+            this.docGraphs.interfaceType(_.pickBy(typeMap, (t) => {
+                return (t instanceof GraphQL.GraphQLInterfaceType);
+            }));
 
-        _.forEach(this.docGraphs, (value, key) => {
-            this.addingNewFields(value(), key);
-            value(this.sortingAlphabetically(value()));
-        })
+            _.forEach(this.docGraphs, (value, key) => {
+                this.addingNewFields(value(), key);
+                value(this.sortingAlphabetically(value()));
+            })
 
-        for (const type in GraphqlTypesForDocumentation) {
-            if (_.size(this.docGraphs[type]()) > 0 && !(this.currentSelected())) {
-                const selectedCollection = this.docGraphs[type]();
-                const selectedGraph = selectedCollection[Object.keys(selectedCollection)[0]];
-                this.select(selectedGraph, DocumentationActions.global);
+            for (const type in GraphqlTypesForDocumentation) {
+                if (_.size(this.docGraphs[type]()) > 0) {
+                    const selectedCollection = this.docGraphs[type]();
+                    const selectedGraph = selectedCollection[Object.keys(selectedCollection)[0]];
+                    this.select(selectedGraph, DocumentationActions.global);
+                    break;
+                }
             }
-            else if (_.size(this.docGraphs[type]()) === 0) {
-                delete this.docGraphs[type];
-            }
+
+            this.getAvailableTypes();
         }
     }
 
@@ -118,7 +120,7 @@ export class GraphDocService {
         if (from === DocumentationActions.global) {
             this.navigation([graph])
         }
-        else if(from === DocumentationActions.details){
+        else if (from === DocumentationActions.details) {
             this.navigation.push(graph);
         }
         else {
@@ -143,7 +145,6 @@ export class GraphDocService {
         else {
             this.select(this.docGraphs[graphType]()[graphName], from);
         }
-        console.log("HERE")
     }
 
     public currentSelected() {
@@ -166,21 +167,36 @@ export class GraphDocService {
         while ((type instanceof GraphQL.GraphQLList) || (type instanceof GraphQL.GraphQLNonNull)) {
             type = type.ofType;
         }
-        if(type instanceof GraphQL.GraphQLObjectType) {
+        if (type instanceof GraphQL.GraphQLObjectType) {
             return "objectType";
         }
-        if(type instanceof GraphQL.GraphQLInputObjectType) {
+        if (type instanceof GraphQL.GraphQLInputObjectType) {
             return "inputObjectType";
         }
-        if(type instanceof GraphQL.GraphQLEnumType) {
+        if (type instanceof GraphQL.GraphQLEnumType) {
             return "enumType";
         }
-        if(type instanceof GraphQL.GraphQLScalarType) {
+        if (type instanceof GraphQL.GraphQLScalarType) {
             return "scalarType";
         }
-        if(type instanceof GraphQL.GraphQLUnionType) {
+        if (type instanceof GraphQL.GraphQLUnionType) {
             return "unionType";
         }
         return "interfaceType";
+    }
+
+    private getAvailableTypes() {
+        let indexer = {};
+        let availableTypes = [];
+
+        _.each(GraphqlTypesForDocumentation, (v, k) => {
+            if (_.size(this.docGraphs[k]()) > 0) {
+                indexer[v] = k;
+                availableTypes.push(v);
+            }
+        })
+
+        this.typeIndexer(indexer);
+        this.availableTypes(availableTypes);
     }
 }

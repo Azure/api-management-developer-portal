@@ -4,7 +4,8 @@ import graphqlDocExplorer from "./graphql-doc-explorer.html";
 import { Component, OnMounted, Param, OnDestroyed } from "@paperbits/common/ko/decorators";
 import { GraphDocService } from "./graphql-doc-service";
 import * as _ from "lodash";
-import { GraphqlTypesForDocumentation, DocumentationActions } from "../../../../../../constants";
+import { GraphqlTypesForDocumentation, DocumentationActions, TypeOfApi } from "../../../../../../constants";
+import { Api } from "../../../../../../models/api";
 
 @Component({
     selector: "graphql-documentation",
@@ -17,10 +18,8 @@ import { GraphqlTypesForDocumentation, DocumentationActions } from "../../../../
 export class GraphqlDocumentation {
 
     public readonly selectedType: ko.Observable<string>;
-    public readonly availableTypes: ko.ObservableArray<string>;
     public readonly filter: ko.Observable<string>;
-    public readonly typeIndexer: ko.Observable<object>;
-    
+
     public readonly working: ko.Observable<boolean>;
 
     constructor(
@@ -30,9 +29,7 @@ export class GraphqlDocumentation {
         this.detailsPageUrl = ko.observable();
         this.apiName = ko.observable<string>();
         this.filter = ko.observable("");
-        this.typeIndexer = ko.observable();
         this.selectedType = ko.observable<string>();
-        this.availableTypes = ko.observableArray<string>();
     }
 
     @Param()
@@ -46,7 +43,6 @@ export class GraphqlDocumentation {
     public async initialize(): Promise<void> {
         this.working(true);
         await this.graphDocService.initialize();
-        this.getAvailableTypes();
         this.selectedType(GraphqlTypesForDocumentation[this.graphDocService.currentSelected()['collectionTypeForDoc']()]);
         this.graphDocService.navigation.subscribe(this.onNavigationChange);
         this.working(false);
@@ -69,22 +65,5 @@ export class GraphqlDocumentation {
         if (selected.length > 0) {
             this.selectedType(GraphqlTypesForDocumentation[this.graphDocService.currentSelected()['collectionTypeForDoc']()]);
         }
-    }
-
-    private getAvailableTypes() {
-        let indexer = {};
-        let availableTypes = [];
-
-        const availables = _.keys(this.graphDocService.docGraphs);
-
-        _.each(GraphqlTypesForDocumentation, (v,k) => {
-            if(_.includes(availables, k)) {
-                indexer[v] = k;
-                availableTypes.push(v);
-            }
-        })
-
-        this.typeIndexer(indexer);
-        this.availableTypes(availableTypes);
     }
 }
