@@ -6,7 +6,7 @@ import { HttpHeader, HttpClient, HttpResponse, HttpMethod } from "@paperbits/com
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { IAuthenticator } from "../authentication";
 import { MapiClient } from "./mapiClient";
-import { User } from "../models/user";
+import { User, UserState } from "../models/user";
 import { Utils } from "../utils";
 import { Identity } from "../contracts/identity";
 import { UserContract, UserPropertiesContract, } from "../contracts/user";
@@ -113,18 +113,22 @@ export class UsersService {
         await this.getTokenFromResponse(response);
     }
 
-    public async updatePassword(userId: string, newPassword: string, token: string): Promise<void> {
+    public async updatePassword(userId: string, newPassword: string, token: string, newState?: UserState): Promise<void> {
         const headers = [];
 
         if (token) {
             headers.push({ name: "Authorization", value: token }, MapiClient.getPortalHeader("updatePassword"));
         }
 
-        const payload = {
+        const payload: Record<string, any> = {
             properties: {
                 password: newPassword
             }
         };
+
+        if (newState) {
+            payload.properties.state = newState;
+        }
 
         await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
     }

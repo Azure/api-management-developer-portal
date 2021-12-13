@@ -6,6 +6,7 @@ import { EventManager } from "@paperbits/common/events";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../../services/usersService";
 import { ValidationReport } from "../../../../../contracts/validationReport";
+import { UserState } from "../../../../../models/user";
 
 @RuntimeComponent({
     selector: "confirm-password"
@@ -100,7 +101,7 @@ export class ConfirmPassword {
         }
 
         try {
-            await this.usersService.updatePassword(this.userId, this.password(), this.token);
+            await this.usersService.updatePassword(this.userId, this.password(), this.token, UserState.active);
             this.isResetConfirmed(true);
             setTimeout(() => {
                 this.usersService.navigateToHome();
