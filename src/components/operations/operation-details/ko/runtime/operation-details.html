@@ -33,7 +33,7 @@
     <div class="collapsible">
         <h3>Request</h3>
         <div class="collapsible-container">
-            <span class="monospace"
+            <span class="text-monospace"
                 data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
 
             <!-- ko if: operation().parameters.length > 0 -->
@@ -52,18 +52,18 @@
                 <div class="d-contents" role="rowgroup">
                     <!-- ko foreach: { data: operation().parameters, as: 'parameter' } -->
                     <div class="d-contents" role="row">
-                        <div role="cell" class="text-truncate monospace"
+                        <div role="cell" class="text-truncate text-monospace"
                             data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
                         <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
                         <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
-                        <div role="cell" class="text-truncate monospace" data-bind="text: parameter.type"></div>
+                        <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type"></div>
                         <div role="cell">
                             <span data-bind="markdown: parameter.description"></span>
 
                             <!-- ko foreach: { data: parameter.examples, as: 'example' } -->
                             <p>
                                 <span data-bind="text: example.title"></span>:
-                                <span data-bind="text: example.value" class="monospace text-wrap"></span>
+                                <span data-bind="text: example.value" class="text-monospace text-wrap"></span>
                                 <span data-bind="text: example.description" class="d-block"></span>
                             </p>
                             <!-- /ko -->
@@ -89,10 +89,10 @@
                 <div class="d-contents" role="rowgroup">
                     <!-- ko foreach: { data: operation().request.headers, as: 'header' } -->
                     <div class="d-contents" role="row">
-                        <div role="cell" class="text-truncate monospace"
+                        <div role="cell" class="text-truncate text-monospace"
                             data-bind="text: header.name, attr: { title: header.name }"></div>
                         <div role="cell" class="text-truncate" data-bind="text: header.required"></div>
-                        <div role="cell" class="text-truncate monospace"
+                        <div role="cell" class="text-truncate text-monospace"
                             data-bind="text: header.type, attr: { title: header.type }"></div>
                         <div role="cell">
                             <span data-bind="markdown: header.description"></span>
@@ -100,7 +100,7 @@
                             <!-- ko foreach: { data: header.examples, as: 'example' } -->
                             <p>
                                 <span data-bind="text: example.title"></span>:
-                                <span data-bind="text: example.value" class="monospace text-wrap"></span>
+                                <span data-bind="text: example.value" class="text-monospace text-wrap"></span>
                                 <span data-bind="text: example.description" class="d-block"></span>
                             </p>
                             <!-- /ko -->
@@ -150,11 +150,11 @@
                         <div class="d-contents" role="rowgroup">
                             <!-- ko foreach: { data: representation.formParameters, as: 'parameter' } -->
                             <div class="d-contents" role="row">
-                                <div role="cell" class="text-truncate monospace"
+                                <div role="cell" class="text-truncate text-monospace"
                                     data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
                                 <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
                                 <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
-                                <div role="cell" class="text-truncate monospace" data-bind="text: parameter.type"></div>
+                                <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type"></div>
                                 <div role="cell" data-bind="markdown: parameter.description"></div>
                             </div>
                             <!-- /ko -->
@@ -164,8 +164,8 @@
 
                     <!-- ko if: representation.examples -->
                     <!-- ko foreach: { data: representation.examples, as: 'example' } -->
-                    <code-sample params="{ title: example.title, content: example.value, language: representation.exampleFormat }">
-                    </code-sample>
+                    <code-snippet params="{ title: example.title, content: example.value, language: example.format }">
+                    </code-snippet>
                     <!-- /ko -->
                     <!-- /ko -->
                 </div>
@@ -196,10 +196,10 @@
                 <div class="d-contents" role="rowgroup">
                     <!-- ko foreach: { data: response.headers, as: 'header' } -->
                     <div class="d-contents" role="row">
-                        <div role="cell" class="text-truncate monospace"
+                        <div role="cell" class="text-truncate text-monospace"
                             data-bind="text: header.name, attr: { title: header.name }"></div>
                         <div role="cell" class="text-truncate" data-bind="text: header.required"></div>
-                        <div role="cell" class="text-truncate monospace"
+                        <div role="cell" class="text-truncate text-monospace"
                             data-bind="text: header.type, attr: { title: header.type }"></div>
                         <div role="cell" data-bind="markdown: header.description"></div>
                     </div>
@@ -226,8 +226,8 @@
 
                     <!-- ko if: representation.examples -->
                     <!-- ko foreach: { data: representation.examples, as: 'example' } -->
-                    <code-sample params="{ title: example.title, content: example.value, language: representation.exampleFormat }">
-                    </code-sample>
+                    <code-snippet params="{ title: example.title, content: example.value, language: example.format }">
+                    </code-snippet>
                     <!-- /ko -->
                     <!-- /ko -->
                 </div>
@@ -298,12 +298,12 @@
     <div class="collapsible">
         <h3>Socket URL</h3>
         <div class="collapsible-container">
-            <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
+            <span class="text-monospace" data-bind="text: $component.requestUrlSample"></span>
         </div>
 
         <h3>Protocol</h3>
         <div class="collapsible-container">
-            <span class="monospace" data-bind="text: $component.protocol"></span>
+            <span class="text-monospace" data-bind="text: $component.protocol"></span>
         </div>
     </div>
 
@@ -325,7 +325,7 @@
     <div class="collapsible">
         <h3>GraphQL Endpoint</h3>
         <div class="collapsible-container">
-            <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
+            <span class="text-monospace" data-bind="text: $component.requestUrlSample"></span>
         </div>
     </div>
 

@@ -7,7 +7,7 @@ import { AppError } from "../errors";
 import { defaultPageSize } from "../constants";
 import { PageContract } from "../contracts/page";
 import { LocaleModel } from "@paperbits/common/localization";
-import { PopupModel } from "@paperbits/core/popup";
+import { PopupInstanceModel } from "@paperbits/core/popup";
 
 
 const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block"];
@@ -381,7 +381,7 @@ export class MapiObjectStorage implements IObjectStorage {
         const localeSearchPrefix = isLocalized ? `${selectedLocale}/` : "";
 
         if (key === "popups") {
-            const pageOfPopups: Page<PopupModel> = {
+            const pageOfPopups: Page<PopupInstanceModel> = {
                 value: []
             };
 

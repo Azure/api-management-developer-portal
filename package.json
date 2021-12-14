@@ -62,12 +62,13 @@
         "webpack-merge": "^5.2.0"
     },
     "dependencies": {
+        "@braintree/sanitize-url": "^5.0.2",
         "@monaco-editor/loader": "^1.2.0",
-        "@paperbits/azure": "0.1.465",
-        "@paperbits/common": "0.1.465",
-        "@paperbits/core": "0.1.465",
-        "@paperbits/prosemirror": "0.1.465",
-        "@paperbits/styles": "0.1.465",
+        "@paperbits/azure": "0.1.468",
+        "@paperbits/common": "0.1.468",
+        "@paperbits/core": "0.1.468",
+        "@paperbits/prosemirror": "0.1.468",
+        "@paperbits/styles": "0.1.468",
         "@webcomponents/custom-elements": "1.5.0",
         "@webcomponents/shadydom": "^1.9.0",
         "applicationinsights-js": "^1.0.21",

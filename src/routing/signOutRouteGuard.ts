@@ -54,6 +54,6 @@ export class SignOutRouteGuard implements RouteGuard {
         }
 
         this.authenticator.clearAccessToken();
-        location.assign("/");
+        location.assign(Constants.pageUrlHome);
     }
 }

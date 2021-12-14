@@ -1,5 +1,6 @@
 import * as Msal from "msal";
 import * as Constants from "../constants";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 import { HttpClient } from "@paperbits/common/http";
 import { Router } from "@paperbits/common/routing";
 import { RouteHelper } from "../routing/routeHelper";
@@ -46,7 +47,7 @@ export class AadService {
 
         this.router.getCurrentUrl() === returnUrl
             ? location.reload()
-            : await this.router.navigateTo(returnUrl);
+            : await this.router.navigateTo(sanitizeUrl(returnUrl));
     }
 
     /**
