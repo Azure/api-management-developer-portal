@@ -3,7 +3,7 @@ curl -v -X {{method}} "{{requestUrl}}"
 -H "{{ header.name }}: {{ header.displayedValue }}"
 {% endfor -%}
 {% if request.body != blank and request.bodyFormat == "raw" -%}
---data-raw '{{ request.body }}'
+--data-raw "{{ request.body | replace: '"','\\"'  }}"
 {% endif -%}
 {% if request.binary != blank and request.bodyFormat == "binary" -%}
 --data-binary "@path/to/{{request.binary.name}}"
