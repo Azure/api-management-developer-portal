@@ -1,6 +1,6 @@
 import { MapiError } from "./../errors/mapiError";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod } from "@paperbits/common/http";
-import { CaptchaParams } from "../contracts/captchaParams";
+import { CaptchaChallenge, CaptchaParams, CaptchaSettings } from "../contracts/captchaParams";
 import { SignupRequest } from "../contracts/signupRequest";
 import { ResetRequest, ChangePasswordRequest } from "../contracts/resetRequest";
 import { IAuthenticator } from "../authentication";
@@ -9,6 +9,7 @@ import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProv
 import { SettingNames } from "../constants";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
+import { Utils } from "../utils";
 
 export class BackendService {
     private portalUrl: string;
@@ -18,6 +19,44 @@ export class BackendService {
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator
     ) { }
+
+    public async getCaptchaSettings(): Promise<CaptchaSettings> {
+        let response: HttpResponse<CaptchaSettings>;
+        const httpRequest: HttpRequest = {
+            method: HttpMethod.get,
+            url: await this.getUrl("/captcha-available")
+        }
+
+        try {
+            response = await this.httpClient.send<any>(httpRequest);
+        }
+        catch (error) {
+            throw new Error(`Unable to complete request. Error: ${error.message}`);
+        }
+
+        return this.handleResponse<CaptchaSettings>(response);
+    }
+
+    public async getCaptchaChallenge(challengeType?: string): Promise<CaptchaChallenge> {
+        let response: HttpResponse<CaptchaChallenge>;
+        let requestUrl = "/captcha-challenge";
+        if (challengeType) {
+            requestUrl = Utils.addQueryParameter(requestUrl, "challengeType", challengeType);
+        }
+        const httpRequest: HttpRequest = {
+            method: HttpMethod.get,
+            url: await this.getUrl(requestUrl)
+        }
+
+        try {
+            response = await this.httpClient.send<any>(httpRequest);
+        }
+        catch (error) {
+            throw new Error(`Unable to complete request. Error: ${error.message}`);
+        }
+
+        return this.handleResponse<CaptchaChallenge>(response);
+    }
 
     public async getCaptchaParams(): Promise<CaptchaParams> {
         let response: HttpResponse<CaptchaParams>;
@@ -33,7 +72,7 @@ export class BackendService {
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
-        return this.handleResponse(response);
+        return this.handleResponse<CaptchaParams>(response);
     }
 
     public async sendSignupRequest(signupRequest: SignupRequest): Promise<void> {
@@ -138,7 +177,7 @@ export class BackendService {
         return `${this.portalUrl}${path}`;
     }
 
-    private handleResponse(response: HttpResponse<CaptchaParams>): CaptchaParams {
+    private handleResponse<T>(response: HttpResponse<T>): T {
         if (response.statusCode === 200) {
             return response.toObject();
         }

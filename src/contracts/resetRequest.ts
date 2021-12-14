@@ -1,7 +1,10 @@
+import { CaptchaChallengeRequest } from "./captchaParams";
+
 /**
  * Cotract of Reset password request
  */
 export interface ResetRequest {
+    challenge: CaptchaChallengeRequest,
     solution: string;
     token: string;
     type: string;
@@ -13,6 +16,7 @@ export interface ResetRequest {
  * Cotract of user change password 
  */
 export interface ChangePasswordRequest {
+    challenge: CaptchaChallengeRequest,
     solution: string;
     token: string;
     type: string;

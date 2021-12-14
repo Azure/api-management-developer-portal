@@ -33,7 +33,7 @@
         </div>
 
         <!-- ko if: requireHipCaptcha -->
-        <hip-captcha></hip-captcha>
+        <hip-captcha params="{ captchaData: captchaData, onInitComplete: onCaptchaCreated }"></hip-captcha>
         <!-- /ko -->       
         
         <!-- ko if: termsOfUse -->

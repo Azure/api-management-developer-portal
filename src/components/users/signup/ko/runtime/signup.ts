@@ -8,8 +8,7 @@ import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services/usersService";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
 import { ValidationReport } from "../../../../../contracts/validationReport";
-
-declare var WLSPHIP0;
+import { CaptchaData } from "../../../../../models/captchaData";
 
 @RuntimeComponent({
     selector: "signup-runtime"
@@ -30,6 +29,10 @@ export class Signup {
     public readonly showHideLabel: ko.Observable<string>;
     public readonly working: ko.Observable<boolean>;
     public readonly captcha: ko.Observable<string>;
+    
+    public setCaptchaValidation: (captchaValidator: ko.Observable<string>) => void;
+    public refreshCaptcha: () => Promise<void>;
+    public readonly captchaData: ko.Observable<CaptchaData>;
 
     constructor(
         private readonly usersService: UsersService,
@@ -51,6 +54,7 @@ export class Signup {
         this.delegationUrl = ko.observable();
         this.termsEnabled = ko.observable(false);
         this.requireHipCaptcha = ko.observable();
+        this.captchaData = ko.observable();
 
         validation.init({
             insertMessages: false,
@@ -124,6 +128,11 @@ export class Signup {
             }
         }
     }
+    
+    public onCaptchaCreated(captchaValidate: (captchaValidator: ko.Observable<string>) => void, refreshCaptcha: () => Promise<void>){
+        this.setCaptchaValidation = captchaValidate;
+        this.refreshCaptcha = refreshCaptcha;
+    }
 
     /**
      * Sends user signup request to Management API.
@@ -139,31 +148,9 @@ export class Signup {
             lastName: this.lastName
         };
 
-        let captchaSolution;
-        let captchaFlowId;
-        let captchaToken;
-        let captchaType;
-
         if (isCaptchaRequired) {
             validationGroup["captcha"] = this.captcha;
-
-            WLSPHIP0.verify((solution, token, param) => {
-                WLSPHIP0.clientValidation();
-
-                if (WLSPHIP0.error !== 0) {
-                    this.captcha(null); // is not valid
-                    return;
-                }
-                else {
-                    captchaSolution = solution;
-                    captchaToken = token;
-                    captchaType = WLSPHIP0.type;
-                    const flowIdElement = <HTMLInputElement>document.getElementById("FlowId");
-                    captchaFlowId = flowIdElement.value;
-                    this.captcha("valid");
-                    return;
-                }
-            }, "");
+            this.setCaptchaValidation(this.captcha);
         }
 
         const result = validation.group(validationGroup);
@@ -201,11 +188,13 @@ export class Signup {
             this.working(true);
 
             if (isCaptchaRequired) {
+                const captchaRequestData = this.captchaData();
                 const createSignupRequest: SignupRequest = {
-                    solution: captchaSolution,
-                    flowId: captchaFlowId,
-                    token: captchaToken,
-                    type: captchaType,
+                    challenge: captchaRequestData.challenge, 
+                    solution: captchaRequestData.solution?.solution,
+                    flowId: captchaRequestData.solution?.flowId,
+                    token: captchaRequestData.solution?.token,
+                    type: captchaRequestData.solution?.type,
                     signupData: mapiSignupData
                 };
 
@@ -225,7 +214,7 @@ export class Signup {
         }
         catch (error) {
             if (isCaptchaRequired) {
-                WLSPHIP0.reloadHIP();
+                await this.refreshCaptcha();
             }
 
             let errorMessages: string[];

@@ -1,4 +1,45 @@
-<div id="captcha">
+<div id="captcha" class="captcha">
+    <!-- ko if: working -->
+    <div class="cards-body">
+        <spinner class="fit"></spinner>
+    </div>
+    <!-- /ko -->
+    <!-- ko ifnot: working -->
+        <!-- ko if: isNewCaptcha -->
+        <div class="form-group">
+            <!-- ko if: captchaType() == 'visual' -->
+            <label for="captchaValue">Enter the characters you see.</label>
+            <!-- /ko -->
+            <!-- ko if: captchaType() == 'audio' -->                
+            <label for="captchaValue">Press icon to play or repeat the audio. Enter the words you hear in any order.</label>
+            <!-- /ko -->
+            <div class="captcha-toggle">
+                <a role="button" href="#" title="Get a new challenge" data-bind="click: refreshChallenge">New</a>
+                <b aria-hidden="true">&nbsp;|&nbsp;</b>
+                <!-- ko if: captchaType() == 'visual' -->
+                <a role="button" href="#" title="Switch to the audio challenge" data-bind="click: changeChallengeType">Audio</a>
+                <!-- /ko -->
+                <!-- ko if: captchaType() == 'audio' -->
+                <a role="button" href="#" title="Switch to the visual challenge" data-bind="click: changeChallengeType">Picture</a>
+                <!-- /ko -->
+            </div>
+            <div class="captcha-challenge">
+            <!-- ko if: captchaType() == 'visual' -->
+            <img data-bind="attr: { src: captchaChallenge, alt: captchaType() + '  challenge' }" />
+            <!-- /ko -->
+            <!-- ko if: captchaType() == 'audio' -->
+            <a role="button" href="#" title="Play the audio" data-bind="click: playChallenge">
+                <img role="button" src="/assets/images/hipaudioplay.png" alt="Play the audio">
+            </a>
+            <!-- /ko -->
+            </div>
+            <input type="text" id="captchaValue" aria-required="true" autofocus="autofocus" class="form-control" placeholder="Enter the captcha here"
+                data-bind="textInput: captchaValue">
+        </div>
+        <!-- /ko -->
+    <!-- /ko -->
+    
+    <!-- ko ifnot: isNewCaptcha -->
     <div class="form-group">
         <div id="ispHIPHIP"></div>
         <div id="ispHIPScript" style="display: inline"></div>
@@ -7,4 +48,5 @@
         <input type="hidden" id="Type" name="Type" />
         <input type="hidden" id="FlowId" name="FlowId" data-bind="value: encryptedFlowId" />
     </div>
+    <!-- /ko -->
 </div>
