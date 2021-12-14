@@ -4,7 +4,7 @@ import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
-import rehypeSanitize from "rehype-sanitize";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
 import * as truncateHtml from "truncate-html";
 
@@ -48,7 +48,12 @@ ko.bindingHandlers["markdown"] = {
             .use(remarkGfm)
             .use(remarkRehype, { allowDangerousHtml: true })
             .use(rehypeRaw)
-            .use(rehypeSanitize)
+            .use(rehypeSanitize, {
+                ...defaultSchema,
+                attributes: {
+                    '*': ['className', 'role']
+                }
+            })
             .use(rehypeStringify)
             .process(markdown, (err: any, html: any) => {
                 html = truncateHtml.default(html, { length: length, reserveLastWord: true });
