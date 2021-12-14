@@ -23,6 +23,7 @@ export class HTMLInjectionWidgetModelBinder implements IModelBinder<HTMLInjectio
         model.htmlCode = contract.htmlCode ?? htmlCodeInitial;
         model.htmlCodeSizeStyles = contract.htmlCodeSizeStyles ?? htmlCodeSizeStylesInitial;
         model.inheritStyling = contract.inheritStyling ?? true;
+        model.styles = contract.styles || {};
         return model;
     }
 
@@ -32,6 +33,7 @@ export class HTMLInjectionWidgetModelBinder implements IModelBinder<HTMLInjectio
             htmlCode: model.htmlCode,
             htmlCodeSizeStyles: model.htmlCodeSizeStyles,
             inheritStyling: model.inheritStyling,
+            styles: model.styles
         };
 
         return contract;

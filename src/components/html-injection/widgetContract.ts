@@ -1,3 +1,4 @@
+import { LocalStyles } from "@paperbits/common/styles";
 import { Contract } from "@paperbits/common";
 import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
 
@@ -8,4 +9,5 @@ export interface HTMLInjectionWidgetContract extends Contract {
     htmlCode: string;
     htmlCodeSizeStyles: SizeStylePluginConfig;
     inheritStyling: boolean;
+    styles: LocalStyles;
 }

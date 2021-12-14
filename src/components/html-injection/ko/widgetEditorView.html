@@ -1,8 +1,8 @@
 <fieldset class="form flex flex-item flex-item-grow no-overflow">
     <div class="form-group flex flex-column" style="display: flex; margin-bottom: 0;">
-        <size-editor
-            params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: htmlCodeSizeStyles, onUpdate: htmlCodeSizeStyles }">
+        <size-editor params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: sizeStyleConfig, onUpdate: onSizeUpdate }">
         </size-editor>
+
         <label for="inheritStyling" class="form-label">
             <input type="checkbox" id="inheritStyling" name="inheritStyling" data-bind="checked: inheritStyling" />
             Apply developer portal styling

@@ -1,6 +1,6 @@
 import { Bag } from "@paperbits/common";
 import { EventManager, Events } from "@paperbits/common/events";
-import { IWidgetBinding } from "@paperbits/common/editing";
+import { ComponentFlow, IWidgetBinding } from "@paperbits/common/editing";
 import { widgetName, widgetDisplayName, widgetEditorSelector } from "../constants";
 import { WidgetViewModel } from "./widgetViewModel";
 import { ViewModelBinder } from "@paperbits/common/widgets";
@@ -20,7 +20,7 @@ export class WidgetViewModelBinder implements ViewModelBinder<HTMLInjectionWidge
         private readonly settingsProvider: ISettingsProvider,
     ) { }
 
-    public async updateViewModel(model: HTMLInjectionWidgetModel, viewModel: WidgetViewModel): Promise<void> {
+    public async updateViewModel(model: HTMLInjectionWidgetModel, viewModel: WidgetViewModel, bindingContext: Bag<any>): Promise<void> {
         let htmlStyling: string = "";
 
         if (model.inheritStyling) {
@@ -49,11 +49,11 @@ export class WidgetViewModelBinder implements ViewModelBinder<HTMLInjectionWidge
             }
         }
 
-        viewModel.runtimeConfig(JSON.stringify({
-            htmlCode: model.htmlCode,
-            htmlCodeSizeStyles: model.htmlCodeSizeStyles,
-            htmlStyling,
-        }));
+        if (model.styles) {
+            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager));
+        }
+
+        viewModel.htmlCode(model.htmlCode);
     }
 
     public async modelToViewModel(model: HTMLInjectionWidgetModel, viewModel?: WidgetViewModel, bindingContext?: Bag<any>): Promise<WidgetViewModel> {
@@ -65,11 +65,11 @@ export class WidgetViewModelBinder implements ViewModelBinder<HTMLInjectionWidge
                 displayName: widgetDisplayName,
                 readonly: bindingContext ? bindingContext.readonly : false,
                 model: model,
-                flow: "block",
+                flow: ComponentFlow.Contents,
                 editor: widgetEditorSelector,
                 draggable: true,
                 applyChanges: async () => {
-                    await this.updateViewModel(model, viewModel);
+                    await this.updateViewModel(model, viewModel, bindingContext);
                     this.eventManager.dispatchEvent(Events.ContentUpdate);
                 }
             };
@@ -77,7 +77,7 @@ export class WidgetViewModelBinder implements ViewModelBinder<HTMLInjectionWidge
             viewModel["widgetBinding"] = binding;
         }
 
-        this.updateViewModel(model, viewModel);
+        this.updateViewModel(model, viewModel, bindingContext);
 
         return viewModel;
     }

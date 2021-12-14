@@ -2,15 +2,18 @@ import * as ko from "knockout";
 import template from "./widgetView.html";
 import { widgetSelector } from "../constants";
 import { Component } from "@paperbits/common/ko/decorators";
+import { StyleModel } from "@paperbits/common/styles";
 
 @Component({
     selector: widgetSelector,
     template: template
 })
 export class WidgetViewModel {
-    public readonly runtimeConfig: ko.Observable<string>;
+    public readonly styles: ko.Observable<StyleModel>;
+    public readonly htmlCode: ko.Observable<string>;
 
     constructor() {
-        this.runtimeConfig = ko.observable();
+        this.htmlCode = ko.observable();
+        this.styles = ko.observable();
     }
 }

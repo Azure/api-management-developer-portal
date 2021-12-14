@@ -5,6 +5,9 @@ import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorat
 import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
 import { HTMLInjectionWidgetModel } from "../widgetModel";
 import { widgetEditorSelector } from "..";
+import { StyleHelper } from "@paperbits/styles";
+import { ViewManager } from "@paperbits/common/ui";
+import { EventManager, Events } from "@paperbits/common/events";
 
 @Component({
     selector: widgetEditorSelector,
@@ -12,13 +15,16 @@ import { widgetEditorSelector } from "..";
 })
 export class WidgetEditorViewModel implements WidgetEditor<HTMLInjectionWidgetModel> {
     public readonly htmlCode: ko.Observable<string>;
-    public readonly htmlCodeSizeStyles: ko.Observable<SizeStylePluginConfig>;
     public readonly inheritStyling: ko.Observable<boolean>;
+    public readonly sizeStyleConfig: ko.Observable<SizeStylePluginConfig>;
 
-    constructor() {
+    constructor(
+        private readonly viewManager: ViewManager,
+        private readonly eventManager: EventManager
+    ) {
         this.htmlCode = ko.observable();
-        this.htmlCodeSizeStyles = ko.observable();
         this.inheritStyling = ko.observable();
+        this.sizeStyleConfig = ko.observable();
     }
 
     @Param()
@@ -30,15 +36,36 @@ export class WidgetEditorViewModel implements WidgetEditor<HTMLInjectionWidgetMo
     @OnMounted()
     public async initialize(): Promise<void> {
         this.htmlCode(this.model.htmlCode);
-        this.htmlCode.subscribe(() => this.applyChanges("htmlCode"));
-        this.htmlCodeSizeStyles(this.model.htmlCodeSizeStyles);
-        this.htmlCodeSizeStyles.subscribe(() => this.applyChanges("htmlCodeSizeStyles"));
         this.inheritStyling(this.model.inheritStyling);
-        this.inheritStyling.subscribe(() => this.applyChanges("inheritStyling"));
+        this.updateResponsiveObservables();
+
+        this.htmlCode.subscribe(this.applyChanges);
+        this.inheritStyling.subscribe(this.applyChanges);
+        this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
     }
 
-    private applyChanges(key: string): void {
-        this.model[key] = this[key]();
+    private updateResponsiveObservables(): void {
+        if (!this.model.styles) {
+            return;
+        }
+
+        const viewport = this.viewManager.getViewport();
+        const sizeStyleConfig = StyleHelper.getPluginConfigForLocalStyles(this.model.styles, "size", viewport);
+        this.sizeStyleConfig(sizeStyleConfig);
+    }
+
+    private applyChanges(): void {
+        this.model.htmlCode = this.htmlCode();
+        this.model.inheritStyling = this.inheritStyling();
+        this.onChange(this.model);
+    }
+
+    /**
+     * Updates widget sizing styles.
+     */
+    public onSizeUpdate(sizeStyles: SizeStylePluginConfig): void {
+        const viewport = this.viewManager.getViewport();
+        StyleHelper.setPluginConfigForLocalStyles(this.model.styles, "size", sizeStyles, viewport);
         this.onChange(this.model);
     }
 }
