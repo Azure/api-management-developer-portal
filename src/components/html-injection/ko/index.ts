@@ -1,3 +1,3 @@
-export * from "./widgetEditorViewModel";
-export * from "./widgetViewModel";
-export * from "./widgetViewModelBinder";
+export * from "./htmlInjectionEditorViewModel";
+export * from "./htmlInjectionViewModel";
+export * from "./htmlInjectionViewModelBinder";

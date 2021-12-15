@@ -8,7 +8,7 @@ import { StyleModel } from "@paperbits/common/styles";
     selector: widgetSelector,
     template: template
 })
-export class WidgetViewModel {
+export class HtmlInjectionViewModel {
     public readonly styles: ko.Observable<StyleModel>;
     public readonly htmlCode: ko.Observable<string>;
 

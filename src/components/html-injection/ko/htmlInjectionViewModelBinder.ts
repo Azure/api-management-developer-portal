@@ -2,25 +2,25 @@ import { Bag } from "@paperbits/common";
 import { EventManager, Events } from "@paperbits/common/events";
 import { ComponentFlow, IWidgetBinding } from "@paperbits/common/editing";
 import { widgetName, widgetDisplayName, widgetEditorSelector } from "../constants";
-import { WidgetViewModel } from "./widgetViewModel";
+import { HtmlInjectionViewModel } from "./htmlInjectionViewModel";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { JssCompiler } from "@paperbits/styles/jssCompiler";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { HTMLInjectionWidgetModel } from "../widgetModel";
+import { HTMLInjectionModel } from "../htmlInjectionModel";
 
 /**
  * This class describes how the model needs to be presented (as a view model)
  * in a specific UI framework.
  */
-export class WidgetViewModelBinder implements ViewModelBinder<HTMLInjectionWidgetModel, WidgetViewModel>  {
+export class HtmlInjectionViewModelBinder implements ViewModelBinder<HTMLInjectionModel, HtmlInjectionViewModel>  {
     constructor(
         private readonly eventManager: EventManager,
         private readonly styleCompiler: StyleCompiler,
         private readonly settingsProvider: ISettingsProvider,
     ) { }
 
-    public async updateViewModel(model: HTMLInjectionWidgetModel, viewModel: WidgetViewModel, bindingContext: Bag<any>): Promise<void> {
+    public async updateViewModel(model: HTMLInjectionModel, viewModel: HtmlInjectionViewModel, bindingContext: Bag<any>): Promise<void> {
         let htmlStyling: string = "";
 
         if (model.inheritStyling) {
@@ -56,11 +56,11 @@ export class WidgetViewModelBinder implements ViewModelBinder<HTMLInjectionWidge
         viewModel.htmlCode(model.htmlCode);
     }
 
-    public async modelToViewModel(model: HTMLInjectionWidgetModel, viewModel?: WidgetViewModel, bindingContext?: Bag<any>): Promise<WidgetViewModel> {
+    public async modelToViewModel(model: HTMLInjectionModel, viewModel?: HtmlInjectionViewModel, bindingContext?: Bag<any>): Promise<HtmlInjectionViewModel> {
         if (!viewModel) {
-            viewModel = new WidgetViewModel();
+            viewModel = new HtmlInjectionViewModel();
 
-            const binding: IWidgetBinding<HTMLInjectionWidgetModel, WidgetViewModel> = {
+            const binding: IWidgetBinding<HTMLInjectionModel, HtmlInjectionViewModel> = {
                 name: widgetName,
                 displayName: widgetDisplayName,
                 readonly: bindingContext ? bindingContext.readonly : false,
@@ -82,7 +82,7 @@ export class WidgetViewModelBinder implements ViewModelBinder<HTMLInjectionWidge
         return viewModel;
     }
 
-    public canHandleModel(model: HTMLInjectionWidgetModel): boolean {
-        return model instanceof HTMLInjectionWidgetModel;
+    public canHandleModel(model: HTMLInjectionModel): boolean {
+        return model instanceof HTMLInjectionModel;
     }
 }

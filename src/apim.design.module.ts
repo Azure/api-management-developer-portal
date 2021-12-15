@@ -63,7 +63,7 @@ import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts.module";
 import { ApiProductsEditorModule } from "./components/apis/api-products/ko/apiProductsEditor.module";
 import { RuntimeConfigurator } from "./services/runtimeConfigurator";
-import { HtmlInjectionDesignModule } from "./components/html-injection/widget.design.module";
+import { HtmlInjectionDesignModule } from "./components/html-injection/htmlInjection.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
 
 export class ApimDesignModule implements IInjectorModule {

@@ -1,4 +1,4 @@
 export * from "./constants";
-export * from "./widgetHandlers";
-export * from "./widgetModel";
-export * from "./widgetModelBinder";
+export * from "./htmlInjectionHandlers";
+export * from "./htmlInjectionModel";
+export * from "./htmlInjectionModelBinder";
