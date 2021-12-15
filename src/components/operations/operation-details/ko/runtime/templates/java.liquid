@@ -6,6 +6,9 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.UnsupportedEncodingException;
+import java.io.DataInputStream;
+import java.io.InputStream;
+import java.io.FileInputStream;
 
 public class HelloWorld {
 
@@ -21,8 +24,10 @@ public class HelloWorld {
 {% endfor %}
         connection.setRequestMethod("{{method}}");
 {% if method == "POST" or method == "PUT" -%}
-    {%- if request.body != blank and request.bodyFormat == "raw"  %}
+    {%- if request.body != blank %}
+        // Request body
         connection.setDoOutput(true);
+    {%- if request.bodyFormat == "raw"  -%}
     {%- assign formattedBody = request.body | replace: '"','\\"' 
         formattedBody = formattedBody | replace: '\r\n', ' ' 
         formattedBody = formattedBody | replace: '\n', ' ' 
@@ -32,6 +37,15 @@ public class HelloWorld {
             .write(
              "{{formattedBody}}".getBytes()
              );
+    {%- elsif request.bodyFormat == "binary" %}
+        String fileName = "< path/to/{{request.binary.name}} >";
+        InputStream is = new FileInputStream(fileName);
+        byte[] bytes = new byte[(int) is.available()];
+        DataInputStream dataInputStream = new DataInputStream(is);
+        dataInputStream.readFully(bytes);
+        dataInputStream.close();
+        connection.getOutputStream().write(bytes);
+    {%- endif %}
     {% endif -%}
 
 {% endif %}

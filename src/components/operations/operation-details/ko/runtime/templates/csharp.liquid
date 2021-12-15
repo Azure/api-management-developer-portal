@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Net.Http;
 using System.Web;
+using System.IO;
 
 namespace CSHttpClientSample
 {
@@ -101,17 +102,19 @@ namespace CSHttpClientSample
 
 {% when "POST" %}
             HttpResponseMessage response;
-
+            {%- if request.body != blank %}
             // Request body
-            {%- assign formattedBody = request.body | replace: '"','\\"' 
-            formattedBody = formattedBody | replace: '\r\n', ' '  
-            formattedBody = formattedBody | replace: '\n', ' ' 
+{%- if request.bodyFormat == "raw"  -%}
+            {%- assign formattedBody = request.body | replace:'"','\\"' 
+            formattedBody = formattedBody | replace: '\r\n', ' ' 
             formattedBody = formattedBody | replace: '     ', ' ' %}
-            byte[] byteData = Encoding.UTF8.GetBytes("{{formattedBody}}");
 
-            using (var content = new ByteArrayContent(byteData))
+            using (var content = new StringContent("{{formattedBody}}"))
             {
-{%- if request.body != blank and request.bodyFormat == "raw"  -%}
+{%- elsif request.bodyFormat == "binary" %}
+            using (var content = new StreamContent(File.OpenRead(" < path\\to\\{{request.binary.name}} > ")))
+            {
+{%- endif %}
     {%- for header in request.meaningfulHeaders -%}
         {% case header.name | downcase -%}
             {%when"content-disposition" %}
@@ -148,16 +151,19 @@ namespace CSHttpClientSample
             var response = await client.DeleteAsync(uri);
 {% when "PUT" %}
             HttpResponseMessage response;
-
+{% if request.body != blank %}
             // Request body
+{%- if request.bodyFormat == "raw"  -%}
             {%- assign formattedBody = request.body | replace:'"','\\"' 
             formattedBody = formattedBody | replace: '\r\n', ' ' 
             formattedBody = formattedBody | replace: '     ', ' ' %}
-            byte[] byteData = Encoding.UTF8.GetBytes("{{formattedBody}}");
 
-            using (var content = new ByteArrayContent(byteData))
+            using (var content = new StringContent("{{formattedBody}}"))
             {
-{% if request.body != blank and request.bodyFormat == "raw"  -%}
+{%- elsif request.bodyFormat == "binary" %}
+            using (var content = new  StreamContent(File.OpenRead(" < path\\to\\{{request.binary.name}} > ")))
+            {
+{%- endif %}
 {%- for header in request.meaningfulHeaders -%}
     {% case header.name | downcase -%}
         {%when"content-disposition" %}

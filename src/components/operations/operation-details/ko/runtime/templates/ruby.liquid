@@ -9,9 +9,13 @@ request = Net::HTTP::{{ method | downcase | capitalize }}.new(uri.request_uri)
 {% for header in request.meaningfulHeaders -%}
 request['{{header.name}}'] = '{{header.displayedValue}}'
 {% endfor %}
-{% if request.body != blank and request.bodyFormat == "raw"  -%}
+{% if request.body != blank -%}
 # Request body
+{% if request.bodyFormat == "raw" -%}
 request.body = '{{ request.body }}'
+{%- elsif  request.bodyFormat == "binary" -%}
+request.body = File.read("< path/to/{{request.binary.name}} >")
+{% endif %}
 {% endif %}
 response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
     http.request(request)

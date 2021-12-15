@@ -10,10 +10,17 @@ try:
     '{{header.name}}': '{{header.displayedValue}}',
 {%- endfor %}
     }
-{% if request.body != blank and request.bodyFormat == "raw"  %}
+{% if request.body != blank %}
+    # Request body
+{%- if request.bodyFormat == "raw" %}
     data =  {{request.body}}
     data = json.dumps(data)
-    req = urllib2.Request(url, headers=hdr, data = data)
+    req = urllib.request.Request(url, headers=hdr, data = bytes(data))
+    {%- elsif  request.bodyFormat == "binary" %}
+    with open('< path/to/{{request.binary.name}} >', 'rb') as f:
+        data = f.read()
+    req = urllib.request.Request(url, headers=hdr, data = bytes(data))
+    {%- endif %}
 {% else %}
     req = urllib2.Request(url, headers=hdr)
 {% endif %}
@@ -37,10 +44,17 @@ try:
     '{{header.name}}': '{{header.displayedValue}}',
 {%- endfor %}
     }
-{% if request.body != blank and request.bodyFormat == "raw"  %}
+{% if request.body != blank %}
+    # Request body
+{%- if request.bodyFormat == "raw" %}
     data =  {{request.body}}
     data = json.dumps(data)
     req = urllib.request.Request(url, headers=hdr, data = bytes(data.encode("utf-8")))
+{%- elsif  request.bodyFormat == "binary" %}
+    with open('< path/to/{{request.binary.name}} >', 'rb') as f:
+        data = f.read()
+    req = urllib.request.Request(url, headers=hdr, data = bytes(data))
+{%- endif %}
 {% else %}
     req = urllib.request.Request(url, headers=hdr)
 {% endif %}
