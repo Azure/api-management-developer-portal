@@ -251,7 +251,6 @@ export class OperationConsole {
             { value: "curl", text: "Curl" },
             { value: "java", text: "Java" },
             { value: "javascript", text: "JavaScript" },
-            { value: "objc", text: "Objective C" },
             { value: "php", text: "PHP" },
             { value: "python", text: "Python" },
             { value: "ruby", text: "Ruby" },
