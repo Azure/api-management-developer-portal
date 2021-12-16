@@ -1,6 +1,6 @@
 ﻿@import "variables.scss";
 @import "mixins.scss";
-@import "icons.scss";
+@import "icons-toolboxes.scss";
 @import "animation.scss";
 @import "layouts.scss";
 
@@ -48,7 +48,7 @@ h2 {
 
     &.toolbox-position-left {
         left: 20px;
-        max-width: calc(100%-40px);
+        max-width: calc(100% - 40px);
     }
 
     &.toolbox-position-left-bottom {

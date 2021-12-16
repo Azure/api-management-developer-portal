@@ -3,8 +3,16 @@
         <div class="input-group">
             <div class="input">
                 <span data-bind="text: selection"></span>
-                <!-- ko if: selectedApi() && selectedApi().type === 'soap' -->
-                <span class="badge badge-soap">SOAP</span>
+                <!-- ko if: selectedApi() -->
+                    <!-- ko if: selectedApi().type === 'soap' -->
+                    <span class="badge badge-soap">SOAP</span>
+                    <!-- /ko -->
+                    <!-- ko if: selectedApi().type === 'websocket' -->
+                    <span class="badge badge-soap">WebSocket</span>
+                    <!-- /ko -->
+                    <!-- ko if: selectedApi().type === 'graphql' -->
+                    <span class="badge badge-soap">GraphQL</span>
+                    <!-- /ko -->
                 <!-- /ko -->
             </div>
             <div class="input-group-append">
@@ -43,6 +51,12 @@
                             <span data-bind="text: item.displayName"></span>
                             <!-- ko if: item.type === 'soap' -->
                             <span class="badge badge-soap">SOAP</span>
+                            <!-- /ko -->
+                            <!-- ko if: item.type === 'websocket' -->
+                            <span class="badge badge-soap">WebSocket</span>
+                            <!-- /ko -->
+                            <!-- ko if: item.type === 'graphql' -->
+                            <span class="badge badge-soap">GraphQL</span>
                             <!-- /ko -->
                             <!-- ko if: item.apiVersion -->
                             - <span data-bind="text: item.apiVersion"></span>

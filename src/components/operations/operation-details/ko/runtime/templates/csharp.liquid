@@ -14,65 +14,64 @@ namespace CSHttpClientSample
             Console.WriteLine("Hit ENTER to exit...");
             Console.ReadLine();
         }
-        
+
         static async void MakeRequest()
         {
             var client = new HttpClient();
             var queryString = HttpUtility.ParseQueryString(string.Empty);
 
-{% if meaningfulHeaders.size > 0 -%}
+{% if request.meaningfulHeaders.size > 0 -%}
             // Request headers
 {% for header in request.meaningfulHeaders -%}
-{% case header.Name -%}
+{% case header.name -%}
 {% when "Accept"%}
-            client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("{{header.value}}"));
+            client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("{{header.displayedValue}}"));
 {% when "Accept-Charset" -%}
-            client.DefaultRequestHeaders.AcceptCharset.Add(StringWithQualityHeaderValue.Parse("{{header.value}}"));
+            client.DefaultRequestHeaders.AcceptCharset.Add(StringWithQualityHeaderValue.Parse("{{header.displayedValue}}"));
 {% when "Accept-Encoding" -%}
-            client.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("{{header.value}}"));
+            client.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("{{header.displayedValue}}"));
 {% when "Accept-Language" -%}
-            client.DefaultRequestHeaders.AcceptLanguage.Add(StringWithQualityHeaderValue.Parse("{{header.value}}"));
+            client.DefaultRequestHeaders.AcceptLanguage.Add(StringWithQualityHeaderValue.Parse("{{header.displayedValue}}"));
 {% when "Cache-Control" -%}
-            client.DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("{{header.value}}");
+            client.DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("{{header.displayedValue}}");
 {% when "Connection" -%}
-            client.DefaultRequestHeaders.Connection.Add("{{header.value}}");
+            client.DefaultRequestHeaders.Connection.Add("{{header.displayedValue}}");
 {% when "Date" -%}
-            client.DefaultRequestHeaders.Date = DateTimeOffset.Parse("{{header.value}}");
+            client.DefaultRequestHeaders.Date = DateTimeOffset.Parse("{{header.displayedValue}}");
 {% when "Expect" -%}
-            client.DefaultRequestHeaders.Expect.Add(NameValueWithParametersHeaderValue.Parse("{{header.value}}"));
+            client.DefaultRequestHeaders.Expect.Add(NameValueWithParametersHeaderValue.Parse("{{header.displayedValue}}"));
 {% when "If-Match" -%}
-            client.DefaultRequestHeaders.IfMatch.Add(EntityTagHeaderValue.Parse("{{header.value}}"));
+            client.DefaultRequestHeaders.IfMatch.Add(EntityTagHeaderValue.Parse("{{header.displayedValue}}"));
 {% when "If-Modified-Since" -%}
-            client.DefaultRequestHeaders.IfModifiedSince = DateTimeOffset.Parse("{{header.value}}");
+            client.DefaultRequestHeaders.IfModifiedSince = DateTimeOffset.Parse("{{header.displayedValue}}");
 {% when "If-None-Match" -%}
-            client.DefaultRequestHeaders.IfNoneMatch.Add(EntityTagHeaderValue.Parse("{{header.value}}"));
+            client.DefaultRequestHeaders.IfNoneMatch.Add(EntityTagHeaderValue.Parse("{{header.displayedValue}}"));
 {% when "If-Range" -%}
-            client.DefaultRequestHeaders.IfRange = RangeConditionHeaderValue.Parse("{{header.value}}");
+            client.DefaultRequestHeaders.IfRange = RangeConditionHeaderValue.Parse("{{header.displayedValue}}");
 {% when "If-Unmodified-Since" -%}
-            client.DefaultRequestHeaders.IfUnmodifiedSince = DateTimeOffset.Parse("{{header.value}}");
+            client.DefaultRequestHeaders.IfUnmodifiedSince = DateTimeOffset.Parse("{{header.displayedValue}}");
 {% when "Max-Forwards" -%}
-            client.DefaultRequestHeaders.MaxForwards = int.Parse("{{header.value}}");
+            client.DefaultRequestHeaders.MaxForwards = int.Parse("{{header.displayedValue}}");
 {% when "Pragma" -%}
-            client.DefaultRequestHeaders.Pragma.Add(NameValueHeaderValue.Parse("{{header.value}}"));
+            client.DefaultRequestHeaders.Pragma.Add(NameValueHeaderValue.Parse("{{header.displayedValue}}"));
 {% when "Range" -%}
-            client.DefaultRequestHeaders.Range = RangeHeaderValue.Parse("{{header.value}}");
+            client.DefaultRequestHeaders.Range = RangeHeaderValue.Parse("{{header.displayedValue}}");
 {% when "Referer" -%}
-            client.DefaultRequestHeaders.Referrer = new Uri("{{header.value}}");
+            client.DefaultRequestHeaders.Referrer = new Uri("{{header.displayedValue}}");
 {% when "TE" -%}
-            client.DefaultRequestHeaders.TE.Add(TransferCodingWithQualityHeaderValue.Parse("{{header.value}}"));
+            client.DefaultRequestHeaders.TE.Add(TransferCodingWithQualityHeaderValue.Parse("{{header.displayedValue}}"));
 {% when "Transfer-Encoding" -%}
-            client.DefaultRequestHeaders.TransferEncoding.Add(TransferCodingHeaderValue.Parse("{{header.value}}"));
+            client.DefaultRequestHeaders.TransferEncoding.Add(TransferCodingHeaderValue.Parse("{{header.displayedValue}}"));
 {% when "Upgrade" -%}
-            client.DefaultRequestHeaders.Upgrade.Add(ProductHeaderValue.Parse("{{header.value}}"));
+            client.DefaultRequestHeaders.Upgrade.Add(ProductHeaderValue.Parse("{{header.displayedValue}}"));
 {% when "User-Agent" -%}
-            client.DefaultRequestHeaders.UserAgent.Add(ProductInfoHeaderValue.Parse("{{header.value}}"));
-{% when "Via" -%}              
-            client.DefaultRequestHeaders.Via.Add(ViaHeaderValue.Parse("{{header.value}}"));
+            client.DefaultRequestHeaders.UserAgent.Add(ProductInfoHeaderValue.Parse("{{header.displayedValue}}"));
+{% when "Via" -%}
+            client.DefaultRequestHeaders.Via.Add(ViaHeaderValue.Parse("{{header.displayedValue}}"));
 {% when "Warning" -%}
-            client.DefaultRequestHeaders.Warning.Add(WarningHeaderValue.Parse("{{header.value}}"));
-{% when "Content-Type" -%}
+            client.DefaultRequestHeaders.Warning.Add(WarningHeaderValue.Parse("{{header.displayedValue}}"));
 {% else -%}
-            client.DefaultRequestHeaders.Add("{{header.Name}}", "{{header.value}}");
+            client.DefaultRequestHeaders.Add("{{header.name}}", "{{header.displayedValue}}");
 {% endcase -%}
 {% endfor -%}
 {% endif -%}
@@ -128,9 +127,9 @@ namespace CSHttpClientSample
             if (response.Content != null)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(responseString);    
+                Console.WriteLine(responseString);
             }
 {% endcase -%}
         }
     }
-}	
+}

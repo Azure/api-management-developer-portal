@@ -6,10 +6,10 @@ export class ConsoleRepresentation {
     public readonly schemaId?: string;
     public readonly typeName?: string;
 
-    constructor(contract: Representation) {
-        this.sample = contract.example;
-        this.contentType = contract.contentType;
-        this.schemaId = contract.schemaId;
-        this.typeName = contract.typeName;
+    constructor(representation: Representation) {
+        this.sample = representation.examples?.length > 0 ? representation.examples[0].value : "";
+        this.contentType = representation.contentType;
+        this.schemaId = representation.schemaId;
+        this.typeName = representation.typeName;
     }
 }

@@ -1,13 +1,14 @@
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { SignupViewModel } from "./signupViewModel";
-import { SignupModel } from "../signupModel";
 import { Bag } from "@paperbits/common";
+import { ISettingsProvider } from "@paperbits/common/configuration";
+import { ComponentFlow } from "@paperbits/common/editing";
+import { ViewModelBinder } from "@paperbits/common/widgets";
+import { TermsOfService } from "../../../../contracts/identitySettings";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
+import { IdentityService } from "../../../../services";
 import { BackendService } from "../../../../services/backendService";
 import { TenantService } from "../../../../services/tenantService";
-import { IdentityService } from "../../../../services";
-import { TermsOfService } from "../../../../contracts/IdentitySettings";
-import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
+import { SignupModel } from "../signupModel";
+import { SignupViewModel } from "./signupViewModel";
 
 export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignupViewModel> {
 
@@ -26,9 +27,9 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
         if (!viewModel) {
             viewModel = new SignupViewModel();
             viewModel["widgetBinding"] = {
-                displayName: "Sign-up form: basic",
+                displayName: "Sign-up form: Basic",
                 model: model,
-                flow: "block",
+                flow: ComponentFlow.Block,
                 draggable: true
             };
         }

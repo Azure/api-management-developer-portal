@@ -7,7 +7,8 @@ import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@
 import { MapiError } from "../errors/mapiError";
 import { IAuthenticator, AccessToken } from "../authentication";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
-
+import { KnownMimeTypes } from "../models/knownMimeTypes";
+import { Page } from "../models/page";
 
 export interface IHttpBatchResponses {
     responses: IHttpBatchResponse[];
@@ -76,8 +77,8 @@ export class MapiClient {
 
         httpRequest.headers = httpRequest.headers || [];
 
-        if (httpRequest.body && !httpRequest.headers.some(x => x.name === "Content-Type")) {
-            httpRequest.headers.push({ name: "Content-Type", value: "application/json" });
+        if (httpRequest.body && !httpRequest.headers.some(x => x.name === KnownHttpHeaders.ContentType)) {
+            httpRequest.headers.push({ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json });
         }
 
         if (!httpRequest.headers.some(x => x.name === "Accept")) {
@@ -134,8 +135,16 @@ export class MapiClient {
             httpRequest.headers.push(MapiClient.getPortalHeader());
         }
 
-        httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
-        httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${Constants.managementApiVersion}`);
+        // Do nothing if absolute URL
+        if (!httpRequest.url.startsWith("https://") && !httpRequest.url.startsWith("http://")) {
+            httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
+        }        
+
+        const url = new URL(httpRequest.url);
+
+        if (!url.searchParams.has("api-version")) {
+            httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${Constants.managementApiVersion}`);
+        }
 
         let response: HttpResponse<T>;
 
@@ -226,6 +235,33 @@ export class MapiClient {
             default:
                 return new MapiError("Unhandled", `Unexpected status code in SMAPI response: ${statusCode}.`);
         }
+    }
+
+    public async getAll<T>(url: string, headers?: HttpHeader[]): Promise<T[]> {
+        const allItems: T[] = [];
+        const call = (requestUrl: string) => this.makeRequest<Page<T>>({
+            method: HttpMethod.get,
+            url: requestUrl,
+            headers: headers
+        });
+        
+        const takeResult = (result: Page<T>): Promise<T[]> => {
+            if (result) {
+                if (Array.isArray(result)) {
+                    return Promise.resolve(result);
+                }
+
+                if (result.value) {
+                    allItems.push(...result.value);
+                }
+                if (result.nextLink) {
+                    return call(result.nextLink).then(takeResult);
+                }
+            }
+            return Promise.resolve(allItems);
+        };
+
+        return this.get(url, headers).then(takeResult);
     }
 
     public get<TResponse>(url: string, headers?: HttpHeader[]): Promise<TResponse> {

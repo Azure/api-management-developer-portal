@@ -13,24 +13,24 @@
 
 <ul class="nav nav-pills" role="tablist">
       <li class="nav-item" role="presentation">
-        <a href="#" role="tab" class="nav-link active" title="Table view" data-bind="click: $component.switchToTable, css: { active: $component.schemaView() === 'table' }">
+        <button role="tab" class="nav-link active" title="Table view" data-bind="activate: $component.switchToTable, css: { active: $component.schemaView() === 'table' }">
             <i class="icon-emb icon-emb-list"></i>
-        </a>
+        </button>
     </li>
     <li class="nav-item" role="presentation">
-        <a href="#" role="tab" class="nav-link" title="Raw schema view" data-bind="click: $component.switchToRaw, css: { active: $component.schemaView() === 'raw' }">
+        <button role="tab" class="nav-link" title="Raw schema view" data-bind="activate: $component.switchToRaw, css: { active: $component.schemaView() === 'raw' }">
             <i class="icon-emb icon-emb-brackets"></i>
-        </a>
+        </button>
     </li>
 </ul>
 
 <!-- ko if: schemaView() == 'raw' -->
-<code-sample params="{ content: $component.rawSchema, language: $component.rawSchemaFormat }"></code-sample>
+<code-snippet params="{ content: $component.rawSchema, language: $component.rawSchemaFormat }"></code-snippet>
 <!-- /ko -->
 
 <!-- ko if: schemaView() == 'table' -->
 
-<!-- ko if: $component.kind() === 'object' -->
+<!-- ko if: $component.kind() === 'object' || $component.kind() === 'array' -->
 <!-- ko template: { name: 'typeDefinitionObject', data: $component } -->
 <!-- /ko -->
 <!-- /ko -->

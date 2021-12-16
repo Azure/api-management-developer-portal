@@ -1,4 +1,4 @@
-import { HttpClient, HttpRequest } from "@paperbits/common/http";
+import { HttpClient, HttpMethod, HttpRequest } from "@paperbits/common/http";
 import { IAuthenticator } from "../authentication";
 import { ViewManager } from "@paperbits/common/ui";
 import { Router } from "@paperbits/common/routing";
@@ -7,6 +7,8 @@ import { AzureBlobStorage } from "@paperbits/azure";
 import * as Constants from "../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { MapiClient } from "./mapiClient";
+import { KnownMimeTypes } from "../models/knownMimeTypes";
+import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 
 export class ProvisionService {
     constructor(
@@ -35,7 +37,7 @@ export class ProvisionService {
 
     public async provision(): Promise<void> {
         const managementApiUrl = await this.getManagementUrl();
-        const dataUrl = `/editors/themes/default.json`;
+        const dataUrl = `/editors/templates/default.json`;
 
         try {
             const dataObj = await this.fetchData(dataUrl);
@@ -54,12 +56,12 @@ export class ProvisionService {
                     url: url,
                     method: "PUT",
                     headers: [
-                        { name: "If-Match", value: "*" },
-                        { name: "Content-Type", value: "application/json" },
-                        { name: "Authorization", value: accessToken },
+                        { name: KnownHttpHeaders.IfMatch, value: "*" },
+                        { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
+                        { name: KnownHttpHeaders.Authorization, value: accessToken },
                         MapiClient.getPortalHeader("provision")
                     ],
-                    body: JSON.stringify({ properties: contentItem })
+                    body: JSON.stringify(contentItem)
                 };
 
                 const response = await this.httpClient.send(request);
@@ -68,7 +70,7 @@ export class ProvisionService {
                     throw new Error("Unable to setup website.");
                 }
             }
-            this.router.navigateTo("/");
+            this.router.navigateTo(Constants.pageUrlHome);
             this.viewManager.setHost({ name: "page-host" });
             this.viewManager.showToolboxes();
         }
@@ -86,9 +88,9 @@ export class ProvisionService {
                 url: `${managementApiUrl}/contentTypes?api-version=${Constants.managementApiVersion}`,
                 method: "GET",
                 headers: [
-                    { name: "If-Match", value: "*" },
-                    { name: "Content-Type", value: "application/json" },
-                    { name: "Authorization", value: accessToken },
+                    { name: KnownHttpHeaders.IfMatch, value: "*" },
+                    { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
+                    { name: KnownHttpHeaders.Authorization, value: accessToken },
                     MapiClient.getPortalHeader("getContentTypes")
                 ],
             };
@@ -100,9 +102,9 @@ export class ProvisionService {
                     url: `${managementApiUrl}/contentTypes/${contentTypeName}/contentItems?api-version=${Constants.managementApiVersion}`,
                     method: "GET",
                     headers: [
-                        { name: "If-Match", value: "*" },
-                        { name: "Content-Type", value: "application/json" },
-                        { name: "Authorization", value: accessToken },
+                        { name: KnownHttpHeaders.IfMatch, value: "*" },
+                        { name: KnownHttpHeaders.ContentType, value: "application/json" },
+                        { name: KnownHttpHeaders.Authorization, value: accessToken },
                         MapiClient.getPortalHeader("getContentItems")
                     ],
                 };
@@ -111,11 +113,11 @@ export class ProvisionService {
                 for (const item of items) {
                     const itemReq: HttpRequest = {
                         url: `${managementApiUrl}${item["id"]}?api-version=${Constants.managementApiVersion}`,
-                        method: "DELETE",
+                        method: HttpMethod.delete,
                         headers: [
-                            { name: "If-Match", value: "*" },
-                            { name: "Content-Type", value: "application/json" },
-                            { name: "Authorization", value: accessToken },
+                            { name: KnownHttpHeaders.IfMatch, value: "*" },
+                            { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
+                            { name: KnownHttpHeaders.Authorization, value: accessToken },
                             MapiClient.getPortalHeader("resetContent")
                         ],
                     };

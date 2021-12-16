@@ -3,7 +3,7 @@
 int main(int argc, const char * argv[])
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-    
+
     NSString* path = @"{{requestUrl}}";
     NSArray* array = @[
                          // Request parameters
@@ -14,7 +14,7 @@ int main(int argc, const char * argv[])
 {% endfor -%}
 {% endif -%}
                       ];
-    
+
     NSString* string = [array componentsJoinedByString:@"&"];
     path = [path stringByAppendingFormat:@"?%@", string];
 
@@ -22,17 +22,17 @@ int main(int argc, const char * argv[])
 
     NSMutableURLRequest* _request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:path]];
     [_request setHTTPMethod:@"{{method}}"];
-{% if meaningfulHeaders.size > 0 -%}
+{% if request.meaningfulHeaders.size > 0 -%}
     // Request headers
 {% for header in request.meaningfulHeaders -%}
-    [_request setValue:@"{{header.value}}" forHTTPHeaderField:@"{{header.name}}"];
+    [_request setValue:@"{{header.displayedValue}}" forHTTPHeaderField:@"{{header.name}}"];
 {% endfor -%}
 {% endif -%}
 {% if body -%}
     // Request body
     [_request setHTTPBody:[@"{{ body | replace:'"','\"' }}" dataUsingEncoding:NSUTF8StringEncoding]];
 {% endif -%}
-    
+
     NSURLResponse *response = nil;
     NSError *error = nil;
     NSData* _connectionData = [NSURLConnection sendSynchronousRequest:_request returningResponse:&response error:&error];
@@ -47,21 +47,21 @@ int main(int argc, const char * argv[])
         NSMutableDictionary* json = nil;
         NSString* dataString = [[NSString alloc] initWithData:_connectionData encoding:NSUTF8StringEncoding];
         NSLog(@"%@", dataString);
-        
+
         if (nil != _connectionData)
         {
             json = [NSJSONSerialization JSONObjectWithData:_connectionData options:NSJSONReadingMutableContainers error:&error];
         }
-        
+
         if (error || !json)
         {
             NSLog(@"Could not parse loaded json with error:%@", error);
         }
-        
+
         NSLog(@"%@", json);
         _connectionData = nil;
     }
-    
+
     [pool drain];
 
     return 0;

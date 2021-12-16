@@ -2,7 +2,7 @@ import { KnownHttpHeaders } from "./../models/knownHttpHeaders";
 import { AccessToken } from "./../authentication/accessToken";
 import * as Constants from "./../constants";
 import { Router } from "@paperbits/common/routing";
-import { HttpHeader, HttpClient, HttpResponse } from "@paperbits/common/http";
+import { HttpHeader, HttpClient, HttpResponse, HttpMethod } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { IAuthenticator } from "../authentication";
 import { MapiClient } from "./mapiClient";
@@ -12,6 +12,7 @@ import { Identity } from "../contracts/identity";
 import { UserContract, UserPropertiesContract, } from "../contracts/user";
 import { MapiSignupRequest } from "../contracts/signupRequest";
 import { MapiError } from "../errors/mapiError";
+import { KnownMimeTypes } from "../models/knownMimeTypes";
 
 
 /**
@@ -225,8 +226,8 @@ export class UsersService {
 
             await this.mapiClient.delete<string>(query, [header, MapiClient.getPortalHeader("deleteUser")]);
 
-            this.authenticator.clearAccessToken();
-            location.assign("/");
+            sessionStorage.setItem(Constants.closeAccount, "true");
+            this.signOut();
         }
         catch (error) {
             this.navigateToSignin();
@@ -308,10 +309,10 @@ export class UsersService {
 
         const response = await this.httpClient.send({
             url: `${managementApiUrl}/users?api-version=${Constants.managementApiVersion}`,
-            method: "POST",
+            method: HttpMethod.post,
             headers: [
-                { name: "Content-Type", value: "application/json" },
-                { name: "Authorization", value: `${provider} id_token="${idToken}"` },
+                { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
+                { name: KnownHttpHeaders.Authorization, value: `${provider} id_token="${idToken}"` },
                 MapiClient.getPortalHeader("createUserWithOAuth")
             ],
             body: JSON.stringify(user)
@@ -320,7 +321,7 @@ export class UsersService {
         await this.getTokenFromResponse(response);
     }
 
-    private async getTokenFromResponse(response: HttpResponse<any>) {
+    private async getTokenFromResponse(response: HttpResponse<any>): Promise<void> {
         if (!(response.statusCode >= 200 && response.statusCode <= 299)) {
             throw MapiError.fromResponse(response);
         }

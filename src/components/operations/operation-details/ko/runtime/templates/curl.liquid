@@ -1,6 +1,6 @@
 curl -v -X {{method}} "{{requestUrl}}"
 {% for header in request.meaningfulHeaders -%}
--H "{{ header.name }}: {{ header.value }}"
+-H "{{ header.name }}: {{ header.displayedValue }}"
 {% endfor -%}
 {% if request.body != blank and request.bodyFormat == "raw" -%}
 --data-raw '{{ request.body }}'

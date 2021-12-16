@@ -27,7 +27,10 @@ const runtimeConfig = {
             },
             {
                 test: /\.tsx?$/,
-                loader: "awesome-typescript-loader"
+                loader: "ts-loader",
+                options: {
+                    allowTsInNodeModules: true
+                }
             },
             {
                 test: /\.html$/,
@@ -59,7 +62,8 @@ const runtimeConfig = {
             patterns: [
                 { from: `./src/themes/website/styles/fonts`, to: "styles/fonts" },
                 { from: `./src/themes/website/assets` },
-                { from: `./js/HipObject.js`, to: "scripts/js" }
+                { from: `./js/HipObject.js`, to: "scripts/js" },
+                { from: `node_modules/monaco-editor/min/vs`, to: `assets/monaco-editor/vs` }
             ]
         })
     ],

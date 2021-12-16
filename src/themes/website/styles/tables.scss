@@ -34,6 +34,7 @@ $body-bg: none;
 
 .table {
     margin: 20px 0;
+    overflow-x: auto;
 
     .table-row {
         display: flex;
@@ -106,4 +107,30 @@ $body-bg: none;
 
 .table-preset-reports {
     grid-template-columns: minmax(150px, 1fr) 120px 120px 120px 120px 120px 120px 120px;
+}
+
+.table-preset-ws-logs {
+    grid-template-columns: auto auto 1fr;
+    margin: none;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    max-height: 250px;
+
+    & > .d-contents > .d-contents > div {
+        padding: 4px;
+        vertical-align: middle;
+    }
+}
+
+table {
+    width: 100%;
+
+    thead {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    th,
+    td {
+        padding: 8px 4px;
+    }
 }

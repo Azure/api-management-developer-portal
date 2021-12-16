@@ -1,22 +1,37 @@
 import { Parameter } from "./parameter";
 import { Representation } from "./representation";
 import { RequestContract } from "../contracts/request";
+import { KnownMimeTypes } from "./knownMimeTypes";
 
 export class Request {
-    public description?: string;
-    public queryParameters: Parameter[];
-    public headers: Parameter[];
-    public representations: Representation[];
+    public readonly description?: string;
+    public readonly queryParameters: Parameter[];
+    public readonly headers: Parameter[];
+    public readonly representations: Representation[];
 
     /**
      * Returns "true" if this request is meaningful from documentation prospective.
      */
     public isMeaningful(): boolean {
-        return !!this.description || this.representations.some(x => !!x.typeName);
+        return !!this.description || this.representations.some(x => !!x.typeName || x.formParameters?.length > 0);
     }
 
+    /**
+     * Returns "true" if this request has multipart body.
+     */
+    public isFormData(): boolean {
+        return this.representations.some(x => x.contentType === KnownMimeTypes.FormData);
+    }
+
+    /**
+     * Returns all meaningful representations.
+     */
     public meaningfulRepresentations(): Representation[] {
-        return this.representations.filter(x => !!x.typeName || !!x.example);
+        return this.representations.filter(representation =>
+            !!representation.typeName // has type definition reference
+            || representation.formParameters?.length > 0 // has form parameters
+            || representation.examples?.length > 0 // has examples
+        );
     }
 
     constructor(contract?: RequestContract) {

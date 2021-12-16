@@ -3,6 +3,7 @@ import { HistoryOfApiViewModel } from "./historyOfApiViewModel";
 import { HistoryOfApiModel } from "../historyOfApiModel";
 import { Bag } from "@paperbits/common";
 import { EventManager } from "@paperbits/common/events";
+import { ComponentFlow } from "@paperbits/common/editing";
 
 
 export class HistoryOfApiViewModelBinder implements ViewModelBinder<HistoryOfApiModel, HistoryOfApiViewModel> {
@@ -21,10 +22,10 @@ export class HistoryOfApiViewModelBinder implements ViewModelBinder<HistoryOfApi
         }));
 
         viewModel["widgetBinding"] = {
-            displayName: "API: history",
+            displayName: "API: Change history",
             model: model,
             draggable: true,
-            flow: "block",
+            flow: ComponentFlow.Block,
             editor: "history-of-api-editor",
             applyChanges: async (updatedModel: HistoryOfApiModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);

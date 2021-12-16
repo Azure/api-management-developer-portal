@@ -1,0 +1,31 @@
+name: CD-ApiMDeveloperPortal-Migration-Pipeline
+
+trigger: none
+
+variables:
+  - name: poolName
+    value: "agentpoolName"
+
+jobs:
+
+  # All tasks on APIM Developer portal pipeline
+  - job: Migrate_APIM_Developer_Portal
+    displayName: Migrate APIM Developer portal from one APIM instance to another APIM instance Migration 
+    pool:
+      name: $(poolName)
+    timeoutInMinutes: 90
+    steps:
+      - task: Npm@1
+        displayName: Npm Install command
+        inputs:
+          command: "install"
+
+      - pwsh: |        
+          node ./migrate --sourceSubscriptionId "$(sourceSubscriptionId)" --sourceResourceGroupName  "$(sourceResourceGroupName)" --sourceServiceName "$(sourceServiceName)" --destServiceName "$(destServiceName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --sourceTenantId "$(sourceAzureTenantId)" --sourceServicePrincipal "$(sourceServicePrincipal)" --sourceSecret "$(sourceServicePrincipalSecret)"  --destTenantId "$(sourceAzureTenantId)" --destServicePrincipal "$(destServicePrincipal)" --destSecret "$(destServicePrincipalSecret)"
+        workingDirectory: "$(System.DefaultWorkingDirectory)/scripts.v3"
+        displayName: Run Migrate cmd from $(sourceServiceName) to $(destinationServiceName)
+              
+      - pwsh: |
+          node ./updatecontenturl --existingEnvUrls "$(existingEnvUrls)" --destEnvUrls  "$(destEnvUrls)" --destServiceName "$(destinationServiceName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --destTenantId "$(destAzureTenantId)" --destServicePrincipal "$(destServicePrincipal)" --destSecret "$(destServicePrincipalSecret)"
+        workingDirectory: '$(System.DefaultWorkingDirectory)/scripts.v3'
+        displayName: Update urls for  $(destinationServiceName)

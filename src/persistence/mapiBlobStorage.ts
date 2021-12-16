@@ -1,9 +1,11 @@
-import { MapiClient } from "./../services/mapiClient";
 import { IBlobStorage } from "@paperbits/common/persistence";
 import { AzureBlobStorage } from "@paperbits/azure";
-import { StaticSettingsProvider } from "../configuration/staticSettingsProvider";
+import { Logger } from "@paperbits/common/logging";
 import { ISettingsProvider } from "@paperbits/common/configuration";
+import { MapiClient } from "./../services/mapiClient";
+import { StaticSettingsProvider } from "../components/staticSettingsProvider";
 import { Utils } from "../utils";
+
 
 
 const defaultContainerName = "content";
@@ -13,7 +15,8 @@ export class MapiBlobStorage implements IBlobStorage {
 
     constructor(
         private readonly mapiClient: MapiClient,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly logger: Logger
     ) { }
 
     private async getStorageClient(): Promise<AzureBlobStorage> {
@@ -55,7 +58,7 @@ export class MapiBlobStorage implements IBlobStorage {
             });
         }
 
-        this.storageClient = new AzureBlobStorage(storageSettingsProvider);
+        this.storageClient = new AzureBlobStorage(storageSettingsProvider, this.logger);
 
         return this.storageClient;
     }

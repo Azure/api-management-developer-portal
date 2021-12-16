@@ -18,6 +18,7 @@ import {
     TypeDefinitionPropertyTypeArrayOfReference,
     TypeDefinitionPropertyTypeArrayOfPrimitive
 } from "../../../../../models/typeDefinition";
+import { OAuthService } from "../../../../../services/oauthService";
 
 
 @RuntimeComponent({
@@ -41,9 +42,12 @@ export class OperationDetails {
     public readonly hostnames: ko.Observable<string[]>;
     public readonly working: ko.Observable<boolean>;
     public readonly associatedAuthServer: ko.Observable<AuthorizationServer>;
+    public readonly apiType: ko.Observable<string>;
+    public readonly protocol: ko.Computed<string>;
 
     constructor(
         private readonly apiService: ApiService,
+        private readonly oauthService: OAuthService,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
     ) {
@@ -62,13 +66,19 @@ export class OperationDetails {
         this.defaultSchemaView = ko.observable("table");
         this.useCorsProxy = ko.observable();
         this.requestUrlSample = ko.computed(() => {
+
+            const api = this.api();
+            const hostname = this.sampleHostname();
+            
+            if (api?.type === TypeOfApi.graphQL) {
+                return `https://${hostname}/${api.path}`;
+            }
+
             if (!this.api() || !this.operation()) {
                 return null;
             }
 
-            const api = this.api();
             const operation = this.operation();
-            const hostname = this.sampleHostname();
 
             let operationPath = api.versionedPath;
 
@@ -76,8 +86,30 @@ export class OperationDetails {
                 operationPath += operation.displayUrlTemplate;
             }
 
-            return `https://${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
+            let requestUrl = "";
+
+            if (api.type === TypeOfApi.webSocket) {
+                requestUrl = `${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
+            } else {
+                requestUrl = `https://${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
+            }
+
+            if (api.apiVersion && api.apiVersionSet?.versioningScheme === "Query") {
+                return Utils.addQueryParameter(requestUrl, api.apiVersionSet.versionQueryName, api.apiVersion);
+            }
+
+            return requestUrl;
         });
+        this.protocol = ko.computed(() => {
+            const api = this.api();
+
+            if (!api) {
+                return null;
+            }
+
+            return api.protocols?.join(", ");
+        });
+        this.apiType = ko.observable();
     }
 
     @Param()
@@ -88,9 +120,6 @@ export class OperationDetails {
 
     @Param()
     public enableScrollTo: boolean;
-
-    @Param()
-    public authorizationServers: AuthorizationServer[];
 
     @Param()
     public defaultSchemaView: ko.Observable<string>;
@@ -150,7 +179,7 @@ export class OperationDetails {
         }
 
         await this.loadGatewayInfo(apiName);
-
+        this.apiType(api?.type);
         this.api(api);
 
         this.closeConsole();
@@ -160,9 +189,8 @@ export class OperationDetails {
 
         let associatedAuthServer = null;
 
-        if (this.authorizationServers && associatedServerId) {
-            associatedAuthServer = this.authorizationServers
-                .find(x => x.name === associatedServerId);
+        if (associatedServerId) {
+            associatedAuthServer = await this.oauthService.getAuthServer(api.authenticationSettings?.oAuth2?.authorizationServerId, api.authenticationSettings?.openid?.openidProviderId);
         }
 
         this.associatedAuthServer(associatedAuthServer);
@@ -300,11 +328,6 @@ export class OperationDetails {
 
         if (!definition.name) {
             definition.name = representation.typeName;
-        }
-
-        if (representation.example) {
-            definition.example = representation.example;
-            definition.exampleFormat = representation.exampleFormat;
         }
 
         return definition;

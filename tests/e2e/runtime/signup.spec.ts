@@ -1,6 +1,6 @@
 import * as puppeteer from "puppeteer";
 import { expect } from "chai";
-import { LaunchOptions } from "../../constants";
+import { BrowserLaunchOptions } from "../../constants";
 import { Utils } from "../../utils";
 import { SignupBasicWidget } from "../maps/signup-basic";
 
@@ -11,7 +11,7 @@ describe("User sign-up flow", async () => {
 
     before(async () => {
         config = await Utils.getConfig();
-        browser = await puppeteer.launch(LaunchOptions);
+        browser = await puppeteer.launch(BrowserLaunchOptions);
     });
 
     it("User can sign-up with basic credentials", async () => {

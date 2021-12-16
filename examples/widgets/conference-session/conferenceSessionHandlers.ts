@@ -9,7 +9,7 @@ export class ConferenceSessionHandlers implements IWidgetHandler {
             name: widgetName,
             displayName: widgetDisplayName,
             category: widgetCategory,
-            iconClass: "paperbits-puzzle-10",
+            iconClass: "widget-icon widget-icon-component",
             requires: [],
             createModel: async () => {
                 const model = new ConferenceSessionModel();

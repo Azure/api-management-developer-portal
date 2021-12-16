@@ -13,21 +13,15 @@
  *    --sourceSubscriptionId "< your subscription ID >" ^
  *    --sourceResourceGroupName "< your resource group name >" ^
  *    --sourceServiceName "< your service name >" ^
-<<<<<<< HEAD
+ *    --sourceTenantId "< optional (needed if source and destination is in different subscription) source tenant ID >" ^
+ *    --sourceServicePrincipal "< optional (needed if source and destination is in different subscription) source service principal or user name. >" ^
+ *    --sourceServicePrincipalSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the source apim. >" ^
  *    --destSubscriptionId "< your subscription ID >" ^
  *    --destResourceGroupName "< your resource group name >" ^
  *    --destServiceName "< your service name >"
-=======
- *    --sourceTenantid "< optional (needed if source and destination is in different subscription) source tenant id >" ^
- *    --sourceServiceprincipal "< optional (needed if source and destination is in different subscription) source serviceprincipal or user name. >" ^
- *    --sourceSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the source apim. >" ^
- *    --destSubscriptionId "< your subscription ID >" ^
- *    --destResourceGroupName "< your resource group name >" ^
- *    --destServiceName "< your service name >"
- *    --destTenantid "< optional (needed if source and destination is in different subscription) destination tenantid >"
- *    --destServiceprincipal "< optional (needed if source and destination is in different subscription)destination serviceprincipal or user name. >"
- *    --destSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the destination. >"
->>>>>>> master
+ *    --destTenantId "< optional (needed if source and destination is in different subscription) destination tenant ID >"
+ *    --destServicePrincipal "< optional (needed if source and destination is in different subscription)destination service principal or user name. >"
+ *    --destServicePrincipalSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the destination. >"
  * 
  * Auto-publishing is not supported for self-hosted versions, so make sure you publish the portal (for example, locally)
  * and upload the generated static files to your hosting after the migration is completed.
@@ -40,27 +34,18 @@ const { ImporterExporter } = require('./utils.js');
 
 const yargs = require('yargs')
     .example(`node ./migrate ^ \r
-<<<<<<< HEAD
-        --sourceSubscriptionId "< your subscription ID > ^ \r
-        --sourceResourceGroupName "< your resource group name >" ^ \r
-        --sourceServiceName "< your service name >" ^ \r
-        --destSubscriptionId "< your subscription ID >" ^ \r
-        --destResourceGroupName "< your resource group name >" ^ \r
-        --destServiceName "< your service name >"\n`)
-=======
     *    --sourceSubscriptionId "< your subscription ID > \r
     *    --sourceResourceGroupName "< your resource group name > \r
     *    --sourceServiceName "< your service name > \r
-    *    --sourceTenantid "< optional (needed if source and destination is in different subscription) source tenant id > \r
-    *    --sourceServiceprincipal "< optional (needed if source and destination is in different subscription) source serviceprincipal or user name. > \r
-    *    --sourceSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the source apim. > \r
+    *    --sourceTenantId "< optional (needed if source and destination is in different subscription) source tenant ID > \r
+    *    --sourceServicePrincipal "< optional (needed if source and destination is in different subscription) source service principal or user name. > \r
+    *    --sourceServicePrincipalSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the source apim. > \r
     *    --destSubscriptionId "< your subscription ID > \r
     *    --destResourceGroupName "< your resource group name > \r
     *    --destServiceName "< your service name > \r
-    *    --destTenantid "< optional (needed if source and destination is in different subscription) destination tenantid > \r
-    *    --destServiceprincipal "< optional (needed if source and destination is in different subscription) destination serviceprincipal or user name. > \r
-    *    --destSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the destination. >\n`)
->>>>>>> master
+    *    --destTenantId "< optional (needed if source and destination is in different subscription) destination tenant ID > \r
+    *    --destServicePrincipal "< optional (needed if source and destination is in different subscription) destination service principal or user name. > \r
+    *    --destServicePrincipalSecret "< optional (needed if source and destination is in different subscription) secret or password for service principal or az login for the destination. >\n`)
     .option('sourceSubscriptionId', {
         type: 'string',
         description: 'Azure subscription ID.',
@@ -76,24 +61,21 @@ const yargs = require('yargs')
         description: 'API Management service name.',
         demandOption: true
     })
-<<<<<<< HEAD
-=======
-    .option('sourceTenantid', {
+    .option('sourceTenantId', {
         type: 'string',
-        description: 'source tenantid.',
+        description: 'source tenant ID.',
         demandOption: false
     })
-    .option('sourceServiceprincipal', {
+    .option('sourceServicePrincipal', {
         type: 'string',
-        description: 'source serviceprincipal or user name.',
+        description: 'source service principal ID.',
         demandOption: false
     })
-    .option('sourceSecret', {
+    .option('sourceServicePrincipalSecret', {
         type: 'string',
-        description: 'secret or password for service principal or az login for the source apim.',
+        description: 'source service principal secret.',
         demandOption: false
     })
->>>>>>> master
     .option('destSubscriptionId', {
         type: 'string',
         description: 'Azure subscription ID.',
@@ -109,52 +91,38 @@ const yargs = require('yargs')
         description: 'API Management service name.',
         demandOption: true
     })
-<<<<<<< HEAD
-=======
-    .option('destTenantid', {
+    .option('destTenantId', {
         type: 'string',
-        description: ' destination tenantid.',
+        description: ' destination tenantId.',
         demandOption: false
     })
-    .option('destServiceprincipal', {
+    .option('destServicePrincipal', {
         type: 'string',
-        description: 'destination serviceprincipal or user name.',
+        description: 'destination service principal or user name.',
         demandOption: false
     })
-    .option('destSecret', {
+    .option('destServicePrincipalSecret', {
         type: 'string',
-        description: 'secret or password for service principal or az login for the destination.',
+        description: 'destination service principal secret.',
         demandOption: false
     })
->>>>>>> master
     .help()
     .argv;
 
 async function migrate() {
-<<<<<<< HEAD
-    const sourceImporterExporter = new ImporterExporter(yargs.sourceSubscriptionId, yargs.sourceResourceGroupName, yargs.sourceServiceName);
-    await sourceImporterExporter.export();
-
-    const destIimporterExporter = new ImporterExporter(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName);
-    await destIimporterExporter.cleanup();
-    await destIimporterExporter.import();
-
-    /* New publishing endpoint is not deployed to production yet. */
-    // await destIimporterExporter.publish();
-=======
     try {
-        const sourceImporterExporter = new ImporterExporter(yargs.sourceSubscriptionId, yargs.sourceResourceGroupName, yargs.sourceServiceName, yargs.sourceTenantid, yargs.sourceServiceprincipal, yargs.sourceSecret);
+        const sourceImporterExporter = new ImporterExporter(yargs.sourceSubscriptionId, yargs.sourceResourceGroupName, yargs.sourceServiceName, yargs.sourceTenantId, yargs.sourceServicePrincipal, yargs.sourceServicePrincipalSecret);
         await sourceImporterExporter.export();
 
-        const destIimporterExporter = new ImporterExporter(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName, yargs.destTenantid, yargs.destServiceprincipal, yargs.destSecret);
-        await destIimporterExporter.cleanup();
-        await destIimporterExporter.import();
-        await destIimporterExporter.publish();
-    }
+        const destImporterExporter = new ImporterExporter(yargs.destSubscriptionId, yargs.destResourceGroupName, yargs.destServiceName, yargs.destTenantId, yargs.destServicePrincipal, yargs.destServicePrincipalSecret);
+        await destImporterExporter.cleanup();
+        await destImporterExporter.import();
+
+        await destImporterExporter.publish();
+    } 
     catch (error) {
         throw new Error(`Unable to complete migration. ${error.message}`);
     }
->>>>>>> master
 }
 
 migrate()
@@ -163,12 +131,6 @@ migrate()
         process.exit(0);
     })
     .catch(error => {
-<<<<<<< HEAD
-        console.error(error);
-        process.exit(1);
-    });
-=======
         console.error(error.message);
         process.exit(1);
     });
->>>>>>> master

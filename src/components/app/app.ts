@@ -1,7 +1,4 @@
-import { AzureResourceManagementService } from "./../../services/armService";
-import { SessionManager } from "./../../authentication/sessionManager";
-import { KnownHttpHeaders } from "./../../models/knownHttpHeaders";
-import { HttpClient } from "@paperbits/common/http";
+import { EventManager } from "@paperbits/common/events";
 import { AccessToken } from "./../../authentication/accessToken";
 import template from "./app.html";
 import { ViewManager } from "@paperbits/common/ui";
@@ -24,6 +21,7 @@ export class App {
         private readonly settingsProvider: ISettingsProvider,
         private readonly authenticator: IAuthenticator,
         private readonly viewManager: ViewManager,
+        private readonly eventManager: EventManager
         private readonly siteService: ISiteService,
         private readonly armService: AzureResourceManagementService,
         private readonly sessionManager: SessionManager
@@ -106,6 +104,11 @@ export class App {
 
             this.viewManager.setHost({ name: "page-host" });
             this.viewManager.showToolboxes();
+
+            setTimeout(() => this.eventManager.dispatchEvent("displayHint", {
+                key: "a69b",
+                content: `When you're in the administrative view, you still can navigate any website hyperlink by clicking on it holding Ctrl (Windows) or ⌘ (Mac) key.`
+            }), 5000);
         }
         catch (error) {
             this.viewManager.addToast(startupError, `Check if the settings specified in the configuration file <i>config.design.json</i> are correct or refer to the <a href="http://aka.ms/apimdocs/portal#faq" target="_blank">frequently asked questions</a>.`);

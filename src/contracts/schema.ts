@@ -75,16 +75,6 @@ export interface SchemaObjectContract extends ReferenceObjectContract {
     minProperties?: number;
 
     /**
-     * Example of the payload represented by this schema object.
-     */
-    example?: string;
-
-    /**
-     * Format of payload example represented by this schema object. It is used for syntax highlighting.
-     */
-    exampleFormat?: string;
-
-    /**
      * Raw schema representation.
      */
     rawSchema?: string;
@@ -146,6 +136,9 @@ export interface XsdSchemaContract {
     value: string;
 }
 
+export interface GraphQLSchemaContract {
+    value: string;
+}
 
 /**
  * 
@@ -153,12 +146,13 @@ export interface XsdSchemaContract {
 export interface SchemaContract extends ArmResource {
     properties: {
         contentType: string;
-        document?: SwaggerSchemaContract | OpenApiSchemaContract | XsdSchemaContract;
+        document?: SwaggerSchemaContract | OpenApiSchemaContract | XsdSchemaContract | GraphQLSchemaContract;
     };
 }
 
 export enum SchemaType {
     swagger = "application/vnd.ms-azure-apim.swagger.definitions+json",
     openapi = "application/vnd.oai.openapi.components+json",
-    xsd = "application/vnd.ms-azure-apim.xsd+xml"
+    xsd = "application/vnd.ms-azure-apim.xsd+xml",
+    graphQL  = "application/vnd.ms-azure-apim.graphql.schema"
 }

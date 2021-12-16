@@ -5,21 +5,21 @@ import { ResponseContract } from "../contracts/response";
 import { Utils } from "../utils";
 
 export class Response {
-    public identifier: string;
-    public headers?: Parameter[];
-    public statusCode: StatusCode;
-    public representations?: Representation[];
-    public description?: string;
+    public readonly identifier: string;
+    public readonly headers: Parameter[];
+    public readonly statusCode: StatusCode;
+    public readonly representations: Representation[];
+    public readonly description: string;
 
     /**
      * Returns "true" if this response is meaningful from documentation prospective.
      */
     public isMeaningful(): boolean {
-        return !!this.description || this.representations.some(x => !!x.typeName || !!x.example);
+        return !!this.description || this.representations.some(x => !!x.typeName || x.examples?.length > 0);
     }
 
     public meaningfulRepresentations(): Representation[] {
-        return this.representations.filter(x => !!x.typeName || !!x.example);
+        return this.representations.filter(x => !!x.typeName || x.examples?.length > 0);
     }
 
     constructor(contract?: ResponseContract) {

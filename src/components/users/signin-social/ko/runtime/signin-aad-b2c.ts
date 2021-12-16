@@ -1,9 +1,12 @@
 import * as ko from "knockout";
 import template from "./signin-aad-b2c.html";
-import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 import { EventManager } from "@paperbits/common/events";
-import { AzureActiveDirectoryService } from "../../../../../services";
+import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { SettingNames } from "../../../../../constants";
+import { AadB2CClientConfig } from "../../../../../contracts/aadB2CClientConfig";
 import { ValidationReport } from "../../../../../contracts/validationReport";
+import { AadService } from "../../../../../services";
 
 
 const aadb2cResetPasswordErrorCode = "AADB2C90118";
@@ -17,38 +20,23 @@ const aadb2cResetPasswordErrorCode = "AADB2C90118";
 })
 export class SignInAadB2C {
     constructor(
-        private readonly aadService: AzureActiveDirectoryService,
-        private readonly eventManager: EventManager
+        private readonly aadService: AadService,
+        private readonly eventManager: EventManager,
+        private readonly settingsProvider: ISettingsProvider
     ) {
-        this.clientId = ko.observable();
-        this.authority = ko.observable();
-        this.instance = ko.observable();
-        this.signInPolicy = ko.observable();
-        this.passwordResetPolicyName = ko.observable();
         this.classNames = ko.observable();
         this.label = ko.observable();
+        this.replyUrl = ko.observable();
     }
-
-    @Param()
-    public clientId: ko.Observable<string>;
-
-    @Param()
-    public authority: ko.Observable<string>;
-
-    @Param()
-    public instance: ko.Observable<string>;
-
-    @Param()
-    public signInPolicy: ko.Observable<string>;
-
-    @Param()
-    public passwordResetPolicyName: ko.Observable<string>;
 
     @Param()
     public classNames: ko.Observable<string>;
 
     @Param()
     public label: ko.Observable<string>;
+
+    @Param()
+    public replyUrl: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -61,13 +49,20 @@ export class SignInAadB2C {
     public async signIn(): Promise<void> {
         this.cleanValidationErrors();
 
+        const config = await this.settingsProvider.getSetting<AadB2CClientConfig>(SettingNames.aadB2CClientConfig);
+
         try {
-            await this.aadService.runAadB2CUserFlow(this.clientId(), this.authority(), this.instance(), this.signInPolicy());
+            await this.aadService.runAadB2CUserFlow(
+                config.clientId,
+                config.authority,
+                config.signinTenant,
+                config.signinPolicyName,
+                this.replyUrl());
         }
         catch (error) {
-            if (this.passwordResetPolicyName() && error.message.includes(aadb2cResetPasswordErrorCode)) { // Reset password requested
+            if (config.passwordResetPolicyName && error.message.includes(aadb2cResetPasswordErrorCode)) { // Reset password requested
                 try {
-                    await this.aadService.runAadB2CUserFlow(this.clientId(), this.authority(), this.instance(), this.passwordResetPolicyName());
+                    await this.aadService.runAadB2CUserFlow(config.clientId, config.authority, config.signinTenant, config.passwordResetPolicyName);
                     return;
                 }
                 catch (resetpasswordError) {
@@ -75,7 +70,7 @@ export class SignInAadB2C {
                 }
             }
 
-            let errorDetails;
+            let errorDetails: string[];
 
             if (error.code === "ValidationError") {
                 errorDetails = error.details?.map(detail => detail.message);

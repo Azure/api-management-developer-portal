@@ -1,13 +1,9 @@
 ﻿@import "variables.scss";
 @import "mixins.scss";
-@import "icons.scss";
+@import "icons-toolboxes.scss";
 
 .list-item-group {
     width: 100%;
-
-    .list-item-group {
-        padding-left: 2.75em;
-    }
 
     .list-item {
         flex-basis: unset;
@@ -21,6 +17,10 @@
         min-width: 200px;
         position: fixed;
     }
+
+    &.list-item-group-collapsible {
+        padding-left: 18px;
+    }
 }
 
 .list-item-collapsible {
@@ -32,7 +32,19 @@
         cursor: pointer;
         background: none;
         border: none;
-        margin-right: 5px;
+        margin: 0;
+        padding: 0;
+        width: 16px;
+        height: 16px;
+        left: -16px;
+        position: absolute;
+
+        &:focus,
+        &:hover {
+            @include selection(8px, -3px);
+            outline: none;
+            cursor: pointer;
+        }
 
         .paperbits-icon {
             color: $collapse-button-color;
@@ -46,18 +58,17 @@
 }
 
 .list-item {
-    // line-height: $list-item-size;
-    line-height: 2em;
+    line-height: 2.2em;
     position: relative;
     cursor: pointer;
     vertical-align: middle;
     display: flex;
     text-decoration: none;
     color: $color-base;
-    margin-bottom: 5px;
+    padding: 0 5px;
 
     .paperbits-icon {
-        padding: 0 5px 0 10px;
+        padding: 0 5px;
     }
 
     .list-item-label {
@@ -103,6 +114,7 @@
     &.list-item-image {
         @include pseudo-transparent-bckg();
         margin: 3px;
+        padding: 0;
         flex-basis: auto;
     }
 
@@ -121,9 +133,13 @@
         }
     }
 
+    .list-item-widget-icon {
+        margin: 7px;
+    }
+
     &.list-item-large {
         display: inline-block;
-        width: 130px;
+        width: 140px;
         text-align: center;
         padding: 15px 5px;
         line-height: 1.5em;

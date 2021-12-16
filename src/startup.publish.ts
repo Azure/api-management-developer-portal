@@ -7,6 +7,7 @@ import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
 import { StaticSettingsProvider } from "./configuration/staticSettingsProvider";
 import { FileSystemBlobStorage } from "./components/filesystemBlobStorage";
 import { ApimPublishModule } from "./apim.publish.module";
+import { PublishingCacheModule } from "./persistence/publishingCacheModule";
 import { useArmConfiguration } from "./configuration/settingsHelper";
 
 
@@ -30,6 +31,7 @@ injector.bindModule(new ProseMirrorModule());
 injector.bindModule(new ApimPublishModule());
 injector.bindInstance("settingsProvider", settingsProvider);
 injector.bindInstance("outputBlobStorage", outputBlobStorage);
+injector.bindModule(new PublishingCacheModule());
 injector.resolve("autostart");
 
 

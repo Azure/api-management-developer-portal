@@ -2,7 +2,8 @@ import { ViewModelBinder } from "@paperbits/common/widgets";
 import { ResetPasswordViewModel } from "./resetPasswordViewModel";
 import { ResetPasswordModel } from "../resetPasswordModel";
 import { Bag } from "@paperbits/common";
-import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
+import { ISettingsProvider } from "@paperbits/common/configuration";
+import { ComponentFlow } from "@paperbits/common/editing";
 
 export class ResetPasswordViewModelBinder implements ViewModelBinder<ResetPasswordModel, ResetPasswordViewModel> {
 
@@ -12,9 +13,9 @@ export class ResetPasswordViewModelBinder implements ViewModelBinder<ResetPasswo
         if (!viewModel) {
             viewModel = new ResetPasswordViewModel();
             viewModel["widgetBinding"] = {
-                displayName: "Password: reset form",
+                displayName: "Password: Reset form",
                 model: model,
-                flow: "block",
+                flow: ComponentFlow.Block,
                 draggale: true
             };
         }

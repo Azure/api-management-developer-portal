@@ -3,6 +3,7 @@ import { OperationListViewModel } from "./operationListViewModel";
 import { OperationListModel } from "../operationListModel";
 import { Bag } from "@paperbits/common";
 import { EventManager } from "@paperbits/common/events";
+import { ComponentFlow } from "@paperbits/common/editing";
 
 export class OperationListViewModelBinder implements ViewModelBinder<OperationListModel, OperationListViewModel> {
     constructor(private readonly eventManager: EventManager) { }
@@ -27,7 +28,7 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
             displayName: "List of operations",
             model: model,
             draggable: true,
-            flow: "block",
+            flow: ComponentFlow.Block,
             editor: "operation-list-editor",
             applyChanges: async (updatedModel: OperationListModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);

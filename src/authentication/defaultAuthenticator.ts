@@ -1,23 +1,26 @@
-import { EventManager } from "@paperbits/common/events";
-import { IAuthenticator, AccessToken } from "./../authentication";
+import * as Constants from "./../constants";
+import { sanitizeUrl } from "@braintree/sanitize-url";
+import { AccessToken, IAuthenticator } from "./../authentication";
+
 
 export class DefaultAuthenticator implements IAuthenticator {
-    constructor(private readonly eventManager: EventManager) { }
-
     private runSsoFlow(): Promise<void> {
         return new Promise<void>(async () => {
             const url = new URL(location.href);
-            const queryParams = new URLSearchParams(url.search);
-            const tokenValue = queryParams.get("token");
+            let tokenValue = url.searchParams.get("token");
+            let returnUrl = url.searchParams.get("returnUrl") || "/";
+            if (!tokenValue && url.hash.startsWith("#token=")) {
+                const hashParams = new URLSearchParams(url.hash.replace(/#/g, "?"));
+                tokenValue = hashParams.get("token");
+                returnUrl = hashParams.get("returnUrl") || returnUrl || "/";
+            }
             const tokenString = `SharedAccessSignature ${tokenValue}`;
             const token = AccessToken.parse(tokenString);
 
             await this.setAccessToken(token);
 
-            const returnUrl = queryParams.get("returnUrl") || "/";
-
             // wait for redirect to happen, deliberatly not resolving the promise
-            window.location.assign(returnUrl);
+            window.location.assign(sanitizeUrl(returnUrl));
         });
     }
 
@@ -33,6 +36,11 @@ export class DefaultAuthenticator implements IAuthenticator {
 
             if (!accessToken.isExpired()) {
                 return accessToken;
+            }
+            else {
+                this.clearAccessToken();
+                alert("You session expired. Please sign-in again.");
+                window.location.assign(Constants.pageUrlSignIn);
             }
         }
 

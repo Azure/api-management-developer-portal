@@ -1,0 +1,156 @@
+<!-- ko if: working -->
+<div class="panel panel-dark fit">
+    <spinner class="fit"></spinner>
+</div>
+<!-- /ko -->
+
+<!-- ko ifnot: working -->
+
+<div class="panel panel-dark animation-fade-in">
+    <button type="button" class="no-border pull-right" data-dismiss="modal" aria-label="Close console"
+        data-bind="click: $parent.closeConsole">
+        <i class="icon-emb icon-emb-simple-remove"></i>
+    </button>
+
+    <nav aria-label="breadcrumb" class="breadcrumb-gql">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#"
+                    data-bind="text: $component.api().displayName, attr: { href: $component.getApiReferenceUrl() }"></a>
+            </li>
+
+            <!-- ko if: $component.api().apiVersion -->
+            <li class="breadcrumb-item">
+                <span data-bind="text: $component.api().apiVersion"></span>
+            </li>
+            <!-- /ko -->
+        </ol>
+    </nav>
+
+    <div class="mw-600">
+        <authorization
+            params="{ api: $component.api, authorizationServer: $component.authorizationServer, headers: $component.headers}">
+        </authorization>
+    
+        <h3 class="pt-0">Headers
+            <button class="no-border" data-bind="click: $component.collapse('collapsedHeaders')">
+                <!-- ko if: $component.collapsedHeaders -->
+                <i class="icon-emb icon-emb-chevron-down"></i>
+                <!-- /ko -->
+                <!-- ko ifnot: $component.collapsedHeaders -->
+                <i class="icon-emb icon-emb-chevron-up"></i>
+                <!-- /ko -->
+            </button>
+        </h3>
+        <!-- ko ifnot: $component.collapsedHeaders -->
+        <!-- ko if: $component.headers().length > 0 -->
+        <div data-bind="foreach: { data: $component.headers, as: 'header' }">
+            <div class="row flex flex-row headers-gql pl-0">
+                <div class="col-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
+                                spellcheck="false" aria-label="Header name" data-bind="textInput: header.name">
+                            <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <!-- ko if: header.options && header.options.length > 0 -->
+                        <select class="form-control" aria-label="Header value"
+                            data-bind="value: header.value, options: header.options"></select>
+                        <!-- /ko -->
+                        <!-- ko if: !header.options || header.options.length === 0 -->
+                        <div class="form-group">
+                            <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
+                                spellcheck="false" aria-label="Header value" data-bind="textInput: header.value">
+                            <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                </div>
+                <div class="col-2 pt-12">
+                    <a href="#" role="button" data-bind="click: $component.removeHeader">Remove</a>
+                </div>
+            </div>
+        </div>
+        <!-- /ko -->
+    
+        <a href="#" role="button" data-bind="click: $component.addHeader">
+            <i class="icon-emb icon-emb-plus"></i> Add header
+        </a>
+        <!-- /ko -->
+    </div>
+</div>
+
+<div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
+    <div class="gql-container">
+        <div class="gql-explorer-grid">
+            <h4>Explorer
+                <button class="no-border visible-collapse" data-bind="click: $component.collapse('collapsedExplorer')">
+                    <!-- ko if: $component.collapsedExplorer -->
+                    <i class="icon-emb icon-emb-chevron-down"></i>
+                    <!-- /ko -->
+                    <!-- ko ifnot: $component.collapsedExplorer -->
+                    <i class="icon-emb icon-emb-chevron-up"></i>
+                    <!-- /ko -->
+                </button>
+            </h4>
+
+            <!-- ko ifnot: $component.collapsedExplorer -->
+            <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
+                <select id="operationType" class="form-control" data-bind="value: queryType">
+                    <option value="query">Query</option>
+                    <option value="mutation">Mutation</option>
+                    <option value="subscription">Subscription</option>
+                </select>
+                <div class="input-icons">
+                    <i class="icon-emb icon-emb-magnifier icon"></i>
+                    <input class="form-control search" type="search" aria-label="Search" placeholder="Search"
+                        spellcheck="false" data-bind="textInput: filter" />
+                </div>
+
+                
+                <div class="input-group explorer-operations scrollable">
+                    <!-- ko template: { name: 'graphqlExplorer', data: {operationNode: $component.node(), filter: filter()} } -->
+                    <!-- /ko -->
+                </div>
+            </div>
+            <!-- /ko -->
+        </div>
+        <div class="gql-query-grid">
+            <h4>
+                Query editor
+                <i class="icon-emb icon-emb-info"
+                    title="Select a query, mutation, or subscription from the explorer to add it to the test console or begin typing to compose a query."></i>
+            </h4>
+            <div class="query-editor" id="queryEditor"></div>
+            <h4 class="margin-top-variables">
+                Query variables
+                <i class="icon-emb icon-emb-info"
+                    title="Use variables to reuse the same query or mutation to pass different values."></i>
+            </h4>
+            <div class="query-variable" id="variablesEditor"></div>
+            <div class="flex flex-column align-items-end">
+                <div class="btn-group margin-top-send" role="group">
+                    <!-- ko ifnot: $component.sendingRequest()-->
+                    <button type="button" class="button button-primary btn-sm" data-bind="click: validateAndSendRequest">
+                        Send
+                    </button>
+                    <!-- /ko -->
+                    <!-- ko if: $component.sendingRequest() -->
+                    <button type="button" class="button button-primary btn-sm" disabled>
+                        Sending...
+                    </button>
+                    <!-- /ko -->
+                </div>
+            </div>
+        </div>
+        <div class="gql-response-grid">
+            <h4>Response</h4>
+            <div class="response-editor" id="responseEditor"></div>
+        </div>
+    </div>
+</div>
+<!--/ko-->

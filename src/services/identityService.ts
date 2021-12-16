@@ -2,7 +2,7 @@ import { MapiClient } from "./mapiClient";
 import { IdentityProviderContract } from "../contracts/identityProvider";
 import { Page } from "../models/page";
 import { IdentityProvider } from "../models/identityProvider";
-import { IdentitySettingContract } from "../contracts/IdentitySettings";
+import { IdentitySettingContract } from "../contracts/identitySettings";
 
 /**
  * A service for management operations with identity providers.

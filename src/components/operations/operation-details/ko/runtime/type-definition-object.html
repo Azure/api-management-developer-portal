@@ -3,37 +3,37 @@
 <div role="table" class="table-preset table-preset-schema">
     <div class="d-contents" role="rowgroup">
         <div class="d-contents" role="row">
-            <div role="cell" class="table-preset-head text-truncate">Name</div>
-            <div role="cell" class="table-preset-head text-truncate">Required</div>
-            <div role="cell" class="table-preset-head text-truncate">Type</div>
-            <div role="cell" class="table-preset-head">Description</div>
+            <div role="columnheader" class="table-preset-head text-truncate">Name</div>
+            <div role="columnheader" class="table-preset-head text-truncate">Required</div>
+            <div role="columnheader" class="table-preset-head text-truncate">Type</div>
+            <div role="columnheader" class="table-preset-head">Description</div>
         </div>
     </div>
     <div class="d-contents" role="rowgroup">
         <!-- ko foreach: { data: definition.properties, as: 'property' } -->
         <div class="d-contents" role="row">
             <div role="cell" class="text-truncate" data-bind="text: property.name, attr: { title: property.name }">
-                <span class="monospace" data-bind="text: property.name, attr: { title: property.name }"></span>
+                <span class="text-monospace" data-bind="text: property.name, attr: { title: property.name }"></span>
             </div>
             <div role="cell" data-bind="text: property.required"></div>
             <div role="cell" class="text-truncate">
                 <!-- ko if: property.type.displayAs === 'primitive' -->
-                <span class="monospace"
+                <span class="text-monospace"
                     data-bind="text: property.type.name, attr: { title: property.type.name }"></span>
                 <!-- /ko -->
 
                 <!-- ko if: property.type.displayAs === 'arrayOfPrimitive' -->
-                <span class="monospace"
+                <span class="text-monospace"
                     data-bind="text: property.type.name, attr: { title: property.type.name }"></span>[]
                 <!-- /ko -->
 
                 <!-- ko if: property.type.displayAs === 'reference' -->
-                <a class="monospace"
+                <a class="text-monospace"
                     data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name), title: property.type.name }"></a>
                 <!-- /ko -->
 
                 <!-- ko if: property.type.displayAs === 'arrayOfReference' -->
-                <a class="monospace"
+                <a class="text-monospace"
                     data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name), title: property.type.name }"></a>[]
                 <!-- /ko -->
 
@@ -45,12 +45,12 @@
                 <!-- ko if: $index() > 0 -->,
                 <!-- /ko -->
                 <!-- ko if: item.displayAs === 'reference' -->
-                <a class="monospace"
+                <a class="text-monospace"
                     data-bind="text: item.name, attr: { href: $component.getReferenceUrl(item.name), title: item.name }"></a>
                 <!-- /ko -->
 
                 <!-- ko if: item.displayAs === 'primitive' -->
-                <span class="monospace" data-bind="text: item, attr: { title: item.name }"></span>
+                <span class="text-monospace" data-bind="text: item, attr: { title: item.name }"></span>
                 <!-- /ko -->
 
                 <!-- /ko -->
@@ -63,9 +63,4 @@
     </div>
 </div>
 
-<!-- /ko -->
-
-<!-- ko if: $component.example -->
-<h5>Example</h5>
-<code-sample params="{ content: $component.example, language: $component.exampleFormat }"></code-sample>
 <!-- /ko -->

@@ -1,11 +1,13 @@
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { SigninViewModel } from "./signinViewModel";
-import { SigninModel } from "../signinModel";
 import { Bag } from "@paperbits/common";
-import { TenantService } from "../../../../services/tenantService";
+import { ComponentFlow } from "@paperbits/common/editing";
+import { EventManager } from "@paperbits/common/events";
+import { ViewModelBinder } from "@paperbits/common/widgets";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { BackendService } from "../../../../services/backendService";
-import { EventManager } from "@paperbits/common/events";
+import { TenantService } from "../../../../services/tenantService";
+import { SigninModel } from "../signinModel";
+import { SigninViewModel } from "./signinViewModel";
+
 
 export class SigninViewModelBinder implements ViewModelBinder<SigninModel, SigninViewModel> {
     
@@ -19,9 +21,9 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
             viewModel = new SigninViewModel();
             viewModel["widgetBinding"] = {
                 name: "signin",
-                displayName: "Sign-in form: basic",
+                displayName: "Sign-in form: Basic",
                 model: model,
-                flow: "block",
+                flow: ComponentFlow.Block,
                 draggable: true,
                 applyChanges: async (updatedModel: SigninModel) => {
                     this.modelToViewModel(updatedModel, viewModel, bindingContext);

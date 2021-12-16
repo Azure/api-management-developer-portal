@@ -1,7 +1,8 @@
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { ValidationSummaryViewModel } from "./validationSummaryViewModel";
-import { ValidationSummaryModel } from "../validationSummaryModel";
 import { Bag } from "@paperbits/common";
+import { ComponentFlow } from "@paperbits/common/editing";
+import { ViewModelBinder } from "@paperbits/common/widgets";
+import { ValidationSummaryModel } from "../validationSummaryModel";
+import { ValidationSummaryViewModel } from "./validationSummaryViewModel";
 
 
 export class ValidationSummaryViewModelBinder implements ViewModelBinder<ValidationSummaryModel, ValidationSummaryViewModel> {
@@ -12,7 +13,7 @@ export class ValidationSummaryViewModelBinder implements ViewModelBinder<Validat
             viewModel["widgetBinding"] = {
                 displayName: "Validation summary",
                 model: model,
-                flow: "block",
+                flow: ComponentFlow.Block,
                 draggable: true
             };
         }

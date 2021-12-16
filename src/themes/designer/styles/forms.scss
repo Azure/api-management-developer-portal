@@ -1,13 +1,14 @@
 ﻿@import "variables.scss";
 @import "mixins.scss";
-@import "icons.scss";
+@import "icons-toolboxes.scss";
 
 .form {
     margin: 0;
     padding: 0;
     border: none;
 
-    &.ps { // perfect-scrollbar
+    &.ps {
+        // perfect-scrollbar
         padding-right: 15px;
     }
 }
@@ -84,7 +85,7 @@ textarea {
 
     &:focus {
         outline: none;
-        border: 1px solid $form-control-focus-color;
+        border: 1px solid $form-control-border-focused;
     }
 
     &.is-invalid {
@@ -178,6 +179,18 @@ textarea {
         cursor: pointer;
         display: inline-block;
         line-height: 2em;
+        font-size: $form-control-font-size;
+
+        &:active,
+        &:focus,
+        &:hover {
+            outline: none;
+            @include selection(10px, -4px);
+        }
+
+        &.disabled {
+            color: #ccc;
+        }
     }
 
     .input-group-addon {

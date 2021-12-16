@@ -6,8 +6,8 @@ export class ProfileHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: "profile",
             category: "User",
-            displayName: "User: profile",
-            iconClass: "paperbits-cheque-3",
+            displayName: "User: Profile",
+            iconClass: "widget-icon widget-icon-api-management",
             requires: ["html"],
             createModel: async () => new ProfileModel()
         };

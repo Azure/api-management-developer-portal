@@ -1,4 +1,5 @@
 import template from "./setupDialog.html";
+import * as Constants from "../../constants";
 import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { ViewManager } from "@paperbits/common/ui";
 import { Router } from "@paperbits/common/routing";
@@ -21,7 +22,7 @@ export class SetupDialog {
         try {
             this.viewManager.removeShutter();
             await this.provisioningService.provision();
-            await this.router.navigateTo("/");
+            await this.router.navigateTo(Constants.pageUrlHome);
 
             window.location.reload();
         }

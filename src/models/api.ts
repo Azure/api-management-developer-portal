@@ -2,6 +2,7 @@ import { VersionSet } from "./versionSet";
 import { ApiContract, SubscriptionKeyParameterName } from "../contracts/api";
 import { Utils } from "../utils";
 import { AuthenticationSettings } from "../contracts/authenticationSettings";
+import { TypeOfApi } from "../constants";
 
 /**
  * API model.
@@ -86,6 +87,11 @@ export class Api {
      * Determines type of API, e.g. "soap".
      */
     public type?: string;
+    
+    /**
+     * Determines type name of API to display in UI, e.g. "Soap".
+     */
+    public typeName?: string;
 
     /**
      * Information about associated authorization servers (OAuth 2 or OpenID Connect).
@@ -116,6 +122,25 @@ export class Api {
         this.type = contract.properties.type;
         this.authenticationSettings = contract.properties.authenticationSettings;
         this.subscriptionRequired = contract.properties.subscriptionRequired;
+
+        if(contract.properties.type) {
+            switch(contract.properties.type) {
+                case TypeOfApi.soap:
+                    this.typeName = "SOAP";
+                    break;
+                case TypeOfApi.webSocket:
+                    this.typeName = "WebSocket";
+                    break;
+                case TypeOfApi.graphQL:
+                    this.typeName = "GraphQL";
+                    break;
+                default:
+                    this.typeName = "REST";
+                    break;
+            }
+        } else {
+            this.typeName = "REST";
+        }
 
         if (contract.properties.apiVersionSet) {
             const nestedVersionSet = contract.properties.apiVersionSet;

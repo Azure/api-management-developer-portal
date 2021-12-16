@@ -2,15 +2,15 @@ import { ProductContract } from "../contracts/product";
 import { Utils } from "../utils";
 
 export class Product {
-    public id: string;
-    public name: string;
-    public displayName: string;
-    public description: string;
-    public approvalRequired: boolean;
-    public state: string;
-    public subscriptionRequired: boolean;
-    public subscriptionsLimit?: number;
-    public terms: string;
+    public readonly id: string;
+    public readonly name: string;
+    public readonly displayName: string;
+    public readonly description: string;
+    public readonly approvalRequired: boolean;
+    public readonly state: string;
+    public readonly subscriptionRequired: boolean;
+    public readonly subscriptionsLimit?: number;
+    public readonly terms: string;
 
     constructor(contract?: ProductContract) {
         this.id = Utils.getResourceName("products", contract.id, "shortId");

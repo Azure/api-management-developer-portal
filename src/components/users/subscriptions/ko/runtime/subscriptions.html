@@ -1,10 +1,10 @@
 <div role="table" class="table">
     <div role="rowgroup" class="table-head">
         <div role="row" class="table-row">
-            <div role="cell" class="col-8 text-truncate">Subscription details</div>
-            <div role="cell" class="col-2 text-truncate">Product</div>
-            <div role="cell" class="col-1 text-truncate">State</div>
-            <div role="cell" class="col-1 text-truncate">Action</div>
+            <div role="columnheader" class="col-8 text-truncate">Subscription details</div>
+            <div role="columnheader" class="col-2 text-truncate">Product</div>
+            <div role="columnheader" class="col-1 text-truncate">State</div>
+            <div role="columnheader" class="col-1 text-truncate">Action</div>
         </div>
     </div>
     <div role="rowgroup" class="table-body">
@@ -21,7 +21,7 @@
             <div role="cell" class="col-8">
                 <div role="table">
                     <div role="row" class="row">
-                        <div role="cell" class="col-md-3">
+                        <div role="rowheader" class="col-md-3">
                             Name
                         </div>
                         <div role="cell" class="col-md-6">
@@ -49,8 +49,10 @@
 
                     <!-- ko if: $data.model.isAwaitingApproval -->
                     <div role="row" class="row">
-                        <label class="col-lg-3">Requested on</label>
-                        <div class="col-lg-6">
+                        <div role="rowheader" class="col-md-3">
+                            Requested on
+                        </div>
+                        <div class="col-md-6">
                             <span data-bind="text: $parent.timeToString(model.createdDate)"></span>
                         </div>
                     </div>
@@ -59,20 +61,20 @@
                     <!-- ko ifnot: $data.model.isRejected -->
                     <!-- ko if: $data.model.startDate  -->
                     <div role="row" class="row">
-                        <div role="cell" class="col-lg-3">
+                        <div role="rowheader" class="col-md-3">
                             Started on
                         </div>
-                        <div role="cell" class="col-lg-6">
+                        <div role="cell" class="col-md-6">
                             <span data-bind="text: $parent.timeToString(model.startDate)"></span>
                         </div>
                     </div>
                     <!-- /ko -->
 
                     <div role="row" class="row">
-                        <div role="cell" class="col-md-3">
+                        <div role="rowheader" class="col-md-3">
                             Primary key
                         </div>
-                        <div role="cell" class="col-md-6">
+                        <div role="cell" class="col-md-6 text-wrap">
                             <code data-bind="text: primaryKey"></code>
                         </div>
                         <div role="cell" class="col-md-3 nowrap">
@@ -94,8 +96,8 @@
                     </div>
 
                     <div role="row" class="row">
-                        <div role="cell" class="col-md-3">Secondary key</div>
-                        <div role="cell" class="col-md-6">
+                        <div role="rowheader" class="col-md-3">Secondary key</div>
+                        <div role="cell" class="col-md-6 text-wrap">
                             <code data-bind="text: secondaryKey"></code>
                         </div>
                         <div role="cell" class="col-md-3 nowrap">
@@ -118,7 +120,7 @@
                     <!-- /ko -->
                 </div>
             </div>
-            <div role="cell" class="col-2">
+            <div role="cell" class="col-2 text-wrap">
                 <span data-bind="text: model.productName"></span>
             </div>
             <div role="cell" class="col-1">

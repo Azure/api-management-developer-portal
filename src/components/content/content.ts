@@ -1,12 +1,13 @@
 ﻿import template from "./content.html";
+import * as moment from "moment";
+import * as Constants from "../../constants";
 import { ViewManager, View } from "@paperbits/common/ui";
 import { Component } from "@paperbits/common/ko/decorators";
-import { HttpClient } from "@paperbits/common/http";
-import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Logger } from "@paperbits/common/logging";
 import { IAuthenticator } from "../../authentication/IAuthenticator";
 import { AppError } from "./../../errors/appError";
 import { MapiError } from "../../errors/mapiError";
+import { MapiClient } from "../../services";
 
 
 @Component({
@@ -16,9 +17,8 @@ import { MapiError } from "../../errors/mapiError";
 export class ContentWorkshop {
     constructor(
         private readonly viewManager: ViewManager,
-        private readonly httpClient: HttpClient,
+        private readonly mapiClient: MapiClient,
         private readonly authenticator: IAuthenticator,
-        private readonly settingsProvider: ISettingsProvider,
         private readonly logger: Logger
     ) { }
 
@@ -30,19 +30,11 @@ export class ContentWorkshop {
         }
 
         try {
-            const accessToken = await this.authenticator.getAccessTokenAsString();
+            const revisionName = moment.utc().format(Constants.releaseNameFormat);
 
-            const publishRootUrl = await this.settingsProvider.getSetting<string>("backendUrl") || "";
-
-            const response = await this.httpClient.send({
-                url: publishRootUrl + "/publish",
-                method: "POST",
-                headers: [{ name: "Authorization", value: accessToken }]
+            await this.mapiClient.put(`/portalRevisions/${revisionName}`, null, {
+                properties: { description: "", isCurrent: true }
             });
-
-            if (response.statusCode !== 200) {
-                throw MapiError.fromResponse(response);
-            }
 
             this.viewManager.notifySuccess("Operations", `The website is being published...`);
             this.viewManager.closeWorkshop("content-workshop");

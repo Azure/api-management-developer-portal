@@ -3,6 +3,7 @@ import { EventManager } from "@paperbits/common/events";
 import { OperationDetailsViewModel } from "./operationDetailsViewModel";
 import { OperationDetailsModel } from "../operationDetailsModel";
 import { Bag } from "@paperbits/common";
+import { ComponentFlow } from "@paperbits/common/editing";
 
 
 export class OperationDetailsViewModelBinder implements ViewModelBinder<OperationDetailsModel, OperationDetailsViewModel> {
@@ -13,10 +14,10 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
             viewModel = new OperationDetailsViewModel();
 
             viewModel["widgetBinding"] = {
-                displayName: "Operation: details",
+                displayName: "Operation: Details",
                 model: model,
                 draggable: true,
-                flow: "block",
+                flow: ComponentFlow.Block,
                 editor: "operation-details-editor",
                 applyChanges: async (updatedModel: OperationDetailsModel) => {
                     await this.modelToViewModel(updatedModel, viewModel, bindingContext);
@@ -28,7 +29,6 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
         const runtimeConfig = {
             enableConsole: model.enableConsole,
             enableScrollTo: model.enableScrollTo,
-            authorizationServers: model.authorizationServers,
             defaultSchemaView: model.defaultSchemaView,
             useCorsProxy: model.useCorsProxy
         };

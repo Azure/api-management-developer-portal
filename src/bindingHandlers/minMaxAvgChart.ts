@@ -3,10 +3,13 @@ import * as d3 from "d3";
 import { MinMaxAvgChartConfig } from "../components/reports/minMaxAvgChart/minMaxAvgChartConfig";
 import { MinMaxAvgChartRecord } from "../components/reports/minMaxAvgChart/minMaxAvgChartRecord";
 
+const chartTitleAttribute = "chart-title";
+const chartDescAttribute = "chart-desc";
 
 ko.bindingHandlers["minMaxAvgChart"] = {
-    update: (element: HTMLElement, valueAccessor: () => MinMaxAvgChartConfig): void => {
+    update: (element: HTMLElement, valueAccessor: () => MinMaxAvgChartConfig, allBindingsAccessor): void => {
         const configuration = ko.unwrap(valueAccessor());
+        const allBindings = allBindingsAccessor() || {};
 
         if (!configuration) {
             return;
@@ -52,6 +55,16 @@ ko.bindingHandlers["minMaxAvgChart"] = {
         const svg = d3
             .create("svg")
             .attr("viewBox", [0, 0, width, height]);
+
+        const chartTitle = allBindings[chartTitleAttribute];
+        const chartDesc = allBindings[chartDescAttribute];
+
+        if (chartTitle) {
+            svg.append("title").text(chartTitle);
+        }
+        if (chartDesc) {
+            svg.append("desc").text(chartDesc);
+        }
 
         /* Axis X */
         const x = d3.scaleTime()

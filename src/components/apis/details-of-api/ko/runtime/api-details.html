@@ -11,6 +11,12 @@
             <!-- ko if: api().type === 'soap' -->
             <span class="badge badge-soap">SOAP</span>
             <!-- /ko -->
+            <!-- ko if: api().type === 'websocket' -->
+            <span class="badge badge-soap">WebSocket</span>
+            <!-- /ko -->
+            <!-- ko if: api().type === 'graphql' -->
+            <span class="badge badge-soap">GraphQL</span>
+            <!-- /ko -->
         </h1>
 
         <div class="form-inline">
@@ -21,6 +27,7 @@
                     data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: currentApiVersion">
                 </select>
                 <!-- /ko -->
+                <!-- ko if: api().type !== 'websocket' && api().type !== 'graphql' -->
                 <select id="apiDefinitions" class="form-control" aria-label="API definitions"
                     data-bind="value: downloadSelected">
                     <option value="" disabled="disabled" selected="selected">API definition</option>
@@ -35,6 +42,7 @@
                 <a href="#" class="nav-link text-truncate" data-bind="attr: { href: $component.getChangeLogUrl()} ">
                     Changelog
                 </a>
+                <!-- /ko -->
             </div>
         </div>
 

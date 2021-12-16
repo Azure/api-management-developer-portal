@@ -1,3 +1,5 @@
+@use "sass:math";
+
 $box-model-spacing: 30px;
 $box-model-spacing-from-border: 1px;
 $box-model-border-width: 4px;
@@ -44,23 +46,23 @@ $box-model-border-width: 4px;
     }
 
     .box-model-control-top-left {
-        top: -$box-model-border-width / 2;
-        left: -$box-model-border-width / 2;
+        top: math.div(-$box-model-border-width, 2);
+        left: math.div(-$box-model-border-width, 2);
     }
 
     .box-model-control-top-right {
-        top: -$box-model-border-width / 2;
-        right: -$box-model-border-width / 2;
+        top: math.div(-$box-model-border-width, 2);
+        right: math.div(-$box-model-border-width, 2);
     }
 
     .box-model-control-bottom-left {
-        bottom: -$box-model-border-width / 2;
-        left: -$box-model-border-width / 2;
+        bottom: math.div(-$box-model-border-width, 2);
+        left: math.div(-$box-model-border-width, 2);
     }
 
     .box-model-control-bottom-right {
-        bottom: -$box-model-border-width / 2;
-        right: -$box-model-border-width / 2;
+        bottom: math.div(-$box-model-border-width, 2);
+        right: math.div(-$box-model-border-width, 2);
     }
 
     .box-model-group {
@@ -130,22 +132,22 @@ $box-model-border-width: 4px;
                     color: #fff;
 
                     &.box-model-control-top {
-                        top: -$box-model-border-width / 2;
+                        top: math.div(-$box-model-border-width, 2);
                         transform: translate(-50%, -50%);
                     }
 
                     &.box-model-control-left {
-                        left: -$box-model-border-width / 2;
+                        left: math.div(-$box-model-border-width, 2);
                         transform: translate(-50%, -50%);
                     }
 
                     &.box-model-control-right {
-                        right: -$box-model-border-width / 2;
+                        right: math.div(-$box-model-border-width, 2);
                         transform: translate(50%, -50%);
                     }
 
                     &.box-model-control-bottom {
-                        bottom: -$box-model-border-width / 2;
+                        bottom: math.div(-$box-model-border-width, 2);
                         transform: translate(-50%, 50%);
                     }
 

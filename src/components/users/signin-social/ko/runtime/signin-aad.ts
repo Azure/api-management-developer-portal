@@ -1,9 +1,13 @@
 import * as ko from "knockout";
 import template from "./signin-aad.html";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 import { EventManager } from "@paperbits/common/events";
-import { Component, RuntimeComponent, Param } from "@paperbits/common/ko/decorators";
+import { Component, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { ValidationReport } from "../../../../../contracts/validationReport";
-import { AzureActiveDirectoryService } from "../../../../../services";
+import { AadService } from "../../../../../services";
+import { SettingNames, defaultAadTenantName } from "./../../../../../constants";
+import { AadClientConfig } from "./../../../../../contracts/aadClientConfig";
+
 
 
 @RuntimeComponent({
@@ -15,30 +19,24 @@ import { AzureActiveDirectoryService } from "../../../../../services";
 })
 export class SignInAad {
     constructor(
-        private readonly aadService: AzureActiveDirectoryService,
-        private readonly eventManager: EventManager
+        private readonly aadService: AadService,
+        private readonly eventManager: EventManager,
+        private readonly settingsProvider: ISettingsProvider
     ) {
-        this.clientId = ko.observable();
-        this.authority = ko.observable();
-        this.signinTenant = ko.observable();
         this.classNames = ko.observable();
         this.label = ko.observable();
+        this.replyUrl = ko.observable();
     }
-
-    @Param()
-    public clientId: ko.Observable<string>;
-
-    @Param()
-    public authority: ko.Observable<string>;
-
-    @Param()
-    public signinTenant: ko.Observable<string>;
 
     @Param()
     public classNames: ko.Observable<string>;
 
     @Param()
     public label: ko.Observable<string>;
+
+    @Param()
+    public replyUrl: ko.Observable<string>;
+
 
     /**
      * Initiates signing-in with Azure Active Directory.
@@ -47,7 +45,8 @@ export class SignInAad {
         this.cleanValidationErrors();
 
         try {
-            await this.aadService.signInWithAadAdal(this.clientId(), this.authority(), this.signinTenant());
+            const config = await this.settingsProvider.getSetting<AadClientConfig>(SettingNames.aadClientConfig);
+            await this.aadService.signInWithAad(config.clientId, config.authority, config.signinTenant || defaultAadTenantName, this.replyUrl());
         }
         catch (error) {
             let errorDetails;
