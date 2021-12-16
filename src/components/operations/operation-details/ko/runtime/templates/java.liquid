@@ -1,52 +1,71 @@
-// // This sample uses the Apache HTTP client from HTTP Components (http://hc.apache.org/httpcomponents-client-ga/)
-import java.net.URI;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.UnsupportedEncodingException;
+import java.io.DataInputStream;
+import java.io.InputStream;
+import java.io.FileInputStream;
 
-public class JavaSample 
-{
-    public static void main(String[] args) 
-    {
-        HttpClient httpclient = HttpClients.createDefault();
+public class HelloWorld {
 
-        try
-        {
-            URIBuilder builder = new URIBuilder("{{requestUrl}}");
+  public static void main(String[] args) {
+    try {
+        String urlString = "{{requestUrl}}";
+        URL url = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-{% if request.parameters.size > 0 -%}
-{% for parameter in request.parameters -%}
-            builder.setParameter("{{parameter.name}}", "{{parameter.value}}");
-{% endfor -%}
-{% endif -%}
-
-            URI uri = builder.build();
-            Http{{ method | downcase | capitalize }} request = new Http{{ method | downcase | capitalize }}(uri);
-{% for header in request.meaningfulHeaders -%}
-            request.setHeader("{{header.name}}", "{{header.displayedValue}}");
+        //Request headers
+{%- for header in request.meaningfulHeaders %}
+        connection.setRequestProperty("{{header.name}}", "{{header.displayedValue}}");
 {% endfor %}
+        connection.setRequestMethod("{{method}}");
+{% if method == "POST" or method == "PUT" -%}
+    {%- if request.body != blank %}
+        // Request body
+        connection.setDoOutput(true);
+    {%- if request.bodyFormat == "raw"  -%}
+    {%- assign formattedBody = request.body | replace: '"','\\"' 
+        formattedBody = formattedBody | replace: '\r\n', ' ' 
+        formattedBody = formattedBody | replace: '\n', ' ' 
+        formattedBody = formattedBody | replace: '     ', ' ' %}
+        connection
+            .getOutputStream()
+            .write(
+             "{{formattedBody}}".getBytes()
+             );
+    {%- elsif request.bodyFormat == "binary" %}
+        String fileName = "< path/to/{{request.binary.name}} >";
+        InputStream is = new FileInputStream(fileName);
+        byte[] bytes = new byte[(int) is.available()];
+        DataInputStream dataInputStream = new DataInputStream(is);
+        dataInputStream.readFully(bytes);
+        dataInputStream.close();
+        connection.getOutputStream().write(bytes);
+    {%- endif %}
+    {% endif -%}
 
-{% if body -%}
-            // Request body
-            StringEntity reqEntity = new StringEntity("{{ body | replace:'"','\"' }}");
-            request.setEntity(reqEntity);
-{% endif -%}
+{% endif %}
+        int status = connection.getResponseCode();
+        System.out.println(status);
 
-            HttpResponse response = httpclient.execute(request);
-            HttpEntity entity = response.getEntity();
-
-            if (entity != null) 
-            {
-                System.out.println(EntityUtils.toString(entity));
-            }
+        BufferedReader in = new BufferedReader(
+            new InputStreamReader(connection.getInputStream())
+        );
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
         }
-        catch (Exception e)
-        {
-            System.out.println(e.getMessage());
-        }
+        in.close();
+        System.out.println(content);
+
+        connection.disconnect();
+    } catch (Exception ex) {
+      System.out.print("exception:" + ex.getMessage());
     }
+  }
 }

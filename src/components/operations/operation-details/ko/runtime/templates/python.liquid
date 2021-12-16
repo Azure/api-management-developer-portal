@@ -1,75 +1,67 @@
 ########### Python 2.7 #############
-import httplib, urllib, base64
-
-headers = {
-{% if request.meaningfulHeaders.size > 0 -%}
-    # Request headers
-{% for header in request.meaningfulHeaders -%}
-    '{{header.name}}': '{{header.displayedValue}}',
-{% endfor -%}
-{% endif -%}
-}
-
-params = urllib.urlencode({
-{% if request.parameters.size > 0 -%}
-    # Request parameters
-{% for parameter in request.parameters -%}
-    '{{parameter.name}}': '{{parameter.value}}',
-{% endfor -%}
-{% endif -%}
-})
+import urllib2, json
 
 try:
-{% case scheme -%}
-{% when "http" -%}
-    conn = httplib.HTTPConnection('{{host}}')
-{% when "https" -%}
-    conn = httplib.HTTPSConnection('{{host}}')
-{% endcase -%}
-    conn.request("{{method}}", "{{path}}{% if path contains '?' %}&{% else %}?{% endif %}%s" % params{% if body %}, "{{ body | replace:'"','\"' }}"{% endif %}, headers)
-    response = conn.getresponse()
-    data = response.read()
-    print(data)
-    conn.close()
-except Exception as e:
-    print("[Errno {0}] {1}".format(e.errno, e.strerror))
+    url = "{{requestUrl}}"
 
+    hdr ={
+    # Request headers
+{%- for header in request.meaningfulHeaders %}
+    '{{header.name}}': '{{header.displayedValue}}',
+{%- endfor %}
+    }
+{% if request.body != blank %}
+    # Request body
+{%- if request.bodyFormat == "raw" %}
+    data =  {{request.body}}
+    data = json.dumps(data)
+    req = urllib.request.Request(url, headers=hdr, data = bytes(data))
+    {%- elsif  request.bodyFormat == "binary" %}
+    with open('< path/to/{{request.binary.name}} >', 'rb') as f:
+        data = f.read()
+    req = urllib.request.Request(url, headers=hdr, data = bytes(data))
+    {%- endif %}
+{% else %}
+    req = urllib2.Request(url, headers=hdr)
+{% endif %}
+    req.get_method = lambda: '{{method}}'
+    response = urllib2.urlopen(req)
+    print(response.getcode())
+    print(response.read())
+except Exception as e:
+    print(e)
 ####################################
 
 ########### Python 3.2 #############
-import http.client, urllib.request, urllib.parse, urllib.error, base64
-
-headers = {
-{% if request.meaningfulHeaders.size > 0 -%}
-    # Request headers
-{% for header in request.meaningfulHeaders -%}
-    '{{header.name}}': '{{header.displayedValue}}',
-{% endfor -%}
-{% endif -%}
-}
-
-params = urllib.parse.urlencode({
-{% if parameters.size > 0 -%}
-    # Request parameters
-{% for parameter in request.parameters -%}
-    '{{parameter.name}}': '{{parameter.value}}',
-{% endfor -%}
-{% endif -%}
-})
+import urllib.request, json
 
 try:
-{% case scheme -%}
-{% when "http" -%}
-    conn = http.client.HTTPConnection('{{host}}')
-{% when "https" -%}
-    conn = http.client.HTTPSConnection('{{host}}')
-{% endcase -%}
-    conn.request("{{method}}", "{{path}}{% if path contains '?' %}&{% else %}?{% endif %}%s" % params{% if body %}, "{{ body | replace:'"','\"' }}"{% endif %}, headers)
-    response = conn.getresponse()
-    data = response.read()
-    print(data)
-    conn.close()
-except Exception as e:
-    print("[Errno {0}] {1}".format(e.errno, e.strerror))
+    url = "{{requestUrl}}"
 
+    hdr ={
+    # Request headers
+{%- for header in request.meaningfulHeaders %}
+    '{{header.name}}': '{{header.displayedValue}}',
+{%- endfor %}
+    }
+{% if request.body != blank %}
+    # Request body
+{%- if request.bodyFormat == "raw" %}
+    data =  {{request.body}}
+    data = json.dumps(data)
+    req = urllib.request.Request(url, headers=hdr, data = bytes(data.encode("utf-8")))
+{%- elsif  request.bodyFormat == "binary" %}
+    with open('< path/to/{{request.binary.name}} >', 'rb') as f:
+        data = f.read()
+    req = urllib.request.Request(url, headers=hdr, data = bytes(data))
+{%- endif %}
+{% else %}
+    req = urllib.request.Request(url, headers=hdr)
+{% endif %}
+    req.get_method = lambda: '{{method}}'
+    response = urllib.request.urlopen(req)
+    print(response.getcode())
+    print(response.read())
+except Exception as e:
+    print(e)
 ####################################
