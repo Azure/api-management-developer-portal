@@ -17,19 +17,19 @@ export class HtmlInjectionViewModelBinder implements ViewModelBinder<HTMLInjecti
     ) { }
 
     public async updateViewModel(model: HTMLInjectionModel, viewModel: HtmlInjectionViewModel, bindingContext: Bag<any>): Promise<void> {
-        let htmlStyling: string = "";
+        let htmlInheritedStyles: string = "";
 
         if (model.inheritStyling) {
             const environment = await this.settingsProvider.getSetting<string>("environment");
 
-            htmlStyling = '<link href="/styles/theme.css" rel="stylesheet" type="text/css">';
+            htmlInheritedStyles = '<link href="/styles/theme.css" rel="stylesheet" type="text/css">';
 
             if (environment === "development") {
                 const globalStyleSheet = await this.styleCompiler.getStyleSheet();
                 const compiler = new JssCompiler();
-                htmlStyling += `<style>${compiler.compile(globalStyleSheet)}</style>`;
+                htmlInheritedStyles += `<style>${compiler.compile(globalStyleSheet)}</style>`;
             } else {
-                htmlStyling += '<link href="/styles.css" rel="stylesheet" type="text/css">';
+                htmlInheritedStyles += '<link href="/styles.css" rel="stylesheet" type="text/css">';
             }
         }
 
@@ -37,7 +37,7 @@ export class HtmlInjectionViewModelBinder implements ViewModelBinder<HTMLInjecti
             viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager));
         }
 
-        viewModel.htmlCode(model.htmlCode);
+        viewModel.htmlCode(htmlInheritedStyles + model.htmlCode);
     }
 
     public async modelToViewModel(model: HTMLInjectionModel, viewModel?: HtmlInjectionViewModel, bindingContext?: Bag<any>): Promise<HtmlInjectionViewModel> {
@@ -49,7 +49,7 @@ export class HtmlInjectionViewModelBinder implements ViewModelBinder<HTMLInjecti
                 displayName: widgetDisplayName,
                 readonly: bindingContext ? bindingContext.readonly : false,
                 model: model,
-                flow: ComponentFlow.Contents,
+                flow: ComponentFlow.Block,
                 editor: widgetEditorSelector,
                 draggable: true,
                 applyChanges: async () => {

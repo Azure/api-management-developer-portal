@@ -4,4 +4,4 @@ export const widgetCategory = "Advanced";
 export const widgetSelector = "html-injection";
 export const widgetRuntimeSelector = "html-injection-runtime";
 export const widgetEditorSelector = "html-injection-editor";
-export const widgetIconClass = "html-injection-icon html-injection-icon-api-management";
+export const widgetIconClass = "widget-icon widget-icon-api-management";
