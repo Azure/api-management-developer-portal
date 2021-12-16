@@ -4,9 +4,6 @@ import { HTMLInjectionHandlers } from "./htmlInjectionHandlers";
 import { HtmlInjectionViewModel, HtmlInjectionViewModelBinder } from "./ko";
 import { HTMLInjectionModelBinder } from ".";
 
-/**
- * Inversion of control module that registers design-time dependencies.
- */
 export class HtmlInjectionDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bind("widget", HtmlInjectionViewModel);

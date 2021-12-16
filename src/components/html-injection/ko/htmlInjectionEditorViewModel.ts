@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import template from "./widgetEditorView.html";
+import template from "./htmlInjectionEditorView.html";
 import { WidgetEditor } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
 import { SizeStylePluginConfig } from "@paperbits/styles/plugins";

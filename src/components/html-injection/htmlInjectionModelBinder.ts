@@ -4,11 +4,8 @@ import { HTMLInjectionModel } from "./htmlInjectionModel";
 import { Contract } from "@paperbits/common";
 import { HTMLInjectionContract } from "./htmlInjectionContract";
 import { htmlCodeInitial, htmlCodeSizeStylesInitial } from "./ko/constants";
+import { StyleHelper } from "@paperbits/styles";
 
-/**
- * This is a class that helps to prepare the model using data described
- * in the contract.
- */
 export class HTMLInjectionModelBinder implements IModelBinder<HTMLInjectionModel> {
     public canHandleContract(contract: Contract): boolean {
         return contract.type === widgetName;
@@ -21,7 +18,6 @@ export class HTMLInjectionModelBinder implements IModelBinder<HTMLInjectionModel
     public async contractToModel(contract: HTMLInjectionContract): Promise<HTMLInjectionModel> {
         const model = new HTMLInjectionModel();
         model.htmlCode = contract.htmlCode ?? htmlCodeInitial;
-        model.htmlCodeSizeStyles = contract.htmlCodeSizeStyles ?? htmlCodeSizeStylesInitial;
         model.inheritStyling = contract.inheritStyling ?? true;
         model.styles = contract.styles || {};
         return model;
@@ -31,7 +27,6 @@ export class HTMLInjectionModelBinder implements IModelBinder<HTMLInjectionModel
         const contract: HTMLInjectionContract = {
             type: widgetName,
             htmlCode: model.htmlCode,
-            htmlCodeSizeStyles: model.htmlCodeSizeStyles,
             inheritStyling: model.inheritStyling,
             styles: model.styles
         };

@@ -2,16 +2,9 @@
 import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { HTMLInjectionModel } from "./htmlInjectionModel";
 import { htmlCodeInitial, htmlCodeSizeStylesInitial } from "./ko/constants";
+import { StyleHelper } from "@paperbits/styles";
 
-/**
- * Handlers giving the editor required context to manupulate the widget. For example,
- * it describes how the widget gets created, how it responds to drag'n'drop events,
- * what contextual commands is supports, etc.
- */
 export class HTMLInjectionHandlers implements IWidgetHandler {
-    /**
-     * This method invoked when the widget gets added to the content.
-     */
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
             name: widgetName,
@@ -20,14 +13,11 @@ export class HTMLInjectionHandlers implements IWidgetHandler {
             displayName: widgetDisplayName,
             iconClass: widgetIconClass,
 
-            /**
-             * This method invoked when the widget gets added to the content.
-             */
             createModel: async () => { 
                 const model = new HTMLInjectionModel();
                 model.htmlCode = htmlCodeInitial;
-                model.htmlCodeSizeStyles = htmlCodeSizeStylesInitial;
                 model.inheritStyling = true;
+                StyleHelper.setPluginConfigForLocalStyles(model.styles, "size", htmlCodeSizeStylesInitial);
                 return model;
             }
         };

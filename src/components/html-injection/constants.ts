@@ -1,7 +1,7 @@
-export const widgetName = "html-injection";
+export const widgetName = "custom-html-code";
 export const widgetDisplayName = "Custom HTML code";
 export const widgetCategory = "Advanced";
-export const widgetSelector = "widget";
-export const widgetRuntimeSelector = "widget-runtime";
-export const widgetEditorSelector = "widget-editor";
-export const widgetIconClass = "widget-icon widget-icon-api-management";
+export const widgetSelector = "html-injection";
+export const widgetRuntimeSelector = "html-injection-runtime";
+export const widgetEditorSelector = "html-injection-editor";
+export const widgetIconClass = "html-injection-icon html-injection-icon-api-management";
