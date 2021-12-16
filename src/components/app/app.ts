@@ -9,6 +9,8 @@ import { IAuthenticator } from "../../authentication";
 import { Utils } from "../../utils";
 import { Bag } from "@paperbits/common";
 import { SettingNames } from "../../constants";
+import { AzureResourceManagementService } from "../../services/armService";
+import { SessionManager } from "@paperbits/common/persistence/sessionManager";
 
 const startupError = `Unable to start the portal`;
 
@@ -21,7 +23,7 @@ export class App {
         private readonly settingsProvider: ISettingsProvider,
         private readonly authenticator: IAuthenticator,
         private readonly viewManager: ViewManager,
-        private readonly eventManager: EventManager
+        private readonly eventManager: EventManager,
         private readonly siteService: ISiteService,
         private readonly armService: AzureResourceManagementService,
         private readonly sessionManager: SessionManager

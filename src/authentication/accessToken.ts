@@ -95,6 +95,7 @@ export class AccessToken {
     }
 
     public isExpired(): boolean {
+        return false;
         const now = new Date();
         return now > this.expires;
     }

@@ -4,7 +4,7 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { EventManager } from "@paperbits/common/events";
 import { Component, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { ValidationReport } from "../../../../../contracts/validationReport";
-import { AadService } from "../../../../../services";
+import { AzureActiveDirectoryService } from "../../../../../services";
 import { SettingNames, defaultAadTenantName } from "./../../../../../constants";
 import { AadClientConfig } from "./../../../../../contracts/aadClientConfig";
 
@@ -19,7 +19,7 @@ import { AadClientConfig } from "./../../../../../contracts/aadClientConfig";
 })
 export class SignInAad {
     constructor(
-        private readonly aadService: AadService,
+        private readonly aadService: AzureActiveDirectoryService,
         private readonly eventManager: EventManager,
         private readonly settingsProvider: ISettingsProvider
     ) {

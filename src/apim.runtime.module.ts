@@ -24,7 +24,6 @@ import { ApiProductsTiles } from "./components/apis/api-products/ko/runtime/api-
 import { ApiDetails } from "./components/apis/details-of-api/ko/runtime/api-details";
 import { ApiHistory } from "./components/apis/history-of-api/ko/runtime/api-history";
 import { ApiList, ApiListDropdown, ApiListTiles } from "./components/apis/list-of-apis/ko/runtime";
-import { DefaultAuthenticator } from "./components/defaultAuthenticator";
 import { FileInput } from "./components/file-input/file-input";
 import { CodeSnippet } from "./components/operations/operation-details/ko/runtime/code-snippet";
 import { Authorization } from "./components/operations/operation-details/ko/runtime/authorization";
@@ -60,7 +59,7 @@ import { AadSignOutRouteGuard } from "./routing/aadSignoutRouteGuard";
 import { RouteHelper } from "./routing/routeHelper";
 import { SignOutRouteGuard } from "./routing/signOutRouteGuard";
 import { StaticUserService } from "./services";
-import { AadService } from "./services/aadService";
+import { AzureActiveDirectoryService } from "./services/aadService";
 import { AnalyticsService } from "./services/analyticsService";
 import { ApiService } from "./services/apiService";
 import { BackendService } from "./services/backendService";
@@ -73,6 +72,11 @@ import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
 import { ApimSettingsProvider } from "./configuration/apimSettingsProvider";
 import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
+import { DefaultSettingsProvider, StaticSettingsProvider } from "./configuration";
+import { HistoryRouteHandler, LocationRouteHandler } from "@paperbits/common/routing";
+import { SettingNames } from "./constants";
+import { XmlHttpRequestClient } from "@paperbits/common/http";
+import { DefaultAuthenticator } from "./authentication/defaultAuthenticator";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -155,6 +159,6 @@ export class ApimRuntimeModule implements IInjectorModule {
             injector.bindInstance("configFileUri", "/config.runtime.json");
             injector.bindSingleton("settingsProvider", DefaultSettingsProvider);
         }
-        injector.bindToCollection("autostart", AccessTokenRefrsher)
+        // injector.bindToCollection("autostart", AccessTokenRefrsher);
     }
 }

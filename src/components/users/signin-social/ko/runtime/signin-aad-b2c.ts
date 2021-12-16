@@ -6,7 +6,7 @@ import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common
 import { SettingNames } from "../../../../../constants";
 import { AadB2CClientConfig } from "../../../../../contracts/aadB2CClientConfig";
 import { ValidationReport } from "../../../../../contracts/validationReport";
-import { AadService } from "../../../../../services";
+import { AzureActiveDirectoryService } from "../../../../../services";
 
 
 const aadb2cResetPasswordErrorCode = "AADB2C90118";
@@ -20,7 +20,7 @@ const aadb2cResetPasswordErrorCode = "AADB2C90118";
 })
 export class SignInAadB2C {
     constructor(
-        private readonly aadService: AadService,
+        private readonly aadService: AzureActiveDirectoryService,
         private readonly eventManager: EventManager,
         private readonly settingsProvider: ISettingsProvider
     ) {

@@ -3,8 +3,8 @@ import { AzureBlobStorage } from "@paperbits/azure";
 import { Logger } from "@paperbits/common/logging";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { MapiClient } from "./../services/mapiClient";
-import { StaticSettingsProvider } from "../components/staticSettingsProvider";
 import { Utils } from "../utils";
+import { StaticSettingsProvider } from "../configuration";
 
 
 
