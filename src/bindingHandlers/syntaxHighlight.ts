@@ -43,9 +43,6 @@ ko.bindingHandlers["syntaxHighlight"] = {
                 case "javascript":
                     highlightLanguage = "js";
                     break;
-                case "objc":
-                    highlightLanguage = "c";
-                    break;
                 case "php":
                     // highlightLanguage = "php"; // broken!
                     highlightLanguage = "ruby";
