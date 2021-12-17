@@ -39,10 +39,10 @@ export class ApiList {
         this.pattern = ko.observable();
         this.tags = ko.observable([]);
         this.pageNumber = ko.observable(1);
+        this.totalPages = ko.observable(0);
         this.apiGroups = ko.observableArray();
         this.groupByTag = ko.observable(false);
         this.defaultGroupByTagToEnabled = ko.observable(false);
-        this.totalPages = ko.observable(0);
     }
 
     @Param()
