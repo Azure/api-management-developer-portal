@@ -8,7 +8,7 @@ curl_setopt($curl, CURLOPT_URL, $url);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 {% if request.meaningfulHeaders.size > 0 -%}
-// Request headers
+# Request headers
 $headers = array(
 {%- for header in request.meaningfulHeaders %}
     '{{header.name}}: {{header.displayedValue}}',
@@ -16,7 +16,7 @@ $headers = array(
 curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 {%- endif %}
 {% if request.body != blank %}
-// Request body
+# Request body
 {% if request.bodyFormat == "raw" -%}
 $request_body = '{{request.body}}';
 {%- elsif  request.bodyFormat == "binary" %}
