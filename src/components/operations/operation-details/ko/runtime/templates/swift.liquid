@@ -1,0 +1,54 @@
+import Foundation
+import FoundationNetworking
+
+let url = URL(string: "{{requestUrl}}") 
+var request : URLRequest = URLRequest(url: url!)
+request.httpMethod = "{{method}}"
+
+// Request headers 
+let headers = [
+{% for header in request.meaningfulHeaders %}
+"{{header.name}}": "{{header.displayedValue}}",
+{%- endfor %}
+]
+request.allHTTPHeaderFields = headers
+{% if request.body != blank %}
+// Request body
+{%- if request.bodyFormat == "raw" -%}
+{%- assign formattedBody = request.body | replace:'"','\\"' 
+formattedBody = formattedBody | replace: '\r\n', ' ' 
+formattedBody = formattedBody | replace: '     ', ' ' %}
+let postString = "{{formattedBody}}"
+request.httpBody = postString.data(using: .utf8)
+{%- elsif  request.bodyFormat == "binary" %}
+let file = "< path/to/{{request.binary.name}} >" 
+var result = ""
+if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {       
+    let fileURL = dir.appendingPathComponent(file)     
+    do {        
+        result = try String(contentsOf: fileURL, encoding: .utf8)   
+    }   
+    catch {
+    print("error")
+    }
+    request.httpBody = result.data(using: .utf8) 
+}
+{% endif %}
+{% endif %}
+let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+	if (error != nil) {
+		if let error = error as Error? {
+		print(error)
+		}
+	} else {
+		if let response = response as? HTTPURLResponse, let responseCode = response.statusCode as Int? {
+			print(responseCode)
+		}
+		if let data = data, let dataString = String(data: data, encoding: .utf8) {
+			print(dataString)
+		}
+	}
+}
+task.resume()
+
+RunLoop.main.run()

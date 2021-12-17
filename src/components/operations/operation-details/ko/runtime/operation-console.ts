@@ -254,6 +254,7 @@ export class OperationConsole {
             { value: "php", text: "PHP" },
             { value: "python", text: "Python" },
             { value: "ruby", text: "Ruby" },
+            { value: "swift", text: "Swift" },
         ];
     }
 
