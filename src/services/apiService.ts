@@ -469,6 +469,7 @@ export class ApiService {
 
         page.value = result.value.map(item => new Api(item));
         page.nextLink = result.nextLink;
+        page.count = result.count;
 
         return page;
     }
