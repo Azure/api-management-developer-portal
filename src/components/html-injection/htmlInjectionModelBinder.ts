@@ -3,8 +3,7 @@ import { IModelBinder } from "@paperbits/common/editing";
 import { HTMLInjectionModel } from "./htmlInjectionModel";
 import { Contract } from "@paperbits/common";
 import { HTMLInjectionContract } from "./htmlInjectionContract";
-import { htmlCodeInitial, htmlCodeSizeStylesInitial } from "./ko/constants";
-import { StyleHelper } from "@paperbits/styles";
+import { htmlCodeInitial } from "./ko/constants";
 
 export class HTMLInjectionModelBinder implements IModelBinder<HTMLInjectionModel> {
     public canHandleContract(contract: Contract): boolean {

@@ -1,5 +1,4 @@
 import { LocalStyles } from "@paperbits/common/styles";
-import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
 
 export class HTMLInjectionModel {
     public htmlCode: string;
