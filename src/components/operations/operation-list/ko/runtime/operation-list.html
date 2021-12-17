@@ -16,7 +16,8 @@
 <div class="form-inline search-input">
     <div class="d-block flex-grow mw-170">
         <div class="input-group">
-            <input type="search" aria-label="Search operations" placeholder="Search operations" spellcheck="false" data-bind="textInput: pattern" />
+            <input type="search" aria-label="Search operations" placeholder="Search operations" spellcheck="false"
+                data-bind="textInput: pattern" />
             <button type="button" class="search-button" aria-label="Search operations">
                 <i class="icon-emb icon-emb-magnifier"></i>
             </button>
@@ -65,7 +66,8 @@
                     data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
                     <div class="row">
                         <span class="col-md-2 mw-60" data-bind="attr: { 'data-method': method }"></span>
-                        <span class="col-md-9" data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
+                        <span class="col-md-9"
+                            data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
                     </div>
                 </a>
             </li>
@@ -102,7 +104,8 @@
                     data-bind="attr: { href: $component.getReferenceUrl(item)}, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
                     <div class="row">
                         <span class="col-md-2 mw-60" data-bind="attr: { 'data-method': method }"></span>
-                        <span class="col-md-9" data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
+                        <span class="col-md-9"
+                            data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
                     </div>
                 </a>
             </li>
@@ -124,22 +127,22 @@
 <!-- ko ifnot: working -->
 <ul class="pagination justify-content-center" role="navigation" aria-label="Pagination">
     <!-- ko if: hasPrevPage -->
-    <li class="page-item">
-        <a href="#" class="page-link" role="button" aria-label="Previous page"
+    <li class="page-item" role="presentation">
+        <button class="page-link" role="button" aria-label="Go to previous page" title="Go to previous page"
             data-bind="click: prevPage, enable: hasPrevPage">
             <i class="icon-emb icon-emb-chevron-left"></i>
-        </a>
+        </button>
     </li>
     <!-- /ko -->
-    <li class="page-item">
+    <li class="page-item" role="presentation">
         <span class="page-link" data-bind="text: pageNumber"></span>
     </li>
     <!-- ko if: hasNextPage -->
-    <li class="page-item">
-        <a href="#" class="page-link" role="button" aria-label="Next page"
+    <li class="page-item" role="presentation">
+        <button class="page-link" role="button" aria-label="Go to next page" title="Go to next page"
             data-bind="click: nextPage, enable: hasNextPage">
             <i class="icon-emb icon-emb-chevron-right"></i>
-        </a>
+        </button>
     </li>
     <!-- /ko -->
 </ul>
