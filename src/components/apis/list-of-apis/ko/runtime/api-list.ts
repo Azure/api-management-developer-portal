@@ -23,12 +23,9 @@ export class ApiList {
     public readonly working: ko.Observable<boolean>;
     public readonly pattern: ko.Observable<string>;
     public readonly tags: ko.Observable<Tag[]>;
-    public readonly page: ko.Observable<number>;
-    public readonly hasPager: ko.Computed<boolean>;
-    public readonly hasPrevPage: ko.Observable<boolean>;
-    public readonly hasNextPage: ko.Observable<boolean>;
     public readonly groupByTag: ko.Observable<boolean>;
-    public totalNoOfItems: ko.Observable<number>;
+    public readonly pageNumber: ko.Observable<number>;
+    public readonly totalPages: ko.Observable<number>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -41,14 +38,11 @@ export class ApiList {
         this.working = ko.observable();
         this.pattern = ko.observable();
         this.tags = ko.observable([]);
-        this.page = ko.observable(1);
-        this.hasPrevPage = ko.observable();
-        this.hasNextPage = ko.observable();
-        this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
+        this.pageNumber = ko.observable(1);
         this.apiGroups = ko.observableArray();
         this.groupByTag = ko.observable(false);
         this.defaultGroupByTagToEnabled = ko.observable(false);
-        this.totalNoOfItems = ko.observable();
+        this.totalPages = ko.observable(0);
     }
 
     @Param()
@@ -75,13 +69,14 @@ export class ApiList {
             .subscribe(this.resetSearch);
 
         this.groupByTag.subscribe(this.resetSearch);
+        this.pageNumber.subscribe(this.loadPageOfApis);
     }
 
     /**
      * Loads page of APIs.
      */
     public async loadPageOfApis(): Promise<void> {
-        const pageNumber = this.page() - 1;
+        const pageNumber = this.pageNumber() - 1;
 
         const query: SearchQuery = {
             pattern: this.pattern(),
@@ -90,31 +85,27 @@ export class ApiList {
             take: Constants.defaultPageSize
         };
 
-        let nextLink;
-
         try {
             this.working(true);
+
+            let totalItems: number;
 
             if (this.groupByTag()) {
                 const pageOfTagResources = await this.apiService.getApisByTags(query);
                 const apiGroups = pageOfTagResources.value;
 
                 this.apiGroups(apiGroups);
-
-                nextLink = pageOfTagResources.nextLink;
-                this.totalNoOfItems(pageOfTagResources.count);
+                totalItems = pageOfTagResources.count;
             }
             else {
                 const pageOfApis = await this.apiService.getApis(query);
                 const apis = pageOfApis ? pageOfApis.value : [];
-                this.apis(apis);
 
-                nextLink = pageOfApis.nextLink;
-                this.totalNoOfItems(pageOfApis.count);
+                this.apis(apis);
+                totalItems = pageOfApis.count;
             }
 
-            this.hasPrevPage(pageNumber > 0);
-            this.hasNextPage(!!nextLink);
+            this.totalPages(Math.ceil(totalItems / Constants.defaultPageSize));
         }
         catch (error) {
             throw new Error(`Unable to load APIs. Error: ${error.message}`);
@@ -124,152 +115,12 @@ export class ApiList {
         }
     }
 
-    public pageCount(): number {
-        return Math.ceil(this.totalNoOfItems() / Constants.defaultPageSize);
-    };
-
-    public setCurrentPag(page: number): void {
-        if (page < Constants.firstPage)
-            page = Constants.firstPage;
-
-        if (page > this.lastPage())
-            page = this.lastPage();
-
-        this.page(page);
-    };
-
-
-    public lastPage(): number {
-        return this.pageCount();
-    };
-
-    public nextPagePresent(): number {
-        var next = this.page() + 1;
-        if (next > this.lastPage())
-            return null;
-        return next;
-    };
-
-    public previousPage(): number {
-        var previous = this.page() - 1;
-        if (previous < Constants.firstPage)
-            return null;
-
-        return previous;
-    };
-
-    public needPaging(): boolean {
-        return this.pageCount() > 1;
-    };
-
-    public nextPageActive(): boolean {
-        return this.nextPagePresent() != null;
-    };
-
-    public previousPageActive(): boolean {
-        return this.previousPage() != null;
-    };
-
-    public lastPageActive(): boolean {
-        return (this.lastPage() != this.page());
-    };
-
-    public firstPageActive(): boolean {
-        return (Constants.firstPage != this.page());
-    };
-
-    public generateAllPages(): number[] {
-        var pages = [];
-        for (var i = Constants.firstPage; i <= this.lastPage(); i++)
-            pages.push(i);
-
-        return pages;
-    };
-
-    public generateMaxPage(): number[] {
-        var current = this.page();
-        var pageCount = this.pageCount();
-        var first = Constants.firstPage;
-
-        var upperLimit = current + (Constants.maxPageCount - 1) / 2;
-        var downLimit = current - (Constants.maxPageCount - 1) / 2;
-
-        while (upperLimit > pageCount) {
-            upperLimit--;
-            if (downLimit > first)
-                downLimit--;
-        }
-
-        while (downLimit < first) {
-            downLimit++;
-            if (upperLimit < pageCount)
-                upperLimit++;
-        }
-
-        var pages = [];
-        for (var i = downLimit; i <= upperLimit; i++) {
-            pages.push(i);
-        }
-        return pages;
-    };
-
-    public getPages(): ko.ObservableArray {
-        this.page();
-        this.totalNoOfItems();
-
-        if (this.pageCount() <= Constants.maxPageCount) {
-            return ko.observableArray(this.generateAllPages());
-        } else {
-            return ko.observableArray(this.generateMaxPage());
-        }
-    };
-
-    public goToPage(page: number): void {
-        if (page >= Constants.firstPage && page <= this.lastPage())
-            this.page(page);
-        this.loadPageOfApis();
-    }
-
-    public goToFirst(): void {
-        this.page(Constants.firstPage);
-        this.loadPageOfApis();
-    };
-
-    public goToPrevious(): void {
-        var previous = this.previousPage();
-        if (previous != null)
-            this.page(previous);
-        this.loadPageOfApis();
-    };
-
-    public goToNext(): void {
-        var next = this.nextPagePresent();
-        if (next != null)
-            this.page(next);
-        this.loadPageOfApis();
-    };
-
-    public goToLast(): void {
-        this.page(this.lastPage());
-        this.loadPageOfApis();
-    };
-
     public getReferenceUrl(api: Api): string {
         return this.routeHelper.getApiReferenceUrl(api.name, this.detailsPageUrl());
     }
 
-    public prevPage(): void {
-        this.page(this.page() - 1);
-        this.loadPageOfApis();
-    }
-
-    public nextPage(): void {
-        this.page(this.page() + 1);
-        this.loadPageOfApis();
-    }
-
     public async resetSearch(): Promise<void> {
-        this.page(1);
+        this.pageNumber(1);
         this.loadPageOfApis();
     }
 
