@@ -59,7 +59,7 @@ export class ApiService {
         const page = new Page<Api>();
         page.value = pageOfApis.value.map(x => new Api(x));
         page.nextLink = pageOfApis.nextLink;
-
+        page.count = pageOfApis.count;
         return page;
     }
 
@@ -201,7 +201,7 @@ export class ApiService {
 
         page.value = Object.keys(tagGroups).map(x => tagGroups[x]);
         page.nextLink = pageOfApiTagResources.nextLink;
-
+        page.count = pageOfApiTagResources.count;
         return page;
     }
 
@@ -399,7 +399,7 @@ export class ApiService {
         if (schemas && schemas.length > 0) {
 
             const gql = schemas.find(s => s.properties.contentType === SchemaType.graphQL);
-            if(gql) return SchemaType.graphQL;
+            if (gql) return SchemaType.graphQL;
 
             const is2 = !!schemas.find(item => item.properties.contentType === SchemaType.swagger)
                 &&
@@ -415,7 +415,7 @@ export class ApiService {
         if (!apiId) {
             throw new Error(`Parameter "apiId" not specified.`);
         }
-      
+
         const result = [];
         const pageOfProducts = await this.mapiClient.get<Page<ProductContract>>(`${apiId}/products`, [MapiClient.getPortalHeader("getAllApiProducts")]);
 
@@ -429,7 +429,7 @@ export class ApiService {
 
         return page;
     }
-    
+
     /**
      * Returns page of API products filtered by name.
      */
