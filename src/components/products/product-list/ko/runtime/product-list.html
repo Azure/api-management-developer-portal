@@ -46,29 +46,33 @@
 
     <!-- /ko -->
 
-    <!-- ko if: hasPager -->
+    <!-- ko if: needPaging -->
     <!-- ko ifnot: working -->
-    <div class="table-footer">
-        <ul class="pagination justify-content-center" role="navigation" aria-label="Pagination">
-            <!-- ko if: hasPrevPage -->
-            <li>
-                <a href="#" class="page-link" role="button" aria-label="Previous page"
-                    data-bind="click: prevPage, enable: hasPrevPage">
-                    <i class="icon-emb icon-emb-chevron-left"></i>
-                </a>
+    <div class="table-footer" role="presentation">
+        <ul aria-label="Pagination" class="pagination">
+            <li data-bind="css: { disabled: !firstPageActive() }">
+                <a data-bind="click: goToFirst">First</a>
+            </li>
+            <li data-bind="css: { disabled: !previousPageActive() }">
+                <a data-bind="click: goToPrevious">Previous</a>
+            </li>
+
+            <!-- ko foreach: getPages() -->
+            <li data-bind="css: { active: $component.page() === $data }">
+                <a data-bind="click: $component.goToPage, text: $data"></a>
             </li>
             <!-- /ko -->
-            <li>
-                <span class="page-link" data-bind="text: page"></span>
+
+            <li data-bind="css: { disabled: !nextPageActive() }">
+                <a data-bind="click: goToNext">Next</a>
             </li>
-            <!-- ko if: hasNextPage -->
-            <li>
-                <a href="#" class="page-link" role="button" aria-label="Next page"
-                    data-bind="click: nextPage, enable: hasNextPage">
-                    <i class="icon-emb icon-emb-chevron-right"></i>
-                </a>
+            <li data-bind="css: { disabled: !lastPageActive() }">
+                <a data-bind="click: goToLast">Last</a>
             </li>
-            <!-- /ko -->
+            <li class="totalPages">
+                <span
+                    data-bind="text: 'Total Pages : ' + $component.page() + ' of ' + $component.pageCount() + ' Pages'"></span>
+            </li>
         </ul>
     </div>
     <!-- /ko -->
