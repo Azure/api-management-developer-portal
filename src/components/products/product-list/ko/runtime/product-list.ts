@@ -27,6 +27,7 @@ export class ProductList {
     public readonly hasPager: ko.Computed<boolean>;
     public readonly hasPrevPage: ko.Observable<boolean>;
     public readonly hasNextPage: ko.Observable<boolean>;
+    public totalNoOfItems: ko.Observable<number>;
 
     constructor(
         private readonly usersService: UsersService,
@@ -44,6 +45,7 @@ export class ProductList {
         this.hasPrevPage = ko.observable(false);
         this.hasNextPage = ko.observable(false);
         this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
+        this.totalNoOfItems = ko.observable();  
     }
 
     @Param()
@@ -79,7 +81,7 @@ export class ProductList {
             this.hasNextPage(!!itemsPage.nextLink);
 
             this.products(itemsPage.value);
-
+            this.totalNoOfItems(itemsPage.count);
             if (this.allowSelection() && !this.selectedProductName()) {
                 this.selectFirstProduct();
             }
@@ -96,6 +98,136 @@ export class ProductList {
             this.working(false);
         }
     }
+
+    public pageCount(): number {
+        return Math.ceil(this.totalNoOfItems() / Constants.defaultPageSize);
+    };
+
+    public setCurrentPag(page: number): void {
+        if (page < Constants.firstPage)
+            page = Constants.firstPage;
+
+        if (page > this.lastPage())
+            page = this.lastPage();
+
+        this.page(page);
+    };
+
+
+    public lastPage(): number {
+        return this.pageCount();
+    };
+
+    public nextPagePresent(): number {
+        var next = this.page() + 1;
+        if (next > this.lastPage())
+            return null;
+        return next;
+    };
+
+    public previousPage(): number {
+        var previous = this.page() - 1;
+        if (previous < Constants.firstPage)
+            return null;
+
+        return previous;
+    };
+
+    public needPaging(): boolean {
+        return this.pageCount() > 1;
+    };
+
+    public nextPageActive(): boolean {
+        return this.nextPagePresent() != null;
+    };
+
+    public previousPageActive(): boolean {
+        return this.previousPage() != null;
+    };
+
+    public lastPageActive(): boolean {
+        return (this.lastPage() != this.page());
+    };
+
+    public firstPageActive(): boolean {
+        return (Constants.firstPage != this.page());
+    };
+
+    public generateAllPages(): number[] {
+        var pages = [];
+        for (var i = Constants.firstPage; i <= this.lastPage(); i++)
+            pages.push(i);
+
+        return pages;
+    };
+
+    public generateMaxPage(): number[] {
+        var current = this.page();
+        var pageCount = this.pageCount();
+        var first = Constants.firstPage;
+
+        var upperLimit = current + (Constants.maxPageCount - 1) / 2;
+        var downLimit = current - (Constants.maxPageCount - 1) / 2;
+
+        while (upperLimit > pageCount) {
+            upperLimit--;
+            if (downLimit > first)
+                downLimit--;
+        }
+
+        while (downLimit < first) {
+            downLimit++;
+            if (upperLimit < pageCount)
+                upperLimit++;
+        }
+
+        var pages = [];
+        for (var i = downLimit; i <= upperLimit; i++) {
+            pages.push(i);
+        }
+        return pages;
+    };
+
+    public getPages(): ko.ObservableArray {
+        this.page();
+        this.totalNoOfItems();
+
+        if (this.pageCount() <= Constants.maxPageCount) {
+            return ko.observableArray(this.generateAllPages());
+        } else {
+            return ko.observableArray(this.generateMaxPage());
+        }
+    };
+
+    public goToPage(page: number): void {
+        if (page >= Constants.firstPage && page <= this.lastPage())
+            this.page(page);
+        this.loadPageOfProducts();
+    }
+
+    public goToFirst(): void {
+        this.page(Constants.firstPage);
+        this.loadPageOfProducts();
+    };
+
+    public goToPrevious(): void {
+        var previous = this.previousPage();
+        if (previous != null)
+            this.page(previous);
+        this.loadPageOfProducts();
+    };
+
+    public goToNext(): void {
+        var next = this.nextPagePresent();
+        if (next != null)
+            this.page(next);
+        this.loadPageOfProducts();
+    };
+
+    public goToLast(): void {
+        this.page(this.lastPage());
+        this.loadPageOfProducts();
+    };
 
     public selectFirstProduct(): void {
         let productName;
