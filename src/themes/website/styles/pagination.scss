@@ -22,4 +22,41 @@
             font-weight: 900;
         }
     }
+    
+    li {
+		display: inline-block !important;
+		color: black;
+		padding: 8px 16px;
+		text-decoration: none;
+		transition: background-color .3s;
+		border: 1px solid #ddd;
+		margin: 70px 4px;
+		cursor: pointer;
+		&:hover {
+			&:not(.active) {
+				&:not(.totalPages) {
+					background-color: #ddd;
+				}
+			}
+		}
+	}
+	.active {
+		background-color: #C9002E;
+		color: white;
+		border: 1px solid #C9002E;
+	}
+	.disabled {
+		pointer-events: none;
+		opacity: 0.6;
+	}
+	.totalPages {
+		border: none;
+		margin-left: 150px;
+		color: black;
+		padding: 8px 16px;
+		text-decoration: none;
+		transition: background-color .3s;
+		font-size: medium;
+		font-weight: bold;
+	}
 }
