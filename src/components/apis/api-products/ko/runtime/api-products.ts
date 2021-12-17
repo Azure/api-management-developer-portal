@@ -44,6 +44,7 @@ export class ApiProducts {
     @OnMounted()
     public async initialize(): Promise<void> {
         const apiName = this.routeHelper.getApiName();
+
         if (apiName) {
             this.selectedApiName(apiName);
             await this.loadPageOfProducts();
@@ -54,6 +55,8 @@ export class ApiProducts {
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.searchProducts);
+
+        this.pageNumber.subscribe(this.loadPageOfProducts);
     }
 
     private async onRouteChange(): Promise<void> {
