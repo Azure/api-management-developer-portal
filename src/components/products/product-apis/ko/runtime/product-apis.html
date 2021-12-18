@@ -58,31 +58,9 @@
     <!-- /ko -->
 
 
-    <!-- ko if: hasPager -->
     <!-- ko ifnot: working -->
-    <div class="table-footer">
-        <ul class="pagination justify-content-center" role="navigation" aria-label="Pagination">
-            <!-- ko if: hasPrevPage -->
-            <li class="page-item">
-                <a href="#" class="page-link" role="button" aria-label="Previous page"
-                    data-bind="click: prevPage, enable: hasPrevPage">
-                    <i class="icon-emb icon-emb-chevron-left"></i>
-                </a>
-            </li>
-            <!-- /ko -->
-            <li class="page-item">
-                <span class="page-link" data-bind="text: page"></span>
-            </li>
-            <!-- ko if: hasNextPage -->
-            <li class="page-item">
-                <a href="#" class="page-link" role="button" aria-label="Next page"
-                    data-bind="click: nextPage, enable: hasNextPage">
-                    <i class="icon-emb icon-emb-chevron-right"></i>
-                </a>
-            </li>
-            <!-- /ko -->
-        </ul>
-    </div>
+    <!-- ko if: $component.totalPages() > 1 -->
+    <pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }"></pagination>
     <!-- /ko -->
     <!-- /ko -->
 </div>
