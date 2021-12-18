@@ -20,10 +20,9 @@ export class ApiProductsTiles {
     public readonly selectedApiName: ko.Observable<string>;
     public readonly working: ko.Observable<boolean>;
     public readonly pattern: ko.Observable<string>;
-    public readonly page: ko.Observable<number>;
-    public readonly hasPager: ko.Computed<boolean>;
-    public readonly hasPrevPage: ko.Observable<boolean>;
-    public readonly hasNextPage: ko.Observable<boolean>;
+    public readonly pageNumber: ko.Observable<number>;
+    public readonly totalPages: ko.Observable<number>;
+
     private lastPattern: string;
 
     constructor(
@@ -36,10 +35,8 @@ export class ApiProductsTiles {
         this.selectedApiName = ko.observable();
         this.working = ko.observable();
         this.pattern = ko.observable();
-        this.page = ko.observable(1);
-        this.hasPrevPage = ko.observable();
-        this.hasNextPage = ko.observable();
-        this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
+        this.pageNumber = ko.observable(1);
+        this.totalPages = ko.observable(0);
     }
 
     @Param()
@@ -48,9 +45,10 @@ export class ApiProductsTiles {
     @OnMounted()
     public async initialize(): Promise<void> {
         const apiName = this.routeHelper.getApiName();
+
         if (apiName) {
             this.selectedApiName(apiName);
-            await this.loadData();
+            await this.loadPageOfProducts();
         }
 
         this.router.addRouteChangeListener(this.onRouteChange);
@@ -58,6 +56,8 @@ export class ApiProductsTiles {
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.searchProducts);
+
+        this.pageNumber.subscribe(this.loadPageOfProducts);
     }
 
     private async onRouteChange(): Promise<void> {
@@ -68,23 +68,22 @@ export class ApiProductsTiles {
         }
 
         this.selectedApiName(apiName);
-        await this.loadData();
+        await this.loadPageOfProducts();
     }
 
     /**
      * Initiates searching products.
      */
     public async searchProducts(): Promise<void> {
-        this.page(1);
-        await this.loadData();
+        this.pageNumber(1);
+        await this.loadPageOfProducts();
     }
 
     /**
      * Loads page of products.
      */
-    public async loadData(): Promise<void> {
-
-        const pageNumber = this.page() - 1;
+    public async loadPageOfProducts(): Promise<void> {
+        const pageNumber = this.pageNumber() - 1;
 
         const query: SearchQuery = {
             pattern: this.pattern(),
@@ -95,11 +94,10 @@ export class ApiProductsTiles {
         try {
             this.working(true);
             const apiName = this.selectedApiName();
-            const itemsPage = await this.apiService.getApiProductsPage(apiName, query);
+            const pageOfProducts = await this.apiService.getApiProductsPage(apiName, query);
             this.lastPattern = this.pattern();
-            this.hasPrevPage(pageNumber > 0);
-            this.hasNextPage(!!itemsPage.nextLink);
-            this.products(itemsPage.value);
+            this.products(pageOfProducts.value);
+            this.totalPages(Math.ceil(pageOfProducts.count / Constants.defaultPageSize));
         }
         catch (error) {
             throw new Error(`Unable to load API products. Error: ${error.message}`);
@@ -111,16 +109,6 @@ export class ApiProductsTiles {
 
     public getProductUrl(product: Product): string {
         return this.routeHelper.getProductReferenceUrl(product.name, this.detailsPageUrl());
-    }
-
-    public prevPage(): void {
-        this.page(this.page() - 1);
-        this.loadData();
-    }
-
-    public nextPage(): void {
-        this.page(this.page() + 1);
-        this.loadData();
     }
 
     @OnDestroyed()

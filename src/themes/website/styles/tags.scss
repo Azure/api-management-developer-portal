@@ -7,10 +7,9 @@
 .tag-item,
 .tag-item:active,
 .tag-item:hover {
-    border: 1px solid #0078d4;
+    border: 1px solid $default-text-color;
     padding: 2px 7px;
-    border-radius: 3px;
-    color: #0078d4;
+    color: $default-text-color;
     cursor: default;
     display: inline-flex;
     text-decoration: none;
