@@ -123,35 +123,9 @@
     </div>
     <!-- /ko -->
 
-    <!-- ko if: needPaging -->
     <!-- ko ifnot: working -->
-    <div class="table-footer" role="presentation">
-        <ul aria-label="Pagination" class="pagination">
-            <li data-bind="css: { disabled: !firstPageActive() }">
-                <a data-bind="click: goToFirst">First</a>
-            </li>
-            <li data-bind="css: { disabled: !previousPageActive() }">
-                <a data-bind="click: goToPrevious">Previous</a>
-            </li>
-
-            <!-- ko foreach: getPages() -->
-            <li data-bind="css: { active: $component.page() === $data }">
-                <a data-bind="click: $component.goToPage, text: $data"></a>
-            </li>
-            <!-- /ko -->
-
-            <li data-bind="css: { disabled: !nextPageActive() }">
-                <a data-bind="click: goToNext">Next</a>
-            </li>
-            <li data-bind="css: { disabled: !lastPageActive() }">
-                <a data-bind="click: goToLast">Last</a>
-            </li>
-            <li class="totalPages">
-                <span
-                    data-bind="text: 'Total Pages : ' + $component.page() + ' of ' + $component.pageCount() + ' Pages'"></span>
-            </li>
-        </ul>
-    </div>
+    <!-- ko if: $component.totalPages() > 1 -->
+    <pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }"></pagination>
     <!-- /ko -->
     <!-- /ko -->
 </div>
