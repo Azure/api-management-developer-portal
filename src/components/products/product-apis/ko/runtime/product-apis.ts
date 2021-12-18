@@ -83,9 +83,6 @@ export class ProductApis {
 
             const pageOfApis = await this.apiService.getProductApis(`products/${productName}`, query);
             this.apis(pageOfApis.value);
-
-            console.log(pageOfApis.count);
-
             this.totalPages(Math.ceil(pageOfApis.count / Constants.defaultPageSize));
         }
         catch (error) {

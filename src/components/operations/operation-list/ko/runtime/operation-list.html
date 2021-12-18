@@ -123,29 +123,9 @@
 </div>
 <!-- /ko -->
 
-<!-- ko if: hasPager -->
 <!-- ko ifnot: working -->
-<ul class="pagination justify-content-center" role="navigation" aria-label="Pagination">
-    <!-- ko if: hasPrevPage -->
-    <li class="page-item" role="presentation">
-        <button class="page-link" role="button" aria-label="Go to previous page" title="Go to previous page"
-            data-bind="click: prevPage, enable: hasPrevPage">
-            <i class="icon-emb icon-emb-chevron-left"></i>
-        </button>
-    </li>
-    <!-- /ko -->
-    <li class="page-item" role="presentation">
-        <span class="page-link" data-bind="text: pageNumber"></span>
-    </li>
-    <!-- ko if: hasNextPage -->
-    <li class="page-item" role="presentation">
-        <button class="page-link" role="button" aria-label="Go to next page" title="Go to next page"
-            data-bind="click: nextPage, enable: hasNextPage">
-            <i class="icon-emb icon-emb-chevron-right"></i>
-        </button>
-    </li>
-    <!-- /ko -->
-</ul>
+<!-- ko if: $component.totalPages() > 1 -->
+<pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }"></pagination>
 <!-- /ko -->
 <!-- /ko -->
 

@@ -90,7 +90,7 @@ export const reservedPermalinks = [
 ];
 
 /**
- * Maximum number of items to show in a paginated view.
+ * Maximum number of items to request from Managament API.
  */
 export const defaultPageSize = 50;
 
