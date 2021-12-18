@@ -23,10 +23,8 @@ export class ProductListDropdown {
     public readonly selectedProduct: ko.Observable<Product>;
     public readonly selectedProductName: ko.Observable<string>;
     public readonly pattern: ko.Observable<string>;
-    public readonly page: ko.Observable<number>;
-    public readonly hasPager: ko.Computed<boolean>;
-    public readonly hasPrevPage: ko.Observable<boolean>;
-    public readonly hasNextPage: ko.Observable<boolean>;
+    public readonly pageNumber: ko.Observable<number>;
+    public readonly totalPages: ko.Observable<number>;
     public readonly expanded: ko.Observable<boolean>;
     public readonly selection: ko.Computed<string>;
 
@@ -40,10 +38,8 @@ export class ProductListDropdown {
         this.working = ko.observable();
         this.selectedId = ko.observable();
         this.pattern = ko.observable();
-        this.page = ko.observable(1);
-        this.hasPrevPage = ko.observable();
-        this.hasNextPage = ko.observable();
-        this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
+        this.pageNumber = ko.observable(1);
+        this.totalPages = ko.observable(0);
         this.products = ko.observableArray();
         this.selectedProduct = ko.observable();
         this.selectedProductName = ko.observable();
@@ -69,13 +65,14 @@ export class ProductListDropdown {
             .subscribe(this.resetSearch);
 
         this.router.addRouteChangeListener(this.onRouteChange);
+        this.pageNumber.subscribe(this.loadPageOfProducts);
     }
 
     /**
      * Initiates searching Products.
      */
     public async resetSearch(): Promise<void> {
-        this.page(1);
+        this.pageNumber(1);
         this.loadPageOfProducts();
     }
 
@@ -97,7 +94,7 @@ export class ProductListDropdown {
         try {
             this.working(true);
 
-            const pageNumber = this.page() - 1;
+            const pageNumber = this.pageNumber() - 1;
 
             const query: SearchQuery = {
                 pattern: this.pattern(),
@@ -105,17 +102,16 @@ export class ProductListDropdown {
                 take: Constants.defaultPageSize
             };
 
-            const itemsPage = await this.productService.getProductsPage(query);
+            const pageOfProducts = await this.productService.getProductsPage(query);
 
-            this.products(itemsPage.value);
-            this.hasPrevPage(pageNumber > 0);
-            this.hasNextPage(!!itemsPage.nextLink);
+            this.products(pageOfProducts.value);
+            this.totalPages(Math.ceil(pageOfProducts.count / Constants.defaultPageSize));
 
             const productName = this.routeHelper.getProductName();
 
             this.selectedProduct(productName
-                ? itemsPage.value.find(item => item.id.endsWith(productName))
-                : itemsPage.value[0]);
+                ? pageOfProducts.value.find(item => item.id.endsWith(productName))
+                : pageOfProducts.value[0]);
         }
         catch (error) {
             throw new Error(`Unable to load APIs. Error: ${error.message}`);
@@ -123,16 +119,6 @@ export class ProductListDropdown {
         finally {
             this.working(false);
         }
-    }
-
-    public prevPage(): void {
-        this.page(this.page() - 1);
-        this.loadPageOfProducts();
-    }
-
-    public nextPage(): void {
-        this.page(this.page() + 1);
-        this.loadPageOfProducts();
     }
 
     public toggle(): void {

@@ -111,11 +111,11 @@ export class ApiService {
         if (odataFilterEntries.length > 0) {
             query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
         }
-        const pagesOfOperationsByTag = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(query, [MapiClient.getPortalHeader("getOperationsByTags")]);
+        const pageOfOperationsByTag = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(query, [MapiClient.getPortalHeader("getOperationsByTags")]);
         const page = new Page<TagGroup<Operation>>();
         const tagGroups: Bag<TagGroup<Operation>> = {};
 
-        pagesOfOperationsByTag.value.forEach(x => {
+        pageOfOperationsByTag.value.forEach(x => {
             const tagContract: TagContract = x.tag ? Utils.armifyContract("tags", x.tag) : null;
             const operationContract: OperationContract = x.operation ? Utils.armifyContract("operations", x.operation) : null;
 
@@ -137,7 +137,8 @@ export class ApiService {
             tagGroup.items.push(new Operation(operationContract));
         });
         page.value = Object.keys(tagGroups).map(x => tagGroups[x]);
-        page.nextLink = pagesOfOperationsByTag.nextLink;
+        page.nextLink = pageOfOperationsByTag.nextLink;
+        page.count = pageOfOperationsByTag.count;
 
         return page;
     }
@@ -365,6 +366,7 @@ export class ApiService {
 
         page.value = result.value.map(c => new Operation(<any>c));
         page.nextLink = result.nextLink;
+        page.count = result.count;
 
         return page;
     }
@@ -469,6 +471,7 @@ export class ApiService {
 
         page.value = result.value.map(item => new Api(item));
         page.nextLink = result.nextLink;
+        page.count = result.count;
 
         return page;
     }
