@@ -30,7 +30,6 @@ export class Pagination {
     @Param()
     public totalPages: ko.Observable<number>;
 
-    @Event()
     public onPageChange: (pageNumber: number) => void;
 
     @OnMounted()

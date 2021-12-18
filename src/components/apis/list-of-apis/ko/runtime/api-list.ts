@@ -68,8 +68,11 @@ export class ApiList {
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.resetSearch);
 
-        this.groupByTag.subscribe(this.resetSearch);
-        this.pageNumber.subscribe(this.loadPageOfApis);
+        this.groupByTag
+            .subscribe(this.resetSearch);
+
+        this.pageNumber
+            .subscribe(this.loadPageOfApis);
     }
 
     /**
