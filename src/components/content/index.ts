@@ -1,3 +1,3 @@
 export * from "./content.module";
-export * from "./contentSection";
+export * from "./operationsSection";
 export * from "./content";

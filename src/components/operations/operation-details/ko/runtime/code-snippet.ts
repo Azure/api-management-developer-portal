@@ -1,13 +1,13 @@
 import * as ko from "knockout";
-import template from "./code-sample.html";
+import template from "./code-snippet.html";
 import { Component, Param } from "@paperbits/common/ko/decorators";
 
 
 @Component({
-    selector: "code-sample",
+    selector: "code-snippet",
     template: template
 })
-export class CodeSampleViewModel {
+export class CodeSnippet {
     public readonly label: ko.Computed<string>;
 
     constructor() {

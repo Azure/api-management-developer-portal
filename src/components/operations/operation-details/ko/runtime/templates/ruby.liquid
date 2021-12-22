@@ -2,34 +2,24 @@ require 'net/http'
 
 uri = URI('{{requestUrl}}')
 
-{% if parameters.size > 0 -%}
-query = URI.encode_www_form({
-# Request parameters
-{% for parameter in request.parameters -%}
-    '{{parameter.name}}' => '{{parameter.value}}'{% unless forloop.last %},{% endunless %}
-{% endfor -%}
-})
-if query.length > 0
-  if uri.query && uri.query.length > 0
-    uri.query += '&' + query
-  else
-    uri.query = query
-  end
-end
-{% endif -%}
 
 request = Net::HTTP::{{ method | downcase | capitalize }}.new(uri.request_uri)
+
 # Request headers
 {% for header in request.meaningfulHeaders -%}
 request['{{header.name}}'] = '{{header.displayedValue}}'
-{% endfor -%}
-{% if body -%}
+{% endfor %}
+{% if request.body != blank -%}
 # Request body
-request.body = "{{ body | replace:'"','\"' }}"
-{% endif -%}
-
+{% if request.bodyFormat == "raw" -%}
+request.body = '{{ request.body }}'
+{%- elsif  request.bodyFormat == "binary" -%}
+request.body = File.read("< path/to/{{request.binary.name}} >")
+{% endif %}
+{% endif %}
 response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
     http.request(request)
 end
 
+puts response.code
 puts response.body

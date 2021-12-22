@@ -90,9 +90,19 @@ export const reservedPermalinks = [
 ];
 
 /**
- * Maximum number of items to show in a paginated view.
+ * Maximum number of items to request from Managament API.
  */
 export const defaultPageSize = 50;
+
+/**
+ * Default value of first page in a paginated view.
+ */
+ export const firstPage = 1;
+
+/**
+ * Maximum number of pages to show in a paginated view.
+ */
+export const showMaximumPages = 3;
 
 /**
  * Default input delay before changes take effect.
@@ -107,17 +117,17 @@ export const AppType = "developerPortal";
 /**
  * Query Editor Settings - GraphQL Console
  */
- export const QueryEditorSettings = {
+export const QueryEditorSettings = {
     id: "queryEditor",
     config: {
         language: 'graphqlQuery',
         readOnly: false,
     }
- }
+}
 
- /**
- * Variables Editor Settings - GraphQL Console
- */
+/**
+* Variables Editor Settings - GraphQL Console
+*/
 export const VariablesEditorSettings = {
     id: "variablesEditor",
     config: {
@@ -129,13 +139,13 @@ export const VariablesEditorSettings = {
 /**
  * Response Settings - GraphQL Console
  */
- export const ResponseSettings = {
+export const ResponseSettings = {
     id: "responseEditor",
     config: {
         language: 'json',
         readOnly: true,
     }
- }
+}
 
  /**
  * Graphql types

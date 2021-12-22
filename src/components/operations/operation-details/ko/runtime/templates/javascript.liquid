@@ -10,10 +10,14 @@ $.ajax({
         {% endfor -%}
     },
     {% endif -%}
-    {% if request.body -%}
+    {% if request.body != blank and request.bodyFormat == "raw" -%}
 
     // Request body
-    data: "{{ request.body | replace:'"','\"' }}",
+    {%- assign formattedBody = request.body | replace: '"','\\"' 
+    formattedBody = formattedBody | replace: '\r\n', ' ' 
+    formattedBody = formattedBody | replace: '\n', ' ' 
+    formattedBody = formattedBody | replace: '     ', ' ' %}
+    data: "{{ formattedBody }}",
     {% endif -%}
 })
 .done(function (data) {

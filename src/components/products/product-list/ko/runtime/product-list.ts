@@ -23,10 +23,8 @@ export class ProductList {
     public readonly showDetails: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
     public readonly pattern: ko.Observable<string>;
-    public readonly page: ko.Observable<number>;
-    public readonly hasPager: ko.Computed<boolean>;
-    public readonly hasPrevPage: ko.Observable<boolean>;
-    public readonly hasNextPage: ko.Observable<boolean>;
+    public readonly pageNumber: ko.Observable<number>;
+    public readonly totalPages: ko.Observable<number>;
 
     constructor(
         private readonly usersService: UsersService,
@@ -40,10 +38,8 @@ export class ProductList {
         this.selectedProductName = ko.observable().extend(<any>{ acceptChange: this.allowSelection });
         this.working = ko.observable(true);
         this.pattern = ko.observable();
-        this.page = ko.observable(1);
-        this.hasPrevPage = ko.observable(false);
-        this.hasNextPage = ko.observable(false);
-        this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
+        this.pageNumber = ko.observable(1);
+        this.totalPages = ko.observable(0);
     }
 
     @Param()
@@ -59,10 +55,12 @@ export class ProductList {
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.resetSearch);
+
+        this.pageNumber.subscribe(this.loadPageOfProducts);
     }
 
     public async loadPageOfProducts(): Promise<void> {
-        const pageNumber = this.page() - 1;
+        const pageNumber = this.pageNumber() - 1;
 
         const query: SearchQuery = {
             pattern: this.pattern(),
@@ -73,12 +71,9 @@ export class ProductList {
         try {
             this.working(true);
 
-            const itemsPage = await this.productService.getProductsPage(query);
-
-            this.hasPrevPage(pageNumber > 0);
-            this.hasNextPage(!!itemsPage.nextLink);
-
-            this.products(itemsPage.value);
+            const pageOfProducts = await this.productService.getProductsPage(query);
+            this.products(pageOfProducts.value);
+            this.totalPages(Math.ceil(pageOfProducts.count / Constants.defaultPageSize));
 
             if (this.allowSelection() && !this.selectedProductName()) {
                 this.selectFirstProduct();
@@ -112,18 +107,8 @@ export class ProductList {
         return this.routeHelper.getProductReferenceUrl(product.name, this.detailsPageUrl());
     }
 
-    public prevPage(): void {
-        this.page(this.page() - 1);
-        this.loadPageOfProducts();
-    }
-
-    public nextPage(): void {
-        this.page(this.page() + 1);
-        this.loadPageOfProducts();
-    }
-
     public async resetSearch(): Promise<void> {
-        this.page(1);
+        this.pageNumber(1);
         this.loadPageOfProducts();
     }
 }

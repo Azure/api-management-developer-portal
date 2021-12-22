@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Net.Http;
 using System.Web;
+using System.IO;
 
 namespace CSHttpClientSample
 {
@@ -18,84 +19,128 @@ namespace CSHttpClientSample
         static async void MakeRequest()
         {
             var client = new HttpClient();
-            var queryString = HttpUtility.ParseQueryString(string.Empty);
 
-{% if request.meaningfulHeaders.size > 0 -%}
+{% if request.meaningfulHeaders.size > 0 %}
             // Request headers
 {% for header in request.meaningfulHeaders -%}
-{% case header.name -%}
-{% when "Accept"%}
+{% case header.name | downcase -%}
+{%when"content-disposition"-%}
+            {%- continue %};
+{%when  "content-encoding" -%}
+            {%- continue %};
+{%when  "content-language" -%}
+            {%- continue -%};
+{%when  "content-length" %}
+            {%- continue -%};
+{%when  "content-location" %}
+            {%- continue %};
+{%when  "content-md5" -%}
+            {%- continue %};
+{%when  "content-range" -%}
+            {%- continue %};
+{%when  "content-type" -%}
+            {%- continue -%};
+{%when  "expires" -%}
+            {%- continue %};
+{%when  "last-modified" -%}
+            {%- continue %};
+{% when "accept"%}
             client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("{{header.displayedValue}}"));
-{% when "Accept-Charset" -%}
+{% when "accept-charset" %}
             client.DefaultRequestHeaders.AcceptCharset.Add(StringWithQualityHeaderValue.Parse("{{header.displayedValue}}"));
-{% when "Accept-Encoding" -%}
+{% when "accept-encoding" %}
             client.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("{{header.displayedValue}}"));
-{% when "Accept-Language" -%}
+{% when "accept-language" %}
             client.DefaultRequestHeaders.AcceptLanguage.Add(StringWithQualityHeaderValue.Parse("{{header.displayedValue}}"));
-{% when "Cache-Control" -%}
+{% when "cache-control" %}
             client.DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("{{header.displayedValue}}");
-{% when "Connection" -%}
+{% when "connection" %}
             client.DefaultRequestHeaders.Connection.Add("{{header.displayedValue}}");
-{% when "Date" -%}
+{% when "date" %}
             client.DefaultRequestHeaders.Date = DateTimeOffset.Parse("{{header.displayedValue}}");
-{% when "Expect" -%}
+{% when "expect" %}
             client.DefaultRequestHeaders.Expect.Add(NameValueWithParametersHeaderValue.Parse("{{header.displayedValue}}"));
-{% when "If-Match" -%}
+{% when "if-match" %}
             client.DefaultRequestHeaders.IfMatch.Add(EntityTagHeaderValue.Parse("{{header.displayedValue}}"));
-{% when "If-Modified-Since" -%}
+{% when "if-modified-since" %}
             client.DefaultRequestHeaders.IfModifiedSince = DateTimeOffset.Parse("{{header.displayedValue}}");
-{% when "If-None-Match" -%}
+{% when "if-none-match" %}
             client.DefaultRequestHeaders.IfNoneMatch.Add(EntityTagHeaderValue.Parse("{{header.displayedValue}}"));
-{% when "If-Range" -%}
+{% when "if-range" %}
             client.DefaultRequestHeaders.IfRange = RangeConditionHeaderValue.Parse("{{header.displayedValue}}");
-{% when "If-Unmodified-Since" -%}
+{% when "if-unmodified-since" %}
             client.DefaultRequestHeaders.IfUnmodifiedSince = DateTimeOffset.Parse("{{header.displayedValue}}");
-{% when "Max-Forwards" -%}
+{% when "max-forwards" %}
             client.DefaultRequestHeaders.MaxForwards = int.Parse("{{header.displayedValue}}");
-{% when "Pragma" -%}
+{% when "pragma" %}
             client.DefaultRequestHeaders.Pragma.Add(NameValueHeaderValue.Parse("{{header.displayedValue}}"));
-{% when "Range" -%}
+{% when "range" %}
             client.DefaultRequestHeaders.Range = RangeHeaderValue.Parse("{{header.displayedValue}}");
-{% when "Referer" -%}
+{% when "referer" %}
             client.DefaultRequestHeaders.Referrer = new Uri("{{header.displayedValue}}");
-{% when "TE" -%}
+{% when "te" %}
             client.DefaultRequestHeaders.TE.Add(TransferCodingWithQualityHeaderValue.Parse("{{header.displayedValue}}"));
-{% when "Transfer-Encoding" -%}
+{% when "transfer-encoding" %}
             client.DefaultRequestHeaders.TransferEncoding.Add(TransferCodingHeaderValue.Parse("{{header.displayedValue}}"));
-{% when "Upgrade" -%}
+{% when "upgrade" %}
             client.DefaultRequestHeaders.Upgrade.Add(ProductHeaderValue.Parse("{{header.displayedValue}}"));
-{% when "User-Agent" -%}
+{% when "user-agent" %}
             client.DefaultRequestHeaders.UserAgent.Add(ProductInfoHeaderValue.Parse("{{header.displayedValue}}"));
-{% when "Via" -%}
+{% when "via" %}
             client.DefaultRequestHeaders.Via.Add(ViaHeaderValue.Parse("{{header.displayedValue}}"));
-{% when "Warning" -%}
+{% when "warning" %}
             client.DefaultRequestHeaders.Warning.Add(WarningHeaderValue.Parse("{{header.displayedValue}}"));
-{% else -%}
+{% else %}
             client.DefaultRequestHeaders.Add("{{header.name}}", "{{header.displayedValue}}");
 {% endcase -%}
 {% endfor -%}
 {% endif -%}
 
-{% if request.parameters.size > 0 -%}
-            // Request parameters
-{% for parameter in request.parameters -%}
-            queryString["{{parameter.Name}}"] = "{{parameter.Value}}";
-{% endfor -%}
-{% endif -%}
-            var uri = "{{requestUrl}}{% if path contains '?' %}&{% else %}?{% endif %}" + queryString;
+            var uri = "{{requestUrl}}";
 
 {% case method -%}
 
-{% when "POST" -%}
+{% when "POST" %}
             HttpResponseMessage response;
-
+            {%- if request.body != blank %}
             // Request body
-            byte[] byteData = Encoding.UTF8.GetBytes("{{ body | replace:'"','\"'}}");
+{%- if request.bodyFormat == "raw"  -%}
+            {%- assign formattedBody = request.body | replace:'"','\\"' 
+            formattedBody = formattedBody | replace: '\r\n', ' ' 
+            formattedBody = formattedBody | replace: '     ', ' ' %}
 
-            using (var content = new ByteArrayContent(byteData))
+            using (var content = new StringContent("{{formattedBody}}"))
             {
-{% if body -%}
-               content.Headers.ContentType = new MediaTypeHeaderValue("< your content type, i.e. application/json >");
+{%- elsif request.bodyFormat == "binary" %}
+            using (var content = new StreamContent(File.OpenRead(" < path\\to\\{{request.binary.name}} > ")))
+            {
+{%- endif %}
+    {%- for header in request.meaningfulHeaders -%}
+        {% case header.name | downcase -%}
+            {%when"content-disposition" %}
+                content.Headers.ContentDisposition = new ContentDispositionHeaderValue("{{header.displayedValue}}");
+            {%when  "content-encoding" %}
+                content.Headers.ContentEncoding.Add("{{header.displayedValue}}");
+            {%when  "content-language" %}
+                content.Headers.ContentLanguage.Add("{{header.displayedValue}}");
+            {%when  "content-length" %}
+                content.Headers.ContentLength = {{header.displayedValue}};
+            {%when  "content-location" %}
+                content.Headers.ContentLocation = new Uri("{{header.displayedValue}}"); 
+            {%when  "content-md5" %}
+                content.Headers.Add("content-md5", "{{header.displayedValue}}");
+            {%when  "content-range" %}
+                content.Headers.ContentRange = new ContentRangeHeaderValue({{header.displayedValue}});
+            {%when  "content-type" %}
+                content.Headers.ContentType = new MediaTypeHeaderValue("{{header.displayedValue}}");
+            {%when  "expires" %}
+                content.Headers.Add("expires", "{{header.displayedValue}}");
+            {%when  "last-modified" %}
+                content.Headers.Add("last-modified", "{{header.displayedValue}}");
+            {% else -%}
+                {%- continue -%};
+        {% endcase -%}
+    {% endfor -%}
 {% endif -%}
                response = await client.PostAsync(uri, content);
             }
@@ -104,16 +149,47 @@ namespace CSHttpClientSample
             var response = await client.GetAsync(uri);
 {% when "DELETE" -%}
             var response = await client.DeleteAsync(uri);
-{% when "PUT" -%}
+{% when "PUT" %}
             HttpResponseMessage response;
-
+{% if request.body != blank %}
             // Request body
-            byte[] byteData = Encoding.UTF8.GetBytes("{{ body | replace:'"','\"'}}");
+{%- if request.bodyFormat == "raw"  -%}
+            {%- assign formattedBody = request.body | replace:'"','\\"' 
+            formattedBody = formattedBody | replace: '\r\n', ' ' 
+            formattedBody = formattedBody | replace: '     ', ' ' %}
 
-            using (var content = new ByteArrayContent(byteData))
+            using (var content = new StringContent("{{formattedBody}}"))
             {
-{% if body -%}
-                content.Headers.ContentType = new MediaTypeHeaderValue("< your content type, i.e. application/json >");
+{%- elsif request.bodyFormat == "binary" %}
+            using (var content = new  StreamContent(File.OpenRead(" < path\\to\\{{request.binary.name}} > ")))
+            {
+{%- endif %}
+{%- for header in request.meaningfulHeaders -%}
+    {% case header.name | downcase -%}
+        {%when"content-disposition" %}
+            content.Headers.ContentDisposition = new ContentDispositionHeaderValue("{{header.displayedValue}}");
+        {%when  "content-encoding" %}
+            content.Headers.ContentEncoding.Add("{{header.displayedValue}}");
+        {%when  "content-language" %}
+            content.Headers.ContentLanguage.Add("{{header.displayedValue}}");
+        {%when  "content-length" %}
+            content.Headers.ContentLength = {{header.displayedValue}};
+        {%when  "content-location" %}
+            content.Headers.ContentLocation = new Uri("{{header.displayedValue}}"); 
+        {%when  "content-md5" %}
+            content.Headers.Add("content-md5", "{{header.displayedValue}}");
+        {%when  "content-range" %}
+            content.Headers.ContentRange = new ContentRangeHeaderValue({{header.displayedValue}});
+        {%when  "content-type" %}
+            content.Headers.ContentType = new MediaTypeHeaderValue("{{header.displayedValue}}");
+        {%when  "expires" %}
+            content.Headers.Add("expires", "{{header.displayedValue}}");
+        {%when  "last-modified" %}
+            content.Headers.Add("last-modified", "{{header.displayedValue}}");
+        {% else -%}
+            {%- continue -%};
+    {% endcase -%}
+{% endfor -%}
 {% endif -%}
                 response = await client.PutAsync(uri, content);
             }
@@ -129,7 +205,7 @@ namespace CSHttpClientSample
                 var responseString = await response.Content.ReadAsStringAsync();
                 Console.WriteLine(responseString);
             }
-{% endcase -%}
+{% endcase %}
         }
     }
 }

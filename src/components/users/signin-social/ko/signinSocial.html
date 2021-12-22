@@ -1,9 +1,18 @@
 <div data-bind="secured: roles">
-<!-- ko if: aadConfig -->
-<signin-aad data-bind="attr: { params: aadConfig }"></signin-aad>
-<!-- /ko -->
+    <!-- ko if: aadConfig -->
+    <signin-aad data-bind="attr: { params: aadConfig }"></signin-aad>
+    <!-- /ko -->
 
-<!-- ko if: aadB2CConfig -->
-<signin-aad-b2c data-bind="attr: { params: aadB2CConfig }"></signin-aad-b2c>
-<!-- /ko -->
+    <!-- ko if: aadB2CConfig -->
+    <signin-aad-b2c data-bind="attr: { params: aadB2CConfig }"></signin-aad-b2c>
+    <!-- /ko -->
+
+    <!-- ko ifnot: aadConfig && aadB2CConfig && (mode === "publishing") -->
+    <div class="not-configured">This widget will display additional sign-in buttons when you configure <a
+            href="https://aka.ms/apim-how-to-aad" target="_blank">Azure Active Directory</a> or <a
+            href="https://aka.ms/apim-how-to-aadb2c" target="_blank">Azure Active Directory B2C</a>
+        integration in your API Management service. This message appears only in the portal's administrative mode and
+        the widget will be rendered as an empty space in the published portal, so you don't need to remove it.
+    </div>
+    <!-- /ko -->
 </div>

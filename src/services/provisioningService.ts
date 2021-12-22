@@ -37,7 +37,7 @@ export class ProvisionService {
 
     public async provision(): Promise<void> {
         const managementApiUrl = await this.getManagementUrl();
-        const dataUrl = `/editors/themes/default.json`;
+        const dataUrl = `/editors/templates/default.json`;
 
         try {
             const dataObj = await this.fetchData(dataUrl);
@@ -61,7 +61,7 @@ export class ProvisionService {
                         { name: KnownHttpHeaders.Authorization, value: accessToken },
                         MapiClient.getPortalHeader("provision")
                     ],
-                    body: JSON.stringify({ properties: contentItem })
+                    body: JSON.stringify(contentItem)
                 };
 
                 const response = await this.httpClient.send(request);
@@ -70,7 +70,7 @@ export class ProvisionService {
                     throw new Error("Unable to setup website.");
                 }
             }
-            this.router.navigateTo("/");
+            this.router.navigateTo(Constants.pageUrlHome);
             this.viewManager.setHost({ name: "page-host" });
             this.viewManager.showToolboxes();
         }

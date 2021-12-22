@@ -1,7 +1,8 @@
 <div class="form-inline search-input">
     <div class="d-block flex-grow">
         <div class="input-group">
-            <input type="search" role="searchbox" aria-label="Search APIs" placeholder="Search APIs" spellcheck="false" data-bind="textInput: pattern" />
+            <input type="search" role="searchbox" aria-label="Search APIs" placeholder="Search APIs" spellcheck="false"
+                data-bind="textInput: pattern" />
             <button type="button" class="search-button" aria-label="Search APIs">
                 <i class="icon-emb icon-emb-magnifier"></i>
             </button>
@@ -49,8 +50,7 @@
         <!-- ko foreach: { data: group.items, as: 'item' } -->
         <div class="table-row" role="row">
             <div class="col-5 text-truncate" role="cell">
-                <a href="#"
-                    data-bind="attr: { href: $component.getReferenceUrl(item), title: item.displayName }">
+                <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item), title: item.displayName }">
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.apiVersion -->
                     - <span data-bind="text: item.apiVersion"></span>
@@ -70,7 +70,7 @@
             <div class="col-7" role="cell">
                 <div tabindex="0" data-bind="markdown: { source: item.description, truncateAt: 250 }"></div>
             </div>
-            <!-- /ko -->            
+            <!-- /ko -->
         </div>
         <!-- /ko -->
         <!-- /ko -->
@@ -88,8 +88,7 @@
         <!-- ko foreach: { data: apis, as: 'item' } -->
         <div class="table-row" role="row">
             <div class="col-5 text-truncate" role="cell">
-                <a href="#"
-                    data-bind="attr: { href: $component.getReferenceUrl(item), title: item.displayName }">
+                <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item), title: item.displayName }">
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.apiVersion -->
                     - <span data-bind="text: item.apiVersion"></span>
@@ -124,31 +123,9 @@
     </div>
     <!-- /ko -->
 
-    <!-- ko if: hasPager -->
     <!-- ko ifnot: working -->
-    <div class="table-footer" role="presentation">
-        <ul class="pagination justify-content-center" role="navigation" aria-label="Pagination">
-            <!-- ko if: hasPrevPage -->
-            <li role="presentation">
-                <a href="#" class="page-link" role="button" aria-label="Previous page"
-                    data-bind="click: prevPage, enable: hasPrevPage">
-                    <i class="icon-emb icon-emb-chevron-left"></i>
-                </a>
-            </li>
-            <!-- /ko -->
-            <li role="presentation">
-                <span class="page-link" data-bind="text: page"></span>
-            </li>
-            <!-- ko if: hasNextPage -->
-            <li role="presentation">
-                <a href="#" class="page-link" role="button" aria-label="Next page"
-                    data-bind="click: nextPage, enable: hasNextPage">
-                    <i class="icon-emb icon-emb-chevron-right"></i>
-                </a>
-            </li>
-            <!-- /ko -->
-        </ul>
-    </div>
+    <!-- ko if: $component.totalPages() > 1 -->
+    <pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }"></pagination>
     <!-- /ko -->
     <!-- /ko -->
 </div>
