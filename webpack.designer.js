@@ -58,6 +58,10 @@ const designerConfig = {
             {
                 test: /\.(raw|liquid)$/,
                 loader: "raw-loader"
+            },
+            {
+                test: /\.mustache/,
+                loader: "raw-loader"
             }
         ]
     },

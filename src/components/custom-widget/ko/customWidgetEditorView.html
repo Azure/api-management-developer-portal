@@ -1,0 +1,24 @@
+<fieldset class="form flex flex-item flex-item-grow no-overflow">
+    <div class="form-group flex flex-column" style="display: flex; margin-bottom: 0; overflow: auto;">
+        <div class="flex-item">
+            <size-editor params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: sizeStyleConfig, onUpdate: onSizeUpdate }">
+            </size-editor>
+
+            <h4>Custom fields</h4>
+        </div>
+
+        <!-- ko if: override -->
+        <div>
+            Custom widget source is overridden
+            <!-- ko if: typeof override() === 'string' -->
+            from <b data-bind="text: override"></b>
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
+        <iframe class="flex-item flex-item-grow"
+                data-bind="attr: { src: src }"
+                sandbox="allow-scripts allow-modals allow-forms"
+                frameborder="0"
+        ></iframe>
+    </div>
+</fieldset>

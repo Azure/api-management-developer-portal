@@ -65,6 +65,10 @@ const functionConfig = {
             {
                 test: /\.liquid$/,
                 loader: "raw-loader"
+            },
+            {
+                test: /\.mustache/,
+                loader: "raw-loader"
             }
         ]
     },

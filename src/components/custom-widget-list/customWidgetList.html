@@ -1,0 +1,34 @@
+<div class="flex flex-column fit">
+    <div class="flex-item flex-item-grow">
+        <table style="width: 100%;">
+            <tbody>
+            <!-- ko foreach: { data: customWidgetConfigs, as: 'config' } -->
+            <tr>
+                <td>
+                    <span data-bind="text: config.displayName"></span>
+                    <!-- ko if: config.override -->
+                    <i>(override)</i>
+                    <!-- /ko -->
+                </td>
+                <td style="text-align: right;">
+                    <!-- ko ifnot: config.override -->
+                    <button class="btn btn-default" data-bind="click: () => $component.downloadWidget(config)">
+                        <i class="paperbits-icon paperbits-square-download"></i>
+                    </button>
+                    <button class="btn btn-default" data-bind="click: () => $component.deleteWidget(config)">
+                        <i class="paperbits-icon paperbits-trash-simple"></i>
+                    </button>
+                    <!-- /ko -->
+                </td>
+            </tr>
+            <!-- /ko -->
+            </tbody>
+        </table>
+    </div>
+    <div class="flex-item">
+        <button class="btn btn-default" data-bind="click: openScaffoldWizard">
+            <i class="paperbits-icon paperbits-simple-add"></i>
+            Create new custom widget
+        </button>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+<!-- ko if: override -->
+<div class="alert alert-danger">
+  Custom widget source is overridden
+  <!-- ko if: typeof override() === 'string' -->
+  from <b data-bind="text: override"></b>
+  <!-- /ko -->
+</div>
+<!-- /ko -->
+<iframe data-bind="attr: { id: name, src: src }, styled: styles"
+        sandbox="allow-scripts allow-modals allow-forms"
+        frameborder="0"
+></iframe>
