@@ -90,9 +90,19 @@ export const reservedPermalinks = [
 ];
 
 /**
- * Maximum number of items to show in a paginated view.
+ * Maximum number of items to request from Managament API.
  */
 export const defaultPageSize = 50;
+
+/**
+ * Default value of first page in a paginated view.
+ */
+ export const firstPage = 1;
+
+/**
+ * Maximum number of pages to show in a paginated view.
+ */
+export const showMaximumPages = 3;
 
 /**
  * Default input delay before changes take effect.

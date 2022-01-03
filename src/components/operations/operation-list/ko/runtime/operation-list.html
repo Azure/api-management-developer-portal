@@ -16,7 +16,8 @@
 <div class="form-inline search-input">
     <div class="d-block flex-grow mw-170">
         <div class="input-group">
-            <input type="search" aria-label="Search operations" placeholder="Search operations" spellcheck="false" data-bind="textInput: pattern" />
+            <input type="search" aria-label="Search operations" placeholder="Search operations" spellcheck="false"
+                data-bind="textInput: pattern" />
             <button type="button" class="search-button" aria-label="Search operations">
                 <i class="icon-emb icon-emb-magnifier"></i>
             </button>
@@ -65,7 +66,8 @@
                     data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
                     <div class="row">
                         <span class="col-md-2 mw-60" data-bind="attr: { 'data-method': method }"></span>
-                        <span class="col-md-9" data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
+                        <span class="col-md-9"
+                            data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
                     </div>
                 </a>
             </li>
@@ -102,7 +104,8 @@
                     data-bind="attr: { href: $component.getReferenceUrl(item)}, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
                     <div class="row">
                         <span class="col-md-2 mw-60" data-bind="attr: { 'data-method': method }"></span>
-                        <span class="col-md-9" data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
+                        <span class="col-md-9"
+                            data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
                     </div>
                 </a>
             </li>
@@ -120,29 +123,9 @@
 </div>
 <!-- /ko -->
 
-<!-- ko if: hasPager -->
 <!-- ko ifnot: working -->
-<ul class="pagination justify-content-center" role="navigation" aria-label="Pagination">
-    <!-- ko if: hasPrevPage -->
-    <li class="page-item">
-        <a href="#" class="page-link" role="button" aria-label="Previous page"
-            data-bind="click: prevPage, enable: hasPrevPage">
-            <i class="icon-emb icon-emb-chevron-left"></i>
-        </a>
-    </li>
-    <!-- /ko -->
-    <li class="page-item">
-        <span class="page-link" data-bind="text: pageNumber"></span>
-    </li>
-    <!-- ko if: hasNextPage -->
-    <li class="page-item">
-        <a href="#" class="page-link" role="button" aria-label="Next page"
-            data-bind="click: nextPage, enable: hasNextPage">
-            <i class="icon-emb icon-emb-chevron-right"></i>
-        </a>
-    </li>
-    <!-- /ko -->
-</ul>
+<!-- ko if: $component.totalPages() > 1 -->
+<pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }"></pagination>
 <!-- /ko -->
 <!-- /ko -->
 
