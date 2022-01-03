@@ -67,11 +67,11 @@
     "dependencies": {
         "@braintree/sanitize-url": "^5.0.2",
         "@monaco-editor/loader": "^1.2.0",
-        "@paperbits/azure": "0.1.488",
-        "@paperbits/common": "0.1.488",
-        "@paperbits/core": "0.1.488",
-        "@paperbits/prosemirror": "0.1.488",
-        "@paperbits/styles": "0.1.488",
+        "@paperbits/azure": "0.1.493",
+        "@paperbits/common": "0.1.493",
+        "@paperbits/core": "0.1.493",
+        "@paperbits/prosemirror": "0.1.493",
+        "@paperbits/styles": "0.1.493",
         "@webcomponents/custom-elements": "1.5.0",
         "@webcomponents/shadydom": "^1.9.0",
         "applicationinsights-js": "^1.0.21",
@@ -79,6 +79,7 @@
         "codemirror": "^5.65.1",
         "core-js": "^3.21.0",
         "d3": "^5.11.0",
+        "file-saver": "^2.0.5",
         "google-maps": "^4.3.3",
         "graphql": "^15.5.0",
         "graphql-config": "^4.0.1",
@@ -103,6 +104,7 @@
         "remark-parse": "^10.0.1",
         "remark-rehype": "^10.1.0",
         "saxen": "^8.1.2",
+        "scaffold": "scaffold_lib-0.0.0.tgz",
         "topojson-client": "^3.1.0",
         "truncate-html": "^1.0.4"
     }
