@@ -144,12 +144,12 @@ export class Authorization {
 
         const keyHeader = new ConsoleHeader();
         keyHeader.name(KnownHttpHeaders.Authorization);
-        keyHeader.value(accessToken);
         keyHeader.description = "Subscription key.";
         keyHeader.secret = true;
         keyHeader.inputTypeValue("password");
         keyHeader.type = "string";
         keyHeader.required = true;
+        keyHeader.value(accessToken);
 
         if(!this.isGraphQL()) {
             this.consoleOperation().request.headers.push(keyHeader);
