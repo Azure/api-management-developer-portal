@@ -51,7 +51,7 @@ ko.bindingHandlers["markdown"] = {
             .use(rehypeSanitize, {
                 ...defaultSchema,
                 attributes: {
-                    '*': ['className', 'role']
+                    '*': ['className', 'role', 'href', 'style']
                 }
             })
             .use(rehypeStringify)
