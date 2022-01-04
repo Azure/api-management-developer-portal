@@ -8,7 +8,6 @@ import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
-import { Utils } from "../../../../../utils";
 import { Tag } from "../../../../../models/tag";
 
 
@@ -26,10 +25,8 @@ export class ApiListDropdown {
     public readonly working: ko.Observable<boolean>;
     public readonly pattern: ko.Observable<string>;
     public readonly tags: ko.Observable<Tag[]>;
-    public readonly page: ko.Observable<number>;
-    public readonly hasPager: ko.Computed<boolean>;
-    public readonly hasPrevPage: ko.Observable<boolean>;
-    public readonly hasNextPage: ko.Observable<boolean>;
+    public readonly pageNumber: ko.Observable<number>;
+    public readonly totalPages: ko.Observable<number>;
     public readonly selection: ko.Computed<string>;
 
     constructor(
@@ -44,10 +41,8 @@ export class ApiListDropdown {
         this.selectedApiName = ko.observable();
         this.pattern = ko.observable();
         this.tags = ko.observable([]);
-        this.page = ko.observable(1);
-        this.hasPrevPage = ko.observable();
-        this.hasNextPage = ko.observable();
-        this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
+        this.pageNumber = ko.observable(1);
+        this.totalPages = ko.observable(0);
         this.apiGroups = ko.observableArray();
         this.selection = ko.computed(() => {
             const api = ko.unwrap(this.selectedApi);
@@ -74,13 +69,14 @@ export class ApiListDropdown {
             .subscribe(this.resetSearch);
 
         this.router.addRouteChangeListener(this.onRouteChange);
+        this.pageNumber.subscribe(this.loadPageOfApis);
     }
 
     /**
      * Initiates searching APIs.
      */
     public async resetSearch(): Promise<void> {
-        this.page(1);
+        this.pageNumber(1);
         this.loadPageOfApis();
     }
 
@@ -101,7 +97,7 @@ export class ApiListDropdown {
         try {
             this.working(true);
 
-            const pageNumber = this.page() - 1;
+            const pageNumber = this.pageNumber() - 1;
 
             const query: SearchQuery = {
                 pattern: this.pattern(),
@@ -114,10 +110,7 @@ export class ApiListDropdown {
             const apiGroups = pageOfTagResources.value;
             this.apiGroups(apiGroups);
 
-            const nextLink = pageOfTagResources.nextLink;
-
-            this.hasPrevPage(pageNumber > 0);
-            this.hasNextPage(!!nextLink);
+            this.totalPages(Math.ceil(pageOfTagResources.count / Constants.defaultPageSize));
         }
         catch (error) {
             throw new Error(`Unable to load APIs. ${error.message}`);
@@ -146,16 +139,6 @@ export class ApiListDropdown {
 
         this.selectedApi(api);
         this.selectedApiName(apiName);
-    }
-
-    public prevPage(): void {
-        this.page(this.page() - 1);
-        this.loadPageOfApis();
-    }
-
-    public nextPage(): void {
-        this.page(this.page() + 1);
-        this.loadPageOfApis();
     }
 
     public getReferenceUrl(api: Api): string {

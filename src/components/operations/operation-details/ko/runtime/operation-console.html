@@ -246,7 +246,7 @@
         </div>
         <div class="col-5">
             <div class="flex form-check form-check-inline">
-                <select id="requestRepresentations" class="form-control" style="width: auto;"
+                <select aria-label="Request representations" id="requestRepresentations" class="form-control" style="width: auto;"
                     data-bind="value: $component.selectedRepresentation">
                     <!-- ko foreach: { data: request.representations, as: 'representation' } -->
                     <option
@@ -310,7 +310,7 @@
 <!-- ko ifnot: api().type === 'websocket' -->
 <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
     <!-- ko ifnot: operation().request.isFormData() -->
-    <select id="requestLanguages" class="form-control" data-bind="value: $component.selectedLanguage">
+    <select aria-label="Programming language" id="requestLanguages" class="form-control" data-bind="value: $component.selectedLanguage">
         <!-- ko foreach: { data: requestLanguages, as: 'requestLanguage' } -->
         <option data-bind="value: requestLanguage.value, text: requestLanguage.text"></option>
         <!-- /ko -->
@@ -360,7 +360,7 @@
 
 <!-- ko if: api().type === 'websocket' -->
 <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
-    <select id="requestLanguages" class="form-control" data-bind="value: $component.selectedLanguage">
+    <select aria-label="Programming language" id="requestLanguages" class="form-control" data-bind="value: $component.selectedLanguage">
         <!-- ko foreach: { data: requestLanguages, as: 'requestLanguage' } -->
         <option data-bind="value: requestLanguage.value, text: requestLanguage.text"></option>
         <!-- /ko -->

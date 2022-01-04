@@ -77,6 +77,7 @@ import { HistoryRouteHandler, LocationRouteHandler } from "@paperbits/common/rou
 import { SettingNames } from "./constants";
 import { XmlHttpRequestClient } from "@paperbits/common/http";
 import { DefaultAuthenticator } from "./authentication/defaultAuthenticator";
+import { Pagination } from "./components/pagination/pagination";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -142,6 +143,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("viewStack", ViewStack);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("tagInput", TagInput);
+        injector.bind("pagination", Pagination);
 
 
         if (location.href.includes("designtime=true")) {

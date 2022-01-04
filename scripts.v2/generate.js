@@ -16,7 +16,7 @@ async function generateJson() {
                 "PUT",
                 `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/${key}?api-version=2019-12-01`,
                 managementApiAccessToken,
-                JSON.stringify(dataObj[key]));
+                dataObj[key]);
         }
     }
     catch (error) {
