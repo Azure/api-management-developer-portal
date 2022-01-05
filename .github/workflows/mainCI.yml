@@ -8,16 +8,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 16.x]
-    
+
     steps:
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 16.x
         uses: actions/checkout@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16.x
           
       - name: Install
         run: npm install
@@ -61,7 +57,7 @@ jobs:
       - name: Zip Release
         uses: TheDoctor0/zip-release@0.6.0
         with:
-          filname: accesibility_scan.zip
+          filename: accesibility_scan.zip
           directory: ${{ github.workspace }}/_accessibility-reports
           
       - name: Upload Artifact
