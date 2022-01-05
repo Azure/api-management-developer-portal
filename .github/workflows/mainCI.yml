@@ -53,15 +53,3 @@ jobs:
         with:
           name: accessibility-reports
           path: ${{ github.workspace }}/_accessibility-reports
-          
-      - name: Zip Release
-        uses: TheDoctor0/zip-release@0.6.0
-        with:
-          filename: ${{ github.workspace }}/accesibility_scan.zip
-          directory: ${{ github.workspace }}/_accessibility-reports
-          
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: accesibility_scan.zip
-          path: ${{ github.workspace }}/accesibility_scan.zip
