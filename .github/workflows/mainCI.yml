@@ -21,9 +21,7 @@ jobs:
           
       - name: Install
         run: npm install
-        
-        
-        
+    
       - name: Overwrite configs
         uses: DamianReeves/write-file-action@v1.0
         with:
@@ -46,7 +44,7 @@ jobs:
           write-mode: overwrite
         
       - name: Build
-        run: npm run publish
+        run: npm run build-website
           
       - name: Scan for accessibility issues
         uses: microsoft/accessibility-insights-action@v2
