@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  pull_request:
+    branches: 
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        with:
+          node-version: ${{ matrix.node-version }}
+          
+      - name: Build
+        run: |
+          npm install
+          npm run build
+          
+      - name: Scan for accessibility issues
+        uses: microsoft/accessibility-insights-action@v2
+        with: 
+          site-dir: ${{ github.workspace }}/dist/website
+          
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: accessibility-reports
+          path: ${{ github.workspace }}/_accessibility-reports
