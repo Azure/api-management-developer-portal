@@ -52,7 +52,7 @@ jobs:
         uses: microsoft/accessibility-insights-action@v2
         with: 
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          site-dir: ${{ github.workspace }}/dist/website
+          site-dir: ${{ github.workspace }}/dist/designer
           
       - name: Upload report artifact
         uses: actions/upload-artifact@v2
