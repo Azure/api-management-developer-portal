@@ -423,16 +423,16 @@
         <div class="d-contents" role="rowgroup">
             <!--ko foreach: { data: $component.reportByApi, as: 'record' }-->
             <div class="d-contents" role="row">
-                <div class="text-truncate">
+                <div role="cell" class="text-truncate">
                     <span data-bind="text: record.apiName"></span>
                 </div>
-                <div data-bind="text: record.callCountSuccess"></div>
-                <div data-bind="text: record.callCountBlocked"></div>
-                <div data-bind="text: record.callCountFailed"></div>
-                <div data-bind="text: record.callCountOther"></div>
-                <div data-bind="text: record.callCountTotal"></div>
-                <div data-bind="text: record.apiTimeAvg"></div>
-                <div data-bind="text: record.bandwidth"></div>
+                <div role="cell" data-bind="text: record.callCountSuccess"></div>
+                <div role="cell" data-bind="text: record.callCountBlocked"></div>
+                <div role="cell" data-bind="text: record.callCountFailed"></div>
+                <div role="cell" data-bind="text: record.callCountOther"></div>
+                <div role="cell" data-bind="text: record.callCountTotal"></div>
+                <div role="cell" data-bind="text: record.apiTimeAvg"></div>
+                <div role="cell" data-bind="text: record.bandwidth"></div>
             </div>
             <!--/ko-->
         </div>
