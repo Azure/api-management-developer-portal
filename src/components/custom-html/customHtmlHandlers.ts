@@ -1,6 +1,6 @@
 ﻿import { widgetName, widgetDisplayName, widgetCategory, widgetIconClass } from "./constants";
 import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
-import { HTMLInjectionModel } from "./htmlInjectionModel";
+import { HTMLInjectionModel } from "./customHtmlModel";
 import { htmlCodeInitial, htmlCodeSizeStylesInitial } from "./ko/constants";
 import { StyleHelper } from "@paperbits/styles";
 

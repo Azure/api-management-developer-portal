@@ -1,5 +1,5 @@
 {
     "environment": "runtime",
-    "managementApiUrl": "https://<service-name>.management.azure-api.net",
-    "backendUrl": "https://<service-name>.developer.azure-api.net"
+    "managementApiUrl": "https://alzasloneuap05.management.azure-api.net",
+    "backendUrl": "https://alzasloneuap05.developer.azure-api.net"
 }

@@ -47,8 +47,8 @@ export enum AadEndpoints {
  * Types of direction (e.g. for sorting of elements in a table)
  */
 export enum Direction {
-    asc = 'asc',
-    desc = 'desc'
+    asc = "asc",
+    desc = "desc"
 }
 
 export const defaultAadTenantName = "common";
@@ -110,16 +110,16 @@ export const AppType = "developerPortal";
  export const HtmlEditorSettings = {
     id: "htmlEditor",
     config: {
-        language: 'html',
+        language: "html",
         readOnly: false,
 
         lineHeight: 17,
         automaticLayout: true,
         minimap: {
-            enabled: true
+            enabled: false
         },
     }
- }
+ };
 
 /**
  * Query Editor Settings - GraphQL Console
@@ -127,21 +127,21 @@ export const AppType = "developerPortal";
 export const QueryEditorSettings = {
     id: "queryEditor",
     config: {
-        language: 'graphqlQuery',
+        language: "graphqlQuery",
         readOnly: false,
     }
-}
+};
 
 /**
-* Variables Editor Settings - GraphQL Console
-*/
+ * Variables Editor Settings - GraphQL Console
+ */
 export const VariablesEditorSettings = {
     id: "variablesEditor",
     config: {
-        language: 'json',
+        language: "json",
         readOnly: false,
     }
-}
+};
 
 /**
  * Response Settings - GraphQL Console
@@ -149,14 +149,14 @@ export const VariablesEditorSettings = {
 export const ResponseSettings = {
     id: "responseEditor",
     config: {
-        language: 'json',
+        language: "json",
         readOnly: true,
     }
-}
+};
 
 /**
-* Graphql operation types
-*/
+ * Graphql operation types
+ */
 export enum GraphqlOperationTypes {
     query = "query",
     mutation = "mutation",

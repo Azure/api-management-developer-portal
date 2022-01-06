@@ -1,7 +1,6 @@
 {
     "environment": "development",
-    "managementApiUrl": "https://<service-name>.management.azure-api.net",
-    "managementApiAccessToken": "SharedAccessSignature ...",
-    "backendUrl": "https://<service-name>.developer.azure-api.net",
+    "managementApiUrl": "https://alzasloneuap05.management.azure-api.net",
+    "managementApiAccessToken": "SharedAccessSignature 1&202201300000&1osjEfEWZFqXfIUx0TYpD9eqpmWcITA51Vw8YCV1t0TOPe6YuAB2ZQgMGHTkbvfVNBE+v2gIie967H2v8uf+7A==",
     "useHipCaptcha": false
 }

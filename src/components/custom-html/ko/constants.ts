@@ -4,24 +4,24 @@ export const htmlCodeInitial =
 `<html>
 <head>
     <style>
-        /* You can put your custom styles here */
+        /* Custom styles */
         body {
             text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Custom HTML widget</h1>
-    <p>Write your HTML here!</p>
-    <div class="inline-block">
-        <button class="button button-primary">
-            Example of a styled button
+    <fieldset>
+        <h1>Custom HTML</h1>
+        <p>This widget allows you to host custom HTML content. You can also add or remove the developer portal global styles.</p>
+        <button class="button button-default">
+           Default button
         </button>
-    </div>
+    <fieldset>
 </body>
 </html>`;
 
 export const htmlCodeSizeStylesInitial: SizeStylePluginConfig = {
-    height: "500px",
+    height: "300px",
     width: "100%",
 };

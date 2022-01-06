@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import template from "./htmlInjectionView.html";
+import template from "./customHtmlView.html";
 import { widgetSelector } from "../constants";
 import { Component } from "@paperbits/common/ko/decorators";
 import { StyleModel } from "@paperbits/common/styles";
@@ -8,7 +8,7 @@ import { StyleModel } from "@paperbits/common/styles";
     selector: widgetSelector,
     template: template
 })
-export class HtmlInjectionViewModel {
+export class CustomHtmlViewModel {
     public readonly styles: ko.Observable<StyleModel>;
     public readonly htmlCode: ko.Observable<string>;
 

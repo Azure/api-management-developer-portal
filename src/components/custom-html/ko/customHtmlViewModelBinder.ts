@@ -2,21 +2,21 @@ import { Bag } from "@paperbits/common";
 import { EventManager, Events } from "@paperbits/common/events";
 import { ComponentFlow, IWidgetBinding } from "@paperbits/common/editing";
 import { widgetName, widgetDisplayName, widgetEditorSelector } from "../constants";
-import { HtmlInjectionViewModel } from "./htmlInjectionViewModel";
+import { CustomHtmlViewModel } from "./customHtmlViewModel";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { JssCompiler } from "@paperbits/styles/jssCompiler";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { HTMLInjectionModel } from "../htmlInjectionModel";
+import { HTMLInjectionModel } from "../customHtmlModel";
 
-export class HtmlInjectionViewModelBinder implements ViewModelBinder<HTMLInjectionModel, HtmlInjectionViewModel>  {
+export class CustomHtmlViewModelBinder implements ViewModelBinder<HTMLInjectionModel, CustomHtmlViewModel>  {
     constructor(
         private readonly eventManager: EventManager,
         private readonly styleCompiler: StyleCompiler,
         private readonly settingsProvider: ISettingsProvider,
     ) { }
 
-    public async updateViewModel(model: HTMLInjectionModel, viewModel: HtmlInjectionViewModel, bindingContext: Bag<any>): Promise<void> {
+    public async updateViewModel(model: HTMLInjectionModel, viewModel: CustomHtmlViewModel, bindingContext: Bag<any>): Promise<void> {
         let htmlInheritedStyles: string = "";
 
         if (model.inheritStyling) {
@@ -40,11 +40,11 @@ export class HtmlInjectionViewModelBinder implements ViewModelBinder<HTMLInjecti
         viewModel.htmlCode(htmlInheritedStyles + model.htmlCode);
     }
 
-    public async modelToViewModel(model: HTMLInjectionModel, viewModel?: HtmlInjectionViewModel, bindingContext?: Bag<any>): Promise<HtmlInjectionViewModel> {
+    public async modelToViewModel(model: HTMLInjectionModel, viewModel?: CustomHtmlViewModel, bindingContext?: Bag<any>): Promise<CustomHtmlViewModel> {
         if (!viewModel) {
-            viewModel = new HtmlInjectionViewModel();
+            viewModel = new CustomHtmlViewModel();
 
-            const binding: IWidgetBinding<HTMLInjectionModel, HtmlInjectionViewModel> = {
+            const binding: IWidgetBinding<HTMLInjectionModel, CustomHtmlViewModel> = {
                 name: widgetName,
                 displayName: widgetDisplayName,
                 readonly: bindingContext ? bindingContext.readonly : false,

@@ -1,8 +1,8 @@
 import { widgetName } from "./constants";
 import { IModelBinder } from "@paperbits/common/editing";
-import { HTMLInjectionModel } from "./htmlInjectionModel";
+import { HTMLInjectionModel } from "./customHtmlModel";
 import { Contract } from "@paperbits/common";
-import { HTMLInjectionContract } from "./htmlInjectionContract";
+import { HTMLInjectionContract } from "./customHtmlContract";
 import { htmlCodeInitial } from "./ko/constants";
 
 export class HTMLInjectionModelBinder implements IModelBinder<HTMLInjectionModel> {

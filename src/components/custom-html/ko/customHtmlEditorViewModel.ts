@@ -1,9 +1,9 @@
 import * as ko from "knockout";
-import template from "./htmlInjectionEditorView.html";
+import template from "./customHtmlEditorView.html";
 import { WidgetEditor } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
 import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
-import { HTMLInjectionModel } from "../htmlInjectionModel";
+import { HTMLInjectionModel } from "../customHtmlModel";
 import { widgetEditorSelector } from "..";
 import { StyleHelper } from "@paperbits/styles";
 import { ViewManager } from "@paperbits/common/ui";
@@ -13,7 +13,7 @@ import { EventManager, Events } from "@paperbits/common/events";
     selector: widgetEditorSelector,
     template: template
 })
-export class HtmlInjectionEditorViewModel implements WidgetEditor<HTMLInjectionModel> {
+export class CustomHtmlEditorViewModel implements WidgetEditor<HTMLInjectionModel> {
     public readonly htmlCode: ko.Observable<string>;
     public readonly inheritStyling: ko.Observable<boolean>;
     public readonly sizeStyleConfig: ko.Observable<SizeStylePluginConfig>;
