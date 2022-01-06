@@ -75,6 +75,7 @@ import { ApimSettingsProvider } from "./configuration/apimSettingsProvider";
 import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import { Pagination } from "./components/pagination/pagination";
 
+
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindSingleton("logger", ConsoleLogger);
