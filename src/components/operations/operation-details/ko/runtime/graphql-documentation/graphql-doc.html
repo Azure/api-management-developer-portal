@@ -7,16 +7,44 @@
 <!-- ko ifnot: working -->
 
 <div class="menu menu-vertical margin-top d-block flex-item flex-grow animation-fade-in">
-    <select id="operationType" class="form-control"
-        data-bind="options: graphDocService.availableTypes, value: selectedType">
-    </select>
+    
+    <div class="dropdown-container collapsible">
+        <div class="form-control" tabindex="0" role="button" data-toggle="dropdown" aria-label="Operations">
+            <div class="input-group">
+                <div class="input">
+                    <span data-bind="text: selectedType"></span>
+                </div>
+                <div class="input-group-append">
+                    <i class="icon-emb icon-emb-chevron-down"></i>
+                </div>
+            </div>
+        </div>
+    
+        <div class="collapsible-dropdown collapsible-content dropdown">
+            <div role="list"> 
+                <div class="collapsible">
+                    <div class="collapsible-container">
+                        <div class="menu menu-vertical" role="list">
+                            <!-- ko foreach: { data: graphDocService.availableTypes, as: 'type' } -->
+                            <span role="listitem" class="nav-link text-truncate operation-pointer" data-bind="click: () => { $component.selectedType(type) }, text: type, css: { 'nav-link-active': $component.selectedType() === type }"></span>
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                </div>
+                <!-- ko if: graphDocService.availableTypes().length === 0 -->
+                <p>No operations found</p>
+                <!-- /ko -->
+            </div>
+        </div>
+    </div>
+
     <div class="input-icons">
         <i class="icon-emb icon-emb-magnifier icon"></i>
         <input class="form-control search-placeholder" type="search" aria-label="Search" placeholder="Search"
             spellcheck="false" data-bind="textInput: filter" />
     </div>
 
-    <div class="input-group explorer-operations scrollable">
+    <div class="input-group">
         <!-- ko template: { name: 'graphqlDocExplorer', data: {operationNode: iteratorConverter(graphDocService.typeIndexer()[selectedType()]), filter: filter(), type: graphDocService.typeIndexer()[selectedType()]} } -->
         <!-- /ko -->
     </div>

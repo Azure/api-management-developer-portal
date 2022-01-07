@@ -314,7 +314,6 @@ pre {
         }
 
         &.graph {
-            margin-top: 40px;
             float: right;
         }
     }
@@ -515,4 +514,12 @@ operation-console {
 .description-text {
     font-style: italic;
     margin-bottom: 10px;
+}
+
+.operation-pointer {
+    cursor: pointer;
+}
+
+.gql-details {
+    margin-top: 0px;
 }

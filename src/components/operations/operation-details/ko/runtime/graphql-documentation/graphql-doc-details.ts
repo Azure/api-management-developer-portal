@@ -2,26 +2,31 @@ import * as ko from "knockout";
 import template from "./graphql-doc-details.html";
 import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { GraphDocService } from "./graphql-doc-service";
-import { DocumentationActions } from "../../../../../../constants";
+import { DocumentationActions, fieldTypes } from "../../../../../../constants";
 import * as GraphQL from "graphql";
 import * as _ from "lodash";
-import { Value } from "liquidjs";
+import graphqlDocTable from "./graphql-doc-table.html";
 
 @Component({
     selector: "graphql-details",
-    template: template
+    template: template,
+    childTemplates: {
+        graphqlDocTable: graphqlDocTable,
+    }
 })
 
 export class GraphqlDetails {
 
     public readonly working: ko.Observable<boolean>;
     public readonly graphSelected: ko.Observable<object>;
+    public readonly fieldTypes: Array<string>;
 
     constructor(
         private readonly graphDocService: GraphDocService
     ) {
         this.working = ko.observable(true);
         this.graphSelected = ko.observable();
+        this.fieldTypes = fieldTypes;
     }
 
     @OnMounted()
@@ -109,11 +114,20 @@ export class GraphqlDetails {
         return (fields && fields.length > 0);
     }
 
-    public keyName(keyName: string): string {
-        return keyName + ': ';
-    }
-
     public fieldValues(fields: object): Array<object> {
         return _.values(fields);
+    }
+
+    public headerName(field: string): string {
+        switch (field) {
+            case "_types":
+                return "Possible Types"
+            case "_fields":
+                return "Fields"
+            case "_values":
+                return "Values"
+            default:
+                return "Arguments";
+        }
     }
 }

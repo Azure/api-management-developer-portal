@@ -1,0 +1,34 @@
+<div role="table" class="table-preset" data-bind="class: (from == '_values' || from == '_types') ? 'table-preset-enum' : 'table-preset-gql'">
+    <div class="d-contents" role="rowgroup">
+        <div class="d-contents" role="row">
+            <!-- ko if: !(from == '_types') -->
+            <div role="columnheader" class="table-preset-head text-truncate">Name</div>
+            <!-- /ko -->
+            <!-- ko if: !(from == '_values') -->
+            <div role="columnheader" class="table-preset-head text-truncate">Type</div>
+            <!-- /ko -->
+            <div role="columnheader" class="table-preset-head">Description</div>
+        </div>
+    </div>
+    <div class="d-contents" role="rowgroup">
+        <!-- ko foreach: { data: list, as: 'field' } -->
+        <div class="d-contents" role="row">
+            <!-- ko if: !($parent.from == '_types') -->
+            <div role="cell" class="text-truncate" data-bind="text: ($parent.from == '_values') ? field.value : field.name, attr: { title: ($parent.from == '_values') ? field.value : field.name }">
+                <span class="text-monospace" data-bind="text: ($parent.from == '_values') ? field.value : field.name, attr: { title: ($parent.from == '_values') ? field.value : field.name }"></span>
+            </div>
+            <!-- /ko -->
+            <!-- ko if: !($parent.from == '_values') -->
+            <div role="cell" class="text-truncate">
+                <span data-bind="text: $component.getType(field, 'left', ($parent.from == '_types') ? true : false)"></span>
+                <a class="details-button"
+                    data-bind="text: $component.getType(field, 'name', ($parent.from == '_types') ? true : false), attr: { href: $component.selectType(field, ($parent.from == '_types') ? true : false)}"></a>
+                <span data-bind="text: $component.getType(field, 'right', ($parent.from == '_types') ? true : false)"></span>
+            </div>
+            <!-- /ko -->
+            <div role="cell" data-bind="markdown: field.description">
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>

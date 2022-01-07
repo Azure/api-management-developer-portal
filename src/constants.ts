@@ -177,6 +177,8 @@ export enum DocumentationActions {
     back = "back"
 }
 
+export const fieldTypes = [ "args", "_fields", "_values", "_types" ];
+
 /**
  * Known setting names.
  */

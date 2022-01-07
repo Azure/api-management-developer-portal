@@ -66,4 +66,8 @@ export class GraphqlDocumentation {
             this.selectedType(GraphqlTypesForDocumentation[this.graphDocService.currentSelected()['collectionTypeForDoc']()]);
         }
     }
+    
+    public selectType(type: string) {
+        this.selectedType(type);
+    }
 }
