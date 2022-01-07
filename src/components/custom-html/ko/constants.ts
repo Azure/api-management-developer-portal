@@ -6,18 +6,18 @@ export const htmlCodeInitial =
     <style>
         /* Custom styles */
         body {
-            text-align: center;
+            text-align: left;
         }
     </style>
 </head>
 <body>
     <fieldset>
-        <h1>Custom HTML</h1>
-        <p>This widget allows you to host custom HTML content. You can also add or remove the developer portal global styles.</p>
+        <h1>Custom HTML code example</h1>
+        <p>Replace this content with custom HTML code. It will be rendered in an iframe in the developer portal.</p>
         <button class="button button-default">
-           Default button
+           Sample button
         </button>
-    <fieldset>
+    </fieldset>
 </body>
 </html>`;
 
