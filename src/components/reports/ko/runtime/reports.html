@@ -53,8 +53,10 @@
     </div>
 </div>
 
-<h2>Products</h2>
-<div>
+<section>
+    <h2>Products</h2>
+
+    <!-- ko if: reportByProductHasData -->
     <div role="table" class="table-preset table-preset-reports">
         <div class="d-contents" role="rowgroup">
             <div class="d-contents" role="row">
@@ -154,8 +156,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- ko if: reportByProductHasData -->
         <div class="d-contents" role="rowgroup">
             <!-- ko foreach: { data: $component.reportByProduct, as: 'record' } -->
             <div class="d-contents" role="row">
@@ -172,13 +172,6 @@
             </div>
             <!-- /ko -->
         </div>
-        <!-- /ko -->
-
-        <!-- ko ifnot: reportByProductHasData -->
-        <div>
-            No data to display
-        </div>
-        <!-- /ko -->
     </div>
 
     <!-- ko if: $component.reportByProductTotalPages() > 1 -->
@@ -187,14 +180,21 @@
     </pagination>
     <!-- /ko -->
 
+    <!-- /ko -->
+
+    <!-- ko ifnot: reportByProductHasData -->
+    <p>No data to display</p>
+    <!-- /ko -->
+
     <!-- ko if: reportByProductWorking -->
     <spinner class="fit"></spinner>
     <!-- /ko -->
-</div>
+</section>
 
+<section>
+    <h2>Subscriptions</h2>
 
-<h2>Subscriptions</h2>
-<div>
+    <!-- ko if: reportBySubscriptionHasData -->
     <div role="table" class="table-preset table-preset-reports">
         <div class="d-contents" role="rowgroup">
             <div class="d-contents" role="row">
@@ -299,8 +299,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- ko if: reportBySubscriptionHasData -->
         <div class="d-contents" role="rowgroup">
             <!-- ko foreach: { data: $component.reportBySubscription, as: 'record' } -->
             <div class="d-contents" role="row">
@@ -317,12 +315,6 @@
             </div>
             <!-- /ko -->
         </div>
-        <!-- /ko -->
-        <!-- ko ifnot: reportBySubscriptionHasData -->
-        <div>
-            No data to display
-        </div>
-        <!-- /ko -->
     </div>
 
     <!-- ko if: $component.reportBySubscriptionTotalPages() > 1 -->
@@ -331,13 +323,21 @@
     </pagination>
     <!-- /ko -->
 
+    <!-- /ko -->
+
+    <!-- ko ifnot: reportBySubscriptionHasData -->
+    <p>No data to display</p>
+    <!-- /ko -->
+
     <!-- ko if: reportBySubscriptionWorking -->
     <spinner class="fit"></spinner>
     <!-- /ko -->
-</div>
+</section>
 
-<h2>APIs</h2>
-<div>
+<section>
+    <h2>APIs</h2>
+
+    <!-- ko if: reportByApiHasData -->
     <div role="table" class="table-preset table-preset-reports">
         <div class="d-contents" role="rowgroup">
             <div class="d-contents" role="row">
@@ -437,8 +437,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- ko if: reportByApiHasData -->
         <div class="d-contents" role="rowgroup">
             <!--ko foreach: { data: $component.reportByApi, as: 'record' }-->
             <div class="d-contents" role="row">
@@ -455,13 +453,6 @@
             </div>
             <!--/ko-->
         </div>
-
-        <!-- /ko -->
-        <!-- ko ifnot: reportByApiHasData -->
-        <div>
-            No data to display
-        </div>
-        <!-- /ko -->
     </div>
 
     <!-- ko if: $component.reportByApiTotalPages() > 1 -->
@@ -469,13 +460,21 @@
     </pagination>
     <!-- /ko -->
 
+    <!-- /ko -->
+
+    <!-- ko ifnot: reportByApiHasData -->
+    <p>No data to display</p>
+    <!-- /ko -->
+
     <!-- ko if: reportByApiWorking -->
     <spinner class="fit"></spinner>
     <!-- /ko -->
-</div>
+</section>
 
-<h2>Operations</h2>
-<div>
+<section>
+    <h2>Operations</h2>
+
+    <!-- ko if: reportByOperationHasData -->
     <div role="table" class="table-preset table-preset-reports">
         <div class="d-contents" role="rowgroup">
             <div class="d-contents" role="row">
@@ -577,8 +576,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- ko if: reportByOperationHasData -->
         <div class="d-contents" role="rowgroup">
             <!-- ko foreach: { data: $component.reportByOperation, as: 'record' } -->
             <div class="d-contents" role="row">
@@ -595,12 +592,6 @@
             </div>
             <!-- /ko -->
         </div>
-        <!-- /ko -->
-        <!-- ko ifnot: reportByOperationHasData -->
-        <div>
-            No data to display
-        </div>
-        <!-- /ko -->
     </div>
 
     <!-- ko if: $component.reportByOperationTotalPages() > 1 -->
@@ -609,7 +600,13 @@
     </pagination>
     <!-- /ko -->
 
+    <!-- /ko -->
+
+    <!-- ko ifnot: reportByOperationHasData -->
+    <p>No data to display</p>
+    <!-- /ko -->
+
     <!-- ko if: reportByOperationWorking -->
     <spinner class="fit"></spinner>
     <!-- /ko -->
-</div>
+</section>
