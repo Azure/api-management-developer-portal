@@ -1,6 +1,6 @@
 <!-- ko if: $component.authorizationServer() || $component.subscriptionKeyRequired() -->
 <h3 class="pt-0">Authorization 
-    <button class="no-border" data-bind="activate: $component.collapseAuth">
+    <button aria-label="Collapse authorization" class="no-border" data-bind="activate: $component.collapseAuth">
         <!-- ko if: $component.collapsedAuth -->
         <i class="icon-emb icon-emb-chevron-down"></i>
         <!-- /ko -->
