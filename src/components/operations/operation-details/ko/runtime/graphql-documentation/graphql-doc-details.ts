@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import template from "./graphql-doc-details.html";
 import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { GraphDocService } from "./graphql-doc-service";
-import { DocumentationActions, fieldTypes } from "../../../../../../constants";
+import { gqlFieldTypes, GraphqlTypesForDocumentation, gqlFieldNames } from "../../../../../../constants";
 import * as GraphQL from "graphql";
 import * as _ from "lodash";
 import graphqlDocTable from "./graphql-doc-table.html";
@@ -17,33 +17,38 @@ import graphqlDocTable from "./graphql-doc-table.html";
 
 export class GraphqlDetails {
 
+    public navigation: ko.ObservableArray<object>;
+
     public readonly working: ko.Observable<boolean>;
-    public readonly graphSelected: ko.Observable<object>;
-    public readonly fieldTypes: Array<string>;
+    public readonly gqlFieldTypes: Array<string>;
 
     constructor(
         private readonly graphDocService: GraphDocService
     ) {
+        this.navigation = ko.observableArray<object>([]);
         this.working = ko.observable(true);
-        this.graphSelected = ko.observable();
-        this.fieldTypes = fieldTypes;
+        this.gqlFieldTypes = gqlFieldTypes;
     }
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        this.graphDocService.navigation.subscribe(this.onNavigationChange);
+        this.graphDocService.currentSelected.subscribe(this.onCurrentSelectedChange);
     }
 
-    private onNavigationChange(selected: Array<object>): void {
-        if (selected.length > 0) {
-            this.graphSelected(this.graphDocService.currentSelected());
+    private onCurrentSelectedChange(selected: object): void {
+        if (selected) {
+            this.navigation([this.graphDocService.currentSelected()]);
             this.working(false);
         }
     }
 
+    public graphSelected() {
+        const selectedIndex = this.navigation().length - 1;
+        return this.navigation()[selectedIndex];
+    }
+
     public getName(): string {
-        const name = this.graphSelected()['name'];
-        return (name) ? name : "No Name";
+        return `${this.graphSelected()['name']} (${GraphqlTypesForDocumentation[this.graphSelected()[gqlFieldNames.type]()]})`
     }
 
     public getDescription(): string {
@@ -56,30 +61,28 @@ export class GraphqlDetails {
         return fullTypeName[side];
     }
 
-    public selectType(graph: object, isUnion = false): string {
+    public addToNavigation(graph: object, isUnion = false): void {
         const graphName = this.getType(graph, 'name', isUnion);
         const type = this.graphDocService.indexCollectionFromType((isUnion) ? graph : graph['type']);
-        return this.graphDocService.routeHelper.getGraphReferenceUrl(this.graphDocService.selectedApiName(), type, graphName, DocumentationActions.details);
+        const newGraph = this.graphDocService.docGraphs[type]()[graphName];
+        this.navigation.push(newGraph);
     }
 
     public multipleGraphs(): boolean {
-        return (this.graphDocService.navigation().length > 1);
+        return (this.navigation().length > 1);
     }
 
     public previousGraphName(): string {
         const previousGraph = this.previousGraph();
-        return `${previousGraph['name']} (${previousGraph['collectionTypeForDoc']()})`;
+        return `${previousGraph['name']} (${GraphqlTypesForDocumentation[previousGraph[gqlFieldNames.type]()]})`;
     }
 
-    public goBack(): string {
-        const previousGraph = this.previousGraph();
-        const type = previousGraph['collectionTypeForDoc']();
-        const graphName = previousGraph["name"];
-        return this.graphDocService.routeHelper.getGraphReferenceUrl(this.graphDocService.selectedApiName(), type, graphName, DocumentationActions.back);
+    public goBack(): void {
+        this.navigation.pop();
     }
 
     private previousGraph(): object {
-        const navigation = this.graphDocService.navigation();
+        const navigation = this.navigation();
         return navigation[navigation.length - 2];
     }
 

@@ -493,7 +493,8 @@ operation-console {
     padding: 0px;
     border: 0px;
     background: white;
-    color: #0F7EBD;
+    color: #0F7EBD !important;
+    cursor: pointer;
 
     &.selected {
         font-weight: bold;

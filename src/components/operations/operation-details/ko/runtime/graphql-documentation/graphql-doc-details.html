@@ -9,7 +9,7 @@
     <!-- ko if: multipleGraphs() -->
     <div class="col-12 gql-navigation">
         <i class="icon-emb icon-emb-chevron-left"></i>
-        <a class="details-button" data-bind="text: previousGraphName(), attr: { href: goBack()}"></a>
+        <a class="details-button" data-bind="text: previousGraphName(), click: goBack"></a>
     </div>
     <!-- /ko -->
 
@@ -24,13 +24,13 @@
         <h3>Type</h3>
         <span data-bind="text: getType(graphSelected(), 'left')"></span>
         <a class="details-button"
-            data-bind="text: getType(graphSelected(), 'name'), attr: { href: selectType(graphSelected())}"></a>
+            data-bind="text: getType(graphSelected(), 'name'), click: () => { addToNavigation(graphSelected()) }"></a>
         <span data-bind="text: getType(graphSelected(), 'right')"></span>
     </div>
     <!-- /ko -->
 
 
-    <!-- ko foreach: { data: fieldTypes, as: 'field' } -->
+    <!-- ko foreach: { data: gqlFieldTypes, as: 'field' } -->
     <!-- ko if: $component.hasField(field) -->
     <div class="col-12">
         <h3 data-bind="text: $component.headerName(field)"></h3>

@@ -22,7 +22,7 @@
             <div role="cell" class="text-truncate">
                 <span data-bind="text: $component.getType(field, 'left', ($parent.from == '_types') ? true : false)"></span>
                 <a class="details-button"
-                    data-bind="text: $component.getType(field, 'name', ($parent.from == '_types') ? true : false), attr: { href: $component.selectType(field, ($parent.from == '_types') ? true : false)}"></a>
+                    data-bind="text: $component.getType(field, 'name', ($parent.from == '_types') ? true : false), click: () => { $component.addToNavigation(field, ($parent.from == '_types') ? true : false) }"></a>
                 <span data-bind="text: $component.getType(field, 'right', ($parent.from == '_types') ? true : false)"></span>
             </div>
             <!-- /ko -->

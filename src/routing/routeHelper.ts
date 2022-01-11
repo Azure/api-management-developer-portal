@@ -68,13 +68,6 @@ export class RouteHelper {
     }
 
     /**
-     * Returns ARM resource from where the actions are executed specified in hash parameter of the current route for graphQL APIs, e.g. "details".
-     */
-    public getFrom(): string {
-        return this.getHashParameter("from");
-    }
-
-    /**
      * Returns URL of API details page depending on current route.
      * @param apiName ARM resource name of the API.
      * @param detailsPageUrl Relative URL of API details page.
@@ -124,10 +117,9 @@ export class RouteHelper {
      * @param apiName ARM resource name of the API.
      * @param type ARM resource graph type.
      * @param graph ARM resource name of the graph.
-     * @param from ARM resource from where the actions are executed.
      * @param detailsPageUrl Relative URL of operation details page.
      */
-     public getGraphReferenceUrl(apiName: string, type: string, graph: string, from: string ,detailsPageUrl: string = ""): string {
+     public getGraphReferenceUrl(apiName: string, type: string, graph: string, detailsPageUrl: string = ""): string {
         if (!apiName) {
             throw new Error(`Parameter "apiName" not specified.`);
         }
@@ -140,10 +132,6 @@ export class RouteHelper {
             throw new Error(`Parameter "graphName" not specified.`);
         }
 
-        if (!from) {
-            throw new Error(`Parameter "from" not specified.`);
-        }
-
         let path = "";
         const currentPath = this.router.getPath();
 
@@ -151,7 +139,7 @@ export class RouteHelper {
             path = detailsPageUrl;
         }
 
-        return `${path}#api=${apiName}&type=${type}&graph=${graph}&from=${from}`;
+        return `${path}#api=${apiName}&type=${type}&graph=${graph}`;
     }
 
     /**

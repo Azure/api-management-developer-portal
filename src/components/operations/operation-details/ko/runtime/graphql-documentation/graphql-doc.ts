@@ -4,8 +4,7 @@ import graphqlDocExplorer from "./graphql-doc-explorer.html";
 import { Component, OnMounted, Param, OnDestroyed } from "@paperbits/common/ko/decorators";
 import { GraphDocService } from "./graphql-doc-service";
 import * as _ from "lodash";
-import { GraphqlTypesForDocumentation, DocumentationActions, TypeOfApi } from "../../../../../../constants";
-import { Api } from "../../../../../../models/api";
+import { GraphqlTypesForDocumentation, gqlFieldNames } from "../../../../../../constants";
 
 @Component({
     selector: "graphql-documentation",
@@ -43,13 +42,13 @@ export class GraphqlDocumentation {
     public async initialize(): Promise<void> {
         this.working(true);
         await this.graphDocService.initialize();
-        this.selectedType(GraphqlTypesForDocumentation[this.graphDocService.currentSelected()['collectionTypeForDoc']()]);
-        this.graphDocService.navigation.subscribe(this.onNavigationChange);
+        this.selectedType(GraphqlTypesForDocumentation[this.graphDocService.currentSelected()[gqlFieldNames.type]()]);
+        this.graphDocService.currentSelected.subscribe(this.onCurrentSelectedChange);
         this.working(false);
     }
 
     public getReferenceUrl(type: string, graphName: string): string {
-        return this.graphDocService.routeHelper.getGraphReferenceUrl(this.apiName(), type, graphName, DocumentationActions.global, this.detailsPageUrl());
+        return this.graphDocService.routeHelper.getGraphReferenceUrl(this.apiName(), type, graphName, this.detailsPageUrl());
     }
 
     @OnDestroyed()
@@ -61,12 +60,12 @@ export class GraphqlDocumentation {
         return _.values(this.graphDocService.docGraphs[collection]());
     }
 
-    private onNavigationChange(selected: Array<object>): void {
-        if (selected.length > 0) {
-            this.selectedType(GraphqlTypesForDocumentation[this.graphDocService.currentSelected()['collectionTypeForDoc']()]);
+    private onCurrentSelectedChange(selected: object): void {
+        if (selected) {
+            this.selectedType(GraphqlTypesForDocumentation[this.graphDocService.currentSelected()[gqlFieldNames.type]()]);
         }
     }
-    
+
     public selectType(type: string) {
         this.selectedType(type);
     }

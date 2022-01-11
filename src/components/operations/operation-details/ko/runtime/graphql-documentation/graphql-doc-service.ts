@@ -1,6 +1,6 @@
 import * as GraphQL from "graphql";
 import * as ko from "knockout";
-import { GraphqlTypesForDocumentation, DocumentationActions, TypeOfApi } from "../../../../../../constants";
+import { GraphqlTypesForDocumentation, TypeOfApi, GraphqlTypes, gqlFieldNames } from "../../../../../../constants";
 import { Api } from "../../../../../../models/api";
 import { ApiService } from "../../../../../../services/apiService";
 import { RouteHelper } from "../../../../../../routing/routeHelper";
@@ -8,7 +8,7 @@ import { Router } from "@paperbits/common/routing";
 import * as _ from "lodash";
 
 export class GraphDocService {
-    public navigation: ko.ObservableArray<object>;
+    public currentSelected: ko.Observable<object>;
     public docGraphs: {
         query: ko.Observable<object>,
         mutation: ko.Observable<object>,
@@ -19,7 +19,7 @@ export class GraphDocService {
         scalarType: ko.Observable<object>,
         unionType: ko.Observable<object>,
         interfaceType: ko.Observable<object>
-    }
+    };
 
     public api: ko.Observable<Api>;
     public selectedApiName: ko.Observable<string>;
@@ -31,7 +31,7 @@ export class GraphDocService {
         public readonly router: Router,
         public readonly routeHelper: RouteHelper
     ) {
-        this.navigation = ko.observableArray<object>();
+        this.currentSelected = ko.observable<object>(null);
         this.docGraphs = {
             query: ko.observable<object>(),
             mutation: ko.observable<object>(),
@@ -63,7 +63,6 @@ export class GraphDocService {
     }
 
     private async defaultValues(): Promise<void> {
-        this.navigation([]);
         await this.getApi(this.selectedApiName());
         if (this.api().type === TypeOfApi.graphQL) {
             const graphQLSchemas = await this.apiService.getSchemas(this.api());
@@ -96,14 +95,16 @@ export class GraphDocService {
 
             _.forEach(this.docGraphs, (value, key) => {
                 this.addingNewFields(value(), key);
-                value(this.sortingAlphabetically(value()));
+                if (key == GraphqlTypes.query || key == GraphqlTypes.subscription || key == GraphqlTypes.mutation) {
+                    value(this.sortingAlphabetically(value()));
+                }
             })
 
             for (const type in GraphqlTypesForDocumentation) {
                 if (_.size(this.docGraphs[type]()) > 0) {
                     const selectedCollection = this.docGraphs[type]();
                     const selectedGraph = selectedCollection[Object.keys(selectedCollection)[0]];
-                    this.select(selectedGraph, DocumentationActions.global);
+                    this.select(selectedGraph);
                     break;
                 }
             }
@@ -112,27 +113,18 @@ export class GraphDocService {
         }
     }
 
-    public select(graph: object, from): void {
+    public select(graph: object): void {
         if (this.currentSelected()) {
-            this.currentSelected()['isSelectedForDoc'](false);
+            this.currentSelected()[gqlFieldNames.selected](false);
         }
-        graph['isSelectedForDoc'](true);
-        if (from === DocumentationActions.global) {
-            this.navigation([graph])
-        }
-        else if (from === DocumentationActions.details) {
-            this.navigation.push(graph);
-        }
-        else {
-            this.navigation.pop();
-        }
+        graph[gqlFieldNames.selected](true);
+        this.currentSelected(graph);
     }
 
     public async onRouteChangeGraph(): Promise<void> {
         const apiName = this.routeHelper.getApiName();
         const graphType = this.routeHelper.getGraphType();
         const graphName = this.routeHelper.getGraphName();
-        const from = this.routeHelper.getFrom();
 
         if (!apiName) return;
 
@@ -143,13 +135,8 @@ export class GraphDocService {
 
         if (!(graphType && graphName)) return;
         else {
-            this.select(this.docGraphs[graphType]()[graphName], from);
+            this.select(this.docGraphs[graphType]()[graphName]);
         }
-    }
-
-    public currentSelected() {
-        const selectedIndex = this.navigation().length - 1;
-        return this.navigation()[selectedIndex];
     }
 
     private sortingAlphabetically(collection) {
@@ -158,8 +145,10 @@ export class GraphDocService {
 
     private addingNewFields(collection: object, type: string) {
         _.forEach(collection, (value) => {
-            value.isSelectedForDoc = ko.observable<boolean>(false);
-            value.collectionTypeForDoc = ko.observable<string>(type);
+            if (type == GraphqlTypes.query || type == GraphqlTypes.subscription || type == GraphqlTypes.mutation) {
+                value[gqlFieldNames.selected] = ko.observable<boolean>(false);
+            }
+            value[gqlFieldNames.type] = ko.observable<string>(type);
         })
     }
 
@@ -190,7 +179,7 @@ export class GraphDocService {
         let availableTypes = [];
 
         _.each(GraphqlTypesForDocumentation, (v, k) => {
-            if (_.size(this.docGraphs[k]()) > 0) {
+            if (_.size(this.docGraphs[k]()) > 0 && (k == GraphqlTypes.query || k == GraphqlTypes.subscription || k == GraphqlTypes.mutation)) {
                 indexer[v] = k;
                 availableTypes.push(v);
             }

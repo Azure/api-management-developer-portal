@@ -171,13 +171,12 @@ export enum GraphqlTypesForDocumentation {
     interfaceType = "Interface Type"
 }
 
-export enum DocumentationActions {
-    global = "global",
-    details = "details",
-    back = "back"
+export enum gqlFieldNames {
+    selected = "isSelectedForDoc",
+    type = "collectionTypeForDoc",
 }
 
-export const fieldTypes = [ "args", "_fields", "_values", "_types" ];
+export const gqlFieldTypes = [ "args", "_fields", "_values", "_types" ];
 
 /**
  * Known setting names.
