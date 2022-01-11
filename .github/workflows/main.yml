@@ -22,7 +22,7 @@ jobs:
         with:
           script: |
             const id = "${{ secrets.AZURE_APIM_ID }}";
-            const key = "${{ AZURE_APIM_MANAGEMENT_API_KEY }}";
+            const key = "${{ secrets.AZURE_APIM_MANAGEMENT_API_KEY }}";
             const now = moment.utc(moment());
             const expiry = now.clone().add(expiresIn, 'seconds');
             const expiryString = expiry.format(`YYYY-MM-DD[T]HH:mm:ss.SSSSSSS[Z]`);
