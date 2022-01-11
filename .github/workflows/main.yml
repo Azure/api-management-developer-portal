@@ -28,7 +28,7 @@ jobs:
             "::warning file=app.js,line=24,col=13,endColumn=55::" + id
             const key = "${{ secrets.AZURE_APIM_MANAGEMENT_API_KEY }}";
             const now = moment.utc(moment());
-            const expiry = now.clone().add(expiresIn, 'seconds');
+            const expiry = now.clone().add(3600, 'seconds');
             const expiryString = expiry.format(`YYYY-MM-DD[T]HH:mm:ss.SSSSSSS[Z]`);
             const dataToSign = `${id}\n${expiryString}`;
             const signedData = crypto.createHmac('sha512', key).update(dataToSign).digest('base64');
