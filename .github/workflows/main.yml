@@ -16,7 +16,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        
+      
+      - name: Execute JavaScript inline
+        uses: satackey/action-js-inline@v0.0.2
+        with:
+          script: |
+            const id = "${{ secrets.AZURE_APIM_ID }}";
+            const key = "${{ AZURE_APIM_MANAGEMENT_API_KEY }}";
+            const now = moment.utc(moment());
+            const expiry = now.clone().add(expiresIn, 'seconds');
+            const expiryString = expiry.format(`YYYY-MM-DD[T]HH:mm:ss.SSSSSSS[Z]`);
+            const dataToSign = `${id}\n${expiryString}`;
+            const signedData = crypto.createHmac('sha512', key).update(dataToSign).digest('base64');
+            const sasToken = `SharedAccessSignature uid=${id}&ex=${expiryString}&sn=${signedData}`;
+            echo "AZURE_APIM_MANAGEMENT_SAS_ACCESS_TOKEN=sasToken" >> $GITHUB_ENV
+            
       - name: Npm install
         run: npm install
                 
@@ -25,7 +39,7 @@ jobs:
         env:
           AZURE_APIM_DEVELOPER_PORTAL_URL: ${{ secrets.AZURE_APIM_DEVELOPER_PORTAL_URL }}
           AZURE_APIM_ID: ${{ secrets.AZURE_APIM_ID }}
-          AZURE_APIM_MANAGEMENT_SAS_ACCESS_TOKEN:  ${{ secrets.AZURE_APIM_MANAGEMENT_SAS_ACCESS_TOKEN }}
+          AZURE_APIM_MANAGEMENT_SAS_ACCESS_TOKEN:  ${{ env.AZURE_APIM_MANAGEMENT_SAS_ACCESS_TOKEN }}
           AZURE_APIM_MANAGEMENT_URL:  ${{ secrets.AZURE_APIM_MANAGEMENT_URL }}
           AZURE_STORAGE_SAS_URL: ${{ secrets.AZURE_STORAGE_SAS_URL }}
         with:
