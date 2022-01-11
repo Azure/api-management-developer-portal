@@ -100,11 +100,7 @@
 
             <!-- ko ifnot: $component.collapsedExplorer -->
             <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
-                <select id="operationType" class="form-control" data-bind="value: queryType">
-                    <option value="query">Query</option>
-                    <option value="mutation">Mutation</option>
-                    <option value="subscription">Subscription</option>
-                </select>
+                <select class="form-control" data-bind="options: graphDocService.availableTypes, value: queryType"></select>
                 <div class="input-icons">
                     <i class="icon-emb icon-emb-magnifier icon"></i>
                     <input class="form-control search" type="search" aria-label="Search" placeholder="Search"

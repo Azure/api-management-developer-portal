@@ -9,7 +9,7 @@ import template from "./graphql-console.html";
 import graphqlExplorer from "./graphql-explorer.html";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlTypes } from "./../../../../../constants";
+import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlTypes, gqlFieldNames, GraphqlTypesForDocumentation } from "./../../../../../constants";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { ApiService } from "../../../../../services/apiService";
@@ -19,6 +19,7 @@ import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ResponsePackage } from "./responsePackage";
 import { Utils } from "../../../../../utils";
+import { GraphDocService } from "./graphql-documentation/graphql-doc-service";
 
 function getType(type: GraphQL.GraphQLOutputType | GraphQL.GraphQLInputType) {
     while ((type instanceof GraphQL.GraphQLList) || (type instanceof GraphQL.GraphQLNonNull)) {
@@ -69,7 +70,8 @@ export class GraphqlConsole {
         private readonly routeHelper: RouteHelper,
         private readonly apiService: ApiService,
         private readonly httpClient: HttpClient,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly graphDocService: GraphDocService
     ) {
         this.working = ko.observable(true);
         this.collapsedExplorer = ko.observable(true);
@@ -135,8 +137,7 @@ export class GraphqlConsole {
         const graphQLSchemas = await this.apiService.getSchemas(this.api());
         this.schema = graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema;
         await this.buildTree(this.schema);
-        this.node(this.queryNode());
-        this.node().toggle(true);
+        this.selectByDefault();
         this.generateDocument();
         this.working(false);
     }
@@ -145,8 +146,23 @@ export class GraphqlConsole {
         return this.routeHelper.getApiReferenceUrl(this.api().name);
     }
 
+    private selectByDefault(): void {
+        const type = this.graphDocService.currentSelected()[gqlFieldNames.type]();
+        this.onQueryTypeChange(GraphqlTypesForDocumentation[type]);
+        const name = this.graphDocService.currentSelected()['name'];
+
+        for (let child of this.node().children()) {
+            if(child.label() === name) {
+                child.toggle();
+                break;
+            }
+        }
+    }
+
     private async onQueryTypeChange(queryType: string): Promise<void> {
-        switch (queryType) {
+        this.queryType(queryType);
+        const type = this.graphDocService.typeIndexer()[queryType];
+        switch (type) {
             case "query":
                 this.node(this.queryNode());
                 break;
