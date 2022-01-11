@@ -20,7 +20,10 @@ jobs:
       - name: Execute JavaScript inline
         uses: satackey/action-js-inline@v0.0.2
         with:
+          required-packages: moment
           script: |
+            const moment = require('moment')
+
             const id = "${{ secrets.AZURE_APIM_ID }}";
             "::warning file=app.js,line=24,col=13,endColumn=55::" + id
             const key = "${{ secrets.AZURE_APIM_MANAGEMENT_API_KEY }}";
