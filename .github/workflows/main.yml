@@ -22,7 +22,7 @@ jobs:
         with:
           script: |
             const id = "${{ secrets.AZURE_APIM_ID }}";
-            echo "::warning file=app.js,line=24,col=13,endColumn=55::" + id
+            "::warning file=app.js,line=24,col=13,endColumn=55::" + id
             const key = "${{ secrets.AZURE_APIM_MANAGEMENT_API_KEY }}";
             const now = moment.utc(moment());
             const expiry = now.clone().add(expiresIn, 'seconds');
@@ -30,7 +30,7 @@ jobs:
             const dataToSign = `${id}\n${expiryString}`;
             const signedData = crypto.createHmac('sha512', key).update(dataToSign).digest('base64');
             const sasToken = `SharedAccessSignature uid=${id}&ex=${expiryString}&sn=${signedData}`;
-            echo "AZURE_APIM_MANAGEMENT_SAS_ACCESS_TOKEN=sasToken" >> $GITHUB_ENV
+            "AZURE_APIM_MANAGEMENT_SAS_ACCESS_TOKEN=sasToken" >> $GITHUB_ENV
             
       - name: Npm install
         run: npm install
