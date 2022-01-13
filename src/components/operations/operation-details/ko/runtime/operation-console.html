@@ -211,9 +211,17 @@
     </a>
     <!-- /ko -->
 
-    <!-- ko if: hasBody -->
+    <!-- ko if: canHaveBody -->
+    
     <h3>Body</h3>
 
+    <!-- ko if: !hasBody() -->
+    <a href="#" role="button" data-bind="click: $component.addBody">
+        <i class="icon-emb icon-emb-plus"></i> Add body
+    </a>
+    <!-- /ko -->
+
+    <!-- ko if: hasBody() -->
     <div class="row flex flex-row form-group">
         <div class="col-5">
             <label class="form-check-label">Request body format</label>
@@ -303,8 +311,12 @@
         </div>
     </div>
     <!-- /ko -->
-
+    <div class="col-1">
+        <a href="#" role="button" data-bind="click: $component.removeBody" class="btn-centered-vert btn-inline" aria-label="Remove body"><i class="icon-emb icon-emb-trash"></i></a>
+    </div>
     <!-- /ko -->
+    <!-- /ko -->
+    
 </div>
 
 <!-- ko ifnot: api().type === 'websocket' -->
