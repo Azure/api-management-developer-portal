@@ -60,6 +60,8 @@ export class OperationConsole {
     public readonly wsPayload: ko.Observable<string | File>;
     public readonly wsDataFormat: ko.Observable<string>;
     public readonly wsLogItems: ko.ObservableArray<LogItem>;
+    
+    private bodyStash: string;
 
     constructor(
         private readonly apiService: ApiService,
@@ -103,6 +105,8 @@ export class OperationConsole {
         this.wsPayload = ko.observable();
         this.wsDataFormat = ko.observable("raw");
         this.wsLogItems = ko.observableArray([]);
+
+        this.bodyStash = "";
 
         validation.rules["maxFileSize"] = {
             validator: (file: File, maxSize: number) => !file || file.size < maxSize,
@@ -169,6 +173,8 @@ export class OperationConsole {
         if (!selectedApi || !selectedOperation) {
             return;
         }
+
+        this.bodyStash = "";
 
         this.working(true);
         this.sendingRequest(false);
@@ -271,16 +277,27 @@ export class OperationConsole {
         this.updateRequestSummary();
     }
 
+    public addBody(): void {
+        this.consoleOperation().hasBody(true);
+        this.consoleOperation().request.body(this.bodyStash);
+    }
+
+    public removeBody(): void {
+        this.consoleOperation().hasBody(false);
+        this.bodyStash = this.consoleOperation().request.body();
+        this.consoleOperation().request.body(null);
+    }
+
+    public revertBody(): void {
+        this.consoleOperation().request.body(this.selectedRepresentation().sample)
+    }
+
     public addHeader(): void {
         const newHeader = new ConsoleHeader();
         this.consoleOperation().request.headers.push(newHeader);
         newHeader.value.subscribe(_ => this.updateRequestSummary());
 
         this.updateRequestSummary();
-    }
-
-    public revertBody(): void {
-        this.consoleOperation().request.body(this.selectedRepresentation().sample)
     }
 
     public removeHeader(header: ConsoleHeader): void {
