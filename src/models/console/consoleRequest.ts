@@ -23,6 +23,8 @@ export class ConsoleRequest {
     public representationContentType: string;
     public readonly readonlyBodyFormat: boolean;
 
+    private sample: string;
+
     constructor(request: Request) {
         this.description = request.description;
         this.representations = request.representations.map(representation => new ConsoleRepresentation(representation));
@@ -37,13 +39,16 @@ export class ConsoleRequest {
         this.bodyFormat = ko.observable(RequestBodyType.raw);
         this.bodyDataItems = ko.observableArray([]);
 
+        this.sample = "";
+
         this.selectedRepresentation = ko.observable(this.representations[0]);
         this.selectedRepresentation.subscribe(representation => {
-            this.body(representation.sample);
+            this.sample = representation.sample;
+            this.body(this.sample);
             this.representationContentType = representation.contentType
         })
 
-        this.body.subscribe(body => this.isBodyEdited(body !== this.selectedRepresentation().sample))
+        this.body.subscribe(body => this.isBodyEdited(body !== this.sample))
 
         if (this.representations?.length === 0) {
             return;
