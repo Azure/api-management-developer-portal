@@ -2,7 +2,7 @@ import { ViewModelBinder } from "@paperbits/common/widgets";
 import { ProductSubscribeViewModel } from "./productSubscribeViewModel";
 import { ProductSubscribeModel } from "../productSubscribeModel";
 import { Bag } from "@paperbits/common";
-import { EventManager } from "@paperbits/common/events";
+import { EventManager, Events } from "@paperbits/common/events";
 import { ComponentFlow } from "@paperbits/common/editing";
 
 
@@ -26,7 +26,7 @@ export class ProductSubscribeViewModelBinder implements ViewModelBinder<ProductS
             editor: "product-subscribe-editor",
             applyChanges: async (updatedModel: ProductSubscribeModel) => {
                 this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                this.eventManager.dispatchEvent("onContentUpdate");
+                this.eventManager.dispatchEvent(Events.ContentUpdate);
             }
         };
 

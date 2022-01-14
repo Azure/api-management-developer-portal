@@ -1,5 +1,5 @@
 import { ViewModelBinder } from "@paperbits/common/widgets";
-import { EventManager } from "@paperbits/common/events";
+import { EventManager, Events } from "@paperbits/common/events";
 import { OperationDetailsViewModel } from "./operationDetailsViewModel";
 import { OperationDetailsModel } from "../operationDetailsModel";
 import { Bag } from "@paperbits/common";
@@ -21,7 +21,7 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
                 editor: "operation-details-editor",
                 applyChanges: async (updatedModel: OperationDetailsModel) => {
                     await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                    this.eventManager.dispatchEvent("onContentUpdate");
+                    this.eventManager.dispatchEvent(Events.ContentUpdate);
                 }
             };
         }
