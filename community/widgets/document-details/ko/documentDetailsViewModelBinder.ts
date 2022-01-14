@@ -1,5 +1,5 @@
 import { Bag } from "@paperbits/common";
-import { EventManager } from "@paperbits/common/events";
+import { EventManager, Events } from "@paperbits/common/events";
 import { ComponentFlow, IWidgetBinding } from "@paperbits/common/editing";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { DocumentDetailsViewModel } from "./documentDetailsViewModel";
@@ -28,7 +28,7 @@ export class DocumentDetailsViewModelBinder implements ViewModelBinder<DocumentD
                 draggable: true,
                 applyChanges: async () => {
                     await this.updateViewModel(model, viewModel);
-                    this.eventManager.dispatchEvent("onContentUpdate");
+                    this.eventManager.dispatchEvent(Events.ContentUpdate);
                 }
             };
             viewModel["widgetBinding"] = binding;
