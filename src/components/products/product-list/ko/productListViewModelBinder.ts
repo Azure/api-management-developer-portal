@@ -1,6 +1,6 @@
 import { Bag } from "@paperbits/common";
 import { ViewModelBinder } from "@paperbits/common/widgets";
-import { EventManager } from "@paperbits/common/events";
+import { EventManager, Events } from "@paperbits/common/events";
 import { ProductListViewModel } from "./productListViewModel";
 import { ProductListModel } from "../productListModel";
 import { ComponentFlow } from "@paperbits/common/editing";
@@ -32,7 +32,7 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
             editor: "product-list-editor",
             applyChanges: async (updatedModel: ProductListModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                this.eventManager.dispatchEvent("onContentUpdate");
+                this.eventManager.dispatchEvent(Events.ContentUpdate);
             }
         };
 

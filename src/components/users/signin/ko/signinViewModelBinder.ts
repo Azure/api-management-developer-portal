@@ -1,6 +1,6 @@
 import { Bag } from "@paperbits/common";
 import { ComponentFlow } from "@paperbits/common/editing";
-import { EventManager } from "@paperbits/common/events";
+import { EventManager, Events } from "@paperbits/common/events";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { BackendService } from "../../../../services/backendService";
@@ -27,7 +27,7 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
                 draggable: true,
                 applyChanges: async (updatedModel: SigninModel) => {
                     this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                    this.eventManager.dispatchEvent("onContentUpdate");
+                    this.eventManager.dispatchEvent(Events.ContentUpdate);
                 }
             };
         }
