@@ -16,9 +16,11 @@ export class CustomWidgetHandlers implements IWidgetHandler {
             createModel: async () => { 
                 const model = new CustomWidgetModel();
                 model.name = "";
-                model.storageUri = undefined;
+                model.uri = undefined;
                 model.inheritStyling = true;
                 model.customInput1 = "";
+                model.customInputCode = "";
+                model.customInputCodeValue = "{}";
                 StyleHelper.setPluginConfigForLocalStyles(model.styles, "size", sizeStylesInitial);
                 return model;
             }

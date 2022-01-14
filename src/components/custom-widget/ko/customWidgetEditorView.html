@@ -1,6 +1,6 @@
 <fieldset class="form flex flex-item flex-item-grow no-overflow">
     <div class="form-group flex flex-column" style="display: flex; margin-bottom: 0;">
-        <h4>Init fields</h4>
+        <h4 style="margin: 0">Init fields</h4>
         <label class="form-label" for="name">
             Name of your widget
             <input type="text" id="name" class="form-control" data-bind="textInput: name"/>
@@ -8,7 +8,7 @@
 
         <p>
             storage URL (for debug): <br/>
-            <a target="_blank" data-bind="text: storageUri, attr: { href: storageUri }"></a>
+            <a target="_blank" data-bind="text: `https://scaffoldtest.blob.core.windows.net/${uri()}/index.html`, attr: { href: `https://scaffoldtest.blob.core.windows.net/${uri()}/index.html` }"></a>
         </p>
 
         <a id="customWidgetDownloadBtn" data-bind="click: downloadScaffold">
@@ -17,13 +17,25 @@
             </button>
         </a>
 
-        <h4>Runtime fields</h4>
+        <h4 style="margin: 0;">Runtime fields</h4>
+        <!--
         <size-editor params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: sizeStyleConfig, onUpdate: onSizeUpdate }">
         </size-editor>
+        -->
 
         <label class="form-label" for="customInput1">
             Custom input 1
             <input type="text" id="customInput1" class="form-control" data-bind="textInput: customInput1"/>
         </label>
+
+        <label class="form-label">
+            Custom input Code
+        </label>
+        <code-editor style="height: 100px; flex-shrink: 0;" class="flex flex-item flex-item-grow" params="{ code: customInputCode, onChange: customInputCode }"></code-editor>
+
+        <iframe data-bind="attr: { srcdoc: customInputCodeWithJS }"
+                sandbox="allow-scripts allow-modals allow-forms"
+                frameborder="0"
+        ></iframe>
     </div>
 </fieldset>

@@ -19,7 +19,17 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
         }
 
         viewModel.name(model.name);
-        viewModel.storageUri(model.storageUri);
+
+        let developmentSrc;
+        // TODO if in DEV mode only, ignore on prod - could cause a security vulnerability?
+        if (true) {
+            const key = `cw_${model.uri}_devsrc`;
+            const searchParams = new URLSearchParams(window.location.search);
+            developmentSrc = searchParams.get(key);
+            if (developmentSrc) window.sessionStorage.setItem(key, developmentSrc);
+            else developmentSrc = window.sessionStorage.getItem(key);
+        }
+        viewModel.src(developmentSrc ?? `https://scaffoldtest.blob.core.windows.net/${model.uri}/index.html`);
     }
 
     public async modelToViewModel(model: CustomWidgetModel, viewModel?: CustomWidgetViewModel, bindingContext?: Bag<any>): Promise<CustomWidgetViewModel> {
