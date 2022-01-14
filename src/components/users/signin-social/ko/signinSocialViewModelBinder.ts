@@ -1,6 +1,6 @@
 import { ComponentFlow } from "@paperbits/common/editing";
 import { Bag } from "@paperbits/common";
-import { EventManager } from "@paperbits/common/events";
+import { EventManager, Events } from "@paperbits/common/events";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { IdentityService } from "../../../../services/identityService";
@@ -30,7 +30,7 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
                 flow: ComponentFlow.Inline,
                 applyChanges: () => {
                     this.modelToViewModel(model, viewModel, bindingContext);
-                    this.eventManager.dispatchEvent("onContentUpdate");
+                    this.eventManager.dispatchEvent(Events.ContentUpdate);
                 }
             };
         }

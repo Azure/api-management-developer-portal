@@ -2,7 +2,7 @@ import { ViewModelBinder } from "@paperbits/common/widgets";
 import { OperationListViewModel } from "./operationListViewModel";
 import { OperationListModel } from "../operationListModel";
 import { Bag } from "@paperbits/common";
-import { EventManager } from "@paperbits/common/events";
+import { EventManager, Events } from "@paperbits/common/events";
 import { ComponentFlow } from "@paperbits/common/editing";
 
 export class OperationListViewModelBinder implements ViewModelBinder<OperationListModel, OperationListViewModel> {
@@ -32,7 +32,7 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
             editor: "operation-list-editor",
             applyChanges: async (updatedModel: OperationListModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                this.eventManager.dispatchEvent("onContentUpdate");
+                this.eventManager.dispatchEvent(Events.ContentUpdate);
             }
         };
 
