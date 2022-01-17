@@ -29,7 +29,13 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
             if (developmentSrc) window.sessionStorage.setItem(key, developmentSrc);
             else developmentSrc = window.sessionStorage.getItem(key);
         }
-        viewModel.src(developmentSrc ?? `https://scaffoldtest.blob.core.windows.net/${model.uri}/index.html`);
+
+        const editorValues = {
+            customInput1: model.customInput1,
+            customInputCodeValue: JSON.parse(model.customInputCodeValue).data,
+        };
+
+        viewModel.src((developmentSrc ?? `https://scaffoldtest.blob.core.windows.net/${model.uri}/index.html`) + `?editorValues=${encodeURIComponent(JSON.stringify(editorValues))}`);
     }
 
     public async modelToViewModel(model: CustomWidgetModel, viewModel?: CustomWidgetViewModel, bindingContext?: Bag<any>): Promise<CustomWidgetViewModel> {

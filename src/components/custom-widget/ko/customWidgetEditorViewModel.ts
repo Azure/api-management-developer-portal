@@ -10,7 +10,6 @@ import { ViewManager } from "@paperbits/common/ui";
 import { EventManager, Events } from "@paperbits/common/events";
 
 const js = (customInputCodeValue) => `<script>
-    console.log('${customInputCodeValue}');
     var value = JSON.parse('${customInputCodeValue}').data;
 
     function onChange(value) {
@@ -73,10 +72,6 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.customInputCode.subscribe(this.applyChangeInputCode);
         this.customInputCodeValue.subscribe(this.applyChanges);
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
-
-        this.propagateChanges();
-        this.customInput1.subscribe(this.propagateChanges);
-        this.customInputCodeValue.subscribe(this.propagateChanges);
     }
 
     private updateResponsiveObservables(): void {
@@ -128,14 +123,5 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         a.href = `http://localhost:8000/scaffold?name=${this.name()}&uri=${uri}&storageUrl=${storageUrl}`;
         document.getElementById("customWidgetDownloadBtn").parentElement.append(a);
         a.click();
-    }
-
-    private propagateChanges(): void {
-        const contentEditorDocument = (document.querySelector("#contentEditor > iframe") as HTMLIFrameElement).contentDocument;
-        const contentWindow = (contentEditorDocument.getElementById(this.name()) as HTMLIFrameElement).contentWindow;
-        contentWindow.postMessage({
-            customInput1: this.customInput1(),
-            customInputCodeValue: JSON.parse(this.customInputCodeValue()).data,
-        }, "*");
     }
 }
