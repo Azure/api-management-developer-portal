@@ -29,7 +29,7 @@ export class CustomHtmlViewModelBinder implements ViewModelBinder<HTMLInjectionM
                 const compiler = new JssCompiler();
                 htmlInheritedStyles += `<style>${compiler.compile(globalStyleSheet)}</style>`;
             } else {
-                htmlInheritedStyles += '<link href="/styles.css" rel="stylesheet" type="text/css">';
+                htmlInheritedStyles += '<link href="/styles/styles.css" rel="stylesheet" type="text/css">';
             }
         }
 
