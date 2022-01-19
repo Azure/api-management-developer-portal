@@ -5,7 +5,6 @@ import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@pap
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
-import { TypeDefinitionPropertyTypeCombination } from "./../../../../../models/typeDefinition";
 import { AuthorizationServer } from "./../../../../../models/authorizationServer";
 import { Representation } from "./../../../../../models/representation";
 import { RouteHelper } from "../../../../../routing/routeHelper";
@@ -16,7 +15,8 @@ import {
     TypeDefinitionProperty,
     TypeDefinitionPropertyTypeReference,
     TypeDefinitionPropertyTypeArrayOfReference,
-    TypeDefinitionPropertyTypeArrayOfPrimitive
+    TypeDefinitionPropertyTypeArrayOfPrimitive,
+    TypeDefinitionPropertyTypeCombination
 } from "../../../../../models/typeDefinition";
 import { OAuthService } from "../../../../../services/oauthService";
 
@@ -281,10 +281,6 @@ export class OperationDetails {
                 || definition.type instanceof TypeDefinitionPropertyTypeArrayOfReference)) {
                 result.push(definition.type.name);
             }
-
-            if (definition.type instanceof TypeDefinitionPropertyTypeCombination) {
-                result.push(...definition.type.combination.map(x => x["name"]));
-            }
         });
 
         return result.filter(x => !skipNames.includes(x));
@@ -320,7 +316,7 @@ export class OperationDetails {
 
         if (!definition) {
             // Fallback for the case when type is referenced, but not defined in schema.
-            return new TypeDefinition(representation.typeName, {});
+            return new TypeDefinition(representation.typeName, {}, this.definitions());
         }
 
         // Making copy to avoid overriding original properties.

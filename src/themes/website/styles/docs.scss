@@ -132,7 +132,10 @@ pre {
     @media (min-width: $breakpoint-md) {
         max-width: 600px;
     }
+}
 
+.combination-type {
+    margin-top: 30px;
 }
 
 .graphql-console-width {
