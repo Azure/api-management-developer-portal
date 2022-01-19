@@ -16,6 +16,7 @@ export class OauthServerConfiguration {
         this.authorizationServer = ko.observable();
         this.displayedGrantFlows = ko.observable();
     }
+
     @Param()
     public authorizationServer: ko.Observable<AuthorizationServer>;
 }

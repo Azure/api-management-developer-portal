@@ -12,7 +12,7 @@
         <div class="col-6">
             <div class="form-group">
                 <div class="input-group">
-                    <input autocomplete="off" class="form-control form-control-sm input-password" placeholder="value"
+                    <input autocomplete="off" class="form-control form-control-sm input-padding-r-30" placeholder="value"
                         spellcheck="false" aria-label="Supported grant flows" readonly
                         data-bind="textInput: $component.authorizationServer().grantTypes">
                     <button class="input-toggle-btn"
@@ -35,7 +35,7 @@
         <div class="col-6">
             <div class="form-group">
                 <div class="input-group">
-                    <input autocomplete="off" class="form-control form-control-sm input-password" placeholder="value"
+                    <input autocomplete="off" class="form-control form-control-sm input-padding-r-30" placeholder="value"
                         spellcheck="false" aria-label="Client id" readonly
                         data-bind="textInput: $component.authorizationServer().clientId">
                     <button class="input-toggle-btn"
@@ -58,7 +58,7 @@
         <div class="col-6">
             <div class="form-group">
                 <div class="input-group">
-                    <input autocomplete="off" class="form-control form-control-sm input-password" placeholder="value"
+                    <input autocomplete="off" class="form-control form-control-sm input-padding-r-30" placeholder="value"
                         spellcheck="false" aria-label="Authorization endpoint" readonly
                         data-bind="textInput: $component.authorizationServer().authorizationEndpoint">
                     <button class="input-toggle-btn"
@@ -81,7 +81,7 @@
         <div class="col-6">
             <div class="form-group">
                 <div class="input-group">
-                    <input autocomplete="off" class="form-control form-control-sm input-password" placeholder="value"
+                    <input autocomplete="off" class="form-control form-control-sm input-padding-r-30" placeholder="value"
                         spellcheck="false" aria-label="Token endpoint" readonly
                         data-bind="textInput: $component.authorizationServer().tokenEndpoint">
                     <button class="input-toggle-btn"
@@ -104,11 +104,11 @@
         <div class="col-6">
             <div class="form-group">
                 <div class="input-group">
-                    <input autocomplete="off" class="form-control form-control-sm input-password" placeholder="value"
+                    <input autocomplete="off" class="form-control form-control-sm input-padding-r-30" placeholder="value"
                         spellcheck="false" aria-label="Scopes" readonly
                         data-bind="textInput:  $component.authorizationServer().scopes">
                     <button class="input-toggle-btn"
-                        data-bind="copyToClipboard: $component.authorizationServer().scopes">
+                        data-bind="copyToClipboard: $component.authorizationServer().scopes.toString()">
                         <i class="icon-emb icon-emb-duplicate"></i>
                     </button>
                 </div>
