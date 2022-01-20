@@ -15,8 +15,7 @@ import {
     TypeDefinitionProperty,
     TypeDefinitionPropertyTypeReference,
     TypeDefinitionPropertyTypeArrayOfReference,
-    TypeDefinitionPropertyTypeArrayOfPrimitive,
-    TypeDefinitionPropertyTypeCombination
+    TypeDefinitionPropertyTypeArrayOfPrimitive
 } from "../../../../../models/typeDefinition";
 import { OAuthService } from "../../../../../services/oauthService";
 

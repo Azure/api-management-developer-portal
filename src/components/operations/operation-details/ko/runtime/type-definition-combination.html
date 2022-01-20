@@ -1,12 +1,14 @@
 <!-- ko if: properties && properties.length > 0 -->
 
-<h5 class="combination-type"><span data-bind="text: type.combinationType"></span>:</h5>
-<!-- ko foreach: { data: type.combinationReferences, as: 'reference'} -->
-<div>
-    <a class="text-monospace"
-        data-bind="text: reference, attr: { href: $component.getReferenceUrl(reference), title: reference }"></a>
+<div class="combination-type">
+    <h5><span data-bind="text: type.combinationType"></span>:</h5>
+    <!-- ko foreach: { data: type.combinationReferences, as: 'reference'} -->
+    <div>
+        <a class="text-monospace"
+            data-bind="text: reference, attr: { href: $component.getReferenceUrl(reference), title: reference }"></a>
+    </div>
+    <!-- /ko -->
 </div>
-<!-- /ko -->
 
 
 <!-- ko foreach: { data: properties, as: 'property' } -->
