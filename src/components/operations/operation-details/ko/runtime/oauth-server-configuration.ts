@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import template from "./oauth-server-configuration.html";
-import { Component, Param } from "@paperbits/common/ko/decorators";
+import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 
 @Component({
@@ -10,13 +10,21 @@ import { AuthorizationServer } from "../../../../../models/authorizationServer";
 
 export class OauthServerConfiguration {
 
-    public displayedGrantFlows: ko.Observable<string[]>;
+    public displayedGrantFlows: ko.Observable<string>;
+    public displayedScopes: ko.Observable<string>;
 
     constructor() {
         this.authorizationServer = ko.observable();
         this.displayedGrantFlows = ko.observable();
+        this.displayedScopes = ko.observable();
     }
 
     @Param()
     public authorizationServer: ko.Observable<AuthorizationServer>;
+
+    @OnMounted()
+    public async initialize(): Promise<void> {
+        this.displayedGrantFlows(this.authorizationServer().grantTypes.join(', ').toString());
+        this.displayedScopes(this.authorizationServer().scopes.join(', ').toString());
+    }
 }

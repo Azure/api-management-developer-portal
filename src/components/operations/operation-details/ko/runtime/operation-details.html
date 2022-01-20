@@ -235,6 +235,16 @@
             </div>
             <!-- /ko -->
             <!-- /ko -->
+
+            <!-- ko if: associatedAuthServer -->
+            <div class="animation-fade-in">
+                <h4>OAuth Server Configuration</h4>
+
+                <oauth-server-configuration params="{authorizationServer: associatedAuthServer}">
+                </oauth-server-configuration>
+            </div>
+            <!-- /ko -->
+
         </div>
     </div>
 
@@ -334,11 +344,6 @@
 </div>
 <!-- /ko -->
 
-<!-- /ko -->
-
-<!-- ko if: associatedAuthServer -->
-<oauth-server-configuration params="{authorizationServer: associatedAuthServer}">
-</oauth-server-configuration>
 <!-- /ko -->
 
 <!-- ko if: $component.consoleIsOpen -->
