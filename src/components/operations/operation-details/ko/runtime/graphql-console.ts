@@ -9,7 +9,7 @@ import template from "./graphql-console.html";
 import graphqlExplorer from "./graphql-explorer.html";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlTypes, gqlFieldNames, GraphqlTypesForDocumentation } from "./../../../../../constants";
+import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlTypes, GraphqlCustomFieldNames, GraphqlTypesForDocumentation } from "./../../../../../constants";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { ApiService } from "../../../../../services/apiService";
@@ -147,7 +147,7 @@ export class GraphqlConsole {
     }
 
     private selectByDefault(): void {
-        const type = this.graphDocService.currentSelected()[gqlFieldNames.type]();
+        const type = this.graphDocService.currentSelected()[GraphqlCustomFieldNames.type]();
         this.onQueryTypeChange(GraphqlTypesForDocumentation[type]);
         const name = this.graphDocService.currentSelected()['name'];
 

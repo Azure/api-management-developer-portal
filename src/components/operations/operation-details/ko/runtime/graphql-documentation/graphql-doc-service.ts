@@ -1,6 +1,6 @@
 import * as GraphQL from "graphql";
 import * as ko from "knockout";
-import { GraphqlTypesForDocumentation, TypeOfApi, GraphqlTypes, gqlFieldNames } from "../../../../../../constants";
+import { GraphqlTypesForDocumentation, TypeOfApi, GraphqlTypes, GraphqlCustomFieldNames } from "../../../../../../constants";
 import { Api } from "../../../../../../models/api";
 import { ApiService } from "../../../../../../services/apiService";
 import { RouteHelper } from "../../../../../../routing/routeHelper";
@@ -107,7 +107,7 @@ export class GraphDocService {
                     this.select(selectedGraph);
                     break;
                 }
-            }
+            }            
 
             this.getAvailableTypes();
         }
@@ -115,9 +115,9 @@ export class GraphDocService {
 
     public select(graph: object): void {
         if (this.currentSelected()) {
-            this.currentSelected()[gqlFieldNames.selected](false);
+            this.currentSelected()[GraphqlCustomFieldNames.selected](false);
         }
-        graph[gqlFieldNames.selected](true);
+        graph[GraphqlCustomFieldNames.selected](true);
         this.currentSelected(graph);
     }
 
@@ -146,9 +146,9 @@ export class GraphDocService {
     private addingNewFields(collection: object, type: string) {
         _.forEach(collection, (value) => {
             if (type == GraphqlTypes.query || type == GraphqlTypes.subscription || type == GraphqlTypes.mutation) {
-                value[gqlFieldNames.selected] = ko.observable<boolean>(false);
+                value[GraphqlCustomFieldNames.selected] = ko.observable<boolean>(false);
             }
-            value[gqlFieldNames.type] = ko.observable<string>(type);
+            value[GraphqlCustomFieldNames.type] = ko.observable<string>(type);
         })
     }
 

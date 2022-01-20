@@ -171,12 +171,25 @@ export enum GraphqlTypesForDocumentation {
     interfaceType = "Interface Type"
 }
 
-export enum gqlFieldNames {
+export enum GraphqlCustomFieldNames {
     selected = "isSelectedForDoc",
     type = "collectionTypeForDoc",
 }
 
-export const gqlFieldTypes = [ "args", "_fields", "_values", "_types" ];
+export enum GraphqlDefaultScalarTypes {
+    int = "Int",
+    float = "Float",
+    string = "String",
+    boolean = "Boolean",
+    id = "ID"
+}
+
+export enum GraphqlFieldTypes {
+    args = "args",
+    fields = "_fields",
+    values = "_values",
+    types = "_types"
+}
 
 /**
  * Known setting names.

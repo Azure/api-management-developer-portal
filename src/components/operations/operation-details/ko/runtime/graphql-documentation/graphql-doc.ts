@@ -4,7 +4,7 @@ import graphqlDocExplorer from "./graphql-doc-explorer.html";
 import { Component, OnMounted, Param, OnDestroyed } from "@paperbits/common/ko/decorators";
 import { GraphDocService } from "./graphql-doc-service";
 import * as _ from "lodash";
-import { GraphqlTypesForDocumentation, gqlFieldNames } from "../../../../../../constants";
+import { GraphqlTypesForDocumentation, GraphqlCustomFieldNames } from "../../../../../../constants";
 
 @Component({
     selector: "graphql-documentation",
@@ -42,7 +42,7 @@ export class GraphqlDocumentation {
     public async initialize(): Promise<void> {
         this.working(true);
         await this.graphDocService.initialize();
-        this.selectedType(GraphqlTypesForDocumentation[this.graphDocService.currentSelected()[gqlFieldNames.type]()]);
+        this.selectedType(GraphqlTypesForDocumentation[this.graphDocService.currentSelected()[GraphqlCustomFieldNames.type]()]);
         this.graphDocService.currentSelected.subscribe(this.onCurrentSelectedChange);
         this.working(false);
     }
@@ -62,7 +62,7 @@ export class GraphqlDocumentation {
 
     private onCurrentSelectedChange(selected: object): void {
         if (selected) {
-            this.selectedType(GraphqlTypesForDocumentation[this.graphDocService.currentSelected()[gqlFieldNames.type]()]);
+            this.selectedType(GraphqlTypesForDocumentation[this.graphDocService.currentSelected()[GraphqlCustomFieldNames.type]()]);
         }
     }
 
