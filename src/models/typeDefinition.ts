@@ -36,7 +36,7 @@ export class TypeDefinitionPropertyTypeArrayOfReference extends TypeDefinitionPr
 export class TypeDefinitionPropertyTypeCombination extends TypeDefinitionPropertyType {
     constructor(
         public readonly combinationType: string,
-        public readonly combination: TypeDefinitionPropertyType[]
+        public readonly combinationReferences: string[]
     ) {
         super("combination");
     }
@@ -121,52 +121,13 @@ export class TypeDefinitionEnumerationProperty extends TypeDefinitionProperty {
     }
 }
 
-export class TypeDefinitionCombinationProperty extends TypeDefinitionProperty {
-    constructor(name: string, contract: SchemaObjectContract, isRequired: boolean) {
-        super(name, contract, isRequired);
-
-        let combinationType;
-        let combinationArray;
-
-        if (contract.allOf) {
-            combinationType = "All of";
-            combinationArray = contract.allOf;
-        }
-
-        if (contract.anyOf) {
-            combinationType = "Any of";
-            combinationArray = contract.anyOf;
-        }
-
-        if (contract.oneOf) {
-            combinationType = "One of";
-            combinationArray = contract.oneOf;
-        }
-
-        if (contract.not) {
-            combinationType = "Not";
-            combinationArray = contract.not;
-        }
-
-        const combination = combinationArray.map(item => {
-            if (item.$ref) {
-                return new TypeDefinitionPropertyTypeReference(getTypeNameFromRef(item.$ref));
-            }
-            return new TypeDefinitionPropertyTypePrimitive(item.type || "object");
-        });
-
-        this.type = new TypeDefinitionPropertyTypeCombination(combinationType, combination);
-        this.kind = "combination";
-    }
-}
-
 export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
     /**
      * Object properties.
      */
     public properties?: TypeDefinitionProperty[];
 
-    constructor(name: string, contract: SchemaObjectContract, isRequired: boolean, nested: boolean = false) {
+    constructor(name: string, contract: SchemaObjectContract, isRequired: boolean, nested: boolean = false, definitions: object = {}) {
         super(name, contract, isRequired);
 
         this.kind = "object";
@@ -213,6 +174,62 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         if (contract.properties) { // complex type
             this.properties = this.processProperties(contract, nested);
         }
+
+        if (contract.allOf ||
+            contract.anyOf ||
+            contract.oneOf ||
+            contract.not
+        ) {
+            let combinationType: string;
+            let combinationArray: SchemaObjectContract[];
+
+            if (contract.allOf) {
+                combinationType = "All of";
+                combinationArray = contract.allOf;
+            }
+
+            if (contract.anyOf) {
+                combinationType = "Any of";
+                combinationArray = contract.anyOf;
+            }
+
+            if (contract.oneOf) {
+                combinationType = "One of";
+                combinationArray = contract.oneOf;
+            }
+
+            if (contract.not) {
+                combinationType = "Not";
+                combinationArray = contract.not;
+            }
+
+            const combinationPropertiesProcessed = this.processCombinationProperties(combinationArray, definitions);
+
+            this.kind = "combination";
+            this.type = new TypeDefinitionPropertyTypeCombination(combinationType, combinationPropertiesProcessed.combinationReferencesNames);
+            this.properties = combinationPropertiesProcessed.combinationReferenceObjectsArray;
+        }
+    }
+
+    private processCombinationProperties(combinationArray: SchemaObjectContract[], definitions: object) {
+        const combinationReferenceObjectsArray: TypeDefinition[] = [];
+        const combinationReferencesNames: string[] = [];
+
+        combinationArray.map((combinationArrayItem) => {
+            if (combinationArrayItem.$ref) {
+                const combinationReferenceName = getTypeNameFromRef(combinationArrayItem.$ref);
+                combinationReferencesNames.push(combinationReferenceName);
+
+                combinationReferenceObjectsArray.push(new TypeDefinition(combinationReferenceName, definitions[combinationReferenceName], definitions))
+            } else {
+                combinationReferenceObjectsArray.push(new TypeDefinition("Custom properties", combinationArrayItem, definitions))
+            }
+        });
+
+        return {
+            combinationReferenceObjectsArray,
+            combinationReferencesNames
+        };
     }
 
     private flattenNestedObjects(nested: TypeDefinitionObjectProperty, prefix: string): TypeDefinitionProperty[] {
@@ -269,14 +286,6 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                         propertySchemaObject.type = "array";
                     }
 
-                    if (propertySchemaObject.allOf ||
-                        propertySchemaObject.anyOf ||
-                        propertySchemaObject.oneOf ||
-                        propertySchemaObject.not
-                    ) {
-                        propertySchemaObject.type = "combination";
-                    }
-
                     switch (propertySchemaObject.type) {
                         case "integer":
                         case "number":
@@ -330,10 +339,6 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
 
                             break;
 
-                        case "combination":
-                            props.push(new TypeDefinitionCombinationProperty(propertyNameToDisplay, propertySchemaObject, isRequired));
-                            break;
-
                         default:
                             console.warn(`Unknown type of schema definition: ${propertySchemaObject.type}`);
                     }
@@ -361,8 +366,8 @@ export class TypeDefinitionIndexerProperty extends TypeDefinitionObjectProperty 
 }
 
 export class TypeDefinition extends TypeDefinitionObjectProperty {
-    constructor(name: string, contract: SchemaObjectContract) {
-        super(name, contract, true);
+    constructor(name: string, contract: SchemaObjectContract, definitions: object) {
+        super(name, contract, true, false, definitions);
         this.name = name;
     }
 
