@@ -154,7 +154,8 @@
                                     data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
                                 <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
                                 <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
-                                <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type"></div>
+                                <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type">
+                                </div>
                                 <div role="cell" data-bind="markdown: parameter.description"></div>
                             </div>
                             <!-- /ko -->
@@ -234,6 +235,16 @@
             </div>
             <!-- /ko -->
             <!-- /ko -->
+
+            <!-- ko if: associatedAuthServer -->
+            <div class="animation-fade-in">
+                <h4>OAuth Server Configuration</h4>
+
+                <oauth-server-configuration params="{authorizationServer: associatedAuthServer}">
+                </oauth-server-configuration>
+            </div>
+            <!-- /ko -->
+
         </div>
     </div>
 
@@ -251,7 +262,8 @@
             <!-- ko foreach: { data: definitions, as: 'definition' } -->
             <div class="d-contents" role="row">
                 <div role="cell" class="text-truncate">
-                    <a data-bind="text: definition.name, attr: { title: definition.name, href: $component.getDefinitionReferenceUrl(definition) }"></a>
+                    <a
+                        data-bind="text: definition.name, attr: { title: definition.name, href: $component.getDefinitionReferenceUrl(definition) }"></a>
                 </div>
                 <div role="cell" data-bind="markdown: definition.description"></div>
             </div>
