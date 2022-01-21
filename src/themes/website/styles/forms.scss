@@ -191,7 +191,7 @@ $search-button-width: 30px;
         align-items: center;
     }
     
-    .input-password {
+    .input-padding-r-30 {
         padding-right: 30px;
     }
 
@@ -275,10 +275,10 @@ $search-button-width: 30px;
     }
 }
 
-.input-password::-ms-clear {
+.input-padding-r-30::-ms-clear {
     display: none;
     
 }
-.input-password::-ms-reveal {
+.input-padding-r-30::-ms-reveal {
     display: none;
 }
