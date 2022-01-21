@@ -124,12 +124,12 @@
                     <div class="input-group">
                         <!-- ko if: parameter.options.length === 0 -->
                         <!-- ko if: !parameter.secret-->
-                        <input type="text" autocomplete="off" class="form-control form-control-sm input-password"
+                        <input type="text" autocomplete="off" class="form-control form-control-sm input-padding-r-30"
                             placeholder="value" spellcheck="false" aria-label="Parameter value"
                             data-bind="textInput: parameter.value">
                         <!-- /ko -->
                         <!-- ko if: parameter.secret-->
-                        <input autocomplete="off" class="form-control form-control-sm input-password"
+                        <input autocomplete="off" class="form-control form-control-sm input-padding-r-30"
                             placeholder="value" spellcheck="false" aria-label="Parameter value"
                             data-bind=" attr: {type: parameter.inputType}, textInput: parameter.value">
                         <button data-bind="click: () => $component.toggleSecretParameter(parameter)"
@@ -186,7 +186,7 @@
                             spellcheck="false" aria-label="Header value" data-bind="textInput: header.value">
                         <!-- /ko -->
                         <!-- ko if: header.secret -->
-                        <input autocomplete="off" class="form-control form-control-sm input-password"
+                        <input autocomplete="off" class="form-control form-control-sm input-padding-r-30"
                             placeholder="value" spellcheck="false" aria-label="Header value"
                             data-bind="attr: {type: header.inputTypeValue}, textInput: header.value">
                         <button data-bind="click: () => $component.toggleSecretHeader(header)" class="input-toggle-btn">
