@@ -46,6 +46,7 @@ jobs:
           AZURE_APIM_MANAGEMENT_SAS_ACCESS_TOKEN:  ${{ env.AZURE_APIM_MANAGEMENT_SAS_ACCESS_TOKEN }}
           AZURE_APIM_MANAGEMENT_URL:  ${{ secrets.AZURE_APIM_MANAGEMENT_URL }}
           AZURE_STORAGE_SAS_URL: ${{ secrets.AZURE_STORAGE_SAS_URL }}
+          DOCUMENTATION_CONTAINER_URL: ${{ secrets.DOCUMENTATION_CONTAINER_URL }}
         with:
           files: '["**/config.*.json"]'
       
