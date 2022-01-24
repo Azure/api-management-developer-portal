@@ -47,6 +47,7 @@ export class OperationConsole {
     public readonly isHostnameWildcarded: ko.Computed<boolean>;
     public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
     public readonly wildcardSegment: ko.Observable<string>;
+    public readonly showCodeExamples: ko.Observable<boolean>;
     public isConsumptionMode: boolean;
     public templates: Object;
     public backendUrl: string;
@@ -105,6 +106,8 @@ export class OperationConsole {
         this.wsPayload = ko.observable();
         this.wsDataFormat = ko.observable("raw");
         this.wsLogItems = ko.observableArray([]);
+
+        this.showCodeExamples = ko.observable(false);
 
         this.bodyStash = "";
 
@@ -580,6 +583,10 @@ export class OperationConsole {
         this.consoleOperation().request.queryParameters().forEach(header => header.revealed(this.secretsRevealed()));
 
         this.updateRequestSummary();
+    }
+
+    public toggleCodeExamples(): void{
+        this.showCodeExamples(!this.showCodeExamples());
     }
 
     public toggleSecretHeader(header: ConsoleHeader): void {

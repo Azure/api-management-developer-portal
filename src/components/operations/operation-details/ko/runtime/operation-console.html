@@ -142,7 +142,9 @@
                 </div>
             </div>
             <div class="col-1">
-                <a href="#" role="button" data-bind="click: $component.removeQueryParameter" class="btn-centered-vert btn-inline" aria-label="Remove parameter"><i class="icon-emb icon-emb-trash"></i></a>
+                <a href="#" role="button" data-bind="click: $component.removeQueryParameter"
+                    class="btn-centered-vert btn-inline" aria-label="Remove parameter"><i
+                        class="icon-emb icon-emb-trash"></i></a>
             </div>
         </div>
     </div>
@@ -198,7 +200,9 @@
                 </div>
             </div>
             <div class="col-1">
-                <a href="#" role="button" data-bind="click: $component.removeHeader" class="btn-centered-vert btn-inline" aria-label="Remove header"><i class="icon-emb icon-emb-trash"></i></a>
+                <a href="#" role="button" data-bind="click: $component.removeHeader"
+                    class="btn-centered-vert btn-inline" aria-label="Remove header"><i
+                        class="icon-emb icon-emb-trash"></i></a>
             </div>
         </div>
     </div>
@@ -210,7 +214,7 @@
     <!-- /ko -->
 
     <!-- ko if: canHaveBody -->
-    
+
     <h3>Body</h3>
 
     <!-- ko if: !hasBody() -->
@@ -310,17 +314,31 @@
     </div>
     <!-- /ko -->
     <div class="col-1">
-        <a href="#" role="button" data-bind="click: $component.removeBody" class="btn-centered-vert btn-inline" aria-label="Remove body"><i class="icon-emb icon-emb-trash"></i></a>
+        <a href="#" role="button" data-bind="click: $component.removeBody" class="btn-centered-vert btn-inline"
+            aria-label="Remove body"><i class="icon-emb icon-emb-trash"></i></a>
     </div>
     <!-- /ko -->
     <!-- /ko -->
-    
+
 </div>
 
 <!-- ko ifnot: api().type === 'websocket' -->
 <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
+    
+    <a href="#" role="button" data-bind="click: $component.toggleCodeExamples" class="btn-centered-vert btn-inline"
+        aria-label="Toggle code samples">
+        <!-- ko if: $component.showCodeExamples  -->
+        <i class="icon-emb icon-emb-eye-fill"></i> Hide code samples
+        <!-- /ko -->
+        <!-- ko ifnot: $component.showCodeExamples  -->
+        <i class="icon-emb icon-emb-eye"></i> Show code samples
+        <!-- /ko -->
+    </a>
+
+    <!-- ko if: $component.showCodeExamples-->
     <!-- ko ifnot: operation().request.isFormData() -->
-    <select aria-label="Programming language" id="requestLanguages" class="form-control" data-bind="value: $component.selectedLanguage">
+    <select aria-label="Programming language" id="requestLanguages" class="form-control"
+        data-bind="value: $component.selectedLanguage">
         <!-- ko foreach: { data: requestLanguages, as: 'requestLanguage' } -->
         <option data-bind="value: requestLanguage.value, text: requestLanguage.text"></option>
         <!-- /ko -->
@@ -350,6 +368,7 @@
     <!-- /ko -->
 
     <!-- /ko -->
+    <!-- /ko -->
 
     <div class="flex flex-column align-items-end">
         <div class="btn-group" role="group">
@@ -370,7 +389,8 @@
 
 <!-- ko if: api().type === 'websocket' -->
 <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
-    <select aria-label="Programming language" id="requestLanguages" class="form-control" data-bind="value: $component.selectedLanguage">
+    <select aria-label="Programming language" id="requestLanguages" class="form-control"
+        data-bind="value: $component.selectedLanguage">
         <!-- ko foreach: { data: requestLanguages, as: 'requestLanguage' } -->
         <option data-bind="value: requestLanguage.value, text: requestLanguage.text"></option>
         <!-- /ko -->
