@@ -1,0 +1,18 @@
+<div class="form flex-item flex-item-grow flex flex-column" data-bind="scrollable: {}">
+    <size-editor
+        params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: sizeStyleConfig, onUpdate: onSizeUpdate }">
+    </size-editor>
+
+    <label for="inheritStyling" class="form-label">
+        <input type="checkbox" id="inheritStyling" name="inheritStyling" data-bind="checked: inheritStyling" />
+        Apply developer portal styling
+        <button class="btn btn-info" type="button"
+            data-bind="tooltip: 'Select this setting to inherit developer portal styles for elements inside your custom HTML code and ensure consistency in how content is presented in the developer portal.'"></button>
+    </label>
+
+    <label class="form-label">
+        HTML code
+        <button class="btn btn-info" type="button" data-bind="tooltip: 'The provided HTML code will be rendered in an&nbsp;<code>iframe</code> element.'"></button>
+    </label>
+    <code-editor class="flex-item flex-item-grow" params="{ code: htmlCode, onChange: htmlCode }"></code-editor>
+</div>
