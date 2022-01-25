@@ -76,6 +76,7 @@ import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import { Pagination } from "./components/pagination/pagination";
 import { OauthServerConfiguration } from "./components/operations/operation-details/ko/runtime/oauth-server-configuration";
 
+
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindSingleton("logger", ConsoleLogger);
