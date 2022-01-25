@@ -1,12 +1,7 @@
-<div class="form-inline search-input">
+<div class="form-inline max-w-500">
     <div class="d-block flex-grow">
-        <div class="input-group">
-            <input type="search" role="searchbox" aria-label="Search APIs" placeholder="Search APIs" spellcheck="false"
-                data-bind="textInput: pattern" />
-            <button type="button" class="search-button" aria-label="Search APIs">
-                <i class="icon-emb icon-emb-magnifier"></i>
-            </button>
-        </div>
+        <input type="search" class="form-control form-control-light" aria-label="Search APIs" placeholder="Search APIs" spellcheck="false"
+            data-bind="textInput: pattern" />
         <tag-input params="{ scope: 'apis', onChange: onTagsChange }"></tag-input>
     </div>
     <div class="form-group ml-auto">
