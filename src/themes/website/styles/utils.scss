@@ -115,6 +115,10 @@
     padding-left: 0px !important;
 }
 
+.max-w-500 {
+    max-width: 500px;
+}
+
 .fit {
     @include fit;
     flex: 1 1 auto;
