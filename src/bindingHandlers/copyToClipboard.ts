@@ -5,7 +5,7 @@ ko.bindingHandlers["copyToClipboard"] = {
         const copyToClipboard = async () => {
             const placeholder = document.createElement("textarea");
             const unwrappedValue = ko.unwrap(valueAccessor());
-            placeholder.innerText = typeof unwrappedValue === 'string'
+            placeholder.innerText = typeof unwrappedValue === "string"
                 ? unwrappedValue as string
                 : await (unwrappedValue as (() => Promise<string>))();
             document.body.appendChild(placeholder);

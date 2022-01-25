@@ -45,7 +45,7 @@ $badge-background-color: #e1e1e1;
 $default-heading-font-weight: 500;
 $default-heading-line-height: 1.2;
 $default-heading-color: inherit;
-$default-navlink-padding:  0.5rem 1rem;
+$default-navlink-padding: .5rem 1rem;
 $default-text-color: #555;
 
 /* Balloons */
@@ -55,3 +55,19 @@ $balloon-border-radius: 0;
 /* Nav pills */
 $border-color-active: $default-text-color;
 $border-color-hover: #efefef;
+
+/* Switch */
+$switch-background-color-on: #0078d4;
+$switch-background-color-off: #ccc;
+$switch-handle-color: #fff;
+$switch-width: 55px;
+$switch-height: 32px;
+$switch-trigger-gap: 4px;
+$switch-trigger-size: $switch-height - ($switch-trigger-gap * 3);
+
+/* Forms */
+$form-control-color: #495057;
+$form-control-bg-color: #fff;
+$form-control-border-color: #ced4da;
+$form-control-border-radius: 0;
+$search-button-width: 30px;
