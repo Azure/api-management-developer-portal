@@ -234,15 +234,6 @@ pre {
     margin-right: 20px;
 }
 
-.input-icons {
-    margin-bottom: 10px;
-
-    i {
-        position: absolute;
-        z-index: 2;
-    }
-}
-
 .input-node-color {
     color: rgb(139, 43, 185);
 }
@@ -372,7 +363,7 @@ operation-console {
     }
 }
 
-oauth-server-configuration{
+oauth-server-configuration {
     .form-control {
         margin: 0;
     }

@@ -1,12 +1,7 @@
 <div class="flex flex-column">
-    <div class="form-inline search-input">
-        <div class="input-group">
-            <input type="search" role="searchbox" aria-label="Search tags" placeholder="Search tags"
-                data-bind="textInput: pattern" />
-            <button type="button" class="search-button" tabindex="-1">
-                <i class="icon-emb icon-emb-magnifier"></i>
-            </button>
-        </div>
+    <div class="form-inline">
+        <input type="search" class="form-control form-control-light" aria-label="Search tags" placeholder="Search tags"
+            data-bind="textInput: pattern" />
     </div>
 
     <!-- ko ifnot: empty -->
