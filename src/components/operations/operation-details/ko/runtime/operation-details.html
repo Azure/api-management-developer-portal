@@ -32,9 +32,19 @@
 
     <div class="collapsible">
         <h3>Request</h3>
+
         <div class="collapsible-container">
             <span class="text-monospace"
                 data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
+
+            <!-- ko if: associatedAuthServer -->
+            <div class="animation-fade-in">
+                <h4>Authorization</h4>
+
+                <oauth-server-configuration params="{authorizationServer: associatedAuthServer}">
+                </oauth-server-configuration>
+            </div>
+            <!-- /ko -->
 
             <!-- ko if: operation().parameters.length > 0 -->
             <h4>Request parameters</h4>
@@ -235,16 +245,6 @@
             </div>
             <!-- /ko -->
             <!-- /ko -->
-
-            <!-- ko if: associatedAuthServer -->
-            <div class="animation-fade-in">
-                <h4>OAuth Server Configuration</h4>
-
-                <oauth-server-configuration params="{authorizationServer: associatedAuthServer}">
-                </oauth-server-configuration>
-            </div>
-            <!-- /ko -->
-
         </div>
     </div>
 
