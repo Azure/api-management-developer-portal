@@ -16,6 +16,7 @@ export class SigninSocialViewModel {
     public readonly styles: ko.Observable<StyleModel>;
     public readonly roles: ko.ObservableArray<string>;
     public readonly mode: ko.Observable<string>;
+    public readonly showNoAadConfigMessage: ko.Computed<boolean>;
 
     constructor() {
         this.aadConfig = ko.observable<string>();
@@ -25,5 +26,6 @@ export class SigninSocialViewModel {
         this.styles = ko.observable<StyleModel>();
         this.roles = ko.observableArray<string>();
         this.mode = ko.observable<string>();
+        this.showNoAadConfigMessage = ko.computed<boolean>(() => !this.aadConfig() && !this.aadB2CConfig() && this.mode() !== 'publishing');
     }
 }

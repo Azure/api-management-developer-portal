@@ -30,7 +30,7 @@
 
 <!-- ko if: schemaView() == 'table' -->
 
-<!-- ko if: $component.kind() === 'object' || $component.kind() === 'array' -->
+<!-- ko if: ($component.kind() === 'object' || $component.kind() === 'array') && $component.definition.properties -->
 <!-- ko template: { name: 'typeDefinitionObject', data: $component.definition } -->
 <!-- /ko -->
 <!-- /ko -->
@@ -45,7 +45,7 @@
 <!-- /ko -->
 <!-- /ko -->
 
-<!-- ko if: $component.kind() === 'combination' -->
+<!-- ko if: $component.kind() === 'combination' && $component.definition.properties -->
 <!-- ko template: { name: 'typeDefinitionCombination', data: $component.definition } -->
 <!-- /ko -->
 <!-- /ko -->
