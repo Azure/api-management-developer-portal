@@ -326,12 +326,12 @@
 <!-- ko if: apiType() === 'graphql' -->
 <div class="animation-fade-in">
     <div class="operation-header">
-        <div class="col-10">
-            <h3 class="gql-details">GraphQL Endpoint</h3>
+        <div>
+            <h2 class="gql-details">GraphQL Endpoint</h2>
             <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
         </div>
         <!-- ko if: $component.enableConsole -->
-        <div class="col-2">
+        <div>
             <button class="open-console-button graph" data-bind="click: $component.openConsole">Try it <i
                     class="icon-emb icon-emb-play"></i>
             </button>

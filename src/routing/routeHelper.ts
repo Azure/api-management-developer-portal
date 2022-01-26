@@ -120,17 +120,6 @@ export class RouteHelper {
      * @param detailsPageUrl Relative URL of operation details page.
      */
      public getGraphReferenceUrl(apiName: string, type: string, graph: string, detailsPageUrl: string = ""): string {
-        if (!apiName) {
-            throw new Error(`Parameter "apiName" not specified.`);
-        }
-
-        if (!type) {
-            throw new Error(`Parameter "type" not specified.`);
-        }
-
-        if (!graph) {
-            throw new Error(`Parameter "graphName" not specified.`);
-        }
 
         let path = "";
         const currentPath = this.router.getPath();

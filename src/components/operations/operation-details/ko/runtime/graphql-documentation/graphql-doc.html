@@ -9,37 +9,39 @@
 <div class="menu-vertical margin-top d-block flex-item flex-grow animation-fade-in">
     
     <div class="dropdown-container collapsible">
-        <div class="form-control" tabindex="0" role="button" data-toggle="dropdown" aria-label="Operations">
-            <div class="input-group">
-                <div class="input">
+        <div class="form-group">
+            <div class="input-group" tabindex="0" role="button" data-toggle="dropdown" aria-label="Operations">
+
+                <div class="form-control">
                     <span data-bind="text: selectedType"></span>
                 </div>
-                <div class="input-group-append">
+
+                <button class="input-group-addon no-border">
                     <i class="icon-emb icon-emb-chevron-down"></i>
-                </div>
-            </div>
-        </div>
-    
-        <div class="collapsible-dropdown collapsible-content dropdown">
-            <div role="list"> 
-                <div class="collapsible">
-                    <div class="collapsible-container">
-                        <div class="menu menu-vertical" role="list">
-                            <!-- ko foreach: { data: graphDocService.availableTypes, as: 'type' } -->
-                            <span role="listitem" class="nav-link text-truncate operation-pointer" data-bind="click: () => { $component.selectedType(type) }, text: type, css: { 'nav-link-active': $component.selectedType() === type }"></span>
-                            <!-- /ko -->
+                </button>
+
+                <div class="collapsible-dropdown collapsible-content dropdown">
+                    <div role="list"> 
+                        <div class="collapsible">
+                            <div class="collapsible-container">
+                                <div class="menu menu-vertical" role="list">
+                                    <!-- ko foreach: { data: graphDocService.availableTypes, as: 'type' } -->
+                                    <span role="listitem" class="nav-link text-truncate operation-pointer" data-bind="click: () => { $component.selectedType(type) }, text: type, css: { 'nav-link-active': $component.selectedType() === type }"></span>
+                                    <!-- /ko -->
+                                </div>
+                            </div>
                         </div>
+                        <!-- ko if: graphDocService.availableTypes().length === 0 -->
+                        <p>No operations found</p>
+                        <!-- /ko -->
                     </div>
                 </div>
-                <!-- ko if: graphDocService.availableTypes().length === 0 -->
-                <p>No operations found</p>
-                <!-- /ko -->
+
             </div>
         </div>
     </div>
 
     <div class="input-icons">
-        <i class="icon-emb icon-emb-magnifier icon"></i>
         <input class="form-control search-placeholder" type="search" aria-label="Search" placeholder="Search operations"
             spellcheck="false" data-bind="textInput: filter" />
     </div>
