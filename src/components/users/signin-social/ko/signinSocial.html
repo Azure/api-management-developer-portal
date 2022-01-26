@@ -7,7 +7,7 @@
     <signin-aad-b2c data-bind="attr: { params: aadB2CConfig }"></signin-aad-b2c>
     <!-- /ko -->
 
-    <!-- ko ifnot: aadConfig && aadB2CConfig && (mode === "publishing") -->
+    <!-- ko if: showNoAadConfigMessage -->
     <div class="not-configured">This widget will display additional sign-in buttons when you configure <a
             href="https://aka.ms/apim-how-to-aad" target="_blank">Azure Active Directory</a> or <a
             href="https://aka.ms/apim-how-to-aadb2c" target="_blank">Azure Active Directory B2C</a>
