@@ -20,7 +20,12 @@ const runtimeConfig = {
                 test: /\.scss$/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    { loader: "css-loader", options: { url: false } },
+                    {
+                        loader: "css-loader",
+                        options: {
+                            url: (url) => /\/icon-.*\.svg$/.test(url)
+                        }
+                    },
                     { loader: "postcss-loader" },
                     { loader: "sass-loader" }
                 ]

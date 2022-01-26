@@ -132,7 +132,6 @@ pre {
     @media (min-width: $breakpoint-md) {
         max-width: 600px;
     }
-
 }
 
 .graphql-console-width {
@@ -233,15 +232,6 @@ pre {
 
 .breadcrumb-gql {
     margin-right: 20px;
-}
-
-.input-icons {
-    margin-bottom: 10px;
-
-    i {
-        position: absolute;
-        z-index: 2;
-    }
 }
 
 .input-node-color {
@@ -372,6 +362,12 @@ operation-console {
     min-height: 100%;
     border-left: 1px solid #dee2e6;
 
+    .form-control {
+        margin: 0;
+    }
+}
+
+oauth-server-configuration {
     .form-control {
         margin: 0;
     }

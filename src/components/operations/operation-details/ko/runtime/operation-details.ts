@@ -5,7 +5,6 @@ import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@pap
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
-import { TypeDefinitionPropertyTypeCombination } from "./../../../../../models/typeDefinition";
 import { AuthorizationServer } from "./../../../../../models/authorizationServer";
 import { Representation } from "./../../../../../models/representation";
 import { RouteHelper } from "../../../../../routing/routeHelper";
@@ -69,12 +68,8 @@ export class OperationDetails {
 
             const api = this.api();
             const hostname = this.sampleHostname();
-            
-            if (api?.type === TypeOfApi.graphQL) {
-                return `https://${hostname}/${api.path}`;
-            }
 
-            if (!this.api() || !this.operation()) {
+            if ((!this.api() || !this.operation()) && api?.type !== TypeOfApi.graphQL) {
                 return null;
             }
 
@@ -82,7 +77,7 @@ export class OperationDetails {
 
             let operationPath = api.versionedPath;
 
-            if (api.type !== TypeOfApi.soap) {
+            if (api.type !== TypeOfApi.soap && api.type !== TypeOfApi.graphQL) {
                 operationPath += operation.displayUrlTemplate;
             }
 
@@ -281,10 +276,6 @@ export class OperationDetails {
                 || definition.type instanceof TypeDefinitionPropertyTypeArrayOfReference)) {
                 result.push(definition.type.name);
             }
-
-            if (definition.type instanceof TypeDefinitionPropertyTypeCombination) {
-                result.push(...definition.type.combination.map(x => x["name"]));
-            }
         });
 
         return result.filter(x => !skipNames.includes(x));
@@ -320,7 +311,7 @@ export class OperationDetails {
 
         if (!definition) {
             // Fallback for the case when type is referenced, but not defined in schema.
-            return new TypeDefinition(representation.typeName, {});
+            return new TypeDefinition(representation.typeName, {}, this.definitions());
         }
 
         // Making copy to avoid overriding original properties.

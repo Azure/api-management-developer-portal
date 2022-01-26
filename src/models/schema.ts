@@ -49,7 +49,7 @@ export class Schema {
 
         this.definitions = Object.keys(definitions)
             .map(definitionName => {
-                return new TypeDefinition(definitionName, definitions[definitionName]);
+                return new TypeDefinition(definitionName, definitions[definitionName], definitions);
             });
     }
 }
