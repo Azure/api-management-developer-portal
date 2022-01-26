@@ -68,12 +68,8 @@ export class OperationDetails {
 
             const api = this.api();
             const hostname = this.sampleHostname();
-            
-            if (api?.type === TypeOfApi.graphQL) {
-                return `https://${hostname}/${api.path}`;
-            }
 
-            if (!this.api() || !this.operation()) {
+            if ((!this.api() || !this.operation()) && api?.type !== TypeOfApi.graphQL) {
                 return null;
             }
 
@@ -81,7 +77,7 @@ export class OperationDetails {
 
             let operationPath = api.versionedPath;
 
-            if (api.type !== TypeOfApi.soap) {
+            if (api.type !== TypeOfApi.soap && api.type !== TypeOfApi.graphQL) {
                 operationPath += operation.displayUrlTemplate;
             }
 
