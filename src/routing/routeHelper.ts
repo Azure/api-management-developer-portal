@@ -54,6 +54,20 @@ export class RouteHelper {
     }
 
     /**
+     * Returns ARM resource name of the graph type specified in hash parameter of the current route for graphQL APIs, e.g. "query".
+     */
+    public getGraphType(): string {
+        return this.getHashParameter("type");
+    }
+
+    /**
+     * Returns ARM resource name of the graph specified in hash parameter of the current route for graphQL APIs, e.g. "users".
+     */
+    public getGraphName(): string {
+        return this.getHashParameter("graph");
+    }
+
+    /**
      * Returns URL of API details page depending on current route.
      * @param apiName ARM resource name of the API.
      * @param detailsPageUrl Relative URL of API details page.
@@ -96,6 +110,52 @@ export class RouteHelper {
         }
 
         return `${path}#api=${apiName}&operation=${operationName}`;
+    }
+
+    /**
+     * Returns URL of graph details page depending on current route.
+     * @param apiName ARM resource name of the API.
+     * @param type ARM resource graph type.
+     * @param graph ARM resource name of the graph.
+     * @param detailsPageUrl Relative URL of operation details page.
+     */
+     public getGraphReferenceUrl(apiName: string, type: string, graph: string, detailsPageUrl: string = ""): string {
+
+        let path = "";
+        const currentPath = this.router.getPath();
+
+        if (currentPath !== detailsPageUrl) {
+            path = detailsPageUrl;
+        }
+
+        return `${path}#api=${apiName}&type=${type}&graph=${graph}`;
+    }
+
+    /**
+     * Returns URL of graph details page depending on current route.
+     * @param apiName ARM resource name of the API.
+     * @param type ARM resource graph type.
+     * @param graph ARM resource name of the graph.
+     * @param definition Name of the definition.
+     */
+     public getGraphDefinitionReferenceId(apiName: string, type: string, graph: string, definition: string): string {
+        if (!apiName) {
+            throw new Error(`Parameter "apiName" not specified.`);
+        }
+
+        if (!type) {
+            throw new Error(`Parameter "type" not specified.`);
+        }
+
+        if (!graph) {
+            throw new Error(`Parameter "graphName" not specified.`);
+        }
+
+        if (!definition) {
+            throw new Error(`Parameter "definition" not specified.`);
+        }
+
+        return `api=${apiName}&type=${type}&graph=${graph}&definition=${definition}`;
     }
 
     /**

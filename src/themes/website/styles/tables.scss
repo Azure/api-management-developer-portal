@@ -124,6 +124,10 @@ $body-bg: none;
     }
 }
 
+.table-preset-gql {
+    grid-template-columns: minmax(150px, 350px) 200px minmax(350px, 1fr);
+}
+
 .table-preset-ws-logs {
     grid-template-columns: auto auto 1fr;
     margin: none;
