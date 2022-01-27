@@ -102,13 +102,11 @@
 
             <!-- ko ifnot: $component.collapsedExplorer -->
             <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
-                <select id="operationType" class="form-control" data-bind="value: queryType">
-                    <option value="query">Query</option>
-                    <option value="mutation">Mutation</option>
-                    <option value="subscription">Subscription</option>
-                </select>
-                <input type="search" class="form-control" aria-label="Search" placeholder="Search"
-                    spellcheck="false" data-bind="textInput: filter" />
+                <select class="form-control" data-bind="options: graphDocService.availableTypes, value: queryType"></select>
+                <div class="input-icons">
+                    <input class="form-control search" type="search" aria-label="Search" placeholder="Search operations"
+                        spellcheck="false" data-bind="textInput: filter" />
+                </div>
 
                 <div class="input-group explorer-operations scrollable">
                     <!-- ko template: { name: 'graphqlExplorer', data: {operationNode: $component.node(), filter: filter()} } -->
@@ -120,13 +118,13 @@
         <div class="gql-query-grid">
             <h4>
                 Query editor
-                <i class="icon-emb icon-emb-info"
+                <i class="icon-emb icon-emb-info info-icon-size"
                     title="Select a query, mutation, or subscription from the explorer to add it to the test console or begin typing to compose a query."></i>
             </h4>
             <div class="query-editor" id="queryEditor"></div>
             <h4 class="margin-top-variables">
                 Query variables
-                <i class="icon-emb icon-emb-info"
+                <i class="icon-emb icon-emb-info info-icon-size"
                     title="Use variables to reuse the same query or mutation to pass different values."></i>
             </h4>
             <div class="query-variable" id="variablesEditor"></div>
