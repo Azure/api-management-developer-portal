@@ -1,41 +1,39 @@
-<div class="dropdown-container collapsible">
-    <div class="form-group">
-        <div class="input-group" data-toggle="dropdown">
-            <div class="form-control" tabindex="0" role="button" aria-label="Products">
-                <span data-bind="text: selection"></span>
-            </div>
-            <div class="input-group-addon">
-                <i class="icon-emb icon-emb-chevron-down"></i>
-            </div>
-            <div class="collapsible-dropdown collapsible-content dropdown">
-                <input type="search" class="form-control form-control-light" aria-label="Search" placeholder="Search products"
-                    spellcheck="false" data-bind="textInput: pattern" />
+<div class="form-group dropdown-container collapsible">
+    <div class="input-group">
+        <div class="form-control" tabindex="0" role="button" aria-label="Products" data-toggle="dropdown">
+            <span data-bind="text: selection"></span>
+        </div>
+        <button class="input-group-addon no-border" data-toggle="dropdown">
+            <i class="icon-emb icon-emb-chevron-down"></i>
+        </button>
+        <div class="collapsible-dropdown collapsible-content dropdown">
+            <input type="search" class="form-control form-control-light" aria-label="Search"
+                placeholder="Search products" spellcheck="false" data-bind="textInput: pattern" />
 
-                <div role="list">
-                    <!-- ko if: working -->
-                    <spinner role="presentation"></spinner>
-                    <!-- /ko -->
+            <div role="list">
+                <!-- ko if: working -->
+                <spinner role="presentation"></spinner>
+                <!-- /ko -->
 
-                    <!-- ko ifnot: working -->
+                <!-- ko ifnot: working -->
 
-                    <!-- ko foreach: { data: products, as: 'product' } -->
-                    <a href="#" role="listitem" class="nav-link text-truncate"
-                        data-bind="attr: { href: $component.getProductUrl(product) }, text: product.displayName"></a>
-                    <!-- /ko -->
+                <!-- ko foreach: { data: products, as: 'product' } -->
+                <a href="#" role="listitem" class="nav-link text-truncate"
+                    data-bind="attr: { href: $component.getProductUrl(product) }, text: product.displayName"></a>
+                <!-- /ko -->
 
-                    <!-- ko if: products().length === 0 -->
-                    <p>No products found</p>
-                    <!-- /ko -->
+                <!-- ko if: products().length === 0 -->
+                <p>No products found</p>
+                <!-- /ko -->
 
-                    <!-- ko ifnot: working -->
-                    <!-- ko if: $component.totalPages() > 1 -->
-                    <pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }">
-                    </pagination>
-                    <!-- /ko -->
-                    <!-- /ko -->
+                <!-- ko ifnot: working -->
+                <!-- ko if: $component.totalPages() > 1 -->
+                <pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }">
+                </pagination>
+                <!-- /ko -->
+                <!-- /ko -->
 
-                    <!-- /ko -->
-                </div>
+                <!-- /ko -->
             </div>
         </div>
     </div>
