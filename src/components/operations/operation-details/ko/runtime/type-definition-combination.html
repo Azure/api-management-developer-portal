@@ -14,7 +14,7 @@
 <!-- ko foreach: { data: properties, as: 'property' } -->
     <h4 data-bind="text: property.name"></h4>
 
-    <!-- ko if: property.kind === 'object' || property.kind === 'array' -->
+    <!-- ko if: (property.kind === 'object' || property.kind === 'array') && property.properties -->
     <!-- ko template: { name: 'typeDefinitionObject', data: property } -->
     <!-- /ko -->
     <!-- /ko -->
@@ -29,7 +29,7 @@
     <!-- /ko -->
     <!-- /ko -->
 
-    <!-- ko if: property.kind === 'combination' -->
+    <!-- ko if: property.kind === 'combination' && property.properties -->
     <!-- ko template: { name: 'typeDefinitionCombination', data: property } -->
     <!-- /ko -->
     <!-- /ko -->
