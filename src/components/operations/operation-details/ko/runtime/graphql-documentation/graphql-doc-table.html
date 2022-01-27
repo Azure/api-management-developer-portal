@@ -1,0 +1,53 @@
+<div role="table" class="table-preset"
+    data-bind="class: (reference.type == 'enumType' || reference.type == 'unionType') ? 'table-preset-enum' : 'table-preset-gql'">
+    <div class="d-contents" role="rowgroup">
+        <div class="d-contents" role="row">
+            <!-- ko ifnot: reference.type == 'unionType' -->
+            <div role="columnheader" class="table-preset-head text-truncate"
+                data-bind="text: $component.headerName(reference.type)"></div>
+            <!-- /ko -->
+            <!-- ko ifnot: reference.type == 'enumType' -->
+            <div role="columnheader" class="table-preset-head text-truncate"
+                data-bind="text: (reference.type == 'unionType') ? $component.headerName(reference.type) : 'Type'">
+            </div>
+            <!-- /ko -->
+            <div role="columnheader" class="table-preset-head">Description</div>
+        </div>
+    </div>
+    <div class="d-contents" role="rowgroup">
+        <!-- ko foreach: { data: $component.referenceFieldList(reference), as: 'field' } -->
+        <div class="d-contents" role="row">
+            <!-- ko ifnot: $parent.reference.type == 'unionType' -->
+            <div role="cell" class="text-truncate"
+                data-bind="text: ($parent.reference.type == 'enumType') ? field.value : field.name, attr: { title: ($parent.reference.type == 'enumType') ? field.value : field.name }">
+            </div>
+            <!-- /ko -->
+            <!-- ko ifnot: $parent.reference.type == 'enumType' -->
+            <!-- ko if: $parent.reference.type == 'unionType' -->
+            <div role="cell" class="text-truncate">
+                <a class="text-monospace"
+                    data-bind="text: field.name, attr: { href: $component.anchorLink({ type: 'objectType', name: field.name }), title: $component.prettyType('objectType') }"></a>
+            </div>
+            <!-- /ko -->
+            <!-- ko ifnot: $parent.reference.type == 'unionType' -->
+            <div role="cell" class="text-truncate">
+                <span data-bind="text: $component.getType(field, 'left')"></span>
+
+                <!-- ko ifnot: $component.fullType(field).type == 'scalarType' && $component.isDefaultScalarType($component.fullType(field).name) -->
+                <a class="text-monospace"
+                    data-bind="text: $component.getType(field, 'name'), attr: { href: $component.anchorLink($component.fullType(field)), title: $component.prettyType($component.fullType(field).type) }"></a>
+                <!-- /ko -->
+                <!-- ko if: $component.fullType(field).type == 'scalarType' && $component.isDefaultScalarType($component.fullType(field).name) -->
+                <span class="text-monospace" data-bind="text: $component.getType(field, 'name')"></span>
+                <!-- /ko -->
+
+                <span data-bind="text: $component.getType(field, 'right')"></span>
+            </div>
+            <!-- /ko -->
+            <!-- /ko -->
+            <div role="cell" data-bind="markdown: field.description">
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>

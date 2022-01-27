@@ -326,21 +326,19 @@
 <!-- ko if: apiType() === 'graphql' -->
 <div class="animation-fade-in">
     <div class="operation-header">
-        <h2 class="operation-name"></h2>
+        <div>
+            <h2>GraphQL Endpoint</h2>
+            <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
+        </div>
         <!-- ko if: $component.enableConsole -->
-        <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i
-                class="icon-emb icon-emb-play"></i>
-        </button>
+        <div>
+            <button class="open-console-button graph mt-17" data-bind="click: $component.openConsole">Try it <i
+                    class="icon-emb icon-emb-play"></i>
+            </button>
+        </div>
         <!-- /ko -->
     </div>
-
-    <div class="collapsible">
-        <h3>GraphQL Endpoint</h3>
-        <div class="collapsible-container">
-            <span class="text-monospace" data-bind="text: $component.requestUrlSample"></span>
-        </div>
-    </div>
-
+    <graphql-details></graphql-details>
 </div>
 <!-- /ko -->
 
