@@ -25,7 +25,7 @@
             <!-- ko ifnot: $parent.reference.type == 'enumType' -->
             <!-- ko if: $parent.reference.type == 'unionType' -->
             <div role="cell" class="text-truncate">
-                <a class="details-button clickable"
+                <a class="text-monospace"
                     data-bind="text: field.name, attr: { href: $component.anchorLink({ type: 'objectType', name: field.name }), title: $component.prettyType('objectType') }"></a>
             </div>
             <!-- /ko -->
@@ -34,11 +34,11 @@
                 <span data-bind="text: $component.getType(field, 'left')"></span>
 
                 <!-- ko ifnot: $component.fullType(field).type == 'scalarType' && $component.isDefaultScalarType($component.fullType(field).name) -->
-                <a class="details-button clickable"
+                <a class="text-monospace"
                     data-bind="text: $component.getType(field, 'name'), attr: { href: $component.anchorLink($component.fullType(field)), title: $component.prettyType($component.fullType(field).type) }"></a>
                 <!-- /ko -->
                 <!-- ko if: $component.fullType(field).type == 'scalarType' && $component.isDefaultScalarType($component.fullType(field).name) -->
-                <a class="details-button" data-bind="text: $component.getType(field, 'name')"></a>
+                <span class="text-monospace" data-bind="text: $component.getType(field, 'name')"></span>
                 <!-- /ko -->
 
                 <span data-bind="text: $component.getType(field, 'right')"></span>

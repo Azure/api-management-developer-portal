@@ -17,11 +17,11 @@
         <h3>Response Type</h3>
         <span data-bind="text: getType(graphSelected(), 'left')"></span>
         <!-- ko ifnot: graphSelectedType()['type'] == 'scalarType' && isDefaultScalarType(graphSelectedType()['name']) -->
-        <a class="details-button clickable"
+        <a class="text-monospace"
             data-bind="text: graphSelectedType()['name'], attr: { href: anchorLink(graphSelectedType()), title: prettyType(graphSelectedType()['type']) }"></a>
         <!-- /ko -->
         <!-- ko if: graphSelectedType()['type'] == 'scalarType' && isDefaultScalarType(graphSelectedType()['name']) -->
-        <a class="details-button" data-bind="text: graphSelectedType()['name']"></a>
+        <span class="text-monospace" data-bind="text: graphSelectedType()['name']"></span>
         <!-- /ko -->
         <span data-bind="text: getType(graphSelected(), 'right')"></span>
     </div>
@@ -47,11 +47,11 @@
                     <div role="cell" class="text-truncate">
                         <span data-bind="text: $component.getType(arg, 'left')"></span>
                         <!-- ko ifnot: $component.fullType(arg).type == 'scalarType' && $component.isDefaultScalarType($component.fullType(arg).name) -->
-                        <a class="details-button clickable"
+                        <a class="text-monospace"
                             data-bind="text: $component.fullType(arg).name, attr: { href: $component.anchorLink($component.fullType(arg)), title: $component.prettyType($component.fullType(arg).type) }"></a>
                         <!-- /ko -->
                         <!-- ko if: $component.fullType(arg).type == 'scalarType' && $component.isDefaultScalarType($component.fullType(arg).name) -->
-                        <a class="details-button" data-bind="text: $component.fullType(arg).name"></a>
+                        <span class="text-monospace" data-bind="text: $component.fullType(arg).name"></span>
                         <!-- /ko -->
                         <span data-bind="text: $component.getType(arg, 'right')"></span>
                     </div>
@@ -81,12 +81,12 @@
 
                     <div role="cell" class="text-truncate">
                         <!-- ko ifnot: reference.type == 'scalarType' -->
-                        <a class="details-button clickable"
+                        <a class="text-monospace"
                             data-bind="text: reference.name, attr: { href: $component.anchorLink(reference), title: $component.prettyType(reference.type) }"></a>
                         <!-- /ko -->
                         <!-- ko if: reference.type == 'scalarType' -->
-                        <a id="example" class="details-button"
-                            data-bind="text: reference.name, attr: { id: $component.anchorLink(reference, true), title: $component.prettyType(reference.type) }"></a>
+                        <span class="text-monospace" id="example"
+                            data-bind="text: reference.name, attr: { id: $component.anchorLink(reference, true), title: $component.prettyType(reference.type) }"></span>
                         <!-- /ko -->
                     </div>
 

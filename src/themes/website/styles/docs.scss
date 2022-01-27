@@ -485,22 +485,6 @@ oauth-server-configuration {
     }
 }
 
-.details-button {
-    padding: 0px;
-    border: 0px;
-    background: white;
-    color: black;
-
-    &.selected {
-        font-weight: bold;
-    }
-
-    &.clickable {
-        color: #0F7EBD !important;
-        cursor: pointer;
-    }
-}
-
 .gql-navigation {
     margin-top: 40px; 
     font-size: 20px;
@@ -519,8 +503,4 @@ oauth-server-configuration {
 
 .operation-pointer {
     cursor: pointer;
-}
-
-.gql-details {
-    margin-top: 0px;
 }
