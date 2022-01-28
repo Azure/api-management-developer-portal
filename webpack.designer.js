@@ -1,12 +1,13 @@
 const path = require("path");
+const webpack = require("webpack");
+const { merge } = require("webpack-merge");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const runtimeConfig = require("./webpack.runtime.js");
+const runtimeConfig = require("./webpack.runtime");
 
 
 const designerConfig = {
-    mode: "none",
+    mode: "development",
     target: "web",
     entry: {
         "editors/scripts/paperbits": ["./src/startup.design.ts"],
@@ -24,9 +25,7 @@ const designerConfig = {
                     MiniCssExtractPlugin.loader,
                     {
                         loader: "css-loader",
-                        options: {
-                            url: (url) => /\/icon-.*\.svg$/.test(url)
-                        }
+                        options: { url: { filter: (url) => /\/icon-.*\.svg$/.test(url) } }
                     },
                     { loader: "postcss-loader" },
                     { loader: "sass-loader" }
@@ -44,6 +43,7 @@ const designerConfig = {
                 loader: "html-loader",
                 options: {
                     esModule: true,
+                    sources: false,
                     minimize: {
                         removeComments: false,
                         collapseWhitespace: false
@@ -51,37 +51,50 @@ const designerConfig = {
                 }
             },
             {
-                test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-                loader: "url-loader",
-                options: {
-                    limit: 10000
-                }
+                test: /\.(svg)$/i,
+                type: "asset/inline"
             },
             {
-                test: /\.liquid$/,
+                test: /\.(raw|liquid)$/,
                 loader: "raw-loader"
             }
         ]
     },
     plugins: [
-        new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
             filename: "[name].css",
             chunkFilename: "[id].css"
         }),
         new CopyWebpackPlugin({
             patterns: [
+                { from: `./src/libraries`, to: "data" },
+                { from: `./src/config.design.json`, to: `./config.json` },
                 { from: `./src/themes/designer/assets/index.html`, to: "index.html" },
                 { from: `./src/themes/designer/styles/fonts`, to: "editors/styles/fonts" },
                 { from: `./src/libraries`, to: "data" },
                 { from: "./src/config.design.json", to: "config.json" },
                 { from: `./templates/default.json`, to: "editors/templates/default.json" }
             ]
-        })
+        }),
+        new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
     ],
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"]
+        extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"],
+        fallback: {
+            buffer: require.resolve("buffer"),
+            stream: require.resolve("stream-browserify"),
+            querystring: require.resolve("querystring-es3")
+        }
     }
 };
 
-module.exports = [runtimeConfig(true), designerConfig]
+const designerRuntimeConfig = merge(runtimeConfig, {
+    entry: { "styles/theme": `./src/themes/website/styles/styles.design.scss` },
+    output: { "path": path.resolve(__dirname, "dist/designer") }
+});
+
+module.exports = {
+    default: [designerConfig, designerRuntimeConfig],
+    designerRuntimeConfig,
+    designerConfig
+};
