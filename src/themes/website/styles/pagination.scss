@@ -2,17 +2,18 @@
     display: flex;
     padding-left: 0;
     list-style: none;
-    border-radius: .25rem;
+    margin-top: 20px;
     
     .page-link {
         border: none;
         position: relative;
         display: block;
-        padding: .5rem .75rem;
-        margin-left: -1px;
+        padding: .5rem .5rem;
         line-height: 1.25;
-        color: #007bff;
+        color: $default-text-color;
         background-color: #fff;
+        border: 1px solid $default-text-color;
+        margin: 2px;
 
         &:hover {
             text-decoration: none;
@@ -20,6 +21,11 @@
 
         .icon {
             font-weight: 900;
+        }
+
+        &.active {
+            font-weight: bold;
+            outline: 1px solid $default-text-color;
         }
     }
 }

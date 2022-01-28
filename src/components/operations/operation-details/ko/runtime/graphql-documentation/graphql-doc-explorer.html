@@ -1,0 +1,16 @@
+<div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
+    <ul role="list" class="nav">
+        <!-- ko foreach: { data: operationNode, as: 'nodeChild' } -->
+        <li class="nav-item" role="presentation">
+            <!-- ko if: nodeChild.name.includes($parent.filter) -->
+            <a href="#" role="listitem" class="nav-link"
+                data-bind="attr: { href: $component.getReferenceUrl($parent.type, nodeChild.name)}, css: { 'nav-link-active': nodeChild.isSelectedForDoc }">
+                <div class="row">
+                    <span data-bind="text: nodeChild.name, attr: { title: nodeChild.name }"></span>
+                </div>
+            </a>
+            <!--/ko-->
+        </li>
+        <!--/ko-->
+    </ul>
+</div>

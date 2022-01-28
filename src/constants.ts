@@ -47,8 +47,8 @@ export enum AadEndpoints {
  * Types of direction (e.g. for sorting of elements in a table)
  */
 export enum Direction {
-    asc = 'asc',
-    desc = 'desc'
+    asc = "asc",
+    desc = "desc"
 }
 
 export const defaultAadTenantName = "common";
@@ -90,9 +90,19 @@ export const reservedPermalinks = [
 ];
 
 /**
- * Maximum number of items to show in a paginated view.
+ * Maximum number of items to request from Managament API.
  */
 export const defaultPageSize = 50;
+
+/**
+ * Default value of first page in a paginated view.
+ */
+ export const firstPage = 1;
+
+/**
+ * Maximum number of pages to show in a paginated view.
+ */
+export const showMaximumPages = 3;
 
 /**
  * Default input delay before changes take effect.
@@ -105,26 +115,43 @@ export const defaultInputDelayMs = 600;
 export const AppType = "developerPortal";
 
 /**
+ * HTML Editor Settings - HTML injection widget editor
+ */
+ export const HtmlEditorSettings = {
+    id: "htmlEditor",
+    config: {
+        language: "html",
+        readOnly: false,
+
+        lineHeight: 17,
+        automaticLayout: true,
+        minimap: {
+            enabled: false
+        },
+    }
+ };
+
+/**
  * Query Editor Settings - GraphQL Console
  */
 export const QueryEditorSettings = {
     id: "queryEditor",
     config: {
-        language: 'graphqlQuery',
+        language: "graphqlQuery",
         readOnly: false,
     }
-}
+};
 
 /**
-* Variables Editor Settings - GraphQL Console
-*/
+ * Variables Editor Settings - GraphQL Console
+ */
 export const VariablesEditorSettings = {
     id: "variablesEditor",
     config: {
-        language: 'json',
+        language: "json",
         readOnly: false,
     }
-}
+};
 
 /**
  * Response Settings - GraphQL Console
@@ -132,18 +159,53 @@ export const VariablesEditorSettings = {
 export const ResponseSettings = {
     id: "responseEditor",
     config: {
-        language: 'json',
+        language: "json",
         readOnly: true,
     }
-}
+};
 
-/**
-* Graphql operation types
-*/
-export enum GraphqlOperationTypes {
+ /**
+ * Graphql types
+ */
+  export enum GraphqlTypes {
     query = "query",
     mutation = "mutation",
-    subscription = "subscription"
+    subscription = "subscription",
+}
+
+ /**
+ * Graphql types for documentation
+ */
+export enum GraphqlTypesForDocumentation {
+    query = "Query",
+    mutation = "Mutation",
+    subscription = "Subscription",
+    objectType = "Object Type",
+    inputObjectType = "Input Object Type",
+    enumType = "Enum Type",
+    scalarType = "Scalar Type",
+    unionType = "Union Type",
+    interfaceType = "Interface Type"
+}
+
+export enum GraphqlCustomFieldNames {
+    selected = "isSelectedForDoc",
+    type = "collectionTypeForDoc",
+}
+
+export enum GraphqlDefaultScalarTypes {
+    int = "Int",
+    float = "Float",
+    string = "String",
+    boolean = "Boolean",
+    id = "ID"
+}
+
+export enum GraphqlFieldTypes {
+    args = "args",
+    fields = "_fields",
+    values = "_values",
+    types = "_types"
 }
 
 /**

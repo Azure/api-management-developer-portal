@@ -30,8 +30,8 @@
 
 <!-- ko if: schemaView() == 'table' -->
 
-<!-- ko if: $component.kind() === 'object' || $component.kind() === 'array' -->
-<!-- ko template: { name: 'typeDefinitionObject', data: $component } -->
+<!-- ko if: ($component.kind() === 'object' || $component.kind() === 'array') && $component.definition.properties -->
+<!-- ko template: { name: 'typeDefinitionObject', data: $component.definition } -->
 <!-- /ko -->
 <!-- /ko -->
 
@@ -42,6 +42,11 @@
 
 <!-- ko if: $component.kind() === 'indexer' -->
 <!-- ko template: { name: 'typeDefinitionIndexer', data: $component } -->
+<!-- /ko -->
+<!-- /ko -->
+
+<!-- ko if: $component.kind() === 'combination' && $component.definition.properties -->
+<!-- ko template: { name: 'typeDefinitionCombination', data: $component.definition } -->
 <!-- /ko -->
 <!-- /ko -->
 

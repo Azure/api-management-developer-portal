@@ -1,5 +1,5 @@
 import { Bag } from "@paperbits/common";
-import { EventManager } from "@paperbits/common/events";
+import { EventManager, Events } from "@paperbits/common/events";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { ApiProductsViewModel } from "./apiProductsViewModel";
 import { ApiProductsModel } from "../apiProductsModel";
@@ -29,7 +29,7 @@ export class ApiProductsViewModelBinder implements ViewModelBinder<ApiProductsMo
             editor: "api-products-editor",
             applyChanges: async (updatedModel: ApiProductsModel) => {
                 await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                this.eventManager.dispatchEvent("onContentUpdate");
+                this.eventManager.dispatchEvent(Events.ContentUpdate);
             }
         };
 

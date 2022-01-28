@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import * as Prism from "prismjs";
+import "prismjs/components/prism-markup-templating";
 import "prismjs/components/prism-javascript";
 import "prismjs/components/prism-http";
 import "prismjs/components/prism-c";
@@ -10,7 +11,8 @@ import "prismjs/components/prism-ruby";
 import "prismjs/components/prism-markup";
 import "prismjs/components/prism-bash";
 import "prismjs/components/prism-json";
-// import "prismjs/components/prism-php"; // broken!
+import "prismjs/components/prism-swift";
+import "prismjs/components/prism-php";
 
 
 interface SyntaxHighlightConfig {
@@ -43,18 +45,17 @@ ko.bindingHandlers["syntaxHighlight"] = {
                 case "javascript":
                     highlightLanguage = "js";
                     break;
-                case "objc":
-                    highlightLanguage = "c";
-                    break;
                 case "php":
-                    // highlightLanguage = "php"; // broken!
-                    highlightLanguage = "ruby";
+                    highlightLanguage = "php";
                     break;
                 case "python":
                     highlightLanguage = "python";
                     break;
                 case "ruby":
                     highlightLanguage = "ruby";
+                    break;
+                case "swift":
+                    highlightLanguage = "swift"
                     break;
                 case "xml":
                     highlightLanguage = "xml";

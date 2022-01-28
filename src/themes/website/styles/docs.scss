@@ -132,7 +132,6 @@ pre {
     @media (min-width: $breakpoint-md) {
         max-width: 600px;
     }
-
 }
 
 .graphql-console-width {
@@ -235,15 +234,6 @@ pre {
     margin-right: 20px;
 }
 
-.input-icons {
-    margin-bottom: 10px;
-
-    i {
-        position: absolute;
-        z-index: 2;
-    }
-}
-
 .input-node-color {
     color: rgb(139, 43, 185);
 }
@@ -312,6 +302,10 @@ pre {
             color: #128930;
             background-color: white;
         }
+
+        &.graph {
+            float: right;
+        }
     }
 }
 
@@ -368,6 +362,12 @@ operation-console {
     min-height: 100%;
     border-left: 1px solid #dee2e6;
 
+    .form-control {
+        margin: 0;
+    }
+}
+
+oauth-server-configuration {
     .form-control {
         margin: 0;
     }
@@ -483,4 +483,24 @@ operation-console {
     @media (max-width: 768px) {
         margin-top: 20px;
     }
+}
+
+.gql-navigation {
+    margin-top: 40px; 
+    font-size: 20px;
+}
+
+.search-placeholder {
+    padding: 5px !important;
+    text-align: left;
+    padding-left: 40px !important;
+}
+
+.description-text {
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+.operation-pointer {
+    cursor: pointer;
 }

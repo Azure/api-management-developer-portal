@@ -38,40 +38,32 @@ export class Reports {
     public readonly reportByProduct: ko.Observable<ReportRecordByProductViewModel[]>;
     public readonly reportByProductOrder: ko.Observable<string>;
     public readonly reportByProductOrderAscending: ko.Observable<boolean>;
-    public readonly reportByProductPage: ko.Observable<number>;
-    public readonly reportByProductHasPager: ko.Computed<boolean>;
-    public readonly reportByProductHasPrevPage: ko.Observable<boolean>;
-    public readonly reportByProductHasNextPage: ko.Observable<boolean>;
+    public readonly reportByProductPageNumber: ko.Observable<number>;
+    public readonly reportByProductTotalPages: ko.Observable<number>;
     public readonly reportByProductWorking: ko.Observable<boolean>;
     public readonly reportByProductHasData: ko.Computed<boolean>;
 
     public readonly reportBySubscription: ko.Observable<ReportRecordBySubscriptionViewModel[]>;
     public readonly reportBySubscriptionOrder: ko.Observable<string>;
     public readonly reportBySubscriptionOrderAscending: ko.Observable<boolean>;
-    public readonly reportBySubscriptionPage: ko.Observable<number>;
-    public readonly reportBySubscriptionHasPager: ko.Computed<boolean>;
-    public readonly reportBySubscriptionHasPrevPage: ko.Observable<boolean>;
-    public readonly reportBySubscriptionHasNextPage: ko.Observable<boolean>;
+    public readonly reportBySubscriptionPageNumber: ko.Observable<number>;
+    public readonly reportBySubscriptionTotalPages: ko.Observable<number>;
     public readonly reportBySubscriptionWorking: ko.Observable<boolean>;
     public readonly reportBySubscriptionHasData: ko.Computed<boolean>;
 
     public readonly reportByApi: ko.Observable<ReportRecordByApiViewModel[]>;
     public readonly reportByApiOrder: ko.Observable<string>;
     public readonly reportByApiOrderAscending: ko.Observable<boolean>;
-    public readonly reportByApiPage: ko.Observable<number>;
-    public readonly reportByApiHasPager: ko.Computed<boolean>;
-    public readonly reportByApiHasPrevPage: ko.Observable<boolean>;
-    public readonly reportByApiHasNextPage: ko.Observable<boolean>;
+    public readonly reportByApiPageNumber: ko.Observable<number>;
+    public readonly reportByApiTotalPages: ko.Observable<number>;
     public readonly reportByApiWorking: ko.Observable<boolean>;
     public readonly reportByApiHasData: ko.Computed<boolean>;
 
     public readonly reportByOperation: ko.Observable<ReportRecordByOperationViewModel[]>;
     public readonly reportByOperationOrder: ko.Observable<string>;
     public readonly reportByOperationOrderAscending: ko.Observable<boolean>;
-    public readonly reportByOperationPage: ko.Observable<number>;
-    public readonly reportByOperationHasPager: ko.Computed<boolean>;
-    public readonly reportByOperationHasPrevPage: ko.Observable<boolean>;
-    public readonly reportByOperationHasNextPage: ko.Observable<boolean>;
+    public readonly reportByOperationPageNumber: ko.Observable<number>;
+    public readonly reportByOperationTotalPages: ko.Observable<number>;
     public readonly reportByOperationWorking: ko.Observable<boolean>;
     public readonly reportByOperationHasData: ko.Computed<boolean>;
 
@@ -90,40 +82,32 @@ export class Reports {
         this.reportByProduct = ko.observable([]);
         this.reportByProductOrder = ko.observable("callCountSuccess");
         this.reportByProductOrderAscending = ko.observable(false);
-        this.reportByProductPage = ko.observable(1);
-        this.reportByProductHasPrevPage = ko.observable(false);
-        this.reportByProductHasNextPage = ko.observable(false);
-        this.reportByProductHasPager = ko.computed(() => this.reportByProductHasPrevPage() || this.reportByProductHasNextPage());
+        this.reportByProductPageNumber = ko.observable(1);
+        this.reportByProductTotalPages = ko.observable(0);
         this.reportByProductWorking = ko.observable(false);
         this.reportByProductHasData = ko.computed(() => this.reportByProduct().length !== 0);
 
         this.reportBySubscription = ko.observable([]);
         this.reportBySubscriptionOrder = ko.observable("callCountSuccess");
         this.reportBySubscriptionOrderAscending = ko.observable(false);
-        this.reportBySubscriptionPage = ko.observable(1);
-        this.reportBySubscriptionHasPrevPage = ko.observable(false);
-        this.reportBySubscriptionHasNextPage = ko.observable(false);
-        this.reportBySubscriptionHasPager = ko.computed(() => this.reportBySubscriptionHasPrevPage() || this.reportBySubscriptionHasNextPage());
+        this.reportBySubscriptionPageNumber = ko.observable(1);
+        this.reportBySubscriptionTotalPages = ko.observable(0);
         this.reportBySubscriptionWorking = ko.observable(false);
         this.reportBySubscriptionHasData = ko.computed(() => this.reportBySubscription().length !== 0);
 
         this.reportByApi = ko.observable([]);
         this.reportByApiOrder = ko.observable("callCountSuccess");
         this.reportByApiOrderAscending = ko.observable(false);
-        this.reportByApiPage = ko.observable(1);
-        this.reportByApiHasPrevPage = ko.observable(false);
-        this.reportByApiHasNextPage = ko.observable(false);
-        this.reportByApiHasPager = ko.computed(() => this.reportByApiHasPrevPage() || this.reportByApiHasNextPage());
+        this.reportByApiPageNumber = ko.observable(1);
+        this.reportByApiTotalPages = ko.observable(0);
         this.reportByApiWorking = ko.observable(false);
         this.reportByApiHasData = ko.computed(() => this.reportByApi().length !== 0);
 
         this.reportByOperation = ko.observable([]);
         this.reportByOperationOrder = ko.observable("callCountSuccess");
         this.reportByOperationOrderAscending = ko.observable(false);
-        this.reportByOperationPage = ko.observable(1);
-        this.reportByOperationHasPrevPage = ko.observable(false);
-        this.reportByOperationHasNextPage = ko.observable(false);
-        this.reportByOperationHasPager = ko.computed(() => this.reportByOperationHasPrevPage() || this.reportByOperationHasNextPage());
+        this.reportByOperationPageNumber = ko.observable(1);
+        this.reportByOperationTotalPages = ko.observable(0);
         this.reportByOperationWorking = ko.observable(false);
         this.reportByOperationHasData = ko.computed(() => this.reportByOperation().length !== 0);
     }
@@ -136,6 +120,18 @@ export class Reports {
 
         this.startTime.subscribe(this.scheduleChartsUpdate);
         this.endTime.subscribe(this.scheduleChartsUpdate);
+
+        this.reportByProductPageNumber
+            .subscribe(this.getReportsByProduct);
+
+        this.reportBySubscriptionPageNumber
+            .subscribe(this.getReportsBySubscription);
+
+        this.reportByApiPageNumber
+            .subscribe(this.getReportsByApi);
+
+        this.reportByOperationPageNumber
+            .subscribe(this.getReportsByOperation);
     }
 
     private scheduleChartsUpdate(): void {
@@ -165,7 +161,7 @@ export class Reports {
     private async getReportsByProduct(): Promise<void> {
         const startTime = this.startTime();
         const endTime = this.endTime();
-        const pageNumber = this.reportByProductPage() - 1;
+        const pageNumber = this.reportByProductPageNumber() - 1;
         const orderBy = this.reportByProductOrder();
         const orderAscending = this.reportByProductOrderAscending();
         const query: ReportQuery = {
@@ -180,9 +176,6 @@ export class Reports {
 
         const pageOfRecords = await this.analyticsService.getReportsByProduct(query);
         const records = pageOfRecords.value;
-
-        this.reportByProductHasPrevPage(pageNumber > 0);
-        this.reportByProductHasNextPage(!!pageOfRecords.nextLink);
 
         const viewModels: ReportRecordByProductViewModel[] = records.map(contract => {
             const viewModel = new ReportRecordByProductViewModel();
@@ -201,17 +194,8 @@ export class Reports {
         });
 
         this.reportByProduct(viewModels);
+        this.reportByProductTotalPages(Math.ceil(pageOfRecords.count / Constants.defaultPageSize));
         this.reportByProductWorking(false);
-    }
-
-    public reportByProductPrevPage(): void {
-        this.reportByProductPage(this.reportByProductPage() - 1);
-        this.getReportsByProduct();
-    }
-
-    public reportByProductNextPage(): void {
-        this.reportByProductPage(this.reportByProductPage() + 1);
-        this.getReportsByProduct();
     }
 
     public reportByProductOrderBy(fieldName: string): void {
@@ -229,7 +213,7 @@ export class Reports {
     private async getReportsBySubscription(): Promise<void> {
         const startTime = this.startTime();
         const endTime = this.endTime();
-        const pageNumber = this.reportBySubscriptionPage() - 1;
+        const pageNumber = this.reportBySubscriptionPageNumber() - 1;
         const orderBy = this.reportBySubscriptionOrder();
         const orderAscending = this.reportBySubscriptionOrderAscending();
         const query: ReportQuery = {
@@ -244,10 +228,6 @@ export class Reports {
 
         const pageOfRecords = await this.analyticsService.getReportsBySubscription(query);
         const records = pageOfRecords.value;
-
-        this.reportBySubscriptionHasPrevPage(pageNumber > 0);
-        this.reportBySubscriptionHasNextPage(!!pageOfRecords.nextLink);
-
 
         const viewModels: ReportRecordBySubscriptionViewModel[] = records.map(contract => {
             const viewModel = new ReportRecordBySubscriptionViewModel();
@@ -268,17 +248,8 @@ export class Reports {
         });
 
         this.reportBySubscription(viewModels);
+        this.reportBySubscriptionTotalPages(Math.ceil(pageOfRecords.count / Constants.defaultPageSize));
         this.reportBySubscriptionWorking(false);
-    }
-
-    public reportBySubscriptionPrevPage(): void {
-        this.reportBySubscriptionPage(this.reportBySubscriptionPage() - 1);
-        this.getReportsBySubscription();
-    }
-
-    public reportBySubscriptionNextPage(): void {
-        this.reportBySubscriptionPage(this.reportBySubscriptionPage() + 1);
-        this.getReportsBySubscription();
     }
 
     public reportBySubscriptionOrderBy(fieldName: string): void {
@@ -296,7 +267,7 @@ export class Reports {
     private async getReportsByApi(): Promise<void> {
         const startTime = this.startTime();
         const endTime = this.endTime();
-        const pageNumber = this.reportByApiPage() - 1;
+        const pageNumber = this.reportByApiPageNumber() - 1;
         const orderBy = this.reportByApiOrder();
         const orderAscending = this.reportByApiOrderAscending();
         const query: ReportQuery = {
@@ -311,9 +282,6 @@ export class Reports {
 
         const pageOfRecords = await this.analyticsService.getReportsByApi(query);
         const records = pageOfRecords.value;
-
-        this.reportByApiHasPrevPage(pageNumber > 0);
-        this.reportByApiHasNextPage(!!pageOfRecords.nextLink);
 
         const viewModels: ReportRecordByApiViewModel[] = records.map(contract => {
             const viewModel = new ReportRecordByApiViewModel();
@@ -332,17 +300,8 @@ export class Reports {
         });
 
         this.reportByApi(viewModels);
+        this.reportByApiTotalPages(Math.ceil(pageOfRecords.count / Constants.defaultPageSize));
         this.reportByApiWorking(false);
-    }
-
-    public reportByApiPrevPage(): void {
-        this.reportByApiPage(this.reportByApiPage() - 1);
-        this.getReportsByApi();
-    }
-
-    public reportByApiNextPage(): void {
-        this.reportByApiPage(this.reportByApiPage() + 1);
-        this.getReportsByApi();
     }
 
     public reportByApiOrderBy(fieldName: string): void {
@@ -360,7 +319,7 @@ export class Reports {
     private async getReportsByOperation(): Promise<void> {
         const startTime = this.startTime();
         const endTime = this.endTime();
-        const pageNumber = this.reportByOperationPage() - 1;
+        const pageNumber = this.reportByOperationPageNumber() - 1;
         const orderBy = this.reportByOperationOrder();
         const orderAscending = this.reportByOperationOrderAscending();
         const query: ReportQuery = {
@@ -374,9 +333,6 @@ export class Reports {
         this.reportByOperationWorking(true);
         const pageOfRecords = await this.analyticsService.getReportsByOperation(query);
         const records = pageOfRecords.value;
-
-        this.reportByOperationHasPrevPage(pageNumber > 0);
-        this.reportByOperationHasNextPage(!!pageOfRecords.nextLink);
 
         const viewModels: ReportRecordByOperationViewModel[] = records.map(contract => {
             const viewModel = new ReportRecordByOperationViewModel();
@@ -395,17 +351,8 @@ export class Reports {
         });
 
         this.reportByOperation(viewModels);
+        this.reportByOperationTotalPages(Math.ceil(pageOfRecords.count / Constants.defaultPageSize));
         this.reportByOperationWorking(false);
-    }
-
-    public reportByOperationPrevPage(): void {
-        this.reportByOperationPage(this.reportByOperationPage() - 1);
-        this.getReportsByOperation();
-    }
-
-    public reportByOperationNextPage(): void {
-        this.reportByOperationPage(this.reportByOperationPage() + 1);
-        this.getReportsByOperation();
     }
 
     public reportByOperationOrderBy(fieldName: string): void {

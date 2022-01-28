@@ -95,10 +95,6 @@
     scroll-behavior: smooth;
 }
 
-.mw-60 {
-    min-width: 60px;
-}
-
 .mw-170 {
     min-width: 170px;
 }
@@ -115,6 +111,10 @@
     padding-left: 0px !important;
 }
 
+.max-w-500 {
+    max-width: 500px;
+}
+
 .fit {
     @include fit;
     flex: 1 1 auto;
@@ -122,4 +122,12 @@
 
 .scrollable {
     overflow: auto;
+}
+
+.combination-type {
+    margin-top: 30px;
+}
+
+.mt-17 {
+    margin-top: 17px;
 }
