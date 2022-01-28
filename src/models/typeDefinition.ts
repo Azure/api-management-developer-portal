@@ -8,7 +8,6 @@ export abstract class TypeDefinitionPropertyType {
     }
 }
 
-
 export class TypeDefinitionPropertyTypePrimitive extends TypeDefinitionPropertyType {
     constructor(public readonly name: string) {
         super("primitive");
@@ -133,17 +132,20 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         this.kind = "object";
 
         if (contract.$ref) { // reference
-            this.type = new TypeDefinitionPropertyTypeReference(getTypeNameFromRef(contract.$ref));
+            const refName = this.getTypeNameFromRef(contract.$ref);
+
+            this.type = new TypeDefinitionPropertyTypeReference(refName);
+            this.description = definitions[refName].description ?? '';
             return;
         }
 
         if (contract.type === "array" && contract.items) {
             if (contract.items.$ref) {
                 const arrayProperty = new TypeDefinitionPrimitiveProperty("[]", contract, isRequired);
-                arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfReference(getTypeNameFromRef(contract.items.$ref));
+                arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfReference(this.getTypeNameFromRef(contract.items.$ref));
                 this.properties = [arrayProperty];
             } else if (contract.items.properties) {
-                this.properties = this.processProperties(contract.items, nested, "[]");
+                this.properties = this.processProperties(contract.items, nested, definitions, "[]");
             }
 
             this.kind = "array";
@@ -158,7 +160,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
             }
 
             if (contract.items.$ref) {
-                type = new TypeDefinitionPropertyTypeReference(getTypeNameFromRef(contract.items.$ref));
+                type = new TypeDefinitionPropertyTypeReference(this.getTypeNameFromRef(contract.items.$ref));
             }
 
             this.properties = [new TypeDefinitionIndexerProperty(type)];
@@ -172,7 +174,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         }
 
         if (contract.properties) { // complex type
-            this.properties = this.processProperties(contract, nested);
+            this.properties = this.processProperties(contract, nested, definitions);
         }
 
         if (contract.allOf ||
@@ -217,7 +219,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
 
         combinationArray.map((combinationArrayItem) => {
             if (combinationArrayItem.$ref) {
-                const combinationReferenceName = getTypeNameFromRef(combinationArrayItem.$ref);
+                const combinationReferenceName = this.getTypeNameFromRef(combinationArrayItem.$ref);
                 combinationReferencesNames.push(combinationReferenceName);
 
                 combinationReferenceObjectsArray.push(new TypeDefinition(combinationReferenceName, definitions[combinationReferenceName], definitions))
@@ -254,7 +256,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         return result;
     }
 
-    private processProperties(item: SchemaObjectContract, nested: boolean, prefix?: string): TypeDefinitionProperty[] {
+    private processProperties(item: SchemaObjectContract, nested: boolean, definitions: object, prefix?: string): TypeDefinitionProperty[] {
         const props = [];
 
         if (!item.properties) {
@@ -301,7 +303,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                             break;
 
                         case "object":
-                            const objectProperty = new TypeDefinitionObjectProperty(propertyNameToDisplay, propertySchemaObject, isRequired, true);
+                            const objectProperty = new TypeDefinitionObjectProperty(propertyNameToDisplay, propertySchemaObject, isRequired, true, definitions);
 
                             if (!propertySchemaObject.$ref && propertySchemaObject.properties && !nested) {
                                 const flattenObjects = this.flattenNestedObjects(objectProperty, propertyNameToDisplay);
@@ -320,11 +322,11 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                             }
 
                             if (propertySchemaObject.items.$ref) {
-                                arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfReference(getTypeNameFromRef(propertySchemaObject.items.$ref));
+                                arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfReference(this.getTypeNameFromRef(propertySchemaObject.items.$ref));
                                 props.push(arrayProperty);
                             }
                             else if (propertySchemaObject.items.properties) {
-                                const objectProperty = new TypeDefinitionObjectProperty(propertyNameToDisplay, propertySchemaObject.items, isRequired, true);
+                                const objectProperty = new TypeDefinitionObjectProperty(propertyNameToDisplay, propertySchemaObject.items, isRequired, true, definitions);
                                 const flattenObjects = this.flattenNestedObjects(objectProperty, propertyNameToDisplay + "[]");
                                 props.push(...flattenObjects);
                             }
@@ -333,7 +335,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                                 props.push(arrayProperty);
                             }
                             else {
-                                const objectProperty = new TypeDefinitionObjectProperty(propertyNameToDisplay + "[]", propertySchemaObject.items, isRequired, true);
+                                const objectProperty = new TypeDefinitionObjectProperty(propertyNameToDisplay + "[]", propertySchemaObject.items, isRequired, true, definitions);
                                 props.push(objectProperty);
                             }
 
@@ -350,10 +352,10 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
 
         return props;
     }
-}
 
-function getTypeNameFromRef($ref: string): string {
-    return $ref && $ref.split("/").pop();
+    private getTypeNameFromRef($ref: string): string {
+        return $ref && $ref.split("/").pop();
+    }
 }
 
 export class TypeDefinitionIndexerProperty extends TypeDefinitionObjectProperty {
