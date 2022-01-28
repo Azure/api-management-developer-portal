@@ -2,7 +2,6 @@ const webpack = require("webpack");
 const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const runtimeConfig = require("./webpack.runtime");
 
@@ -70,7 +69,6 @@ const functionConfig = {
         ]
     },
     plugins: [
-        new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" }),
         new CopyWebpackPlugin([
             { from: `./examples/function`, to: `./` },
