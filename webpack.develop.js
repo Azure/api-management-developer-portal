@@ -1,8 +1,6 @@
-const webpack = require("webpack");
 const { merge } = require("webpack-merge");
-const designerConfig = require("./webpack.designer.js");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-
+const { designerConfig, designerRuntimeConfig } = require("./webpack.designer.js");
 
 const developmentConfig = {
     mode: "development",
@@ -12,7 +10,6 @@ const developmentConfig = {
         historyApiFallback: true
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
         new CopyWebpackPlugin({
             patterns: [
                 { from: `./src/config.design.json`, to: `./config.json` }
@@ -21,6 +18,7 @@ const developmentConfig = {
     ]
 }
 
-module.exports = []
-    .concat(designerConfig)
-    .map(x => merge(x, developmentConfig));
+module.exports = [
+    merge(designerConfig, developmentConfig),
+    designerRuntimeConfig
+]
