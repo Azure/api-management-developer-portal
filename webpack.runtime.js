@@ -1,11 +1,11 @@
 const path = require("path");
-const { merge } = require("webpack-merge");
+const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 
 const runtimeConfig = {
-    mode: "none",
+    mode: "development",
     target: "web",
     entry: {
         "scripts/theme": ["./src/startup.runtime.ts"]
@@ -22,9 +22,7 @@ const runtimeConfig = {
                     MiniCssExtractPlugin.loader,
                     {
                         loader: "css-loader",
-                        options: {
-                            url: (url) => /\/icon-.*\.svg$/.test(url)
-                        }
+                        options: { url: { filter: (url) => /\/icon-.*\.svg$/.test(url) } }
                     },
                     { loader: "postcss-loader" },
                     { loader: "sass-loader" }
@@ -42,6 +40,7 @@ const runtimeConfig = {
                 loader: "html-loader",
                 options: {
                     esModule: true,
+                    sources: false,
                     minimize: {
                         removeComments: false,
                         collapseWhitespace: false
@@ -49,11 +48,8 @@ const runtimeConfig = {
                 }
             },
             {
-                test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-                loader: "url-loader",
-                options: {
-                    limit: 10000
-                }
+                test: /\.(svg)$/i,
+                type: "asset/inline"
             },
             {
                 test: /\.liquid$/,
@@ -66,34 +62,19 @@ const runtimeConfig = {
         new CopyWebpackPlugin({
             patterns: [
                 { from: `./src/themes/website/styles/fonts`, to: "styles/fonts" },
-                { from: `./src/themes/website/assets` },
-                { from: `./js/HipObject.js`, to: "scripts/js" },
-                { from: `node_modules/monaco-editor/min/vs`, to: `assets/monaco-editor/vs` }
+                { from: `./src/themes/website/assets` }
             ]
-        })
+        }),
+        new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
     ],
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"]
+        extensions: [".js", ".ts", ".jsx", ".tsx", ".html", ".scss"],
+        fallback: {
+            buffer: require.resolve("buffer"),
+            stream: require.resolve("stream-browserify"),
+            querystring: require.resolve("querystring-es3")
+        }
     }
 }
 
-module.exports = (designer) => {
-    const stylesPath = designer
-        ? `./src/themes/website/styles/styles.design.scss`
-        : `./src/themes/website/styles/styles.scss`;
-
-    const outputPath = designer
-        ? path.resolve(__dirname, "dist/designer")
-        : path.resolve(__dirname, "dist/publisher/assets");
-
-    const modification = {
-        entry: {
-            "styles/theme": stylesPath
-        },
-        output: {
-            path: outputPath
-        }
-    }
-
-    return merge(runtimeConfig, modification);
-};
+module.exports = runtimeConfig;
