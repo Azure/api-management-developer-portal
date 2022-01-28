@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
@@ -21,9 +22,7 @@ const runtimeConfig = {
                     MiniCssExtractPlugin.loader,
                     {
                         loader: "css-loader",
-                        options: {
-                            url: (url) => /\/icon-.*\.svg$/.test(url)
-                        }
+                        options: { url: { filter: (url) => /\/icon-.*\.svg$/.test(url) } }
                     },
                     { loader: "postcss-loader" },
                     { loader: "sass-loader" }
@@ -65,13 +64,15 @@ const runtimeConfig = {
                 { from: `./src/themes/website/styles/fonts`, to: "styles/fonts" },
                 { from: `./src/themes/website/assets` }
             ]
-        })
+        }),
+        new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
     ],
     resolve: {
         extensions: [".js", ".ts", ".jsx", ".tsx", ".html", ".scss"],
         fallback: {
-            "buffer": false,
-            "stream": require.resolve("stream-browserify")
+            buffer: require.resolve("buffer"),
+            stream: require.resolve("stream-browserify"),
+            querystring: require.resolve("querystring-es3")
         }
     }
 }

@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const { merge } = require("webpack-merge");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -69,14 +70,20 @@ const publisherConfig = {
         new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" }),
         new CopyWebpackPlugin({
             patterns: [
-                { from: `./src/data/demo.json`, to: `./data/demo.json` },
                 { from: `./src/config.publish.json`, to: `config.json` },
-                { from: `./src/config.runtime.json`, to: `assets/config.json` }
+                { from: `./src/config.runtime.json`, to: `assets/config.json` },
+                { from: `./templates/default.json`, to: "editors/templates/default.json" }
             ]
-        })
+        }),
+        new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
     ],
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"]
+        extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"],
+        fallback: {
+            buffer: require.resolve("buffer"),
+            stream: require.resolve("stream-browserify"),
+            querystring: require.resolve("querystring-es3")
+        }
     }
 };
 

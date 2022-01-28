@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const { merge } = require("webpack-merge");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -74,10 +75,16 @@ const designerConfig = {
                 { from: "./src/config.design.json", to: "config.json" },
                 { from: `./templates/default.json`, to: "editors/templates/default.json" }
             ]
-        })
+        }),
+        new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
     ],
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"]
+        extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"],
+        fallback: {
+            buffer: require.resolve("buffer"),
+            stream: require.resolve("stream-browserify"),
+            querystring: require.resolve("querystring-es3")
+        }
     }
 };
 
