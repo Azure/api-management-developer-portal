@@ -25,7 +25,7 @@
 .dropdown {
     display: none;
     position: absolute;
-    z-index: 9000;
+    z-index: $z-index-dropdowns;
 
     &.show {
         display: block;
