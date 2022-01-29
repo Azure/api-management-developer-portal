@@ -102,11 +102,11 @@
 
             <!-- ko ifnot: $component.collapsedExplorer -->
             <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
-                <select class="form-control" data-bind="options: graphDocService.availableTypes, value: queryType"></select>
-                <div class="input-icons">
-                    <input class="form-control search" type="search" aria-label="Search" placeholder="Search operations"
-                        spellcheck="false" data-bind="textInput: filter" />
-                </div>
+                <select class="form-control"
+                    data-bind="options: graphDocService.availableTypes, value: queryType"></select>
+
+                <input class="form-control search" type="search" aria-label="Search" placeholder="Search operations"
+                    spellcheck="false" data-bind="textInput: filter" />
 
                 <div class="input-group explorer-operations scrollable">
                     <!-- ko template: { name: 'graphqlExplorer', data: {operationNode: $component.node(), filter: filter()} } -->
