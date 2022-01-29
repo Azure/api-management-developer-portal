@@ -1,7 +1,5 @@
 <!-- ko if: working -->
-<div class="panel panel-dark fit">
-    <spinner class="fit"></spinner>
-</div>
+    <spinner class="block"></spinner>
 <!-- /ko -->
 
 <!-- ko ifnot: working -->
@@ -10,7 +8,6 @@
         <h2 data-bind="text: getName()"></h2>
         <span data-bind="text: getDescription(graphSelectedType(), true)"></span>
     </div>
-
 
     <!-- ko if: graphSelected()['type'] -->
     <div>
