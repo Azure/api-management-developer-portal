@@ -7,10 +7,12 @@
             <i class="icon-emb icon-emb-chevron-down"></i>
         </button>
         <div class="dropdown">
-            <input type="search" class="form-control form-control-light" aria-label="Search"
-                placeholder="Search products" spellcheck="false" data-bind="textInput: pattern" />
+            <div class="form-group">
+                <input type="search" class="form-control form-control-light" aria-label="Search"
+                    placeholder="Search products" spellcheck="false" data-bind="textInput: pattern" />
+            </div>
 
-            <div role="list">
+            <div class="menu menu-vertical" role="list">
                 <!-- ko if: working -->
                 <spinner class="block" role="presentation"></spinner>
                 <!-- /ko -->
@@ -19,7 +21,7 @@
 
                 <!-- ko foreach: { data: products, as: 'product' } -->
                 <a href="#" role="listitem" class="nav-link text-truncate" data-dismiss
-                    data-bind="attr: { href: $component.getProductUrl(product) }, text: product.displayName"></a>
+                    data-bind="attr: { href: $component.getProductUrl(product) }, text: product.displayName, css: { 'nav-link-active': $component.selectedProduct() === product }"></a>
                 <!-- /ko -->
 
                 <!-- ko if: products().length === 0 -->
