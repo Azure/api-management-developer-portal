@@ -1,4 +1,4 @@
-<div class="form-group dropdown-container collapsible">
+<div class="form-group">
     <div class="input-group">
         <div class="form-control" tabindex="0" role="button" aria-label="Products" data-toggle="dropdown">
             <span data-bind="text: selection"></span>
@@ -6,19 +6,19 @@
         <button class="input-group-addon no-border" data-toggle="dropdown">
             <i class="icon-emb icon-emb-chevron-down"></i>
         </button>
-        <div class="collapsible-dropdown collapsible-content dropdown">
+        <div class="dropdown">
             <input type="search" class="form-control form-control-light" aria-label="Search"
                 placeholder="Search products" spellcheck="false" data-bind="textInput: pattern" />
 
             <div role="list">
                 <!-- ko if: working -->
-                <spinner role="presentation"></spinner>
+                <spinner class="block" role="presentation"></spinner>
                 <!-- /ko -->
 
                 <!-- ko ifnot: working -->
 
                 <!-- ko foreach: { data: products, as: 'product' } -->
-                <a href="#" role="listitem" class="nav-link text-truncate"
+                <a href="#" role="listitem" class="nav-link text-truncate" data-dismiss
                     data-bind="attr: { href: $component.getProductUrl(product) }, text: product.displayName"></a>
                 <!-- /ko -->
 
