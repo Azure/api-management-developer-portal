@@ -17,6 +17,7 @@ export class HipCaptcha {
     public readonly encryptedFlowId: ko.Observable<string>;
 
     public readonly isNewCaptcha: ko.Observable<boolean>;
+    public readonly isLegacyCaptcha: ko.Observable<boolean>;
     public readonly captchaChallenge: ko.Observable<string>;
     public readonly captchaValue: ko.Observable<string>;
     public readonly captchaType: ko.Observable<string>;
@@ -30,6 +31,7 @@ export class HipCaptcha {
         this.captchaChallenge = ko.observable();
         this.captchaType = ko.observable();
         this.isNewCaptcha = ko.observable(false);
+        this.isLegacyCaptcha = ko.observable(false);
         this.working = ko.observable(true);
         this.captchaData = ko.observable();
         this.captchaValue = ko.observable();
@@ -52,7 +54,15 @@ export class HipCaptcha {
         try {
             const settings = await this.backendService.getCaptchaSettings();
             this.isNewCaptcha(settings && settings.captchaEnabled);
+            this.isLegacyCaptcha(settings && settings.legacyCaptchaEnabled);
+
+            // Do not load Captcha component if captcha endpoints are not available
+            if (!this.isNewCaptcha() && !this.isLegacyCaptcha()) {
+                this.working(false);
+                return;
+            }
         } catch { }
+        
 
         try {
             if (this.isNewCaptcha()) {

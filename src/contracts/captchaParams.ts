@@ -14,7 +14,12 @@ export interface CaptchaSettings {
     /**
      * True if new captcha endpoint is set
      */
-     captchaEnabled: boolean;
+    captchaEnabled: boolean;
+    
+     /**
+     * True if legacy captcha endpoint is set
+     */
+    legacyCaptchaEnabled: boolean;
 
     /**
      * True if captcha service by pass allowed

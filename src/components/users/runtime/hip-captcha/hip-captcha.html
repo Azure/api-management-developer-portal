@@ -1,3 +1,4 @@
+<!-- ko if: isNewCaptcha() || isLegacyCaptcha() -->
 <div id="captcha" class="captcha">
     <!-- ko if: working -->
     <div class="cards-body">
@@ -39,7 +40,7 @@
         <!-- /ko -->
     <!-- /ko -->
     
-    <!-- ko ifnot: isNewCaptcha -->
+    <!-- ko if: isLegacyCaptcha -->
     <div class="form-group">
         <div id="ispHIPHIP"></div>
         <div id="ispHIPScript" style="display: inline"></div>
@@ -50,3 +51,4 @@
     </div>
     <!-- /ko -->
 </div>
+<!-- /ko -->
