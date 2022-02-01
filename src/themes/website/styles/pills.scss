@@ -12,11 +12,11 @@
             background: inherit;
 
             &:hover {
-                background-color: #efefef;
+                background-color: $border-color-hover;
             }
 
             &.active {
-                border-color: #ccc;
+                border-color: $border-color-active;
             }
         }
     }

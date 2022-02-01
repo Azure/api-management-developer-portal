@@ -30,6 +30,9 @@ import { CodeSnippet } from "./components/operations/operation-details/ko/runtim
 import { Authorization } from "./components/operations/operation-details/ko/runtime/authorization";
 import { OperationConsole } from "./components/operations/operation-details/ko/runtime/operation-console";
 import { GraphqlConsole } from "./components/operations/operation-details/ko/runtime/graphql-console";
+import { GraphqlDocumentation } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc";
+import { GraphqlDetails } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc-details";
+import { GraphDocService } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc-service";
 import { OperationDetails } from "./components/operations/operation-details/ko/runtime/operation-details";
 import { TypeDefinitionViewModel } from "./components/operations/operation-details/ko/runtime/type-definition";
 import { OperationList } from "./components/operations/operation-list/ko/runtime/operation-list";
@@ -73,6 +76,9 @@ import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
 import { ApimSettingsProvider } from "./configuration/apimSettingsProvider";
 import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
+import { Pagination } from "./components/pagination/pagination";
+import { OauthServerConfiguration } from "./components/operations/operation-details/ko/runtime/oauth-server-configuration";
+
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -92,6 +98,8 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationDetails", OperationDetails);
         injector.bind("operationConsole", OperationConsole);
         injector.bind("graphqlConsole", GraphqlConsole);
+        injector.bind("graphqlDocumentation", GraphqlDocumentation);
+        injector.bind("graphqlDetails", GraphqlDetails);
         injector.bind("authorization", Authorization);
         injector.bind("typeDefinition", TypeDefinitionViewModel);
         injector.bind("codeSnippet", CodeSnippet);
@@ -131,12 +139,15 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("settingsProvider", ApimSettingsProvider);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("routeHelper", RouteHelper);
+        injector.bindSingleton("graphDocService", GraphDocService);
         injector.bindSingleton("userService", StaticUserService);
         injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindSingleton("viewStack", ViewStack);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("tagInput", TagInput);
-        injector.bindToCollection("autostart", AccessTokenRefrsher)
+        injector.bindToCollection("autostart", AccessTokenRefrsher);
+        injector.bind("pagination", Pagination);
+        injector.bind("oauthServerConfiguration", OauthServerConfiguration);
     }
 }

@@ -1,4 +1,5 @@
 import * as ko from "knockout";
+import * as Constants from "../../../../../constants";
 import template from "./product-subscriptions.html";
 import { Subscription } from "../../../../../models/subscription";
 import { Router } from "@paperbits/common/routing";
@@ -18,10 +19,8 @@ export class ProductSubscriptions {
     public readonly isUserSignedIn: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
     public readonly subscriptions: ko.ObservableArray<Subscription>;
-    public readonly page: ko.Observable<number>;
-    public readonly hasPager: ko.Computed<boolean>;
-    public readonly hasPrevPage: ko.Observable<boolean>;
-    public readonly hasNextPage: ko.Observable<boolean>;
+    public readonly pageNumber: ko.Observable<number>;
+    public readonly totalPages: ko.Observable<number>;
 
     constructor(
         private readonly usersService: UsersService,
@@ -32,17 +31,17 @@ export class ProductSubscriptions {
         this.isUserSignedIn = ko.observable();
         this.working = ko.observable();
         this.subscriptions = ko.observableArray();
-
-        this.page = ko.observable(1);
-        this.hasPrevPage = ko.observable(false);
-        this.hasNextPage = ko.observable(false);
-        this.hasPager = ko.computed(() => this.hasPrevPage() || this.hasNextPage());
+        this.pageNumber = ko.observable(1);
+        this.totalPages = ko.observable(0);
     }
 
     @OnMounted()
     public async initialize(): Promise<void> {
         this.router.addRouteChangeListener(this.loadProductSubscriptions);
         await this.loadProductSubscriptions();
+
+        this.pageNumber
+            .subscribe(this.loadProductSubscriptions);
     }
 
     private async loadProductSubscriptions(): Promise<void> {
@@ -60,13 +59,12 @@ export class ProductSubscriptions {
         }
 
         this.working(true);
-        try {
-            const pageNumber = this.page() - 1;
-            const itemsPage = await this.productService.getSubscriptionsForProduct(userId, `/products/${productName}`);
 
-            this.hasPrevPage(pageNumber > 0);
-            this.hasNextPage(!!itemsPage.nextLink);
-            this.subscriptions(itemsPage.value);
+        try {
+            const pageOfSubscriptions = await this.productService.getSubscriptionsForProduct(userId, `/products/${productName}`);
+
+            this.subscriptions(pageOfSubscriptions.value);
+            this.totalPages(Math.ceil(pageOfSubscriptions.count / Constants.defaultPageSize));
         }
         catch (error) {
             if (error.code === "Unauthorized") {
@@ -83,17 +81,6 @@ export class ProductSubscriptions {
         finally {
             this.working(false);
         }
-    }
-
-
-    public prevPage(): void {
-        this.page(this.page() - 1);
-        this.loadProductSubscriptions();
-    }
-
-    public nextPage(): void {
-        this.page(this.page() + 1);
-        this.loadProductSubscriptions();
     }
 
     @OnDestroyed()

@@ -132,7 +132,6 @@ pre {
     @media (min-width: $breakpoint-md) {
         max-width: 600px;
     }
-
 }
 
 .graphql-console-width {
@@ -235,15 +234,6 @@ pre {
     margin-right: 20px;
 }
 
-.input-icons {
-    margin-bottom: 10px;
-
-    i {
-        position: absolute;
-        z-index: 2;
-    }
-}
-
 .input-node-color {
     color: rgb(139, 43, 185);
 }
@@ -312,6 +302,10 @@ pre {
             color: #128930;
             background-color: white;
         }
+
+        &.graph {
+            float: right;
+        }
     }
 }
 
@@ -319,18 +313,6 @@ api-list,
 api-list-dropdown,
 api-list-tiles {
     flex-basis: 100%;
-}
-
-api-list-dropdown {
-    .collapsible-dropdown {
-        box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.5);
-        border: 1px solid #ffffff;
-        top: 100%;
-        left: 0;
-        right: 0;
-        padding: 20px;
-        z-index: $z-index-dropdowns;
-    }
 }
 
 .line-clamp {
@@ -368,6 +350,12 @@ operation-console {
     min-height: 100%;
     border-left: 1px solid #dee2e6;
 
+    .form-control {
+        margin: 0;
+    }
+}
+
+oauth-server-configuration {
     .form-control {
         margin: 0;
     }
@@ -483,4 +471,18 @@ operation-console {
     @media (max-width: 768px) {
         margin-top: 20px;
     }
+}
+
+.gql-navigation {
+    margin-top: 40px; 
+    font-size: 20px;
+}
+
+.description-text {
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+.operation-pointer {
+    cursor: pointer;
 }

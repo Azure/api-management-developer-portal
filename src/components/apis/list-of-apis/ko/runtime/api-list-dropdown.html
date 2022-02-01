@@ -1,102 +1,72 @@
-<div class="dropdown-container collapsible">
-    <div class="form-control" tabindex="0" role="button" data-toggle="dropdown" aria-label="APIs" >
-        <div class="input-group">
-            <div class="input">
-                <span data-bind="text: selection"></span>
-                <!-- ko if: selectedApi() -->
-                    <!-- ko if: selectedApi().type === 'soap' -->
-                    <span class="badge badge-soap">SOAP</span>
-                    <!-- /ko -->
-                    <!-- ko if: selectedApi().type === 'websocket' -->
-                    <span class="badge badge-soap">WebSocket</span>
-                    <!-- /ko -->
-                    <!-- ko if: selectedApi().type === 'graphql' -->
-                    <span class="badge badge-soap">GraphQL</span>
-                    <!-- /ko -->
-                <!-- /ko -->
-            </div>
-            <div class="input-group-append">
-                <i class="icon-emb icon-emb-chevron-down"></i>
-            </div>
-        </div>
-    </div>
-
-    <div class="collapsible-dropdown collapsible-content dropdown">
-        <div class="search-input">
-            <div class="input-group">
-                <input type="search" role="searchbox" aria-label="Search" placeholder="Search APIs"
-                    data-bind="textInput: pattern" autofocus />
-                <button type="button" class="search-button" aria-label="Search APIs">
-                    <i class="icon-emb icon-emb-magnifier"></i>
-                </button>
-            </div>
-        </div>
-        <!-- <tag-input params="{ scope: 'apis', onChange: onTagsChange }"></tag-input> -->
-        <div role="list">
-            <!-- ko if: working -->
-            <spinner role="presentation"></spinner>
+<div class="form-group">
+    <div class="input-group" tabindex="0" role="button" aria-label="APIs">
+        <div class="form-control" data-toggle="dropdown">
+            <span data-bind="text: selection"></span>
+            <!-- ko if: selectedApi() -->
+            <!-- ko if: selectedApi().type === 'soap' -->
+            <span class="badge badge-soap">SOAP</span>
             <!-- /ko -->
+            <!-- ko if: selectedApi().type === 'websocket' -->
+            <span class="badge badge-soap">WebSocket</span>
+            <!-- /ko -->
+            <!-- ko if: selectedApi().type === 'graphql' -->
+            <span class="badge badge-soap">GraphQL</span>
+            <!-- /ko -->
+            <!-- /ko -->
+        </div>
+        <button class="input-group-addon no-border" data-toggle="dropdown">
+            <i class="icon-emb icon-emb-chevron-down"></i>
+        </button>
+        <div class="dropdown">
+            <input type="search" class="form-control form-control-light" aria-label="Search" placeholder="Search APIs"
+                data-bind="textInput: pattern" autofocus />
 
-            <!-- ko ifnot: working -->
-            <!-- ko foreach: { data: apiGroups, as: 'group' } -->
-            <div class="collapsible">
+            <!-- <tag-input params="{ scope: 'apis', onChange: onTagsChange }"></tag-input> -->
+            
+                <!-- ko if: working -->
+                <spinner class="block" role="presentation"></spinner>
+                <!-- /ko -->
+
+                <!-- ko ifnot: working -->
+                <!-- ko foreach: { data: apiGroups, as: 'group' } -->
                 <div class="tag-group">
                     <span class="tag-item" role="group" data-bind="text: group.tag"></span>
                 </div>
-                <div class="collapsible-container">
-                    <div class="menu menu-vertical" role="list">
-                        <!-- ko foreach: { data: group.items, as: 'item' } -->
-                        <a href="#" role="listitem" class="nav-link text-truncate"
-                            data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedApiName() === item.name }">
-                            <span data-bind="text: item.displayName"></span>
-                            <!-- ko if: item.type === 'soap' -->
-                            <span class="badge badge-soap">SOAP</span>
-                            <!-- /ko -->
-                            <!-- ko if: item.type === 'websocket' -->
-                            <span class="badge badge-soap">WebSocket</span>
-                            <!-- /ko -->
-                            <!-- ko if: item.type === 'graphql' -->
-                            <span class="badge badge-soap">GraphQL</span>
-                            <!-- /ko -->
-                            <!-- ko if: item.apiVersion -->
-                            - <span data-bind="text: item.apiVersion"></span>
-                            <!-- /ko -->
-                        </a>
+                <div class="menu menu-vertical" role="list">
+                    <!-- ko foreach: { data: group.items, as: 'item' } -->
+                    <a href="#" role="listitem" class="nav-link text-truncate" data-dismiss
+                        data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedApiName() === item.name }">
+                        <span data-bind="text: item.displayName"></span>
+                        <!-- ko if: item.type === 'soap' -->
+                        <span class="badge badge-soap">SOAP</span>
                         <!-- /ko -->
-                    </div>
+                        <!-- ko if: item.type === 'websocket' -->
+                        <span class="badge badge-soap">WebSocket</span>
+                        <!-- /ko -->
+                        <!-- ko if: item.type === 'graphql' -->
+                        <span class="badge badge-soap">GraphQL</span>
+                        <!-- /ko -->
+                        <!-- ko if: item.apiVersion -->
+                        - <span data-bind="text: item.apiVersion"></span>
+                        <!-- /ko -->
+                    </a>
+                    <!-- /ko -->
                 </div>
-            </div>
-            <!-- /ko -->
-
-            <!-- ko if: apiGroups().length === 0 -->
-            <div class="list-item-empty">No APIs found</div>
-            <!-- /ko -->
-
-            <!-- ko if: hasPager -->
-            <ul class="pagination justify-content-center" role="navigation" aria-label="Pagination">
-                <!-- ko if: hasPrevPage -->
-                <li class="page-item">
-                    <a href="#" class="page-link" role="button" aria-label="Previous page"
-                        data-bind="click: prevPage, enable: hasPrevPage">
-                        <i class="icon-emb icon-emb-chevron-left"></i>
-                    </a>
-                </li>
                 <!-- /ko -->
-                <li class="page-item">
-                    <span class="page-link" data-bind="text: page"></span>
-                </li>
-                <!-- ko if: hasNextPage -->
-                <li class="page-item">
-                    <a href="#" class="page-link" role="button" aria-label="Next page"
-                        data-bind="click: nextPage, enable: hasNextPage">
-                        <i class="icon-emb icon-emb-chevron-right"></i>
-                    </a>
-                </li>
-                <!-- /ko -->
-            </ul>
-            <!-- /ko -->
 
-            <!-- /ko -->
+                <!-- ko if: apiGroups().length === 0 -->
+                <div class="list-item-empty">No APIs found</div>
+                <!-- /ko -->
+
+                <!-- ko ifnot: working -->
+                <!-- ko if: $component.totalPages() > 1 -->
+                <pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }">
+                </pagination>
+                <!-- /ko -->
+                <!-- /ko -->
+
+                <!-- /ko -->
+            
         </div>
     </div>
 </div>

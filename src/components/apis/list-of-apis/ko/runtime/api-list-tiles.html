@@ -1,11 +1,7 @@
-<div class="form-inline search-input">
+<div class="form-inline max-w-500">
     <div class="d-block flex-grow">
-        <div class="input-group">
-            <input type="search" role="searchbox" aria-label="Search APIs" placeholder="Search APIs" spellcheck="false" data-bind="textInput: pattern" />
-            <button type="button" class="search-button" aria-label="Search APIs">
-                <i class="icon-emb icon-emb-magnifier"></i>
-            </button>
-        </div>
+        <input type="search" class="form-control form-control-light" aria-label="Search APIs" placeholder="Search APIs" spellcheck="false"
+            data-bind="textInput: pattern" />
         <tag-input params="{ scope: 'apis', onChange: onTagsChange }"></tag-input>
     </div>
     <div class="form-group ml-auto">
@@ -82,29 +78,11 @@
     </div>
     <!-- /ko -->
 
+    <!-- ko ifnot: working -->
+    <!-- ko if: $component.totalPages() > 1 -->
     <div class="cards-footer">
-        <!-- ko if: hasPager -->
-        <ul class="pagination" role="navigation" aria-label="Pagination">
-            <!-- ko if: hasPrevPage -->
-            <li class="page-item">
-                <a href="#" class="page-link" role="button" aria-label="Previous page"
-                    data-bind="click: prevPage, enable: hasPrevPage">
-                    <i class="icon-emb icon-emb-chevron-left"></i>
-                </a>
-            </li>
-            <!-- /ko -->
-            <li class="page-item">
-                <span class="page-link" data-bind="text: page"></span>
-            </li>
-            <!-- ko if: hasNextPage -->
-            <li class="page-item">
-                <a href="#" class="page-link" role="button" aria-label="Next page"
-                    data-bind="click: nextPage, enable: hasNextPage">
-                    <i class="icon-emb icon-emb-chevron-right"></i>
-                </a>
-            </li>
-            <!-- /ko -->
-        </ul>
-        <!-- /ko -->
+        <pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }"></pagination>
     </div>
+    <!-- /ko -->
+    <!-- /ko -->
 </div>

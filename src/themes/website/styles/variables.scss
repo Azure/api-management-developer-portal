@@ -4,9 +4,9 @@ $breakpoint-sm: 576px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 992px;
 $breakpoint-xl: 1200px;
-
 $grid-breakpoints: ( xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px ) !default;
 
+/* Fonts */
 $font-size-base: calc(10px + .8vw);
 $font-size-h6: $font-size-base;
 $font-size-h5: calc(8px + 1vw);
@@ -27,24 +27,47 @@ $font-family-base: Arial, Helvetica, sans-serif;
 $font-family-script: Tahoma, Geneva, Verdana, sans-serif;
 
 $list-group-link-color: #555 !default;
+$list-item-selected: #def0fe;
+$tag-background-color: #767676;
+$icon-font-path: "fonts/";
 
+/* z-index */
 $z-index-base: 8800;
 $z-index-tooltips: 8900;
 $z-index-alerts: 9000;
 $z-index-dropdowns: 9100;
 $z-index-balloon: 9101;
 
+/* Badges */
 $badge-background-color: #e1e1e1;
-$list-item-selected: #def0fe;
-$tag-background-color: #767676;
-$icon-font-path: "fonts/";
 
 /* Defaults */
 $default-heading-font-weight: 500;
 $default-heading-line-height: 1.2;
 $default-heading-color: inherit;
-$default-navlink-padding:  0.5rem 1rem;
+$default-navlink-padding: .5rem 1rem;
 $default-text-color: #555;
 
+/* Balloons */
 $balloon-background: #fff;
 $balloon-border-radius: 0;
+
+/* Nav pills */
+$border-color-active: $default-text-color;
+$border-color-hover: #efefef;
+
+/* Switch */
+$switch-background-color-on: #0078d4;
+$switch-background-color-off: #ccc;
+$switch-handle-color: #fff;
+$switch-width: 55px;
+$switch-height: 32px;
+$switch-trigger-gap: 4px;
+$switch-trigger-size: $switch-height - ($switch-trigger-gap * 3);
+
+/* Forms */
+$form-control-color: #495057;
+$form-control-bg-color: #fff;
+$form-control-border-color: #ced4da;
+$form-control-border-radius: 0;
+$search-button-width: 30px;

@@ -93,7 +93,7 @@
                         data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                     <!-- /ko -->
                     <!-- ko if: parameter.options.length === 0 -->
-                    <div class="input-group">
+                    <div class="input-group has-validation">
                         <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
                             spellcheck="false" aria-label="Parameter value"
                             data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value">
@@ -108,7 +108,7 @@
         <div class="row flex flex-row">
             <div class="col-4">
                 <div class="form-group">
-                    <div class="input-group">
+                    <div class="input-group has-validation">
                         <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
                             spellcheck="false" aria-label="Parameter name" data-bind="textInput: parameter.name">
                         <span class="invalid-feedback" data-bind="validationMessage: parameter.name"></span>
@@ -124,18 +124,17 @@
                     <div class="input-group">
                         <!-- ko if: parameter.options.length === 0 -->
                         <!-- ko if: !parameter.secret-->
-                        <input type="text" autocomplete="off" class="form-control form-control-sm input-password"
+                        <input type="text" autocomplete="off" class="form-control form-control-sm"
                             placeholder="value" spellcheck="false" aria-label="Parameter value"
                             data-bind="textInput: parameter.value">
                         <!-- /ko -->
                         <!-- ko if: parameter.secret-->
-                        <input autocomplete="off" class="form-control form-control-sm input-password"
+                        <input autocomplete="off" class="form-control form-control-sm"
                             placeholder="value" spellcheck="false" aria-label="Parameter value"
                             data-bind=" attr: {type: parameter.inputType}, textInput: parameter.value">
                         <button data-bind="click: () => $component.toggleSecretParameter(parameter)"
-                            class="input-toggle-btn">
-                            <i
-                                data-bind="class: parameter.revealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
+                            class="input-group-addon">
+                            <i data-bind="class: parameter.revealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
                         </button>
                         <!-- /ko -->
                         <!-- /ko -->
@@ -166,7 +165,7 @@
         <div class="row flex flex-row">
             <div class="col-4">
                 <div class="form-group">
-                    <div class="input-group">
+                    <div class="input-group has-validation">
                         <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
                             spellcheck="false" aria-label="Header name" data-bind="textInput: header.name">
                         <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
@@ -180,18 +179,17 @@
                         data-bind="value: header.value, options: header.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                     <!-- /ko -->
                     <!-- ko if: !header.options || header.options.length === 0 -->
-                    <div class="input-group">
+                    <div class="input-group has-validation">
                         <!-- ko if: !header.secret -->
                         <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
                             spellcheck="false" aria-label="Header value" data-bind="textInput: header.value">
                         <!-- /ko -->
                         <!-- ko if: header.secret -->
-                        <input autocomplete="off" class="form-control form-control-sm input-password"
+                        <input autocomplete="off" class="form-control form-control-sm"
                             placeholder="value" spellcheck="false" aria-label="Header value"
                             data-bind="attr: {type: header.inputTypeValue}, textInput: header.value">
-                        <button data-bind="click: () => $component.toggleSecretHeader(header)" class="input-toggle-btn">
-                            <i
-                                data-bind="class: header.revealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
+                        <button data-bind="click: () => $component.toggleSecretHeader(header)" class="input-group-addon">
+                            <i data-bind="class: header.revealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
                         </button>
                         <!-- /ko -->
                         <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
@@ -211,9 +209,17 @@
     </a>
     <!-- /ko -->
 
-    <!-- ko if: hasBody -->
+    <!-- ko if: canHaveBody -->
+    
     <h3>Body</h3>
 
+    <!-- ko if: !hasBody() -->
+    <a href="#" role="button" data-bind="click: $component.addBody">
+        <i class="icon-emb icon-emb-plus"></i> Add body
+    </a>
+    <!-- /ko -->
+
+    <!-- ko if: hasBody() -->
     <div class="row flex flex-row form-group">
         <div class="col-5">
             <label class="form-check-label">Request body format</label>
@@ -246,7 +252,7 @@
         </div>
         <div class="col-5">
             <div class="flex form-check form-check-inline">
-                <select id="requestRepresentations" class="form-control" style="width: auto;"
+                <select aria-label="Request representations" id="requestRepresentations" class="form-control"
                     data-bind="value: $component.selectedRepresentation">
                     <!-- ko foreach: { data: request.representations, as: 'representation' } -->
                     <option
@@ -258,7 +264,7 @@
         </div>
         <div class="col-2 flex justify-content-end">
             <!-- ko if: request.isBodyEdited() -->
-            <i class="icon-emb icon-emb-spinner11" style="cursor: pointer; display: flex; align-self: center;" data-bind="click: $component.revertBody"></i>
+            <i class="icon-emb icon-emb-spinner" style="cursor: pointer; display: flex; align-self: center;" data-bind="click: $component.revertBody"></i>
             <!-- /ko -->
         </div>
     </div>
@@ -303,14 +309,18 @@
         </div>
     </div>
     <!-- /ko -->
-
+    <div class="col-1">
+        <a href="#" role="button" data-bind="click: $component.removeBody" class="btn-centered-vert btn-inline" aria-label="Remove body"><i class="icon-emb icon-emb-trash"></i></a>
+    </div>
     <!-- /ko -->
+    <!-- /ko -->
+    
 </div>
 
 <!-- ko ifnot: api().type === 'websocket' -->
 <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
     <!-- ko ifnot: operation().request.isFormData() -->
-    <select id="requestLanguages" class="form-control" data-bind="value: $component.selectedLanguage">
+    <select aria-label="Programming language" id="requestLanguages" class="form-control" data-bind="value: $component.selectedLanguage">
         <!-- ko foreach: { data: requestLanguages, as: 'requestLanguage' } -->
         <option data-bind="value: requestLanguage.value, text: requestLanguage.text"></option>
         <!-- /ko -->
@@ -360,7 +370,7 @@
 
 <!-- ko if: api().type === 'websocket' -->
 <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
-    <select id="requestLanguages" class="form-control" data-bind="value: $component.selectedLanguage">
+    <select aria-label="Programming language" id="requestLanguages" class="form-control" data-bind="value: $component.selectedLanguage">
         <!-- ko foreach: { data: requestLanguages, as: 'requestLanguage' } -->
         <option data-bind="value: requestLanguage.value, text: requestLanguage.text"></option>
         <!-- /ko -->

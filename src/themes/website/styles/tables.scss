@@ -72,7 +72,7 @@ $body-bg: none;
 }
 
 .table-preset > .d-contents > .d-contents > div {
-    padding: 8px 4px;
+    padding: 8px;
 }
 
 .table-preset-head {
@@ -107,6 +107,25 @@ $body-bg: none;
 
 .table-preset-reports {
     grid-template-columns: minmax(150px, 1fr) 120px 120px 120px 120px 120px 120px 120px;
+
+    .table-preset-head {
+        button {
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+
+            .btn-addon {
+                min-width: 1.5em;
+            }
+        }
+    }
+}
+
+.table-preset-gql {
+    grid-template-columns: minmax(150px, 350px) 200px minmax(350px, 1fr);
 }
 
 .table-preset-ws-logs {
@@ -129,8 +148,8 @@ table {
         border-bottom: 1px solid #dee2e6;
     }
 
-    th,
-    td {
+    td,
+    th {
         padding: 8px 4px;
     }
 }

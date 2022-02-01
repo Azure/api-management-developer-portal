@@ -1,0 +1,42 @@
+<ul role="navigation" aria-label="Pagination" class="pagination">
+    <!-- ko if: canGoFirstPage -->
+    <li role="presentation">
+        <button class="page-link" data-bind="click: goToFirst" aria-label="Go to first page" title="Go to first page">
+            <i class="icon-emb icon-emb-chevron-left"></i>
+            <i class="icon-emb icon-emb-chevron-left"></i>
+        </button>
+    </li>
+    <!-- /ko -->
+
+    <!-- ko if: canGoPrevPage -->
+    <li role="presentation">
+        <button class="page-link" data-bind="click: goToPrevious" aria-label="Go to previous page" title="Go to previous page"> 
+            <i class="icon-emb icon-emb-chevron-left"></i>
+        </button>
+    </li>
+    <!-- /ko -->
+
+    <!-- ko foreach: pageNumbers -->
+    <li role="presentation">
+        <button class="page-link"
+            data-bind="click: $component.goToPage, text: $data, css: { active: $component.pageNumber() === $data }, attr: { 'aria-current': $component.pageNumber() === $data }"></button>
+    </li>
+    <!-- /ko -->
+
+    <!-- ko if: canGoNextPage -->
+    <li role="presentation" >
+        <button class="page-link" data-bind="click: goToNext" aria-label="Go to next page" title="Go to next page">
+            <i class="icon-emb icon-emb-chevron-right"></i>
+        </button>
+    </li>
+    <!-- /ko -->
+
+    <!-- ko if: canGoLastPage -->
+    <li role="presentation">
+        <button class="page-link" data-bind="click: goToLast" aria-label="Go to last page" title="Go to last page">
+            <i class="icon-emb icon-emb-chevron-right"></i>
+            <i class="icon-emb icon-emb-chevron-right"></i>
+        </button>
+    </li>
+    <!-- /ko -->
+</ul>

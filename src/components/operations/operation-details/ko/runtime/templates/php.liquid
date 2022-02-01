@@ -1,47 +1,32 @@
 <?php
-// This sample uses the Apache HTTP client from HTTP Components (http://hc.apache.org/httpcomponents-client-ga/)
-require_once 'HTTP/Request2.php';
 
-$request = new Http_Request2('{{requestUrl}}');
-$url = $request->getUrl();
+$url = "{{requestUrl}}";
+$curl = curl_init($url);
+
+curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "{{method}}");
+curl_setopt($curl, CURLOPT_URL, $url);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 {% if request.meaningfulHeaders.size > 0 -%}
+# Request headers
 $headers = array(
-    // Request headers
-{% for header in request.meaningfulHeaders -%}
-    '{{header.name}}' => '{{header.displayedValue}}',
-{% endfor -%}
-);
-
-$request->setHeader($headers);
-{% endif -%}
-
-{% if request.parameters.size > 0 -%}
-$parameters = array(
-    // Request parameters
-{% for parameter in request.parameters -%}
-    '{{parameter.name}}' => '{{parameter.value}}',
-{% endfor -%}
-);
-
-$url->setQueryVariables($parameters);
-{% endif -%}
-
-$request->setMethod(HTTP_Request2::METHOD_{{method}});
-
-{% if body -%}
-// Request body
-$request->setBody("{{ body | replace:'"','\"' }}");
-{% endif -%}
-
-try
-{
-    $response = $request->send();
-    echo $response->getBody();
-}
-catch (HttpException $ex)
-{
-    echo $ex;
-}
-
+{%- for header in request.meaningfulHeaders %}
+    '{{header.name}}: {{header.displayedValue}}',
+{%- endfor -%});
+curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+{%- endif %}
+{% if request.body != blank %}
+# Request body
+{% if request.bodyFormat == "raw" -%}
+$request_body = '{{request.body}}';
+{%- elsif  request.bodyFormat == "binary" %}
+$file = fopen("< path\\to\\{{request.binary.name}} >", "r");
+$request_body = fread($file,filesize("< path\\to\\{{request.binary.name}} >"));
+fclose($file);
+{% endif %}
+curl_setopt($curl, CURLOPT_POSTFIELDS, $request_body);
+{% endif %}
+$resp = curl_exec($curl);
+curl_close($curl);
+var_dump($resp);
 ?>
