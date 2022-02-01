@@ -1,5 +1,5 @@
 import { VersionSet } from "./versionSet";
-import { ApiContract, SubscriptionKeyParameterName } from "../contracts/api";
+import { ApiContract, ContactDetails, LicenseDetails, SubscriptionKeyParameterName } from "../contracts/api";
 import { Utils } from "../utils";
 import { AuthenticationSettings } from "../contracts/authenticationSettings";
 import { TypeOfApi } from "../constants";
@@ -103,6 +103,21 @@ export class Api {
      */
     public subscriptionRequired: boolean;
 
+    /**
+     * Contact information.
+     */
+    public contact?: ContactDetails;
+
+    /**
+     * Name of the license and a URL to the license description.
+     */
+    public license?: LicenseDetails;
+
+    /**
+     * Link to the page that describes the terms of service.
+     */
+    public termsOfServiceUrl?: string;
+
     constructor(contract?: ApiContract) {
         if (contract.id) {
             this.id = Utils.getResourceName("apis", contract.id, "shortId");
@@ -122,6 +137,9 @@ export class Api {
         this.type = contract.properties.type;
         this.authenticationSettings = contract.properties.authenticationSettings;
         this.subscriptionRequired = contract.properties.subscriptionRequired;
+        this.contact = contract.properties.contact;
+        this.license = contract.properties.license;
+        this.termsOfServiceUrl = contract.properties.termsOfServiceUrl;
 
         if(contract.properties.type) {
             switch(contract.properties.type) {
