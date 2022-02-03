@@ -20,6 +20,7 @@ export class GraphDocService {
         unionType: ko.Observable<object>,
         interfaceType: ko.Observable<object>
     };
+    public content: ko.Observable<string>;
 
     public api: ko.Observable<Api>;
     public selectedApiName: ko.Observable<string>;
@@ -47,6 +48,7 @@ export class GraphDocService {
         this.selectedApiName = ko.observable<string>();
         this.typeIndexer = ko.observable();
         this.availableTypes = ko.observableArray<string>();
+        this.content = ko.observable<string>();
     }
 
     public async initialize(): Promise<void> {
@@ -66,8 +68,8 @@ export class GraphDocService {
         await this.getApi(this.selectedApiName());
         if (this.api().type === TypeOfApi.graphQL) {
             const graphQLSchemas = await this.apiService.getSchemas(this.api());
-            const content = graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema;
-            const schema = GraphQL.buildSchema(content, { commentDescriptions: true });
+            this.content(graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema);
+            const schema = GraphQL.buildSchema(this.content(), { commentDescriptions: true });
 
             this.docGraphs.query(schema.getQueryType()?.getFields());
             this.docGraphs.mutation(schema.getMutationType()?.getFields());
