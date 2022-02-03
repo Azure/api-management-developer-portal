@@ -18,6 +18,7 @@ import graphqlDocTable from "./graphql-doc-table.html";
 export class GraphqlDetails {
 
     public graphSelected: ko.Observable<object>;
+    public graphSelectedSchemaView: ko.Observable<string>;
     public graphSelectedType: ko.Observable<object>;
 
     public readonly working: ko.Observable<boolean>;
@@ -40,6 +41,7 @@ export class GraphqlDetails {
         this.working = ko.observable(true);
         this.gqlFieldTypes = _.values(GraphqlFieldTypes);
         this.graphSelected = ko.observable<object>();
+        this.graphSelectedSchemaView = ko.observable<string>("table");
         this.graphSelectedType = ko.observable<object>();
         this.allReferencesList = ko.observableArray<object>([]);
     }
@@ -190,7 +192,11 @@ export class GraphqlDetails {
     private convertToList(references: object): Array<object> {
         return _.flatMap(references, (names, type) => {
             return _.map(names(), (name) => {
-                return { type, name };
+                return { 
+                    type, 
+                    name, 
+                    schemaView: ko.observable<string>('table'),
+                };
             });
         });
     }
@@ -220,5 +226,21 @@ export class GraphqlDetails {
 
     private getReferenceUrl(definition: string): string {
         return this.graphDocService.routeHelper.getGraphDefinitionReferenceId(this.graphDocService.selectedApiName(), this.graphSelected()[GraphqlCustomFieldNames.type](), this.graphSelected()['name'], definition);
+    }
+
+    public switchToTable(schemaView: ko.Observable): void {
+        schemaView("table");
+    }
+
+    public switchToRaw(schemaView: ko.Observable): void {
+        schemaView("raw");
+    }
+
+    public content(reference: object, graph = null): string {
+        if(!graph) {
+            graph = this.graphDocService.docGraphs[reference['type']]()[reference['name']];
+        }
+        const location = graph?.astNode?.loc; 
+        return this.graphDocService.content().substring(location?.start, location?.end);
     }
 }
