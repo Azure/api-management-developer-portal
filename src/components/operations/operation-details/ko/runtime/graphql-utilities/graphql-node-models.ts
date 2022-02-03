@@ -104,7 +104,7 @@ export class GraphQLOutputTreeNode extends GraphQLTreeNode {
                 let inputTreeeNode = new GraphQLInputTreeNode(arg.name, arg, this.generateDocument, this);
                 argsNodes.push(inputTreeeNode)
             }
-            if (type instanceof GraphQL.GraphQLObjectType) {
+            if (type instanceof GraphQL.GraphQLObjectType || type instanceof GraphQL.GraphQLInterfaceType) {
                 let fields = type.getFields();
                 for (let name in fields) {
                     fieldNodes.push(new GraphQLOutputTreeNode(name, fields[name], this.generateDocument, this))
