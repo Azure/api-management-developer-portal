@@ -87,7 +87,17 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
     }
 
     public registerScaffoldedWidget(): void {
-        /* TODO register new widget and replace this instance of "Custom Widget" widget by it */
+        /* const mockOfAScaffoldedJSONFromTheBE = {
+            name: "widget1",
+            displayName: "Custom widget 1",
+            category: "Advanced",
+            iconUrl: "https://...",
+            defaultConfig: { uri: "http..." },
+
+            urlToBlobStorage: "url to the index.html of the newly registered widget on the blob storage (was pushed by the BE there during scaffolding)"
+        } */
+
+        /* TODO register new widget and replace this instance of "Custom Widget" widget by an instance of the newly registered custom widget */
         alert("WiP");
     }
 }
