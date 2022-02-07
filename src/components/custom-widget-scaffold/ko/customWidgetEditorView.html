@@ -1,0 +1,11 @@
+<fieldset class="form flex flex-item flex-item-grow no-overflow">
+    <div class="form-group flex flex-column" style="display: flex; margin-bottom: 0;">
+        <size-editor params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: sizeStyleConfig, onUpdate: onSizeUpdate }">
+        </size-editor>
+
+        <iframe data-bind="attr: { src: src }"
+                sandbox="allow-scripts allow-modals allow-forms"
+                frameborder="0"
+        ></iframe>
+    </div>
+</fieldset>

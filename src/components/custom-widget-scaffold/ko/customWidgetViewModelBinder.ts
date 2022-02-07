@@ -4,15 +4,23 @@ import { ComponentFlow, IWidgetBinding } from "@paperbits/common/editing";
 import { widgetName, widgetDisplayName, widgetEditorSelector } from "../constants";
 import { CustomWidgetViewModel } from "./customWidgetViewModel";
 import { ViewModelBinder } from "@paperbits/common/widgets";
+import { StyleCompiler } from "@paperbits/common/styles";
 import { CustomWidgetModel } from "../customWidgetModel";
+import { buildRemoteFilesSrc } from "./utils";
 
 export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidgetModel, CustomWidgetViewModel>  {
     constructor(
         private readonly eventManager: EventManager,
+        private readonly styleCompiler: StyleCompiler,
     ) { }
 
-    public async updateViewModel(model: CustomWidgetModel, viewModel: CustomWidgetViewModel): Promise<void> {
+    public async updateViewModel(model: CustomWidgetModel, viewModel: CustomWidgetViewModel, bindingContext: Bag<any>): Promise<void> {
+        if (model.styles) {
+            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager));
+        }
+
         viewModel.name(model.name);
+        viewModel.src(buildRemoteFilesSrc(model, "index.html"));
     }
 
     public async modelToViewModel(model: CustomWidgetModel, viewModel?: CustomWidgetViewModel, bindingContext?: Bag<any>): Promise<CustomWidgetViewModel> {
@@ -28,7 +36,7 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
                 editor: widgetEditorSelector,
                 draggable: true,
                 applyChanges: async () => {
-                    await this.updateViewModel(model, viewModel);
+                    await this.updateViewModel(model, viewModel, bindingContext);
                     this.eventManager.dispatchEvent(Events.ContentUpdate);
                 }
             };
@@ -36,7 +44,7 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
             viewModel["widgetBinding"] = binding;
         }
 
-        this.updateViewModel(model, viewModel);
+        this.updateViewModel(model, viewModel, bindingContext);
 
         return viewModel;
     }

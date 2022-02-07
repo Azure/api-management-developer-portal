@@ -18,6 +18,7 @@ export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> 
         model.name = contract.name ?? "";
         model.uri = contract.uri;
         model.styles = contract.styles || {};
+        model.customInputValue = contract.customInputValue ?? "{}";
         return model;
     }
 
@@ -27,6 +28,7 @@ export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> 
             name: model.name,
             uri: model.uri,
             styles: model.styles,
+            customInputValue: model.customInputValue,
         };
 
         return contract;

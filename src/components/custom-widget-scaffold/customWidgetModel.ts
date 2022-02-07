@@ -4,6 +4,7 @@ export class CustomWidgetModel {
     public name: string;
     public uri: string | undefined;
     public inheritStyling: boolean;
+    public customInputValue: string;
 
     /**
      * Local styles.

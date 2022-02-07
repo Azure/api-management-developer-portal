@@ -8,15 +8,7 @@ import { widgetEditorSelector } from "..";
 import { StyleHelper } from "@paperbits/styles";
 import { ViewManager } from "@paperbits/common/ui";
 import { EventManager, Events } from "@paperbits/common/events";
-
-const js = (customInputCodeValue) => `<script>
-    var value = JSON.parse('${customInputCodeValue}').data;
-
-    function onChange(value) {
-        console.log('onChange', {value});
-        window.parent.postMessage({"customInputCode": value}, "${window.location.origin}");
-    }
-</script>`;
+import { buildBlobStorageSrc } from "../../custom-widget-scaffold/ko/utils";
 
 @Component({
     selector: widgetEditorSelector,
@@ -54,23 +46,8 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
     public async initialize(): Promise<void> {
         this.name(this.model.name);
         this.uri(this.model.uri);
-        this.customInput1(this.model.customInput1);
-        this.customInputCode(this.model.customInputCode);
-        this.customInputCodeValue(this.model.customInputCodeValue);
-        this.customInputCodeWithJS(js(this.model.customInputCodeValue) + this.model.customInputCode);
-        this.updateResponsiveObservables();
-
-        window.addEventListener("message", event => {
-            if (typeof event.data === "object" && "customInputCode" in event.data) {
-                this.customInputCodeValue(JSON.stringify({data: event.data.customInputCode}));
-            }
-        });
 
         this.name.subscribe(this.applyChanges);
-        this.customInput1.subscribe(this.applyChanges);
-        this.customInputCode.subscribe(this.applyChanges);
-        this.customInputCode.subscribe(this.applyChangeInputCode);
-        this.customInputCodeValue.subscribe(this.applyChanges);
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
     }
 
@@ -86,22 +63,6 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
 
     private applyChanges(): void {
         this.model.name = this.name();
-        this.model.customInput1 = this.customInput1();
-        this.model.customInputCode = this.customInputCode();
-        this.model.customInputCodeValue = this.customInputCodeValue();
-        this.onChange(this.model);
-    }
-
-    private applyChangeInputCode(): void {
-        this.customInputCodeWithJS(js(this.customInputCodeValue()) + this.customInputCode());
-    }
-
-    /**
-     * Updates widget sizing styles.
-     */
-    public onSizeUpdate(sizeStyles: SizeStylePluginConfig): void {
-        const viewport = this.viewManager.getViewport();
-        StyleHelper.setPluginConfigForLocalStyles(this.model.styles, "size", sizeStyles, viewport);
         this.onChange(this.model);
     }
 
@@ -118,10 +79,15 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
             this.onChange(this.model);
         }
 
-        const storageUrl = `https://scaffoldtest.blob.core.windows.net/${uri}`;
+        const storageUrl = buildBlobStorageSrc({uri});
         const a = document.createElement("a");
         a.href = `http://localhost:8000/scaffold?name=${this.name()}&uri=${uri}&storageUrl=${storageUrl}`;
         document.getElementById("customWidgetDownloadBtn").parentElement.append(a);
         a.click();
+    }
+
+    public registerScaffoldedWidget(): void {
+        /* TODO register new widget and replace this instance of "Custom Widget" widget by it */
+        alert("WiP");
     }
 }
