@@ -74,6 +74,7 @@ import { UsersService } from "./services/usersService";
 import { ApimSettingsProvider } from "./configuration/apimSettingsProvider";
 import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import { Pagination } from "./components/pagination/pagination";
+import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -140,5 +141,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("tagInput", TagInput);
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bind("pagination", Pagination);
+        injector.bind("httpClient", StaticDataHttpClient);
     }
 }

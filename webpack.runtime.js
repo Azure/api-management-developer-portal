@@ -63,7 +63,9 @@ const runtimeConfig = {
                 { from: `./src/themes/website/styles/fonts`, to: "styles/fonts" },
                 { from: `./src/themes/website/assets` },
                 { from: `./js/HipObject.js`, to: "scripts/js" },
-                { from: `node_modules/monaco-editor/min/vs`, to: `assets/monaco-editor/vs` }
+                { from: `node_modules/monaco-editor/min/vs`, to: `assets/monaco-editor/vs` },
+                { from: `./templates/default.json`, to: "editors/templates/default.json" },
+                { from: `./tests/mocks`, to: "tests/mocks/defaultMockData.json" },
             ]
         })
     ],
