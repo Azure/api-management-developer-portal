@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import template from "./customWidgetEditorView.html";
 import { WidgetEditor } from "@paperbits/common/widgets";
-import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
+import { Component, Event, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
 import { CustomWidgetModel } from "../customWidgetModel";
 import { widgetEditorSelector } from "..";
@@ -17,7 +17,8 @@ import { buildRemoteFilesSrc } from "./utils";
 export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetModel> {
     public readonly sizeStyleConfig: ko.Observable<SizeStylePluginConfig>;
     public readonly customInputValue: ko.Observable<string>;
-    public src: string;
+    public readonly src: ko.Observable<string>;
+    public htmlInheritedStyles: string;
 
     constructor(
         private readonly viewManager: ViewManager,
@@ -25,6 +26,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
     ) {
         this.sizeStyleConfig = ko.observable();
         this.customInputValue = ko.observable();
+        this.src = ko.observable();
     }
 
     @Param()
@@ -35,7 +37,8 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        this.src = buildRemoteFilesSrc(this.model, "editor.html");
+        this.htmlInheritedStyles = `<link href="${window.location.origin}/editors/styles/paperbits.css" rel="stylesheet" type="text/css">`;
+        // this.src("");
 
         this.customInputValue(this.model.customInputValue);
         this.updateResponsiveObservables();
@@ -51,6 +54,13 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
 
         this.customInputValue.subscribe(this.applyChanges);
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
+
+        /*
+        const globalStyleSheet = await this.styleCompiler.getStyleSheet();
+        const compiler = new JssCompiler();
+        // this.htmlInheritedStyles += <link href="http://localhost:8080/styles/theme.css" rel="stylesheet" type="text/css"><style>${compiler.compile(globalStyleSheet)}</style>
+        */
+        this.src(buildRemoteFilesSrc(this.model, "editor.html"));
     }
 
     private updateResponsiveObservables(): void {
