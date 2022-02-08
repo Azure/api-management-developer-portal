@@ -1,4 +1,4 @@
-import * as Msal from "msal";
+import * as msal from "@azure/msal-browser";
 import * as Constants from "../constants";
 import { HttpClient } from "@paperbits/common/http";
 import { RouteGuard, Route } from "@paperbits/common/routing";
@@ -35,8 +35,9 @@ export class AadSignOutRouteGuard implements RouteGuard {
             }
         };
 
-        const msalInstance = new Msal.UserAgentApplication(msalConfig);
-        const signedInUserAccount = msalInstance.getAccount();
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
+        const currentAccounts = msalInstance.getAllAccounts();
+        const signedInUserAccount = currentAccounts?.length > 0 && currentAccounts[0];
 
         if (!signedInUserAccount) {
             return true; // if no AAD/B2C sessions open, allow router to continue the route change processing.
@@ -45,7 +46,7 @@ export class AadSignOutRouteGuard implements RouteGuard {
         await this.httpClient.send({ url: "/signout" }); // server session termination.
 
         this.authenticator.clearAccessToken();
-        msalInstance.logout(); // actual sign-out from AAD/B2C
+        msalInstance.logoutPopup(); // actual sign-out from AAD/B2C
 
         return false; // explicitly stopping route execution.
     }

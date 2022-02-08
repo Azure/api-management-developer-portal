@@ -65,6 +65,7 @@
         "webpack-merge": "5.8.0"
     },
     "dependencies": {
+        "@azure/msal-browser": "^2.21.0",
         "@braintree/sanitize-url": "^5.0.2",
         "@monaco-editor/loader": "^1.2.0",
         "@paperbits/azure": "0.1.482",
@@ -92,7 +93,6 @@
         "mime": "^3.0.0",
         "moment": "^2.29.1",
         "monaco-editor": "^0.29.1",
-        "msal": "^1.4.15",
         "prettier": "^2.5.1",
         "prismjs": "^1.26.0",
         "rehype-raw": "^6.1.1",

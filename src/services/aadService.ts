@@ -1,4 +1,4 @@
-import * as Msal from "msal";
+import * as msal from "@azure/msal-browser";
 import * as Constants from "../constants";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { HttpClient } from "@paperbits/common/http";
@@ -74,11 +74,10 @@ export class AadService {
         const metadataResponse = await this.httpClient.send({ url: `${authorityUrl}/.well-known/openid-configuration` });
         const metadata = metadataResponse.toText();
 
-        const msalConfig: Msal.Configuration = {
+        const msalConfig: msal.Configuration = {
             auth: {
                 clientId: clientId,
                 authority: authorityUrl,
-                validateAuthority: true,
                 authorityMetadata: metadata
             }
         };
@@ -87,16 +86,16 @@ export class AadService {
             msalConfig.auth.redirectUri = replyUrl;
         }
 
-        const msalInstance = new Msal.UserAgentApplication(msalConfig);
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
 
         const loginRequest = {
-            scopes: []
+            scopes: ['openid']
         };
 
         const response = await msalInstance.loginPopup(loginRequest);
 
-        if (response.idToken && response.idToken.rawIdToken) {
-            await this.exchangeIdToken(response.idToken.rawIdToken, Constants.IdentityProviders.aad);
+        if (response.idToken) {
+            await this.exchangeIdToken(response.idToken, Constants.IdentityProviders.aad);
         }
     }
 
@@ -127,11 +126,10 @@ export class AadService {
 
         const auth = `https://${tenant}/tfp/${instance}/${userFlow}`;
 
-        const msalConfig: Msal.Configuration = {
+        const msalConfig: msal.Configuration = {
             auth: {
                 clientId: clientId,
-                authority: auth,
-                validateAuthority: false,
+                authority: auth
             }
         };
 
@@ -139,7 +137,7 @@ export class AadService {
             msalConfig.auth.redirectUri = replyUrl;
         }
 
-        const msalInstance = new Msal.UserAgentApplication(msalConfig);
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
 
         const loginRequest = {
             scopes: ["openid", "email", "profile"]
@@ -147,8 +145,8 @@ export class AadService {
 
         const response = await msalInstance.loginPopup(loginRequest);
 
-        if (response.idToken && response.idToken.rawIdToken) {
-            await this.exchangeIdToken(response.idToken.rawIdToken, Constants.IdentityProviders.aadB2C);
+        if (response.idToken) {
+            await this.exchangeIdToken(response.idToken, Constants.IdentityProviders.aadB2C);
         }
     }
 
@@ -166,8 +164,8 @@ export class AadService {
         }
 
         const msalConfig = {};
-        const msalInstance = new Msal.UserAgentApplication(<any>msalConfig);
-        await msalInstance.loginPopup({});
+        const msalInstance = new msal.PublicClientApplication(<any>msalConfig);
+        await msalInstance.loginPopup();
 
         window.close();
     }
