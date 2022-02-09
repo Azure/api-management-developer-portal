@@ -6,7 +6,7 @@ import { CustomHtmlViewModelBinder } from "./ko/customHtmlViewModelBinder";
 
 export class CustomHtmlPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {        
-        injector.bind("widget", CustomHtmlViewModel);
+        injector.bind("customHtmlViewModel", CustomHtmlViewModel);
         injector.bindToCollection("modelBinders", HTMLInjectionModelBinder);
         injector.bindToCollection("viewModelBinders", CustomHtmlViewModelBinder);
     }
