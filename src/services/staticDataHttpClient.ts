@@ -125,9 +125,7 @@ export class StaticDataHttpClient implements HttpClient {
         }
 
         let response = new HttpResponse<T>();
-        // if (request.method === 'GET') {
         await this.ensureInitialized();
-
         let result: any;
 
         if (request.url.match("contentTypes\/.*\/contentItems")) {
@@ -135,7 +133,18 @@ export class StaticDataHttpClient implements HttpClient {
         }
 
         let urlWithoutParameters = request.url.split('?')[0];
-        result = (this.mockDataObject[urlWithoutParameters]);
+
+        // Create new subscription
+        const regexp = new RegExp(`https:\/\/contoso\.management\.azure-api\.net\/subscriptions\/sid\/resourceGroups\/rgid\/providers\/Microsoft\.ApiManagement\/service\/sid\/users\/6189460d4634612164e10999\/subscriptions\/[a-xA-Z0-9]*$`);
+        const matches = regexp.exec(urlWithoutParameters);
+        if (matches && matches.length == 1) {
+            result = this.mockDataObject["https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/subscriptions/61fd37461359a02500aad62f"];
+        }
+        else {
+
+            result = (this.mockDataObject[urlWithoutParameters]);
+        }
+
         if (result == undefined) {
             throw new Error(`No mock data for: ${urlWithoutParameters}`);
         }
@@ -144,18 +153,6 @@ export class StaticDataHttpClient implements HttpClient {
         response.statusCode = result.statusCode;
         response.statusText = result.statusText;
         response.body = Buffer.from(JSON.stringify(result.body));
-
-
-        /*response.body = Buffer.from(JSON.stringify(result));
-        response.statusCode = 200;
-        response.statusText = "OK";
-        response.headers = [{ name: 'Content-Type', value: 'application/json' }];*/
-
-        /*}
-        else {
-            response.statusCode = 200;
-            response.statusText = "OK";
-        }*/
 
         return response;
     }
