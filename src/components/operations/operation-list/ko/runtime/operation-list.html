@@ -2,7 +2,7 @@
 <div class="flex flex-row">
     <!-- ko if: working-->
     <div class="flex-item flex-grow">
-        <spinner class="fit"></spinner>
+        <spinner class="block"></spinner>
     </div>
     <!-- /ko -->
 
@@ -12,16 +12,15 @@
 </div>
 <!-- /ko -->
 
+<!-- ko if: apiType() === 'graphql' -->
+<graphql-documentation params="{ apiName: $component.selectedApiName, detailsPageUrl: $component.detailsPageUrl }"></graphql-documentation>
+<!-- /ko -->
+
 <!-- ko ifnot: apiType() === 'websocket' || apiType() === 'graphql'-->
-<div class="form-inline search-input">
+<div class="form-inline max-w-500">
     <div class="d-block flex-grow mw-170">
-        <div class="input-group">
-            <input type="search" aria-label="Search operations" placeholder="Search operations" spellcheck="false"
-                data-bind="textInput: pattern" />
-            <button type="button" class="search-button" aria-label="Search operations">
-                <i class="icon-emb icon-emb-magnifier"></i>
-            </button>
-        </div>
+        <input type="search" class="form-control form-control-light" aria-label="Search operations" placeholder="Search operations" spellcheck="false"
+            data-bind="textInput: pattern" />
         <tag-input params="{ scope: $component.tagScope, onChange: onTagsChange }"></tag-input>
     </div>
     <div class="form-group ml-auto">
@@ -48,7 +47,7 @@
 <!-- ko if: groupByTag -->
 <div class="menu menu-vertical d-block">
     <!-- ko if: working -->
-    <spinner class="fit"></spinner>
+    <spinner class="block"></spinner>
     <!-- /ko -->
 
     <!-- ko ifnot: working -->
@@ -65,8 +64,8 @@
                 <a href="#" role="listitem" class="nav-link"
                     data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
                     <div class="row">
-                        <span class="col-md-2 mw-60" data-bind="attr: { 'data-method': method }"></span>
-                        <span class="col-md-9"
+                        <span class="col-md-2" data-bind="attr: { 'data-method': method }"></span>
+                        <span class="col-md-10"
                             data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
                     </div>
                 </a>
@@ -89,7 +88,7 @@
 <div class="flex flex-row">
     <!-- ko if: working-->
     <div class="flex-item flex-grow">
-        <spinner class="fit"></spinner>
+        <spinner class="block"></spinner>
     </div>
     <!-- /ko -->
 
@@ -103,8 +102,8 @@
                 <a href="#" role="listitem" class="nav-link"
                     data-bind="attr: { href: $component.getReferenceUrl(item)}, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
                     <div class="row">
-                        <span class="col-md-2 mw-60" data-bind="attr: { 'data-method': method }"></span>
-                        <span class="col-md-9"
+                        <span class="col-md-2" data-bind="attr: { 'data-method': method }"></span>
+                        <span class="col-md-10"
                             data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
                     </div>
                 </a>

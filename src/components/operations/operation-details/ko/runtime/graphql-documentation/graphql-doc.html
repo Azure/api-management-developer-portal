@@ -1,0 +1,39 @@
+<!-- ko if: working -->
+<spinner class="block"></spinner>
+<!-- /ko -->
+
+<!-- ko ifnot: working -->
+
+<div class="menu-vertical mt-17 d-block flex-item flex-grow animation-fade-in">
+    <div class="form-group">
+        <div class="input-group" tabindex="0" role="button" data-toggle="dropdown" aria-label="Types">
+            <div class="form-control">
+                <span data-bind="text: selectedType"></span>
+            </div>
+            <button class="input-group-addon no-border">
+                <i class="icon-emb icon-emb-chevron-down"></i>
+            </button>
+            <div class="dropdown">
+                <div class="menu menu-vertical" role="list">
+                    <!-- ko foreach: { data: graphDocService.availableTypes, as: 'type' } -->
+                    <div tabindex="0" role="listitem" class="nav-link text-truncate operation-pointer" data-dismiss
+                        data-bind="click: () => { $component.selectedType(type) }, text: type, css: { 'nav-link-active': $component.selectedType() === type }">
+                    </div>
+                    <!-- /ko -->
+                </div>
+                <!-- ko if: graphDocService.availableTypes().length === 0 -->
+                <p>No operations found</p>
+                <!-- /ko -->
+            </div>
+        </div>
+    </div>
+
+    <input class="form-control" type="search" aria-label="Search types" placeholder="Search types" spellcheck="false"
+        data-bind="textInput: filter" />
+
+
+    <!-- ko template: { name: 'graphqlDocExplorer', data: {operationNode: iteratorConverter(graphDocService.typeIndexer()[selectedType()]), filter: filter(), type: graphDocService.typeIndexer()[selectedType()]} } -->
+    <!-- /ko -->
+</div>
+
+<!-- /ko -->

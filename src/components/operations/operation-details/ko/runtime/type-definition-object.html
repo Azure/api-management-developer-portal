@@ -1,4 +1,4 @@
-<!-- ko if: definition.properties && definition.properties.length > 0 -->
+<!-- ko if: properties.length > 0 -->
 
 <div role="table" class="table-preset table-preset-schema">
     <div class="d-contents" role="rowgroup">
@@ -10,7 +10,7 @@
         </div>
     </div>
     <div class="d-contents" role="rowgroup">
-        <!-- ko foreach: { data: definition.properties, as: 'property' } -->
+        <!-- ko foreach: { data: properties, as: 'property' } -->
         <div class="d-contents" role="row">
             <div role="cell" class="text-truncate" data-bind="text: property.name, attr: { title: property.name }">
                 <span class="text-monospace" data-bind="text: property.name, attr: { title: property.name }"></span>

@@ -18,10 +18,11 @@ export class ConsoleOperation {
     public readonly wsUrl: ko.Computed<string>;
     public readonly templateParameters: ko.ObservableArray<ConsoleParameter>;
     public readonly responses?: ConsoleResponse[];
-    public readonly hasBody: boolean;
+    public readonly hasBody: ko.Observable<boolean>;
     public readonly request: ConsoleRequest;
     public urlTemplate: string;
     public readonly displayedWsUrl: ko.Computed<string>;
+    public readonly canHaveBody: boolean;
 
     constructor(api: Api, operation: Operation) {
         this.api = api;
@@ -31,7 +32,8 @@ export class ConsoleOperation {
         this.urlTemplate = operation.urlTemplate;
         this.request = new ConsoleRequest(operation.request);
         this.templateParameters = ko.observableArray(operation.templateParameters.map(parameterContract => new ConsoleParameter(parameterContract)));
-        this.hasBody = !["GET", "HEAD", "TRACE"].includes(this.method);
+        this.hasBody = ko.observable(operation.request.representations.length > 0);
+        this.canHaveBody = !["GET", "HEAD", "TRACE"].includes(this.method);
 
         if (operation.responses) {
             this.responses = operation.responses.map(x => new ConsoleResponse(x));

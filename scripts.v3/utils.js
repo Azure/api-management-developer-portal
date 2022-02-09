@@ -137,7 +137,7 @@ class ImporterExporter {
 
             if (stat && stat.isDirectory()) {
                 results.push(...this.listFilesInDirectory(file));
-            } 
+            }
             else {
                 results.push(file);
             }
@@ -155,7 +155,7 @@ class ImporterExporter {
             const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
 
             return contentTypes;
-        } 
+        }
         catch (error) {
             throw new Error(`Unable to fetch content types. ${error.message}`);
         }
@@ -183,7 +183,7 @@ class ImporterExporter {
             while (nextPageUrl)
 
             return contentItems;
-        } 
+        }
         catch (error) {
             throw new Error(`Unable to fetch content items. ${error.message}`);
         }
@@ -215,7 +215,7 @@ class ImporterExporter {
     async updateContentItem(contentType, contentItem, body) {
         try {
             const url = `/contentTypes/${contentType}/contentItems/${contentItem}`;
-            
+
             const data = await this.httpClient.sendRequest("PUT", url, body);
 
             return data;
@@ -249,7 +249,7 @@ class ImporterExporter {
                 const metadataFile = JSON.stringify(metadata);
                 await fs.promises.writeFile(pathToFile + metadataFileExt, metadataFile);
             }
-        } 
+        }
         catch (error) {
             throw new Error(`Unable to download media files. ${error.message}`);
         }
@@ -355,7 +355,7 @@ class ImporterExporter {
                     await this.httpClient.sendRequest("DELETE", `/${contentItem.id}`);
                 }
             }
-        } 
+        }
         catch (error) {
             throw new Error(`Unable to delete content. ${error.message}`);
         }
@@ -379,7 +379,7 @@ class ImporterExporter {
             for (const key of keys) {
                 await this.httpClient.sendRequest("PUT", key, dataObj[key]);
             }
-        } 
+        }
         catch (error) {
             throw new Error(`Unable to generate the content. ${error.message}`);
         }
@@ -402,7 +402,7 @@ class ImporterExporter {
         try {
             await this.deleteContent();
             await this.deleteBlobs();
-        } 
+        }
         catch (error) {
             throw new Error(`Unable to complete cleanup. ${error.message}`);
         }
@@ -411,13 +411,13 @@ class ImporterExporter {
     /**
      * Exports the content and media files from specfied service.
      */
-    async export () {
+    async export() {
         console.log("Exporting...")
 
         try {
             await this.captureContent();
             await this.downloadBlobs();
-        } 
+        }
         catch (error) {
             throw new Error(`Unable to complete export. ${error.message}`);
         }
@@ -426,13 +426,13 @@ class ImporterExporter {
     /**
      * Imports the content and media files into specfied service.
      */
-    async import () {
+    async import() {
         console.log("Importing...")
 
         try {
             await this.generateContent();
             await this.uploadBlobs();
-        } 
+        }
         catch (error) {
             throw new Error(`Unable to complete import. ${error.message}`);
         }
@@ -447,11 +447,12 @@ class ImporterExporter {
             const revision = timeStamp.toISOString().replace(/[\-\:\T]/g, "").substr(0, 14);
             const url = `/portalRevisions/${revision}`;
             const body = {
-                description: `Migration ${revision}.`
-            }
+                description: `Migration ${revision}.`,
+                isCurrent: true
+            };
 
             await this.httpClient.sendRequest("PUT", url, body);
-        } 
+        }
         catch (error) {
             throw new Error(`Unable to schedule website publishing. ${error.message}`);
         }
@@ -487,12 +488,12 @@ class ImporterExporter {
                 };
             };
 
-        } 
+        }
         catch (error) {
             throw new Error(`Unable to update URL. ${error.message}`);
         }
     }
-  
+
     /**
      * Pushes the GTM tag to the specified APIM instance.
      * @param {string} gtmContainerId - Google Tag Manager container ID, e.g. `GTM-XXXXXX`.
@@ -502,14 +503,16 @@ class ImporterExporter {
         try {
             const config = await this.getContentItem("document", "configuration");
             const newNodes = config.properties.nodes.map((node) => {
-                return {...node, integration: {
-                    googleTagManager: {
-                        containerId: gtmContainerId
+                return {
+                    ...node, integration: {
+                        googleTagManager: {
+                            containerId: gtmContainerId
+                        }
                     }
-                }}
+                }
             })
-            const newConfig = {...config, properties: {...config.properties, nodes: newNodes }}
-            
+            const newConfig = { ...config, properties: { ...config.properties, nodes: newNodes } }
+
             await this.updateContentItem("document", "configuration", newConfig)
         }
         catch (error) {

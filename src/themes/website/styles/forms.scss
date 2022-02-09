@@ -1,13 +1,5 @@
 @import "variables.scss";
 
-$switch-background-color-on: #0078d4;
-$switch-background-color-off: #ccc;
-$switch-handle-color: #fff;
-$switch-width: 55px;
-$switch-height: 32px;
-$switch-trigger-gap: 4px;
-$switch-trigger-size: $switch-height - ($switch-trigger-gap * 3);
-
 .form-inline {
     display: flex;
     flex-flow: row wrap;
@@ -17,6 +9,7 @@ $switch-trigger-size: $switch-height - ($switch-trigger-gap * 3);
 .form-inline .form-check {
     width: 100%;
 }
+
 @media (min-width: 576px) {
     .form-inline label {
         display: flex;
@@ -71,16 +64,25 @@ $switch-trigger-size: $switch-height - ($switch-trigger-gap * 3);
 
 .form-control {
     display: block;
-    width: 100%;
     padding: .375rem .75rem;
     font-size: 1rem;
     line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
+    color: $form-control-color;
+    background-color: $form-control-bg-color;
     background-clip: padding-box;
-    border: 1px solid #ced4da;
-    border-radius: .25rem;
+    border: 1px solid $form-control-border-color;
+    border-radius: $form-control-border-radius;
+    width: 100%;
+
+    &.form-control-light {
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        background-color: transparent;
+    }
 }
+
+
 
 .form-check-inline {
     display: inline-flex;
@@ -114,6 +116,37 @@ $switch-trigger-size: $switch-height - ($switch-trigger-gap * 3);
     margin-top: .25rem;
     font-size: 80%;
     color: #dc3545;
+}
+
+.expanded {
+    .icon-chevron-down {
+        // TODO: Introduce proper class for dropdown toggle
+        transform: rotate(180deg);
+    }
+}
+
+input[type=search] {
+    @extend .icon-svg-magnifier;
+    background-position: 5px center;
+    background-size: 1em;
+    background-repeat: no-repeat;
+    padding-left: calc(1em + 10px);
+}
+
+.input-label {
+    margin-bottom: 5px;
+
+    .item-label {
+        padding-right: 5px;
+    }
+}
+
+.input[type=password]::-ms-reveal {
+    display: none;
+}
+
+.input[type=password]::-ms-clear {
+    display: none;
 }
 
 .switch {
@@ -171,114 +204,48 @@ $switch-trigger-size: $switch-height - ($switch-trigger-gap * 3);
     }
 }
 
-$search-button-width: 30px;
-
 .input-group {
-    display: flex;
+    padding: 0;
+    display: inline-flex;
     flex-wrap: wrap;
+    width: 100%;
 
-    .input {
-        border: none;
-        background: none;
-        flex-grow: 1;
+    & > :not(:first-child):not(.dropdown):not(.invalid-feedback) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        margin-left: -1px;
     }
 
-    .input-group-prepend {
-        align-items: center;
+    &.has-validation > :nth-last-child(n+3) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        margin-left: -1px;
     }
 
-    .input-group-append {
-        align-items: center;
+    &:not(.has-validation)>:not(:last-child):not(.dropdown) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
     }
-    
-    .input-password {
-        padding-right: 30px;
-    }
+ 
 
-    .input-toggle-btn {
-        position: absolute;
-        right: 1px;
-        top: 1px;
-        bottom: 1px;
-        background: none;
-        cursor: pointer;
-        border: none;
-        border-bottom-right-radius: 4px;
-        border-top-right-radius: 4px;
-        outline: none;
-        max-width: 30px;
-    
-        &:hover {
-            background: #ccc;
-        }
-    
-        &:focus {
-            outline: none;
-        }
-    }
-}
-
-.expanded {
-    .icon-chevron-down {
-        // TODO: Introduce proper class for dropdown toggle
-        transform: rotate(180deg);
-    }
-}
-
-.search-input {
-    display: flex;
-    flex: 1;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    max-width: 500px;
-
-    tag-input {
-        display: block;
-        margin: 5px 0;
-        max-width: 300px;
-    }
-
-    .input-group:first-child {
-        border-bottom: 1px solid #a19f9d;
-        max-width: 300px;
+    .form-control {
         flex: 1;
     }
 
-    input[type=search] {
-        border: none;
-        background: none;
-        padding-left: $search-button-width;
-        min-height: 32px;
+    .input-group-addon {
+        line-height: normal;
+        background-color: #fff;
+        color: #000;
+        border: 1px solid #000;
+    }
+
+    .dropdown {
+        background: #fff;
+        box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.5);
+        padding: 20px;
         width: 100%;
-        vertical-align: top;
-    }
-
-    .search-button {
-        border: none;
-        background: none;
-        position: absolute;
+        top: 100%;
         left: 0;
-        top: 0;
-        bottom: 0;
-        width: $search-button-width;
+        right: 0;
     }
-
-    .switch {
-        margin: 0 10px;
-    }
-}
-
-.input-label {
-    margin-bottom: 5px;
-    .item-label {
-        padding-right: 5px;
-    }
-}
-
-.input-password::-ms-clear {
-    display: none;
-    
-}
-.input-password::-ms-reveal {
-    display: none;
 }
