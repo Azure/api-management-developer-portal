@@ -17,20 +17,6 @@ jobs:
           
       - name: Install
         run: npm install
-
-      - name: Overwrite configs
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: ${{ github.workspace }}/src/config.publish.json
-          contents: ${{ secrets.CONFIG_PUBLISH }}
-          write-mode: overwrite
-          
-      - name: Overwrite configs
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: ${{ github.workspace }}/src/config.runtime.json
-          contents: ${{ secrets.CONFIG_RUNTIME }}
-          write-mode: overwrite
         
       - name: Build
         run: npm run build-website
