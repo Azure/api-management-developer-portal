@@ -37,6 +37,8 @@ import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts
 import { RuntimeConfigPublisher } from "./publishing/runtimeConfigPublisher";
 import { RuntimeConfigBuilder } from "./publishing/runtimeConfigBuilder";
 import { CustomHtmlPublishModule } from "./components/custom-html/customHtml.publish.module";
+import { StaticDataHttpClient } from "./services/staticDataHttpClient";
+import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -63,7 +65,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ReportsModule());
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new CustomHtmlPublishModule());
-        injector.bindSingleton("tenantService", TenantService);        
+        injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("userService", StaticUserService);
         injector.bindSingleton("roleService", StaticRoleService);
@@ -80,6 +82,8 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("runtimeConfigBuilder", RuntimeConfigBuilder);
         injector.bindToCollection("publishers", AadConfigPublisher);
         injector.bindToCollection("publishers", RuntimeConfigPublisher);
-        
+        injector.bind("httpClient", StaticDataHttpClient);
+        injector.bind("provider", PublisherStaticDataProvider);
+
     }
 }

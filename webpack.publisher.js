@@ -72,7 +72,8 @@ const publisherConfig = {
             patterns: [
                 { from: `./src/config.publish.json`, to: `config.json` },
                 { from: `./src/config.runtime.json`, to: `assets/config.json` },
-                { from: `./templates/default.json`, to: "editors/templates/default.json" }
+                { from: `./templates/default.json`, to: "editors/templates/default.json" },
+                { from: `./tests/mocks/defaultMockData.json`, to: "tests/mocks/defaultMockData.json" },
             ]
         }),
         new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })

@@ -79,6 +79,7 @@ import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import { Pagination } from "./components/pagination/pagination";
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { OauthServerConfiguration } from "./components/operations/operation-details/ko/runtime/oauth-server-configuration";
+import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -151,5 +152,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("pagination", Pagination);
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
         injector.bind("httpClient", StaticDataHttpClient);
+        injector.bind("provider", RuntimeStaticDataProvider);
     }
 }
