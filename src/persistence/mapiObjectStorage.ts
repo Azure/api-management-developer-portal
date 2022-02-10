@@ -114,6 +114,11 @@ export class MapiObjectStorage implements IObjectStorage {
                 contentItem = mapiContentItem;
                 break;
 
+            case "popup":
+                contentType = "popups";
+                contentItem = mapiContentItem;
+                break;
+
             default:
                 throw new AppError(`Unknown content type: "${mapiContentType}"`);
         }
@@ -195,7 +200,7 @@ export class MapiObjectStorage implements IObjectStorage {
                 break;
 
             case "popups":
-                mapiContentType = "popups";
+                mapiContentType = "popup";
                 mapiContentItem = contentItem;
                 break;
 

@@ -13,6 +13,7 @@ import "prismjs/components/prism-bash";
 import "prismjs/components/prism-json";
 import "prismjs/components/prism-swift";
 import "prismjs/components/prism-php";
+import "prismjs/components/prism-graphql";
 
 
 interface SyntaxHighlightConfig {
@@ -62,6 +63,9 @@ ko.bindingHandlers["syntaxHighlight"] = {
                     break;
                 case "json":
                     highlightLanguage = "json";
+                    break;
+                case "graphql":
+                    highlightLanguage = "graphql";
                     break;
                 default:
                     highlightLanguage = "plain";
