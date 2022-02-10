@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import * as Constants from "../../../../../constants";
 import template from "./signup-social.html";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { Router } from "@paperbits/common/routing";
 import { ValidationReport } from "../../../../../contracts/validationReport";
@@ -22,6 +22,7 @@ export class SignupSocial {
     public readonly email: ko.Observable<string>;
     public readonly firstName: ko.Observable<string>;
     public readonly lastName: ko.Observable<string>;
+    public readonly consented: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
 
     constructor(
@@ -33,6 +34,10 @@ export class SignupSocial {
         this.email = ko.observable("");
         this.firstName = ko.observable("");
         this.lastName = ko.observable("");
+        this.termsEnabled = ko.observable(false);
+        this.termsOfUse = ko.observable();
+        this.isConsentRequired = ko.observable(false);
+        this.consented = ko.observable(false);
         this.working = ko.observable(false);
 
         validation.init({
@@ -44,7 +49,17 @@ export class SignupSocial {
         this.email.extend(<any>{ required: { message: `Email is required.` }, email: true });
         this.firstName.extend(<any>{ required: { message: `First name is required.` } });
         this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
+        this.consented.extend(<any>{ equal: { params: true, message: "You must agree to the terms of use." } });
     }
+
+    @Param()
+    public termsOfUse: ko.Observable<string>;
+
+    @Param()
+    public isConsentRequired: ko.Observable<boolean>;
+
+    @Param()
+    public termsEnabled: ko.Observable<boolean>;
 
     /**
      * Initializes component after creation.
@@ -75,6 +90,10 @@ export class SignupSocial {
             firstName: this.firstName,
             lastName: this.lastName
         };
+
+        if (this.termsEnabled() && this.isConsentRequired()) {
+            validationGroup["consented"] = this.consented;
+        }
 
         const result = validation.group(validationGroup);
 
