@@ -1,6 +1,7 @@
 import { Bag } from "@paperbits/common";
 import { ComponentFlow } from "@paperbits/common/editing";
 import { ViewModelBinder } from "@paperbits/common/widgets";
+import { TermsOfService } from "../../../../contracts/identitySettings";
 import { IdentityService } from "../../../../services/identityService";
 import { SignupSocialModel } from "../signupSocialModel";
 import { SignupSocialViewModel } from "./signupSocialViewModel";
@@ -11,6 +12,11 @@ export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocial
         private readonly identityService: IdentityService,
         private readonly settingsProvider: ISettingsProvider
     ) { }
+
+    public async getTermsOfService(): Promise<TermsOfService> {
+        const identitySetting = await this.identityService.getIdentitySetting();
+        return identitySetting.properties.termsOfService;
+    }
 
     public async modelToViewModel(model: SignupSocialModel, viewModel?: SignupSocialViewModel, bindingContext?: Bag<any>): Promise<SignupSocialViewModel> {
         if (!viewModel) {
@@ -34,6 +40,17 @@ export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocial
 
         const settings = await this.settingsProvider.getSettings();
         viewModel.mode(settings["environment"]);
+
+        const params = {};
+        const termsOfService = await this.getTermsOfService();
+        if (termsOfService.text) params["termsOfUse"] = termsOfService.text;
+        if (termsOfService.consentRequired) params["isConsentRequired"] = termsOfService.consentRequired;
+        if (termsOfService.enabled) params["termsEnabled"] = termsOfService.enabled;
+
+        if (Object.keys(params).length !== 0) {
+            const runtimeConfig = JSON.stringify(params);
+            viewModel.runtimeConfig(runtimeConfig);
+        }
 
         return viewModel;
     }

@@ -26,6 +26,7 @@ export class SignInAad {
         this.classNames = ko.observable();
         this.label = ko.observable();
         this.replyUrl = ko.observable();
+        this.termsOfUse = ko.observable();
     }
 
     @Param()
@@ -36,6 +37,9 @@ export class SignInAad {
 
     @Param()
     public replyUrl: ko.Observable<string>;
+
+    @Param()
+    public termsOfUse: ko.Observable<string>;
 
 
     /**

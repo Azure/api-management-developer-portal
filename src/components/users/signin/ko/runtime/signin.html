@@ -14,6 +14,10 @@
                 data-bind="textInput: password">
         </div>
 
+        <!-- ko if: termsEnabled && termsOfUse -->
+        <terms-of-use params="{ isConsentRequired: isConsentRequired, consented: consented, termsOfUse: termsOfUse }"></terms-of-use>
+        <!-- /ko -->
+
         <div class="form-group">
             <button id="signin" class="button button-primary" data-bind="click: signin, disable: working">
                 Sign in
