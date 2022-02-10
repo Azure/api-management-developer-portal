@@ -4,7 +4,7 @@ const fs = require('fs');
 
 export class PublisherStaticDataProvider implements IStaticDataProvider {
     getStaticData(): Promise<any> {
-        let fullPath = path.join(__dirname, '\\..\\..\\tests\\mocks\\defaultMockData.json');
+        let fullPath = path.join(__dirname, '../../tests/mocks/defaultMockData.json');
         let filePath = path.resolve(fullPath);
         console.log(`fullPath: ${fullPath} and filepath: ${filePath}`);
 
