@@ -4,7 +4,8 @@ const fs = require('fs');
 
 export class PublisherStaticDataProvider implements IStaticDataProvider {
     getStaticData(): Promise<any> {
-        let filePath = path.join(__dirname, '\\..\\..\\tests\\mocks\\defaultMockData.json') 
+        let fullPath = path.join(__dirname, '\\..\\..\\tests\\mocks\\defaultMockData.json');
+        let filePath = path.resolve(fullPath);
 
         return new Promise<any>((resolve, reject) => {
             fs.readFile(filePath, { encoding: 'utf-8' }, function (err, data) {
