@@ -4,9 +4,12 @@ import { IStaticDataProvider } from "./IStaticDataProvider";
 
 export class StaticDataHttpClient implements HttpClient {
     private readonly httpClient: XmlHttpRequestClient;
+    private readonly mockData: string = "defaultMockData.json";
+    private readonly defaultData: string = "default.json";
 
     private initPromise: Promise<void>;
     private mockDataObject: Object;
+    private defaultDataObject: Object;
 
     constructor(private readonly provider: IStaticDataProvider) {
         this.httpClient = new XmlHttpRequestClient();
@@ -18,7 +21,8 @@ export class StaticDataHttpClient implements HttpClient {
             return this.initPromise;
         }
 
-        this.mockDataObject = await this.provider.getStaticData();
+        this.mockDataObject = await this.provider.getStaticData(this.mockData);
+        this.defaultDataObject = await this.provider.getStaticData(this.defaultData);
     }
 
     private async ensureInitialized(): Promise<void> {
@@ -40,9 +44,19 @@ export class StaticDataHttpClient implements HttpClient {
 
         let urlWithoutParameters = request.url.split('?')[0];
 
+        if (request.url.match("contentTypes\/.*\/contentItems\/")) {
+            response.statusCode = 200;
+            response.statusText = "OK";
+            response.headers = [{ name: "content-type", value: "application/json; charset=utf-8" }];
+            response.body = Buffer.from(JSON.stringify(this.defaultDataObject[this.getShortUrl(request.url)]));
+
+            return response;
+        }
+
         // Create new subscription
         const regexp = new RegExp(`https:\/\/contoso\.management\.azure-api\.net\/subscriptions\/sid\/resourceGroups\/rgid\/providers\/Microsoft\.ApiManagement\/service\/sid\/users\/6189460d4634612164e10999\/subscriptions\/[a-xA-Z0-9]*$`);
         const matches = regexp.exec(urlWithoutParameters);
+        
         if (matches && matches.length == 1) {
             result = this.mockDataObject["https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/subscriptions/61fd37461359a02500aad62f"];
         }
@@ -67,6 +81,11 @@ export class StaticDataHttpClient implements HttpClient {
         response.body = Buffer.from(JSON.stringify(result.body));
 
         return response;
+    }
+
+    private getShortUrl(url: string): string {
+        let shortUrl = url.replace("https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid", "");
+        return shortUrl.split('?')[0];
     }
 
 }

@@ -1,3 +1,3 @@
 export interface IStaticDataProvider {
-    getStaticData(): Promise<any>;
+    getStaticData(objectType: string): Promise<any>;
 }

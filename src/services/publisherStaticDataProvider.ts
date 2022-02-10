@@ -3,8 +3,9 @@ import { IStaticDataProvider } from "./IStaticDataProvider";
 const fs = require('fs');
 
 export class PublisherStaticDataProvider implements IStaticDataProvider {
-    getStaticData(): Promise<any> {
-        let fullPath = path.join(__dirname, '../../tests/mocks/defaultMockData.json');
+    getStaticData(objectType: string): Promise<any> {
+        let fullPath = objectType == "defaultMockData.json" ?
+            path.join(__dirname, '../../tests/mocks/defaultMockData.json') : path.join(__dirname, '../../templates/default.json');
         let filePath = path.resolve(fullPath);
         console.log(`fullPath: ${fullPath} and filepath: ${filePath}`);
 
