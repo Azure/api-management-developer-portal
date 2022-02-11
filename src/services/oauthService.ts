@@ -1,15 +1,17 @@
-import { UnauthorizedError } from "./../errors/unauthorizedError";
 import * as ClientOAuth2 from "client-oauth2";
-import * as Utils from "@paperbits/common";
-import { HttpClient, HttpMethod } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { GrantTypes } from "./../constants";
-import { MapiClient } from "./mapiClient";
+import { HttpClient, HttpMethod } from "@paperbits/common/http";
 import { AuthorizationServerContract } from "../contracts/authorizationServer";
-import { AuthorizationServer } from "../models/authorizationServer";
 import { OpenIdConnectProviderContract } from "../contracts/openIdConnectProvider";
-import { OpenIdConnectProvider } from "./../models/openIdConnectProvider";
+import { AuthorizationServer } from "../models/authorizationServer";
+import { Utils } from "../utils";
+import { GrantTypes } from "./../constants";
 import { OpenIdConnectMetadata } from "./../contracts/openIdConnectMetadata";
+import { UnauthorizedError } from "./../errors/unauthorizedError";
+import { OpenIdConnectProvider } from "./../models/openIdConnectProvider";
+import { MapiClient } from "./mapiClient";
+import { KnownHttpHeaders } from "../models/knownHttpHeaders";
+import { KnownMimeTypes } from "../models/knownMimeTypes";
 
 export class OAuthService {
     private environmentPromise: Promise<string>;
@@ -21,7 +23,7 @@ export class OAuthService {
     ) { }
 
     private async getEnvironment(): Promise<string> {
-        if (!this.environmentPromise){
+        if (!this.environmentPromise) {
             this.environmentPromise = this.settingsProvider.getSetting<string>("environment");
         }
         return this.environmentPromise;
@@ -112,7 +114,7 @@ export class OAuthService {
      * @param grantType {string} Requested grant type.
      * @param authorizationServer {AuthorizationServer} Authorization server details.
      */
-    public async authenticate(grantType: string, authorizationServer: AuthorizationServer): Promise<string> {
+    public async authenticate(grantType: string, authorizationServer: AuthorizationServer, apiName?: string): Promise<string> {
         const backendUrl = await this.settingsProvider.getSetting<string>("backendUrl") || `https://${location.hostname}`;
 
         let accessToken;
@@ -127,7 +129,7 @@ export class OAuthService {
                 break;
 
             case GrantTypes.clientCredentials:
-                accessToken = await this.authenticateClientCredentials(backendUrl, authorizationServer);
+                accessToken = await this.authenticateClientCredentials(backendUrl, authorizationServer, apiName);
                 break;
 
             default:
@@ -173,13 +175,13 @@ export class OAuthService {
                         return;
                     }
 
-                    const oauthToken = await oauthClient.token.getToken(redirectUri + tokenHash);
+                    const tokenInfo = await oauthClient.token.getToken(redirectUri + tokenHash);
 
-                    if (oauthToken.accessToken) {
-                        resolve(`${oauthToken.tokenType} ${oauthToken.accessToken}`);
+                    if (tokenInfo.accessToken) {
+                        resolve(`${Utils.toTitleCase(tokenInfo.tokenType)} ${tokenInfo.accessToken}`);
                     }
-                    else if (oauthToken.data?.id_token) {
-                        resolve(`Bearer ${oauthToken.data.id_token}`);
+                    else if (tokenInfo.data?.id_token) {
+                        resolve(`Bearer ${tokenInfo.data.id_token}`);
                     }
                 };
 
@@ -223,7 +225,7 @@ export class OAuthService {
 
                     const accessToken = event.data["accessToken"];
                     const accessTokenType = event.data["accessTokenType"];
-                    resolve(`${accessTokenType} ${accessToken}`);
+                    resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
                 };
 
                 window.addEventListener("message", receiveMessage, false);
@@ -239,7 +241,28 @@ export class OAuthService {
      * @param backendUrl {string} Portal backend URL.
      * @param authorizationServer {AuthorizationServer} Authorization server details.
      */
-    public async authenticateClientCredentials(backendUrl: string, authorizationServer: AuthorizationServer): Promise<string> {
+    public async authenticateClientCredentials(backendUrl: string, authorizationServer: AuthorizationServer, apiName: string): Promise<string> {
+        const response = await this.httpClient.send<any>({
+            method: HttpMethod.post,
+            url: `${backendUrl}/signin-oauth/credentials/${apiName}`,
+            headers: [{ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }]
+        });
+
+        if (response.statusCode === 200) {
+            const tokenInfo = response.toObject();
+            return `${Utils.toTitleCase(tokenInfo.accessTokenType)} ${tokenInfo.accessToken}`;
+        }
+
+        if (response.statusCode === 400) {
+            const error = response.toObject();
+
+            if (error.message !== "Authorization server configuration not found.") { // message from legacy flow
+                alert(error.message);
+                return null;
+            }
+        }
+
+        // Run legacy window-based flow
         let uri = `${backendUrl}/signin-oauth/credentials/${authorizationServer.name}`;
 
         if (authorizationServer.scopes) {
@@ -258,7 +281,7 @@ export class OAuthService {
 
                     const accessToken = event.data["accessToken"];
                     const accessTokenType = event.data["accessTokenType"];
-                    resolve(`${accessTokenType} ${accessToken}`);
+                    resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
                 };
 
                 window.addEventListener("message", receiveMessage, false);
@@ -290,7 +313,7 @@ export class OAuthService {
 
         const tokenInfo = response.toObject();
 
-        return `${tokenInfo.accessTokenType} ${tokenInfo.accessToken}`;
+        return `${Utils.toTitleCase(tokenInfo.accessTokenType)} ${tokenInfo.accessToken}`;
     }
 
     public async discoverOAuthServer(metadataEndpoint: string): Promise<AuthorizationServer> {
