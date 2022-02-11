@@ -19,7 +19,6 @@ export class PublisherStaticDataProvider implements IStaticDataProvider {
                 const obj = JSON.parse(data);
                 resolve(obj);
             });
-
         });
     }
 }

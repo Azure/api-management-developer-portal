@@ -19,6 +19,5 @@ export class RuntimeStaticDataProvider implements IStaticDataProvider {
             });
             resolve(result.toObject());
         });
-
     }
 }

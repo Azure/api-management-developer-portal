@@ -1,6 +1,6 @@
 {
     "environment": "publishing",
-    "managementApiUrl": "https://contoso.management.azure-api.net",
-    "managementApiAccessToken": "SharedAccessSignature&1&",
+    "managementApiUrl": "https://<service-name>.management.azure-api.net",
+    "managementApiAccessToken": "SharedAccessSignature...",
     "useHipCaptcha": false
 }

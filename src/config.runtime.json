@@ -1,5 +1,5 @@
 {
     "environment": "runtime",
-    "managementApiUrl": "https://contoso.management.azure-api.net",
-    "backendUrl": "https://contoso.developer.azure-api.net"
+    "managementApiUrl": "https://<service-name>.management.azure-api.net",
+    "backendUrl": "https://<service-name>.developer.azure-api.net"
 }

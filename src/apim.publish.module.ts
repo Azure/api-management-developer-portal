@@ -85,7 +85,7 @@ export class ApimPublishModule implements IInjectorModule {
 
         if (process.env.NODE_ENV === "staticData") {
             injector.bind("httpClient", StaticDataHttpClient);
-            injector.bind("provider", PublisherStaticDataProvider);
+            injector.bind("dataProvider", PublisherStaticDataProvider);
         }
 
     }

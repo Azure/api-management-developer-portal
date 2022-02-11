@@ -154,7 +154,7 @@ export class ApimRuntimeModule implements IInjectorModule {
 
         if (process.env.NODE_ENV === "staticData") {
             injector.bind("httpClient", StaticDataHttpClient);
-            injector.bind("provider", RuntimeStaticDataProvider);
+            injector.bind("dataProvider", RuntimeStaticDataProvider);
         }
     }
 }

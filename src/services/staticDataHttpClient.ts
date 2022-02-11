@@ -11,7 +11,7 @@ export class StaticDataHttpClient implements HttpClient {
     private mockDataObject: Object;
     private defaultDataObject: Object;
 
-    constructor(private readonly provider: IStaticDataProvider) {
+    constructor(private readonly dataProvider: IStaticDataProvider) {
         this.httpClient = new XmlHttpRequestClient();
     }
 
@@ -21,8 +21,8 @@ export class StaticDataHttpClient implements HttpClient {
             return this.initPromise;
         }
 
-        this.mockDataObject = await this.provider.getStaticData(this.mockData);
-        this.defaultDataObject = await this.provider.getStaticData(this.defaultData);
+        this.mockDataObject = await this.dataProvider.getStaticData(this.mockData);
+        this.defaultDataObject = await this.dataProvider.getStaticData(this.defaultData);
     }
 
     private async ensureInitialized(): Promise<void> {
