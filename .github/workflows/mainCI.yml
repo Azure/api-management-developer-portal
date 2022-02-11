@@ -19,7 +19,7 @@ jobs:
         run: npm install
         
       - name: Build
-        run: npm run build-website
+        run: npm run build-static-data
           
       - name: Scan for accessibility issues
         uses: microsoft/accessibility-insights-action@v2

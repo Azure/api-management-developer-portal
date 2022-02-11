@@ -82,8 +82,11 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("runtimeConfigBuilder", RuntimeConfigBuilder);
         injector.bindToCollection("publishers", AadConfigPublisher);
         injector.bindToCollection("publishers", RuntimeConfigPublisher);
-        injector.bind("httpClient", StaticDataHttpClient);
-        injector.bind("provider", PublisherStaticDataProvider);
+
+        if (process.env.NODE_ENV === "staticData") {
+            injector.bind("httpClient", StaticDataHttpClient);
+            injector.bind("provider", PublisherStaticDataProvider);
+        }
 
     }
 }

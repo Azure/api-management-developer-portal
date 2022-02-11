@@ -151,7 +151,10 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bind("pagination", Pagination);
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
-        injector.bind("httpClient", StaticDataHttpClient);
-        injector.bind("provider", RuntimeStaticDataProvider);
+
+        if (process.env.NODE_ENV === "staticData") {
+            injector.bind("httpClient", StaticDataHttpClient);
+            injector.bind("provider", RuntimeStaticDataProvider);
+        }
     }
 }
