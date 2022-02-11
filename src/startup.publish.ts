@@ -15,7 +15,6 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 /* Reading settings from configuration file */
 let settingsProvider: ISettingsProvider;
 if (process.env.NODE_ENV === "staticData") {
-    console.log(":::::::::: sshould work");
     settingsProvider = new StaticSettingsProvider({
         "environment": "publishing",
         "managementApiUrl": "https://contoso.management.azure-api.net",
