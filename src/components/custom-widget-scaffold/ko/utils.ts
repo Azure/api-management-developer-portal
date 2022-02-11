@@ -6,10 +6,10 @@ export function buildBlobStorageSrc({uri = ""}: Partial<CustomWidgetModel>, file
   return `https://${blobContainer}.blob.core.windows.net/${uri}/${filePath}`;
 }
 
-export function buildRemoteFilesSrc(model: Partial<CustomWidgetModel>, filePath: string = ""): string {
+export function buildRemoteFilesSrc(model: Partial<CustomWidgetModel>, filePath: string = "", environment: string = ""): string {
   let developmentSrc;
-  // TODO if in DEV mode only, ignore on prod - could cause a security vulnerability?
-  if (true) {
+
+  if (environment === "development") {
     const key = `cw_${model.uri}_devsrc`;
     const searchParams = new URLSearchParams(window.location.search);
     developmentSrc = searchParams.get(key);
@@ -23,7 +23,9 @@ export function buildRemoteFilesSrc(model: Partial<CustomWidgetModel>, filePath:
     data: JSON.parse(model.customInputValue).data,
     origin: window.location.origin,
   };
-  const editorValuesStr = `?editorValues=${encodeURIComponent(JSON.stringify(values))}`;
+  let searchParams = `?editorValues=${encodeURIComponent(JSON.stringify(values))}`;
+  /** invalidate cache every 1 ms on dev */
+  if (environment === "development") searchParams += `&v=${(new Date()).getTime()}`;
 
-  return (developmentSrc ?? buildBlobStorageSrc(model, filePath)) + editorValuesStr;
+  return (developmentSrc ?? buildBlobStorageSrc(model, filePath)) + searchParams;
 }

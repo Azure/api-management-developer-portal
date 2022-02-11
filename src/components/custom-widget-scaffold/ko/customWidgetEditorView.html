@@ -1,16 +1,16 @@
 <fieldset class="form flex flex-item flex-item-grow no-overflow">
     <div class="form-group flex flex-column" style="display: flex; margin-bottom: 0; overflow: auto;">
-        <div style="flex: 0 0 auto">
+        <div class="flex-item">
             <size-editor params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: sizeStyleConfig, onUpdate: onSizeUpdate }">
             </size-editor>
 
             <h4>Custom fields</h4>
         </div>
 
-        <iframe data-bind="attr: { src: src }"
+        <iframe class="flex-item flex-item-grow"
+                data-bind="attr: { src: src }"
                 sandbox="allow-scripts allow-modals allow-forms"
                 frameborder="0"
-                style="flex: 1 0 auto"
         ></iframe>
     </div>
 </fieldset>

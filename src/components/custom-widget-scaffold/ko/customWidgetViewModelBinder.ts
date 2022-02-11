@@ -7,11 +7,13 @@ import { ViewModelBinder } from "@paperbits/common/widgets";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { CustomWidgetModel } from "../customWidgetModel";
 import { buildRemoteFilesSrc } from "./utils";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 
 export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidgetModel, CustomWidgetViewModel>  {
     constructor(
         private readonly eventManager: EventManager,
         private readonly styleCompiler: StyleCompiler,
+        private readonly settingsProvider: ISettingsProvider
     ) { }
 
     public async updateViewModel(model: CustomWidgetModel, viewModel: CustomWidgetViewModel, bindingContext: Bag<any>): Promise<void> {
@@ -19,8 +21,9 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
             viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager));
         }
 
+        const environment = await this.settingsProvider.getSetting<string>("environment");
         viewModel.name(model.name);
-        viewModel.src(buildRemoteFilesSrc(model, "index.html"));
+        viewModel.src(buildRemoteFilesSrc(model, "index.html", environment));
     }
 
     public async modelToViewModel(model: CustomWidgetModel, viewModel?: CustomWidgetViewModel, bindingContext?: Bag<any>): Promise<CustomWidgetViewModel> {

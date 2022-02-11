@@ -9,6 +9,7 @@ import { StyleHelper } from "@paperbits/styles";
 import { ViewManager } from "@paperbits/common/ui";
 import { EventManager, Events } from "@paperbits/common/events";
 import { buildRemoteFilesSrc } from "./utils";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 
 @Component({
     selector: widgetEditorSelector,
@@ -17,14 +18,16 @@ import { buildRemoteFilesSrc } from "./utils";
 export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetModel> {
     public readonly sizeStyleConfig: ko.Observable<SizeStylePluginConfig>;
     public readonly customInputValue: ko.Observable<string>;
-    public src: string;
+    public readonly src: ko.Observable<string>;
 
     constructor(
         private readonly viewManager: ViewManager,
-        private readonly eventManager: EventManager
+        private readonly eventManager: EventManager,
+        private readonly settingsProvider: ISettingsProvider,
     ) {
         this.sizeStyleConfig = ko.observable();
         this.customInputValue = ko.observable();
+        this.src = ko.observable("");
     }
 
     @Param()
@@ -35,8 +38,6 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        this.src = buildRemoteFilesSrc(this.model, "editor.html") + `&inheritedStyling=<link href="${window.location.origin}/editors/styles/paperbits.css" rel="stylesheet" type="text/css">`;
-
         this.customInputValue(this.model.customInputValue);
         this.updateResponsiveObservables();
 
@@ -51,6 +52,9 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
 
         this.customInputValue.subscribe(this.applyChanges);
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
+
+        const environment = await this.settingsProvider.getSetting<string>("environment");
+        this.src(buildRemoteFilesSrc(this.model, "editor.html", environment));
     }
 
     private updateResponsiveObservables(): void {
