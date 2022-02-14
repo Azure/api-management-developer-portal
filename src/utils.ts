@@ -1,7 +1,7 @@
-import { NameValuePair } from "request";
 import { ArmResource } from "./contracts/armResource";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
+import { NameValuePair } from "./contracts/nameValuePair";
 
 
 export class Utils {
