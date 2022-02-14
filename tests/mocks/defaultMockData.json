@@ -2216,14 +2216,6 @@
             {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "strict-transport-security",
-                "value": "max-age=31536000; includeSubDomains"
-            },
-            {
-                "name": "x-content-type-options",
-                "value": "nosniff"
             }
         ]
     },
@@ -2251,14 +2243,6 @@
             {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "strict-transport-security",
-                "value": "max-age=31536000; includeSubDomains"
-            },
-            {
-                "name": "x-content-type-options",
-                "value": "nosniff"
             }
         ]
     },
@@ -2303,14 +2287,6 @@
             {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "strict-transport-security",
-                "value": "max-age=31536000; includeSubDomains"
-            },
-            {
-                "name": "x-content-type-options",
-                "value": "nosniff"
             }
         ]
     },
@@ -2325,14 +2301,6 @@
             {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "strict-transport-security",
-                "value": "max-age=31536000; includeSubDomains"
-            },
-            {
-                "name": "x-content-type-options",
-                "value": "nosniff"
             }
         ]
     },
@@ -2715,14 +2683,6 @@
             {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "strict-transport-security",
-                "value": "max-age=31536000; includeSubDomains"
-            },
-            {
-                "name": "x-content-type-options",
-                "value": "nosniff"
             }
         ]
     },
@@ -2962,14 +2922,6 @@
             {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "strict-transport-security",
-                "value": "max-age=31536000; includeSubDomains"
-            },
-            {
-                "name": "x-content-type-options",
-                "value": "nosniff"
             }
         ]
     },
@@ -3011,14 +2963,6 @@
             {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "strict-transport-security",
-                "value": "max-age=31536000; includeSubDomains"
-            },
-            {
-                "name": "x-content-type-options",
-                "value": "nosniff"
             }
         ]
     }
