@@ -2,36 +2,8 @@
     "/config.json": {
         "headers": [
             {
-                "name": "accept-ranges",
-                "value": "bytes"
-            },
-            {
-                "name": "cache-control",
-                "value": "public, max-age=0"
-            },
-            {
-                "name": "content-length",
-                "value": "163"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=UTF-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:29:00 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "W/\"a3-17ec5219318\""
-            },
-            {
-                "name": "last-modified",
-                "value": "Fri, 04 Feb 2022 14:26:58 GMT"
-            },
-            {
-                "name": "x-powered-by",
-                "value": "Express"
             }
         ],
         "statusCode": 200,
@@ -45,36 +17,8 @@
     "/config-apim.json": {
         "headers": [
             {
-                "name": "accept-ranges",
-                "value": "bytes"
-            },
-            {
-                "name": "cache-control",
-                "value": "public, max-age=0"
-            },
-            {
-                "name": "content-length",
-                "value": "99"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=UTF-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:29:00 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "W/\"63-17ea11e2f9f\""
-            },
-            {
-                "name": "last-modified",
-                "value": "Fri, 28 Jan 2022 14:36:57 GMT"
-            },
-            {
-                "name": "x-powered-by",
-                "value": "Express"
             }
         ],
         "statusCode": 200,
@@ -89,36 +33,8 @@
     "/auth-servers.json": {
         "headers": [
             {
-                "name": "accept-ranges",
-                "value": "bytes"
-            },
-            {
-                "name": "cache-control",
-                "value": "public, max-age=0"
-            },
-            {
-                "name": "content-length",
-                "value": "864"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=UTF-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:29:00 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "W/\"360-17ea11e31d4\""
-            },
-            {
-                "name": "last-modified",
-                "value": "Fri, 28 Jan 2022 14:36:57 GMT"
-            },
-            {
-                "name": "x-powered-by",
-                "value": "Express"
             }
         ],
         "statusCode": 200,
@@ -128,30 +44,14 @@
                 "name": "test",
                 "displayName": "test",
                 "description": "test",
-                "clientId": "50228cda-2574-4a0e-bfdf-9157e218c802",
+                "clientId": "00000000-0000-0000-0000-000000000000",
                 "authorizationEndpoint": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
                 "tokenEndpoint": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
                 "scopes": [
-                    "api://50228cda-2574-4a0e-bfdf-9157e218c802/blabla2"
+                    "api://00000000-0000-0000-0000-000000000000/blabla2"
                 ],
                 "grantTypes": [
                     "authorization_code"
-                ]
-            },
-            {
-                "name": "unicorn",
-                "displayName": "unicorn",
-                "description": "unicorn description",
-                "clientId": "18bde5e7-d368-44c9-ad4b-6e6e857087e2",
-                "authorizationEndpoint": "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/authorize",
-                "tokenEndpoint": "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token",
-                "scopes": [
-                    "api://dfab24e8-78ce-46b8-8f7d-aa5e53521575/Data.Post"
-                ],
-                "grantTypes": [
-                    "authorization_code",
-                    "implicit",
-                    "client_credentials"
                 ]
             }
         ]
@@ -159,16 +59,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "3213"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:13 GMT"
             }
         ],
         "statusCode": 200,
@@ -235,62 +127,16 @@
                         "type": "websocket",
                         "isCurrent": true
                     }
-                },
-                {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testauth",
-                    "type": "Microsoft.ApiManagement/service/apis",
-                    "name": "testauth",
-                    "properties": {
-                        "displayName": "test API",
-                        "apiRevision": "1",
-                        "description": "",
-                        "subscriptionRequired": true,
-                        "serviceUrl": null,
-                        "path": "testAuth",
-                        "protocols": [
-                            "https"
-                        ],
-                        "authenticationSettings": null,
-                        "subscriptionKeyParameterNames": null,
-                        "isCurrent": true
-                    }
-                },
-                {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testrep",
-                    "type": "Microsoft.ApiManagement/service/apis",
-                    "name": "testrep",
-                    "properties": {
-                        "displayName": "test API 2",
-                        "apiRevision": "1",
-                        "description": "",
-                        "subscriptionRequired": true,
-                        "serviceUrl": null,
-                        "path": "testRep",
-                        "protocols": [
-                            "https"
-                        ],
-                        "authenticationSettings": null,
-                        "subscriptionKeyParameterNames": null,
-                        "isCurrent": true
-                    }
                 }
             ],
-            "count": 5
+            "count": 3
         }
     },
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/tags": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:14 GMT"
             }
         ],
         "statusCode": 200,
@@ -303,20 +149,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "758"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:38 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAH48=\""
             }
         ],
         "statusCode": 200,
@@ -353,16 +187,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apisByTags": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "4943"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:14 GMT"
             }
         ],
         "statusCode": 200,
@@ -628,55 +454,17 @@
                         "type": "websocket",
                         "isCurrent": true
                     }
-                },
-                {
-                    "api": {
-                        "id": "/apis/testauth",
-                        "name": "test API",
-                        "apiRevision": "1",
-                        "description": "",
-                        "subscriptionRequired": true,
-                        "serviceUrl": null,
-                        "path": "testAuth",
-                        "protocols": null,
-                        "authenticationSettings": null,
-                        "subscriptionKeyParameterNames": null,
-                        "isCurrent": true
-                    }
-                },
-                {
-                    "api": {
-                        "id": "/apis/testrep",
-                        "name": "test API 2",
-                        "apiRevision": "1",
-                        "description": "",
-                        "subscriptionRequired": true,
-                        "serviceUrl": null,
-                        "path": "testRep",
-                        "protocols": null,
-                        "authenticationSettings": null,
-                        "subscriptionKeyParameterNames": null,
-                        "isCurrent": true
-                    }
                 }
             ],
-            "count": 16,
+            "count": 14,
             "nextLink": null
         }
     },
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/hostnames": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "266"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:38 GMT"
             }
         ],
         "statusCode": 200,
@@ -698,16 +486,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operations": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "7897"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:38 GMT"
             }
         ],
         "statusCode": 200,
@@ -916,20 +696,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operations/create-resource": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "1606"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:40 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAI0A=\""
             }
         ],
         "statusCode": 200,
@@ -975,16 +743,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operations/create-resource/tags": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:38 GMT"
             }
         ],
         "statusCode": 200,
@@ -997,16 +757,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/releases": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:37 GMT"
             }
         ],
         "statusCode": 200,
@@ -1019,16 +771,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/products": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "1203"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:44 GMT"
             }
         ],
         "statusCode": 200,
@@ -1070,16 +814,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/subscriptions": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "899"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:34 GMT"
             }
         ],
         "statusCode": 200,
@@ -1110,20 +846,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/subscriptions/61fd37461359a02500aad62f/listSecrets": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "99"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:35 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAJfU=\""
             }
         ],
         "statusCode": 200,
@@ -1136,20 +860,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operations/modify-resource": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "832"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:41 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAACQU=\""
             }
         ],
         "statusCode": 200,
@@ -1183,16 +895,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operations/modify-resource/tags": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:41 GMT"
             }
         ],
         "statusCode": 200,
@@ -1205,20 +909,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operations/remove-resource": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "842"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:42 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAACQc=\""
             }
         ],
         "statusCode": 200,
@@ -1252,16 +944,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operations/remove-resource/tags": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:42 GMT"
             }
         ],
         "statusCode": 200,
@@ -1274,20 +958,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operations/retrieve-header-only": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "837"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:42 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAACQk=\""
             }
         ],
         "statusCode": 200,
@@ -1321,16 +993,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operations/retrieve-header-only/tags": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:42 GMT"
             }
         ],
         "statusCode": 200,
@@ -1343,20 +1007,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operations/retrieve-resource": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "1773"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:43 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAD/Y=\""
             }
         ],
         "statusCode": 200,
@@ -1421,16 +1073,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operations/retrieve-resource/tags": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:43 GMT"
             }
         ],
         "statusCode": 200,
@@ -1443,20 +1087,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operations/retrieve-resource-cached": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "1493"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:44 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAACQQ=\""
             }
         ],
         "statusCode": 200,
@@ -1507,16 +1139,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operations/retrieve-resource-cached/tags": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:44 GMT"
             }
         ],
         "statusCode": 200,
@@ -1529,20 +1153,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/http-bin": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "729"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:49 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAH7U=\""
             }
         ],
         "statusCode": 200,
@@ -1578,16 +1190,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/http-bin/operations": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:49 GMT"
             }
         ],
         "statusCode": 200,
@@ -1600,16 +1204,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/http-bin/hostnames": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "266"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:49 GMT"
             }
         ],
         "statusCode": 200,
@@ -1631,16 +1227,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/http-bin/schemas": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "348306"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:53 GMT"
             }
         ],
         "statusCode": 200,
@@ -1665,20 +1253,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/http-bin/schemas/graphql": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "348222"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:57 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAH7Y=\""
             }
         ],
         "statusCode": 200,
@@ -1698,16 +1274,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/http-bin/products": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "534"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:27:58 GMT"
             }
         ],
         "statusCode": 200,
@@ -1715,7 +1283,7 @@
         "body": {
             "value": [
                 {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/http-bin/products/test",
+                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/http-bin/products/unlimited",
                     "type": "Microsoft.ApiManagement/service/apis/products",
                     "name": "test",
                     "properties": {
@@ -1735,20 +1303,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/test": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "700"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:03 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAC8M=\""
             }
         ],
         "statusCode": 200,
@@ -1784,16 +1340,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/test/hostnames": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "266"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:03 GMT"
             }
         ],
         "statusCode": 200,
@@ -1815,16 +1363,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/test/operations": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "549"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:03 GMT"
             }
         ],
         "statusCode": 200,
@@ -1852,20 +1392,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/test/operations/onHandshake": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "560"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:04 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAEAI=\""
             }
         ],
         "statusCode": 200,
@@ -1893,16 +1421,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/test/operations/onHandshake/tags": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:03 GMT"
             }
         ],
         "statusCode": 200,
@@ -1915,16 +1435,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/test/products": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "530"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:04 GMT"
             }
         ],
         "statusCode": 200,
@@ -1932,7 +1444,7 @@
         "body": {
             "value": [
                 {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/test/products/test",
+                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/test/products/unlimited",
                     "type": "Microsoft.ApiManagement/service/apis/products",
                     "name": "test",
                     "properties": {
@@ -1942,550 +1454,6 @@
                         "subscriptionRequired": true,
                         "approvalRequired": false,
                         "subscriptionsLimit": null,
-                        "state": "published"
-                    }
-                }
-            ],
-            "count": 1
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testauth": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "660"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:08 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAIzg=\""
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testauth",
-            "type": "Microsoft.ApiManagement/service/apis",
-            "name": "testauth",
-            "properties": {
-                "displayName": "test API",
-                "apiRevision": "1",
-                "description": "",
-                "subscriptionRequired": true,
-                "serviceUrl": null,
-                "path": "testAuth",
-                "protocols": [
-                    "https"
-                ],
-                "authenticationSettings": {
-                    "oAuth2": null,
-                    "openid": null
-                },
-                "subscriptionKeyParameterNames": {
-                    "header": "Ocp-Apim-Subscription-Key",
-                    "query": "subscription-key"
-                },
-                "isCurrent": true
-            }
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testauth/operations": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "538"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:08 GMT"
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "value": [
-                {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testauth/operations/get-bing",
-                    "type": "Microsoft.ApiManagement/service/apis/operations",
-                    "name": "get-bing",
-                    "properties": {
-                        "displayName": "get bing",
-                        "method": "GET",
-                        "urlTemplate": "/https://bing.com",
-                        "templateParameters": [],
-                        "description": "test",
-                        "responses": [],
-                        "policies": null
-                    }
-                }
-            ],
-            "count": 1
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testauth/hostnames": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "266"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:08 GMT"
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "value": [
-                {
-                    "id": "contoso_azure-api_net",
-                    "type": "Microsoft.ApiManagement/service/apis/hostnames",
-                    "name": "contoso_azure-api_net",
-                    "properties": {
-                        "value": "contoso.azure-api.net"
-                    }
-                }
-            ],
-            "count": 1
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testauth/operations/get-bing": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "549"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:10 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAADRE=\""
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testauth/operations/get-bing",
-            "type": "Microsoft.ApiManagement/service/apis/operations",
-            "name": "get-bing",
-            "properties": {
-                "displayName": "get bing",
-                "method": "GET",
-                "urlTemplate": "/https://bing.com",
-                "templateParameters": [],
-                "description": "test",
-                "request": {
-                    "queryParameters": [],
-                    "headers": [],
-                    "representations": []
-                },
-                "responses": [],
-                "policies": null
-            }
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testauth/operations/get-bing/tags": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:08 GMT"
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "value": [],
-            "count": 0
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testauth/products": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "534"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:10 GMT"
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "value": [
-                {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testauth/products/test",
-                    "type": "Microsoft.ApiManagement/service/apis/products",
-                    "name": "test",
-                    "properties": {
-                        "displayName": "test",
-                        "description": "whatever",
-                        "terms": null,
-                        "subscriptionRequired": true,
-                        "approvalRequired": false,
-                        "subscriptionsLimit": null,
-                        "state": "published"
-                    }
-                }
-            ],
-            "count": 1
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testrep": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "659"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:14 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAIzM=\""
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testrep",
-            "type": "Microsoft.ApiManagement/service/apis",
-            "name": "testrep",
-            "properties": {
-                "displayName": "test API 2",
-                "apiRevision": "1",
-                "description": "",
-                "subscriptionRequired": true,
-                "serviceUrl": null,
-                "path": "testRep",
-                "protocols": [
-                    "https"
-                ],
-                "authenticationSettings": {
-                    "oAuth2": null,
-                    "openid": null
-                },
-                "subscriptionKeyParameterNames": {
-                    "header": "Ocp-Apim-Subscription-Key",
-                    "query": "subscription-key"
-                },
-                "isCurrent": true
-            }
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testrep/hostnames": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "266"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:14 GMT"
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "value": [
-                {
-                    "id": "contoso_azure-api_net",
-                    "type": "Microsoft.ApiManagement/service/apis/hostnames",
-                    "name": "contoso_azure-api_net",
-                    "properties": {
-                        "value": "contoso.azure-api.net"
-                    }
-                }
-            ],
-            "count": 1
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testrep/operations": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "1614"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:14 GMT"
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "value": [
-                {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testrep/operations/testget",
-                    "type": "Microsoft.ApiManagement/service/apis/operations",
-                    "name": "testget",
-                    "properties": {
-                        "displayName": "test operation with a longer longer longer  name",
-                        "method": "GET",
-                        "urlTemplate": "/test",
-                        "templateParameters": [],
-                        "description": "",
-                        "responses": [
-                            {
-                                "statusCode": 200,
-                                "description": "",
-                                "representations": [],
-                                "headers": []
-                            },
-                            {
-                                "statusCode": 404,
-                                "description": "test not found",
-                                "representations": [
-                                    {
-                                        "contentType": "application/json",
-                                        "examples": {
-                                            "default": {
-                                                "value": {
-                                                    "sampleField": "tet"
-                                                }
-                                            }
-                                        },
-                                        "schemaId": "1637752617712",
-                                        "typeName": "test",
-                                        "generatedSample": "{\r\n  \"sampleField\": \"tet\"\r\n}",
-                                        "sample": "{\r\n  \"sampleField\": \"tet\"\r\n}"
-                                    }
-                                ],
-                                "headers": [
-                                    {
-                                        "name": "header",
-                                        "description": "Header description",
-                                        "type": "",
-                                        "values": []
-                                    }
-                                ]
-                            }
-                        ],
-                        "policies": null
-                    }
-                }
-            ],
-            "count": 1
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testrep/operations/testget": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "1485"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:17 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAI0Q=\""
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testrep/operations/testget",
-            "type": "Microsoft.ApiManagement/service/apis/operations",
-            "name": "testget",
-            "properties": {
-                "displayName": "test operation with a longer longer longer  name",
-                "method": "GET",
-                "urlTemplate": "/test",
-                "templateParameters": [],
-                "description": "",
-                "request": {
-                    "queryParameters": [],
-                    "headers": [],
-                    "representations": []
-                },
-                "responses": [
-                    {
-                        "statusCode": 200,
-                        "description": "",
-                        "representations": [],
-                        "headers": []
-                    },
-                    {
-                        "statusCode": 404,
-                        "description": "test not found",
-                        "representations": [
-                            {
-                                "contentType": "application/json",
-                                "examples": {
-                                    "default": {
-                                        "value": {
-                                            "sampleField": "tet"
-                                        }
-                                    }
-                                },
-                                "schemaId": "1637752617712",
-                                "typeName": "test",
-                                "generatedSample": "{\r\n  \"sampleField\": \"tet\"\r\n}",
-                                "sample": "{\r\n  \"sampleField\": \"tet\"\r\n}"
-                            }
-                        ],
-                        "headers": [
-                            {
-                                "name": "header",
-                                "description": "Header description",
-                                "type": "",
-                                "values": []
-                            }
-                        ]
-                    }
-                ],
-                "policies": null
-            }
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testrep/schemas/1637752617712": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "597"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:15 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAADR8=\""
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testrep/schemas/1637752617712",
-            "type": "Microsoft.ApiManagement/service/apis/schemas",
-            "name": "1637752617712",
-            "properties": {
-                "contentType": "application/vnd.oai.openapi.components+json",
-                "document": {
-                    "components": {
-                        "schemas": {
-                            "test": {
-                                "type": "object",
-                                "properties": {
-                                    "sampleField": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testrep/operations/testget/tags": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:15 GMT"
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "value": [],
-            "count": 0
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testrep/products": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "610"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:17 GMT"
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "value": [
-                {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/testrep/products/starter",
-                    "type": "Microsoft.ApiManagement/service/apis/products",
-                    "name": "starter",
-                    "properties": {
-                        "displayName": "Starter",
-                        "description": "Subscribers will be able to run 5 calls/minute up to a maximum of 100 calls/week.",
-                        "terms": "",
-                        "subscriptionRequired": true,
-                        "approvalRequired": false,
-                        "subscriptionsLimit": 1,
                         "state": "published"
                     }
                 }
@@ -2496,16 +1464,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "2134"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:30 GMT"
             }
         ],
         "statusCode": 200,
@@ -2527,34 +1487,6 @@
                     }
                 },
                 {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/test",
-                    "type": "Microsoft.ApiManagement/service/products",
-                    "name": "test",
-                    "properties": {
-                        "displayName": "test",
-                        "description": "whatever",
-                        "terms": null,
-                        "subscriptionRequired": true,
-                        "approvalRequired": false,
-                        "subscriptionsLimit": null,
-                        "state": "published"
-                    }
-                },
-                {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/testadmin",
-                    "type": "Microsoft.ApiManagement/service/products",
-                    "name": "testadmin",
-                    "properties": {
-                        "displayName": "testAdmin",
-                        "description": "htbrhtrhrt",
-                        "terms": null,
-                        "subscriptionRequired": true,
-                        "approvalRequired": true,
-                        "subscriptionsLimit": 5,
-                        "state": "published"
-                    }
-                },
-                {
                     "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/unlimited",
                     "type": "Microsoft.ApiManagement/service/products",
                     "name": "unlimited",
@@ -2569,26 +1501,14 @@
                     }
                 }
             ],
-            "count": 4
+            "count": 2
         }
     },
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/starter": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "496"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:20 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAADRs=\""
             }
         ],
         "statusCode": 200,
@@ -2611,16 +1531,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/starter/apis": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "1325"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:20 GMT"
             }
         ],
         "statusCode": 200,
@@ -2645,43 +1557,16 @@
                         "subscriptionKeyParameterNames": null,
                         "isCurrent": true
                     }
-                },
-                {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/starter/apis/testrep",
-                    "type": "Microsoft.ApiManagement/service/products/apis",
-                    "name": "testrep",
-                    "properties": {
-                        "displayName": "test API 2",
-                        "apiRevision": "1",
-                        "description": "",
-                        "subscriptionRequired": true,
-                        "serviceUrl": null,
-                        "path": "testRep",
-                        "protocols": [
-                            "https"
-                        ],
-                        "authenticationSettings": null,
-                        "subscriptionKeyParameterNames": null,
-                        "isCurrent": true
-                    }
                 }
             ],
-            "count": 2
+            "count": 1
         }
     },
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/tenant/settings": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "418"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:55 GMT"
             }
         ],
         "statusCode": 200,
@@ -2699,201 +1584,11 @@
             }
         }
     },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/test": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "419"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:23 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAI04=\""
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/test",
-            "type": "Microsoft.ApiManagement/service/products",
-            "name": "test",
-            "properties": {
-                "displayName": "test",
-                "description": "whatever",
-                "terms": null,
-                "subscriptionRequired": true,
-                "approvalRequired": false,
-                "subscriptionsLimit": null,
-                "state": "published"
-            }
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/test/apis": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "2046"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:23 GMT"
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "value": [
-                {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/test/apis/http-bin",
-                    "type": "Microsoft.ApiManagement/service/products/apis",
-                    "name": "http-bin",
-                    "properties": {
-                        "displayName": "Http Bin",
-                        "apiRevision": "1",
-                        "description": null,
-                        "subscriptionRequired": true,
-                        "serviceUrl": "https://demo.saleor.io/graphql/",
-                        "path": "graphql",
-                        "protocols": [
-                            "http",
-                            "https"
-                        ],
-                        "authenticationSettings": null,
-                        "subscriptionKeyParameterNames": null,
-                        "type": "graphql",
-                        "isCurrent": true
-                    }
-                },
-                {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/test/apis/test",
-                    "type": "Microsoft.ApiManagement/service/products/apis",
-                    "name": "test",
-                    "properties": {
-                        "displayName": "test",
-                        "apiRevision": "1",
-                        "description": "",
-                        "subscriptionRequired": true,
-                        "serviceUrl": "ws://www.example.com/test",
-                        "path": "",
-                        "protocols": [
-                            "ws",
-                            "wss"
-                        ],
-                        "authenticationSettings": null,
-                        "subscriptionKeyParameterNames": null,
-                        "type": "websocket",
-                        "isCurrent": true
-                    }
-                },
-                {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/test/apis/testauth",
-                    "type": "Microsoft.ApiManagement/service/products/apis",
-                    "name": "testauth",
-                    "properties": {
-                        "displayName": "test API",
-                        "apiRevision": "1",
-                        "description": "",
-                        "subscriptionRequired": true,
-                        "serviceUrl": null,
-                        "path": "testAuth",
-                        "protocols": [
-                            "https"
-                        ],
-                        "authenticationSettings": null,
-                        "subscriptionKeyParameterNames": null,
-                        "isCurrent": true
-                    }
-                }
-            ],
-            "count": 3
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/testadmin": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "432"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:25 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAFSQ=\""
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/testadmin",
-            "type": "Microsoft.ApiManagement/service/products",
-            "name": "testadmin",
-            "properties": {
-                "displayName": "testAdmin",
-                "description": "htbrhtrhrt",
-                "terms": null,
-                "subscriptionRequired": true,
-                "approvalRequired": true,
-                "subscriptionsLimit": 5,
-                "state": "published"
-            }
-        }
-    },
-    "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/testadmin/apis": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
-                "name": "content-type",
-                "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:25 GMT"
-            }
-        ],
-        "statusCode": 200,
-        "statusText": "OK",
-        "body": {
-            "value": [],
-            "count": 0
-        }
-    },
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/unlimited": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "514"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:35 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAACOA=\""
             }
         ],
         "statusCode": 200,
@@ -2916,16 +1611,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/unlimited/apis": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "697"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:28 GMT"
             }
         ],
         "statusCode": 200,
@@ -2958,16 +1645,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/reports/byApi": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "1878"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:32 GMT"
             }
         ],
         "statusCode": 200,
@@ -3015,46 +1694,6 @@
                     "serviceTimeMax": 0
                 },
                 {
-                    "name": "test API",
-                    "apiId": "/apis/testauth",
-                    "callCountSuccess": 0,
-                    "callCountBlocked": 0,
-                    "callCountFailed": 0,
-                    "callCountOther": 0,
-                    "callCountTotal": 0,
-                    "bandwidth": 0,
-                    "cacheHitCount": 0,
-                    "cacheMissCount": 0,
-                    "valueCacheHitCount": 0,
-                    "valueCacheMissCount": 0,
-                    "apiTimeAvg": 0,
-                    "apiTimeMin": 0,
-                    "apiTimeMax": 0,
-                    "serviceTimeAvg": 0,
-                    "serviceTimeMin": 0,
-                    "serviceTimeMax": 0
-                },
-                {
-                    "name": "test API 2",
-                    "apiId": "/apis/testrep",
-                    "callCountSuccess": 0,
-                    "callCountBlocked": 0,
-                    "callCountFailed": 0,
-                    "callCountOther": 0,
-                    "callCountTotal": 0,
-                    "bandwidth": 0,
-                    "cacheHitCount": 0,
-                    "cacheMissCount": 0,
-                    "valueCacheHitCount": 0,
-                    "valueCacheMissCount": 0,
-                    "apiTimeAvg": 0,
-                    "apiTimeMin": 0,
-                    "apiTimeMax": 0,
-                    "serviceTimeAvg": 0,
-                    "serviceTimeMin": 0,
-                    "serviceTimeMax": 0
-                },
-                {
                     "name": "Http Bin",
                     "apiId": "/apis/http-bin",
                     "callCountSuccess": 0,
@@ -3075,23 +1714,15 @@
                     "serviceTimeMax": 0
                 }
             ],
-            "count": 5,
+            "count": 3,
             "nextLink": null
         }
     },
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/reports/bySubscription": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "38"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:32 GMT"
             }
         ],
         "statusCode": 200,
@@ -3105,16 +1736,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/reports/byTime": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "470"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:33 GMT"
             }
         ],
         "statusCode": 200,
@@ -3149,16 +1772,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/reports/byProduct": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "404"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:33 GMT"
             }
         ],
         "statusCode": 200,
@@ -3193,20 +1808,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "581"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:28:51 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAJgs=\""
             }
         ],
         "statusCode": 200,
@@ -3235,16 +1838,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/identity": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "33"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 14:36:10 GMT"
             },
             {
                 "name": "ocp-apim-sas-token",
@@ -3260,20 +1855,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "427"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Fri, 04 Feb 2022 13:42:26 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAJY4AAAAAAAAlkA==\""
             },
             {
                 "name": "location",
@@ -3306,16 +1889,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/echo-api/operationsByTags": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "2632"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Tue, 08 Feb 2022 16:50:57 GMT"
             }
         ],
         "statusCode": 200,
@@ -3402,16 +1977,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/reports/byOperation": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "3862"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Tue, 08 Feb 2022 16:58:50 GMT"
             }
         ],
         "statusCode": 200,
@@ -3564,67 +2131,17 @@
                     "serviceTimeAvg": 0,
                     "serviceTimeMin": 0,
                     "serviceTimeMax": 0
-                },
-                {
-                    "name": "get bing",
-                    "apiId": "/apis/testauth",
-                    "operationId": "/apis/testauth/operations/get-bing",
-                    "callCountSuccess": 0,
-                    "callCountBlocked": 0,
-                    "callCountFailed": 0,
-                    "callCountOther": 0,
-                    "callCountTotal": 0,
-                    "bandwidth": 0,
-                    "cacheHitCount": 0,
-                    "cacheMissCount": 0,
-                    "valueCacheHitCount": 0,
-                    "valueCacheMissCount": 0,
-                    "apiTimeAvg": 0,
-                    "apiTimeMin": 0,
-                    "apiTimeMax": 0,
-                    "serviceTimeAvg": 0,
-                    "serviceTimeMin": 0,
-                    "serviceTimeMax": 0
-                },
-                {
-                    "name": "test operation with a longer longer longer  name",
-                    "apiId": "/apis/testrep",
-                    "operationId": "/apis/testrep/operations/testget",
-                    "callCountSuccess": 0,
-                    "callCountBlocked": 0,
-                    "callCountFailed": 0,
-                    "callCountOther": 0,
-                    "callCountTotal": 0,
-                    "bandwidth": 0,
-                    "cacheHitCount": 0,
-                    "cacheMissCount": 0,
-                    "valueCacheHitCount": 0,
-                    "valueCacheMissCount": 0,
-                    "apiTimeAvg": 0,
-                    "apiTimeMin": 0,
-                    "apiTimeMax": 0,
-                    "serviceTimeAvg": 0,
-                    "serviceTimeMin": 0,
-                    "serviceTimeMax": 0
                 }
             ],
-            "count": 9,
+            "count": 7,
             "nextLink": null
         }
     },
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/reports/byGeo": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "38"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Tue, 08 Feb 2022 16:58:50 GMT"
             }
         ],
         "statusCode": 200,
@@ -3636,31 +2153,13 @@
         }
     },
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/subscriptions/61fd37461359a02500aad62f/regenerateSecondaryKey": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "0"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 10:57:37 GMT"
-            }
-        ],
+        "headers": [],
         "statusCode": 204,
         "statusText": "No Content",
         "body": {}
     },
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/subscriptions/61fd37461359a02500aad62f/regeneratePrimaryKey": {
-        "headers": [
-            {
-                "name": "content-length",
-                "value": "0"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 10:57:23 GMT"
-            }
-        ],
+        "headers": [],
         "statusCode": 204,
         "statusText": "No Content",
         "body": {}
@@ -3668,20 +2167,8 @@
     "https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/subscriptions/61fd37461359a02500aad62f": {
         "headers": [
             {
-                "name": "content-length",
-                "value": "806"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 11:00:07 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAJso=\""
             }
         ],
         "statusCode": 200,
@@ -3727,10 +2214,6 @@
         },
         "headers": [
             {
-                "name": "content-length",
-                "value": "500"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
             },
@@ -3741,10 +2224,6 @@
             {
                 "name": "x-content-type-options",
                 "value": "nosniff"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 17:08:39 GMT"
             }
         ]
     },
@@ -3770,16 +2249,8 @@
         },
         "headers": [
             {
-                "name": "content-length",
-                "value": "464"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
-            },
-            {
-                "name": "etag",
-                "value": "\"AAAAAAAAXTMq3QAAAAAAAA==\""
             },
             {
                 "name": "strict-transport-security",
@@ -3788,10 +2259,6 @@
             {
                 "name": "x-content-type-options",
                 "value": "nosniff"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 17:08:41 GMT"
             }
         ]
     },
@@ -3819,55 +2286,20 @@
                         "tokenBodyParameters": [],
                         "tokenEndpoint": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
                         "supportState": false,
-                        "defaultScope": "api://50228cda-2574-4a0e-bfdf-9157e218c802/blabla2",
+                        "defaultScope": "api://00000000-0000-0000-0000-000000000000/blabla2",
                         "grantTypes": [
                             "authorizationCode"
                         ],
                         "bearerTokenSendingMethods": [
                             "authorizationHeader"
                         ],
-                        "clientId": "50228cda-2574-4a0e-bfdf-9157e218c802"
-                    }
-                },
-                {
-                    "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/authorizationServers/unicorn",
-                    "type": "Microsoft.ApiManagement/service/authorizationServers",
-                    "name": "unicorn",
-                    "properties": {
-                        "displayName": "unicorn",
-                        "description": "unicorn description",
-                        "clientRegistrationEndpoint": "http://localhost",
-                        "authorizationEndpoint": "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/authorize",
-                        "authorizationMethods": [
-                            "GET",
-                            "POST"
-                        ],
-                        "clientAuthenticationMethod": [
-                            "Body"
-                        ],
-                        "tokenBodyParameters": [],
-                        "tokenEndpoint": "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token",
-                        "supportState": false,
-                        "defaultScope": "api://dfab24e8-78ce-46b8-8f7d-aa5e53521575/Data.Post",
-                        "grantTypes": [
-                            "authorizationCode",
-                            "implicit",
-                            "clientCredentials"
-                        ],
-                        "bearerTokenSendingMethods": [
-                            "authorizationHeader"
-                        ],
-                        "clientId": "18bde5e7-d368-44c9-ad4b-6e6e857087e2"
+                        "clientId": "00000000-0000-0000-0000-000000000000"
                     }
                 }
             ],
             "count": 2
         },
         "headers": [
-            {
-                "name": "content-length",
-                "value": "2364"
-            },
             {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
@@ -3879,10 +2311,6 @@
             {
                 "name": "x-content-type-options",
                 "value": "nosniff"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 17:08:42 GMT"
             }
         ]
     },
@@ -3895,10 +2323,6 @@
         },
         "headers": [
             {
-                "name": "content-length",
-                "value": "34"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
             },
@@ -3909,10 +2333,6 @@
             {
                 "name": "x-content-type-options",
                 "value": "nosniff"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 17:08:42 GMT"
             }
         ]
     },
@@ -3922,10 +2342,6 @@
         "statusText": "OK",
         "body": {},
         "headers": [
-            {
-                "name": "content-length",
-                "value": "8988"
-            },
             {
                 "name": "content-type",
                 "value": "image/jpeg"
@@ -3937,10 +2353,6 @@
             {
                 "name": "last-modified",
                 "value": "Thu, 30 May 2019 23:12:22 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "0x8D6E55445556D63"
             },
             {
                 "name": "server",
@@ -3969,10 +2381,6 @@
             {
                 "name": "access-control-allow-origin",
                 "value": "*"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 17:43:08 GMT"
             }
         ]
     },
@@ -3981,10 +2389,6 @@
         "statusText": "OK",
         "body": {},
         "headers": [
-            {
-                "name": "content-length",
-                "value": "9945"
-            },
             {
                 "name": "content-type",
                 "value": "image/jpeg"
@@ -3996,10 +2400,6 @@
             {
                 "name": "last-modified",
                 "value": "Thu, 30 May 2019 23:12:30 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "0x8D6E55449F11FAC"
             },
             {
                 "name": "server",
@@ -4028,10 +2428,6 @@
             {
                 "name": "access-control-allow-origin",
                 "value": "*"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 17:43:07 GMT"
             }
         ]
     },
@@ -4040,10 +2436,6 @@
         "statusText": "OK",
         "body": {},
         "headers": [
-            {
-                "name": "content-length",
-                "value": "9699"
-            },
             {
                 "name": "content-type",
                 "value": "image/jpeg"
@@ -4055,10 +2447,6 @@
             {
                 "name": "last-modified",
                 "value": "Thu, 30 May 2019 23:12:12 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "0x8D6E5543FCDC2DE"
             },
             {
                 "name": "server",
@@ -4087,10 +2475,6 @@
             {
                 "name": "access-control-allow-origin",
                 "value": "*"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 17:43:08 GMT"
             }
         ]
     },
@@ -4099,10 +2483,6 @@
         "statusText": "OK",
         "body": {},
         "headers": [
-            {
-                "name": "content-length",
-                "value": "1784"
-            },
             {
                 "name": "content-type",
                 "value": "image/png"
@@ -4114,10 +2494,6 @@
             {
                 "name": "last-modified",
                 "value": "Thu, 30 May 2019 23:12:04 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "0x8D6E5543ADC3ACB"
             },
             {
                 "name": "server",
@@ -4146,10 +2522,6 @@
             {
                 "name": "access-control-allow-origin",
                 "value": "*"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 17:43:08 GMT"
             }
         ]
     },
@@ -4158,10 +2530,6 @@
         "statusText": "OK",
         "body": {},
         "headers": [
-            {
-                "name": "content-length",
-                "value": "6819"
-            },
             {
                 "name": "content-type",
                 "value": "image/png"
@@ -4173,10 +2541,6 @@
             {
                 "name": "last-modified",
                 "value": "Thu, 30 May 2019 23:10:33 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "0x8D6E55404540D44"
             },
             {
                 "name": "server",
@@ -4205,10 +2569,6 @@
             {
                 "name": "access-control-allow-origin",
                 "value": "*"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 17:43:08 GMT"
             }
         ]
     },
@@ -4217,10 +2577,6 @@
         "statusText": "OK",
         "body": {},
         "headers": [
-            {
-                "name": "content-length",
-                "value": "60316"
-            },
             {
                 "name": "content-type",
                 "value": "image/jpeg"
@@ -4232,10 +2588,6 @@
             {
                 "name": "last-modified",
                 "value": "Thu, 30 May 2019 23:11:44 GMT"
-            },
-            {
-                "name": "etag",
-                "value": "0x8D6E5542EA0C82A"
             },
             {
                 "name": "server",
@@ -4264,10 +2616,6 @@
             {
                 "name": "access-control-allow-origin",
                 "value": "*"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 17:43:08 GMT"
             }
         ]
     },
@@ -4365,10 +2713,6 @@
         },
         "headers": [
             {
-                "name": "content-length",
-                "value": "3561"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
             },
@@ -4379,10 +2723,6 @@
             {
                 "name": "x-content-type-options",
                 "value": "nosniff"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 17:04:11 GMT"
             }
         ]
     },
@@ -4620,10 +2960,6 @@
         },
         "headers": [
             {
-                "name": "content-length",
-                "value": "8446"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
             },
@@ -4634,10 +2970,6 @@
             {
                 "name": "x-content-type-options",
                 "value": "nosniff"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 17:08:37 GMT"
             }
         ]
     },
@@ -4677,10 +3009,6 @@
         },
         "headers": [
             {
-                "name": "content-length",
-                "value": "916"
-            },
-            {
                 "name": "content-type",
                 "value": "application/json; charset=utf-8"
             },
@@ -4691,10 +3019,6 @@
             {
                 "name": "x-content-type-options",
                 "value": "nosniff"
-            },
-            {
-                "name": "date",
-                "value": "Wed, 09 Feb 2022 17:08:38 GMT"
             }
         ]
     }
