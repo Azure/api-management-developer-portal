@@ -16,9 +16,11 @@ export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> 
     public async contractToModel(contract: CustomWidgetContract): Promise<CustomWidgetModel> {
         const model = new CustomWidgetModel();
         model.name = contract.name ?? "";
+        model.widgetDisplayName = contract.widgetDisplayName;
+        model.customInputValue = contract.customInputValue ?? "{}";
+
         model.uri = contract.uri;
         model.styles = contract.styles || {};
-        model.customInputValue = contract.customInputValue ?? "{}";
         return model;
     }
 
@@ -26,9 +28,11 @@ export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> 
         const contract: CustomWidgetContract = {
             type: widgetName,
             name: model.name,
+            widgetDisplayName: model.widgetDisplayName,
+            customInputValue: model.customInputValue,
+
             uri: model.uri,
             styles: model.styles,
-            customInputValue: model.customInputValue,
         };
 
         return contract;
