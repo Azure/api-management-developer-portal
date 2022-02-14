@@ -27,7 +27,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           site-dir: ${{ github.workspace }}/dist/website 
           localhost-port: 12345
-          input-urls: http://localhost:12345/404 http://localhost:12345/500 http://localhost:12345/profile
+          input-urls: http://localhost:12345/profile http://localhost:12345/500 http://localhost:12345/404
           
       - name: Upload report artifact
         uses: actions/upload-artifact@v2
