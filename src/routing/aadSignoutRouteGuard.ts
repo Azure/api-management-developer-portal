@@ -46,7 +46,10 @@ export class AadSignOutRouteGuard implements RouteGuard {
         await this.httpClient.send({ url: "/signout" }); // server session termination.
 
         this.authenticator.clearAccessToken();
-        msalInstance.logoutPopup(); // actual sign-out from AAD/B2C
+        msalInstance.logoutPopup({
+            postLogoutRedirectUri: location.origin,
+            mainWindowRedirectUri: location.origin
+        }); // actual sign-out from AAD/B2C
 
         return false; // explicitly stopping route execution.
     }

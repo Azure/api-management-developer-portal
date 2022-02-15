@@ -30,4 +30,9 @@ export interface SigninSocialContract extends Contract {
      * AAD B2C reply URL, e.g. `/signin`.
      */
     aadB2CReplyUrl: string;
+
+    /**
+     * MSAL v2.0 or v1.0
+     */
+    msalVersion: string;
 }

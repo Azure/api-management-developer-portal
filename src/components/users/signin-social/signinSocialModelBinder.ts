@@ -22,6 +22,7 @@ export class SigninSocialModelBinder implements IModelBinder<SigninSocialModel> 
         model.aadB2CLabel = contract.aadB2CLabel || "Azure Active Directory B2C";
         model.aadReplyUrl = contract.aadReplyUrl;
         model.aadB2CReplyUrl = contract.aadB2CReplyUrl;
+        model.msalVersion = contract.msalVersion;
 
         return model;
     }
@@ -43,6 +44,7 @@ export class SigninSocialModelBinder implements IModelBinder<SigninSocialModel> 
             aadReplyUrl: model.aadReplyUrl,
             aadB2CLabel: model.aadB2CLabel,
             aadB2CReplyUrl: model.aadB2CReplyUrl,
+            msalVersion: model.msalVersion,
             styles: model.styles,
             roles: roles
         };

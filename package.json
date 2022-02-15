@@ -93,6 +93,7 @@
         "mime": "^3.0.0",
         "moment": "^2.29.1",
         "monaco-editor": "^0.29.1",
+        "msal": "^1.4.16",
         "prettier": "^2.5.1",
         "prismjs": "^1.26.0",
         "rehype-raw": "^6.1.1",

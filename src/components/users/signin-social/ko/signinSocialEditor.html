@@ -58,6 +58,16 @@
         </label>
         <div id="miscellaneous" class="collapse form-group-collapse">
             <div class="form-group">
+                <label for="msalVersion" class="form-label">
+                    MSAL version
+                </label>
+                <select id="msalVersion" class="form-control" data-bind="value: msalVersion">
+                    <option value="" disabled="disabled" selected="selected">MSAL version</option>
+                    <option value="v1">V1</value>
+                    <option value="v2">V2</value>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="appearanceStyle" class="form-label">
                     Appearance
                     <button class="btn btn-info" type="button" title="Help"

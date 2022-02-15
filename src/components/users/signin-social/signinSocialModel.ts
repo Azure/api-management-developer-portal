@@ -31,6 +31,11 @@ export class SigninSocialModel {
      */
     public aadB2CReplyUrl?: string;
 
+    /**
+     * MSAL v2.0 or v1.0
+     */
+     msalVersion: string;
+
     constructor() {
         this.styles = { appearance: "components/button/default" };
     }
