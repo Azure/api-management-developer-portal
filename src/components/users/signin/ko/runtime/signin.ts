@@ -32,8 +32,8 @@ export class Signin {
     ) {
 
         this.delegationUrl = ko.observable();
-        this.username = ko.observable("");
-        this.password = ko.observable("");
+        this.username = ko.observable("name.surname@contoso.com");
+        this.password = ko.observable("test");
         this.errorMessages = ko.observableArray([]);
         this.hasErrors = ko.pureComputed(() => this.errorMessages().length > 0);
         this.working = ko.observable(false);
