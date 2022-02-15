@@ -1,6 +1,6 @@
 import { HttpMethod } from "@paperbits/common/http";
 import { XmlHttpRequestClient } from "@paperbits/common/http/xmlHttpRequestClient";
-import { IStaticDataProvider } from "./IStaticDataProvider";
+import  IStaticDataProvider  from "./IStaticDataProvider";
 
 export class RuntimeStaticDataProvider implements IStaticDataProvider {
     private readonly httpClient: XmlHttpRequestClient;

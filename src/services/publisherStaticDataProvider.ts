@@ -1,5 +1,5 @@
 import path = require("path");
-import { IStaticDataProvider } from "./IStaticDataProvider";
+import  IStaticDataProvider  from "./IStaticDataProvider";
 const fs = require('fs');
 
 export class PublisherStaticDataProvider implements IStaticDataProvider {

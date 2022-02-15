@@ -1,5 +1,5 @@
 import { HttpClient, HttpRequest, HttpResponse, XmlHttpRequestClient } from "@paperbits/common/http";
-import { IStaticDataProvider } from "./IStaticDataProvider";
+import IStaticDataProvider from "./IStaticDataProvider";
 
 
 export class StaticDataHttpClient implements HttpClient {
