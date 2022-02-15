@@ -2313,42 +2313,6 @@
             {
                 "name": "content-type",
                 "value": "image/jpeg"
-            },
-            {
-                "name": "content-md5",
-                "value": "Pqzrasvz666/s1FC6+A9ww=="
-            },
-            {
-                "name": "last-modified",
-                "value": "Thu, 30 May 2019 23:12:22 GMT"
-            },
-            {
-                "name": "server",
-                "value": "Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0"
-            },
-            {
-                "name": "x-ms-request-id",
-                "value": "7fc677a5-801e-0073-06dc-1de5ce000000"
-            },
-            {
-                "name": "x-ms-version",
-                "value": "2009-09-19"
-            },
-            {
-                "name": "x-ms-lease-status",
-                "value": "unlocked"
-            },
-            {
-                "name": "x-ms-blob-type",
-                "value": "BlockBlob"
-            },
-            {
-                "name": "access-control-expose-headers",
-                "value": "x-ms-request-id,Server,x-ms-version,Content-Type,Last-Modified,ETag,Content-MD5,x-ms-lease-status,x-ms-blob-type,Content-Length,Date,Transfer-Encoding"
-            },
-            {
-                "name": "access-control-allow-origin",
-                "value": "*"
             }
         ]
     },
@@ -2360,42 +2324,6 @@
             {
                 "name": "content-type",
                 "value": "image/jpeg"
-            },
-            {
-                "name": "content-md5",
-                "value": "6mgBrgStr2n7AFlg7yU2dQ=="
-            },
-            {
-                "name": "last-modified",
-                "value": "Thu, 30 May 2019 23:12:30 GMT"
-            },
-            {
-                "name": "server",
-                "value": "Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0"
-            },
-            {
-                "name": "x-ms-request-id",
-                "value": "e8307212-e01e-008d-36dc-1dd9ab000000"
-            },
-            {
-                "name": "x-ms-version",
-                "value": "2009-09-19"
-            },
-            {
-                "name": "x-ms-lease-status",
-                "value": "unlocked"
-            },
-            {
-                "name": "x-ms-blob-type",
-                "value": "BlockBlob"
-            },
-            {
-                "name": "access-control-expose-headers",
-                "value": "x-ms-request-id,Server,x-ms-version,Content-Type,Last-Modified,ETag,Content-MD5,x-ms-lease-status,x-ms-blob-type,Content-Length,Date,Transfer-Encoding"
-            },
-            {
-                "name": "access-control-allow-origin",
-                "value": "*"
             }
         ]
     },
@@ -2407,42 +2335,6 @@
             {
                 "name": "content-type",
                 "value": "image/jpeg"
-            },
-            {
-                "name": "content-md5",
-                "value": "qMtzstjNo97gl0ELUaCyEQ=="
-            },
-            {
-                "name": "last-modified",
-                "value": "Thu, 30 May 2019 23:12:12 GMT"
-            },
-            {
-                "name": "server",
-                "value": "Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0"
-            },
-            {
-                "name": "x-ms-request-id",
-                "value": "284afa6e-a01e-00a8-7edc-1d4118000000"
-            },
-            {
-                "name": "x-ms-version",
-                "value": "2009-09-19"
-            },
-            {
-                "name": "x-ms-lease-status",
-                "value": "unlocked"
-            },
-            {
-                "name": "x-ms-blob-type",
-                "value": "BlockBlob"
-            },
-            {
-                "name": "access-control-expose-headers",
-                "value": "x-ms-request-id,Server,x-ms-version,Content-Type,Last-Modified,ETag,Content-MD5,x-ms-lease-status,x-ms-blob-type,Content-Length,Date,Transfer-Encoding"
-            },
-            {
-                "name": "access-control-allow-origin",
-                "value": "*"
             }
         ]
     },
@@ -2454,42 +2346,6 @@
             {
                 "name": "content-type",
                 "value": "image/png"
-            },
-            {
-                "name": "content-md5",
-                "value": "w5Xh8bN4q4P3zlH7c+aH4A=="
-            },
-            {
-                "name": "last-modified",
-                "value": "Thu, 30 May 2019 23:12:04 GMT"
-            },
-            {
-                "name": "server",
-                "value": "Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0"
-            },
-            {
-                "name": "x-ms-request-id",
-                "value": "15c3ec5d-d01e-0060-44dc-1dd02f000000"
-            },
-            {
-                "name": "x-ms-version",
-                "value": "2009-09-19"
-            },
-            {
-                "name": "x-ms-lease-status",
-                "value": "unlocked"
-            },
-            {
-                "name": "x-ms-blob-type",
-                "value": "BlockBlob"
-            },
-            {
-                "name": "access-control-expose-headers",
-                "value": "x-ms-request-id,Server,x-ms-version,Content-Type,Last-Modified,ETag,Content-MD5,x-ms-lease-status,x-ms-blob-type,Content-Length,Date,Transfer-Encoding"
-            },
-            {
-                "name": "access-control-allow-origin",
-                "value": "*"
             }
         ]
     },
@@ -2501,42 +2357,6 @@
             {
                 "name": "content-type",
                 "value": "image/png"
-            },
-            {
-                "name": "content-md5",
-                "value": "lcr1pbWljnx1jq+7c9ew8A=="
-            },
-            {
-                "name": "last-modified",
-                "value": "Thu, 30 May 2019 23:10:33 GMT"
-            },
-            {
-                "name": "server",
-                "value": "Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0"
-            },
-            {
-                "name": "x-ms-request-id",
-                "value": "312797f3-a01e-0081-58dc-1d375a000000"
-            },
-            {
-                "name": "x-ms-version",
-                "value": "2009-09-19"
-            },
-            {
-                "name": "x-ms-lease-status",
-                "value": "unlocked"
-            },
-            {
-                "name": "x-ms-blob-type",
-                "value": "BlockBlob"
-            },
-            {
-                "name": "access-control-expose-headers",
-                "value": "x-ms-request-id,Server,x-ms-version,Content-Type,Last-Modified,ETag,Content-MD5,x-ms-lease-status,x-ms-blob-type,Content-Length,Date,Transfer-Encoding"
-            },
-            {
-                "name": "access-control-allow-origin",
-                "value": "*"
             }
         ]
     },
@@ -2548,42 +2368,6 @@
             {
                 "name": "content-type",
                 "value": "image/jpeg"
-            },
-            {
-                "name": "content-md5",
-                "value": "N9xBeWuIvqGdfOx+Jvjigg=="
-            },
-            {
-                "name": "last-modified",
-                "value": "Thu, 30 May 2019 23:11:44 GMT"
-            },
-            {
-                "name": "server",
-                "value": "Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0"
-            },
-            {
-                "name": "x-ms-request-id",
-                "value": "502dc853-601e-005b-56dc-1d9271000000"
-            },
-            {
-                "name": "x-ms-version",
-                "value": "2009-09-19"
-            },
-            {
-                "name": "x-ms-lease-status",
-                "value": "unlocked"
-            },
-            {
-                "name": "x-ms-blob-type",
-                "value": "BlockBlob"
-            },
-            {
-                "name": "access-control-expose-headers",
-                "value": "x-ms-request-id,Server,x-ms-version,Content-Type,Last-Modified,ETag,Content-MD5,x-ms-lease-status,x-ms-blob-type,Content-Length,Date,Transfer-Encoding"
-            },
-            {
-                "name": "access-control-allow-origin",
-                "value": "*"
             }
         ]
     },
