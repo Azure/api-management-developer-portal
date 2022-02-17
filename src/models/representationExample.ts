@@ -27,7 +27,7 @@ export class RepresentationExample {
          */
         public readonly contentType: string
     ) {
-        if (this.contentType.includes("/xml")) {
+        if (/\bxml\b/i.test(this.contentType)) {
             this.value = Utils.formatXml(value);
             this.format = "xml";
 
@@ -36,7 +36,7 @@ export class RepresentationExample {
             }
         }
 
-        if (this.contentType.includes("/json")) {
+        if (/\bjson\b/i.test(this.contentType)) {
             this.value = Utils.formatJson(value);
             this.format = "json";
 
