@@ -39,7 +39,7 @@ export class CustomWidgetDesignModule implements IInjectorModule {
                 try {
                     const url = new URL(sourcesObj[key]);
                     window.sessionStorage.setItem(customWidgetUriKey(key), url.href);
-                    promises.push(fetch(url.href + "dist/config.json"));
+                    promises.push(fetch(url.href + "msapim.config.json"));
                 } catch (e) {
                     console.warn(key, sourcesObj[key], e);
                 }
