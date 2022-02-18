@@ -72,7 +72,8 @@ const designerConfig = {
                 { from: `./src/themes/designer/assets/index.html`, to: "index.html" },
                 { from: `./src/themes/designer/styles/fonts`, to: "editors/styles/fonts" },
                 { from: `./src/libraries`, to: "data" },
-                { from: "./src/config.design.json", to: "config.json" }
+                { from: "./src/config.design.json", to: "config.json" },
+                { from: `./templates/default.json`, to: "editors/templates/default.json" }
             ]
         }),
         new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
