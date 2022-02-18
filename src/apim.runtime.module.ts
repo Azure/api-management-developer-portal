@@ -80,6 +80,7 @@ import { Pagination } from "./components/pagination/pagination";
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { OauthServerConfiguration } from "./components/operations/operation-details/ko/runtime/oauth-server-configuration";
 import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
+import {staticDataEnvironment} from "./../environmentConstants"
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -152,7 +153,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("pagination", Pagination);
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
 
-        if (process.env.NODE_ENV === "staticData") {
+        if (process.env.NODE_ENV === staticDataEnvironment) {
             injector.bind("httpClient", StaticDataHttpClient);
             injector.bind("dataProvider", RuntimeStaticDataProvider);
         }

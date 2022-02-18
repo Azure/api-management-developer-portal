@@ -39,6 +39,7 @@ import { RuntimeConfigBuilder } from "./publishing/runtimeConfigBuilder";
 import { CustomHtmlPublishModule } from "./components/custom-html/customHtml.publish.module";
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
+import {staticDataEnvironment} from "./../environmentConstants"
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -83,7 +84,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindToCollection("publishers", AadConfigPublisher);
         injector.bindToCollection("publishers", RuntimeConfigPublisher);
 
-        if (process.env.NODE_ENV === "staticData") {
+        if (process.env.NODE_ENV === staticDataEnvironment) {
             injector.bind("httpClient", StaticDataHttpClient);
             injector.bind("dataProvider", PublisherStaticDataProvider);
         }
