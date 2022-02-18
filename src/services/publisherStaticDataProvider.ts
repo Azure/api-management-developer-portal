@@ -7,7 +7,6 @@ export class PublisherStaticDataProvider implements IStaticDataProvider {
         let fullPath = objectType == "defaultMockData.json" ?
             path.join(__dirname, '../../tests/mocks/defaultMockData.json') : path.join(__dirname, '../../templates/default.json');
         let filePath = path.resolve(fullPath);
-        console.log(`fullPath: ${fullPath} and filepath: ${filePath}`);
 
         return new Promise<any>((resolve, reject) => {
             fs.readFile(filePath, { encoding: 'utf-8' }, function (err, data) {
