@@ -63,9 +63,7 @@ const runtimeConfig = {
             patterns: [
                 { from: `./src/themes/website/styles/fonts`, to: "styles/fonts" },
                 { from: `./src/themes/website/assets` },
-                { from: `node_modules/monaco-editor/min/vs`, to: `assets/monaco-editor/vs` },
-                { from: `./templates/default.json`, to: "editors/templates/default.json" },
-                { from: `./tests/mocks/defaultMockData.json`, to: "tests/mocks/defaultMockData.json" },
+                { from: `node_modules/monaco-editor/min/vs`, to: `assets/monaco-editor/vs` }
             ]
         }),
         new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
