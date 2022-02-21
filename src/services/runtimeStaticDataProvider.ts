@@ -8,7 +8,7 @@ export class RuntimeStaticDataProvider implements IStaticDataProvider {
         this.httpClient = new XmlHttpRequestClient();
     }
     getStaticData(objectType: string): Promise<any> {
-        let path = objectType == "defaultMockData.json" ? "/tests/mocks/defaultMockData.json" : "/editors/templates/default.json";
+        let path = objectType == "defaultStaticData.json" ? "/tests/mocks/defaultStaticData.json" : "/editors/templates/default.json";
 
         return new Promise<any>(async (resolve, reject) => {
             let result = await this.httpClient.send({

@@ -4,7 +4,7 @@ import IStaticDataProvider from "./IStaticDataProvider";
 
 export class StaticDataHttpClient implements HttpClient {
     private readonly httpClient: XmlHttpRequestClient;
-    private readonly mockData: string = "defaultMockData.json";
+    private readonly mockData: string = "defaultStaticData.json";
     private readonly defaultData: string = "default.json";
 
     private initPromise: Promise<void>;
