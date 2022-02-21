@@ -107,7 +107,7 @@ export class OperationConsole {
         this.wsDataFormat = ko.observable("raw");
         this.wsLogItems = ko.observableArray([]);
 
-        this.showCodeExamples = ko.observable(false);
+        this.showCodeExamples = ko.observable(true);
 
         this.bodyStash = "";
 
