@@ -2,7 +2,7 @@ import { LocalStyles } from "@paperbits/common/styles";
 import { Contract } from "@paperbits/common";
 
 export interface CustomWidgetContract extends Contract {
-    name: string;
-    uri: string | undefined;
-    styles: LocalStyles;
+    name: string | null;
+    tech: string | null;
+    sourceControl: string | null;
 }

@@ -9,13 +9,13 @@ import { StyleModel } from "@paperbits/common/styles";
     template: template
 })
 export class CustomWidgetViewModel {
-    public readonly styles: ko.Observable<StyleModel>;
     public readonly name: ko.Observable<string>;
-    public readonly src: ko.Observable<string>;
+    public readonly tech: ko.Observable<string>;
+    public readonly sourceControl: ko.Observable<string>;
 
     constructor() {
         this.name = ko.observable();
-        this.src = ko.observable();
-        this.styles = ko.observable();
+        this.tech = ko.observable();
+        this.sourceControl = ko.observable();
     }
 }

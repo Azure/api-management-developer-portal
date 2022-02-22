@@ -14,8 +14,8 @@ export class CustomWidgetHandlers implements IWidgetHandler {
             createModel: async () => { 
                 const model = new CustomWidgetModel();
                 model.name = "";
-                model.uri = undefined;
-                model.inheritStyling = true;
+                model.tech = "";
+                model.sourceControl = "";
                 return model;
             }
         };

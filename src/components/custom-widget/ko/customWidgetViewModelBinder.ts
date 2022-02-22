@@ -13,6 +13,8 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
 
     public async updateViewModel(model: CustomWidgetModel, viewModel: CustomWidgetViewModel): Promise<void> {
         viewModel.name(model.name);
+        viewModel.tech(model.tech);
+        viewModel.sourceControl(model.sourceControl);
     }
 
     public async modelToViewModel(model: CustomWidgetModel, viewModel?: CustomWidgetViewModel, bindingContext?: Bag<any>): Promise<CustomWidgetViewModel> {
