@@ -20,7 +20,8 @@
         "test": "node node_modules/mocha/bin/_mocha -r mocha.js src/**/*.spec.ts tests/e2e/**/*.spec.ts --timeout 30000",
         "deploy-function": "npm run build-function && cd dist/function && func azure functionapp publish < function app name >",
         "publish": "webpack --config webpack.publisher.js && node dist/publisher/index.js && npm run serve-website",
-        "serve-website": "webpack serve --open --static ./dist/website --no-stats"
+        "serve-website": "webpack serve --open --static ./dist/website --no-stats",
+        "build-static-data": "webpack --config webpack.staticData.js && node dist/publisher/index.js"
     },
     "devDependencies": {
         "@azure/storage-blob": "12.8.0",

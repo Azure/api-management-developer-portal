@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  pull_request:
+    branches: 
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Use Node.js 16.x
+        uses: actions/checkout@v2
+        with:
+          node-version: 16.x
+          
+      - name: Install
+        run: npm install
+        
+      - name: Build
+        run: npm run build-static-data
+          
+      - name: Scan for accessibility issues
+        uses: microsoft/accessibility-insights-action@v2
+        with: 
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          site-dir: ${{ github.workspace }}/dist/website 
+          localhost-port: 12345
+          input-urls: http://localhost:12345/profile http://localhost:12345/500 http://localhost:12345/404
+          
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: accessibility-reports
+          path: ${{ github.workspace }}/_accessibility-reports
