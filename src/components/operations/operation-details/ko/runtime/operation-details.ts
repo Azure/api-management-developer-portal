@@ -67,7 +67,7 @@ export class OperationDetails {
         this.requestUrlSample = ko.computed(() => {
 
             const api = this.api();
-            const hostname = this.sampleHostname();
+            const hostname = this.sampleHostname() ?? null;
 
             if ((!this.api() || !this.operation()) && api?.type !== TypeOfApi.graphQL) {
                 return null;
@@ -83,11 +83,13 @@ export class OperationDetails {
 
             let requestUrl = "";
 
-            if (api.type === TypeOfApi.webSocket) {
-                requestUrl = `${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
-            } else {
-                requestUrl = `https://${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
+            if (hostname && api.type !== TypeOfApi.webSocket) {
+                requestUrl = 'https://';
             }
+
+            if (hostname) requestUrl += hostname;
+
+            requestUrl += Utils.ensureLeadingSlash(operationPath);
 
             if (api.apiVersion && api.apiVersionSet?.versioningScheme === "Query") {
                 return Utils.addQueryParameter(requestUrl, api.apiVersionSet.versionQueryName, api.apiVersion);
@@ -284,12 +286,10 @@ export class OperationDetails {
     public async loadGatewayInfo(apiName: string): Promise<void> {
         const hostnames = await this.apiService.getApiHostnames(apiName);
 
-        if (hostnames.length === 0) {
-            throw new Error(`Unable to fetch gateway hostnames.`);
+        if (hostnames.length !== 0) {
+            this.sampleHostname(hostnames[0]);
+            this.hostnames(hostnames);
         }
-
-        this.sampleHostname(hostnames[0]);
-        this.hostnames(hostnames);
     }
 
     private cleanSelection(): void {
