@@ -78,7 +78,7 @@ export class SignupSocial {
 
         this.firstName(jwtToken.given_name);
         this.lastName(jwtToken.family_name);
-        this.email(jwtToken.email);
+        this.email(jwtToken.email || jwtToken.emails?.[0]);
     }
 
     /**
