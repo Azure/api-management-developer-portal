@@ -78,7 +78,10 @@ import { UsersService } from "./services/usersService";
 import { ApimSettingsProvider } from "./configuration/apimSettingsProvider";
 import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import { Pagination } from "./components/pagination/pagination";
+import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { OauthServerConfiguration } from "./components/operations/operation-details/ko/runtime/oauth-server-configuration";
+import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
+import {staticDataEnvironment} from "./../environmentConstants"
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -151,5 +154,10 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bind("pagination", Pagination);
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
+
+        if (process.env.NODE_ENV === staticDataEnvironment) {
+            injector.bind("httpClient", StaticDataHttpClient);
+            injector.bind("dataProvider", RuntimeStaticDataProvider);
+        }
     }
 }
