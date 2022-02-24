@@ -13,10 +13,6 @@
     flex-direction: column;
 }
 
-.flex-vertical-center {
-    align-items: center;
-}
-
 .flex-item {
     flex: 0 1 auto;
     align-self: auto;
@@ -36,4 +32,12 @@
 
 .justify-content-end {
     justify-content: flex-end!important;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.align-self-center {
+    align-self: center;
 }

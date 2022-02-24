@@ -1,47 +1,42 @@
-<div class="dropdown-container collapsible">
-    <div class="form-control" tabindex="0" role="button" data-toggle="dropdown" aria-label="Products">
-        <div class="input-group">
-            <div class="input" data-bind="text: selection"></div>
-            <div class="input-group-append">
-                <i class="icon-emb icon-emb-chevron-down"></i>
-            </div>
+<div class="form-group">
+    <div class="input-group">
+        <div class="form-control" tabindex="0" role="button" aria-label="Products" data-toggle="dropdown">
+            <span data-bind="text: selection"></span>
         </div>
-    </div>
-
-    <div class="collapsible-dropdown collapsible-content dropdown">
-        <div class="search-input">
-            <div class="input-group">
-                <input type="search" role="searchbox" aria-label="Search" placeholder="Search products"
-                    spellcheck="false" data-bind="textInput: pattern" />
-                <button type="button" class="search-button" aria-label="Search products">
-                    <i class="icon-emb icon-emb-magnifier"></i>
-                </button>
+        <button class="input-group-addon no-border" data-toggle="dropdown" aria-label="Expand products list">
+            <i class="icon-emb icon-emb-chevron-down"></i>
+        </button>
+        <div class="dropdown">
+            <div class="form-group">
+                <input type="search" class="form-control form-control-light" aria-label="Search"
+                    placeholder="Search products" spellcheck="false" data-bind="textInput: pattern" />
             </div>
-        </div>
 
-        <div role="list">
-            <!-- ko if: working -->
-            <spinner role="presentation"></spinner>
-            <!-- /ko -->
+            <div class="menu menu-vertical" role="list">
+                <!-- ko if: working -->
+                <spinner class="block" role="presentation"></spinner>
+                <!-- /ko -->
 
-            <!-- ko ifnot: working -->
+                <!-- ko ifnot: working -->
 
-            <!-- ko foreach: { data: products, as: 'product' } -->
-            <a href="#" role="listitem" class="nav-link text-truncate"
-                data-bind="attr: { href: $component.getProductUrl(product) }, text: product.displayName"></a>
-            <!-- /ko -->
+                <!-- ko foreach: { data: products, as: 'product' } -->
+                <a href="#" role="listitem" class="nav-link text-truncate" data-dismiss
+                    data-bind="attr: { href: $component.getProductUrl(product) }, text: product.displayName, css: { 'nav-link-active': $component.selectedProduct() === product }"></a>
+                <!-- /ko -->
 
-            <!-- ko if: products().length === 0 -->
-            <p>No products found</p>
-            <!-- /ko -->
+                <!-- ko if: products().length === 0 -->
+                <p>No products found</p>
+                <!-- /ko -->
 
-            <!-- ko ifnot: working -->
-            <!-- ko if: $component.totalPages() > 1 -->
-            <pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }"></pagination>
-            <!-- /ko -->
-            <!-- /ko -->
+                <!-- ko ifnot: working -->
+                <!-- ko if: $component.totalPages() > 1 -->
+                <pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }">
+                </pagination>
+                <!-- /ko -->
+                <!-- /ko -->
 
-            <!-- /ko -->
+                <!-- /ko -->
+            </div>
         </div>
     </div>
 </div>

@@ -1,0 +1,9 @@
+code-editor {
+    min-height: 200px;
+
+    /* fix for positioning of the IntelliSense window of Monaco Editor */
+    .monaco-editor .overflowingContentWidgets {
+        position: absolute;
+        top: 0;
+    }
+}

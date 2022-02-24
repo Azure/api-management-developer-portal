@@ -1,12 +1,5 @@
 import * as ko from "knockout";
-import { remark } from "remark";
-import remarkParse from "remark-parse";
-import remarkGfm from "remark-gfm";
-import remarkRehype from "remark-rehype";
-import rehypeRaw from "rehype-raw";
-import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
-import rehypeStringify from "rehype-stringify";
-import * as truncateHtml from "truncate-html";
+import { MarkdownService } from "../services/markdownService";
 
 interface MarkdownConfig {
     /**
@@ -25,6 +18,7 @@ ko.bindingHandlers["markdown"] = {
     update: (element: HTMLElement, valueAccessor: () => string | MarkdownConfig): void => {
         const config = ko.unwrap(valueAccessor());
         const htmlObservable = ko.observable();
+        const markdownService = new MarkdownService();
 
         let markdown: string;
         let length: number;
@@ -43,21 +37,7 @@ ko.bindingHandlers["markdown"] = {
 
         ko.applyBindingsToNode(element, { html: htmlObservable }, null);
 
-        remark()
-            .use(remarkParse)
-            .use(remarkGfm)
-            .use(remarkRehype, { allowDangerousHtml: true })
-            .use(rehypeRaw)
-            .use(rehypeSanitize, {
-                ...defaultSchema,
-                attributes: {
-                    '*': ['className', 'role']
-                }
-            })
-            .use(rehypeStringify)
-            .process(markdown, (err: any, html: any) => {
-                html = truncateHtml.default(html, { length: length, reserveLastWord: true });
-                htmlObservable(html);
-            });
+        const html = markdownService.processMarkdown(markdown);
+        htmlObservable(html);
     }
 };

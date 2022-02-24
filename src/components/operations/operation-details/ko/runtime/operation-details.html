@@ -32,9 +32,19 @@
 
     <div class="collapsible">
         <h3>Request</h3>
+
         <div class="collapsible-container">
             <span class="text-monospace"
                 data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
+
+            <!-- ko if: associatedAuthServer -->
+            <div class="animation-fade-in">
+                <h4>Authorization</h4>
+
+                <oauth-server-configuration params="{authorizationServer: associatedAuthServer}">
+                </oauth-server-configuration>
+            </div>
+            <!-- /ko -->
 
             <!-- ko if: operation().parameters.length > 0 -->
             <h4>Request parameters</h4>
@@ -154,7 +164,8 @@
                                     data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
                                 <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
                                 <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
-                                <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type"></div>
+                                <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type">
+                                </div>
                                 <div role="cell" data-bind="markdown: parameter.description"></div>
                             </div>
                             <!-- /ko -->
@@ -251,7 +262,8 @@
             <!-- ko foreach: { data: definitions, as: 'definition' } -->
             <div class="d-contents" role="row">
                 <div role="cell" class="text-truncate">
-                    <a data-bind="text: definition.name, attr: { title: definition.name, href: $component.getDefinitionReferenceUrl(definition) }"></a>
+                    <a
+                        data-bind="text: definition.name, attr: { title: definition.name, href: $component.getDefinitionReferenceUrl(definition) }"></a>
                 </div>
                 <div role="cell" data-bind="markdown: definition.description"></div>
             </div>
@@ -314,21 +326,19 @@
 <!-- ko if: apiType() === 'graphql' -->
 <div class="animation-fade-in">
     <div class="operation-header">
-        <h2 class="operation-name"></h2>
+        <div>
+            <h2>GraphQL Endpoint</h2>
+            <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
+        </div>
         <!-- ko if: $component.enableConsole -->
-        <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i
-                class="icon-emb icon-emb-play"></i>
-        </button>
+        <div>
+            <button class="open-console-button graph mt-17" data-bind="click: $component.openConsole">Try it <i
+                    class="icon-emb icon-emb-play"></i>
+            </button>
+        </div>
         <!-- /ko -->
     </div>
-
-    <div class="collapsible">
-        <h3>GraphQL Endpoint</h3>
-        <div class="collapsible-container">
-            <span class="text-monospace" data-bind="text: $component.requestUrlSample"></span>
-        </div>
-    </div>
-
+    <graphql-details></graphql-details>
 </div>
 <!-- /ko -->
 
@@ -336,8 +346,8 @@
 
 <!-- ko if: $component.consoleIsOpen -->
 <!-- ko ifnot: apiType() === 'graphql' -->
-<div class="detachable-right scrollable flex-grow animation-fade-in">
-    <operation-console class="test flex flex-column" data-bind="dialog: {}"
+<div class="detachable-right flex-grow animation-fade-in">
+    <operation-console class="test flex flex-column gql-console-height" data-bind="dialog: {}"
         params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
     </operation-console>
 </div>

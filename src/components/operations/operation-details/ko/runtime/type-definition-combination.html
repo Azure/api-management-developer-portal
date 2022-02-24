@@ -1,0 +1,39 @@
+<!-- ko if: properties.length > 0 -->
+
+<div class="combination-type">
+    <h5><span data-bind="text: type.combinationType"></span>:</h5>
+    <!-- ko foreach: { data: type.combinationReferences, as: 'reference'} -->
+    <div>
+        <a class="text-monospace"
+            data-bind="text: reference, attr: { href: $component.getReferenceUrl(reference), title: reference }"></a>
+    </div>
+    <!-- /ko -->
+</div>
+
+
+<!-- ko foreach: { data: properties, as: 'property' } -->
+    <h4 data-bind="text: property.name"></h4>
+
+    <!-- ko if: (property.kind === 'object' || property.kind === 'array') && property.properties -->
+    <!-- ko template: { name: 'typeDefinitionObject', data: property } -->
+    <!-- /ko -->
+    <!-- /ko -->
+
+    <!-- ko if: property.kind === 'enum' -->
+    <!-- ko template: { name: 'typeDefinitionEnum', data: property } -->
+    <!-- /ko -->
+    <!-- /ko -->
+
+    <!-- ko if: property.kind === 'indexer' -->
+    <!-- ko template: { name: 'typeDefinitionIndexer', data: property } -->
+    <!-- /ko -->
+    <!-- /ko -->
+
+    <!-- ko if: property.kind === 'combination' && property.properties -->
+    <!-- ko template: { name: 'typeDefinitionCombination', data: property } -->
+    <!-- /ko -->
+    <!-- /ko -->
+
+<!-- /ko -->
+
+<!-- /ko -->

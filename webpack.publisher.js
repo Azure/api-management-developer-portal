@@ -1,12 +1,13 @@
 const path = require("path");
+const webpack = require("webpack");
+const { merge } = require("webpack-merge");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const runtimeConfig = require("./webpack.runtime");
- 
+
 
 const publisherConfig = {
-    mode: "none",
+    mode: "development",
     target: "node",
     node: {
         __dirname: false,
@@ -14,15 +15,10 @@ const publisherConfig = {
     },
     entry: {
         "index": ["./src/startup.publish.ts"]
-    },
-    optimization: {
-        minimize: false
-    },
+    },    
     output: {
         filename: "./[name].js",
-        path: path.resolve(__dirname, "dist/publisher"),
-        library: "publisher",
-        libraryTarget: "commonjs2"
+        path: path.resolve(__dirname, "dist/publisher")
     },
     module: {
         rules: [
@@ -47,6 +43,7 @@ const publisherConfig = {
                 loader: "html-loader",
                 options: {
                     esModule: true,
+                    sources: false,
                     minimize: {
                         removeComments: false,
                         collapseWhitespace: false
@@ -61,24 +58,40 @@ const publisherConfig = {
                 }
             },
             {
-                test: /\.liquid$/,
+                test: /\.(raw|liquid)$/,
                 loader: "raw-loader"
             }
         ]
     },
     plugins: [
-        new CleanWebpackPlugin(),
+        new webpack.IgnorePlugin({ resourceRegExp: /canvas/ }, { resourceRegExp: /jsdom$/ }),
         new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" }),
         new CopyWebpackPlugin({
             patterns: [
                 { from: `./src/config.publish.json`, to: `config.json` },
-                { from: `./src/config.runtime.json`, to: `assets/config.json` }
+                { from: `./src/config.runtime.json`, to: `assets/config.json` },
+                { from: `./templates/default.json`, to: "editors/templates/default.json" }
             ]
-        })
+        }),
+        new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
     ],
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"]
+        extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"],
+        fallback: {
+            buffer: require.resolve("buffer"),
+            stream: require.resolve("stream-browserify"),
+            querystring: require.resolve("querystring-es3")
+        }
     }
 };
 
-module.exports = [publisherConfig, runtimeConfig(false)];
+const publisherRuntimeConfig = merge(runtimeConfig, {
+    entry: { "styles/theme": `./src/themes/website/styles/styles.scss` },
+    output: { "path": path.resolve(__dirname, "dist/publisher/assets") }
+});
+
+module.exports = {
+    default: [publisherConfig, publisherRuntimeConfig],
+    publisherConfig,
+    publisherRuntimeConfig
+}

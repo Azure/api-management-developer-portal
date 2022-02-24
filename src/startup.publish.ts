@@ -8,6 +8,8 @@ import { StaticSettingsProvider } from "./configuration/staticSettingsProvider";
 import { FileSystemBlobStorage } from "./components/filesystemBlobStorage";
 import { ApimPublishModule } from "./apim.publish.module";
 import { PublishingCacheModule } from "./persistence/publishingCacheModule";
+import { ISettingsProvider } from "@paperbits/common/configuration";
+import {staticDataEnvironment} from "./../environmentConstants"
 import { useArmConfiguration } from "./configuration/settingsHelper";
 
 
@@ -17,7 +19,21 @@ if (!configuration) {
     process.exit();
 }
 
-const settingsProvider = new StaticSettingsProvider(configuration);
+/* Reading settings from configuration file */
+let settingsProvider: ISettingsProvider;
+if (process.env.NODE_ENV === staticDataEnvironment) {
+    settingsProvider = new StaticSettingsProvider({
+        "environment": "publishing",
+        "managementApiUrl": "https://contoso.management.azure-api.net",
+        "managementApiAccessToken": "SharedAccessSignature&1&",
+        "useHipCaptcha": false
+    });
+}
+else {
+    const configFile = path.resolve(__dirname, "./config.json");
+    const configuration = JSON.parse(fs.readFileSync(configFile, "utf8").toString());
+    settingsProvider = new StaticSettingsProvider(configuration);
+}
 
 /* Storage where the website get published */
 const outputBlobStorage = new FileSystemBlobStorage("./dist/website");

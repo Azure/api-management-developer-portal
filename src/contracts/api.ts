@@ -96,6 +96,21 @@ export interface ApiProperties {
      * Specifies whether an API or Product subscription is required for accessing the API.
      */
     subscriptionRequired: boolean;
+
+    /**
+     * Contact information.
+     */
+    contact?: ContactDetails;
+
+    /**
+     * Name of the license and a URL to the license description.
+     */
+    license?: LicenseDetails;
+
+    /**
+     * Link to the page that describes the terms of service. Must be in the URL format.
+     */
+    termsOfServiceUrl?: string;
 }
 
 
@@ -104,3 +119,13 @@ export interface SubscriptionKeyParameterName {
     query: string;
 }
 
+export interface ContactDetails {
+    name?: string,
+    email?: string,
+    url?: string,
+}
+
+export interface LicenseDetails {
+    name: string,
+    url: string
+}

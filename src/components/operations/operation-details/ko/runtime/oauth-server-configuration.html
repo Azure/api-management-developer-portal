@@ -1,0 +1,114 @@
+<div class="row flex flex-row">
+    <div class="col-2">
+        <div class="form-group">
+            <div class="form-group">
+                <label for="username" class="text-monospace form-label">Supported grant flows</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 align-self-center">
+        <div class="form-group">
+            <div class="input-group">
+                <input autocomplete="off" class="form-control form-control-sm" placeholder="value" spellcheck="false"
+                    aria-label="Supported grant flows" readonly data-bind="textInput: $component.displayedGrantFlows()">
+                <button class="input-group-addon no-border"
+                    data-bind="copyToClipboard: $component.displayedGrantFlows()" aria-label="Copy to clipboard">
+                    <i class="icon-emb icon-emb-duplicate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row flex flex-row">
+    <div class="col-2">
+        <div class="form-group">
+            <div class="form-group">
+                <label for="username" class="text-monospace form-label">Client ID</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 align-self-center">
+        <div class="form-group">
+            <div class="input-group" data-bind="with: $component.authorizationServer">
+                <input autocomplete="off" class="form-control form-control-sm" placeholder="value" spellcheck="false"
+                    aria-label="Client id" readonly data-bind="textInput: clientId">
+                <button class="input-group-addon no-border" data-bind="copyToClipboard: clientId"
+                    aria-label="Copy to clipboard">
+                    <i class="icon-emb icon-emb-duplicate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row flex flex-row">
+    <div class="col-2">
+        <div class="form-group">
+            <div class="form-group">
+                <label for="username" class="text-monospace form-label">Authorization endpoint</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 align-self-center">
+        <div class="form-group">
+            <div class="input-group">
+                <input autocomplete="off" class="form-control form-control-sm" placeholder="value" spellcheck="false"
+                    aria-label="Authorization endpoint" readonly
+                    data-bind="textInput: $component.authorizationServer().authorizationEndpoint">
+
+                <button class="input-group-addon no-border"
+                    data-bind="copyToClipboard: $component.authorizationServer().authorizationEndpoint"
+                    aria-label="Copy to clipboard">
+                    <i class="icon-emb icon-emb-duplicate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row flex flex-row">
+    <div class="col-2">
+        <div class="form-group">
+            <div class="form-group">
+                <label for="username" class="text-monospace form-label">Token endpoint</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 align-self-center">
+        <div class="form-group">
+            <div class="input-group">
+                <input autocomplete="off" class="form-control form-control-sm" placeholder="value" spellcheck="false"
+                    aria-label="Token endpoint" readonly
+                    data-bind="textInput: $component.authorizationServer().tokenEndpoint">
+                <button class="input-group-addon no-border"
+                    data-bind="copyToClipboard: $component.authorizationServer().tokenEndpoint"
+                    aria-label="Copy to clipboard">
+                    <i class="icon-emb icon-emb-duplicate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row flex flex-row">
+    <div class="col-2">
+        <div class="form-group">
+            <div class="form-group">
+                <label for="username" class="text-monospace form-label">Scopes</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 align-self-center">
+        <div class="form-group">
+            <div class="input-group">
+                <input autocomplete="off" class="form-control form-control-sm" placeholder="value" spellcheck="false"
+                    aria-label="Scopes" readonly data-bind="textInput: $component.displayedScopes">
+                <button class="input-group-addon no-border" data-bind="copyToClipboard: $component.displayedScopes"
+                    aria-label="Copy to clipboard">
+                    <i class="icon-emb icon-emb-duplicate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,6 +3,7 @@ import template from "./type-definition.html";
 import typeDefinitionEnum from "./type-definition-enum.html";
 import typeDefinitionIndexer from "./type-definition-indexer.html";
 import typeDefinitionObject from "./type-definition-object.html";
+import typeDefinitionCombination from "./type-definition-combination.html";
 import { Component, Param, OnMounted } from "@paperbits/common/ko/decorators";
 import { TypeDefinition } from "../../../../../models/typeDefinition";
 import { RouteHelper } from "../../../../../routing/routeHelper";
@@ -13,7 +14,8 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
     childTemplates: {
         typeDefinitionEnum: typeDefinitionEnum,
         typeDefinitionIndexer: typeDefinitionIndexer,
-        typeDefinitionObject: typeDefinitionObject
+        typeDefinitionObject: typeDefinitionObject,
+        typeDefinitionCombination: typeDefinitionCombination
     }
 })
 export class TypeDefinitionViewModel {

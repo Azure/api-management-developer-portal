@@ -5,7 +5,6 @@ import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@pap
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
-import { TypeDefinitionPropertyTypeCombination } from "./../../../../../models/typeDefinition";
 import { AuthorizationServer } from "./../../../../../models/authorizationServer";
 import { Representation } from "./../../../../../models/representation";
 import { RouteHelper } from "../../../../../routing/routeHelper";
@@ -68,13 +67,9 @@ export class OperationDetails {
         this.requestUrlSample = ko.computed(() => {
 
             const api = this.api();
-            const hostname = this.sampleHostname();
-            
-            if (api?.type === TypeOfApi.graphQL) {
-                return `https://${hostname}/${api.path}`;
-            }
+            const hostname = this.sampleHostname() ?? null;
 
-            if (!this.api() || !this.operation()) {
+            if ((!this.api() || !this.operation()) && api?.type !== TypeOfApi.graphQL) {
                 return null;
             }
 
@@ -82,17 +77,19 @@ export class OperationDetails {
 
             let operationPath = api.versionedPath;
 
-            if (api.type !== TypeOfApi.soap) {
+            if (api.type !== TypeOfApi.soap && api.type !== TypeOfApi.graphQL) {
                 operationPath += operation.displayUrlTemplate;
             }
 
             let requestUrl = "";
 
-            if (api.type === TypeOfApi.webSocket) {
-                requestUrl = `${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
-            } else {
-                requestUrl = `https://${hostname}${Utils.ensureLeadingSlash(operationPath)}`;
+            if (hostname && api.type !== TypeOfApi.webSocket) {
+                requestUrl = 'https://';
             }
+
+            if (hostname) requestUrl += hostname;
+
+            requestUrl += Utils.ensureLeadingSlash(operationPath);
 
             if (api.apiVersion && api.apiVersionSet?.versioningScheme === "Query") {
                 return Utils.addQueryParameter(requestUrl, api.apiVersionSet.versionQueryName, api.apiVersion);
@@ -281,10 +278,6 @@ export class OperationDetails {
                 || definition.type instanceof TypeDefinitionPropertyTypeArrayOfReference)) {
                 result.push(definition.type.name);
             }
-
-            if (definition.type instanceof TypeDefinitionPropertyTypeCombination) {
-                result.push(...definition.type.combination.map(x => x["name"]));
-            }
         });
 
         return result.filter(x => !skipNames.includes(x));
@@ -293,12 +286,10 @@ export class OperationDetails {
     public async loadGatewayInfo(apiName: string): Promise<void> {
         const hostnames = await this.apiService.getApiHostnames(apiName);
 
-        if (hostnames.length === 0) {
-            throw new Error(`Unable to fetch gateway hostnames.`);
+        if (hostnames.length !== 0) {
+            this.sampleHostname(hostnames[0]);
+            this.hostnames(hostnames);
         }
-
-        this.sampleHostname(hostnames[0]);
-        this.hostnames(hostnames);
     }
 
     private cleanSelection(): void {
@@ -320,7 +311,7 @@ export class OperationDetails {
 
         if (!definition) {
             // Fallback for the case when type is referenced, but not defined in schema.
-            return new TypeDefinition(representation.typeName, {});
+            return new TypeDefinition(representation.typeName, {}, this.definitions());
         }
 
         // Making copy to avoid overriding original properties.

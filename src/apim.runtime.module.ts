@@ -29,6 +29,9 @@ import { CodeSnippet } from "./components/operations/operation-details/ko/runtim
 import { Authorization } from "./components/operations/operation-details/ko/runtime/authorization";
 import { OperationConsole } from "./components/operations/operation-details/ko/runtime/operation-console";
 import { GraphqlConsole } from "./components/operations/operation-details/ko/runtime/graphql-console";
+import { GraphqlDocumentation } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc";
+import { GraphqlDetails } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc-details";
+import { GraphDocService } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc-service";
 import { OperationDetails } from "./components/operations/operation-details/ko/runtime/operation-details";
 import { TypeDefinitionViewModel } from "./components/operations/operation-details/ko/runtime/type-definition";
 import { OperationList } from "./components/operations/operation-list/ko/runtime/operation-list";
@@ -78,6 +81,11 @@ import { SettingNames } from "./constants";
 import { XmlHttpRequestClient } from "@paperbits/common/http";
 import { DefaultAuthenticator } from "./authentication/defaultAuthenticator";
 import { Pagination } from "./components/pagination/pagination";
+import { StaticDataHttpClient } from "./services/staticDataHttpClient";
+import { OauthServerConfiguration } from "./components/operations/operation-details/ko/runtime/oauth-server-configuration";
+import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
+import {staticDataEnvironment} from "./../environmentConstants"
+
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -97,6 +105,8 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationDetails", OperationDetails);
         injector.bind("operationConsole", OperationConsole);
         injector.bind("graphqlConsole", GraphqlConsole);
+        injector.bind("graphqlDocumentation", GraphqlDocumentation);
+        injector.bind("graphqlDetails", GraphqlDetails);
         injector.bind("authorization", Authorization);
         injector.bind("typeDefinition", TypeDefinitionViewModel);
         injector.bind("codeSnippet", CodeSnippet);
@@ -137,6 +147,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("httpClient", XmlHttpRequestClient);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("routeHelper", RouteHelper);
+        injector.bindSingleton("graphDocService", GraphDocService);
         injector.bindSingleton("userService", StaticUserService);
         injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("oauthService", OAuthService);
@@ -144,6 +155,12 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("tagInput", TagInput);
         injector.bind("pagination", Pagination);
+        injector.bind("oauthServerConfiguration", OauthServerConfiguration);
+
+        if (process.env.NODE_ENV === staticDataEnvironment) {
+            injector.bind("httpClient", StaticDataHttpClient);
+            injector.bind("dataProvider", RuntimeStaticDataProvider);
+        }
 
 
         if (location.href.includes("designtime=true")) {

@@ -43,10 +43,15 @@ export class OperationConsole {
     public readonly selectedRepresentation: ko.Observable<ConsoleRepresentation>;
     public readonly requestError: ko.Observable<string>;
     public readonly codeSample: ko.Observable<string>;
+    public readonly showHostnameInput: ko.Observable<boolean>;
     public readonly selectedHostname: ko.Observable<string>;
     public readonly isHostnameWildcarded: ko.Computed<boolean>;
     public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
     public readonly wildcardSegment: ko.Observable<string>;
+    public readonly collapsedParameters: ko.Observable<boolean>;
+    public readonly collapsedHeaders: ko.Observable<boolean>;
+    public readonly collapsedBody: ko.Observable<boolean>;
+    public readonly collapsedRequest: ko.Observable<boolean>;
     public isConsumptionMode: boolean;
     public templates: Object;
     public backendUrl: string;
@@ -60,6 +65,8 @@ export class OperationConsole {
     public readonly wsPayload: ko.Observable<string | File>;
     public readonly wsDataFormat: ko.Observable<string>;
     public readonly wsLogItems: ko.ObservableArray<LogItem>;
+
+    private bodyStash: string;
 
     constructor(
         private readonly apiService: ApiService,
@@ -87,6 +94,7 @@ export class OperationConsole {
         this.sendingRequest = ko.observable(false);
         this.codeSample = ko.observable();
         this.onFileSelect = this.onFileSelect.bind(this);
+        this.showHostnameInput = ko.observable(false);
         this.selectedHostname = ko.observable("");
         this.hostnameSelectionEnabled = ko.observable();
         this.isHostnameWildcarded = ko.computed(() => this.selectedHostname().includes("*"));
@@ -103,6 +111,13 @@ export class OperationConsole {
         this.wsPayload = ko.observable();
         this.wsDataFormat = ko.observable("raw");
         this.wsLogItems = ko.observableArray([]);
+
+        this.collapsedParameters = ko.observable(false);
+        this.collapsedHeaders = ko.observable(false);
+        this.collapsedBody = ko.observable(false);
+        this.collapsedRequest = ko.observable(false);
+
+        this.bodyStash = "";
 
         validation.rules["maxFileSize"] = {
             validator: (file: File, maxSize: number) => !file || file.size < maxSize,
@@ -170,6 +185,8 @@ export class OperationConsole {
             return;
         }
 
+        this.bodyStash = "";
+
         this.working(true);
         this.sendingRequest(false);
         this.wsConnected(false);
@@ -186,8 +203,14 @@ export class OperationConsole {
         const hostnames = this.hostnames();
         this.hostnameSelectionEnabled(this.hostnames()?.length > 1);
 
-        const hostname = hostnames[0];
-        this.selectedHostname(hostname);
+        let hostname = "";
+
+        if (hostnames) {
+            hostname = hostnames[0];
+            this.selectedHostname(hostname);
+        } else {
+            this.showHostnameInput(true);
+        }
 
         this.hostnameSelectionEnabled(this.hostnames()?.length > 1);
         consoleOperation.host.hostname(hostname);
@@ -271,16 +294,27 @@ export class OperationConsole {
         this.updateRequestSummary();
     }
 
+    public addBody(): void {
+        this.consoleOperation().hasBody(true);
+        this.consoleOperation().request.body(this.bodyStash);
+    }
+
+    public removeBody(): void {
+        this.consoleOperation().hasBody(false);
+        this.bodyStash = this.consoleOperation().request.body();
+        this.consoleOperation().request.body(null);
+    }
+
+    public revertBody(): void {
+        this.consoleOperation().request.body(this.selectedRepresentation().sample)
+    }
+
     public addHeader(): void {
         const newHeader = new ConsoleHeader();
         this.consoleOperation().request.headers.push(newHeader);
         newHeader.value.subscribe(_ => this.updateRequestSummary());
 
         this.updateRequestSummary();
-    }
-
-    public revertBody(): void {
-        this.consoleOperation().request.body(this.selectedRepresentation().sample)
     }
 
     public removeHeader(header: ConsoleHeader): void {
@@ -391,7 +425,7 @@ export class OperationConsole {
         const url = consoleOperation.requestUrl();
         const method = consoleOperation.method;
         const headers = [...request.headers()];
-        
+
         let payload;
 
         switch (consoleOperation.request.bodyFormat()) {
@@ -429,9 +463,11 @@ export class OperationConsole {
 
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
 
-            const responseStatusText = knownStatusCode
-                ? knownStatusCode.description
-                : "Unknown";
+            const responseStatusText = !!response.statusText
+                ? response.statusText
+                : knownStatusCode
+                    ? knownStatusCode.description
+                    : "Unknown";
 
             this.responseStatusCode(response.statusCode.toString());
             this.responseStatusText(responseStatusText);
@@ -587,6 +623,22 @@ export class OperationConsole {
 
     public getApiReferenceUrl(): string {
         return this.routeHelper.getApiReferenceUrl(this.api().name);
+    }
+
+    public collapseParameters(): void {
+        this.collapsedParameters(!this.collapsedParameters());
+    }
+
+    public collapseHeaders(): void {
+        this.collapsedHeaders(!this.collapsedHeaders());
+    }
+
+    public collapseBody(): void {
+        this.collapsedBody(!this.collapsedBody());
+    }
+
+    public collapseRequest(): void {
+        this.collapsedRequest(!this.collapsedRequest());
     }
 
 }

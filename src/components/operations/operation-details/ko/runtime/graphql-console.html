@@ -31,7 +31,7 @@
         <authorization
             params="{ api: $component.api, authorizationServer: $component.authorizationServer, headers: $component.headers}">
         </authorization>
-    
+
         <h3 class="pt-0">Headers
             <button class="no-border" data-bind="click: $component.collapse('collapsedHeaders')">
                 <!-- ko if: $component.collapsedHeaders -->
@@ -48,9 +48,10 @@
             <div class="row flex flex-row headers-gql pl-0">
                 <div class="col-4">
                     <div class="form-group">
-                        <div class="input-group">
-                            <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="name"
-                                spellcheck="false" aria-label="Header name" data-bind="textInput: header.name">
+                        <div class="input-group has-validation">
+                            <input type="text" autocomplete="off" class="form-control form-control-sm"
+                                placeholder="name" spellcheck="false" aria-label="Header name"
+                                data-bind="textInput: header.name">
                             <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
                         </div>
                     </div>
@@ -63,8 +64,9 @@
                         <!-- /ko -->
                         <!-- ko if: !header.options || header.options.length === 0 -->
                         <div class="form-group">
-                            <input type="text" autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                                spellcheck="false" aria-label="Header value" data-bind="textInput: header.value">
+                            <input type="text" autocomplete="off" class="form-control form-control-sm"
+                                placeholder="value" spellcheck="false" aria-label="Header value"
+                                data-bind="textInput: header.value">
                             <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
                         </div>
                         <!-- /ko -->
@@ -76,7 +78,7 @@
             </div>
         </div>
         <!-- /ko -->
-    
+
         <a href="#" role="button" data-bind="click: $component.addHeader">
             <i class="icon-emb icon-emb-plus"></i> Add header
         </a>
@@ -100,18 +102,12 @@
 
             <!-- ko ifnot: $component.collapsedExplorer -->
             <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
-                <select id="operationType" class="form-control" data-bind="value: queryType">
-                    <option value="query">Query</option>
-                    <option value="mutation">Mutation</option>
-                    <option value="subscription">Subscription</option>
-                </select>
-                <div class="input-icons">
-                    <i class="icon-emb icon-emb-magnifier icon"></i>
-                    <input class="form-control search" type="search" aria-label="Search" placeholder="Search"
-                        spellcheck="false" data-bind="textInput: filter" />
-                </div>
+                <select class="form-control"
+                    data-bind="options: graphDocService.availableTypes, value: queryType"></select>
 
-                
+                <input class="form-control search" type="search" aria-label="Search" placeholder="Search operations"
+                    spellcheck="false" data-bind="textInput: filter" />
+
                 <div class="input-group explorer-operations scrollable">
                     <!-- ko template: { name: 'graphqlExplorer', data: {operationNode: $component.node(), filter: filter()} } -->
                     <!-- /ko -->
@@ -122,20 +118,21 @@
         <div class="gql-query-grid">
             <h4>
                 Query editor
-                <i class="icon-emb icon-emb-info"
+                <i class="icon-emb icon-emb-info info-icon-size"
                     title="Select a query, mutation, or subscription from the explorer to add it to the test console or begin typing to compose a query."></i>
             </h4>
             <div class="query-editor" id="queryEditor"></div>
             <h4 class="margin-top-variables">
                 Query variables
-                <i class="icon-emb icon-emb-info"
+                <i class="icon-emb icon-emb-info info-icon-size"
                     title="Use variables to reuse the same query or mutation to pass different values."></i>
             </h4>
             <div class="query-variable" id="variablesEditor"></div>
             <div class="flex flex-column align-items-end">
                 <div class="btn-group margin-top-send" role="group">
                     <!-- ko ifnot: $component.sendingRequest()-->
-                    <button type="button" class="button button-primary btn-sm" data-bind="click: validateAndSendRequest">
+                    <button type="button" class="button button-primary btn-sm"
+                        data-bind="click: validateAndSendRequest">
                         Send
                     </button>
                     <!-- /ko -->
