@@ -79,7 +79,18 @@
             params="{ api: $component.api, authorizationServer: $component.authorizationServer, consoleOperation: $component.consoleOperation, codeSample: $component.codeSample, selectedLanguage: $component.selectedLanguage}">
         </authorization>
 
-        <h3>Parameters</h3>
+        <h3>Parameters
+            <button aria-label="Collapse parameters" class="no-border"
+                data-bind="activate: $component.collapseParameters">
+                <!-- ko if: $component.collapsedParameters -->
+                <i class="icon-emb icon-emb-chevron-down"></i>
+                <!-- /ko -->
+                <!-- ko ifnot: $component.collapsedParameters -->
+                <i class="icon-emb icon-emb-chevron-up"></i>
+                <!-- /ko -->
+            </button>
+        </h3>
+        <!-- ko ifnot: $component.collapsedParameters -->
         <!-- ko if: (templateParameters && templateParameters().length > 0) || (request.queryParameters && request.queryParameters().length > 0) -->
         <div data-bind="foreach: { data: templateParameters, as: 'parameter' }">
             <div class="row flex flex-row">
@@ -157,9 +168,20 @@
             <i class="icon-emb icon-emb-plus"></i>
             Add parameter
         </a>
+        <!-- /ko -->
 
-        <h3>Headers</h3>
+        <h3>Headers
+            <button aria-label="Collapse parameters" class="no-border" data-bind="activate: $component.collapseHeaders">
+                <!-- ko if: $component.collapsedHeaders -->
+                <i class="icon-emb icon-emb-chevron-down"></i>
+                <!-- /ko -->
+                <!-- ko ifnot: $component.collapsedHeaders -->
+                <i class="icon-emb icon-emb-chevron-up"></i>
+                <!-- /ko -->
+            </button>
+        </h3>
 
+        <!-- ko ifnot: $component.collapsedHeaders -->
         <!-- ko if: api.type === 'websocket' -->
         <span>Headers are not supported in the test console for WebSocket APIs.</span>
         <!-- /ko -->
@@ -219,11 +241,22 @@
             <i class="icon-emb icon-emb-plus"></i> Add header
         </a>
         <!-- /ko -->
+        <!-- /ko -->
 
         <!-- ko if: canHaveBody -->
 
-        <h3>Body</h3>
+        <h3>Body
+            <button aria-label="Collapse parameters" class="no-border" data-bind="activate: $component.collapseBody">
+                <!-- ko if: $component.collapsedBody -->
+                <i class="icon-emb icon-emb-chevron-down"></i>
+                <!-- /ko -->
+                <!-- ko ifnot: $component.collapsedBody -->
+                <i class="icon-emb icon-emb-chevron-up"></i>
+                <!-- /ko -->
+            </button>
+        </h3>
 
+        <!-- ko ifnot: $component.collapsedBody -->
         <!-- ko if: !hasBody() -->
         <a href="#" role="button" data-bind="click: $component.addBody">
             <i class="icon-emb icon-emb-plus"></i> Add body
@@ -327,23 +360,24 @@
         </div>
         <!-- /ko -->
         <!-- /ko -->
+        <!-- /ko -->
 
     </div>
 
     <!-- ko ifnot: api().type === 'websocket' -->
     <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
+        <h3>HTTP request
+            <button aria-label="Collapse parameters" class="no-border" data-bind="activate: $component.collapseRequest">
+                <!-- ko if: $component.collapsedRequest -->
+                <i class="icon-emb icon-emb-chevron-down"></i>
+                <!-- /ko -->
+                <!-- ko ifnot: $component.collapsedRequest -->
+                <i class="icon-emb icon-emb-chevron-up"></i>
+                <!-- /ko -->
+            </button>
+        </h3>
 
-        <a href="#" role="button" data-bind="click: $component.toggleCodeExamples" class="btn-centered-vert btn-inline"
-            aria-label="Toggle code samples">
-            <!-- ko if: $component.showCodeExamples  -->
-            <i class="icon-emb icon-emb-eye-fill"></i> Hide code samples
-            <!-- /ko -->
-            <!-- ko ifnot: $component.showCodeExamples  -->
-            <i class="icon-emb icon-emb-eye"></i> Show code samples
-            <!-- /ko -->
-        </a>
-
-        <!-- ko if: $component.showCodeExamples-->
+        <!-- ko ifnot: $component.collapsedRequest -->
         <!-- ko ifnot: operation().request.isFormData() -->
         <select aria-label="Programming language" id="requestLanguages" class="form-control"
             data-bind="value: $component.selectedLanguage">
@@ -352,7 +386,6 @@
             <!-- /ko -->
         </select>
 
-        <h3>HTTP request</h3>
         <div class="code-snippet">
             <div class="code-snippet-heading">
                 <button class="code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
@@ -377,22 +410,21 @@
 
         <!-- /ko -->
         <!-- /ko -->
-
     </div>
     <!-- /ko -->
 
     <!-- ko if: api().type === 'websocket' -->
     <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
-        <a href="#" role="button" data-bind="click: $component.toggleCodeExamples" class="btn-centered-vert btn-inline"
-            aria-label="Toggle code samples">
-            <!-- ko if: $component.showCodeExamples  -->
-            <i class="icon-emb icon-emb-eye-fill"></i> Hide code samples
-            <!-- /ko -->
-            <!-- ko ifnot: $component.showCodeExamples  -->
-            <i class="icon-emb icon-emb-eye"></i> Show code samples
-            <!-- /ko -->
-        </a>
-        <!-- ko if: $component.showCodeExamples-->
+        <h3>WebSocket request
+            <button aria-label="Collapse parameters" class="no-border" data-bind="activate: $component.collapseRequest">
+                <!-- ko if: $component.collapsedRequest -->
+                <i class="icon-emb icon-emb-chevron-down"></i>
+                <!-- /ko -->
+                <!-- ko ifnot: $component.collapsedRequest -->
+                <i class="icon-emb icon-emb-chevron-up"></i>
+                <!-- /ko -->
+        </h3>
+        <!-- ko ifnot: $component.collapsedRequest -->
         <select aria-label="Programming language" id="requestLanguages" class="form-control"
             data-bind="value: $component.selectedLanguage">
             <!-- ko foreach: { data: requestLanguages, as: 'requestLanguage' } -->
@@ -400,7 +432,6 @@
             <!-- /ko -->
         </select>
 
-        <h3>WebSocket request</h3>
         <div class="code-snippet">
             <div class="code-snippet-heading">
                 <button class="code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
@@ -422,10 +453,6 @@
         <!-- ko if: $component.codeSample -->
         <pre data-bind="syntaxHighlight: { code: $component.codeSample, language: $component.selectedLanguage }"></pre>
         <!-- /ko -->
-        <!-- /ko -->
-
-
-
         <!-- ko if: wsConnected -->
         <h3>Payload</h3>
         <div class="flex justify-content-end">
@@ -501,7 +528,7 @@
         <!-- ko if: wsLogItems().length === 0 -->
         <p>Sent and received messages will appear here. Send a payload to begin.</p>
         <!-- /ko -->
-
+        <!-- /ko -->
     </div>
     <!-- /ko -->
 

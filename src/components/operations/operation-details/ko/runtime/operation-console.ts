@@ -47,7 +47,10 @@ export class OperationConsole {
     public readonly isHostnameWildcarded: ko.Computed<boolean>;
     public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
     public readonly wildcardSegment: ko.Observable<string>;
-    public readonly showCodeExamples: ko.Observable<boolean>;
+    public readonly collapsedParameters: ko.Observable<boolean>;
+    public readonly collapsedHeaders: ko.Observable<boolean>;
+    public readonly collapsedBody: ko.Observable<boolean>;
+    public readonly collapsedRequest: ko.Observable<boolean>;
     public isConsumptionMode: boolean;
     public templates: Object;
     public backendUrl: string;
@@ -61,7 +64,7 @@ export class OperationConsole {
     public readonly wsPayload: ko.Observable<string | File>;
     public readonly wsDataFormat: ko.Observable<string>;
     public readonly wsLogItems: ko.ObservableArray<LogItem>;
-    
+
     private bodyStash: string;
 
     constructor(
@@ -107,7 +110,10 @@ export class OperationConsole {
         this.wsDataFormat = ko.observable("raw");
         this.wsLogItems = ko.observableArray([]);
 
-        this.showCodeExamples = ko.observable(true);
+        this.collapsedParameters = ko.observable(false);
+        this.collapsedHeaders = ko.observable(false);
+        this.collapsedBody = ko.observable(false);
+        this.collapsedRequest = ko.observable(false);
 
         this.bodyStash = "";
 
@@ -411,7 +417,7 @@ export class OperationConsole {
         const url = consoleOperation.requestUrl();
         const method = consoleOperation.method;
         const headers = [...request.headers()];
-        
+
         let payload;
 
         switch (consoleOperation.request.bodyFormat()) {
@@ -450,7 +456,7 @@ export class OperationConsole {
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
 
             const responseStatusText = !!response.statusText
-                ? response.statusText 
+                ? response.statusText
                 : knownStatusCode
                     ? knownStatusCode.description
                     : "Unknown";
@@ -585,10 +591,6 @@ export class OperationConsole {
         this.updateRequestSummary();
     }
 
-    public toggleCodeExamples(): void{
-        this.showCodeExamples(!this.showCodeExamples());
-    }
-
     public toggleSecretHeader(header: ConsoleHeader): void {
         header.toggleRevealed();
     }
@@ -613,6 +615,22 @@ export class OperationConsole {
 
     public getApiReferenceUrl(): string {
         return this.routeHelper.getApiReferenceUrl(this.api().name);
+    }
+
+    public collapseParameters(): void {
+        this.collapsedParameters(!this.collapsedParameters());
+    }
+
+    public collapseHeaders(): void {
+        this.collapsedHeaders(!this.collapsedHeaders());
+    }
+
+    public collapseBody(): void {
+        this.collapsedBody(!this.collapsedBody());
+    }
+
+    public collapseRequest(): void {
+        this.collapsedRequest(!this.collapsedRequest());
     }
 
 }
