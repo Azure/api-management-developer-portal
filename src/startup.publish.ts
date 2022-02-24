@@ -1,3 +1,5 @@
+import * as path from "path";
+import * as fs from "fs";
 import { InversifyInjector } from "@paperbits/common/injection";
 import { IPublisher } from "@paperbits/common/publishing";
 import { CoreModule } from "@paperbits/core/core.module";

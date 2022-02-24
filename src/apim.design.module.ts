@@ -140,7 +140,7 @@ export class ApimDesignModule implements IInjectorModule {
 
 
         // injector.bindToCollection("autostart", AccessTokenRefrsher);
-        injector.bindToCollection("autostart", RuntimeConfigurator);
+        // injector.bindToCollection("autostart", RuntimeConfigurator);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("CodeEditor", CodeEditor);
         // injector.bindInstance("configFileUri", "/config.design.json");
@@ -148,5 +148,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("settingsProvider", DefaultSettingsProvider);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bindSingleton("armService", AzureResourceManagementService);
+        
     }
 }
