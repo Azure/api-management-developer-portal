@@ -43,6 +43,7 @@ export class OperationConsole {
     public readonly selectedRepresentation: ko.Observable<ConsoleRepresentation>;
     public readonly requestError: ko.Observable<string>;
     public readonly codeSample: ko.Observable<string>;
+    public readonly showHostnameInput: ko.Observable<boolean>;
     public readonly selectedHostname: ko.Observable<string>;
     public readonly isHostnameWildcarded: ko.Computed<boolean>;
     public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
@@ -93,6 +94,7 @@ export class OperationConsole {
         this.sendingRequest = ko.observable(false);
         this.codeSample = ko.observable();
         this.onFileSelect = this.onFileSelect.bind(this);
+        this.showHostnameInput = ko.observable(false);
         this.selectedHostname = ko.observable("");
         this.hostnameSelectionEnabled = ko.observable();
         this.isHostnameWildcarded = ko.computed(() => this.selectedHostname().includes("*"));
@@ -201,8 +203,14 @@ export class OperationConsole {
         const hostnames = this.hostnames();
         this.hostnameSelectionEnabled(this.hostnames()?.length > 1);
 
-        const hostname = hostnames[0];
-        this.selectedHostname(hostname);
+        let hostname = "";
+
+        if (hostnames) {
+            hostname = hostnames[0];
+            this.selectedHostname(hostname);
+        } else {
+            this.showHostnameInput(true);
+        }
 
         this.hostnameSelectionEnabled(this.hostnames()?.length > 1);
         consoleOperation.host.hostname(hostname);
