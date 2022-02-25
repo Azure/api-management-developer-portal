@@ -15,6 +15,7 @@
         "emitDecoratorMetadata": true,
         "allowUnreachableCode": true,
         "sourceMap": true,
+        "jsx": "react-jsx",
         "incremental": true
     },
     "include": [

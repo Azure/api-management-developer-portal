@@ -1,3 +1,4 @@
+import { ReactModule } from "@paperbits/react/react.module";
 import { AadConfigPublisher } from "./publishing/aadConfigPublisher";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
@@ -39,6 +40,7 @@ import { RuntimeConfigBuilder } from "./publishing/runtimeConfigBuilder";
 import { CustomHtmlPublishModule } from "./components/custom-html/customHtml.publish.module";
 import { CustomWidgetPublishModule } from "./components/custom-widget/customWidget.publish.module";
 import { CustomWidgetPublishModule as CustomWidgetSPublishModule } from "./components/custom-widget-scaffold/customWidget.publish.module";
+import { ClickCounterPublishModule } from "./components/click-counter/clickCounter.publish.module";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -65,6 +67,8 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ReportsModule());
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new CustomHtmlPublishModule());
+        injector.bindModule(new ReactModule());
+        injector.bindModule(new ClickCounterPublishModule());
         injector.bindModule(new CustomWidgetPublishModule());
         injector.bindModule(new CustomWidgetSPublishModule());
         injector.bindSingleton("tenantService", TenantService);

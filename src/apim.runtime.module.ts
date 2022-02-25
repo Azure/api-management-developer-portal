@@ -1,3 +1,4 @@
+import { ReactModule } from "@paperbits/react/react.module";
 import "./polyfills";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.activate";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.component";
@@ -74,6 +75,7 @@ import { UsersService } from "./services/usersService";
 import { ApimSettingsProvider } from "./configuration/apimSettingsProvider";
 import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import { Pagination } from "./components/pagination/pagination";
+import { ClickCounterRuntimeModule } from "./components/click-counter/clickCounter.runtime.module";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -141,5 +143,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("tagInput", TagInput);
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bind("pagination", Pagination);
+        injector.bindModule(new ReactModule());
+        injector.bindModule(new ClickCounterRuntimeModule());
     }
 }

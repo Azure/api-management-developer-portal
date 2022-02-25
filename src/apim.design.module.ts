@@ -1,3 +1,4 @@
+import { ReactModule } from "@paperbits/react/react.module";
 import * as Constants from "./constants";
 import "./bindingHandlers/codeEditor";
 import { UnsavedChangesRouteGuard } from "./routing/unsavedChangesRouteGuard";
@@ -68,6 +69,7 @@ import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.desi
 import { CustomWidgetDesignModule } from "./components/custom-widget/customWidget.design.module";
 import { CustomWidgetDesignModule as CustomWidgetSDesignModule } from "./components/custom-widget-scaffold/customWidget.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
+import { ClickCounterDesignModule } from "./components/click-counter/clickCounter.design.module";
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -119,6 +121,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new SigninSocialEditorModule());
         injector.bindModule(new CustomHtmlDesignModule());
+        injector.bindModule(new ReactModule());
+        injector.bindModule(new ClickCounterDesignModule());
         injector.bindModule(new CustomWidgetDesignModule());
         injector.bindModule(new CustomWidgetSDesignModule());
         injector.bindSingleton("app", App);
