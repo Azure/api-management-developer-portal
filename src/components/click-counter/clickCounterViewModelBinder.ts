@@ -7,7 +7,6 @@ import { ClickCounterModel } from "./clickCounterModel";
 import { ClickCounter } from "./clickCounter";
 import { widgetDisplayName, widgetEditorSelector, widgetName } from "./constants";
 
-
 export class ClickCounterViewModelBinder implements ViewModelBinder<ClickCounterModel, ClickCounter>  {
   constructor(
     private readonly eventManager: EventManager,
@@ -25,6 +24,10 @@ export class ClickCounterViewModelBinder implements ViewModelBinder<ClickCounter
     binding.flow = ComponentFlow.Block;
     binding.draggable = true;
     binding.viewModelClass = ClickCounter;
+    binding.defaultProps = {
+      initialCount: model.initialCount,
+      eventManager: this.eventManager,
+    };
     binding.applyChanges = async () => {
       await this.modelToViewModel(model, binding.viewModel, bindingContext);
       this.eventManager.dispatchEvent("onContentUpdate");

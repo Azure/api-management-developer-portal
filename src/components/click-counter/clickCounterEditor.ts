@@ -13,11 +13,11 @@ import { widgetEditorSelector } from "./constants";
   template: template
 })
 export class ClickCounterEditor implements WidgetEditor<ClickCounterModel> {
-  public readonly initialCount: ko.Observable<number>;
+  public readonly initialCount: ko.Observable<string>;
   public readonly background: ko.Observable<BackgroundStylePluginConfig>;
 
   constructor() {
-    this.initialCount = ko.observable(0);
+    this.initialCount = ko.observable("0");
     this.background = ko.observable<BackgroundStylePluginConfig>();
   }
 
@@ -34,7 +34,7 @@ export class ClickCounterEditor implements WidgetEditor<ClickCounterModel> {
        includinig "model", are available.
     */
 
-    this.initialCount(this.model.initialCount);
+    this.initialCount(this.model.initialCount.toString());
     this.initialCount
       .extend(ChangeRateLimit)
       .subscribe(this.applyChanges);
@@ -44,7 +44,7 @@ export class ClickCounterEditor implements WidgetEditor<ClickCounterModel> {
   }
 
   private applyChanges(): void {
-    this.model.initialCount = this.initialCount();
+    this.model.initialCount = parseInt(this.initialCount());
     this.onChange(this.model);
   }
 

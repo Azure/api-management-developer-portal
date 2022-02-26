@@ -2,27 +2,48 @@ import * as React from "react";
 import { RuntimeComponent } from "@paperbits/react/decorators";
 import { widgetRuntimeSelector } from "./constants";
 
+export interface TClickCounterRuntimeProps {
+  initialCount: number;
+  eventManager?: any;
+}
 
 export interface ClickCounterState {
-  clickCount: number;
+  initialCount: number;
+  clickCount?: number;
 }
 
 @RuntimeComponent({ selector: widgetRuntimeSelector })
-export class ClickCounterRuntime extends React.Component {
+export class ClickCounterRuntime extends React.Component<TClickCounterRuntimeProps> {
   public state: ClickCounterState;
 
-  constructor(props: any) {
+  constructor(props: TClickCounterRuntimeProps) {
     super(props);
 
     this.state = {
-      clickCount: props.initialCount || 0
+      initialCount: props.initialCount,
+      clickCount: undefined
     };
 
     this.increaseCount = this.increaseCount.bind(this);
+
+    console.log({ eventManager: props.eventManager });
+  }
+
+  public componentDidMount(): void {
+    window.addEventListener("resize", console.log);
+  }
+
+  public componentWillUnmount(): void {
+    // cleanup
+  }
+
+  public static getDerivedStateFromProps(props: TClickCounterRuntimeProps, state: ClickCounterState): ClickCounterState {
+    console.log(props, state);
+    return {...state, initialCount: props.initialCount};
   }
 
   public increaseCount(): void {
-    this.setState({ clickCount: this.state.clickCount + 1 });
+    this.setState({ clickCount: 1 + (this.state.clickCount ?? this.state.initialCount) });
   }
 
   public render(): JSX.Element {
@@ -33,7 +54,7 @@ export class ClickCounterRuntime extends React.Component {
         </button>
         <div>
           <label htmlFor="clickCount">Click count:</label>
-          <b id="clickCount">{this.state.clickCount}</b>
+          <b id="clickCount">{this.state.clickCount ?? this.state.initialCount}</b>
         </div>
       </div>
     );

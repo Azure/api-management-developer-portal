@@ -1,16 +1,23 @@
 import * as React from "react";
+import { ClickCounterRuntime } from "./clickCounterRuntime";
 
-/**
- * Click counter widget.
- */
-export class ClickCounter extends React.Component {
-  public state: any;
+interface TProps {
+  eventManager: any;
+  initialCount: number;
+}
 
-  constructor(props: any) {
+interface TState {
+  classNames: string;
+  initialCount: number;
+}
+
+export class ClickCounter extends React.Component<TProps, TState> {
+  constructor(props: TProps) {
     super(props);
 
     this.state = {
-      initialCount: props.initialCount || 0
+      initialCount: props.initialCount,
+      classNames: "",
     };
   }
 
@@ -25,7 +32,17 @@ export class ClickCounter extends React.Component {
           Please refer to documentation to learn about <a href="https://paperbits.io/wiki/widget-anatomy">widget anatomy</a>.
         </p>
 
-        <div style={{ height: 100 }} dangerouslySetInnerHTML={{ __html: `<click-counter-runtime props='{ "initialCount": ${this.state.initialCount} }'></click-counter-runtime>` }} />
+        direct
+        <div style={{ height: 100 }}>
+          {console.log(this.state.initialCount)}
+          <ClickCounterRuntime initialCount={this.state.initialCount} eventManager={this.props.eventManager} />
+        </div>
+
+        dangerously Set Inner HTML
+        <div style={{ height: 100 }}
+             dangerouslySetInnerHTML={{
+               __html: `<click-counter-runtime props='{ "initialCount": ${this.state.initialCount} }'></click-counter-runtime>`
+             }} />
       </div>
     );
   }
