@@ -58,6 +58,7 @@ export class ClickCounterViewModelBinder implements ViewModelBinder<ClickCounter
     }
 
     viewModel.setState(state => ({
+      ...state,
       initialCount: model.initialCount,
       classNames: classNames,
     }));

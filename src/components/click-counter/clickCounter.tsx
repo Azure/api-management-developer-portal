@@ -34,11 +34,10 @@ export class ClickCounter extends React.Component<TProps, TState> {
 
         direct
         <div style={{ height: 100 }}>
-          {console.log(this.state.initialCount)}
           <ClickCounterRuntime initialCount={this.state.initialCount} eventManager={this.props.eventManager} />
         </div>
 
-        dangerously Set Inner HTML
+        dangerously Set Inner HTML (WRONG)
         <div style={{ height: 100 }}
              dangerouslySetInnerHTML={{
                __html: `<click-counter-runtime props='{ "initialCount": ${this.state.initialCount} }'></click-counter-runtime>`
