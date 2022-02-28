@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RuntimeComponent } from "@paperbits/react/decorators";
-import { widgetRuntimeSelector } from "./constants";
+import { widgetRuntimeSelector } from "../constants";
 
 export interface TClickCounterRuntimeProps {
   initialCount: number;
@@ -11,6 +11,32 @@ export interface ClickCounterState {
   initialCount: number;
   clickCount?: number;
 }
+
+window.customElements.define("test-element",
+  class extends HTMLElement {
+    private readonly myTitle: string;
+
+    constructor() {
+      super();
+      this.innerHTML = `<h1>Loading</h1>`;
+
+      this.myTitle = this.getAttribute("myTitle");
+    }
+
+    public connectedCallback(): void {
+      this.initShadowDOM();
+    }
+
+    get template(): string {
+      return `<span>${this.myTitle}</span>`;
+    }
+
+    private initShadowDOM(): void {
+      const shadowRoot = this.attachShadow({ mode: "open" });
+      shadowRoot.innerHTML = this.template;
+    }
+  }
+);
 
 @RuntimeComponent({ selector: widgetRuntimeSelector })
 export class ClickCounterRuntime extends React.Component<TClickCounterRuntimeProps> {
@@ -38,8 +64,7 @@ export class ClickCounterRuntime extends React.Component<TClickCounterRuntimePro
   }
 
   public static getDerivedStateFromProps(props: TClickCounterRuntimeProps, state: ClickCounterState): ClickCounterState {
-    console.log(props, state);
-    return {...state, initialCount: props.initialCount};
+    return { ...state, initialCount: props.initialCount };
   }
 
   public increaseCount(): void {
@@ -50,11 +75,17 @@ export class ClickCounterRuntime extends React.Component<TClickCounterRuntimePro
     return (
       <div className="text text-align-center">
         <button className="button" onClick={this.increaseCount}>
-          Click me
+          <div dangerouslySetInnerHTML={{ __html: "<test-element myTitle='Click me!'></test-element>" }} />
         </button>
         <div>
           <label htmlFor="clickCount">Click count:</label>
           <b id="clickCount">{this.state.clickCount ?? this.state.initialCount}</b>
+
+          {(this.state.clickCount ?? this.state.initialCount) % 2 ? (
+            <div dangerouslySetInnerHTML={{ __html: "<test-element myTitle='odd'></test-element>" }} />
+          ) : (
+            <div dangerouslySetInnerHTML={{ __html: "<test-element myTitle='even'></test-element>" }} />
+          )}
         </div>
       </div>
     );

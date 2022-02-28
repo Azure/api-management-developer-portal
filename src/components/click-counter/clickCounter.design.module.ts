@@ -1,9 +1,9 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { ClickCounterEditor } from "./clickCounterEditor";
+import { ClickCounterEditor } from "./react/clickCounterEditor";
 import { ClickCounterHandlers } from "./clickCounterHandlers";
 import { ClickCounterModelBinder } from "./clickCounterModelBinder";
 import { ClickCounterViewModelBinder } from "./clickCounterViewModelBinder";
-import { ClickCounter } from "./clickCounter";
+import { ClickCounter } from "./react/clickCounter";
 
 export class ClickCounterDesignModule implements IInjectorModule {
   public register(injector: IInjector): void {

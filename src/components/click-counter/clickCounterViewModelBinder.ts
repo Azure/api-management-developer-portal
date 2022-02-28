@@ -4,7 +4,7 @@ import { EventManager } from "@paperbits/common/events";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { ClickCounterModel } from "./clickCounterModel";
-import { ClickCounter } from "./clickCounter";
+import { ClickCounter } from "./react/clickCounter";
 import { widgetDisplayName, widgetEditorSelector, widgetName } from "./constants";
 
 export class ClickCounterViewModelBinder implements ViewModelBinder<ClickCounterModel, ClickCounter>  {

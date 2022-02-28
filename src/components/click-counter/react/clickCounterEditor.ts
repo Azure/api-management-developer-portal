@@ -1,12 +1,12 @@
 import * as ko from "knockout";
 import template from "./clickCounterEditor.html";
-import { ClickCounterModel } from "./clickCounterModel";
+import { ClickCounterModel } from "../clickCounterModel";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
 import { WidgetEditor } from "@paperbits/common/widgets";
 import { ChangeRateLimit } from "@paperbits/common/ko/consts";
 import { BackgroundStylePluginConfig } from "@paperbits/styles/plugins";
 import { StyleHelper } from "@paperbits/styles";
-import { widgetEditorSelector } from "./constants";
+import { widgetEditorSelector } from "../constants";
 
 @Component({
   selector: widgetEditorSelector,
