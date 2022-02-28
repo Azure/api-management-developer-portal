@@ -153,6 +153,11 @@ async function downloadBlobs(blobStorageUrl, snapshotMediaFolder) {
 }
 
 async function uploadBlobs(blobStorageUrl, localMediaFolder) {
+    if (!fs.existsSync(localMediaFolder)) {
+        console.info("No media files found in the snapshot folder. Skipping media upload...");
+        return;
+    }
+
     try {
         const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
         const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
