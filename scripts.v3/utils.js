@@ -259,8 +259,14 @@ class ImporterExporter {
      * Uploads media files to storage of specified API Management service.
      */
     async uploadBlobs() {
+        const snapshotMediaFolder = `${this.snapshotFolder}/media`;
+
+        if (!fs.existsSync(snapshotMediaFolder)) {
+            console.info("No media files found in the snapshot folder. Skipping media upload...");
+            return;
+        }
+
         try {
-            const snapshotMediaFolder = `${this.snapshotFolder}/media`;
             const blobStorageUrl = await this.getStorageSasUrl();
             const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
             const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
