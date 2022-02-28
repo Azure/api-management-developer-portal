@@ -12,7 +12,8 @@
  *    node ./cleanup ^
  *   --subscriptionId < your subscription ID > ^
  *   --resourceGroupName < your resource group name > ^
- *   --serviceName < your service name >
+ *   --serviceName < your service name > ^
+ *   --publish true [false: default]
  */
 
 const path = require("path");
