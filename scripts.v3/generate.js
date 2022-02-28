@@ -12,7 +12,8 @@
  *    node ./cleanup ^
  *   --subscriptionId < your subscription ID > ^
  *   --resourceGroupName < your resource group name > ^
- *   --serviceName < your service name >
+ *   --serviceName < your service name > ^
+ *   --publish true [false: default]
  */
 
 const path = require("path");
@@ -45,6 +46,12 @@ const yargs = require('yargs')
         example: '../dist/snapshot',
         demandOption: false
     })
+    .option('publish', {
+        type: 'boolean',
+        default: false,
+        description: 'Enabling this flag will publish the developer portal changes.',
+        demandOption: false
+    })
     .help()
     .argv;
 
@@ -68,6 +75,14 @@ async function generate() {
     );
 
     await importerExporter.import();
+
+    if (yargs.publish === true) {
+        console.log("Publishing changes...");
+        await importerExporter.publish();
+        console.log("Published.");
+    } else {
+        console.warn("Skipped publishing changes! If you want to publish the changes run the script with --publish true flag.");    
+    }
 }
 
 generate()
