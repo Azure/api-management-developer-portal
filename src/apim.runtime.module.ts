@@ -82,6 +82,9 @@ import { OauthServerConfiguration } from "./components/operations/operation-deta
 import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
 import {staticDataEnvironment} from "./../environmentConstants"
 
+import { ReactModule } from "@paperbits/react/react.module";
+import { ClickCounterDesignModule } from "./components/click-counter/clickCounter.design.module";
+
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -157,5 +160,8 @@ export class ApimRuntimeModule implements IInjectorModule {
             injector.bind("httpClient", StaticDataHttpClient);
             injector.bind("dataProvider", RuntimeStaticDataProvider);
         }
+
+        injector.bindModule(new ReactModule());
+        injector.bindModule(new ClickCounterDesignModule());
     }
 }

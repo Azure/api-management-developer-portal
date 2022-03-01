@@ -1,0 +1,32 @@
+<div class="form" data-bind="scrollable: true">
+    <p>This is your widget editor that is yet to be implemented.</p>
+
+    <div class="form-group form-group-collapsible">
+        <label class="form-label">
+            <a href="#" class="form-group-toggle" title="Toggle section" data-bind="collapse: '#basicCollapse'"
+                aria-label="Toggle 'Basic' section"></a>
+            <b>Basic</b>
+        </label>
+        <div id="basicCollapse" class="collapse form-group-collapse">
+            <div class="form-group">
+                <label class="form-label">
+                    Initial count
+                    <button class="btn btn-info" type="button"
+                        data-bind="tooltip: 'Initial value that needs to be set to click counter.'"></button>
+                </label>
+                <input type="number" class="form-control" data-bind="textInput: initialCount" min="0" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group form-group-collapsible">
+        <label class="form-label">
+            <a href="#" class="form-group-toggle" title="Toggle section" data-bind="collapse: '#backgroundCollapse'"
+                aria-label="Toggle 'Basic' section"></a>
+            <b>Background</b>
+        </label>
+        <div id="backgroundCollapse" class="collapse form-group-collapse">
+            <background params="{ background: background, onUpdate: onBackgroundChange }"></background>
+        </div>
+    </div>
+</div>

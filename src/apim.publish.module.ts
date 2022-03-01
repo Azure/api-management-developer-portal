@@ -41,6 +41,9 @@ import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
 import {staticDataEnvironment} from "./../environmentConstants"
 
+import { ReactModule } from "@paperbits/react/react.module";
+import { ClickCounterDesignModule } from "./components/click-counter/clickCounter.design.module";
+
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindModule(new ListOfApisModule());
@@ -89,5 +92,8 @@ export class ApimPublishModule implements IInjectorModule {
             injector.bind("dataProvider", PublisherStaticDataProvider);
         }
 
+
+        injector.bindModule(new ReactModule());
+        injector.bindModule(new ClickCounterDesignModule());
     }
 }

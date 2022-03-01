@@ -67,6 +67,9 @@ import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
 
+import { ReactModule } from "@paperbits/react/react.module";
+import { ClickCounterDesignModule } from "./components/click-counter/clickCounter.design.module";
+
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindModule(new SetupModule());
@@ -138,5 +141,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindToCollection("autostart", RuntimeConfigurator);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("CodeEditor", CodeEditor);
+
+        injector.bindModule(new ReactModule());
+        injector.bindModule(new ClickCounterDesignModule());
     }
 }
