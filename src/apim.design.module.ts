@@ -115,7 +115,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new HelpModule());
         injector.bindModule(new ValidationSummaryDesignModule());
         injector.bindModule(new ValidationSummaryModule());
-        injector.bindModule(new SigninSocialEditorModule());
         injector.bindModule(new CustomHtmlDesignModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
