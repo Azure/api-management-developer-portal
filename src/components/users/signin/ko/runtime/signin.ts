@@ -37,7 +37,6 @@ export class Signin {
         this.password = ko.observable("");
         this.errorMessages = ko.observableArray([]);
         this.hasErrors = ko.pureComputed(() => this.errorMessages().length > 0);
-        // Next four variables are necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
         this.termsEnabled = ko.observable(false);
         this.termsOfUse = ko.observable();
         this.isConsentRequired = ko.observable(false);

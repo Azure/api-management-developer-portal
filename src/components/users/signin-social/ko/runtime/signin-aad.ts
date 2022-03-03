@@ -8,8 +8,6 @@ import { AadService } from "../../../../../services";
 import { SettingNames, defaultAadTenantName } from "./../../../../../constants";
 import { AadClientConfig } from "./../../../../../contracts/aadClientConfig";
 
-
-
 @RuntimeComponent({
     selector: "signin-aad"
 })
@@ -26,7 +24,6 @@ export class SignInAad {
         this.classNames = ko.observable();
         this.label = ko.observable();
         this.replyUrl = ko.observable();
-        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
         this.termsOfUse = ko.observable();
     }
 

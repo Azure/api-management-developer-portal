@@ -55,7 +55,6 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
         const aadIdentityProvider = identityProviders.find(x => x.type === "aad");
         const aadB2CIdentityProvider = identityProviders.find(x => x.type === "aadB2C");
         
-        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
         const termsOfService = await this.getTermsOfService();
         const termsOfUse = (termsOfService.text && termsOfService.enabled) ? termsOfService.text : undefined;
 

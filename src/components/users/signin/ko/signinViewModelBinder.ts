@@ -19,7 +19,6 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
         private readonly backendService: BackendService,
         private readonly identityService: IdentityService) {}
 
-    
     public async getTermsOfService(): Promise<TermsOfService> {
         const identitySetting = await this.identityService.getIdentitySetting();
         return identitySetting.properties.termsOfService;
@@ -55,7 +54,6 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
             }
         }
 
-        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
         const termsOfService = await this.getTermsOfService();
         if (termsOfService.text) params["termsOfUse"] = termsOfService.text;
         if (termsOfService.consentRequired) params["isConsentRequired"] = termsOfService.consentRequired;
