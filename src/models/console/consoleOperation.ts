@@ -45,7 +45,8 @@ export class ConsoleOperation {
         this.requestUrl = ko.computed(() => {
             const protocol = this.api.protocols.indexOf("https") !== -1 ? "https" : "http";
             const urlTemplate = this.getRequestPath();
-            const result = `${protocol}://${this.host.hostname()}${Utils.ensureLeadingSlash(urlTemplate)}`;
+            let result = this.host.hostname() ? `${protocol}://${this.host.hostname()}` : '';
+            result += Utils.ensureLeadingSlash(urlTemplate);
 
             return result;
         });
