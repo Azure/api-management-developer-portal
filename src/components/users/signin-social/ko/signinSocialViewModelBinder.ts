@@ -3,6 +3,7 @@ import { Bag } from "@paperbits/common";
 import { EventManager, Events } from "@paperbits/common/events";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder } from "@paperbits/common/widgets";
+import { TermsOfService } from "../../../../contracts/identitySettings";
 import { IdentityService } from "../../../../services/identityService";
 import { SigninSocialModel } from "../signinSocialModel";
 import { SigninSocialViewModel } from "./signinSocialViewModel";
@@ -16,6 +17,11 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
         private readonly eventManager: EventManager,
         private readonly settingsProvider: ISettingsProvider
     ) { }
+
+    public async getTermsOfService(): Promise<TermsOfService> {
+        const identitySetting = await this.identityService.getIdentitySetting();
+        return identitySetting.properties.termsOfService;
+    }
 
     public async modelToViewModel(model: SigninSocialModel, viewModel?: SigninSocialViewModel, bindingContext?: Bag<any>): Promise<SigninSocialViewModel> {
         if (!viewModel) {
@@ -47,23 +53,28 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
         const identityProviders = await this.identityService.getIdentityProviders();
 
         const aadIdentityProvider = identityProviders.find(x => x.type === "aad");
+        const aadB2CIdentityProvider = identityProviders.find(x => x.type === "aadB2C");
+        
+        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
+        const termsOfService = await this.getTermsOfService();
+        const termsOfUse = (termsOfService.text && termsOfService.enabled) ? termsOfService.text : undefined;
 
         if (aadIdentityProvider) {
             const aadConfig = {
                 classNames: classNames,
                 label: model.aadLabel,
-                replyUrl: model.aadReplyUrl || undefined
+                replyUrl: model.aadReplyUrl || undefined,
+                termsOfUse: aadB2CIdentityProvider ? undefined : termsOfUse // display terms of use only once if both configs are present
             };
             viewModel.aadConfig(JSON.stringify(aadConfig));
         }
-
-        const aadB2CIdentityProvider = identityProviders.find(x => x.type === "aadB2C");
 
         if (aadB2CIdentityProvider) {
             const aadB2CConfig = {
                 classNames: classNames,
                 label: model.aadB2CLabel,
-                replyUrl: model.aadB2CReplyUrl || undefined
+                replyUrl: model.aadB2CReplyUrl || undefined,
+                termsOfUse
             };
 
             viewModel.aadB2CConfig(JSON.stringify(aadB2CConfig));
