@@ -22,6 +22,7 @@ export class Signin {
     public readonly password: ko.Observable<string>;
     public readonly errorMessages: ko.ObservableArray<string>;
     public readonly hasErrors: ko.Computed<boolean>;
+    public readonly consented: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
 
     constructor(
@@ -36,6 +37,11 @@ export class Signin {
         this.password = ko.observable("");
         this.errorMessages = ko.observableArray([]);
         this.hasErrors = ko.pureComputed(() => this.errorMessages().length > 0);
+        // Next four variables are necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
+        this.termsEnabled = ko.observable(false);
+        this.termsOfUse = ko.observable();
+        this.isConsentRequired = ko.observable(false);
+        this.consented = ko.observable(false);
         this.working = ko.observable(false);
 
         validation.init({
@@ -46,10 +52,20 @@ export class Signin {
 
         this.username.extend(<any>{ required: { message: `Email is required.` }, email: true });
         this.password.extend(<any>{ required: { message: `Password is required.` } });
+        this.consented.extend(<any>{ equal: { params: true, message: "You must agree to the terms of use." } });
     }
 
     @Param()
     public delegationUrl: ko.Observable<string>;
+
+    @Param()
+    public termsEnabled: ko.Observable<boolean>;
+
+    @Param()
+    public termsOfUse: ko.Observable<string>;
+
+    @Param()
+    public isConsentRequired: ko.Observable<boolean>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -83,11 +99,17 @@ export class Signin {
     public async signin(): Promise<void> {
         this.errorMessages([]);
 
-        const result = validation.group({
+        const validationGroup = {
             username: this.username,
             password: this.password
-        });
+        };
 
+        if (this.termsEnabled() && this.isConsentRequired()) {
+            validationGroup["consented"] = this.consented;
+        }
+
+        const result = validation.group(validationGroup);
+        
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
