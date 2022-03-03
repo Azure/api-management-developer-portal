@@ -55,6 +55,7 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
             }
         }
 
+        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
         const termsOfService = await this.getTermsOfService();
         if (termsOfService.text) params["termsOfUse"] = termsOfService.text;
         if (termsOfService.consentRequired) params["isConsentRequired"] = termsOfService.consentRequired;

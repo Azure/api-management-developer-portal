@@ -27,6 +27,7 @@ export class SignInAadB2C {
         this.classNames = ko.observable();
         this.label = ko.observable();
         this.replyUrl = ko.observable();
+        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
         this.termsOfUse = ko.observable();
     }
 
