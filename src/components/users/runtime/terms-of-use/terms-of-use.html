@@ -1,0 +1,20 @@
+<div class="form-group">
+    <!-- ko if: isConsentRequired -->
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" data-bind="checked: consented" id="consented" required>
+        <label class="form-check-label" for="consented">I agree to the Terms of Use.</label>
+        <a href="#" data-bind="activate: toggleTermsOfUse, text: showHideLabel"></a>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko ifnot: isConsentRequired -->
+    <p>
+        <span>Please review Terms of Use.</span>
+        <a href="#" data-bind="activate: toggleTermsOfUse, text: showHideLabel"></a>
+    </p>
+    <!-- /ko -->
+
+    <!-- ko if: showTerms -->
+    <blockquote class="col-md-12" rows="10" readonly data-bind="text: termsOfUse"></blockquote>
+    <!-- /ko -->
+</div>
