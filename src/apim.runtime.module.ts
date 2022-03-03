@@ -51,6 +51,7 @@ import { ConfirmPassword } from "./components/users/confirm-password/ko/runtime/
 import { Profile } from "./components/users/profile/ko/runtime/profile";
 import { ResetPassword } from "./components/users/reset-password/ko/runtime/reset-password";
 import { HipCaptcha } from "./components/users/runtime/hip-captcha/hip-captcha";
+import { TermsOfUse } from "./components/users/runtime/terms-of-use/terms-of-use";
 import { SignInAad } from "./components/users/signin-social/ko/runtime/signin-aad";
 import { SignInAadB2C } from "./components/users/signin-social/ko/runtime/signin-aad-b2c";
 import { Signin } from "./components/users/signin/ko/runtime/signin";
@@ -132,6 +133,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("usersService", UsersService);
         injector.bind("reports", Reports);
         injector.bind("hipCaptcha", HipCaptcha);
+        injector.bind("termsOfUse", TermsOfUse);
         injector.bind("resetPassword", ResetPassword);
         injector.bind("confirmPassword", ConfirmPassword);
         injector.bind("changePassword", ChangePassword);
