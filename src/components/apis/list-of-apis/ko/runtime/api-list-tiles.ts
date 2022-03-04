@@ -20,13 +20,12 @@ import { Tag } from "../../../../../models/tag";
 export class ApiListTiles {
     public readonly apis: ko.ObservableArray<Api>;
     public readonly apiGroups: ko.ObservableArray<TagGroup<Api>>;
-    public readonly selectedApiName: ko.Observable<string>;
     public readonly working: ko.Observable<boolean>;
     public readonly pattern: ko.Observable<string>;
     public readonly tags: ko.Observable<Tag[]>;
+    public readonly groupByTag: ko.Observable<boolean>;
     public readonly pageNumber: ko.Observable<number>;
     public readonly totalPages: ko.Observable<number>;
-    public readonly groupByTag: ko.Observable<boolean>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -34,9 +33,9 @@ export class ApiListTiles {
     ) {
         this.detailsPageUrl = ko.observable();
         this.allowSelection = ko.observable(false);
+        this.showApiType = ko.observable(true);
         this.apis = ko.observableArray([]);
         this.working = ko.observable();
-        this.selectedApiName = ko.observable().extend(<any>{ acceptChange: this.allowSelection });
         this.pattern = ko.observable();
         this.tags = ko.observable([]);
         this.pageNumber = ko.observable(1);
@@ -50,6 +49,9 @@ export class ApiListTiles {
     public allowSelection: ko.Observable<boolean>;
 
     @Param()
+    public showApiType: ko.Observable<boolean>;
+
+    @Param()
     public defaultGroupByTagToEnabled: ko.Observable<boolean>;
 
     @Param()
@@ -58,14 +60,12 @@ export class ApiListTiles {
     @OnMounted()
     public async initialize(): Promise<void> {
         this.groupByTag(this.defaultGroupByTagToEnabled());
+        this.tags.subscribe(this.resetSearch);
 
         await this.resetSearch();
 
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
-            .subscribe(this.resetSearch);
-
-        this.tags
             .subscribe(this.resetSearch);
 
         this.groupByTag
@@ -76,28 +76,20 @@ export class ApiListTiles {
     }
 
     /**
-     * Initiates searching APIs.
-     */
-    public async resetSearch(): Promise<void> {
-        this.pageNumber(1);
-        this.loadPageOfApis();
-    }
-
-    /**
      * Loads page of APIs.
      */
     public async loadPageOfApis(): Promise<void> {
+        const pageNumber = this.pageNumber() - 1;
+
+        const query: SearchQuery = {
+            pattern: this.pattern(),
+            tags: this.tags(),
+            skip: pageNumber * Constants.defaultPageSize,
+            take: Constants.defaultPageSize
+        };
+
         try {
             this.working(true);
-
-            const pageNumber = this.pageNumber() - 1;
-
-            const query: SearchQuery = {
-                pattern: this.pattern(),
-                tags: this.tags(),
-                skip: pageNumber * Constants.defaultPageSize,
-                take: Constants.defaultPageSize
-            };
 
             let totalItems: number;
 
@@ -128,6 +120,11 @@ export class ApiListTiles {
 
     public getReferenceUrl(api: Api): string {
         return this.routeHelper.getApiReferenceUrl(api.name, this.detailsPageUrl());
+    }
+
+    public async resetSearch(): Promise<void> {
+        this.pageNumber(1);
+        this.loadPageOfApis();
     }
 
     public async onTagsChange(tags: Tag[]): Promise<void> {
