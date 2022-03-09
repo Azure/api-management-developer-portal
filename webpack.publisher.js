@@ -15,10 +15,7 @@ const publisherConfig = {
     },
     entry: {
         "index": ["./src/startup.publish.ts"]
-    },
-    optimization: {
-        minimize: false
-    },
+    },    
     output: {
         filename: "./[name].js",
         path: path.resolve(__dirname, "dist/publisher")
@@ -67,6 +64,7 @@ const publisherConfig = {
         ]
     },
     plugins: [
+        new webpack.IgnorePlugin({ resourceRegExp: /canvas/ }, { resourceRegExp: /jsdom$/ }),
         new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" }),
         new CopyWebpackPlugin({
             patterns: [

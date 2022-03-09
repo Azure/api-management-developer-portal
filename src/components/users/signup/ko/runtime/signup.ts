@@ -24,9 +24,7 @@ export class Signup {
     public readonly firstName: ko.Observable<string>;
     public readonly lastName: ko.Observable<string>;
     public readonly isUserRequested: ko.Observable<boolean>;
-    public readonly showTerms: ko.Observable<boolean>;
     public readonly consented: ko.Observable<boolean>;
-    public readonly showHideLabel: ko.Observable<string>;
     public readonly working: ko.Observable<boolean>;
     public readonly captcha: ko.Observable<string>;
     
@@ -44,15 +42,13 @@ export class Signup {
         this.firstName = ko.observable("");
         this.lastName = ko.observable("");
         this.isUserRequested = ko.observable(false);
+        this.termsEnabled = ko.observable(false);
+        this.termsOfUse = ko.observable();
         this.isConsentRequired = ko.observable(false);
         this.consented = ko.observable(false);
-        this.showTerms = ko.observable();
-        this.termsOfUse = ko.observable();
-        this.showHideLabel = ko.observable("Show");
         this.working = ko.observable(false);
         this.captcha = ko.observable();
         this.delegationUrl = ko.observable();
-        this.termsEnabled = ko.observable(false);
         this.requireHipCaptcha = ko.observable();
         this.captchaData = ko.observable();
 
@@ -68,6 +64,7 @@ export class Signup {
         this.firstName.extend(<any>{ required: { message: `First name is required.` } });
         this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
         this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
+        this.consented.extend(<any>{ equal: { params: true, message: "You must agree to the terms of use." } });
     }
 
 
@@ -121,12 +118,6 @@ export class Signup {
 
             throw error;
         }
-
-        if (this.termsOfUse() && this.termsEnabled()) {
-            if (this.isConsentRequired()) {
-                this.consented.extend(<any>{ equal: { params: true, message: "You must agree to registration terms." } });
-            }
-        }
     }
     
     public onCaptchaCreated(captchaValidate: (captchaValidator: ko.Observable<string>) => void, refreshCaptcha: () => Promise<void>){
@@ -153,17 +144,13 @@ export class Signup {
             this.setCaptchaValidation(this.captcha);
         }
 
+        if (this.termsEnabled() && this.isConsentRequired()) {
+            validationGroup["consented"] = this.consented;
+        }
+
         const result = validation.group(validationGroup);
 
-        let clientErrors = result();
-
-        if (this.termsEnabled() && this.isConsentRequired()) {
-            const termsConsented = validation.group({
-                consented: this.consented
-            });
-
-            clientErrors = clientErrors.concat(termsConsented());
-        }
+        const clientErrors = result();
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
@@ -240,20 +227,5 @@ export class Signup {
         finally {
             this.working(false);
         }
-    }
-
-
-    /**
-     * Shows/hides registration terms.
-     */
-    public toggleRegistrationTerms(): void {
-        if (this.showTerms()) {
-            this.showHideLabel("Show");
-        }
-        else {
-            this.showHideLabel("Hide");
-        }
-
-        this.showTerms(!this.showTerms());
     }
 }

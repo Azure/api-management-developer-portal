@@ -50,6 +50,31 @@
         <p data-bind="markdown: api().description"></p>
         <!-- /ko -->
 
+        <!-- ko if: api().contact -->
+        <h4>Contact</h4>
+            <!-- ko if: api().contact.name -->
+            <div data-bind="text: api().contact.name"></div>
+            <!-- /ko -->
+
+            <!-- ko if: api().contact.email -->
+            <div><a data-bind="attr: { href: 'mailto:' + api().contact.email }, text: api().contact.email"></a></div>
+            <!-- /ko -->
+
+            <!-- ko if: api().contact.url -->
+            <div><a data-bind="attr: { href: api().contact.url }, text: api().contact.url"></a></div>
+            <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko if: api().license -->
+        <h4>License</h4>
+        <div><a data-bind="attr: { href: api().license.url }, text: api().license.name"></a></div>
+        <!-- /ko -->
+
+        <!-- ko if: api().termsOfServiceUrl -->
+        <h4>Additional resources</h4>
+        <div><a data-bind="attr: { href: api().termsOfServiceUrl }">Terms and conditions</a></div>
+        <!-- /ko -->
+
         <!-- /ko -->
 
         <!-- ko ifnot: api -->
