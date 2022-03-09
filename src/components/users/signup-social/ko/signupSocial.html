@@ -2,7 +2,7 @@
 <signup-social-runtime data-bind="attr: { params: runtimeConfig }"></signup-social-runtime>
 <!-- /ko -->
 
-<!-- ko ifnot: identityProvider && (mode === "publishing") -->
+<!-- ko if: showNoAadConfigMessage -->
 <div class="not-configured">This widget will display a sign-up form when you configure <a
         href="https://aka.ms/apim-how-to-aad" target="_blank">Azure Active Directory</a> or<a
         href="https://aka.ms/apim-how-to-aadb2c" target="_blank">Azure Active Directory B2C</a> integration in your API
