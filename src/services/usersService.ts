@@ -59,7 +59,7 @@ export class UsersService {
                 method: "GET",
                 headers: [
                     { name: "Authorization", value: credentials },
-                    MapiClient.getPortalHeader("authenticate")
+                    await this.mapiClient.getPortalHeader("authenticate")
                 ]
             };
 
@@ -107,7 +107,7 @@ export class UsersService {
         const response = await this.httpClient.send({
             url: `${managementApiUrl}${requestUrl}&api-version=${Constants.managementApiVersion}`,
             method: "PUT",
-            headers: [{ name: "Authorization", value: token }, MapiClient.getPortalHeader("activateUser")]
+            headers: [{ name: "Authorization", value: token }, await this.mapiClient.getPortalHeader("activateUser")]
         });
 
         await this.getTokenFromResponse(response);
@@ -117,7 +117,7 @@ export class UsersService {
         const headers = [];
 
         if (token) {
-            headers.push({ name: "Authorization", value: token }, MapiClient.getPortalHeader("updatePassword"));
+            headers.push({ name: "Authorization", value: token }, await this.mapiClient.getPortalHeader("updatePassword"));
         }
 
         const payload = {
@@ -147,7 +147,7 @@ export class UsersService {
         }
 
         try {
-            const identity = await this.mapiClient.get<Identity>("/identity", [MapiClient.getPortalHeader("getCurrentUserId")]);
+            const identity = await this.mapiClient.get<Identity>("/identity", [await this.mapiClient.getPortalHeader("getCurrentUserId")]);
 
             if (!identity || !identity.id) {
                 return null;
@@ -178,7 +178,7 @@ export class UsersService {
                 return null;
             }
 
-            const user = await this.mapiClient.get<UserContract>(userId, [MapiClient.getPortalHeader("getCurrentUser")]);
+            const user = await this.mapiClient.get<UserContract>(userId, [await this.mapiClient.getPortalHeader("getCurrentUser")]);
 
             return new User(user);
         }
@@ -193,7 +193,7 @@ export class UsersService {
      * @param updateUserData 
      */
     public async updateUser(userId: string, firstName: string, lastName: string): Promise<User> {
-        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, MapiClient.getPortalHeader("updateUser")];
+        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.mapiClient.getPortalHeader("updateUser")];
         const payload = {
             properties: {
                 firstName: firstName,
@@ -224,7 +224,7 @@ export class UsersService {
 
             const query = Utils.addQueryParameter(userId, `deleteSubscriptions=true&notify=true&appType=${Constants.AppType}`);
 
-            await this.mapiClient.delete<string>(query, [header, MapiClient.getPortalHeader("deleteUser")]);
+            await this.mapiClient.delete<string>(query, [header, await this.mapiClient.getPortalHeader("deleteUser")]);
 
             sessionStorage.setItem(Constants.closeAccount, "true");
             this.signOut();
@@ -261,12 +261,12 @@ export class UsersService {
     }
 
     public async createSignupRequest(signupRequest: MapiSignupRequest): Promise<void> {
-        await this.mapiClient.post("/users", [MapiClient.getPortalHeader("createSignupRequest")], signupRequest);
+        await this.mapiClient.post("/users", [await this.mapiClient.getPortalHeader("createSignupRequest")], signupRequest);
     }
 
     public async createResetPasswordRequest(email: string): Promise<void> {
         const payload = { to: email, appType: Constants.AppType };
-        await this.mapiClient.post(`/confirmations/password?appType=${Constants.AppType}`, [MapiClient.getPortalHeader("createResetPasswordRequest")], payload);
+        await this.mapiClient.post(`/confirmations/password?appType=${Constants.AppType}`, [await this.mapiClient.getPortalHeader("createResetPasswordRequest")], payload);
     }
 
     public async changePassword(userId: string, newPassword: string): Promise<void> {
@@ -279,7 +279,7 @@ export class UsersService {
         const headers = [
             { name: "Authorization", value: authToken },
             { name: "If-Match", value: "*" },
-            MapiClient.getPortalHeader("changePassword")
+            await this.mapiClient.getPortalHeader("changePassword")
         ];
 
         const payload = {
@@ -313,7 +313,7 @@ export class UsersService {
             headers: [
                 { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                 { name: KnownHttpHeaders.Authorization, value: `${provider} id_token="${idToken}"` },
-                MapiClient.getPortalHeader("createUserWithOAuth")
+                await this.mapiClient.getPortalHeader("createUserWithOAuth")
             ],
             body: JSON.stringify(user)
         });
