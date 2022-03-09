@@ -14,11 +14,11 @@ export class IdentityService {
      * Returns a collection of configured identity providers.
      */
     public async getIdentityProviders(): Promise<IdentityProvider[]> {
-        const identityProviders = await this.mapiClient.get<Page<IdentityProviderContract>>("/identityProviders", [MapiClient.getPortalHeader("getIdentityProviders")]);
+        const identityProviders = await this.mapiClient.get<Page<IdentityProviderContract>>("/identityProviders", [await this.mapiClient.getPortalHeader("getIdentityProviders")]);
         return identityProviders.value.map(contract => new IdentityProvider(contract));
     }
     
     public async getIdentitySetting(): Promise<IdentitySettingContract> {
-        return await this.mapiClient.get<IdentitySettingContract>("/portalsettings/signup", [MapiClient.getPortalHeader("getIdentitySetting")]);
+        return await this.mapiClient.get<IdentitySettingContract>("/portalsettings/signup", [await this.mapiClient.getPortalHeader("getIdentitySetting")]);
     }
 }

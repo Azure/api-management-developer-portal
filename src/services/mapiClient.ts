@@ -25,6 +25,7 @@ export interface IHttpBatchResponse {
 export class MapiClient {
     private managementApiUrl: string;
     private environment: string;
+    private developerPortalType: string;
     private initializePromise: Promise<void>;
     private requestCache: TtlCache = new TtlCache();
 
@@ -45,6 +46,7 @@ export class MapiClient {
     private async initialize(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
 
+        this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || "self-hosted-portal";
         const managementApiUrl = settings[Constants.SettingNames.managementApiUrl];
 
         if (!managementApiUrl) {
@@ -123,7 +125,7 @@ export class MapiClient {
                 httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${accessToken}` });
             } else {
                 if (!portalHeader) {
-                    httpRequest.headers.push(MapiClient.getPortalHeader("unauthorized"));
+                    httpRequest.headers.push(await this.getPortalHeader("unauthorized"));
                 } else {
                     portalHeader.value = `${portalHeader.value}-unauthorized`;
                 }
@@ -131,7 +133,7 @@ export class MapiClient {
         }
 
         if (!portalHeader && httpRequest.method !== HttpMethod.head) {
-            httpRequest.headers.push(MapiClient.getPortalHeader());
+            httpRequest.headers.push(await this.getPortalHeader());
         }
 
         // Do nothing if absolute URL
@@ -314,14 +316,15 @@ export class MapiClient {
         });
     }
 
-    public static getPortalHeader(eventName?: string): HttpHeader {
+    public async getPortalHeader(eventName?: string): Promise<HttpHeader> {
+        await this.ensureInitialized();
         let host = "";
         try {
             host = window.location.host;
         } catch (error) {
             host = "publishing";
         }
-
-        return { name: Constants.portalHeaderName, value: `${Constants.developerPortalType}|${host}|${eventName || ""}` };
+                
+        return { name: Constants.portalHeaderName, value: `${this.developerPortalType}|${host}|${eventName || ""}` };
     }
 }
