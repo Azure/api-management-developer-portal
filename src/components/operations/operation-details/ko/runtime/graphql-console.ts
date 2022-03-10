@@ -520,7 +520,7 @@ export class GraphqlConsole {
     }
 
     public gqlFieldName(name: string, isRequired: boolean, isInputNode: boolean): string {
-        let gqlFieldName = name += (isRequired) ? '*' : '';
+        let gqlFieldName = name += (isRequired && isInputNode) ? '*' : '';
         gqlFieldName = gqlFieldName += (isInputNode) ? ':' : '';
         return gqlFieldName;
     }
