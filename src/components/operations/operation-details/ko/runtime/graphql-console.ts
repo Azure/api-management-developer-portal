@@ -13,20 +13,13 @@ import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, Graphql
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { ApiService } from "../../../../../services/apiService";
-import { GraphQLTreeNode, GraphQLOutputTreeNode, GraphQLInputTreeNode } from "./graphql-utilities/graphql-node-models";
+import { GraphQLTreeNode, GraphQLOutputTreeNode, GraphQLInputTreeNode, getType } from "./graphql-utilities/graphql-node-models";
 import { setupGraphQLQueryIntellisense } from "./graphql-utilities/graphqlUtils";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ResponsePackage } from "./responsePackage";
 import { Utils } from "../../../../../utils";
 import { GraphDocService } from "./graphql-documentation/graphql-doc-service";
-
-function getType(type: GraphQL.GraphQLOutputType | GraphQL.GraphQLInputType) {
-    while ((type instanceof GraphQL.GraphQLList) || (type instanceof GraphQL.GraphQLNonNull)) {
-        type = type.ofType;
-    }
-    return type;
-}
 
 @Component({
     selector: "graphql-console",
@@ -201,20 +194,20 @@ export class GraphqlConsole {
             // Go through every node in a new generated parsed graphQL, associate the node with the created tree from init and toggle checkmark.
             GraphQL.visit(ast, {
                 enter(node) {
-                    if (node.kind === "Field" || node.kind === "Argument" || node.kind === "ObjectField") {
+                    if (node.kind === "Field" || node.kind === "Argument" || node.kind === "ObjectField" || node.kind === "InlineFragment") {
                         let targetNode: GraphQLTreeNode;
                         if (node.kind === "Field") {
                             targetNode = curNode.children().find(n => !n.isInputNode() && n.label() === node.name.value);
+                        } else if (node.kind === "InlineFragment") {
+                            targetNode = curNode.children().find(n => !n.isInputNode() && n.label() === node.typeCondition.name.value);
                         } else {
                             let inputNode = <GraphQLInputTreeNode>curNode.children().find(n => n.isInputNode() && n.label() === node.name.value);
-                            if (node.kind === "Argument") {
-                                if (node.value.kind === "StringValue") {
-                                    inputNode.inputValue(`"${node.value.value}"`);
-                                } else if (node.value.kind === "BooleanValue" || node.value.kind === "IntValue" || node.value.kind === "FloatValue" || node.value.kind === "EnumValue") {
-                                    inputNode.inputValue(`${node.value.value}`);
-                                } else if (node.value.kind === "Variable") {
-                                    inputNode.inputValue(`$${node.value.name.value}`);
-                                }
+                            if (node.value.kind === "StringValue") {
+                                inputNode.inputValue(`"${node.value.value}"`);
+                            } else if (node.value.kind === "BooleanValue" || node.value.kind === "IntValue" || node.value.kind === "FloatValue" || node.value.kind === "EnumValue") {
+                                inputNode.inputValue(`${node.value.value}`);
+                            } else if (node.value.kind === "Variable") {
+                                inputNode.inputValue(`$${node.value.name.value}`);
                             }
                             targetNode = inputNode;
                         }
@@ -236,8 +229,9 @@ export class GraphqlConsole {
                     }
                 },
                 leave(node) {
-                    if (curNode && node.kind === "Field" || node.kind === "Argument" || node.kind === "ObjectField") {
-                        curNode = curNode.parent();
+                    if (curNode && node.kind === "Field" || node.kind === "Argument" || node.kind === "ObjectField" || node.kind === "InlineFragment") {
+                        if(node.kind !== "Field" || node.name.value !== '__typename')
+                            curNode = curNode.parent();
                     }
                 }
             });
@@ -469,10 +463,12 @@ export class GraphqlConsole {
                 }
             }
             if (node.selected()) {
+                const parentType = getType(node.parent()?.data?.type);
+                const nodeName = (parentType instanceof GraphQL.GraphQLUnionType) ? `... on ${node.label()}` : node.label();
                 if (level === 0) {
-                    selectedNodes.push(node.label() + this.createVariableString(<GraphQLOutputTreeNode>node) + this.createFieldStringFromNodes(outputNodes, level + 1));
+                    selectedNodes.push(nodeName + this.createVariableString(<GraphQLOutputTreeNode>node) + this.createFieldStringFromNodes(outputNodes, level + 1));
                 } else {
-                    selectedNodes.push(node.label() + this.createArgumentStringFromNode(inputNodes, true) + this.createFieldStringFromNodes(outputNodes, level + 1));
+                    selectedNodes.push(nodeName + this.createArgumentStringFromNode(inputNodes, true) + this.createFieldStringFromNodes(outputNodes, level + 1));
                 }
             }
         }
