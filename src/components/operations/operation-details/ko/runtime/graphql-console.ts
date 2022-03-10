@@ -207,7 +207,7 @@ export class GraphqlConsole {
                             targetNode = curNode.children().find(n => !n.isInputNode() && n.label() === node.name.value);
                         } else {
                             let inputNode = <GraphQLInputTreeNode>curNode.children().find(n => n.isInputNode() && n.label() === node.name.value);
-                            if (node.kind === "Argument") {
+                            if (node.kind === "Argument" || node.kind === "ObjectField") {
                                 if (node.value.kind === "StringValue") {
                                     inputNode.inputValue(`"${node.value.value}"`);
                                 } else if (node.value.kind === "BooleanValue" || node.value.kind === "IntValue" || node.value.kind === "FloatValue" || node.value.kind === "EnumValue") {
@@ -524,7 +524,7 @@ export class GraphqlConsole {
     }
 
     public gqlFieldName(name: string, isRequired: boolean, isInputNode: boolean): string {
-        let gqlFieldName = name += (isRequired) ? '*' : '';
+        let gqlFieldName = name += (isRequired && isInputNode) ? '*' : '';
         gqlFieldName = gqlFieldName += (isInputNode) ? ':' : '';
         return gqlFieldName;
     }
