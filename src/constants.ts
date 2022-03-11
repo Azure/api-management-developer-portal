@@ -208,6 +208,10 @@ export enum GraphqlFieldTypes {
     types = "_types"
 }
 
+export enum GraphqlMetaField {
+    typename = "__typename"
+}
+
 /**
  * Known setting names.
  */
