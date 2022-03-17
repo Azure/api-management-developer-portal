@@ -1,9 +1,11 @@
 import * as ko from "knockout";
 import { saveAs } from "file-saver";
-import scaffold, { TControl, TTech } from "scaffold/scaffold";
+import { scaffold } from "scaffold";
+import { TControl, TTech } from "scaffold/scaffold";
 import template from "./customWidgetEditorView.html";
-import { WidgetEditor } from "@paperbits/common/widgets";
+import { IWidgetService, WidgetEditor } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
+import { CustomWidgetHandlers } from "../../custom-widget-scaffold";
 import { CustomWidgetModel } from "../customWidgetModel";
 import { widgetEditorSelector } from "..";
 
@@ -16,7 +18,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
     public readonly tech: ko.Observable<TTech | null>;
     public readonly sourceControl: ko.Observable<TControl>;
 
-    constructor() {
+    constructor(private readonly widgetService: IWidgetService) {
         this.name = ko.observable();
         this.tech = ko.observable();
         this.sourceControl = ko.observable();
@@ -49,24 +51,13 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
     public downloadScaffold(): void {
         const tech = this.tech();
         if (!this.name() || !tech) return;
-        scaffold({tech, control: this.sourceControl(), name: this.name()}, ".").then(blob => {
+        scaffold({tech, control: this.sourceControl(), name: this.name()}, ".").then(({ config, blob }) => {
             if (confirm("download?")) saveAs(blob, "widget.zip");
             else console.log(blob);
+
+            this.widgetService.registerWidgetHandler(new CustomWidgetHandlers(config));
+            // injector.bindInstanceToCollection("widgetHandlers", );
+            /* TODO register new widget and replace this instance of "Custom Widget" widget by an instance of the newly registered custom widget */
         });
-    }
-
-    public registerScaffoldedWidget(): void {
-        /* const mockOfAScaffoldedJSONFromTheBE = {
-            name: "widget1",
-            displayName: "Custom widget 1",
-            category: "Advanced",
-            iconUrl: "https://...",
-            defaultConfig: { uri: "http..." },
-
-            urlToBlobStorage: "url to the index.html of the newly registered widget on the blob storage (was pushed by the BE there during scaffolding)"
-        } */
-
-        /* TODO register new widget and replace this instance of "Custom Widget" widget by an instance of the newly registered custom widget */
-        alert("WiP");
     }
 }
