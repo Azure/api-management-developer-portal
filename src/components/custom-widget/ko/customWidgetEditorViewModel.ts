@@ -13,7 +13,7 @@ import { widgetEditorSelector } from "..";
 })
 export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetModel> {
     public readonly name: ko.Observable<string>;
-    public readonly tech: ko.Observable<TTech>;
+    public readonly tech: ko.Observable<TTech | null>;
     public readonly sourceControl: ko.Observable<TControl>;
 
     constructor() {
@@ -47,8 +47,9 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
     }
 
     public downloadScaffold(): void {
-        if (!this.name()) return;
-        scaffold({tech: this.tech(), control: this.sourceControl(), name: this.name()}, ".").then(blob => {
+        const tech = this.tech();
+        if (!this.name() || !tech) return;
+        scaffold({tech, control: this.sourceControl(), name: this.name()}, ".").then(blob => {
             if (confirm("download?")) saveAs(blob, "widget.zip");
             else console.log(blob);
         });

@@ -16,8 +16,8 @@ export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> 
     public async contractToModel(contract: CustomWidgetContract): Promise<CustomWidgetModel> {
         const model = new CustomWidgetModel();
         model.name = contract.name ?? "";
-        model.tech = contract.tech ?? "";
-        model.sourceControl = contract.sourceControl ?? "";
+        model.tech = contract.tech ?? null;
+        model.sourceControl = contract.sourceControl ?? null;
         return model;
     }
 
