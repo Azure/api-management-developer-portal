@@ -76,6 +76,7 @@
         "codemirror": "^5.63.3",
         "core-js": "^3.19.1",
         "d3": "^5.11.0",
+        "file-saver": "^2.0.5",
         "google-maps": "^4.3.3",
         "graphql": "15.5.0",
         "graphql-config": "^4.0.1",
@@ -100,6 +101,7 @@
         "remark-parse": "^10.0.1",
         "remark-rehype": "^10.0.1",
         "saxen": "^8.1.2",
+        "scaffold": "scaffold_lib-0.0.0.tgz",
         "topojson-client": "^3.1.0",
         "truncate-html": "^1.0.4"
     }

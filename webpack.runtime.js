@@ -53,6 +53,10 @@ const runtimeConfig = {
             {
                 test: /\.liquid$/,
                 loader: "raw-loader"
+            },
+            {
+                test: /\.mustache/,
+                loader: "raw-loader"
             }
         ]
     },

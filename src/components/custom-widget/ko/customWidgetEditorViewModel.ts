@@ -1,4 +1,6 @@
 import * as ko from "knockout";
+import { saveAs } from "file-saver";
+import scaffold, { TControl, TTech } from "scaffold/scaffold";
 import template from "./customWidgetEditorView.html";
 import { WidgetEditor } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
@@ -11,8 +13,8 @@ import { widgetEditorSelector } from "..";
 })
 export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetModel> {
     public readonly name: ko.Observable<string>;
-    public readonly tech: ko.Observable<string>;
-    public readonly sourceControl: ko.Observable<string>;
+    public readonly tech: ko.Observable<TTech>;
+    public readonly sourceControl: ko.Observable<TControl>;
 
     constructor() {
         this.name = ko.observable();
@@ -46,12 +48,10 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
 
     public downloadScaffold(): void {
         if (!this.name()) return;
-        /*
-        const a = document.createElement("a");
-        a.href = `http://localhost:8000/scaffold?name=${this.name()}`;
-        document.getElementById("customWidgetDownloadBtn").parentElement.append(a);
-        a.click();
-         */
+        scaffold({tech: this.tech(), control: this.sourceControl(), name: this.name()}, ".").then(blob => {
+            if (confirm("download?")) saveAs(blob, "widget.zip");
+            else console.log(blob);
+        });
     }
 
     public registerScaffoldedWidget(): void {

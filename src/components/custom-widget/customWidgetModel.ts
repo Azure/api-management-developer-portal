@@ -1,5 +1,7 @@
+import { TControl, TTech } from "scaffold/scaffold";
+
 export class CustomWidgetModel {
     public name: string;
-    public tech: string;
-    public sourceControl: string;
+    public tech: TTech;
+    public sourceControl: TControl;
 }
