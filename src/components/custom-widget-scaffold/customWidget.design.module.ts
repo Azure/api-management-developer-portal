@@ -21,16 +21,12 @@ export class CustomWidgetDesignModule implements IInjectorModule {
                 category: "Custom widgets",
                 // iconUrl: "https://...",
                 uri: "test-uri",
-                customInputValue: JSON.stringify({
-                    data: {
-                        field2: "Lorem ipsum dolor sit amet!"
-                    }
-                }),
             }
         };
 
         const promises = [];
 
+        /* load overrides */
         const sources = new URLSearchParams(window.location.search).get("MS_APIM_CW_devsrcs");
         if (sources) {
             const sourcesObj = JSON.parse(sources);
@@ -50,10 +46,7 @@ export class CustomWidgetDesignModule implements IInjectorModule {
             .then(r => r.map(e => e.json()))
             .then(r => Promise.all(r).then(r => {
                 r.forEach(config => {
-                    configurations[config.uri] = {
-                        ...config,
-                        customInputValue: JSON.stringify(config.customInputValue),
-                    };
+                    configurations[config.uri] = config;
                 });
 
                 Object.values(configurations).forEach(config => {

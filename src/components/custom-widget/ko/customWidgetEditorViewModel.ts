@@ -48,16 +48,23 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.onChange(this.model);
     }
 
-    public downloadScaffold(): void {
+    public async downloadScaffold(): Promise<void> {
+        const name = this.name();
         const tech = this.tech();
-        if (!this.name() || !tech) return;
-        scaffold({tech, control: this.sourceControl(), name: this.name()}, ".").then(({ config, blob }) => {
-            if (confirm("download?")) saveAs(blob, "widget.zip");
-            else console.log(blob);
+        if (!name || !tech) return;
 
-            this.widgetService.registerWidgetHandler(new CustomWidgetHandlers(config));
-            // injector.bindInstanceToCollection("widgetHandlers", );
-            /* TODO register new widget and replace this instance of "Custom Widget" widget by an instance of the newly registered custom widget */
-        });
+        const nameUri = encodeURIComponent(name.normalize("NFD").toLowerCase().replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9-]/g, "-"));
+
+        // TODO make sure a widget with name like nameUri does not exist
+        // "A widget with the same alphanumerical signature already exists."
+
+        const { config, blob } = await scaffold({name, nameUri, tech, control: this.sourceControl()}, ".");
+
+        if (confirm("download?")) saveAs(blob, "widget.zip");
+        else console.log(blob);
+
+        this.widgetService.registerWidgetHandler(new CustomWidgetHandlers(config));
+
+        // TODO replace this instance of "Custom Widget" widget by an instance of the newly registered custom widget
     }
 }
