@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import template from "./customWidgetView.html";
+import template from "./customWidgetInstanceView.html";
 import { widgetSelector } from "../constants";
 import { Component } from "@paperbits/common/ko/decorators";
 import { StyleModel } from "@paperbits/common/styles";
@@ -8,7 +8,7 @@ import { StyleModel } from "@paperbits/common/styles";
     selector: widgetSelector,
     template: template
 })
-export class CustomWidgetViewModel {
+export class CustomWidgetInstanceViewModel {
     public readonly styles: ko.Observable<StyleModel>;
     public readonly name: ko.Observable<string>;
     public readonly src: ko.Observable<string>;

@@ -1,20 +1,20 @@
 import { widgetName } from "./constants";
 import { IModelBinder } from "@paperbits/common/editing";
-import { CustomWidgetModel } from "./customWidgetModel";
+import { CustomWidgetInstanceModel } from "./customWidgetInstanceModel";
 import { Contract } from "@paperbits/common";
-import { CustomWidgetContract } from "./customWidgetContract";
+import { CustomWidgetInstanceContract } from "./customWidgetInstanceContract";
 
-export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> {
+export class CustomWidgetInstanceModelBinder implements IModelBinder<CustomWidgetInstanceModel> {
     public canHandleContract(contract: Contract): boolean {
         return contract.type === widgetName;
     }
 
     public canHandleModel(model: any): boolean {
-        return model instanceof CustomWidgetModel;
+        return model instanceof CustomWidgetInstanceModel;
     }
 
-    public async contractToModel(contract: CustomWidgetContract): Promise<CustomWidgetModel> {
-        const model = new CustomWidgetModel();
+    public async contractToModel(contract: CustomWidgetInstanceContract): Promise<CustomWidgetInstanceModel> {
+        const model = new CustomWidgetInstanceModel();
         model.name = contract.name ?? "";
         model.widgetDisplayName = contract.widgetDisplayName;
         model.customInputValue = contract.customInputValue ?? "{}";
@@ -24,8 +24,8 @@ export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> 
         return model;
     }
 
-    public modelToContract(model: CustomWidgetModel): Contract {
-        const contract: CustomWidgetContract = {
+    public modelToContract(model: CustomWidgetInstanceModel): Contract {
+        const contract: CustomWidgetInstanceContract = {
             type: widgetName,
             name: model.name,
             widgetDisplayName: model.widgetDisplayName,

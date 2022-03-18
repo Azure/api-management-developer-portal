@@ -1,4 +1,4 @@
-import { CustomWidgetModel } from "../customWidgetModel";
+import { CustomWidgetInstanceModel } from "../customWidgetInstanceModel";
 
 const blobContainer = "scaffoldtest";
 
@@ -11,11 +11,11 @@ export function loadDevSrc(environment: string, uri: string, filePath?: string):
   return developmentSrc ? developmentSrc + filePath : developmentSrc;
 }
 
-export function buildBlobStorageSrc({uri = ""}: Partial<CustomWidgetModel>, filePath: string = ""): string {
+export function buildBlobStorageSrc({uri = ""}: Partial<CustomWidgetInstanceModel>, filePath: string = ""): string {
   return `https://${blobContainer}.blob.core.windows.net/${uri}/${filePath}`;
 }
 
-export function buildRemoteFilesSrc(model: Partial<CustomWidgetModel>, filePath: string = "", environment: string = ""): string {
+export function buildRemoteFilesSrc(model: Partial<CustomWidgetInstanceModel>, filePath: string = "", environment: string = ""): string {
   const developmentSrc = loadDevSrc(environment, model.uri, filePath);
 
   const values = {

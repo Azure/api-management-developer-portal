@@ -2,21 +2,21 @@ import { Bag } from "@paperbits/common";
 import { EventManager, Events } from "@paperbits/common/events";
 import { ComponentFlow, IWidgetBinding } from "@paperbits/common/editing";
 import { widgetName, widgetDisplayName, widgetEditorSelector } from "../constants";
-import { CustomWidgetViewModel } from "./customWidgetViewModel";
+import { CustomWidgetInstanceViewModel } from "./customWidgetInstanceViewModel";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { CustomWidgetModel } from "../customWidgetModel";
+import { CustomWidgetInstanceModel } from "../customWidgetInstanceModel";
 import { buildRemoteFilesSrc } from "./utils";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 
-export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidgetModel, CustomWidgetViewModel>  {
+export class CustomWidgetInstanceViewModelBinder implements ViewModelBinder<CustomWidgetInstanceModel, CustomWidgetInstanceViewModel>  {
     constructor(
         private readonly eventManager: EventManager,
         private readonly styleCompiler: StyleCompiler,
         private readonly settingsProvider: ISettingsProvider
     ) { }
 
-    public async updateViewModel(model: CustomWidgetModel, viewModel: CustomWidgetViewModel, bindingContext: Bag<any>): Promise<void> {
+    public async updateViewModel(model: CustomWidgetInstanceModel, viewModel: CustomWidgetInstanceViewModel, bindingContext: Bag<any>): Promise<void> {
         if (model.styles) {
             viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager));
         }
@@ -26,11 +26,11 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
         viewModel.src(buildRemoteFilesSrc(model, "index.html", environment));
     }
 
-    public async modelToViewModel(model: CustomWidgetModel, viewModel?: CustomWidgetViewModel, bindingContext?: Bag<any>): Promise<CustomWidgetViewModel> {
+    public async modelToViewModel(model: CustomWidgetInstanceModel, viewModel?: CustomWidgetInstanceViewModel, bindingContext?: Bag<any>): Promise<CustomWidgetInstanceViewModel> {
         if (!viewModel) {
-            viewModel = new CustomWidgetViewModel();
+            viewModel = new CustomWidgetInstanceViewModel();
 
-            const binding: IWidgetBinding<CustomWidgetModel, CustomWidgetViewModel> = {
+            const binding: IWidgetBinding<CustomWidgetInstanceModel, CustomWidgetInstanceViewModel> = {
                 name: widgetName,
                 displayName: widgetDisplayName,
                 readonly: bindingContext ? bindingContext.readonly : false,
@@ -52,7 +52,7 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
         return viewModel;
     }
 
-    public canHandleModel(model: CustomWidgetModel): boolean {
-        return model instanceof CustomWidgetModel;
+    public canHandleModel(model: CustomWidgetInstanceModel): boolean {
+        return model instanceof CustomWidgetInstanceModel;
     }
 }

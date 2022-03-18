@@ -1,15 +1,15 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { CustomWidgetHandlers } from "./customWidgetHandlers";
-import { CustomWidgetEditorViewModel, CustomWidgetViewModel, CustomWidgetViewModelBinder } from "./ko";
-import { CustomWidgetModelBinder } from ".";
+import { CustomWidgetInstanceHandlers } from "./customWidgetInstanceHandlers";
+import { CustomWidgetInstanceEditorViewModel, CustomWidgetInstanceViewModel, CustomWidgetInstanceViewModelBinder } from "./ko";
+import { CustomWidgetInstanceModelBinder } from ".";
 import { customWidgetUriKey } from "./ko/utils";
 
-export class CustomWidgetDesignModule implements IInjectorModule {
+export class CustomWidgetInstanceDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bind("customWidgetScaffold", CustomWidgetViewModel);
-        injector.bind("customWidgetScaffoldEditor", CustomWidgetEditorViewModel);
-        injector.bindToCollection("modelBinders", CustomWidgetModelBinder);
-        injector.bindToCollection("viewModelBinders", CustomWidgetViewModelBinder);
+        injector.bind("customWidgetScaffold", CustomWidgetInstanceViewModel);
+        injector.bind("customWidgetScaffoldEditor", CustomWidgetInstanceEditorViewModel);
+        injector.bindToCollection("modelBinders", CustomWidgetInstanceModelBinder);
+        injector.bindToCollection("viewModelBinders", CustomWidgetInstanceViewModelBinder);
 
         /**
          * Here we can load custom custom-widget-binder configurations from a blob storage. For example, it could be some kind of registry: `/custom-code/registry.json`.
@@ -51,7 +51,7 @@ export class CustomWidgetDesignModule implements IInjectorModule {
 
                 Object.values(configurations).forEach(config => {
                     console.log(config);
-                    injector.bindInstanceToCollection("widgetHandlers", new CustomWidgetHandlers(config));
+                    injector.bindInstanceToCollection("widgetHandlers", new CustomWidgetInstanceHandlers(config));
                 });
             }));
     }

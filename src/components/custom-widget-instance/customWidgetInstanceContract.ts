@@ -1,7 +1,7 @@
 import { LocalStyles } from "@paperbits/common/styles";
 import { Contract } from "@paperbits/common";
 
-export interface CustomWidgetContract extends Contract {
+export interface CustomWidgetInstanceContract extends Contract {
     /**
      * This name is used to identify which custom-widget-binder to load into iframe.
      */

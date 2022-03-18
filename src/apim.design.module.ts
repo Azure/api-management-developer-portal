@@ -66,7 +66,7 @@ import { ApiProductsEditorModule } from "./components/apis/api-products/ko/apiPr
 import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CustomWidgetDesignModule } from "./components/custom-widget/customWidget.design.module";
-import { CustomWidgetDesignModule as CustomWidgetSDesignModule } from "./components/custom-widget-scaffold/customWidget.design.module";
+import { CustomWidgetInstanceDesignModule } from "./components/custom-widget-instance/customWidgetInstance.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
 
 export class ApimDesignModule implements IInjectorModule {
@@ -119,7 +119,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new CustomHtmlDesignModule());
         injector.bindModule(new CustomWidgetDesignModule());
-        injector.bindModule(new CustomWidgetSDesignModule());
+        injector.bindModule(new CustomWidgetInstanceDesignModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("tenantService", TenantService);

@@ -38,7 +38,7 @@ import { RuntimeConfigPublisher } from "./publishing/runtimeConfigPublisher";
 import { RuntimeConfigBuilder } from "./publishing/runtimeConfigBuilder";
 import { CustomHtmlPublishModule } from "./components/custom-html/customHtml.publish.module";
 import { CustomWidgetPublishModule } from "./components/custom-widget/customWidget.publish.module";
-import { CustomWidgetPublishModule as CustomWidgetSPublishModule } from "./components/custom-widget-scaffold/customWidget.publish.module";
+import { CustomWidgetInstancePublishModule } from "./components/custom-widget-instance/customWidgetInstance.publish.module";
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
 import {staticDataEnvironment} from "./../environmentConstants"
@@ -69,7 +69,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new CustomHtmlPublishModule());
         injector.bindModule(new CustomWidgetPublishModule());
-        injector.bindModule(new CustomWidgetSPublishModule());
+        injector.bindModule(new CustomWidgetInstancePublishModule());
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("userService", StaticUserService);

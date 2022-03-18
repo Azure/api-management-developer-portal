@@ -1,6 +1,6 @@
 import { LocalStyles } from "@paperbits/common/styles";
 
-export class CustomWidgetModel {
+export class CustomWidgetInstanceModel {
     /**
      * This name is used to identify which custom-widget-binder to load into iframe.
      */

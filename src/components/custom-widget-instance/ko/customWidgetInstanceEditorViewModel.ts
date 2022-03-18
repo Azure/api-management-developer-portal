@@ -1,9 +1,9 @@
 import * as ko from "knockout";
-import template from "./customWidgetEditorView.html";
+import template from "./customWidgetInstanceEditorView.html";
 import { WidgetEditor } from "@paperbits/common/widgets";
 import { Component, Event, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
-import { CustomWidgetModel } from "../customWidgetModel";
+import { CustomWidgetInstanceModel } from "../customWidgetInstanceModel";
 import { widgetEditorSelector } from "..";
 import { StyleHelper } from "@paperbits/styles";
 import { ViewManager } from "@paperbits/common/ui";
@@ -15,7 +15,7 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
     selector: widgetEditorSelector,
     template: template
 })
-export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetModel> {
+export class CustomWidgetInstanceEditorViewModel implements WidgetEditor<CustomWidgetInstanceModel> {
     public readonly sizeStyleConfig: ko.Observable<SizeStylePluginConfig>;
     public readonly customInputValue: ko.Observable<string>;
     public readonly src: ko.Observable<string>;
@@ -31,10 +31,10 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
     }
 
     @Param()
-    public model: CustomWidgetModel;
+    public model: CustomWidgetInstanceModel;
 
     @Event()
-    public onChange: (model: CustomWidgetModel) => void;
+    public onChange: (model: CustomWidgetInstanceModel) => void;
 
     @OnMounted()
     public async initialize(): Promise<void> {

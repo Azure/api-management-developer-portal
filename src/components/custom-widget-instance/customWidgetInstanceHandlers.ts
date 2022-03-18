@@ -1,10 +1,10 @@
 ﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
-import { CustomWidgetModel } from "./customWidgetModel";
+import { CustomWidgetInstanceModel } from "./customWidgetInstanceModel";
 import { sizeStylesInitial } from "./ko/constants";
 import { TCustomWidgetConfig } from "scaffold/scaffold";
 import { StyleHelper } from "@paperbits/styles";
 
-export class CustomWidgetHandlers implements IWidgetHandler {
+export class CustomWidgetInstanceHandlers implements IWidgetHandler {
     constructor(private readonly configuration: TCustomWidgetConfig) { }
 
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -15,7 +15,7 @@ export class CustomWidgetHandlers implements IWidgetHandler {
             requires: [],
 
             createModel: async () => {
-                const model = new CustomWidgetModel();
+                const model = new CustomWidgetInstanceModel();
                 model.name = this.configuration.name;
                 model.uri = this.configuration.uri;
                 model.customInputValue = "{}";
