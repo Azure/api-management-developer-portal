@@ -21,13 +21,11 @@ export class AccessTokenRefrsher {
     private async refreshToken(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
 
-        let managementApiUrl = settings[Constants.SettingNames.managementApiUrl];
+        let backendUrl = settings[Constants.SettingNames.backendUrl];
 
-        if (!managementApiUrl) {
-            throw new Error(`Management API URL ("${Constants.SettingNames.managementApiUrl}") setting is missing in configuration file.`);
+        if (!backendUrl) {
+            throw new Error(`Management API URL ("${Constants.SettingNames.backendUrl}") setting is missing in configuration file.`);
         }
-
-        managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
 
         try {
             const accessToken = await this.authenticator.getAccessToken();
@@ -45,7 +43,7 @@ export class AccessTokenRefrsher {
 
             const response = await this.httpClient.send({
                 method: "GET",
-                url: `${managementApiUrl}${Utils.ensureLeadingSlash("/identity")}?api-version=${Constants.managementApiVersion}`,
+                url: `${backendUrl}${Utils.ensureLeadingSlash("/identity")}?api-version=${Constants.managementApiVersion}`,
                 headers: [{ name: "Authorization", value: accessToken.toString() }]
             });
 

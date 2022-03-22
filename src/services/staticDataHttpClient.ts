@@ -56,9 +56,9 @@ export class StaticDataHttpClient implements HttpClient {
         // Create new subscription
         const regexp = new RegExp(`https:\/\/contoso\.management\.azure-api\.net\/subscriptions\/sid\/resourceGroups\/rgid\/providers\/Microsoft\.ApiManagement\/service\/sid\/users\/6189460d4634612164e10999\/subscriptions\/[a-xA-Z0-9]*$`);
         const matches = regexp.exec(urlWithoutParameters);
-        
+
         if (matches && matches.length == 1) {
-            result = this.mockDataObject["https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/subscriptions/61fd37461359a02500aad62f"];
+            result = this.mockDataObject["https://contoso.developer.azure-api.net/users/6189460d4634612164e10999/subscriptions/61fd37461359a02500aad62f"];
         }
         else {
 
@@ -84,7 +84,7 @@ export class StaticDataHttpClient implements HttpClient {
     }
 
     private getShortUrl(url: string): string {
-        let shortUrl = url.replace("https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid", "");
+        let shortUrl = url.replace("https://contoso.developer.azure-api.net", "");
         return shortUrl.split('?')[0];
     }
 

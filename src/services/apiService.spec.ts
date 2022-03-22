@@ -8,7 +8,7 @@ import { StaticAuthenticator } from "./../components/staticAuthenticator";
 import { StaticSettingsProvider } from "./../components/staticSettingsProvider";
 
 const settingsProvider = new StaticSettingsProvider({
-    managementApiUrl: "https://contoso.management.azure-api.net",
+    backendUrl: "https://contoso.developer.azure-api.net",
     managementApiAccessToken: "SharedAccessSignature 1&220001010000&000000000000000000000000000=="
 });
 
@@ -25,7 +25,7 @@ describe("API service", async () => {
                 value: [bookStoreApi]
             });
 
-        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider, logger);
+        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider);
 
         const apiService = new ApiService(mapiClient);
         const apis = await apiService.getApis();
@@ -41,7 +41,7 @@ describe("API service", async () => {
             .get("/apis/book-store-api")
             .reply(200, bookStoreApi);
 
-        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider, logger);
+        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider);
 
         const apiService = new ApiService(mapiClient);
         const api = await apiService.getApi("apis/book-store-api");

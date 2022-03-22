@@ -1,6 +1,5 @@
 import * as Constants from "./../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { Logger } from "@paperbits/common/logging";
 import { Utils } from "../utils";
 import { TtlCache } from "./ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
@@ -23,7 +22,7 @@ export interface IHttpBatchResponse {
 }
 
 export class MapiClient {
-    private managementApiUrl: string;
+    private backendUrl: string;
     private environment: string;
     private developerPortalType: string;
     private initializePromise: Promise<void>;
@@ -33,7 +32,6 @@ export class MapiClient {
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator,
         private readonly settingsProvider: ISettingsProvider,
-        private readonly logger: Logger
     ) { }
 
     private async ensureInitialized(): Promise<void> {
@@ -47,13 +45,11 @@ export class MapiClient {
         const settings = await this.settingsProvider.getSettings();
 
         this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || "self-hosted-portal";
-        const managementApiUrl = settings[Constants.SettingNames.managementApiUrl];
+        this.backendUrl = settings[Constants.SettingNames.backendUrl];
 
-        if (!managementApiUrl) {
-            throw new Error(`Management API URL ("${Constants.SettingNames.managementApiUrl}") setting is missing in configuration file.`);
+        if (!this.backendUrl) {
+            throw new Error(`Backend API URL ("${Constants.SettingNames.backendUrl}") setting is missing in configuration file.`);
         }
-
-        this.managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
 
         const managementApiAccessToken = settings[Constants.SettingNames.managementApiAccessToken];
 
@@ -138,8 +134,8 @@ export class MapiClient {
 
         // Do nothing if absolute URL
         if (!httpRequest.url.startsWith("https://") && !httpRequest.url.startsWith("http://")) {
-            httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
-        }        
+            httpRequest.url = `${this.backendUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
+        }
 
         const url = new URL(httpRequest.url);
 
@@ -245,7 +241,7 @@ export class MapiClient {
             url: requestUrl,
             headers: headers
         });
-        
+
         const takeResult = (result: Page<T>): Promise<T[]> => {
             if (result) {
                 if (Array.isArray(result)) {
@@ -324,7 +320,7 @@ export class MapiClient {
         } catch (error) {
             host = "publishing";
         }
-                
+
         return { name: Constants.portalHeaderName, value: `${this.developerPortalType}|${host}|${eventName || ""}` };
     }
 }
