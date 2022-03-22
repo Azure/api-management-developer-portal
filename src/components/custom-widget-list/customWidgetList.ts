@@ -29,14 +29,12 @@ export class ContentWorkshop {
                 name: "test-uri",
                 displayName: "Test URI",
                 category: "Custom widgets",
-                // iconUrl: "https://...",
                 uri: "test-uri",
             },
             "test-uri-x": {
                 name: "test-uri-x",
-                displayName: "Test URI 2",
+                displayName: "Test URI X",
                 category: "Custom widgets",
-                // iconUrl: "https://...",
                 uri: "test-uri-x",
             },
         };
@@ -81,7 +79,7 @@ export class ContentWorkshop {
             component: {
                 name: "custom-widget-create",
                 params: {
-                    configs: this.customWidgetConfigs,
+                    configs: [...this.customWidgetConfigs()],
                     configAdd: (config: TCustomWidgetConfig) => this.customWidgetConfigs([...this.customWidgetConfigs(), config]),
                 },
             },

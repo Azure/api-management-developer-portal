@@ -61,8 +61,10 @@ export class CreateWidget implements WidgetEditor<CustomWidgetModel> {
 
         const nameUri = encodeURIComponent(name.normalize("NFD").toLowerCase().replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9-]/g, "-"));
 
-        // TODO make sure a widget with name like nameUri does not exist
-        // "A widget with the same alphanumerical signature already exists."
+        if (this.configs.find(c => c.name === nameUri)) {
+            alert("A widget with the same alphanumerical signature already exists.");
+            return;
+        }
 
         const {config, blob} = await scaffold({name, nameUri, tech, control: this.sourceControl()}, ".");
 
@@ -70,8 +72,7 @@ export class CreateWidget implements WidgetEditor<CustomWidgetModel> {
         else console.log(blob);
 
         this.widgetService.registerWidgetHandler(new CustomWidgetHandlers(config));
+        this.configs.push(config);
         this.configAdd(config);
-
-        // TODO replace this instance of "Custom Widget" widget by an instance of the newly registered custom widget
     }
 }
