@@ -3,6 +3,7 @@ import template from "./customHtmlView.html";
 import { widgetSelector } from "../constants";
 import { Component } from "@paperbits/common/ko/decorators";
 import { StyleModel } from "@paperbits/common/styles";
+import { iframeSandboxAllows } from "../../../constants";
 
 @Component({
     selector: widgetSelector,
@@ -11,6 +12,7 @@ import { StyleModel } from "@paperbits/common/styles";
 export class CustomHtmlViewModel {
     public readonly styles: ko.Observable<StyleModel>;
     public readonly htmlCode: ko.Observable<string>;
+    public readonly iframeSandboxAllows: string = iframeSandboxAllows;
 
     constructor() {
         this.htmlCode = ko.observable();
