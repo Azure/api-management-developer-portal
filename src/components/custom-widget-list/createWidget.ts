@@ -5,7 +5,7 @@ import { TControl, TTech } from "scaffold/scaffold";
 import template from "./createWidget.html";
 import { IWidgetService, WidgetEditor } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
-import { CustomWidgetHandlers } from "../custom-widget-scaffold";
+import { CustomWidgetHandlers } from "../custom-widget";
 import { CustomWidgetModel } from "./customWidgetModel";
 // import { widgetEditorSelector } from "..";
 
