@@ -38,8 +38,6 @@ class HttpMockBuilder {
             url = `https://contoso.management.azure-api.com${Utils.ensureLeadingSlash(url)}`;
         }
 
-        url = Utils.ensureUrlArmified(url);
-
         const parsed = new URL(url);
         const path = parsed.pathname;
 

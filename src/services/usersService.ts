@@ -51,11 +51,10 @@ export class UsersService {
      */
     public async authenticate(credentials: string): Promise<string> {
         try {
-            let managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
-            managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
+            let backendUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.backendUrl);
 
             const request = {
-                url: `${managementApiUrl}/identity?api-version=${Constants.managementApiVersion}`,
+                url: `${backendUrl}/identity?api-version=${Constants.managementApiVersion}`,
                 method: "GET",
                 headers: [
                     { name: "Authorization", value: credentials },
@@ -101,11 +100,10 @@ export class UsersService {
         const requestUrl = `/users/${userId}/identities/Basic/${identity}?appType=${Constants.AppType}`;
         const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
 
-        let managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
-        managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
+        let backendUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.backendUrl);
 
         const response = await this.httpClient.send({
-            url: `${managementApiUrl}${requestUrl}&api-version=${Constants.managementApiVersion}`,
+            url: `${backendUrl}${requestUrl}&api-version=${Constants.managementApiVersion}`,
             method: "PUT",
             headers: [{ name: "Authorization", value: token }, await this.mapiClient.getPortalHeader("activateUser")]
         });
@@ -292,8 +290,8 @@ export class UsersService {
     }
 
     public async createUserWithOAuth(provider: string, idToken: string, firstName: string, lastName: string, email: string): Promise<void> {
-        let managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
-        managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
+        let backendUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.backendUrl);
+
         const jwtToken = Utils.parseJwt(idToken);
 
         const user: UserPropertiesContract = {
@@ -308,7 +306,7 @@ export class UsersService {
         };
 
         const response = await this.httpClient.send({
-            url: `${managementApiUrl}/users?api-version=${Constants.managementApiVersion}`,
+            url: `${backendUrl}/users?api-version=${Constants.managementApiVersion}`,
             method: HttpMethod.post,
             headers: [
                 { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
