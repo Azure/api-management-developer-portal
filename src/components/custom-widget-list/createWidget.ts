@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import { saveAs } from "file-saver";
 import { scaffold } from "scaffold";
-import { TControl, TTech } from "scaffold/scaffold";
+import { TControl, TCustomWidgetConfig, TTech } from "scaffold/scaffold";
 import template from "./createWidget.html";
 import { IWidgetService, WidgetEditor } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
@@ -27,6 +27,12 @@ export class CreateWidget implements WidgetEditor<CustomWidgetModel> {
     @Param()
     public model: CustomWidgetModel;
 
+    @Param()
+    private configs: TCustomWidgetConfig[];
+
+    @Param()
+    private configAdd: (config: TCustomWidgetConfig) => void;
+
     @Event()
     public onChange: (model: CustomWidgetModel) => void;
 
@@ -51,11 +57,13 @@ export class CreateWidget implements WidgetEditor<CustomWidgetModel> {
     public downloadScaffold(): void {
         const tech = this.tech();
         if (!this.name() || !tech) return;
+        // TODO check if exits in 'configs'
         scaffold({tech, control: this.sourceControl(), name: this.name()}, ".").then(({ config, blob }) => {
             if (confirm("download?")) saveAs(blob, "widget.zip");
             else console.log(blob);
 
             this.widgetService.registerWidgetHandler(new CustomWidgetHandlers(config));
+            this.configAdd(config);
             // injector.bindInstanceToCollection("widgetHandlers", );
             /* TODO register new widget and replace this instance of "Custom Widget" widget by an instance of the newly registered custom widget */
         });
