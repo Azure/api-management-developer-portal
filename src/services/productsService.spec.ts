@@ -10,7 +10,7 @@ import { StaticSettingsProvider } from "../components/staticSettingsProvider";
 
 
 const settingsProvider = new StaticSettingsProvider({
-    managementApiUrl: "https://contoso.management.azure-api.net",
+    backendUrl: "https://contoso.developer.azure-api.net",
     managementApiAccessToken: "SharedAccessSignature 1&220001010000&000000000000000000000000000=="
 });
 
@@ -25,7 +25,7 @@ describe("Product service", async () => {
             .get("/products")
             .reply(200, { value: [starterProduct] });
 
-        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider, logger);
+        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider);
         const tenantService = new TenantService(mapiClient);
 
         const productService = new ProductService(mapiClient, tenantService);
@@ -42,7 +42,7 @@ describe("Product service", async () => {
             .get("/products/starter")
             .reply(200, starterProduct);
 
-        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider, logger);
+        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider);
         const tenantService = new TenantService(mapiClient);
 
         const productService = new ProductService(mapiClient, tenantService);

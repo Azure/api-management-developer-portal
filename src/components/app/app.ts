@@ -6,6 +6,7 @@ import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ISiteService } from "@paperbits/common/sites";
 import { IAuthenticator } from "../../authentication";
+import { SettingNames } from "../../constants";
 
 const startupError = `Unable to start the portal`;
 
@@ -26,8 +27,8 @@ export class App {
     public async initialize(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
 
-        if (!settings["managementApiUrl"]) {
-            this.viewManager.addToast(startupError, `Management API URL is missing. See setting <i>managementApiUrl</i> in the configuration file <i>config.design.json</i>`);
+        if (!settings[SettingNames.backendUrl]) {
+            this.viewManager.addToast(startupError, `Backend API URL is missing. See setting <i>backendUrl</i> in the configuration file <i>config.design.json</i>`);
             return;
         }
 
