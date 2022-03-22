@@ -1,6 +1,6 @@
 {
     "environment": "publishing",
-    "backendUrl": "http://localhost:3000",
-    "managementApiAccessToken": "SharedAccessSignature integration&202204171545&24Q4eP+VEdO2WTSLs8+qx9zLzJo+UjItA+wueYy56eyLoSOC+Lc8R1LeB0JsqedWZSM6HQ9S5vsyEK54FvliqQ==",
+    "managementApiAccessToken": "SharedAccessSignature ...",
+    "backendUrl": "https://<service-name>.developer.azure-api.net",
     "useHipCaptcha": false
 }
