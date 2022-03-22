@@ -1,5 +1,10 @@
 import { SchemaObjectContract } from "../contracts/schema";
 
+export interface DestructedCombination {
+    combinationType: string,
+    combinationArray: SchemaObjectContract[]
+}
+
 export abstract class TypeDefinitionPropertyType {
     public displayAs: string;
 
@@ -108,7 +113,7 @@ export abstract class TypeDefinitionProperty {
         return $ref && $ref.split("/").pop();
     }
 
-    protected desctructCombination(contract: SchemaObjectContract) {
+    protected destructCombination(contract: SchemaObjectContract): DestructedCombination {
         let combinationType: string;
         let combinationArray: SchemaObjectContract[];
 
@@ -163,7 +168,7 @@ export class TypeDefinitionCombinationProperty extends TypeDefinitionProperty {
     constructor(name: string, contract: SchemaObjectContract, isRequired: boolean) {
         super(name, contract, isRequired);
 
-        const { combinationType, combinationArray } = this.desctructCombination(contract);
+        const { combinationType, combinationArray } = this.destructCombination(contract);
 
         const combination = combinationArray.map(item => {
             if (item.$ref) {
@@ -239,7 +244,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
             contract.anyOf ||
             contract.oneOf
         ) {
-            const { combinationType, combinationArray } = this.desctructCombination(contract);
+            const { combinationType, combinationArray } = this.destructCombination(contract);
 
             const combinationPropertiesProcessed = this.processCombinationProperties(combinationArray, definitions);
 
