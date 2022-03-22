@@ -267,3 +267,8 @@ export const genericHttpRequestError = "Server error. Unable to send request. Pl
 
 export const oauthSessionKey = "oauthSession";
 export const reservedCharTuplesForOData: [string, string][] = [["'", "''"]];
+
+/**
+ * List of allowed attributes for a sandboxed iframe.
+ */
+export const iframeSandboxAllows = "allow-scripts allow-modals allow-forms allow-downloads allow-popups-to-escape-sandbox allow-top-navigation allow-presentation allow-orientation-lock allow-pointer-lock";
