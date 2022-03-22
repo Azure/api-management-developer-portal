@@ -3,8 +3,8 @@ import { saveAs } from "file-saver";
 import { scaffold } from "scaffold";
 import { TControl, TCustomWidgetConfig, TTech } from "scaffold/scaffold";
 import template from "./createWidget.html";
-import { IWidgetService, WidgetEditor } from "@paperbits/common/widgets";
-import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
+import { IWidgetService } from "@paperbits/common/widgets";
+import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { CustomWidgetHandlers } from "../custom-widget";
 import { CustomWidgetModel } from "./customWidgetModel";
 // import { widgetEditorSelector } from "..";
@@ -13,7 +13,7 @@ import { CustomWidgetModel } from "./customWidgetModel";
     selector: "custom-widget-create",
     template: template
 })
-export class CreateWidget implements WidgetEditor<CustomWidgetModel> {
+export class CreateWidget {
     public readonly name: ko.Observable<string>;
     public readonly tech: ko.Observable<TTech | null>;
     public readonly sourceControl: ko.Observable<TControl>;
@@ -33,25 +33,11 @@ export class CreateWidget implements WidgetEditor<CustomWidgetModel> {
     @Param()
     private configAdd: (config: TCustomWidgetConfig) => void;
 
-    @Event()
-    public onChange: (model: CustomWidgetModel) => void;
-
     @OnMounted()
     public async initialize(): Promise<void> {
         this.name(this.model.name);
         this.tech(this.model.tech);
         this.sourceControl(this.model.sourceControl);
-
-        this.name.subscribe(this.applyChanges);
-        this.tech.subscribe(this.applyChanges);
-        this.sourceControl.subscribe(this.applyChanges);
-    }
-
-    private applyChanges(): void {
-        this.model.name = this.name();
-        this.model.tech = this.tech();
-        this.model.sourceControl = this.sourceControl();
-        this.onChange(this.model);
     }
 
     public async downloadScaffold(): Promise<void> {
