@@ -132,6 +132,10 @@ export abstract class TypeDefinitionProperty {
             combinationArray = contract.not;
         }
 
+        if (contract.properties) {
+            combinationArray.push({ properties: contract.properties });
+        }
+
         return {
             combinationType,
             combinationArray
@@ -233,8 +237,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
 
         if (contract.allOf ||
             contract.anyOf ||
-            contract.oneOf ||
-            contract.not
+            contract.oneOf
         ) {
             const { combinationType, combinationArray } = this.desctructCombination(contract);
 
