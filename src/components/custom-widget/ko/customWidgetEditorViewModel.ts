@@ -8,7 +8,7 @@ import { widgetEditorSelector } from "..";
 import { StyleHelper } from "@paperbits/styles";
 import { ViewManager } from "@paperbits/common/ui";
 import { EventManager, Events } from "@paperbits/common/events";
-import { buildRemoteFilesSrc } from "./utils";
+import { buildWidgetSource } from "./utils";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 
 @Component({
@@ -54,7 +54,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
 
         const environment = await this.settingsProvider.getSetting<string>("environment");
-        this.src(buildRemoteFilesSrc(this.model, "editor.html", environment));
+        this.src(buildWidgetSource(this.model, "editor.html", environment).src);
     }
 
     private updateResponsiveObservables(): void {

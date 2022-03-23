@@ -21,8 +21,6 @@ export class CustomWidgetModel {
      */
     public styles: LocalStyles;
 
-    public uri: string | undefined;
-
     constructor() {
         this.styles = {};
     }

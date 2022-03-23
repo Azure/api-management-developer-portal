@@ -6,7 +6,7 @@ import { CustomWidgetViewModel } from "./customWidgetViewModel";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { CustomWidgetModel } from "../customWidgetModel";
-import { buildRemoteFilesSrc } from "./utils";
+import { buildWidgetSource } from "./utils";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 
 export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidgetModel, CustomWidgetViewModel>  {
@@ -23,7 +23,9 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
 
         const environment = await this.settingsProvider.getSetting<string>("environment");
         viewModel.name(model.name);
-        viewModel.src(buildRemoteFilesSrc(model, "index.html", environment));
+        const widgetSource = buildWidgetSource(model, "index.html", environment);
+        viewModel.src(widgetSource.src);
+        viewModel.override(widgetSource.override);
     }
 
     public async modelToViewModel(model: CustomWidgetModel, viewModel?: CustomWidgetViewModel, bindingContext?: Bag<any>): Promise<CustomWidgetViewModel> {

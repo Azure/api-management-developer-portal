@@ -1,10 +1,12 @@
 ﻿import * as ko from "knockout";
+import { saveAs } from "file-saver";
 import template from "./customWidgetList.html";
 import { ViewManager, View } from "@paperbits/common/ui";
 import { Component } from "@paperbits/common/ko/decorators";
-import { customWidgetUriKey } from "../custom-widget/ko/utils";
+import { OVERRIDE_CONFIG_SESSION_KEY_PREFIX, widgetArchiveName } from "../custom-widget/ko/utils";
 import { CustomWidgetHandlers } from "../custom-widget";
 import { IWidgetService } from "@paperbits/common/widgets";
+import { generateBlob } from "scaffold";
 import { TCustomWidgetConfig } from "scaffold/scaffold";
 
 
@@ -23,59 +25,68 @@ export class ContentWorkshop {
         this.loadCustomWidgets().then(configs => this.customWidgetConfigs(Object.values(configs)));
     }
 
-    public async loadCustomWidgets(): Promise<Record<string, any>> {
-        const configurations: Record<string, TCustomWidgetConfig> = {
-            "test-uri": {
-                name: "test-uri",
-                displayName: "Test URI",
-                category: "Custom widgets",
-                uri: "test-uri",
-            },
-            "test-uri-x": {
-                name: "test-uri-x",
-                displayName: "Test URI X",
-                category: "Custom widgets",
-                uri: "test-uri-x",
-            },
-        };
+    private async loadCustomWidgets(): Promise<Record<string, any>> {
+        const configsPromises = [];
 
-        const promises = [];
+        // TODO load configs from blob storage async
+
+        const overridesPromises = [];
 
         /* load overrides */
-        const sources = new URLSearchParams(window.location.search).get("MS_APIM_CW_devsrcs");
-        if (sources) {
-            const sourcesObj = JSON.parse(sources);
-
-            Object.keys(sourcesObj).forEach(key => {
+        const sourcesSession = Object.keys(window.sessionStorage)
+            .filter((key: string) => key.startsWith(OVERRIDE_CONFIG_SESSION_KEY_PREFIX))
+            .map(key => window.sessionStorage.getItem(key));
+        const sourcesSearchParams = new URLSearchParams(window.location.search).getAll("MS_APIM_CW_devsrc");
+        const sources = [...new Set([...sourcesSession, ...sourcesSearchParams])];
+        if (sources.length) {
+            sources.forEach(source => {
                 try {
-                    const url = new URL(sourcesObj[key]);
-                    window.sessionStorage.setItem(customWidgetUriKey(key), url.href);
-                    promises.push(fetch(url.href + "msapim.config.json"));
+                    const url = new URL(source);
+                    overridesPromises.push(fetch(url.href + "config.msapim.json"));
                 } catch (e) {
-                    console.warn(key, sourcesObj[key], e);
+                    console.warn(source, e);
                 }
             });
         }
 
-        return Promise.all(promises)
-            .then(r => r.map(e => e.json()))
-            .then(r => Promise.all(r).then(r => {
-                r.forEach(config => {
-                    configurations[config.uri] = config;
-                });
+        const promisesToJson = async promises => Promise.all(await Promise.all(promises).then(r => r.map(e => e.json())));
+        const configs: TCustomWidgetConfig[] = [{
+            name: "test-uri",
+            displayName: "Test URI",
+            category: "Custom widgets",
+            tech: "react",
+            deployed: {},
+        }, {
+            name: "test-uri-x",
+            displayName: "Test URI X",
+            category: "Custom widgets",
+            tech: "react",
+            deployed: {},
+        }]; // await promisesToJson(configsPromises);
+        const overrides: TCustomWidgetConfig[] = await promisesToJson(overridesPromises);
 
-                Object.values(configurations).forEach(config => {
-                    console.log(config);
-                    this.widgetService.registerWidgetHandler(new CustomWidgetHandlers(config));
-                });
+        console.log({configs, overrides});
 
-                return configurations;
-            }));
+        const configurations: Record<string, TCustomWidgetConfig> = {};
+
+        configs.forEach(config => configurations[config.name] = config);
+        overrides.forEach((override, i) => {
+            const href = new URL(sources[i]).href;
+            window.sessionStorage.setItem(OVERRIDE_CONFIG_SESSION_KEY_PREFIX + override.name, href);
+            configurations[override.name] = {...override, override: href ?? true};
+        });
+
+        Object.values(configurations).forEach(config => {
+            console.log(config);
+            this.widgetService.registerWidgetHandler(new CustomWidgetHandlers(config));
+        });
+
+        return configurations;
     }
 
     public async openScaffoldWizard(): Promise<void> {
         const view: View = {
-            heading: "Create custom widget",
+            heading: "Create new custom widget",
             component: {
                 name: "custom-widget-create",
                 params: {
@@ -85,6 +96,16 @@ export class ContentWorkshop {
             },
         };
         this.viewManager.openViewAsWorkshop(view);
+    }
+
+    public async publishWidget(config: TCustomWidgetConfig): Promise<void> {
+        if (!confirm(`This operation is in-reversible – it overwrites currently published version of this custom widget. Are you sure you want to proceed with publishing '${config.displayName}'?`)) return;
+
+        // TODO copy on blob storage
+    }
+
+    public async downloadWidget(config: TCustomWidgetConfig): Promise<void> {
+        return saveAs(await generateBlob(config), widgetArchiveName(config));
     }
 
     public async deleteWidget(config: TCustomWidgetConfig): Promise<void> {

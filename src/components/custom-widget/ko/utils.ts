@@ -1,22 +1,20 @@
 import { CustomWidgetModel } from "../customWidgetModel";
+import { TCustomWidgetConfig } from "scaffold/scaffold";
 
 const blobContainer = "scaffoldtest";
 
-export const customWidgetUriKey = key => `MS_APIM_CW_devsrc_${key}`;
+export const OVERRIDE_CONFIG_SESSION_KEY_PREFIX = "MS_APIM_CW_devsrc_";
 
-export function loadDevSrc(environment: string, uri: string, filePath?: string): string | null {
-  if (environment !== "development") return null;
+export const widgetArchiveName = (config: TCustomWidgetConfig) => `${config.name}-msapim-widget.zip`;
 
-  const developmentSrc = window.sessionStorage.getItem(customWidgetUriKey(uri));
-  return developmentSrc ? developmentSrc + filePath : developmentSrc;
+export function buildBlobStorageSrc({name = ""}: Partial<CustomWidgetModel>): string {
+  return `https://${blobContainer}.blob.core.windows.net/${name}/`;
 }
 
-export function buildBlobStorageSrc({uri = ""}: Partial<CustomWidgetModel>, filePath: string = ""): string {
-  return `https://${blobContainer}.blob.core.windows.net/${uri}/${filePath}`;
-}
-
-export function buildRemoteFilesSrc(model: Partial<CustomWidgetModel>, filePath: string = "", environment: string = ""): string {
-  const developmentSrc = loadDevSrc(environment, model.uri, filePath);
+export function buildWidgetSource(model: Partial<CustomWidgetModel>, filePath: string = "", environment: string = ""): {override: string | boolean, src: string} {
+  const developmentSrc = environment === "development"
+    ? window.sessionStorage.getItem(OVERRIDE_CONFIG_SESSION_KEY_PREFIX + model.name)
+    : null;
 
   const values = {
     data: JSON.parse(model.customInputValue).data,
@@ -26,5 +24,8 @@ export function buildRemoteFilesSrc(model: Partial<CustomWidgetModel>, filePath:
   /** invalidate cache every 1 ms on dev */
   if (environment === "development") searchParams += `&v=${(new Date()).getTime()}`;
 
-  return (developmentSrc ?? buildBlobStorageSrc(model, filePath)) + searchParams;
+  return {
+    override: developmentSrc,
+    src: (developmentSrc ?? buildBlobStorageSrc(model)) + filePath + searchParams
+  };
 }

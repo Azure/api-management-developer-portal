@@ -17,6 +17,5 @@ export interface CustomWidgetContract extends Contract {
      */
     customInputValue: string;
 
-    uri: string | undefined;
     styles: LocalStyles;
 }
