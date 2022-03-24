@@ -43,10 +43,15 @@ export class OperationConsole {
     public readonly selectedRepresentation: ko.Observable<ConsoleRepresentation>;
     public readonly requestError: ko.Observable<string>;
     public readonly codeSample: ko.Observable<string>;
+    public readonly showHostnameInput: ko.Observable<boolean>;
     public readonly selectedHostname: ko.Observable<string>;
     public readonly isHostnameWildcarded: ko.Computed<boolean>;
     public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
     public readonly wildcardSegment: ko.Observable<string>;
+    public readonly collapsedParameters: ko.Observable<boolean>;
+    public readonly collapsedHeaders: ko.Observable<boolean>;
+    public readonly collapsedBody: ko.Observable<boolean>;
+    public readonly collapsedRequest: ko.Observable<boolean>;
     public isConsumptionMode: boolean;
     public templates: Object;
     public backendUrl: string;
@@ -60,7 +65,7 @@ export class OperationConsole {
     public readonly wsPayload: ko.Observable<string | File>;
     public readonly wsDataFormat: ko.Observable<string>;
     public readonly wsLogItems: ko.ObservableArray<LogItem>;
-    
+
     private bodyStash: string;
 
     constructor(
@@ -89,6 +94,7 @@ export class OperationConsole {
         this.sendingRequest = ko.observable(false);
         this.codeSample = ko.observable();
         this.onFileSelect = this.onFileSelect.bind(this);
+        this.showHostnameInput = ko.observable(false);
         this.selectedHostname = ko.observable("");
         this.hostnameSelectionEnabled = ko.observable();
         this.isHostnameWildcarded = ko.computed(() => this.selectedHostname().includes("*"));
@@ -105,6 +111,11 @@ export class OperationConsole {
         this.wsPayload = ko.observable();
         this.wsDataFormat = ko.observable("raw");
         this.wsLogItems = ko.observableArray([]);
+
+        this.collapsedParameters = ko.observable(false);
+        this.collapsedHeaders = ko.observable(false);
+        this.collapsedBody = ko.observable(false);
+        this.collapsedRequest = ko.observable(false);
 
         this.bodyStash = "";
 
@@ -192,8 +203,14 @@ export class OperationConsole {
         const hostnames = this.hostnames();
         this.hostnameSelectionEnabled(this.hostnames()?.length > 1);
 
-        const hostname = hostnames[0];
-        this.selectedHostname(hostname);
+        let hostname = "";
+
+        if (hostnames) {
+            hostname = hostnames[0];
+            this.selectedHostname(hostname);
+        } else {
+            this.showHostnameInput(true);
+        }
 
         this.hostnameSelectionEnabled(this.hostnames()?.length > 1);
         consoleOperation.host.hostname(hostname);
@@ -408,7 +425,7 @@ export class OperationConsole {
         const url = consoleOperation.requestUrl();
         const method = consoleOperation.method;
         const headers = [...request.headers()];
-        
+
         let payload;
 
         switch (consoleOperation.request.bodyFormat()) {
@@ -447,7 +464,7 @@ export class OperationConsole {
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
 
             const responseStatusText = !!response.statusText
-                ? response.statusText 
+                ? response.statusText
                 : knownStatusCode
                     ? knownStatusCode.description
                     : "Unknown";
@@ -606,6 +623,22 @@ export class OperationConsole {
 
     public getApiReferenceUrl(): string {
         return this.routeHelper.getApiReferenceUrl(this.api().name);
+    }
+
+    public collapseParameters(): void {
+        this.collapsedParameters(!this.collapsedParameters());
+    }
+
+    public collapseHeaders(): void {
+        this.collapsedHeaders(!this.collapsedHeaders());
+    }
+
+    public collapseBody(): void {
+        this.collapsedBody(!this.collapsedBody());
+    }
+
+    public collapseRequest(): void {
+        this.collapsedRequest(!this.collapsedRequest());
     }
 
 }

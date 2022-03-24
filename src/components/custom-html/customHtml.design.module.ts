@@ -6,8 +6,8 @@ import { HTMLInjectionModelBinder } from ".";
 
 export class CustomHtmlDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bind("widget", CustomHtmlViewModel);
-        injector.bind("widgetEditor", CustomHtmlEditorViewModel);
+        injector.bind("customHtmlViewModel", CustomHtmlViewModel);
+        injector.bind("customHtmlViewEditorModel", CustomHtmlEditorViewModel);
         injector.bindToCollection("modelBinders", HTMLInjectionModelBinder);
         injector.bindToCollection("viewModelBinders", CustomHtmlViewModelBinder);
         injector.bindToCollection("widgetHandlers", HTMLInjectionHandlers);
