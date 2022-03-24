@@ -51,6 +51,7 @@ import { ConfirmPassword } from "./components/users/confirm-password/ko/runtime/
 import { Profile } from "./components/users/profile/ko/runtime/profile";
 import { ResetPassword } from "./components/users/reset-password/ko/runtime/reset-password";
 import { HipCaptcha } from "./components/users/runtime/hip-captcha/hip-captcha";
+import { TermsOfUse } from "./components/users/runtime/terms-of-use/terms-of-use";
 import { SignInAad } from "./components/users/signin-social/ko/runtime/signin-aad";
 import { SignInAadB2C } from "./components/users/signin-social/ko/runtime/signin-aad-b2c";
 import { Signin } from "./components/users/signin/ko/runtime/signin";
@@ -77,8 +78,11 @@ import { UsersService } from "./services/usersService";
 import { ApimSettingsProvider } from "./configuration/apimSettingsProvider";
 import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import { Pagination } from "./components/pagination/pagination";
+import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { OauthServerConfiguration } from "./components/operations/operation-details/ko/runtime/oauth-server-configuration";
 import { AadServiceV2 } from "./services/aadServiceV2";
+import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
+import {staticDataEnvironment} from "./../environmentConstants"
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -130,6 +134,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("usersService", UsersService);
         injector.bind("reports", Reports);
         injector.bind("hipCaptcha", HipCaptcha);
+        injector.bind("termsOfUse", TermsOfUse);
         injector.bind("resetPassword", ResetPassword);
         injector.bind("confirmPassword", ConfirmPassword);
         injector.bind("changePassword", ChangePassword);
@@ -151,5 +156,10 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bind("pagination", Pagination);
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
+
+        if (process.env.NODE_ENV === staticDataEnvironment) {
+            injector.bind("httpClient", StaticDataHttpClient);
+            injector.bind("dataProvider", RuntimeStaticDataProvider);
+        }
     }
 }

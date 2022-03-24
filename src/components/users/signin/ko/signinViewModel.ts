@@ -7,9 +7,9 @@ import { Component } from "@paperbits/common/ko/decorators";
     template: template
 })
 export class SigninViewModel {
-    public readonly delegationConfig: ko.Observable<string>;
+    public readonly runtimeConfig: ko.Observable<string>;
 
     constructor() {
-        this.delegationConfig = ko.observable<string>();
+        this.runtimeConfig = ko.observable<string>();
     }
 }

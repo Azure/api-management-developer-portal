@@ -346,8 +346,8 @@
 
 <!-- ko if: $component.consoleIsOpen -->
 <!-- ko ifnot: apiType() === 'graphql' -->
-<div class="detachable-right scrollable flex-grow animation-fade-in">
-    <operation-console class="test flex flex-column" data-bind="dialog: {}"
+<div class="detachable-right flex-grow animation-fade-in">
+    <operation-console class="test flex flex-column gql-console-height" data-bind="dialog: {}"
         params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
     </operation-console>
 </div>

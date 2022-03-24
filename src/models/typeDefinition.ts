@@ -1,5 +1,10 @@
 import { SchemaObjectContract } from "../contracts/schema";
 
+export interface DestructedCombination {
+    combinationType: string,
+    combinationArray: SchemaObjectContract[]
+}
+
 export abstract class TypeDefinitionPropertyType {
     public displayAs: string;
 
@@ -35,7 +40,8 @@ export class TypeDefinitionPropertyTypeArrayOfReference extends TypeDefinitionPr
 export class TypeDefinitionPropertyTypeCombination extends TypeDefinitionPropertyType {
     constructor(
         public readonly combinationType: string,
-        public readonly combinationReferences: string[]
+        public readonly combinationReferences?: string[],
+        public readonly combination?: TypeDefinitionPropertyType[]
     ) {
         super("combination");
     }
@@ -102,6 +108,44 @@ export abstract class TypeDefinitionProperty {
             this.rawSchemaFormat = "json";
         }
     }
+
+    protected getTypeNameFromRef($ref: string): string {
+        return $ref && $ref.split("/").pop();
+    }
+
+    protected destructCombination(contract: SchemaObjectContract): DestructedCombination {
+        let combinationType: string;
+        let combinationArray: SchemaObjectContract[];
+
+        if (contract.allOf) {
+            combinationType = "All of";
+            combinationArray = contract.allOf;
+        }
+
+        if (contract.anyOf) {
+            combinationType = "Any of";
+            combinationArray = contract.anyOf;
+        }
+
+        if (contract.oneOf) {
+            combinationType = "One of";
+            combinationArray = contract.oneOf;
+        }
+
+        if (contract.not) {
+            combinationType = "Not";
+            combinationArray = contract.not;
+        }
+
+        if (contract.properties) {
+            combinationArray.push({ properties: contract.properties });
+        }
+
+        return {
+            combinationType,
+            combinationArray
+        }
+    }
 }
 
 export class TypeDefinitionPrimitiveProperty extends TypeDefinitionProperty {
@@ -117,6 +161,25 @@ export class TypeDefinitionEnumerationProperty extends TypeDefinitionProperty {
         super(name, contract, isRequired);
 
         this.kind = "enum";
+    }
+}
+
+export class TypeDefinitionCombinationProperty extends TypeDefinitionProperty {
+    constructor(name: string, contract: SchemaObjectContract, isRequired: boolean) {
+        super(name, contract, isRequired);
+
+        const { combinationType, combinationArray } = this.destructCombination(contract);
+
+        const combination = combinationArray.map(item => {
+            if (item.$ref) {
+                return new TypeDefinitionPropertyTypeReference(this.getTypeNameFromRef(item.$ref));
+            }
+
+            return new TypeDefinitionPropertyTypePrimitive(item.type || "object");
+        });
+
+        this.type = new TypeDefinitionPropertyTypeCombination(combinationType, null, combination);
+        this.kind = "combination";
     }
 }
 
@@ -179,31 +242,9 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
 
         if (contract.allOf ||
             contract.anyOf ||
-            contract.oneOf ||
-            contract.not
+            contract.oneOf
         ) {
-            let combinationType: string;
-            let combinationArray: SchemaObjectContract[];
-
-            if (contract.allOf) {
-                combinationType = "All of";
-                combinationArray = contract.allOf;
-            }
-
-            if (contract.anyOf) {
-                combinationType = "Any of";
-                combinationArray = contract.anyOf;
-            }
-
-            if (contract.oneOf) {
-                combinationType = "One of";
-                combinationArray = contract.oneOf;
-            }
-
-            if (contract.not) {
-                combinationType = "Not";
-                combinationArray = contract.not;
-            }
+            const { combinationType, combinationArray } = this.destructCombination(contract);
 
             const combinationPropertiesProcessed = this.processCombinationProperties(combinationArray, definitions);
 
@@ -288,6 +329,14 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                         propertySchemaObject.type = "array";
                     }
 
+                    if (propertySchemaObject.allOf ||
+                        propertySchemaObject.anyOf ||
+                        propertySchemaObject.oneOf ||
+                        propertySchemaObject.not
+                    ) {
+                        propertySchemaObject.type = "combination";
+                    }
+
                     switch (propertySchemaObject.type) {
                         case "integer":
                         case "number":
@@ -341,6 +390,10 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
 
                             break;
 
+                        case "combination":
+                            props.push(new TypeDefinitionCombinationProperty(propertyNameToDisplay, propertySchemaObject, isRequired));
+                            break;
+
                         default:
                             console.warn(`Unknown type of schema definition: ${propertySchemaObject.type}`);
                     }
@@ -351,10 +404,6 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
             });
 
         return props;
-    }
-
-    private getTypeNameFromRef($ref: string): string {
-        return $ref && $ref.split("/").pop();
     }
 }
 

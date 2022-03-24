@@ -29,6 +29,8 @@ export class SignInAad {
         this.label = ko.observable();
         this.replyUrl = ko.observable();
         this.msalVersion = ko.observable();
+        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
+        this.termsOfUse = ko.observable();
     }
 
     @Param()
@@ -52,6 +54,8 @@ export class SignInAad {
             this.selectedService = this.aadService;
         }
     }
+    public termsOfUse: ko.Observable<string>;
+
 
     /**
      * Initiates signing-in with Azure Active Directory.
