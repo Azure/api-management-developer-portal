@@ -11,7 +11,7 @@ export function buildBlobStorageSrc({name = ""}: Partial<CustomWidgetModel>): st
   return `https://${blobContainer}.blob.core.windows.net/${name}/`;
 }
 
-export function buildWidgetSource(model: Partial<CustomWidgetModel>, filePath: string = "", environment: string = ""): {override: string | boolean, src: string} {
+export function buildWidgetSource(model: Partial<CustomWidgetModel>, filePath: string = "", environment: string = ""): {override: string | null, src: string} {
   const developmentSrc = environment === "development"
     ? window.sessionStorage.getItem(OVERRIDE_CONFIG_SESSION_KEY_PREFIX + model.name)
     : null;
