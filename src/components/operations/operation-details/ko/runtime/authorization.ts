@@ -37,7 +37,6 @@ export class Authorization {
     public readonly products: ko.Observable<Product[]>;
     public readonly selectedSubscriptionKey: ko.Observable<string>;
     public readonly collapsedAuth: ko.Observable<boolean>;
-    
 
     constructor(
         private readonly sessionManager: SessionManager,
@@ -74,7 +73,7 @@ export class Authorization {
     public consoleOperation: ko.Observable<ConsoleOperation>;
 
     @Param()
-    public headers: ko.ObservableArray<ConsoleHeader>; 
+    public headers: ko.ObservableArray<ConsoleHeader>;
 
     @Param()
     public codeSample: ko.Observable<string>;
@@ -151,14 +150,14 @@ export class Authorization {
         keyHeader.required = true;
         keyHeader.value(accessToken);
 
-        if(!this.isGraphQL()) {
+        if (!this.isGraphQL()) {
             this.consoleOperation().request.headers.push(keyHeader);
             this.updateRequestSummary();
         }
         else {
             this.headers.push(keyHeader);
         }
-        
+
         this.authenticated(true);
     }
 
@@ -195,7 +194,7 @@ export class Authorization {
         keyHeader.required = true;
         keyHeader.value(subscriptionKey);
 
-        if(!this.isGraphQL()) {
+        if (!this.isGraphQL()) {
             this.consoleOperation().request.headers.push(keyHeader);
             this.updateRequestSummary();
         }
@@ -230,7 +229,7 @@ export class Authorization {
      * Initiates specified authentication flow.
      * @param grantType OAuth grant type, e.g. "implicit" or "authorization_code".
      */
-     public async authenticateOAuth(grantType: string): Promise<void> {
+    public async authenticateOAuth(grantType: string): Promise<void> {
         const api = this.api();
         const authorizationServer = this.authorizationServer();
         const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
@@ -240,7 +239,12 @@ export class Authorization {
             authorizationServer.scopes = [scopeOverride];
         }
 
-        const accessToken = await this.oauthService.authenticate(grantType, authorizationServer);
+        const accessToken = await this.oauthService.authenticate(grantType, authorizationServer, api.name);
+
+        if (!accessToken) {
+            return;
+        }
+
         await this.setStoredCredentials(serverName, scopeOverride, grantType, accessToken);
 
         this.setAuthorizationHeader(accessToken);
@@ -276,7 +280,7 @@ export class Authorization {
     }
 
     public removeHeader(header: ConsoleHeader): void {
-        if(!this.isGraphQL()) {
+        if (!this.isGraphQL()) {
             this.consoleOperation().request.headers.remove(header);
             this.updateRequestSummary();
         }
@@ -284,7 +288,7 @@ export class Authorization {
             this.headers.remove(header);
         }
     }
-    
+
     private async setStoredCredentials(serverName: string, scopeOverride: string, grantType: string, accessToken: string): Promise<void> {
         const oauthSession = await this.sessionManager.getItem<OAuthSession>(oauthSessionKey) || {};
         const recordKey = this.getSessionRecordKey(serverName, scopeOverride);
@@ -324,7 +328,7 @@ export class Authorization {
             this.authorizationError("Oops, something went wrong. Try again later.");
         }
     }
-    
+
     private async loadSubscriptionKeys(): Promise<void> {
         const userId = await this.usersService.getCurrentUserId();
 
@@ -381,8 +385,8 @@ export class Authorization {
         } else {
             this.setSubscriptionKeyHeader(subscriptionKey);
         }
-        
-        if(!this.isGraphQL()) {
+
+        if (!this.isGraphQL()) {
             this.updateRequestSummary();
         }
     }
