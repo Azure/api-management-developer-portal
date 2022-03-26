@@ -11,10 +11,11 @@ import { FileSystemBlobStorage } from "./components/filesystemBlobStorage";
 import { ApimPublishModule } from "./apim.publish.module";
 import { PublishingCacheModule } from "./persistence/publishingCacheModule";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import {staticDataEnvironment} from "./../environmentConstants"
+import { staticDataEnvironment } from "./../environmentConstants"
 
 /* Reading settings from configuration file */
 let settingsProvider: ISettingsProvider;
+
 if (process.env.NODE_ENV === staticDataEnvironment) {
     settingsProvider = new StaticSettingsProvider({
         "environment": "publishing",
