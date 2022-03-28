@@ -21,6 +21,10 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
     public readonly sizeStyleConfig: ko.Observable<SizeStylePluginConfig>;
     public readonly customInputValue: ko.Observable<string>;
     public readonly src: ko.Observable<string>;
+    /**
+     * Signals that the widgets' source is being overridden (for local development). Optionally holds URL to overrides' config files.
+     */
+    public readonly override: ko.Observable<string | boolean>;
 
     constructor(
         private readonly viewManager: ViewManager,
@@ -30,6 +34,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.sizeStyleConfig = ko.observable();
         this.customInputValue = ko.observable();
         this.src = ko.observable("");
+        this.override = ko.observable();
     }
 
     @Param()
@@ -59,6 +64,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         const widgetSource = buildWidgetSource(this.model, "editor.html", environment);
         const response = await fetch(widgetSource.src);
         this.src(response.ok ? widgetSource.src : fallbackUi); // TODO check if prod or dev
+        this.override(widgetSource.override);
     }
 
     private updateResponsiveObservables(): void {
