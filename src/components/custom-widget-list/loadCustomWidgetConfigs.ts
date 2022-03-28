@@ -1,14 +1,13 @@
-import { OVERRIDE_CONFIG_SESSION_KEY_PREFIX } from "../custom-widget/ko/utils";
+import { buildBlobStorageSrc, OVERRIDE_CONFIG_SESSION_KEY_PREFIX } from "../custom-widget/ko/utils";
 import { TCustomWidgetConfig } from "scaffold/scaffold";
+import { JObject } from "../../models/jObject";
+
+const name = "apim";
+const configsPath = "files/something/custom-widgets-configs";
 
 async function loadCustomWidgetConfigs(): Promise<TCustomWidgetConfig[]> {
-    const configsPromises = [];
-
-    // TODO load configs from blob storage async
-
+// async function loadCustomWidgetConfigs(containerClient: ContainerClient): Promise<TCustomWidgetConfig[]> {
     const overridesPromises = [];
-
-    /* load overrides */
     const sourcesSession = Object.keys(window.sessionStorage)
         .filter((key: string) => key.startsWith(OVERRIDE_CONFIG_SESSION_KEY_PREFIX))
         .map(key => window.sessionStorage.getItem(key));
@@ -25,8 +24,14 @@ async function loadCustomWidgetConfigs(): Promise<TCustomWidgetConfig[]> {
         });
     }
 
+    const configsPromises = [];
+    // const configBlobsList = await containerClient.listBlobsFlat({prefix: "files/something/custom-widgets-configs/"});
+    const configBlobsList = await fetch(buildBlobStorageSrc(name) + "?restype=container&comp=list&prefix=" + configsPath);
+    const blobUrls = JObject.fromXml(await configBlobsList.text()).children[1].children[1].children.map(e => e.children[1].value); // TODO refactor
+    blobUrls.forEach(url => configsPromises.push(fetch(url)));
+
     const promisesToJson = async promises => Promise.all(await Promise.all(promises).then(r => r.map(e => e.json())));
-    const configs: TCustomWidgetConfig[] = [{
+    const configs: TCustomWidgetConfig[] = /*[{
         name: "test-uri",
         displayName: "Test URI",
         category: "Custom widgets",
@@ -38,7 +43,7 @@ async function loadCustomWidgetConfigs(): Promise<TCustomWidgetConfig[]> {
         category: "Custom widgets",
         tech: "react",
         deployed: {},
-    }]; // await promisesToJson(configsPromises);
+    }]; /*/ await promisesToJson(configsPromises); /**/
     const overrides: TCustomWidgetConfig[] = await promisesToJson(overridesPromises);
 
     console.log({configs, overrides});

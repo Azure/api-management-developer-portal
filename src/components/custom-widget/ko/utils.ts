@@ -7,7 +7,7 @@ export const OVERRIDE_CONFIG_SESSION_KEY_PREFIX = "MS_APIM_CW_devsrc_";
 
 export const widgetArchiveName = (config: TCustomWidgetConfig) => `${config.name}-msapim-widget.zip`;
 
-export function buildBlobStorageSrc({name = ""}: Partial<CustomWidgetModel>): string {
+export function buildBlobStorageSrc(name: string): string {
   return `https://${blobContainer}.blob.core.windows.net/${name}/`;
 }
 
@@ -26,6 +26,6 @@ export function buildWidgetSource(model: Partial<CustomWidgetModel>, filePath: s
 
   return {
     override: developmentSrc,
-    src: (developmentSrc ?? buildBlobStorageSrc(model)) + filePath + searchParams
+    src: (developmentSrc ?? buildBlobStorageSrc(model.name)) + filePath + searchParams
   };
 }
