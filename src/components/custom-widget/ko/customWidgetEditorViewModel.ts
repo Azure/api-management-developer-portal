@@ -10,6 +10,8 @@ import { ViewManager } from "@paperbits/common/ui";
 import { EventManager, Events } from "@paperbits/common/events";
 import { buildWidgetSource } from "./utils";
 import { ISettingsProvider } from "@paperbits/common/configuration";
+// tslint:disable-next-line:no-implicit-dependencies
+import fallbackUi from "!!url-loader!./fallbackUi.html";
 
 @Component({
     selector: widgetEditorSelector,
@@ -54,7 +56,9 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
 
         const environment = await this.settingsProvider.getSetting<string>("environment");
-        this.src(buildWidgetSource(this.model, "editor.html", environment).src);
+        const widgetSource = buildWidgetSource(this.model, "editor.html", environment);
+        const response = await fetch(widgetSource.src);
+        this.src(response.ok ? widgetSource.src : fallbackUi); // TODO check if prod or dev
     }
 
     private updateResponsiveObservables(): void {

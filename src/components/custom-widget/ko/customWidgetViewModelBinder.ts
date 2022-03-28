@@ -8,6 +8,8 @@ import { StyleCompiler } from "@paperbits/common/styles";
 import { CustomWidgetModel } from "../customWidgetModel";
 import { buildWidgetSource } from "./utils";
 import { ISettingsProvider } from "@paperbits/common/configuration";
+// tslint:disable-next-line:no-implicit-dependencies
+import fallbackUi from "!!url-loader!./fallbackUi.html";
 
 export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidgetModel, CustomWidgetViewModel>  {
     constructor(
@@ -24,7 +26,8 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
         const environment = await this.settingsProvider.getSetting<string>("environment");
         viewModel.name(model.name);
         const widgetSource = buildWidgetSource(model, "index.html", environment);
-        viewModel.src(widgetSource.src);
+        const response = await fetch(widgetSource.src);
+        viewModel.src(response.ok ? widgetSource.src : fallbackUi); // TODO check if prod or dev, don't show anything on prod
         viewModel.override(widgetSource.override);
     }
 
