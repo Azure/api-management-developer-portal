@@ -50,7 +50,7 @@ export class MapiBlobStorage implements IBlobStorage {
             });
         }
         else {
-            const result = await this.mapiClient.post<any>(`/portalSettings/mediaContent/listSecrets`, [MapiClient.getPortalHeader("getStorageSasUrl")]);
+            const result = await this.mapiClient.post<any>(`/portalSettings/mediaContent/listSecrets`, [await this.mapiClient.getPortalHeader("getStorageSasUrl")]);
             const blobStorageUrl = result.containerSasUrl;
 
             storageSettingsProvider = new StaticSettingsProvider({

@@ -1,8 +1,9 @@
 import { Utils } from "../../../../../../utils";
 import * as GraphQL from "graphql";
 import * as ko from "knockout";
+import * as _ from "lodash";
 
-function getType(type: GraphQL.GraphQLOutputType | GraphQL.GraphQLInputType) {
+export function getType(type: GraphQL.GraphQLOutputType | GraphQL.GraphQLInputType) {
     while ((type instanceof GraphQL.GraphQLList) || (type instanceof GraphQL.GraphQLNonNull)) {
         type = type.ofType;
     }
@@ -92,9 +93,8 @@ export class GraphQLOutputTreeNode extends GraphQLTreeNode {
     }
 
     public generateNodes() {
-        let data = this.data;
-        let args = data.args;
-        let type = getType(this.data.type);
+        let args = this.data?.args || [];
+        let type = getType(this.data?.type) || this.data;
 
         let argsNodes: GraphQLInputTreeNode[] = [];
         let fieldNodes: GraphQLOutputTreeNode[] = [];
@@ -109,6 +109,12 @@ export class GraphQLOutputTreeNode extends GraphQLTreeNode {
                 for (let name in fields) {
                     fieldNodes.push(new GraphQLOutputTreeNode(name, fields[name], this.generateDocument, this))
                 }
+            }
+            if (type instanceof GraphQL.GraphQLUnionType) {
+                let subtypes = type.getTypes();
+                _.forEach(subtypes, (subtype) => {
+                    fieldNodes.push(new GraphQLOutputTreeNode(subtype['name'], subtype, this.generateDocument, this))
+                })
             }
             this.children([...argsNodes.sort((a, b) => a.label().localeCompare(b.label())), ...fieldNodes.sort((a, b) => a.label().localeCompare(b.label()))])
         }
@@ -127,6 +133,9 @@ export class GraphQLInputTreeNode extends GraphQLTreeNode {
         this.children = ko.observableArray([]);;
         this.data = data;
         this.isRequired = ko.observable(isNonNull(data.type));
+        if (this.isRequired()) {
+            this.toggle(true);
+        }
 
         this.inputValue = ko.observable("");
         let type = getType(data.type);

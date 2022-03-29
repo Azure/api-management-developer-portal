@@ -15,6 +15,11 @@
             <input aria-required="true" class="form-control" id="lastName" name="lastName"
                 placeholder="e.g. Doe" type="text" data-bind="textInput: lastName">
         </div>
+
+        <!-- ko if: termsEnabled && termsOfUse -->
+        <terms-of-use params="{ isConsentRequired: isConsentRequired, consented: consented, termsOfUse: termsOfUse }"></terms-of-use>
+        <!-- /ko -->
+        
         <div class="form-group">
             <button type="button" id="signup" class="button button-primary" data-bind="click: signup">
                 Sign up

@@ -30,7 +30,7 @@ export class SignOutRouteGuard implements RouteGuard {
 
                 if (token) {
                     try {
-                        const identity = await this.mapiClient.get<Identity>("/identity", [MapiClient.getPortalHeader("delegationSignOut")]);
+                        const identity = await this.mapiClient.get<Identity>("/identity", [await this.mapiClient.getPortalHeader("delegationSignOut")]);
 
                         if (identity) {
                             const redirectUrl = await this.backendService.getDelegationUrl(DelegationAction.signOut, { userId: identity.id });

@@ -37,14 +37,15 @@ export class AccessToken {
     }
 
     private static parseSharedAccessSignature(value: string): AccessToken {
-        const regex = /^[\w\-]*\&(\d*)\&/gm;
+        const regex = /^([\w\-]*)\&(\d*)\&/gm;
         const match = regex.exec(value);
 
-        if (!match || match.length < 2) {
+        if (!match || match.length < 3) {
             throw new Error(`SharedAccessSignature token format is not valid.`);
         }
 
-        const dateTime = match[1];
+        const userId = match[1];
+        const dateTime = match[2];
         const year = dateTime.substr(0, 4);
         const month = dateTime.substr(4, 2);
         const day = dateTime.substr(6, 2);
@@ -53,7 +54,7 @@ export class AccessToken {
         const dateTimeIso = `${year}-${month}-${day}T${hour}:${minute}:00.000Z`;
         const expirationDateUtc = new Date(dateTimeIso);
 
-        return new AccessToken("SharedAccessSignature", value, expirationDateUtc);
+        return new AccessToken("SharedAccessSignature", value, expirationDateUtc, userId);
     }
 
     private static parseBearerToken(value: string): AccessToken {
