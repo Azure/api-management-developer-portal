@@ -59,7 +59,6 @@ export class ApiProductsDropdown {
 
     if (apiName) {
       this.selectedApiName(apiName);
-      await this.loadPageOfProducts();
     }
 
     await this.resetSearch();
