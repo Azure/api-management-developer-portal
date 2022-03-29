@@ -49,6 +49,13 @@ export class SignInAadB2C {
 
     @OnMounted()
     public async initialize(): Promise<void> {
+        const config = await this.settingsProvider.getSetting<AadB2CClientConfig>(SettingNames.aadB2CClientConfig);
+        
+        if (config.clientLibrary === Constants.AadVersions.v2) {
+            this.selectedService = this.aadServiceV2;
+        } else {
+            this.selectedService = this.aadService;
+        }
         await this.selectedService.checkCallbacks();
     }
 
@@ -59,12 +66,6 @@ export class SignInAadB2C {
         this.cleanValidationErrors();
 
         const config = await this.settingsProvider.getSetting<AadB2CClientConfig>(SettingNames.aadB2CClientConfig);
-        
-        if (config.clientLibrary === Constants.AadVersions.v2) {
-            this.selectedService = this.aadServiceV2;
-        } else {
-            this.selectedService = this.aadService;
-        }
 
         try {
             await this.selectedService.runAadB2CUserFlow(

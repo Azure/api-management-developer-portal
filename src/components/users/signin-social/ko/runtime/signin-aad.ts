@@ -3,7 +3,7 @@ import * as Constants from "../../../../../constants";
 import template from "./signin-aad.html";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { EventManager } from "@paperbits/common/events";
-import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Component, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 import { AadService, AadServiceV2, IAadService } from "../../../../../services";
 import { SettingNames, defaultAadTenantName } from "./../../../../../constants";
@@ -41,8 +41,8 @@ export class SignInAad {
     @Param()
     public replyUrl: ko.Observable<string>;
 
+    @Param()
     public termsOfUse: ko.Observable<string>;
-
 
     /**
      * Initiates signing-in with Azure Active Directory.
