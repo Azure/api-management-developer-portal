@@ -1,3 +1,4 @@
+import { IWidgetService } from "@paperbits/common/widgets";
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
 import { ContentWorkshop } from "./customWidgetList";
 import { OperationsSectionToolButton } from "./operationsSection";
@@ -13,8 +14,9 @@ export class CustomWidgetListModule implements IInjectorModule {
 
         const configsPromise = loadCustomWidgetConfigs();
         injector.bindInstance("customWidgetConfigs", configsPromise);
+        const widgetService = injector.resolve<IWidgetService>("widgetService");
         configsPromise.then(configs => configs.forEach(config =>
-            injector.bindInstanceToCollection("widgetHandlers", new CustomWidgetHandlers(config))
+            widgetService.registerWidgetHandler(new CustomWidgetHandlers(config))
         ));
     }
 }
