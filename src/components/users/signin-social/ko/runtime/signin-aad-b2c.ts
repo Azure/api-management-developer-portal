@@ -21,6 +21,7 @@ const aadb2cResetPasswordErrorCode = "AADB2C90118";
 })
 export class SignInAadB2C {
     private selectedService: IAadService;
+    private aadConfig: AadB2CClientConfig;
 
     constructor(
         private readonly aadService: AadService,
@@ -49,14 +50,16 @@ export class SignInAadB2C {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        const config = await this.settingsProvider.getSetting<AadB2CClientConfig>(SettingNames.aadB2CClientConfig);
-        
-        if (config.clientLibrary === Constants.AadVersions.v2) {
-            this.selectedService = this.aadServiceV2;
-        } else {
-            this.selectedService = this.aadService;
+        this.aadConfig = await this.settingsProvider.getSetting<AadB2CClientConfig>(SettingNames.aadB2CClientConfig);
+
+        if (this.aadConfig) {
+            if (this.aadConfig.clientLibrary === Constants.AadVersions.v2) {
+                this.selectedService = this.aadServiceV2;
+            } else {
+                this.selectedService = this.aadService;
+            }
+            await this.selectedService.checkCallbacks();
         }
-        await this.selectedService.checkCallbacks();
     }
 
     /**
@@ -65,20 +68,22 @@ export class SignInAadB2C {
     public async signIn(): Promise<void> {
         this.cleanValidationErrors();
 
-        const config = await this.settingsProvider.getSetting<AadB2CClientConfig>(SettingNames.aadB2CClientConfig);
+        if (!this.aadConfig) {
+            return;
+        }
 
         try {
             await this.selectedService.runAadB2CUserFlow(
-                config.clientId,
-                config.authority,
-                config.signinTenant,
-                config.signinPolicyName,
+                this.aadConfig.clientId,
+                this.aadConfig.authority,
+                this.aadConfig.signinTenant,
+                this.aadConfig.signinPolicyName,
                 this.replyUrl());
         }
         catch (error) {
-            if (config.passwordResetPolicyName && error.message.includes(aadb2cResetPasswordErrorCode)) { // Reset password requested
+            if (this.aadConfig.passwordResetPolicyName && error.message.includes(aadb2cResetPasswordErrorCode)) { // Reset password requested
                 try {
-                    await this.selectedService.runAadB2CUserFlow(config.clientId, config.authority, config.signinTenant, config.passwordResetPolicyName);
+                    await this.selectedService.runAadB2CUserFlow(this.aadConfig.clientId, this.aadConfig.authority, this.aadConfig.signinTenant, this.aadConfig.passwordResetPolicyName);
                     return;
                 }
                 catch (resetpasswordError) {

@@ -53,13 +53,15 @@ export class SignInAad {
         try {
             const config = await this.settingsProvider.getSetting<AadClientConfig>(SettingNames.aadClientConfig);
             
-            if (config.clientLibrary === Constants.AadVersions.v2) {
-                this.selectedService = this.aadServiceV2;
-            } else {
-                this.selectedService = this.aadService;
-            }
-            
-            await this.selectedService.signInWithAad(config.clientId, config.authority, config.signinTenant || defaultAadTenantName, this.replyUrl());
+            if (config) {
+                if (config.clientLibrary === Constants.AadVersions.v2) {
+                    this.selectedService = this.aadServiceV2;
+                } else {
+                    this.selectedService = this.aadService;
+                }
+                
+                await this.selectedService.signInWithAad(config.clientId, config.authority, config.signinTenant || defaultAadTenantName, this.replyUrl());
+            }            
         }
         catch (error) {
             let errorDetails;
