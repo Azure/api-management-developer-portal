@@ -36,33 +36,33 @@
         <div class="text-monospace" data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
         <!-- /ko -->
 
-    <!-- ko if: $component.hostnameSelectionEnabled() || $component.showHostnameInput() -->
-    <h3>Host</h3>
+        <!-- ko if: $component.hostnameSelectionEnabled() || $component.showHostnameInput() -->
+        <h3>Host</h3>
 
-    <div class="row flex flex-row">
-        <div class="col-4">
-            <label for="hostname" class="text-monospace form-label">
-                Hostname
-            </label>
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <!-- ko if: $component.hostnameSelectionEnabled -->
-                <select id="hostname" class="form-control" data-bind="value: $component.selectedHostname">
-                    <!-- ko foreach: { data: $component.hostnames, as: 'hostname' } -->
-                    <option data-bind="value: hostname, text: hostname"></option>
+        <div class="row flex flex-row">
+            <div class="col-4">
+                <label for="hostname" class="text-monospace form-label">
+                    Hostname
+                </label>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <!-- ko if: $component.hostnameSelectionEnabled -->
+                    <select id="hostname" class="form-control" data-bind="value: $component.selectedHostname">
+                        <!-- ko foreach: { data: $component.hostnames, as: 'hostname' } -->
+                        <option data-bind="value: hostname, text: hostname"></option>
+                        <!-- /ko -->
+                    </select>
                     <!-- /ko -->
-                </select>
-                <!-- /ko -->
-                <!-- ko if: $component.showHostnameInput -->
-                <input id="hostname" type="text" autocomplete="off" class="form-control form-control-sm"
-                    placeholder="hostname" spellcheck="false"
-                    data-bind="event: { keyup: $component.updateRequestSummary }, textInput: $component.selectedHostname">
-                <!-- /ko -->
+                    <!-- ko if: $component.showHostnameInput -->
+                    <input id="hostname" type="text" autocomplete="off" class="form-control form-control-sm"
+                        placeholder="hostname" spellcheck="false"
+                        data-bind="event: { keyup: $component.updateRequestSummary }, textInput: $component.selectedHostname">
+                    <!-- /ko -->
+                </div>
             </div>
         </div>
-    </div>
-    <!-- /ko -->
+        <!-- /ko -->
 
         <!-- ko if: $component.isHostnameWildcarded -->
         <div class="row flex flex-row">
@@ -564,7 +564,7 @@
     <!--/ko-->
 </div>
 <div class="panel">
-
+    <!-- ko ifnot: working -->
     <div class="flex flex-column align-items-end">
         <div class="btn-group" role="group">
             <!-- ko if: !$component.sendingRequest() && $component.selectedLanguage() === 'http' -->
@@ -596,5 +596,6 @@
             <!-- /ko -->
         </div>
     </div>
+    <!-- /ko -->
     <!-- /ko -->
 </div>
