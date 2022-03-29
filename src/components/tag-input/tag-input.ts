@@ -65,6 +65,7 @@ export class TagInput {
         const tagsValue = this.routeHelper.getTags();
 
         if (!tagsValue) {
+            this.onChange([]);
             return;
         }
 
