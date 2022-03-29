@@ -31,7 +31,6 @@ export class SignInAadB2C {
         this.classNames = ko.observable();
         this.label = ko.observable();
         this.replyUrl = ko.observable();
-        this.msalVersion = ko.observable();
         // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
         this.termsOfUse = ko.observable();
     }
@@ -48,17 +47,8 @@ export class SignInAadB2C {
     @Param()
     public termsOfUse: ko.Observable<string>;
 
-    @Param()
-    public msalVersion: ko.Observable<string>;
-
     @OnMounted()
     public async initialize(): Promise<void> {
-        const msalVersion = this.msalVersion();
-        if (msalVersion === Constants.AadVersions.v2) {
-            this.selectedService = this.aadServiceV2;
-        } else {
-            this.selectedService = this.aadService;
-        }
         await this.selectedService.checkCallbacks();
     }
 
@@ -69,6 +59,12 @@ export class SignInAadB2C {
         this.cleanValidationErrors();
 
         const config = await this.settingsProvider.getSetting<AadB2CClientConfig>(SettingNames.aadB2CClientConfig);
+        
+        if (config.clientLibrary === Constants.AadVersions.v2) {
+            this.selectedService = this.aadServiceV2;
+        } else {
+            this.selectedService = this.aadService;
+        }
 
         try {
             await this.selectedService.runAadB2CUserFlow(

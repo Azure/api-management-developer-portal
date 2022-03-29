@@ -54,4 +54,9 @@ export interface IdentityProviderProperties {
      * Password reset policy name. Only applies to AAD B2C identity provider.
      */
     passwordResetPolicyName: string;
+
+    /**
+     * The client library to be used in the developer portal
+     */
+    clientLibrary: string;
 }

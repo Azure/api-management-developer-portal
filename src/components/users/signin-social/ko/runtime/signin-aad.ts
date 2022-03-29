@@ -28,7 +28,6 @@ export class SignInAad {
         this.classNames = ko.observable();
         this.label = ko.observable();
         this.replyUrl = ko.observable();
-        this.msalVersion = ko.observable();
         // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
         this.termsOfUse = ko.observable();
     }
@@ -42,18 +41,6 @@ export class SignInAad {
     @Param()
     public replyUrl: ko.Observable<string>;
 
-    @Param()
-    public msalVersion: ko.Observable<string>;
-
-    @OnMounted()
-    public async initialize(): Promise<void> {
-        const msalVersion = this.msalVersion();
-        if (msalVersion === Constants.AadVersions.v2) {
-            this.selectedService = this.aadServiceV2;
-        } else {
-            this.selectedService = this.aadService;
-        }
-    }
     public termsOfUse: ko.Observable<string>;
 
 
@@ -65,6 +52,13 @@ export class SignInAad {
 
         try {
             const config = await this.settingsProvider.getSetting<AadClientConfig>(SettingNames.aadClientConfig);
+            
+            if (config.clientLibrary === Constants.AadVersions.v2) {
+                this.selectedService = this.aadServiceV2;
+            } else {
+                this.selectedService = this.aadService;
+            }
+            
             await this.selectedService.signInWithAad(config.clientId, config.authority, config.signinTenant || defaultAadTenantName, this.replyUrl());
         }
         catch (error) {

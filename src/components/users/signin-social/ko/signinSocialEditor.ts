@@ -17,7 +17,6 @@ export class SignInSocialEditor {
     public readonly aadB2CReplyUrl: ko.Observable<string>;
     public readonly appearanceStyle: ko.Observable;
     public readonly appearanceStyles: ko.ObservableArray;
-    public readonly msalVersion: ko.Observable<string>;
 
     constructor(private readonly styleService: StyleService) {
         this.aadLabel = ko.observable<string>();
@@ -26,7 +25,6 @@ export class SignInSocialEditor {
         this.aadB2CReplyUrl = ko.observable<string>();
         this.appearanceStyle = ko.observable();
         this.appearanceStyles = ko.observableArray();
-        this.msalVersion = ko.observable<string>();
     }
 
     @Param()
@@ -41,7 +39,6 @@ export class SignInSocialEditor {
         this.aadReplyUrl(this.model.aadReplyUrl);
         this.aadB2CLabel(this.model.aadB2CLabel);
         this.aadB2CReplyUrl(this.model.aadB2CReplyUrl);
-        this.msalVersion(this.model.msalVersion);
 
         if (this.model.styles) {
             const variations = await this.styleService.getComponentVariations("button");
@@ -54,7 +51,6 @@ export class SignInSocialEditor {
         this.aadB2CLabel.subscribe(this.applyChanges);
         this.aadB2CReplyUrl.subscribe(this.applyChanges);
         this.appearanceStyle.subscribe(this.applyChanges);
-        this.msalVersion.subscribe(this.applyChanges);
     }
 
     public onVariationSelected(snippet: LocalStyles): void {
@@ -72,7 +68,6 @@ export class SignInSocialEditor {
         this.model.aadB2CLabel = this.aadB2CLabel();
         this.model.aadReplyUrl = this.aadReplyUrl() || null;
         this.model.aadB2CReplyUrl = this.aadB2CReplyUrl() || null;
-        this.model.msalVersion = this.msalVersion() || null;
         this.model.styles = {
             appearance: this.appearanceStyle()
         };

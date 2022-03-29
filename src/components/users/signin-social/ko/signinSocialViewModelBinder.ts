@@ -64,7 +64,6 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
                 classNames: classNames,
                 label: model.aadLabel,
                 replyUrl: model.aadReplyUrl || undefined,
-                msalVersion: model.msalVersion || undefined,
                 termsOfUse: aadB2CIdentityProvider ? undefined : termsOfUse // display terms of use only once if both configs are present
             };
             viewModel.aadConfig(JSON.stringify(aadConfig));
@@ -75,7 +74,6 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
                 classNames: classNames,
                 label: model.aadB2CLabel,
                 replyUrl: model.aadB2CReplyUrl || undefined,
-                msalVersion: model.msalVersion || undefined,
                 termsOfUse
             };
 
