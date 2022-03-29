@@ -62,8 +62,6 @@ export class ApiListTiles {
         this.groupByTag(this.defaultGroupByTagToEnabled());
         this.tags.subscribe(this.resetSearch);
 
-        await this.resetSearch();
-
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.resetSearch);
