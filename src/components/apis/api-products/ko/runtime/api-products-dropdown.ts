@@ -121,9 +121,9 @@ export class ApiProductsDropdown {
 
       const productName = this.routeHelper.getProductName();
 
-        this.selectedProduct(productName
-            ? pageOfProducts.value.find(item => item.id.endsWith(productName))
-            : pageOfProducts.value[-1]);
+            if(productName){
+                this.selectedProduct(pageOfProducts.value.find(item => item.id.endsWith(productName)));
+             }
     }
     catch (error) {
         throw new Error(`Unable to load API Products. Error: ${error.message}`);
