@@ -1,3 +1,4 @@
+import { AadVersions } from "../constants";
 import { IdentityProviderContract } from "../contracts/identityProvider";
 
 /**
@@ -51,6 +52,11 @@ export class IdentityProvider {
      */
     public passwordResetPolicyName: string;
 
+    /**
+     * The client library to be used in the developer portal
+     */
+    public clientLibrary: AadVersions;
+
     constructor(contract?: IdentityProviderContract) {
         if (!contract) {
             return;
@@ -65,5 +71,6 @@ export class IdentityProvider {
         this.signinPolicyName = contract.properties.signinPolicyName;
         this.signupPolicyName = contract.properties.signupPolicyName;
         this.passwordResetPolicyName = contract.properties.passwordResetPolicyName;
+        this.clientLibrary = contract.properties.clientLibrary === "MSAL-2" ? AadVersions.v2 : AadVersions.v1;
     }
 }
