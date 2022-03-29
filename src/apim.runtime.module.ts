@@ -20,6 +20,7 @@ import "./bindingHandlers/scrollintoview";
 import "./bindingHandlers/syntaxHighlight";
 import "./bindingHandlers/tab";
 import { ApiProducts } from "./components/apis/api-products/ko/runtime/api-products";
+import { ApiProductsDropdown } from "./components/apis/api-products/ko/runtime/api-products-dropdown";
 import { ApiProductsTiles } from "./components/apis/api-products/ko/runtime/api-products-tiles";
 import { ApiDetails } from "./components/apis/details-of-api/ko/runtime/api-details";
 import { ApiHistory } from "./components/apis/history-of-api/ko/runtime/api-history";
@@ -96,6 +97,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("apiListDropdown", ApiListDropdown);
         injector.bind("apiListTiles", ApiListTiles);
         injector.bind("apiProducts", ApiProducts);
+        injector.bind("apiProductsDropdown", ApiProductsDropdown);
         injector.bind("apiProductsTiles", ApiProductsTiles);
         injector.bind("apiDetails", ApiDetails);
         injector.bind("apiHistory", ApiHistory);
