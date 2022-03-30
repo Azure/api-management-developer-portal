@@ -2,7 +2,7 @@ import { IBlobStorage } from "@paperbits/common/persistence";
 import { AzureBlobStorage } from "@paperbits/azure";
 import { Logger } from "@paperbits/common/logging";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { MapiClient } from "./../services/mapiClient";
+import { MapiClient } from "../services";
 import { StaticSettingsProvider } from "../components/staticSettingsProvider";
 import { Utils } from "../utils";
 
@@ -64,11 +64,12 @@ export class MapiBlobStorage implements IBlobStorage {
     }
 
     /**
-     * Lists all blobs in storage.
+     * Lists all blobs in storage or with specific prefix (in a specific "folder").
+     * @param blobPrefix Blob prefix.
      */
-    public async listBlobs?(): Promise<string[]> {
+    public async listBlobs?(blobPrefix?: string): Promise<string[]> {
         const client = await this.getStorageClient();
-        return await client.listBlobs();
+        return await client.listBlobs(blobPrefix);
     }
 
     /**

@@ -53,7 +53,7 @@ import { ChangePasswordModule } from "./components/users/change-password/ko/chan
 import { ChangePasswordEditorModule } from "./components/users/change-password/ko/changePasswordEditor.module";
 import { TenantService } from "./services/tenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/validationSummary.module";
-import { ValidationSummaryDesignModule } from "./components/users/validation-summary/validationSummary.design.module"
+import { ValidationSummaryDesignModule } from "./components/users/validation-summary/validationSummary.design.module";
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
@@ -103,7 +103,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ProductSubscribeModule());
         injector.bindModule(new ProductSubscribeEditorModule());
         injector.bindModule(new ContentModule());
-        injector.bindModule(new CustomWidgetListModule());
         injector.bindModule(new OperationListModule());
         injector.bindModule(new OperationListEditorModule());
         injector.bindModule(new OperationDetailsDesignModule());
@@ -115,7 +114,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ConfirmPasswordEditorModule());
         injector.bindModule(new ChangePasswordModule());
         injector.bindModule(new ChangePasswordEditorModule());
-        injector.bindModule(new HelpModule());
         injector.bindModule(new ValidationSummaryDesignModule());
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new SigninSocialEditorModule());
@@ -142,5 +140,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindToCollection("autostart", RuntimeConfigurator);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("CodeEditor", CodeEditor);
+        injector.bindModule(new CustomWidgetListModule()); // needs "blobStorage"
+        injector.bindModule(new HelpModule());
     }
 }

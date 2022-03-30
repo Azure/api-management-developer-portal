@@ -1,12 +1,13 @@
-import { buildBlobStorageSrc, OVERRIDE_CONFIG_SESSION_KEY_PREFIX } from "../custom-widget/ko/utils";
 import { TCustomWidgetConfig } from "scaffold/scaffold";
-import { JObject } from "../../models/jObject";
+import { MapiBlobStorage } from "../../persistence";
+import {
+    root,
+    configsFolder,
+    configFileName,
+    OVERRIDE_CONFIG_SESSION_KEY_PREFIX,
+} from "../custom-widget/ko/utils";
 
-const name = "apim";
-const configsPath = "files/something/custom-widgets-configs";
-
-async function loadCustomWidgetConfigs(): Promise<TCustomWidgetConfig[]> {
-// async function loadCustomWidgetConfigs(containerClient: ContainerClient): Promise<TCustomWidgetConfig[]> {
+async function loadCustomWidgetConfigs(blobStorage: MapiBlobStorage): Promise<TCustomWidgetConfig[]> {
     const overridesPromises = [];
     const sourcesSession = Object.keys(window.sessionStorage)
         .filter((key: string) => key.startsWith(OVERRIDE_CONFIG_SESSION_KEY_PREFIX))
@@ -17,36 +18,21 @@ async function loadCustomWidgetConfigs(): Promise<TCustomWidgetConfig[]> {
         sources.forEach(source => {
             try {
                 const url = new URL(source);
-                overridesPromises.push(fetch(url.href + "config.msapim.json"));
+                overridesPromises.push(fetch(url.href + configFileName));
             } catch (e) {
                 console.warn(source, e);
             }
         });
     }
 
-    const configsPromises = [];
-    // const configBlobsList = await containerClient.listBlobsFlat({prefix: "files/something/custom-widgets-configs/"});
-    const configBlobsList = await fetch(buildBlobStorageSrc(name) + "?restype=container&comp=list&prefix=" + configsPath);
-    const blobUrls = JObject.fromXml(await configBlobsList.text()).children[1].children[1].children.map(e => e.children[1].value); // TODO refactor
-    blobUrls.forEach(url => configsPromises.push(fetch(url)));
+    const configsNames = await blobStorage.listBlobs(`${root}/${configsFolder}/`);
+    const configsUint8s = await Promise.all(configsNames.map(blobName => blobStorage.downloadBlob(blobName)));
+    const configs: TCustomWidgetConfig[] = configsUint8s.map(uint8 => JSON.parse(new TextDecoder().decode(uint8)));
 
     const promisesToJson = async promises => Promise.all(await Promise.all(promises).then(r => r.map(e => e.json())));
-    const configs: TCustomWidgetConfig[] = /*[{
-        name: "test-uri",
-        displayName: "Test URI",
-        category: "Custom widgets",
-        tech: "react",
-        deployed: {},
-    }, {
-        name: "test-uri-x",
-        displayName: "Test URI X",
-        category: "Custom widgets",
-        tech: "react",
-        deployed: {},
-    }]; /*/ await promisesToJson(configsPromises); /**/
     const overrides: TCustomWidgetConfig[] = await promisesToJson(overridesPromises);
 
-    console.log({configs, overrides});
+    console.log({configs, overrides}); // TODO
 
     const configurations: Record<string, TCustomWidgetConfig> = {};
 

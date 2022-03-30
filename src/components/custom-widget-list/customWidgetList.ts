@@ -39,12 +39,6 @@ export class ContentWorkshop {
         this.viewManager.openViewAsWorkshop(view);
     }
 
-    public async publishWidget(config: TCustomWidgetConfig): Promise<void> {
-        if (!confirm(`This operation is in-reversible – it overwrites currently published version of this custom widget. Are you sure you want to proceed with publishing '${config.displayName}'?`)) return;
-
-        // TODO copy on blob storage
-    }
-
     public async downloadWidget(config: TCustomWidgetConfig): Promise<void> {
         return saveAs(await generateBlob(config), widgetArchiveName(config));
     }
@@ -53,6 +47,7 @@ export class ContentWorkshop {
         if (!confirm(`This operation is in-reversible, are you sure you want to delete custom widget '${config.displayName}'?`)) return;
 
         this.customWidgetConfigs(this.customWidgetConfigs().filter(c => c.name !== config.name));
+
         // TODO delete from blob storage
     }
 }

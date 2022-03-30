@@ -1,5 +1,6 @@
 import { IWidgetService } from "@paperbits/common/widgets";
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
+import { MapiBlobStorage } from "../../persistence";
 import { ContentWorkshop } from "./customWidgetList";
 import { OperationsSectionToolButton } from "./operationsSection";
 import { CreateWidget } from "./createWidget";
@@ -12,7 +13,8 @@ export class CustomWidgetListModule implements IInjectorModule {
         injector.bind("resetDetailsWorkshop", CreateWidget);
         injector.bindToCollection("workshopSections", OperationsSectionToolButton);
 
-        const configsPromise = loadCustomWidgetConfigs();
+        const blobStorage = injector.resolve<MapiBlobStorage>("blobStorage");
+        const configsPromise = loadCustomWidgetConfigs(blobStorage);
         injector.bindInstance("customWidgetConfigs", configsPromise);
         const widgetService = injector.resolve<IWidgetService>("widgetService");
         configsPromise.then(configs => configs.forEach(config =>

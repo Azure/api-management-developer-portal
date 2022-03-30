@@ -1,17 +1,16 @@
 import * as ko from "knockout";
-import template from "./customWidgetEditorView.html";
 import { WidgetEditor } from "@paperbits/common/widgets";
 import { Component, Event, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
-import { CustomWidgetModel } from "../customWidgetModel";
-import { widgetEditorSelector } from "..";
 import { StyleHelper } from "@paperbits/styles";
 import { ViewManager } from "@paperbits/common/ui";
 import { EventManager, Events } from "@paperbits/common/events";
-import { buildWidgetSource } from "./utils";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-// tslint:disable-next-line:no-implicit-dependencies
-import fallbackUi from "!!url-loader!./fallbackUi.html";
+import { MapiBlobStorage } from "../../../persistence";
+import { CustomWidgetModel } from "../customWidgetModel";
+import { widgetEditorSelector } from "..";
+import template from "./customWidgetEditorView.html";
+import { buildWidgetSource } from "./utils";
 
 @Component({
     selector: widgetEditorSelector,
@@ -30,6 +29,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         private readonly viewManager: ViewManager,
         private readonly eventManager: EventManager,
         private readonly settingsProvider: ISettingsProvider,
+        private readonly blobStorage: MapiBlobStorage,
     ) {
         this.sizeStyleConfig = ko.observable();
         this.customInputValue = ko.observable();
@@ -61,9 +61,8 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
 
         const environment = await this.settingsProvider.getSetting<string>("environment");
-        const widgetSource = buildWidgetSource(this.model, "editor.html", environment);
-        const response = await fetch(widgetSource.src);
-        this.src(response.ok ? widgetSource.src : fallbackUi); // TODO check if prod or dev
+        const widgetSource = await buildWidgetSource(this.blobStorage, this.model, "editor.html", environment);
+        this.src(widgetSource.src);
         this.override(widgetSource.override);
     }
 
