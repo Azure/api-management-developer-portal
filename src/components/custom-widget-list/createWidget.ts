@@ -57,7 +57,7 @@ export class CreateWidget {
             return;
         }
 
-        const {config, blob} = await scaffold({name, displayName, tech, control: this.sourceControl()}, ".");
+        const {config, blob} = await scaffold({name, displayName, tech, control: this.sourceControl()});
 
         saveAs(blob, widgetArchiveName(config));
 

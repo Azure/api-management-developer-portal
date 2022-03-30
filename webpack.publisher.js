@@ -60,10 +60,6 @@ const publisherConfig = {
             {
                 test: /\.(raw|liquid)$/,
                 loader: "raw-loader"
-            },
-            {
-                test: /\.mustache/,
-                loader: "raw-loader"
             }
         ]
     },
