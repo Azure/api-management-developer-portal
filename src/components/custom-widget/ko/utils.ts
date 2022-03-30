@@ -11,8 +11,12 @@ export const configFileName = "config.msapim.json";
 
 export const widgetArchiveName = (config: TCustomWidgetConfig) => `${config.name}-msapim-widget.zip`;
 
-export function buildBlobStorageSrc(name: string): string {
+export function buildBlobDataSrc(name: string): string {
     return `/${root}/${dataFolder}/${name}`;
+}
+
+export function buildBlobConfigSrc(name: string): string {
+    return `/${root}/${configsFolder}/${name}/${configFileName}`;
 }
 
 export async function buildWidgetSource(
@@ -27,7 +31,7 @@ export async function buildWidgetSource(
 
     // tslint:disable-next-line:triple-equals
     const url = new URL(developmentSrc == null ? (
-        await blobStorage.getDownloadUrl(`${buildBlobStorageSrc(model.name)}/${filePath}`)
+        await blobStorage.getDownloadUrl(`${buildBlobDataSrc(model.name)}/${filePath}`)
     ) : developmentSrc + filePath);
 
     url.pathname = decodeURIComponent(url.pathname);

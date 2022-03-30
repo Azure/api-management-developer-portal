@@ -1,12 +1,13 @@
 ﻿import * as ko from "knockout";
 import { saveAs } from "file-saver";
-import template from "./customWidgetList.html";
 import { ViewManager, View } from "@paperbits/common/ui";
-import { Component } from "@paperbits/common/ko/decorators";
-import { widgetArchiveName } from "../custom-widget/ko/utils";
 import { IWidgetService } from "@paperbits/common/widgets";
+import { Component } from "@paperbits/common/ko/decorators";
 import { generateBlob } from "scaffold";
 import { TCustomWidgetConfig } from "scaffold/scaffold";
+import { MapiBlobStorage } from "../../persistence";
+import { buildBlobConfigSrc, buildBlobDataSrc, widgetArchiveName } from "../custom-widget/ko/utils";
+import template from "./customWidgetList.html";
 
 
 @Component({
@@ -19,6 +20,7 @@ export class ContentWorkshop {
     constructor(
         private readonly widgetService: IWidgetService,
         private readonly viewManager: ViewManager,
+        private readonly blobStorage: MapiBlobStorage,
         customWidgetConfigs: Promise<TCustomWidgetConfig[]>,
     ) {
         this.customWidgetConfigs = ko.observable();
@@ -46,8 +48,10 @@ export class ContentWorkshop {
     public async deleteWidget(config: TCustomWidgetConfig): Promise<void> {
         if (!confirm(`This operation is in-reversible, are you sure you want to delete custom widget '${config.displayName}'?`)) return;
 
-        this.customWidgetConfigs(this.customWidgetConfigs().filter(c => c.name !== config.name));
+        const blobsToDelete = await this.blobStorage.listBlobs(buildBlobDataSrc(config.name));
+        blobsToDelete.push(buildBlobConfigSrc(config.name));
+        await Promise.all(blobsToDelete.map(blobKey => this.blobStorage.deleteBlob(blobKey)));
 
-        // TODO delete from blob storage
+        this.customWidgetConfigs(this.customWidgetConfigs().filter(c => c.name !== config.name));
     }
 }

@@ -9,7 +9,12 @@ import * as Utils from "@paperbits/common/utils";
 import { MapiBlobStorage } from "../../persistence";
 import { CustomWidgetHandlers } from "../custom-widget";
 import { CustomWidgetModel } from "./customWidgetModel";
-import { configFileName, configsFolder, dataFolder, root, widgetArchiveName } from "../custom-widget/ko/utils";
+import {
+    widgetArchiveName,
+    buildBlobConfigSrc,
+    dataFolder,
+    root,
+} from "../custom-widget/ko/utils";
 // tslint:disable-next-line:no-implicit-dependencies
 import fallbackUi from "!!raw-loader!./fallbackUi.html";
 
@@ -57,7 +62,7 @@ export class CreateWidget {
         saveAs(blob, widgetArchiveName(config));
 
         const content = Utils.stringToUnit8Array(JSON.stringify(config));
-        await this.blobStorage.uploadBlob(`/${root}/${configsFolder}/${name}/${configFileName}`, content);
+        await this.blobStorage.uploadBlob(buildBlobConfigSrc(name), content);
 
         const fallbackUiUnit8 = Utils.stringToUnit8Array(fallbackUi);
         await this.blobStorage.uploadBlob(`/${root}/${dataFolder}/${name}/index.html`, fallbackUiUnit8);
