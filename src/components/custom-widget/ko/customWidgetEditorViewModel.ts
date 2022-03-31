@@ -6,6 +6,7 @@ import { StyleHelper } from "@paperbits/styles";
 import { ViewManager } from "@paperbits/common/ui";
 import { EventManager, Events } from "@paperbits/common/events";
 import { ISettingsProvider } from "@paperbits/common/configuration";
+import { iframeSandboxAllows } from "../../../constants";
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
 import { widgetEditorSelector } from "..";
@@ -24,6 +25,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
      * Signals that the widgets' source is being overridden (for local development). Optionally holds URL to overrides' config files.
      */
     public readonly override: ko.Observable<string | boolean>;
+    public readonly iframeSandboxAllows: string = iframeSandboxAllows;
 
     constructor(
         private readonly viewManager: ViewManager,
