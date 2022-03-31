@@ -1,8 +1,9 @@
 import * as ko from "knockout";
-import template from "./customWidgetView.html";
-import { widgetSelector } from "../constants";
 import { Component } from "@paperbits/common/ko/decorators";
 import { StyleModel } from "@paperbits/common/styles";
+import { iframeSandboxAllows } from "../../../constants";
+import { widgetSelector } from "../constants";
+import template from "./customWidgetView.html";
 
 @Component({
     selector: widgetSelector,
@@ -16,6 +17,7 @@ export class CustomWidgetViewModel {
      * Signals that the widgets' source is being overridden (for local development). Optionally holds URL to overrides' config files.
      */
     public readonly override: ko.Observable<string | boolean>;
+    public readonly iframeSandboxAllows: string = iframeSandboxAllows;
 
     constructor() {
         this.name = ko.observable();
