@@ -4,13 +4,7 @@
 .DS_Store
 dist/
 node_modules/
-<<<<<<< HEAD
-# src/config.design.json
-# src/config.publish.json
-# src/config.runtime.json
-=======
 src/config.design.json
 src/config.publish.json
 src/config.runtime.json
->>>>>>> fb0e630d8683bff4b1b067b68526ab924d76acd9
 
