@@ -2,19 +2,21 @@ import * as ko from "knockout";
 import { saveAs } from "file-saver";
 import { scaffold } from "scaffold";
 import { TControl, TCustomWidgetConfig, TTech } from "scaffold/scaffold";
-import template from "./createWidget.html";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component, Param } from "@paperbits/common/ko/decorators";
 import * as Utils from "@paperbits/common/utils";
 import { MapiBlobStorage } from "../../persistence";
 import { CustomWidgetHandlers } from "../custom-widget";
-import { CustomWidgetModel } from "./customWidgetModel";
 import {
     widgetArchiveName,
     buildBlobConfigSrc,
     dataFolder,
     root,
 } from "../custom-widget/ko/utils";
+import { CustomWidgetModel } from "./customWidgetModel";
+import { buildConfigDeploy } from "./loadCustomWidgetConfigs";
+import template from "./createWidget.html";
 // tslint:disable-next-line:no-implicit-dependencies
 import fallbackUi from "!!raw-loader!./fallbackUi.html";
 
@@ -28,6 +30,7 @@ export class CreateWidget {
     public readonly sourceControl: ko.Observable<TControl>;
 
     constructor(
+        private readonly settingsProvider: ISettingsProvider,
         private readonly widgetService: IWidgetService,
         private readonly blobStorage: MapiBlobStorage,
     ) {
@@ -57,7 +60,7 @@ export class CreateWidget {
             return;
         }
 
-        const {config, blob} = await scaffold({name, displayName, tech, control: this.sourceControl()});
+        const {config, blob} = await scaffold({name, displayName, tech, control: this.sourceControl()}, await buildConfigDeploy(this.settingsProvider));
 
         saveAs(blob, widgetArchiveName(config));
 

@@ -1,4 +1,5 @@
-import { TCustomWidgetConfig } from "scaffold/scaffold";
+import { ISettingsProvider } from "@paperbits/common/configuration";
+import { TConfigDeploy, TCustomWidgetConfig } from "scaffold/scaffold";
 import { MapiBlobStorage } from "../../persistence";
 import {
     root,
@@ -6,13 +7,26 @@ import {
     configFileName,
     OVERRIDE_CONFIG_SESSION_KEY_PREFIX,
 } from "../custom-widget/ko/utils";
+import { SettingNames } from "../../constants";
+
+export const buildConfigDeploy = async (settingsProvider: ISettingsProvider): Promise<TConfigDeploy> => ({
+    // TODO
+    // const managementApiUrl = (await this.settingsProvider.getSetting(SettingNames.managementApiUrl) as string).split("/")[2];
+    subscriptionId: "a200340d-6b82-494d-9dbf-687ba6e33f9e",
+    resourceGroupName: "jmach",
+    serviceName: "apim-resource-jmach",
+    managementApiEndpoint: "management.azure.com",
+    apiVersion: await settingsProvider.getSetting(SettingNames.managementApiVersion) as string,
+})
 
 async function loadCustomWidgetConfigs(blobStorage: MapiBlobStorage): Promise<TCustomWidgetConfig[]> {
     const overridesPromises = [];
     const sourcesSession = Object.keys(window.sessionStorage)
         .filter((key: string) => key.startsWith(OVERRIDE_CONFIG_SESSION_KEY_PREFIX))
         .map(key => window.sessionStorage.getItem(key));
-    const sourcesSearchParams = new URLSearchParams(window.location.search).getAll("MS_APIM_CW_devsrc");
+    const sourcesSearchParams = new URLSearchParams(window.location.search)
+        .getAll("MS_APIM_CW_localhost_port")
+        .map(port => "http://localhost:" + (isNaN(parseInt(port)) ? "8080" : port));
     const sources = [...new Set([...sourcesSession, ...sourcesSearchParams])];
     if (sources.length) {
         sources.forEach(source => {

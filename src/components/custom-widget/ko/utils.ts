@@ -2,7 +2,7 @@ import { TCustomWidgetConfig } from "scaffold/scaffold";
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
 
-export const OVERRIDE_CONFIG_SESSION_KEY_PREFIX = "MS_APIM_CW_devsrc_";
+export const OVERRIDE_CONFIG_SESSION_KEY_PREFIX = "MS_APIM_CW_localhost_port_";
 
 export const root = "custom-widgets";
 export const dataFolder = "data";
@@ -25,9 +25,7 @@ export async function buildWidgetSource(
     filePath: string,
     environment: string
 ): Promise<{ override: string | null, src: string }> {
-    const developmentSrc = environment === "development"
-        ? window.sessionStorage.getItem(OVERRIDE_CONFIG_SESSION_KEY_PREFIX + model.name)
-        : null;
+    const developmentSrc = window.sessionStorage.getItem(OVERRIDE_CONFIG_SESSION_KEY_PREFIX + model.name);
 
     // tslint:disable-next-line:triple-equals
     const url = new URL(developmentSrc == null ? (
@@ -44,9 +42,6 @@ export async function buildWidgetSource(
         environment: environment,
     };
     url.searchParams.append("editorValues", encodeURIComponent(JSON.stringify(values)));
-
-    /** invalidate cache every 1 ms on dev */
-    if (environment === "development") url.searchParams.append("version", `${(new Date()).getTime()}`);
 
     return {override: developmentSrc, src: url.toString()};
 }

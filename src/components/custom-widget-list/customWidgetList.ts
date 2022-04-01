@@ -1,5 +1,6 @@
 ﻿import * as ko from "knockout";
 import { saveAs } from "file-saver";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ViewManager, View } from "@paperbits/common/ui";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component } from "@paperbits/common/ko/decorators";
@@ -7,6 +8,7 @@ import { generateBlob } from "scaffold";
 import { TCustomWidgetConfig } from "scaffold/scaffold";
 import { MapiBlobStorage } from "../../persistence";
 import { buildBlobConfigSrc, buildBlobDataSrc, widgetArchiveName } from "../custom-widget/ko/utils";
+import { buildConfigDeploy } from "./loadCustomWidgetConfigs";
 import template from "./customWidgetList.html";
 
 
@@ -18,6 +20,7 @@ export class ContentWorkshop {
     public readonly customWidgetConfigs: ko.Observable<TCustomWidgetConfig[]>;
 
     constructor(
+        private readonly settingsProvider: ISettingsProvider,
         private readonly widgetService: IWidgetService,
         private readonly viewManager: ViewManager,
         private readonly blobStorage: MapiBlobStorage,
@@ -42,7 +45,8 @@ export class ContentWorkshop {
     }
 
     public async downloadWidget(config: TCustomWidgetConfig): Promise<void> {
-        return saveAs(await generateBlob(config), widgetArchiveName(config));
+        const blob = await generateBlob(config, await buildConfigDeploy(this.settingsProvider));
+        return saveAs(blob, widgetArchiveName(config));
     }
 
     public async deleteWidget(config: TCustomWidgetConfig): Promise<void> {
