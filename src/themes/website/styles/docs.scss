@@ -284,29 +284,6 @@ pre {
 .operation-header {
     display: flex;
     justify-content: space-between;
-
-    .open-console-button {
-        margin-left: 10px;
-        font-size: .8em;
-        font-weight: 700;
-        border: none;
-        border-radius: 4px;
-        transition-duration: .4s;
-        height: 30px;
-        background-color: #128930;
-        color: white;
-        cursor: pointer;
-        white-space: nowrap;
-
-        &:hover {
-            color: #128930;
-            background-color: white;
-        }
-
-        &.graph {
-            float: right;
-        }
-    }
 }
 
 api-list,

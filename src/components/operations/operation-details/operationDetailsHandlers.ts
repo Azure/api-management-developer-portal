@@ -1,4 +1,5 @@
-﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+﻿﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+import { StyleDefinition } from "@paperbits/common/styles";
 import { OperationDetailsModel } from "./operationDetailsModel";
 
 export class OperationDetailsHandlers implements IWidgetHandler {
@@ -14,4 +15,73 @@ export class OperationDetailsHandlers implements IWidgetHandler {
 
         return widgetOrder;
     }
+
+    public getStyleDefinitions(): StyleDefinition {
+        return {
+            colors: {
+                tryItColor: {
+                    displayName: "Bacground - green",
+                    defaults: {
+                        value: "green"
+                    }
+                }
+            },
+            components: {
+                operationDetails: {
+                    displayName: "operationDetails",
+                    plugins: ["margin", "padding", "typography"],
+                    components: {
+                        tryItButton: {
+                            displayName: "Try it button",
+                            plugins: ["margin", "padding", "typography", "size", "background","states"],
+                            defaults: {
+                                allowedStates: [
+                                    "hover",
+                                    "focus",
+                                    "active",
+                                    "disabled"
+                                ],
+                                typography: {
+                                    fontStyle: "normal",
+                                    fontWeight: "700",
+                                    fontSize: ".8em",
+                                    colorKey: "colors/defaultBg"
+                                },
+                                background: {
+                                    colorKey: "colors/tryItColor"
+                                },
+                                size: {
+                                    maxHeight: "30px",
+                                    minHeight: "30px",
+                                    maxWidth: "60px"
+                                },
+                                border: {
+                                    left: { width: "0" },
+                                    right: { width: "0" },
+                                    top: { width: "0" },
+                                    bottom: { width: "0" }
+                                },
+                                padding: {
+                                    left: "6",
+                                    right: "6",
+                                    top: "1",
+                                    bottom: "1"
+                                },
+                                states: {
+                                    hover: {
+                                        background: {
+                                            colorKey: "colors/defaultBg"
+                                        },
+                                        typography: {
+                                            colorKey: "colors/tryItColor",
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
 }
