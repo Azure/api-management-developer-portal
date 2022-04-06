@@ -26,6 +26,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
      */
     public readonly override: ko.Observable<string | boolean>;
     public readonly iframeSandboxAllows: string = iframeSandboxAllows;
+    public readonly instanceId: number;
 
     constructor(
         private readonly viewManager: ViewManager,
@@ -37,6 +38,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.customInputValue = ko.observable();
         this.src = ko.observable("");
         this.override = ko.observable();
+        this.instanceId = Math.random();
     }
 
     @Param()
@@ -52,9 +54,11 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
 
         window.addEventListener("message", event => {
             if (typeof event.data === "object" && "customInputValueChangedMSAPIM" in event.data) {
+                const {key, value, instanceId} = event.data.customInputValueChangedMSAPIM;
+                if (instanceId !== this.instanceId) return;
+
                 const data = JSON.parse(this.customInputValue()).data ?? {};
-                const valueObj = event.data.customInputValueChangedMSAPIM;
-                data[valueObj.key] = valueObj.value;
+                data[key] = value;
                 this.customInputValue(JSON.stringify({data}));
             }
         });
@@ -63,7 +67,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
 
         const environment = await this.settingsProvider.getSetting<string>("environment");
-        const widgetSource = await buildWidgetSource(this.blobStorage, this.model, "editor.html", environment);
+        const widgetSource = await buildWidgetSource(this.blobStorage, this.model, environment, this.instanceId, "editor.html");
         this.src(widgetSource.src);
         this.override(widgetSource.override);
     }
