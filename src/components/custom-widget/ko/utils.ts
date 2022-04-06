@@ -22,8 +22,9 @@ export function buildBlobConfigSrc(name: string): string {
 export async function buildWidgetSource(
     blobStorage: MapiBlobStorage,
     model: CustomWidgetModel,
+    environment: string,
+    instanceId: number,
     filePath: string,
-    environment: string
 ): Promise<{ override: string | null, src: string }> {
     // check is necessary during publishing
     const developmentSrc = environment === "development"
@@ -42,7 +43,8 @@ export async function buildWidgetSource(
         origin: window.location.origin,
         id: model.name,
         displayName: model.widgetDisplayName,
-        environment: environment,
+        environment,
+        instanceId,
     };
     url.searchParams.append("editorValues", encodeURIComponent(JSON.stringify(values)));
 

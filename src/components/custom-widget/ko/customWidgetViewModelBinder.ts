@@ -11,12 +11,16 @@ import { CustomWidgetViewModel } from "./customWidgetViewModel";
 import { buildWidgetSource } from "./utils";
 
 export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidgetModel, CustomWidgetViewModel>  {
+    public readonly instanceId: number;
+
     constructor(
         private readonly eventManager: EventManager,
         private readonly styleCompiler: StyleCompiler,
         private readonly settingsProvider: ISettingsProvider,
         private readonly blobStorage: MapiBlobStorage,
-    ) { }
+    ) {
+        this.instanceId = Math.random();
+    }
 
     public async updateViewModel(model: CustomWidgetModel, viewModel: CustomWidgetViewModel, bindingContext: Bag<any>): Promise<void> {
         if (model.styles) {
@@ -25,7 +29,7 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
 
         const environment = await this.settingsProvider.getSetting<string>("environment");
         viewModel.name(model.name);
-        const widgetSource = await buildWidgetSource(this.blobStorage, model, "index.html", environment);
+        const widgetSource = await buildWidgetSource(this.blobStorage, model, environment, this.instanceId, "index.html");
         // const response = await fetch(widgetSource.src);
         // viewModel.src(response.ok ? widgetSource.src : fallbackUi); // TODO check if prod or dev, don't show anything on prod
         viewModel.src(widgetSource.src);

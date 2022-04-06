@@ -17,7 +17,7 @@ export const buildConfigDeploy = async (settingsProvider: ISettingsProvider): Pr
     serviceName: "apim-resource-jmach",
     managementApiEndpoint: "management.azure.com",
     apiVersion: await settingsProvider.getSetting(SettingNames.managementApiVersion) as string,
-})
+});
 
 async function loadCustomWidgetConfigs(blobStorage: MapiBlobStorage): Promise<TCustomWidgetConfig[]> {
     const overridesPromises = [];
@@ -26,7 +26,7 @@ async function loadCustomWidgetConfigs(blobStorage: MapiBlobStorage): Promise<TC
         .map(key => window.sessionStorage.getItem(key));
     const sourcesSearchParams = new URLSearchParams(window.location.search)
         .getAll("MS_APIM_CW_localhost_port")
-        .map(port => "http://localhost:" + (isNaN(parseInt(port)) ? "8080" : port));
+        .map(port => "http://localhost:" + (isNaN(parseInt(port)) ? "3000" : port));
     const sources = [...new Set([...sourcesSession, ...sourcesSearchParams])];
     if (sources.length) {
         sources.forEach(source => {
