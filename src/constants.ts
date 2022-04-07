@@ -240,7 +240,6 @@ export const graphqlSubProtocol = "graphql-transport-ws";
 export enum SettingNames {
     backendUrl = "backendUrl",
     managementApiUrl = "managementApiUrl",
-    managementApiVersion = "managementApiVersion",
     managementApiAccessToken = "managementApiAccessToken",
     aadClientConfig = "aad",
     aadB2CClientConfig = "aadB2C",
