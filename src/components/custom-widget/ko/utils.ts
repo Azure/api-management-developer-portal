@@ -1,8 +1,8 @@
-import { TCustomWidgetConfig } from "scaffold/scaffold";
+import { OVERRIDE_PORT_KEY, TCustomWidgetConfig } from "scaffold/scaffold";
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
 
-export const OVERRIDE_CONFIG_SESSION_KEY_PREFIX = "MS_APIM_CW_localhost_port_";
+export const OVERRIDE_CONFIG_SESSION_KEY_PREFIX = OVERRIDE_PORT_KEY + "_";
 
 export const root = "custom-widgets";
 export const dataFolder = "data";

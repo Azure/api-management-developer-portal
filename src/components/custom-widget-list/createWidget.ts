@@ -2,7 +2,6 @@ import * as ko from "knockout";
 import { saveAs } from "file-saver";
 import { scaffold } from "scaffold";
 import { TControl, TCustomWidgetConfig, TTech } from "scaffold/scaffold";
-import { ISettingsProvider } from "@paperbits/common/configuration";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component, Param } from "@paperbits/common/ko/decorators";
 import * as Utils from "@paperbits/common/utils";
@@ -30,7 +29,6 @@ export class CreateWidget {
     public readonly sourceControl: ko.Observable<TControl>;
 
     constructor(
-        private readonly settingsProvider: ISettingsProvider,
         private readonly widgetService: IWidgetService,
         private readonly blobStorage: MapiBlobStorage,
     ) {
@@ -60,7 +58,9 @@ export class CreateWidget {
             return;
         }
 
-        const {config, blob} = await scaffold({name, displayName, tech, control: this.sourceControl()}, await buildConfigDeploy(this.settingsProvider));
+        const configData = {name, displayName, tech, control: this.sourceControl()};
+        const configDeploy = await buildConfigDeploy();
+        const {config, blob} = await scaffold(configData, configDeploy);
 
         saveAs(blob, widgetArchiveName(config));
 
