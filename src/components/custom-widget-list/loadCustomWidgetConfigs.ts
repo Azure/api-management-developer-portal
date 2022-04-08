@@ -24,7 +24,7 @@ async function loadCustomWidgetConfigs(blobStorage: MapiBlobStorage): Promise<TC
         .map(key => window.sessionStorage.getItem(key));
     const sourcesSearchParams = new URLSearchParams(window.location.search)
         .getAll(OVERRIDE_PORT_KEY)
-        .map(port => "http://localhost:" + (isNaN(parseInt(port)) ? OVERRIDE_DEFAULT_PORT : port));
+        .map(port => new URL("http://localhost:" + (isNaN(parseInt(port)) ? OVERRIDE_DEFAULT_PORT : port)).href);
     const sources = [...new Set([...sourcesSession, ...sourcesSearchParams])];
     if (sources.length) {
         sources.forEach(source => {
@@ -44,9 +44,9 @@ async function loadCustomWidgetConfigs(blobStorage: MapiBlobStorage): Promise<TC
     const promisesToJson = async promises => Promise.all(await Promise.all(promises).then(r => r.map(e => e.json())));
     const overrides: TCustomWidgetConfig[] = await promisesToJson(overridesPromises);
 
-    console.log({configs, overrides}); // TODO
-
     const configurations: Record<string, TCustomWidgetConfig> = {};
+
+    console.log({configurations, configs, overrides, sources}); // TODO
 
     configs.forEach(config => configurations[config.name] = config);
     overrides.forEach((override, i) => {
