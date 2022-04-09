@@ -25,7 +25,10 @@ export async function buildWidgetSource(
     filePath: string,
     environment: string
 ): Promise<{ override: string | null, src: string }> {
-    const developmentSrc = window.sessionStorage.getItem(OVERRIDE_CONFIG_SESSION_KEY_PREFIX + model.name);
+    // check is necessary during publishing
+    const developmentSrc = environment === "development"
+        ? window.sessionStorage.getItem(OVERRIDE_CONFIG_SESSION_KEY_PREFIX + model.name)
+        : null;
 
     // tslint:disable-next-line:triple-equals
     const url = new URL(developmentSrc == null ? (
