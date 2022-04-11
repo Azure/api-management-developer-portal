@@ -20,7 +20,7 @@ export class OperationDetailsHandlers implements IWidgetHandler {
         return {
             colors: {
                 tryItColor: {
-                    displayName: "Bacground - green",
+                    displayName: "Try it button background",
                     defaults: {
                         value: "green"
                     }
@@ -33,7 +33,7 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                     components: {
                         tryItButton: {
                             displayName: "Try it button",
-                            plugins: ["margin", "padding", "typography", "size", "background","states"],
+                            plugins: ["margin", "padding", "typography", "size", "background", "states"],
                             defaults: {
                                 allowedStates: [
                                     "hover",
@@ -43,7 +43,7 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                                 ],
                                 typography: {
                                     fontStyle: "normal",
-                                    fontWeight: "700",
+                                    fontWeight: 700,
                                     fontSize: ".8em",
                                     colorKey: "colors/defaultBg"
                                 },
@@ -51,21 +51,20 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                                     colorKey: "colors/tryItColor"
                                 },
                                 size: {
-                                    maxHeight: "30px",
-                                    minHeight: "30px",
-                                    maxWidth: "60px"
+                                    height: "30px",
+                                    width: "60px"
                                 },
                                 border: {
-                                    left: { width: "0" },
-                                    right: { width: "0" },
-                                    top: { width: "0" },
-                                    bottom: { width: "0" }
+                                    left: { width: 0 },
+                                    right: { width: 0 },
+                                    top: { width: 0 },
+                                    bottom: { width: 0 }
                                 },
                                 padding: {
-                                    left: "6",
-                                    right: "6",
-                                    top: "1",
-                                    bottom: "1"
+                                    left: 6,
+                                    right: 6,
+                                    top: 1,
+                                    bottom: 1
                                 },
                                 states: {
                                     hover: {
