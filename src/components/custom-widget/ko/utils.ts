@@ -33,7 +33,7 @@ export async function buildWidgetSource(
 
     // tslint:disable-next-line:triple-equals
     const url = new URL(developmentSrc == null ? (
-        await blobStorage.getDownloadUrl(`${buildBlobDataSrc(model.name)}/${filePath}`)
+        await blobStorage.getDownloadUrlWithoutToken(`${buildBlobDataSrc(model.name)}/${filePath}`)
     ) : developmentSrc + filePath);
 
     url.pathname = decodeURIComponent(url.pathname);
