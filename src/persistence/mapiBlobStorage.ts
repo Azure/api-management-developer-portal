@@ -102,6 +102,16 @@ export class MapiBlobStorage implements IBlobStorage {
     }
 
     /**
+     * Returns download URL of uploaded blob without token.
+     * @param blobKey Unique blob identifier.
+     */
+    public async getDownloadUrlWithoutToken(blobKey: string): Promise<string> {
+        const url = new URL(await this.getDownloadUrl(blobKey));
+        ["sv", "st", "se", "sr", "sp", "sig"].forEach(key => url.searchParams.delete(key));
+        return url.toString();
+    }
+
+    /**
      * Removes specified blob from memory.
      * @param blobKey Unique blob identifier.
      */
