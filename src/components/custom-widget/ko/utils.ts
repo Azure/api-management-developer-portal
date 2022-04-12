@@ -26,8 +26,8 @@ export async function buildWidgetSource(
     instanceId: number,
     filePath: string,
 ): Promise<{ override: string | null, src: string }> {
-    // check is necessary during publishing
-    const developmentSrc = environment === "development"
+    // check is necessary during publishing as window.sessionStorage.getItem throws "DOMException {}  node:internal/process/promises:279"
+    const developmentSrc = environment !== "publishing"
         ? window.sessionStorage.getItem(OVERRIDE_CONFIG_SESSION_KEY_PREFIX + model.name)
         : null;
 
@@ -40,7 +40,7 @@ export async function buildWidgetSource(
 
     const values = {
         data: JSON.parse(model.customInputValue).data,
-        origin: window.location.origin,
+        origin: window.location.origin, // TODO origin during publish
         id: model.name,
         displayName: model.widgetDisplayName,
         environment,
