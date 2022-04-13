@@ -33,7 +33,11 @@ export class TagInput {
         this.availableTags = ko.computed<Tag[]>(() => this.tags().filter(tag => !this.selection().map(x => x.id).includes(tag.id)));
         this.empty = ko.computed(() => this.availableTags().length === 0);
         this.onDismiss = new ko.subscribable<Tag[]>();
+        this.styleablePath = "";
     }
+
+    @Param()
+    public styleablePath : string;
 
     @Param()
     public scope: ko.Observable<string>;

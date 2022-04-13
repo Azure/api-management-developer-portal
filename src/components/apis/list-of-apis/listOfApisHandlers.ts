@@ -19,28 +19,22 @@ export class ListOfApisHandlers implements IWidgetHandler {
     public getStyleDefinitions(): StyleDefinition {
         return {
             colors: {
-                testColor: {
-                    displayName: "Pink",
-                    defaults: {
-                        value: "pink"
-                    }
-                },
-                testColor2: {
-                    displayName: "Pink",
-                    defaults: {
-                        value: "violet"
-                    }
-                },
                 borderColor: {
-                    displayName: "Border - light gray",
+                    displayName: "Search input border color",
                     defaults: {
                         value: "#505050"
                     }
                 },
-                gridBorderColor:{
-                    displayName: "Grid - border color",
-                    defaults:{
+                gridBorderColor: {
+                    displayName: "Grid separators color",
+                    defaults: {
                         value: "#dee2e6"
+                    }
+                },
+                tagButtonColor: {
+                    displayName: "Tag button color",
+                    defaults: {
+                        value: "#555"
                     }
                 }
             },
@@ -54,28 +48,41 @@ export class ListOfApisHandlers implements IWidgetHandler {
                             plugins: ["typography", "border", "states"],
                             defaults: {
                                 allowedStates: [
-                                    "hover",
-                                    "focus",
-                                    "active"
+                                    "focus"
                                 ],
                                 typography: {
                                     fontSize: "1rem",
                                     colorKey: "colors/default",
                                     lineHeight: "1.5"
                                 },
-
                                 border: {
                                     bottom: {
                                         width: "1",
                                         style: "solid",
                                         colorKey: "colors/borderColor"
                                     }
+                                },
+                                states: {
+                                    focus: {
+                                        typography: {
+                                            fontSize: "1rem",
+                                            colorKey: "colors/default",
+                                            lineHeight: "1.5"
+                                        },
+                                        border: {
+                                            bottom: {
+                                                width: "1",
+                                                style: "solid",
+                                                colorKey: "colors/borderColor"
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         },
-                        apisGridRow:{
+                        apisGridRow: {
                             displayName: "Grid row",
-                            plugins: ["background", "typography","border"],
+                            plugins: ["background", "typography", "border"],
                             defaults: {
                                 border: {
                                     top: {
@@ -89,16 +96,16 @@ export class ListOfApisHandlers implements IWidgetHandler {
                                     colorKey: "colors/default"
                                 },
                                 display: "flex",
-                                padding:{
+                                padding: {
                                     top: ".75rem",
                                     bottom: ".75rem"
-                                   
+
                                 }
                             }
                         },
-                        apisGridHeader:{
+                        apisGridHeader: {
                             displayName: "Grid row",
-                            plugins: ["background", "typography","border"],
+                            plugins: ["background", "typography", "border"],
                             defaults: {
                                 border: {
                                     bottom: {
@@ -112,10 +119,70 @@ export class ListOfApisHandlers implements IWidgetHandler {
                                     colorKey: "colors/default"
                                 },
                                 display: "flex",
-                                padding:{
+                                padding: {
                                     top: ".75rem",
                                     bottom: ".75rem"
-                                } 
+                                }
+                            }
+                        },
+                        tagInput: {
+                            displayName: "tag input",
+                            plugins: ["background", "border", "typography"],
+                            defaults: {
+                                border: {
+                                    bottom: {
+                                        width: 1,
+                                        style: "solid",
+                                        colorKey: "colors/tagButtonColor"
+                                    },
+                                    top: {
+                                        width: 1,
+                                        style: "solid",
+                                        colorKey: "colors/tagButtonColor"
+                                    },
+                                    right: {
+                                        width: 1,
+                                        style: "solid",
+                                        colorKey: "colors/tagButtonColor"
+                                    },
+                                    left: {
+                                        width: 1,
+                                        style: "solid",
+                                        colorKey: "colors/tagButtonColor"
+                                    }
+                                },
+
+                                typography: {
+                                    colorKey: "colors/tagButtonColor",
+                                    textDecoration: "none"
+                                },
+                                padding: {
+                                    top: 2,
+                                    right: 7,
+                                    bottom: 2,
+                                    left: 7
+                                },
+                                margin: {
+                                    top: 2,
+                                    right: 2,
+                                    bottom: 2,
+                                    left: 2
+                                },
+                                size: {
+                                    minHeight: "2em"
+                                },
+                                container: {
+                                    alignItems: "center"
+                                }
+                            }
+                        },
+                        toggleButtonLabel: {
+                            displayName: "Label",
+                            plugins: ["typography"],
+                            defaults: {
+                                typography: {
+                                    colorKey: "colors/deault"
+                                }
                             }
                         }
                     }
