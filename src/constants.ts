@@ -1,7 +1,7 @@
 /**
  * APIM service SKU names.
  */
-export enum ServiceSkuName {
+ export enum ServiceSkuName {
     Developer = "Developer",
     Basic = "Basic",
     Standard = "Standard",
@@ -211,6 +211,8 @@ export enum GraphqlFieldTypes {
 export enum GraphqlMetaField {
     typename = "__typename"
 }
+
+export const graphqlSubProtocol = "graphql-transport-ws";
 
 /**
  * Known setting names.

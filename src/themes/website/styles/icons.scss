@@ -139,6 +139,10 @@
     content: "\e984";
 }
 
+.icon-emb-power-cord:before {
+    content: "\e9b7";
+}
+
 .icon-svg-wadl {
     @include icon-18px();
     background-color: transparent;

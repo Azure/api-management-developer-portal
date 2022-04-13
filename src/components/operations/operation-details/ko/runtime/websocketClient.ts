@@ -35,11 +35,11 @@ export class WebsocketClient {
         return this.logs;
     }
 
-    public connect(websocketUrl?: string) {
+    public connect(websocketUrl?: string, subProtocol?: string ) {
         this.websocketUrl = websocketUrl || this.websocketUrl;
         this.logDataItem(`Connecting to ${this.websocketUrl}`, LogItemType.Connection);
 
-        this.websocket = new WebSocket(this.websocketUrl);
+        this.websocket = (subProtocol) ? new WebSocket(this.websocketUrl, subProtocol) : new WebSocket(this.websocketUrl);
         this.websocket.onopen = this.onOpenConnection;
         this.websocket.onclose = this.onCloseConnection;
         this.websocket.onerror = this.onErrorConnection;
