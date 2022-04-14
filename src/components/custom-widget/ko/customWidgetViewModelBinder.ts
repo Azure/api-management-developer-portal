@@ -40,7 +40,7 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
         if (!viewModel) {
             viewModel = new CustomWidgetViewModel();
 
-            const binding: IWidgetBinding<CustomWidgetModel, CustomWidgetViewModel> = {
+            viewModel["widgetBinding"] = {
                 name: widgetName,
                 displayName: widgetDisplayName,
                 readonly: bindingContext ? bindingContext.readonly : false,
@@ -52,9 +52,7 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
                     await this.updateViewModel(model, viewModel, bindingContext);
                     this.eventManager.dispatchEvent(Events.ContentUpdate);
                 }
-            };
-
-            viewModel["widgetBinding"] = binding;
+            } as IWidgetBinding<CustomWidgetModel, CustomWidgetViewModel>;
         }
 
         this.updateViewModel(model, viewModel, bindingContext);

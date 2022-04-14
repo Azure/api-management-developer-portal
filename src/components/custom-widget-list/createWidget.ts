@@ -51,9 +51,12 @@ export class CreateWidget {
         const tech = this.tech();
         if (!displayName || !tech) return;
 
-        const name = encodeURIComponent(displayName.normalize("NFD").toLowerCase().replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9-]/g, "-"));
+        const name = encodeURIComponent(displayName.normalize("NFD")
+            .toLowerCase()
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9-]/g, "-"));
 
-        if (this.configs.find(c => c.name === name)) {
+        if (this.configs.find(config => config.name === name)) {
             alert("A widget with the same alphanumerical signature already exists.");
             return;
         }
