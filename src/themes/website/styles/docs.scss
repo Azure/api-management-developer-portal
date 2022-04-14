@@ -129,6 +129,7 @@ pre {
     bottom: 0;
     right: 0;
     z-index: 1050;
+
     @media (min-width: $breakpoint-md) {
         max-width: 600px;
     }
@@ -137,12 +138,12 @@ pre {
 .apis-section {
     padding: 0;
 
-    & > .container,
-    & > .container-fluid {
-        & > .row {
+    &>.container,
+    &>.container-fluid {
+        &>.row {
             padding: 0;
 
-            & > .col {
+            &>.col {
                 padding: 0;
             }
         }

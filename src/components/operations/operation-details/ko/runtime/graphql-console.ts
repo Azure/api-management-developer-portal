@@ -22,6 +22,7 @@ import { Utils } from "../../../../../utils";
 import { GraphDocService } from "./graphql-documentation/graphql-doc-service";
 import { LogItem, LogItemType, WebsocketClient } from "./websocketClient";
 import * as _ from "lodash";
+import { Logger } from "@paperbits/common/logging";
 
 @Component({
     selector: "graphql-console",
@@ -71,14 +72,15 @@ export class GraphqlConsole {
     public readonly displayWsConsole: ko.Observable<boolean>;
     private ws: WebsocketClient;
     public readonly wsLogItems: ko.ObservableArray<object>;
-    
+
 
     constructor(
         private readonly routeHelper: RouteHelper,
         private readonly apiService: ApiService,
         private readonly httpClient: HttpClient,
         private readonly settingsProvider: ISettingsProvider,
-        private readonly graphDocService: GraphDocService
+        private readonly graphDocService: GraphDocService,
+        private readonly logger: Logger
     ) {
         this.working = ko.observable(true);
         this.collapsedHeaders = ko.observable(true);
@@ -168,7 +170,7 @@ export class GraphqlConsole {
         const name = this.graphDocService.currentSelected()['name'];
 
         for (let child of this.operationNodes[type]().children()) {
-            if(child.label() === name) {
+            if (child.label() === name) {
                 child.toggle();
                 break;
             }
@@ -204,7 +206,7 @@ export class GraphqlConsole {
                     if (node.kind === GraphQL.Kind.OPERATION_DEFINITION) {
                         variables = [];
                         curNode = this.globalNodes().find(mainNode => mainNode.label() == node.operation);
-                    } else if (node.kind === GraphQL.Kind.FIELD || node.kind === GraphQL.Kind.ARGUMENT 
+                    } else if (node.kind === GraphQL.Kind.FIELD || node.kind === GraphQL.Kind.ARGUMENT
                         || node.kind === GraphQL.Kind.OBJECT_FIELD || node.kind === GraphQL.Kind.INLINE_FRAGMENT) {
                         let targetNode: GraphQLTreeNode;
                         if (node.kind === GraphQL.Kind.FIELD) {
@@ -215,7 +217,7 @@ export class GraphqlConsole {
                             let inputNode = <GraphQLInputTreeNode>curNode.children().find(n => n.isInputNode() && n.label() === node.name.value);
                             if (node.value.kind === GraphQL.Kind.STRING) {
                                 inputNode.inputValue(`"${node.value.value}"`);
-                            } else if (node.value.kind === GraphQL.Kind.BOOLEAN || node.value.kind === GraphQL.Kind.INT 
+                            } else if (node.value.kind === GraphQL.Kind.BOOLEAN || node.value.kind === GraphQL.Kind.INT
                                 || node.value.kind === GraphQL.Kind.FLOAT || node.value.kind === GraphQL.Kind.ENUM) {
                                 inputNode.inputValue(`${node.value.value}`);
                             } else if (node.value.kind === GraphQL.Kind.VARIABLE) {
@@ -227,7 +229,7 @@ export class GraphqlConsole {
                             curNode = targetNode;
                             curNode.toggle(true, false);
                         }
-                    } else if (node.kind === GraphQL.Kind.VARIABLE_DEFINITION && 
+                    } else if (node.kind === GraphQL.Kind.VARIABLE_DEFINITION &&
                         (node.type.kind === GraphQL.Kind.NAMED_TYPE || node.type.kind === GraphQL.Kind.NON_NULL_TYPE)) {
                         let typeString;
                         if (node.type.kind === GraphQL.Kind.NON_NULL_TYPE && node.type.type.kind === GraphQL.Kind.NAMED_TYPE) {
@@ -242,13 +244,13 @@ export class GraphqlConsole {
                     }
                 },
                 leave: node => {
-                    if (curNode && (node.kind === GraphQL.Kind.FIELD || node.kind === GraphQL.Kind.ARGUMENT 
-                        || node.kind === GraphQL.Kind.OBJECT_FIELD || node.kind === GraphQL.Kind.INLINE_FRAGMENT 
+                    if (curNode && (node.kind === GraphQL.Kind.FIELD || node.kind === GraphQL.Kind.ARGUMENT
+                        || node.kind === GraphQL.Kind.OBJECT_FIELD || node.kind === GraphQL.Kind.INLINE_FRAGMENT
                         || node.kind === GraphQL.Kind.OPERATION_DEFINITION)) {
                         if (node.kind === GraphQL.Kind.OPERATION_DEFINITION) {
                             (<GraphQLOutputTreeNode>curNode).variables = variables;
                         }
-                        if(!(node.kind === GraphQL.Kind.FIELD && node.name.value === GraphqlMetaField.typename))
+                        if (!(node.kind === GraphQL.Kind.FIELD && node.name.value === GraphqlMetaField.typename))
                             curNode = curNode.parent();
                     }
                 }
@@ -292,7 +294,7 @@ export class GraphqlConsole {
 
     private async sendRequest(): Promise<void> {
         this.editorValidations();
-        if(this.editorErrors().length > 0) {
+        if (this.editorErrors().length > 0) {
             return;
         }
         this.sendingRequest(true);
@@ -501,11 +503,12 @@ export class GraphqlConsole {
         return result;
     }
 
-    
+
 
     private checkingGeneration(node: GraphQLTreeNode): boolean {
-        const isOperation = _.includes([GraphqlTypes.query, GraphqlTypes.mutation, GraphqlTypes.subscription], node.label());
-        if((node.selected() && !isOperation) || (node.selected() && isOperation && node.hasActiveChild())) {
+        const allOperations = <string[]>[GraphqlTypes.query, GraphqlTypes.mutation, GraphqlTypes.subscription];
+        const isOperation = allOperations.includes(node.label());
+        if ((node.selected() && !isOperation) || (node.selected() && isOperation && node.hasActiveChild())) {   
             return true;
         }
         return false;
@@ -567,7 +570,7 @@ export class GraphqlConsole {
         })
     }
 
-    public getOperationNode(type : string) {
+    public getOperationNode(type: string) {
         return this.operationNodes[this.graphDocService.typeIndexer()[type]]();
     }
 
@@ -577,10 +580,10 @@ export class GraphqlConsole {
     }
 
     public async closeWsConnection(): Promise<void> {
-            if(this.wsConnected()) {
-                this.wsConnected(false);
-                this.ws?.disconnect();
-            }
+        if (this.wsConnected()) {
+            this.wsConnected(false);
+            this.ws?.disconnect();
+        }
     }
 
     public async closeWs(): Promise<void> {
@@ -593,7 +596,7 @@ export class GraphqlConsole {
         if (this.wsConnected() || this.editorErrors().length > 0) {
             return;
         }
-        
+
         this.wsProcessing(true);
         this.displayWsConsole(true);
 
@@ -642,8 +645,8 @@ export class GraphqlConsole {
                         data.logData = JSON.stringify(json["payload"], null, 2);
                         this.wsLogItems.unshift(data);
                     }
-                } catch (err) {
-                    console.log(err);
+                } catch (error) {
+                    this.logger.trackError(error);
                 }
             }
             else if (data.logType === LogItemType.SendData) {
@@ -653,16 +656,16 @@ export class GraphqlConsole {
                         data.logData = JSON.stringify(json["payload"], null, 2);
                         this.wsLogItems.unshift(data);
                     }
-                } catch (err) {
-                    console.log(err);
+                } catch (error) {
+                    this.logger.trackError(error);
                 }
             }
             else if (data.logType === LogItemType.Connection) {
-                if(_.includes(data.logData, 'Disconnected')) {
+                if (data.logData.includes('Disconnected')) {
                     return;
                 }
-                if(_.includes(data.logData, 'Disconnecting from')) {
-                    data.logData = _.replace(data.logData, 'Disconnecting', 'Disconnected');
+                if (data.logData.includes('Disconnecting from')) {
+                    data.logData = data.logData.replace('Disconnecting', 'Disconnected');
                 }
                 this.wsLogItems.unshift(data);
             }
@@ -679,8 +682,8 @@ export class GraphqlConsole {
     private editorValidations(): void {
         this.editorErrors([]);
         const markers = (<any>window).monaco.editor.getModelMarkers({});
-        if(!!markers.find(m => m.severity >= 5 && m.owner == "graphqlQuery")) {
-            this.editorErrors.push("Syntax error in 'Query editor'"); 
+        if (!!markers.find(m => m.severity >= 5 && m.owner == "graphqlQuery")) {
+            this.editorErrors.push("Syntax error in 'Query editor'");
         }
         try {
             JSON.parse(this.variables() || "{}");
@@ -701,5 +704,5 @@ export class GraphqlConsole {
         this.closeWsConnection();
         this.wsConnect();
     }
-    
+
 }

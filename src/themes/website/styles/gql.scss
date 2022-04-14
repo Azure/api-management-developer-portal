@@ -1,3 +1,5 @@
+@import "variables.scss";
+
 .table-ws-gql {
     display: grid;
     max-width: 100%;
@@ -7,9 +9,9 @@
     &.logs {
         grid-template-columns: auto auto 1fr;
         grid-auto-rows: max-content;
-        background: white;
-    
-        & > .d-contents > .d-contents > :is(div, pre)  {
+        background: $form-control-bg-color;
+
+        &>.d-contents>.d-contents> :is(div, pre) {
             padding: 4px;
             vertical-align: middle;
         }
@@ -18,19 +20,22 @@
 
 .gql-ws-spinner {
     margin: 0px;
-    background: white;
+    background: $form-control-bg-color;
 }
 
 .gql-container {
     display: grid;
+
     @media (max-width: 768px) {
         grid-template-columns: 100%;
-        grid-template-areas: "explorer" "query" "response";
+        grid-template-areas: "explorer""query""response";
     }
+
     @media (max-width: 1200px) and (min-width: 769px) {
         grid-template-columns: 30% 70%;
-        grid-template-areas: "explorer query" ". response";
+        grid-template-areas: "explorer query"". response";
     }
+
     @media (min-width: 1201px) {
         grid-template-columns: 20% 40% 40%;
         grid-template-areas: "explorer query response";
@@ -39,6 +44,7 @@
 
 .gql-explorer-grid {
     grid-area: explorer;
+
     @media (max-width: 1200px) and (min-width: 769px) {
         grid-column: 1;
         grid-row: 1 / 3;
@@ -47,9 +53,11 @@
     h4 {
         margin-top: 0;
     }
+
     @media (min-width: 769px) {
         padding-right: 20px;
     }
+
     @media (max-width: 768px) {
         margin-bottom: 20px;
     }
@@ -57,6 +65,7 @@
 
 .gql-query-grid {
     grid-area: query;
+
     @media (min-width: 1201px) {
         padding-right: 20px;
     }
@@ -72,6 +81,7 @@
     h4 {
         margin-top: 0;
     }
+
     @media (max-width: 1200px) {
         margin-top: 15px;
     }
@@ -90,29 +100,38 @@
 .query-editor {
     @media (max-height: 1080px) {
         height: 290px;
+
         &.with-errors {
             height: 190px;
         }
     }
+
     @media (max-height: 1200px) and (min-height: 1081px) {
         height: 440px;
+
         &.with-errors {
             height: 340px;
         }
+
         @media (max-width: 1200px) and (min-width: 769px) {
             height: 150px;
+
             &.with-errors {
                 height: 150px;
             }
         }
     }
+
     @media (min-height: 1201px) {
         height: 533px;
+
         &.with-errors {
             height: 450px;
         }
+
         @media (max-width: 1200px) and (min-width: 769px) {
             height: 303px;
+
             &.with-errors {
                 height: 203px;
             }
@@ -123,23 +142,30 @@
 .query-variable {
     @media (max-height: 1200px) {
         height: 166px;
+
         &.with-errors {
             height: 153px;
         }
+
         @media (max-width: 1200px) and (min-width: 769px) {
             height: 100px;
+
             &.with-errors {
                 height: 100px;
             }
         }
     }
+
     @media (min-height: 1201px) {
         height: 263px;
+
         &.with-errors {
             height: 233px;
         }
+
         @media (max-width: 1200px) and (min-width: 769px) {
             height: 103px;
+
             &.with-errors {
                 height: 103px;
             }
@@ -150,35 +176,46 @@
 .response-editor {
     @media (max-height: 1080px) {
         height: 520px;
+
         &.with-ws {
             height: 225px;
         }
     }
+
     @media (max-height: 1200px) and (min-height: 1081px) {
         height: 670px;
+
         &.with-ws {
             height: 295px;
         }
+
         @media (max-width: 1200px) and (min-width: 769px) {
             height: 218px;
+
             &.with-ws {
                 height: 218px;
             }
         }
+
         @media (max-width: 768px) {
             height: 600px;
+
             &.with-ws {
                 height: 280px;
             }
         }
     }
+
     @media (min-height: 1201px) {
         height: 860px;
+
         &.with-ws {
             height: 392px;
         }
+
         @media (max-width: 1200px) and (min-width: 769px) {
             height: 254px;
+
             &.with-ws {
                 height: 254px;
             }
@@ -189,27 +226,35 @@
 .response-ws {
     @media (max-height: 1080px) {
         height: 231px;
+
         &.with-spinner {
             height: 207px;
         }
     }
+
     @media (max-height: 1200px) and (min-height: 1081px) {
         height: 311px;
+
         &.with-spinner {
             height: 287px;
         }
+
         @media (max-width: 1200px) and (min-width: 769px) {
             height: 218px;
         }
+
         @media (max-width: 768px) {
             height: 280px;
         }
     }
+
     @media (min-height: 1201px) {
-        height:  404px;
+        height: 404px;
+
         &.with-spinner {
             height: 380px;
         }
+
         @media (max-width: 1200px) and (min-width: 769px) {
             height: 254px;
         }
@@ -219,21 +264,27 @@
 .explorer-operations {
     @media (max-height: 1080px) {
         height: 464px;
+
         @media (max-width: 1200px) and (min-width: 769px) {
             height: 1044px;
         }
+
         @media (max-width: 768px) {
             height: 400px;
         }
     }
+
     @media (max-height: 1200px) and (min-height: 1081px) {
         height: 614px;
+
         @media (max-width: 768px) {
             height: 400px;
         }
     }
+
     @media (min-height: 1201px) {
         height: 804px;
+
         @media (max-width: 768px) {
             height: 400px;
         }
@@ -256,6 +307,7 @@
 .mw-600 {
     flex: 0 0 100%;
     max-width: 100%;
+
     @media (min-width: 901px) {
         flex: 0 0 600px;
         max-width: 600px;
@@ -275,18 +327,11 @@
 }
 
 .input-node-color {
-    color: rgb(139, 43, 185);
+    color: $gql-input-node-color;
 }
 
 .not-input-node-color {
-    color: #0F7EBD;
-}
-
-.icon {
-    padding: 10px;
-    color: #0078D4;
-    min-width: 50px;
-    text-align: center;
+    color: $gql-not-input-node-color;
 }
 
 .presentation-item {
@@ -297,8 +342,8 @@
     }
 
     select {
-        background-color: white;
-        color: rgb(15, 126, 189);
+        background-color: $form-control-bg-color;
+        color: $gql-not-input-node-color;
     }
 }
 
@@ -306,9 +351,9 @@
     height: 60px;
 }
 
-.operationType-gql {
+.operation-type-gql {
     width: 100%;
-    color: rgb(177, 26, 4);
+    color: $gql-operation-type-color;
     font-weight: bold;
 }
 
