@@ -5,7 +5,7 @@
             <!-- ko foreach: { data: customWidgetConfigs, as: 'config' } -->
             <tr>
                 <td>
-                    <span data-bind="text: config.displayName"></span>
+                    <span data-bind="text: config.displayName, tooltip: config.tooltip"></span>
                     <!-- ko if: config.override -->
                     <i>(override)</i>
                     <!-- /ko -->

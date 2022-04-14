@@ -25,7 +25,17 @@ export class ContentWorkshop {
         customWidgetConfigs: Promise<TCustomWidgetConfig[]>,
     ) {
         this.customWidgetConfigs = ko.observable();
-        customWidgetConfigs.then(configs => this.customWidgetConfigs(configs));
+        customWidgetConfigs.then(configs =>
+            this.customWidgetConfigs(configs.map(config => ({...config, tooltip: ContentWorkshop.configToTooltip(config)})))
+        );
+    }
+
+    private static configToTooltip(config: TCustomWidgetConfig): string {
+        return `<code>
+          ID: ${config.name}<br/>
+          Tech: ${config.tech}<br/>
+          Deployed: ${new Date(config.deployed).toLocaleString()}<br/>
+        </code>`;
     }
 
     public async openScaffoldWizard(): Promise<void> {

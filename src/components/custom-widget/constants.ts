@@ -1,7 +1,7 @@
-export const widgetName = "custom-widget-s";
-export const widgetDisplayName = "Custom widget Scaffold";
+export const widgetName = "custom-widget";
+export const widgetDisplayName = "Custom widget";
 export const widgetCategory = "Advanced";
-export const widgetSelector = "custom-widget-s";
-export const widgetRuntimeSelector = "custom-widget-runtime-s";
-export const widgetEditorSelector = "custom-widget-editor-s";
+export const widgetSelector = "custom-widget";
+export const widgetRuntimeSelector = "custom-widget-runtime";
+export const widgetEditorSelector = "custom-widget-editor";
 export const widgetIconClass = "widget-icon widget-icon-api-management";
