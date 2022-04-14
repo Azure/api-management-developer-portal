@@ -1,8 +1,15 @@
+import { Bag } from "@paperbits/common/bag";
 import { SchemaObjectContract } from "../contracts/schema";
 
 export interface DestructedCombination {
     combinationType: string,
     combinationArray: SchemaObjectContract[]
+}
+
+export interface ProcessedCombinationPropertiesObject {
+    combinationReferenceObjectsArray: TypeDefinition[],
+    combinationReferencesNames: string[],
+    combinationOtherProperties: Bag<SchemaObjectContract>
 }
 
 export abstract class TypeDefinitionPropertyType {
@@ -246,33 +253,44 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         ) {
             const { combinationType, combinationArray } = this.destructCombination(contract);
 
-            const combinationPropertiesProcessed = this.processCombinationProperties(combinationArray, definitions);
+            const processedCombinationPropertiesObject: ProcessedCombinationPropertiesObject = {
+                combinationReferenceObjectsArray: [],
+                combinationReferencesNames: [],
+                combinationOtherProperties: {}
+            }
+
+            let processedTypeDefinitionsArray: Array<TypeDefinition> = [];
+
+            const combinationPropertiesProcessed = this.processCombinationProperties(combinationArray, definitions, processedCombinationPropertiesObject);
+            processedTypeDefinitionsArray = combinationPropertiesProcessed.combinationReferenceObjectsArray;
+            processedTypeDefinitionsArray.push(new TypeDefinition("Other properties", {properties: combinationPropertiesProcessed.combinationOtherProperties}, definitions))
 
             this.kind = "combination";
             this.type = new TypeDefinitionPropertyTypeCombination(combinationType, combinationPropertiesProcessed.combinationReferencesNames);
-            this.properties = combinationPropertiesProcessed.combinationReferenceObjectsArray;
+            this.properties = processedTypeDefinitionsArray;
         }
     }
 
-    private processCombinationProperties(combinationArray: SchemaObjectContract[], definitions: object) {
-        const combinationReferenceObjectsArray: TypeDefinition[] = [];
-        const combinationReferencesNames: string[] = [];
-
+    private processCombinationProperties(combinationArray: SchemaObjectContract[], definitions: object, processedCombinationPropertiesObject?: ProcessedCombinationPropertiesObject): ProcessedCombinationPropertiesObject {
         combinationArray.map((combinationArrayItem) => {
+            if (combinationArrayItem.allOf || combinationArrayItem.anyOf || combinationArrayItem.oneOf) {
+                const { combinationType, combinationArray } = this.destructCombination(combinationArrayItem);
+                processedCombinationPropertiesObject = this.processCombinationProperties(combinationArray, definitions, processedCombinationPropertiesObject);
+            } 
+            
             if (combinationArrayItem.$ref) {
                 const combinationReferenceName = this.getTypeNameFromRef(combinationArrayItem.$ref);
-                combinationReferencesNames.push(combinationReferenceName);
+                processedCombinationPropertiesObject.combinationReferencesNames.push(combinationReferenceName);
 
-                combinationReferenceObjectsArray.push(new TypeDefinition(combinationReferenceName, definitions[combinationReferenceName], definitions))
-            } else {
-                combinationReferenceObjectsArray.push(new TypeDefinition("Custom properties", combinationArrayItem, definitions))
+                processedCombinationPropertiesObject.combinationReferenceObjectsArray.push(new TypeDefinition(combinationReferenceName, definitions[combinationReferenceName], definitions));
+            } 
+            
+            if (combinationArrayItem.properties) {
+                processedCombinationPropertiesObject.combinationOtherProperties = { ...processedCombinationPropertiesObject.combinationOtherProperties, ...combinationArrayItem.properties };
             }
         });
 
-        return {
-            combinationReferenceObjectsArray,
-            combinationReferencesNames
-        };
+        return processedCombinationPropertiesObject;
     }
 
     private flattenNestedObjects(nested: TypeDefinitionObjectProperty, prefix: string): TypeDefinitionProperty[] {
