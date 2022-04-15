@@ -97,7 +97,7 @@ export const defaultPageSize = 50;
 /**
  * Default value of first page in a paginated view.
  */
- export const firstPage = 1;
+export const firstPage = 1;
 
 /**
  * Maximum number of pages to show in a paginated view.
@@ -117,7 +117,7 @@ export const AppType = "developerPortal";
 /**
  * HTML Editor Settings - HTML injection widget editor
  */
- export const HtmlEditorSettings = {
+export const HtmlEditorSettings = {
     id: "htmlEditor",
     config: {
         language: "html",
@@ -129,7 +129,7 @@ export const AppType = "developerPortal";
             enabled: false
         },
     }
- };
+};
 
 /**
  * Query Editor Settings - GraphQL Console
@@ -164,18 +164,18 @@ export const ResponseSettings = {
     }
 };
 
- /**
- * Graphql types
- */
-  export enum GraphqlTypes {
+/**
+* Graphql types
+*/
+export enum GraphqlTypes {
     query = "query",
     mutation = "mutation",
     subscription = "subscription",
 }
 
- /**
- * Graphql types for documentation
- */
+/**
+* Graphql types for documentation
+*/
 export enum GraphqlTypesForDocumentation {
     query = "Query",
     mutation = "Mutation",
@@ -211,6 +211,8 @@ export enum GraphqlFieldTypes {
 export enum GraphqlMetaField {
     typename = "__typename"
 }
+
+export const graphqlSubProtocol = "graphql-transport-ws";
 
 /**
  * Known setting names.
