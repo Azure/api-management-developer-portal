@@ -15,14 +15,14 @@ export class WebsocketClient {
     private websocket: WebSocket;
     private logs: LogItem[];
 
-    constructor(private websocketUrl?: string) { 
+    constructor(private websocketUrl?: string) {
         this.onOpenConnection = this.onOpenConnection.bind(this);
         this.onCloseConnection = this.onCloseConnection.bind(this);
         this.onErrorConnection = this.onErrorConnection.bind(this);
         this.onMessageConnection = this.onMessageConnection.bind(this);
         this.logs = [];
     }
-    
+
     public isConnected: boolean;
 
     public onOpen: (message: string) => void;
@@ -35,11 +35,11 @@ export class WebsocketClient {
         return this.logs;
     }
 
-    public connect(websocketUrl?: string) {
+    public connect(websocketUrl?: string, subProtocol?: string) {
         this.websocketUrl = websocketUrl || this.websocketUrl;
         this.logDataItem(`Connecting to ${this.websocketUrl}`, LogItemType.Connection);
 
-        this.websocket = new WebSocket(this.websocketUrl);
+        this.websocket = new WebSocket(this.websocketUrl, subProtocol);
         this.websocket.onopen = this.onOpenConnection;
         this.websocket.onclose = this.onCloseConnection;
         this.websocket.onerror = this.onErrorConnection;
@@ -52,7 +52,7 @@ export class WebsocketClient {
             this.websocket.close();
         }
     }
-    
+
     public clearLogs(): void {
         this.logs = [];
         if (this.onLogItem) {
@@ -112,22 +112,22 @@ export class WebsocketClient {
     }
 
     private getTime() {
-        const now     = new Date();
-        let hour    = now.getHours().toString();
-        let minute  = now.getMinutes().toString();
-        let second  = now.getSeconds().toString(); 
-        let mSecond  = now.getMilliseconds().toString(); 
+        const now = new Date();
+        let hour = now.getHours().toString();
+        let minute = now.getMinutes().toString();
+        let second = now.getSeconds().toString();
+        let mSecond = now.getMilliseconds().toString();
 
-        if(hour.length == 1) {
+        if (hour.length == 1) {
             hour = '0' + hour;
         }
-        if(minute.length == 1) {
+        if (minute.length == 1) {
             minute = '0' + minute;
         }
-        if(second.length == 1) {
+        if (second.length == 1) {
             second = '0' + second;
-        }  
-        
+        }
+
         return `${hour}:${minute}:${second}.${mSecond}`;
     }
 }

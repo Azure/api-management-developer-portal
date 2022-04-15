@@ -58,6 +58,10 @@
     margin-bottom: auto;
 }
 
+.mb-unset {
+    margin-bottom: unset;
+}
+
 .text-truncate {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -130,4 +134,16 @@
 
 .mt-17 {
     margin-top: 17px;
+}
+
+.mt-30 {
+    margin-top: 30px !important;
+}
+
+.mt-15 {
+    margin-top: 15px;
+}
+
+.mr-20 {
+    margin-right: 20px;
 }
