@@ -26,17 +26,17 @@
 .gql-container {
     display: grid;
 
-    @media (max-width: 768px) {
+    @media (max-width: $breakpoint-md) {
         grid-template-columns: 100%;
         grid-template-areas: "explorer""query""response";
     }
 
-    @media (max-width: 1200px) and (min-width: 769px) {
+    @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
         grid-template-columns: 30% 70%;
         grid-template-areas: "explorer query"". response";
     }
 
-    @media (min-width: 1201px) {
+    @media (min-width: $breakpoint-xl) {
         grid-template-columns: 20% 40% 40%;
         grid-template-areas: "explorer query response";
     }
@@ -45,7 +45,7 @@
 .gql-explorer-grid {
     grid-area: explorer;
 
-    @media (max-width: 1200px) and (min-width: 769px) {
+    @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
         grid-column: 1;
         grid-row: 1 / 3;
     }
@@ -54,11 +54,11 @@
         margin-top: 0;
     }
 
-    @media (min-width: 769px) {
+    @media (min-width: $breakpoint-md) {
         padding-right: 20px;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: $breakpoint-md) {
         margin-bottom: 20px;
     }
 }
@@ -66,7 +66,7 @@
 .gql-query-grid {
     grid-area: query;
 
-    @media (min-width: 1201px) {
+    @media (min-width: $breakpoint-xl) {
         padding-right: 20px;
     }
 
@@ -82,7 +82,7 @@
         margin-top: 0;
     }
 
-    @media (max-width: 1200px) {
+    @media (max-width: $breakpoint-xl) {
         margin-top: 15px;
     }
 }
@@ -98,7 +98,7 @@
 }
 
 .query-editor {
-    @media (max-height: 1080px) {
+    @media (max-height: $breakpoint-ml) {
         height: 290px;
 
         &.with-errors {
@@ -106,14 +106,14 @@
         }
     }
 
-    @media (max-height: 1200px) and (min-height: 1081px) {
+    @media (max-height: $breakpoint-xl) and (min-height: $breakpoint-ml) {
         height: 440px;
 
         &.with-errors {
             height: 340px;
         }
 
-        @media (max-width: 1200px) and (min-width: 769px) {
+        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
             height: 150px;
 
             &.with-errors {
@@ -122,14 +122,14 @@
         }
     }
 
-    @media (min-height: 1201px) {
+    @media (min-height: $breakpoint-xl) {
         height: 533px;
 
         &.with-errors {
             height: 450px;
         }
 
-        @media (max-width: 1200px) and (min-width: 769px) {
+        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
             height: 303px;
 
             &.with-errors {
@@ -140,14 +140,14 @@
 }
 
 .query-variable {
-    @media (max-height: 1200px) {
+    @media (max-height: $breakpoint-xl) {
         height: 166px;
 
         &.with-errors {
             height: 153px;
         }
 
-        @media (max-width: 1200px) and (min-width: 769px) {
+        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
             height: 100px;
 
             &.with-errors {
@@ -156,14 +156,14 @@
         }
     }
 
-    @media (min-height: 1201px) {
+    @media (min-height: $breakpoint-xl) {
         height: 263px;
 
         &.with-errors {
             height: 233px;
         }
 
-        @media (max-width: 1200px) and (min-width: 769px) {
+        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
             height: 103px;
 
             &.with-errors {
@@ -174,7 +174,7 @@
 }
 
 .response-editor {
-    @media (max-height: 1080px) {
+    @media (max-height: $breakpoint-ml) {
         height: 520px;
 
         &.with-ws {
@@ -182,14 +182,14 @@
         }
     }
 
-    @media (max-height: 1200px) and (min-height: 1081px) {
+    @media (max-height: $breakpoint-xl) and (min-height: $breakpoint-ml) {
         height: 670px;
 
         &.with-ws {
             height: 295px;
         }
 
-        @media (max-width: 1200px) and (min-width: 769px) {
+        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
             height: 218px;
 
             &.with-ws {
@@ -197,7 +197,7 @@
             }
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: $breakpoint-md) {
             height: 600px;
 
             &.with-ws {
@@ -206,14 +206,14 @@
         }
     }
 
-    @media (min-height: 1201px) {
+    @media (min-height: $breakpoint-xl) {
         height: 860px;
 
         &.with-ws {
             height: 392px;
         }
 
-        @media (max-width: 1200px) and (min-width: 769px) {
+        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
             height: 254px;
 
             &.with-ws {
@@ -224,7 +224,7 @@
 }
 
 .response-ws {
-    @media (max-height: 1080px) {
+    @media (max-height: $breakpoint-ml) {
         height: 231px;
 
         &.with-spinner {
@@ -232,60 +232,60 @@
         }
     }
 
-    @media (max-height: 1200px) and (min-height: 1081px) {
+    @media (max-height: $breakpoint-xl) and (min-height: $breakpoint-ml) {
         height: 311px;
 
         &.with-spinner {
             height: 287px;
         }
 
-        @media (max-width: 1200px) and (min-width: 769px) {
+        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
             height: 218px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: $breakpoint-md) {
             height: 280px;
         }
     }
 
-    @media (min-height: 1201px) {
+    @media (min-height: $breakpoint-xl) {
         height: 404px;
 
         &.with-spinner {
             height: 380px;
         }
 
-        @media (max-width: 1200px) and (min-width: 769px) {
+        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
             height: 254px;
         }
     }
 }
 
 .explorer-operations {
-    @media (max-height: 1080px) {
+    @media (max-height: $breakpoint-ml) {
         height: 464px;
 
-        @media (max-width: 1200px) and (min-width: 769px) {
+        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
             height: 1044px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: $breakpoint-md) {
             height: 400px;
         }
     }
 
-    @media (max-height: 1200px) and (min-height: 1081px) {
+    @media (max-height: $breakpoint-xl) and (min-height: $breakpoint-ml) {
         height: 614px;
 
-        @media (max-width: 768px) {
+        @media (max-width: $breakpoint-md) {
             height: 400px;
         }
     }
 
-    @media (min-height: 1201px) {
+    @media (min-height: $breakpoint-xl) {
         height: 804px;
 
-        @media (max-width: 768px) {
+        @media (max-width: $breakpoint-md) {
             height: 400px;
         }
     }
@@ -312,18 +312,6 @@
         flex: 0 0 600px;
         max-width: 600px;
     }
-}
-
-.margin-top-variables {
-    margin-top: 30px !important;
-}
-
-.margin-top-send {
-    margin-top: 15px;
-}
-
-.breadcrumb-gql {
-    margin-right: 20px;
 }
 
 .input-node-color {

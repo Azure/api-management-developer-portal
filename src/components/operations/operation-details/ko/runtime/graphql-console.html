@@ -12,7 +12,7 @@
         <i class="icon-emb icon-emb-simple-remove"></i>
     </button>
 
-    <nav aria-label="breadcrumb" class="breadcrumb-gql">
+    <nav aria-label="breadcrumb" class="mr-20">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="#" data-bind="text: api().displayName, attr: { href: getApiReferenceUrl() }"></a>
@@ -122,7 +122,7 @@
                     title="Select a query, mutation, or subscription from the explorer to add it to the test console or begin typing to compose a query."></i>
             </h4>
             <div class="query-editor" data-bind="css: {'with-errors': hasErrorEditors()}" id="queryEditor"></div>
-            <h4 class="margin-top-variables">
+            <h4 class="mt-30">
                 Query variables
                 <i class="icon-emb icon-emb-info info-icon-size"
                     title="Use variables to reuse the same query or mutation to pass different values."></i>
@@ -139,7 +139,7 @@
                 </div>
                 <!-- /ko -->
 
-                <div class="btn-group margin-top-send" role="group">
+                <div class="btn-group mt-15" role="group">
                     <!-- ko if: !isSubscriptionOperation() || canRestartSubscription() -->
 
                     <!-- ko ifnot: sendingRequest()-->
@@ -181,7 +181,7 @@
 
             <!-- ko if: displayWsConsole -->
 
-            <div class="margin-top-variables flex">
+            <div class="mt-30 flex">
                 <h4>
                     Subscription
                 </h4>
