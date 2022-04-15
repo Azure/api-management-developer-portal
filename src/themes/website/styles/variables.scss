@@ -3,8 +3,9 @@ $breakpoint-xs: 0;
 $breakpoint-sm: 576px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 992px;
+$breakpoint-ml: 1080px;
 $breakpoint-xl: 1200px;
-$grid-breakpoints: ( xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px ) !default;
+$grid-breakpoints: ( xs: 0, sm: 576px, md: 768px, lg: 992px, ml: 1080px, xl: 1200px ) !default;
 
 /* Fonts */
 $font-size-base: calc(10px + .8vw);
@@ -71,3 +72,8 @@ $form-control-bg-color: #fff;
 $form-control-border-color: #ced4da;
 $form-control-border-radius: 0;
 $search-button-width: 30px;
+
+/* GraphQL */
+$gql-input-node-color: #8b2bb9;
+$gql-not-input-node-color: #0F7EBD;
+$gql-operation-type-color: #b11a04;

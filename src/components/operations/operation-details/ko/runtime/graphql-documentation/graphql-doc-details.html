@@ -11,7 +11,7 @@
 
     <!-- ko if: graphSelected()['type'] -->
     <div>
-        <h3>Response Type</h3>
+        <h3>Response type</h3>
         <span data-bind="text: getType(graphSelected(), 'left')"></span>
         <!-- ko ifnot: graphSelectedType()['type'] == 'scalarType' && isDefaultScalarType(graphSelectedType()['name']) -->
         <a class="text-monospace"
@@ -119,9 +119,9 @@
     <!-- ko foreach: { data: allReferencesList(), as: 'reference' } -->
     <!-- ko ifnot: reference.type == 'scalarType' -->
     <div>
-        <h3
+        <h4
             data-bind="text: reference.name, attr: { id: $component.anchorLink(reference, true), title: $component.prettyType(reference.type) }">
-        </h3>
+        </h4>
         <span data-bind="text: $component.getDescription(reference)"></span>
         <ul class="nav nav-pills" role="tablist">
             <li class="nav-item" role="presentation">
