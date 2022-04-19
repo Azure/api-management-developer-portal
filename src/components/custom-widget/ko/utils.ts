@@ -9,7 +9,7 @@ export const dataFolder = "data";
 export const configsFolder = "configs";
 export const configFileName = "config.msapim.json";
 
-export const widgetArchiveName = (config: TCustomWidgetConfig) => `${config.name}-msapim-widget.zip`;
+export const widgetArchiveName = (config: TCustomWidgetConfig) => `azure-api-management-widget-${config.name}.zip`;
 
 export function buildBlobDataSrc(name: string): string {
     return `/${root}/${dataFolder}/${name}`;
