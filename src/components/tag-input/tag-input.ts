@@ -65,6 +65,9 @@ export class TagInput {
         const tagsValue = this.routeHelper.getTags();
 
         if (!tagsValue) {
+            if (this.onChange) {
+                this.onChange([]);
+            }
             return;
         }
 
@@ -80,7 +83,7 @@ export class TagInput {
                 tagItems.push(new Tag(tagContract));
 
             }
-            
+
             this.selection(tagItems);
 
             if (this.onChange) {
