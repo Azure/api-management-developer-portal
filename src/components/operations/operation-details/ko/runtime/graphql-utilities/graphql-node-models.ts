@@ -73,6 +73,10 @@ export abstract class GraphQLTreeNode {
         }
     }
 
+    public hasActiveChild(): boolean {
+        return !!this.children().find(c => c.selected());
+    }
+
     abstract generateNodes(): void
 }
 
