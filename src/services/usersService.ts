@@ -51,7 +51,8 @@ export class UsersService {
      */
     public async authenticate(credentials: string): Promise<string> {
         try {
-            let backendUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.backendUrl);
+            const backendUrlBase = await this.settingsProvider.getSetting<string>(Constants.SettingNames.backendUrl)
+            let backendUrl = Utils.getDeveloperEndpoint(backendUrlBase);
 
             const request = {
                 url: `${backendUrl}/identity?api-version=${Constants.managementApiVersion}`,
@@ -100,7 +101,8 @@ export class UsersService {
         const requestUrl = `/users/${userId}/identities/Basic/${identity}?appType=${Constants.AppType}`;
         const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
 
-        let backendUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.backendUrl);
+        const backendUrlBase = await this.settingsProvider.getSetting<string>(Constants.SettingNames.backendUrl)
+        let backendUrl = Utils.getDeveloperEndpoint(backendUrlBase);
 
         const response = await this.httpClient.send({
             url: `${backendUrl}${requestUrl}&api-version=${Constants.managementApiVersion}`,
@@ -290,7 +292,9 @@ export class UsersService {
     }
 
     public async createUserWithOAuth(provider: string, idToken: string, firstName: string, lastName: string, email: string): Promise<void> {
-        let backendUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.backendUrl);
+
+        const backendUrlBase = await this.settingsProvider.getSetting<string>(Constants.SettingNames.backendUrl)
+        let backendUrl = Utils.getDeveloperEndpoint(backendUrlBase);
 
         const jwtToken = Utils.parseJwt(idToken);
 

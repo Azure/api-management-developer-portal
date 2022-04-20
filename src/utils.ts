@@ -25,6 +25,13 @@ export class Utils {
         }
     }
 
+    public static getDeveloperEndpoint(backendUrl: string): string {
+        if (backendUrl.endsWith("/")) {
+            return backendUrl + "developer"
+        }
+        return backendUrl + "/developer"
+    }
+
     public static groupBy<T>(array: T[], valueAccessor: (item: T) => string): T[][] {
         const grouping = array.reduce((groups, item) => {
             let val = valueAccessor(item);
