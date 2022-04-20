@@ -63,7 +63,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
             }
         });
 
-        this.customInputValue.subscribe(this.applyChanges);
+        this.customInputValue.subscribe(this.applyCustomInputValueChanges);
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
 
         const environment = await this.settingsProvider.getSetting<string>("environment");
@@ -80,6 +80,23 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         const viewport = this.viewManager.getViewport();
         const sizeStyleConfig = StyleHelper.getPluginConfigForLocalStyles(this.model.styles, "size", viewport);
         this.sizeStyleConfig(sizeStyleConfig);
+    }
+
+    private debounceTimeoutId: number | undefined;
+    private applyCustomInputValueChanges(): void {
+        clearTimeout(this.debounceTimeoutId);
+        if (this.debounceTimeoutId) {
+            this.debounceTimeoutId = window.setTimeout(() => {
+                this.applyChanges();
+                this.debounceTimeoutId = undefined;
+            }, 500);
+        } else {
+            // leading edge
+            this.applyChanges();
+            this.debounceTimeoutId = window.setTimeout(() => {
+                this.debounceTimeoutId = undefined;
+            }, 500);
+        }
     }
 
     private applyChanges(): void {
