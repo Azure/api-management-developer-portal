@@ -45,7 +45,7 @@ export class MapiClient {
         const settings = await this.settingsProvider.getSettings();
 
         this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || "self-hosted-portal";
-        this.backendUrl = settings[Constants.SettingNames.backendUrl];
+        this.backendUrl = Utils.getDeveloperEndpoint(settings[Constants.SettingNames.backendUrl]);
 
         if (!this.backendUrl) {
             throw new Error(`Backend API URL ("${Constants.SettingNames.backendUrl}") setting is missing in configuration file.`);
