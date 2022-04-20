@@ -26,26 +26,35 @@ export class ContentWorkshop {
     ) {
         this.customWidgetConfigs = ko.observable();
         customWidgetConfigs.then(configs =>
-            this.customWidgetConfigs(configs.map(config => ({...config, tooltip: ContentWorkshop.configToTooltip(config)})))
+            this.customWidgetConfigs(configs
+                .sort(ContentWorkshop.sortByName)
+                .map(config => ({...config, tooltip: ContentWorkshop.configToTooltip(config)}))
+            )
         );
+    }
+
+    private static sortByName(a: TCustomWidgetConfig, b: TCustomWidgetConfig): number {
+        return a.name.localeCompare(b.name);
     }
 
     private static configToTooltip(config: TCustomWidgetConfig): string {
         return `<code>
           ID: ${config.name}<br/>
           Tech: ${config.tech}<br/>
-          Deployed: ${new Date(config.deployed).toLocaleString()}<br/>
+          Deployed: ${config.deployed ? new Date(config.deployed).toLocaleString() : "-"}<br/>
         </code>`;
     }
 
     public async openScaffoldWizard(): Promise<void> {
         const view: View = {
-            heading: "Create new custom widget",
+            heading: "Custom widget",
             component: {
                 name: "custom-widget-create",
                 params: {
                     configs: [...this.customWidgetConfigs()],
-                    configAdd: (config: TCustomWidgetConfig) => this.customWidgetConfigs([...this.customWidgetConfigs(), config]),
+                    configAdd: (config: TCustomWidgetConfig) => this.customWidgetConfigs(
+                        [...this.customWidgetConfigs(), config].sort(ContentWorkshop.sortByName)
+                    ),
                 },
             },
         };
