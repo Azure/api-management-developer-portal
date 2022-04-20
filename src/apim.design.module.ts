@@ -102,7 +102,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ProductDetailsDesignModule());
         injector.bindModule(new ProductSubscribeModule());
         injector.bindModule(new ProductSubscribeEditorModule());
-        injector.bindModule(new ContentModule());
         injector.bindModule(new OperationListModule());
         injector.bindModule(new OperationListEditorModule());
         injector.bindModule(new OperationDetailsDesignModule());
@@ -140,6 +139,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("CodeEditor", CodeEditor);
         injector.bindModule(new CustomWidgetListModule()); // needs "blobStorage"
+        injector.bindModule(new ContentModule());
         injector.bindModule(new HelpModule());
     }
 }

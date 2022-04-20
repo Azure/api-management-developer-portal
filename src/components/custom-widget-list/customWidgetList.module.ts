@@ -9,8 +9,8 @@ import { CustomWidgetHandlers } from "../custom-widget";
 
 export class CustomWidgetListModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bind("contentWorkshop", ContentWorkshop);
-        injector.bind("resetDetailsWorkshop", CreateWidget);
+        injector.bind("customWidgetWorkshop", ContentWorkshop);
+        injector.bind("createWidgetWorkshop", CreateWidget);
         injector.bindToCollection("workshopSections", OperationsSectionToolButton);
 
         const blobStorage = injector.resolve<MapiBlobStorage>("blobStorage");
