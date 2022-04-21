@@ -1,4 +1,5 @@
 import { HyperlinkModel } from "@paperbits/common/permalinks";
+import { LocalStyles } from "@paperbits/common/styles";
 
 /**
  * Product list widget configuration.
@@ -19,6 +20,11 @@ export class ProductListModel {
      */
     public detailsPageHyperlink: HyperlinkModel;
 
+    /**
+    * Widget local styles.
+    */
+    public styles: LocalStyles;
+    
     constructor(layout: string = "list") {
         this.layout = layout;
     }
