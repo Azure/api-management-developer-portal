@@ -30,8 +30,6 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
         const environment = await this.settingsProvider.getSetting<string>("environment");
         viewModel.name(model.name);
         const widgetSource = await buildWidgetSource(this.blobStorage, model, environment, this.instanceId, "index.html");
-        // const response = await fetch(widgetSource.src);
-        // viewModel.src(response.ok ? widgetSource.src : fallbackUi); // TODO check if prod or dev, don't show anything on prod
         viewModel.src(widgetSource.src);
         viewModel.override(widgetSource.override);
     }

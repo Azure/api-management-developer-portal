@@ -1,8 +1,8 @@
-﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+﻿import { TCustomWidgetConfig } from "scaffold/scaffold";
+import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+import { StyleHelper } from "@paperbits/styles";
 import { CustomWidgetModel } from "./customWidgetModel";
 import { sizeStylesInitial } from "./ko/constants";
-import { TCustomWidgetConfig } from "scaffold/scaffold";
-import { StyleHelper } from "@paperbits/styles";
 
 export class CustomWidgetHandlers implements IWidgetHandler {
     constructor(private readonly configuration: TCustomWidgetConfig) { }
