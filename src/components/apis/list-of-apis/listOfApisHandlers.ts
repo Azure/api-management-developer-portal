@@ -181,7 +181,7 @@ export class ListOfApisHandlers implements IWidgetHandler {
                             plugins: ["typography"],
                             defaults: {
                                 typography: {
-                                    colorKey: "colors/deault"
+                                    colorKey: "colors/default"
                                 }
                             }
                         }
