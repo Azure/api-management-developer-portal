@@ -1,8 +1,8 @@
-import { widgetName } from "./constants";
 import { IModelBinder } from "@paperbits/common/editing";
-import { CustomWidgetModel } from "./customWidgetModel";
 import { Contract } from "@paperbits/common";
+import { CustomWidgetModel } from "./customWidgetModel";
 import { CustomWidgetContract } from "./customWidgetContract";
+import { widgetName } from "./constants";
 
 export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> {
     public canHandleContract(contract: Contract): boolean {
@@ -24,15 +24,13 @@ export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> 
     }
 
     public modelToContract(model: CustomWidgetModel): Contract {
-        const contract: CustomWidgetContract = {
+        return {
             type: widgetName,
             name: model.name,
             widgetDisplayName: model.widgetDisplayName,
             customInputValue: model.customInputValue,
 
             styles: model.styles,
-        };
-
-        return contract;
+        } as CustomWidgetContract;
     }
 }
