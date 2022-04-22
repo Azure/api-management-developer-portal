@@ -8,11 +8,11 @@ import {
     OVERRIDE_CONFIG_SESSION_KEY_PREFIX,
 } from "../custom-widget/ko/utils";
 
-export const buildConfigDeploy = async (): Promise<TConfigDeploy> => ({ // TODO
-    subscriptionId: "a200340d-6b82-494d-9dbf-687ba6e33f9e",
-    resourceGroupName: "jmach",
-    serviceName: "jm-apim",
-    managementApiEndpoint: "management.azure.com",
+export const buildConfigDeploy = async (): Promise<TConfigDeploy> => ({
+    subscriptionId: "<subscription-id>",
+    resourceGroupName: "<resource-group>",
+    serviceName: "<service-name>",
+    managementApiEndpoint: "<management-api-endpoint>",
     apiVersion: managementApiVersion,
     openUrl: window.location.origin,
 });
