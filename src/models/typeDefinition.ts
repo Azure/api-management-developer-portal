@@ -6,6 +6,11 @@ export interface DestructedCombination {
     combinationArray: SchemaObjectContract[]
 }
 
+export interface PropertiesObject {
+    props: TypeDefinitionProperty[],
+    hasReadOnly: boolean
+}
+
 export interface ProcessedCombinationPropertiesObject {
     combinationReferenceObjectsArray: TypeDefinition[],
     combinationReferencesNames: string[],
@@ -86,6 +91,11 @@ export abstract class TypeDefinitionProperty {
     public required?: boolean;
 
     /**
+     * Defines if this property has a read-only status.
+     */
+     public readOnly?: boolean;
+
+    /**
      * List of allowed values.
      */
     public enum: any[];
@@ -104,6 +114,7 @@ export abstract class TypeDefinitionProperty {
         this.name = contract.title || name;
         this.description = contract.description;
         this.type = new TypeDefinitionPropertyTypePrimitive(contract.format || contract.type || "object");
+        this.readOnly = contract.readOnly ?? false;
         this.required = isRequired;
 
         if (contract.rawSchemaFormat) {
@@ -215,7 +226,9 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                 arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfReference(this.getTypeNameFromRef(contract.items.$ref));
                 this.properties = [arrayProperty];
             } else if (contract.items.properties) {
-                this.properties = this.processProperties(contract.items, nested, definitions, "[]");
+                const { props, hasReadOnly } = this.processProperties(contract.items, nested, definitions, "[]");
+                this.properties = props;
+                this.readOnly = hasReadOnly;
             }
 
             this.kind = "array";
@@ -244,7 +257,9 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         }
 
         if (contract.properties) { // complex type
-            this.properties = this.processProperties(contract, nested, definitions);
+            const { props, hasReadOnly } = this.processProperties(contract, nested, definitions);
+            this.properties = props;
+            this.readOnly = hasReadOnly;
         }
 
         if (contract.allOf ||
@@ -315,11 +330,12 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         return result;
     }
 
-    private processProperties(item: SchemaObjectContract, nested: boolean, definitions: object, prefix?: string): TypeDefinitionProperty[] {
+    private processProperties(item: SchemaObjectContract, nested: boolean, definitions: object, prefix?: string): PropertiesObject {
         const props = [];
+        let hasReadOnly = false;
 
         if (!item.properties) {
-            return [];
+            return;
         }
 
         Object
@@ -329,11 +345,9 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                     const propertySchemaObject = item.properties[propertyName];
                     const propertyNameToDisplay = (prefix ? prefix + "." : "") + propertyName;
 
-                    if (!propertySchemaObject) {
-                        return;
-                    }
+                    hasReadOnly = propertySchemaObject.readOnly ?? false;
 
-                    if (propertySchemaObject.readOnly) {
+                    if (!propertySchemaObject) {
                         return;
                     }
 
@@ -421,7 +435,10 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                 }
             });
 
-        return props;
+        return {
+            props,
+            hasReadOnly
+        };
     }
 }
 
