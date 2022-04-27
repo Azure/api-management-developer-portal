@@ -40,7 +40,7 @@ export async function buildWidgetSource(
 
     const values = {
         data: JSON.parse(model.customInputValue).data,
-        origin: window.location.origin, // TODO origin during publish
+        origin: window.location.origin, // TODO later once connected to BE origin during publish
         id: model.name,
         displayName: model.widgetDisplayName,
         environment,

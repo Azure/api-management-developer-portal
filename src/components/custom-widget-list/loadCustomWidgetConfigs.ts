@@ -46,8 +46,6 @@ async function loadCustomWidgetConfigs(blobStorage: MapiBlobStorage): Promise<TC
 
     const configurations: Record<string, TCustomWidgetConfig> = {};
 
-    console.log({configurations, configs, overrides, sources}); // TODO
-
     configs.forEach(config => configurations[config.name] = config);
     overrides.forEach((override, i) => {
         const href = new URL(sources[i]).href;
