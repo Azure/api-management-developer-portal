@@ -7,18 +7,19 @@ import { IPermalinkResolver } from "@paperbits/common/permalinks";
 
 export class ListOfApisModelBinder implements IModelBinder<ListOfApisModel> {
     constructor(private readonly permalinkResolver: IPermalinkResolver) { }
-    
+
     public canHandleModel(model: Object): boolean {
         return model instanceof ListOfApisModel;
     }
 
     public async contractToModel(contract: ListOfApisContract): Promise<ListOfApisModel> {
         const model = new ListOfApisModel();
-        
+
         model.layout = contract.itemStyleView;
         model.allowSelection = contract.allowSelection;
         model.showApiType = contract.showApiType === undefined ? true : contract.showApiType;
         model.defaultGroupByTagToEnabled = contract.defaultGroupByTagToEnabled === true;
+        model.styles = contract.styles || {};
 
         if (contract.detailsPageHyperlink) {
             model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.detailsPageHyperlink);
@@ -43,7 +44,8 @@ export class ListOfApisModelBinder implements IModelBinder<ListOfApisModel> {
                     target: model.detailsPageHyperlink.target,
                     targetKey: model.detailsPageHyperlink.targetKey
                 }
-                : null
+                : null,
+            styles: model.styles
         };
 
         return contract;
