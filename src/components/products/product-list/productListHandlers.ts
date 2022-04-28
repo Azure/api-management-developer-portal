@@ -34,8 +34,8 @@ export class ProductListHandlers implements IWidgetHandler {
             },
             components: {
                 productList: {
-                    displayName: "productList",
-                    plugins: ["margin", "padding", "typography"],
+                    displayName: "Product List",
+                    plugins: ["margin", "padding", "typography", "background"],
                     components: {
                         searchInput: {
                             displayName: "Search input",
