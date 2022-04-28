@@ -40,7 +40,7 @@ export class ListOfApisHandlers implements IWidgetHandler {
             },
             components: {
                 listOfApis: {
-                    displayName: "listOfApis",
+                    displayName: "List of APIs",
                     plugins: ["margin", "padding", "typography"],
                     components: {
                         searchInput: {

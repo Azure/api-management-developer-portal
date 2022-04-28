@@ -38,6 +38,40 @@ h2 {
         z-index: $z-index-base + 1;
     }
 
+    &.toolbox-context {
+        padding: 0;
+
+    .toolbox-splitter {
+            width: 1px;
+            border-right: 1px solid #ccc;
+            height: 45px;
+        }
+
+        .toolbox-button {
+            padding: 0 15px;
+
+            span {
+                font-weight: bold;
+            }
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.02);
+            }
+        }
+
+        .toolbox-dropdown {
+            padding: 2px;
+            height: 45px;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.02);
+            }
+        }
+    }
+
     &.toolbox-horizontal {
         flex-direction: row;
     }
@@ -72,7 +106,8 @@ h2 {
         min-width: 320px;
     }
 
-    .toolbox-btn {
+    .toolbox-btn,
+    .toolbox-button {
         color: $icon-base-color;
         line-height: $toolbox-btn-size;
         min-width: $toolbox-btn-size;
@@ -103,13 +138,13 @@ h2 {
             }
         }
 
-        &.toolbox-dropdown {
-            a {
-                padding-left: 15px;
-                padding-right: 15px;
-                text-align: center;
-            }
-        }
+        // &.toolbox-dropdown {
+        //     a {
+        //         padding-left: 15px;
+        //         padding-right: 15px;
+        //         text-align: center;
+        //     }
+        // }
 
         &.pull-down {
             margin-top: auto;
@@ -269,7 +304,7 @@ h2 {
 }
 
 .subtle {
-    font-size: .9em;
+    font-size: 0.9em;
     color: lighten($color-base, 10%);
     font-family: monospace;
     padding-top: 5px;

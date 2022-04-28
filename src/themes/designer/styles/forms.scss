@@ -6,6 +6,9 @@
     margin: 0;
     padding: 0;
     border: none;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 
     &.ps {
         // perfect-scrollbar
@@ -85,7 +88,7 @@ textarea {
 
     &:focus {
         outline: none;
-        border: 1px solid $form-control-border-focused;
+        border: 1px solid $form-control-focus-color;
     }
 
     &.is-invalid {
@@ -172,7 +175,7 @@ textarea {
         outline: none;
     }
 
-    .input-group-addon {
+    .input-group-btn {
         min-width: 1.5em;
         border: none;
         line-height: inherit;
