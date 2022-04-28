@@ -1,12 +1,15 @@
 import { HttpMethod } from "@paperbits/common/http";
 import { XmlHttpRequestClient } from "@paperbits/common/http/xmlHttpRequestClient";
-import  IStaticDataProvider  from "./IStaticDataProvider";
+import { Logger } from "@paperbits/common/logging";
+import IStaticDataProvider from "./IStaticDataProvider";
 
 export class RuntimeStaticDataProvider implements IStaticDataProvider {
     private readonly httpClient: XmlHttpRequestClient;
-    constructor() {
-        this.httpClient = new XmlHttpRequestClient();
+
+    constructor(logger: Logger) {
+        this.httpClient = new XmlHttpRequestClient(logger);
     }
+
     getStaticData(objectType: string): Promise<any> {
         let path = objectType == "defaultStaticData.json" ? "/tests/mocks/defaultStaticData.json" : "/editors/templates/default.json";
 
