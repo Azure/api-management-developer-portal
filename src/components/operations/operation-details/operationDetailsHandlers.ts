@@ -28,8 +28,8 @@ export class OperationDetailsHandlers implements IWidgetHandler {
             },
             components: {
                 operationDetails: {
-                    displayName: "operationDetails",
-                    plugins: ["margin", "padding", "typography"],
+                    displayName: "Operation Details",
+                    plugins: ["margin", "padding", "typography", "background"],
                     components: {
                         tryItButton: {
                             displayName: "Try it button",
