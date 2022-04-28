@@ -1,4 +1,5 @@
 import { HttpClient, HttpRequest, HttpResponse, XmlHttpRequestClient } from "@paperbits/common/http";
+import { Logger } from "@paperbits/common/logging";
 import IStaticDataProvider from "./IStaticDataProvider";
 
 
@@ -11,8 +12,8 @@ export class StaticDataHttpClient implements HttpClient {
     private mockDataObject: Object;
     private defaultDataObject: Object;
 
-    constructor(private readonly dataProvider: IStaticDataProvider) {
-        this.httpClient = new XmlHttpRequestClient();
+    constructor(private readonly dataProvider: IStaticDataProvider, logger: Logger) {
+        this.httpClient = new XmlHttpRequestClient(logger);
     }
 
     private async initialize(): Promise<void> {
