@@ -4,11 +4,15 @@ import { EventManager, Events } from "@paperbits/common/events";
 import { ProductListViewModel } from "./productListViewModel";
 import { ProductListModel } from "../productListModel";
 import { ComponentFlow } from "@paperbits/common/editing";
+import { StyleCompiler } from "@paperbits/common/styles";
+import { ProductListHandlers } from "../productListHandlers";
 
 
 export class ProductListViewModelBinder implements ViewModelBinder<ProductListModel, ProductListViewModel> {
-    constructor(private readonly eventManager: EventManager) { }
-    
+    constructor(
+        private readonly eventManager: EventManager,
+        private readonly styleCompiler: StyleCompiler) { }
+
     public async modelToViewModel(model: ProductListModel, viewModel?: ProductListViewModel, bindingContext?: Bag<any>): Promise<ProductListViewModel> {
         if (!viewModel) {
             viewModel = new ProductListViewModel();
@@ -28,6 +32,7 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
             displayName: "List of products" + (model.layout === "list" ? "" : ` (${model.layout})`),
             model: model,
             draggable: true,
+            handler: ProductListHandlers,
             flow: ComponentFlow.Block,
             editor: "product-list-editor",
             applyChanges: async (updatedModel: ProductListModel) => {
@@ -35,6 +40,10 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
                 this.eventManager.dispatchEvent(Events.ContentUpdate);
             }
         };
+
+        if (model.styles) {
+            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, ProductListHandlers));
+        }
 
         return viewModel;
     }
