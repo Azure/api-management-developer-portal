@@ -4,10 +4,14 @@ import { OperationDetailsViewModel } from "./operationDetailsViewModel";
 import { OperationDetailsModel } from "../operationDetailsModel";
 import { Bag } from "@paperbits/common";
 import { ComponentFlow } from "@paperbits/common/editing";
-
+import { OperationDetailsHandlers } from "../operationDetailsHandlers";
+import { StyleCompiler } from "@paperbits/common/styles";
 
 export class OperationDetailsViewModelBinder implements ViewModelBinder<OperationDetailsModel, OperationDetailsViewModel> {
-    constructor(private readonly eventManager: EventManager) { }
+    constructor(
+        private readonly eventManager: EventManager,
+        private readonly styleCompiler: StyleCompiler
+    ) { }
 
     public async modelToViewModel(model: OperationDetailsModel, viewModel?: OperationDetailsViewModel, bindingContext?: Bag<any>): Promise<OperationDetailsViewModel> {
         if (!viewModel) {
@@ -18,6 +22,7 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
                 layer: bindingContext?.layer,
                 model: model,
                 draggable: true,
+                handler: OperationDetailsHandlers,
                 flow: ComponentFlow.Block,
                 editor: "operation-details-editor",
                 applyChanges: async (updatedModel: OperationDetailsModel) => {
@@ -33,6 +38,10 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
             defaultSchemaView: model.defaultSchemaView,
             useCorsProxy: model.useCorsProxy
         };
+
+        if (model.styles) {
+            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, OperationDetailsHandlers));
+        }
 
         viewModel.config(JSON.stringify(runtimeConfig));
 
