@@ -142,9 +142,9 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
     public getStyleDefinitions(): StyleDefinition {
         return {
             colors: {
-                displayTextColor:{
+                displayTextColor: {
                     displayName: "Text color",
-                    defaults:{
+                    defaults: {
                         value: "#252525"
                     }
                 }
@@ -152,13 +152,13 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
             components: {
                 productListDropdown: {
                     displayName: "Product List Dropdown",
-                    plugins: ["margin", "padding", "typography","shadow"],
+                    plugins: ["margin", "padding", "typography", "shadow"],
                     components: {
                         dropdownInput: {
                             displayName: "Input",
                             plugins: ["background", "typography", "border", "margin", "padding"],
                             defaults: {
-                                background:{
+                                background: {
                                     colorKey: "colors/defaultBg"
                                 },
                                 typography: {
@@ -172,7 +172,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                     bottom: "7px",
                                     left: "10px"
                                 },
-                                margin:{
+                                margin: {
                                     top: 0,
                                     right: 0,
                                     bottom: 0,
@@ -183,23 +183,23 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                         width: 1,
                                         style: "solid",
                                         colorKey: "colors/default"
-                                    }, 
+                                    },
                                     right: {
                                         width: 0
-                                    }, 
+                                    },
                                     bottom: {
                                         width: 1,
                                         style: "solid",
                                         colorKey: "colors/default"
-                                    }, 
+                                    },
                                     left: {
                                         width: 1,
                                         style: "solid",
                                         colorKey: "colors/default"
                                     }
                                 },
-                                size:{
-                                    width:"100%"
+                                size: {
+                                    width: "100%"
                                 },
                                 display: "block",
                                 flex: "1"
@@ -209,7 +209,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                             displayName: "Input",
                             plugins: ["background", "typography", "border", "margin", "padding"],
                             defaults: {
-                                background:{
+                                background: {
                                     colorKey: "colors/defaultBg"
                                 },
                                 typography: {
@@ -228,24 +228,24 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                         width: 1,
                                         style: "solid",
                                         colorKey: "colors/default"
-                                    }, 
+                                    },
                                     right: {
                                         width: 1,
                                         style: "solid",
                                         colorKey: "colors/default"
-                                    }, 
+                                    },
                                     bottom: {
                                         width: 1,
                                         style: "solid",
                                         colorKey: "colors/default"
-                                    }, 
+                                    },
                                     left: {
                                         width: 1,
                                         style: "solid",
                                         colorKey: "colors/default"
                                     }
                                 },
-                                margin:{
+                                margin: {
                                     top: 0,
                                     right: 0,
                                     bottom: 0,
@@ -254,7 +254,71 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                 dispaly: "block"
                             }
                         },
-                        searchInput: {
+                        dropDown: {
+                            displayName: "Dropdown",
+                            plugins: ["background", "typography"],
+                            defaults: {
+                                background: {
+                                    colorKey: "colors/defaultBg"
+                                },
+                                padding: {
+                                    top: "20px",
+                                    right: "20px",
+                                    bottom: "20px",
+                                    left: "20px",
+                                },
+                                size: {
+                                    width: "100%"
+                                },
+                                position: {
+                                    position: "absolute",
+                                    top: "100%"
+                                },
+                                shadow: {
+                                    shadowId: "shadows/shadow1"
+                                }
+                            },
+                            components: {
+                                testSearchInput: {
+                                    displayName: "Search input",
+                                    plugins: ["typography", "border", "states"],
+                                    defaults: {
+                                        allowedStates: [
+                                            "focus"
+                                        ],
+                                        typography: {
+                                            fontSize: "1rem",
+                                            colorKey: "colors/default",
+                                            lineHeight: "1.5"
+                                        },
+                                        border: {
+                                            bottom: {
+                                                width: "100px",
+                                                style: "solid",
+                                                colorKey: "colors/default"
+                                            }
+                                        },
+                                        states: {
+                                            focus: {
+                                                typography: {
+                                                    fontSize: "1rem",
+                                                    colorKey: "colors/default",
+                                                    lineHeight: "1.5"
+                                                },
+                                                border: {
+                                                    bottom: {
+                                                        width: "1",
+                                                        style: "solid",
+                                                        colorKey: "colors/default"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                            }
+                        },
+                        dropdownSearchInput: {
                             displayName: "Search input",
                             plugins: ["typography", "border", "states"],
                             defaults: {
@@ -268,7 +332,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                 },
                                 border: {
                                     bottom: {
-                                        width: "1",
+                                        width: "100px",
                                         style: "solid",
                                         colorKey: "colors/default"
                                     }
@@ -291,48 +355,6 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                 }
                             }
                         },
-                        dropDown: {
-                            displayName: "Dropdown",
-                            plugins: ["background", "typography"],
-                            defaults: {
-                                background:{
-                                    colorKey: "colors/defaultBg"
-                                },
-                                padding:{
-                                    top: "20px",
-                                    right: "20px",
-                                    bottom: "20px",
-                                    left: "20px",
-                                },
-                                size:{
-                                    width: "100%"
-                                },
-                                position:{
-                                    position:"absolute",
-                                    top:"100%"
-                                },
-                                shadow: {
-                                    shadowId: "shadows/shadow1"
-                                }
-                            }
-                        },
-                        testDropdown:{
-                            displayName:"test",
-                            plugins: [ "typography", "states"],
-                            defaults:{
-                                allowedStates: ["actvie"],
-                                typography:{
-                                    
-                                },
-                                states:{
-                                    active:{
-                                        typography:{
-                                            colorKey: "colors/defaultBg"
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
