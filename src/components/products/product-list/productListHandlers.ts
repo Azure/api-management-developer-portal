@@ -152,7 +152,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
             components: {
                 productListDropdown: {
                     displayName: "Product List Dropdown",
-                    plugins: ["margin", "padding", "typography", "shadow"],
+                    plugins: ["margin", "padding", "typography"],
                     components: {
                         dropdownInput: {
                             displayName: "Input",
@@ -197,12 +197,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                         style: "solid",
                                         colorKey: "colors/default"
                                     }
-                                },
-                                size: {
-                                    width: "100%"
-                                },
-                                display: "block",
-                                flex: "1"
+                                }
                             }
                         },
                         dropdownInputButton: {
@@ -267,55 +262,9 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                     bottom: "20px",
                                     left: "20px",
                                 },
-                                size: {
-                                    width: "100%"
-                                },
-                                position: {
-                                    position: "absolute",
-                                    top: "100%"
-                                },
                                 shadow: {
                                     shadowId: "shadows/shadow1"
                                 }
-                            },
-                            components: {
-                                testSearchInput: {
-                                    displayName: "Search input",
-                                    plugins: ["typography", "border", "states"],
-                                    defaults: {
-                                        allowedStates: [
-                                            "focus"
-                                        ],
-                                        typography: {
-                                            fontSize: "1rem",
-                                            colorKey: "colors/default",
-                                            lineHeight: "1.5"
-                                        },
-                                        border: {
-                                            bottom: {
-                                                width: "100px",
-                                                style: "solid",
-                                                colorKey: "colors/default"
-                                            }
-                                        },
-                                        states: {
-                                            focus: {
-                                                typography: {
-                                                    fontSize: "1rem",
-                                                    colorKey: "colors/default",
-                                                    lineHeight: "1.5"
-                                                },
-                                                border: {
-                                                    bottom: {
-                                                        width: "1",
-                                                        style: "solid",
-                                                        colorKey: "colors/default"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
                             }
                         },
                         dropdownSearchInput: {
@@ -354,7 +303,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                     }
                                 }
                             }
-                        },
+                        }
                     }
                 }
             }
