@@ -1,11 +1,11 @@
 curl -v -X {{method}} "{{requestUrl}}"
-{% for header in request.meaningfulHeaders -%}
--H "{{ header.name }}: {{ header.displayedValue }}"
-{% endfor -%}
+{%- for header in request.meaningfulHeaders %} -H "{{ header.name }}: {{ header.displayedValue }}"
+{%- endfor -%}
 {% if request.body != blank -%}
 {%- if request.bodyFormat == "raw" -%}
---data-raw "{{ request.body | replace: '"','\\"'  }}"
-{%- elsif request.bodyFormat == "binary" %}
---data-binary "@ < path/to/{{request.binary.name}} >"
+{%- assign formattedBody = request.body | replace:'"','\\"' -%}
+{%- assign formattedBody = formattedBody | replace: '\r\n', ' ' -%}
+{%- assign formattedBody = formattedBody | replace: '     ', ' ' %} --data-raw "{{formattedBody}}"
+{%- elsif request.bodyFormat == "binary" %} --data-binary "@ < path/to/{{request.binary.name}} >"
 {% endif -%}
 {% endif -%}
