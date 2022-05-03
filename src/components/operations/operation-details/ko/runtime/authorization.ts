@@ -203,20 +203,27 @@ export class Authorization {
         }
     }
 
-
-    private async clearStoredCredentials(): Promise<void> {
+    private async clearStoredCredentials(grantTypeChanged?: boolean): Promise<void> {
         await this.sessionManager.removeItem(oauthSessionKey);
-        this.removeAuthorizationHeader();
+
+        if (grantTypeChanged) {
+            this.removeAuthorizationHeader();
+        }
     }
 
     private removeAuthorizationHeader(): void {
         const authorizationHeader = this.findHeader(KnownHttpHeaders.Authorization);
-        this.removeHeader(authorizationHeader);
+
+        if (authorizationHeader && authorizationHeader.required) {
+            authorizationHeader.value(null);
+        } else {
+            this.removeHeader(authorizationHeader);
+        }
         this.authenticated(false);
     }
 
     private async onGrantTypeChange(grantType: string): Promise<void> {
-        await this.clearStoredCredentials();
+        await this.clearStoredCredentials(!!grantType);
 
         if (!grantType || grantType === GrantTypes.password) {
             return;
