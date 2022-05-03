@@ -11,7 +11,7 @@ import template from "./graphql-console.html";
 import graphqlExplorer from "./graphql-explorer.html";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlTypes, GraphqlCustomFieldNames, GraphqlMetaField, graphqlSubProtocol } from "./../../../../../constants";
+import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlTypes, GraphqlCustomFieldNames, GraphqlMetaField, graphqlSubProtocol, GraphqlProtocols } from "./../../../../../constants";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { ApiService } from "../../../../../services/apiService";
@@ -163,7 +163,7 @@ export class GraphqlConsole {
             this.host.hostname(this.hostnames()[0]);
         }
 
-        const graphQLSchemas = await this.apiService.getSchemas(this.api());
+        const graphQLSchemas = await this.apiService.getSchemas(selectedApi);
         this.schema = graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema;
         await this.buildTree(this.schema);
         this.availableOperations();
@@ -344,7 +344,7 @@ export class GraphqlConsole {
     }
 
     private requestUrl(): string {
-        const protocol = this.api().protocols.includes("https") ? "https" : "http";
+        const protocol = this.api().protocols.includes(GraphqlProtocols.https) ? GraphqlProtocols.https : GraphqlProtocols.http;
         const urlTemplate = this.getRequestPath();
         let result = this.host.hostname() ? `${protocol}://${this.host.hostname()}` : '';
         result += Utils.ensureLeadingSlash(urlTemplate);
@@ -627,7 +627,7 @@ export class GraphqlConsole {
     }
 
     private wsUrl(): string {
-        const protocol = this.api().protocols.includes("wss") ? "wss" : "ws";
+        const protocol = this.api().protocols.includes(GraphqlProtocols.wss) ? GraphqlProtocols.wss : GraphqlProtocols.ws;
         const urlTemplate = this.getRequestPath();
         const result = `${protocol}://${this.host.hostname()}${Utils.ensureLeadingSlash(urlTemplate)}`;
         return result;
@@ -635,9 +635,10 @@ export class GraphqlConsole {
 
     private getRequestPath(getHidden: boolean = false): string {
         let versionPath = "";
+        const api = this.api();
 
-        if (this.api().apiVersionSet && this.api().apiVersion && this.api().apiVersionSet.versioningScheme === "Segment") {
-            versionPath = `/${this.api().apiVersion}`;
+        if (api.apiVersionSet && api.apiVersion && api.apiVersionSet.versioningScheme === "Segment") {
+            versionPath = `/${api.apiVersion}`;
         }
 
         let requestUrl = "";
@@ -646,25 +647,25 @@ export class GraphqlConsole {
         parameters.forEach(parameter => {
             if (parameter.value()) {
                 const parameterPlaceholder = parameter.name() !== "*" ? `{${parameter.name()}}` : "*";
-
+                const encodeURI = Utils.encodeURICustomized(parameter.value());
                 if (requestUrl.indexOf(parameterPlaceholder) > -1) {
                     requestUrl = requestUrl.replace(parameterPlaceholder,
-                        !getHidden || !parameter.secret ? Utils.encodeURICustomized(parameter.value())
-                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, '•')));
+                        !getHidden || !parameter.secret ? encodeURI
+                            : (parameter.revealed() ? encodeURI : parameter.value().replace(/./g, '•')));
                 }
                 else {
                     requestUrl = this.addParam(requestUrl, Utils.encodeURICustomized(parameter.name()),
-                        !getHidden || !parameter.secret ? Utils.encodeURICustomized(parameter.value())
-                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, '•')));
+                        !getHidden || !parameter.secret ? encodeURI
+                            : (parameter.revealed() ? encodeURI : parameter.value().replace(/./g, '•')));
                 }
             }
         });
 
-        if (this.api().apiVersionSet && this.api().apiVersionSet.versioningScheme === "Query") {
-            requestUrl = this.addParam(requestUrl, this.api().apiVersionSet.versionQueryName, this.api().apiVersion);
+        if (api.apiVersionSet && api.apiVersionSet.versioningScheme === "Query") {
+            requestUrl = this.addParam(requestUrl, api.apiVersionSet.versionQueryName, api.apiVersion);
         }
 
-        return `${this.api().path}${versionPath}${requestUrl}`;
+        return `${api.path}${versionPath}${requestUrl}`;
     }
 
     private addParam(uri: string, name: string, value: string): string {
@@ -744,9 +745,9 @@ export class GraphqlConsole {
     private editorValidations(): void {
         this.editorErrors([]);
 
-        const hasWsProtocol = !!this.api().protocols.find(p => p == "ws" || p == "wss");
+        const hasWsProtocol = !!this.api().protocols.find(p => p == GraphqlProtocols.ws || p == GraphqlProtocols.wss);
         if (this.isSubscriptionOperation() && !hasWsProtocol) {
-            this.editorErrors.push(`Websocket protocol not enabled, you can enable it in Azure > APIM > APIs > ${this.api().name} > Settings tab, and reload Developer Portal.`);
+            this.editorErrors.push("Live subscriptions are not supported for this API");
         }
 
         const markers = (<any>window).monaco.editor.getModelMarkers({});

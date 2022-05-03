@@ -174,6 +174,16 @@ export enum GraphqlTypes {
 }
 
 /**
+* Graphql protocols
+*/
+export enum GraphqlProtocols {
+    http = "http",
+    https = "https",
+    ws = "ws",
+    wss = "wss"
+}
+
+/**
 * Graphql types for documentation
 */
 export enum GraphqlTypesForDocumentation {

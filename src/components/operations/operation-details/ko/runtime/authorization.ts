@@ -426,7 +426,7 @@ export class Authorization {
     private getSubscriptionKeyParam(): ConsoleParameter {
         const subscriptionKeyParamName = this.getSubscriptionKeyParamName();
         const searchName = subscriptionKeyParamName.toLocaleLowerCase();
-        const queryParameters = (this.isGraphQL()) ? this.queryParameters() : this.consoleOperation().request.queryParameters();
+        const queryParameters = this.isGraphQL() ? this.queryParameters() : this.consoleOperation().request.queryParameters();
         return queryParameters.find(x => x.name()?.toLocaleLowerCase() === searchName);
     }
 
