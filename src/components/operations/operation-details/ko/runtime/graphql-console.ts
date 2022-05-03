@@ -60,6 +60,7 @@ export class GraphqlConsole {
     public readonly collapsedQuery: ko.Observable<boolean>;
     public readonly collapsedMutation: ko.Observable<boolean>;
     public readonly collapsedSubscription: ko.Observable<boolean>;
+    public readonly collapsedParameters: ko.Observable<boolean>;
     public readonly queryParameters: ko.ObservableArray<ConsoleParameter>;
     public readonly headers: ko.ObservableArray<ConsoleHeader>;
     public readonly editorErrors: ko.ObservableArray<string>;
@@ -91,6 +92,7 @@ export class GraphqlConsole {
         this.collapsedQuery = ko.observable(true);
         this.collapsedMutation = ko.observable(true);
         this.collapsedSubscription = ko.observable(true);
+        this.collapsedParameters = ko.observable(true);
         this.editorErrors = ko.observableArray([]);
         this.api = ko.observable<Api>();
         this.sendingRequest = ko.observable(false);
@@ -771,4 +773,16 @@ export class GraphqlConsole {
         this.wsConnect();
     }
 
+    public toggleSecretParameter(parameter: ConsoleParameter): void {
+        parameter.toggleRevealed();
+    }
+
+    public removeQueryParameter(parameter: ConsoleParameter): void {
+        this.queryParameters.remove(parameter);
+    }
+
+    public addQueryParameter(): void {
+        const newParameter = new ConsoleParameter();
+        this.queryParameters.push(newParameter);
+    }
 }
