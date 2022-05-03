@@ -49,7 +49,8 @@ export class Authorization {
         this.authorizationServer = ko.observable();
         this.selectedGrantType = ko.observable();
         this.api = ko.observable<Api>();
-        this.headers = ko.observableArray<ConsoleHeader>();;
+        this.headers = ko.observableArray<ConsoleHeader>();
+        this.queryParameters = ko.observableArray<ConsoleParameter>();
         this.consoleOperation = ko.observable<ConsoleOperation>();
         this.templates = templates;
         this.codeSample = ko.observable<string>();
@@ -74,6 +75,9 @@ export class Authorization {
 
     @Param()
     public headers: ko.ObservableArray<ConsoleHeader>;
+
+    @Param()
+    public queryParameters: ko.ObservableArray<ConsoleParameter>;
 
     @Param()
     public codeSample: ko.Observable<string>;
@@ -387,8 +391,8 @@ export class Authorization {
             return;
         }
 
-        if (this.api().type === TypeOfApi.webSocket) {
-            this.setSubscriptionKeyParameter(subscriptionKey)
+        if (this.api().type === TypeOfApi.webSocket || this.isGraphQL()) {
+            this.setSubscriptionKeyParameter(subscriptionKey);
         } else {
             this.setSubscriptionKeyHeader(subscriptionKey);
         }
@@ -417,15 +421,20 @@ export class Authorization {
         keyParameter.required = true;
         keyParameter.inputType("password");
 
-        this.consoleOperation().request.queryParameters.push(keyParameter);
-        this.updateRequestSummary();
+        if (this.isGraphQL()) {
+            this.queryParameters.push(keyParameter);
+        }
+        else {
+            this.consoleOperation().request.queryParameters.push(keyParameter);
+            this.updateRequestSummary();
+        }
     }
 
     private getSubscriptionKeyParam(): ConsoleParameter {
         const subscriptionKeyParamName = this.getSubscriptionKeyParamName();
         const searchName = subscriptionKeyParamName.toLocaleLowerCase();
-
-        return this.consoleOperation().request.queryParameters().find(x => x.name()?.toLocaleLowerCase() === searchName);
+        const queryParameters = this.isGraphQL() ? this.queryParameters() : this.consoleOperation().request.queryParameters();
+        return queryParameters.find(x => x.name()?.toLocaleLowerCase() === searchName);
     }
 
     private getSubscriptionKeyParamName(): string {
@@ -439,8 +448,13 @@ export class Authorization {
     }
 
     public removeQueryParameter(parameter: ConsoleParameter): void {
-        this.consoleOperation().request.queryParameters.remove(parameter);
-        this.updateRequestSummary();
+        if (this.isGraphQL()) {
+            this.queryParameters.remove(parameter);
+        }
+        else {
+            this.consoleOperation().request.queryParameters.remove(parameter);
+            this.updateRequestSummary();
+        }
     }
 
     public collapseAuth(): void {
