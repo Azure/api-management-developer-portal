@@ -28,10 +28,10 @@ public class HelloWorld {
         // Request body
         connection.setDoOutput(true);
     {%- if request.bodyFormat == "raw"  -%}
-    {%- assign formattedBody = request.body | replace: '"','\\"' 
-        formattedBody = formattedBody | replace: '\r\n', ' ' 
-        formattedBody = formattedBody | replace: '\n', ' ' 
-        formattedBody = formattedBody | replace: '     ', ' ' %}
+    {%- assign formattedBody = request.body | replace:'"','\\"' -%}
+    {%- assign formattedBody = formattedBody | replace: '\r\n', ' ' -%}
+    {%- assign formattedBody = formattedBody | replace: '\n', ' ' -%}
+    {%- assign formattedBody = formattedBody | replace: '     ', ' ' %}
         connection
             .getOutputStream()
             .write(
