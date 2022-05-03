@@ -5,6 +5,8 @@ import * as monaco from "monaco-editor";
 import loader from '@monaco-editor/loader';
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
+import { ConsoleHost } from "./../../../../../models/console/consoleHost";
+import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
 import template from "./graphql-console.html";
 import graphqlExplorer from "./graphql-explorer.html";
 import { Api } from "../../../../../models/api";
@@ -58,12 +60,14 @@ export class GraphqlConsole {
     public readonly collapsedQuery: ko.Observable<boolean>;
     public readonly collapsedMutation: ko.Observable<boolean>;
     public readonly collapsedSubscription: ko.Observable<boolean>;
+    public readonly queryParameters: ko.ObservableArray<ConsoleParameter>;
     public readonly headers: ko.ObservableArray<ConsoleHeader>;
     public readonly editorErrors: ko.ObservableArray<string>;
     public readonly variables: ko.Observable<string>;
     public readonly response: ko.Observable<string>;
     public readonly isContentValid: ko.Observable<boolean>;
     public backendUrl: string;
+    public readonly host: ConsoleHost
 
     public readonly isSubscriptionOperation: ko.Observable<boolean>;
 
@@ -91,9 +95,11 @@ export class GraphqlConsole {
         this.api = ko.observable<Api>();
         this.sendingRequest = ko.observable(false);
         this.authorizationServer = ko.observable();
+        this.hostnames = ko.observable();
+        this.host = new ConsoleHost();
+        this.queryParameters = ko.observableArray();
         this.headers = ko.observableArray();
         this.document = ko.observable();
-        this.operationUrl = ko.observable();
         this.variables = ko.observable();
         this.response = ko.observable();
         this.filter = ko.observable("");
@@ -119,7 +125,7 @@ export class GraphqlConsole {
     public api: ko.Observable<Api>;
 
     @Param()
-    public operationUrl: ko.Observable<string>;
+    public hostnames: ko.Observable<string[]>;
 
     @Param()
     public authorizationServer: ko.Observable<AuthorizationServer>;
@@ -150,6 +156,10 @@ export class GraphqlConsole {
         defaultHeader.name("Content-Type");
         defaultHeader.value("application/json");
         this.headers.push(defaultHeader);
+
+        if (this.hostnames()) {
+            this.host.hostname(this.hostnames()[0]);
+        }
 
         const graphQLSchemas = await this.apiService.getSchemas(this.api());
         this.schema = graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema;
@@ -306,7 +316,7 @@ export class GraphqlConsole {
         })
 
         const request: HttpRequest = {
-            url: this.operationUrl(),
+            url: this.requestUrl(),
             method: "POST",
             headers: this.addSystemHeaders(),
             body: payload
@@ -329,6 +339,14 @@ export class GraphqlConsole {
         finally {
             this.sendingRequest(false);
         }
+    }
+
+    private requestUrl(): string {
+        const protocol = this.api().protocols.includes("https") ? "https" : "http";
+        const urlTemplate = this.getRequestPath();
+        let result = this.host.hostname() ? `${protocol}://${this.host.hostname()}` : '';
+        result += Utils.ensureLeadingSlash(urlTemplate);
+        return result;
     }
 
     private addSystemHeaders() {
@@ -508,7 +526,7 @@ export class GraphqlConsole {
     private checkingGeneration(node: GraphQLTreeNode): boolean {
         const allOperations = <string[]>[GraphqlTypes.query, GraphqlTypes.mutation, GraphqlTypes.subscription];
         const isOperation = allOperations.includes(node.label());
-        if ((node.selected() && !isOperation) || (node.selected() && isOperation && node.hasActiveChild())) {   
+        if ((node.selected() && !isOperation) || (node.selected() && isOperation && node.hasActiveChild())) {
             return true;
         }
         return false;
@@ -600,16 +618,58 @@ export class GraphqlConsole {
         this.wsProcessing(true);
         this.displayWsConsole(true);
 
-        let url = this.operationUrl();
-
-        if (url.startsWith("https://")) {
-            url = "wss://" + url.substring(8);
-        } else if (url.startsWith("http://")) {
-            url = "ws://" + url.substring(7)
-        }
+        let url = this.wsUrl();
 
         this.initWebSocket();
         this.ws.connect(url, graphqlSubProtocol);
+    }
+
+    private wsUrl(): string {
+        const protocol = this.api().protocols.includes("wss") ? "wss" : "ws";
+        const urlTemplate = this.getRequestPath();
+        const result = `${protocol}://${this.host.hostname()}${Utils.ensureLeadingSlash(urlTemplate)}`;
+        return result;
+    }
+
+    private getRequestPath(getHidden: boolean = false): string {
+        let versionPath = "";
+
+        if (this.api().apiVersionSet && this.api().apiVersion && this.api().apiVersionSet.versioningScheme === "Segment") {
+            versionPath = `/${this.api().apiVersion}`;
+        }
+
+        let requestUrl = "";
+        const parameters = this.queryParameters();
+
+        parameters.forEach(parameter => {
+            if (parameter.value()) {
+                const parameterPlaceholder = parameter.name() !== "*" ? `{${parameter.name()}}` : "*";
+
+                if (requestUrl.indexOf(parameterPlaceholder) > -1) {
+                    requestUrl = requestUrl.replace(parameterPlaceholder,
+                        !getHidden || !parameter.secret ? Utils.encodeURICustomized(parameter.value())
+                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, '•')));
+                }
+                else {
+                    requestUrl = this.addParam(requestUrl, Utils.encodeURICustomized(parameter.name()),
+                        !getHidden || !parameter.secret ? Utils.encodeURICustomized(parameter.value())
+                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, '•')));
+                }
+            }
+        });
+
+        if (this.api().apiVersionSet && this.api().apiVersionSet.versioningScheme === "Query") {
+            requestUrl = this.addParam(requestUrl, this.api().apiVersionSet.versionQueryName, this.api().apiVersion);
+        }
+
+        return `${this.api().path}${versionPath}${requestUrl}`;
+    }
+
+    private addParam(uri: string, name: string, value: string): string {
+        const separator = uri.indexOf("?") >= 0 ? "&" : "?";
+        const paramString = !value || value === "" ? name : name + "=" + value;
+
+        return uri + separator + paramString;
     }
 
     public clearWsLogs(): void {
@@ -681,6 +741,12 @@ export class GraphqlConsole {
 
     private editorValidations(): void {
         this.editorErrors([]);
+
+        const hasWsProtocol = !!this.api().protocols.find(p => p == "ws" || p == "wss");
+        if (this.isSubscriptionOperation() && !hasWsProtocol) {
+            this.editorErrors.push(`Websocket protocol not enabled, you can enable it in Azure > APIM > APIs > ${this.api().name} > Settings tab, and reload Developer Portal.`);
+        }
+
         const markers = (<any>window).monaco.editor.getModelMarkers({});
         if (!!markers.find(m => m.severity >= 5 && m.owner == "graphqlQuery")) {
             this.editorErrors.push("Syntax error in 'Query editor'");
