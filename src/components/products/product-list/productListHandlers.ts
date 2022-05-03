@@ -332,7 +332,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                 },
                                 border: {
                                     bottom: {
-                                        width: "100px",
+                                        width: "1px",
                                         style: "solid",
                                         colorKey: "colors/default"
                                     }
