@@ -5,11 +5,13 @@ import * as monaco from "monaco-editor";
 import loader from '@monaco-editor/loader';
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
+import { ConsoleHost } from "./../../../../../models/console/consoleHost";
+import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
 import template from "./graphql-console.html";
 import graphqlExplorer from "./graphql-explorer.html";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlTypes, GraphqlCustomFieldNames, GraphqlMetaField, graphqlSubProtocol } from "./../../../../../constants";
+import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlTypes, GraphqlCustomFieldNames, GraphqlMetaField, graphqlSubProtocol, GraphqlProtocols, GqlWsMessageType } from "./../../../../../constants";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { ApiService } from "../../../../../services/apiService";
@@ -58,12 +60,15 @@ export class GraphqlConsole {
     public readonly collapsedQuery: ko.Observable<boolean>;
     public readonly collapsedMutation: ko.Observable<boolean>;
     public readonly collapsedSubscription: ko.Observable<boolean>;
+    public readonly collapsedParameters: ko.Observable<boolean>;
+    public readonly queryParameters: ko.ObservableArray<ConsoleParameter>;
     public readonly headers: ko.ObservableArray<ConsoleHeader>;
     public readonly editorErrors: ko.ObservableArray<string>;
     public readonly variables: ko.Observable<string>;
     public readonly response: ko.Observable<string>;
     public readonly isContentValid: ko.Observable<boolean>;
     public backendUrl: string;
+    public readonly host: ConsoleHost
 
     public readonly isSubscriptionOperation: ko.Observable<boolean>;
 
@@ -87,13 +92,16 @@ export class GraphqlConsole {
         this.collapsedQuery = ko.observable(true);
         this.collapsedMutation = ko.observable(true);
         this.collapsedSubscription = ko.observable(true);
+        this.collapsedParameters = ko.observable(true);
         this.editorErrors = ko.observableArray([]);
         this.api = ko.observable<Api>();
         this.sendingRequest = ko.observable(false);
         this.authorizationServer = ko.observable();
+        this.hostnames = ko.observable();
+        this.host = new ConsoleHost();
+        this.queryParameters = ko.observableArray();
         this.headers = ko.observableArray();
         this.document = ko.observable();
-        this.operationUrl = ko.observable();
         this.variables = ko.observable();
         this.response = ko.observable();
         this.filter = ko.observable("");
@@ -119,7 +127,7 @@ export class GraphqlConsole {
     public api: ko.Observable<Api>;
 
     @Param()
-    public operationUrl: ko.Observable<string>;
+    public hostnames: ko.Observable<string[]>;
 
     @Param()
     public authorizationServer: ko.Observable<AuthorizationServer>;
@@ -151,7 +159,11 @@ export class GraphqlConsole {
         defaultHeader.value("application/json");
         this.headers.push(defaultHeader);
 
-        const graphQLSchemas = await this.apiService.getSchemas(this.api());
+        if (this.hostnames()) {
+            this.host.hostname(this.hostnames()[0]);
+        }
+
+        const graphQLSchemas = await this.apiService.getSchemas(selectedApi);
         this.schema = graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema;
         await this.buildTree(this.schema);
         this.availableOperations();
@@ -306,7 +318,7 @@ export class GraphqlConsole {
         })
 
         const request: HttpRequest = {
-            url: this.operationUrl(),
+            url: this.requestUrl(),
             method: "POST",
             headers: this.addSystemHeaders(),
             body: payload
@@ -329,6 +341,14 @@ export class GraphqlConsole {
         finally {
             this.sendingRequest(false);
         }
+    }
+
+    private requestUrl(): string {
+        const protocol = this.api().protocols.includes(GraphqlProtocols.https) ? GraphqlProtocols.https : GraphqlProtocols.http;
+        const urlTemplate = this.getRequestPath();
+        let result = this.host.hostname() ? `${protocol}://${this.host.hostname()}` : '';
+        result += Utils.ensureLeadingSlash(urlTemplate);
+        return result;
     }
 
     private addSystemHeaders() {
@@ -508,7 +528,7 @@ export class GraphqlConsole {
     private checkingGeneration(node: GraphQLTreeNode): boolean {
         const allOperations = <string[]>[GraphqlTypes.query, GraphqlTypes.mutation, GraphqlTypes.subscription];
         const isOperation = allOperations.includes(node.label());
-        if ((node.selected() && !isOperation) || (node.selected() && isOperation && node.hasActiveChild())) {   
+        if ((node.selected() && !isOperation) || (node.selected() && isOperation && node.hasActiveChild())) {
             return true;
         }
         return false;
@@ -600,16 +620,59 @@ export class GraphqlConsole {
         this.wsProcessing(true);
         this.displayWsConsole(true);
 
-        let url = this.operationUrl();
-
-        if (url.startsWith("https://")) {
-            url = "wss://" + url.substring(8);
-        } else if (url.startsWith("http://")) {
-            url = "ws://" + url.substring(7)
-        }
+        let url = this.wsUrl();
 
         this.initWebSocket();
         this.ws.connect(url, graphqlSubProtocol);
+    }
+
+    private wsUrl(): string {
+        const protocol = this.api().protocols.includes(GraphqlProtocols.wss) ? GraphqlProtocols.wss : GraphqlProtocols.ws;
+        const urlTemplate = this.getRequestPath();
+        const result = `${protocol}://${this.host.hostname()}${Utils.ensureLeadingSlash(urlTemplate)}`;
+        return result;
+    }
+
+    private getRequestPath(getHidden: boolean = false): string {
+        let versionPath = "";
+        const api = this.api();
+
+        if (api.apiVersionSet && api.apiVersion && api.apiVersionSet.versioningScheme === "Segment") {
+            versionPath = `/${api.apiVersion}`;
+        }
+
+        let requestUrl = "";
+        const parameters = this.queryParameters();
+
+        parameters.forEach(parameter => {
+            if (parameter.value()) {
+                const parameterPlaceholder = parameter.name() !== "*" ? `{${parameter.name()}}` : "*";
+                const encodedValue = Utils.encodeURICustomized(parameter.value());
+                if (requestUrl.indexOf(parameterPlaceholder) > -1) {
+                    requestUrl = requestUrl.replace(parameterPlaceholder,
+                        !getHidden || !parameter.secret ? encodedValue
+                            : (parameter.revealed() ? encodedValue : parameter.value().replace(/./g, '•')));
+                }
+                else {
+                    requestUrl = this.addParam(requestUrl, Utils.encodeURICustomized(parameter.name()),
+                        !getHidden || !parameter.secret ? encodedValue
+                            : (parameter.revealed() ? encodedValue : parameter.value().replace(/./g, '•')));
+                }
+            }
+        });
+
+        if (api.apiVersionSet && api.apiVersionSet.versioningScheme === "Query") {
+            requestUrl = this.addParam(requestUrl, api.apiVersionSet.versionQueryName, api.apiVersion);
+        }
+
+        return `${api.path}${versionPath}${requestUrl}`;
+    }
+
+    private addParam(uri: string, name: string, value: string): string {
+        const separator = uri.indexOf("?") >= 0 ? "&" : "?";
+        const paramString = !value || value === "" ? name : name + "=" + value;
+
+        return uri + separator + paramString;
     }
 
     public clearWsLogs(): void {
@@ -622,11 +685,11 @@ export class GraphqlConsole {
             this.wsProcessing(false);
             this.wsConnected(true);
             this.ws.send(JSON.stringify({
-                type: "connection_init",
+                type: GqlWsMessageType.connection_init,
                 payload: {}
             }));
             this.ws.send(JSON.stringify({
-                type: "subscribe",
+                type: GqlWsMessageType.subscribe,
                 id: "1",
                 payload: {
                     query: this.document(),
@@ -641,7 +704,7 @@ export class GraphqlConsole {
             if (data.logType === LogItemType.GetData) {
                 try {
                     let json = JSON.parse(data.logData);
-                    if (json["type"] == "next" && "payload" in json) {
+                    if (json["type"] == GqlWsMessageType.next && "payload" in json) {
                         data.logData = JSON.stringify(json["payload"], null, 2);
                         this.wsLogItems.unshift(data);
                     }
@@ -652,7 +715,7 @@ export class GraphqlConsole {
             else if (data.logType === LogItemType.SendData) {
                 try {
                     let json = JSON.parse(data.logData);
-                    if (json["type"] == "subscribe" && "payload" in json) {
+                    if (json["type"] == GqlWsMessageType.subscribe && "payload" in json) {
                         data.logData = JSON.stringify(json["payload"], null, 2);
                         this.wsLogItems.unshift(data);
                     }
@@ -681,6 +744,12 @@ export class GraphqlConsole {
 
     private editorValidations(): void {
         this.editorErrors([]);
+
+        const hasWsProtocol = !!this.api().protocols.find(p => p == GraphqlProtocols.ws || p == GraphqlProtocols.wss);
+        if (this.isSubscriptionOperation() && !hasWsProtocol) {
+            this.editorErrors.push("Live subscriptions are not supported for this API");
+        }
+
         const markers = (<any>window).monaco.editor.getModelMarkers({});
         if (!!markers.find(m => m.severity >= 5 && m.owner == "graphqlQuery")) {
             this.editorErrors.push("Syntax error in 'Query editor'");
@@ -705,4 +774,16 @@ export class GraphqlConsole {
         this.wsConnect();
     }
 
+    public toggleSecretParameter(parameter: ConsoleParameter): void {
+        parameter.toggleRevealed();
+    }
+
+    public removeQueryParameter(parameter: ConsoleParameter): void {
+        this.queryParameters.remove(parameter);
+    }
+
+    public addQueryParameter(): void {
+        const newParameter = new ConsoleParameter();
+        this.queryParameters.push(newParameter);
+    }
 }
