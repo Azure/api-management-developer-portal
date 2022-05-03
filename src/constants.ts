@@ -184,6 +184,15 @@ export enum GraphqlProtocols {
 }
 
 /**
+* Graphql websocket message type
+*/
+export enum GqlWsMessageType {
+    connection_init = "connection_init",
+    subscribe = "subscribe",
+    next  = "next"
+}
+
+/**
 * Graphql types for documentation
 */
 export enum GraphqlTypesForDocumentation {

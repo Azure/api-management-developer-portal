@@ -11,7 +11,7 @@ import template from "./graphql-console.html";
 import graphqlExplorer from "./graphql-explorer.html";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlTypes, GraphqlCustomFieldNames, GraphqlMetaField, graphqlSubProtocol, GraphqlProtocols } from "./../../../../../constants";
+import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlTypes, GraphqlCustomFieldNames, GraphqlMetaField, graphqlSubProtocol, GraphqlProtocols, GqlWsMessageType } from "./../../../../../constants";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { ApiService } from "../../../../../services/apiService";
@@ -647,16 +647,16 @@ export class GraphqlConsole {
         parameters.forEach(parameter => {
             if (parameter.value()) {
                 const parameterPlaceholder = parameter.name() !== "*" ? `{${parameter.name()}}` : "*";
-                const encodeURI = Utils.encodeURICustomized(parameter.value());
+                const encodedValue = Utils.encodeURICustomized(parameter.value());
                 if (requestUrl.indexOf(parameterPlaceholder) > -1) {
                     requestUrl = requestUrl.replace(parameterPlaceholder,
-                        !getHidden || !parameter.secret ? encodeURI
-                            : (parameter.revealed() ? encodeURI : parameter.value().replace(/./g, '•')));
+                        !getHidden || !parameter.secret ? encodedValue
+                            : (parameter.revealed() ? encodedValue : parameter.value().replace(/./g, '•')));
                 }
                 else {
                     requestUrl = this.addParam(requestUrl, Utils.encodeURICustomized(parameter.name()),
-                        !getHidden || !parameter.secret ? encodeURI
-                            : (parameter.revealed() ? encodeURI : parameter.value().replace(/./g, '•')));
+                        !getHidden || !parameter.secret ? encodedValue
+                            : (parameter.revealed() ? encodedValue : parameter.value().replace(/./g, '•')));
                 }
             }
         });
@@ -685,11 +685,11 @@ export class GraphqlConsole {
             this.wsProcessing(false);
             this.wsConnected(true);
             this.ws.send(JSON.stringify({
-                type: "connection_init",
+                type: GqlWsMessageType.connection_init,
                 payload: {}
             }));
             this.ws.send(JSON.stringify({
-                type: "subscribe",
+                type: GqlWsMessageType.subscribe,
                 id: "1",
                 payload: {
                     query: this.document(),
@@ -704,7 +704,7 @@ export class GraphqlConsole {
             if (data.logType === LogItemType.GetData) {
                 try {
                     let json = JSON.parse(data.logData);
-                    if (json["type"] == "next" && "payload" in json) {
+                    if (json["type"] == GqlWsMessageType.next && "payload" in json) {
                         data.logData = JSON.stringify(json["payload"], null, 2);
                         this.wsLogItems.unshift(data);
                     }
@@ -715,7 +715,7 @@ export class GraphqlConsole {
             else if (data.logType === LogItemType.SendData) {
                 try {
                     let json = JSON.parse(data.logData);
-                    if (json["type"] == "subscribe" && "payload" in json) {
+                    if (json["type"] == GqlWsMessageType.subscribe && "payload" in json) {
                         data.logData = JSON.stringify(json["payload"], null, 2);
                         this.wsLogItems.unshift(data);
                     }
