@@ -75,7 +75,7 @@ export class ApiService {
         const query = "/apis?$filter=isCurrent eq true";
         const apisPage = await this.mapiClient.get<Page<ApiContract>>(query, [await this.mapiClient.getPortalHeader("getApisInVersionSet")]);
         const result = apisPage.value
-            .filter(x => x.properties.apiVersionSetId && Utils.getResourceName("apiVersionSets", x.properties.apiVersionSetId, "shortId") === versionSetId)
+            .filter(x => x.apiVersionSetId && Utils.getResourceName("apiVersionSets", x.apiVersionSetId, "shortId") === versionSetId)
             .map(x => new Api(x));
 
         return result;
@@ -177,8 +177,8 @@ export class ApiService {
         const tagGroups: Bag<TagGroup<Api>> = {};
 
         pageOfApiTagResources.value.forEach((x) => {
-            const tagContract: TagContract = x.tag ? Utils.armifyContract("tags", x.tag) : null;
-            const apiContract: ApiContract = x.api ? Utils.armifyContract("apis", x.api) : null;
+            const tagContract: TagContract = x.tag
+            const apiContract: ApiContract = x.api
 
             let tagGroup: TagGroup<Api>;
             let tagName: string;
@@ -243,10 +243,10 @@ export class ApiService {
             return null;
         }
 
-        if (apiContract.properties.apiVersionSetId && !apiContract.properties.apiVersionSet) { // Filling the missing version set
-            const setId = Utils.getResourceName("apiVersionSets", apiContract.properties.apiVersionSetId, "shortId");
+        if (apiContract.apiVersionSetId && !apiContract.apiVersionSet) { // Filling the missing version set
+            const setId = Utils.getResourceName("apiVersionSets", apiContract.apiVersionSetId, "shortId");
             const apiVersionSetContract = await this.getApiVersionSet(setId);
-            apiContract.properties.apiVersionSet = apiVersionSetContract;
+            apiContract.apiVersionSet = apiVersionSetContract;
         }
 
         return new Api(apiContract);

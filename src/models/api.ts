@@ -39,11 +39,6 @@ export class Api {
     public apiVersion?: string;
 
     /**
-     * Description of API version.
-     */
-    public apiVersionDescription?: string;
-
-    /**
      * To be defined
      */
     public apiVersionSet?: VersionSet;
@@ -87,7 +82,7 @@ export class Api {
      * Determines type of API, e.g. "soap".
      */
     public type?: string;
-    
+
     /**
      * Determines type name of API to display in UI, e.g. "Soap".
      */
@@ -124,25 +119,23 @@ export class Api {
         }
 
         this.name = contract.name;
-        this.displayName = contract.properties.displayName;
-        this.versionedDisplayName = contract.properties.displayName;
-        this.serviceUrl = contract.properties.serviceUrl;
-        this.protocols = contract.properties.protocols;
-        this.description = contract.properties.description;
-        this.path = contract.properties.path;
+        this.serviceUrl = contract.serviceUrl;
+        this.protocols = contract.protocols;
+        this.description = contract.description;
+        this.path = contract.path;
         this.versionedPath = this.path;
-        this.apiVersion = contract.properties.apiVersion;
-        this.apiRevision = contract.properties.apiRevision;
-        this.subscriptionKeyParameterNames = contract.properties.subscriptionKeyParameterNames;
-        this.type = contract.properties.type;
-        this.authenticationSettings = contract.properties.authenticationSettings;
-        this.subscriptionRequired = contract.properties.subscriptionRequired;
-        this.contact = contract.properties.contact;
-        this.license = contract.properties.license;
-        this.termsOfServiceUrl = contract.properties.termsOfServiceUrl;
+        this.apiVersion = contract.apiVersion;
+        this.apiRevision = contract.apiRevision;
+        this.subscriptionKeyParameterNames = contract.subscriptionKeyParameterNames;
+        this.type = contract.type;
+        this.authenticationSettings = contract.authenticationSettings;
+        this.subscriptionRequired = contract.subscriptionRequired;
+        this.contact = contract.contact;
+        this.license = contract.license;
+        this.termsOfServiceUrl = contract.termsOfServiceUrl;
 
-        if(contract.properties.type) {
-            switch(contract.properties.type) {
+        if (contract.type) {
+            switch (contract.type) {
                 case TypeOfApi.soap:
                     this.typeName = "SOAP";
                     break;
@@ -160,9 +153,9 @@ export class Api {
             this.typeName = "REST";
         }
 
-        if (contract.properties.apiVersionSet) {
-            const nestedVersionSet = contract.properties.apiVersionSet;
-            const versionSet = new VersionSet(contract.properties.apiVersionSetId);
+        if (contract.apiVersionSet) {
+            const nestedVersionSet = contract.apiVersionSet;
+            const versionSet = new VersionSet(contract.apiVersionSetId);
             versionSet.name = nestedVersionSet.name;
             versionSet.description = nestedVersionSet.description;
             versionSet.versionHeaderName = nestedVersionSet.versionHeaderName;

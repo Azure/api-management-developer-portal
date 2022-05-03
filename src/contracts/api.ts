@@ -1,18 +1,18 @@
 import { AuthenticationSettings } from "./authenticationSettings";
-import { ArmResource } from "./armResource";
 
 /**
  * Cotract of API
  */
-export interface ApiContract extends ArmResource {
-    properties: ApiProperties;
-}
+export interface ApiContract {
+    /**
+   * API identifier.
+   */
+    id: string;
 
-export interface ApiProperties {
     /**
      * API name. Must be 1 to 300 characters long.
      */
-    displayName?: string;
+    name?: string;
 
     /**
      * Description of the API. May include HTML formatting tags.
@@ -23,11 +23,6 @@ export interface ApiProperties {
      * Indicates the Version identifier of the API if the API is versioned.
      */
     apiVersion?: string;
-
-    /**
-     * Description of the API Version.
-     */
-    apiVersionDescription?: string;
 
     /**
      * A resource identifier for the related API version set.
