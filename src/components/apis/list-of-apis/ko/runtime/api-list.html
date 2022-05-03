@@ -92,7 +92,7 @@
             </div>
             <!-- ko if: $component.showApiType -->
             <div class="col-5" role="cell">
-                <div tabindex="0" data-bind="markdown: { source: item.description, truncateAt: 250 }"></div>
+                <div class="cell-inherit-color" tabindex="0" data-bind="markdown: { source: item.description, truncateAt: 250 }"></div>
             </div>
             <div class="col-2" role="cell">
                 <span data-bind="text: item.typeName"></span>
@@ -100,7 +100,7 @@
             <!-- /ko -->
             <!-- ko ifnot: $component.showApiType -->
             <div class="col-7" role="cell">
-                <div tabindex="0" data-bind="markdown: { source: item.description, truncateAt: 250 }"></div>
+                <div class="cell-inherit-color" tabindex="0" data-bind="markdown: { source: item.description, truncateAt: 250 }"></div>
             </div>
             <!-- /ko -->
         </div>
