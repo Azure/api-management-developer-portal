@@ -203,10 +203,10 @@ export class Authorization {
         }
     }
 
-    private async clearStoredCredentials(grantType?: string): Promise<void> {
+    private async clearStoredCredentials(grantTypeChanged?: boolean): Promise<void> {
         await this.sessionManager.removeItem(oauthSessionKey);
 
-        if (grantType) {
+        if (grantTypeChanged) {
             this.removeAuthorizationHeader();
         }
     }
@@ -223,7 +223,7 @@ export class Authorization {
     }
 
     private async onGrantTypeChange(grantType: string): Promise<void> {
-        await this.clearStoredCredentials(grantType);
+        await this.clearStoredCredentials(!!grantType);
 
         if (!grantType || grantType === GrantTypes.password) {
             return;
