@@ -5,7 +5,7 @@ import { Bag } from "@paperbits/common";
 import { EventManager, Events } from "@paperbits/common/events";
 import { ComponentFlow } from "@paperbits/common/editing";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { ListOfApisHandlers } from "../listOfApisHandlers";
+import { ListOfApisDropdownHandlers, ListOfApisHandlers, ListOfApisTilesHandlers } from "../listOfApisHandlers";
 
 
 export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisModel, ListOfApisViewModel> {
@@ -30,11 +30,16 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
                 : undefined
         }));
 
+        const handler = model.layout == "list" ? ListOfApisHandlers :
+            model.layout == "dropdown" ?
+                ListOfApisDropdownHandlers :
+                ListOfApisTilesHandlers;
+
         viewModel["widgetBinding"] = {
             displayName: "List of APIs" + (model.layout === "list" ? "" : ` (${model.layout})`),
             model: model,
             draggable: true,
-            handler: ListOfApisHandlers,
+            handler: handler,
             flow: ComponentFlow.Block,
             editor: "list-of-apis-editor",
             applyChanges: async (updatedModel: ListOfApisModel) => {
@@ -44,7 +49,7 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
         };
 
         if (model.styles) {
-            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, ListOfApisHandlers));
+            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, handler));
         }
 
         return viewModel;
