@@ -147,3 +147,21 @@
 .mr-20 {
     margin-right: 20px;
 }
+
+.content-inherit-color {
+    p {
+        color: inherit;
+    }
+}
+
+.content-inherit-font-weight {
+    p {
+        font-weight: inherit;
+    }
+}
+
+.content-inherit-font-style {
+    p {
+        font-style: inherit;
+    }
+}

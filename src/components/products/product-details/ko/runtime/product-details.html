@@ -5,8 +5,9 @@
 
 <!-- ko if: product -->
 <div class="animation-fade-in">
-    <h2 data-bind="text: product().displayName"></h2>
-    <p data-bind="markdown: product().description"></p>
+    <h2 class="title-text" data-bind="text: product().displayName"></h2>
+    <p class="description-text content-inherit-color content-inherit-font-weight content-inherit-font-style"
+        data-bind="markdown: product().description"></p>
 </div>
 <!-- /ko -->
 
