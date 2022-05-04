@@ -1,4 +1,4 @@
-import { TControl, TTech } from "scaffold/scaffold";
+import { TControl, TTech } from "@azure/apimanagement-custom-widget-scaffolder";
 
 export class CustomWidgetModel {
     public name: string;

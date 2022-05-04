@@ -1,4 +1,4 @@
-import { TConfigDeploy, TCustomWidgetConfig, OVERRIDE_PORT_KEY, OVERRIDE_DEFAULT_PORT } from "scaffold/scaffold";
+import { TConfigDeploy, TCustomWidgetConfig, OVERRIDE_PORT_KEY, OVERRIDE_DEFAULT_PORT } from "@azure/apimanagement-custom-widget-scaffolder";
 import { managementApiVersion } from "../../constants";
 import { MapiBlobStorage } from "../../persistence";
 import {
