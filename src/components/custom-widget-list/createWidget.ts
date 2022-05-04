@@ -1,7 +1,6 @@
 import * as ko from "knockout";
 import { saveAs } from "file-saver";
-import { scaffold } from "scaffold";
-import { TControl, TCustomWidgetConfig, TTech } from "scaffold/scaffold";
+import { scaffold, TControl, TCustomWidgetConfig, TTech } from "@azure/apimanagement-custom-widget-scaffolder";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component, Param } from "@paperbits/common/ko/decorators";
 import * as Utils from "@paperbits/common/utils";

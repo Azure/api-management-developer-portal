@@ -1,4 +1,4 @@
-import { OVERRIDE_PORT_KEY, TCustomWidgetConfig } from "scaffold/scaffold";
+import { OVERRIDE_PORT_KEY, TCustomWidgetConfig } from "@azure/apimanagement-custom-widget-scaffolder";
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
 
