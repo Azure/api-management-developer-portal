@@ -148,6 +148,9 @@
     margin-right: 20px;
 }
 
+/*  the markdown surrounds the text with a <p> tag that has properties defined in global styles
+    that will overwrite the style defined for the element
+*/
 .content-inherit-color {
     p {
         color: inherit;
