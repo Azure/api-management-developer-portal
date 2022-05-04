@@ -1,8 +1,3 @@
-export interface BearerTokenSendingMethod {
-    sendingMethodType: string;
-    isChecked: boolean;
-}
-
 export interface OAuth2AuthenticationSettings {
     authorizationServerId?: string;
     scope?: string;
@@ -10,7 +5,7 @@ export interface OAuth2AuthenticationSettings {
 
 export interface OpenIdAuthenticationSettings {
     openidProviderId?: string;
-    bearerTokenSendingMethods?: BearerTokenSendingMethod[];
+    bearerTokenSendingMethods?: string[];
 }
 
 export interface AuthenticationSettings {

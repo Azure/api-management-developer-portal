@@ -15,14 +15,14 @@ export class User {
 
     constructor(contract: UserContract) {
         this.id = Utils.getResourceName("users", contract.id, "shortId");
-        this.firstName = contract.properties.firstName;
-        this.lastName = contract.properties.lastName;
-        this.email = contract.properties.email;
-        this.state = <any>contract.properties.state;
-        this.registrationDate = contract.properties.registrationDate;
-        this.note = contract.properties.note;
-        this.groups = contract.properties.groups;
-        this.identities = contract.properties.identities;
+        this.firstName = contract.firstName;
+        this.lastName = contract.lastName;
+        this.email = contract.email;
+        this.state = <any>contract.state;
+        this.registrationDate = contract.registrationDate;
+        this.note = contract.note;
+        this.groups = contract.groups;
+        this.identities = contract.identities;
         this.isBasicAccount = this.identities[0]?.provider === "Basic";
     }
 }

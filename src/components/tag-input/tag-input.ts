@@ -76,10 +76,10 @@ export class TagInput {
 
         if (tags && tags.length > 0) {
             for (const tag of tags) {
-                const tagContract: TagContract = Utils.armifyContract("tags", {
+                const tagContract: TagContract = {
                     id: `/tags/${tag}`,
                     name: tag
-                });
+                };
                 tagItems.push(new Tag(tagContract));
 
             }

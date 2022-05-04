@@ -1,18 +1,11 @@
-import { ArmResource } from "./armResource";
-
-
 /**
  * External OAuth authorization server settings.
  */
-export interface AuthorizationServerContract extends ArmResource {
-    properties: AuthorizationServerProperties;
-}
-
-interface AuthorizationServerProperties {
+export interface AuthorizationServerContract {
     /**
-     * User-friendly authorization server name, e.g. "Contoso Auth".
-     */
-    displayName?: string;
+    * User-friendly authorization server name, e.g. "Contoso Auth".
+    */
+    name?: string;
 
     /**
      * Description of the authorization server. Can contain HTML formatting tags.

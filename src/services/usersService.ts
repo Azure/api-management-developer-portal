@@ -9,7 +9,7 @@ import { MapiClient } from "./mapiClient";
 import { User } from "../models/user";
 import { Utils } from "../utils";
 import { Identity } from "../contracts/identity";
-import { UserContract, UserPropertiesContract, } from "../contracts/user";
+import { UserContract } from "../contracts/user";
 import { MapiSignupRequest } from "../contracts/signupRequest";
 import { MapiError } from "../errors/mapiError";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
@@ -298,7 +298,7 @@ export class UsersService {
 
         const jwtToken = Utils.parseJwt(idToken);
 
-        const user: UserPropertiesContract = {
+        const user: UserContract = {
             firstName: firstName,
             lastName: lastName,
             email: email,

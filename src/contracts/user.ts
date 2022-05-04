@@ -1,9 +1,3 @@
-import { ArmResource } from "./armResource";
-
-export interface UserContract extends ArmResource {
-    properties: UserPropertiesContract;
-}
-
 export interface UserIdentity {
     /**
      * Identifier value within provider.
@@ -16,7 +10,8 @@ export interface UserIdentity {
     provider: string;
 }
 
-export interface UserPropertiesContract {
+export interface UserContract {
+    id?: string;
     /**
      * First name.
      */

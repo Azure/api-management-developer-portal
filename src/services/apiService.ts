@@ -116,14 +116,14 @@ export class ApiService {
         const tagGroups: Bag<TagGroup<Operation>> = {};
 
         pageOfOperationsByTag.value.forEach(x => {
-            const tagContract: TagContract = x.tag ? Utils.armifyContract("tags", x.tag) : null;
-            const operationContract: OperationContract = x.operation ? Utils.armifyContract("operations", x.operation) : null;
+            const tagContract: TagContract = x.tag
+            const operationContract: OperationContract = x.operation
 
             let tagGroup: TagGroup<Operation>;
             let tagName: string;
 
             if (tagContract) {
-                tagName = tagContract.properties.displayName;
+                tagName = tagContract.name;
             } else {
                 tagName = "Untagged";
             }
@@ -184,7 +184,7 @@ export class ApiService {
             let tagName: string;
 
             if (tagContract) {
-                tagName = tagContract.properties.displayName;
+                tagName = tagContract.name;
             }
             else {
                 tagName = "Untagged";
@@ -385,7 +385,7 @@ export class ApiService {
         const result = await this.mapiClient.get<Page<SchemaContract>>(`${api.id}/schemas`, [await this.mapiClient.getPortalHeader("getSchemas")]);
         const schemaReferences = result.value;
         const schemaType = this.getSchemasType(schemaReferences);
-        const schemas = await Promise.all(schemaReferences.filter(schema => schema.properties.contentType === schemaType).map(schemaReference => this.getApiSchema((schemaType === SchemaType.graphQL) ? `${api.id}/schemas/${schemaReference.name}` : schemaReference.id)));
+        const schemas = await Promise.all(schemaReferences.filter(schema => schema.contentType === schemaType).map(schemaReference => this.getApiSchema((schemaType === SchemaType.graphQL) ? `${api.id}/schemas/${schemaReference.name}` : schemaReference.id)));
 
         // return schemas;
         // const result = await this.mapiClient.get<Page<SchemaContract>>(`${api.id}/schemas?$top=20`, null);
@@ -400,12 +400,12 @@ export class ApiService {
     private getSchemasType(schemas: SchemaContract[]): SchemaType {
         if (schemas && schemas.length > 0) {
 
-            const gql = schemas.find(s => s.properties.contentType === SchemaType.graphQL);
+            const gql = schemas.find(s => s.contentType === SchemaType.graphQL);
             if (gql) return SchemaType.graphQL;
 
-            const is2 = !!schemas.find(item => item.properties.contentType === SchemaType.swagger)
+            const is2 = !!schemas.find(item => item.contentType === SchemaType.swagger)
                 &&
-                !schemas.find(item => item.properties.contentType === SchemaType.openapi);
+                !schemas.find(item => item.contentType === SchemaType.openapi);
             if (is2) {
                 return SchemaType.swagger;
             }

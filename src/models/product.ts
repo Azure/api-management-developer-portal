@@ -15,12 +15,12 @@ export class Product {
     constructor(contract?: ProductContract) {
         this.id = Utils.getResourceName("products", contract.id, "shortId");
         this.name = contract.name;
-        this.displayName = contract.properties.displayName;
-        this.description = contract.properties.description;
-        this.approvalRequired = contract.properties.approvalRequired;
-        this.state = contract.properties.state;
-        this.subscriptionRequired = contract.properties.subscriptionRequired;
-        this.subscriptionsLimit = contract.properties.subscriptionsLimit;
-        this.terms = contract.properties.terms;
+        this.displayName = contract.name;
+        this.description = contract.description;
+        this.approvalRequired = contract.approvalRequired;
+        this.state = contract.state;
+        this.subscriptionRequired = contract.subscriptionRequired;
+        this.subscriptionsLimit = contract.subscriptionsLimit;
+        this.terms = contract.terms;
     }
 }

@@ -120,11 +120,11 @@ export class ProductService {
         for (const subscription of subscriptions) {
             const subscriptionModel = new Subscription(subscription);
 
-            if (subscription.properties.scope.endsWith("/apis")) {
+            if (subscription.scope.endsWith("/apis")) {
                 subscriptionModel.productName = "All APIs";
             } else
-                if (subscription.properties.scope.includes("/apis/")) {
-                    const apiName = Utils.getResourceName("apis", subscription.properties.scope);
+                if (subscription.scope.includes("/apis/")) {
+                    const apiName = Utils.getResourceName("apis", subscription.scope);
 
                     const apiPromise = this.mapiClient
                         .get<ApiContract>(`/apis/${apiName}`)
@@ -134,12 +134,12 @@ export class ProductService {
 
                     promises.push(apiPromise);
                 } else {
-                    const productName = Utils.getResourceName("products", subscription.properties.scope);
+                    const productName = Utils.getResourceName("products", subscription.scope);
 
                     const productPromise = this.mapiClient
                         .get<ProductContract>(`/products/${productName}`)
                         .then(product => {
-                            subscriptionModel.productName = product.properties.displayName;
+                            subscriptionModel.productName = product.name;
                         }).catch(error => console.log(`Get product error: ${error.message}`));
 
                     promises.push(productPromise);
@@ -202,7 +202,7 @@ export class ProductService {
             }
             else {
                 contracts.value
-                    .filter(x => x.properties.subscriptionRequired === true)
+                    .filter(x => x.subscriptionRequired === true)
                     .map(item => result.push(new Product(item)));
             }
         }
