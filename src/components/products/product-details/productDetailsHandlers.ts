@@ -1,4 +1,5 @@
 ﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+import { StyleDefinition } from "@paperbits/common/styles";
 import { ProductDetailsModel } from "./productDetailsModel";
 
 export class ProductDetailsHandlers implements IWidgetHandler {
@@ -13,5 +14,37 @@ export class ProductDetailsHandlers implements IWidgetHandler {
         };
 
         return widgetOrder;
+    }
+    public getStyleDefinitions(): StyleDefinition {
+        return {
+            components: {
+                productDetails: {
+                    displayName: "Product Details",
+                    plugins: ["margin", "padding", "background"],
+                    components: {
+                        descriptionText: {
+                            displayName: "Description Text",
+                            plugins: ["typography"],
+                            defaults: {
+                                typography: {
+                                    colorKey: "colors/default",
+                                    fonWeight: "normal"
+                                }
+                            }
+                        },
+                        titleText: {
+                            displayName: "Title Text",
+                            plugins: ["typography"],
+                            defaults: {
+                                typography: {
+                                    colorKey: "colors/default",
+                                    fonWeight: "normal"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
     }
 }
