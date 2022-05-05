@@ -14,12 +14,16 @@ export class ProductDetailsModelBinder implements IModelBinder<ProductDetailsMod
     }
 
     public async contractToModel(contract: ProductDetailsContract): Promise<ProductDetailsModel> {
-        return new ProductDetailsModel();
+        const model = new ProductDetailsModel();
+        model.styles = contract.styles || {};
+
+        return model;
     }
 
     public modelToContract(model: ProductDetailsModel): Contract {
         const contract: ProductDetailsContract = {
-            type: "product-details"
+            type: "product-details",
+            styles: model.styles
         };
 
         return contract;
