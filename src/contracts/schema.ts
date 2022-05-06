@@ -144,7 +144,6 @@ export interface GraphQLSchemaContract {
  */
 export interface SchemaContract {
     id: string;
-    name: string;
     contentType: string;
     document?: SwaggerSchemaContract | OpenApiSchemaContract | XsdSchemaContract | GraphQLSchemaContract;
 }

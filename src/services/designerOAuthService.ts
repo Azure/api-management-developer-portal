@@ -1,19 +1,19 @@
 import * as ClientOAuth2 from "client-oauth2";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { HttpClient, HttpMethod } from "@paperbits/common/http";
-import { AuthorizationServerContract } from "../contracts/authorizationServer";
-import { OpenIdConnectProviderContract } from "../contracts/openIdConnectProvider";
-import { AuthorizationServerDataApi } from "../models/authorizationServer";
+import { AuthorizationServerArmContract } from "../contracts/authorizationServer";
+import { OpenIdConnectProviderArmContract } from "../contracts/openIdConnectProvider";
+import { AuthorizationServerArm } from "../models/authorizationServer";
 import { Utils } from "../utils";
 import { GrantTypes } from "./../constants";
 import { OpenIdConnectMetadata } from "./../contracts/openIdConnectMetadata";
 import { UnauthorizedError } from "./../errors/unauthorizedError";
-import { OpenIdConnectProviderDataApi } from "./../models/openIdConnectProvider";
+import { OpenIdConnectProviderArm } from "./../models/openIdConnectProvider";
 import { MapiClient } from "./mapiClient";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 
-export class OAuthService {
+export class DesignerOAuthService {
     private environmentPromise: Promise<string>;
 
     constructor(
@@ -32,12 +32,12 @@ export class OAuthService {
     /**
      * Returns configured OAuth 2.0 and OpenID Connect providers.
      */
-    public async getOAuthServers(): Promise<AuthorizationServerDataApi[]> {
-        const loadedServers = await this.settingsProvider.getSetting<AuthorizationServerDataApi[]>("authServers");
+    public async getOAuthServers(): Promise<AuthorizationServerArm[]> {
+        const loadedServers = await this.settingsProvider.getSetting<AuthorizationServerArm[]>("authServers");
         return loadedServers || [];
     }
 
-    public async getAuthServer(authorizationServerId: string, openidProviderId: string): Promise<AuthorizationServerDataApi> {
+    public async getAuthServer(authorizationServerId: string, openidProviderId: string): Promise<AuthorizationServerArm> {
         const env = await this.getEnvironment();
         if (env !== "development") {
             const servers = await this.getOAuthServers();
@@ -49,15 +49,15 @@ export class OAuthService {
         }
 
         try {
-            let authorizationServer: AuthorizationServerDataApi;
+            let authorizationServer: AuthorizationServerArm;
             if (authorizationServerId) {
-                const authServer = await this.mapiClient.get<AuthorizationServerContract>(`/authorizationServers/${authorizationServerId}`, [await this.mapiClient.getPortalHeader("getAuthorizationServer")]);
-                authorizationServer = new AuthorizationServerDataApi(authServer);
+                const authServer = await this.mapiClient.get<AuthorizationServerArmContract>(`/authorizationServers/${authorizationServerId}`, [await this.mapiClient.getPortalHeader("getAuthorizationServer")]);
+                authorizationServer = new AuthorizationServerArm(authServer);
                 return authorizationServer;
             }
             if (openidProviderId) {
-                const authServer = await this.mapiClient.get<OpenIdConnectProviderContract>(`/openidConnectProviders/${openidProviderId}`, [await this.mapiClient.getPortalHeader("getOpenidConnectProvider")]);
-                const provider = new OpenIdConnectProviderDataApi(authServer);
+                const authServer = await this.mapiClient.get<OpenIdConnectProviderArmContract>(`/openidConnectProviders/${openidProviderId}`, [await this.mapiClient.getPortalHeader("getOpenidConnectProvider")]);
+                const provider = new OpenIdConnectProviderArm(authServer);
                 try {
                     const openIdServer = await this.discoverOAuthServer(provider.metadataEndpoint);
                     openIdServer.name = provider.name;
@@ -78,15 +78,15 @@ export class OAuthService {
         }
     }
 
-    public async loadAllServers(): Promise<AuthorizationServerDataApi[]> {
+    public async loadAllServers(): Promise<AuthorizationServerArm[]> {
         try {
             const authorizationServers = [];
-            const allOAuthServers = await this.mapiClient.getAll<AuthorizationServerContract>("/authorizationServers", [await this.mapiClient.getPortalHeader("getAuthorizationServers")]);
-            const oauthServers = allOAuthServers.map(authServer => new AuthorizationServerDataApi(authServer));
+            const allOAuthServers = await this.mapiClient.getAll<AuthorizationServerArmContract>("/authorizationServers", [await this.mapiClient.getPortalHeader("getAuthorizationServers")]);
+            const oauthServers = allOAuthServers.map(authServer => new AuthorizationServerArm(authServer));
             authorizationServers.push(...oauthServers);
 
-            const allOicdServers = await this.mapiClient.getAll<OpenIdConnectProviderContract>("/openidConnectProviders", [await this.mapiClient.getPortalHeader("getOpenidConnectProviders")]);
-            const oicdServers = allOicdServers.map(authServer => new OpenIdConnectProviderDataApi(authServer));
+            const allOicdServers = await this.mapiClient.getAll<OpenIdConnectProviderArmContract>("/openidConnectProviders", [await this.mapiClient.getPortalHeader("getOpenidConnectProviders")]);
+            const oicdServers = allOicdServers.map(authServer => new OpenIdConnectProviderArm(authServer));
 
             for (const provider of oicdServers) {
                 try {
@@ -114,7 +114,7 @@ export class OAuthService {
      * @param grantType {string} Requested grant type.
      * @param authorizationServer {AuthorizationServer} Authorization server details.
      */
-    public async authenticate(grantType: string, authorizationServer: AuthorizationServerDataApi, apiName?: string): Promise<string> {
+    public async authenticate(grantType: string, authorizationServer: AuthorizationServerArm, apiName?: string): Promise<string> {
         const backendUrl = await this.settingsProvider.getSetting<string>("backendUrl") || `https://${location.hostname}`;
 
         let accessToken;
@@ -144,7 +144,7 @@ export class OAuthService {
      * @param backendUrl {string} Portal backend URL.
      * @param authorizationServer {AuthorizationServer} Authorization server details.
      */
-    public authenticateImplicit(backendUrl: string, authorizationServer: AuthorizationServerDataApi): Promise<string> {
+    public authenticateImplicit(backendUrl: string, authorizationServer: AuthorizationServerArm): Promise<string> {
         const redirectUri = `${backendUrl}/signin-oauth/implicit/callback`;
         const query = {
             state: Utils.guid()
@@ -198,7 +198,7 @@ export class OAuthService {
      * @param backendUrl {string} Portal backend URL.
      * @param authorizationServer {AuthorizationServer} Authorization server details.
      */
-    public async authenticateCode(backendUrl: string, authorizationServer: AuthorizationServerDataApi): Promise<string> {
+    public async authenticateCode(backendUrl: string, authorizationServer: AuthorizationServerArm): Promise<string> {
         const redirectUri = `${backendUrl}/signin-oauth/code/callback/${authorizationServer.name}`;
 
         const query = {
@@ -241,7 +241,7 @@ export class OAuthService {
      * @param backendUrl {string} Portal backend URL.
      * @param authorizationServer {AuthorizationServer} Authorization server details.
      */
-    public async authenticateClientCredentials(backendUrl: string, authorizationServer: AuthorizationServerDataApi, apiName: string): Promise<string> {
+    public async authenticateClientCredentials(backendUrl: string, authorizationServer: AuthorizationServerArm, apiName: string): Promise<string> {
         const response = await this.httpClient.send<any>({
             method: HttpMethod.post,
             url: `${backendUrl}/signin-oauth/credentials/${apiName}`,
@@ -292,7 +292,7 @@ export class OAuthService {
         });
     }
 
-    public async authenticatePassword(username: string, password: string, authorizationServer: AuthorizationServerDataApi): Promise<string> {
+    public async authenticatePassword(username: string, password: string, authorizationServer: AuthorizationServerArm): Promise<string> {
         const backendUrl = await this.settingsProvider.getSetting<string>("backendUrl") || `https://${location.hostname}`;
         let uri = `${backendUrl}/signin-oauth/password/${authorizationServer.name}`;
 
@@ -316,11 +316,11 @@ export class OAuthService {
         return `${Utils.toTitleCase(tokenInfo.accessTokenType)} ${tokenInfo.accessToken}`;
     }
 
-    public async discoverOAuthServer(metadataEndpoint: string): Promise<AuthorizationServerDataApi> {
+    public async discoverOAuthServer(metadataEndpoint: string): Promise<AuthorizationServerArm> {
         const response = await this.httpClient.send<OpenIdConnectMetadata>({ url: metadataEndpoint });
         const metadata = response.toObject();
 
-        const server = new AuthorizationServerDataApi();
+        const server = new AuthorizationServerArm();
         server.authorizationEndpoint = metadata.authorization_endpoint;
         server.tokenEndpoint = metadata.token_endpoint;
         server.scopes = ["openid"];

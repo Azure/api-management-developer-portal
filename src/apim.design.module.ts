@@ -57,7 +57,7 @@ import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
 import { PolicyService } from "./services/policyService";
-import { OAuthService } from "./services/oauthService";
+import { DesignerOAuthService } from "./services/designerOAuthService";
 import { HistoryRouteHandler } from "@paperbits/common/routing";
 import { OldContentRouteGuard } from "./routing/oldContentRouteGuard";
 import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
@@ -131,7 +131,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindToCollection("routeGuards", OldContentRouteGuard);
         injector.bindToCollection("routeGuards", UnsavedChangesRouteGuard);
         injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);
-        injector.bindSingleton("oauthService", OAuthService);
+        injector.bindSingleton("oauthService", DesignerOAuthService);
         injector.bindToCollection("autostart", HistoryRouteHandler);
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bindToCollection("autostart", RuntimeConfigurator);

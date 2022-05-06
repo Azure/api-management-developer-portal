@@ -1,14 +1,6 @@
-import { OpenIdConnectProviderContract } from "../contracts/openIdConnectProvider";
+import { OpenIdConnectProviderContract, OpenIdConnectProviderArmContract } from "../contracts/openIdConnectProvider";
 
 export class OpenIdConnectProvider {
-    constructor(contract: OpenIdConnectProviderContract) {
-        this.name = contract.name;
-        this.displayName = contract.name;
-        this.description = contract.description;
-        this.clientId = contract.clientId;
-        this.metadataEndpoint = contract.metadataEndpoint;
-    }
-
     /**
      * Resource name.
      */
@@ -34,4 +26,25 @@ export class OpenIdConnectProvider {
      */
 
     public clientId: string;
+}
+export class OpenIdConnectProviderDataApi extends OpenIdConnectProvider {
+    constructor(contract: OpenIdConnectProviderContract) {
+        super()
+        this.name = contract.name;
+        this.displayName = contract.name;
+        this.description = contract.description;
+        this.clientId = contract.clientId;
+        this.metadataEndpoint = contract.metadataEndpoint;
+    }
+}
+
+export class OpenIdConnectProviderArm extends OpenIdConnectProvider {
+    constructor(contract: OpenIdConnectProviderArmContract) {
+        super()
+        this.name = contract.name;
+        this.displayName = contract.properties.displayName;
+        this.description = contract.properties.description;
+        this.clientId = contract.properties.clientId;
+        this.metadataEndpoint = contract.properties.metadataEndpoint;
+    }
 }

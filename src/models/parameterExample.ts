@@ -6,7 +6,7 @@ export class ParameterExample {
         /**
          * Title, e.g. `Short version`
          */
-        public title: string,
+        public summary: string,
 
         /**
          * Description, e.g. `Short version of the API`.
