@@ -121,9 +121,7 @@ export class UsersService {
         }
 
         const payload = {
-            properties: {
-                password: newPassword
-            }
+            password: newPassword
         };
 
         await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
@@ -195,10 +193,8 @@ export class UsersService {
     public async updateUser(userId: string, firstName: string, lastName: string): Promise<User> {
         const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.mapiClient.getPortalHeader("updateUser")];
         const payload = {
-            properties: {
-                firstName: firstName,
-                lastName: lastName
-            }
+            firstName: firstName,
+            lastName: lastName
         };
         await this.mapiClient.patch<string>(`${userId}?appType=${Constants.AppType}`, headers, payload);
         const user = await this.mapiClient.get<UserContract>(userId);
@@ -283,9 +279,7 @@ export class UsersService {
         ];
 
         const payload = {
-            properties: {
-                password: newPassword
-            }
+            password: newPassword
         };
 
         await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
