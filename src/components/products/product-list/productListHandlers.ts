@@ -249,7 +249,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                 dispaly: "block"
                             }
                         },
-                        dropDown: {
+                        dropdownContainer: {
                             displayName: "Dropdown",
                             plugins: ["background", "typography"],
                             defaults: {
