@@ -327,7 +327,7 @@ export class ListOfApisDropdownHandlers implements IWidgetHandler {
                                 dispaly: "block"
                             }
                         },
-                        dropdown:{
+                        dropdownContainer:{
                             displayName: "Dropdown",
                             plugins: ["background", "typography"],
                             defaults:{
