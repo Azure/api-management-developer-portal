@@ -5,7 +5,7 @@ import { ProductListViewModel } from "./productListViewModel";
 import { ProductListModel } from "../productListModel";
 import { ComponentFlow } from "@paperbits/common/editing";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { ProductListHandlers } from "../productListHandlers";
+import { ProductListDropdownHandlers, ProductListHandlers, ProductListTilesHandlers } from "../productListHandlers";
 
 
 export class ProductListViewModelBinder implements ViewModelBinder<ProductListModel, ProductListViewModel> {
@@ -27,12 +27,16 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
                 : undefined
         }));
 
+        let handler = model.layout == "list" ? ProductListHandlers :
+            model.layout == "dropdown" ?
+                ProductListDropdownHandlers :
+                ProductListTilesHandlers;
 
         viewModel["widgetBinding"] = {
             displayName: "List of products" + (model.layout === "list" ? "" : ` (${model.layout})`),
             model: model,
             draggable: true,
-            handler: ProductListHandlers,
+            handler: handler,
             flow: ComponentFlow.Block,
             editor: "product-list-editor",
             applyChanges: async (updatedModel: ProductListModel) => {
@@ -42,7 +46,7 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
         };
 
         if (model.styles) {
-            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, ProductListHandlers));
+            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, handler));
         }
 
         return viewModel;
