@@ -16,6 +16,21 @@ export class ApiProductsHandlers implements IWidgetHandler {
     }
 }
 
+export class ApiProductsDropdownHandlers implements IWidgetHandler {
+  public async getWidgetOrder(): Promise<IWidgetOrder> {
+    const widgetOrder: IWidgetOrder = {
+      name: "api-products-dropdown",
+      category: "APIs",
+      displayName: "API: Products (dropdown)",
+      iconClass: "widget-icon widget-icon-api-management",
+      requires: ["html"],
+      createModel: async () => new ApiProductsModel("dropdown"),
+    };
+
+    return widgetOrder;
+  }
+}
+
 export class ApiProductsTilesHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {

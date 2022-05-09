@@ -1,10 +1,13 @@
 <!-- ko if: properties.length > 0 -->
 
-<div role="table" class="table-preset table-preset-schema">
+<div role="table" class="table-preset" data-bind="css: readOnly === true ? 'table-preset-schema-readonly' : 'table-preset-schema'">
     <div class="d-contents" role="rowgroup">
         <div class="d-contents" role="row">
             <div role="columnheader" class="table-preset-head text-truncate">Name</div>
             <div role="columnheader" class="table-preset-head text-truncate">Required</div>
+            <!-- ko if: readOnly -->
+            <div role="columnheader" class="table-preset-head text-truncate">Read-only</div>
+            <!-- /ko -->
             <div role="columnheader" class="table-preset-head text-truncate">Type</div>
             <div role="columnheader" class="table-preset-head">Description</div>
         </div>
@@ -16,6 +19,9 @@
                 <span class="text-monospace" data-bind="text: property.name, attr: { title: property.name }"></span>
             </div>
             <div role="cell" data-bind="text: property.required"></div>
+            <!-- ko if: $parent.readOnly -->
+            <div role="cell" data-bind="text: property.readOnly"></div>
+            <!-- /ko -->
             <div role="cell" class="text-truncate">
                 <!-- ko if: property.type.displayAs === 'primitive' -->
                 <span class="text-monospace"
