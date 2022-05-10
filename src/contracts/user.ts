@@ -41,11 +41,6 @@ export interface UserContract {
     registrationDate?: Date;
 
     /**
-     * Optional note about a user set by the administrator.
-     */
-    note?: string;
-
-    /**
      * Collection of groups user is part of.
      */
     groups?: any[];
