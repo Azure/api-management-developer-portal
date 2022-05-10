@@ -10,6 +10,8 @@ import { SettingNames } from "../constants";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { Utils } from "../utils";
+import { AuthorizationServerForClient } from "../contracts/authorizationServer";
+import { AuthorizationServer } from "../models/authorizationServer";
 
 export class BackendService {
     private portalUrl: string;
@@ -168,6 +170,42 @@ export class BackendService {
         else {
             throw Error(response.toText());
         }
+    }
+
+    public async getAuthorizationServer(authorizationServerId: string): Promise<AuthorizationServer> {
+        let response: HttpResponse<AuthorizationServerForClient>;
+        const httpRequest: HttpRequest = {
+            method: HttpMethod.get,
+            url: await this.getUrl(`/authorizationServers/${authorizationServerId}`)
+        }
+
+        try {
+            response = await this.httpClient.send<any>(httpRequest);
+        }
+        catch (error) {
+            throw new Error(`Unable to complete request. Error: ${error.message}`);
+        }
+
+        const contract = this.handleResponse<AuthorizationServerForClient>(response);
+        return new AuthorizationServer(contract);
+    }
+
+    public async getOpenIdConnectProvider(provider: string): Promise<AuthorizationServer> {
+        let response: HttpResponse<AuthorizationServerForClient>;
+        const httpRequest: HttpRequest = {
+            method: HttpMethod.get,
+            url: await this.getUrl(`/openidConnectProviders/${provider}`)
+        }
+
+        try {
+            response = await this.httpClient.send<any>(httpRequest);
+        }
+        catch (error) {
+            throw new Error(`Unable to complete request. Error: ${error.message}`);
+        }
+
+        const contract = this.handleResponse<AuthorizationServerForClient>(response);
+        return new AuthorizationServer(contract);
     }
 
     private async getUrl(path: string): Promise<string> {
