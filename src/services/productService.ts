@@ -293,11 +293,9 @@ export class ProductService {
         }
         else {
             const payload = {
-                properties: {
-                    scope: productId,
-                    name: subscriptionName,
-                    appType: Constants.AppType
-                }
+                scope: productId,
+                name: subscriptionName,
+                appType: Constants.AppType
             };
             await this.mapiClient.put(userId + subscriptionId, [await this.mapiClient.getPortalHeader("createSubscription")], payload);
         }
@@ -321,9 +319,7 @@ export class ProductService {
             const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.mapiClient.getPortalHeader("cancelSubscription")];
 
             const payload = {
-                properties: {
-                    state: SubscriptionState.cancelled
-                }
+                state: SubscriptionState.cancelled
             };
 
             await this.mapiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, headers, payload);
@@ -349,9 +345,7 @@ export class ProductService {
         const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.mapiClient.getPortalHeader("renameSubscription")];
 
         const payload = {
-            properties: {
-                name: subscriptionName
-            }
+            name: subscriptionName
         };
 
         await this.mapiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, headers, payload);
