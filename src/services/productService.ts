@@ -43,7 +43,7 @@ export class ProductService {
                 const subscription = new Subscription(subscriptionContract);
 
                 const secretPromise = this.mapiClient
-                    .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscriptionContract.name}/listSecrets`, [await this.mapiClient.getPortalHeader("getSubscriptionSecrets")])
+                    .get<SubscriptionSecrets>(`${userId}/subscriptions/${subscriptionContract.name}/listSecrets`, [await this.mapiClient.getPortalHeader("getSubscriptionSecrets")])
                     .then(secrets => {
                         subscription.primaryKey = secrets.primaryKey;
                         subscription.secondaryKey = secrets.secondaryKey;
@@ -146,7 +146,7 @@ export class ProductService {
                 }
 
             const secretPromise = this.mapiClient
-                .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscription.name}/listSecrets`)
+                .get<SubscriptionSecrets>(`${userId}/subscriptions/${subscription.name}/listSecrets`)
                 .then(secrets => {
                     subscriptionModel.primaryKey = secrets.primaryKey;
                     subscriptionModel.secondaryKey = secrets.secondaryKey;
@@ -179,7 +179,7 @@ export class ProductService {
         }
 
         const secrets = await this.mapiClient
-            .post<SubscriptionSecrets>(`${subscriptionId}/listSecrets`, [await this.mapiClient.getPortalHeader("getSubscriptionSecrets")]);
+            .get<SubscriptionSecrets>(`${subscriptionId}/listSecrets`, [await this.mapiClient.getPortalHeader("getSubscriptionSecrets")]);
 
         const subscripitonModel = new Subscription(contract);
         subscripitonModel.primaryKey = secrets.primaryKey;
