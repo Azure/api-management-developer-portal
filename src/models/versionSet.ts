@@ -16,12 +16,12 @@ export class VersionSet {
             return;
         }
 
-        if (contract.properties) {
-            this.name = contract.properties.displayName;
-            this.description = contract.properties.description;
-            this.versioningScheme = contract.properties.versioningScheme;
-            this.versionQueryName = contract.properties.versionQueryName;
-            this.versionHeaderName = contract.properties.versionHeaderName;
+        if (contract) {
+            this.name = contract.name;
+            this.description = contract.description;
+            this.versioningScheme = contract.versioningScheme;
+            this.versionQueryName = contract.versionQueryName;
+            this.versionHeaderName = contract.versionHeaderName;
         }
     }
 }
