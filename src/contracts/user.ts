@@ -44,10 +44,4 @@ export interface UserContract {
      * Collection of user identities.
      */
     identities?: UserIdentity[];
-
-    /**
-     *  Application type. Required to send notification with proper urls in emails.
-     *  
-     */
-    appType: string;
 }

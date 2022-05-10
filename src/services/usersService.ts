@@ -98,7 +98,7 @@ export class UsersService {
         const ticket = parameters.get("ticket");
         const ticketId = parameters.get("ticketid");
         const identity = parameters.get("identity");
-        const requestUrl = `/users/${userId}/identities/Basic/${identity}?appType=${Constants.AppType}`;
+        const requestUrl = `/users/${userId}/identities/Basic/${identity}`;
         const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
 
         const backendUrlBase = await this.settingsProvider.getSetting<string>(Constants.SettingNames.backendUrl)
@@ -124,7 +124,7 @@ export class UsersService {
             password: newPassword
         };
 
-        await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
+        await this.mapiClient.patch(`${userId}`, headers, payload);
     }
 
     /**
@@ -196,7 +196,7 @@ export class UsersService {
             firstName: firstName,
             lastName: lastName
         };
-        await this.mapiClient.patch<string>(`${userId}?appType=${Constants.AppType}`, headers, payload);
+        await this.mapiClient.patch<string>(`${userId}`, headers, payload);
         const user = await this.mapiClient.get<UserContract>(userId);
 
         if (user) {
@@ -218,7 +218,7 @@ export class UsersService {
                 value: "*"
             };
 
-            const query = Utils.addQueryParameter(userId, `deleteSubscriptions=true&notify=true&appType=${Constants.AppType}`);
+            const query = Utils.addQueryParameter(userId, `deleteSubscriptions=true&notify=true`);
 
             await this.mapiClient.delete<string>(query, [header, await this.mapiClient.getPortalHeader("deleteUser")]);
 
@@ -261,8 +261,8 @@ export class UsersService {
     }
 
     public async createResetPasswordRequest(email: string): Promise<void> {
-        const payload = { to: email, appType: Constants.AppType };
-        await this.mapiClient.post(`/confirmations/password?appType=${Constants.AppType}`, [await this.mapiClient.getPortalHeader("createResetPasswordRequest")], payload);
+        const payload = { to: email };
+        await this.mapiClient.post(`/confirmations/password`, [await this.mapiClient.getPortalHeader("createResetPasswordRequest")], payload);
     }
 
     public async changePassword(userId: string, newPassword: string): Promise<void> {
@@ -282,7 +282,7 @@ export class UsersService {
             password: newPassword
         };
 
-        await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
+        await this.mapiClient.patch(`${userId}`, headers, payload);
     }
 
     public async createUserWithOAuth(provider: string, idToken: string, firstName: string, lastName: string, email: string): Promise<void> {
@@ -299,8 +299,7 @@ export class UsersService {
             identities: [{
                 id: jwtToken.oid,
                 provider: provider
-            }],
-            appType: Constants.AppType
+            }]
         };
 
         const response = await this.httpClient.send({
