@@ -54,11 +54,6 @@ export class Api {
     public apiRevisionDescription?: string;
 
     /**
-     * Web service URL "https://httpbin.org".
-     */
-    public serviceUrl?: string;
-
-    /**
      * API URL suffix, e.g. "/httbin"
      */
     public path?: string;
@@ -120,7 +115,6 @@ export class Api {
 
         this.name = contract.name;
         this.displayName = contract.name;
-        this.serviceUrl = contract.serviceUrl;
         this.protocols = contract.protocols;
         this.description = contract.description;
         this.path = contract.path;

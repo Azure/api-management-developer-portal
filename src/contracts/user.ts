@@ -41,11 +41,6 @@ export interface UserContract {
     registrationDate?: Date;
 
     /**
-     * Collection of groups user is part of.
-     */
-    groups?: any[];
-
-    /**
      * Collection of user identities.
      */
     identities?: UserIdentity[];

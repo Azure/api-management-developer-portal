@@ -8,7 +8,6 @@ export class User {
     public email: string;
     public state: UserState;
     public registrationDate: Date;
-    public groups?: UserGroup[];
     public identities: UserIdentity[];
     public isBasicAccount: boolean;
 
@@ -19,7 +18,6 @@ export class User {
         this.email = contract.email;
         this.state = <any>contract.state;
         this.registrationDate = contract.registrationDate;
-        this.groups = contract.groups;
         this.identities = contract.identities;
         this.isBasicAccount = this.identities[0]?.provider === "Basic";
     }
