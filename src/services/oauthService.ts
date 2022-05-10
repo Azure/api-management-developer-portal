@@ -1,108 +1,36 @@
 import * as ClientOAuth2 from "client-oauth2";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { HttpClient, HttpMethod } from "@paperbits/common/http";
-import { AuthorizationServerContract } from "../contracts/authorizationServer";
-import { OpenIdConnectProviderContract } from "../contracts/openIdConnectProvider";
 import { AuthorizationServer } from "../models/authorizationServer";
 import { Utils } from "../utils";
 import { GrantTypes } from "./../constants";
 import { OpenIdConnectMetadata } from "./../contracts/openIdConnectMetadata";
 import { UnauthorizedError } from "./../errors/unauthorizedError";
-import { OpenIdConnectProvider } from "./../models/openIdConnectProvider";
-import { MapiClient } from "./mapiClient";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
+import { BackendService } from "./backendService";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 
 export class OAuthService {
     private environmentPromise: Promise<string>;
 
     constructor(
-        private readonly mapiClient: MapiClient,
         private readonly httpClient: HttpClient,
+        private readonly backendService: BackendService,
         private readonly settingsProvider: ISettingsProvider
     ) { }
 
-    private async getEnvironment(): Promise<string> {
-        if (!this.environmentPromise) {
-            this.environmentPromise = this.settingsProvider.getSetting<string>("environment");
-        }
-        return this.environmentPromise;
-    }
-
-    /**
-     * Returns configured OAuth 2.0 and OpenID Connect providers.
-     */
-    public async getOAuthServers(): Promise<AuthorizationServer[]> {
-        const loadedServers = await this.settingsProvider.getSetting<AuthorizationServer[]>("authServers");
-        return loadedServers || [];
-    }
-
     public async getAuthServer(authorizationServerId: string, openidProviderId: string): Promise<AuthorizationServer> {
-        const env = await this.getEnvironment();
-        if (env !== "development") {
-            const servers = await this.getOAuthServers();
-            let server = undefined;
-            if (servers) {
-                server = servers.find(s => s.name === (authorizationServerId || openidProviderId));
-            }
-            return server;
-        }
-
         try {
-            let authorizationServer: AuthorizationServer;
             if (authorizationServerId) {
-                const authServer = await this.mapiClient.get<AuthorizationServerContract>(`/authorizationServers/${authorizationServerId}`, [await this.mapiClient.getPortalHeader("getAuthorizationServer")]);
-                authorizationServer = new AuthorizationServer(authServer);
-                return authorizationServer;
+                const authServer = await this.backendService.getAuthorizationServer(authorizationServerId);
+                return authServer;
             }
             if (openidProviderId) {
-                const authServer = await this.mapiClient.get<OpenIdConnectProviderContract>(`/openidConnectProviders/${openidProviderId}`, [await this.mapiClient.getPortalHeader("getOpenidConnectProvider")]);
-                const provider = new OpenIdConnectProvider(authServer);
-                try {
-                    const openIdServer = await this.discoverOAuthServer(provider.metadataEndpoint);
-                    openIdServer.name = provider.name;
-                    openIdServer.clientId = provider.clientId;
-                    openIdServer.displayName = provider.displayName;
-                    openIdServer.description = provider.description;
-                    return openIdServer;
-                }
-                catch (error) {
-                    // Swallow discovery errors until publishing-related notification channel gets implemented.
-                }
+                const authServer = await this.backendService.getOpenIdConnectProvider(openidProviderId);
+                return authServer;
             }
 
             return undefined;
-        }
-        catch (error) {
-            throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);
-        }
-    }
-
-    public async loadAllServers(): Promise<AuthorizationServer[]> {
-        try {
-            const authorizationServers = [];
-            const allOAuthServers = await this.mapiClient.getAll<AuthorizationServerContract>("/authorizationServers", [await this.mapiClient.getPortalHeader("getAuthorizationServers")]);
-            const oauthServers = allOAuthServers.map(authServer => new AuthorizationServer(authServer));
-            authorizationServers.push(...oauthServers);
-
-            const allOicdServers = await this.mapiClient.getAll<OpenIdConnectProviderContract>("/openidConnectProviders", [await this.mapiClient.getPortalHeader("getOpenidConnectProviders")]);
-            const oicdServers = allOicdServers.map(authServer => new OpenIdConnectProvider(authServer));
-
-            for (const provider of oicdServers) {
-                try {
-                    const authServer = await this.discoverOAuthServer(provider.metadataEndpoint);
-                    authServer.name = provider.name;
-                    authServer.clientId = provider.clientId;
-                    authServer.displayName = provider.displayName;
-                    authServer.description = provider.description;
-                    authorizationServers.push(authServer);
-                }
-                catch (error) {
-                    // Swallow discovery errors until publishing-related notification channel gets implemented.
-                }
-            }
-
-            return authorizationServers;
         }
         catch (error) {
             throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);
