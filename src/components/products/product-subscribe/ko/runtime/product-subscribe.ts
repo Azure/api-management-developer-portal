@@ -119,7 +119,7 @@ export class ProductSubscribe {
     private async loadSubscriptions(userId: string): Promise<void> {
         const product = this.product();
         const subscriptions = await this.productService.getSubscriptionsForProduct(userId, product.id);
-        const activeSubscriptions = subscriptions.value.filter(item => item.state === SubscriptionState.active) || [];
+        const activeSubscriptions = subscriptions.value.filter(item => item.state === SubscriptionState.active || item.state === SubscriptionState.submitted) || [];
         const numberOfSubscriptions = activeSubscriptions.length;
         const limitReached = (product.subscriptionsLimit || product.subscriptionsLimit === 0) && product.subscriptionsLimit <= numberOfSubscriptions;
         this.limitReached(limitReached);
