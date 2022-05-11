@@ -19,6 +19,10 @@
     text-overflow: ellipsis;
 }
 
+.overflow {
+    overflow: auto;
+}
+
 .no-overflow {
     overflow: hidden;
 }
