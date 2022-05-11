@@ -64,8 +64,6 @@ export class CreateWidget {
         const configDeploy = await buildConfigDeploy();
         const {config, blob} = await scaffold(configData, configDeploy);
 
-        saveAs(blob, widgetArchiveName(config));
-
         const content = Utils.stringToUnit8Array(JSON.stringify(config));
         await this.blobStorage.uploadBlob(buildBlobConfigSrc(name), content);
 
@@ -76,5 +74,7 @@ export class CreateWidget {
         this.widgetService.registerWidgetHandler(new CustomWidgetHandlers(config));
         this.configs.push(config);
         this.configAdd(config);
+
+        saveAs(blob, widgetArchiveName(config));
     }
 }
