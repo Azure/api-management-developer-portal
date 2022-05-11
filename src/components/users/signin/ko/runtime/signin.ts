@@ -104,10 +104,6 @@ export class Signin {
             password: this.password
         };
 
-        if (this.termsEnabled() && this.isConsentRequired()) {
-            validationGroup["consented"] = this.consented;
-        }
-
         const result = validation.group(validationGroup);
         
         const clientErrors = result();
