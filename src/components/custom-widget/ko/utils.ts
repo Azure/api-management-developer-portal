@@ -1,4 +1,5 @@
 import { OVERRIDE_PORT_KEY, TCustomWidgetConfig } from "@azure/apimanagement-custom-widget-scaffolder";
+import { EDITOR_DATA_KEY, TEditorData, TValuesBase } from "@azure/apimanagement-custom-widget-tools";
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
 
@@ -38,15 +39,15 @@ export async function buildWidgetSource(
 
     url.pathname = decodeURIComponent(url.pathname);
 
-    const values = {
-        data: JSON.parse(model.customInputValue).data,
+    const data: TEditorData<TValuesBase> = {
+        values: JSON.parse(model.customInputValue).values,
         origin: window.location.origin, // TODO later once connected to BE origin during publish
         id: model.name,
         displayName: model.widgetDisplayName,
         environment,
         instanceId,
     };
-    url.searchParams.append("editorValues", encodeURIComponent(JSON.stringify(values)));
+    url.searchParams.append(EDITOR_DATA_KEY, encodeURIComponent(JSON.stringify(data)));
 
     return {override: developmentSrc, src: url.toString()};
 }

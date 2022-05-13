@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import { saveAs } from "file-saver";
-import { scaffold, TControl, TCustomWidgetConfig, TTech } from "@azure/apimanagement-custom-widget-scaffolder";
+import { scaffold, TCustomWidgetConfig, TScaffoldSourceControl, TScaffoldTech } from "@azure/apimanagement-custom-widget-scaffolder";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component, Param } from "@paperbits/common/ko/decorators";
 import * as Utils from "@paperbits/common/utils";
@@ -24,8 +24,8 @@ import fallbackUi from "!!raw-loader!./fallbackUi.html";
 })
 export class CreateWidget {
     public readonly displayName: ko.Observable<string>;
-    public readonly tech: ko.Observable<TTech | null>;
-    public readonly sourceControl: ko.Observable<TControl>;
+    public readonly tech: ko.Observable<TScaffoldTech | null>;
+    public readonly sourceControl: ko.Observable<TScaffoldSourceControl>;
 
     constructor(
         private readonly widgetService: IWidgetService,

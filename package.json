@@ -69,6 +69,8 @@
         "webpack-merge": "5.8.0"
     },
     "dependencies": {
+        "@azure/apimanagement-custom-widget-scaffolder": "file:azure-apimanagement-custom-widget-scaffolder-0.2.1.tgz",
+        "@azure/apimanagement-custom-widget-tools": "file:azure-apimanagement-custom-widget-tools-0.1.0.tgz",
         "@azure/msal-browser": "^2.27.0",
         "@braintree/sanitize-url": "6.0.0",
         "@microsoft/applicationinsights-web": "^2.8.5",
