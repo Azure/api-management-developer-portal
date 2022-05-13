@@ -57,9 +57,9 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
                 const {key, value, instanceId} = event.data.customInputValueChangedMSAPIM;
                 if (instanceId !== this.instanceId) return;
 
-                const data = JSON.parse(this.customInputValue()).data ?? {};
-                data[key] = value;
-                this.customInputValue(JSON.stringify({data}));
+                const values = JSON.parse(this.customInputValue()).values ?? {};
+                values[key] = value;
+                this.customInputValue(JSON.stringify({values}));
             }
         });
 
