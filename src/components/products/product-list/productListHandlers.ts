@@ -263,7 +263,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                     left: "20px",
                                 },
                                 shadow: {
-                                    shadowId: "shadows/shadow1"
+                                    shadowKey: "shadows/shadow1"
                                 }
                             }
                         },
@@ -323,5 +323,109 @@ export class ProductListTilesHandlers implements IWidgetHandler {
         };
 
         return widgetOrder;
+    }
+
+    public getStyleDefinitions(): StyleDefinition {
+        return {
+            components: {
+                productListTiles: {
+                    displayName: "List of products (tiles)",
+                    plugins: ["margin", "padding", "background"],
+                    components: {
+                        searchInput: {
+                            displayName: "Search input",
+                            plugins: ["typography", "border", "states"],
+                            defaults: {
+                                allowedStates: [
+                                    "focus"
+                                ],
+                                typography: {
+                                    fontSize: "1rem",
+                                    colorKey: "colors/default",
+                                    lineHeight: "1.5"
+                                },
+                                border: {
+                                    bottom: {
+                                        width: "1px",
+                                        style: "solid",
+                                        colorKey: "colors/borderColor"
+                                    }
+                                },
+                                states: {
+                                    focus: {
+                                        typography: {
+                                            fontSize: "1rem",
+                                            colorKey: "colors/default",
+                                            lineHeight: "1.5"
+                                        },
+                                        border: {
+                                            bottom: {
+                                                width: "1",
+                                                style: "solid",
+                                                colorKey: "colors/default"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        productCard: {
+                            displayName: "Card",
+                            plugins: ["background", "shadow", "border", "margin", "padding"],
+                            defaults: {
+                                margin: {
+                                    left: 0,
+                                    right: 0,
+                                    top: 30,
+                                    bottom: 30
+                                },
+                                padding:{
+                                    top:50,
+                                    right: 30,
+                                    bottom: 50,
+                                    left: 30
+
+                                },
+                                border:{
+                                    left: 0,
+                                    right: 0,
+                                    top: 0,
+                                    bottom: 0
+                                },
+                                shadow: {
+                                    shadowKey: "shadows/shadow1"
+                                }
+                            }
+                        },
+                        cardTitle: {
+                            displayName: "Card Title",
+                            plugins: ["typography"],
+                            defaults: {
+
+                            }
+                        },
+                        cardText: {
+                            displayName: "Card Text",
+                            plugins: ["typography"],
+                            defaults: {
+
+                            }
+                        },
+                        widgetText: {
+                            displayName: "Text",
+                            plugins: ["typography"],
+                            defaults: {
+                                typography: {
+                                    colorKey: "colors/default",
+                                    fontStyle: "normal",
+                                    fontWeight: "normal"
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        };
     }
 }
