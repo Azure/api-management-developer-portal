@@ -43,6 +43,13 @@ export enum AadEndpoints {
     legacy = "login.windows.net"
 }
 
+export enum AadClientLibrary {
+    v1 = "v1",
+    v2 = "v2"
+}
+
+export const AadClientLibraryV2 = "MSAL-2";
+
 /**
  * Types of direction (e.g. for sorting of elements in a table)
  */

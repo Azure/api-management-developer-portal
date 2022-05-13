@@ -54,7 +54,7 @@ export class SignInAad {
             const config = await this.settingsProvider.getSetting<AadClientConfig>(SettingNames.aadClientConfig);
             
             if (config) {
-                if (config.clientLibrary === Constants.AadVersions.v2) {
+                if (config.clientLibrary === Constants.AadClientLibrary.v2) {
                     this.selectedService = this.aadServiceV2;
                 } else {
                     this.selectedService = this.aadService;
