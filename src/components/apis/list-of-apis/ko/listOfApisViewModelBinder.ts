@@ -30,10 +30,11 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
                 : undefined
         }));
 
-        const handler = model.layout == "list" ? ListOfApisHandlers :
-            model.layout == "dropdown" ?
-                ListOfApisDropdownHandlers :
-                ListOfApisTilesHandlers;
+        const handlerForLayout = {
+            list: ListOfApisHandlers,
+            dropdown: ListOfApisDropdownHandlers
+        };
+        const handler = handlerForLayout[model.layout] ?? ListOfApisTilesHandlers;
 
         viewModel["widgetBinding"] = {
             displayName: "List of APIs" + (model.layout === "list" ? "" : ` (${model.layout})`),
