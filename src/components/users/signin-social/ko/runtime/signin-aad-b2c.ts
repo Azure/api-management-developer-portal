@@ -53,7 +53,7 @@ export class SignInAadB2C {
         this.aadConfig = await this.settingsProvider.getSetting<AadB2CClientConfig>(SettingNames.aadB2CClientConfig);
 
         if (this.aadConfig) {
-            if (this.aadConfig.clientLibrary === Constants.AadVersions.v2) {
+            if (this.aadConfig.clientLibrary === Constants.AadClientLibrary.v2) {
                 this.selectedService = this.aadServiceV2;
             } else {
                 this.selectedService = this.aadService;

@@ -1,4 +1,4 @@
-import { AadVersions } from "../constants";
+import { AadClientLibrary } from "../constants";
 
 export interface AadB2CClientConfig {
     /**
@@ -35,5 +35,5 @@ export interface AadB2CClientConfig {
     /**
      * The client library to be used in the developer portal
      */
-     clientLibrary: AadVersions;
+     clientLibrary: AadClientLibrary;
 }
