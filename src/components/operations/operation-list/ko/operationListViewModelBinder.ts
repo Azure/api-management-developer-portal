@@ -4,9 +4,13 @@ import { OperationListModel } from "../operationListModel";
 import { Bag } from "@paperbits/common";
 import { EventManager, Events } from "@paperbits/common/events";
 import { ComponentFlow } from "@paperbits/common/editing";
+import { OperationListHandlers } from "../operationListHandlers";
+import { StyleCompiler } from "@paperbits/common/styles";
 
 export class OperationListViewModelBinder implements ViewModelBinder<OperationListModel, OperationListViewModel> {
-    constructor(private readonly eventManager: EventManager) { }
+    constructor(
+        private readonly eventManager: EventManager,
+        private readonly styleCompiler: StyleCompiler) { }
 
     public async modelToViewModel(model: OperationListModel, viewModel?: OperationListViewModel, bindingContext?: Bag<any>): Promise<OperationListViewModel> {
         if (!viewModel) {
@@ -28,6 +32,7 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
             displayName: "List of operations",
             model: model,
             draggable: true,
+            handler: OperationListHandlers,
             flow: ComponentFlow.Block,
             editor: "operation-list-editor",
             applyChanges: async (updatedModel: OperationListModel) => {
@@ -35,6 +40,10 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
                 this.eventManager.dispatchEvent(Events.ContentUpdate);
             }
         };
+
+        if (model.styles) {
+            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, OperationListHandlers));
+        }
 
         return viewModel;
     }
