@@ -9,9 +9,16 @@ import { ProductListDropdownHandlers, ProductListHandlers, ProductListTilesHandl
 
 
 export class ProductListViewModelBinder implements ViewModelBinder<ProductListModel, ProductListViewModel> {
+    private readonly handlerForLayout;
+
     constructor(
         private readonly eventManager: EventManager,
-        private readonly styleCompiler: StyleCompiler) { }
+        private readonly styleCompiler: StyleCompiler) {
+            this.handlerForLayout = {
+                list: ProductListHandlers,
+                dropdown: ProductListDropdownHandlers
+            };
+         }
 
     public async modelToViewModel(model: ProductListModel, viewModel?: ProductListViewModel, bindingContext?: Bag<any>): Promise<ProductListViewModel> {
         if (!viewModel) {
@@ -27,10 +34,7 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
                 : undefined
         }));
 
-        let handler = model.layout == "list" ? ProductListHandlers :
-            model.layout == "dropdown" ?
-                ProductListDropdownHandlers :
-                ProductListTilesHandlers;
+        const handler = this.handlerForLayout[model.layout] ?? ProductListTilesHandlers;
 
         viewModel["widgetBinding"] = {
             displayName: "List of products" + (model.layout === "list" ? "" : ` (${model.layout})`),
