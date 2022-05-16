@@ -7,7 +7,7 @@
     <!-- /ko -->
 
     <!-- ko ifnot: working-->
-    <p>WebSocket APIs don’t expose API operations.</p>
+    <div>WebSocket APIs don’t expose API operations.</div>
     <!-- /ko -->
 </div>
 <!-- /ko -->
@@ -19,12 +19,12 @@
 <!-- ko ifnot: apiType() === 'websocket' || apiType() === 'graphql'-->
 <div class="form-inline max-w-500">
     <div class="d-block flex-grow mw-170">
-        <input type="search" class="form-control form-control-light" aria-label="Search operations" placeholder="Search operations" spellcheck="false"
+        <input type="search" class="form-control form-control-light search-input" aria-label="Search operations" placeholder="Search operations" spellcheck="false"
             data-bind="textInput: pattern" />
         <tag-input params="{ scope: $component.tagScope, onChange: onTagsChange }"></tag-input>
     </div>
     <div class="form-group ml-auto">
-        <label for="groupByTag">Group by tag
+        <label for="groupByTag" class="toggle-button-label">Group by tag
             <div class="switch">
                 <input id="groupByTag" type="checkbox" data-bind="checked: $component.groupByTag">
                 <span class="slider round"></span>
@@ -56,7 +56,7 @@
 
         <!-- ko foreach: { data: operationGroups, as: 'group' } -->
         <div class="tag-group">
-            <span class="tag-item" role="group" data-bind="text: group.tag"></span>
+            <span class="tag-card" role="group" data-bind="text: group.tag"></span>
         </div>
         <ul class="nav" role="list">
             <!-- ko foreach: { data: group.items, as: 'item' } -->
@@ -75,7 +75,7 @@
         <!-- /ko -->
 
         <!-- ko if: operationGroups().length === 0 -->
-        <p>No operations found</p>
+        <div>No operations found</div>
         <!-- /ko -->
 
         <!-- /ko -->
@@ -99,7 +99,7 @@
         <ul class="nav" role="list">
             <!-- ko foreach: { data: operations, as: 'item' } -->
             <li class="nav-item" role="presentation">
-                <a href="#" role="listitem" class="nav-link"
+                <a href="#" role="listitem" class="nav-link inherit-color"
                     data-bind="attr: { href: $component.getReferenceUrl(item)}, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
                     <div class="row">
                         <span class="col-md-2" data-bind="attr: { 'data-method': method }"></span>
