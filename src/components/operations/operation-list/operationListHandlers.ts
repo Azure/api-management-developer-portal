@@ -21,7 +21,7 @@ export class OperationListHandlers implements IWidgetHandler {
             components: {
                 operationList: {
                     displayName: "Operation List",
-                    plugins: ["background", "typography"],
+                    plugins: ["background", "typography", "margin", "padding"],
                     defaults: {
                         typography: {
                             colorKey: "colors/default"
