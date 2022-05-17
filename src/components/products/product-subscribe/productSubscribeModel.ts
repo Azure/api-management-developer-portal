@@ -1,10 +1,15 @@
-export class ProductSubscribeModel { 
+import { LocalStyles } from "@paperbits/common/styles";
 
-
-	 /**
-     * Controls whether legal text is displayed by default or not.
-     */
+export class ProductSubscribeModel {
+    /**
+    * Controls whether legal text is displayed by default or not.
+    */
     public showTermsByDefault: boolean;
-	
+
+    /**
+    * Widget local styles.
+    */
+    public styles: LocalStyles;
+
 
 }
