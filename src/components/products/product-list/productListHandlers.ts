@@ -1,6 +1,7 @@
 ﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { StyleDefinition } from "@paperbits/common/styles";
 import { ProductListModel } from "./productListModel";
+import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
 
 export class ProductListHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -37,88 +38,9 @@ export class ProductListHandlers implements IWidgetHandler {
                     displayName: "Product List",
                     plugins: ["margin", "padding", "typography", "background"],
                     components: {
-                        searchInput: {
-                            displayName: "Search input",
-                            plugins: ["typography", "border", "states"],
-                            defaults: {
-                                allowedStates: [
-                                    "focus"
-                                ],
-                                typography: {
-                                    fontSize: "1rem",
-                                    colorKey: "colors/default",
-                                    lineHeight: "1.5"
-                                },
-                                border: {
-                                    bottom: {
-                                        width: "1",
-                                        style: "solid",
-                                        colorKey: "colors/borderColor"
-                                    }
-                                },
-                                states: {
-                                    focus: {
-                                        typography: {
-                                            fontSize: "1rem",
-                                            colorKey: "colors/default",
-                                            lineHeight: "1.5"
-                                        },
-                                        border: {
-                                            bottom: {
-                                                width: "1",
-                                                style: "solid",
-                                                colorKey: "colors/borderColor"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        productsGridRow: {
-                            displayName: "Grid row",
-                            plugins: ["background", "typography", "border"],
-                            defaults: {
-                                border: {
-                                    top: {
-                                        width: "1",
-                                        style: "solid",
-                                        colorKey: "colors/gridBorderColor"
-                                    }
-                                },
-                                typography: {
-                                    fontWeight: "normal",
-                                    colorKey: "colors/default"
-                                },
-                                display: "flex",
-                                padding: {
-                                    top: ".75rem",
-                                    bottom: ".75rem"
-
-                                }
-                            }
-                        },
-                        productsGridHeader: {
-                            displayName: "Grid row",
-                            plugins: ["background", "typography", "border"],
-                            defaults: {
-                                border: {
-                                    bottom: {
-                                        width: "1",
-                                        style: "solid",
-                                        colorKey: "colors/gridBorderColor"
-                                    }
-                                },
-                                typography: {
-                                    fontWeight: "bold",
-                                    colorKey: "colors/default"
-                                },
-                                display: "flex",
-                                padding: {
-                                    top: ".75rem",
-                                    bottom: ".75rem"
-                                }
-                            }
-                        }
+                        searchInput: DefaultStyleDefinitions.SearchInput,
+                        productsGridRow: DefaultStyleDefinitions.GridRow,
+                        productsGridHeader: DefaultStyleDefinitions.GridHeader,
                     }
                 }
             }
@@ -154,101 +76,8 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                     displayName: "Product List Dropdown",
                     plugins: ["margin", "padding", "typography"],
                     components: {
-                        dropdownInput: {
-                            displayName: "Input",
-                            plugins: ["background", "typography", "border", "margin", "padding"],
-                            defaults: {
-                                background: {
-                                    colorKey: "colors/defaultBg"
-                                },
-                                typography: {
-                                    fontSize: "1rem",
-                                    lineHeight: "1.5",
-                                    colorKey: "colors/displayTextColor"
-                                },
-                                padding: {
-                                    top: "7px",
-                                    right: "10px",
-                                    bottom: "7px",
-                                    left: "10px"
-                                },
-                                margin: {
-                                    top: 0,
-                                    right: 0,
-                                    bottom: 0,
-                                    left: 0
-                                },
-                                border: {
-                                    top: {
-                                        width: 1,
-                                        style: "solid",
-                                        colorKey: "colors/default"
-                                    },
-                                    right: {
-                                        width: 0
-                                    },
-                                    bottom: {
-                                        width: 1,
-                                        style: "solid",
-                                        colorKey: "colors/default"
-                                    },
-                                    left: {
-                                        width: 1,
-                                        style: "solid",
-                                        colorKey: "colors/default"
-                                    }
-                                }
-                            }
-                        },
-                        dropdownInputButton: {
-                            displayName: "Input",
-                            plugins: ["background", "typography", "border", "margin", "padding"],
-                            defaults: {
-                                background: {
-                                    colorKey: "colors/defaultBg"
-                                },
-                                typography: {
-                                    fontSize: "0.9em",
-                                    colorKey: "colors/default",
-                                    lineHeight: "normal"
-                                },
-                                padding: {
-                                    top: "7px",
-                                    right: "10px",
-                                    bottom: "7px",
-                                    left: "10px"
-                                },
-                                border: {
-                                    top: {
-                                        width: 1,
-                                        style: "solid",
-                                        colorKey: "colors/default"
-                                    },
-                                    right: {
-                                        width: 1,
-                                        style: "solid",
-                                        colorKey: "colors/default"
-                                    },
-                                    bottom: {
-                                        width: 1,
-                                        style: "solid",
-                                        colorKey: "colors/default"
-                                    },
-                                    left: {
-                                        width: 1,
-                                        style: "solid",
-                                        colorKey: "colors/default"
-                                    }
-                                },
-                                margin: {
-                                    top: 0,
-                                    right: 0,
-                                    bottom: 0,
-                                    left: 0
-                                },
-                                dispaly: "block"
-                            }
-                        },
+                        dropdownInput: DefaultStyleDefinitions.DropdownInput,
+                        dropdownInputButton: DefaultStyleDefinitions.DropdownInputButton,
                         dropdownContainer: {
                             displayName: "Dropdown",
                             plugins: ["background", "typography"],
@@ -267,43 +96,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                 }
                             }
                         },
-                        dropdownSearchInput: {
-                            displayName: "Search input",
-                            plugins: ["typography", "border", "states"],
-                            defaults: {
-                                allowedStates: [
-                                    "focus"
-                                ],
-                                typography: {
-                                    fontSize: "1rem",
-                                    colorKey: "colors/default",
-                                    lineHeight: "1.5"
-                                },
-                                border: {
-                                    bottom: {
-                                        width: "1px",
-                                        style: "solid",
-                                        colorKey: "colors/default"
-                                    }
-                                },
-                                states: {
-                                    focus: {
-                                        typography: {
-                                            fontSize: "1rem",
-                                            colorKey: "colors/default",
-                                            lineHeight: "1.5"
-                                        },
-                                        border: {
-                                            bottom: {
-                                                width: "1",
-                                                style: "solid",
-                                                colorKey: "colors/default"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        dropdownSearchInput: DefaultStyleDefinitions.SearchInput
                     }
                 }
             }
@@ -332,96 +125,11 @@ export class ProductListTilesHandlers implements IWidgetHandler {
                     displayName: "List of products (tiles)",
                     plugins: ["margin", "padding", "background"],
                     components: {
-                        searchInput: {
-                            displayName: "Search input",
-                            plugins: ["typography", "border", "states"],
-                            defaults: {
-                                allowedStates: [
-                                    "focus"
-                                ],
-                                typography: {
-                                    fontSize: "1rem",
-                                    colorKey: "colors/default",
-                                    lineHeight: "1.5"
-                                },
-                                border: {
-                                    bottom: {
-                                        width: "1px",
-                                        style: "solid",
-                                        colorKey: "colors/borderColor"
-                                    }
-                                },
-                                states: {
-                                    focus: {
-                                        typography: {
-                                            fontSize: "1rem",
-                                            colorKey: "colors/default",
-                                            lineHeight: "1.5"
-                                        },
-                                        border: {
-                                            bottom: {
-                                                width: "1",
-                                                style: "solid",
-                                                colorKey: "colors/default"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        productCard: {
-                            displayName: "Card",
-                            plugins: ["background", "shadow", "border", "margin", "padding"],
-                            defaults: {
-                                margin: {
-                                    left: 0,
-                                    right: 0,
-                                    top: 30,
-                                    bottom: 30
-                                },
-                                padding:{
-                                    top:50,
-                                    right: 30,
-                                    bottom: 50,
-                                    left: 30
-
-                                },
-                                border:{
-                                    left: 0,
-                                    right: 0,
-                                    top: 0,
-                                    bottom: 0
-                                },
-                                shadow: {
-                                    shadowKey: "shadows/shadow1"
-                                }
-                            }
-                        },
-                        cardTitle: {
-                            displayName: "Card Title",
-                            plugins: ["typography"],
-                            defaults: {
-
-                            }
-                        },
-                        cardText: {
-                            displayName: "Card Text",
-                            plugins: ["typography"],
-                            defaults: {
-
-                            }
-                        },
-                        widgetText: {
-                            displayName: "Text",
-                            plugins: ["typography"],
-                            defaults: {
-                                typography: {
-                                    colorKey: "colors/default",
-                                    fontStyle: "normal",
-                                    fontWeight: "normal"
-                                }
-                            }
-                        }
+                        searchInput: DefaultStyleDefinitions.SearchInput,
+                        productCard: DefaultStyleDefinitions.Card,
+                        cardTitle: DefaultStyleDefinitions.CardTitle,
+                        cardText: DefaultStyleDefinitions.CardText,
+                        widgetText: DefaultStyleDefinitions.WidgetText
                     }
                 }
 
