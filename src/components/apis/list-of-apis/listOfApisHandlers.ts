@@ -81,7 +81,8 @@ export class ListOfApisTilesHandlers implements IWidgetHandler {
                         cardText: DefaultStyleDefinitions.CardText,
                         widgetText: DefaultStyleDefinitions.WidgetText,
                         tagInput: DefaultStyleDefinitions.TagInput,
-                        toggleButtonLabel: DefaultStyleDefinitions.ToggleButtonLabel
+                        toggleButtonLabel: DefaultStyleDefinitions.ToggleButtonLabel,
+                        tagCard: DefaultStyleDefinitions.TagCard
                     }
                 }
             }

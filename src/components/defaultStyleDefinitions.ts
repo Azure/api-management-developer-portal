@@ -302,3 +302,50 @@ export const GridHeader: ComponentStyleDefinition = {
         }
     }
 }
+
+export const TagCard: ComponentStyleDefinition ={
+    displayName: "Tag Card",
+    plugins: ["background", "typography", "padding", "margin", "border"],
+    defaults: {
+        typography: {
+            colorKey: "colors/tagButtonColor",
+        },
+        border: {
+            bottom: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/tagButtonColor"
+            },
+            top: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/tagButtonColor"
+            },
+            left: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/tagButtonColor"
+            },
+            right: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/tagButtonColor"
+            }
+        },
+        margin: {
+            top: 2,
+            right: 2,
+            bottom: 2,
+            left: 2
+        },
+        padding: {
+            top: 2,
+            right: 7,
+            bottom: 2,
+            left: 7
+        },
+        size: {
+            minHeight: "2em"
+        }
+    }
+}

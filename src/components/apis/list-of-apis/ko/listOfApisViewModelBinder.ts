@@ -7,17 +7,15 @@ import { ComponentFlow } from "@paperbits/common/editing";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ListOfApisDropdownHandlers, ListOfApisHandlers, ListOfApisTilesHandlers } from "../listOfApisHandlers";
 
+const handlerForLayout = {
+    list: ListOfApisHandlers,
+    dropdown: ListOfApisDropdownHandlers
+};
 
 export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisModel, ListOfApisViewModel> {
-    private readonly handlerForLayout;
-
     constructor(
         private readonly eventManager: EventManager,
         private readonly styleCompiler: StyleCompiler) {
-        this.handlerForLayout = {
-            list: ListOfApisHandlers,
-            dropdown: ListOfApisDropdownHandlers
-        };
     }
 
     public async modelToViewModel(model: ListOfApisModel, viewModel?: ListOfApisViewModel, bindingContext?: Bag<any>): Promise<ListOfApisViewModel> {
@@ -36,7 +34,7 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
                 : undefined
         }));
 
-        const handler = this.handlerForLayout[model.layout] ?? ListOfApisTilesHandlers;
+        const handler = handlerForLayout[model.layout] ?? ListOfApisTilesHandlers;
 
         viewModel["widgetBinding"] = {
             displayName: "List of APIs" + (model.layout === "list" ? "" : ` (${model.layout})`),

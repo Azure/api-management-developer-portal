@@ -33,52 +33,7 @@ export class OperationListHandlers implements IWidgetHandler {
                         tagInput: DefaultStyleDefinitions.TagInput,
                         toggleButtonLabel: DefaultStyleDefinitions.ToggleButtonLabel,
                         widgetText: DefaultStyleDefinitions.WidgetText,
-                        tagCard: {
-                            displayName: "Tag Card",
-                            plugins: ["background", "typography", "padding", "margin", "border"],
-                            defaults: {
-                                typography: {
-                                    colorKey: "colors/tagButtonColor",
-                                },
-                                border: {
-                                    bottom: {
-                                        width: "1",
-                                        style: "solid",
-                                        colorKey: "colors/tagButtonColor"
-                                    },
-                                    top: {
-                                        width: "1",
-                                        style: "solid",
-                                        colorKey: "colors/tagButtonColor"
-                                    },
-                                    left: {
-                                        width: "1",
-                                        style: "solid",
-                                        colorKey: "colors/tagButtonColor"
-                                    },
-                                    right: {
-                                        width: "1",
-                                        style: "solid",
-                                        colorKey: "colors/tagButtonColor"
-                                    }
-                                },
-                                margin: {
-                                    top: 2,
-                                    right: 2,
-                                    bottom: 2,
-                                    left: 2
-                                },
-                                padding: {
-                                    top: 2,
-                                    right: 7,
-                                    bottom: 2,
-                                    left: 7
-                                },
-                                size: {
-                                    minHeight: "2em"
-                                }
-                            }
-                        },
+                        tagCard: DefaultStyleDefinitions.TagCard,
                         dropdownInput: DefaultStyleDefinitions.DropdownInput,
                         dropdownInputButton: DefaultStyleDefinitions.DropdownInputButton,
                         dropdownContainer: DefaultStyleDefinitions.DropdownContainer
