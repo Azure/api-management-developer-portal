@@ -17,12 +17,16 @@ export class SubscriptionsModelBinder implements IModelBinder<SubscriptionsModel
     }
 
     public async contractToModel(contract: SubscriptionsContract): Promise<SubscriptionsModel> {
-        return new SubscriptionsModel();
+        const model =  new SubscriptionsModel();
+        model.styles = contract.styles || {};
+
+        return model;
     }
 
     public modelToContract(model: SubscriptionsModel): Contract {
         const contract: SubscriptionsContract = {
-            type: nodeType
+            type: nodeType,
+            styles: model.styles
         };
 
         return contract;

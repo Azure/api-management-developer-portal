@@ -1,5 +1,7 @@
 ﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+import { StyleDefinition } from "@paperbits/common/styles";
 import { SubscriptionsModel } from "./subscriptionsModel";
+import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
 
 export class SubscriptionsHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -13,5 +15,20 @@ export class SubscriptionsHandlers implements IWidgetHandler {
         };
 
         return widgetOrder;
+    }
+
+    public getStyleDefinitions(): StyleDefinition {
+        return {
+            components: {
+                userSubscriptions: {
+                    displayName: "User: Subscriptions",
+                    plugins: ["typography", "background", "margin", "padding"],
+                    components: {
+                        subscriptionsGridHeader: DefaultStyleDefinitions.GridHeader,
+                        subscriptionsGridRow: DefaultStyleDefinitions.GridRow
+                    }
+                }
+            }
+        };
     }
 }
