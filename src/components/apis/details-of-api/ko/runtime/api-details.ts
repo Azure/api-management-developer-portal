@@ -6,6 +6,7 @@ import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
+import { toHast } from "mdast-util-to-hast";
 
 
 @RuntimeComponent({
@@ -93,6 +94,10 @@ export class ApiDetails {
 
         this.currentApiVersion(api.name);
         this.api(api);
+
+        this.api().contact ={ email: " f", name:"vejk", url:"nvwa"};
+        this.api().license = {name:"enwiovgw", url:"fnwiqoegneqio"}
+        this.api().termsOfServiceUrl= " fneigneow"
 
         this.working(false);
     }

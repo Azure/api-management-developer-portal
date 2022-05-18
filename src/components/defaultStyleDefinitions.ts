@@ -303,7 +303,7 @@ export const GridHeader: ComponentStyleDefinition = {
     }
 }
 
-export const TagCard: ComponentStyleDefinition ={
+export const TagCard: ComponentStyleDefinition = {
     displayName: "Tag Card",
     plugins: ["background", "typography", "padding", "margin", "border"],
     defaults: {
@@ -346,6 +346,50 @@ export const TagCard: ComponentStyleDefinition ={
         },
         size: {
             minHeight: "2em"
+        }
+    }
+}
+
+export const Combobox: ComponentStyleDefinition = {
+    displayName: "Combobox",
+    plugins: ["background", "typography", "border"],
+    defaults: {
+        border: {
+            bottom: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/borderColor"
+            },
+            top: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/borderColor"
+            },
+            left: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/borderColor"
+            },
+            right: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/borderColor"
+            }
+        },
+        margin: {
+            top: 5,
+            right: 10,
+            bottom: 20
+        },
+        padding: {
+            top: 7,
+            left: 10,
+            right: 10,
+            bottom: 5
+        },
+        typography: {
+            fontSize: "1rem",
+            colorKey: "colors/borderColor"
         }
     }
 }
