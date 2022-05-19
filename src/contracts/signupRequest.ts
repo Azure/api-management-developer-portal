@@ -1,7 +1,10 @@
+import { CaptchaChallengeRequest } from "./captchaParams";
+
 /**
  * Cotract of user sign up request
  */
 export interface SignupRequest {
+    challenge: CaptchaChallengeRequest,
     solution: string;
     token: string;
     type: string;

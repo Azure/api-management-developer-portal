@@ -62,8 +62,10 @@ const runtimeConfig = {
         new CopyWebpackPlugin({
             patterns: [
                 { from: `./src/themes/website/styles/fonts`, to: "styles/fonts" },
-                { from: `node_modules/monaco-editor/min/vs`, to: `assets/monaco-editor/vs` },
-                { from: `./src/themes/website/assets` }
+                { from: `./src/themes/website/assets` },
+                { from: `./js/HipObject.js`, to: "scripts/js" },
+                { from: `./src/themes/website/images`, to: `assets/images` },
+                { from: `node_modules/monaco-editor/min/vs`, to: `assets/monaco-editor/vs` }
             ]
         }),
         new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
