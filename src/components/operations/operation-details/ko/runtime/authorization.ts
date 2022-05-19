@@ -211,14 +211,14 @@ export class Authorization {
         await this.sessionManager.removeItem(oauthSessionKey);
 
         if (grantTypeChanged) {
-            this.removeAuthorizationHeader();
+            this.removeAuthorizationHeader(true);
         }
     }
 
-    private removeAuthorizationHeader(): void {
+    private removeAuthorizationHeader(clearValue: boolean = false): void {
         const authorizationHeader = this.findHeader(KnownHttpHeaders.Authorization);
 
-        if (authorizationHeader && authorizationHeader.required) {
+        if (clearValue && authorizationHeader && authorizationHeader.required) {
             authorizationHeader.value(null);
         } else {
             this.removeHeader(authorizationHeader);
