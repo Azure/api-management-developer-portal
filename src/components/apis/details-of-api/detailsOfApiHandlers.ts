@@ -20,7 +20,6 @@ export class DetailsOfApiHandlers implements IWidgetHandler {
     }
     public getStyleDefinitions(): StyleDefinition {
         return {
-
             colors: {
                 badgeColor: {
                     displayName: "API type badge color",
@@ -45,7 +44,7 @@ export class DetailsOfApiHandlers implements IWidgetHandler {
                             plugins: ["background", "typography", "border", "padding", "margin"],
                             defaults: {
                                 typography: {
-                                    colorKey: "colors/borderColor",
+                                    colorKey: "colors/badgeColor",
                                     fontWeight: "normal",
                                     fontSize: "10px",
                                     fontFamily: "Menlo,Monaco,Consolas,\"Courier New\",monospace"
@@ -54,22 +53,22 @@ export class DetailsOfApiHandlers implements IWidgetHandler {
                                     bottom: {
                                         width: "1",
                                         style: "solid",
-                                        colorKey: "colors/borderColor"
+                                        colorKey: "colors/badgeColor"
                                     },
                                     top: {
                                         width: "1",
                                         style: "solid",
-                                        colorKey: "colors/borderColor"
+                                        colorKey: "colors/badgeColor"
                                     },
                                     left: {
                                         width: "1",
                                         style: "solid",
-                                        colorKey: "colors/borderColor"
+                                        colorKey: "colors/badgeColor"
                                     },
                                     right: {
                                         width: "1",
                                         style: "solid",
-                                        colorKey: "colors/borderColor"
+                                        colorKey: "colors/badgeColor"
                                     }
                                 },
                                 padding: {

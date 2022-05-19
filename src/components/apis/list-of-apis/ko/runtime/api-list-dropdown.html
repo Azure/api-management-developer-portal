@@ -30,7 +30,7 @@
             <!-- ko ifnot: working -->
             <!-- ko foreach: { data: apiGroups, as: 'group' } -->
             <div class="tag-group">
-                <span class="tag-item" role="group" data-bind="text: group.tag"></span>
+                <span class="tag-card" role="group" data-bind="text: group.tag"></span>
             </div>
             <div class="menu menu-vertical" role="list">
                 <!-- ko foreach: { data: group.items, as: 'item' } -->

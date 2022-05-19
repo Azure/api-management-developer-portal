@@ -38,7 +38,13 @@ export class ListOfApisHandlers implements IWidgetHandler {
                     defaults: {
                         value: "#555"
                     }
-                }
+                },
+                /*badgeColor: {
+                    displayName: "API type badge color",
+                    defaults: {
+                        value: "red"
+                    }
+                }*/
             },
             components: {
                 listOfApis: {
@@ -56,6 +62,7 @@ export class ListOfApisHandlers implements IWidgetHandler {
         };
     }
 }
+
 export class ListOfApisTilesHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
@@ -69,6 +76,7 @@ export class ListOfApisTilesHandlers implements IWidgetHandler {
 
         return widgetOrder;
     }
+
     public getStyleDefinitions(): StyleDefinition {
         return {
             components: {
@@ -90,6 +98,7 @@ export class ListOfApisTilesHandlers implements IWidgetHandler {
         };
     }
 }
+
 export class ListOfApisDropdownHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
@@ -123,6 +132,7 @@ export class ListOfApisDropdownHandlers implements IWidgetHandler {
                         dropdownInputButton: cloneDeep(DefaultStyleDefinitions.DropdownInputButton),
                         dropdownContainer: cloneDeep(DefaultStyleDefinitions.DropdownContainer),
                         searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
+                        tagCard: cloneDeep(DefaultStyleDefinitions.TagCard)
                     }
                 }
             }
