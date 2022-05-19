@@ -38,7 +38,7 @@ export class ConsoleHeader {
         this.description = "Additional header.";
 
         this.value.subscribe(() => {
-            this.displayedValue((this.secret && !this.revealed()) ? this.value().replace(/./g, '•') : this.value());
+            this.displayedValue((this.secret && !this.revealed()) ? this.value()?.replace(/./g, '•') : this.value());
         });
         this.revealed.subscribe(() => {
             this.displayedValue((this.secret && !this.revealed()) ? this.value().replace(/./g, '•') : this.value());
