@@ -1,4 +1,4 @@
-import * as Msal from "msal";
+import * as msal from "@azure/msal-browser";
 import * as Constants from "../constants";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { HttpClient } from "@paperbits/common/http";
@@ -11,7 +11,7 @@ import { IAadService } from "./IAadService";
 /**
  * Service for operations with Azure Active Directory identity provider.
  */
-export class AadService implements IAadService {
+export class AadServiceV2 implements IAadService {
     constructor(
         private readonly router: Router,
         private readonly routeHelper: RouteHelper,
@@ -59,7 +59,7 @@ export class AadService implements IAadService {
      * @param {string} replyUrl - Reply URL, e.g. `https://contoso.com/signin-aad`.
      */
     public async signInWithAad(clientId: string, authority: string, signinTenant: string, replyUrl?: string): Promise<void> {
-        console.log("Msal v1");
+        console.log("Msal v2");
         if (!clientId) {
             throw new Error(`Parameter "clientId" not specified.`);
         }
@@ -76,12 +76,12 @@ export class AadService implements IAadService {
         const metadataResponse = await this.httpClient.send({ url: `${authorityUrl}/.well-known/openid-configuration` });
         const metadata = metadataResponse.toText();
 
-        const msalConfig: Msal.Configuration = {
+        const msalConfig: msal.Configuration = {
             auth: {
                 clientId: clientId,
                 authority: authorityUrl,
-                validateAuthority: true,
-                authorityMetadata: metadata
+                authorityMetadata: metadata,
+                knownAuthorities: [authority]
             }
         };
 
@@ -89,16 +89,16 @@ export class AadService implements IAadService {
             msalConfig.auth.redirectUri = replyUrl;
         }
 
-        const msalInstance = new Msal.UserAgentApplication(msalConfig);
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
 
         const loginRequest = {
-            scopes: []
+            scopes: ['openid']
         };
 
         const response = await msalInstance.loginPopup(loginRequest);
 
-        if (response.idToken && response.idToken.rawIdToken) {
-            await this.exchangeIdToken(response.idToken.rawIdToken, Constants.IdentityProviders.aad);
+        if (response.idToken) {
+            await this.exchangeIdToken(response.idToken, Constants.IdentityProviders.aad);
         }
     }
 
@@ -111,7 +111,7 @@ export class AadService implements IAadService {
      * @param {string} replyUrl - Reply URL, e.g. `https://contoso.com/signin`.
      */
     public async runAadB2CUserFlow(clientId: string, tenant: string, instance: string, userFlow: string, replyUrl?: string): Promise<void> {
-        console.log("Msal v1");
+        console.log("Msal v2");
         if (!clientId) {
             throw new Error(`Parameter "clientId" not specified.`);
         }
@@ -130,11 +130,11 @@ export class AadService implements IAadService {
 
         const auth = `https://${tenant}/tfp/${instance}/${userFlow}`;
 
-        const msalConfig: Msal.Configuration = {
+        const msalConfig: msal.Configuration = {
             auth: {
                 clientId: clientId,
                 authority: auth,
-                validateAuthority: false,
+                knownAuthorities: [tenant]
             }
         };
 
@@ -142,7 +142,7 @@ export class AadService implements IAadService {
             msalConfig.auth.redirectUri = replyUrl;
         }
 
-        const msalInstance = new Msal.UserAgentApplication(msalConfig);
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
 
         const loginRequest = {
             scopes: ["openid", "email", "profile"]
@@ -150,8 +150,8 @@ export class AadService implements IAadService {
 
         const response = await msalInstance.loginPopup(loginRequest);
 
-        if (response.idToken && response.idToken.rawIdToken) {
-            await this.exchangeIdToken(response.idToken.rawIdToken, Constants.IdentityProviders.aadB2C);
+        if (response.idToken) {
+            await this.exchangeIdToken(response.idToken, Constants.IdentityProviders.aadB2C);
         }
     }
 
@@ -169,8 +169,8 @@ export class AadService implements IAadService {
         }
 
         const msalConfig = {};
-        const msalInstance = new Msal.UserAgentApplication(<any>msalConfig);
-        await msalInstance.loginPopup(msalConfig);
+        const msalInstance = new msal.PublicClientApplication(<any>msalConfig);
+        await msalInstance.loginPopup();
 
         window.close();
     }
