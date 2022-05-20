@@ -39,7 +39,7 @@ export class ProductListHandlers implements IWidgetHandler {
                     displayName: "Product List",
                     plugins: ["margin", "padding", "typography", "background"],
                     components: {
-                        searchInput:cloneDeep(DefaultStyleDefinitions.SearchInput),
+                        searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
                         productsGridRow: cloneDeep(DefaultStyleDefinitions.GridRow),
                         productsGridHeader: cloneDeep(DefaultStyleDefinitions.GridHeader),
                     }
@@ -121,6 +121,14 @@ export class ProductListTilesHandlers implements IWidgetHandler {
 
     public getStyleDefinitions(): StyleDefinition {
         return {
+            colors: {
+                borderColor: {
+                    displayName: "Search input border color",
+                    defaults: {
+                        value: "#505050"
+                    }
+                }
+            },
             components: {
                 productListTiles: {
                     displayName: "List of products (tiles)",

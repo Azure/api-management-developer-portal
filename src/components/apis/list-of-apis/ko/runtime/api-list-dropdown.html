@@ -4,13 +4,13 @@
             <span data-bind="text: selection"></span>
             <!-- ko if: selectedApi() -->
             <!-- ko if: selectedApi().type === 'soap' -->
-            <span class="badge badge-soap">SOAP</span>
+            <span class="badge api-type-badge">SOAP</span>
             <!-- /ko -->
             <!-- ko if: selectedApi().type === 'websocket' -->
-            <span class="badge badge-soap">WebSocket</span>
+            <span class="badge api-type-badge">WebSocket</span>
             <!-- /ko -->
             <!-- ko if: selectedApi().type === 'graphql' -->
-            <span class="badge badge-soap">GraphQL</span>
+            <span class="badge api-type-badge">GraphQL</span>
             <!-- /ko -->
             <!-- /ko -->
         </div>
@@ -38,13 +38,13 @@
                     data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedApiName() === item.name }">
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.type === 'soap' -->
-                    <span class="badge badge-soap">SOAP</span>
+                    <span class="badge api-type-badge">SOAP</span>
                     <!-- /ko -->
                     <!-- ko if: item.type === 'websocket' -->
-                    <span class="badge badge-soap">WebSocket</span>
+                    <span class="badge api-type-badge">WebSocket</span>
                     <!-- /ko -->
                     <!-- ko if: item.type === 'graphql' -->
-                    <span class="badge badge-soap">GraphQL</span>
+                    <span class="badge api-type-badge">GraphQL</span>
                     <!-- /ko -->
                     <!-- ko if: item.apiVersion -->
                     - <span data-bind="text: item.apiVersion"></span>

@@ -393,3 +393,50 @@ export const Combobox: ComponentStyleDefinition = {
         }
     }
 }
+
+export const ApiTypeBadge: ComponentStyleDefinition = {
+    displayName: "API Type Badge",
+    plugins: ["background", "typography", "border", "padding", "margin"],
+    defaults: {
+        typography: {
+            colorKey: "colors/badgeColor",
+            fontWeight: "normal",
+            fontSize: "10px",
+            fontFamily: "Menlo,Monaco,Consolas,\"Courier New\",monospace"
+        },
+        border: {
+            bottom: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/badgeColor"
+            },
+            top: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/badgeColor"
+            },
+            left: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/badgeColor"
+            },
+            right: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/badgeColor"
+            }
+        },
+        padding: {
+            top: 0,
+            right: 2,
+            bottm: 0,
+            left: 2
+        },
+        margin: {
+            top: 2,
+            right: 2,
+            bottm: 2,
+            left: 2
+        },
+    }
+}

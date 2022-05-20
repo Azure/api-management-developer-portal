@@ -9,13 +9,13 @@
         <h1 class="title-text">
             <span data-bind="text: api().displayName"></span>
             <!-- ko if: api().type === 'soap' -->
-            <span class="badge badge-soap">SOAP</span>
+            <span class="badge api-type-badge">SOAP</span>
             <!-- /ko -->
             <!-- ko if: api().type === 'websocket' -->
-            <span class="badge badge-soap">WebSocket</span>
+            <span class="badge api-type-badge">WebSocket</span>
             <!-- /ko -->
             <!-- ko if: api().type === 'graphql' -->
-            <span class="api-type-badge">GraphQL</span>
+            <span class="badge api-type-badge">GraphQL</span>
             <!-- /ko -->
         </h1>
 

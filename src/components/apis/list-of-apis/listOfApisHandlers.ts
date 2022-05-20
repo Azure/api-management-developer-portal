@@ -38,13 +38,7 @@ export class ListOfApisHandlers implements IWidgetHandler {
                     defaults: {
                         value: "#555"
                     }
-                },
-                /*badgeColor: {
-                    displayName: "API type badge color",
-                    defaults: {
-                        value: "red"
-                    }
-                }*/
+                }
             },
             components: {
                 listOfApis: {
@@ -79,6 +73,20 @@ export class ListOfApisTilesHandlers implements IWidgetHandler {
 
     public getStyleDefinitions(): StyleDefinition {
         return {
+            colors: {
+                borderColor: {
+                    displayName: "Search input border color",
+                    defaults: {
+                        value: "#505050"
+                    }
+                },
+                tagButtonColor: {
+                    displayName: "Tag button color",
+                    defaults: {
+                        value: "#555"
+                    }
+                }
+            },
             components: {
                 listOfApisTiles: {
                     displayName: "List of APIs Tiles",
@@ -121,6 +129,24 @@ export class ListOfApisDropdownHandlers implements IWidgetHandler {
                     defaults: {
                         value: "#252525"
                     }
+                },
+                badgeColor: {
+                    displayName: "API type badge color",
+                    defaults: {
+                        value: "#636363"
+                    }
+                },
+                borderColor: {
+                    displayName: "Search input border color",
+                    defaults: {
+                        value: "#505050"
+                    }
+                },
+                tagButtonColor: {
+                    displayName: "Tag button color",
+                    defaults: {
+                        value: "#555"
+                    }
                 }
             },
             components: {
@@ -132,7 +158,8 @@ export class ListOfApisDropdownHandlers implements IWidgetHandler {
                         dropdownInputButton: cloneDeep(DefaultStyleDefinitions.DropdownInputButton),
                         dropdownContainer: cloneDeep(DefaultStyleDefinitions.DropdownContainer),
                         searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
-                        tagCard: cloneDeep(DefaultStyleDefinitions.TagCard)
+                        tagCard: cloneDeep(DefaultStyleDefinitions.TagCard),
+                        apiTypeBadge: cloneDeep(DefaultStyleDefinitions.ApiTypeBadge)
                     }
                 }
             }
