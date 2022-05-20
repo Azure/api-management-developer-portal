@@ -2,6 +2,7 @@
 import { StyleDefinition } from "@paperbits/common/styles";
 import { SubscriptionsModel } from "./subscriptionsModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
+import { cloneDeep } from "lodash";
 
 export class SubscriptionsHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -19,13 +20,21 @@ export class SubscriptionsHandlers implements IWidgetHandler {
 
     public getStyleDefinitions(): StyleDefinition {
         return {
+            colors: {
+                gridBorderColor: {
+                    displayName: "Grid separators color",
+                    defaults: {
+                        value: "#dee2e6"
+                    }
+                },
+            },
             components: {
                 userSubscriptions: {
                     displayName: "User: Subscriptions",
                     plugins: ["typography", "background", "margin", "padding"],
                     components: {
-                        subscriptionsGridHeader: DefaultStyleDefinitions.GridHeader,
-                        subscriptionsGridRow: DefaultStyleDefinitions.GridRow
+                        tableHeader: cloneDeep(DefaultStyleDefinitions.GridHeader),
+                        tableRow: cloneDeep(DefaultStyleDefinitions.GridRow)
                     }
                 }
             }
