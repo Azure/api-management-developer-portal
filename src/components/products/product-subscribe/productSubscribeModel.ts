@@ -9,7 +9,5 @@ export class ProductSubscribeModel {
     /**
     * Widget local styles.
     */
-    public styles: LocalStyles;
-
-
+    public styles: LocalStyles = {};
 }

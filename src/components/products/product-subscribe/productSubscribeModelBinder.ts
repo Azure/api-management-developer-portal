@@ -17,7 +17,7 @@ export class ProductSubscribeModelBinder implements IModelBinder<ProductSubscrib
 		const model = new ProductSubscribeModel();
 		
 	    model.showTermsByDefault = contract.showTermsByDefault;
-        model.styles = contract.styles || {};
+        model.styles = contract.styles ?? {};
 			   
 	    return model;
     }

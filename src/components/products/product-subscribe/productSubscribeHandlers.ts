@@ -88,10 +88,7 @@ export class ProductSubscribeHandlers implements IWidgetHandler {
                         subscribeButton:{
                             displayName: "Button",
                             plugins:["background","typography","states","shadow","size","margin","border","padding"],
-                            defaults:{
-                                category:"appearance",
-                                appearance: "components/button/default",
-                            }
+                           
                         }
                     }
                 }
