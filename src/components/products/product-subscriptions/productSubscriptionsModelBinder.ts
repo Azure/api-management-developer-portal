@@ -14,7 +14,7 @@ export class ProductSubscriptionsModelBinder implements IModelBinder<ProductSubs
 
     public async contractToModel(contract: ProductSubscriptionsContract): Promise<ProductSubscriptionsModel> {
         const model = new ProductSubscriptionsModel();
-        model.styles = contract.styles || {};
+        model.styles = contract.styles ?? {};
 
         return model;
     }

@@ -5,5 +5,5 @@ export interface ProductSubscriptionsContract extends Contract {
     /**
     * Widget local styles.
     */
-    styles: LocalStyles;
+    styles?: LocalStyles;
 }
