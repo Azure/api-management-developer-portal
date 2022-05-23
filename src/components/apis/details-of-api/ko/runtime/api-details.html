@@ -23,7 +23,7 @@
             <div class="form-group">
                 <!-- ko if: versionApis().length > 0 -->
                 <label for="apiVersions">API version: </label>
-                <select id="apiVersions" class="api-versions-combobox"
+                <select id="apiVersions" class="form-control api-versions-combobox"
                     data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: currentApiVersion">
                 </select>
                 <!-- /ko -->
