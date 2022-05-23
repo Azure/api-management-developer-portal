@@ -2,6 +2,7 @@
 import { StyleDefinition } from "@paperbits/common/styles";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
 import { ListOfApisModel } from "./listOfApisModel";
+import { cloneDeep } from "lodash";
 
 export class ListOfApisHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -44,17 +45,18 @@ export class ListOfApisHandlers implements IWidgetHandler {
                     displayName: "List of APIs",
                     plugins: ["margin", "padding", "typography"],
                     components: {
-                        searchInput: DefaultStyleDefinitions.SearchInput,
-                        apisGridRow: DefaultStyleDefinitions.GridRow,
-                        apisGridHeader: DefaultStyleDefinitions.GridHeader,
-                        tagInput: DefaultStyleDefinitions.TagInput,
-                        toggleButtonLabel: DefaultStyleDefinitions.ToggleButtonLabel
+                        searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
+                        apisGridRow: cloneDeep(DefaultStyleDefinitions.GridRow),
+                        apisGridHeader: cloneDeep(DefaultStyleDefinitions.GridHeader),
+                        tagInput: cloneDeep(DefaultStyleDefinitions.TagInput),
+                        toggleButtonLabel: cloneDeep(DefaultStyleDefinitions.ToggleButtonLabel)
                     }
                 }
             }
         };
     }
 }
+
 export class ListOfApisTilesHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
@@ -68,27 +70,43 @@ export class ListOfApisTilesHandlers implements IWidgetHandler {
 
         return widgetOrder;
     }
+
     public getStyleDefinitions(): StyleDefinition {
         return {
+            colors: {
+                borderColor: {
+                    displayName: "Search input border color",
+                    defaults: {
+                        value: "#505050"
+                    }
+                },
+                tagButtonColor: {
+                    displayName: "Tag button color",
+                    defaults: {
+                        value: "#555"
+                    }
+                }
+            },
             components: {
                 listOfApisTiles: {
                     displayName: "List of APIs Tiles",
                     plugins: ["margin", "padding", "background", "typography"],
                     components: {
-                        searchInput: DefaultStyleDefinitions.SearchInput,
-                        apiCard: DefaultStyleDefinitions.Card,
-                        cardTitle: DefaultStyleDefinitions.CardTitle,
-                        cardText: DefaultStyleDefinitions.CardText,
-                        widgetText: DefaultStyleDefinitions.WidgetText,
-                        tagInput: DefaultStyleDefinitions.TagInput,
-                        toggleButtonLabel: DefaultStyleDefinitions.ToggleButtonLabel,
-                        tagCard: DefaultStyleDefinitions.TagCard
+                        searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
+                        apiCard: cloneDeep(DefaultStyleDefinitions.Card),
+                        cardTitle: cloneDeep(DefaultStyleDefinitions.CardTitle),
+                        cardText: cloneDeep(DefaultStyleDefinitions.CardText),
+                        widgetText: cloneDeep(DefaultStyleDefinitions.WidgetText),
+                        tagInput: cloneDeep(DefaultStyleDefinitions.TagInput),
+                        toggleButtonLabel: cloneDeep(DefaultStyleDefinitions.ToggleButtonLabel),
+                        tagCard: cloneDeep(DefaultStyleDefinitions.TagCard)
                     }
                 }
             }
         };
     }
 }
+
 export class ListOfApisDropdownHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
@@ -111,6 +129,24 @@ export class ListOfApisDropdownHandlers implements IWidgetHandler {
                     defaults: {
                         value: "#252525"
                     }
+                },
+                badgeColor: {
+                    displayName: "API type badge color",
+                    defaults: {
+                        value: "#636363"
+                    }
+                },
+                borderColor: {
+                    displayName: "Search input border color",
+                    defaults: {
+                        value: "#505050"
+                    }
+                },
+                tagButtonColor: {
+                    displayName: "Tag button color",
+                    defaults: {
+                        value: "#555"
+                    }
                 }
             },
             components: {
@@ -118,10 +154,12 @@ export class ListOfApisDropdownHandlers implements IWidgetHandler {
                     displayName: "List of APIs Dropdown",
                     plugins: ["margin", "padding", "typography", "background"],
                     components: {
-                        dropdownInput: DefaultStyleDefinitions.DropdownInput,
-                        dropdownInputButton: DefaultStyleDefinitions.DropdownInputButton,
-                        dropdownContainer: DefaultStyleDefinitions.DropdownContainer,
-                        searchInput: DefaultStyleDefinitions.SearchInput,
+                        dropdownInput: cloneDeep(DefaultStyleDefinitions.DropdownInput),
+                        dropdownInputButton: cloneDeep(DefaultStyleDefinitions.DropdownInputButton),
+                        dropdownContainer: cloneDeep(DefaultStyleDefinitions.DropdownContainer),
+                        searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
+                        tagCard: cloneDeep(DefaultStyleDefinitions.TagCard),
+                        apiTypeBadge: cloneDeep(DefaultStyleDefinitions.ApiTypeBadge)
                     }
                 }
             }
