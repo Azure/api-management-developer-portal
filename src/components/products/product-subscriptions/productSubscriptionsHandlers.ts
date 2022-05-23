@@ -36,7 +36,7 @@ export class ProductSubscriptionsHandlers implements IWidgetHandler {
                     components:
                     {
                         tableRow: cloneDeep(DefaultStyleDefinitions.GridRow),
-                        tableHeader: cloneDeep(DefaultStyleDefinitions.GridHeader),
+                        tableHead: cloneDeep(DefaultStyleDefinitions.GridHeader),
                     }
                 }
             }
