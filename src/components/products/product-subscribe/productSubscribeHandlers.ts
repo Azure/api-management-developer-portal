@@ -1,6 +1,8 @@
 ﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { StyleDefinition } from "@paperbits/common/styles";
 import { ProductSubscribeModel } from "./productSubscribeModel";
+import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions"
+import { cloneDeep } from "lodash";
 
 export class ProductSubscribeHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -18,6 +20,14 @@ export class ProductSubscribeHandlers implements IWidgetHandler {
 
     public getStyleDefinitions(): StyleDefinition {
         return {
+            colors: {
+                borderColor: {
+                    displayName: "Input border color",
+                    defaults: {
+                        value: "#505050"
+                    }
+                }
+            },
             components: {
                 productSubscribe: {
                     displayName: "Product Subscribe",
@@ -28,55 +38,7 @@ export class ProductSubscribeHandlers implements IWidgetHandler {
                         }
                     },
                     components: {
-                        subscriptionInput: {
-                            displayName: "Input",
-                            plugins: ["typography", "background", "border"],
-                            defaults: {
-                                typography: {
-                                    colorKey: "colors/default",
-                                    fontStyle: "normal",
-                                    fontWeight: "normal",
-                                    fontSize: "1rem"
-                                },
-                                border: {
-                                    bottom: {
-                                        width: "1px",
-                                        style: "solid",
-                                        colorKey: "colors/borderColor"
-                                    },
-                                    top: {
-                                        width: "1px",
-                                        style: "solid",
-                                        colorKey: "colors/borderColor"
-                                    },
-                                    left: {
-                                        width: "1px",
-                                        style: "solid",
-                                        colorKey: "colors/borderColor"
-                                    },
-                                    right: {
-                                        width: "1px",
-                                        style: "solid",
-                                        colorKey: "colors/borderColor"
-                                    },
-
-                                },
-                                padding: {
-                                    top: 7,
-                                    left: 10,
-                                    right: 10,
-                                    bottom: 5
-                                },
-                                margin: {
-                                    top: 5,
-                                    right: 10,
-                                    bottom: 20
-                                },
-                                size: {
-                                    width: "100%"
-                                }
-                            }
-                        },
+                        subscriptionInput: cloneDeep(DefaultStyleDefinitions.Input),
                         termsOfUseCheckbox: {
                             displayName: "Terms Of Use Checkbox",
                             plugins: ["typography"]
@@ -85,10 +47,10 @@ export class ProductSubscribeHandlers implements IWidgetHandler {
                             displayName: "Terms Of Use",
                             plugins: ["backround", "typography", "size", "border"]
                         },
-                        subscribeButton:{
+                        subscribeButton: {
                             displayName: "Button",
-                            plugins:["background","typography","states","shadow","size","margin","border","padding"],
-                           
+                            plugins: ["background", "typography", "states", "shadow", "size", "margin", "border", "padding"],
+
                         }
                     }
                 }

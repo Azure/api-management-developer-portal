@@ -22,7 +22,7 @@ export class ProductListHandlers implements IWidgetHandler {
         return {
             colors: {
                 borderColor: {
-                    displayName: "Search input border color",
+                    displayName: "Input border color",
                     defaults: {
                         value: "#505050"
                     }
