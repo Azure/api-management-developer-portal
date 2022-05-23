@@ -14,7 +14,7 @@ export class DetailsOfApiModelBinder implements IModelBinder<DetailsOfApiModel> 
 
     public async contractToModel(contract: DetailsOfApiContract): Promise<DetailsOfApiModel> {
         const model = new DetailsOfApiModel();
-        model.styles = contract.styles || {};
+        model.styles = contract.styles ?? {};
         
         if (contract.changeLogPageHyperlink) {
             model.changeLogPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.changeLogPageHyperlink);

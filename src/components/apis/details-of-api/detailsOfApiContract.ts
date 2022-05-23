@@ -10,5 +10,5 @@ export interface DetailsOfApiContract extends Contract {
     /**
      * Widget local styles.
      */
-    styles: LocalStyles;
+    styles?: LocalStyles;
 }

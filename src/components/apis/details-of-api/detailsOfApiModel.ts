@@ -10,5 +10,5 @@ export class DetailsOfApiModel {
     /**
      * Widget local styles.
      */
-    styles: LocalStyles;
+    styles: LocalStyles = {};
 }

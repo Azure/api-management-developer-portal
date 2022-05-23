@@ -95,10 +95,6 @@ export class ApiDetails {
         this.currentApiVersion(api.name);
         this.api(api);
 
-        this.api().contact ={ email: " f", name:"vejk", url:"nvwa"};
-        this.api().license = {name:"enwiovgw", url:"fnwiqoegneqio"}
-        this.api().termsOfServiceUrl= " fneigneow"
-
         this.working(false);
     }
 
