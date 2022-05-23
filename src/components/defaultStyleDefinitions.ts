@@ -303,7 +303,7 @@ export const GridHeader: ComponentStyleDefinition = {
     }
 }
 
-export const TagCard: ComponentStyleDefinition ={
+export const TagCard: ComponentStyleDefinition = {
     displayName: "Tag Card",
     plugins: ["background", "typography", "padding", "margin", "border"],
     defaults: {
@@ -347,5 +347,96 @@ export const TagCard: ComponentStyleDefinition ={
         size: {
             minHeight: "2em"
         }
+    }
+}
+
+export const Combobox: ComponentStyleDefinition = {
+    displayName: "Combobox",
+    plugins: ["background", "typography", "border"],
+    defaults: {
+        border: {
+            bottom: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/borderColor"
+            },
+            top: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/borderColor"
+            },
+            left: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/borderColor"
+            },
+            right: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/borderColor"
+            }
+        },
+        margin: {
+            top: 5,
+            right: 10,
+            bottom: 20
+        },
+        padding: {
+            top: 7,
+            left: 10,
+            right: 10,
+            bottom: 5
+        },
+        typography: {
+            fontSize: "1rem",
+            colorKey: "colors/borderColor"
+        }
+    }
+}
+
+export const ApiTypeBadge: ComponentStyleDefinition = {
+    displayName: "API Type Badge",
+    plugins: ["background", "typography", "border", "padding", "margin"],
+    defaults: {
+        typography: {
+            colorKey: "colors/badgeColor",
+            fontWeight: "normal",
+            fontSize: "10px",
+            fontFamily: "Menlo,Monaco,Consolas,\"Courier New\",monospace"
+        },
+        border: {
+            bottom: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/badgeColor"
+            },
+            top: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/badgeColor"
+            },
+            left: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/badgeColor"
+            },
+            right: {
+                width: "1",
+                style: "solid",
+                colorKey: "colors/badgeColor"
+            }
+        },
+        padding: {
+            top: 0,
+            right: 2,
+            bottm: 0,
+            left: 2
+        },
+        margin: {
+            top: 2,
+            right: 2,
+            bottm: 2,
+            left: 2
+        },
     }
 }
