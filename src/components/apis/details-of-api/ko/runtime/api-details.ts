@@ -6,8 +6,6 @@ import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
-import { toHast } from "mdast-util-to-hast";
-
 
 @RuntimeComponent({
     selector: "api-details"
