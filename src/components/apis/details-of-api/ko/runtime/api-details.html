@@ -6,16 +6,16 @@
     <!-- ko ifnot: working -->
     <div class="flex-item flex-grow animation-fade-in">
         <!-- ko if: api -->
-        <h1>
+        <h1 class="title-text">
             <span data-bind="text: api().displayName"></span>
             <!-- ko if: api().type === 'soap' -->
-            <span class="badge badge-soap">SOAP</span>
+            <span class="badge api-type-badge">SOAP</span>
             <!-- /ko -->
             <!-- ko if: api().type === 'websocket' -->
-            <span class="badge badge-soap">WebSocket</span>
+            <span class="badge api-type-badge">WebSocket</span>
             <!-- /ko -->
             <!-- ko if: api().type === 'graphql' -->
-            <span class="badge badge-soap">GraphQL</span>
+            <span class="badge api-type-badge">GraphQL</span>
             <!-- /ko -->
         </h1>
 
@@ -23,12 +23,12 @@
             <div class="form-group">
                 <!-- ko if: versionApis().length > 0 -->
                 <label for="apiVersions">API version: </label>
-                <select id="apiVersions" class="form-control"
+                <select id="apiVersions" class="form-control api-versions-combobox"
                     data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: currentApiVersion">
                 </select>
                 <!-- /ko -->
                 <!-- ko if: api().type !== 'websocket' && api().type !== 'graphql' -->
-                <select id="apiDefinitions" class="form-control" aria-label="API definitions"
+                <select id="apiDefinitions" class="form-control api-definitions-combobox" aria-label="API definitions"
                     data-bind="value: downloadSelected">
                     <option value="" disabled="disabled" selected="selected">API definition</option>
                     <option value="openapi">Open API 3 (YAML)</option>
@@ -47,7 +47,7 @@
         </div>
 
         <!-- ko if: api().description  -->
-        <p data-bind="markdown: api().description"></p>
+        <p class="content-inherit-color content-inherit-font-weight content-inherit-font-style" data-bind="markdown: api().description"></p>
         <!-- /ko -->
 
         <!-- ko if: api().contact -->
