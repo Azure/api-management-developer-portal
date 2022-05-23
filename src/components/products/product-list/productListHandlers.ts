@@ -2,6 +2,7 @@
 import { StyleDefinition } from "@paperbits/common/styles";
 import { ProductListModel } from "./productListModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
+import { cloneDeep } from "lodash";
 
 export class ProductListHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -38,9 +39,9 @@ export class ProductListHandlers implements IWidgetHandler {
                     displayName: "Product List",
                     plugins: ["margin", "padding", "typography", "background"],
                     components: {
-                        searchInput: DefaultStyleDefinitions.SearchInput,
-                        productsGridRow: DefaultStyleDefinitions.GridRow,
-                        productsGridHeader: DefaultStyleDefinitions.GridHeader,
+                        searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
+                        productsGridRow: cloneDeep(DefaultStyleDefinitions.GridRow),
+                        productsGridHeader: cloneDeep(DefaultStyleDefinitions.GridHeader),
                     }
                 }
             }
@@ -96,7 +97,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                 }
                             }
                         },
-                        dropdownSearchInput: DefaultStyleDefinitions.SearchInput
+                        dropdownSearchInput: cloneDeep(DefaultStyleDefinitions.SearchInput)
                     }
                 }
             }
@@ -120,16 +121,24 @@ export class ProductListTilesHandlers implements IWidgetHandler {
 
     public getStyleDefinitions(): StyleDefinition {
         return {
+            colors: {
+                borderColor: {
+                    displayName: "Search input border color",
+                    defaults: {
+                        value: "#505050"
+                    }
+                }
+            },
             components: {
                 productListTiles: {
                     displayName: "List of products (tiles)",
                     plugins: ["margin", "padding", "background"],
                     components: {
-                        searchInput: DefaultStyleDefinitions.SearchInput,
-                        productCard: DefaultStyleDefinitions.Card,
-                        cardTitle: DefaultStyleDefinitions.CardTitle,
-                        cardText: DefaultStyleDefinitions.CardText,
-                        widgetText: DefaultStyleDefinitions.WidgetText
+                        searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
+                        productCard: cloneDeep(DefaultStyleDefinitions.Card),
+                        cardTitle: cloneDeep(DefaultStyleDefinitions.CardTitle),
+                        cardText: cloneDeep(DefaultStyleDefinitions.CardText),
+                        widgetText: cloneDeep(DefaultStyleDefinitions.WidgetText)
                     }
                 }
 
