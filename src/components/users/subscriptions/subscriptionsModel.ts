@@ -4,6 +4,6 @@ export class SubscriptionsModel {
     /**
     * Widget local styles.
     */
-    public styles: LocalStyles;
+    public styles: LocalStyles = {};
 
 }
