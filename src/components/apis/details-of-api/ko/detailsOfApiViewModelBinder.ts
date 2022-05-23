@@ -4,11 +4,14 @@ import { DetailsOfApiModel } from "../detailsOfApiModel";
 import { Bag } from "@paperbits/common";
 import { EventManager, Events } from "@paperbits/common/events";
 import { ComponentFlow } from "@paperbits/common/editing";
+import { StyleCompiler } from "@paperbits/common/styles";
+import { DetailsOfApiHandlers } from "../detailsOfApiHandlers";
 
 
 export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApiModel, DetailsOfApiViewModel> {
-    
-    constructor(private readonly eventManager: EventManager) { }
+
+    constructor(private readonly eventManager: EventManager,
+        private readonly styleCompiler: StyleCompiler) { }
 
     public async modelToViewModel(model: DetailsOfApiModel, viewModel?: DetailsOfApiViewModel, bindingContext?: Bag<any>): Promise<DetailsOfApiViewModel> {
         if (!viewModel) {
@@ -26,6 +29,7 @@ export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApi
             layer: bindingContext?.layer,
             model: model,
             draggable: true,
+            handler: DetailsOfApiHandlers,
             flow: ComponentFlow.Block,
             editor: "details-of-api-editor",
             applyChanges: async (updatedModel: DetailsOfApiModel) => {
@@ -33,6 +37,10 @@ export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApi
                 this.eventManager.dispatchEvent(Events.ContentUpdate);
             }
         };
+
+        if (model.styles) {
+            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, DetailsOfApiHandlers));
+        }
 
         return viewModel;
     }
