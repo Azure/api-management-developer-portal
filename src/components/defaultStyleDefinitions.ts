@@ -153,11 +153,30 @@ export function getDropdownContainerStyleDefinition(): ComponentStyleDefinition 
 
 export function getCardStyleDefinition(): ComponentStyleDefinition {
     return {
-        displayName: "Dropdown",
-        plugins: ["background", "typography"],
+        displayName: "Card",
+        plugins: ["background", "shadow", "border", "margin", "padding"],
         defaults: {
-            background: {
-                colorKey: "colors/defaultBg"
+            margin: {
+                left: 0,
+                right: 0,
+                top: 30,
+                bottom: 30
+            },
+            padding: {
+                top: 50,
+                right: 30,
+                bottom: 50,
+                left: 30
+
+            },
+            border: {
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            },
+            shadow: {
+                shadowKey: "shadows/shadow1"
             }
         }
     };
@@ -193,7 +212,7 @@ export function getWidgetTextStyleDefinition(): ComponentStyleDefinition {
 
 export function getTagInputStyleDefinition(): ComponentStyleDefinition {
     return {
-        displayName: "tag input",
+        displayName: "Tag Input",
         plugins: ["background", "border", "typography"],
         defaults: {
             border: {
@@ -259,7 +278,7 @@ export function getToggleButtonLabelStyleDefinition(): ComponentStyleDefinition 
 
 export function getTableRowStyleDefinition(): ComponentStyleDefinition {
     return {
-        displayName: "Grid Row",
+        displayName: "Table Row",
         plugins: ["background", "typography", "border"],
         defaults: {
             border: {
@@ -285,7 +304,7 @@ export function getTableRowStyleDefinition(): ComponentStyleDefinition {
 
 export function getTableHeadStyleDefinition(): ComponentStyleDefinition {
     return {
-        displayName: "Grid Header",
+        displayName: "Table Head",
         plugins: ["background", "typography", "border"],
         defaults: {
             border: {
