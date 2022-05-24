@@ -8,12 +8,11 @@ import { StyleModel } from "@paperbits/common/styles";
     template: template
 })
 export class ProductSubscribeViewModel {
-	public readonly runtimeConfig: ko.Observable<string>;
+    public readonly runtimeConfig: ko.Observable<string>;
     public readonly styles: ko.Observable<StyleModel>;
 
-	constructor() {        
+    constructor() {
         this.runtimeConfig = ko.observable();
         this.styles = ko.observable<StyleModel>();
     }
-	
 }
