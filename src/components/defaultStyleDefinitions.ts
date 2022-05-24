@@ -350,6 +350,55 @@ export const TagCard: ComponentStyleDefinition = {
     }
 }
 
+export const Input: ComponentStyleDefinition ={
+    displayName: "Input",
+    plugins: ["typography", "background", "border"],
+    defaults: {
+        typography: {
+            colorKey: "colors/default",
+            fontStyle: "normal",
+            fontWeight: "normal",
+            fontSize: "1rem"
+        },
+        border: {
+            bottom: {
+                width: "1px",
+                style: "solid",
+                colorKey: "colors/borderColor"
+            },
+            top: {
+                width: "1px",
+                style: "solid",
+                colorKey: "colors/borderColor"
+            },
+            left: {
+                width: "1px",
+                style: "solid",
+                colorKey: "colors/borderColor"
+            },
+            right: {
+                width: "1px",
+                style: "solid",
+                colorKey: "colors/borderColor"
+            },
+
+        },
+        padding: {
+            top: 7,
+            left: 10,
+            right: 10,
+            bottom: 5
+        },
+        margin: {
+            top: 5,
+            right: 10,
+            bottom: 20
+        },
+        size: {
+            width: "100%"
+        }
+    }
+}
 export const Combobox: ComponentStyleDefinition = {
     displayName: "Combobox",
     plugins: ["background", "typography", "border"],
