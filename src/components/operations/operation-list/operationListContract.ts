@@ -39,5 +39,5 @@ export interface OperationListContract extends Contract {
     /**
      * Widget local styles.
      */
-    styles: LocalStyles;
+    styles?: LocalStyles;
 }

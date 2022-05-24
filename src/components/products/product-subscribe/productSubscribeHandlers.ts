@@ -2,7 +2,6 @@
 import { StyleDefinition } from "@paperbits/common/styles";
 import { ProductSubscribeModel } from "./productSubscribeModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions"
-import { cloneDeep } from "lodash";
 
 export class ProductSubscribeHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -38,7 +37,7 @@ export class ProductSubscribeHandlers implements IWidgetHandler {
                         }
                     },
                     components: {
-                        subscriptionInput: cloneDeep(DefaultStyleDefinitions.Input),
+                        subscriptionInput: DefaultStyleDefinitions.getInputStyleDefinition(),
                         termsOfUseCheckbox: {
                             displayName: "Terms Of Use Checkbox",
                             plugins: ["typography"]

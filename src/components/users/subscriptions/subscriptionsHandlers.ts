@@ -2,7 +2,6 @@
 import { StyleDefinition } from "@paperbits/common/styles";
 import { SubscriptionsModel } from "./subscriptionsModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
-import { cloneDeep } from "lodash";
 
 export class SubscriptionsHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -33,8 +32,8 @@ export class SubscriptionsHandlers implements IWidgetHandler {
                     displayName: "User: Subscriptions",
                     plugins: ["typography", "background", "margin", "padding"],
                     components: {
-                        tableHeader: cloneDeep(DefaultStyleDefinitions.GridHeader),
-                        tableRow: cloneDeep(DefaultStyleDefinitions.GridRow)
+                        tableHeader: DefaultStyleDefinitions.getTableHeadStyleDefinition(),
+                        tableRow: DefaultStyleDefinitions.getTableRowStyleDefinition()
                     }
                 }
             }

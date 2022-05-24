@@ -30,7 +30,7 @@ export class ListOfApisModel {
     /**
      * Widget local styles.
      */
-     public styles: LocalStyles;
+    public styles: LocalStyles = {};
 
     constructor(layout?: string) {
         this.layout = layout;

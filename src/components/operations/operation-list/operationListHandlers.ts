@@ -2,7 +2,6 @@
 import { StyleDefinition } from "@paperbits/common/styles";
 import { OperationListModel } from "./operationListModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
-import { cloneDeep } from "lodash";
 
 export class OperationListHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -30,14 +29,14 @@ export class OperationListHandlers implements IWidgetHandler {
                         }
                     },
                     components: {
-                        searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
-                        tagInput: cloneDeep(DefaultStyleDefinitions.TagInput),
-                        toggleButtonLabel: cloneDeep(DefaultStyleDefinitions.ToggleButtonLabel),
-                        widgetText: cloneDeep(DefaultStyleDefinitions.WidgetText),
-                        tagCard: cloneDeep(DefaultStyleDefinitions.TagCard),
-                        dropdownInput: cloneDeep(DefaultStyleDefinitions.DropdownInput),
-                        dropdownInputButton: cloneDeep(DefaultStyleDefinitions.DropdownInputButton),
-                        dropdownContainer: cloneDeep(DefaultStyleDefinitions.DropdownContainer)
+                        searchInput: DefaultStyleDefinitions.getSearchInputStyleDefinition(),
+                        tagInput: DefaultStyleDefinitions.getTagInputStyleDefinition(),
+                        toggleButtonLabel: DefaultStyleDefinitions.getToggleButtonLabelStyleDefinition(),
+                        widgetText: DefaultStyleDefinitions.getWidgetTextStyleDefinition(),
+                        tagCard: DefaultStyleDefinitions.getTagCardStyleDefinition(),
+                        dropdownInput: DefaultStyleDefinitions.getDropdownInputStyleDefinition(),
+                        dropdownInputButton: DefaultStyleDefinitions.getDropdownInputButtonStyleDefinition(),
+                        dropdownContainer: DefaultStyleDefinitions.getDropdownContainerStyleDefinition()
                     }
 
                 }

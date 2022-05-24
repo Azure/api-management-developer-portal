@@ -23,8 +23,8 @@ export class ProductListModel {
     /**
     * Widget local styles.
     */
-    public styles: LocalStyles;
-    
+    public styles: LocalStyles = {};
+
     constructor(layout: string = "list") {
         this.layout = layout;
     }
