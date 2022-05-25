@@ -66,6 +66,7 @@ import { ApiProductsEditorModule } from "./components/apis/api-products/ko/apiPr
 import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
+import { DesignerMapiClient } from "./services/designerMapiClient";
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -124,7 +125,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("policyService", PolicyService);
-        injector.bindSingleton("mapiClient", MapiClient);
+        injector.bindSingleton("mapiClient", DesignerMapiClient);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);

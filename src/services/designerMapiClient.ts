@@ -9,7 +9,7 @@ import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { Page } from "../models/page";
 
-export class MapiClient {
+export class DesignerMapiClient {
     private backendUrl: string;
     private environment: string;
     private developerPortalType: string;
@@ -33,7 +33,7 @@ export class MapiClient {
         const settings = await this.settingsProvider.getSettings();
 
         this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || "self-hosted-portal";
-        this.backendUrl = Utils.getDeveloperEndpoint(settings[Constants.SettingNames.backendUrl]);
+        this.backendUrl = settings[Constants.SettingNames.backendUrl]
 
         if (!this.backendUrl) {
             throw new Error(`Backend API URL ("${Constants.SettingNames.backendUrl}") setting is missing in configuration file.`);
