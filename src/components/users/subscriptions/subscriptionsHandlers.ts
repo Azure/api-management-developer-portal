@@ -32,7 +32,7 @@ export class SubscriptionsHandlers implements IWidgetHandler {
                     displayName: "User: Subscriptions",
                     plugins: ["typography", "background", "margin", "padding"],
                     components: {
-                        tableHeader: DefaultStyleDefinitions.getTableHeadStyleDefinition(),
+                        tableHead: DefaultStyleDefinitions.getTableHeadStyleDefinition(),
                         tableRow: DefaultStyleDefinitions.getTableRowStyleDefinition()
                     }
                 }
