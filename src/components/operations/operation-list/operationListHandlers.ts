@@ -19,6 +19,14 @@ export class OperationListHandlers implements IWidgetHandler {
 
     public getStyleDefinitions(): StyleDefinition {
         return {
+            colors: {
+                tagButtonColor: {
+                    displayName: "Tag button color",
+                    defaults: {
+                        value: "#555"
+                    }
+                }
+            },
             components: {
                 operationList: {
                     displayName: "Operation List",
