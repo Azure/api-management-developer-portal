@@ -20,9 +20,9 @@ export interface ProductListContract extends Contract {
      * Link to a page that contains operation details.
      */
     detailsPageHyperlink?: HyperlinkContract;
-    
+
     /**
     * Widget local styles.
     */
-     styles: LocalStyles;
+    styles?: LocalStyles;
 }

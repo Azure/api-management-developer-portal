@@ -19,7 +19,7 @@ export class ListOfApisModelBinder implements IModelBinder<ListOfApisModel> {
         model.allowSelection = contract.allowSelection;
         model.showApiType = contract.showApiType === undefined ? true : contract.showApiType;
         model.defaultGroupByTagToEnabled = contract.defaultGroupByTagToEnabled === true;
-        model.styles = contract.styles || {};
+        model.styles = contract.styles ?? {};
 
         if (contract.detailsPageHyperlink) {
             model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.detailsPageHyperlink);
