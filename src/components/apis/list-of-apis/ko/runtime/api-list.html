@@ -16,7 +16,7 @@
 
 <div class="table" role="table" aria-label="APIs" >
     <div role="rowgroup" >
-        <div class="apis-grid-header" role="row">
+        <div class="table-head" role="row">
             <div tabindex="0" class="col-5" role="columnheader">Name</div>
 
             <!-- ko if: showApiType -->
@@ -43,7 +43,7 @@
             <span class="tag-item" role="rowgroup" data-bind="text: group.tag"></span>
         </div>
         <!-- ko foreach: { data: group.items, as: 'item' } -->
-        <div class="apis-grid-row" role="row">
+        <div class="table-row" role="row">
             <div class="col-5 text-truncate" role="cell">
                 <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item), title: item.displayName }">
                     <span data-bind="text: item.displayName"></span>
@@ -81,7 +81,7 @@
 
         <!-- ko ifnot: groupByTag -->
         <!-- ko foreach: { data: apis, as: 'item' } -->
-        <div class="apis-grid-row" role="row">
+        <div class="table-row" role="row">
             <div class="col-5 text-truncate" role="cell">
                 <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item), title: item.displayName }">
                     <span data-bind="text: item.displayName"></span>
@@ -107,7 +107,7 @@
         <!-- /ko -->
 
         <!-- ko if: apis().length === 0 -->
-        <div class="apis-grid-row" role="row">
+        <div class="table-row" role="row">
             <div class="col-12">
                 No APIs found
             </div>

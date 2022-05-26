@@ -2,7 +2,6 @@
 import { StyleDefinition } from "@paperbits/common/styles";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
 import { ListOfApisModel } from "./listOfApisModel";
-import { cloneDeep } from "lodash";
 
 export class ListOfApisHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -45,11 +44,11 @@ export class ListOfApisHandlers implements IWidgetHandler {
                     displayName: "List of APIs",
                     plugins: ["margin", "padding", "typography"],
                     components: {
-                        searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
-                        apisGridRow: cloneDeep(DefaultStyleDefinitions.GridRow),
-                        apisGridHeader: cloneDeep(DefaultStyleDefinitions.GridHeader),
-                        tagInput: cloneDeep(DefaultStyleDefinitions.TagInput),
-                        toggleButtonLabel: cloneDeep(DefaultStyleDefinitions.ToggleButtonLabel)
+                        searchInput: DefaultStyleDefinitions.getSearchInputStyleDefinition(),
+                        tableRow: DefaultStyleDefinitions.getTableRowStyleDefinition(),
+                        tableHead: DefaultStyleDefinitions.getTableHeadStyleDefinition(),
+                        tagInput: DefaultStyleDefinitions.getTagInputStyleDefinition(),
+                        toggleButtonLabel: DefaultStyleDefinitions.getToggleButtonLabelStyleDefinition()
                     }
                 }
             }
@@ -92,14 +91,14 @@ export class ListOfApisTilesHandlers implements IWidgetHandler {
                     displayName: "List of APIs Tiles",
                     plugins: ["margin", "padding", "background", "typography"],
                     components: {
-                        searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
-                        apiCard: cloneDeep(DefaultStyleDefinitions.Card),
-                        cardTitle: cloneDeep(DefaultStyleDefinitions.CardTitle),
-                        cardText: cloneDeep(DefaultStyleDefinitions.CardText),
-                        widgetText: cloneDeep(DefaultStyleDefinitions.WidgetText),
-                        tagInput: cloneDeep(DefaultStyleDefinitions.TagInput),
-                        toggleButtonLabel: cloneDeep(DefaultStyleDefinitions.ToggleButtonLabel),
-                        tagCard: cloneDeep(DefaultStyleDefinitions.TagCard)
+                        searchInput: DefaultStyleDefinitions.getSearchInputStyleDefinition(),
+                        apiCard: DefaultStyleDefinitions.getCardStyleDefinition(),
+                        cardTitle: DefaultStyleDefinitions.getCardTitleStyleDefinition(),
+                        cardText: DefaultStyleDefinitions.getCardTextStyleDefinition(),
+                        widgetText: DefaultStyleDefinitions.getWidgetTextStyleDefinition(),
+                        tagInput: DefaultStyleDefinitions.getTagInputStyleDefinition(),
+                        toggleButtonLabel: DefaultStyleDefinitions.getToggleButtonLabelStyleDefinition(),
+                        tagCard: DefaultStyleDefinitions.getTagCardStyleDefinition()
                     }
                 }
             }
@@ -154,12 +153,12 @@ export class ListOfApisDropdownHandlers implements IWidgetHandler {
                     displayName: "List of APIs Dropdown",
                     plugins: ["margin", "padding", "typography", "background"],
                     components: {
-                        dropdownInput: cloneDeep(DefaultStyleDefinitions.DropdownInput),
-                        dropdownInputButton: cloneDeep(DefaultStyleDefinitions.DropdownInputButton),
-                        dropdownContainer: cloneDeep(DefaultStyleDefinitions.DropdownContainer),
-                        searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
-                        tagCard: cloneDeep(DefaultStyleDefinitions.TagCard),
-                        apiTypeBadge: cloneDeep(DefaultStyleDefinitions.ApiTypeBadge)
+                        dropdownInput: DefaultStyleDefinitions.getDropdownInputButtonStyleDefinition(),
+                        dropdownInputButton: DefaultStyleDefinitions.getDropdownInputButtonStyleDefinition(),
+                        dropdownContainer: DefaultStyleDefinitions.getDropdownContainerStyleDefinition(),
+                        searchInput: DefaultStyleDefinitions.getSearchInputStyleDefinition(),
+                        tagCard: DefaultStyleDefinitions.getTagCardStyleDefinition(),
+                        apiTypeBadge: DefaultStyleDefinitions.getApiTypeBadgeStyleDefinition()
                     }
                 }
             }

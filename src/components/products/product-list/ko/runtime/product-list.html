@@ -4,7 +4,7 @@
 </div>
 
 <div class="table">
-    <div class="products-grid-header" role="row">
+    <div class="table-head" role="row">
         
             <div class="col-5">Name</div>
             <div class="col-7">Description</div>
@@ -20,7 +20,7 @@
     <!-- ko ifnot: working -->
     <div class="table-body animation-fade-in">
         <!-- ko foreach: { data: products, as: 'product' } -->
-        <div class="products-grid-row">
+        <div class="table-row">
             <div class="col-5 text-truncate">
                 <a data-bind="attr: { href: $component.getProductUrl(product) }, text: product.displayName"></a>
             </div>

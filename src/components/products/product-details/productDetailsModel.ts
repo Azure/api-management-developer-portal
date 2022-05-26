@@ -4,5 +4,5 @@ export class ProductDetailsModel {
     /**
     * Widget local styles.
     */
-    public styles: LocalStyles;
+    public styles: LocalStyles = {};
 }

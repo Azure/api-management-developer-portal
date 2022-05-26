@@ -2,7 +2,6 @@
 import { StyleDefinition } from "@paperbits/common/styles";
 import { ProductListModel } from "./productListModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
-import { cloneDeep } from "lodash";
 
 export class ProductListHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -39,9 +38,9 @@ export class ProductListHandlers implements IWidgetHandler {
                     displayName: "Product List",
                     plugins: ["margin", "padding", "typography", "background"],
                     components: {
-                        searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
-                        productsGridRow: cloneDeep(DefaultStyleDefinitions.GridRow),
-                        productsGridHeader: cloneDeep(DefaultStyleDefinitions.GridHeader),
+                        searchInput: DefaultStyleDefinitions.getSearchInputStyleDefinition(),
+                        tableRow: DefaultStyleDefinitions.getTableRowStyleDefinition(),
+                        tableHead: DefaultStyleDefinitions.getTableHeadStyleDefinition()
                     }
                 }
             }
@@ -77,8 +76,8 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                     displayName: "Product List Dropdown",
                     plugins: ["margin", "padding", "typography"],
                     components: {
-                        dropdownInput: DefaultStyleDefinitions.DropdownInput,
-                        dropdownInputButton: DefaultStyleDefinitions.DropdownInputButton,
+                        dropdownInput: DefaultStyleDefinitions.getDropdownInputStyleDefinition(),
+                        dropdownInputButton: DefaultStyleDefinitions.getDropdownInputButtonStyleDefinition(),
                         dropdownContainer: {
                             displayName: "Dropdown",
                             plugins: ["background", "typography"],
@@ -97,7 +96,7 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                 }
                             }
                         },
-                        dropdownSearchInput: cloneDeep(DefaultStyleDefinitions.SearchInput)
+                        dropdownSearchInput: DefaultStyleDefinitions.getSearchInputStyleDefinition()
                     }
                 }
             }
@@ -134,11 +133,11 @@ export class ProductListTilesHandlers implements IWidgetHandler {
                     displayName: "List of products (tiles)",
                     plugins: ["margin", "padding", "background"],
                     components: {
-                        searchInput: cloneDeep(DefaultStyleDefinitions.SearchInput),
-                        productCard: cloneDeep(DefaultStyleDefinitions.Card),
-                        cardTitle: cloneDeep(DefaultStyleDefinitions.CardTitle),
-                        cardText: cloneDeep(DefaultStyleDefinitions.CardText),
-                        widgetText: cloneDeep(DefaultStyleDefinitions.WidgetText)
+                        searchInput: DefaultStyleDefinitions.getSearchInputStyleDefinition(),
+                        productCard: DefaultStyleDefinitions.getCardStyleDefinition(),
+                        cardTitle: DefaultStyleDefinitions.getCardTitleStyleDefinition(),
+                        cardText: DefaultStyleDefinitions.getCardTextStyleDefinition(),
+                        widgetText: DefaultStyleDefinitions.getWidgetTextStyleDefinition()
                     }
                 }
 
