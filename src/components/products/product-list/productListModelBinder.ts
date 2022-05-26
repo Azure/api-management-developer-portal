@@ -23,7 +23,7 @@ export class ProductListModelBinder implements IModelBinder<ProductListModel> {
         model.layout = contract.itemStyleView || "list";
 
         model.allowSelection = contract.allowSelection;
-        model.styles = contract.styles || {};
+        model.styles = contract.styles ?? {};
 
         if (contract.detailsPageHyperlink) {
             model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.detailsPageHyperlink);

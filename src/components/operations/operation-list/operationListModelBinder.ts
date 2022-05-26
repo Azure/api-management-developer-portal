@@ -23,7 +23,7 @@ export class OperationListModelBinder implements IModelBinder<OperationListModel
         model.showToggleUrlPath = contract.showToggleUrlPath;
         model.defaultShowUrlPath = contract.defaultShowUrlPath;
         model.defaultGroupByTagToEnabled = contract.defaultGroupByTagToEnabled === true;
-        model.styles = contract.styles || {};
+        model.styles = contract.styles ?? {};
 
         if (contract.detailsPageHyperlink) {
             model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.detailsPageHyperlink);

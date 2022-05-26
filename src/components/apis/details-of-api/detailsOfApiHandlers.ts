@@ -2,8 +2,6 @@
 import { StyleDefinition } from "@paperbits/common/styles";
 import { DetailsOfApiModel } from "./detailsOfApiModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
-import { cloneDeep } from "lodash";
-
 
 export class DetailsOfApiHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -33,13 +31,13 @@ export class DetailsOfApiHandlers implements IWidgetHandler {
                     displayName: "API details",
                     plugins: ["background", "typography", "margin", "padding"],
                     components: {
-                        apiVersionsCombobox: cloneDeep(DefaultStyleDefinitions.Combobox),
-                        apiDefinitionsCombobox: cloneDeep(DefaultStyleDefinitions.Combobox),
+                        apiVersionsCombobox: DefaultStyleDefinitions.getComboboxStyleDefinition(),
+                        apiDefinitionsCombobox: DefaultStyleDefinitions.getComboboxStyleDefinition(),
                         titleText: {
                             displayName: "Title",
                             plugins: ["typography"]
                         },
-                        apiTypeBadge:  cloneDeep(DefaultStyleDefinitions.ApiTypeBadge)
+                        apiTypeBadge: DefaultStyleDefinitions.getApiTypeBadgeStyleDefinition()
                     }
                 }
             }

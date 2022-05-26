@@ -2,7 +2,6 @@
 import { StyleDefinition } from "@paperbits/common/styles";
 import { ProductSubscriptionsModel } from "./productSubscriptionsModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
-import { cloneDeep } from "lodash";
 
 
 export class ProductSubscriptionsHandlers implements IWidgetHandler {
@@ -29,14 +28,14 @@ export class ProductSubscriptionsHandlers implements IWidgetHandler {
                     }
                 },
             },
-            components:{
-                productSubscriptions:{
+            components: {
+                productSubscriptions: {
                     displayName: "Product Subscriptions",
-                    plugins:["background", "typography","margin","padding"],
+                    plugins: ["background", "typography", "margin", "padding"],
                     components:
                     {
-                        tableRow: cloneDeep(DefaultStyleDefinitions.GridRow),
-                        tableHead: cloneDeep(DefaultStyleDefinitions.GridHeader),
+                        tableRow: DefaultStyleDefinitions.getTableRowStyleDefinition(),
+                        tableHead: DefaultStyleDefinitions.getTableHeadStyleDefinition()
                     }
                 }
             }

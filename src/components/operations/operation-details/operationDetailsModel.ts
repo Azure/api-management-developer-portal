@@ -24,7 +24,7 @@ export class OperationDetailsModel {
     /**
      * Widget local styles.
      */
-     public styles: LocalStyles;
+    public styles: LocalStyles = {};
 
     constructor() {
         this.enableConsole = true;
