@@ -129,7 +129,7 @@ export class ProductService {
                     const apiPromise = this.mapiClient
                         .get<ApiContract>(`/apis/${apiName}`)
                         .then(api => {
-                            subscriptionModel.productName = `API: ${api.properties.displayName}`;
+                            subscriptionModel.productName = `API: ${api.name}`;
                         }).catch(error => console.log(`Get API error: ${error.message}`));
 
                     promises.push(apiPromise);
