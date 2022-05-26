@@ -195,7 +195,7 @@ export class OperationConsole {
         this.responseStatusCode(null);
         this.responseStatusText(null);
         this.responseBody(null);
-
+        console.log("operation-console.ts 198", selectedOperation.id)
         const operation = await this.apiService.getOperation(selectedOperation.id);
         const consoleOperation = new ConsoleOperation(selectedApi, operation);
         this.consoleOperation(consoleOperation);

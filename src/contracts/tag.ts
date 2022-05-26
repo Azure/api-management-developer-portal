@@ -1,5 +1,4 @@
 import { ArmResource } from "./armResource";
-
 export interface TagProperties {
     displayName: string;
 }

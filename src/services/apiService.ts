@@ -33,9 +33,8 @@ export class ApiService {
     public async getApis(searchQuery?: SearchQuery): Promise<Page<Api>> {
         const skip = searchQuery && searchQuery.skip || 0;
         const take = searchQuery && searchQuery.take || Constants.defaultPageSize;
-        const odataFilterEntries = [`isCurrent eq true`];
 
-        let query = `/apis?expandApiVersionSet=true&$top=${take}&$skip=${skip}`;
+        let query = `/apis?$top=${take}&$skip=${skip}`;
 
         if (searchQuery) {
             if (searchQuery.tags) {
@@ -43,15 +42,6 @@ export class ApiService {
                     query = Utils.addQueryParameter(query, `tags[${index}]=${tag.name}`);
                 });
             }
-
-            if (searchQuery.pattern) {
-                const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
-                odataFilterEntries.push(`(contains(properties/displayName,'${pattern}'))`);
-            }
-        }
-
-        if (odataFilterEntries.length > 0) {
-            query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
         }
 
         const pageOfApis = await this.mapiClient.get<Page<ApiContract>>(query, [await this.mapiClient.getPortalHeader("getApis")]);
@@ -72,10 +62,10 @@ export class ApiService {
             return null;
         }
 
-        const query = "/apis?$filter=isCurrent eq true";
+        const query = "/apis";
         const apisPage = await this.mapiClient.get<Page<ApiContract>>(query, [await this.mapiClient.getPortalHeader("getApisInVersionSet")]);
         const result = apisPage.value
-            .filter(x => x.properties.apiVersionSetId && Utils.getResourceName("apiVersionSets", x.properties.apiVersionSetId, "shortId") === versionSetId)
+            .filter(x => x.apiVersionSetId === versionSetId)
             .map(x => new Api(x));
 
         return result;
@@ -117,7 +107,7 @@ export class ApiService {
 
         pageOfOperationsByTag.value.forEach(x => {
             const tagContract: TagContract = x.tag ? Utils.armifyContract("tags", x.tag) : null;
-            const operationContract: OperationContract = x.operation ? Utils.armifyContract("operations", x.operation) : null;
+            const operationContract: OperationContract = x.operation
 
             let tagGroup: TagGroup<Operation>;
             let tagName: string;
@@ -178,7 +168,7 @@ export class ApiService {
 
         pageOfApiTagResources.value.forEach((x) => {
             const tagContract: TagContract = x.tag ? Utils.armifyContract("tags", x.tag) : null;
-            const apiContract: ApiContract = x.api ? Utils.armifyContract("apis", x.api) : null;
+            const apiContract: ApiContract = x.api
 
             let tagGroup: TagGroup<Api>;
             let tagName: string;
@@ -243,10 +233,9 @@ export class ApiService {
             return null;
         }
 
-        if (apiContract.properties.apiVersionSetId && !apiContract.properties.apiVersionSet) { // Filling the missing version set
-            const setId = Utils.getResourceName("apiVersionSets", apiContract.properties.apiVersionSetId, "shortId");
-            const apiVersionSetContract = await this.getApiVersionSet(setId);
-            apiContract.properties.apiVersionSet = apiVersionSetContract;
+        if (apiContract.apiVersionSetId && !apiContract.apiVersionSet) { // Filling the missing version set
+            const apiVersionSetContract = await this.getApiVersionSet(apiContract.apiVersionSetId);
+            apiContract.apiVersionSet = apiVersionSetContract;
         }
 
         return new Api(apiContract);
@@ -305,7 +294,7 @@ export class ApiService {
         const take = Constants.defaultPageSize;
         apiResourceUri += `/releases?$top=${take}&$skip=${skip}`;
 
-        const changelogContracts = await this.mapiClient.get<Page<ChangeLogContract>>(apiResourceUri, [await this.mapiClient.getPortalHeader("getApiChangeLog")]);
+        const changelogContracts = await this.mapiClient.get<Page<ChangeLogContract>>("apis/" + apiResourceUri, [await this.mapiClient.getPortalHeader("getApiChangeLog")]);
         if (!changelogContracts) {
             return null;
         }
@@ -314,7 +303,7 @@ export class ApiService {
     }
 
     public async getApiVersionSet(versionSetId: string): Promise<VersionSet> {
-        const versionSetContract = await this.mapiClient.get<VersionSetContract>(versionSetId, [await this.mapiClient.getPortalHeader("getApiVersionSet")]);
+        const versionSetContract = await this.mapiClient.get<VersionSetContract>("apiVersionSets/" + versionSetId, [await this.mapiClient.getPortalHeader("getApiVersionSet")]);
         return new VersionSet(versionSetContract.id, versionSetContract);
     }
 
@@ -385,7 +374,7 @@ export class ApiService {
         const result = await this.mapiClient.get<Page<SchemaContract>>(`${api.id}/schemas`, [await this.mapiClient.getPortalHeader("getSchemas")]);
         const schemaReferences = result.value;
         const schemaType = this.getSchemasType(schemaReferences);
-        const schemas = await Promise.all(schemaReferences.filter(schema => schema.properties.contentType === schemaType).map(schemaReference => this.getApiSchema((schemaType === SchemaType.graphQL) ? `${api.id}/schemas/${schemaReference.name}` : schemaReference.id)));
+        const schemas = await Promise.all(schemaReferences.filter(schema => schema.contentType === schemaType).map(schemaReference => this.getApiSchema((schemaType === SchemaType.graphQL) ? `${api.id}/schemas/${schemaReference.id}` : schemaReference.id)));
 
         // return schemas;
         // const result = await this.mapiClient.get<Page<SchemaContract>>(`${api.id}/schemas?$top=20`, null);
@@ -400,12 +389,12 @@ export class ApiService {
     private getSchemasType(schemas: SchemaContract[]): SchemaType {
         if (schemas && schemas.length > 0) {
 
-            const gql = schemas.find(s => s.properties.contentType === SchemaType.graphQL);
+            const gql = schemas.find(s => s.contentType === SchemaType.graphQL);
             if (gql) return SchemaType.graphQL;
 
-            const is2 = !!schemas.find(item => item.properties.contentType === SchemaType.swagger)
+            const is2 = !!schemas.find(item => item.contentType === SchemaType.swagger)
                 &&
-                !schemas.find(item => item.properties.contentType === SchemaType.openapi);
+                !schemas.find(item => item.contentType === SchemaType.openapi);
             if (is2) {
                 return SchemaType.swagger;
             }
@@ -476,11 +465,12 @@ export class ApiService {
         return page;
     }
 
-    public async getApiHostnames(apiName: string): Promise<string[]> {
-        const query = `apis/${apiName}/hostnames`;
-        const pageOfHostnames = await this.mapiClient.get<Page<Hostname>>(query, [await this.mapiClient.getPortalHeader("getApiHostnames")]);
-        const hostnameValues = pageOfHostnames.value.map(x => x.properties.value);
+    public async getHostnames(): Promise<string[]> {
+        const query = `gateway/hostnames`;
+        const result = await this.mapiClient.get<{
+            hostnames: string[]
+        }>(query, [await this.mapiClient.getPortalHeader("getApiHostnames")]);
 
-        return hostnameValues;
+        return result.hostnames;
     }
 }

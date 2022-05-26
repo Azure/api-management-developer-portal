@@ -1,6 +1,5 @@
 
 import { Bag } from "@paperbits/common";
-import { ArmResource } from "./armResource";
 
 export interface ReferenceObjectContract {
     $ref?: string;
@@ -143,16 +142,15 @@ export interface GraphQLSchemaContract {
 /**
  * 
  */
-export interface SchemaContract extends ArmResource {
-    properties: {
-        contentType: string;
-        document?: SwaggerSchemaContract | OpenApiSchemaContract | XsdSchemaContract | GraphQLSchemaContract;
-    };
+export interface SchemaContract {
+    id: string;
+    contentType: string;
+    document?: SwaggerSchemaContract | OpenApiSchemaContract | XsdSchemaContract | GraphQLSchemaContract;
 }
 
 export enum SchemaType {
     swagger = "application/vnd.ms-azure-apim.swagger.definitions+json",
     openapi = "application/vnd.oai.openapi.components+json",
     xsd = "application/vnd.ms-azure-apim.xsd+xml",
-    graphQL  = "application/vnd.ms-azure-apim.graphql.schema"
+    graphQL = "application/vnd.ms-azure-apim.graphql.schema"
 }

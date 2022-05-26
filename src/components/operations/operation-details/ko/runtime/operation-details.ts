@@ -175,7 +175,7 @@ export class OperationDetails {
             return;
         }
 
-        await this.loadGatewayInfo(apiName);
+        await this.loadGatewayInfo();
         this.apiType(api?.type);
         this.api(api);
 
@@ -283,8 +283,8 @@ export class OperationDetails {
         return result.filter(x => !skipNames.includes(x));
     }
 
-    public async loadGatewayInfo(apiName: string): Promise<void> {
-        const hostnames = await this.apiService.getApiHostnames(apiName);
+    public async loadGatewayInfo(): Promise<void> {
+        const hostnames = await this.apiService.getHostnames();
 
         if (hostnames.length !== 0) {
             this.sampleHostname(hostnames[0]);
