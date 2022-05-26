@@ -11,7 +11,7 @@ export class CustomWidgetHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: this.configuration.name,
             displayName: this.configuration.displayName,
-            category: this.configuration.category,
+            // category: this.configuration.category, TODO needed?
             requires: [],
 
             createModel: async () => {

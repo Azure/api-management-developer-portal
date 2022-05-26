@@ -1,5 +1,4 @@
-import { TConfigDeploy, TCustomWidgetConfig, OVERRIDE_PORT_KEY, OVERRIDE_DEFAULT_PORT } from "@azure/apimanagement-custom-widget-scaffolder";
-import { managementApiVersion } from "../../constants";
+import { TCustomWidgetConfig, OVERRIDE_PORT_KEY, OVERRIDE_DEFAULT_PORT } from "@azure/apimanagement-custom-widget-scaffolder";
 import { MapiBlobStorage } from "../../persistence";
 import {
     root,
@@ -7,15 +6,6 @@ import {
     configFileName,
     OVERRIDE_CONFIG_SESSION_KEY_PREFIX,
 } from "../custom-widget/ko/utils";
-
-export const buildConfigDeploy = async (): Promise<TConfigDeploy> => ({
-    subscriptionId: "<subscription-id>",
-    resourceGroupName: "<resource-group>",
-    serviceName: "<service-name>",
-    managementApiEndpoint: "<management-api-endpoint>",
-    apiVersion: managementApiVersion,
-    openUrl: window.location.origin,
-});
 
 async function loadCustomWidgetConfigs(blobStorage: MapiBlobStorage): Promise<TCustomWidgetConfig[]> {
     const overridesPromises = [];

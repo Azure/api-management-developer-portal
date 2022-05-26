@@ -1,12 +1,11 @@
 ﻿import * as ko from "knockout";
-import { saveAs } from "file-saver";
+// import { saveAs } from "file-saver";
 import { ViewManager, View } from "@paperbits/common/ui";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component } from "@paperbits/common/ko/decorators";
-import { generateBlob, TCustomWidgetConfig } from "@azure/apimanagement-custom-widget-scaffolder";
+import { TCustomWidgetConfig } from "@azure/apimanagement-custom-widget-scaffolder";
 import { MapiBlobStorage } from "../../persistence";
-import { buildBlobConfigSrc, buildBlobDataSrc, widgetArchiveName } from "../custom-widget/ko/utils";
-import { buildConfigDeploy } from "./loadCustomWidgetConfigs";
+import { buildBlobConfigSrc, buildBlobDataSrc } from "../custom-widget/ko/utils";
 import template from "./customWidgetList.html";
 
 
@@ -60,10 +59,10 @@ export class ContentWorkshop {
         this.viewManager.openViewAsWorkshop(view);
     }
 
-    public async downloadWidget(config: TCustomWidgetConfig): Promise<void> {
+    /* public async downloadWidget(config: TCustomWidgetConfig): Promise<void> {
         const blob = await generateBlob(config, await buildConfigDeploy());
         return saveAs(blob, widgetArchiveName(config));
-    }
+    } */
 
     public async deleteWidget(config: TCustomWidgetConfig): Promise<void> {
         if (!confirm(`This operation is in-reversible, are you sure you want to delete custom widget '${config.displayName}'?`)) return;
