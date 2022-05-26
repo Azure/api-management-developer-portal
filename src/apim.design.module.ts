@@ -1,5 +1,6 @@
 import * as Constants from "./constants";
 import "./bindingHandlers/codeEditor";
+import "./bindingHandlers/copyToClipboard";
 import { UnsavedChangesRouteGuard } from "./routing/unsavedChangesRouteGuard";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";

@@ -83,26 +83,4 @@ export class CreateWidget {
 
         this.commandToScaffold(`npx ... --displayName="${displayName}" --tech="${tech}"" --apiVersion="${managementApiVersion}" --openUrl="${window.location.origin}"`);
     }
-
-    public async copyToClipboard(): Promise<void> { // TODO reuse?
-        const placeholder = document.createElement("textarea");
-        const unwrappedValue = ko.unwrap(this.commandToScaffold);
-        placeholder.innerText = typeof unwrappedValue === "string"
-            ? unwrappedValue as string
-            : await (unwrappedValue as (() => Promise<string>))();
-        document.body.appendChild(placeholder);
-
-        const range = document.createRange();
-        range.selectNode(placeholder);
-
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
-
-        document.execCommand("copy");
-
-        selection.removeAllRanges();
-        document.body.removeChild(placeholder);
-    };
-
 }
