@@ -1,4 +1,4 @@
-import { OVERRIDE_PORT_KEY, TCustomWidgetConfig } from "@azure/apimanagement-custom-widget-scaffolder";
+import { OVERRIDE_PORT_KEY } from "@azure/apimanagement-custom-widget-scaffolder";
 import { EDITOR_DATA_KEY, TEditorData, TValuesBase } from "@azure/apimanagement-custom-widget-tools";
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
@@ -9,8 +9,6 @@ export const root = "custom-widgets";
 export const dataFolder = "data";
 export const configsFolder = "configs";
 export const configFileName = "config.msapim.json";
-
-export const widgetArchiveName = (config: TCustomWidgetConfig) => `azure-api-management-widget-${config.name}.zip`;
 
 export function buildBlobDataSrc(name: string): string {
     return `/${root}/${dataFolder}/${name}`;
