@@ -2,6 +2,7 @@ import { ArmResource } from "./contracts/armResource";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
 import { NameValuePair } from "./contracts/nameValuePair";
+import { ensureTrailingSlash } from "@paperbits/common";
 
 
 export class Utils {
@@ -26,10 +27,7 @@ export class Utils {
     }
 
     public static getDeveloperEndpoint(backendUrl: string): string {
-        if (backendUrl.endsWith("/")) {
-            return backendUrl + "developer"
-        }
-        return backendUrl + "/developer"
+        return `${ensureTrailingSlash(backendUrl)}developer`
     }
 
     public static groupBy<T>(array: T[], valueAccessor: (item: T) => string): T[][] {
