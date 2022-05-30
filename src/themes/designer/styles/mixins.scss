@@ -37,10 +37,11 @@
   position: absolute;
 }
 @mixin tabable() {
+  @include selection();
+
   &:focus,
   &:hover {
     outline: none;
-    @include selection();
   }
 
   &:active,
@@ -62,9 +63,15 @@
             linear-gradient(to top, $selection-corners-color 1px, transparent 1px) 0 100%,
             linear-gradient(to top, $selection-corners-color 1px, transparent 1px) 100% 100%;
     background-repeat: no-repeat;
-    background-size: $size;
+    background-size: 0 0;
     z-index: $z-index-selection;
+    transition: .375s background-size;
     content: '';
+  }
+  &:active:after,
+  &:focus:after,
+  &:hover:after {
+    background-size: $size $size;
   }
 }
 @mixin surface() {
