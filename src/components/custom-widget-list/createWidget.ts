@@ -1,15 +1,10 @@
 import * as ko from "knockout";
-import {
-    TCustomWidgetConfig,
-    TScaffoldSourceControl,
-    TScaffoldTech,
-} from "@azure/apimanagement-custom-widget-scaffolder";
+import { TScaffoldTech } from "@azure-tools/apimanagement-custom-widget-scaffolder";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component, Param } from "@paperbits/common/ko/decorators";
 import * as Utils from "@paperbits/common/utils";
 import { MapiBlobStorage } from "../../persistence";
-import { managementApiVersion } from "../../constants";
-import { CustomWidgetHandlers } from "../custom-widget";
+import { CustomWidgetHandlers, TCustomWidgetConfig } from "../custom-widget";
 import { buildBlobConfigSrc, dataFolder, root } from "../custom-widget/ko/utils";
 import { CustomWidgetModel } from "./customWidgetModel";
 import template from "./createWidget.html";
@@ -23,7 +18,7 @@ import fallbackUi from "!!raw-loader!./fallbackUi.html";
 export class CreateWidget {
     public readonly displayName: ko.Observable<string>;
     public readonly tech: ko.Observable<TScaffoldTech | null>;
-    public readonly sourceControl: ko.Observable<TScaffoldSourceControl>;
+    // public readonly sourceControl: ko.Observable<TScaffoldSourceControl>;
     public readonly commandToScaffold: ko.Observable<string>;
 
     constructor(
@@ -32,7 +27,7 @@ export class CreateWidget {
     ) {
         this.displayName = ko.observable("");
         this.tech = ko.observable();
-        this.sourceControl = ko.observable();
+        // this.sourceControl = ko.observable();
         this.commandToScaffold = ko.observable();
     }
 
@@ -67,7 +62,7 @@ export class CreateWidget {
             return;
         }
 
-        const config = {name, displayName, tech, control: this.sourceControl()};
+        const config = {name, displayName, tech}; // , control: this.sourceControl()};
         // const configDeploy = await buildConfigDeploy();
 
         const content = Utils.stringToUnit8Array(JSON.stringify(config));
@@ -81,6 +76,7 @@ export class CreateWidget {
         this.configs.push(config);
         this.configAdd(config);
 
-        this.commandToScaffold(`npx ... --displayName="${displayName}" --tech="${tech}"" --apiVersion="${managementApiVersion}" --openUrl="${window.location.origin}"`);
+        // TODO finish the command
+        this.commandToScaffold(`npx ... --displayName="${displayName}" --tech="${tech}" --openUrl="${window.location.origin}"`);
     }
 }

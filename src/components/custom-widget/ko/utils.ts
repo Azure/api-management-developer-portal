@@ -1,4 +1,4 @@
-import { OVERRIDE_PORT_KEY } from "@azure/apimanagement-custom-widget-scaffolder";
+import { OVERRIDE_PORT_KEY } from "@azure-tools/apimanagement-custom-widget-scaffolder";
 import { EDITOR_DATA_KEY, TEditorData, TValuesBase } from "@azure/apimanagement-custom-widget-tools";
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";

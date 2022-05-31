@@ -1,8 +1,14 @@
-﻿import { TCustomWidgetConfig } from "@azure/apimanagement-custom-widget-scaffolder";
+﻿import { TCustomWidgetBaseConfig } from "@azure-tools/apimanagement-custom-widget-scaffolder";
 import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { StyleHelper } from "@paperbits/styles";
 import { CustomWidgetModel } from "./customWidgetModel";
 import { sizeStylesInitial } from "./ko/constants";
+
+export interface TCustomWidgetConfig extends TCustomWidgetBaseConfig {
+  name: string;
+  deployed?: string;
+  override?: string | boolean;
+}
 
 export class CustomWidgetHandlers implements IWidgetHandler {
     constructor(private readonly configuration: TCustomWidgetConfig) { }
