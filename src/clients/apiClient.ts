@@ -1,26 +1,31 @@
 import * as Constants from "./../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Utils } from "../utils";
-import { TtlCache } from "./ttlCache";
+import { TtlCache } from "../services/ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
 import { MapiError } from "../errors/mapiError";
 import { IAuthenticator, AccessToken } from "../authentication";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { Page } from "../models/page";
+import { injectable } from "inversify";
+import IApiClient from "./IApiClient";
 
-export class DesignerMapiClient {
-    private backendUrl: string;
+@injectable()
+export default abstract class ApiClient implements IApiClient {
+    protected backendUrl: string;
     private environment: string;
     private developerPortalType: string;
     private initializePromise: Promise<void>;
     private requestCache: TtlCache = new TtlCache();
 
     constructor(
-        private readonly httpClient: HttpClient,
-        private readonly authenticator: IAuthenticator,
-        private readonly settingsProvider: ISettingsProvider,
+        protected readonly httpClient: HttpClient,
+        protected readonly authenticator: IAuthenticator,
+        protected readonly settingsProvider: ISettingsProvider
     ) { }
+
+    protected abstract setBaseUrl(): Promise<void>;
 
     private async ensureInitialized(): Promise<void> {
         if (!this.initializePromise) {
@@ -32,13 +37,13 @@ export class DesignerMapiClient {
     private async initialize(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
 
-        this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || "self-hosted-portal";
-        this.backendUrl = settings[Constants.SettingNames.backendUrl]
+        await this.setBaseUrl();
 
         if (!this.backendUrl) {
             throw new Error(`Backend API URL ("${Constants.SettingNames.backendUrl}") setting is missing in configuration file.`);
         }
 
+        this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || "self-hosted-portal";
         const managementApiAccessToken = settings[Constants.SettingNames.managementApiAccessToken];
 
         if (managementApiAccessToken) {
@@ -98,7 +103,7 @@ export class DesignerMapiClient {
         return key;
     }
 
-    protected async makeRequest<T>(httpRequest: HttpRequest): Promise<T> {
+    private async makeRequest<T>(httpRequest: HttpRequest): Promise<T> {
         const authHeader = httpRequest.headers.find(header => header.name === KnownHttpHeaders.Authorization);
         const portalHeader = httpRequest.headers.find(header => header.name === Constants.portalHeaderName);
 
