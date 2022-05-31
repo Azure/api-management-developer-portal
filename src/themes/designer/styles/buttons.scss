@@ -35,9 +35,9 @@
     border: 1px dashed #ccc;
     border-radius: 20px;
     padding: 2px 12px;
-    @include selection(5px, -2px);
 
     &:focus {
+        @include selection(5px, -2px);
         outline: none;
     }
 

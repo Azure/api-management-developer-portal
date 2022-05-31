@@ -9,6 +9,7 @@ paperbits-picture,
 paperbits-text,
 widget {
     display: block;
+    @include selection(10px);
 
     &.dragged {
         box-shadow: 2px 2px 2px 2px rgba(128, 128, 128, 0.4);
@@ -17,10 +18,6 @@ widget {
         background: #fff;
         opacity: 0.98;
         position: fixed;
-    }
-
-    &:hover {
-        @include selection(10px);
     }
 }
 
@@ -107,9 +104,9 @@ widget {
     width: 80px;
     white-space: nowrap;
     margin: 5px;
+    @include selection(15px, -5px);
 
     &:hover {
-        @include selection(15px, -5px);
         cursor: pointer;
     }
 }
@@ -156,10 +153,7 @@ widget {
     line-height: 0;
     width: 120px;
     cursor: pointer;
-
-    &:hover {
-        @include selection(15px, -10px);
-    }
+    @include selection(15px, -10px);
 }
 
 .section-container-cfg {

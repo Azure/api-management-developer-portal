@@ -182,12 +182,12 @@ textarea {
         display: inline-block;
         line-height: 2em;
         font-size: $form-control-font-size;
+        @include selection(10px, -4px);
 
         &:active,
         &:focus,
         &:hover {
             outline: none;
-            @include selection(10px, -4px);
         }
 
         &.disabled {
