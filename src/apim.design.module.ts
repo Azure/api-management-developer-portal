@@ -26,7 +26,7 @@ import { SubscriptionsModule } from "./components/users/subscriptions/subscripti
 import { SubscriptionsDesignModule } from "./components/users/subscriptions/subscriptions.design.module";
 import { ProductDetailsModule } from "./components/products/product-details/productDetails.module";
 import { ProductDetailsDesignModule } from "./components/products/product-details/productDetails.design.module";
-import { MapiClient, IdentityService } from "./services";
+import { IdentityService } from "./services";
 import { SetupModule } from "./components/setup/setup.module";
 import { ContentModule } from "./components/content";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";
@@ -66,7 +66,7 @@ import { ApiProductsEditorModule } from "./components/apis/api-products/ko/apiPr
 import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
-import { DesignerMapiClient } from "./services/designerMapiClient";
+import MapiClient from "./clients/mapiClient";
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -125,7 +125,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("policyService", PolicyService);
-        injector.bindSingleton("mapiClient", DesignerMapiClient);
+        injector.bindSingleton("apiClient", MapiClient);
+        injector.bindSingleton("mapiClient", MapiClient); //TODO: remove
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);
