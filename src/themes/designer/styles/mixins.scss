@@ -50,6 +50,9 @@
   }
 }
 @mixin selection($size: 10px, $spacing: 0) {
+  @include selectionUneven($size, $size, $spacing);
+}
+@mixin selectionUneven($sizeX: 10px, $sizeY: 10px, $spacing: 0) {
   &:after {
     @include fit($spacing);
     @include no-pointer-events();
@@ -71,7 +74,7 @@
   &:active:after,
   &:focus:after,
   &:hover:after {
-    background-size: $size $size;
+    background-size: $sizeX $sizeY;
   }
 }
 @mixin surface() {
