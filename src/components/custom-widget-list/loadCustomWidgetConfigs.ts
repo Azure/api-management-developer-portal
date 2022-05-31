@@ -1,5 +1,6 @@
-import { TCustomWidgetConfig, OVERRIDE_PORT_KEY, OVERRIDE_DEFAULT_PORT } from "@azure/apimanagement-custom-widget-scaffolder";
+import { OVERRIDE_PORT_KEY, OVERRIDE_DEFAULT_PORT } from "@azure-tools/apimanagement-custom-widget-scaffolder";
 import { MapiBlobStorage } from "../../persistence";
+import { TCustomWidgetConfig } from "../custom-widget";
 import {
     root,
     configsFolder,

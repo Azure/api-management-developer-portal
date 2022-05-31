@@ -3,8 +3,8 @@
 import { ViewManager, View } from "@paperbits/common/ui";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component } from "@paperbits/common/ko/decorators";
-import { TCustomWidgetConfig } from "@azure/apimanagement-custom-widget-scaffolder";
 import { MapiBlobStorage } from "../../persistence";
+import { TCustomWidgetConfig } from "../custom-widget";
 import { buildBlobConfigSrc, buildBlobDataSrc } from "../custom-widget/ko/utils";
 import template from "./customWidgetList.html";
 
