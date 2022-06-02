@@ -40,6 +40,8 @@
         h1 {
             padding-left: 5px;
             line-height: 25px;
+
+         
         }
 
         .btn-dismiss {
@@ -51,7 +53,6 @@
 
 .toolbox.workshops-container {
     z-index: $z-index-base;
-    height: 70vh;
     min-height: 370px;
 
     .journey-container {
