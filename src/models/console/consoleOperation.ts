@@ -42,6 +42,12 @@ export class ConsoleOperation {
             this.responses = [];
         }
 
+        if (this.urlTemplate.includes("/*")) {
+            const templateParameter = new ConsoleParameter();
+            templateParameter.name("*");
+            this.templateParameters.push(templateParameter);
+        }
+
         this.requestUrl = ko.computed(() => {
             const protocol = this.api.protocols.indexOf("https") !== -1 ? "https" : "http";
             const urlTemplate = this.getRequestPath();
@@ -124,8 +130,9 @@ export class ConsoleOperation {
         if (this.api.apiVersionSet && this.api.apiVersionSet.versioningScheme === "Query") {
             requestUrl = this.addParam(requestUrl, this.api.apiVersionSet.versionQueryName, this.api.apiVersion);
         }
+        requestUrl = requestUrl.replace("/*", "");
 
         return `${this.api.path}${versionPath}${requestUrl}`;
     }
-    
+
 }
