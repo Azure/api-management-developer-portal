@@ -6,11 +6,12 @@ import { Bag } from "@paperbits/common";
 import { ValidationReport } from "../../../../../contracts/validationReport";
 import { onValidationErrors } from "../../utils";
 
+const selector = "validation-summary";
 @RuntimeComponent({
-    selector: "validation-summary"
+    selector
 })
 @Component({
-    selector: "validation-summary",
+    selector,
     template: template
 })
 
@@ -42,5 +43,7 @@ export class ValidationSummary {
         } else {
             this.hasErrors(false);
         }
+
+        document.getElementsByTagName(selector)[0]?.scrollIntoView();
     }
 }

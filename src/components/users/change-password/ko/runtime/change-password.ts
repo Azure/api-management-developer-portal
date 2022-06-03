@@ -48,7 +48,7 @@ export class ChangePassword {
             decorateInputElement: true
         });
 
-        this.password.extend(<any>{ required: { message: `Password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
+        this.password.extend(<any>{ required: { message: `Password is required.` } }); // TODO: password requirements should come from Management API.
         this.newPassword.extend(<any>{ required: { message: `New password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
         this.passwordConfirmation.extend(<any>{ required: { message: `Password confirmation is required.` }, equal: { message: "Password confirmation field must be equal to new password.", params: this.newPassword } });
         this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });

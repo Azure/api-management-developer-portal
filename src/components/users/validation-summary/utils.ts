@@ -13,7 +13,9 @@ export enum errorSources {
     resetpassword = "resetpassword",
     changeProfile = "changeProfile",
     renameSubscription = "renameSubscription",
+    cancelSubscription = "cancelSubscription",
     regeneratePKey = "regeneratePKey",
+    regenerateSKey = "regenerateSKey",
 }
 
 export async function tryCatchDispatchError(
@@ -22,13 +24,13 @@ export async function tryCatchDispatchError(
     source: errorSources,
     fallbackMessage?: string,
     errorDetailsMap: (detail: any) => string = detail => `${detail.message}`
-): Promise<void> {
-    parseAndDispatchError(eventManager, source, [], fallbackMessage, errorDetailsMap);
+): Promise<string[] | void> {
+    dispatchErrors(eventManager, source, []);
 
     try {
         await guardedFunction();
     } catch (error) {
-        parseAndDispatchError(eventManager, source, error, fallbackMessage, errorDetailsMap);
+        return parseAndDispatchError(eventManager, source, error, fallbackMessage, errorDetailsMap);
     }
 }
 
@@ -36,15 +38,19 @@ export function parseAndDispatchError(
     eventManager: EventManager,
     source: errorSources,
     error: Record<string, any>,
-    fallbackMessage?: string,
+    defaultMessage?: string,
     errorDetailsMap: (detail: any) => string = detail => `${detail.message}`
 ): string[] {
     let errorDetails: string[];
 
-    if (error.code === "ValidationError") {
-        errorDetails = error.details?.map(errorDetailsMap) || [fallbackMessage ?? error.message];
+    if (error.code === "ValidationError" && error.details?.length > 0) {
+        errorDetails = error.details.map(errorDetailsMap); // Prioritize errors from the error.details object.
+    } else if (error.message) {
+        errorDetails = [defaultMessage ?? error.message];
+    } else if (typeof error === "string") {
+        errorDetails = [defaultMessage ?? error];
     } else {
-        errorDetails = [fallbackMessage ?? error.message];
+        errorDetails = []; // No error / clear current errors.
     }
 
     dispatchErrors(eventManager, source, errorDetails);
