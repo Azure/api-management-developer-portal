@@ -8,7 +8,7 @@ import { Router } from "@paperbits/common/routing";
 import { Utils } from "../../../../../utils";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { UsersService } from "../../../../../services";
-import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
+import { dispatchErrors, errorSources, tryCatchDispatchError } from "../../../validation-summary/utils";
 
 
 @RuntimeComponent({
@@ -105,7 +105,7 @@ export class SignupSocial {
             return;
         }
 
-        try {
+        await tryCatchDispatchError(async () => {
             const provider = this.routeHelper.getIdTokenProvider();
             const idToken = this.routeHelper.getIdToken();
 
@@ -114,13 +114,8 @@ export class SignupSocial {
                 return;
             }
 
-            dispatchErrors(this.eventManager, errorSources.signup, []);
-
             await this.usersService.createUserWithOAuth(provider, idToken, this.firstName(), this.lastName(), this.email());
             await this.router.navigateTo(Constants.pageUrlHome);
-        }
-        catch (error) {
-            parseAndDispatchError(this.eventManager, errorSources.signup, error, Constants.genericHttpRequestError);
-        }
+        }, this.eventManager, errorSources.signup, Constants.genericHttpRequestError);
     }
 }

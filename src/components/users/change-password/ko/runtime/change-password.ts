@@ -7,7 +7,7 @@ import { ChangePasswordRequest } from "../../../../../contracts/resetRequest";
 import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services";
 import { CaptchaData } from "../../../../../models/captchaData";
-import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
+import { dispatchErrors, errorSources, tryCatchDispatchError } from "../../../validation-summary/utils";
 
 @RuntimeComponent({
     selector: "change-password-runtime"
@@ -112,13 +112,13 @@ export class ChangePassword {
 
         userId = `/users/${userId}`;
 
-        try {
-            this.working(true);
+        this.working(true);
 
+        await tryCatchDispatchError(async () => {
             if (isCaptcha) {
                 const captchaRequestData = this.captchaData();
                 const resetRequest: ChangePasswordRequest = {
-                    challenge: captchaRequestData.challenge, 
+                    challenge: captchaRequestData.challenge,
                     solution: captchaRequestData.solution?.solution,
                     flowId: captchaRequestData.solution?.flowId,
                     token: captchaRequestData.solution?.token,
@@ -131,16 +131,8 @@ export class ChangePassword {
                 await this.usersService.changePassword(userId, this.newPassword());
             }
             this.isChangeConfirmed(true);
+        }, this.eventManager, errorSources.changepassword, undefined, detail => `${detail.target}: ${detail.message} \n`);
 
-            dispatchErrors(this.eventManager, errorSources.changepassword, []);
-        } catch (error) {
-            if (isCaptcha) {
-                await this.refreshCaptcha();
-            }
-
-            parseAndDispatchError(this.eventManager, errorSources.changepassword, error, undefined, detail => `${detail.target}: ${detail.message} \n`);
-        } finally {
-            this.working(false);
-        }
+        this.working(false);
     }
 }

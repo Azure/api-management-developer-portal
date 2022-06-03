@@ -169,6 +169,7 @@ export class Signup {
 
         try {
             this.working(true);
+            dispatchErrors(this.eventManager, errorSources.signup, []);
 
             if (isCaptchaRequired) {
                 const captchaRequestData = this.captchaData();
@@ -189,7 +190,6 @@ export class Signup {
 
             this.isUserRequested(true);
 
-            dispatchErrors(this.eventManager, errorSources.signup, []);
         }
         catch (error) {
             if (isCaptchaRequired) {

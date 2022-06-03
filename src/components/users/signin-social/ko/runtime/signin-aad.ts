@@ -6,7 +6,7 @@ import { Component, Param, RuntimeComponent } from "@paperbits/common/ko/decorat
 import { AadService, AadServiceV2, IAadService } from "../../../../../services";
 import { AadClientLibrary, SettingNames, defaultAadTenantName } from "../../../../../constants";
 import { AadClientConfig } from "../../../../../contracts/aadClientConfig";
-import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
+import { errorSources, tryCatchDispatchError } from "../../../validation-summary/utils";
 
 @RuntimeComponent({
     selector: "signin-aad"
@@ -47,27 +47,18 @@ export class SignInAad {
      * Initiates signing-in with Azure Active Directory.
      */
     public async signIn(): Promise<void> {
-        this.cleanValidationErrors();
-
-        try {
+        await tryCatchDispatchError(async () => {
             const config = await this.settingsProvider.getSetting<AadClientConfig>(SettingNames.aadClientConfig);
-            
+
             if (config) {
                 if (config.clientLibrary === AadClientLibrary.v2) {
                     this.selectedService = this.aadServiceV2;
                 } else {
                     this.selectedService = this.aadService;
                 }
-                
-                await this.selectedService.signInWithAad(config.clientId, config.authority, config.signinTenant || defaultAadTenantName, this.replyUrl());
-            }            
-        }
-        catch (error) {
-            parseAndDispatchError(this.eventManager, errorSources.socialAcc, error);
-        }
-    }
 
-    private cleanValidationErrors(): void {
-        dispatchErrors(this.eventManager, errorSources.signInOAuth, []); // TODO different source then on line 95?
+                await this.selectedService.signInWithAad(config.clientId, config.authority, config.signinTenant || defaultAadTenantName, this.replyUrl());
+            }
+        }, this.eventManager, errorSources.socialAcc);
     }
 }
