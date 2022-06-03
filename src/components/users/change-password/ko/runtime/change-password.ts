@@ -1,14 +1,13 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
-import * as Constants from "../../../../../constants";
 import template from "./change-password.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { ChangePasswordRequest } from "../../../../../contracts/resetRequest";
 import { BackendService } from "../../../../../services/backendService";
-import { UsersService } from "../../../../../services/usersService";
-import { ValidationReport } from "../../../../../contracts/validationReport";
+import { UsersService } from "../../../../../services";
 import { CaptchaData } from "../../../../../models/captchaData";
+import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
 
 @RuntimeComponent({
     selector: "change-password-runtime"
@@ -98,11 +97,7 @@ export class ChangePassword {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            const validationReport: ValidationReport = {
-                source: "changepassword",
-                errors: clientErrors
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, errorSources.changepassword, clientErrors);
             return;
         }
 
@@ -111,11 +106,7 @@ export class ChangePassword {
         let userId = await this.usersService.authenticate(credentials);
 
         if (!userId) {
-            const validationReport: ValidationReport = {
-                source: "changepassword",
-                errors: ["Incorrect user name or password"]
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, errorSources.changepassword, ["Incorrect user name or password"]);
             return;
         }
 
@@ -141,35 +132,13 @@ export class ChangePassword {
             }
             this.isChangeConfirmed(true);
 
-            const validationReport: ValidationReport = {
-                source: "changepassword",
-                errors: []
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, errorSources.changepassword, []);
         } catch (error) {
             if (isCaptcha) {
                 await this.refreshCaptcha();
             }
 
-            let errorMessages: string[];
-
-            if (error.code === "ValidationError") {
-                const details: any[] = error.details;
-
-                if (details && details.length > 0) {
-                    let message = "";
-                    errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
-                }
-            }
-            else {
-                errorMessages = [Constants.genericHttpRequestError];
-            }
-
-            const validationReport: ValidationReport = {
-                source: "changepassword",
-                errors: errorMessages
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            parseAndDispatchError(this.eventManager, errorSources.changepassword, error, undefined, detail => `${detail.target}: ${detail.message} \n`);
         } finally {
             this.working(false);
         }

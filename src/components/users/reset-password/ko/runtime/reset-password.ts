@@ -1,14 +1,13 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
-import * as Constants from "../../../../../constants";
 import template from "./reset-password.html";
 import { EventManager } from "@paperbits/common/events";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
-import { UsersService } from "../../../../../services/usersService";
+import { UsersService } from "../../../../../services";
 import { ResetRequest } from "../../../../../contracts/resetRequest";
-import { ValidationReport } from "../../../../../contracts/validationReport";
 import { BackendService } from "../../../../../services/backendService";
 import { CaptchaData } from "../../../../../models/captchaData";
+import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
 
 @RuntimeComponent({
     selector: "reset-password-runtime"
@@ -88,11 +87,7 @@ export class ResetPassword {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            const validationReport: ValidationReport = {
-                source: "resetpassword",
-                errors: clientErrors
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, errorSources.resetpassword, clientErrors);
             return;
         }
 
@@ -116,37 +111,15 @@ export class ResetPassword {
             }
             this.isResetRequested(true);
 
-            const validationReport: ValidationReport = {
-                source: "resetpassword",
-                errors: []
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        } 
+            dispatchErrors(this.eventManager, errorSources.resetpassword, []);
+        }
         catch (error) {
             if (isCaptcha) {
                 await this.refreshCaptcha();
             }
 
-            let errorMessages: string[];
-
-            if (error.code === "ValidationError") {
-                const details: any[] = error.details;
-
-                if (details && details.length > 0) {
-                    let message = "";
-                    errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
-                }
-            }
-            else {
-                errorMessages = [Constants.genericHttpRequestError];
-            }
-
-            const validationReport: ValidationReport = {
-                source: "resetpassword",
-                errors: errorMessages
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        } 
+            parseAndDispatchError(this.eventManager, errorSources.resetpassword, error, undefined, detail => `${detail.target}: ${detail.message} \n`);
+        }
         finally {
             this.working(false);
         }

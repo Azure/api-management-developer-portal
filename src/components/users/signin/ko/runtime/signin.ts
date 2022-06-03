@@ -5,10 +5,10 @@ import { sanitizeUrl } from "@braintree/sanitize-url";
 import { EventManager } from "@paperbits/common/events";
 import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing/router";
-import { ValidationReport } from "../../../../../contracts/validationReport";
 import { MapiError } from "../../../../../errors/mapiError";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { UsersService } from "../../../../../services/usersService";
+import { UsersService } from "../../../../../services";
+import { dispatchErrors, errorSources } from "../../../validation-summary/utils";
 
 @RuntimeComponent({
     selector: "signin-runtime"
@@ -110,11 +110,7 @@ export class Signin {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            const validationReport: ValidationReport = {
-                source: "signin",
-                errors: clientErrors
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, errorSources.signin, clientErrors);
             this.errorMessages(clientErrors);
             return;
         }
@@ -135,43 +131,25 @@ export class Signin {
 
                 this.navigateToHome();
 
-                const validationReport: ValidationReport = {
-                    source: "signin",
-                    errors: []
-                };
-
-                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+                dispatchErrors(this.eventManager, errorSources.signin, []);
             }
             else {
-                this.errorMessages(["Please provide a valid email and password."]);
-
-                const validationReport: ValidationReport = {
-                    source: "signin",
-                    errors: ["Please provide a valid email and password."]
-                };
-
-                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+                const errors = ["Please provide a valid email and password."];
+                this.errorMessages(errors);
+                dispatchErrors(this.eventManager, errorSources.signin, errors);
             }
         }
         catch (error) {
             if (error instanceof MapiError) {
                 if (error.code === "identity_not_confirmed") {
                     const msg = [`We found an unconfirmed account for the e-mail address ${this.username()}. To complete the creation of your account we need to verify your e-mail address. We’ve sent an e-mail to ${this.username()}. Please follow the instructions inside the e-mail to activate your account. If the e-mail doesn’t arrive within the next few minutes, please check your junk email folder`];
-                    const validationReport: ValidationReport = {
-                        source: "signin",
-                        errors: msg
-                    };
-                    this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+                    dispatchErrors(this.eventManager, errorSources.signin, msg);
                     return;
                 }
 
                 this.errorMessages([error.message]);
 
-                const validationReport: ValidationReport = {
-                    source: "signin",
-                    errors: [error.message]
-                };
-                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+                dispatchErrors(this.eventManager, errorSources.signin, [error.message]);
 
                 return;
             }

@@ -5,10 +5,10 @@ import template from "./signup-social.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { Router } from "@paperbits/common/routing";
-import { ValidationReport } from "../../../../../contracts/validationReport";
 import { Utils } from "../../../../../utils";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { UsersService } from "../../../../../services";
+import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
 
 
 @RuntimeComponent({
@@ -101,11 +101,7 @@ export class SignupSocial {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            const validationReport: ValidationReport = {
-                source: "signup",
-                errors: clientErrors
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, errorSources.signup, clientErrors);
             return;
         }
 
@@ -118,35 +114,13 @@ export class SignupSocial {
                 return;
             }
 
-            const validationReport: ValidationReport = {
-                source: "signup",
-                errors: []
-            };
-
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, errorSources.signup, []);
 
             await this.usersService.createUserWithOAuth(provider, idToken, this.firstName(), this.lastName(), this.email());
             await this.router.navigateTo(Constants.pageUrlHome);
         }
         catch (error) {
-            let errorMessages: string[];
-
-            if (error.code === "ValidationError") {
-                const details: any[] = error.details;
-
-                if (details && details.length > 0) {
-                    errorMessages = details.map(item => `${item.message}`);
-                }
-            }
-            else {
-                errorMessages = [Constants.genericHttpRequestError];
-            }
-
-            const validationReport: ValidationReport = {
-                source: "signup",
-                errors: errorMessages
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            parseAndDispatchError(this.eventManager, errorSources.signup, error, Constants.genericHttpRequestError);
         }
     }
 }

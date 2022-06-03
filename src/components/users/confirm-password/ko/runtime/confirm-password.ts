@@ -1,11 +1,10 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
-import * as Constants from "../../../../../constants";
 import template from "./confirm-password.html";
 import { EventManager } from "@paperbits/common/events";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
-import { UsersService } from "../../../../../services/usersService";
-import { ValidationReport } from "../../../../../contracts/validationReport";
+import { UsersService } from "../../../../../services";
+import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
 
 @RuntimeComponent({
     selector: "confirm-password"
@@ -54,15 +53,11 @@ export class ConfirmPassword {
         const queryParams = new URLSearchParams(location.search);
 
         if (!queryParams.has("userid") || !queryParams.has("ticketid") || !queryParams.has("ticket")) {
-            const validationReport: ValidationReport = {
-                source: "confirmpassword",
-                errors: ["Required params not found"]
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, errorSources.confirmpassword, ["Required params not found"]);
             return;
         }
 
-        try {            
+        try {
             this.token = this.usersService.getTokenFromTicketParams(queryParams);
             this.userId = this.usersService.getUserIdFromParams(queryParams);
 
@@ -70,11 +65,7 @@ export class ConfirmPassword {
                 throw new Error("User not found.");
             }
         } catch (error) {
-            const validationReport: ValidationReport = {
-                source: "confirmpassword",
-                errors: ["Activate user error: " + error.message]
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, errorSources.confirmpassword, ["Activate user error: " + error.message]);
         }
     }
 
@@ -91,11 +82,7 @@ export class ConfirmPassword {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            const validationReport: ValidationReport = {
-                source: "confirmpassword",
-                errors: clientErrors
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, errorSources.confirmpassword, clientErrors);
             return;
         }
 
@@ -107,26 +94,7 @@ export class ConfirmPassword {
             }, 1000);
         }
         catch (error) {
-            if (error.code === "ValidationError") {
-                const details: any[] = error.details;
-
-                if (details && details.length > 0) {
-                    let message = "";
-                    const errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
-                    const validationReport: ValidationReport = {
-                        source: "confirmpassword",
-                        errors: errorMessages
-                    };
-                    this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-                }
-            }
-            else {
-                const validationReport: ValidationReport = {
-                    source: "confirmpassword",
-                    errors: [Constants.genericHttpRequestError]
-                };
-                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-            }
+            parseAndDispatchError(this.eventManager, errorSources.confirmpassword, error, undefined, detail => `${detail.target}: ${detail.message} \\n`);
         }
     }
 }

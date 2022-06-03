@@ -1,13 +1,12 @@
 import * as ko from "knockout";
-import * as Constants from "../../../../../constants";
 import template from "./signin-aad.html";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { EventManager } from "@paperbits/common/events";
 import { Component, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
-import { ValidationReport } from "../../../../../contracts/validationReport";
 import { AadService, AadServiceV2, IAadService } from "../../../../../services";
-import { SettingNames, defaultAadTenantName } from "./../../../../../constants";
-import { AadClientConfig } from "./../../../../../contracts/aadClientConfig";
+import { AadClientLibrary, SettingNames, defaultAadTenantName } from "../../../../../constants";
+import { AadClientConfig } from "../../../../../contracts/aadClientConfig";
+import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
 
 @RuntimeComponent({
     selector: "signin-aad"
@@ -54,7 +53,7 @@ export class SignInAad {
             const config = await this.settingsProvider.getSetting<AadClientConfig>(SettingNames.aadClientConfig);
             
             if (config) {
-                if (config.clientLibrary === Constants.AadClientLibrary.v2) {
+                if (config.clientLibrary === AadClientLibrary.v2) {
                     this.selectedService = this.aadServiceV2;
                 } else {
                     this.selectedService = this.aadService;
@@ -64,30 +63,11 @@ export class SignInAad {
             }            
         }
         catch (error) {
-            let errorDetails;
-
-            if (error.code === "ValidationError") {
-                errorDetails = error.details?.map(detail => detail.message);
-            }
-            else {
-                errorDetails = [error.message];
-            }
-
-            const validationReport: ValidationReport = {
-                source: "socialAcc",
-                errors: errorDetails
-            };
-
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            parseAndDispatchError(this.eventManager, errorSources.socialAcc, error);
         }
     }
 
     private cleanValidationErrors(): void {
-        const validationReport: ValidationReport = {
-            source: "signInOAuth",
-            errors: []
-        };
-
-        this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+        dispatchErrors(this.eventManager, errorSources.signInOAuth, []); // TODO different source then on line 95?
     }
 }
