@@ -169,8 +169,9 @@ class ImporterExporter {
         try {
             const contentItems = [];
             let nextPageUrl = `/contentTypes/${contentType}/contentItems`;
+            nextPageUrl = this.ensureDocumentTypeFiltered(contentType, nextPageUrl);
 
-            do {
+            do {                
                 const data = await this.httpClient.sendRequest("GET", nextPageUrl);
                 contentItems.push(...data.value);
 
@@ -187,6 +188,15 @@ class ImporterExporter {
         catch (error) {
             throw new Error(`Unable to fetch content items. ${error.message}`);
         }
+    }
+
+    ensureDocumentTypeFiltered(contentType, nextLink)
+    {
+        if(contentType === 'document')
+        {
+            nextLink = `${nextLink}?$top=1` 
+        }
+        return nextLink
     }
 
     /**
