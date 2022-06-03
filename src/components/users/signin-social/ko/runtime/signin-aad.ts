@@ -59,6 +59,6 @@ export class SignInAad {
 
                 await this.selectedService.signInWithAad(config.clientId, config.authority, config.signinTenant || defaultAadTenantName, this.replyUrl());
             }
-        }, this.eventManager, errorSources.socialAcc);
+        }, this.eventManager, errorSources.signInOAuth);
     }
 }

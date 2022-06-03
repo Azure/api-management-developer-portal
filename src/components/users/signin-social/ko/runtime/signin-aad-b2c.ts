@@ -90,11 +90,11 @@ export class SignInAadB2C {
                 }
             }
 
-            parseAndDispatchError(this.eventManager, errorSources.socialAcc, error);
+            parseAndDispatchError(this.eventManager, errorSources.signInOAuth, error);
         }
     }
 
     private cleanValidationErrors(): void {
-        dispatchErrors(this.eventManager, errorSources.signInOAuth, []); // TODO different source then on line 93?
+        dispatchErrors(this.eventManager, errorSources.signInOAuth, []);
     }
 }

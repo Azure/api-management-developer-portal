@@ -6,7 +6,6 @@ export const onValidationErrors = "onValidationErrors";
 export enum errorSources {
     signin = "signin",
     signup = "signup",
-    socialAcc = "socialAcc",
     signInOAuth = "signInOAuth",
     confirmpassword = "confirmpassword",
     changepassword = "changepassword",
