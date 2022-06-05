@@ -1,8 +1,6 @@
 .flex {
     display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-content: stretch;
+    min-height: 0; // fixes issue with oveflow in Edge, FF and other browsers
 }
 
 .flex-row {
@@ -23,7 +21,11 @@
 }
 
 .flex-grow {
-    flex: 1;
+    flex: 1 ;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
 }
 
 .expand {
@@ -31,7 +33,7 @@
 }
 
 .justify-content-end {
-    justify-content: flex-end!important;
+    justify-content: flex-end !important;
 }
 
 .align-items-center {

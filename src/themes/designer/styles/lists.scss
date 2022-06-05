@@ -66,7 +66,7 @@
     text-decoration: none;
     color: $color-base;
     padding: 0 5px;
-    @include selection();
+    @include selection(5px);
 
     .paperbits-icon {
         padding: 0 5px;

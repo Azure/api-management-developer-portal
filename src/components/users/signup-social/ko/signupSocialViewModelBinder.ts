@@ -25,6 +25,7 @@ export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocial
 
         viewModel["widgetBinding"] = {
             displayName: "Sign-up form: OAuth",
+            layer: bindingContext?.layer,
             model: model,
             flow: ComponentFlow.Block,
             draggable: true

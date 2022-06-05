@@ -37,8 +37,11 @@ body {
 }
 hr {
     box-sizing: content-box;
-    height: 0;
+    width: 100%;
+    height: 2px;
     overflow: visible;
+    border: none;
+    background-color: #ccc;
 }
 h1,
 h2,
@@ -160,6 +163,9 @@ caption {
     color: #6c757d;
     text-align: left;
     caption-side: bottom;
+}
+th {
+    text-align: inherit;
 }
 label {
     display: inline-block;
