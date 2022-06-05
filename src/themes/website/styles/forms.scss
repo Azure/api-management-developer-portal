@@ -222,11 +222,11 @@ input[type=search] {
         margin-left: -1px;
     }
 
-    &:not(.has-validation)>:not(:last-child):not(.dropdown) {
+    &:not(.has-validation) > :not(:last-child):not(.dropdown) {
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
     }
- 
+
 
     .form-control {
         flex: 1;
