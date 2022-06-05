@@ -68,7 +68,6 @@
     background-repeat: no-repeat;
     background-size: 0 0;
     z-index: $z-index-selection;
-    transition: .375s background-size;
     content: '';
   }
   &:active:after,

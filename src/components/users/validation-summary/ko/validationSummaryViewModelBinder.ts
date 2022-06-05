@@ -12,6 +12,7 @@ export class ValidationSummaryViewModelBinder implements ViewModelBinder<Validat
 
             viewModel["widgetBinding"] = {
                 displayName: "Validation summary",
+                layer: bindingContext?.layer,
                 model: model,
                 flow: ComponentFlow.Block,
                 draggable: true

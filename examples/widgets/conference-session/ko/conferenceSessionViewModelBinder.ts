@@ -21,7 +21,7 @@ export class ConferenceSessionViewModelBinder implements ViewModelBinder<Confere
             const binding: IWidgetBinding<ConferenceSessionModel, ConferenceSessionViewModel> = {
                 name: widgetName,
                 displayName: widgetDisplayName,
-                readonly: bindingContext?.readonly,
+                layer: bindingContext?.layer,
                 model: model,
                 draggable: true,
                 flow: ComponentFlow.Block,

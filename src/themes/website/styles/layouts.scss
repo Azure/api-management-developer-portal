@@ -358,6 +358,31 @@ html {
     }
 }
 
+section {
+    display: flex;
+    flex-direction: column;
+    flex: none;
+
+    .row {
+        padding: 10px;
+        min-height: 90px;
+        flex: 1;
+
+        .col {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+    }
+
+    /* TODO: Enable row height through editor */
+    &.stretch > .container,
+    .container-fluid > .row {
+        flex: 1;
+    }
+}
+
 .stretch {
     flex: 1;
     height: 100%;
@@ -385,6 +410,19 @@ html {
     position: sticky;
     bottom: 0;
     z-index: 1020;
+}
+
+.fit {
+    @include fit;
+    flex: 1 1 auto;
+}
+
+.fill {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 100%;
+    width: 100%;
 }
 
 layout,
