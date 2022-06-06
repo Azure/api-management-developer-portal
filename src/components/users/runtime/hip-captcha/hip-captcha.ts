@@ -70,7 +70,7 @@ export class HipCaptcha {
                     .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
                     .subscribe(this.updateChallengeInput);
 
-                await this.getCaptchaChallenge("visual"); //audio
+                await this.getCaptchaChallenge("visual"); // audio
             } else {
                 const hipObjScriptElement = document.createElement("script");
                 hipObjScriptElement.type = "text/javascript";
@@ -85,7 +85,7 @@ export class HipCaptcha {
         }
         
         if (this.onInitComplete) {
-            this.onInitComplete(this.setValidation, this.refreshCaptcha)
+            this.onInitComplete(this.setValidation, this.refreshCaptcha);
         }
     }
 
@@ -164,24 +164,24 @@ export class HipCaptcha {
         const captchaElement = document.getElementById("captcha");
         if (captchaElement) {
             const form = captchaElement.closest("form");
-            form.submit = () => WLSPHIP0.verify(fillHipData, '');
+            form.submit = () => WLSPHIP0.verify(fillHipData, "");
             const ispHIPHIP = <HTMLElement>captchaElement.querySelector("#ispHIPHIP");
 
             WLSPHIP0.error = "0";
             WLSPHIP0.left = 0;
             WLSPHIP0.inputWidth = ispHIPHIP.offsetWidth;
             WLSPHIP0.cssSet = {
-                "cssCdHIPInput": "form-control captcha-input",
-                "cssCdHIPMenu": "",
-                "cssCdHIPLink": "",
-                "cssCdHIPError": "",
-                "cssCdHIPErrorImg": ""
+                cssCdHIPInput: "form-control captcha-input",
+                cssCdHIPMenu: "",
+                cssCdHIPLink: "",
+                cssCdHIPError: "",
+                cssCdHIPErrorImg: ""
             };
             WLSPHIP0.postLoad = () => {
-                const captchaInput = ispHIPHIP.querySelector('input[type=text]');
+                const captchaInput = ispHIPHIP.querySelector("input[type=text]");
                 captchaInput.removeAttribute("style");
                 captchaInput.setAttribute("placeholder", "Enter the captcha here");
-            }
+            };
 
             const ispHipContainer = document.getElementById("ispHIPScript");
             ispHipContainer.appendChild(scriptElement);

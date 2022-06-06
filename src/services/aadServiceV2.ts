@@ -92,7 +92,7 @@ export class AadServiceV2 implements IAadService {
         const msalInstance = new msal.PublicClientApplication(msalConfig);
 
         const loginRequest = {
-            scopes: ['openid']
+            scopes: ["openid"]
         };
 
         const response = await msalInstance.loginPopup(loginRequest);

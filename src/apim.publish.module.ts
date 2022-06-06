@@ -39,7 +39,7 @@ import { RuntimeConfigBuilder } from "./publishing/runtimeConfigBuilder";
 import { CustomHtmlPublishModule } from "./components/custom-html/customHtml.publish.module";
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
-import {staticDataEnvironment} from "./../environmentConstants"
+import { staticDataEnvironment } from "./../environmentConstants";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
