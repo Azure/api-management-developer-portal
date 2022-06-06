@@ -15,7 +15,7 @@ export class ConsoleRequest {
     public readonly selectedRepresentation: ko.Observable<ConsoleRepresentation>;
     public readonly description: string;
     public readonly body: ko.Observable<string>;
-    public readonly isBodyEdited: ko.Observable<boolean>
+    public readonly isBodyEdited: ko.Observable<boolean>;
     public readonly hasBody: boolean;
     public readonly binary: ko.Observable<File>;
     public readonly bodyFormat: ko.Observable<RequestBodyType>;
@@ -33,7 +33,7 @@ export class ConsoleRequest {
         this.meaningfulHeaders = ko.computed(() => this.headers().filter(x => !!x.value()));
 
         this.body = ko.observable();
-        this.isBodyEdited= ko.observable(false)
+        this.isBodyEdited = ko.observable(false);
         this.binary = ko.observable();
         this.binary.extend(<any>{ maxFileSize: 3 * 1024 * 1024 });
         this.bodyFormat = ko.observable(RequestBodyType.raw);
@@ -45,10 +45,10 @@ export class ConsoleRequest {
         this.selectedRepresentation.subscribe(representation => {
             this.sample = representation.sample;
             this.body(this.sample);
-            this.representationContentType = representation.contentType
-        })
+            this.representationContentType = representation.contentType;
+        });
 
-        this.body.subscribe(body => this.isBodyEdited(body !== this.sample))
+        this.body.subscribe(body => this.isBodyEdited(body !== this.sample));
 
         if (this.representations?.length === 0) {
             return;

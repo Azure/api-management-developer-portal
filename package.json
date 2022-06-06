@@ -21,7 +21,8 @@
         "deploy-function": "npm run build-function && cd dist/function && func azure functionapp publish < function app name >",
         "publish": "webpack --config webpack.publisher.js && node dist/publisher/index.js && npm run serve-website",
         "serve-website": "webpack serve --open --static ./dist/website --no-stats",
-        "build-static-data": "webpack --config webpack.staticData.js && node dist/publisher/index.js"
+        "build-static-data": "webpack --config webpack.staticData.js && node dist/publisher/index.js",
+        "lint:fix": "tslint -p . --fix"
     },
     "devDependencies": {
         "@azure/storage-blob": "12.10.0",
