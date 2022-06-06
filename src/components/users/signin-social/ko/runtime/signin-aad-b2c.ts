@@ -6,7 +6,8 @@ import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common
 import { AadClientLibrary, SettingNames } from "../../../../../constants";
 import { AadB2CClientConfig } from "../../../../../contracts/aadB2CClientConfig";
 import { AadService, AadServiceV2, IAadService } from "../../../../../services";
-import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 
 const aadb2cResetPasswordErrorCode = "AADB2C90118";
@@ -90,11 +91,11 @@ export class SignInAadB2C {
                 }
             }
 
-            parseAndDispatchError(this.eventManager, errorSources.signInOAuth, error);
+            parseAndDispatchError(this.eventManager, ErrorSources.signInOAuth, error);
         }
     }
 
     private cleanValidationErrors(): void {
-        dispatchErrors(this.eventManager, errorSources.signInOAuth, []);
+        dispatchErrors(this.eventManager, ErrorSources.signInOAuth, []);
     }
 }

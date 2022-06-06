@@ -4,7 +4,7 @@ import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/dec
 import { EventManager } from "@paperbits/common/events";
 import { Bag } from "@paperbits/common";
 import { ValidationReport } from "../../../../../contracts/validationReport";
-import { onValidationErrors } from "../../utils";
+import { onValidationErrors } from "../../constants";
 
 const selector = "validation-summary";
 @RuntimeComponent({

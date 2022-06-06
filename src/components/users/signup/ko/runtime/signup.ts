@@ -8,7 +8,8 @@ import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
 import { CaptchaData } from "../../../../../models/captchaData";
-import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
     selector: "signup-runtime"
@@ -154,7 +155,7 @@ export class Signup {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            dispatchErrors(this.eventManager, errorSources.signup, clientErrors);
+            dispatchErrors(this.eventManager, ErrorSources.signup, clientErrors);
             return;
         }
 
@@ -169,7 +170,7 @@ export class Signup {
 
         try {
             this.working(true);
-            dispatchErrors(this.eventManager, errorSources.signup, []);
+            dispatchErrors(this.eventManager, ErrorSources.signup, []);
 
             if (isCaptchaRequired) {
                 const captchaRequestData = this.captchaData();
@@ -196,7 +197,7 @@ export class Signup {
                 await this.refreshCaptcha();
             }
 
-            parseAndDispatchError(this.eventManager, errorSources.signup, error, Constants.genericHttpRequestError);
+            parseAndDispatchError(this.eventManager, ErrorSources.signup, error, Constants.genericHttpRequestError);
         }
         finally {
             this.working(false);

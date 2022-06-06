@@ -10,7 +10,8 @@ import { DelegationParameters, DelegationActionPath } from "../../../../../contr
 import { Utils } from "../../../../../utils";
 import { Router } from "@paperbits/common/routing/router";
 import { EventManager } from "@paperbits/common/events";
-import { errorSources, parseAndDispatchError, tryCatchDispatchError } from "../../../validation-summary/utils";
+import { parseAndDispatchError, tryCatchDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
     selector: "subscriptions-runtime"
@@ -61,7 +62,7 @@ export class Subscriptions {
             this.syncSubscriptionLabelState(subscription, updatedVM);
             this.subscriptions.replace(subscription, updatedVM);
             subscription.toggleEdit();
-        }, this.eventManager, errorSources.renameSubscription);
+        }, this.eventManager, ErrorSources.renameSubscription);
     }
 
     public async regeneratePKey(subscription: SubscriptionListItem): Promise<void> {
@@ -72,7 +73,7 @@ export class Subscriptions {
             this.syncSubscriptionLabelState(subscription, updatedVM);
             updatedVM.changedItem("primaryKey");
             this.subscriptions.replace(subscription, updatedVM);
-        }, this.eventManager, errorSources.regeneratePKey);
+        }, this.eventManager, ErrorSources.regeneratePKey);
         subscription.isPRegenerating(false);
     }
 
@@ -84,7 +85,7 @@ export class Subscriptions {
             this.syncSubscriptionLabelState(subscription, updatedVM);
             updatedVM.changedItem("secondaryKey");
             this.subscriptions.replace(subscription, updatedVM);
-        }, this.eventManager, errorSources.regenerateSKey);
+        }, this.eventManager, ErrorSources.regenerateSKey);
         subscription.isSRegenerating(false);
     }
 
@@ -121,7 +122,7 @@ export class Subscriptions {
                 return;
             }
 
-            parseAndDispatchError(this.eventManager, errorSources.cancelSubscription, error);
+            parseAndDispatchError(this.eventManager, ErrorSources.cancelSubscription, error);
         } finally {
             subscription.isSRegenerating(false);
         }

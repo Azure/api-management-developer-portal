@@ -6,7 +6,8 @@ import { Component, Param, RuntimeComponent } from "@paperbits/common/ko/decorat
 import { AadService, AadServiceV2, IAadService } from "../../../../../services";
 import { AadClientLibrary, SettingNames, defaultAadTenantName } from "../../../../../constants";
 import { AadClientConfig } from "../../../../../contracts/aadClientConfig";
-import { errorSources, tryCatchDispatchError } from "../../../validation-summary/utils";
+import { tryCatchDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
     selector: "signin-aad"
@@ -59,6 +60,6 @@ export class SignInAad {
 
                 await this.selectedService.signInWithAad(config.clientId, config.authority, config.signinTenant || defaultAadTenantName, this.replyUrl());
             }
-        }, this.eventManager, errorSources.signInOAuth);
+        }, this.eventManager, ErrorSources.signInOAuth);
     }
 }

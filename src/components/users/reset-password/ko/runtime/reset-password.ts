@@ -7,7 +7,8 @@ import { UsersService } from "../../../../../services";
 import { ResetRequest } from "../../../../../contracts/resetRequest";
 import { BackendService } from "../../../../../services/backendService";
 import { CaptchaData } from "../../../../../models/captchaData";
-import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
     selector: "reset-password-runtime"
@@ -87,7 +88,7 @@ export class ResetPassword {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            dispatchErrors(this.eventManager, errorSources.resetpassword, clientErrors);
+            dispatchErrors(this.eventManager, ErrorSources.resetpassword, clientErrors);
             return;
         }
 
@@ -111,14 +112,14 @@ export class ResetPassword {
             }
             this.isResetRequested(true);
 
-            dispatchErrors(this.eventManager, errorSources.resetpassword, []);
+            dispatchErrors(this.eventManager, ErrorSources.resetpassword, []);
         }
         catch (error) {
             if (isCaptcha) {
                 await this.refreshCaptcha();
             }
 
-            parseAndDispatchError(this.eventManager, errorSources.resetpassword, error, undefined, detail => `${detail.target}: ${detail.message} \n`);
+            parseAndDispatchError(this.eventManager, ErrorSources.resetpassword, error, undefined, detail => `${detail.target}: ${detail.message} \n`);
         }
         finally {
             this.working(false);

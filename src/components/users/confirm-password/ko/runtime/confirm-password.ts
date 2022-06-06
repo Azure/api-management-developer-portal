@@ -4,7 +4,8 @@ import template from "./confirm-password.html";
 import { EventManager } from "@paperbits/common/events";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../../services";
-import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
     selector: "confirm-password"
@@ -53,7 +54,7 @@ export class ConfirmPassword {
         const queryParams = new URLSearchParams(location.search);
 
         if (!queryParams.has("userid") || !queryParams.has("ticketid") || !queryParams.has("ticket")) {
-            dispatchErrors(this.eventManager, errorSources.confirmpassword, ["Required params not found"]);
+            dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Required params not found"]);
             return;
         }
 
@@ -65,7 +66,7 @@ export class ConfirmPassword {
                 throw new Error("User not found.");
             }
         } catch (error) {
-            dispatchErrors(this.eventManager, errorSources.confirmpassword, ["Activate user error: " + error.message]);
+            dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Activate user error: " + error.message]);
         }
     }
 
@@ -82,7 +83,7 @@ export class ConfirmPassword {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            dispatchErrors(this.eventManager, errorSources.confirmpassword, clientErrors);
+            dispatchErrors(this.eventManager, ErrorSources.confirmpassword, clientErrors);
             return;
         }
 
@@ -94,7 +95,7 @@ export class ConfirmPassword {
             }, 1000);
         }
         catch (error) {
-            parseAndDispatchError(this.eventManager, errorSources.confirmpassword, error, undefined, detail => `${detail.target}: ${detail.message} \\n`);
+            parseAndDispatchError(this.eventManager, ErrorSources.confirmpassword, error, undefined, detail => `${detail.target}: ${detail.message} \\n`);
         }
     }
 }

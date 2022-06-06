@@ -7,7 +7,8 @@ import { ChangePasswordRequest } from "../../../../../contracts/resetRequest";
 import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services";
 import { CaptchaData } from "../../../../../models/captchaData";
-import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
     selector: "change-password-runtime"
@@ -97,7 +98,7 @@ export class ChangePassword {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            dispatchErrors(this.eventManager, errorSources.changepassword, clientErrors);
+            dispatchErrors(this.eventManager, ErrorSources.changepassword, clientErrors);
             return;
         }
 
@@ -106,7 +107,7 @@ export class ChangePassword {
         let userId = await this.usersService.authenticate(credentials);
 
         if (!userId) {
-            dispatchErrors(this.eventManager, errorSources.changepassword, ["Incorrect user name or password"]);
+            dispatchErrors(this.eventManager, ErrorSources.changepassword, ["Incorrect user name or password"]);
             return;
         }
 
@@ -114,7 +115,7 @@ export class ChangePassword {
 
         try {
             this.working(true);
-            dispatchErrors(this.eventManager, errorSources.changepassword, []);
+            dispatchErrors(this.eventManager, ErrorSources.changepassword, []);
 
             if (isCaptcha) {
                 const captchaRequestData = this.captchaData();
@@ -137,7 +138,7 @@ export class ChangePassword {
                 await this.refreshCaptcha();
             }
 
-            parseAndDispatchError(this.eventManager, errorSources.changepassword, error, undefined, detail => `${detail.target}: ${detail.message} \n`);
+            parseAndDispatchError(this.eventManager, ErrorSources.changepassword, error, undefined, detail => `${detail.target}: ${detail.message} \n`);
         } finally {
             this.working(false);
         }

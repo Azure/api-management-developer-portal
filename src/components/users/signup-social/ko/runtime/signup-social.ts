@@ -8,7 +8,8 @@ import { Router } from "@paperbits/common/routing";
 import { Utils } from "../../../../../utils";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { UsersService } from "../../../../../services";
-import { dispatchErrors, errorSources, tryCatchDispatchError } from "../../../validation-summary/utils";
+import { dispatchErrors, tryCatchDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 
 @RuntimeComponent({
@@ -101,7 +102,7 @@ export class SignupSocial {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            dispatchErrors(this.eventManager, errorSources.signup, clientErrors);
+            dispatchErrors(this.eventManager, ErrorSources.signup, clientErrors);
             return;
         }
 
@@ -116,6 +117,6 @@ export class SignupSocial {
 
             await this.usersService.createUserWithOAuth(provider, idToken, this.firstName(), this.lastName(), this.email());
             await this.router.navigateTo(Constants.pageUrlHome);
-        }, this.eventManager, errorSources.signup, Constants.genericHttpRequestError);
+        }, this.eventManager, ErrorSources.signup, Constants.genericHttpRequestError);
     }
 }

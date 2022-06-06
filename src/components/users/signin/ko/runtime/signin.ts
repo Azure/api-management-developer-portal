@@ -8,7 +8,8 @@ import { Router } from "@paperbits/common/routing/router";
 import { MapiError } from "../../../../../errors/mapiError";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { UsersService } from "../../../../../services";
-import { dispatchErrors, errorSources } from "../../../validation-summary/utils";
+import { dispatchErrors} from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
     selector: "signin-runtime"
@@ -110,7 +111,7 @@ export class Signin {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            dispatchErrors(this.eventManager, errorSources.signin, clientErrors);
+            dispatchErrors(this.eventManager, ErrorSources.signin, clientErrors);
             this.errorMessages(clientErrors);
             return;
         }
@@ -131,25 +132,25 @@ export class Signin {
 
                 this.navigateToHome();
 
-                dispatchErrors(this.eventManager, errorSources.signin, []);
+                dispatchErrors(this.eventManager, ErrorSources.signin, []);
             }
             else {
                 const errors = ["Please provide a valid email and password."];
                 this.errorMessages(errors);
-                dispatchErrors(this.eventManager, errorSources.signin, errors);
+                dispatchErrors(this.eventManager, ErrorSources.signin, errors);
             }
         }
         catch (error) {
             if (error instanceof MapiError) {
                 if (error.code === "identity_not_confirmed") {
                     const msg = [`We found an unconfirmed account for the e-mail address ${this.username()}. To complete the creation of your account we need to verify your e-mail address. We’ve sent an e-mail to ${this.username()}. Please follow the instructions inside the e-mail to activate your account. If the e-mail doesn’t arrive within the next few minutes, please check your junk email folder`];
-                    dispatchErrors(this.eventManager, errorSources.signin, msg);
+                    dispatchErrors(this.eventManager, ErrorSources.signin, msg);
                     return;
                 }
 
                 this.errorMessages([error.message]);
 
-                dispatchErrors(this.eventManager, errorSources.signin, [error.message]);
+                dispatchErrors(this.eventManager, ErrorSources.signin, [error.message]);
 
                 return;
             }

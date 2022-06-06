@@ -1,7 +1,8 @@
 import * as ko from "knockout";
 import { EventManager } from "@paperbits/common/events";
 import { Subscription } from "../../../../../models/subscription";
-import { dispatchErrors, errorSources } from "../../../validation-summary/utils";
+import { dispatchErrors} from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 export class SubscriptionListItem {
     private hiddenKey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
@@ -34,7 +35,7 @@ export class SubscriptionListItem {
     }
 
     public toggleEdit(): void {
-        dispatchErrors(this.eventManager, errorSources.renameSubscription, []); // Clear errors.
+        dispatchErrors(this.eventManager, ErrorSources.renameSubscription, []); // Clear errors.
         this.isEdit(!this.isEdit());
     }
 

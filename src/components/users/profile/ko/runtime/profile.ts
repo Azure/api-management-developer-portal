@@ -11,7 +11,8 @@ import { TenantService } from "../../../../../services/tenantService";
 import { pageUrlChangePassword } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
 import { EventManager } from "@paperbits/common/events/eventManager";
-import { errorSources, tryCatchDispatchError } from "../../../validation-summary/utils";
+import { tryCatchDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
     selector: "profile-runtime"
@@ -125,7 +126,7 @@ export class Profile {
             const user = await this.usersService.updateUser(this.user().id, this.firstName(), this.lastName());
             this.setUser(user);
             await this.toggleEdit();
-        }, this.eventManager, errorSources.changeProfile);
+        }, this.eventManager, ErrorSources.changeProfile);
 
         this.working(false);
     }

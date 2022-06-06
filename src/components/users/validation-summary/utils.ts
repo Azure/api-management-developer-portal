@@ -1,26 +1,12 @@
 import { EventManager } from "@paperbits/common/events";
 import { ValidationReport } from "../../../contracts/validationReport";
-
-export const onValidationErrors = "onValidationErrors";
-
-export enum errorSources {
-    signin = "signin",
-    signup = "signup",
-    signInOAuth = "signInOAuth",
-    confirmpassword = "confirmpassword",
-    changepassword = "changepassword",
-    resetpassword = "resetpassword",
-    changeProfile = "changeProfile",
-    renameSubscription = "renameSubscription",
-    cancelSubscription = "cancelSubscription",
-    regeneratePKey = "regeneratePKey",
-    regenerateSKey = "regenerateSKey",
-}
+import { MapiError } from "../../../errors/mapiError";
+import { ErrorSources, onValidationErrors } from "./constants";
 
 export async function tryCatchDispatchError(
     guardedFunction: () => Promise<unknown>,
     eventManager: EventManager,
-    source: errorSources,
+    source: ErrorSources,
     fallbackMessage?: string,
     errorDetailsMap: (detail: any) => string = detail => `${detail.message}`
 ): Promise<string[] | void> {
@@ -35,8 +21,8 @@ export async function tryCatchDispatchError(
 
 export function parseAndDispatchError(
     eventManager: EventManager,
-    source: errorSources,
-    error: Record<string, any>,
+    source: ErrorSources,
+    error: MapiError,
     defaultMessage?: string,
     errorDetailsMap: (detail: any) => string = detail => `${detail.message}`
 ): string[] {
@@ -57,7 +43,7 @@ export function parseAndDispatchError(
     return errorDetails;
 }
 
-export function dispatchErrors(eventManager: EventManager, source: errorSources, errors: string[]): void {
+export function dispatchErrors(eventManager: EventManager, source: ErrorSources, errors: string[]): void {
     dispatchValidationReport(eventManager, {source, errors});
 }
 
