@@ -7,7 +7,7 @@ import { ChangePasswordRequest } from "../../../../../contracts/resetRequest";
 import { BackendService } from "../../../../../services/backendService";
 import { UsersService } from "../../../../../services";
 import { CaptchaData } from "../../../../../models/captchaData";
-import { dispatchErrors, errorSources, tryCatchDispatchError } from "../../../validation-summary/utils";
+import { dispatchErrors, errorSources, parseAndDispatchError } from "../../../validation-summary/utils";
 
 @RuntimeComponent({
     selector: "change-password-runtime"
@@ -112,9 +112,10 @@ export class ChangePassword {
 
         userId = `/users/${userId}`;
 
-        this.working(true);
+        try {
+            this.working(true);
+            dispatchErrors(this.eventManager, errorSources.changepassword, []);
 
-        await tryCatchDispatchError(async () => {
             if (isCaptcha) {
                 const captchaRequestData = this.captchaData();
                 const resetRequest: ChangePasswordRequest = {
@@ -131,8 +132,14 @@ export class ChangePassword {
                 await this.usersService.changePassword(userId, this.newPassword());
             }
             this.isChangeConfirmed(true);
-        }, this.eventManager, errorSources.changepassword, undefined, detail => `${detail.target}: ${detail.message} \n`);
+        } catch (error) {
+            if (isCaptcha) {
+                await this.refreshCaptcha();
+            }
 
-        this.working(false);
+            parseAndDispatchError(this.eventManager, errorSources.changepassword, error, undefined, detail => `${detail.target}: ${detail.message} \n`);
+        } finally {
+            this.working(false);
+        }
     }
 }
