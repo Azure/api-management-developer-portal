@@ -172,7 +172,7 @@ export class OperationConsole {
         this.operation.subscribe(this.resetConsole);
         this.selectedLanguage.subscribe(this.updateRequestSummary);
         this.selectedRepresentation.subscribe(representation => {
-            this.consoleOperation().request.selectedRepresentation(representation)
+            this.consoleOperation().request.selectedRepresentation(representation);
             this.updateRequestSummary();
         });
     }
@@ -306,7 +306,7 @@ export class OperationConsole {
     }
 
     public revertBody(): void {
-        this.consoleOperation().request.body(this.selectedRepresentation().sample)
+        this.consoleOperation().request.body(this.selectedRepresentation().sample);
     }
 
     public addHeader(): void {
@@ -545,7 +545,7 @@ export class OperationConsole {
         }
     }
 
-    private initWebSocket() {
+    private initWebSocket(): void {
         if (!this.ws) {
             this.ws = new WebsocketClient();
             this.ws.onOpen = () => {

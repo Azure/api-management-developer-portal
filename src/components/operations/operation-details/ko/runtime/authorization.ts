@@ -270,7 +270,7 @@ export class Authorization {
     private findHeader(name: string): ConsoleHeader {
         const searchName = name.toLocaleLowerCase();
 
-        const headers = (this.isGraphQL()) ? this.headers() : this.consoleOperation().request.headers()
+        const headers = (this.isGraphQL()) ? this.headers() : this.consoleOperation().request.headers();
 
         return headers.find(x => x.name()?.toLocaleLowerCase() === searchName);
     }

@@ -24,7 +24,7 @@ export class OauthServerConfiguration {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        this.displayedGrantFlows(this.authorizationServer().grantTypes.join(', ').toString());
-        this.displayedScopes(this.authorizationServer().scopes.join(', ').toString());
+        this.displayedGrantFlows(this.authorizationServer().grantTypes.join(", ").toString());
+        this.displayedScopes(this.authorizationServer().scopes.join(", ").toString());
     }
 }
