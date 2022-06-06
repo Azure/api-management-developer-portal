@@ -11,7 +11,7 @@ import { TenantService } from "../../../../../services/tenantService";
 import { pageUrlChangePassword } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
 import { EventManager } from "@paperbits/common/events/eventManager";
-import { tryCatchDispatchError } from "../../../validation-summary/utils";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
@@ -121,13 +121,14 @@ export class Profile {
         }
         
         this.working(true);
-
-        await tryCatchDispatchError(async () => {
+        dispatchErrors(this.eventManager, ErrorSources.changeProfile, []);
+        try {
             const user = await this.usersService.updateUser(this.user().id, this.firstName(), this.lastName());
             this.setUser(user);
             await this.toggleEdit();
-        }, this.eventManager, ErrorSources.changeProfile);
-
+        } catch (error) {
+            parseAndDispatchError(this.eventManager, ErrorSources.changeProfile, error);
+        }
         this.working(false);
     }
 

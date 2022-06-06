@@ -10,7 +10,7 @@ import { DelegationParameters, DelegationActionPath } from "../../../../../contr
 import { Utils } from "../../../../../utils";
 import { Router } from "@paperbits/common/routing/router";
 import { EventManager } from "@paperbits/common/events";
-import { parseAndDispatchError, tryCatchDispatchError } from "../../../validation-summary/utils";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
@@ -56,36 +56,45 @@ export class Subscriptions {
     }
 
     public async renameSubscription(subscription: SubscriptionListItem): Promise<void> {
-        await tryCatchDispatchError(async () => {
+        dispatchErrors(this.eventManager, ErrorSources.renameSubscription, []);
+        try {
             const updated = await this.productService.renameSubscription(subscription.model.id, subscription.editName());
             const updatedVM = new SubscriptionListItem(updated, this.eventManager);
             this.syncSubscriptionLabelState(subscription, updatedVM);
             this.subscriptions.replace(subscription, updatedVM);
             subscription.toggleEdit();
-        }, this.eventManager, ErrorSources.renameSubscription);
+        } catch (error) {
+            parseAndDispatchError(this.eventManager, ErrorSources.renameSubscription, error);
+        }
     }
 
     public async regeneratePKey(subscription: SubscriptionListItem): Promise<void> {
         subscription.isPRegenerating(true);
-        await tryCatchDispatchError(async () => {
+        dispatchErrors(this.eventManager, ErrorSources.regeneratePKey, []);
+        try {
             const updated = await this.productService.regeneratePrimaryKey(subscription.model.id);
             const updatedVM = new SubscriptionListItem(updated, this.eventManager);
             this.syncSubscriptionLabelState(subscription, updatedVM);
             updatedVM.changedItem("primaryKey");
             this.subscriptions.replace(subscription, updatedVM);
-        }, this.eventManager, ErrorSources.regeneratePKey);
+        } catch (error) {
+            parseAndDispatchError(this.eventManager, ErrorSources.regeneratePKey, error);
+        }
         subscription.isPRegenerating(false);
     }
 
     public async regenerateSKey(subscription: SubscriptionListItem): Promise<void> {
         subscription.isSRegenerating(true);
-        await tryCatchDispatchError(async () => {
+        dispatchErrors(this.eventManager, ErrorSources.regenerateSKey, []);
+        try {
             const updated = await this.productService.regenerateSecondaryKey(subscription.model.id);
             const updatedVM = new SubscriptionListItem(updated, this.eventManager);
             this.syncSubscriptionLabelState(subscription, updatedVM);
             updatedVM.changedItem("secondaryKey");
             this.subscriptions.replace(subscription, updatedVM);
-        }, this.eventManager, ErrorSources.regenerateSKey);
+        } catch (error) {
+            parseAndDispatchError(this.eventManager, ErrorSources.regenerateSKey, error);
+        }
         subscription.isSRegenerating(false);
     }
 

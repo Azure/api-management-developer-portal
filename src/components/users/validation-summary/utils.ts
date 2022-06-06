@@ -3,22 +3,6 @@ import { ValidationReport } from "../../../contracts/validationReport";
 import { MapiError } from "../../../errors/mapiError";
 import { ErrorSources, onValidationErrors } from "./constants";
 
-export async function tryCatchDispatchError(
-    guardedFunction: () => Promise<unknown>,
-    eventManager: EventManager,
-    source: ErrorSources,
-    fallbackMessage?: string,
-    errorDetailsMap: (detail: any) => string = detail => `${detail.message}`
-): Promise<string[] | void> {
-    dispatchErrors(eventManager, source, []);
-
-    try {
-        await guardedFunction();
-    } catch (error) {
-        return parseAndDispatchError(eventManager, source, error, fallbackMessage, errorDetailsMap);
-    }
-}
-
 export function parseAndDispatchError(
     eventManager: EventManager,
     source: ErrorSources,

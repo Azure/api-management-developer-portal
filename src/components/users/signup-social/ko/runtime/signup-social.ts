@@ -8,7 +8,7 @@ import { Router } from "@paperbits/common/routing";
 import { Utils } from "../../../../../utils";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { UsersService } from "../../../../../services";
-import { dispatchErrors, tryCatchDispatchError } from "../../../validation-summary/utils";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
 
 
@@ -106,7 +106,8 @@ export class SignupSocial {
             return;
         }
 
-        await tryCatchDispatchError(async () => {
+        dispatchErrors(this.eventManager, ErrorSources.signup, []);
+        try {
             const provider = this.routeHelper.getIdTokenProvider();
             const idToken = this.routeHelper.getIdToken();
 
@@ -117,6 +118,8 @@ export class SignupSocial {
 
             await this.usersService.createUserWithOAuth(provider, idToken, this.firstName(), this.lastName(), this.email());
             await this.router.navigateTo(Constants.pageUrlHome);
-        }, this.eventManager, ErrorSources.signup, Constants.genericHttpRequestError);
+        } catch (error) {
+            parseAndDispatchError(this.eventManager, ErrorSources.signup, error, Constants.genericHttpRequestError);
+        }
     }
 }

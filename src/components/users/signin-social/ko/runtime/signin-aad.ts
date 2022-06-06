@@ -6,7 +6,7 @@ import { Component, Param, RuntimeComponent } from "@paperbits/common/ko/decorat
 import { AadService, AadServiceV2, IAadService } from "../../../../../services";
 import { AadClientLibrary, SettingNames, defaultAadTenantName } from "../../../../../constants";
 import { AadClientConfig } from "../../../../../contracts/aadClientConfig";
-import { tryCatchDispatchError } from "../../../validation-summary/utils";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
@@ -18,7 +18,7 @@ import { ErrorSources } from "../../../validation-summary/constants";
 })
 export class SignInAad {
     private selectedService: IAadService;
-    
+
     constructor(
         private readonly aadService: AadService,
         private readonly aadServiceV2: AadServiceV2,
@@ -28,7 +28,7 @@ export class SignInAad {
         this.classNames = ko.observable();
         this.label = ko.observable();
         this.replyUrl = ko.observable();
-        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
+        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done
         this.termsOfUse = ko.observable();
     }
 
@@ -48,7 +48,8 @@ export class SignInAad {
      * Initiates signing-in with Azure Active Directory.
      */
     public async signIn(): Promise<void> {
-        await tryCatchDispatchError(async () => {
+        dispatchErrors(this.eventManager, ErrorSources.signInOAuth, []);
+        try {
             const config = await this.settingsProvider.getSetting<AadClientConfig>(SettingNames.aadClientConfig);
 
             if (config) {
@@ -60,6 +61,8 @@ export class SignInAad {
 
                 await this.selectedService.signInWithAad(config.clientId, config.authority, config.signinTenant || defaultAadTenantName, this.replyUrl());
             }
-        }, this.eventManager, ErrorSources.signInOAuth);
+        } catch (error) {
+            parseAndDispatchError(this.eventManager, ErrorSources.signInOAuth, error);
+        }
     }
 }
