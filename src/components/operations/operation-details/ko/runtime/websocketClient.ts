@@ -3,7 +3,7 @@ export enum LogItemType {
     SendData = "SendData",
     GetData = "GetData",
     Error = "Error"
-};
+}
 
 export interface LogItem {
     logTime: string;
@@ -116,16 +116,16 @@ export class WebsocketClient {
         let hour = now.getHours().toString();
         let minute = now.getMinutes().toString();
         let second = now.getSeconds().toString();
-        let mSecond = now.getMilliseconds().toString();
+        const mSecond = now.getMilliseconds().toString();
 
         if (hour.length == 1) {
-            hour = '0' + hour;
+            hour = "0" + hour;
         }
         if (minute.length == 1) {
-            minute = '0' + minute;
+            minute = "0" + minute;
         }
         if (second.length == 1) {
-            second = '0' + second;
+            second = "0" + second;
         }
 
         return `${hour}:${minute}:${second}.${mSecond}`;
