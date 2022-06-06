@@ -120,7 +120,7 @@ export class Signup {
         }
     }
     
-    public onCaptchaCreated(captchaValidate: (captchaValidator: ko.Observable<string>) => void, refreshCaptcha: () => Promise<void>){
+    public onCaptchaCreated(captchaValidate: (captchaValidator: ko.Observable<string>) => void, refreshCaptcha: () => Promise<void>) {
         this.setCaptchaValidation = captchaValidate;
         this.refreshCaptcha = refreshCaptcha;
     }

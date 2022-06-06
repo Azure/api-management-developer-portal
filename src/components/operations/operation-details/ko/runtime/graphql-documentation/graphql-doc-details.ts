@@ -22,7 +22,7 @@ export class GraphqlDetails {
     public graphSelectedType: ko.Observable<object>;
 
     public readonly working: ko.Observable<boolean>;
-    public readonly gqlFieldTypes: Array<string>;
+    public readonly gqlFieldTypes: string[];
     public allReferences: {
         objectType: ko.ObservableArray<string>,
         inputObjectType: ko.ObservableArray<string>,
@@ -32,7 +32,7 @@ export class GraphqlDetails {
         interfaceType: ko.ObservableArray<string>
     };
     public allReferencesList: ko.ObservableArray<object>;
-    private referenceQueue: Array<object>;
+    private referenceQueue: object[];
 
 
     constructor(
@@ -71,43 +71,43 @@ export class GraphqlDetails {
     }
 
     public getName(): string {
-        return `${this.graphSelected()['name']}`
+        return `${this.graphSelected()["name"]}`;
     }
 
     public getDescription(reference: object, isSelected = false): string {
         if (isSelected) {
-            return this.graphSelected()['description'];
+            return this.graphSelected()["description"];
         }
-        else if (this.graphDocService.docGraphs[reference['type']] && this.graphDocService.docGraphs[reference['type']]()[reference['name']]) {
-            return this.graphDocService.docGraphs[reference['type']]()[reference['name']].description;
+        else if (this.graphDocService.docGraphs[reference["type"]] && this.graphDocService.docGraphs[reference["type"]]()[reference["name"]]) {
+            return this.graphDocService.docGraphs[reference["type"]]()[reference["name"]].description;
         }
     }
 
     public getType(graph: object, side: string, isUnion = false): string {
-        const fullTypeName = this.buildTypeName((isUnion) ? graph : graph['type']);
+        const fullTypeName = this.buildTypeName((isUnion) ? graph : graph["type"]);
         return fullTypeName[side];
     }
 
     private buildTypeName(type: GraphQL.GraphQLOutputType | GraphQL.GraphQLInputType): object {
-        let tracking = [], complement = ["", ""];
-        let fullTypeName = {};
+        const tracking = [], complement = ["", ""];
+        const fullTypeName = {};
         while ((type instanceof GraphQL.GraphQLList) || (type instanceof GraphQL.GraphQLNonNull)) {
             tracking.push(type instanceof GraphQL.GraphQLList);
             type = type.ofType;
         }
-        fullTypeName['name'] = type.name;
+        fullTypeName["name"] = type.name;
         tracking.reverse();
         tracking.forEach(element => {
             if (element) {
-                complement[0] += '[';
-                complement[1] += ']'
+                complement[0] += "[";
+                complement[1] += "]";
             }
             else {
-                complement[1] += '!'
+                complement[1] += "!";
             }
         });
-        fullTypeName['left'] = complement[0];
-        fullTypeName['right'] = complement[1];
+        fullTypeName["left"] = complement[0];
+        fullTypeName["right"] = complement[1];
         return fullTypeName;
     }
 
@@ -119,18 +119,18 @@ export class GraphqlDetails {
         return (fields && fields.length > 0);
     }
 
-    public fieldValues(fields: object): Array<object> {
+    public fieldValues(fields: object): object[] {
         return _.values(fields);
     }
 
     public headerName(field: string): string {
         switch (field) {
-            case 'unionType':
-                return "Possible Types"
-            case 'inputObjectType': case 'objectType': case "interfaceType":
-                return "Fields"
-            case 'enumType':
-                return "Values"
+            case "unionType":
+                return "Possible Types";
+            case "inputObjectType": case "objectType": case "interfaceType":
+                return "Fields";
+            case "enumType":
+                return "Values";
             default:
                 return "Arguments";
         }
@@ -138,19 +138,19 @@ export class GraphqlDetails {
 
     public buildReferences(): void {
 
-        this.graphSelectedType(this.fullType(this.graphSelected()))
+        this.graphSelectedType(this.fullType(this.graphSelected()));
 
         this.addingReferences(this.graphSelectedType());
 
-        this.fieldIterator(this.graphSelected(), GraphqlFieldTypes.args)
+        this.fieldIterator(this.graphSelected(), GraphqlFieldTypes.args);
 
         while (this.referenceQueue.length > 0) {
             const head = this.referenceQueue.shift();
-            const graph = this.graphDocService.docGraphs[head['type']]()[head['name']];
+            const graph = this.graphDocService.docGraphs[head["type"]]()[head["name"]];
             if (graph) {
                 _.each(_.values(GraphqlFieldTypes), (f) => {
-                    this.fieldIterator(graph, f)
-                })
+                    this.fieldIterator(graph, f);
+                });
             }
         }
     }
@@ -160,72 +160,73 @@ export class GraphqlDetails {
         if (children && children.length > 0) {
             _.each(children, (child) => {
                 this.addingReferences(this.fullType(child, field == GraphqlFieldTypes.types));
-            })
+            });
         }
     }
 
     public fullType(graph: object, isUnion = false): object {
-        const type = this.graphDocService.indexCollectionFromType((isUnion) ? graph : graph['type']);
-        const name = this.getType(graph, 'name', isUnion);
-        return { type, name }
+        const type = this.graphDocService.indexCollectionFromType((isUnion) ? graph : graph["type"]);
+        const name = this.getType(graph, "name", isUnion);
+        return { type, name };
     }
 
     private addingReferences(fullType: object): void {
-        const savedReference = _.includes(this.allReferences[fullType['type']](), fullType['name']);
-        if (fullType['type'] == 'scalarType') {
-            if (!this.isDefaultScalarType(fullType['name']) && !savedReference) {
-                this.allReferences[fullType['type']].push(fullType['name']);
+        const savedReference = _.includes(this.allReferences[fullType["type"]](), fullType["name"]);
+        if (fullType["type"] == "scalarType") {
+            if (!this.isDefaultScalarType(fullType["name"]) && !savedReference) {
+                this.allReferences[fullType["type"]].push(fullType["name"]);
             }
         }
         else if (!savedReference) {
-            this.allReferences[fullType['type']].push(fullType['name']);
-            if (fullType['type'] != 'enumType') {
-                this.referenceQueue.push(fullType)
+            this.allReferences[fullType["type"]].push(fullType["name"]);
+            if (fullType["type"] != "enumType") {
+                this.referenceQueue.push(fullType);
             }
         }
     }
 
     private isDefaultScalarType(name: string): boolean {
-        return _.includes(_.values(GraphqlDefaultScalarTypes), name)
+        return _.includes(_.values(GraphqlDefaultScalarTypes), name);
     }
 
-    private convertToList(references: object): Array<object> {
+    private convertToList(references: object): object[] {
         return _.flatMap(references, (names, type) => {
             return _.map(names(), (name) => {
                 return { 
                     type, 
                     name, 
-                    schemaView: ko.observable<string>('table'),
+                    schemaView: ko.observable<string>("table"),
                 };
             });
         });
     }
 
     public anchorLink(graph: object, destination = false): string {
-        const url = this.getReferenceUrl(graph['type']+graph['name']);
-        return (destination) ? url : `#${url}`
+        const url = this.getReferenceUrl(graph["type"] + graph["name"]);
+        return (destination) ? url : `#${url}`;
     }
 
     public prettyType(type: string): string {
         return GraphqlTypesForDocumentation[type];
     }
 
-    public referenceFieldList(reference: object): Array<object> {
-        const type = reference['type'];
-        const name = reference['name'];
+    public referenceFieldList(reference: object): object[] {
+        const type = reference["type"];
+        const name = reference["name"];
         if (this.graphDocService.docGraphs[type] && this.graphDocService.docGraphs[type]()[name]) {
             const graph = this.graphDocService.docGraphs[type]()[name];
-            if (type == 'inputObjectType' || type == 'objectType' || type == 'interfaceType')
+            if (type == "inputObjectType" || type == "objectType" || type == "interfaceType") {
                 return this.fieldValues(graph[GraphqlFieldTypes.fields]);
-            else if (type == 'enumType')
+            } else if (type == "enumType") {
                 return graph[GraphqlFieldTypes.values];
-            else
+            } else {
                 return graph[GraphqlFieldTypes.types];
+            }
         }
     }
 
     private getReferenceUrl(definition: string): string {
-        return this.graphDocService.routeHelper.getGraphDefinitionReferenceId(this.graphDocService.selectedApiName(), this.graphSelected()[GraphqlCustomFieldNames.type](), this.graphSelected()['name'], definition);
+        return this.graphDocService.routeHelper.getGraphDefinitionReferenceId(this.graphDocService.selectedApiName(), this.graphSelected()[GraphqlCustomFieldNames.type](), this.graphSelected()["name"], definition);
     }
 
     public switchToTable(schemaView: ko.Observable): void {
@@ -237,8 +238,8 @@ export class GraphqlDetails {
     }
 
     public content(reference: object, graph = null): string {
-        if(!graph) {
-            graph = this.graphDocService.docGraphs[reference['type']]()[reference['name']];
+        if (!graph) {
+            graph = this.graphDocService.docGraphs[reference["type"]]()[reference["name"]];
         }
         const location = graph?.astNode?.loc; 
         return this.graphDocService.content().substring(location?.start, location?.end);

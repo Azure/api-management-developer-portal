@@ -250,7 +250,7 @@ ko.bindingHandlers["minMaxAvgChart"] = {
                     }
                 }
 
-                verticalLineTooltipText.text(formatXDetailed(timestamp))
+                verticalLineTooltipText.text(formatXDetailed(timestamp));
             });
 
 
