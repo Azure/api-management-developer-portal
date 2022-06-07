@@ -21,7 +21,7 @@ export class DocumentDetailsViewModelBinder implements ViewModelBinder<DocumentD
             const binding: IWidgetBinding<DocumentDetailsModel, DocumentDetailsViewModel> = {
                 name: widgetName,
                 displayName: widgetDisplayName,
-                readonly: bindingContext?.readonly,
+                layer: bindingContext?.layer,
                 model: model,
                 flow: ComponentFlow.Block,
                 editor: widgetEditorSelector,

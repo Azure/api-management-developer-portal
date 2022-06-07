@@ -2,19 +2,19 @@ import { Bag } from "@paperbits/common/bag";
 import { SchemaObjectContract } from "../contracts/schema";
 
 export interface DestructedCombination {
-    combinationType: string,
-    combinationArray: SchemaObjectContract[]
+    combinationType: string;
+    combinationArray: SchemaObjectContract[];
 }
 
 export interface PropertiesObject {
-    props: TypeDefinitionProperty[],
-    hasReadOnly: boolean
+    props: TypeDefinitionProperty[];
+    hasReadOnly: boolean;
 }
 
 export interface ProcessedCombinationPropertiesObject {
-    combinationReferenceObjectsArray: TypeDefinition[],
-    combinationReferencesNames: string[],
-    combinationOtherProperties: Bag<SchemaObjectContract>
+    combinationReferenceObjectsArray: TypeDefinition[];
+    combinationReferencesNames: string[];
+    combinationOtherProperties: Bag<SchemaObjectContract>;
 }
 
 export abstract class TypeDefinitionPropertyType {
@@ -162,7 +162,7 @@ export abstract class TypeDefinitionProperty {
         return {
             combinationType,
             combinationArray
-        }
+        };
     }
 }
 
@@ -216,7 +216,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
             const refName = this.getTypeNameFromRef(contract.$ref);
 
             this.type = new TypeDefinitionPropertyTypeReference(refName);
-            this.description = definitions[refName].description ?? '';
+            this.description = definitions[refName].description ?? "";
             return;
         }
 
@@ -272,13 +272,13 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                 combinationReferenceObjectsArray: [],
                 combinationReferencesNames: [],
                 combinationOtherProperties: {}
-            }
+            };
 
-            let processedTypeDefinitionsArray: Array<TypeDefinition> = [];
+            let processedTypeDefinitionsArray: TypeDefinition[] = [];
 
             const combinationPropertiesProcessed = this.processCombinationProperties(combinationArray, definitions, processedCombinationPropertiesObject);
             processedTypeDefinitionsArray = combinationPropertiesProcessed.combinationReferenceObjectsArray;
-            processedTypeDefinitionsArray.push(new TypeDefinition("Other properties", {properties: combinationPropertiesProcessed.combinationOtherProperties}, definitions))
+            processedTypeDefinitionsArray.push(new TypeDefinition("Other properties", {properties: combinationPropertiesProcessed.combinationOtherProperties}, definitions));
 
             this.kind = "combination";
             this.type = new TypeDefinitionPropertyTypeCombination(combinationType, combinationPropertiesProcessed.combinationReferencesNames);

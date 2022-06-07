@@ -26,6 +26,7 @@ export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApi
 
         viewModel["widgetBinding"] = {
             displayName: "API: Details",
+            layer: bindingContext?.layer,
             model: model,
             draggable: true,
             handler: DetailsOfApiHandlers,

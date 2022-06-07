@@ -1,4 +1,4 @@
-import { HttpClient} from "@paperbits/common/http";
+import { HttpClient } from "@paperbits/common/http";
 import { IAuthenticator } from "../authentication";
 import { ViewManager } from "@paperbits/common/ui";
 import { Router } from "@paperbits/common/routing";

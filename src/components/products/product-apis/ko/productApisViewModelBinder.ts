@@ -32,6 +32,7 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
         const handler = handlerForLayout[model.layout] ?? ProductApisHandlers
         viewModel["widgetBinding"] = {
             displayName: "Product: APIs" + (model.layout === "list" ? "" : ` (${model.layout})`),
+            layer: bindingContext?.layer,
             model: model,
             draggable: true,
             flow: ComponentFlow.Block,

@@ -261,11 +261,11 @@ export class Utils {
     }
 
     private static reservedURIComponentCharactersTuples = [
-        ['&', '%26'],
-        ['+', '%2B'],
-        ['/', '%2F'],
-        ['?', '%3F'],
-        ['#', '%23'],
+        ["&", "%26"],
+        ["+", "%2B"],
+        ["/", "%2F"],
+        ["?", "%3F"],
+        ["#", "%23"],
     ];
     /**
      * Encodes reserved URI character not encoded by the native encodeURI function
@@ -279,7 +279,7 @@ export class Utils {
         let encoded = encodeURI(uri);
         const iterateReplace = ([char, charEncoded]: [string, string]) => {
             encoded = encoded.replaceAll(char, charEncoded);
-        }
+        };
         this.reservedURIComponentCharactersTuples.forEach(iterateReplace);
         if (additionalReservedTuples) additionalReservedTuples.forEach(iterateReplace);
         return encoded;

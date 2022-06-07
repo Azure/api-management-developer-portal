@@ -41,7 +41,7 @@ h2 {
     &.toolbox-context {
         padding: 0;
 
-    .toolbox-splitter {
+        .toolbox-splitter {
             width: 1px;
             border-right: 1px solid #ccc;
             height: 45px;
@@ -138,14 +138,6 @@ h2 {
             }
         }
 
-        // &.toolbox-dropdown {
-        //     a {
-        //         padding-left: 15px;
-        //         padding-right: 15px;
-        //         text-align: center;
-        //     }
-        // }
-
         &.pull-down {
             margin-top: auto;
         }
@@ -166,6 +158,8 @@ h2 {
 
         &[disabled] {
             opacity: 0.2;
+            cursor: default;
+            pointer-events: none;
         }
 
         .toolbox-btn-addon {

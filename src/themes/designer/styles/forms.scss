@@ -27,7 +27,7 @@
     }
 
     &.form-group-collapsible {
-        &>.form-label {
+        & > .form-label {
             position: unset;
         }
 
@@ -45,7 +45,6 @@
                 left: 10px;
                 border-left: 1px dotted $form-collapsible-section-gutter-color;
             }
-
             @extend .paperbits-icon;
             @extend .paperbits-circle-delete;
 
@@ -85,7 +84,6 @@ textarea {
 
     &::placeholder {
         font-style: italic;
-        color: $color-base;
     }
 
     &:focus {

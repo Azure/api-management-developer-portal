@@ -19,6 +19,7 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
 
             viewModel["widgetBinding"] = {
                 displayName: "Operation: Details",
+                layer: bindingContext?.layer,
                 model: model,
                 draggable: true,
                 handler: OperationDetailsHandlers,
