@@ -1,6 +1,6 @@
 <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
     <ul role="list" class="nav">
-        <!-- ko foreach: { data: operationNode, as: 'nodeChild' } -->
+        <!-- ko fastForEach: { data: operationNode, as: 'nodeChild' } -->
         <li class="nav-item" role="presentation">
             <!-- ko if: nodeChild.name.includes($parent.filter) -->
             <a href="#" role="listitem" class="nav-link"
