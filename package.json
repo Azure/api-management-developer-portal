@@ -85,6 +85,7 @@
         "graphql": "^15.5.0",
         "graphql-config": "^4.0.1",
         "graphql-language-service": "^3.1.4",
+        "idb-keyval": "^6.1.0",
         "js-beautify": "^1.14.3",
         "knockout": "^3.5.1",
         "knockout-mapping": "^2.6.0",
