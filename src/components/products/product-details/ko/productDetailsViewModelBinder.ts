@@ -18,6 +18,7 @@ export class ProductDetailsViewModelBinder implements ViewModelBinder<ProductDet
 
         viewModel["widgetBinding"] = {
             displayName: "Product: Details",
+            layer: bindingContext?.layer,
             model: model,
             draggable: true,
             handler: ProductDetailsHandlers,

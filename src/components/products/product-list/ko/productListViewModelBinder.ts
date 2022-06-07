@@ -35,6 +35,7 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
 
         viewModel["widgetBinding"] = {
             displayName: "List of products" + (model.layout === "list" ? "" : ` (${model.layout})`),
+            layer: bindingContext?.layer,
             model: model,
             draggable: true,
             handler: handler,

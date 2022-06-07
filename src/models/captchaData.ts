@@ -1,11 +1,11 @@
 import { CaptchaChallengeRequest } from "../contracts/captchaParams";
 
 export class CaptchaData {
-    challenge?: CaptchaChallengeRequest;
-    solution?: {
+    public challenge?: CaptchaChallengeRequest;
+    public solution?: {
         solution: string;
         flowId: string;
         token: string;
         type: string;
-    }
+    };
 }

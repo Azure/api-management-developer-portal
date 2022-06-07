@@ -31,11 +31,11 @@ export class ValidationSummary {
 
     private showValidationSummary(event: ValidationReport): void {
         this.errorGroups[event.source] = event.errors;
-        var errSum = [];
-        Object.values(this.errorGroups).forEach(function (curGroup) {
+        const errSum = [];
+        Object.values(this.errorGroups).forEach(curGroup => {
             curGroup.forEach(x => {
                 errSum.push(x);
-            })
+            });
         });
         this.errorMsgs(errSum);
         if (this.errorMsgs().length > 0) {

@@ -120,7 +120,7 @@ export class ApiProductsDropdown {
 
       const productName = this.routeHelper.getProductName();
 
-            if(productName){
+            if (productName) {
                 this.selectedProduct(pageOfProducts.value.find(item => item.id.endsWith(productName)));
              }
     }

@@ -12,6 +12,7 @@ export class ReportsViewModelBinder implements ViewModelBinder<ReportsModel, Rep
 
         viewModel["widgetBinding"] = {
             displayName: "Reports",
+            layer: bindingContext?.layer,
             model: model,
             flow: ComponentFlow.Block,
             draggable: true

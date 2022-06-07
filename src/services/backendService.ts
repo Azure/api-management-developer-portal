@@ -27,7 +27,7 @@ export class BackendService {
         const httpRequest: HttpRequest = {
             method: HttpMethod.get,
             url: await this.getUrl("/captcha-available")
-        }
+        };
 
         try {
             response = await this.httpClient.send<any>(httpRequest);
@@ -48,7 +48,7 @@ export class BackendService {
         const httpRequest: HttpRequest = {
             method: HttpMethod.get,
             url: await this.getUrl(requestUrl)
-        }
+        };
 
         try {
             response = await this.httpClient.send<any>(httpRequest);
@@ -65,7 +65,7 @@ export class BackendService {
         const httpRequest: HttpRequest = {
             method: HttpMethod.get,
             url: await this.getUrl("/captcha")
-        }
+        };
 
         try {
             response = await this.httpClient.send<any>(httpRequest);
@@ -177,7 +177,7 @@ export class BackendService {
         const httpRequest: HttpRequest = {
             method: HttpMethod.get,
             url: await this.getUrl(`/authorizationServers/${authorizationServerId}`)
-        }
+        };
 
         try {
             response = await this.httpClient.send<any>(httpRequest);
@@ -195,7 +195,7 @@ export class BackendService {
         const httpRequest: HttpRequest = {
             method: HttpMethod.get,
             url: await this.getUrl(`/openidConnectProviders/${provider}`)
-        }
+        };
 
         try {
             response = await this.httpClient.send<any>(httpRequest);
