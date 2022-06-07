@@ -358,31 +358,6 @@ html {
     }
 }
 
-section {
-    display: flex;
-    flex-direction: column;
-    flex: none;
-
-    .row {
-        padding: 10px;
-        min-height: 90px;
-        flex: 1;
-
-        .col {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            align-items: flex-start;
-        }
-    }
-
-    /* TODO: Enable row height through editor */
-    &.stretch > .container,
-    .container-fluid > .row {
-        flex: 1;
-    }
-}
-
 .stretch {
     flex: 1;
     height: 100%;
