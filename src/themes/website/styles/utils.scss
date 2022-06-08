@@ -119,6 +119,10 @@
     max-width: 500px;
 }
 
+.min-h-275 {
+    min-height: 275px;
+}
+
 .fit {
     @include fit;
     flex: 1 1 auto;
