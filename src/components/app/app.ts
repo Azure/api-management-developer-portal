@@ -31,6 +31,10 @@ export class App {
             return;
         }
 
+        if (!settings["backendUrl"]) {
+            this.viewManager.addToast("Warning", `Backend URL is missing. See setting <i>backendUrl</i> in the configuration file <i>config.design.json</i>. OAuth authentication in Test console and Captcha widget requires <i>backendUrl</i> setting in config.runtime.json, pointing to your APIM service developer portal URL. In addition, it requires the origin ${location.origin} to be specified in CORS settings.`);
+        }
+
         try {
             const token = await this.authenticator.getAccessTokenAsString();
 
