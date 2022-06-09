@@ -46,6 +46,7 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
                 flow: ComponentFlow.Block,
                 editor: widgetEditorSelector,
                 draggable: true,
+                layer: bindingContext?.layer, // TODO remove once optional
                 applyChanges: async () => {
                     await this.updateViewModel(model, viewModel, bindingContext);
                     this.eventManager.dispatchEvent(Events.ContentUpdate);
