@@ -8,7 +8,7 @@
 
     <!-- ko ifnot: working -->
 
-    <div class="panel panel-dark animation-fade-in min-h-275">
+    <div class="panel panel-dark animation-fade-in">
         <button type="button" class="no-border pull-right" data-dismiss="modal" aria-label="Close console"
             data-bind="click: () => { closeGraphqlConsole(); $parent.closeConsole();}">
             <i class="icon-emb icon-emb-simple-remove"></i>
@@ -157,7 +157,7 @@
         </div>
     </div>
 
-    <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal min-height-operation">
+    <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
 
         <div class="gql-container" data-bind="css: { 'ws-responses': displayWsConsole }">
             <div class="gql-explorer-grid">

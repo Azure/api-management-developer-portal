@@ -338,14 +338,14 @@
 <!-- ko if: $component.consoleIsOpen -->
 <!-- ko ifnot: apiType() === 'graphql' -->
 <div class="detachable-right flex-grow animation-fade-in">
-    <operation-console class="test flex flex-column gql-console-height" data-bind="dialog: {}"
+    <operation-console class="flex flex-column h-100" data-bind="dialog: {}"
         params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
     </operation-console>
 </div>
 <!-- /ko -->
 <!-- ko if: apiType() === 'graphql' -->
 <div class="detachable-right graphql-console-width flex-grow animation-fade-in">
-    <graphql-console class="gql-console-height flex flex-column" data-bind="dialog: {}"
+    <graphql-console class="flex flex-column h-100 gql-console-bg" data-bind="dialog: {}"
         params="{ api: api, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
     </graphql-console>
 </div>

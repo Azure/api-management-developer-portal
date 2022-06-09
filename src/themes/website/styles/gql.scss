@@ -291,17 +291,8 @@
     }
 }
 
-
-.min-height-operation {
-    @media (max-height: $breakpoint-ml) {
-        min-height: 810px;
-    }
-    @media (max-height: $breakpoint-xl) and (min-height: $breakpoint-ml) {
-        min-height: 950px;
-    }
-    @media (min-height: $breakpoint-xl) {
-        min-height: 1050px;
-    }
+.gql-console-bg {
+    background-color: $panel-bg-color-highlight;
 }
 
 .gql-console-height {
