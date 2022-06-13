@@ -9,6 +9,7 @@ import { ValidationReport } from "../../../../../contracts/validationReport";
 import { MapiError } from "../../../../../errors/mapiError";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { UsersService } from "../../../../../services/usersService";
+import { UnauthorizedError } from "../../../../../errors/unauthorizedError";
 
 @RuntimeComponent({
     selector: "signin-runtime"
@@ -122,36 +123,24 @@ export class Signin {
         try {
             this.working(true);
 
-            const userId = await this.usersService.signIn(this.username(), this.password());
+            await this.usersService.signIn(this.username(), this.password());
+            
+            const clientReturnUrl = sessionStorage.getItem("returnUrl");
+            const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
 
-            if (userId) {
-                const clientReturnUrl = sessionStorage.getItem("returnUrl");
-                const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
-
-                if (returnUrl) {
-                    await this.router.navigateTo(sanitizeUrl(returnUrl));
-                    return;
-                }
-
-                this.navigateToHome();
-
-                const validationReport: ValidationReport = {
-                    source: "signin",
-                    errors: []
-                };
-
-                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            if (returnUrl) {
+                await this.router.navigateTo(sanitizeUrl(returnUrl));
+                return;
             }
-            else {
-                this.errorMessages(["Please provide a valid email and password."]);
 
-                const validationReport: ValidationReport = {
-                    source: "signin",
-                    errors: ["Please provide a valid email and password."]
-                };
+            this.navigateToHome();
 
-                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-            }
+            const validationReport: ValidationReport = {
+                source: "signin",
+                errors: []
+            };
+
+            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         }
         catch (error) {
             if (error instanceof MapiError) {
@@ -173,6 +162,16 @@ export class Signin {
                 };
                 this.eventManager.dispatchEvent("onValidationErrors", validationReport);
 
+                return;
+            } else if (error instanceof UnauthorizedError) {
+                this.errorMessages([error.message]);
+
+                const validationReport: ValidationReport = {
+                    source: "signin",
+                    errors: [error.message]
+                };
+
+                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
                 return;
             }
 
