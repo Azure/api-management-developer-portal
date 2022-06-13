@@ -1,3 +1,5 @@
+@import "variables.scss";
+
 .panel {
     padding: 30px;
 
@@ -17,7 +19,7 @@
         background-color: #fafafa;
 
         &.panel-highlight {
-            background-color: darken(#fafafa, 3%);
+            background-color: $panel-bg-color-highlight;
         }
 
         .list-group-item {
