@@ -14,7 +14,8 @@
 
     <div class="form-group">
         <label for="defaultGroupByTagToEnabled" class="form-label">
-            <input type="checkbox" id="defaultGroupByTagToEnabled" name="defaultGroupByTagToEnabled" data-bind="checked: defaultGroupByTagToEnabled" />
+            <input type="checkbox" id="defaultGroupByTagToEnabled" name="defaultGroupByTagToEnabled"
+                data-bind="checked: defaultGroupByTagToEnabled" />
             Default Group by tag to enabled
         </label>
     </div>
@@ -24,12 +25,12 @@
             <label class="form-label">
                 Link to API details page
             </label>
-            <button class="btn btn-info" type="button" aria-hidden="true" role="tooltip" aria-label="A link to be navigated on click"
-                data-bind="tooltip: 'A link to be navigated on click.'">
+            <button class="btn btn-info" type="button" aria-hidden="true" role="tooltip"
+                aria-label="A link to be navigated on click" data-bind="tooltip: 'A link to be navigated on click.'">
             </button>
         </div>
         <div class="input-group">
-            <input id="hyperlink" class="form-control" readonly data-bind="value: hyperlinkTitle" />
+            <input type="text" id="hyperlink" class="form-control" disabled data-bind="value: hyperlinkTitle" />
             <button class="btn input-group-addon" aria-label="Select hyperlink"
                 data-bind="balloon: { position: 'right', component: { name: 'hyperlink-selector', params: { hyperlink: $component.hyperlink, onChange: $component.onHyperlinkChange } } }">
                 <i class="paperbits-icon paperbits-link-69-2"></i>
