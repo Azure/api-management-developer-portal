@@ -522,3 +522,47 @@ export function getApiTypeBadgeStyleDefinition(): ComponentStyleDefinition {
         }
     };
 }
+
+export function getAlertStyleDefinition(): ComponentStyleDefinition {
+    return {
+        displayName: "Displayed Alert",
+        plugins: ["background", "typography", "margin", "padding", "border"],
+        defaults: {
+            typography: {
+                colorKey: "colors/validationTextColor"
+            },
+            background: {
+                colorKey: "colors/validationBackgroundColor"
+            },
+            border: {
+                bottom: {
+                    width: 1,
+                    style: "solid",
+                    colorKey: "colors/validationBorderColor"
+                },
+                left: {
+                    width: 1,
+                    style: "solid",
+                    colorKey: "colors/validationBorderColor"
+                },
+                top: {
+                    width: 1,
+                    style: "solid",
+                    colorKey: "colors/validationBorderColor"
+                },
+                right: {
+                    width: 1,
+                    style: "solid",
+                    colorKey: "colors/validationBorderColor"
+                }
+            }
+        }
+    };
+}
+
+export function getButtonStyleDefinition(): ComponentStyleDefinition {
+    return {
+        displayName: "Button",
+        plugins: ["background", "typography", "states", "shadow", "size", "margin", "border", "padding"]
+    }
+}
