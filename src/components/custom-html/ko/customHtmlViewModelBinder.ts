@@ -47,9 +47,9 @@ export class CustomHtmlViewModelBinder implements ViewModelBinder<HTMLInjectionM
             const binding: IWidgetBinding<HTMLInjectionModel, CustomHtmlViewModel> = {
                 name: widgetName,
                 displayName: widgetDisplayName,
-                readonly: bindingContext ? bindingContext.readonly : false,
+                layer: bindingContext?.layer,
                 model: model,
-                flow: ComponentFlow.Contents,
+                flow: ComponentFlow.Block,
                 editor: widgetEditorSelector,
                 draggable: true,
                 applyChanges: async () => {

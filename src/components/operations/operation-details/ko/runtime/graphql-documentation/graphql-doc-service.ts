@@ -61,7 +61,7 @@ export class GraphDocService {
 
     private async getApi(apiName: string): Promise<void> {
         const api = await this.apiService.getApi(`apis/${apiName}`);
-        this.api(api)
+        this.api(api);
     }
 
     private async defaultValues(): Promise<void> {
@@ -100,7 +100,7 @@ export class GraphDocService {
                 if (key == GraphqlTypes.query || key == GraphqlTypes.subscription || key == GraphqlTypes.mutation) {
                     value(this.sortingAlphabetically(value()));
                 }
-            })
+            });
 
             for (const type in GraphqlTypesForDocumentation) {
                 if (_.size(this.docGraphs[type]()) > 0) {
@@ -151,7 +151,7 @@ export class GraphDocService {
                 value[GraphqlCustomFieldNames.selected] = ko.observable<boolean>(false);
             }
             value[GraphqlCustomFieldNames.type] = ko.observable<string>(type);
-        })
+        });
     }
 
     public indexCollectionFromType(type: GraphQL.GraphQLOutputType | GraphQL.GraphQLInputType): string {
@@ -177,15 +177,15 @@ export class GraphDocService {
     }
 
     private getAvailableTypes() {
-        let indexer = {};
-        let availableTypes = [];
+        const indexer = {};
+        const availableTypes = [];
 
         _.each(GraphqlTypesForDocumentation, (v, k) => {
             if (_.size(this.docGraphs[k]()) > 0 && (k == GraphqlTypes.query || k == GraphqlTypes.subscription || k == GraphqlTypes.mutation)) {
                 indexer[v] = k;
                 availableTypes.push(v);
             }
-        })
+        });
 
         this.typeIndexer(indexer);
         this.availableTypes(availableTypes);

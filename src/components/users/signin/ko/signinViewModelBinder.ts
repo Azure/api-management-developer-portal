@@ -31,6 +31,7 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
             viewModel["widgetBinding"] = {
                 name: "signin",
                 displayName: "Sign-in form: Basic",
+                layer: bindingContext?.layer,
                 model: model,
                 flow: ComponentFlow.Block,
                 draggable: true,

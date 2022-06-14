@@ -33,8 +33,8 @@ export class ValidationSummary {
 
     private showValidationSummary(event: ValidationReport): void {
         this.errorGroups[event.source] = event.errors;
-        const errorSum = [];
-        Object.values(this.errorGroups).forEach((curGroup) => {
+        const errSum = [];
+        Object.values(this.errorGroups).forEach(curGroup => {
             curGroup.forEach(error => errorSum.push(error));
         });
         this.errorMsgs(errorSum);

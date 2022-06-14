@@ -86,7 +86,7 @@ export class OperationDetails {
             let requestUrl = "";
 
             if (hostname && api.type !== TypeOfApi.webSocket) {
-                requestUrl = 'https://';
+                requestUrl = "https://";
             }
 
             if (hostname) requestUrl += hostname;
@@ -291,18 +291,18 @@ export class OperationDetails {
         if (definition.type instanceof TypeDefinitionPropertyTypeCombination) {
             if (definition.type.combination) {
                 definition.type.combination.forEach(combinationProperty => {
-                    result.push(combinationProperty['name']);
+                    result.push(combinationProperty["name"]);
                 });
             } else {
                 definition.type.combinationReferences.forEach(combinationReference => {
                     result.push(combinationReference);
-                })
+                });
             }
         }
 
         if (definition.type instanceof TypeDefinitionPropertyTypePrimitive && definition.type.name === "object") {
             if (definition.name === "Other properties") {
-                definition['properties'].forEach(definitionProp => {
+                definition["properties"].forEach(definitionProp => {
                     this.processDefinition(definitionProp).forEach(processedDefinition => result.push(processedDefinition));
                 });
             } else {
