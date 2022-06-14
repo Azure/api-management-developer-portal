@@ -1,14 +1,14 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
-import * as Constants from "../../../../../constants";
 import template from "./change-password.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { ChangePasswordRequest } from "../../../../../contracts/resetRequest";
 import { BackendService } from "../../../../../services/backendService";
-import { UsersService } from "../../../../../services/usersService";
-import { ValidationReport } from "../../../../../contracts/validationReport";
+import { UsersService } from "../../../../../services";
 import { CaptchaData } from "../../../../../models/captchaData";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
     selector: "change-password-runtime"
@@ -49,7 +49,7 @@ export class ChangePassword {
             decorateInputElement: true
         });
 
-        this.password.extend(<any>{ required: { message: `Password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
+        this.password.extend(<any>{ required: { message: `Password is required.` } }); // TODO: password requirements should come from Management API.
         this.newPassword.extend(<any>{ required: { message: `New password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
         this.passwordConfirmation.extend(<any>{ required: { message: `Password confirmation is required.` }, equal: { message: "Password confirmation field must be equal to new password.", params: this.newPassword } });
         this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
@@ -98,11 +98,7 @@ export class ChangePassword {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            const validationReport: ValidationReport = {
-                source: "changepassword",
-                errors: clientErrors
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, ErrorSources.changepassword, clientErrors);
             return;
         }
 
@@ -111,11 +107,7 @@ export class ChangePassword {
         let userId = await this.usersService.authenticate(credentials);
 
         if (!userId) {
-            const validationReport: ValidationReport = {
-                source: "changepassword",
-                errors: ["Incorrect user name or password"]
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, ErrorSources.changepassword, ["Incorrect user name or password"]);
             return;
         }
 
@@ -123,11 +115,12 @@ export class ChangePassword {
 
         try {
             this.working(true);
+            dispatchErrors(this.eventManager, ErrorSources.changepassword, []);
 
             if (isCaptcha) {
                 const captchaRequestData = this.captchaData();
                 const resetRequest: ChangePasswordRequest = {
-                    challenge: captchaRequestData.challenge, 
+                    challenge: captchaRequestData.challenge,
                     solution: captchaRequestData.solution?.solution,
                     flowId: captchaRequestData.solution?.flowId,
                     token: captchaRequestData.solution?.token,
@@ -140,36 +133,12 @@ export class ChangePassword {
                 await this.usersService.changePassword(userId, this.newPassword());
             }
             this.isChangeConfirmed(true);
-
-            const validationReport: ValidationReport = {
-                source: "changepassword",
-                errors: []
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         } catch (error) {
             if (isCaptcha) {
                 await this.refreshCaptcha();
             }
 
-            let errorMessages: string[];
-
-            if (error.code === "ValidationError") {
-                const details: any[] = error.details;
-
-                if (details && details.length > 0) {
-                    let message = "";
-                    errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
-                }
-            }
-            else {
-                errorMessages = [Constants.genericHttpRequestError];
-            }
-
-            const validationReport: ValidationReport = {
-                source: "changepassword",
-                errors: errorMessages
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            parseAndDispatchError(this.eventManager, ErrorSources.changepassword, error, undefined, detail => `${detail.target}: ${detail.message} \n`);
         } finally {
             this.working(false);
         }
