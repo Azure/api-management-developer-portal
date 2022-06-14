@@ -39,8 +39,7 @@ export class ApiService {
         if (!data) {
             return;
         }
-        const dataForCache = { value: data, addTime: Date.now() }
-        // localStorage.setItem(key, JSON.stringify(dataForCache)); 
+        const dataForCache = { value: data, addTime: Date.now() };
         await set(key, dataForCache);
     }
 
