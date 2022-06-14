@@ -1,5 +1,8 @@
 import * as ko from "knockout";
+import { EventManager } from "@paperbits/common/events";
 import { Subscription } from "../../../../../models/subscription";
+import { dispatchErrors} from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 export class SubscriptionListItem {
     private hiddenKey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
@@ -16,7 +19,10 @@ export class SubscriptionListItem {
     public editName: ko.Observable<string>;
     public isEdit: ko.Observable<boolean>;
 
-    constructor(public model: Subscription) {
+    constructor(
+        public model: Subscription,
+        private readonly eventManager: EventManager
+    ) {
         this.primaryKey = ko.observable(this.hiddenKey);
         this.secondaryKey = ko.observable(this.hiddenKey);
         this.primaryKeyBtnLabel = ko.observable(this.showLabel);
@@ -29,6 +35,7 @@ export class SubscriptionListItem {
     }
 
     public toggleEdit(): void {
+        dispatchErrors(this.eventManager, ErrorSources.renameSubscription, []); // Clear errors.
         this.isEdit(!this.isEdit());
     }
 
