@@ -13,7 +13,10 @@ export class SigninModelBinder implements IModelBinder<SigninModel> {
     }
 
     public async contractToModel(contract: SigninContract): Promise<SigninModel> {
-        return new SigninModel();
+        const model = new SigninModel();
+        model.styles = contract.styles || {};
+
+        return model;
     }
 
     public canHandleContract(contract: Contract): boolean {
@@ -22,7 +25,8 @@ export class SigninModelBinder implements IModelBinder<SigninModel> {
 
     public modelToContract(model: SigninModel): Contract {
         const contract: SigninContract = {
-            type: nodeType
+            type: nodeType,
+            styles: model.styles
         };
 
         return contract;

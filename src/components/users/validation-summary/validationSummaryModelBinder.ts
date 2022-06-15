@@ -10,7 +10,10 @@ export class ValidationSummaryModelBinder implements IModelBinder<ValidationSumm
     }
 
     public async contractToModel(contract: ValidationSummaryContract): Promise<ValidationSummaryModel> {
-        return new ValidationSummaryModel();
+        const model = new ValidationSummaryModel();
+        model.styles = contract.styles ?? {};
+
+        return model;
     }
 
     public canHandleContract(contract: Contract): boolean {
@@ -19,7 +22,8 @@ export class ValidationSummaryModelBinder implements IModelBinder<ValidationSumm
 
     public modelToContract(model: ValidationSummaryModel): Contract {
         const contract: ValidationSummaryContract = {
-            type: "validationSummary"
+            type: "validationSummary",
+            styles: model.styles
         };
 
         return contract;

@@ -1,4 +1,4 @@
-<div class="alert alert-danger text-hide" role="region" aria-live="assertive" aria-atomic="true" data-bind="css: { 'text-hide': !hasErrors() }">
+<div class="alert alert-danger text-hide" role="region" aria-live="assertive" aria-atomic="true" data-bind="css: { 'alert-danger': hasErrors() }">
     <!-- ko foreach: { data: errorMsgs, as: 'msg' } -->
     <div data-bind="text: msg"></div>
     <!-- /ko -->
