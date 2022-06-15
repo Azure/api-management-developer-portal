@@ -6,44 +6,45 @@
 <form data-bind="submit: signup">
     <fieldset data-bind="attr: { disabled: working}">
         <div class="form-group">
-            <label for="email">Email *</label>
-            <input aria-required="true" autofocus="autofocus" spellcheck="false" class="form-control" id="email" name="email"
-                autocomplete="email" placeholder="e.g. name@example.com" type="email" data-bind="textInput: email">
+            <label class="widget-text" for="email">Email *</label>
+            <input aria-required="true" autofocus="autofocus" spellcheck="false" class="form-control input" id="email"
+                name="email" autocomplete="email" placeholder="e.g. name@example.com" type="email"
+                data-bind="textInput: email">
         </div>
         <div class="form-group">
-            <label for="password">Password *</label>
-            <input aria-required="true" class="form-control" id="password" name="password"
-                autocomplete="new-password" type="password" data-bind="textInput: password">
+            <label class="widget-text" for="password">Password *</label>
+            <input aria-required="true" class="form-control input" id="password" name="password" autocomplete="new-password"
+                type="password" data-bind="textInput: password">
         </div>
         <div class="form-group">
-            <label for="confirmPassword">Confirm password *</label>
-            <input aria-required="true" class="form-control" id="confirmPassword" name="confirm"
-                autocomplete="new-password" type="password"
-                data-bind="textInput: passwordConfirmation">
+            <label class="widget-text" for="confirmPassword">Confirm password *</label>
+            <input aria-required="true" class="form-control input" id="confirmPassword" name="confirm"
+                autocomplete="new-password" type="password" data-bind="textInput: passwordConfirmation">
         </div>
         <div class="form-group">
-            <label for="firstName">First name *</label>
-            <input aria-required="true" class="form-control" id="firstName" name="firstName"
-                placeholder="e.g. John" type="text" data-bind="textInput: firstName">
+            <label class="widget-text" for="firstName">First name *</label>
+            <input aria-required="true" class="form-control input" id="firstName" name="firstName" placeholder="e.g. John"
+                type="text" data-bind="textInput: firstName">
         </div>
         <div class="form-group">
-            <label for="lastName">Last name *</label>
-            <input aria-required="true" class="form-control" id="lastName" name="lastName"
-                placeholder="e.g. Doe" type="text" data-bind="textInput: lastName">
+            <label class="widget-text" for="lastName">Last name *</label>
+            <input aria-required="true" class="form-control input" id="lastName" name="lastName" placeholder="e.g. Doe"
+                type="text" data-bind="textInput: lastName">
         </div>
 
         <!-- ko if: requireHipCaptcha -->
         <hip-captcha params="{ captchaData: captchaData, onInitComplete: onCaptchaCreated }"></hip-captcha>
-        <!-- /ko -->       
-        
+        <!-- /ko -->
+
         <!-- ko if: termsEnabled && termsOfUse -->
-        <terms-of-use params="{ isConsentRequired: isConsentRequired, consented: consented, termsOfUse: termsOfUse }"></terms-of-use>
+        <terms-of-use params="{ isConsentRequired: isConsentRequired, consented: consented, termsOfUse: termsOfUse }">
+        </terms-of-use>
         <!-- /ko -->
 
         <div class="form-group">
-            
+
             <!-- ko ifnot: working -->
-            <button type="button" id="signup" class="button button-primary" data-bind="click: signup">
+            <button type="button" id="signup" class="button button-primary signup-button" data-bind="click: signup">
                 Sign up
             </button>
             <!-- /ko -->

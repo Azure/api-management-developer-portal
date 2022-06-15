@@ -566,3 +566,17 @@ export function getButtonStyleDefinition(): ComponentStyleDefinition {
         plugins: ["background", "typography", "states", "shadow", "size", "margin", "border", "padding"]
     }
 }
+
+export function getTermsOfUseCheckboxDefinition(): ComponentStyleDefinition {
+    return {
+        displayName: "Terms Of Use Checkbox",
+        plugins: ["typography"]
+    };
+}
+
+export function getTermsOfUseTextAreaDefinition(): ComponentStyleDefinition {
+    return {
+        displayName: "Terms Of Use",
+        plugins: ["backround", "typography", "size", "border"]
+    }
+}

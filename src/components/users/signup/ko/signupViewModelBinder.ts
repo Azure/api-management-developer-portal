@@ -1,22 +1,26 @@
 import { Bag } from "@paperbits/common";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ComponentFlow } from "@paperbits/common/editing";
+import { EventManager, Events } from "@paperbits/common/events";
+import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { TermsOfService } from "../../../../contracts/identitySettings";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { IdentityService } from "../../../../services";
 import { BackendService } from "../../../../services/backendService";
 import { TenantService } from "../../../../services/tenantService";
+import { SignupHandlers } from "../signupHandlers";
 import { SignupModel } from "../signupModel";
 import { SignupViewModel } from "./signupViewModel";
 
 export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignupViewModel> {
 
-    constructor(
+    constructor(private readonly eventManager: EventManager,
         private readonly tenantService: TenantService,
         private readonly backendService: BackendService,
         private readonly settingsProvider: ISettingsProvider,
-        private readonly identityService: IdentityService) { }
+        private readonly identityService: IdentityService,
+        private readonly styleCompiler: StyleCompiler) { }
 
     public async getTermsOfService(): Promise<TermsOfService> {
         const identitySetting = await this.identityService.getIdentitySetting();
@@ -31,7 +35,12 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
                 layer: bindingContext?.layer,
                 model: model,
                 flow: ComponentFlow.Block,
-                draggable: true
+                draggable: true,
+                handler: SignupHandlers,
+                applyChanges: async (updatedModel: SignupModel) => {
+                    this.modelToViewModel(updatedModel, viewModel, bindingContext);
+                    this.eventManager.dispatchEvent(Events.ContentUpdate);
+                }
             };
         }
 
@@ -41,7 +50,7 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
         if (isDelegationEnabled) {
             const delegationParam = {};
-            delegationParam[DelegationParameters.ReturnUrl] =  "/";
+            delegationParam[DelegationParameters.ReturnUrl] = "/";
 
             const delegationUrl = await this.backendService.getDelegationUrl(DelegationAction.signUp, delegationParam);
             if (delegationUrl) {
@@ -53,10 +62,14 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
         if (termsOfService.text) params["termsOfUse"] = termsOfService.text;
         if (termsOfService.consentRequired) params["isConsentRequired"] = termsOfService.consentRequired;
         if (termsOfService.enabled) params["termsEnabled"] = termsOfService.enabled;
-        
+
         if (Object.keys(params).length !== 0) {
             const runtimeConfig = JSON.stringify(params);
             viewModel.runtimeConfig(runtimeConfig);
+        }
+
+        if (model.styles) {
+            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, SignupHandlers));
         }
 
         return viewModel;
