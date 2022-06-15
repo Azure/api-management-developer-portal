@@ -1,12 +1,14 @@
 import { Bag } from "@paperbits/common";
 import { ComponentFlow } from "@paperbits/common/editing";
 import { EventManager, Events } from "@paperbits/common/events";
+import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { TermsOfService } from "../../../../contracts/identitySettings";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { IdentityService } from "../../../../services";
 import { BackendService } from "../../../../services/backendService";
 import { TenantService } from "../../../../services/tenantService";
+import { SigninHandlers } from "../signinHandlers";
 import { SigninModel } from "../signinModel";
 import { SigninViewModel } from "./signinViewModel";
 
@@ -17,7 +19,8 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
         private readonly eventManager: EventManager, 
         private readonly tenantService: TenantService,
         private readonly backendService: BackendService,
-        private readonly identityService: IdentityService) {}
+        private readonly identityService: IdentityService,
+        private readonly styleCompiler: StyleCompiler) {}
 
     
     public async getTermsOfService(): Promise<TermsOfService> {
@@ -35,6 +38,7 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
                 model: model,
                 flow: ComponentFlow.Block,
                 draggable: true,
+                handler: SigninHandlers,
                 applyChanges: async (updatedModel: SigninModel) => {
                     this.modelToViewModel(updatedModel, viewModel, bindingContext);
                     this.eventManager.dispatchEvent(Events.ContentUpdate);
@@ -65,6 +69,10 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
         if (Object.keys(params).length !== 0) {
             const runtimeConfig = JSON.stringify(params);
             viewModel.runtimeConfig(runtimeConfig);
+        }
+
+        if (model.styles) {
+            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, SigninHandlers));
         }
 
         return viewModel;

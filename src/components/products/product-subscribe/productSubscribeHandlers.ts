@@ -31,11 +31,6 @@ export class ProductSubscribeHandlers implements IWidgetHandler {
                 productSubscribe: {
                     displayName: "Product Subscribe",
                     plugins: ["background", "typography", "margin", "padding"],
-                    defaults: {
-                        typography: {
-                            colorKey: "colors/tryItColor"
-                        }
-                    },
                     components: {
                         subscriptionInput: DefaultStyleDefinitions.getInputStyleDefinition(),
                         termsOfUseCheckbox: {
@@ -46,11 +41,7 @@ export class ProductSubscribeHandlers implements IWidgetHandler {
                             displayName: "Terms Of Use",
                             plugins: ["backround", "typography", "size", "border"]
                         },
-                        subscribeButton: {
-                            displayName: "Button",
-                            plugins: ["background", "typography", "states", "shadow", "size", "margin", "border", "padding"],
-
-                        }
+                        subscribeButton: DefaultStyleDefinitions.getButtonStyleDefinition()
                     }
                 }
             }
