@@ -3,7 +3,6 @@ import { StyleDefinition } from "@paperbits/common/styles";
 import { SignupModel } from "./signupModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
 
-
 export class SignupHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
@@ -17,6 +16,7 @@ export class SignupHandlers implements IWidgetHandler {
 
         return widgetOrder;
     }
+
     public getStyleDefinitions(): StyleDefinition {
         return {
             components: {

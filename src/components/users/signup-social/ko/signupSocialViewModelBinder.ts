@@ -6,12 +6,15 @@ import { IdentityService } from "../../../../services/identityService";
 import { SignupSocialModel } from "../signupSocialModel";
 import { SignupSocialViewModel } from "./signupSocialViewModel";
 import { ISettingsProvider } from "@paperbits/common/configuration";
+import { EventManager, Events } from "@paperbits/common/events";
+import { StyleCompiler } from "@paperbits/common/styles";
+import { SignupSocialHandlers } from "../signupSocialHandlers";
 
 export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocialModel, SignupSocialViewModel> {
-    constructor(
+    constructor(private readonly eventManager: EventManager,
         private readonly identityService: IdentityService,
-        private readonly settingsProvider: ISettingsProvider
-    ) { }
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly styleCompiler: StyleCompiler) { }
 
     public async getTermsOfService(): Promise<TermsOfService> {
         const identitySetting = await this.identityService.getIdentitySetting();
@@ -28,7 +31,12 @@ export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocial
             layer: bindingContext?.layer,
             model: model,
             flow: ComponentFlow.Block,
-            draggable: true
+            draggable: true,
+            handler: SignupSocialHandlers,
+            applyChanges: async (updatedModel: SignupSocialModel) => {
+                this.modelToViewModel(updatedModel, viewModel, bindingContext);
+                this.eventManager.dispatchEvent(Events.ContentUpdate);
+            }
         };
 
         const identityProviders = await this.identityService.getIdentityProviders();
@@ -51,6 +59,10 @@ export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocial
         if (Object.keys(params).length !== 0) {
             const runtimeConfig = JSON.stringify(params);
             viewModel.runtimeConfig(runtimeConfig);
+        }
+
+        if (model.styles) {
+            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, SignupSocialHandlers));
         }
 
         return viewModel;
