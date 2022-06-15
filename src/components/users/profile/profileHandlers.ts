@@ -1,4 +1,4 @@
-﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { StyleDefinition } from "@paperbits/common/styles";
 import { ProfileModel } from "./profileModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
@@ -28,8 +28,8 @@ export class ProfileHandlers implements IWidgetHandler {
                             colorKey: "colors/default",
                         }
                     },
-                    components:{
-                        defaultButton:DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
+                    components: {
+                        defaultButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
                         input: DefaultStyleDefinitions.getInputStyleDefinition()
                     }
                 }

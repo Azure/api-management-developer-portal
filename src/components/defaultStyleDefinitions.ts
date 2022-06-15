@@ -1,4 +1,4 @@
-import { ComponentStyleDefinition } from "@paperbits/common/styles"
+import { ComponentStyleDefinition } from "@paperbits/common/styles";
 
 export function getSearchInputStyleDefinition(): ComponentStyleDefinition {
     return {
@@ -193,7 +193,7 @@ export function getCardTextStyleDefinition(): ComponentStyleDefinition {
     return {
         displayName: "Card Text",
         plugins: ["typography"],
-    }
+    };
 }
 
 export function getWidgetTextStyleDefinition(): ComponentStyleDefinition {
@@ -273,7 +273,7 @@ export function getToggleButtonLabelStyleDefinition(): ComponentStyleDefinition 
                 colorKey: "colors/default"
             }
         }
-    }
+    };
 }
 
 export function getTableRowStyleDefinition(): ComponentStyleDefinition {
@@ -471,7 +471,7 @@ export function getComboboxStyleDefinition(): ComponentStyleDefinition {
                 colorKey: "colors/borderColor"
             }
         }
-    }
+    };
 }
 
 export function getApiTypeBadgeStyleDefinition(): ComponentStyleDefinition {
@@ -564,15 +564,15 @@ export function getButtonStyleDefinition(): ComponentStyleDefinition {
     return {
         displayName: "Button",
         plugins: ["background", "typography", "states", "shadow", "size", "margin", "border", "padding"]
-    }
+    };
 }
 
 export function getDefaultButtonStyleDefinition(): ComponentStyleDefinition {
     return {
         displayName: "Button",
         plugins: ["background", "typography", "states", "shadow", "size", "margin", "border", "padding"],
-        defaults:{
-            background:{
+        defaults: {
+            background: {
                 colorKey: "colors/defaultBg"
             },
             border: {
@@ -598,5 +598,5 @@ export function getDefaultButtonStyleDefinition(): ComponentStyleDefinition {
                 }
             }
         }
-    }
+    };
 }
