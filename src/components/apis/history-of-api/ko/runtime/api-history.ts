@@ -114,7 +114,7 @@ export class ApiHistory {
             this.changeLogWorking(true);
 
             const pageOfLogs = await this.apiService.getApiChangeLog(this.apiId, (this.changeLogPage() - 1) * Constants.defaultPageSize);
-            pageOfLogs.value.map(x => x.properties.updatedDateTime = Utils.formatDateTime(x.properties.updatedDateTime));
+            pageOfLogs.value.map(x => x.properties.createdDateTime = Utils.formatDateTime(x.properties.createdDateTime));
 
             this.changeLogHasPrevPage(this.changeLogPage() > 1);
             this.changeLogHasNextPage(!!pageOfLogs.nextLink);
