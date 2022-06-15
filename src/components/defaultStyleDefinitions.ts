@@ -566,3 +566,37 @@ export function getButtonStyleDefinition(): ComponentStyleDefinition {
         plugins: ["background", "typography", "states", "shadow", "size", "margin", "border", "padding"]
     }
 }
+
+export function getDefaultButtonStyleDefinition(): ComponentStyleDefinition {
+    return {
+        displayName: "Button",
+        plugins: ["background", "typography", "states", "shadow", "size", "margin", "border", "padding"],
+        defaults:{
+            background:{
+                colorKey: "colors/defaultBg"
+            },
+            border: {
+                bottom: {
+                    width: "1",
+                    style: "solid",
+                    colorKey: "colors/default"
+                },
+                top: {
+                    width: "1",
+                    style: "solid",
+                    colorKey: "colors/default"
+                },
+                left: {
+                    width: "1",
+                    style: "solid",
+                    colorKey: "colors/default"
+                },
+                right: {
+                    width: "1",
+                    style: "solid",
+                    colorKey: "colors/default"
+                }
+            }
+        }
+    }
+}

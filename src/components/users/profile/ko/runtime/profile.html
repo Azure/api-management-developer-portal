@@ -20,10 +20,9 @@
     <!-- ko if: isBasicAccount -->
     <div class="row">
         <div class="col-md-12">
-            <button type="button" class="button button-default" data-bind="click: toggleEdit">Change name</button>
-            <button type="button" class="button button-default" data-bind="click: toggleEditPassword">Change
-                password</button>
-            <button type="button" class="button button-default" data-bind="click: closeAccount">Close account</button>
+            <button type="button" class="button default-button" data-bind="click: toggleEdit">Change name</button>
+            <button type="button" class="button default-button" data-bind="click: toggleEditPassword">Change password</button>
+            <button type="button" class="button default-button" data-bind="click: closeAccount">Close account</button>
         </div>
     </div>
     <!-- /ko -->
@@ -37,14 +36,14 @@
     <div class="row">
         <div class="col-md-3"><label for="firstName">First name</label></div>
         <div class="col-md-9">
-            <input type="text" class="form-control" aria-required="true" autofocus="autofocus" id="firstName"
+            <input type="text" class="form-control input" aria-required="true" autofocus="autofocus" id="firstName"
                 name="firstName" autocomplete="first-name" data-bind="textInput: firstName" />
         </div>
     </div>
     <div class="row">
         <div class="col-md-3"><label for="lastName">Last name</label></div>
         <div class="col-md-9">
-            <input type="text" class="form-control" aria-required="true" id="lastName" name="lastName"
+            <input type="text" class="form-control input" aria-required="true" id="lastName" name="lastName"
                 autocomplete="last-name" data-bind="textInput: lastName" />
         </div>
     </div>
@@ -58,9 +57,9 @@
         <!-- /ko -->
         <!-- ko ifnot: working -->
         <div class="col-md-12">
-            <button type="button" class="button button-default"
+            <button type="button" class="button default-button"
                 data-bind="click: changeAccountInfo, enable: isUserChanged()">Save</button>
-            <button type="button" class="button button-default" data-bind="click: toggleEdit">Cancel</button>
+            <button type="button" class="button default-button" data-bind="click: toggleEdit">Cancel</button>
         </div>
         <!-- /ko -->
     </div>
