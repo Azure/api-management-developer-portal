@@ -39,6 +39,7 @@ export class HistoryOfApiHandlers implements IWidgetHandler {
                     components: {
                         tableRow: DefaultStyleDefinitions.getTableRowStyleDefinition(),
                         tableHead: DefaultStyleDefinitions.getTableHeadStyleDefinition(),
+                        widgetText: DefaultStyleDefinitions.getWidgetTextStyleDefinition()
                     }
 
                 }
