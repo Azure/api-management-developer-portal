@@ -12,7 +12,7 @@ export class Product {
 
     constructor(contract?: ProductContract) {
         this.id = contract.id;
-        this.name = contract.name;
+        this.name = contract.id;
         this.displayName = contract.name;
         this.description = contract.description;
         this.approvalRequired = contract.approvalRequired;
