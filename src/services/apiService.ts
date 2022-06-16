@@ -14,7 +14,6 @@ import { Schema } from "../models/schema";
 import { Utils } from "../utils";
 import { OperationContract } from "../contracts/operation";
 import { SchemaContract, SchemaType } from "../contracts/schema";
-import { Hostname } from "./../contracts/hostname";
 import { VersionSetContract } from "../contracts/apiVersionSet";
 import { HttpHeader } from "@paperbits/common/http/httpHeader";
 import { ChangeLogContract } from "../contracts/apiChangeLog";
@@ -106,14 +105,14 @@ export class ApiService {
         const tagGroups: Bag<TagGroup<Operation>> = {};
 
         pageOfOperationsByTag.value.forEach(x => {
-            const tagContract: TagContract = x.tag ? Utils.armifyContract("tags", x.tag) : null;
+            const tagContract: TagContract = x.tag
             const operationContract: OperationContract = x.operation
 
             let tagGroup: TagGroup<Operation>;
             let tagName: string;
 
             if (tagContract) {
-                tagName = tagContract.properties.displayName;
+                tagName = tagContract.name;
             } else {
                 tagName = "Untagged";
             }
@@ -167,14 +166,14 @@ export class ApiService {
         const tagGroups: Bag<TagGroup<Api>> = {};
 
         pageOfApiTagResources.value.forEach((x) => {
-            const tagContract: TagContract = x.tag ? Utils.armifyContract("tags", x.tag) : null;
+            const tagContract: TagContract = x.tag
             const apiContract: ApiContract = x.api
 
             let tagGroup: TagGroup<Api>;
             let tagName: string;
 
             if (tagContract) {
-                tagName = tagContract.properties.displayName;
+                tagName = tagContract.name;
             }
             else {
                 tagName = "Untagged";
