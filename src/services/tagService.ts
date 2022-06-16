@@ -16,7 +16,7 @@ export class TagService {
         }
 
         if (filter) {
-            query = Utils.addQueryParameter(query, `$filter=(startswith(properties/displayName,'${filter}'))`);
+            query = Utils.addQueryParameter(query, `$filter=(startswith(name,'${filter}'))`);
         }
 
         const pageOfTags = await this.apiClient.get<PageContract<TagContract>>(query, [await this.apiClient.getPortalHeader("getTags")]);
