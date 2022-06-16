@@ -252,6 +252,11 @@ export enum SettingNames {
     developerPortalType = "developerPortalType"
 }
 
+export enum DeveloperPortalType {
+    selfHosted = "self-hosted-portal",
+    managed = "dev-portal"
+}
+
 /**
  * The OAuth framework specifies several grant types for different use cases.
  */

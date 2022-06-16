@@ -6,7 +6,7 @@ import { ResetRequest, ChangePasswordRequest } from "../contracts/resetRequest";
 import { IAuthenticator } from "../authentication";
 import { DelegationAction } from "../contracts/tenantSettings";
 import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
-import { SettingNames } from "../constants";
+import { DeveloperPortalType, SettingNames } from "../constants";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { Utils } from "../utils";
@@ -15,6 +15,7 @@ import { AuthorizationServer } from "../models/authorizationServer";
 
 export class BackendService {
     private portalUrl: string;
+    private developerPortalType: string;
 
     constructor(
         private readonly settingsProvider: ISettingsProvider,
@@ -36,7 +37,7 @@ export class BackendService {
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
-        return this.handleResponse<CaptchaSettings>(response);
+        return this.handleResponse<CaptchaSettings>(response, httpRequest.url);
     }
 
     public async getCaptchaChallenge(challengeType?: string): Promise<CaptchaChallenge> {
@@ -57,7 +58,7 @@ export class BackendService {
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
-        return this.handleResponse<CaptchaChallenge>(response);
+        return this.handleResponse<CaptchaChallenge>(response, httpRequest.url);
     }
 
     public async getCaptchaParams(): Promise<CaptchaParams> {
@@ -74,7 +75,7 @@ export class BackendService {
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
-        return this.handleResponse<CaptchaParams>(response);
+        return this.handleResponse<CaptchaParams>(response, httpRequest.url);
     }
 
     public async sendSignupRequest(signupRequest: SignupRequest): Promise<void> {
@@ -186,7 +187,7 @@ export class BackendService {
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
-        const contract = this.handleResponse<AuthorizationServerForClient>(response);
+        const contract = this.handleResponse<AuthorizationServerForClient>(response, httpRequest.url);
         return new AuthorizationServer(contract);
     }
 
@@ -204,23 +205,31 @@ export class BackendService {
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
-        const contract = this.handleResponse<AuthorizationServerForClient>(response);
+        const contract = this.handleResponse<AuthorizationServerForClient>(response, httpRequest.url);
         return new AuthorizationServer(contract);
     }
 
     private async getUrl(path: string): Promise<string> {
-        if (!this.portalUrl) {
-            this.portalUrl = await this.settingsProvider.getSetting<string>(SettingNames.backendUrl) || "";
+        if (!this.portalUrl && !this.developerPortalType) {
+            const settings = await this.settingsProvider.getSettings();
+            this.portalUrl = settings[SettingNames.backendUrl] || "";
+            this.developerPortalType = settings[SettingNames.developerPortalType] || DeveloperPortalType.selfHosted;
         }
         return `${this.portalUrl}${path}`;
     }
 
-    private handleResponse<T>(response: HttpResponse<T>): T {
+    private handleResponse<T>(response: HttpResponse<T>, url: string): T {
         if (response.statusCode === 200) {
-            return response.toObject();
+            const contentType = response.headers.find(header => header.name === "content-type");
+            if (contentType.value.startsWith(KnownMimeTypes.Json)) {
+                return response.toObject();
+            }
+            if (!this.portalUrl && this.developerPortalType === DeveloperPortalType.selfHosted) {
+                console.error(`Backend URL is missing. See setting "backendUrl" in the configuration file config.runtime.json. OAuth authentication in Test console and Captcha widget requires this setting, pointing to your APIM service developer portal URL. In addition, it requires the origin ${location.origin} to be specified in CORS settings.`);
+            }
         }
         else {
-            throw new Error("Unable to handle Captcha response. Check captcha endpoint on server.");
+            throw new Error(`Unable to handle response from URL ${url}.`);
         }
     }
 }

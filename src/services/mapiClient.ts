@@ -46,7 +46,7 @@ export class MapiClient {
     private async initialize(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
 
-        this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || "self-hosted-portal";
+        this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || Constants.DeveloperPortalType.selfHosted;
         const managementApiUrl = settings[Constants.SettingNames.managementApiUrl];
 
         if (!managementApiUrl) {
