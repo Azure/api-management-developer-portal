@@ -143,7 +143,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("aadService", AadService);
         injector.bindSingleton("apiClient", DataApiClient);
-        injector.bindSingleton("mapiClient", DataApiClient); //TODO: remove
         injector.bindSingleton("settingsProvider", ApimSettingsProvider);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("routeHelper", RouteHelper);

@@ -5,7 +5,7 @@ import { Router } from "@paperbits/common/routing";
 import { HttpHeader, HttpClient, HttpResponse, HttpMethod } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { IAuthenticator } from "../authentication";
-import { MapiClient } from "./mapiClient";
+import { IApiClient } from "../clients";
 import { User } from "../models/user";
 import { Utils } from "../utils";
 import { Identity } from "../contracts/identity";
@@ -20,7 +20,7 @@ import { KnownMimeTypes } from "../models/knownMimeTypes";
  */
 export class UsersService {
     constructor(
-        private readonly mapiClient: MapiClient,
+        private readonly apiClient: IApiClient,
         private readonly router: Router,
         private readonly authenticator: IAuthenticator,
         private readonly httpClient: HttpClient,
@@ -59,7 +59,7 @@ export class UsersService {
                 method: "GET",
                 headers: [
                     { name: "Authorization", value: credentials },
-                    await this.mapiClient.getPortalHeader("authenticate")
+                    await this.apiClient.getPortalHeader("authenticate")
                 ]
             };
 
@@ -107,7 +107,7 @@ export class UsersService {
         const response = await this.httpClient.send({
             url: `${backendUrl}${requestUrl}&api-version=${Constants.managementApiVersion}`,
             method: "PUT",
-            headers: [{ name: "Authorization", value: token }, await this.mapiClient.getPortalHeader("activateUser")]
+            headers: [{ name: "Authorization", value: token }, await this.apiClient.getPortalHeader("activateUser")]
         });
 
         await this.getTokenFromResponse(response);
@@ -117,7 +117,7 @@ export class UsersService {
         const headers = [];
 
         if (token) {
-            headers.push({ name: "Authorization", value: token }, await this.mapiClient.getPortalHeader("updatePassword"));
+            headers.push({ name: "Authorization", value: token }, await this.apiClient.getPortalHeader("updatePassword"));
         }
 
         const payload = {
@@ -126,7 +126,7 @@ export class UsersService {
             }
         };
 
-        await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
+        await this.apiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
     }
 
     /**
@@ -147,7 +147,7 @@ export class UsersService {
         }
 
         try {
-            const identity = await this.mapiClient.get<Identity>("/identity", [await this.mapiClient.getPortalHeader("getCurrentUserId")]);
+            const identity = await this.apiClient.get<Identity>("/identity", [await this.apiClient.getPortalHeader("getCurrentUserId")]);
 
             if (!identity || !identity.id) {
                 return null;
@@ -178,7 +178,7 @@ export class UsersService {
                 return null;
             }
 
-            const user = await this.mapiClient.get<UserContract>(userId, [await this.mapiClient.getPortalHeader("getCurrentUser")]);
+            const user = await this.apiClient.get<UserContract>(userId, [await this.apiClient.getPortalHeader("getCurrentUser")]);
 
             return new User(user);
         }
@@ -193,15 +193,15 @@ export class UsersService {
      * @param updateUserData 
      */
     public async updateUser(userId: string, firstName: string, lastName: string): Promise<User> {
-        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.mapiClient.getPortalHeader("updateUser")];
+        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("updateUser")];
         const payload = {
             properties: {
                 firstName: firstName,
                 lastName: lastName
             }
         };
-        await this.mapiClient.patch<string>(`${userId}?appType=${Constants.AppType}`, headers, payload);
-        const user = await this.mapiClient.get<UserContract>(userId);
+        await this.apiClient.patch<string>(`${userId}?appType=${Constants.AppType}`, headers, payload);
+        const user = await this.apiClient.get<UserContract>(userId);
 
         if (user) {
             return new User(user);
@@ -224,7 +224,7 @@ export class UsersService {
 
             const query = Utils.addQueryParameter(userId, `deleteSubscriptions=true&notify=true&appType=${Constants.AppType}`);
 
-            await this.mapiClient.delete<string>(query, [header, await this.mapiClient.getPortalHeader("deleteUser")]);
+            await this.apiClient.delete<string>(query, [header, await this.apiClient.getPortalHeader("deleteUser")]);
 
             sessionStorage.setItem(Constants.closeAccount, "true");
             this.signOut();
@@ -261,12 +261,12 @@ export class UsersService {
     }
 
     public async createSignupRequest(signupRequest: MapiSignupRequest): Promise<void> {
-        await this.mapiClient.post("/users", [await this.mapiClient.getPortalHeader("createSignupRequest")], signupRequest);
+        await this.apiClient.post("/users", [await this.apiClient.getPortalHeader("createSignupRequest")], signupRequest);
     }
 
     public async createResetPasswordRequest(email: string): Promise<void> {
         const payload = { to: email, appType: Constants.AppType };
-        await this.mapiClient.post(`/confirmations/password?appType=${Constants.AppType}`, [await this.mapiClient.getPortalHeader("createResetPasswordRequest")], payload);
+        await this.apiClient.post(`/confirmations/password?appType=${Constants.AppType}`, [await this.apiClient.getPortalHeader("createResetPasswordRequest")], payload);
     }
 
     public async changePassword(userId: string, newPassword: string): Promise<void> {
@@ -279,7 +279,7 @@ export class UsersService {
         const headers = [
             { name: "Authorization", value: authToken },
             { name: "If-Match", value: "*" },
-            await this.mapiClient.getPortalHeader("changePassword")
+            await this.apiClient.getPortalHeader("changePassword")
         ];
 
         const payload = {
@@ -288,7 +288,7 @@ export class UsersService {
             }
         };
 
-        await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
+        await this.apiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
     }
 
     public async createUserWithOAuth(provider: string, idToken: string, firstName: string, lastName: string, email: string): Promise<void> {
@@ -315,7 +315,7 @@ export class UsersService {
             headers: [
                 { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                 { name: KnownHttpHeaders.Authorization, value: `${provider} id_token="${idToken}"` },
-                await this.mapiClient.getPortalHeader("createUserWithOAuth")
+                await this.apiClient.getPortalHeader("createUserWithOAuth")
             ],
             body: JSON.stringify(user)
         });
