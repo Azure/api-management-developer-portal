@@ -171,7 +171,7 @@ class ImporterExporter {
             let nextPageUrl = `/contentTypes/${contentType}/contentItems`;
             nextPageUrl = this.ensureDocumentTypeFiltered(contentType, nextPageUrl);
 
-            do {                
+            do {
                 const data = await this.httpClient.sendRequest("GET", nextPageUrl);
                 contentItems.push(...data.value);
 
@@ -190,11 +190,9 @@ class ImporterExporter {
         }
     }
 
-    ensureDocumentTypeFiltered(contentType, nextLink)
-    {
-        if(contentType === 'document')
-        {
-            nextLink = `${nextLink}?$top=1` 
+    ensureDocumentTypeFiltered(contentType, nextLink) {
+        if (contentType === 'document') {
+            nextLink = `${nextLink}?$top=1`
         }
         return nextLink
     }
