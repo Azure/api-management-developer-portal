@@ -16,7 +16,8 @@ export class ChangePasswordModelBinder implements IModelBinder<ChangePasswordMod
 
     public async contractToModel(contract: ChangePasswordContract): Promise<ChangePasswordModel> {
         const model = new ChangePasswordModel();
-         model.requireHipCaptcha = contract.requireHipCaptcha;
+        model.requireHipCaptcha = contract.requireHipCaptcha;
+        model.styles = contract.styles ?? {};
 
         return model;
     }
@@ -24,7 +25,8 @@ export class ChangePasswordModelBinder implements IModelBinder<ChangePasswordMod
     public modelToContract(model: ChangePasswordModel): Contract {
         const contract: ChangePasswordContract = {
             type: "change-password",
-            requireHipCaptcha: model.requireHipCaptcha
+            requireHipCaptcha: model.requireHipCaptcha,
+            styles: model.styles
         };
 
         return contract;
