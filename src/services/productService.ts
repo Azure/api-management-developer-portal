@@ -36,25 +36,12 @@ export class ProductService {
 
         try {
             const pageContract = await this.apiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`, [await this.apiClient.getPortalHeader("getSubscriptions")]);
-            const promises: Promise<void>[] = [];
             const subscriptions: Subscription[] = [];
 
             for (const subscriptionContract of pageContract.value) {
                 const subscription = new Subscription(subscriptionContract);
-
-                const secretPromise = this.apiClient
-                    .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscriptionContract.name}/listSecrets`, [await this.apiClient.getPortalHeader("getSubscriptionSecrets")])
-                    .then(secrets => {
-                        subscription.primaryKey = secrets.primaryKey;
-                        subscription.secondaryKey = secrets.secondaryKey;
-                    });
-
-                promises.push(secretPromise);
-
                 subscriptions.push(subscription);
             }
-
-            await Promise.all(promises);
 
             pageOfSubscriptions.value = subscriptions;
             pageOfSubscriptions.count = pageContract.count;
@@ -120,11 +107,11 @@ export class ProductService {
         for (const subscription of subscriptions) {
             const subscriptionModel = new Subscription(subscription);
 
-            if (subscription.properties.scope.endsWith("/apis")) {
+            if (subscription.scope.endsWith("/apis")) {
                 subscriptionModel.productName = "All APIs";
             } else
-                if (subscription.properties.scope.includes("/apis/")) {
-                    const apiName = Utils.getResourceName("apis", subscription.properties.scope);
+                if (subscription.scope.includes("/apis/")) {
+                    const apiName = Utils.getResourceName("apis", subscription.scope);
 
                     const apiPromise = this.apiClient
                         .get<ApiContract>(`/apis/${apiName}`)
@@ -134,26 +121,16 @@ export class ProductService {
 
                     promises.push(apiPromise);
                 } else {
-                    const productName = Utils.getResourceName("products", subscription.properties.scope);
+                    const productName = Utils.getResourceName("products", subscription.scope);
 
                     const productPromise = this.apiClient
                         .get<ProductContract>(`/products/${productName}`)
                         .then(product => {
-                            subscriptionModel.productName = product.properties.displayName;
+                            subscriptionModel.productName = product.name;
                         }).catch(error => console.log(`Get product error: ${error.message}`));
 
                     promises.push(productPromise);
                 }
-
-            const secretPromise = this.apiClient
-                .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscription.name}/listSecrets`)
-                .then(secrets => {
-                    subscriptionModel.primaryKey = secrets.primaryKey;
-                    subscriptionModel.secondaryKey = secrets.secondaryKey;
-                });
-
-            promises.push(secretPromise);
-
             result.push(subscriptionModel);
         }
 
@@ -178,12 +155,7 @@ export class ProductService {
             return null;
         }
 
-        const secrets = await this.apiClient
-            .post<SubscriptionSecrets>(`${subscriptionId}/listSecrets`, [await this.apiClient.getPortalHeader("getSubscriptionSecrets")]);
-
         const subscripitonModel = new Subscription(contract);
-        subscripitonModel.primaryKey = secrets.primaryKey;
-        subscripitonModel.secondaryKey = secrets.secondaryKey;
 
         return subscripitonModel;
     }
@@ -202,7 +174,7 @@ export class ProductService {
             }
             else {
                 contracts.value
-                    .filter(x => x.properties.subscriptionRequired === true)
+                    .filter(x => x.subscriptionRequired === true)
                     .map(item => result.push(new Product(item)));
             }
         }
@@ -266,6 +238,7 @@ export class ProductService {
      * @param subscriptionId {string} Subscription unique identifier.
      */
     public async regenerateSecondaryKey(subscriptionId: string): Promise<Subscription> {
+
         await this.apiClient.post(`${subscriptionId}/regenerateSecondaryKey`, [await this.apiClient.getPortalHeader("regenerateSecondaryKey")]);
         return await this.getSubscription(subscriptionId);
     }
@@ -293,13 +266,11 @@ export class ProductService {
         }
         else {
             const payload = {
-                properties: {
-                    scope: productId,
-                    name: subscriptionName,
-                    appType: Constants.AppType
-                }
+                scope: productId,
+                name: subscriptionName,
+                appType: Constants.AppType
             };
-            await this.apiClient.put(userId + subscriptionId, [await this.apiClient.getPortalHeader("createSubscription")], payload);
+            await this.apiClient.post(userId + subscriptionId, [await this.apiClient.getPortalHeader("createSubscription")], payload);
         }
     }
 
@@ -321,9 +292,7 @@ export class ProductService {
             const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("cancelSubscription")];
 
             const payload = {
-                properties: {
-                    state: SubscriptionState.cancelled
-                }
+                state: SubscriptionState.cancelled
             };
 
             await this.apiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, headers, payload);
@@ -349,9 +318,7 @@ export class ProductService {
         const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("renameSubscription")];
 
         const payload = {
-            properties: {
-                name: subscriptionName
-            }
+            name: subscriptionName
         };
 
         await this.apiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, headers, payload);
