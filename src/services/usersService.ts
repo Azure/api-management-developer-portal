@@ -18,6 +18,7 @@ import { KnownMimeTypes } from "../models/knownMimeTypes";
 /**
  * A service for management operations with users.
  */
+//TODO:hh convert this
 export class UsersService {
     constructor(
         private readonly apiClient: IApiClient,
