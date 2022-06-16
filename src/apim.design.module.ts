@@ -126,7 +126,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("policyService", PolicyService);
         injector.bindSingleton("apiClient", MapiClient);
-        injector.bindSingleton("mapiClient", MapiClient); //TODO: remove
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);

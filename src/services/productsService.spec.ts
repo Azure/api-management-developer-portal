@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { describe, it } from "mocha";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { ProductService } from "./productService";
-import { MapiClient } from "./mapiClient";
+import { DataApiClient } from "../clients";
 import { MockHttpClient, starterProduct } from "../../tests/mocks";
 import { StaticAuthenticator } from "../components/staticAuthenticator";
 import { StaticSettingsProvider } from "../components/staticSettingsProvider";
@@ -25,10 +25,10 @@ describe("Product service", async () => {
             .get("/products")
             .reply(200, { value: [starterProduct] });
 
-        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider);
-        const tenantService = new TenantService(mapiClient);
+        const apiClient = new DataApiClient(httpClient, authenticator, settingsProvider);
+        const tenantService = new TenantService(apiClient);
 
-        const productService = new ProductService(mapiClient, tenantService);
+        const productService = new ProductService(apiClient, tenantService);
         const products = await productService.getProducts();
 
         expect(products.length).to.equals(1);
@@ -42,10 +42,10 @@ describe("Product service", async () => {
             .get("/products/starter")
             .reply(200, starterProduct);
 
-        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider);
-        const tenantService = new TenantService(mapiClient);
+        const apiClient = new DataApiClient(httpClient, authenticator, settingsProvider);
+        const tenantService = new TenantService(apiClient);
 
-        const productService = new ProductService(mapiClient, tenantService);
+        const productService = new ProductService(apiClient, tenantService);
         const product = await productService.getProduct("/products/starter");
 
         expect(product.displayName).to.equal(product.displayName);
