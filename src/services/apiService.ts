@@ -22,6 +22,7 @@ import { Bag } from "@paperbits/common";
 import { Tag } from "../models/tag";
 import { IApiClient } from "../clients";
 
+//TODO:hh test all
 export class ApiService {
     constructor(private readonly apiClient: IApiClient) { }
 
