@@ -294,7 +294,7 @@ export class ApiService {
         const take = Constants.defaultPageSize;
         apiResourceUri += `/releases?$top=${take}&$skip=${skip}`;
 
-        const changelogContracts = await this.apiClient.get<Page<ChangeLogContract>>("apis/" + apiResourceUri, [await this.apiClient.getPortalHeader("getApiChangeLog")]);
+        const changelogContracts = await this.apiClient.get<Page<ChangeLogContract>>(`apis/${apiResourceUri}`, [await this.apiClient.getPortalHeader("getApiChangeLog")]);
         if (!changelogContracts) {
             return null;
         }
@@ -303,7 +303,7 @@ export class ApiService {
     }
 
     public async getApiVersionSet(versionSetId: string): Promise<VersionSet> {
-        const versionSetContract = await this.apiClient.get<VersionSetContract>("apiVersionSets/" + versionSetId, [await this.apiClient.getPortalHeader("getApiVersionSet")]);
+        const versionSetContract = await this.apiClient.get<VersionSetContract>(`apiVersionSets/${versionSetId}`, [await this.apiClient.getPortalHeader("getApiVersionSet")]);
         return new VersionSet(versionSetContract.id, versionSetContract);
     }
 
