@@ -3,6 +3,9 @@ import { EDITOR_DATA_KEY, TEditorData, TValuesBase } from "@azure/apimanagement-
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
 
+/**
+ * Signals that the widgets' source is being overridden (for local development). Optionally holds URL to overrides' config files.
+ */
 export const OVERRIDE_CONFIG_SESSION_KEY_PREFIX = OVERRIDE_PORT_KEY + "_";
 
 export const root = "custom-widgets";

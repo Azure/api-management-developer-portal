@@ -7,14 +7,6 @@
             <h4>Custom fields</h4>
         </div>
 
-        <!-- ko if: override -->
-        <div>
-            Custom widget source is overridden
-            <!-- ko if: typeof override() === 'string' -->
-            from <b data-bind="text: override"></b>
-            <!-- /ko -->
-        </div>
-        <!-- /ko -->
         <iframe class="flex-item flex-item-grow"
                 data-bind="attr: { src: src, sandbox: iframeSandboxAllows }"
                 frameborder="0"
