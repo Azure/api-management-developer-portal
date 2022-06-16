@@ -29,7 +29,7 @@ export class AnalyticsService {
      */
     public async getReportsByTime(startTime: Date, endTime: Date, interval: number): Promise<Page<ReportRecordByTime>> {
         const userId = await this.usersService.getCurrentUserId();
-        const query = `${userId}/reports/byTime?$filter=timestamp ge ${startTime.toISOString()} and timestamp le ${endTime.toISOString()}&interval=PT${interval}M`;
+        const query = `${userId}/reports/ByTime?$filter=timestamp ge ${startTime.toISOString()} and timestamp le ${endTime.toISOString()}&interval=PT${interval}M`;
         const pageOfRecords = await this.apiClient.get<Page<ReportRecordByTime>>(query, [await this.apiClient.getPortalHeader("getReportsByTime")]);
 
         return pageOfRecords;
@@ -43,7 +43,7 @@ export class AnalyticsService {
      */
     public async getReportsByGeo(startTime: Date, endTime: Date): Promise<Page<ReportRecordByGeo>> {
         const userId = await this.usersService.getCurrentUserId();
-        const query = `${userId}/reports/byGeo?$filter=timestamp ge ${startTime.toISOString()} and timestamp le ${endTime.toISOString()}`;
+        const query = `${userId}/reports/ByRegion?$filter=timestamp ge ${startTime.toISOString()} and timestamp le ${endTime.toISOString()}`;
         const pageOfRecords = await this.apiClient.get<Page<ReportRecordByGeo>>(query, [await this.apiClient.getPortalHeader("getReportsByGeo")]);
 
         return pageOfRecords;
@@ -64,7 +64,7 @@ export class AnalyticsService {
         const endTime = reportQuery.endTime.toISOString();
 
         const userId = await this.usersService.getCurrentUserId();
-        const query = `${userId}/reports/byProduct?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
+        const query = `${userId}/reports/ByProduct?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
         const pageOfRecords = await this.apiClient.get<Page<ReportRecordByProduct>>(query, [await this.apiClient.getPortalHeader("getReportsByProduct")]);
 
         return pageOfRecords;
@@ -85,7 +85,7 @@ export class AnalyticsService {
         const endTime = reportQuery.endTime.toISOString();
 
         const userId = await this.usersService.getCurrentUserId();
-        const query = `${userId}/reports/bySubscription?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
+        const query = `${userId}/reports/BySubscription?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
         const pageOfRecords = await this.apiClient.get<Page<ReportRecordBySubscription>>(query, [await this.apiClient.getPortalHeader("getReportsBySubscription")]);
 
         return pageOfRecords;
@@ -106,7 +106,7 @@ export class AnalyticsService {
         const endTime = reportQuery.endTime.toISOString();
 
         const userId = await this.usersService.getCurrentUserId();
-        const query = `${userId}/reports/byApi?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
+        const query = `${userId}/reports/ByEndpoint?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
         const pageOfRecords = await this.apiClient.get<Page<ReportRecordByApi>>(query, [await this.apiClient.getPortalHeader("getReportsByApi")]);
 
         return pageOfRecords;
@@ -127,7 +127,7 @@ export class AnalyticsService {
         const endTime = reportQuery.endTime.toISOString();
 
         const userId = await this.usersService.getCurrentUserId();
-        const query = `${userId}/reports/byOperation?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
+        const query = `${userId}/reports/ByOperation?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
         const pageOfRecords = await this.apiClient.get<Page<ReportRecordByOperation>>(query, [await this.apiClient.getPortalHeader("getReportsByOperation")]);
 
         return pageOfRecords;
