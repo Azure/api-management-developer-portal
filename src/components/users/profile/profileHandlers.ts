@@ -29,7 +29,11 @@ export class ProfileHandlers implements IWidgetHandler {
                         }
                     },
                     components: {
-                        defaultButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
+                        changeNameButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
+                        changePasswordButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
+                        closeAccountButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
+                        saveButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
+                        cancelButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
                         input: DefaultStyleDefinitions.getInputStyleDefinition()
                     }
                 }

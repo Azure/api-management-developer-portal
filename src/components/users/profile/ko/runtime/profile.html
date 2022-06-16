@@ -20,9 +20,11 @@
     <!-- ko if: isBasicAccount -->
     <div class="row">
         <div class="col-md-12">
-            <button type="button" class="button default-button" data-bind="click: toggleEdit">Change name</button>
-            <button type="button" class="button default-button" data-bind="click: toggleEditPassword">Change password</button>
-            <button type="button" class="button default-button" data-bind="click: closeAccount">Close account</button>
+            <button type="button" class="button change-name-button" data-bind="click: toggleEdit">Change name</button>
+            <button type="button" class="button change-password-button" data-bind="click: toggleEditPassword">Change
+                password</button>
+            <button type="button" class="button close-account-button" data-bind="click: closeAccount">Close
+                account</button>
         </div>
     </div>
     <!-- /ko -->
@@ -57,9 +59,9 @@
         <!-- /ko -->
         <!-- ko ifnot: working -->
         <div class="col-md-12">
-            <button type="button" class="button default-button"
+            <button type="button" class="button save-button"
                 data-bind="click: changeAccountInfo, enable: isUserChanged()">Save</button>
-            <button type="button" class="button default-button" data-bind="click: toggleEdit">Cancel</button>
+            <button type="button" class="button cancel-button" data-bind="click: toggleEdit">Cancel</button>
         </div>
         <!-- /ko -->
     </div>
