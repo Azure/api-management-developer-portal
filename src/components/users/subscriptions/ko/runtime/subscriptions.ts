@@ -3,12 +3,15 @@ import * as moment from "moment";
 import template from "./subscriptions.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { SubscriptionListItem } from "./subscriptionListItem";
-import { UsersService } from "../../../../../services/usersService";
+import { UsersService } from "../../../../../services";
 import { ProductService } from "../../../../../services/productService";
 import { TenantService } from "../../../../../services/tenantService";
 import { DelegationParameters, DelegationActionPath } from "../../../../../contracts/tenantSettings";
 import { Utils } from "../../../../../utils";
 import { Router } from "@paperbits/common/routing/router";
+import { EventManager } from "@paperbits/common/events";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
     selector: "subscriptions-runtime"
@@ -24,7 +27,8 @@ export class Subscriptions {
         private readonly usersService: UsersService,
         private readonly tenantService: TenantService,
         private readonly router: Router,
-        private readonly productService: ProductService
+        private readonly productService: ProductService,
+        private readonly eventManager: EventManager
     ) {
         this.subscriptions = ko.observableArray();
     }
@@ -42,7 +46,7 @@ export class Subscriptions {
 
     private async loadSubscriptions(userId: string): Promise<void> {
         const models = await this.productService.getUserSubscriptionsWithProductName(userId);
-        const subscriptions = models.map(item => new SubscriptionListItem(item));
+        const subscriptions = models.map(item => new SubscriptionListItem(item, this.eventManager));
 
         this.subscriptions(subscriptions);
     }
@@ -52,30 +56,45 @@ export class Subscriptions {
     }
 
     public async renameSubscription(subscription: SubscriptionListItem): Promise<void> {
-        const updated = await this.productService.renameSubscription(subscription.model.id, subscription.editName());
-        const updatedVM = new SubscriptionListItem(updated);
-        this.syncSubscriptionLabelState(subscription, updatedVM);
-        this.subscriptions.replace(subscription, updatedVM);
-        subscription.toggleEdit();
+        dispatchErrors(this.eventManager, ErrorSources.renameSubscription, []);
+        try {
+            const updated = await this.productService.renameSubscription(subscription.model.id, subscription.editName());
+            const updatedVM = new SubscriptionListItem(updated, this.eventManager);
+            this.syncSubscriptionLabelState(subscription, updatedVM);
+            this.subscriptions.replace(subscription, updatedVM);
+            subscription.toggleEdit();
+        } catch (error) {
+            parseAndDispatchError(this.eventManager, ErrorSources.renameSubscription, error);
+        }
     }
 
     public async regeneratePKey(subscription: SubscriptionListItem): Promise<void> {
         subscription.isPRegenerating(true);
-        const updated = await this.productService.regeneratePrimaryKey(subscription.model.id);
-        const updatedVM = new SubscriptionListItem(updated);
-        this.syncSubscriptionLabelState(subscription, updatedVM);
-        updatedVM.changedItem("primaryKey");
-        this.subscriptions.replace(subscription, updatedVM);
+        dispatchErrors(this.eventManager, ErrorSources.regeneratePKey, []);
+        try {
+            const updated = await this.productService.regeneratePrimaryKey(subscription.model.id);
+            const updatedVM = new SubscriptionListItem(updated, this.eventManager);
+            this.syncSubscriptionLabelState(subscription, updatedVM);
+            updatedVM.changedItem("primaryKey");
+            this.subscriptions.replace(subscription, updatedVM);
+        } catch (error) {
+            parseAndDispatchError(this.eventManager, ErrorSources.regeneratePKey, error);
+        }
         subscription.isPRegenerating(false);
     }
 
     public async regenerateSKey(subscription: SubscriptionListItem): Promise<void> {
         subscription.isSRegenerating(true);
-        const updated = await this.productService.regenerateSecondaryKey(subscription.model.id);
-        const updatedVM = new SubscriptionListItem(updated);
-        this.syncSubscriptionLabelState(subscription, updatedVM);
-        updatedVM.changedItem("secondaryKey");
-        this.subscriptions.replace(subscription, updatedVM);
+        dispatchErrors(this.eventManager, ErrorSources.regenerateSKey, []);
+        try {
+            const updated = await this.productService.regenerateSecondaryKey(subscription.model.id);
+            const updatedVM = new SubscriptionListItem(updated, this.eventManager);
+            this.syncSubscriptionLabelState(subscription, updatedVM);
+            updatedVM.changedItem("secondaryKey");
+            this.subscriptions.replace(subscription, updatedVM);
+        } catch (error) {
+            parseAndDispatchError(this.eventManager, ErrorSources.regenerateSKey, error);
+        }
         subscription.isSRegenerating(false);
     }
 
@@ -102,7 +121,7 @@ export class Subscriptions {
                 return;
             }
             const updated = await this.productService.cancelSubscription(subscriptionId);
-            const updatedVM = new SubscriptionListItem(updated);
+            const updatedVM = new SubscriptionListItem(updated, this.eventManager);
             this.syncSubscriptionLabelState(subscription, updatedVM);
             this.subscriptions.replace(subscription, updatedVM);
         }
@@ -112,7 +131,7 @@ export class Subscriptions {
                 return;
             }
 
-            throw error;
+            parseAndDispatchError(this.eventManager, ErrorSources.cancelSubscription, error);
         } finally {
             subscription.isSRegenerating(false);
         }

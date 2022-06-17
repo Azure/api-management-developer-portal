@@ -5,10 +5,11 @@ import template from "./signup.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { BackendService } from "../../../../../services/backendService";
-import { UsersService } from "../../../../../services/usersService";
+import { UsersService } from "../../../../../services";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
-import { ValidationReport } from "../../../../../contracts/validationReport";
 import { CaptchaData } from "../../../../../models/captchaData";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
     selector: "signup-runtime"
@@ -154,11 +155,7 @@ export class Signup {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            const validationReport: ValidationReport = {
-                source: "signup",
-                errors: clientErrors
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, ErrorSources.signup, clientErrors);
             return;
         }
 
@@ -173,6 +170,7 @@ export class Signup {
 
         try {
             this.working(true);
+            dispatchErrors(this.eventManager, ErrorSources.signup, []);
 
             if (isCaptchaRequired) {
                 const captchaRequestData = this.captchaData();
@@ -193,36 +191,13 @@ export class Signup {
 
             this.isUserRequested(true);
 
-            const validationReport: ValidationReport = {
-                source: "signup",
-                errors: []
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         }
         catch (error) {
             if (isCaptchaRequired) {
                 await this.refreshCaptcha();
             }
 
-            let errorMessages: string[];
-
-            if (error.code === "ValidationError") {
-                const details: any[] = error.details;
-
-                if (details && details.length > 0) {
-                    errorMessages = details.map(item => `${item.message}`);
-                }
-            }
-            else {
-                errorMessages = [Constants.genericHttpRequestError];
-            }
-
-            const validationReport: ValidationReport = {
-                source: "signup",
-                errors: errorMessages
-            };
-
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            parseAndDispatchError(this.eventManager, ErrorSources.signup, error, Constants.genericHttpRequestError);
         }
         finally {
             this.working(false);

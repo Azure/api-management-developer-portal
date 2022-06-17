@@ -6,8 +6,8 @@ import template from "./hip-captcha.html";
 import { CaptchaChallenge } from "../../../../contracts/captchaParams";
 import { CaptchaData } from "../../../../models/captchaData";
 
-declare var WLSPHIP0;
-declare var fillHipData;
+declare let WLSPHIP0;
+declare let fillHipData;
 
 @Component({
     selector: "hip-captcha",
