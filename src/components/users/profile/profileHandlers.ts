@@ -1,5 +1,7 @@
-﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+import { StyleDefinition } from "@paperbits/common/styles";
 import { ProfileModel } from "./profileModel";
+import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
 
 export class ProfileHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -13,5 +15,29 @@ export class ProfileHandlers implements IWidgetHandler {
         };
 
         return widgetOrder;
+    }
+
+    public getStyleDefinitions(): StyleDefinition {
+        return {
+            components: {
+                profile: {
+                    displayName: "User Profile",
+                    plugins: ["background", "typography", "margin", "padding"],
+                    defaults: {
+                        typography: {
+                            colorKey: "colors/default",
+                        }
+                    },
+                    components: {
+                        changeNameButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
+                        changePasswordButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
+                        closeAccountButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
+                        saveButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
+                        cancelButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
+                        input: DefaultStyleDefinitions.getInputStyleDefinition()
+                    }
+                }
+            }
+        };
     }
 }

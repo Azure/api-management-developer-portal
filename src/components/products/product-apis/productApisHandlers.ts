@@ -1,7 +1,7 @@
-﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { StyleDefinition } from "@paperbits/common/styles";
 import { ProductApisModel } from "./productApisModel";
-import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions"
+import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
 
 export class ProductApisHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {

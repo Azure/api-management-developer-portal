@@ -14,7 +14,7 @@ export class SigninModelBinder implements IModelBinder<SigninModel> {
 
     public async contractToModel(contract: SigninContract): Promise<SigninModel> {
         const model = new SigninModel();
-        model.styles = contract.styles || {};
+        model.styles = contract.styles ?? {};
 
         return model;
     }

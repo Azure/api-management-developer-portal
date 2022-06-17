@@ -146,7 +146,7 @@ export class JObject {
             pushSibling(element);
         });
 
-        parser.on("comment", (value: string,) => {
+        parser.on("comment", (value: string, ) => {
             pushSibling(new JComment(parseCallbacks && parseCallbacks.comment ? parseCallbacks.comment(value) : value));
         });
 

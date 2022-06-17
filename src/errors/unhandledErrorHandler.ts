@@ -5,7 +5,7 @@ export class UnhandledErrorHandler {
     constructor(
         private readonly logger: Logger
     ) {
-        window.addEventListener("error", this.handlerError.bind(this), true,);
+        window.addEventListener("error", this.handlerError.bind(this), true, );
         window.addEventListener("unhandledrejection", this.handlerPromiseRejection.bind(this), true);
     }
 

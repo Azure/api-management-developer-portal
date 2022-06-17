@@ -9,7 +9,7 @@ import { ProductApisHandlers, ProductApisTilesHandlers } from "../productApisHan
 
 const handlerForLayout = {
     tiles: ProductApisTilesHandlers
-}
+};
 
 export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisModel, ProductApisViewModel> {
     constructor(
@@ -29,7 +29,7 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
                 : undefined
         }));
 
-        const handler = handlerForLayout[model.layout] ?? ProductApisHandlers
+        const handler = handlerForLayout[model.layout] ?? ProductApisHandlers;
         viewModel["widgetBinding"] = {
             displayName: "Product: APIs" + (model.layout === "list" ? "" : ` (${model.layout})`),
             layer: bindingContext?.layer,
