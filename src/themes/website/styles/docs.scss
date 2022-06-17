@@ -191,13 +191,15 @@ validation-summary {
     display: block;
 }
 
-operation-console {
-    background: #fafafa;
-    min-height: 100%;
+.consoles {
+    background: $panel-bg-color-highlight;
+    height: 100%;
     border-left: 1px solid #dee2e6;
 
-    .form-control {
-        margin: 0;
+    &.operation-console {
+        .form-control {
+            margin: 0;
+        }
     }
 }
 
