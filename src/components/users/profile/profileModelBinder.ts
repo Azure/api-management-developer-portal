@@ -17,12 +17,16 @@ export class ProfileModelBinder implements IModelBinder<ProfileModel> {
     }
 
     public async contractToModel(contract: ProfileContract): Promise<ProfileModel> {
-        return new ProfileModel();
+        const model = new ProfileModel();
+        model.styles = contract.styles ?? {};
+
+        return model;
     }
 
     public modelToContract(model: ProfileModel): Contract {
         const contract: ProfileContract = {
-            type: nodeType
+            type: nodeType,
+            styles: model.styles
         };
 
         return contract;

@@ -35,5 +35,5 @@ export class OperationListModel {
     /**
      * Widget local styles.
      */
-    styles: LocalStyles = {};
+    public styles: LocalStyles = {};
 }
