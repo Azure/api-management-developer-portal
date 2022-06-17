@@ -3,7 +3,7 @@ import { LocalStyles } from "@paperbits/common/styles";
 
 export interface SubscriptionsContract extends Contract {
     /**
-    * Widget local styles.
-    */
+     * Widget local styles.
+     */
     styles?: LocalStyles;
 }

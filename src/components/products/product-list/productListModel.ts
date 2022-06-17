@@ -21,8 +21,8 @@ export class ProductListModel {
     public detailsPageHyperlink: HyperlinkModel;
 
     /**
-    * Widget local styles.
-    */
+     * Widget local styles.
+     */
     public styles: LocalStyles = {};
 
     constructor(layout: string = "list") {

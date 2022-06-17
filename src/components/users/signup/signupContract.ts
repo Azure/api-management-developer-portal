@@ -5,7 +5,7 @@ export interface SignupContract extends Contract {
     requireHipCaptcha: boolean;
 
     /**
-    * Widget local styles.
-    */
+     * Widget local styles.
+     */
     styles?: LocalStyles;
 }

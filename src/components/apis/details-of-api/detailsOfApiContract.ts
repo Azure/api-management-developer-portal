@@ -7,6 +7,7 @@ export interface DetailsOfApiContract extends Contract {
      * Link to a page that contains API changlog.
      */
     changeLogPageHyperlink?: HyperlinkContract;
+
     /**
      * Widget local styles.
      */

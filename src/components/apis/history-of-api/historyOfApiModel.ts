@@ -9,7 +9,7 @@ export class HistoryOfApiModel {
     public detailsPageHyperlink: HyperlinkModel;
 
     /**
-    * Widget local styles.
-    */
+     * Widget local styles.
+     */
     public styles: LocalStyles = {};
 }

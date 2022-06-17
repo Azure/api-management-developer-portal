@@ -9,8 +9,7 @@ export interface ProductSubscribeContract extends Contract {
     showTermsByDefault: boolean;
 
     /**
-    * Widget local styles.
-    */
+     * Widget local styles.
+     */
     styles?: LocalStyles;
-
 }

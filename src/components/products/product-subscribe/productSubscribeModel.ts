@@ -7,7 +7,7 @@ export class ProductSubscribeModel {
     public showTermsByDefault: boolean;
 
     /**
-    * Widget local styles.
-    */
+     * Widget local styles.
+     */
     public styles: LocalStyles = {};
 }
