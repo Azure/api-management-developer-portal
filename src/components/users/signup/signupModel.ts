@@ -4,7 +4,7 @@ export class SignupModel {
     public requireHipCaptcha: boolean;
 
     /**
-    * Widget local styles.
-    */
+     * Widget local styles.
+     */
     public styles: LocalStyles = {};
 }

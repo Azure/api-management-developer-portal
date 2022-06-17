@@ -20,7 +20,7 @@ export class ProductApisModel {
     }
 
     /**
-    * Widget local styles.
-    */
+     * Widget local styles.
+     */
     public styles: LocalStyles = {};
 }

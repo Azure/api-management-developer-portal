@@ -17,7 +17,7 @@ export interface ProductApisContract extends Contract {
     detailsPageHyperlink?: HyperlinkContract;
 
     /**
-    * Widget local styles.
-    */
+     * Widget local styles.
+     */
     styles?: LocalStyles;
 }
