@@ -8,11 +8,11 @@ import { Toast, ViewManager } from "@paperbits/common/ui";
 import { MapiBlobStorage } from "../../../persistence";
 import { widgetName, widgetDisplayName, widgetEditorSelector } from "../constants";
 import { CustomWidgetModel } from "../customWidgetModel";
+import listenForSecretsRequests from "../listenForSecretsRequests";
 import { CustomWidgetViewModel } from "./customWidgetViewModel";
 import { buildWidgetSource } from "./utils";
 
 export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidgetModel, CustomWidgetViewModel>  {
-    public readonly instanceId: number;
     private toast: Toast;
 
     constructor(
@@ -22,7 +22,8 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
         private readonly blobStorage: MapiBlobStorage,
         private readonly viewManager: ViewManager,
     ) {
-        this.instanceId = Math.random();
+        // TODO move somewhere else
+        listenForSecretsRequests();
     }
 
     public async updateViewModel(model: CustomWidgetModel, viewModel: CustomWidgetViewModel, bindingContext: Bag<any>): Promise<void> {
@@ -30,9 +31,11 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
             viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager));
         }
 
-        const environment = await this.settingsProvider.getSetting<string>("environment");
         viewModel.name(model.name);
-        const widgetSource = await buildWidgetSource(this.blobStorage, model, environment, this.instanceId, "index.html");
+        viewModel.instanceId(model.instanceId);
+
+        const environment = await this.settingsProvider.getSetting<string>("environment");
+        const widgetSource = await buildWidgetSource(this.blobStorage, model, environment, "index.html");
         viewModel.src(widgetSource.src);
 
         if (widgetSource.override) {

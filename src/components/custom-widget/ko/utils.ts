@@ -25,7 +25,6 @@ export async function buildWidgetSource(
     blobStorage: MapiBlobStorage,
     model: CustomWidgetModel,
     environment: string,
-    instanceId: number,
     filePath: string,
 ): Promise<{ override: string | null, src: string }> {
     // check is necessary during publishing as window.sessionStorage.getItem throws "DOMException {}  node:internal/process/promises:279"
@@ -43,10 +42,8 @@ export async function buildWidgetSource(
     const data: TEditorData<TValuesBase> = {
         values: JSON.parse(model.customInputValue).values,
         origin: window.location.origin, // TODO later once connected to BE origin during publish
-        id: model.name,
-        displayName: model.widgetDisplayName,
+        instanceId: model.instanceId,
         environment,
-        instanceId,
     };
     url.searchParams.append(EDITOR_DATA_KEY, encodeURIComponent(JSON.stringify(data)));
 
