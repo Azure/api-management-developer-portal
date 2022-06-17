@@ -17,12 +17,16 @@ export class SignupSocialModelBinder implements IModelBinder<SignupSocialModel> 
     }
 
     public async contractToModel(contract: SignupSocialContract): Promise<SignupSocialModel> {
-        return new SignupSocialModel();
+        const model = new SignupSocialModel();
+        model.styles = contract.styles ?? {};
+
+        return model;
     }
 
     public modelToContract(model: SignupSocialModel): Contract {
         const contract: SignupSocialContract = {
-            type: nodeType
+            type: nodeType,
+            styles: model.styles
         };
 
         return contract;
