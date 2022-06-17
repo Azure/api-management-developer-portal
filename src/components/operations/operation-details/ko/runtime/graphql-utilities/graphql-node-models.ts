@@ -138,7 +138,7 @@ export class GraphQLInputTreeNode extends GraphQLTreeNode {
         this.data = data;
         this.isRequired = ko.observable(isNonNull(data.type));
         if (this.isRequired()) {
-            this.toggle(true);
+            this.toggle(true, false);
         }
 
         this.inputValue = ko.observable("");
