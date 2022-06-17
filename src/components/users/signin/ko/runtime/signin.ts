@@ -7,6 +7,7 @@ import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common
 import { Router } from "@paperbits/common/routing/router";
 import { MapiError } from "../../../../../errors/mapiError";
 import { RouteHelper } from "../../../../../routing/routeHelper";
+import { UnauthorizedError } from "../../../../../errors/unauthorizedError";
 import { UsersService } from "../../../../../services";
 import { dispatchErrors} from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
@@ -119,26 +120,22 @@ export class Signin {
         try {
             this.working(true);
 
-            const userId = await this.usersService.signIn(this.username(), this.password());
+            await this.usersService.signIn(this.username(), this.password());
+            
+            const clientReturnUrl = sessionStorage.getItem("returnUrl");
+            const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
 
-            if (userId) {
-                const clientReturnUrl = sessionStorage.getItem("returnUrl");
-                const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
-
-                if (returnUrl) {
-                    await this.router.navigateTo(sanitizeUrl(returnUrl));
-                    return;
-                }
-
-                this.navigateToHome();
-
-                dispatchErrors(this.eventManager, ErrorSources.signin, []);
+            if (returnUrl) {
+                await this.router.navigateTo(sanitizeUrl(returnUrl));
+                return;
             }
-            else {
-                const errors = ["Please provide a valid email and password."];
-                this.errorMessages(errors);
-                dispatchErrors(this.eventManager, ErrorSources.signin, errors);
-            }
+
+            this.navigateToHome();
+
+            dispatchErrors(this.eventManager, ErrorSources.signin, []);
+            const errors = ["Please provide a valid email and password."];
+            this.errorMessages(errors);
+            dispatchErrors(this.eventManager, ErrorSources.signin, errors);
         }
         catch (error) {
             if (error instanceof MapiError) {
@@ -152,6 +149,11 @@ export class Signin {
 
                 dispatchErrors(this.eventManager, ErrorSources.signin, [error.message]);
 
+                return;
+            } else if (error instanceof UnauthorizedError) {
+                this.errorMessages([error.message]);
+
+                dispatchErrors(this.eventManager, ErrorSources.signin, [error.message]);
                 return;
             }
 
