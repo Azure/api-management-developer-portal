@@ -21,8 +21,8 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
     public readonly sizeStyleConfig: ko.Observable<SizeStylePluginConfig>;
     public readonly customInputValue: ko.Observable<string>;
     public readonly src: ko.Observable<string>;
+    public readonly instanceId: ko.Observable<string>;
     public readonly iframeSandboxAllows: string = iframeSandboxAllows;
-    public readonly instanceId: number;
 
     constructor(
         private readonly viewManager: ViewManager,
@@ -33,7 +33,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.sizeStyleConfig = ko.observable();
         this.customInputValue = ko.observable();
         this.src = ko.observable("");
-        this.instanceId = Math.random();
+        this.instanceId = ko.observable();
     }
 
     @Param()
@@ -45,12 +45,13 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
     @OnMounted()
     public async initialize(): Promise<void> {
         this.customInputValue(this.model.customInputValue);
+        this.instanceId(this.model.instanceId);
         this.updateResponsiveObservables();
 
         window.addEventListener("message", event => {
             if (typeof event.data === "object" && "customInputValueChangedMSAPIM" in event.data) {
                 const {key, value, instanceId} = event.data.customInputValueChangedMSAPIM;
-                if (instanceId !== this.instanceId) return;
+                if (instanceId !== this.model.instanceId) return;
 
                 const values = JSON.parse(this.customInputValue()).values ?? {};
                 values[key] = value;
@@ -62,7 +63,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
 
         const environment = await this.settingsProvider.getSetting<string>("environment");
-        const widgetSource = await buildWidgetSource(this.blobStorage, this.model, environment, this.instanceId, "editor.html");
+        const widgetSource = await buildWidgetSource(this.blobStorage, this.model, environment, "editor.html");
         this.src(widgetSource.src);
     }
 

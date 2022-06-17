@@ -17,5 +17,10 @@ export interface CustomWidgetContract extends Contract {
      */
     customInputValue: string;
 
+    /**
+     * ID of this particular instance of the widget.
+     */
+    instanceKey: string;
+
     styles: LocalStyles;
 }

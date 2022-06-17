@@ -21,6 +21,11 @@ export class CustomWidgetModel {
      */
     public styles: LocalStyles;
 
+    /**
+     * ID of particular instance of the widget.
+     */
+    public instanceId: string;
+
     constructor() {
         this.styles = {};
     }

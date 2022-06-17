@@ -3,6 +3,7 @@ import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { StyleHelper } from "@paperbits/styles";
 import { CustomWidgetModel } from "./customWidgetModel";
 import { sizeStylesInitial } from "./ko/constants";
+import { widgetCategory } from "./constants";
 
 export interface TCustomWidgetConfig extends TCustomWidgetBaseConfig {
   name: string;
@@ -17,7 +18,7 @@ export class CustomWidgetHandlers implements IWidgetHandler {
         const widgetOrder: IWidgetOrder = {
             name: this.configuration.name,
             displayName: this.configuration.displayName,
-            // category: this.configuration.category, TODO needed?
+            category: widgetCategory, // TODO needed?
             requires: [],
 
             createModel: async () => {
@@ -25,6 +26,7 @@ export class CustomWidgetHandlers implements IWidgetHandler {
                 model.name = this.configuration.name;
                 model.customInputValue = "{}";
                 StyleHelper.setPluginConfigForLocalStyles(model.styles, "size", sizeStylesInitial);
+                model.instanceId = model.name + "_" + Math.random();
 
                 model.widgetDisplayName = this.configuration.displayName;
                 return model;

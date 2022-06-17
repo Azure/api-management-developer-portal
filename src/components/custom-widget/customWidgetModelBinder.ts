@@ -18,6 +18,7 @@ export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> 
         model.name = contract.name ?? "";
         model.widgetDisplayName = contract.widgetDisplayName;
         model.customInputValue = contract.customInputValue ?? "{}";
+        model.instanceId = contract.instanceKey;
 
         model.styles = contract.styles || {};
         return model;
@@ -29,6 +30,7 @@ export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> 
             name: model.name,
             widgetDisplayName: model.widgetDisplayName,
             customInputValue: model.customInputValue,
+            instanceKey: model.instanceId,
 
             styles: model.styles,
         } as CustomWidgetContract;

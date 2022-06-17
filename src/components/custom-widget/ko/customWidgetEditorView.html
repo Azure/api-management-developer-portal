@@ -1,5 +1,5 @@
 <fieldset class="form flex flex-item flex-item-grow no-overflow">
-    <div class="flex flex-column" style="width: 100%;">
+    <div class="flex flex-column fit">
         <div class="flex-item">
             <size-editor params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: sizeStyleConfig, onUpdate: onSizeUpdate }">
             </size-editor>
@@ -8,7 +8,7 @@
         </div>
 
         <iframe class="flex-item flex-item-grow"
-                data-bind="attr: { src: src, sandbox: iframeSandboxAllows }"
+                data-bind="attr: { id: instanceId, src: src, sandbox: iframeSandboxAllows }"
                 frameborder="0"
         ></iframe>
     </div>
