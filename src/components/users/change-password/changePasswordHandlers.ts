@@ -1,5 +1,7 @@
 ﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+import { StyleDefinition } from "@paperbits/common/styles";
 import { ChangePasswordModel } from "./changePasswordModel";
+import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
 
 export class ChangePasswordHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -13,5 +15,25 @@ export class ChangePasswordHandlers implements IWidgetHandler {
         };
 
         return widgetOrder;
+    }
+
+    public getStyleDefinitions(): StyleDefinition {
+        return {
+            components: {
+                changePassword: {
+                    displayName: "Change Password",
+                    plugins: ["margin", "padding", "background", "typography"],
+                    defaults: {
+                        typography: {
+                            colorKey: "colors/default"
+                        }
+                    },
+                    components: {
+                        input: DefaultStyleDefinitions.getInputStyleDefinition(),
+                        changeButton: DefaultStyleDefinitions.getButtonStyleDefinition()
+                    }
+                }
+            }
+        };
     }
 }

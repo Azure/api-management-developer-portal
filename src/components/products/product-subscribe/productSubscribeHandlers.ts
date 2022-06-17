@@ -33,14 +33,8 @@ export class ProductSubscribeHandlers implements IWidgetHandler {
                     plugins: ["background", "typography", "margin", "padding"],
                     components: {
                         subscriptionInput: DefaultStyleDefinitions.getInputStyleDefinition(),
-                        termsOfUseCheckbox: {
-                            displayName: "Terms Of Use Checkbox",
-                            plugins: ["typography"]
-                        },
-                        termsOfUseTextarea: {
-                            displayName: "Terms Of Use",
-                            plugins: ["backround", "typography", "size", "border"]
-                        },
+                        termsOfUseCheckbox: DefaultStyleDefinitions.getTermsOfUseCheckboxDefinition(),
+                        termsOfUseTextarea: DefaultStyleDefinitions.getTermsOfUseTextAreaDefinition(),
                         subscribeButton: DefaultStyleDefinitions.getButtonStyleDefinition()
                     }
                 }
