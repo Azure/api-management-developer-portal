@@ -11,7 +11,7 @@ export class ConfirmPasswordModelBinder implements IModelBinder<ConfirmPasswordM
 
     public async contractToModel(contract: ConfirmPasswordContract): Promise<ConfirmPasswordModel> {
         const model = new ConfirmPasswordModel();
-        model.styles = contract.styles || {};
+        model.styles = contract.styles ?? {};
 
         return model;
     }
