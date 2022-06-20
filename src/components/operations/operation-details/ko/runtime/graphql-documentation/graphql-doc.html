@@ -15,7 +15,7 @@
             </button>
             <div class="dropdown">
                 <div class="menu menu-vertical" role="list">
-                    <!-- ko foreach: { data: graphDocService.availableTypes, as: 'type' } -->
+                    <!-- ko fastForEach: { data: graphDocService.availableTypes, as: 'type' } -->
                     <div tabindex="0" role="listitem" class="nav-link text-truncate operation-pointer" data-dismiss
                         data-bind="click: () => { $component.selectedType(type) }, text: type, css: { 'nav-link-active': $component.selectedType() === type }">
                     </div>
