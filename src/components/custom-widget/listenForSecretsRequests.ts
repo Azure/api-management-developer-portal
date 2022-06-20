@@ -5,7 +5,7 @@ function listenForSecretsRequests(): void {
         const value = data[ASK_FOR_SECRETS_MESSAGE_KEY];
         if (!value || !("instanceId" in value)) return
 
-        const { instanceId, origin, targetModule } = value;
+        const { instanceId, targetModule } = value;
         const widgetIFrame = (
             targetModule === "app"
                 ? window.frames[0].document.getElementById(instanceId)
@@ -13,7 +13,7 @@ function listenForSecretsRequests(): void {
         ) as HTMLIFrameElement;
 
         const secrets: TSecrets = {token: "the secret token", userId: "42"} // TODO actual values
-        widgetIFrame.contentWindow.postMessage({[ASK_FOR_SECRETS_MESSAGE_KEY]: secrets}, origin);
+        widgetIFrame.contentWindow.postMessage({[ASK_FOR_SECRETS_MESSAGE_KEY]: secrets}, "*");
     });
 }
 
