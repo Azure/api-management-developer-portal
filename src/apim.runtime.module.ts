@@ -19,6 +19,7 @@ import "./bindingHandlers/minMaxAvgChart";
 import "./bindingHandlers/scrollintoview";
 import "./bindingHandlers/syntaxHighlight";
 import "./bindingHandlers/tab";
+import "./bindingHandlers/fastForeach";
 import { ApiProducts } from "./components/apis/api-products/ko/runtime/api-products";
 import { ApiProductsDropdown } from "./components/apis/api-products/ko/runtime/api-products-dropdown";
 import { ApiProductsTiles } from "./components/apis/api-products/ko/runtime/api-products-tiles";

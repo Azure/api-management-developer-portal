@@ -219,13 +219,7 @@ export enum GraphqlCustomFieldNames {
     type = "collectionTypeForDoc",
 }
 
-export enum GraphqlDefaultScalarTypes {
-    int = "Int",
-    float = "Float",
-    string = "String",
-    boolean = "Boolean",
-    id = "ID"
-}
+export const GraphqlDefaultScalarTypes = ["Int", "Float", "String", "Boolean", "ID"]
 
 export enum GraphqlFieldTypes {
     args = "args",
