@@ -2,8 +2,8 @@ import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import * as GraphQL from "graphql";
 import * as monaco from "monaco-editor";
-import loader from "@monaco-editor/loader";
-import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
+import loader from '@monaco-editor/loader';
+import { Component, OnDestroyed, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import { ConsoleHost } from "./../../../../../models/console/consoleHost";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
@@ -77,7 +77,7 @@ export class GraphqlConsole {
     public readonly displayWsConsole: ko.Observable<boolean>;
     private ws: WebsocketClient;
     public readonly wsLogItems: ko.ObservableArray<object>;
-
+    private koSubscriptions: ko.Subscription[] = [];
 
     constructor(
         private readonly routeHelper: RouteHelper,
@@ -139,8 +139,8 @@ export class GraphqlConsole {
     public async initialize(): Promise<void> {
         await this.resetConsole();
         await this.loadingMonaco();
-        this.document.subscribe(this.onDocumentChange);
-        this.response.subscribe(this.onResponseChange);
+        this.koSubscriptions.push(this.document.subscribe(this.onDocumentChange));
+        this.koSubscriptions.push(this.response.subscribe(this.onResponseChange));
         this.backendUrl = await this.settingsProvider.getSetting<string>("backendUrl");
     }
 
@@ -163,9 +163,12 @@ export class GraphqlConsole {
             this.host.hostname(this.hostnames()[0]);
         }
 
-        const graphQLSchemas = await this.apiService.getSchemas(selectedApi);
-        this.schema = graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema;
-        await this.buildTree(this.schema);
+        const graphQLSchema = await this.apiService.getGQLSchema(selectedApi.id);
+        if (graphQLSchema) {
+            this.schema = graphQLSchema.graphQLSchema;
+            this.buildTree(this.schema);    
+        }
+        
         this.availableOperations();
         this.selectByDefault();
         this.isSubscriptionOperation(this.document().trim().startsWith(GraphqlTypes.subscription));
@@ -786,5 +789,10 @@ export class GraphqlConsole {
     public addQueryParameter(): void {
         const newParameter = new ConsoleParameter();
         this.queryParameters.push(newParameter);
+    }
+
+    @OnDestroyed()
+    public dispose(): void {
+        this.koSubscriptions?.forEach(s => s.dispose());
     }
 }
