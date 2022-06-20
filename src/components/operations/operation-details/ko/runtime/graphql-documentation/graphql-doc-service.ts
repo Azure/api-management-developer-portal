@@ -32,6 +32,7 @@ export class GraphDocService {
         public readonly router: Router,
         public readonly routeHelper: RouteHelper
     ) {
+        this.onRouteChangeGraph = this.onRouteChangeGraph.bind(this);
         this.currentSelected = ko.observable<object>(null);
         this.docGraphs = {
             query: ko.observable<object>(),
@@ -55,7 +56,7 @@ export class GraphDocService {
         this.selectedApiName(this.routeHelper.getApiName());
         if (this.selectedApiName()) {
             await this.defaultValues();
-            this.router.addRouteChangeListener(this.onRouteChangeGraph.bind(this));
+            this.router.addRouteChangeListener(this.onRouteChangeGraph);
         }
     }
 
@@ -67,8 +68,11 @@ export class GraphDocService {
     private async defaultValues(): Promise<void> {
         await this.getApi(this.selectedApiName());
         if (this.api().type === TypeOfApi.graphQL) {
-            const graphQLSchemas = await this.apiService.getSchemas(this.api());
-            this.content(graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema);
+            const graphQLSchema = await this.apiService.getGQLSchema(this.api().id);
+            if (!graphQLSchema) {
+                return;
+            }
+            this.content(graphQLSchema.graphQLSchema);
             const schema = GraphQL.buildSchema(this.content(), { commentDescriptions: true });
 
             this.docGraphs.query(schema.getQueryType()?.getFields());
@@ -96,9 +100,10 @@ export class GraphDocService {
             }));
 
             _.forEach(this.docGraphs, (value, key) => {
-                this.addingNewFields(value(), key);
+                const valueData = value();
+                this.addingNewFields(valueData, key);
                 if (key == GraphqlTypes.query || key == GraphqlTypes.subscription || key == GraphqlTypes.mutation) {
-                    value(this.sortingAlphabetically(value()));
+                    value(this.sortingAlphabetically(valueData));
                 }
             });
 
@@ -116,8 +121,9 @@ export class GraphDocService {
     }
 
     public select(graph: object): void {
-        if (this.currentSelected()) {
-            this.currentSelected()[GraphqlCustomFieldNames.selected](false);
+        const selected = this.currentSelected();
+        if (selected) {
+            selected[GraphqlCustomFieldNames.selected](false);
         }
         graph[GraphqlCustomFieldNames.selected](true);
         this.currentSelected(graph);
@@ -136,9 +142,9 @@ export class GraphDocService {
         }
 
         if (!(graphType && graphName)) return;
-        else {
-            this.select(this.docGraphs[graphType]()[graphName]);
-        }
+
+        const graph = this.docGraphs[graphType]()[graphName];
+        this.select(graph);
     }
 
     private sortingAlphabetically(collection) {
