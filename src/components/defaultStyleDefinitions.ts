@@ -578,8 +578,6 @@ export function getTermsOfUseTextAreaDefinition(): ComponentStyleDefinition {
     return {
         displayName: "Terms Of Use",
         plugins: ["backround", "typography", "size", "border"]
-    }
-}
     };
 }
 
@@ -612,6 +610,39 @@ export function getDefaultButtonStyleDefinition(): ComponentStyleDefinition {
                     style: "solid",
                     colorKey: "colors/default"
                 }
+            }
+        }
+    };
+}
+
+export function getTableRowCellStyleDefinition(): ComponentStyleDefinition {
+    return {
+        displayName: "Table Row Cell",
+        plugins: ["background", "typography", "border"],
+        defaults: {
+            typography: {
+                fontWeight: "normal",
+                colorKey: "colors/default"
+            }
+        }
+    };
+}
+
+export function getTableHeadCellStyleDefinition(): ComponentStyleDefinition {
+    return {
+        displayName: "Table Head Cell",
+        plugins: ["background", "typography", "border"],
+        defaults: {
+            border: {
+                bottom: {
+                    width: "1",
+                    style: "solid",
+                    colorKey: "colors/gridBorderColor"
+                }
+            },
+            typography: {
+                fontWeight: "bold",
+                colorKey: "colors/default"
             }
         }
     };

@@ -13,12 +13,16 @@ export class ReportsModelBinder implements IModelBinder<ReportsModel> {
     }
 
     public async contractToModel(contract: ReportsContract): Promise<ReportsModel> {
-        return new ReportsModel();
+        const model = new ReportsModel();
+        model.styles = contract.styles ?? {};
+
+        return model;
     }
 
     public modelToContract(model: ReportsModel): Contract {
         const contract: ReportsContract = {
-            type: "reports"
+            type: "reports",
+            styles: model.styles
         };
 
         return contract;
