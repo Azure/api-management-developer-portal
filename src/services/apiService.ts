@@ -141,10 +141,11 @@ export class ApiService {
         const skip = searchRequest && searchRequest.skip || 0;
         const take = searchRequest && searchRequest.take || Constants.defaultPageSize;
 
-        let query = `/apisByTags?includeNotTaggedApis=true&$top=${take}&$skip=${skip}`;
+        let query = `/apisByTags?$top=${take}&$skip=${skip}`;
 
         const odataFilterEntries = [];
-        odataFilterEntries.push(`api/isCurrent eq true`);
+        //TODO:hh ask for it
+        // odataFilterEntries.push(`api/isCurrent eq true`);
 
         if (searchRequest) {
             if (searchRequest.tags && searchRequest.tags.length > 0) {
