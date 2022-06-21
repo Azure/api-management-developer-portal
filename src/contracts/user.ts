@@ -1,25 +1,13 @@
-import { ArmResource } from "./armResource";
-
-export interface UserContract extends ArmResource {
-    properties: UserPropertiesContract;
-}
-
-export interface UserIdentity {
-    /**
-     * Identifier value within provider.
-     */
-    id: string;
+export interface UserContract {
 
     /**
-     * Identity provider name.
-     */
-    provider: string;
-}
+    * User identifier.
+    */
+    id?: string;
 
-export interface UserPropertiesContract {
     /**
-     * First name.
-     */
+    * First name.
+    */
     firstName: string;
 
     /**
@@ -65,4 +53,21 @@ export interface UserPropertiesContract {
      *  
      */
     appType: string;
+
+    /**
+     * Basic account identifier.
+     */
+    isBasicAccount?: boolean;
+}
+
+export interface UserIdentity {
+    /**
+     * Identifier value within provider.
+     */
+    id: string;
+
+    /**
+     * Identity provider name.
+     */
+    provider: string;
 }

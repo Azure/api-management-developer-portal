@@ -9,7 +9,7 @@ import { IApiClient } from "../clients";
 import { User } from "../models/user";
 import { Utils } from "../utils";
 import { Identity } from "../contracts/identity";
-import { UserContract, UserPropertiesContract, } from "../contracts/user";
+import { UserContract } from "../contracts/user";
 import { MapiSignupRequest } from "../contracts/signupRequest";
 import { MapiError } from "../errors/mapiError";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
@@ -18,7 +18,6 @@ import { KnownMimeTypes } from "../models/knownMimeTypes";
 /**
  * A service for management operations with users.
  */
-//TODO:hh convert this
 export class UsersService {
     constructor(
         private readonly apiClient: IApiClient,
@@ -105,6 +104,7 @@ export class UsersService {
         const backendUrlBase = await this.settingsProvider.getSetting<string>(Constants.SettingNames.backendUrl)
         let backendUrl = Utils.getDeveloperEndpoint(backendUrlBase);
 
+
         const response = await this.httpClient.send({
             url: `${backendUrl}${requestUrl}&api-version=${Constants.managementApiVersion}`,
             method: "PUT",
@@ -122,9 +122,7 @@ export class UsersService {
         }
 
         const payload = {
-            properties: {
-                password: newPassword
-            }
+            password: newPassword
         };
 
         await this.apiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
@@ -196,10 +194,8 @@ export class UsersService {
     public async updateUser(userId: string, firstName: string, lastName: string): Promise<User> {
         const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("updateUser")];
         const payload = {
-            properties: {
-                firstName: firstName,
-                lastName: lastName
-            }
+            firstName: firstName,
+            lastName: lastName
         };
         await this.apiClient.patch<string>(`${userId}?appType=${Constants.AppType}`, headers, payload);
         const user = await this.apiClient.get<UserContract>(userId);
@@ -260,13 +256,13 @@ export class UsersService {
 
         return userId;
     }
-
+    //TODO:hh we only have create user with userId?
     public async createSignupRequest(signupRequest: MapiSignupRequest): Promise<void> {
         await this.apiClient.post("/users", [await this.apiClient.getPortalHeader("createSignupRequest")], signupRequest);
     }
 
     public async createResetPasswordRequest(email: string): Promise<void> {
-        const payload = { to: email, appType: Constants.AppType };
+        const payload = { to: email };
         await this.apiClient.post(`/confirmations/password?appType=${Constants.AppType}`, [await this.apiClient.getPortalHeader("createResetPasswordRequest")], payload);
     }
 
@@ -284,9 +280,7 @@ export class UsersService {
         ];
 
         const payload = {
-            properties: {
-                password: newPassword
-            }
+            password: newPassword
         };
 
         await this.apiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
@@ -299,7 +293,7 @@ export class UsersService {
 
         const jwtToken = Utils.parseJwt(idToken);
 
-        const user: UserPropertiesContract = {
+        const user: UserContract = {
             firstName: firstName,
             lastName: lastName,
             email: email,
