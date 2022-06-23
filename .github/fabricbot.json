@@ -1,0 +1,426 @@
+{
+  "version": "1.0",
+  "tasks": [
+    {
+      "taskType": "trigger",
+      "capabilityId": "ReleaseAnnouncement",
+      "subCapability": "ReleaseAnnouncement",
+      "version": "1.0",
+      "id": "NlRSKxQc8",
+      "config": {
+        "taskName": "Comment on issues resolved with a release",
+        "issueReply": "This issue has been resolved in the ${version} release.",
+        "packageRegex": "(.*)",
+        "packageVersionGroup": 1
+      }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "IssuesOnlyResponder",
+      "version": "1.0",
+      "id": "BOa-O8PVG",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "labelAdded",
+              "parameters": {
+                "label": "(t) Bug"
+              }
+            },
+            {
+              "operator": "not",
+              "operands": [
+                {
+                  "name": "labelAdded",
+                  "parameters": {
+                    "label": "P0"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "eventType": "issue",
+        "eventNames": [
+          "issues",
+          "project_card"
+        ],
+        "actions": [
+          {
+            "name": "addReply",
+            "parameters": {
+              "comment": "@${issueAuthor}, thank you for reporting the bug. "
+            }
+          }
+        ],
+        "taskName": "Issues - comment on bugs other than P0"
+      }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "IssuesOnlyResponder",
+      "version": "1.0",
+      "id": "34xQKnOyA",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "labelAdded",
+              "parameters": {
+                "label": "(t) Bug"
+              }
+            },
+            {
+              "name": "labelAdded",
+              "parameters": {
+                "label": "P0"
+              }
+            }
+          ]
+        },
+        "eventType": "issue",
+        "eventNames": [
+          "issues",
+          "project_card"
+        ],
+        "taskName": "Issues - comment on P0 bugs",
+        "actions": [
+          {
+            "name": "addReply",
+            "parameters": {
+              "comment": "@${issueAuthor}, thank you for reporting the bug. We have classified it as the highest priority and will immediately investigate it."
+            }
+          },
+          {
+            "name": "addToProject",
+            "parameters": {
+              "projectName": "Backlog"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "IssuesOnlyResponder",
+      "version": "1.0",
+      "id": "m3rMdqK3a",
+      "config": {
+        "conditions": {
+          "operator": "or",
+          "operands": [
+            {
+              "name": "labelAdded",
+              "parameters": {
+                "label": "(t) Feature request"
+              }
+            },
+            {
+              "name": "labelAdded",
+              "parameters": {
+                "label": "(t) Improvement"
+              }
+            }
+          ]
+        },
+        "eventType": "issue",
+        "eventNames": [
+          "issues",
+          "project_card"
+        ],
+        "taskName": "Issues - comment on feature requests",
+        "actions": [
+          {
+            "name": "addReply",
+            "parameters": {
+              "comment": "@${issueAuthor}, thank you for requesting this feature."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "IssuesOnlyResponder",
+      "version": "1.0",
+      "id": "qbeaJjWyW",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "labelAdded",
+              "parameters": {
+                "label": "Response needed"
+              }
+            }
+          ]
+        },
+        "eventType": "issue",
+        "eventNames": [
+          "issues",
+          "project_card"
+        ],
+        "taskName": "Issues - response needed",
+        "actions": [
+          {
+            "name": "addReply",
+            "parameters": {
+              "comment": "@${issueAuthor}, we need more information before we start working on this issue. If you prefer to share it in private, please send us an email to apimportalfeedback@microsoft.com with the issue number in its subject."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "PullRequestResponder",
+      "version": "1.0",
+      "id": "6UiWBKmVw",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "operator": "not",
+              "operands": [
+                {
+                  "name": "activitySenderHasAssociation",
+                  "parameters": {
+                    "association": "OWNER"
+                  }
+                }
+              ]
+            },
+            {
+              "operator": "not",
+              "operands": [
+                {
+                  "name": "activitySenderHasAssociation",
+                  "parameters": {
+                    "association": "MEMBER"
+                  }
+                }
+              ]
+            },
+            {
+              "operator": "not",
+              "operands": [
+                {
+                  "name": "activitySenderHasAssociation",
+                  "parameters": {
+                    "association": "FIRST_TIME_CONTRIBUTOR"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "",
+              "parameters": {}
+            }
+          ]
+        },
+        "eventType": "pull_request",
+        "eventNames": [
+          "pull_request",
+          "issues",
+          "project_card"
+        ],
+        "taskName": "Pull request - respond",
+        "actions": [
+          {
+            "name": "addReply",
+            "parameters": {
+              "comment": "@${issueAuthor}, thank you for your contribution to the project! ❤"
+            }
+          }
+        ]
+      },
+      "disabled": true
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "PullRequestResponder",
+      "version": "1.0",
+      "id": "-cEP4ytkG",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "activitySenderHasAssociation",
+              "parameters": {
+                "association": "FIRST_TIME_CONTRIBUTOR"
+              }
+            }
+          ]
+        },
+        "eventType": "pull_request",
+        "eventNames": [
+          "pull_request",
+          "issues",
+          "project_card"
+        ],
+        "taskName": "Pull request - first-time contributor respond",
+        "actions": [
+          {
+            "name": "addReply",
+            "parameters": {
+              "comment": "@${issueAuthor}, thank you for your first contribution to the project! ❤ We greatly appreciate it and look forward to working with you in the future."
+            }
+          }
+        ]
+      },
+      "disabled": true
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "IssuesOnlyResponder",
+      "version": "1.0",
+      "id": "ATsl_XtBh",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "isAction",
+              "parameters": {
+                "action": "opened"
+              }
+            }
+          ]
+        },
+        "eventType": "issue",
+        "eventNames": [
+          "issues",
+          "project_card"
+        ],
+        "taskName": "Issues - acknowledge new issue",
+        "actions": [
+          {
+            "name": "addReply",
+            "parameters": {
+              "comment": "@${issueAuthor}, thank you for opening this issue. We will triage it within the next few business days."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "IssuesOnlyResponder",
+      "version": "1.0",
+      "id": "rq20jiw2A",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "addedToProjectColumn",
+              "parameters": {
+                "action": "created",
+                "projectName": "Backlog"
+              }
+            }
+          ]
+        },
+        "eventType": "issue",
+        "eventNames": [
+          "issues",
+          "project_card"
+        ],
+        "taskName": "Issues - added to the backlog",
+        "actions": [
+          {
+            "name": "addReply",
+            "parameters": {
+              "comment": "By adding this issue to the Backlog project, we have prioritized it for development. You can monitor its status in the project's board."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "IssuesOnlyResponder",
+      "version": "1.0",
+      "id": "uYmW2Q7ZR",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "labelAdded",
+              "parameters": {
+                "label": "(t) Support"
+              }
+            }
+          ]
+        },
+        "eventType": "issue",
+        "eventNames": [
+          "issues",
+          "project_card"
+        ],
+        "taskName": "Issues - contact Azure support",
+        "actions": [
+          {
+            "name": "addReply",
+            "parameters": {
+              "comment": "@${issueAuthor}, please, contact Azure Support for assistance and help in resolving your problem."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "PullRequestResponder",
+      "version": "1.0",
+      "id": "MYJ3a4cYszTq5fXZ9vcjb",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "labelAdded",
+              "parameters": {
+                "label": "Thank you!"
+              }
+            }
+          ]
+        },
+        "eventType": "pull_request",
+        "eventNames": [
+          "pull_request",
+          "issues",
+          "project_card"
+        ],
+        "taskName": "PRs - token of appreciation",
+        "actions": [
+          {
+            "name": "addReply",
+            "parameters": {
+              "comment": "@${issueAuthor}, in recognition of your contributions, we would like to offer you a small token of appreciation. Could you send us the following details to apimportalfeedback@microsoft.com by Sunday, August 29?\n\n- Your email address\n- Your GitHub username\n- This pull request number"
+            }
+          }
+        ]
+      },
+      "disabled": true
+    }
+  ],
+  "userGroups": []
+}
