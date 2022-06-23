@@ -227,7 +227,7 @@ export class Authorization {
     }
 
     private async onGrantTypeChange(grantType: string): Promise<void> {
-        await this.clearStoredCredentials(!!grantType);
+        await this.clearStoredCredentials(true);
 
         if (!grantType || grantType === GrantTypes.password) {
             return;
