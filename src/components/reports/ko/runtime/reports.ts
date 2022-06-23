@@ -200,7 +200,7 @@ export class Reports {
 
     public reportByProductOrderBy(fieldName: string): void {
         if (fieldName === this.reportByProductOrder()) {
-            this.reportByProductOrderAscending(!this.reportByProductOrderAscending())
+            this.reportByProductOrderAscending(!this.reportByProductOrderAscending());
         } else {
             this.reportByProductOrder(fieldName);
         }
@@ -254,7 +254,7 @@ export class Reports {
 
     public reportBySubscriptionOrderBy(fieldName: string): void {
         if (fieldName === this.reportBySubscriptionOrder()) {
-            this.reportBySubscriptionOrderAscending(!this.reportBySubscriptionOrderAscending())
+            this.reportBySubscriptionOrderAscending(!this.reportBySubscriptionOrderAscending());
         } else {
             this.reportBySubscriptionOrder(fieldName);
         }
@@ -306,7 +306,7 @@ export class Reports {
 
     public reportByApiOrderBy(fieldName: string): void {
         if (fieldName === this.reportByApiOrder()) {
-            this.reportByApiOrderAscending(!this.reportByApiOrderAscending())
+            this.reportByApiOrderAscending(!this.reportByApiOrderAscending());
         } else {
             this.reportByApiOrder(fieldName);
         }
@@ -357,7 +357,7 @@ export class Reports {
 
     public reportByOperationOrderBy(fieldName: string): void {
         if (fieldName === this.reportByOperationOrder()) {
-            this.reportByOperationOrderAscending(!this.reportByOperationOrderAscending())
+            this.reportByOperationOrderAscending(!this.reportByOperationOrderAscending());
         } else {
             this.reportByOperationOrder(fieldName);
         }

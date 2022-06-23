@@ -74,7 +74,9 @@ widget {
 
 .btn-standalone {
     color: #ececec;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.15);
     border: none;
     border-radius: 50%;
@@ -107,9 +109,9 @@ widget {
     width: 80px;
     white-space: nowrap;
     margin: 5px;
+    @include selection(15px, -5px);
 
     &:hover {
-        @include selection(15px, -5px);
         cursor: pointer;
     }
 }
@@ -156,10 +158,7 @@ widget {
     line-height: 0;
     width: 120px;
     cursor: pointer;
-
-    &:hover {
-        @include selection(15px, -10px);
-    }
+    @include selection(15px, -10px);
 }
 
 .section-container-cfg {

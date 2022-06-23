@@ -5,13 +5,14 @@ import template from "./profile.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing/router";
 import { User } from "../../../../../models/user";
-import { UsersService } from "../../../../../services/usersService";
+import { UsersService } from "../../../../../services";
 import { DelegationParameters, DelegationActionPath } from "../../../../../contracts/tenantSettings";
 import { TenantService } from "../../../../../services/tenantService";
 import { pageUrlChangePassword } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
-import { ValidationReport } from "../../../../../contracts/validationReport";
 import { EventManager } from "@paperbits/common/events/eventManager";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
     selector: "profile-runtime"
@@ -93,15 +94,6 @@ export class Profile {
         this.email = ko.observable(model.email);
     }
 
-    private cleanValidationErrors(): void {
-        const validationReport: ValidationReport = {
-            source: "changeProfile",
-            errors: []
-        };
-
-        this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-    }
-
     public async toggleEdit(): Promise<void> {
         const isDelegationEnabled = await this.isDelegationEnabled(DelegationActionPath.changeProfile);
         if (isDelegationEnabled) {
@@ -128,32 +120,15 @@ export class Profile {
             return;
         }
         
-        this.cleanValidationErrors();
         this.working(true);
-
+        dispatchErrors(this.eventManager, ErrorSources.changeProfile, []);
         try {
             const user = await this.usersService.updateUser(this.user().id, this.firstName(), this.lastName());
             this.setUser(user);
-            this.toggleEdit();
+            await this.toggleEdit();
+        } catch (error) {
+            parseAndDispatchError(this.eventManager, ErrorSources.changeProfile, error);
         }
-        catch (error) {
-            let errorDetails;
-
-            if (error.code === "ValidationError") {
-                errorDetails = error.details?.map(detail => detail.message) || [error.message];
-            }
-            else {
-                errorDetails = [error.message];
-            }
-
-            const validationReport: ValidationReport = {
-                source: "changeProfile",
-                errors: errorDetails
-            };
-
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        }
-
         this.working(false);
     }
 

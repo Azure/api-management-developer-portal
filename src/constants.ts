@@ -43,6 +43,13 @@ export enum AadEndpoints {
     legacy = "login.windows.net"
 }
 
+export enum AadClientLibrary {
+    v1 = "v1",
+    v2 = "v2"
+}
+
+export const AadClientLibraryV2 = "MSAL-2";
+
 /**
  * Types of direction (e.g. for sorting of elements in a table)
  */
@@ -212,13 +219,7 @@ export enum GraphqlCustomFieldNames {
     type = "collectionTypeForDoc",
 }
 
-export enum GraphqlDefaultScalarTypes {
-    int = "Int",
-    float = "Float",
-    string = "String",
-    boolean = "Boolean",
-    id = "ID"
-}
+export const GraphqlDefaultScalarTypes = ["Int", "Float", "String", "Boolean", "ID"]
 
 export enum GraphqlFieldTypes {
     args = "args",
@@ -243,6 +244,11 @@ export enum SettingNames {
     aadClientConfig = "aad",
     aadB2CClientConfig = "aadB2C",
     developerPortalType = "developerPortalType"
+}
+
+export enum DeveloperPortalType {
+    selfHosted = "self-hosted-portal",
+    managed = "dev-portal"
 }
 
 /**

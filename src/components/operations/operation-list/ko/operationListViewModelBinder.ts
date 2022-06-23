@@ -26,6 +26,7 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
 
         viewModel["widgetBinding"] = {
             displayName: "List of operations",
+            layer: bindingContext?.layer,
             model: model,
             draggable: true,
             flow: ComponentFlow.Block,

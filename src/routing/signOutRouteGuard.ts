@@ -6,6 +6,7 @@ import { Identity } from "../contracts/identity";
 import { TenantService } from "../services/tenantService";
 import { BackendService } from "../services/backendService";
 import { DelegationAction } from "../contracts/tenantSettings";
+import { clear } from 'idb-keyval';
 
 export class SignOutRouteGuard implements RouteGuard {
     constructor(
@@ -54,6 +55,7 @@ export class SignOutRouteGuard implements RouteGuard {
         }
 
         this.authenticator.clearAccessToken();
+        await clear(); // clear cache in indexedDB
         location.assign(Constants.pageUrlHome);
     }
 }

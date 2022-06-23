@@ -26,7 +26,7 @@ export class WidgetViewModelBinder implements ViewModelBinder<WidgetModel, Widge
             const binding: IWidgetBinding<WidgetModel, WidgetViewModel> = {
                 name: widgetName,
                 displayName: widgetDisplayName,
-                readonly: bindingContext ? bindingContext.readonly : false,
+                layer: bindingContext?.layer,
                 model: model,
                 flow: ComponentFlow.Block,
                 editor: widgetEditorSelector,
