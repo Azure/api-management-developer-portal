@@ -2,19 +2,13 @@
 
 .list {
     .list-item {
-        padding: 10px;
+        padding: .5em;
         display: block;
         color: $default-text-color;
-        cursor: default;
+        cursor: pointer;
 
-        &:hover {
-            background-color: #edebe9;
-            text-decoration: none;
-        }
-
-        &:focus {
-            outline: 1px solid #605e5c;
-            text-decoration: none;
+        &.selected {
+            font-weight: bold;
         }
     }
 
