@@ -11,6 +11,7 @@ export class ProductSubscriptionsViewModelBinder implements ViewModelBinder<Prod
             
             viewModel["widgetBinding"] = {
                 displayName: "Product: Subscriptions",
+                layer: bindingContext?.layer,
                 model: model,
                 flow: ComponentFlow.Block,
                 draggable: true

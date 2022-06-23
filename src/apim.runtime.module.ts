@@ -19,6 +19,7 @@ import "./bindingHandlers/minMaxAvgChart";
 import "./bindingHandlers/scrollintoview";
 import "./bindingHandlers/syntaxHighlight";
 import "./bindingHandlers/tab";
+import "./bindingHandlers/fastForeach";
 import { ApiProducts } from "./components/apis/api-products/ko/runtime/api-products";
 import { ApiProductsDropdown } from "./components/apis/api-products/ko/runtime/api-products-dropdown";
 import { ApiProductsTiles } from "./components/apis/api-products/ko/runtime/api-products-tiles";
@@ -81,8 +82,9 @@ import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import { Pagination } from "./components/pagination/pagination";
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { OauthServerConfiguration } from "./components/operations/operation-details/ko/runtime/oauth-server-configuration";
+import { AadServiceV2 } from "./services/aadServiceV2";
 import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
-import {staticDataEnvironment} from "./../environmentConstants"
+import { staticDataEnvironment } from "./../environmentConstants";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -142,6 +144,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("aadService", AadService);
+        injector.bindSingleton("aadServiceV2", AadServiceV2);
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("settingsProvider", ApimSettingsProvider);
         injector.bindSingleton("authenticator", DefaultAuthenticator);

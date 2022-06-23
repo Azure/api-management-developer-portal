@@ -42,10 +42,16 @@ export class ConsoleOperation {
             this.responses = [];
         }
 
+        if (this.urlTemplate.includes("/*")) {
+            const templateParameter = new ConsoleParameter();
+            templateParameter.name("*");
+            this.templateParameters.push(templateParameter);
+        }
+
         this.requestUrl = ko.computed(() => {
             const protocol = this.api.protocols.indexOf("https") !== -1 ? "https" : "http";
             const urlTemplate = this.getRequestPath();
-            let result = this.host.hostname() ? `${protocol}://${this.host.hostname()}` : '';
+            let result = this.host.hostname() ? `${protocol}://${this.host.hostname()}` : "";
             result += Utils.ensureLeadingSlash(urlTemplate);
 
             return result;
@@ -111,12 +117,12 @@ export class ConsoleOperation {
                 if (requestUrl.indexOf(parameterPlaceholder) > -1) {
                     requestUrl = requestUrl.replace(parameterPlaceholder,
                         !getHidden || !parameter.secret ? Utils.encodeURICustomized(parameter.value())
-                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, '•')));
+                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, "•")));
                 }
                 else {
                     requestUrl = this.addParam(requestUrl, Utils.encodeURICustomized(parameter.name()),
                         !getHidden || !parameter.secret ? Utils.encodeURICustomized(parameter.value())
-                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, '•')));
+                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, "•")));
                 }
             }
         });
@@ -124,8 +130,9 @@ export class ConsoleOperation {
         if (this.api.apiVersionSet && this.api.apiVersionSet.versioningScheme === "Query") {
             requestUrl = this.addParam(requestUrl, this.api.apiVersionSet.versionQueryName, this.api.apiVersion);
         }
+        requestUrl = requestUrl.replace("/*", "");
 
         return `${this.api.path}${versionPath}${requestUrl}`;
     }
-    
+
 }

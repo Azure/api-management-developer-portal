@@ -13,7 +13,7 @@ declare module "*.txt" {
     export default content;
 }
 
-declare module '*!text' {
+declare module "*!text" {
     var _: string;
     export default  _;
 }

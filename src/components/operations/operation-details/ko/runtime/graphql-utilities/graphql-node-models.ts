@@ -49,7 +49,7 @@ export abstract class GraphQLTreeNode {
     public toggle(value?: boolean, regenerateDoc = true): void {
         let preCondition: boolean;
         if (value === true || value === false) {
-            preCondition = !value
+            preCondition = !value;
         } else {
             preCondition = this.selected();
         }
@@ -68,7 +68,7 @@ export abstract class GraphQLTreeNode {
 
     public clear(): void {
         this.toggle(false, false);
-        for (let child of this.children()) {
+        for (const child of this.children()) {
             child.clear();
         }
     }
@@ -77,7 +77,7 @@ export abstract class GraphQLTreeNode {
         return !!this.children().find(c => c.selected());
     }
 
-    abstract generateNodes(): void
+    public abstract generateNodes(): void;
 }
 
 export class GraphQLOutputTreeNode extends GraphQLTreeNode {
@@ -97,30 +97,30 @@ export class GraphQLOutputTreeNode extends GraphQLTreeNode {
     }
 
     public generateNodes() {
-        let args = this.data?.args || [];
-        let type = getType(this.data?.type) || this.data;
+        const args = this.data?.args || [];
+        const type = getType(this.data?.type) || this.data;
 
-        let argsNodes: GraphQLInputTreeNode[] = [];
-        let fieldNodes: GraphQLOutputTreeNode[] = [];
+        const argsNodes: GraphQLInputTreeNode[] = [];
+        const fieldNodes: GraphQLOutputTreeNode[] = [];
 
         if (this.children().length === 0) {
-            for (let arg of args) {
-                let inputTreeeNode = new GraphQLInputTreeNode(arg.name, arg, this.generateDocument, this);
-                argsNodes.push(inputTreeeNode)
+            for (const arg of args) {
+                const inputTreeeNode = new GraphQLInputTreeNode(arg.name, arg, this.generateDocument, this);
+                argsNodes.push(inputTreeeNode);
             }
             if (type instanceof GraphQL.GraphQLObjectType || type instanceof GraphQL.GraphQLInterfaceType) {
-                let fields = type.getFields();
-                for (let name in fields) {
-                    fieldNodes.push(new GraphQLOutputTreeNode(name, fields[name], this.generateDocument, this))
+                const fields = type.getFields();
+                for (const name in fields) {
+                    fieldNodes.push(new GraphQLOutputTreeNode(name, fields[name], this.generateDocument, this));
                 }
             }
             if (type instanceof GraphQL.GraphQLUnionType) {
-                let subtypes = type.getTypes();
+                const subtypes = type.getTypes();
                 _.forEach(subtypes, (subtype) => {
-                    fieldNodes.push(new GraphQLOutputTreeNode(subtype['name'], subtype, this.generateDocument, this))
-                })
+                    fieldNodes.push(new GraphQLOutputTreeNode(subtype["name"], subtype, this.generateDocument, this));
+                });
             }
-            this.children([...argsNodes.sort((a, b) => a.label().localeCompare(b.label())), ...fieldNodes.sort((a, b) => a.label().localeCompare(b.label()))])
+            this.children([...argsNodes.sort((a, b) => a.label().localeCompare(b.label())), ...fieldNodes.sort((a, b) => a.label().localeCompare(b.label()))]);
         }
         return this;
     }
@@ -134,15 +134,15 @@ export class GraphQLInputTreeNode extends GraphQLTreeNode {
 
     constructor(label: string, data: GraphQL.GraphQLInputField, generateDocument: () => void, parent: GraphQLTreeNode) {
         super(label, generateDocument, parent);
-        this.children = ko.observableArray([]);;
+        this.children = ko.observableArray([]); 
         this.data = data;
         this.isRequired = ko.observable(isNonNull(data.type));
         if (this.isRequired()) {
-            this.toggle(true);
+            this.toggle(true, false);
         }
 
         this.inputValue = ko.observable("");
-        let type = getType(data.type);
+        const type = getType(data.type);
         if (type instanceof GraphQL.GraphQLEnumType) {
             this.options = ko.observableArray(type.getValues().map(v => v.name));
             if (this.options().length > 0) {
@@ -166,7 +166,7 @@ export class GraphQLInputTreeNode extends GraphQLTreeNode {
                     this.inputValue(`"id"`);
                     break;
                 default:
-                    this.inputValue(`""`)
+                    this.inputValue(`""`);
                     break;
             }
         }
@@ -177,13 +177,13 @@ export class GraphQLInputTreeNode extends GraphQLTreeNode {
     }
 
     public generateNodes(): void {
-        let data = this.data;
-        let type = getType(data.type);
+        const data = this.data;
+        const type = getType(data.type);
         if (type instanceof GraphQL.GraphQLInputObjectType && this.children().length === 0) {
-            let fields = type.getFields();
-            for (let name in fields) {
+            const fields = type.getFields();
+            for (const name in fields) {
                 const inputTreeNode = new GraphQLInputTreeNode(name, fields[name], this.generateDocument, this);
-                this.children.push(inputTreeNode)
+                this.children.push(inputTreeNode);
             }
         }
     }
