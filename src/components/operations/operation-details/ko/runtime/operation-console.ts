@@ -373,12 +373,29 @@ export class OperationConsole {
         this.sendRequest();
     }
 
-    public async sendFromBrowser<T>(request: HttpRequest): Promise<HttpResponse<T>> {
-        const response = await this.httpClient.send<any>(request);
-        return response;
+    public async sendFromBrowser<T>(url, method, headers, body) {
+        const stringifiedHeaders = headers.map(header => `${header.name()}: ${header.value()}`);
+        const response = await fetch(url, {
+            method: method,
+            headers: {...stringifiedHeaders},
+            body: body
+        });
+
+        let headersString = '';
+        response.headers.forEach((value, name) => headersString += `${name}: ${value}\n`);
+
+        const responseReturn: any = {
+            headers: headersString,
+            contentTypeHeader: response.headers.get(KnownHttpHeaders.ContentType),
+            statusCode: response.status,
+            statusText: response.statusText,
+            body: await response.text()
+        };
+
+        return responseReturn;
     }
 
-    public async sendFromProxy<T>(request: HttpRequest): Promise<HttpResponse<T>> {
+    public async sendFromProxy<T>(request: HttpRequest) {
         if (request.body) {
             request.body = Buffer.from(request.body);
         }
@@ -404,12 +421,15 @@ export class OperationConsole {
             ? Buffer.from(responsePackage.body.data)
             : null;
 
+        let headersString = responsePackage.headers.map(x => `${x.name}: ${x.value}`).join("\n");
+        const contentTypeHeader = responsePackage.headers.find(x => x.name === KnownHttpHeaders.ContentType.toLowerCase());
+
         const response: any = {
-            headers: responsePackage.headers,
+            headers: headersString,
+            contentTypeHeader: contentTypeHeader && contentTypeHeader.value,
             statusCode: responsePackage.statusCode,
             statusText: responsePackage.statusMessage,
-            body: responseBodyBuffer,
-            toText: () => responseBodyBuffer.toString("utf8")
+            body: responseBodyBuffer.toString("utf8")
         };
 
         return response;
@@ -457,9 +477,9 @@ export class OperationConsole {
 
             const response = this.useCorsProxy()
                 ? await this.sendFromProxy(request)
-                : await this.sendFromBrowser(request);
+                : await this.sendFromBrowser(url, method, headers, payload);
 
-            this.responseHeadersString(response.headers.map(x => `${x.name}: ${x.value}`).join("\n"));
+            this.responseHeadersString(response.headers);
 
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
 
@@ -471,23 +491,14 @@ export class OperationConsole {
 
             this.responseStatusCode(response.statusCode.toString());
             this.responseStatusText(responseStatusText);
-            this.responseBody(response.toText());
+            this.responseBody(response.body);
 
-            const responseHeaders = response.headers.map(x => {
-                const consoleHeader = new ConsoleHeader();
-                consoleHeader.name(x.name);
-                consoleHeader.value(x.value);
-                return consoleHeader;
-            });
-
-            const contentTypeHeader = responseHeaders.find((header) => header.name().toLowerCase() === KnownHttpHeaders.ContentType.toLowerCase());
-
-            if (contentTypeHeader) {
-                if (contentTypeHeader.value().toLowerCase().indexOf("json") >= 0) {
+            if (response.contentTypeHeader) {
+                if (response.contentTypeHeader.toLowerCase().search("json") !== -1) {
                     this.responseBody(Utils.formatJson(this.responseBody()));
                 }
 
-                if (contentTypeHeader.value().toLowerCase().indexOf("xml") >= 0) {
+                if (response.contentTypeHeader.toLowerCase().search("xml") !== -1) {
                     this.responseBody(Utils.formatXml(this.responseBody()));
                 }
             }
