@@ -8,7 +8,7 @@ import { ResponseContract } from "./response";
 export interface OperationContract {
 
     /**
-     * Operation identifier.
+     * Operation identifier. e.g. "create-resource"
      */
     id: string;
 
