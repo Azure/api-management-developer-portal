@@ -205,8 +205,15 @@ export class OperationList {
         this.totalPages(Math.ceil(pageOfOperations.count / Constants.defaultPageSize));
     }
 
+    public selectOperation(operation: Operation): void {
+        this.selectedOperationName(operation.name);
+
+        const operationUrl = this.routeHelper.getOperationReferenceUrl(this.selectedApiName(), operation.name, this.detailsPageUrl());
+        this.router.navigateTo(operationUrl);
+    }
+
     private selectFirstOperation(): void {
-        let operationName;
+        let operation: Operation;
 
         if (this.groupByTag()) {
             const groups = this.operationGroups();
@@ -215,7 +222,7 @@ export class OperationList {
                 return;
             }
 
-            operationName = groups[0].items[0].name;
+            operation = groups[0].items[0];
         }
         else {
             const operations = this.operations();
@@ -224,13 +231,10 @@ export class OperationList {
                 return;
             }
 
-            operationName = operations[0].name;
+            operation = operations[0];
         }
 
-        this.selectedOperationName(operationName);
-
-        const operationUrl = this.routeHelper.getOperationReferenceUrl(this.selectedApiName(), operationName, this.detailsPageUrl());
-        this.router.navigateTo(operationUrl);
+        this.selectOperation(operation);
     }
 
     public getReferenceUrl(operation: Operation): string {
