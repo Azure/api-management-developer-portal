@@ -586,6 +586,10 @@ export function getDefaultButtonStyleDefinition(): ComponentStyleDefinition {
         displayName: "Button",
         plugins: ["background", "typography", "states", "shadow", "size", "margin", "border", "padding"],
         defaults: {
+            allowedStates: [
+                "active",
+                "disabled"
+            ],
             background: {
                 colorKey: "colors/defaultBg"
             },
@@ -609,6 +613,13 @@ export function getDefaultButtonStyleDefinition(): ComponentStyleDefinition {
                     width: "1",
                     style: "solid",
                     colorKey: "colors/default"
+                }
+            },
+            states: {
+                disabled: {
+                    background: {
+                        colorKey: "colors/HUebs"
+                    }
                 }
             }
         }

@@ -32,11 +32,7 @@ export class ReportsHandlers implements IWidgetHandler {
                     displayName: "Reports",
                     plugins: ["background", "margin", "padding"],
                     components: {
-                        lastHourButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
-                        todayButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
-                        sevenDaysButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
-                        thirtyDaysButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
-                        ninetyDaysButton: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
+                        button: DefaultStyleDefinitions.getDefaultButtonStyleDefinition(),
                         titleText: DefaultStyleDefinitions.getWidgetTextStyleDefinition(),
                         tablePresetHead: DefaultStyleDefinitions.getTableHeadCellStyleDefinition(),
                         tablePresetRow: DefaultStyleDefinitions.getTableRowCellStyleDefinition(),
