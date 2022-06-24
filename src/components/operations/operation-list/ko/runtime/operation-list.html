@@ -51,7 +51,7 @@
     <!-- /ko -->
 
     <!-- ko ifnot: working -->
-    <div class="animation-fade-in" role="listbox" data-bind="listbox: {}"">
+    <div class="animation-fade-in" role="listbox" aria-label="List of operations" data-bind="listbox: {}">
         <!-- ko if: groupByTag -->
 
         <!-- ko foreach: { data: operationGroups, as: 'group' } -->
@@ -90,7 +90,7 @@
     <div class="d-block flex-item flex-grow animation-fade-in">
         <!-- ko ifnot: apiType() === 'graphql' -->
         <!-- ko if: operations -->
-        <div class="list" role="listbox" data-bind="listbox: {}">
+        <div class="list" role="listbox" aria-label="List of operations" data-bind="listbox: {}">
             <!-- ko foreach: { data: operations, as: 'item' } -->
             <div role="option" class="list-item table-preset-operations" data-bind="activate: $component.selectOperation, css: { 'selected': $component.selectedOperationName() === item.name }">
                 <div class="http-method" data-bind="attr: { 'data-method': method }"></div>
