@@ -22,7 +22,6 @@ import { Bag } from "@paperbits/common";
 import { Tag } from "../models/tag";
 import { IApiClient } from "../clients";
 
-//TODO:hh test all
 export class ApiService {
     constructor(private readonly apiClient: IApiClient) { }
 
@@ -144,8 +143,6 @@ export class ApiService {
         let query = `/apisByTags?$top=${take}&$skip=${skip}`;
 
         const odataFilterEntries = [];
-        //TODO:hh ask for it
-        // odataFilterEntries.push(`api/isCurrent eq true`);
 
         if (searchRequest) {
             if (searchRequest.tags && searchRequest.tags.length > 0) {

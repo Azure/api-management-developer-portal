@@ -13,7 +13,7 @@ import { IApiClient } from "../clients";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 
-//TODO:hh it is also in runtime module?
+//TODO:hh multiple modules?
 export class OAuthService {
     private environmentPromise: Promise<string>;
 
