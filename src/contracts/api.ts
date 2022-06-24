@@ -5,7 +5,7 @@ import { AuthenticationSettings } from "./authenticationSettings";
  */
 export interface ApiContract {
     /**
-   * API identifier.
+   * API identifier. e.g. "echo-api"
    */
     id: string;
 
