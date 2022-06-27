@@ -578,8 +578,6 @@ export function getTermsOfUseTextAreaDefinition(): ComponentStyleDefinition {
     return {
         displayName: "Terms Of Use",
         plugins: ["backround", "typography", "size", "border"]
-    }
-}
     };
 }
 
@@ -588,6 +586,10 @@ export function getDefaultButtonStyleDefinition(): ComponentStyleDefinition {
         displayName: "Button",
         plugins: ["background", "typography", "states", "shadow", "size", "margin", "border", "padding"],
         defaults: {
+            allowedStates: [
+                "active",
+                "disabled"
+            ],
             background: {
                 colorKey: "colors/defaultBg"
             },
@@ -612,6 +614,46 @@ export function getDefaultButtonStyleDefinition(): ComponentStyleDefinition {
                     style: "solid",
                     colorKey: "colors/default"
                 }
+            },
+            states: {
+                disabled: {
+                    background: {
+                        colorKey: "colors/HUebs"
+                    }
+                }
+            }
+        }
+    };
+}
+
+export function getTableRowCellStyleDefinition(): ComponentStyleDefinition {
+    return {
+        displayName: "Table Row Cell",
+        plugins: ["background", "typography", "border"],
+        defaults: {
+            typography: {
+                fontWeight: "normal",
+                colorKey: "colors/default"
+            }
+        }
+    };
+}
+
+export function getTableHeadCellStyleDefinition(): ComponentStyleDefinition {
+    return {
+        displayName: "Table Head Cell",
+        plugins: ["background", "typography", "border"],
+        defaults: {
+            border: {
+                bottom: {
+                    width: "1",
+                    style: "solid",
+                    colorKey: "colors/gridBorderColor"
+                }
+            },
+            typography: {
+                fontWeight: "bold",
+                colorKey: "colors/default"
             }
         }
     };
