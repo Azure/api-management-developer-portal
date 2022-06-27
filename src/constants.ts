@@ -263,6 +263,11 @@ export const managementApiVersion = "2021-04-01-preview";
  */
 export const portalHeaderName = "x-ms-apim-client";
 
+export enum DeveloperPortalTypes {
+    SelfHostedPortal = "self-hosted-portal",
+    Managed = "managed"
+}
+
 export const releaseNameFormat = "YYYYMMDDHHmm";
 
 export const genericHttpRequestError = "Server error. Unable to send request. Please try again later.";
