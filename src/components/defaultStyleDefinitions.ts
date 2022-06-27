@@ -199,14 +199,7 @@ export function getCardTextStyleDefinition(): ComponentStyleDefinition {
 export function getWidgetTextStyleDefinition(): ComponentStyleDefinition {
     return {
         displayName: "Text",
-        plugins: ["typography"],
-        defaults: {
-            typography: {
-                colorKey: "colors/default",
-                fontStyle: "normal",
-                fontWeight: "normal"
-            }
-        }
+        plugins: ["typography"]
     };
 }
 

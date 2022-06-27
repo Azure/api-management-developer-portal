@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import template from "./graphql-doc-details.html";
-import { Component, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, OnDestroyed, OnMounted } from "@paperbits/common/ko/decorators";
 import { GraphDocService } from "./graphql-doc-service";
 import { GraphqlFieldTypes, GraphqlTypesForDocumentation, GraphqlCustomFieldNames, GraphqlDefaultScalarTypes } from "../../../../../../constants";
 import * as GraphQL from "graphql";
@@ -16,7 +16,6 @@ import graphqlDocTable from "./graphql-doc-table.html";
 })
 
 export class GraphqlDetails {
-
     public graphSelected: ko.Observable<object>;
     public graphSelectedSchemaView: ko.Observable<string>;
     public graphSelectedType: ko.Observable<object>;
@@ -32,7 +31,8 @@ export class GraphqlDetails {
         interfaceType: ko.ObservableArray<string>
     };
     public allReferencesList: ko.ObservableArray<object>;
-    private referenceQueue: object[];
+    private referenceQueue: Array<object>;
+    private koSubscription: ko.Subscription;
 
 
     constructor(
@@ -44,17 +44,26 @@ export class GraphqlDetails {
         this.graphSelectedSchemaView = ko.observable<string>("table");
         this.graphSelectedType = ko.observable<object>();
         this.allReferencesList = ko.observableArray<object>([]);
+        this.onCurrentSelectedChange =this.onCurrentSelectedChange.bind(this);
     }
+
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        this.graphDocService.currentSelected.subscribe(this.onCurrentSelectedChange);
+        this.koSubscription = this.graphDocService.currentSelected.subscribe(this.onCurrentSelectedChange);
+        const selected = this.graphDocService.currentSelected();
+        this.onCurrentSelectedChange(selected);
+    }
+
+    @OnDestroyed()
+    public dispose(): void {
+        this.koSubscription?.dispose();
     }
 
     private onCurrentSelectedChange(selected: object): void {
         if (selected) {
             this.working(true);
-            this.graphSelected(this.graphDocService.currentSelected());
+            this.graphSelected(selected);
             this.allReferences = {
                 objectType: ko.observableArray<string>([]),
                 inputObjectType: ko.observableArray<string>([]),
@@ -78,8 +87,13 @@ export class GraphqlDetails {
         if (isSelected) {
             return this.graphSelected()["description"];
         }
-        else if (this.graphDocService.docGraphs[reference["type"]] && this.graphDocService.docGraphs[reference["type"]]()[reference["name"]]) {
-            return this.graphDocService.docGraphs[reference["type"]]()[reference["name"]].description;
+        else {
+            const referenceType = this.graphDocService.docGraphs[reference["type"]];
+            if (referenceType) {
+                const refName = reference["name"];
+                const ref = referenceType && referenceType()[refName];
+                return ref?.description;
+            }
         }
     }
 
@@ -137,12 +151,12 @@ export class GraphqlDetails {
     }
 
     public buildReferences(): void {
+        const selected = this.graphSelected();
+        const selectedType = this.fullType(selected);
 
-        this.graphSelectedType(this.fullType(this.graphSelected()));
-
-        this.addingReferences(this.graphSelectedType());
-
-        this.fieldIterator(this.graphSelected(), GraphqlFieldTypes.args);
+        this.graphSelectedType(selectedType);
+        this.addingReferences(selectedType);
+        this.fieldIterator(selected, GraphqlFieldTypes.args)
 
         while (this.referenceQueue.length > 0) {
             const head = this.referenceQueue.shift();
@@ -171,22 +185,24 @@ export class GraphqlDetails {
     }
 
     private addingReferences(fullType: object): void {
-        const savedReference = _.includes(this.allReferences[fullType["type"]](), fullType["name"]);
-        if (fullType["type"] == "scalarType") {
-            if (!this.isDefaultScalarType(fullType["name"]) && !savedReference) {
-                this.allReferences[fullType["type"]].push(fullType["name"]);
+        const typeName = fullType["name"];
+        const typeType = fullType["type"];
+        const savedReference = _.includes(this.allReferences[typeType](), typeName);
+        if (typeType == "scalarType") {
+            if (!this.isDefaultScalarType(typeName) && !savedReference) {
+                this.allReferences[typeType].push(typeName);
             }
         }
         else if (!savedReference) {
-            this.allReferences[fullType["type"]].push(fullType["name"]);
-            if (fullType["type"] != "enumType") {
+            this.allReferences[typeType].push(typeName);
+            if (typeType != "enumType") {
                 this.referenceQueue.push(fullType);
             }
         }
     }
 
     private isDefaultScalarType(name: string): boolean {
-        return _.includes(_.values(GraphqlDefaultScalarTypes), name);
+        return _.includes(GraphqlDefaultScalarTypes, name);
     }
 
     private convertToList(references: object): object[] {
@@ -210,11 +226,15 @@ export class GraphqlDetails {
         return GraphqlTypesForDocumentation[type];
     }
 
-    public referenceFieldList(reference: object): object[] {
+    public referenceFieldList(reference: object): Array<object> {
         const type = reference["type"];
         const name = reference["name"];
-        if (this.graphDocService.docGraphs[type] && this.graphDocService.docGraphs[type]()[name]) {
-            const graph = this.graphDocService.docGraphs[type]()[name];
+        const graphType = this.graphDocService.docGraphs[type];
+        if (graphType) {
+            const graph = graphType()[name];
+            if (!graph) {
+                return [];
+            }
             if (type == "inputObjectType" || type == "objectType" || type == "interfaceType") {
                 return this.fieldValues(graph[GraphqlFieldTypes.fields]);
             } else if (type == "enumType") {
@@ -226,7 +246,8 @@ export class GraphqlDetails {
     }
 
     private getReferenceUrl(definition: string): string {
-        return this.graphDocService.routeHelper.getGraphDefinitionReferenceId(this.graphDocService.selectedApiName(), this.graphSelected()[GraphqlCustomFieldNames.type](), this.graphSelected()["name"], definition);
+        const selected = this.graphSelected();
+        return this.graphDocService.routeHelper.getGraphDefinitionReferenceId(this.graphDocService.selectedApiName(), selected[GraphqlCustomFieldNames.type](), selected['name'], definition);
     }
 
     public switchToTable(schemaView: ko.Observable): void {
@@ -241,7 +262,7 @@ export class GraphqlDetails {
         if (!graph) {
             graph = this.graphDocService.docGraphs[reference["type"]]()[reference["name"]];
         }
-        const location = graph?.astNode?.loc; 
-        return this.graphDocService.content().substring(location?.start, location?.end);
+        const location = graph?.astNode?.loc;
+        return location && this.graphDocService.content().substring(location.start, location.end);
     }
 }
