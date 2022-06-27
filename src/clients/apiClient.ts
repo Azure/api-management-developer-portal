@@ -43,7 +43,7 @@ export default abstract class ApiClient implements IApiClient {
             throw new Error(`Backend API URL ("${Constants.SettingNames.backendUrl}") setting is missing in configuration file.`);
         }
 
-        this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || "self-hosted-portal";
+        this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || Constants.DeveloperPortalTypes.SelfHostedPortal;
         const managementApiAccessToken = settings[Constants.SettingNames.managementApiAccessToken];
 
         if (managementApiAccessToken) {
