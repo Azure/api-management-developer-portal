@@ -21,9 +21,11 @@ import { TagGroup } from "../models/tagGroup";
 import { Bag } from "@paperbits/common";
 import { Tag } from "../models/tag";
 import { IApiClient } from "../clients";
+import { UsersService } from "./usersService";
 
 export class ApiService {
-    constructor(private readonly apiClient: IApiClient) { }
+    constructor(private readonly apiClient: IApiClient,
+        private readonly usersService: UsersService) { }
 
     /**
      * Returns APIs matching search request (if specified).
@@ -159,7 +161,6 @@ export class ApiService {
         if (odataFilterEntries.length > 0) {
             query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
         }
-
         const pageOfApiTagResources = await this.apiClient.get<PageContract<ApiTagResourceContract>>(query, [await this.apiClient.getPortalHeader("getApisByTags")]);
         const page = new Page<TagGroup<Api>>();
         const tagGroups: Bag<TagGroup<Api>> = {};
@@ -225,7 +226,9 @@ export class ApiService {
 
         apiResourceUri += `?expandApiVersionSet=true`; // TODO: doesn't work in non-ARM resources
 
-        const apiContract = await this.apiClient.get<ApiContract>(apiResourceUri, [await this.apiClient.getPortalHeader("getApi")]);
+        //TODO:hh which token to be used? what about the token we use in dev portal backend? it gets forbidden. (ask alexander)
+        const userId = await this.usersService.getCurrentUserId();
+        const apiContract = await this.apiClient.get<ApiContract>(Utils.ensureUserPrefixed(apiResourceUri, userId), [await this.apiClient.getPortalHeader("getApi")]);
 
         if (!apiContract) {
             return null;

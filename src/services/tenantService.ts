@@ -4,6 +4,7 @@ import { IApiClient } from "../clients";
 /**
  * A service for management operations with API Management tenant.
  */
+//TODO:hh multiple modules? (ask alexander/igor)
 //TODO:hh couldnt find how to convert
 export class TenantService {
     constructor(private readonly apiClient: IApiClient) { }

@@ -8,7 +8,7 @@ import { IApiClient } from "../clients";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 
-//TODO:hh multiple modules?
+//TODO:hh multiple modules? (ask alexander/igor)
 export class ProvisionService {
     constructor(
         private readonly httpClient: HttpClient,
