@@ -39,7 +39,7 @@ import { CustomHtmlPublishModule } from "./components/custom-html/customHtml.pub
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
 import { staticDataEnvironment } from "./../environmentConstants"
-import DataApiClient from "./clients/dataApiClient";
+import { MapiClient } from "./clients";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -74,7 +74,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("router", StaticRouter);
         injector.bindSingleton("authenticator", StaticAuthenticator);
-        injector.bindSingleton("apiClient", DataApiClient);
+        injector.bindSingleton("apiClient", MapiClient);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindSingleton("logger", ConsoleLogger);

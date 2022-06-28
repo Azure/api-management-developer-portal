@@ -13,7 +13,7 @@ import { IApiClient } from "../clients";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 
-//TODO:hh multiple modules?
+//TODO:hh multiple modules? (ask alexander/igor)
 export class OAuthService {
     private environmentPromise: Promise<string>;
 

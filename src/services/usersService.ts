@@ -256,7 +256,7 @@ export class UsersService {
 
         return userId;
     }
-    //TODO:hh we only have create user with userId?
+    //TODO:hh we only have create user with userId, but here we use without it. 
     public async createSignupRequest(signupRequest: MapiSignupRequest): Promise<void> {
         await this.apiClient.post("/users", [await this.apiClient.getPortalHeader("createSignupRequest")], signupRequest);
     }

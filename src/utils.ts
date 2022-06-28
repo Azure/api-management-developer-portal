@@ -55,6 +55,20 @@ export class Utils {
         return url;
     }
 
+    /**
+     * Some resources are available for guests and users. i.e /apis and /users/{userId}/apis
+     * Depending on authorization, we need to prefix users resource before requests.
+     * @param query query to be formatted.
+     * @param userId user identifier to be prefixed. i.e. /users/123456789
+     */
+    public static ensureUserPrefixed(query: string, userId: string): string {
+        if (!query.startsWith("/users") && !!userId) {
+            return (query.startsWith("/") ? userId : this.ensureTrailingSlash(userId)) + query;
+        }
+
+        return query;
+    }
+
     public static ensureTrailingSlash(url: string): string {
         if (!url.endsWith("/")) {
             url = url + "/";
