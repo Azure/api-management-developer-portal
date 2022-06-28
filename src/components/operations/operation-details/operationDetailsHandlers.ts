@@ -1,6 +1,7 @@
 ﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { StyleDefinition } from "@paperbits/common/styles";
 import { OperationDetailsModel } from "./operationDetailsModel";
+import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
 
 export class OperationDetailsHandlers implements IWidgetHandler {
     public async getWidgetOrder(): Promise<IWidgetOrder> {
@@ -23,6 +24,30 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                     displayName: "Try it button background",
                     defaults: {
                         value: "green"
+                    }
+                },
+                borderColor: {
+                    displayName: "Input border color",
+                    defaults: {
+                        value: "#505050"
+                    }
+                },
+                consoleBackground: {
+                    displayName: "Test Console Background",
+                    defaults: {
+                        value: "#fafafa"
+                    }
+                },
+                consoleHighlightBackground: {
+                    displayName: "Test Console Highlight Background",
+                    defaults: {
+                        value: "#f2f2f2"
+                    }
+                },
+                mutedTextColor:{
+                    displayName: "Muted Text Color",
+                    defaults:{
+                        value: "#d1c8b2"
                     }
                 }
             },
@@ -75,6 +100,81 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                                             colorKey: "colors/tryItColor",
                                         }
                                     }
+                                }
+                            }
+                        },
+                        sendButton: DefaultStyleDefinitions.getButtonStyleDefinition(),
+                        connectButton: DefaultStyleDefinitions.getButtonStyleDefinition(),
+                        iconButton: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
+                        collapseButton: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
+                        closeButton: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
+                        refreshButton: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
+                        codeSnippetCommand: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
+                        uploadButton: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
+                        addButton: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
+                        revealButton: {
+                            displayName: "Button",
+                            plugins: ["typography", "states", "border", "background"],
+                            defaults: {
+                                allowedStates: [
+                                    "hover",
+                                    "focus",
+                                    "active",
+                                    "disabled"
+                                ],
+                                border: {
+                                    bottom: {
+                                        width: "1px",
+                                        style: "solid",
+                                        colorKey: "colors/borderColor"
+                                    },
+                                    top: {
+                                        width: "1px",
+                                        style: "solid",
+                                        colorKey: "colors/borderColor"
+                                    },
+                                    left: {
+                                        width: "1px",
+                                        style: "solid",
+                                        colorKey: "colors/borderColor"
+                                    },
+                                    right: {
+                                        width: "1px",
+                                        style: "solid",
+                                        colorKey: "colors/borderColor"
+                                    },
+
+                                },
+                            }
+                        },
+                        consoleText: DefaultStyleDefinitions.getConsoleWidgetTextStyleDefinition(),
+                        consoleTitle: DefaultStyleDefinitions.getWidgetTitleStyleDefinition(),
+                        input: DefaultStyleDefinitions.getConsoleInputStyleDefinition(),
+                        combobox: DefaultStyleDefinitions.getComboboxStyleDefinition(),
+                        operationConsole: {
+                            displayName: "Test Console",
+                            plugins: ["background"],
+                            defaults: {
+                                background: {
+                                    colorKey: "colors/consoleBackground"
+                                }
+                            }
+                        },
+                        panelHighlight: {
+                            displayName: "Console Panel HighLight",
+                            plugins: ["background"],
+                            defaults: {
+                                background: {
+                                    colorKey: "colors/consoleHighlightBackground"
+                                }
+                            }
+                        },
+                        textMuted:{
+                            displayName: "Muted Text",
+                            plugins:["typography"],
+                            defaults:{
+                                typography:{
+                                    colorKey: "colors/mutedTextColor"
                                 }
                             }
                         }

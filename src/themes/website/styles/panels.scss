@@ -15,13 +15,8 @@
         padding: 10px 20px;
     }
 
-    &.panel-dark {
-        background-color: #fafafa;
-
-        &.panel-highlight {
-            background-color: $panel-bg-color-highlight;
-        }
-
+    &.panel-dark { 
+        
         .list-group-item {
             border-top: 1px solid #3b3e4c;
         }
@@ -94,10 +89,6 @@
             .form-control {
                 flex: 1;
             }
-        }
-
-        a {
-            color: $default-heading-color;
         }
     }
 }

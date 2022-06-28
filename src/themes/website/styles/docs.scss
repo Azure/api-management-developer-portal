@@ -191,7 +191,6 @@ validation-summary {
 }
 
 operation-console {
-    background: #fafafa;
     min-height: 100%;
     border-left: 1px solid #dee2e6;
 
@@ -222,8 +221,6 @@ oauth-server-configuration {
         }
 
         .code-snippet-command {
-            background: none;
-            border: none;
             cursor: pointer;
 
             &:hover {
