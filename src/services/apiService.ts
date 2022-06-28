@@ -227,7 +227,8 @@ export class ApiService {
         apiResourceUri += `?expandApiVersionSet=true`; // TODO: doesn't work in non-ARM resources
 
         //TODO:hh which token to be used? what about the token we use in dev portal backend? it gets forbidden. (ask alexander)
-        //TODO:hh is this way of providing the users resource looks fine? I thought it should be clear to for self-hosted customers, I could also hide it.
+        //TODO:hh is this way of providing the users resource looks fine? I will app for the rest of the requests If so ...
+        //TODO:hh ... I thought it should be clear to for self-hosted customers, I could also hide it.
         const userId = await this.usersService.getCurrentUserId();
         const apiContract = await this.apiClient.get<ApiContract>(Utils.ensureUserPrefixed(apiResourceUri, userId), [await this.apiClient.getPortalHeader("getApi")]);
 
