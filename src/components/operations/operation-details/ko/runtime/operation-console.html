@@ -394,7 +394,7 @@
 
         <div class="code-snippet">
             <div class="code-snippet-heading">
-                <button class="code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
+                <button class="console-code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
                     aria-label="Toggle secrets">
                     <!-- ko if: $component.secretsRevealed  -->
                     <i class="icon-emb icon-emb-eye-fill"></i> Hide
@@ -403,8 +403,8 @@
                     <i class="icon-emb icon-emb-eye"></i> Show
                     <!-- /ko -->
                 </button>
-                <button class="code-snippet-command" data-bind="copyToClipboard: $component.getPlainTextCodeSample"
-                    aria-label="Copy to clipboard">
+                <button class="console-code-snippet-command"
+                    data-bind="copyToClipboard: $component.getPlainTextCodeSample" aria-label="Copy to clipboard">
                     <i class="icon-emb icon-emb-duplicate"></i> Copy
                 </button>
             </div>
@@ -439,7 +439,7 @@
 
         <div class="code-snippet">
             <div class="code-snippet-heading">
-                <button class="code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
+                <button class="console- code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
                     aria-label="Toggle secrets">
                     <!-- ko if: $component.secretsRevealed  -->
                     <i class="icon-emb icon-emb-eye-fill"></i> Hide
@@ -448,8 +448,8 @@
                     <i class="icon-emb icon-emb-eye"></i> Show
                     <!-- /ko -->
                 </button>
-                <button class="code-snippet-command" data-bind="copyToClipboard: $component.getPlainTextCodeSample"
-                    aria-label="Copy to clipboard">
+                <button class="console- code-snippet-command"
+                    data-bind="copyToClipboard: $component.getPlainTextCodeSample" aria-label="Copy to clipboard">
                     <i class="icon-emb icon-emb-duplicate"></i> Copy
                 </button>
             </div>
@@ -498,8 +498,8 @@
         <!-- ko if: wsLogItems().length > 0 -->
         <div class="code-snippet">
             <div class="code-snippet-heading">
-                <button class="code-snippet-command" data-bind="click: $component.clearLogs, disabled: wsSending"
-                    aria-label="Clear logs">
+                <button class="console- code-snippet-command"
+                    data-bind="click: $component.clearLogs, disabled: wsSending" aria-label="Clear logs">
                     <i class="icon-emb icon-emb-trash"></i> Clear
                 </button>
             </div>

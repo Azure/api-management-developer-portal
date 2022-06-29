@@ -721,7 +721,7 @@ export function getConsoleInputStyleDefinition(): ComponentStyleDefinition {
     };
 }
 
-export function getConsoleButtonStyleDefinition(): ComponentStyleDefinition {
+export function getIconButtonStyleDefinition(): ComponentStyleDefinition {
     return {
         displayName: "Button",
         plugins: ["typography", "states", "border", "background"],

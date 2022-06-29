@@ -44,17 +44,29 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                         value: "#f2f2f2"
                     }
                 },
-                mutedTextColor:{
+                mutedTextColor: {
                     displayName: "Muted Text Color",
-                    defaults:{
+                    defaults: {
                         value: "#d1c8b2"
                     }
-                }
+                },
+                tagButtonColor: {
+                    displayName: "Tag button color",
+                    defaults: {
+                        value: "#555"
+                    }
+                },
+                codeSnippetHoverColor: {
+                    displayName: "Code Snippet Hover Color",
+                    defaults: {
+                        value: "#ccc"
+                    }
+                },
             },
             components: {
                 operationDetails: {
                     displayName: "Operation Details",
-                    plugins: ["margin", "padding", "typography", "background"],
+                    plugins: ["margin", "padding", "background"],
                     components: {
                         tryItButton: {
                             displayName: "Try it button",
@@ -103,15 +115,87 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                                 }
                             }
                         },
+                        titleText: DefaultStyleDefinitions.getWidgetTextStyleDefinition(),
+                        widgetText: DefaultStyleDefinitions.getWidgetTextStyleDefinition(),
+                        tagCard: DefaultStyleDefinitions.getTagCardStyleDefinition(),
+                        tablePresetHead: DefaultStyleDefinitions.getTableHeadCellStyleDefinition(),
+                        tablePresetRow: DefaultStyleDefinitions.getTableRowCellStyleDefinition(),
+                        codeSnippetCommand: {
+                            displayName: "Button",
+                            plugins: ["typography", "states", "border", "background"],
+                            defaults: {
+                                allowedStates: [
+                                    "hover",
+                                    "focus",
+                                    "active",
+                                    "disabled"
+                                ],
+                                typography: {
+                                    colorKey: "colors/default"
+                                },
+                                border: {
+                                    bottom: {
+                                        width: 0
+                                    },
+                                    left: {
+                                        width: 1,
+                                        style: "solid",
+                                        colorKey: "colors/HUebs"
+                                    },
+                                    top: {
+                                        width: 0
+                                    },
+                                    right: {
+                                        width: 0
+                                    }
+                                }
+                            }
+                        },
+
                         sendButton: DefaultStyleDefinitions.getButtonStyleDefinition(),
                         connectButton: DefaultStyleDefinitions.getButtonStyleDefinition(),
-                        iconButton: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
-                        collapseButton: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
-                        closeButton: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
-                        refreshButton: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
-                        codeSnippetCommand: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
-                        uploadButton: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
-                        addButton: DefaultStyleDefinitions.getConsoleButtonStyleDefinition(),
+                        iconButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
+                        collapseButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
+                        closeButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
+                        refreshButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
+                        consoleCodeSnippetCommand: {
+                            displayName: "Button",
+                            plugins: ["typography", "states", "border", "background"],
+                            defaults: {
+                                allowedStates: [
+                                    "hover",
+                                    "focus",
+                                    "active",
+                                    "disabled"
+                                ],
+                                typography: {
+                                    colorKey: "colors/default"
+                                },
+                                border: {
+                                    bottom: {
+                                        width: 0
+                                    },
+                                    left: {
+                                        width: 0
+                                    },
+                                    top: {
+                                        width: 0
+                                    },
+                                    right: {
+                                        width: 0
+                                    }
+                                },
+                                states: {
+                                    hover: {
+                                        background: {
+                                            colorKey: "colors/codeSnippetHoverColor"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        uploadButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
+                        addButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         revealButton: {
                             displayName: "Button",
                             plugins: ["typography", "states", "border", "background"],
@@ -169,11 +253,11 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                                 }
                             }
                         },
-                        textMuted:{
+                        textMuted: {
                             displayName: "Muted Text",
-                            plugins:["typography"],
-                            defaults:{
-                                typography:{
+                            plugins: ["typography"],
+                            defaults: {
+                                typography: {
                                     colorKey: "colors/mutedTextColor"
                                 }
                             }

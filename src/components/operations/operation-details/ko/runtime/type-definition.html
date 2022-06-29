@@ -1,24 +1,27 @@
 <!-- ko if: $component.anchor -->
-<h4 class="text-truncate flex-grow"
+<h4 class="text-truncate flex-grow title-text"
     data-bind="text: $component.name, attr: { id: $component.getReferenceId(definition) }">
 </h4>
 <!-- /ko -->
 <!-- ko ifnot: $component.anchor -->
-<h4 class="text-truncate flex-grow" data-bind="text: $component.name"></h4>
+<h4 class="text-truncate flex-grow title-text" data-bind="text: $component.name"></h4>
 <!-- /ko -->
 
 <!-- ko if: $component.description -->
-<p data-bind="markdown: $component.description"></p>
+<p class="widget-text content-inherit-color content-inherit-font-weight content-inherit-font-style"
+    data-bind="markdown: $component.description"></p>
 <!-- /ko -->
 
 <ul class="nav nav-pills" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button role="tab" class="nav-link active" title="Table view" data-bind="activate: $component.switchToTable, css: { active: $component.schemaView() === 'table' }">
+    <li class="nav-item" role="presentation">
+        <button role="tab" class="nav-link active" title="Table view"
+            data-bind="activate: $component.switchToTable, css: { active: $component.schemaView() === 'table' }">
             <i class="icon-emb icon-emb-list"></i>
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button role="tab" class="nav-link" title="Raw schema view" data-bind="activate: $component.switchToRaw, css: { active: $component.schemaView() === 'raw' }">
+        <button role="tab" class="nav-link" title="Raw schema view"
+            data-bind="activate: $component.switchToRaw, css: { active: $component.schemaView() === 'raw' }">
             <i class="icon-emb icon-emb-brackets"></i>
         </button>
     </li>
