@@ -127,9 +127,6 @@ ko.bindingHandlers["minMaxAvgChart"] = {
             .attr("fill", "none")
             .attr("stroke-width", 2);
 
-
-
-
         for (let i = 0; i < dimensions.length; i++) {
             const dimension = dimensions[i];
 
