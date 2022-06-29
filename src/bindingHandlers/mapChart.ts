@@ -44,7 +44,7 @@ ko.bindingHandlers["mapChart"] = {
         const path = d3.geoPath().projection(projection);
 
         const svg = d3.select(element).append("svg");
-        
+
         const chartTitle = allBindings[chartTitleAttribute];
         const chartDesc = allBindings[chartDescAttribute];
 
@@ -94,20 +94,20 @@ ko.bindingHandlers["mapChart"] = {
         //     .attr("class", "graticule")
         //     .attr("d", path);
 
-        const onMouseOver = (datum, index): void => {
-            d3.selectAll(".subunit-label.la" + datum.id + datum.properties.name.replace(/[ \.#']+/g, ""))
+        const onMouseOver = (event, datum): void => {
+            d3.selectAll(".subunit-label.la" + element.id + datum.id + datum.properties.name.replace(/[ \.#']+/g, ""))
                 .style("display", "inline-block");
 
-            d3.selectAll(".subunit.ca" + datum.id)
+            d3.selectAll(".subunit.ca" + element.id + datum.id)
                 .style("stroke", "#8e8e8e")
                 .style("stroke-width", "1px");
         };
 
-        const onMouseOut = (datum: any, index: number): void => {
-            d3.selectAll(".subunit-label.la" + datum.id + datum.properties.name.replace(/[ \.#']+/g, ""))
+        const onMouseOut = (event: any, datum): void => {
+            d3.selectAll(".subunit-label.la" + element.id + datum.id + datum.properties.name.replace(/[ \.#']+/g, ""))
                 .style("display", "none");
 
-            d3.selectAll(".subunit.ca" + datum.id)
+            d3.selectAll(".subunit.ca" + element.id + datum.id)
                 .style("fill", heatColor(datum))
                 .style("stroke", "none");
         };
@@ -160,10 +160,10 @@ ko.bindingHandlers["mapChart"] = {
 
         const subunits = topojson.feature(worldMapShapes, worldMapShapes.objects.subunits);
         subunits.features = subunits.features.filter((d) => d.id !== "ATA");
-        
+
         minHeat = d3.min(subunits.features, (d) => d.properties.heat);
         const maxHeat = d3.max(subunits.features, (d) => d.properties.heat);
-        
+
         let heats = subunits.features.map((d) => { return d.properties.heat; });
         heats = heats.filter((d) => d).sort(d3.ascending);
 
@@ -173,14 +173,14 @@ ko.bindingHandlers["mapChart"] = {
             .data(subunits.features).enter();
 
         countries.insert("path", ".graticule")
-            .attr("class", (record) => "subunit ca" + record.id)
+            .attr("class", (record) => "subunit ca" + element.id + record.id)
             .style("fill", heatColor)
             .attr("d", path)
             .on("mouseover", onMouseOver)
             .on("mouseout", onMouseOut);
 
         countries.append("text")
-            .attr("class", (record) => "subunit-label la" + record.id + record.properties.name.replace(/[ \.#']+/g, ""))
+            .attr("class", (record) => "subunit-label la" + element.id + record.id + record.properties.name.replace(/[ \.#']+/g, ""))
             .attr("transform", (record) => "translate(" + (width - (5 * record.properties.name.length)) + "," + (15) + ")")
             .attr("dy", ".35em")
             // .attr("filter", "url(#tooltip)")
