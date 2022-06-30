@@ -17,7 +17,6 @@ export class DevPortalLogger implements Logger {
         private readonly settingsProvider: ISettingsProvider
     ) {
         this.clientVersion = version;
-        console.log(version);
     }
 
     public async trackSession(properties?: object): Promise<void> {
