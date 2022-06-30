@@ -6,6 +6,7 @@ import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ISiteService } from "@paperbits/common/sites";
 import { IAuthenticator } from "../../authentication";
+import { DeveloperPortalType, SettingNames } from "../../constants";
 
 const startupError = `Unable to start the portal`;
 
@@ -29,6 +30,13 @@ export class App {
         if (!settings["managementApiUrl"]) {
             this.viewManager.addToast(startupError, `Management API URL is missing. See setting <i>managementApiUrl</i> in the configuration file <i>config.design.json</i>`);
             return;
+        }
+
+        if (!settings["backendUrl"]) {
+            const developerPortalType = settings[SettingNames.developerPortalType] || DeveloperPortalType.selfHosted;
+            if (developerPortalType === DeveloperPortalType.selfHosted) {
+                this.viewManager.addToast("Warning", `Backend URL is missing. See setting <i>backendUrl</i> in the configuration file <i>config.design.json</i>. OAuth authentication in Test console and Captcha widget requires <i>backendUrl</i> setting in config.runtime.json, pointing to your APIM service developer portal URL. In addition, it requires the origin ${location.origin} to be specified in CORS settings.`);
+            }            
         }
 
         try {
