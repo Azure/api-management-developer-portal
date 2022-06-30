@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from 'uuid';
 import * as Constants from "./../constants";
 import { version } from "./../../package.json";
 
-
 export class DevPortalLogger implements Logger {
     private clientVersion: string;
     private backendUrl: string;
@@ -69,7 +68,6 @@ export class DevPortalLogger implements Logger {
             headers: headers,
             body: JSON.stringify(devPortalEvent.toJson())
         };
-        console.log(request);
         this.httpClient.send(request);
     }
 
