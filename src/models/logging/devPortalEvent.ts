@@ -1,5 +1,3 @@
-import { JSONObject } from "puppeteer";
-
 export class DevPortalEvent {
     /**
      * Event type.
@@ -26,7 +24,7 @@ export class DevPortalEvent {
      */
     public activityId: string;
 
-    public toJson(): JSONObject{
+    public toJson(): object{
         return {
             "eventType": this.eventType,
             "message": this.message,
