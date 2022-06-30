@@ -3,7 +3,7 @@ import * as validation from "knockout.validation";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
-import { RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
+import { downloadableTypes, RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
 import { Api } from "../../../../../models/api";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
@@ -25,6 +25,8 @@ import { LogItem, WebsocketClient } from "./websocketClient";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ConsoleRepresentation } from "../../../../../models/console/consoleRepresentation";
 import { cloneDeep } from "lodash";
+import { saveAs } from "file-saver";
+import { getExtension } from "mime";
 
 @Component({
     selector: "operation-console",
@@ -373,24 +375,53 @@ export class OperationConsole {
         this.sendRequest();
     }
 
-    public async sendFromBrowser<T>(url, method, headers, body) {
-        const stringifiedHeaders = headers.map(header => `${header.name()}: ${header.value()}`);
+    public async sendFromBrowser<T>(url: string, method: string, headers: ConsoleHeader[], body: any, operationName: string) {
+        const stringifiedHeaders: object = headers.map(header => `${header.name()}: ${header.value()}`);
         const response = await fetch(url, {
             method: method,
-            headers: {...stringifiedHeaders},
+            headers: { ...stringifiedHeaders },
             body: body
         });
 
         let headersString = '';
         response.headers.forEach((value, name) => headersString += `${name}: ${value}\n`);
 
+        const contentTypeHeaderValue = response.headers.get(KnownHttpHeaders.ContentType);
+
         const responseReturn: any = {
             headers: headersString,
-            contentTypeHeader: response.headers.get(KnownHttpHeaders.ContentType),
+            contentTypeHeader: contentTypeHeaderValue,
             statusCode: response.status,
-            statusText: response.statusText,
-            body: await response.text()
+            statusText: response.statusText
         };
+
+        if (downloadableTypes.some(type => contentTypeHeaderValue.includes(type))) {
+            const reader = response.body.getReader();
+            const chunks = [];
+
+            while (true) {
+                const { done, value } = await reader.read();
+          
+                if (done) {
+                    break;
+                }
+
+                chunks.push(value); 
+            }
+
+            const blob = new Blob(chunks, { type: contentTypeHeaderValue });
+            const fileExtension = getExtension(contentTypeHeaderValue);
+
+            if (fileExtension) {
+                saveAs(blob, operationName + '.' + fileExtension);
+            } else if (contentTypeHeaderValue.includes('zip')) {
+                saveAs(blob, operationName + '.zip');
+            } else {
+                responseReturn.body = "Unknown file format, couldn't save the file.";
+            }
+        } else {
+            responseReturn.body = await response.text();
+        }
 
         return responseReturn;
     }
@@ -477,7 +508,7 @@ export class OperationConsole {
 
             const response = this.useCorsProxy()
                 ? await this.sendFromProxy(request)
-                : await this.sendFromBrowser(url, method, headers, payload);
+                : await this.sendFromBrowser(url, method, headers, payload, consoleOperation.name);
 
             this.responseHeadersString(response.headers);
 
