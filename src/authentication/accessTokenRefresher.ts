@@ -46,8 +46,6 @@ export class AccessTokenRefrsher {
                 url: `${backendUrl}${Utils.ensureLeadingSlash("/identity")}?api-version=${Constants.managementApiVersion}`,
                 headers: [{ name: "Authorization", value: accessToken.toString() }]
             });
-            //TODO:hh looks for a token in header, we do not return any in local, is there anything we should know?
-            //TODO:hh how to sign in? (ask igor)
             const accessTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
 
             if (!accessTokenHeader) {

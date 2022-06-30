@@ -6,6 +6,7 @@ import { IApiClient } from "../clients";
  */
 //TODO:hh multiple modules? (ask alexander/igor)
 //TODO:hh couldnt find how to convert
+//TODO:hh create another for data api, public settings
 export class TenantService {
     constructor(private readonly apiClient: IApiClient) { }
 

@@ -72,7 +72,6 @@ import { BackendService } from "./services/backendService";
 import DataApiClient from "./clients/dataApiClient";
 import { OAuthService } from "./services/oauthService";
 import { ProductService } from "./services/productService";
-import { ProvisionService } from "./services/provisioningService";
 import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
@@ -148,7 +147,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("routeHelper", RouteHelper);
         injector.bindSingleton("graphDocService", GraphDocService);
         injector.bindSingleton("userService", StaticUserService);
-        injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindSingleton("viewStack", ViewStack);
         injector.bindSingleton("sessionManager", DefaultSessionManager);

@@ -228,7 +228,7 @@ export class ApiService {
 
         //TODO:hh which token to be used? what about the token we use in dev portal backend? it gets forbidden. (ask alexander)
         //TODO:hh is this way of providing the users resource looks fine? I will app for the rest of the requests If so ...
-        //TODO:hh ... I thought it should be clear to for self-hosted customers, I could also hide it.
+        //TODO:hh ... I thought it should be clear to for self-hosted customers, I could also hide it. (ask alexander/maxim), check returning id for userId
         const userId = await this.usersService.getCurrentUserId();
         const apiContract = await this.apiClient.get<ApiContract>(Utils.ensureUserPrefixed(apiResourceUri, userId), [await this.apiClient.getPortalHeader("getApi")]);
 
