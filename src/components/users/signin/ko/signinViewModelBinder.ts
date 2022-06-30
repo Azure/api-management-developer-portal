@@ -6,20 +6,20 @@ import { TermsOfService } from "../../../../contracts/identitySettings";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { IdentityService } from "../../../../services";
 import { BackendService } from "../../../../services/backendService";
-import { TenantService } from "../../../../services/tenantService";
+import ITenantService from "../../../../services/ITenantService";
 import { SigninModel } from "../signinModel";
 import { SigninViewModel } from "./signinViewModel";
 
 
 export class SigninViewModelBinder implements ViewModelBinder<SigninModel, SigninViewModel> {
-    
-    constructor(
-        private readonly eventManager: EventManager, 
-        private readonly tenantService: TenantService,
-        private readonly backendService: BackendService,
-        private readonly identityService: IdentityService) {}
 
-    
+    constructor(
+        private readonly eventManager: EventManager,
+        private readonly tenantService: ITenantService,
+        private readonly backendService: BackendService,
+        private readonly identityService: IdentityService) { }
+
+
     public async getTermsOfService(): Promise<TermsOfService> {
         const identitySetting = await this.identityService.getIdentitySetting();
         return identitySetting.properties.termsOfService;
@@ -44,10 +44,10 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
         const params = {};
 
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
-        
+
         if (isDelegationEnabled) {
             const delegationParam = {};
-            delegationParam[DelegationParameters.ReturnUrl] =  "/";
+            delegationParam[DelegationParameters.ReturnUrl] = "/";
             const delegationUrl = await this.backendService.getDelegationUrl(DelegationAction.signIn, delegationParam);
 
             if (delegationUrl) {

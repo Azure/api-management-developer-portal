@@ -26,7 +26,7 @@ import { ResetPasswordModule } from "./components/users/reset-password/resetPass
 import { ConfirmPasswordModule } from "./components/users/confirm-password/ko/confirmPassword.module";
 import { ChangePasswordModule } from "./components/users/change-password/ko/changePassword.module";
 import { ReportsModule } from "./components/reports/ko/reports.module";
-import { TenantService } from "./services/tenantService";
+import { MapiTenantService } from "./services/mapiTenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/validationSummary.module";
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
@@ -66,7 +66,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ReportsModule());
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new CustomHtmlPublishModule());
-        injector.bindSingleton("tenantService", TenantService);
+        injector.bindSingleton("tenantService", MapiTenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("userService", StaticUserService);
         injector.bindSingleton("roleService", StaticRoleService);

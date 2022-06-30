@@ -1,4 +1,3 @@
-import { TenantService } from "./tenantService";
 import { expect } from "chai";
 import { describe, it } from "mocha";
 import { ConsoleLogger } from "@paperbits/common/logging";
@@ -7,6 +6,7 @@ import { DataApiClient } from "../clients";
 import { MockHttpClient, starterProduct } from "../../tests/mocks";
 import { StaticAuthenticator } from "../components/staticAuthenticator";
 import { StaticSettingsProvider } from "../components/staticSettingsProvider";
+import { DataTenantService } from "./dataTenantService";
 
 
 const settingsProvider = new StaticSettingsProvider({
@@ -26,7 +26,7 @@ describe("Product service", async () => {
             .reply(200, { value: [starterProduct] });
 
         const apiClient = new DataApiClient(httpClient, authenticator, settingsProvider);
-        const tenantService = new TenantService(apiClient);
+        const tenantService = new DataTenantService(apiClient);
 
         const productService = new ProductService(apiClient, tenantService);
         const products = await productService.getProducts();
@@ -43,7 +43,7 @@ describe("Product service", async () => {
             .reply(200, starterProduct);
 
         const apiClient = new DataApiClient(httpClient, authenticator, settingsProvider);
-        const tenantService = new TenantService(apiClient);
+        const tenantService = new DataTenantService(apiClient);
 
         const productService = new ProductService(apiClient, tenantService);
         const product = await productService.getProduct("/products/starter");

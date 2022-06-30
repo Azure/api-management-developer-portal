@@ -6,14 +6,14 @@ import { TermsOfService } from "../../../../contracts/identitySettings";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { IdentityService } from "../../../../services";
 import { BackendService } from "../../../../services/backendService";
-import { TenantService } from "../../../../services/tenantService";
+import ITenantService from "../../../../services/ITenantService";
 import { SignupModel } from "../signupModel";
 import { SignupViewModel } from "./signupViewModel";
 
 export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignupViewModel> {
 
     constructor(
-        private readonly tenantService: TenantService,
+        private readonly tenantService: ITenantService,
         private readonly backendService: BackendService,
         private readonly settingsProvider: ISettingsProvider,
         private readonly identityService: IdentityService) { }
@@ -40,7 +40,7 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
         if (isDelegationEnabled) {
             const delegationParam = {};
-            delegationParam[DelegationParameters.ReturnUrl] =  "/";
+            delegationParam[DelegationParameters.ReturnUrl] = "/";
 
             const delegationUrl = await this.backendService.getDelegationUrl(DelegationAction.signUp, delegationParam);
             if (delegationUrl) {
@@ -52,7 +52,7 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
         if (termsOfService.text) params["termsOfUse"] = termsOfService.text;
         if (termsOfService.consentRequired) params["isConsentRequired"] = termsOfService.consentRequired;
         if (termsOfService.enabled) params["termsEnabled"] = termsOfService.enabled;
-        
+
         if (Object.keys(params).length !== 0) {
             const runtimeConfig = JSON.stringify(params);
             viewModel.runtimeConfig(runtimeConfig);

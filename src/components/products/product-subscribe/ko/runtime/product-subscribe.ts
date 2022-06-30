@@ -7,7 +7,7 @@ import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
-import { TenantService } from "../../../../../services/tenantService";
+import ITenantService from "../../../../../services/ITenantService";
 import { DelegationParameters, DelegationActionPath } from "../../../../../contracts/tenantSettings";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
@@ -34,7 +34,7 @@ export class ProductSubscribe {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly tenantService: TenantService,
+        private readonly tenantService: ITenantService,
         private readonly productService: ProductService,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
@@ -48,14 +48,14 @@ export class ProductSubscribe {
         this.limitReached = ko.observable(false);
         this.working = ko.observable(true);
         this.isUserSignedIn = ko.observable(false);
-		this.showTermsByDefault = ko.observable(false);
+        this.showTermsByDefault = ko.observable(false);
 
         this.canSubscribe = ko.pureComputed((): boolean => {
             return (this.delegationEnabled || this.subscriptionName().length > 0) && ((this.termsOfUse() && this.consented()) || !!!this.termsOfUse());
         });
     }
-	
-	@Param()
+
+    @Param()
     public showTermsByDefault: ko.Observable<boolean>;
 
     @OnMounted()
@@ -69,7 +69,7 @@ export class ProductSubscribe {
         const userId = await this.usersService.getCurrentUserId();
         this.isUserSignedIn(!!userId);
 
-        try {						
+        try {
             this.showTermsOfUse(this.showTermsByDefault());
             this.working(true);
 
@@ -91,8 +91,8 @@ export class ProductSubscribe {
             this.termsOfUse(product.terms);
 
             if (product.terms) {
-				const termsLabel = this.showTermsByDefault() ? "Hide" : "Show";
-				this.showHideLabel(termsLabel);
+                const termsLabel = this.showTermsByDefault() ? "Hide" : "Show";
+                this.showHideLabel(termsLabel);
             }
 
             if (userId) {
