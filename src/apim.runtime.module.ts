@@ -73,7 +73,6 @@ import DataApiClient from "./clients/dataApiClient";
 import { OAuthService } from "./services/oauthService";
 import { ProductService } from "./services/productService";
 import { TagService } from "./services/tagService";
-import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
 import { ApimSettingsProvider } from "./configuration/apimSettingsProvider";
 import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
@@ -82,6 +81,7 @@ import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { OauthServerConfiguration } from "./components/operations/operation-details/ko/runtime/oauth-server-configuration";
 import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
 import { staticDataEnvironment } from "./../environmentConstants"
+import { DataTenantService } from "./services/dataTenantService";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -138,7 +138,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("resetPassword", ResetPassword);
         injector.bind("confirmPassword", ConfirmPassword);
         injector.bind("changePassword", ChangePassword);
-        injector.bindSingleton("tenantService", TenantService);
+        injector.bindSingleton("tenantService", DataTenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("aadService", AadService);
         injector.bindSingleton("apiClient", DataApiClient);

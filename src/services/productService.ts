@@ -4,12 +4,11 @@ import { Subscription } from "../models/subscription";
 import { Product } from "../models/product";
 import { SubscriptionContract, SubscriptionState } from "../contracts/subscription";
 import { ProductContract } from "../contracts/product";
-import { TenantService } from "../services/tenantService";
+import ITenantService from "../services/ITenantService";
 import { HttpHeader } from "@paperbits/common/http";
 import * as Constants from "../constants";
 import { Utils } from "../utils";
 import { SearchQuery } from "../contracts/searchQuery";
-import { SubscriptionSecrets } from "../contracts/subscriptionSecrets";
 import { ApiContract } from "../contracts/api";
 
 /**
@@ -18,7 +17,7 @@ import { ApiContract } from "../contracts/api";
 export class ProductService {
     constructor(
         private readonly apiClient: IApiClient,
-        private readonly tenantService: TenantService
+        private readonly tenantService: ITenantService
     ) { }
 
     /**

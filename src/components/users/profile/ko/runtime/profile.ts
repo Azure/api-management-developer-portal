@@ -7,7 +7,7 @@ import { Router } from "@paperbits/common/routing/router";
 import { User } from "../../../../../models/user";
 import { UsersService } from "../../../../../services/usersService";
 import { DelegationParameters, DelegationActionPath } from "../../../../../contracts/tenantSettings";
-import { TenantService } from "../../../../../services/tenantService";
+import ITenantService from "../../../../../services/ITenantService";
 import { pageUrlChangePassword } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
 import { ValidationReport } from "../../../../../contracts/validationReport";
@@ -34,7 +34,7 @@ export class Profile {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly tenantService: TenantService,        
+        private readonly tenantService: ITenantService,
         private readonly eventManager: EventManager,
         private readonly router: Router) {
         this.user = ko.observable();
@@ -127,7 +127,7 @@ export class Profile {
         if (!this.isEdit()) {
             return;
         }
-        
+
         this.cleanValidationErrors();
         this.working(true);
 

@@ -16,7 +16,7 @@ import { Revision } from "../../../../../models/revision";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 import { TemplatingService } from "../../../../../services/templatingService";
-import { TenantService } from "../../../../../services/tenantService";
+import ITenantService from "../../../../../services/ITenantService";
 import { Utils } from "../../../../../utils";
 import template from "./operation-console.html";
 import { ResponsePackage } from "./responsePackage";
@@ -70,7 +70,7 @@ export class OperationConsole {
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly tenantService: TenantService,
+        private readonly tenantService: ITenantService,
         private readonly httpClient: HttpClient,
         private readonly routeHelper: RouteHelper,
         private readonly settingsProvider: ISettingsProvider

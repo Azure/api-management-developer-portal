@@ -3,7 +3,7 @@ import { IAuthenticator } from "../authentication";
 import * as Constants from "../constants";
 import { IApiClient } from "../clients";
 import { Identity } from "../contracts/identity";
-import { TenantService } from "../services/tenantService";
+import ITenantService from "../services/ITenantService";
 import { BackendService } from "../services/backendService";
 import { DelegationAction } from "../contracts/tenantSettings";
 
@@ -11,7 +11,7 @@ export class SignOutRouteGuard implements RouteGuard {
     constructor(
         private readonly apiClient: IApiClient,
         private readonly authenticator: IAuthenticator,
-        private readonly tenantService: TenantService,
+        private readonly tenantService: ITenantService,
         private readonly backendService: BackendService
     ) { }
 

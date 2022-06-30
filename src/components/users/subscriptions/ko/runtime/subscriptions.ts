@@ -5,7 +5,7 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { SubscriptionListItem } from "./subscriptionListItem";
 import { UsersService } from "../../../../../services/usersService";
 import { ProductService } from "../../../../../services/productService";
-import { TenantService } from "../../../../../services/tenantService";
+import ITenantService from "../../../../../services/ITenantService";
 import { DelegationParameters, DelegationActionPath } from "../../../../../contracts/tenantSettings";
 import { Utils } from "../../../../../utils";
 import { Router } from "@paperbits/common/routing/router";
@@ -22,7 +22,7 @@ export class Subscriptions {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly tenantService: TenantService,
+        private readonly tenantService: ITenantService,
         private readonly router: Router,
         private readonly productService: ProductService
     ) {
