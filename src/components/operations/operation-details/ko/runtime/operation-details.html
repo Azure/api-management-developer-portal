@@ -299,7 +299,7 @@
 <!-- ko if: operation -->
 <div class="animation-fade-in">
     <div class="operation-header">
-        <h2 class="operation-name"></h2>
+        <h2 class="operation-name title-text"></h2>
         <!-- ko if: $component.enableConsole -->
         <button class="button try-it-button" data-bind="click: $component.openConsole">
             Try it
@@ -311,20 +311,20 @@
     <!-- ko if: tags().length > 0 -->
     <div class="tag-group">
         <!-- ko foreach: { data: $component.tags, as: 'tag' } -->
-        <span class="tag-item" role="group" data-bind="text: tag"></span>
+        <span class="tag-card" role="group" data-bind="text: tag"></span>
         <!-- /ko -->
     </div>
     <!-- /ko -->
 
     <div class="collapsible">
-        <h3>Socket URL</h3>
+        <h3 class="title-text">Socket URL</h3>
         <div class="collapsible-container">
-            <span class="text-monospace" data-bind="text: $component.requestUrlSample"></span>
+            <span class="text-monospace widget-text" data-bind="text: $component.requestUrlSample"></span>
         </div>
 
-        <h3>Protocol</h3>
+        <h3 class="title-text">Protocol</h3>
         <div class="collapsible-container">
-            <span class="text-monospace" data-bind="text: $component.protocol"></span>
+            <span class="text-monospace widget-text" data-bind="text: $component.protocol"></span>
         </div>
     </div>
 
@@ -336,8 +336,8 @@
 <div class="animation-fade-in">
     <div class="operation-header">
         <div>
-            <h2>GraphQL endpoint</h2>
-            <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
+            <h2 class="title-text">GraphQL endpoint</h2>
+            <span class="monospace widget-text" data-bind="text: $component.requestUrlSample"></span>
         </div>
         <!-- ko if: $component.enableConsole -->
         <div>

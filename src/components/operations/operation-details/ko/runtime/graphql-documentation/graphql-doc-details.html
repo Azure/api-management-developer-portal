@@ -5,28 +5,28 @@
 <!-- ko ifnot: working -->
 <div>
     <div>
-        <h2 data-bind="text: getName()"></h2>
-        <span data-bind="text: getDescription(graphSelectedType(), true)"></span>
+        <h2 class="title-text" data-bind="text: getName()"></h2>
+        <span class="widget-text" data-bind="text: getDescription(graphSelectedType(), true)"></span>
     </div>
 
     <!-- ko if: graphSelected()['type'] -->
     <div>
-        <h3>Response type</h3>
-        <span data-bind="text: getType(graphSelected(), 'left')"></span>
+        <h3 class="title-text">Response type</h3>
+        <span class="widget-text" data-bind="text: getType(graphSelected(), 'left')"></span>
         <!-- ko ifnot: graphSelectedType()['type'] == 'scalarType' && isDefaultScalarType(graphSelectedType()['name']) -->
         <a class="text-monospace"
             data-bind="text: graphSelectedType()['name'], attr: { href: anchorLink(graphSelectedType()), title: prettyType(graphSelectedType()['type']) }"></a>
         <!-- /ko -->
         <!-- ko if: graphSelectedType()['type'] == 'scalarType' && isDefaultScalarType(graphSelectedType()['name']) -->
-        <span class="text-monospace" data-bind="text: graphSelectedType()['name']"></span>
+        <span class="text-monospace widget-text" data-bind="text: graphSelectedType()['name']"></span>
         <!-- /ko -->
-        <span data-bind="text: getType(graphSelected(), 'right')"></span>
+        <span class="widget-text" data-bind="text: getType(graphSelected(), 'right')"></span>
     </div>
     <!-- /ko -->
 
     <!-- ko if: hasField('args') -->
     <div>
-        <h3 data-bind="text: $component.headerName()"></h3>
+        <h3 class="title-text" data-bind="text: $component.headerName()"></h3>
         <ul class="nav nav-pills" role="tablist">
             <li class="nav-item" role="presentation">
                 <button role="tab" class="nav-link active" title="Table view"
@@ -59,9 +59,10 @@
                 <!-- ko fastForEach: { data: graphSelected()['args'], as: 'arg' } -->
                 <div class="d-contents" role="row">
 
-                    <div role="cell" class="text-truncate" data-bind="text: arg.name, attr: { title: arg.name }"></div>
+                    <div role="cell" class="text-truncate table-preset-row"
+                        data-bind="text: arg.name, attr: { title: arg.name }"></div>
 
-                    <div role="cell" class="text-truncate">
+                    <div role="cell" class="text-truncate table-preset-row">
                         <span data-bind="text: $component.getType(arg, 'left')"></span>
                         <!-- ko ifnot: $component.fullType(arg).type == 'scalarType' && $component.isDefaultScalarType($component.fullType(arg).name) -->
                         <a class="text-monospace"
@@ -73,7 +74,9 @@
                         <span data-bind="text: $component.getType(arg, 'right')"></span>
                     </div>
 
-                    <div role="cell" data-bind="markdown: arg.description"></div>
+                    <div role="cell"
+                        class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                        data-bind="markdown: arg.description"></div>
 
                 </div>
                 <!-- /ko -->
@@ -85,7 +88,7 @@
 
     <!-- ko if: allReferencesList().length > 0 -->
     <div>
-        <h3>Types</h3>
+        <h3 class="title-text">Types</h3>
         <div role="table" class="table-preset table-preset-enum">
             <div class="d-contents" role="rowgroup">
                 <div class="d-contents" role="row">
@@ -97,7 +100,7 @@
                 <!-- ko fastForEach: { data: allReferencesList(), as: 'reference' } -->
                 <div class="d-contents" role="row">
 
-                    <div role="cell" class="text-truncate">
+                    <div role="cell" class="text-truncate table-preset-row">
                         <!-- ko ifnot: reference.type == 'scalarType' -->
                         <a class="text-monospace"
                             data-bind="text: reference.name, attr: { href: $component.anchorLink(reference), title: $component.prettyType(reference.type) }"></a>
@@ -108,7 +111,9 @@
                         <!-- /ko -->
                     </div>
 
-                    <div role="cell" data-bind="markdown: $component.getDescription(reference)"></div>
+                    <div role="cell"
+                        class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                        data-bind="markdown: $component.getDescription(reference)"></div>
 
                 </div>
                 <!-- /ko -->
@@ -119,10 +124,10 @@
     <!-- ko fastForEach: { data: allReferencesList(), as: 'reference' } -->
     <!-- ko ifnot: reference.type == 'scalarType' -->
     <div>
-        <h4
+        <h4 class="title-text"
             data-bind="text: reference.name, attr: { id: $component.anchorLink(reference, true), title: $component.prettyType(reference.type) }">
         </h4>
-        <span data-bind="text: $component.getDescription(reference)"></span>
+        <span class="widget-text" data-bind="text: $component.getDescription(reference)"></span>
         <ul class="nav nav-pills" role="tablist">
             <li class="nav-item" role="presentation">
                 <button role="tab" class="nav-link active" title="Table view"
