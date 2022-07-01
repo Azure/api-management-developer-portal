@@ -212,6 +212,7 @@ export class UsersService {
      * Deletes specified user.
      * @param userId {string} Unique user identifier.
      */
+    //TODO:hh update it wih patch method
     public async deleteUser(userId: string): Promise<void> {
         try {
             const header: HttpHeader = {
@@ -256,7 +257,7 @@ export class UsersService {
 
         return userId;
     }
-    //TODO:hh we only have create user with userId, which is supposed to be a guid. Caller should not be generating it.
+
     public async createSignupRequest(signupRequest: MapiSignupRequest): Promise<void> {
         await this.apiClient.post("/users", [await this.apiClient.getPortalHeader("createSignupRequest")], signupRequest);
     }
