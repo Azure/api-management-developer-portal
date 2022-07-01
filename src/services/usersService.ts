@@ -212,7 +212,6 @@ export class UsersService {
      * Deletes specified user.
      * @param userId {string} Unique user identifier.
      */
-    //TODO:hh update it wih patch method
     public async deleteUser(userId: string): Promise<void> {
         try {
             const header: HttpHeader = {
@@ -220,7 +219,7 @@ export class UsersService {
                 value: "*"
             };
 
-            const query = Utils.addQueryParameter(userId, `deleteSubscriptions=true&notify=true&appType=${Constants.AppType}`);
+            const query = Utils.addQueryParameter(userId, `deleteSubscriptions=true&notify=true`);
 
             await this.apiClient.delete<string>(query, [header, await this.apiClient.getPortalHeader("deleteUser")]);
 
