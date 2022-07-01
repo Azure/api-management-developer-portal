@@ -266,8 +266,7 @@ export class ProductService {
         else {
             const payload = {
                 scope: productId,
-                name: subscriptionName,
-                appType: Constants.AppType
+                name: subscriptionName
             };
             await this.apiClient.post(userId + subscriptionId, [await this.apiClient.getPortalHeader("createSubscription")], payload);
         }
@@ -294,7 +293,7 @@ export class ProductService {
                 state: SubscriptionState.cancelled
             };
 
-            await this.apiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, headers, payload);
+            await this.apiClient.patch(subscriptionId, headers, payload);
         }
 
         return await this.getSubscription(subscriptionId);
@@ -320,7 +319,7 @@ export class ProductService {
             name: subscriptionName
         };
 
-        await this.apiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, headers, payload);
+        await this.apiClient.patch(subscriptionId, headers, payload);
 
         return await this.getSubscription(subscriptionId);
     }
