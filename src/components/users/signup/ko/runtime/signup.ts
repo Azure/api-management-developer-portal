@@ -180,8 +180,7 @@ export class Signup {
             firstName: this.firstName(),
             lastName: this.lastName(),
             password: this.password(),
-            confirmation: "signup",
-            appType: Constants.AppType
+            confirmation: "signup"
         };
 
         try {

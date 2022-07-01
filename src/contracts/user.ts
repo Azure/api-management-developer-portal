@@ -49,12 +49,6 @@ export interface UserContract {
     identities?: UserIdentity[];
 
     /**
-     *  Application type. Required to send notification with proper urls in emails.
-     *  
-     */
-    appType: string;
-
-    /**
      * Basic account identifier.
      */
     isBasicAccount?: boolean;
