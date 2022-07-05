@@ -4,7 +4,7 @@ import { CaptchaChallenge, CaptchaParams, CaptchaSettings } from "../contracts/c
 import { SignupRequest } from "../contracts/signupRequest";
 import { ResetRequest, ChangePasswordRequest } from "../contracts/resetRequest";
 import { IAuthenticator } from "../authentication";
-import { DelegationAction } from "../contracts/tenantSettings";
+import { DelegationAction, DelegationActionPath } from "../contracts/tenantSettings";
 import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
 import { DeveloperPortalType, SettingNames } from "../constants";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
@@ -142,6 +142,23 @@ export class BackendService {
         }
 
         throw new MapiError("Unhandled", "Unable to complete change password request.");
+    }
+
+    public async applyDelegation(action: DelegationAction, delegationParameters: {}): Promise<string> {
+        if (this.developerPortalType === DeveloperPortalType.managed) {
+            const queryParams = new URLSearchParams();
+            Object.keys(delegationParameters).map(key => {
+                const val = delegationParameters[key];
+                queryParams.append(key, val);
+            });
+            return `/${DelegationActionPath[action]}?${queryParams.toString()}`;
+        } else {
+            const delegationUrl = await this.getDelegationUrl(action, delegationParameters);
+            if (delegationUrl) {
+                location.assign(delegationUrl);
+            }
+            return null;
+        }
     }
 
     public async getDelegationUrl(action: DelegationAction, delegationParameters: {}): Promise<string> {
