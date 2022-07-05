@@ -24,23 +24,12 @@ export class ContentWorkshop {
     ) {
         this.customWidgetConfigs = ko.observable();
         customWidgetConfigs.then(configs =>
-            this.customWidgetConfigs(configs
-                .sort(ContentWorkshop.sortByName)
-                .map(config => ({...config, tooltip: ContentWorkshop.configToTooltip(config)}))
-            )
+            this.customWidgetConfigs(configs.sort(ContentWorkshop.sortByName))
         );
     }
 
     private static sortByName(a: TCustomWidgetConfig, b: TCustomWidgetConfig): number {
         return a.name.localeCompare(b.name);
-    }
-
-    private static configToTooltip(config: TCustomWidgetConfig): string {
-        return `<code>
-          ID: ${config.name}<br/>
-          Tech: ${config.tech}<br/>
-          Deployed: ${config.deployed ? new Date(config.deployed).toLocaleString() : "-"}<br/>
-        </code>`;
     }
 
     public async openScaffoldWizard(): Promise<void> {
@@ -59,18 +48,24 @@ export class ContentWorkshop {
         this.viewManager.openViewAsWorkshop(view);
     }
 
+    public async openWidgetDetail(config: TCustomWidgetConfig): Promise<void> {
+        const view: View = {
+            heading: "Custom widget",
+            component: {
+                name: "custom-widget-create",
+                params: {
+                    config,
+                    configDelete: (config: TCustomWidgetConfig) => this.customWidgetConfigs(
+                        this.customWidgetConfigs().filter(c => c.name !== config.name)
+                    ),
+                },
+            },
+        };
+        this.viewManager.openViewAsWorkshop(view);
+    }
+
     /* public async downloadWidget(config: TCustomWidgetConfig): Promise<void> {
         const blob = await generateBlob(config, await buildConfigDeploy());
         return saveAs(blob, widgetArchiveName(config));
     } */
-
-    public async deleteWidget(config: TCustomWidgetConfig): Promise<void> {
-        if (!confirm(`This operation is in-reversible, are you sure you want to delete custom widget '${config.displayName}'?`)) return;
-
-        const blobsToDelete = await this.blobStorage.listBlobs(buildBlobDataSrc(config.name));
-        blobsToDelete.push(buildBlobConfigSrc(config.name));
-        await Promise.all(blobsToDelete.map(blobKey => this.blobStorage.deleteBlob(blobKey)));
-
-        this.customWidgetConfigs(this.customWidgetConfigs().filter(c => c.name !== config.name));
-    }
 }

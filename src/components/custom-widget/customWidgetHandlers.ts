@@ -1,11 +1,11 @@
-﻿import { TCustomWidgetBaseConfig } from "@azure-tools/apimanagement-custom-widget-scaffolder";
+﻿import { TCustomWidgetCommonConfig } from "@azure/api-management-custom-widgets-scaffolder";
 import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
 import { StyleHelper } from "@paperbits/styles";
 import { CustomWidgetModel } from "./customWidgetModel";
 import { sizeStylesInitial } from "./ko/constants";
 import { widgetCategory } from "./constants";
 
-export interface TCustomWidgetConfig extends TCustomWidgetBaseConfig {
+export interface TCustomWidgetConfig extends TCustomWidgetCommonConfig {
   name: string;
   deployed?: string;
   override?: string | boolean;
