@@ -6,13 +6,14 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { Router } from "@paperbits/common/routing/router";
 import { User } from "../../../../../models/user";
 import { UsersService } from "../../../../../services";
-import { DelegationParameters, DelegationActionPath } from "../../../../../contracts/tenantSettings";
+import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import { TenantService } from "../../../../../services/tenantService";
 import { pageUrlChangePassword } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
 import { EventManager } from "@paperbits/common/events/eventManager";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
+import { BackendService } from "../../../../../services/backendService";
 
 @RuntimeComponent({
     selector: "profile-runtime"
@@ -35,7 +36,8 @@ export class Profile {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly tenantService: TenantService,        
+        private readonly tenantService: TenantService,
+        private readonly backendService: BackendService,
         private readonly eventManager: EventManager,
         private readonly router: Router) {
         this.user = ko.observable();
@@ -68,15 +70,18 @@ export class Profile {
         this.setUser(model);
     }
 
-    private async isDelegationEnabled(action: DelegationActionPath): Promise<boolean> {
+    private async isDelegationEnabled(action: DelegationAction): Promise<boolean> {
         if (!this.user()) {
             return false;
         }
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
         if (isDelegationEnabled) {
-            const delegation = new URLSearchParams();
-            delegation.append(DelegationParameters.UserId, Utils.getResourceName("users", this.user().id));
-            this.router.navigateTo(`/${action}?${delegation.toString()}`);
+            const delegationParam = {};
+            delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", this.user().id);
+            const delegationUrl = await this.backendService.applyDelegation(action, delegationParam);
+            if (delegationUrl) {
+                await this.router.navigateTo(delegationUrl);
+            }
 
             return true;
         }
@@ -95,7 +100,7 @@ export class Profile {
     }
 
     public async toggleEdit(): Promise<void> {
-        const isDelegationEnabled = await this.isDelegationEnabled(DelegationActionPath.changeProfile);
+        const isDelegationEnabled = await this.isDelegationEnabled(DelegationAction.changeProfile);
         if (isDelegationEnabled) {
             return;
         }
@@ -108,7 +113,7 @@ export class Profile {
     }
 
     public async toggleEditPassword(): Promise<void> {
-        const isDelegationEnabled = await this.isDelegationEnabled(DelegationActionPath.changePassword);
+        const isDelegationEnabled = await this.isDelegationEnabled(DelegationAction.changePassword);
         if (isDelegationEnabled) {
             return;
         }
@@ -133,7 +138,7 @@ export class Profile {
     }
 
     public async closeAccount(): Promise<void> {
-        const isDelegationEnabled = await this.isDelegationEnabled(DelegationActionPath.closeAccount);
+        const isDelegationEnabled = await this.isDelegationEnabled(DelegationAction.closeAccount);
         if (isDelegationEnabled) {
             return;
         }

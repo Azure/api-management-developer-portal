@@ -6,12 +6,13 @@ import { SubscriptionListItem } from "./subscriptionListItem";
 import { UsersService } from "../../../../../services";
 import { ProductService } from "../../../../../services/productService";
 import { TenantService } from "../../../../../services/tenantService";
-import { DelegationParameters, DelegationActionPath } from "../../../../../contracts/tenantSettings";
+import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import { Utils } from "../../../../../utils";
 import { Router } from "@paperbits/common/routing/router";
 import { EventManager } from "@paperbits/common/events";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
+import { BackendService } from "../../../../../services/backendService";
 
 @RuntimeComponent({
     selector: "subscriptions-runtime"
@@ -26,6 +27,7 @@ export class Subscriptions {
     constructor(
         private readonly usersService: UsersService,
         private readonly tenantService: TenantService,
+        private readonly backendService: BackendService,
         private readonly router: Router,
         private readonly productService: ProductService,
         private readonly eventManager: EventManager
@@ -140,10 +142,12 @@ export class Subscriptions {
     private async isDelegationEnabled(subscriptionId: string): Promise<boolean> {
         const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
         if (isDelegationEnabled) {
-            const delegation = new URLSearchParams();
-            delegation.append(DelegationParameters.SubscriptionId, Utils.getResourceName("subscriptions", subscriptionId));
-            this.router.navigateTo(`/${DelegationActionPath.unsubscribe}?${delegation.toString()}`);
-
+            const delegationParam = {};
+            delegationParam[DelegationParameters.SubscriptionId] =  Utils.getResourceName("subscriptions", subscriptionId);
+            const delegationUrl = await this.backendService.applyDelegation(DelegationAction.unsubscribe, delegationParam);
+            if (delegationUrl) {
+                await this.router.navigateTo(delegationUrl);
+            }
             return true;
         }
 

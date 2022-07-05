@@ -109,6 +109,12 @@ export class Signup {
                     } else {
                         this.usersService.navigateToHome();
                     }
+                } else {
+                    const redirectUrl = this.delegationUrl();
+
+                    if (redirectUrl) {
+                        location.assign(redirectUrl);
+                    }
                 }
             }
         }
