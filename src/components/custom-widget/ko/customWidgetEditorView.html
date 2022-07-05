@@ -1,10 +1,16 @@
 <fieldset class="form flex flex-item flex-item-grow no-overflow">
     <div class="flex flex-column fit">
         <div class="flex-item">
+            <div class="form-group">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" data-bind="textInput: model.widgetDisplayName" disabled />
+            </div>
+
             <size-editor params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: sizeStyleConfig, onUpdate: onSizeUpdate }">
             </size-editor>
 
-            <h4>Custom fields</h4>
+            <h4>Custom properties</h4>
+            <p>Custom properties let you adjust values in the custom widget’s code from the administrative user interface of the developer portal, without changing the code or redeploying the custom widget.</p>
         </div>
 
         <iframe class="flex-item flex-item-grow"

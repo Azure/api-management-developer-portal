@@ -5,21 +5,9 @@
             <!-- ko foreach: { data: customWidgetConfigs, as: 'config' } -->
             <tr>
                 <td>
-                    <span data-bind="text: config.displayName, tooltip: config.tooltip"></span>
+                    <a data-bind="text: config.displayName, click: () => $component.openWidgetDetail(config)" style="cursor: pointer"></a>
                     <!-- ko if: config.override -->
                     <i>(overridden)</i>
-                    <!-- /ko -->
-                </td>
-                <td style="text-align: right;">
-                    <!-- ko ifnot: config.override -->
-                    <!--
-                    <button class="btn btn-default" data-bind="click: () => $component.downloadWidget(config)">
-                        <i class="paperbits-icon paperbits-square-download"></i>
-                    </button>
-                    -->
-                    <button class="btn btn-default" data-bind="click: () => $component.deleteWidget(config)" style="display: none;">
-                        <i class="paperbits-icon paperbits-trash-simple"></i>
-                    </button>
                     <!-- /ko -->
                 </td>
             </tr>

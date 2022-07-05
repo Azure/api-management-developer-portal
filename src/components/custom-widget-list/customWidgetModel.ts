@@ -1,4 +1,4 @@
-import { TScaffoldTech } from "@azure-tools/apimanagement-custom-widget-scaffolder";
+import { TScaffoldTech } from "@azure/api-management-custom-widgets-scaffolder";
 
 export class CustomWidgetModel {
     public name: string;

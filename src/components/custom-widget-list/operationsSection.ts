@@ -2,7 +2,7 @@ import { ToolButton, ViewManager, View } from "@paperbits/common/ui";
 
 const helpText =
     "<h1>Custom widgets</h1>" +
-    "<p>Custom widgets allow you to extend the developer portal with additional functionality implemented in plain TypeScript, React, or Vue. For example, use custom widgets to integrate the developer portal with your support system. <a href='https://aka.ms/apimdocs/portal/customwidgets' target='_blank'>Learn more</a></p>";
+    "<p>Custom widgets let you extend the developer portal’s functionality in a modular way. For example, you can implement an integration with a support system, reuse it on several pages, and source-control the code in a git repository.</p>";
 
 export class OperationsSectionToolButton implements ToolButton {
     public readonly iconClass: string = "paperbits-icon paperbits-paint-bucket-40";
