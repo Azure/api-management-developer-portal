@@ -1,11 +1,10 @@
 ﻿import * as ko from "knockout";
 // import { saveAs } from "file-saver";
-import { ViewManager, View } from "@paperbits/common/ui";
+import { View, ViewManager } from "@paperbits/common/ui";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component } from "@paperbits/common/ko/decorators";
 import { MapiBlobStorage } from "../../persistence";
 import { TCustomWidgetConfig } from "../custom-widget";
-import { buildBlobConfigSrc, buildBlobDataSrc } from "../custom-widget/ko/utils";
 import template from "./customWidgetList.html";
 
 
@@ -32,40 +31,26 @@ export class ContentWorkshop {
         return a.name.localeCompare(b.name);
     }
 
-    public async openScaffoldWizard(): Promise<void> {
-        const view: View = {
-            heading: "Custom widget",
-            component: {
-                name: "custom-widget-create",
-                params: {
-                    configs: [...this.customWidgetConfigs()],
-                    configAdd: (config: TCustomWidgetConfig) => this.customWidgetConfigs(
-                        [...this.customWidgetConfigs(), config].sort(ContentWorkshop.sortByName)
-                    ),
-                },
-            },
-        };
-        this.viewManager.openViewAsWorkshop(view);
-    }
-
-    public async openWidgetDetail(config: TCustomWidgetConfig): Promise<void> {
+    public async openScaffoldWizard(config?: TCustomWidgetConfig): Promise<void> {
         const view: View = {
             heading: "Custom widget",
             component: {
                 name: "custom-widget-create",
                 params: {
                     config,
-                    configDelete: (config: TCustomWidgetConfig) => this.customWidgetConfigs(
-                        this.customWidgetConfigs().filter(c => c.name !== config.name)
-                    ),
+                    configs: [...this.customWidgetConfigs()],
+                    configAdd: (config: TCustomWidgetConfig): void => {
+                        this.customWidgetConfigs(
+                            [...this.customWidgetConfigs(), config].sort(ContentWorkshop.sortByName)
+                        );
+                    },
+                    configDelete: (config: TCustomWidgetConfig): void => {
+                        this.customWidgetConfigs(this.customWidgetConfigs().filter(c => c.name !== config.name));
+                        this.viewManager.closeWorkshop(view);
+                    },
                 },
             },
         };
         this.viewManager.openViewAsWorkshop(view);
     }
-
-    /* public async downloadWidget(config: TCustomWidgetConfig): Promise<void> {
-        const blob = await generateBlob(config, await buildConfigDeploy());
-        return saveAs(blob, widgetArchiveName(config));
-    } */
 }

@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import { TScaffoldTech, TECHNOLOGIES, displayNameToName } from "@azure/api-management-custom-widgets-scaffolder";
 import { IWidgetService } from "@paperbits/common/widgets";
-import { Component, Param } from "@paperbits/common/ko/decorators";
+import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import * as Utils from "@paperbits/common/utils";
 import { MapiBlobStorage } from "../../persistence";
 import { CustomWidgetHandlers, TCustomWidgetConfig } from "../custom-widget";
@@ -16,6 +16,10 @@ const techToName: Record<TScaffoldTech, string> = {
     react: "React",
 }
 
+// TODO finish the command
+const buildScaffoldCommand = ({displayName, tech}: TCustomWidgetConfig): string =>
+    `npx ... --displayName="${displayName}" --tech="${tech}" --openUrl="${window.location.origin}"`
+
 @Component({
     selector: "custom-widget-create",
     template: template,
@@ -26,14 +30,14 @@ export class CreateWidget {
     // public readonly sourceControl: ko.Observable<TScaffoldSourceControl>;
     public readonly commandToScaffold: ko.Observable<string>;
     public readonly customWidgetConfigs: ko.Observable<TCustomWidgetConfig[]>;
-    public readonly techAll = TECHNOLOGIES.map(t => ({id: t, name: techToName[t]}));
+    public readonly techAll = TECHNOLOGIES.map(id => ({id, name: techToName[id]}));
 
     constructor(
         private readonly widgetService: IWidgetService,
         private readonly blobStorage: MapiBlobStorage
     ) {
         this.displayName = ko.observable("");
-        this.tech = ko.observable();
+        this.tech = ko.observable(null);
         // this.sourceControl = ko.observable();
         this.commandToScaffold = ko.observable();
     }
@@ -45,13 +49,22 @@ export class CreateWidget {
     private config?: TCustomWidgetConfig;
 
     @Param()
-    private configs?: TCustomWidgetConfig[];
+    private configs: TCustomWidgetConfig[];
 
     @Param()
-    private configAdd?: (config: TCustomWidgetConfig) => void;
+    private configAdd: (config: TCustomWidgetConfig) => void;
 
     @Param()
-    private configDelete?: (config: TCustomWidgetConfig) => void;
+    private configDelete: (config: TCustomWidgetConfig) => void;
+
+    @OnMounted()
+    public async initialize(): Promise<void> {
+        if (this.config) {
+            this.displayName(this.config.displayName);
+            this.tech(this.config.tech);
+            this.commandToScaffold(buildScaffoldCommand(this.config))
+        }
+    }
 
     public async submitData(): Promise<void> {
         const displayName = this.displayName();
@@ -79,17 +92,18 @@ export class CreateWidget {
         this.configs.push(config);
         this.configAdd(config);
 
-        // TODO finish the command
-        this.commandToScaffold(`npx ... --displayName="${displayName}" --tech="${tech}" --openUrl="${window.location.origin}"`);
+        this.commandToScaffold(buildScaffoldCommand(config));
     }
 
-    public async deleteWidget(config: TCustomWidgetConfig): Promise<void> {
-        if (!confirm(`This operation is in-reversible, are you sure you want to delete custom widget '${config.displayName}'?`)) return;
+    public async deleteWidget(): Promise<void> {
+        if (!this.config) return alert("Didn't found config to delete.")
 
-        const blobsToDelete = await this.blobStorage.listBlobs(buildBlobDataSrc(config.name));
-        blobsToDelete.push(buildBlobConfigSrc(config.name));
+        if (!confirm(`This operation is in-reversible, are you sure you want to delete custom widget '${this.config.displayName}'?`)) return;
+
+        const blobsToDelete = await this.blobStorage.listBlobs(buildBlobDataSrc(this.config.name));
+        blobsToDelete.push(buildBlobConfigSrc(this.config.name));
         await Promise.all(blobsToDelete.map(blobKey => this.blobStorage.deleteBlob(blobKey)));
 
-        this.configDelete(config);
+        this.configDelete(this.config);
     }
 }
