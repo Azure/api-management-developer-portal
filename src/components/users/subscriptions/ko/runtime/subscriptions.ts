@@ -118,8 +118,8 @@ export class Subscriptions {
         subscription.isSRegenerating(true);
 
         try {
-            const isDelegationEnabled = await this.isDelegationEnabled(subscriptionId);
-            if (isDelegationEnabled) {
+            const isDelegationApplied = await this.applyDelegation(subscriptionId);
+            if (isDelegationApplied) {
                 return;
             }
             const updated = await this.productService.cancelSubscription(subscriptionId);
@@ -139,7 +139,7 @@ export class Subscriptions {
         }
     }
 
-    private async isDelegationEnabled(subscriptionId: string): Promise<boolean> {
+    private async applyDelegation(subscriptionId: string): Promise<boolean> {
         const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
         if (isDelegationEnabled) {
             const delegationParam = {};

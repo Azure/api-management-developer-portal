@@ -70,7 +70,7 @@ export class Profile {
         this.setUser(model);
     }
 
-    private async isDelegationEnabled(action: DelegationAction): Promise<boolean> {
+    private async applyDelegation(action: DelegationAction): Promise<boolean> {
         if (!this.user()) {
             return false;
         }
@@ -100,8 +100,8 @@ export class Profile {
     }
 
     public async toggleEdit(): Promise<void> {
-        const isDelegationEnabled = await this.isDelegationEnabled(DelegationAction.changeProfile);
-        if (isDelegationEnabled) {
+        const isDelegationApplied = await this.applyDelegation(DelegationAction.changeProfile);
+        if (isDelegationApplied) {
             return;
         }
         if (this.isEdit()) {
@@ -113,8 +113,8 @@ export class Profile {
     }
 
     public async toggleEditPassword(): Promise<void> {
-        const isDelegationEnabled = await this.isDelegationEnabled(DelegationAction.changePassword);
-        if (isDelegationEnabled) {
+        const isDelegationApplied = await this.applyDelegation(DelegationAction.changePassword);
+        if (isDelegationApplied) {
             return;
         }
         await this.router.navigateTo(pageUrlChangePassword);
@@ -138,8 +138,8 @@ export class Profile {
     }
 
     public async closeAccount(): Promise<void> {
-        const isDelegationEnabled = await this.isDelegationEnabled(DelegationAction.closeAccount);
-        if (isDelegationEnabled) {
+        const isDelegationApplied = await this.applyDelegation(DelegationAction.closeAccount);
+        if (isDelegationApplied) {
             return;
         }
         const confirmed = window.confirm(`Dear ${this.user().firstName} ${this.user().lastName}, \nYou are about to close your account associated with email address ${this.user().email}.\nYou will not be able to sign in to or restore your closed account. Are you sure you want to close your account?`);

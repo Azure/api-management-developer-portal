@@ -12,6 +12,7 @@ import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { Utils } from "../utils";
 import { AuthorizationServerForClient } from "../contracts/authorizationServer";
 import { AuthorizationServer } from "../models/authorizationServer";
+import { Bag } from "@paperbits/common/bag";
 
 export class BackendService {
     private portalUrl: string;
@@ -144,7 +145,7 @@ export class BackendService {
         throw new MapiError("Unhandled", "Unable to complete change password request.");
     }
 
-    public async applyDelegation(action: DelegationAction, delegationParameters: {}): Promise<string> {
+    public async applyDelegation(action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
         if (this.developerPortalType === DeveloperPortalType.managed) {
             const queryParams = new URLSearchParams();
             Object.keys(delegationParameters).map(key => {
@@ -161,7 +162,7 @@ export class BackendService {
         }
     }
 
-    public async getDelegationUrl(action: DelegationAction, delegationParameters: {}): Promise<string> {
+    public async getDelegationUrl(action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
         const authToken = await this.authenticator.getAccessTokenAsString();
 
         if (!authToken) {
