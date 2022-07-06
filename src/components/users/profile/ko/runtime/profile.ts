@@ -70,20 +70,24 @@ export class Profile {
         this.setUser(model);
     }
 
-    private async applyDelegation(action: DelegationAction): Promise<void> {
+    private async applyDelegation(action: DelegationAction): Promise<boolean> {
         if (!this.user()) {
-            return;
+            return false;
         }
-
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
         if (isDelegationEnabled) {
             const delegationParam = {};
             delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", this.user().id);
-            const delegationUrl = await this.backendService.applyDelegation(action, delegationParam);
-            if (delegationUrl) {
+            const delegationUrl = await this.backendService.getDelegationString(action, delegationParam);
+            if (delegationUrl.startsWith("http://") || delegationUrl.startsWith("https://")){
+                location.assign(delegationUrl);
+            } else {
                 await this.router.navigateTo(delegationUrl);
             }
+
+            return true;
         }
+        return false;
     }
 
     private setUser(model: User): any {
@@ -98,7 +102,10 @@ export class Profile {
     }
 
     public async toggleEdit(): Promise<void> {
-        await this.applyDelegation(DelegationAction.changeProfile);
+        const isDelegationApplied = await this.applyDelegation(DelegationAction.changeProfile);
+        if (isDelegationApplied) {
+            return;
+        }
         if (this.isEdit()) {
             this.firstName(this.user().firstName);
             this.lastName(this.user().lastName);
@@ -108,7 +115,10 @@ export class Profile {
     }
 
     public async toggleEditPassword(): Promise<void> {
-        await this.applyDelegation(DelegationAction.changePassword);
+        const isDelegationApplied = await this.applyDelegation(DelegationAction.changePassword);
+        if (isDelegationApplied) {
+            return;
+        }
         await this.router.navigateTo(pageUrlChangePassword);
     }
 
@@ -130,7 +140,10 @@ export class Profile {
     }
 
     public async closeAccount(): Promise<void> {
-        await this.applyDelegation(DelegationAction.closeAccount);
+        const isDelegationApplied = await this.applyDelegation(DelegationAction.closeAccount);
+        if (isDelegationApplied) {
+            return;
+        }
         const confirmed = window.confirm(`Dear ${this.user().firstName} ${this.user().lastName}, \nYou are about to close your account associated with email address ${this.user().email}.\nYou will not be able to sign in to or restore your closed account. Are you sure you want to close your account?`);
 
         if (confirmed) {

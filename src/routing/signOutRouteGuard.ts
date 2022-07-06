@@ -36,7 +36,7 @@ export class SignOutRouteGuard implements RouteGuard {
                         if (identity) {
                             const delegationParam = {};
                             delegationParam[DelegationParameters.UserId] =  identity.id;
-                            const redirectUrl = await this.backendService.applyDelegation(DelegationAction.signOut, delegationParam);
+                            const redirectUrl = await this.backendService.getDelegationString(DelegationAction.signOut, delegationParam);
                             if (redirectUrl) {
                                 this.authenticator.clearAccessToken();
                                 await clear(); // clear cache in indexedDB
