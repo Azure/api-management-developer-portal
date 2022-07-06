@@ -70,10 +70,11 @@ export class Profile {
         this.setUser(model);
     }
 
-    private async applyDelegation(action: DelegationAction): Promise<boolean> {
+    private async applyDelegation(action: DelegationAction): Promise<void> {
         if (!this.user()) {
-            return false;
+            return;
         }
+
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
         if (isDelegationEnabled) {
             const delegationParam = {};
@@ -82,10 +83,7 @@ export class Profile {
             if (delegationUrl) {
                 await this.router.navigateTo(delegationUrl);
             }
-
-            return true;
         }
-        return false;
     }
 
     private setUser(model: User): any {
@@ -100,10 +98,7 @@ export class Profile {
     }
 
     public async toggleEdit(): Promise<void> {
-        const isDelegationApplied = await this.applyDelegation(DelegationAction.changeProfile);
-        if (isDelegationApplied) {
-            return;
-        }
+        await this.applyDelegation(DelegationAction.changeProfile);
         if (this.isEdit()) {
             this.firstName(this.user().firstName);
             this.lastName(this.user().lastName);
@@ -113,10 +108,7 @@ export class Profile {
     }
 
     public async toggleEditPassword(): Promise<void> {
-        const isDelegationApplied = await this.applyDelegation(DelegationAction.changePassword);
-        if (isDelegationApplied) {
-            return;
-        }
+        await this.applyDelegation(DelegationAction.changePassword);
         await this.router.navigateTo(pageUrlChangePassword);
     }
 
@@ -138,10 +130,7 @@ export class Profile {
     }
 
     public async closeAccount(): Promise<void> {
-        const isDelegationApplied = await this.applyDelegation(DelegationAction.closeAccount);
-        if (isDelegationApplied) {
-            return;
-        }
+        await this.applyDelegation(DelegationAction.closeAccount);
         const confirmed = window.confirm(`Dear ${this.user().firstName} ${this.user().lastName}, \nYou are about to close your account associated with email address ${this.user().email}.\nYou will not be able to sign in to or restore your closed account. Are you sure you want to close your account?`);
 
         if (confirmed) {

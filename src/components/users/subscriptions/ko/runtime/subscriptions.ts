@@ -118,10 +118,7 @@ export class Subscriptions {
         subscription.isSRegenerating(true);
 
         try {
-            const isDelegationApplied = await this.applyDelegation(subscriptionId);
-            if (isDelegationApplied) {
-                return;
-            }
+            await this.applyDelegation(subscriptionId);
             const updated = await this.productService.cancelSubscription(subscriptionId);
             const updatedVM = new SubscriptionListItem(updated, this.eventManager);
             this.syncSubscriptionLabelState(subscription, updatedVM);
@@ -139,7 +136,7 @@ export class Subscriptions {
         }
     }
 
-    private async applyDelegation(subscriptionId: string): Promise<boolean> {
+    private async applyDelegation(subscriptionId: string): Promise<void> {
         const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
         if (isDelegationEnabled) {
             const delegationParam = {};
@@ -148,9 +145,6 @@ export class Subscriptions {
             if (delegationUrl) {
                 await this.router.navigateTo(delegationUrl);
             }
-            return true;
         }
-
-        return false;
     }
 }
