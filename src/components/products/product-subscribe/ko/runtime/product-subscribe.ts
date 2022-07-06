@@ -155,7 +155,7 @@ export class ProductSubscribe {
         try {
             if (this.delegationEnabled) {
                 const delegationParam = {};
-                delegationParam[DelegationParameters.ProductId] =  Utils.getResourceName("products", productId);
+                delegationParam[DelegationParameters.ProductId] =  productName;
                 delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", userId);
                 const delegationUrl = await this.backendService.applyDelegation(DelegationAction.subscribe, delegationParam);
                 if (delegationUrl) {
