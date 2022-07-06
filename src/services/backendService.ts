@@ -155,10 +155,7 @@ export class BackendService {
             return `/${DelegationActionPath[action]}?${queryParams.toString()}`;
         } else {
             const delegationUrl = await this.getDelegationUrl(action, delegationParameters);
-            if (delegationUrl) {
-                location.assign(delegationUrl);
-            }
-            return null;
+            return delegationUrl;
         }
     }
 
