@@ -2,19 +2,6 @@
 <!-- ko ifnot: commandToScaffold -->
 <form data-bind="submit: submitData" style="height: 100%">
   <div class="flex flex-column fit">
-    <div
-      style="display: flex; border: 1px solid #ccc; border-radius: 3px; background: #eee; padding: 3px 3px 3px 1em; white-space: nowrap; align-items: center;"
-    >
-      <code
-        data-bind="text: 'npx run @azure/api-management-custom-widget-scaffolder'"
-        style="overflow: hidden; text-overflow: ellipsis;"
-      ></code>
-      <button class="btn btn-default" data-bind="copyToClipboard: 'txt'" aria-label="Copy to clipboard"
-              style="flex-shrink: 0;">
-        <i class="paperbits-icon paperbits-single-copy-04"></i>
-      </button>
-    </div>
-
     <div class="flex-item flex-item-grow">
       <label class="form-label" for="displayName">
         Name
