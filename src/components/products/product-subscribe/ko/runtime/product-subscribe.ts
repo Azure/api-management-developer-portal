@@ -159,11 +159,7 @@ export class ProductSubscribe {
                 delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", userId);
                 const delegationUrl = await this.backendService.getDelegationString(DelegationAction.subscribe, delegationParam);
                 if (delegationUrl) {
-                    if (delegationUrl.startsWith("http://") || delegationUrl.startsWith("https://")){
-                        location.assign(delegationUrl);
-                    } else {
-                        await this.router.navigateTo(delegationUrl);
-                    }
+                    location.assign(delegationUrl);
                     return;
                 }
             }

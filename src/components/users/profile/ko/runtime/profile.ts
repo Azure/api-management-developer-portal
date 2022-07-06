@@ -79,10 +79,8 @@ export class Profile {
             const delegationParam = {};
             delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", this.user().id);
             const delegationUrl = await this.backendService.getDelegationString(action, delegationParam);
-            if (delegationUrl.startsWith("http://") || delegationUrl.startsWith("https://")){
+            if (delegationUrl) {
                 location.assign(delegationUrl);
-            } else {
-                await this.router.navigateTo(delegationUrl);
             }
 
             return true;
