@@ -145,7 +145,7 @@ export class BackendService {
         throw new MapiError("Unhandled", "Unable to complete change password request.");
     }
 
-    public async applyDelegation(action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
+    public async getDelegationString(action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
         if (this.developerPortalType === DeveloperPortalType.managed) {
             const queryParams = new URLSearchParams();
             Object.keys(delegationParameters).map(key => {
@@ -154,12 +154,12 @@ export class BackendService {
             });
             return `/${DelegationActionPath[action]}?${queryParams.toString()}`;
         } else {
-            const delegationUrl = await this.getDelegationUrl(action, delegationParameters);
+            const delegationUrl = await this.getDelegationUrlFromServer(action, delegationParameters);
             return delegationUrl;
         }
     }
 
-    public async getDelegationUrl(action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
+    public async getDelegationUrlFromServer(action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
         const authToken = await this.authenticator.getAccessTokenAsString();
 
         if (!authToken) {

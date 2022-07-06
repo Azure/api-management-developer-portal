@@ -157,9 +157,13 @@ export class ProductSubscribe {
                 const delegationParam = {};
                 delegationParam[DelegationParameters.ProductId] =  productName;
                 delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", userId);
-                const delegationUrl = await this.backendService.applyDelegation(DelegationAction.subscribe, delegationParam);
+                const delegationUrl = await this.backendService.getDelegationString(DelegationAction.subscribe, delegationParam);
                 if (delegationUrl) {
-                    await this.router.navigateTo(delegationUrl);
+                    if (delegationUrl.startsWith("http://") || delegationUrl.startsWith("https://")){
+                        location.assign(delegationUrl);
+                    } else {
+                        await this.router.navigateTo(delegationUrl);
+                    }
                     return;
                 }
             }
