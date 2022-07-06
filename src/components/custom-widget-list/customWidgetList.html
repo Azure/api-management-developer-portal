@@ -5,7 +5,7 @@
             <!-- ko foreach: { data: customWidgetConfigs, as: 'config' } -->
             <tr>
                 <td>
-                    <a data-bind="text: config.displayName, click: () => $component.openWidgetDetail(config)" style="cursor: pointer"></a>
+                    <a data-bind="text: config.displayName, click: () => $component.openScaffoldWizard(config)" style="cursor: pointer"></a>
                     <!-- ko if: config.override -->
                     <i>(overridden)</i>
                     <!-- /ko -->
@@ -16,7 +16,7 @@
         </table>
     </div>
     <div class="flex-item">
-        <button class="btn btn-default" data-bind="click: openScaffoldWizard">
+        <button class="btn btn-default" data-bind="click: () => $component.openScaffoldWizard()">
             <i class="paperbits-icon paperbits-simple-add"></i>
             Create new custom widget
         </button>
