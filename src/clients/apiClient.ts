@@ -106,18 +106,23 @@ export default abstract class ApiClient implements IApiClient {
     private async makeRequest<T>(httpRequest: HttpRequest): Promise<T> {
         const authHeader = httpRequest.headers.find(header => header.name === KnownHttpHeaders.Authorization);
         const portalHeader = httpRequest.headers.find(header => header.name === Constants.portalHeaderName);
+        const isUserResourceHeader = httpRequest.headers.find(header => header.name === Constants.isUserResourceHeaderName);
 
         if (!authHeader?.value) {
-            const accessToken = await this.authenticator.getAccessTokenAsString();
+            const accessToken = await this.authenticator.getAccessToken();
 
             if (accessToken) {
-                httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${accessToken}` });
+                httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${accessToken.toString()}` });
             } else {
                 if (!portalHeader) {
                     httpRequest.headers.push(await this.getPortalHeader("unauthorized"));
                 } else {
                     portalHeader.value = `${portalHeader.value}-unauthorized`;
                 }
+            }
+
+            if (!!isUserResourceHeader && isUserResourceHeader.value == "true") {
+                httpRequest.url = Utils.ensureUserPrefixed(httpRequest.url, accessToken?.userId);
             }
         }
 

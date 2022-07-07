@@ -263,6 +263,11 @@ export const managementApiVersion = "2021-04-01-preview";
  */
 export const portalHeaderName = "x-ms-apim-client";
 
+/**
+ * Header name to know if it is a user resource.
+ */
+export const isUserResourceHeaderName = "IsUserResource";
+
 export enum DeveloperPortalTypes {
     SelfHostedPortal = "self-hosted-portal",
     Managed = "managed"

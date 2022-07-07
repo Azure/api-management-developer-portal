@@ -3,6 +3,8 @@ import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
 import { NameValuePair } from "./contracts/nameValuePair";
 import { ensureTrailingSlash } from "@paperbits/common";
+import { HttpHeader } from "@paperbits/common/http";
+import { isUserResourceHeaderName } from "./constants";
 
 
 export class Utils {
@@ -63,10 +65,23 @@ export class Utils {
      */
     public static ensureUserPrefixed(query: string, userId: string): string {
         if (!query.startsWith("/users") && !!userId) {
-            return (query.startsWith("/") ? userId : this.ensureTrailingSlash(userId)) + query;
+            const userResource = `/users/${userId}`
+            return (query.startsWith("/") ? userResource : this.ensureTrailingSlash(userResource)) + query;
         }
 
         return query;
+    }
+
+    /**
+     * Some resources are available for guests and users.
+     * Depending on authorization, we need to prefix users resource before requests.
+     * To decide if it is a resource for guest only or users as well, we check this header.
+     */
+    public static getIsUserResourceHeader(): HttpHeader {
+        return {
+            name: isUserResourceHeaderName,
+            value: "true"
+        };
     }
 
     public static ensureTrailingSlash(url: string): string {
