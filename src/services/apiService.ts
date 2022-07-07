@@ -24,8 +24,7 @@ import { IApiClient } from "../clients";
 import { UsersService } from "./usersService";
 
 export class ApiService {
-    constructor(private readonly apiClient: IApiClient,
-        private readonly usersService: UsersService) { }
+    constructor(private readonly apiClient: IApiClient) { }
 
     /**
      * Returns APIs matching search request (if specified).
@@ -226,11 +225,7 @@ export class ApiService {
 
         apiResourceUri += `?expandApiVersionSet=true`; // TODO: doesn't work in non-ARM resources
 
-        //TODO:hh which token to be used? what about the token we use in dev portal backend? it gets forbidden. (ask alexander)
-        //TODO:hh is this way of providing the users resource looks fine? I will app for the rest of the requests If so ...
-        //TODO:hh ... I thought it should be clear to for self-hosted customers, I could also hide it. (ask alexander/maxim), check returning id for userId
-        const userId = await this.usersService.getCurrentUserId();
-        const apiContract = await this.apiClient.get<ApiContract>(Utils.ensureUserPrefixed(apiResourceUri, userId), [await this.apiClient.getPortalHeader("getApi")]);
+        const apiContract = await this.apiClient.get<ApiContract>(apiResourceUri, [await this.apiClient.getPortalHeader("getApi"), Utils.getIsUserResourceHeader()]);
 
         if (!apiContract) {
             return null;
