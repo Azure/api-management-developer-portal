@@ -17,8 +17,8 @@ const techToName: Record<TScaffoldTech, string> = {
 }
 
 // TODO finish the command
-const buildScaffoldCommand = ({displayName, tech}: TCustomWidgetConfig): string =>
-    `npx ... --displayName="${displayName}" --tech="${tech}" --openUrl="${window.location.origin}"`
+const buildScaffoldCommand = ({displayName, technology}: TCustomWidgetConfig): string =>
+    `npx ... --displayName="${displayName}" --technology="${technology}" --openUrl="${window.location.origin}"`
 
 @Component({
     selector: "custom-widget-create",
@@ -26,7 +26,7 @@ const buildScaffoldCommand = ({displayName, tech}: TCustomWidgetConfig): string 
 })
 export class CreateWidget {
     public readonly displayName: ko.Observable<string>;
-    public readonly tech: ko.Observable<TScaffoldTech | null>;
+    public readonly technology: ko.Observable<TScaffoldTech | null>;
     // public readonly sourceControl: ko.Observable<TScaffoldSourceControl>;
     public readonly commandToScaffold: ko.Observable<string>;
     public readonly customWidgetConfigs: ko.Observable<TCustomWidgetConfig[]>;
@@ -37,7 +37,7 @@ export class CreateWidget {
         private readonly blobStorage: MapiBlobStorage
     ) {
         this.displayName = ko.observable("");
-        this.tech = ko.observable(null);
+        this.technology = ko.observable(null);
         // this.sourceControl = ko.observable();
         this.commandToScaffold = ko.observable();
     }
@@ -61,15 +61,15 @@ export class CreateWidget {
     public async initialize(): Promise<void> {
         if (this.config) {
             this.displayName(this.config.displayName);
-            this.tech(this.config.tech);
+            this.technology(this.config.technology);
             this.commandToScaffold(buildScaffoldCommand(this.config))
         }
     }
 
     public async submitData(): Promise<void> {
         const displayName = this.displayName();
-        const tech = this.tech();
-        if (!displayName || !tech) return;
+        const technology = this.technology();
+        if (!displayName || !technology) return;
 
         const name = displayNameToName(displayName);
 
@@ -78,7 +78,7 @@ export class CreateWidget {
             return;
         }
 
-        const config = {name, displayName, tech}; // , control: this.sourceControl()};
+        const config = {name, displayName, technology}; // , control: this.sourceControl()};
         // const configDeploy = await buildConfigDeploy();
 
         const content = Utils.stringToUnit8Array(JSON.stringify(config));
