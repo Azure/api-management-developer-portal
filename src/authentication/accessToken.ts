@@ -44,6 +44,7 @@ export class AccessToken {
             throw new Error(`SharedAccessSignature token format is not valid.`);
         }
 
+        //TODO:hh think of a solution for integration user
         const userId = match[1];
         const dateTime = match[2];
         const year = dateTime.substr(0, 4);

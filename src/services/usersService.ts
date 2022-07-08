@@ -108,7 +108,7 @@ export class UsersService {
         const response = await this.httpClient.send({
             url: `${backendUrl}${requestUrl}&api-version=${Constants.managementApiVersion}`,
             method: "PUT",
-            headers: [{ name: "Authorization", value: token }, await this.apiClient.getPortalHeader("activateUser")]
+            headers: [{ name: "Authorization", value: token }, await this.apiClient.getPortalHeader("activateUser"), Utils.getIsUserResourceHeader()]
         });
 
         await this.getTokenFromResponse(response);
@@ -118,7 +118,7 @@ export class UsersService {
         const headers = [];
 
         if (token) {
-            headers.push({ name: "Authorization", value: token }, await this.apiClient.getPortalHeader("updatePassword"));
+            headers.push({ name: "Authorization", value: token }, await this.apiClient.getPortalHeader("updatePassword"), Utils.getIsUserResourceHeader());
         }
 
         const payload = {
@@ -177,7 +177,7 @@ export class UsersService {
                 return null;
             }
 
-            const user = await this.apiClient.get<UserContract>(userId, [await this.apiClient.getPortalHeader("getCurrentUser")]);
+            const user = await this.apiClient.get<UserContract>(userId, [await this.apiClient.getPortalHeader("getCurrentUser"), Utils.getIsUserResourceHeader()]);
 
             return new User(user);
         }
@@ -192,7 +192,7 @@ export class UsersService {
      * @param updateUserData 
      */
     public async updateUser(userId: string, firstName: string, lastName: string): Promise<User> {
-        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("updateUser")];
+        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("updateUser"), Utils.getIsUserResourceHeader()];
         const payload = {
             firstName: firstName,
             lastName: lastName
@@ -221,7 +221,7 @@ export class UsersService {
 
             const query = Utils.addQueryParameter(userId, "deleteSubscriptions=true&notify=true");
 
-            await this.apiClient.delete<string>(query, [header, await this.apiClient.getPortalHeader("deleteUser")]);
+            await this.apiClient.delete<string>(query, [header, await this.apiClient.getPortalHeader("deleteUser"), Utils.getIsUserResourceHeader()]);
 
             sessionStorage.setItem(Constants.closeAccount, "true");
             this.signOut();
@@ -258,7 +258,7 @@ export class UsersService {
     }
 
     public async createSignupRequest(signupRequest: MapiSignupRequest): Promise<void> {
-        await this.apiClient.post("/users", [await this.apiClient.getPortalHeader("createSignupRequest")], signupRequest);
+        await this.apiClient.post("/users", [await this.apiClient.getPortalHeader("createSignupRequest"), Utils.getIsUserResourceHeader()], signupRequest);
     }
 
     public async createResetPasswordRequest(email: string): Promise<void> {
@@ -276,7 +276,8 @@ export class UsersService {
         const headers = [
             { name: "Authorization", value: authToken },
             { name: "If-Match", value: "*" },
-            await this.apiClient.getPortalHeader("changePassword")
+            await this.apiClient.getPortalHeader("changePassword"),
+            Utils.getIsUserResourceHeader()
         ];
 
         const payload = {
@@ -309,7 +310,8 @@ export class UsersService {
             headers: [
                 { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                 { name: KnownHttpHeaders.Authorization, value: `${provider} id_token="${idToken}"` },
-                await this.apiClient.getPortalHeader("createUserWithOAuth")
+                await this.apiClient.getPortalHeader("createUserWithOAuth"),
+                Utils.getIsUserResourceHeader()
             ],
             body: JSON.stringify(user)
         });
