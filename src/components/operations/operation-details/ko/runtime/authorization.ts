@@ -336,7 +336,7 @@ export class Authorization {
             return;
         }
 
-        const pageOfProducts = await this.apiService.getAllApiProducts(this.api().id);
+        const pageOfProducts = await this.apiService.getAllApiProducts(`/apis/${this.api().id}`);
         const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
         const pageOfSubscriptions = await this.productService.getSubscriptions(userId);
         const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === SubscriptionState.active);

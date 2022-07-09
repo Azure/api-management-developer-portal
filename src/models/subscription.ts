@@ -34,7 +34,7 @@ export class Subscription {
         this.secondaryKey = contract.secondaryKey;
         this.startDate = (contract.startDate && contract.startDate.split("T")[0]) || undefined;
         this.stateComment = contract.stateComment;
-        this.userId = Utils.getResourceName("users", contract.ownerId, "shortId");
+        this.userId = contract.ownerId
 
         this.state = SubscriptionState[contract.state];
         this.isExpired = this.state === SubscriptionState.expired;
