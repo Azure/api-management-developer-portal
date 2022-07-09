@@ -112,6 +112,7 @@ export class Api {
         this.id = contract.id;
         this.name = contract.id;
         this.displayName = contract.name;
+        this.versionedDisplayName = contract.name;
         this.protocols = contract.protocols;
         this.description = contract.description;
         this.path = contract.path;
