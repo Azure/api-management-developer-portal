@@ -219,9 +219,7 @@ export class UsersService {
                 value: "*"
             };
 
-            const query = Utils.addQueryParameter(userId, "deleteSubscriptions=true&notify=true");
-
-            await this.apiClient.delete<string>(query, [header, await this.apiClient.getPortalHeader("deleteUser"), Utils.getIsUserResourceHeader()]);
+            await this.apiClient.delete<string>(userId, [header, await this.apiClient.getPortalHeader("deleteUser"), Utils.getIsUserResourceHeader()]);
 
             sessionStorage.setItem(Constants.closeAccount, "true");
             this.signOut();
