@@ -148,7 +148,7 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        const contract = await this.apiClient.get<SubscriptionContract>(subscriptionId, [await this.apiClient.getPortalHeader("getSubscription"), Utils.getIsUserResourceHeader()]);
+        const contract = await this.apiClient.get<SubscriptionContract>(`/subscriptions/${subscriptionId}`, [await this.apiClient.getPortalHeader("getSubscription"), Utils.getIsUserResourceHeader()]);
 
         if (!contract) {
             return null;
@@ -227,7 +227,7 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        await this.apiClient.post(`${subscriptionId}/regeneratePrimaryKey`, [await this.apiClient.getPortalHeader("regeneratePrimaryKey"), Utils.getIsUserResourceHeader()]);
+        await this.apiClient.post(`/subscriptions/${subscriptionId}/regeneratePrimaryKey`, [await this.apiClient.getPortalHeader("regeneratePrimaryKey"), Utils.getIsUserResourceHeader()]);
 
         return await this.getSubscription(subscriptionId);
     }
@@ -238,7 +238,7 @@ export class ProductService {
      */
     public async regenerateSecondaryKey(subscriptionId: string): Promise<Subscription> {
 
-        await this.apiClient.post(`${subscriptionId}/regenerateSecondaryKey`, [await this.apiClient.getPortalHeader("regenerateSecondaryKey"), Utils.getIsUserResourceHeader()]);
+        await this.apiClient.post(`/subscriptions/${subscriptionId}/regenerateSecondaryKey`, [await this.apiClient.getPortalHeader("regenerateSecondaryKey"), Utils.getIsUserResourceHeader()]);
         return await this.getSubscription(subscriptionId);
     }
 
@@ -293,7 +293,7 @@ export class ProductService {
                 state: SubscriptionState.cancelled
             };
 
-            await this.apiClient.patch(subscriptionId, headers, payload);
+            await this.apiClient.patch(`/subscriptions/${subscriptionId}`, headers, payload);
         }
 
         return await this.getSubscription(subscriptionId);
@@ -319,7 +319,7 @@ export class ProductService {
             name: subscriptionName
         };
 
-        await this.apiClient.patch(subscriptionId, headers, payload);
+        await this.apiClient.patch(`/subscriptions/${subscriptionId}`, headers, payload);
 
         return await this.getSubscription(subscriptionId);
     }
