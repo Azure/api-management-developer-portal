@@ -31,7 +31,7 @@ export class ProductService {
         }
 
         const pageOfSubscriptions = new Page<Subscription>();
-        const query = productId ? `?$filter=properties/scope eq '${productId}'` : "";
+        const query = productId ? `?$filter=scope eq '${productId}'` : "";
 
         try {
             const pageContract = await this.apiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`, [await this.apiClient.getPortalHeader("getSubscriptions")]);
@@ -190,7 +190,7 @@ export class ProductService {
         let query = `/products?$top=${take}&$skip=${skip}`;
 
         if (filter.pattern) {
-            query = Utils.addQueryParameter(query, `$filter=(contains(properties/displayName,'${encodeURIComponent(filter.pattern)}'))`);
+            query = Utils.addQueryParameter(query, `$filter=(contains(name,'${encodeURIComponent(filter.pattern)}'))`);
         }
 
         const page = await this.apiClient.get<Page<ProductContract>>(query, [await this.apiClient.getPortalHeader("getProductsPage"), Utils.getIsUserResourceHeader()]);

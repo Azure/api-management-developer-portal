@@ -336,7 +336,7 @@ export class ApiService {
 
             if (searchQuery.pattern) {
                 const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
-                query = Utils.addQueryParameter(query, `$filter=contains(properties/${searchQuery.propertyName || 'displayName'},'${pattern}')`);
+                query = Utils.addQueryParameter(query, `$filter=contains(${searchQuery.propertyName || 'name'},'${pattern}')`);
             }
 
             top = searchQuery && searchQuery.take || Constants.defaultPageSize;
@@ -427,7 +427,7 @@ export class ApiService {
         let query = `/apis/${apiName}/products?$top=${take}&$skip=${skip}`;
 
         if (filter.pattern) {
-            query = Utils.addQueryParameter(query, `$filter=(contains(properties/displayName,'${encodeURIComponent(filter.pattern)}'))`);
+            query = Utils.addQueryParameter(query, `$filter=(contains(name,'${encodeURIComponent(filter.pattern)}'))`);
         }
 
         const page = await this.apiClient.get<Page<ProductContract>>(query, [await this.apiClient.getPortalHeader("getApiProductsPage"), Utils.getIsUserResourceHeader()]);
@@ -443,7 +443,7 @@ export class ApiService {
 
         if (searchQuery.pattern) {
             const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
-            query = Utils.addQueryParameter(query, `$filter=contains(properties/displayName,'${pattern}')`);
+            query = Utils.addQueryParameter(query, `$filter=contains(name,'${pattern}')`);
         }
 
         if (searchQuery.skip) {
