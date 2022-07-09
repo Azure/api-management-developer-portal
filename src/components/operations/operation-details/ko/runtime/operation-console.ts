@@ -196,7 +196,7 @@ export class OperationConsole {
         this.responseStatusText(null);
         this.responseBody(null);
 
-        const operation = await this.apiService.getOperation(selectedOperation.id);
+        const operation = await this.apiService.getOperation(`apis/${selectedApi.id}/operations/${selectedOperation.id}`);
         const consoleOperation = new ConsoleOperation(selectedApi, operation);
         this.consoleOperation(consoleOperation);
 
