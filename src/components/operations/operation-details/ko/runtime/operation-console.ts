@@ -417,7 +417,7 @@ export class OperationConsole {
             } else if (contentTypeHeaderValue.includes('zip')) {
                 saveAs(blob, operationName + '.zip');
             } else {
-                responseReturn.body = "Unknown file format, couldn't save the file.";
+                saveAs(blob, operationName);
             }
         } else {
             responseReturn.body = await response.text();
