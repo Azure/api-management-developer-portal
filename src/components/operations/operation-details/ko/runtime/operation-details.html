@@ -47,6 +47,7 @@
                         <div role="columnheader" class="table-preset-head text-truncate">In</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Required</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Type</div>
+                        <div role="columnheader" class="table-preset-head">Example</div>
                         <div role="columnheader" class="table-preset-head">Description</div>
                     </div>
                 </div>
@@ -59,15 +60,18 @@
                         <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
                         <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type"></div>
                         <div role="cell">
-                            <span data-bind="markdown: parameter.description"></span>
-
                             <!-- ko foreach: { data: parameter.examples, as: 'example' } -->
                             <p>
-                                <span data-bind="text: example.title"></span>:
+                                <!-- ko ifnot: example.title === "default" && !example.description && parameter.examples.length === 1 -->
+                                    <span data-bind="text: example.title"></span>:
+                                <!-- /ko -->
                                 <span data-bind="text: example.value" class="text-monospace text-wrap"></span>
                                 <span data-bind="text: example.description" class="d-block"></span>
                             </p>
                             <!-- /ko -->
+                        </div>
+                        <div role="cell">
+                            <span data-bind="markdown: parameter.description"></span>
                         </div>
                     </div>
                     <!-- /ko -->
@@ -106,6 +110,9 @@
                             </p>
                             <!-- /ko -->
                         </div>
+                        <div role="cell">
+                            <span data-bind="markdown: parameter.description"></span>
+                        </div>
                     </div>
                     <!-- /ko -->
                 </div>
@@ -138,7 +145,7 @@
                     <!-- /ko -->
 
                     <!-- ko if: representation.formParameters?.length > 0 -->
-                    <div role="table" class="table-preset table-preset-params">
+                    <div role="table" class="table-preset table-preset-body">
                         <div class="d-contents" role="rowgroup">
                             <div class="d-contents" role="row">
                                 <div role="columnheader" class="table-preset-head text-truncate">Name</div>
