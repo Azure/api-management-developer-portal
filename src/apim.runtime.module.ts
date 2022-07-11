@@ -85,13 +85,12 @@ import { OauthServerConfiguration } from "./components/operations/operation-deta
 import { AadServiceV2 } from "./services/aadServiceV2";
 import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
 import { staticDataEnvironment } from "./../environmentConstants";
-import { DevPortalLogger } from "./logging/devPortalLogger";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindSingleton("logger", ConsoleLogger);
-        injector.bindSingleton("devPortalLogger", DevPortalLogger);
+        injector.bindSingleton("devPortalLogger", ConsoleLogger);
         injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindToCollection("autostart", BalloonBindingHandler);
         injector.bindToCollection("autostart", ResizableBindingHandler);

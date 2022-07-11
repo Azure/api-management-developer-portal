@@ -25,7 +25,7 @@ import { LogItem, WebsocketClient } from "./websocketClient";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ConsoleRepresentation } from "../../../../../models/console/consoleRepresentation";
 import { cloneDeep } from "lodash";
-import { DevPortalLogger } from "../../../../../logging/devPortalLogger";
+import { ConsoleLogger } from "@paperbits/common/logging";
 
 @Component({
     selector: "operation-console",
@@ -75,7 +75,7 @@ export class OperationConsole {
         private readonly httpClient: HttpClient,
         private readonly routeHelper: RouteHelper,
         private readonly settingsProvider: ISettingsProvider,
-        private readonly devPortalLogger: DevPortalLogger
+        private readonly devPortalLogger: ConsoleLogger
     ) {
         this.templates = templates;
 
