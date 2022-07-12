@@ -75,7 +75,7 @@ export class OperationConsole {
         private readonly httpClient: HttpClient,
         private readonly routeHelper: RouteHelper,
         private readonly settingsProvider: ISettingsProvider,
-        private readonly devPortalLogger: ConsoleLogger
+        private readonly logger: ConsoleLogger
     ) {
         this.templates = templates;
 
@@ -647,14 +647,14 @@ export class OperationConsole {
     }
 
     public logCopyEvent(): void {
-        this.devPortalLogger.trackEvent("CodeSampleCopied", {"language": this.selectedLanguage(), "message": "Code sample copied to clipboard"});
+        this.logger.trackEvent("CodeSampleCopied", {"language": this.selectedLanguage(), "message": "Code sample copied to clipboard"});
     }
 
     public logLanguageUpdated(): void {
-        this.devPortalLogger.trackEvent("CodeLanguageChange", {"language": this.selectedLanguage(), "message": "Code sample language changed"});
+        this.logger.trackEvent("CodeLanguageChange", {"language": this.selectedLanguage(), "message": "Code sample language changed"});
     }
 
     public logSentRequest(apiId: string, operationId: string, apiMethod: string, responseCode: string): void {
-        this.devPortalLogger.trackEvent("TestConsoleRequest", {"apiId": apiId, "operationId": operationId, "apiMethod": apiMethod, "responseCode": responseCode});
+        this.logger.trackEvent("TestConsoleRequest", {"apiId": apiId, "operationId": operationId, "apiMethod": apiMethod, "responseCode": responseCode});
     }
 }

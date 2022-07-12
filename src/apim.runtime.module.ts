@@ -90,7 +90,6 @@ import { staticDataEnvironment } from "./../environmentConstants";
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindSingleton("logger", ConsoleLogger);
-        injector.bindSingleton("devPortalLogger", ConsoleLogger);
         injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindToCollection("autostart", BalloonBindingHandler);
         injector.bindToCollection("autostart", ResizableBindingHandler);
