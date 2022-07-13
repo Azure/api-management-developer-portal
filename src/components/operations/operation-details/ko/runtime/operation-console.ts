@@ -494,7 +494,7 @@ export class OperationConsole {
                 }
             }
 
-            this.logSentRequest(this.api().id, consoleOperation.opeationName, method, response.statusCode.toString());
+            this.logSentRequest(this.api().name, consoleOperation.opeationName, method, response.statusCode.toString());
         }
         catch (error) {
             this.logSentRequest(this.api().name, consoleOperation.opeationName, method, error.code.toString());
