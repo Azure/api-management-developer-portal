@@ -1,4 +1,4 @@
-import { ASK_FOR_SECRETS_MESSAGE_KEY, TSecrets } from "@azure/apimanagement-custom-widget-tools";
+import { ASK_FOR_SECRETS_MESSAGE_KEY, TSecrets } from "@azure/api-management-custom-widgets-tools";
 
 function listenForSecretsRequests(): void {
     window.addEventListener("message", ({data}) => {
