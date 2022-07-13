@@ -1,5 +1,5 @@
 import { OVERRIDE_PORT_KEY } from "@azure/api-management-custom-widgets-scaffolder";
-import { EDITOR_DATA_KEY, TEditorData, TValuesBase } from "@azure/apimanagement-custom-widget-tools";
+import { EDITOR_DATA_KEY, TEditorData, TEnvironment, TValuesBase } from "@azure/api-management-custom-widgets-tools";
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
 
@@ -24,7 +24,7 @@ export function buildBlobConfigSrc(name: string): string {
 export async function buildWidgetSource(
     blobStorage: MapiBlobStorage,
     model: CustomWidgetModel,
-    environment: string,
+    environment: TEnvironment,
     filePath: string,
 ): Promise<{ override: string | null, src: string }> {
     // check is necessary during publishing as window.sessionStorage.getItem throws "DOMException {}  node:internal/process/promises:279"
