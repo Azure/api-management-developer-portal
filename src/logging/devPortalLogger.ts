@@ -34,11 +34,23 @@ export class DevPortalLogger implements Logger {
     }
 
     public async trackError(error: Error, properties?: Bag<string>): Promise<void> {
-        // Not implemented
+        let devPortalEvent = new DevPortalEvent();
+        
+        devPortalEvent.eventType = "Error";
+        devPortalEvent.message = properties?.message;
+        devPortalEvent.eventData = JSON.stringify(error);
+        
+        this.traceEvent(devPortalEvent);
     }
 
     public async trackView(viewName: string, properties?: Bag<string>): Promise<void> {
-        // Not implemented
+        let devPortalEvent = new DevPortalEvent();
+        
+        devPortalEvent.eventType = viewName;
+        devPortalEvent.message = properties?.message;
+        devPortalEvent.eventData = JSON.stringify(properties);
+        
+        this.traceEvent(devPortalEvent);
     }
 
     public async trackMetric(metricName: string, properties?: Bag<string>): Promise<void> {
