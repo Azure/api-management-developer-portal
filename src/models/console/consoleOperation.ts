@@ -11,6 +11,7 @@ import { ConsoleHeader } from "./consoleHeader";
 export class ConsoleOperation {
     private readonly api: Api;
 
+    public readonly opeationName: string;
     public readonly name: string;
     public readonly method: string;
     public readonly host: ConsoleHost;
@@ -27,6 +28,7 @@ export class ConsoleOperation {
     constructor(api: Api, operation: Operation) {
         this.api = api;
         this.name = operation.displayName;
+        this.opeationName = operation.name;
         this.method = operation.method.toUpperCase();
         this.host = new ConsoleHost();
         this.urlTemplate = operation.urlTemplate;
