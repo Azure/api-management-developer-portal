@@ -25,6 +25,7 @@ import { LogItem, WebsocketClient } from "./websocketClient";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ConsoleRepresentation } from "../../../../../models/console/consoleRepresentation";
 import { cloneDeep } from "lodash";
+import { Logger } from "@paperbits/common/logging";
 
 @Component({
     selector: "operation-console",
@@ -73,7 +74,8 @@ export class OperationConsole {
         private readonly tenantService: TenantService,
         private readonly httpClient: HttpClient,
         private readonly routeHelper: RouteHelper,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly logger: Logger
     ) {
         this.templates = templates;
 
@@ -175,6 +177,7 @@ export class OperationConsole {
             this.consoleOperation().request.selectedRepresentation(representation);
             this.updateRequestSummary();
         });
+        this.selectedLanguage.subscribe(this.logLanguageUpdated);
     }
 
     private async resetConsole(): Promise<void> {
@@ -419,7 +422,6 @@ export class OperationConsole {
         this.requestError(null);
         this.sendingRequest(true);
         this.responseStatusCode(null);
-
         const consoleOperation = this.consoleOperation();
         const request = consoleOperation.request;
         const url = consoleOperation.requestUrl();
@@ -491,8 +493,11 @@ export class OperationConsole {
                     this.responseBody(Utils.formatXml(this.responseBody()));
                 }
             }
+
+            this.logSentRequest(this.api().name, consoleOperation.opeationName, method, response.statusCode.toString());
         }
         catch (error) {
+            this.logSentRequest(this.api().name, consoleOperation.opeationName, method, error.code.toString());
             if (error.code && error.code === "RequestError") {
                 this.requestError(`Since the browser initiates the request, it requires Cross-Origin Resource Sharing (CORS) enabled on the server. <a href="https://aka.ms/AA4e482" target="_blank">Learn more</a>`);
             }
@@ -641,4 +646,15 @@ export class OperationConsole {
         this.collapsedRequest(!this.collapsedRequest());
     }
 
+    public logCopyEvent(): void {
+        this.logger.trackEvent("CodeSampleCopied", {"language": this.selectedLanguage(), "message": "Code sample copied to clipboard"});
+    }
+
+    public logLanguageUpdated(): void {
+        this.logger.trackEvent("CodeLanguageChange", {"language": this.selectedLanguage(), "message": "Code sample language changed"});
+    }
+
+    public logSentRequest(apiName: string, operationName: string, apiMethod: string, responseCode: string): void {
+        this.logger.trackEvent("TestConsoleRequest", {"apiName": apiName, "operationName": operationName, "apiMethod": apiMethod, "responseCode": responseCode});
+    }
 }

@@ -402,7 +402,7 @@
                     <i class="icon-emb icon-emb-eye"></i> Show
                     <!-- /ko -->
                 </button>
-                <button class="code-snippet-command" data-bind="copyToClipboard: $component.getPlainTextCodeSample"
+                <button class="code-snippet-command" data-bind="copyToClipboard: $component.getPlainTextCodeSample, click: logCopyEvent"
                     aria-label="Copy to clipboard">
                     <i class="icon-emb icon-emb-duplicate"></i> Copy
                 </button>
