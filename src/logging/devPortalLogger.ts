@@ -5,7 +5,6 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { DevPortalEvent } from "../models/logging/devPortalEvent";
 import { v4 as uuidv4 } from 'uuid';
 import * as Constants from "./../constants";
-import { version } from "./../../package.json";
 
 export class DevPortalLogger implements Logger {
     private clientVersion: string;
@@ -16,7 +15,7 @@ export class DevPortalLogger implements Logger {
         private readonly httpClient: HttpClient,
         private readonly settingsProvider: ISettingsProvider
     ) {
-        this.clientVersion = version;
+        this.clientVersion = process.env.VERSION;
     }
 
     public async trackSession(properties?: object): Promise<void> {
