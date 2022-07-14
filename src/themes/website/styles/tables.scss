@@ -93,7 +93,11 @@ $body-bg: none;
     grid-template-columns: minmax(150px, 350px) 100px 100px 200px minmax(350px, 1fr);
 }
 
-.table-preset-headers {
+.table-preset-headers-request {
+    grid-template-columns: minmax(150px, 350px) 100px 200px minmax(350px, 1fr) minmax(350px, 1fr);
+}
+
+.table-preset-headers-response {
     grid-template-columns: minmax(150px, 350px) 100px 200px minmax(350px, 1fr);
 }
 
