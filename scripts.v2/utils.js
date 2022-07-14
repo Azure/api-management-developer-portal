@@ -47,7 +47,7 @@ async function getStorageSasTokenOrThrow(managementApiEndpoint, managementApiAcc
  * @param {string} managementApiAccessToken the SAS token
  */
 async function getStorageSasToken(managementApiEndpoint, managementApiAccessToken) {
-    const response = await request("POST", `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/portalSettings/mediaContent/listSecrets?api-version=2019-12-01`, managementApiAccessToken);
+    const response = await request("POST", `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/portalSettings/mediaContent/listSecrets?api-version=2021-08-01`, managementApiAccessToken);
     return response.containerSasUrl;
 }
 
