@@ -82,12 +82,13 @@
             <!-- ko if: operation().request && operation().request.headers && operation().request.headers.length > 0 -->
             <h4>Request headers</h4>
 
-            <div role="table" class="table-preset table-preset-headers">
+            <div role="table" class="table-preset table-preset-headers-request">
                 <div class="d-contents" role="rowgroup">
                     <div class="d-contents" role="row">
                         <div role="columnheader" class="table-preset-head text-truncate">Name</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Required</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Type</div>
+                        <div role="columnheader" class="table-preset-head">Example</div>
                         <div role="columnheader" class="table-preset-head">Description</div>
                     </div>
                 </div>
@@ -100,8 +101,6 @@
                         <div role="cell" class="text-truncate text-monospace"
                             data-bind="text: header.type, attr: { title: header.type }"></div>
                         <div role="cell">
-                            <span data-bind="markdown: header.description"></span>
-
                             <!-- ko foreach: { data: header.examples, as: 'example' } -->
                             <p>
                                 <span data-bind="text: example.title"></span>:
@@ -111,7 +110,7 @@
                             <!-- /ko -->
                         </div>
                         <div role="cell">
-                            <span data-bind="markdown: parameter.description"></span>
+                            <span data-bind="markdown: header.description"></span>
                         </div>
                     </div>
                     <!-- /ko -->
@@ -193,7 +192,7 @@
             <!-- ko if: response.headers && response.headers.length > 0 -->
             <h4>Response headers</h4>
 
-            <div role="table" class="table-preset table-preset-headers">
+            <div role="table" class="table-preset table-preset-headers-response">
                 <div class="d-contents" role="rowgroup">
                     <div class="d-contents" role="row">
                         <div role="columnheader" class="table-preset-head text-truncate">Name</div>
