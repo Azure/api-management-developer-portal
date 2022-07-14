@@ -1,11 +1,11 @@
 import * as ko from "knockout";
 import { TScaffoldTech, TECHNOLOGIES, displayNameToName } from "@azure/api-management-custom-widgets-scaffolder";
+import { buildBlobConfigSrc, buildBlobDataSrc } from "@azure/api-management-custom-widgets-tools";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import * as Utils from "@paperbits/common/utils";
 import { MapiBlobStorage } from "../../persistence";
 import { CustomWidgetHandlers, TCustomWidgetConfig } from "../custom-widget";
-import { buildBlobConfigSrc, buildBlobDataSrc, dataFolder, root } from "../custom-widget/ko/utils";
 import { CustomWidgetModel } from "./customWidgetModel";
 import template from "./createWidget.html";
 // tslint:disable-next-line:no-implicit-dependencies
@@ -18,7 +18,7 @@ const techToName: Record<TScaffoldTech, string> = {
 
 // TODO finish the command
 const buildScaffoldCommand = ({displayName, technology}: TCustomWidgetConfig): string =>
-    `npx ... --displayName="${displayName}" --technology="${technology}" --openUrl="${window.location.origin}"`
+    `npx @azure/api-management-custom-widgets-scaffolder --displayName="${displayName}" --technology="${technology}" --openUrl="${window.location.origin}"`
 
 @Component({
     selector: "custom-widget-create",
@@ -85,8 +85,9 @@ export class CreateWidget {
         await this.blobStorage.uploadBlob(buildBlobConfigSrc(name), content);
 
         const fallbackUiUnit8 = Utils.stringToUnit8Array(fallbackUi);
-        await this.blobStorage.uploadBlob(`/${root}/${dataFolder}/${name}/index.html`, fallbackUiUnit8);
-        await this.blobStorage.uploadBlob(`/${root}/${dataFolder}/${name}/editor.html`, fallbackUiUnit8);
+        const dataPath = buildBlobDataSrc(name);
+        await this.blobStorage.uploadBlob(`/${dataPath}index.html`, fallbackUiUnit8);
+        await this.blobStorage.uploadBlob(`/${dataPath}editor.html`, fallbackUiUnit8);
 
         this.widgetService.registerWidgetHandler(new CustomWidgetHandlers(config));
         this.configs.push(config);

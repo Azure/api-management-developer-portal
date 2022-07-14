@@ -1,12 +1,8 @@
 import { OVERRIDE_PORT_KEY, OVERRIDE_DEFAULT_PORT } from "@azure/api-management-custom-widgets-scaffolder";
+import { ROOT, CONFIGS_FOLDER, CONFIG_FILE_NAME } from "@azure/api-management-custom-widgets-tools";
 import { MapiBlobStorage } from "../../persistence";
 import { TCustomWidgetConfig } from "../custom-widget";
-import {
-    root,
-    configsFolder,
-    configFileName,
-    OVERRIDE_CONFIG_SESSION_KEY_PREFIX,
-} from "../custom-widget/ko/utils";
+import { OVERRIDE_CONFIG_SESSION_KEY_PREFIX } from "../custom-widget/ko/utils";
 
 async function loadCustomWidgetConfigs(blobStorage: MapiBlobStorage): Promise<TCustomWidgetConfig[]> {
     const overridesPromises = [];
@@ -21,14 +17,14 @@ async function loadCustomWidgetConfigs(blobStorage: MapiBlobStorage): Promise<TC
         sources.forEach(source => {
             try {
                 const url = new URL(source);
-                overridesPromises.push(fetch(url.href + configFileName));
+                overridesPromises.push(fetch(url.href + CONFIG_FILE_NAME));
             } catch (e) {
                 console.warn(source, e);
             }
         });
     }
 
-    const configsNames = await blobStorage.listBlobs(`${root}/${configsFolder}/`);
+    const configsNames = await blobStorage.listBlobs(`${ROOT}/${CONFIGS_FOLDER}/`);
     const configsUint8s = await Promise.all(configsNames.map(blobName => blobStorage.downloadBlob(blobName)));
     const configs: TCustomWidgetConfig[] = configsUint8s.map(uint8 => JSON.parse(new TextDecoder().decode(uint8)));
 

@@ -1,5 +1,11 @@
 import { OVERRIDE_PORT_KEY } from "@azure/api-management-custom-widgets-scaffolder";
-import { EDITOR_DATA_KEY, TEditorData, TEnvironment, TValuesBase } from "@azure/api-management-custom-widgets-tools";
+import {
+    buildBlobDataSrc,
+    EDITOR_DATA_KEY,
+    TEditorData,
+    TEnvironment,
+    TValuesCommon
+} from "@azure/api-management-custom-widgets-tools";
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
 
@@ -7,19 +13,6 @@ import { CustomWidgetModel } from "../customWidgetModel";
  * Signals that the widgets' source is being overridden (for local development). Optionally holds URL to overrides' config files.
  */
 export const OVERRIDE_CONFIG_SESSION_KEY_PREFIX = OVERRIDE_PORT_KEY + "_";
-
-export const root = "custom-widgets";
-export const dataFolder = "data";
-export const configsFolder = "configs";
-export const configFileName = "config.msapim.json";
-
-export function buildBlobDataSrc(name: string): string {
-    return `/${root}/${dataFolder}/${name}`;
-}
-
-export function buildBlobConfigSrc(name: string): string {
-    return `/${root}/${configsFolder}/${name}/${configFileName}`;
-}
 
 export async function buildWidgetSource(
     blobStorage: MapiBlobStorage,
@@ -34,12 +27,12 @@ export async function buildWidgetSource(
 
     // tslint:disable-next-line:triple-equals
     const url = new URL(developmentSrc == null ? (
-        await blobStorage.getDownloadUrlWithoutToken(`${buildBlobDataSrc(model.name)}/${filePath}`)
+        await blobStorage.getDownloadUrlWithoutToken(`${buildBlobDataSrc(model.name)}${filePath}`)
     ) : developmentSrc + filePath);
 
     url.pathname = decodeURIComponent(url.pathname);
 
-    const data: TEditorData<TValuesBase> = {
+    const data: TEditorData<TValuesCommon> = {
         values: JSON.parse(model.customInputValue).values,
         origin: window.location.origin, // TODO later once connected to BE origin during publish
         instanceId: model.instanceId,
