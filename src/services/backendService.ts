@@ -6,7 +6,7 @@ import { ResetRequest, ChangePasswordRequest } from "../contracts/resetRequest";
 import { IAuthenticator } from "../authentication";
 import { DelegationAction, DelegationActionPath } from "../contracts/tenantSettings";
 import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
-import { DeveloperPortalType, SettingNames } from "../constants";
+import { DeveloperPortalType, SettingNames, WarningBackendUrlMissing } from "../constants";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { Utils } from "../utils";
@@ -182,7 +182,7 @@ export class BackendService {
         if (response.statusCode === 200) {
             const result = response.toObject();
             return result["url"];
-        } 
+        }
         else {
             throw Error(response.toText());
         }
@@ -240,7 +240,7 @@ export class BackendService {
                 return response.toObject();
             }
             if (!this.portalUrl && this.developerPortalType === DeveloperPortalType.selfHosted) {
-                console.error(`Backend URL is missing. See setting "backendUrl" in the configuration file config.runtime.json. OAuth authentication in Test console and Captcha widget requires this setting, pointing to your APIM service developer portal URL. In addition, it requires the origin ${location.origin} to be specified in CORS settings.`);
+                console.error(WarningBackendUrlMissing);
             }
         }
         else {

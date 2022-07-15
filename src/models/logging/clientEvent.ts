@@ -1,4 +1,4 @@
-export class DevPortalEvent {
+export class ClientEvent {
     /**
      * Event type.
      */
@@ -15,7 +15,7 @@ export class DevPortalEvent {
     public eventData: string;
 
     /**
-     * ISO representation of current time.
+     * ISO representation of current time, e.g. `2022-01-01T00:00:00.000Z`.
      */
     public timestamp: string;
 
