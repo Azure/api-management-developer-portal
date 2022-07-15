@@ -2,18 +2,18 @@ import * as ko from "knockout";
 import template from "./productSubscribeEditor.html";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
 import { ProductSubscribeModel } from "../productSubscribeModel";
-import { HyperlinkModel } from "@paperbits/common/permalinks";
+
 
 @Component({
     selector: "product-subscribe-editor",
     template: template
 })
 export class ProductSubscribeEditor {
-	public readonly showTermsByDefault: ko.Observable<boolean>;
+    public readonly showTermsByDefault: ko.Observable<boolean>;
 
 
     constructor() {
-		this.showTermsByDefault = ko.observable(false);
+        this.showTermsByDefault = ko.observable(false);
     }
 
     @Param()
@@ -24,12 +24,12 @@ export class ProductSubscribeEditor {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-		this.showTermsByDefault(this.model.showTermsByDefault);
-	    this.showTermsByDefault.subscribe(this.applyChanges);  
+        this.showTermsByDefault(this.model.showTermsByDefault);
+        this.showTermsByDefault.subscribe(this.applyChanges);
     }
 
     private applyChanges(): void {
-		this.model.showTermsByDefault = this.showTermsByDefault();
+        this.model.showTermsByDefault = this.showTermsByDefault();
         this.onChange(this.model);
     }
 

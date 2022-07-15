@@ -2,7 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const packageJson = require('./package.json');
+const packageJson = require("./package.json");
 
 
 const runtimeConfig = {
@@ -70,9 +70,7 @@ const runtimeConfig = {
             ]
         }),
         new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }),
-        new webpack.DefinePlugin({
-            'process.env.VERSION': JSON.stringify(packageJson.version)
-        })
+        new webpack.DefinePlugin({ "process.env.VERSION": JSON.stringify(packageJson.version) })
     ],
     resolve: {
         extensions: [".js", ".ts", ".jsx", ".tsx", ".html", ".scss"],

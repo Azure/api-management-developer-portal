@@ -25,36 +25,30 @@ export class ProvisionService {
 
     public async provision(): Promise<void> {
         const dataUrl = `/editors/templates/default.json`;
+        const dataObj = await this.fetchData(dataUrl);
+        const keys = Object.keys(dataObj);
+        const accessToken = await this.authenticator.getAccessTokenAsString();
 
-        try {
-            const dataObj = await this.fetchData(dataUrl);
-            const keys = Object.keys(dataObj);
-            const accessToken = await this.authenticator.getAccessTokenAsString();
-
-            if (!accessToken) {
-                this.viewManager.notifyError(`Unable to setup website`, `Management API access token is empty or invald.`);
-            }
-
-            for (const key of keys) {
-                const contentItem = dataObj[key];
-                const url = `${key}?api-version=${Constants.managementApiVersion}`;
-                await this.mapiClient.put(
-                    url, 
-                    [
-                        { name: KnownHttpHeaders.IfMatch, value: "*" },
-                        { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
-                        { name: KnownHttpHeaders.Authorization, value: accessToken },
-                        await this.mapiClient.getPortalHeader("provision")
-                    ],
-                    contentItem);
-            }
-            this.router.navigateTo(Constants.pageUrlHome);
-            this.viewManager.setHost({ name: "page-host" });
-            this.viewManager.showToolboxes();
+        if (!accessToken) {
+            this.viewManager.notifyError(`Unable to setup website`, `Management API access token is empty or invald.`);
         }
-        catch (error) {
-            throw error;
+
+        for (const key of keys) {
+            const contentItem = dataObj[key];
+            const url = `${key}?api-version=${Constants.managementApiVersion}`;
+            await this.mapiClient.put(
+                url,
+                [
+                    { name: KnownHttpHeaders.IfMatch, value: "*" },
+                    { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
+                    { name: KnownHttpHeaders.Authorization, value: accessToken },
+                    await this.mapiClient.getPortalHeader("provision")
+                ],
+                contentItem);
         }
+        this.router.navigateTo(Constants.pageUrlHome);
+        this.viewManager.setHost({ name: "page-host" });
+        this.viewManager.showToolboxes();
     }
 
     private async cleanupContent(): Promise<void> {
@@ -62,7 +56,7 @@ export class ProvisionService {
 
         try {
             const response = await this.mapiClient.get(
-                `contentTypes?api-version=${Constants.managementApiVersion}`, 
+                `contentTypes?api-version=${Constants.managementApiVersion}`,
                 [
                     { name: KnownHttpHeaders.IfMatch, value: "*" },
                     { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
@@ -74,7 +68,7 @@ export class ProvisionService {
             for (const contentType of contentTypes) {
                 const contentTypeName = contentType["name"];
                 const itemsResponse = await this.mapiClient.get(
-                    `contentTypes/${contentTypeName}/contentItems?api-version=${Constants.managementApiVersion}`, 
+                    `contentTypes/${contentTypeName}/contentItems?api-version=${Constants.managementApiVersion}`,
                     [
                         { name: KnownHttpHeaders.IfMatch, value: "*" },
                         { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
@@ -85,7 +79,7 @@ export class ProvisionService {
                 const items = Object.values(itemsResponse["value"]);
                 for (const item of items) {
                     await this.mapiClient.delete(
-                        `${item["id"]}?api-version=${Constants.managementApiVersion}`, 
+                        `${item["id"]}?api-version=${Constants.managementApiVersion}`,
                         [
                             { name: KnownHttpHeaders.IfMatch, value: "*" },
                             { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
