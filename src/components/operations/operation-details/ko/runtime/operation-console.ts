@@ -3,7 +3,7 @@ import * as validation from "knockout.validation";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
-import { RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
+import { downloadableTypes, RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
 import { Api } from "../../../../../models/api";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
@@ -25,6 +25,8 @@ import { LogItem, WebsocketClient } from "./websocketClient";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ConsoleRepresentation } from "../../../../../models/console/consoleRepresentation";
 import { cloneDeep } from "lodash";
+import { saveAs } from "file-saver";
+import { getExtension } from "mime";
 import { Logger } from "@paperbits/common/logging";
 
 @Component({
@@ -376,12 +378,56 @@ export class OperationConsole {
         this.sendRequest();
     }
 
-    public async sendFromBrowser<T>(request: HttpRequest): Promise<HttpResponse<T>> {
-        const response = await this.httpClient.send<any>(request);
-        return response;
+    public async sendFromBrowser<T>(url: string, method: string, headers: ConsoleHeader[], body: any, operationName: string) {
+        const stringifiedHeaders: object = headers.map(header => `${header.name()}: ${header.value()}`);
+        const response = await fetch(url, {
+            method: method,
+            headers: { ...stringifiedHeaders },
+            body: body
+        });
+
+        let headersString = '';
+        response.headers.forEach((value, name) => headersString += `${name}: ${value}\n`);
+
+        const contentTypeHeaderValue = response.headers.get(KnownHttpHeaders.ContentType);
+
+        const responseReturn: any = {
+            headers: headersString,
+            contentTypeHeader: contentTypeHeaderValue,
+            statusCode: response.status,
+            statusText: response.statusText
+        };
+
+        if (downloadableTypes.some(type => contentTypeHeaderValue.includes(type))) {
+            const reader = response.body.getReader();
+            const chunks = [];
+
+            while (true) {
+                const { done, value } = await reader.read();
+          
+                if (done) {
+                    break;
+                }
+
+                chunks.push(value); 
+            }
+
+            const blob = new Blob(chunks, { type: contentTypeHeaderValue });
+            const fileExtension = getExtension(contentTypeHeaderValue);
+
+            if (fileExtension) {
+                saveAs(blob, operationName + '.' + fileExtension);
+            } else {
+                saveAs(blob, operationName);
+            }
+        } else {
+            responseReturn.body = await response.text();
+        }
+
+        return responseReturn;
     }
 
-    public async sendFromProxy<T>(request: HttpRequest): Promise<HttpResponse<T>> {
+    public async sendFromProxy<T>(request: HttpRequest) {
         if (request.body) {
             request.body = Buffer.from(request.body);
         }
@@ -407,12 +453,15 @@ export class OperationConsole {
             ? Buffer.from(responsePackage.body.data)
             : null;
 
+        let headersString = responsePackage.headers.map(x => `${x.name}: ${x.value}`).join("\n");
+        const contentTypeHeader = responsePackage.headers.find(x => x.name === KnownHttpHeaders.ContentType.toLowerCase());
+
         const response: any = {
-            headers: responsePackage.headers,
+            headers: headersString,
+            contentTypeHeader: contentTypeHeader && contentTypeHeader.value,
             statusCode: responsePackage.statusCode,
             statusText: responsePackage.statusMessage,
-            body: responseBodyBuffer,
-            toText: () => responseBodyBuffer.toString("utf8")
+            body: responseBodyBuffer.toString("utf8")
         };
 
         return response;
@@ -459,9 +508,9 @@ export class OperationConsole {
 
             const response = this.useCorsProxy()
                 ? await this.sendFromProxy(request)
-                : await this.sendFromBrowser(request);
+                : await this.sendFromBrowser(url, method, headers, payload, consoleOperation.name);
 
-            this.responseHeadersString(response.headers.map(x => `${x.name}: ${x.value}`).join("\n"));
+            this.responseHeadersString(response.headers);
 
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
 
@@ -473,23 +522,14 @@ export class OperationConsole {
 
             this.responseStatusCode(response.statusCode.toString());
             this.responseStatusText(responseStatusText);
-            this.responseBody(response.toText());
+            this.responseBody(response.body);
 
-            const responseHeaders = response.headers.map(x => {
-                const consoleHeader = new ConsoleHeader();
-                consoleHeader.name(x.name);
-                consoleHeader.value(x.value);
-                return consoleHeader;
-            });
-
-            const contentTypeHeader = responseHeaders.find((header) => header.name().toLowerCase() === KnownHttpHeaders.ContentType.toLowerCase());
-
-            if (contentTypeHeader) {
-                if (contentTypeHeader.value().toLowerCase().indexOf("json") >= 0) {
+            if (response.contentTypeHeader) {
+                if (response.contentTypeHeader.toLowerCase().includes("json")) {
                     this.responseBody(Utils.formatJson(this.responseBody()));
                 }
 
-                if (contentTypeHeader.value().toLowerCase().indexOf("xml") >= 0) {
+                if (response.contentTypeHeader.toLowerCase().includes("xml")) {
                     this.responseBody(Utils.formatXml(this.responseBody()));
                 }
             }
