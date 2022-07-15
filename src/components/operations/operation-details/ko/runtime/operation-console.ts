@@ -417,8 +417,6 @@ export class OperationConsole {
 
             if (fileExtension) {
                 saveAs(blob, operationName + '.' + fileExtension);
-            } else if (contentTypeHeaderValue.includes('zip')) {
-                saveAs(blob, operationName + '.zip');
             } else {
                 saveAs(blob, operationName);
             }
@@ -527,11 +525,11 @@ export class OperationConsole {
             this.responseBody(response.body);
 
             if (response.contentTypeHeader) {
-                if (response.contentTypeHeader.toLowerCase().search("json") !== -1) {
+                if (response.contentTypeHeader.toLowerCase().includes("json")) {
                     this.responseBody(Utils.formatJson(this.responseBody()));
                 }
 
-                if (response.contentTypeHeader.toLowerCase().search("xml") !== -1) {
+                if (response.contentTypeHeader.toLowerCase().includes("xml")) {
                     this.responseBody(Utils.formatXml(this.responseBody()));
                 }
             }
