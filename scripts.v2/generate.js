@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { request, uploadBlobs, getStorageSasTokenOrThrow } = require("./utils");
+const { request, uploadBlobs, getStorageSasTokenOrThrow, apiVersion } = require("./utils");
 const managementApiEndpoint = process.argv[2]
 const managementApiAccessToken = process.argv[3]
 const sourceFolder = process.argv[4];
@@ -14,7 +14,7 @@ async function generateJson() {
         for (const key of keys) {
             await request(
                 "PUT",
-                `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/${key}?api-version=2021-08-01`,
+                `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/${key}?api-version=${apiVersion}`,
                 managementApiAccessToken,
                 dataObj[key]);
         }
