@@ -1,12 +1,21 @@
 import { Bag } from "@paperbits/common";
 import { Logger } from "@paperbits/common/logging";
-import { AppInsights } from "applicationinsights-js";
+import { ApplicationInsights } from "@microsoft/applicationinsights-web";
 
 
 export class AppInsightsLogger implements Logger {
+    private readonly appInsights: ApplicationInsights;
+
     constructor(private readonly instrumentationKey: string) {
         if (this.instrumentationKey) {
-            AppInsights.downloadAndSetup({ instrumentationKey: this.instrumentationKey });
+            this.appInsights = new ApplicationInsights({
+                config: {
+                    instrumentationKey: instrumentationKey
+                }
+            });
+
+            this.appInsights.loadAppInsights();
+            this.appInsights.trackPageView();
         }
         else {
             console.warn("AppInsights instrumentation key wasn't specified.");
@@ -20,19 +29,19 @@ export class AppInsightsLogger implements Logger {
     }
 
     public async trackEvent(eventName: string, properties?: Bag<string>): Promise<void> {
-        AppInsights.trackEvent(eventName, properties);
+        this.appInsights.trackEvent({ name: eventName, properties });
     }
 
     public async trackError(error: Error, properties?: Bag<string>): Promise<void> {
-        AppInsights.trackException(error);
+        this.appInsights.trackException({ exception: error });
     }
 
     public async trackView(viewName: string, properties?: Bag<string>): Promise<void> {
-        AppInsights.trackPageView(name);
+        this.appInsights.trackPageView({ name: viewName, properties: properties });
     }
 
     public async trackMetric(metricName: string, properties?: Bag<string>): Promise<void> {
-        // Not implemented
+        // Not supported
     }
 
     public async trackDependency(name: string, properties?: Bag<string>): Promise<void> {
