@@ -14,6 +14,6 @@ declare module "*.txt" {
 }
 
 declare module "*!text" {
-    var _: string;
+    const _: string;
     export default  _;
 }
