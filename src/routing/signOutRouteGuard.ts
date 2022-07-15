@@ -6,7 +6,7 @@ import { Identity } from "../contracts/identity";
 import { TenantService } from "../services/tenantService";
 import { BackendService } from "../services/backendService";
 import { DelegationAction, DelegationParameters } from "../contracts/tenantSettings";
-import { clear } from 'idb-keyval';
+import { clear } from "idb-keyval";
 
 export class SignOutRouteGuard implements RouteGuard {
     constructor(

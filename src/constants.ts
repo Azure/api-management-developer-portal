@@ -304,3 +304,5 @@ export const iframeSandboxAllows = "allow-scripts allow-modals allow-forms allow
  * List of downloadable content types
  */
 export const downloadableTypes = ['image', 'video', 'audio', 'zip', 'pdf'];
+
+export const WarningBackendUrlMissing = `Backend URL is missing. See setting <i>backendUrl</i> in the configuration file <i>config.design.json</i>. OAuth authentication in Test console and Captcha widget requires <i>backendUrl</i> setting in config.runtime.json, pointing to your APIM service developer portal URL. In addition, it requires the origin to be specified in CORS settings (e.g. https://contoso.com). <a href="https://aka.ms/apimdocs/portal/self-hosted-settings" target="_blank">Learn more</a>.`
