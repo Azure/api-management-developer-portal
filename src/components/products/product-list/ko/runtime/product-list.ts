@@ -93,9 +93,8 @@ export class ProductList {
     }
 
     public selectFirstProduct(): void {
-        let productName;
         const products = this.products();
-        productName = products[0].name;
+        const productName = products[0].name;
 
         this.selectedProductName(productName);
 
