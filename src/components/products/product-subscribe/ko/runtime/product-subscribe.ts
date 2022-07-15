@@ -8,8 +8,9 @@ import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { TenantService } from "../../../../../services/tenantService";
-import { DelegationParameters, DelegationActionPath } from "../../../../../contracts/tenantSettings";
+import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import { RouteHelper } from "../../../../../routing/routeHelper";
+import { BackendService } from "../../../../../services/backendService";
 
 @RuntimeComponent({
     selector: "product-subscribe-runtime"
@@ -35,6 +36,7 @@ export class ProductSubscribe {
     constructor(
         private readonly usersService: UsersService,
         private readonly tenantService: TenantService,
+        private readonly backendService: BackendService,
         private readonly productService: ProductService,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
@@ -152,11 +154,14 @@ export class ProductSubscribe {
 
         try {
             if (this.delegationEnabled) {
-                const delegation = new URLSearchParams();
-                delegation.append(DelegationParameters.ProductId, Utils.getResourceName("products", productId));
-                delegation.append(DelegationParameters.UserId, Utils.getResourceName("users", userId));
-                await this.router.navigateTo(`/${DelegationActionPath.subscribe}?${delegation.toString()}`);
-                return;
+                const delegationParam = {};
+                delegationParam[DelegationParameters.ProductId] =  productName;
+                delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", userId);
+                const delegationUrl = await this.backendService.getDelegationString(DelegationAction.subscribe, delegationParam);
+                if (delegationUrl) {
+                    location.assign(delegationUrl);
+                    return;
+                }
             }
 
             if (!this.subscriptionName()) {

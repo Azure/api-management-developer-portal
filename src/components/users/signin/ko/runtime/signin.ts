@@ -81,7 +81,7 @@ export class Signin {
                 const redirectUrl = this.delegationUrl();
 
                 if (redirectUrl) {
-                    window.open(redirectUrl, "_self");
+                    location.assign(redirectUrl);
                 }
             }
         }
