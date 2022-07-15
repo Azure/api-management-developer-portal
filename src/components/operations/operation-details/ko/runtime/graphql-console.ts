@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import * as GraphQL from "graphql";
 import * as monaco from "monaco-editor";
-import loader from '@monaco-editor/loader';
+import loader from "@monaco-editor/loader";
 import { Component, OnDestroyed, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import { ConsoleHost } from "./../../../../../models/console/consoleHost";

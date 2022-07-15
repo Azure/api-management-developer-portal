@@ -22,7 +22,7 @@ import { ChangeLogContract } from "../contracts/apiChangeLog";
 import { TagGroup } from "../models/tagGroup";
 import { Bag } from "@paperbits/common";
 import { Tag } from "../models/tag";
-import { get, set } from 'idb-keyval';
+import { get, set } from "idb-keyval";
 
 interface CacheItem {
     value: any;
