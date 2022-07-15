@@ -66,7 +66,7 @@ export class ClientLogger implements Logger {
         clientEvent.timestamp = datetime.toISOString();
         clientEvent.activityId = uuidv4();
 
-        const developerPortalType = await this.settingsProvider.getSetting<string>(Constants.SettingNames.developerPortalType) || "self-hosted-portal";
+        const developerPortalType = await this.settingsProvider.getSetting<string>(Constants.SettingNames.developerPortalType) || Constants.DeveloperPortalType.selfHosted;
 
         const headers: HttpHeader[] = [];
         headers.push({ name: "client-version", value: this.clientVersion });
@@ -78,6 +78,7 @@ export class ClientLogger implements Logger {
             headers: headers,
             body: JSON.stringify(clientEvent.toJson())
         };
+        
         this.httpClient.send(request);
     }
 
