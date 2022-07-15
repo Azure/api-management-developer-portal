@@ -63,9 +63,11 @@ export class UsersService {
         };
 
         const response = await this.httpClient.send<Identity>(request);
-        
+
         if (response.statusCode !== 200) {
-            const msg = response.statusCode === 400?"This authentication method has been disabled by website administrator.":"Please provide a valid email and password.";
+            const msg = response.statusCode === 400
+                ? "This authentication method has been disabled by website administrator."
+                : "Please provide a valid email and password.";
             throw new UnauthorizedError(msg);
         }
         const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
@@ -78,8 +80,6 @@ export class UsersService {
         const identity = response.toObject();
         return identity.id;
     }
-
-    
 
     public getTokenFromTicketParams(parameters: URLSearchParams): string {
         const ticket = parameters.get("ticket");
