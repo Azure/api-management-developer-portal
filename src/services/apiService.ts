@@ -33,6 +33,7 @@ export class ApiService {
     public async getApis(searchQuery?: SearchQuery): Promise<Page<Api>> {
         const skip = searchQuery && searchQuery.skip || 0;
         const take = searchQuery && searchQuery.take || Constants.defaultPageSize;
+        const odataFilterEntries = [];
 
         let query = `/apis?$top=${take}&$skip=${skip}`;
 
@@ -42,6 +43,15 @@ export class ApiService {
                     query = Utils.addQueryParameter(query, `tags[${index}]=${tag.name}`);
                 });
             }
+
+            if (searchQuery.pattern) {
+                const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
+                odataFilterEntries.push(`(contains(name,'${pattern}'))`);
+            }
+        }
+
+        if (odataFilterEntries.length > 0) {
+            query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
         }
 
         const pageOfApis = await this.apiClient.get<Page<ApiContract>>(query, [await this.apiClient.getPortalHeader("getApis"), Utils.getIsUserResourceHeader()]);
