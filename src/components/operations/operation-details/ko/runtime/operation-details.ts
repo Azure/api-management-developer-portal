@@ -187,7 +187,7 @@ export class OperationDetails {
         let associatedAuthServer = null;
 
         if (associatedServerId) {
-            associatedAuthServer = await this.oauthService.getAuthServer(api.authenticationSettings?.oAuth2?.authorizationServerId, api.authenticationSettings?.openid?.openidProviderId);
+            associatedAuthServer = await this.oauthService.getAuthServer(api.id);
         }
 
         this.associatedAuthServer(associatedAuthServer);
