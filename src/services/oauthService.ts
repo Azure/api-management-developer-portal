@@ -13,7 +13,6 @@ import { IApiClient } from "../clients";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 
-//TODO:hh duplicate this service
 export class OAuthService {
     constructor(
         private readonly apiClient: IApiClient,
@@ -72,7 +71,6 @@ export class OAuthService {
         }
     }
 
-    //TODO:hh should we keep this and duplicate models and contracts?
     public async loadAllServers(): Promise<AuthorizationServer[]> {
         try {
             const authorizationServers = [];
