@@ -273,7 +273,7 @@ export class ApiService {
 
         const headers: HttpHeader[] = [await this.apiClient.getPortalHeader("exportApi"), Utils.getIsUserResourceHeader()];
         headers.push(header);
-        return this.apiClient.get<string>(apiId, headers);
+        return this.apiClient.get<string>(`apis/${apiId}`, headers);
     }
 
     /**
