@@ -19,18 +19,10 @@ export class OAuthService {
         private readonly settingsProvider: ISettingsProvider
     ) { }
 
-    public async getAuthServer(authorizationServerId: string, openidProviderId: string): Promise<AuthorizationServer> {
+    public async getAuthServer(openidProviderId: string): Promise<AuthorizationServer> {
         try {
-            if (authorizationServerId) {
-                const authServer = await this.backendService.getAuthorizationServer(authorizationServerId);
-                return authServer;
-            }
-            if (openidProviderId) {
-                const authServer = await this.backendService.getOpenIdConnectProvider(openidProviderId);
-                return authServer;
-            }
-
-            return undefined;
+            const authServer = await this.backendService.getOpenIdConnectProvider(openidProviderId);
+            return authServer;
         }
         catch (error) {
             throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);

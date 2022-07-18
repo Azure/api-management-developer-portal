@@ -38,4 +38,14 @@ export interface AuthorizationServerForClient {
      * Example: ["profile", "email"]
      */
     scopes: string[];
+
+    /**
+     * Is this auth used for the test console?
+     */
+    useInTestConsole: boolean;
+
+    /**
+     * Is this auth used for API documentation?
+     */
+    useInApiDocumentation: boolean;
 }

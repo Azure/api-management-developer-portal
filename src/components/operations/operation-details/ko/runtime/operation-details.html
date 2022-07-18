@@ -37,6 +37,14 @@
             <span class="text-monospace"
                 data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
 
+            <!-- ko if:  apiDocumentationAuthServers -->
+            <div class="animation-fade-in">
+                <h4>Authorization</h4>
+                <oauth-server-configuration params="{authorizationServers: apiDocumentationAuthServers}">
+                </oauth-server-configuration>
+            </div>
+            <!-- /ko -->
+
             <!-- ko if: operation().parameters.length > 0 -->
             <h4>Request parameters</h4>
 
@@ -63,7 +71,7 @@
                             <!-- ko foreach: { data: parameter.examples, as: 'example' } -->
                             <p>
                                 <!-- ko ifnot: example.title === "default" && !example.description && parameter.examples.length === 1 -->
-                                    <span data-bind="text: example.title"></span>:
+                                <span data-bind="text: example.title"></span>:
                                 <!-- /ko -->
                                 <span data-bind="text: example.value" class="text-monospace text-wrap"></span>
                                 <span data-bind="text: example.description" class="d-block"></span>
@@ -345,14 +353,14 @@
 <!-- ko ifnot: apiType() === 'graphql' -->
 <div class="detachable-right flex-grow animation-fade-in">
     <operation-console class="flex flex-column consoles operation-console" data-bind="dialog: {}"
-        params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
+        params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: testConsoleAuthServer, useCorsProxy: useCorsProxy }">
     </operation-console>
 </div>
 <!-- /ko -->
 <!-- ko if: apiType() === 'graphql' -->
 <div class="detachable-right graphql-console-width flex-grow animation-fade-in">
     <graphql-console class="flex flex-column consoles" data-bind="dialog: {}"
-        params="{ api: api, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
+        params="{ api: api, hostnames: hostnames, authorizationServer: testConsoleAuthServer, useCorsProxy: useCorsProxy }">
     </graphql-console>
 </div>
 <!-- /ko -->

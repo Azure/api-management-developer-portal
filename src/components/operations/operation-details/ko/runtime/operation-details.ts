@@ -21,7 +21,6 @@ import {
 } from "../../../../../models/typeDefinition";
 import { OAuthService } from "../../../../../services/oauthService";
 
-
 @RuntimeComponent({
     selector: "operation-details"
 })
@@ -42,7 +41,8 @@ export class OperationDetails {
     public readonly sampleHostname: ko.Observable<string>;
     public readonly hostnames: ko.Observable<string[]>;
     public readonly working: ko.Observable<boolean>;
-    public readonly associatedAuthServer: ko.Observable<AuthorizationServer>;
+    public readonly apiDocumentationAuthServers: ko.Observable<AuthorizationServer[]>;
+    public readonly testConsoleAuthServer: ko.Observable<AuthorizationServer>;
     public readonly apiType: ko.Observable<string>;
     public readonly protocol: ko.Computed<string>;
 
@@ -55,7 +55,8 @@ export class OperationDetails {
         this.working = ko.observable(false);
         this.sampleHostname = ko.observable();
         this.hostnames = ko.observable();
-        this.associatedAuthServer = ko.observable();
+        this.apiDocumentationAuthServers = ko.observable();
+        this.testConsoleAuthServer = ko.observable();
         this.api = ko.observable();
         this.schemas = ko.observableArray([]);
         this.tags = ko.observableArray([]);
@@ -183,16 +184,31 @@ export class OperationDetails {
 
         this.closeConsole();
 
-        const associatedServerId = api.authenticationSettings?.oAuth2?.authorizationServerId ||
-            api.authenticationSettings?.openid?.openidProviderId;
-
-        let associatedAuthServer = null;
-
-        if (associatedServerId) {
-            associatedAuthServer = await this.oauthService.getAuthServer(api.authenticationSettings?.oAuth2?.authorizationServerId, api.authenticationSettings?.openid?.openidProviderId);
+        if (api.authenticationSettings.oAuth2.authorizationServer) {
+            this.apiDocumentationAuthServers([api.authenticationSettings.oAuth2.authorizationServer]);
+            this.testConsoleAuthServer(api.authenticationSettings.oAuth2.authorizationServer);
+            return;
         }
 
-        this.associatedAuthServer(associatedAuthServer);
+        if (api.authenticationSettings.oAuth2AuthenticationSettings) {
+            this.apiDocumentationAuthServers(api.authenticationSettings.oAuth2AuthenticationSettings.
+                filter(x => x.authorizationServer.useInApiDocumentation)
+                .map(x => x.authorizationServer));
+
+            this.testConsoleAuthServer(api.authenticationSettings.oAuth2AuthenticationSettings.
+                find(x => x.authorizationServer.useInTestConsole)?.authorizationServer)
+            return;
+        }
+
+        if (api.authenticationSettings.openid) {
+            const associatedServerId = api.authenticationSettings?.openid?.openidProviderId;
+
+            if (associatedServerId) {
+                const authServer = await this.oauthService.getAuthServer(api.authenticationSettings?.openid?.openidProviderId);
+                this.apiDocumentationAuthServers([authServer]);
+                this.testConsoleAuthServer(authServer);
+            }
+        }
     }
 
     public async loadOperation(apiName: string, operationName: string): Promise<void> {

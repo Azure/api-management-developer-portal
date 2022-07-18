@@ -2,7 +2,7 @@ import { AuthenticationSettings } from "./authenticationSettings";
 import { ArmResource } from "./armResource";
 
 /**
- * Cotract of API
+ * Contract of API
  */
 export interface ApiContract extends ArmResource {
     properties: ApiProperties;
