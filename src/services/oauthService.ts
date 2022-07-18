@@ -15,61 +15,20 @@ import { KnownMimeTypes } from "../models/knownMimeTypes";
 
 //TODO:hh duplicate this service
 export class OAuthService {
-    private environmentPromise: Promise<string>;
-
     constructor(
         private readonly apiClient: IApiClient,
         private readonly httpClient: HttpClient,
         private readonly settingsProvider: ISettingsProvider
     ) { }
 
-    private async getEnvironment(): Promise<string> {
-        if (!this.environmentPromise) {
-            this.environmentPromise = this.settingsProvider.getSetting<string>("environment");
-        }
-        return this.environmentPromise;
-    }
-
-    /**
-     * Returns configured OAuth 2.0 and OpenID Connect providers.
-     */
-    public async getOAuthServers(): Promise<AuthorizationServer[]> {
-        const loadedServers = await this.settingsProvider.getSetting<AuthorizationServer[]>("authServers");
-        return loadedServers || [];
-    }
-
-    public async getAuthServer(authorizationServerId: string, openidProviderId: string): Promise<AuthorizationServer> {
-        const env = await this.getEnvironment();
-        if (env !== "development") {
-            const servers = await this.getOAuthServers();
-            let server = undefined;
-            if (servers) {
-                server = servers.find(s => s.name === (authorizationServerId || openidProviderId));
-            }
-            return server;
-        }
-
+    public async getAuthServer(apiId: string): Promise<AuthorizationServer> {
         try {
             let authorizationServer: AuthorizationServer;
-            if (authorizationServerId) {
-                const authServer = await this.apiClient.get<AuthorizationServerContract>(`/authorizationServers/${authorizationServerId}`, [await this.apiClient.getPortalHeader("getAuthorizationServer")]);
-                authorizationServer = new AuthorizationServer(authServer);
-                return authorizationServer;
-            }
-            if (openidProviderId) {
-                const authServer = await this.apiClient.get<OpenIdConnectProviderContract>(`/openidConnectProviders/${openidProviderId}`, [await this.apiClient.getPortalHeader("getOpenidConnectProvider")]);
-                const provider = new OpenIdConnectProvider(authServer);
-                try {
-                    const openIdServer = await this.discoverOAuthServer(provider.metadataEndpoint);
-                    openIdServer.name = provider.name;
-                    openIdServer.clientId = provider.clientId;
-                    openIdServer.displayName = provider.displayName;
-                    openIdServer.description = provider.description;
-                    return openIdServer;
-                }
-                catch (error) {
-                    // Swallow discovery errors until publishing-related notification channel gets implemented.
-                }
+
+            authorizationServer = await this.getOauth2ServerByApiId(apiId);
+
+            if (!authorizationServer) {
+                authorizationServer = await this.getOpenidconnectServerByApiId(apiId);
             }
 
             return undefined;
@@ -79,6 +38,41 @@ export class OAuthService {
         }
     }
 
+    private async getOauth2ServerByApiId(apiId: string): Promise<AuthorizationServer> {
+        try {
+            const authServer = await this.apiClient.get<AuthorizationServerContract>(`/apis/${apiId}/authProviders/oauth2`, [await this.apiClient.getPortalHeader("getAuthorizationServer")]);
+            let authorizationServer = new AuthorizationServer(authServer);
+            return authorizationServer
+        }
+        catch (error) {
+            //handle error
+            return undefined
+        }
+    }
+
+    private async getOpenidconnectServerByApiId(apiId: string): Promise<AuthorizationServer> {
+        try {
+            const authServer = await this.apiClient.get<OpenIdConnectProviderContract>(`/apis/${apiId}/authProviders/openidconnect`, [await this.apiClient.getPortalHeader("getAuthorizationServer")]);
+            const provider = new OpenIdConnectProvider(authServer);
+            try {
+                const openIdServer = await this.discoverOAuthServer(provider.metadataEndpoint);
+                openIdServer.name = provider.name;
+                openIdServer.displayName = provider.displayName;
+                openIdServer.description = provider.description;
+                return openIdServer
+            }
+            catch (error) {
+                // Swallow discovery errors until publishing-related notification channel gets implemented.
+                return undefined
+            }
+        }
+        catch (error) {
+            //handle error
+            return undefined
+        }
+    }
+
+    //TODO:hh should we keep this and duplicate models and contracts?
     public async loadAllServers(): Promise<AuthorizationServer[]> {
         try {
             const authorizationServers = [];
@@ -93,7 +87,6 @@ export class OAuthService {
                 try {
                     const authServer = await this.discoverOAuthServer(provider.metadataEndpoint);
                     authServer.name = provider.name;
-                    authServer.clientId = provider.clientId;
                     authServer.displayName = provider.displayName;
                     authServer.description = provider.description;
                     authorizationServers.push(authServer);

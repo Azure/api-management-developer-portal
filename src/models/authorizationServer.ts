@@ -17,20 +17,20 @@ export class AuthorizationServer {
         }
 
         this.name = contract.name;
-        this.displayName = contract.properties.displayName;
-        this.description = contract.properties.description;
-        this.clientId = contract.properties.clientId;
-        this.authorizationEndpoint = contract.properties.authorizationEndpoint;
-        this.tokenEndpoint = contract.properties.tokenEndpoint;
-        this.scopes = !!contract.properties.defaultScope
-            ? contract.properties.defaultScope.split(" ")
+        this.displayName = contract.name;
+        this.description = contract.description;
+        this.clientId = contract.clientId;
+        this.authorizationEndpoint = contract.authorizationEndpoint;
+        this.tokenEndpoint = contract.tokenEndpoint;
+        this.scopes = !!contract.defaultScope
+            ? contract.defaultScope.split(" ")
             : [];
 
-        if (!contract.properties.grantTypes) {
+        if (!contract.grantTypes) {
             return;
         }
 
-        this.grantTypes = contract.properties.grantTypes
+        this.grantTypes = contract.grantTypes
             .map(grantType => {
                 switch (grantType) {
                     case "authorizationCode":

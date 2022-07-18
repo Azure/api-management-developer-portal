@@ -1,18 +1,8 @@
-import { ArmResource } from "./armResource";
-
-
-/**
- * External OAuth authorization server settings.
- */
-export interface AuthorizationServerContract extends ArmResource {
-    properties: AuthorizationServerProperties;
-}
-
-interface AuthorizationServerProperties {
+export interface AuthorizationServerContract {
     /**
-     * User-friendly authorization server name, e.g. "Contoso Auth".
+     * Authorization server name, e.g. "contoso-auth".
      */
-    displayName?: string;
+    name?: string;
 
     /**
      * Description of the authorization server. Can contain HTML formatting tags.
@@ -70,7 +60,6 @@ interface AuthorizationServerProperties {
      * Specifies the mechanism by which access token is passed to the API.
      */
     bearerTokenSendingMethods: string[];
-
 
     /**
      * Client or application ID registered with this authorization server.
