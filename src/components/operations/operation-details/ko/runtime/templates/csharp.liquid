@@ -105,9 +105,9 @@ namespace CSHttpClientSample
             {%- if request.body != blank %}
             // Request body
 {%- if request.bodyFormat == "raw"  -%}
-            {%- assign formattedBody = request.body | replace:'"','\\"' 
-            formattedBody = formattedBody | replace: '\r\n', ' ' 
-            formattedBody = formattedBody | replace: '     ', ' ' %}
+            {%- assign formattedBody = request.body | replace:'"','\\"' -%}
+            {%- assign formattedBody = formattedBody | replace: '\r\n', ' ' -%}
+            {%- assign formattedBody = formattedBody | replace: '     ', ' ' %}
 
             using (var content = new StringContent("{{formattedBody}}"))
             {
@@ -154,10 +154,9 @@ namespace CSHttpClientSample
 {% if request.body != blank %}
             // Request body
 {%- if request.bodyFormat == "raw"  -%}
-            {%- assign formattedBody = request.body | replace:'"','\\"' 
-            formattedBody = formattedBody | replace: '\r\n', ' ' 
-            formattedBody = formattedBody | replace: '     ', ' ' %}
-
+            {%- assign formattedBody = request.body | replace:'"','\\"' -%}
+            {%- assign formattedBody = formattedBody | replace: '\r\n', ' ' -%}
+            {%- assign formattedBody = formattedBody | replace: '     ', ' ' %}
             using (var content = new StringContent("{{formattedBody}}"))
             {
 {%- elsif request.bodyFormat == "binary" %}

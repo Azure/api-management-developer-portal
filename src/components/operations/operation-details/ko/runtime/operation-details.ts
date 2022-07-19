@@ -15,7 +15,9 @@ import {
     TypeDefinitionProperty,
     TypeDefinitionPropertyTypeReference,
     TypeDefinitionPropertyTypeArrayOfReference,
-    TypeDefinitionPropertyTypeArrayOfPrimitive
+    TypeDefinitionPropertyTypeArrayOfPrimitive,
+    TypeDefinitionPropertyTypeCombination,
+    TypeDefinitionPropertyTypePrimitive
 } from "../../../../../models/typeDefinition";
 import { OAuthService } from "../../../../../services/oauthService";
 
@@ -84,7 +86,7 @@ export class OperationDetails {
             let requestUrl = "";
 
             if (hostname && api.type !== TypeOfApi.webSocket) {
-                requestUrl = 'https://';
+                requestUrl = "https://";
             }
 
             if (hostname) requestUrl += hostname;
@@ -187,7 +189,7 @@ export class OperationDetails {
         let associatedAuthServer = null;
 
         if (associatedServerId) {
-            associatedAuthServer = await this.oauthService.getAuthServer(api.id);
+            associatedAuthServer = await this.oauthService.getAuthServer(api.authenticationSettings?.oAuth2?.authorizationServerId, api.authenticationSettings?.openid?.openidProviderId);
         }
 
         this.associatedAuthServer(associatedAuthServer);
@@ -262,25 +264,53 @@ export class OperationDetails {
     }
 
     private lookupReferences(definitions: TypeDefinition[], skipNames: string[]): string[] {
-        const result = [];
+        const result: string[] = [];
         const objectDefinitions: TypeDefinitionProperty[] = definitions
             .map(definition => definition.properties)
             .filter(definition => !!definition)
             .flat();
 
         objectDefinitions.forEach(definition => {
-            if (definition.kind === "indexed") {
-                result.push(definition.type["name"]);
-            }
-
-            if ((definition.type instanceof TypeDefinitionPropertyTypeReference
-                || definition.type instanceof TypeDefinitionPropertyTypeArrayOfPrimitive
-                || definition.type instanceof TypeDefinitionPropertyTypeArrayOfReference)) {
-                result.push(definition.type.name);
-            }
+            this.processDefinition(definition).forEach(processedDefinition => result.push(processedDefinition));
         });
 
         return result.filter(x => !skipNames.includes(x));
+    }
+
+    private processDefinition(definition: TypeDefinitionProperty, result: string[] = []): string[] {
+        if (definition.kind === "indexed") {
+            result.push(definition.type["name"]);
+        }
+
+        if ((definition.type instanceof TypeDefinitionPropertyTypeReference
+            || definition.type instanceof TypeDefinitionPropertyTypeArrayOfPrimitive
+            || definition.type instanceof TypeDefinitionPropertyTypeArrayOfReference)) {
+            result.push(definition.type.name);
+        }
+
+        if (definition.type instanceof TypeDefinitionPropertyTypeCombination) {
+            if (definition.type.combination) {
+                definition.type.combination.forEach(combinationProperty => {
+                    result.push(combinationProperty["name"]);
+                });
+            } else {
+                definition.type.combinationReferences.forEach(combinationReference => {
+                    result.push(combinationReference);
+                });
+            }
+        }
+
+        if (definition.type instanceof TypeDefinitionPropertyTypePrimitive && definition.type.name === "object") {
+            if (definition.name === "Other properties") {
+                definition["properties"].forEach(definitionProp => {
+                    this.processDefinition(definitionProp).forEach(processedDefinition => result.push(processedDefinition));
+                });
+            } else {
+                result.push(definition.name);
+            }
+        }
+
+        return result;
     }
 
     public async loadGatewayInfo(): Promise<void> {

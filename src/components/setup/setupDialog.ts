@@ -19,15 +19,10 @@ export class SetupDialog {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        try {
-            this.viewManager.removeShutter();
-            await this.provisioningService.provision();
-            await this.router.navigateTo(Constants.pageUrlHome);
+        this.viewManager.removeShutter();
+        await this.provisioningService.provision();
+        await this.router.navigateTo(Constants.pageUrlHome);
 
-            window.location.reload();
-        }
-        catch (error) {
-            throw error;
-        }
+        window.location.reload();
     }
 }

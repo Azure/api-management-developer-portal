@@ -21,10 +21,10 @@
 
 .btn-default {
     padding: 2px 12px;
+    @include selection(5px);
 
     &:focus,
     &:hover {
-        @include selection(5px);
         outline: none;
         color: $color-base;
         cursor: pointer;
@@ -80,11 +80,11 @@
     z-index: 99999;
     @extend .paperbits-icon;
     @extend .paperbits-alert-circle-i;
+    @include selection(7px, -5px);
 
     &:active,
     &:focus,
     &:hover {
-        @include selection(7px, -5px);
         outline: none;
     }
 }
@@ -93,10 +93,10 @@
     position: absolute;
     right: 5px;
     top: 5px;
+    @include selection(5px);
 
     &:focus,
     &:hover {
-        @include selection(5px);
         outline: none;
         color: $color-base;
         cursor: pointer;

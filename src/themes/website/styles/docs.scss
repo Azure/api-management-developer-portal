@@ -20,11 +20,10 @@ pre {
 
 [data-method]:before {
     display: inline-block;
-    font-size: .8em;
-    /* font-family: Menlo,Monaco,Consolas,"Courier New",monospace; */
+    font-size: 14px;
+    font-family: monospace;
     font-weight: 700;
     border-radius: 4px;
-    padding: 2px 10px;
     width: 50px;
 }
 
@@ -138,12 +137,12 @@ pre {
 .apis-section {
     padding: 0;
 
-    &>.container,
-    &>.container-fluid {
-        &>.row {
+    & > .container,
+    & > .container-fluid {
+        & > .row {
             padding: 0;
 
-            &>.col {
+            & > .col {
                 padding: 0;
             }
         }
@@ -214,13 +213,15 @@ validation-summary {
     display: block;
 }
 
-operation-console {
-    background: #fafafa;
-    min-height: 100%;
+.consoles {
+    background: $panel-bg-color-highlight;
+    height: 100%;
     border-left: 1px solid #dee2e6;
 
-    .form-control {
-        margin: 0;
+    &.operation-console {
+        .form-control {
+            margin: 0;
+        }
     }
 }
 
@@ -264,6 +265,16 @@ oauth-server-configuration {
 
         .code-snippet-command {
             border-left: 1px solid #ccc;
+        }
+    }
+}
+
+operation-list {
+    .list {
+        .list-item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            width: 100%;
         }
     }
 }

@@ -39,12 +39,6 @@ export class ApimSettingsProvider implements ISettingsProvider {
                 Object.assign(commonConfiguration, apimConfiguration);
             }
         }
-        
-        const authServersRequest = await this.httpClient.send<any>({ url: "/auth-servers.json" });
-        if (authServersRequest.statusCode === 200) {
-            const authServers = authServersRequest.toObject();
-            commonConfiguration["authServers"] = authServers;
-        }
 
         this.configuration = commonConfiguration;
     }

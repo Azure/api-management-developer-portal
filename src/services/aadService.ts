@@ -6,11 +6,12 @@ import { Router } from "@paperbits/common/routing";
 import { RouteHelper } from "../routing/routeHelper";
 import { Utils } from "../utils";
 import { UsersService } from "./usersService";
+import { IAadService } from "./IAadService";
 
 /**
  * Service for operations with Azure Active Directory identity provider.
  */
-export class AadService {
+export class AadService implements IAadService {
     constructor(
         private readonly router: Router,
         private readonly routeHelper: RouteHelper,
@@ -58,6 +59,7 @@ export class AadService {
      * @param {string} replyUrl - Reply URL, e.g. `https://contoso.com/signin-aad`.
      */
     public async signInWithAad(clientId: string, authority: string, signinTenant: string, replyUrl?: string): Promise<void> {
+        console.log("Msal v1");
         if (!clientId) {
             throw new Error(`Parameter "clientId" not specified.`);
         }
@@ -109,6 +111,7 @@ export class AadService {
      * @param {string} replyUrl - Reply URL, e.g. `https://contoso.com/signin`.
      */
     public async runAadB2CUserFlow(clientId: string, tenant: string, instance: string, userFlow: string, replyUrl?: string): Promise<void> {
+        console.log("Msal v1");
         if (!clientId) {
             throw new Error(`Parameter "clientId" not specified.`);
         }
@@ -167,7 +170,7 @@ export class AadService {
 
         const msalConfig = {};
         const msalInstance = new Msal.UserAgentApplication(<any>msalConfig);
-        await msalInstance.loginPopup({});
+        await msalInstance.loginPopup(msalConfig);
 
         window.close();
     }

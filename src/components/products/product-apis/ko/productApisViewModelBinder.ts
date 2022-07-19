@@ -23,6 +23,7 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
 
         viewModel["widgetBinding"] = {
             displayName: "Product: APIs" + (model.layout === "list" ? "" : ` (${model.layout})`),
+            layer: bindingContext?.layer,
             model: model,
             draggable: true,
             flow: ComponentFlow.Block,

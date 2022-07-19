@@ -1,5 +1,5 @@
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .empty-media {
@@ -70,6 +70,7 @@
 
 .text-wrap {
     word-wrap: break-word;
+    min-width: 0;
 }
 
 .text-center {

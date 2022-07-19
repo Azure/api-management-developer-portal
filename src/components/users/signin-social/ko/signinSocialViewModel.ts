@@ -26,6 +26,6 @@ export class SigninSocialViewModel {
         this.styles = ko.observable<StyleModel>();
         this.roles = ko.observableArray<string>();
         this.mode = ko.observable<string>();
-        this.showNoAadConfigMessage = ko.computed<boolean>(() => !this.aadConfig() && !this.aadB2CConfig() && this.mode() !== 'publishing');
+        this.showNoAadConfigMessage = ko.computed<boolean>(() => !this.aadConfig() && !this.aadB2CConfig() && this.mode() !== "publishing");
     }
 }

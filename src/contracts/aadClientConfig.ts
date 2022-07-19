@@ -1,3 +1,5 @@
+import { AadClientLibrary } from "../constants";
+
 export interface AadClientConfig {
     /**
      * Client ID of the Application in the external Identity Provider.
@@ -14,4 +16,9 @@ export interface AadClientConfig {
      * The TenantId to use instead of Common when logging into Active Directory.
      */
     signinTenant: string;
+
+    /**
+     * The client library to be used in the developer portal
+     */
+    clientLibrary: AadClientLibrary;
 }

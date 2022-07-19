@@ -5,7 +5,7 @@ const { execSync } = require("child_process");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const blobStorageContainer = "content";
 const mime = require("mime");
-const apiVersion = "2020-06-01-preview"; // "2021-01-01-preview";
+const apiVersion = "2021-08-01"; //"2020-06-01-preview";
 const managementApiEndpoint = "management.azure.com";
 const metadataFileExt = ".info";
 const defaultFileEncoding = "utf8";
@@ -169,6 +169,7 @@ class ImporterExporter {
         try {
             const contentItems = [];
             let nextPageUrl = `/contentTypes/${contentType}/contentItems`;
+            nextPageUrl = this.ensureDocumentTypeFiltered(contentType, nextPageUrl);
 
             do {
                 const data = await this.httpClient.sendRequest("GET", nextPageUrl);
@@ -187,6 +188,13 @@ class ImporterExporter {
         catch (error) {
             throw new Error(`Unable to fetch content items. ${error.message}`);
         }
+    }
+
+    ensureDocumentTypeFiltered(contentType, nextLink) {
+        if (contentType === 'document') {
+            nextLink = `${nextLink}?$top=1`
+        }
+        return nextLink
     }
 
     /**

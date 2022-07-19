@@ -21,6 +21,7 @@ export class ProductSubscribeViewModelBinder implements ViewModelBinder<ProductS
 
         viewModel["widgetBinding"] = {
             displayName: "Product: Subscribe form",
+            layer: bindingContext?.layer,
             model: model,
             flow: ComponentFlow.Block,
             editor: "product-subscribe-editor",

@@ -13,7 +13,7 @@ import { UserContract } from "../contracts/user";
 import { MapiSignupRequest } from "../contracts/signupRequest";
 import { MapiError } from "../errors/mapiError";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
-
+import { UnauthorizedError } from "../errors/unauthorizedError";
 
 /**
  * A service for management operations with users.
@@ -50,33 +50,35 @@ export class UsersService {
      * @returns {string} User identifier.
      */
     public async authenticate(credentials: string): Promise<string> {
-        try {
-            const backendUrlBase = await this.settingsProvider.getSetting<string>(Constants.SettingNames.backendUrl)
-            let backendUrl = Utils.getDeveloperEndpoint(backendUrlBase);
+        const backendUrlBase = await this.settingsProvider.getSetting<string>(Constants.SettingNames.backendUrl)
+        let backendUrl = Utils.getDeveloperEndpoint(backendUrlBase);
 
-            const request = {
-                url: `${backendUrl}/identity?api-version=${Constants.managementApiVersion}`,
-                method: "GET",
-                headers: [
-                    { name: "Authorization", value: credentials },
-                    await this.apiClient.getPortalHeader("authenticate")
-                ]
-            };
+        const request = {
+            url: `${backendUrl}/identity?api-version=${Constants.managementApiVersion}`,
+            method: "GET",
+            headers: [
+                { name: "Authorization", value: credentials },
+                await this.apiClient.getPortalHeader("authenticate")
+            ]
+        };
 
-            const response = await this.httpClient.send<Identity>(request);
-            const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
+        const response = await this.httpClient.send<Identity>(request);
 
-            if (sasTokenHeader) {
-                const accessToken = AccessToken.parse(sasTokenHeader.value);
-                await this.authenticator.setAccessToken(accessToken);
-            }
-
-            const identity = response.toObject();
-            return identity?.id;
+        if (response.statusCode !== 200) {
+            const msg = response.statusCode === 400
+                ? "This authentication method has been disabled by website administrator."
+                : "Please provide a valid email and password.";
+            throw new UnauthorizedError(msg);
         }
-        catch (error) {
-            return undefined;
+        const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
+
+        if (sasTokenHeader) {
+            const accessToken = AccessToken.parse(sasTokenHeader.value);
+            await this.authenticator.setAccessToken(accessToken);
         }
+
+        const identity = response.toObject();
+        return identity.id;
     }
 
     public getTokenFromTicketParams(parameters: URLSearchParams): string {
@@ -189,7 +191,7 @@ export class UsersService {
     /**
      * Updates user profile data.
      * @param userId {string} Unique user identifier.
-     * @param updateUserData 
+     * @param updateUserData
      */
     public async updateUser(userId: string, firstName: string, lastName: string): Promise<User> {
         const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("updateUser"), Utils.getIsUserResourceHeader()];

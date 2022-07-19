@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import * as moment from "moment";
 import { Trace } from "../../contracts/trace";
 
 export class ConsoleTrace {
@@ -20,9 +20,9 @@ export class ConsoleTrace {
             this.inbound = new Array<ConsoleTraceEntry>();
             this.inboundExecutionTime = 0;
 
-            for (let entry of trace.traceEntries.inbound) {
-                let elapsed = this.parseElapsedTime(entry.elapsed);
-                let consoleEntry = new ConsoleTraceEntry();
+            for (const entry of trace.traceEntries.inbound) {
+                const elapsed = this.parseElapsedTime(entry.elapsed);
+                const consoleEntry = new ConsoleTraceEntry();
                 consoleEntry.source = entry.source;
                 consoleEntry.data = entry.data;
                 consoleEntry.executionTime = elapsed - this.totalExecutionTime;
@@ -38,9 +38,9 @@ export class ConsoleTrace {
             this.backend = new Array<ConsoleTraceEntry>();
             this.backendExecutionTime = 0;
 
-            for (let entry of trace.traceEntries.backend) {
-                let elapsed = this.parseElapsedTime(entry.elapsed);
-                let consoleEntry = new ConsoleTraceEntry();
+            for (const entry of trace.traceEntries.backend) {
+                const elapsed = this.parseElapsedTime(entry.elapsed);
+                const consoleEntry = new ConsoleTraceEntry();
                 consoleEntry.source = entry.source;
                 consoleEntry.data = entry.data;
                 consoleEntry.executionTime = elapsed - this.totalExecutionTime;
@@ -56,9 +56,9 @@ export class ConsoleTrace {
             this.outbound = new Array<ConsoleTraceEntry>();
             this.outboundExecutionTime = 0;
 
-            for (let entry of trace.traceEntries.outbound) {
-                let elapsed = this.parseElapsedTime(entry.elapsed);
-                let consoleEntry = new ConsoleTraceEntry();
+            for (const entry of trace.traceEntries.outbound) {
+                const elapsed = this.parseElapsedTime(entry.elapsed);
+                const consoleEntry = new ConsoleTraceEntry();
                 consoleEntry.source = entry.source;
                 consoleEntry.data = entry.data;
                 consoleEntry.executionTime = elapsed - this.totalExecutionTime;
@@ -73,7 +73,7 @@ export class ConsoleTrace {
 
     private parseElapsedTime(time: string): number {
         moment.duration();
-        let match = time.match(/(\d\d?):(\d\d?):(\d\d?)(\.\d+)/);
+        const match = time.match(/(\d\d?):(\d\d?):(\d\d?)(\.\d+)/);
         return match ? +(1000 * (60 * (60 * +match[1] + +match[2]) + +match[3] + +match[4])) : null;
     }
 }

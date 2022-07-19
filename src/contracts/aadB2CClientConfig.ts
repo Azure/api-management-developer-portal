@@ -1,3 +1,5 @@
+import { AadClientLibrary } from "../constants";
+
 export interface AadB2CClientConfig {
     /**
      * Client ID of the Application in the external Identity Provider.
@@ -29,4 +31,9 @@ export interface AadB2CClientConfig {
      * Password reset policy name. Only applies to AAD B2C identity provider.
      */
     passwordResetPolicyName: string;
+
+    /**
+     * The client library to be used in the developer portal
+     */
+     clientLibrary: AadClientLibrary;
 }

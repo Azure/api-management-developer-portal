@@ -34,7 +34,8 @@ export class RuntimeConfigurator {
             const aadConfig: AadClientConfig = {
                 clientId: aadIdentityProvider.clientId,
                 authority: aadIdentityProvider.authority,
-                signinTenant: aadIdentityProvider.signinTenant
+                signinTenant: aadIdentityProvider.signinTenant,
+                clientLibrary: aadIdentityProvider.clientLibrary
             };
 
             designTimeSettings[SettingNames.aadClientConfig] = aadConfig;
@@ -56,6 +57,7 @@ export class RuntimeConfigurator {
                 signinPolicyName: aadB2CIdentityProvider.signinPolicyName,
                 signupPolicyName: aadB2CIdentityProvider.signupPolicyName,
                 passwordResetPolicyName: aadB2CIdentityProvider.passwordResetPolicyName,
+                clientLibrary: aadB2CIdentityProvider.clientLibrary
             };
 
             designTimeSettings[SettingNames.aadB2CClientConfig] = aadB2CConfig;

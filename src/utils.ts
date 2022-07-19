@@ -68,7 +68,7 @@ export class Utils {
      * @param userId user identifier to be prefixed. i.e. /users/123456789
      */
     public static ensureUserPrefixed(query: string, userId: string): string {
-        if (!query.startsWith("/users") && !!userId) {
+        if (!query.startsWith("/users") && !!userId && userId !== "integration") {
             const userResource = `/users/${userId}`
             return (query.startsWith("/") ? userResource : this.ensureTrailingSlash(userResource)) + query;
         }
@@ -210,7 +210,7 @@ export class Utils {
 
     /**
      * Formats number of bytes into string.
-     * @param bytes 
+     * @param bytes
      */
     public static formatBytes(bytes: number): string {
         let suffix = " bytes";
@@ -240,7 +240,7 @@ export class Utils {
 
     /**
      * Formats time span into string.
-     * @param bytes 
+     * @param bytes
      */
     public static formatTimespan(milliseconds: number): string {
         let suffix = " ms";
@@ -299,16 +299,16 @@ export class Utils {
     }
 
     private static reservedURIComponentCharactersTuples = [
-        ['&', '%26'],
-        ['+', '%2B'],
-        ['/', '%2F'],
-        ['?', '%3F'],
-        ['#', '%23'],
+        ["&", "%26"],
+        ["+", "%2B"],
+        ["/", "%2F"],
+        ["?", "%3F"],
+        ["#", "%23"],
     ];
     /**
      * Encodes reserved URI character not encoded by the native encodeURI function
      * (encodeURIComponent encodes many characters, which are desired unencoded)
-     * 
+     *
      * @param uri string to be encoded
      * @param additionalReservedTuples optional array of additional reserved tuples to replace
      * @returns encoded string
@@ -317,7 +317,7 @@ export class Utils {
         let encoded = encodeURI(uri);
         const iterateReplace = ([char, charEncoded]: [string, string]) => {
             encoded = encoded.replaceAll(char, charEncoded);
-        }
+        };
         this.reservedURIComponentCharactersTuples.forEach(iterateReplace);
         if (additionalReservedTuples) additionalReservedTuples.forEach(iterateReplace);
         return encoded;
@@ -376,8 +376,8 @@ export class Utils {
     }
 
     /**
-     * This is a function used to generate long date format like (Weekday, Month, Day, Year) 
-     * 
+     * This is a function used to generate long date format like (Weekday, Month, Day, Year)
+     *
      * @param time time string
      */
     public static formatDateTime(time: string): string {

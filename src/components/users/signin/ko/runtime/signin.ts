@@ -5,10 +5,12 @@ import { sanitizeUrl } from "@braintree/sanitize-url";
 import { EventManager } from "@paperbits/common/events";
 import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing/router";
-import { ValidationReport } from "../../../../../contracts/validationReport";
 import { MapiError } from "../../../../../errors/mapiError";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { UsersService } from "../../../../../services/usersService";
+import { UnauthorizedError } from "../../../../../errors/unauthorizedError";
+import { UsersService } from "../../../../../services";
+import { dispatchErrors} from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
     selector: "signin-runtime"
@@ -79,7 +81,7 @@ export class Signin {
                 const redirectUrl = this.delegationUrl();
 
                 if (redirectUrl) {
-                    window.open(redirectUrl, "_self");
+                    location.assign(redirectUrl);
                 }
             }
         }
@@ -110,11 +112,7 @@ export class Signin {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            const validationReport: ValidationReport = {
-                source: "signin",
-                errors: clientErrors
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, ErrorSources.signin, clientErrors);
             this.errorMessages(clientErrors);
             return;
         }
@@ -122,57 +120,40 @@ export class Signin {
         try {
             this.working(true);
 
-            const userId = await this.usersService.signIn(this.username(), this.password());
+            await this.usersService.signIn(this.username(), this.password());
+            
+            const clientReturnUrl = sessionStorage.getItem("returnUrl");
+            const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
 
-            if (userId) {
-                const clientReturnUrl = sessionStorage.getItem("returnUrl");
-                const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
-
-                if (returnUrl) {
-                    await this.router.navigateTo(sanitizeUrl(returnUrl));
-                    return;
-                }
-
-                this.navigateToHome();
-
-                const validationReport: ValidationReport = {
-                    source: "signin",
-                    errors: []
-                };
-
-                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            if (returnUrl) {
+                await this.router.navigateTo(sanitizeUrl(returnUrl));
+                return;
             }
-            else {
-                this.errorMessages(["Please provide a valid email and password."]);
 
-                const validationReport: ValidationReport = {
-                    source: "signin",
-                    errors: ["Please provide a valid email and password."]
-                };
+            this.navigateToHome();
 
-                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-            }
+            dispatchErrors(this.eventManager, ErrorSources.signin, []);
+            const errors = ["Please provide a valid email and password."];
+            this.errorMessages(errors);
+            dispatchErrors(this.eventManager, ErrorSources.signin, errors);
         }
         catch (error) {
             if (error instanceof MapiError) {
                 if (error.code === "identity_not_confirmed") {
                     const msg = [`We found an unconfirmed account for the e-mail address ${this.username()}. To complete the creation of your account we need to verify your e-mail address. We’ve sent an e-mail to ${this.username()}. Please follow the instructions inside the e-mail to activate your account. If the e-mail doesn’t arrive within the next few minutes, please check your junk email folder`];
-                    const validationReport: ValidationReport = {
-                        source: "signin",
-                        errors: msg
-                    };
-                    this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+                    dispatchErrors(this.eventManager, ErrorSources.signin, msg);
                     return;
                 }
 
                 this.errorMessages([error.message]);
 
-                const validationReport: ValidationReport = {
-                    source: "signin",
-                    errors: [error.message]
-                };
-                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+                dispatchErrors(this.eventManager, ErrorSources.signin, [error.message]);
 
+                return;
+            } else if (error instanceof UnauthorizedError) {
+                this.errorMessages([error.message]);
+
+                dispatchErrors(this.eventManager, ErrorSources.signin, [error.message]);
                 return;
             }
 

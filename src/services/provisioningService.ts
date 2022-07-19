@@ -25,36 +25,30 @@ export class ProvisionService {
 
     public async provision(): Promise<void> {
         const dataUrl = `/editors/templates/default.json`;
+        const dataObj = await this.fetchData(dataUrl);
+        const keys = Object.keys(dataObj);
+        const accessToken = await this.authenticator.getAccessTokenAsString();
 
-        try {
-            const dataObj = await this.fetchData(dataUrl);
-            const keys = Object.keys(dataObj);
-            const accessToken = await this.authenticator.getAccessTokenAsString();
-
-            if (!accessToken) {
-                this.viewManager.notifyError(`Unable to setup website`, `Management API access token is empty or invald.`);
-            }
-
-            for (const key of keys) {
-                const contentItem = dataObj[key];
-                const url = `${key}?api-version=${Constants.managementApiVersion}`;
-                await this.apiClient.put(
-                    url,
-                    [
-                        { name: KnownHttpHeaders.IfMatch, value: "*" },
-                        { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
-                        { name: KnownHttpHeaders.Authorization, value: accessToken },
-                        await this.apiClient.getPortalHeader("provision")
-                    ],
-                    contentItem);
-            }
-            this.router.navigateTo(Constants.pageUrlHome);
-            this.viewManager.setHost({ name: "page-host" });
-            this.viewManager.showToolboxes();
+        if (!accessToken) {
+            this.viewManager.notifyError(`Unable to setup website`, `Management API access token is empty or invald.`);
         }
-        catch (error) {
-            throw error;
+
+        for (const key of keys) {
+            const contentItem = dataObj[key];
+            const url = `${key}?api-version=${Constants.managementApiVersion}`;
+            await this.apiClient.put(
+                url,
+                [
+                    { name: KnownHttpHeaders.IfMatch, value: "*" },
+                    { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
+                    { name: KnownHttpHeaders.Authorization, value: accessToken },
+                    await this.apiClient.getPortalHeader("provision")
+                ],
+                contentItem);
         }
+        this.router.navigateTo(Constants.pageUrlHome);
+        this.viewManager.setHost({ name: "page-host" });
+        this.viewManager.showToolboxes();
     }
 
     private async cleanupContent(): Promise<void> {

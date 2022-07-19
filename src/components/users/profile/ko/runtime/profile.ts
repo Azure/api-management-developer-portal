@@ -6,12 +6,14 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { Router } from "@paperbits/common/routing/router";
 import { User } from "../../../../../models/user";
 import { UsersService } from "../../../../../services/usersService";
-import { DelegationParameters, DelegationActionPath } from "../../../../../contracts/tenantSettings";
+import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import ITenantService from "../../../../../services/ITenantService";
 import { pageUrlChangePassword } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
-import { ValidationReport } from "../../../../../contracts/validationReport";
 import { EventManager } from "@paperbits/common/events/eventManager";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
+import { BackendService } from "../../../../../services/backendService";
 
 @RuntimeComponent({
     selector: "profile-runtime"
@@ -35,6 +37,7 @@ export class Profile {
     constructor(
         private readonly usersService: UsersService,
         private readonly tenantService: ITenantService,
+        private readonly backendService: BackendService,
         private readonly eventManager: EventManager,
         private readonly router: Router) {
         this.user = ko.observable();
@@ -67,15 +70,18 @@ export class Profile {
         this.setUser(model);
     }
 
-    private async isDelegationEnabled(action: DelegationActionPath): Promise<boolean> {
+    private async applyDelegation(action: DelegationAction): Promise<boolean> {
         if (!this.user()) {
             return false;
         }
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
         if (isDelegationEnabled) {
-            const delegation = new URLSearchParams();
-            delegation.append(DelegationParameters.UserId, Utils.getResourceName("users", this.user().id));
-            this.router.navigateTo(`/${action}?${delegation.toString()}`);
+            const delegationParam = {};
+            delegationParam[DelegationParameters.UserId] = Utils.getResourceName("users", this.user().id);
+            const delegationUrl = await this.backendService.getDelegationString(action, delegationParam);
+            if (delegationUrl) {
+                location.assign(delegationUrl);
+            }
 
             return true;
         }
@@ -93,18 +99,9 @@ export class Profile {
         this.email = ko.observable(model.email);
     }
 
-    private cleanValidationErrors(): void {
-        const validationReport: ValidationReport = {
-            source: "changeProfile",
-            errors: []
-        };
-
-        this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-    }
-
     public async toggleEdit(): Promise<void> {
-        const isDelegationEnabled = await this.isDelegationEnabled(DelegationActionPath.changeProfile);
-        if (isDelegationEnabled) {
+        const isDelegationApplied = await this.applyDelegation(DelegationAction.changeProfile);
+        if (isDelegationApplied) {
             return;
         }
         if (this.isEdit()) {
@@ -116,8 +113,8 @@ export class Profile {
     }
 
     public async toggleEditPassword(): Promise<void> {
-        const isDelegationEnabled = await this.isDelegationEnabled(DelegationActionPath.changePassword);
-        if (isDelegationEnabled) {
+        const isDelegationApplied = await this.applyDelegation(DelegationAction.changePassword);
+        if (isDelegationApplied) {
             return;
         }
         await this.router.navigateTo(pageUrlChangePassword);
@@ -128,38 +125,21 @@ export class Profile {
             return;
         }
 
-        this.cleanValidationErrors();
         this.working(true);
-
+        dispatchErrors(this.eventManager, ErrorSources.changeProfile, []);
         try {
             const user = await this.usersService.updateUser(this.user().id, this.firstName(), this.lastName());
             this.setUser(user);
-            this.toggleEdit();
+            await this.toggleEdit();
+        } catch (error) {
+            parseAndDispatchError(this.eventManager, ErrorSources.changeProfile, error);
         }
-        catch (error) {
-            let errorDetails;
-
-            if (error.code === "ValidationError") {
-                errorDetails = error.details?.map(detail => detail.message) || [error.message];
-            }
-            else {
-                errorDetails = [error.message];
-            }
-
-            const validationReport: ValidationReport = {
-                source: "changeProfile",
-                errors: errorDetails
-            };
-
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        }
-
         this.working(false);
     }
 
     public async closeAccount(): Promise<void> {
-        const isDelegationEnabled = await this.isDelegationEnabled(DelegationActionPath.closeAccount);
-        if (isDelegationEnabled) {
+        const isDelegationApplied = await this.applyDelegation(DelegationAction.closeAccount);
+        if (isDelegationApplied) {
             return;
         }
         const confirmed = window.confirm(`Dear ${this.user().firstName} ${this.user().lastName}, \nYou are about to close your account associated with email address ${this.user().email}.\nYou will not be able to sign in to or restore your closed account. Are you sure you want to close your account?`);

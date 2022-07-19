@@ -16,6 +16,7 @@
 
     .popup-container {
         z-index: 1001;
+        align-items: center;
     }
 
     .popup-close {
@@ -29,5 +30,8 @@
 }
 
 .popup-host {
-    display: contents;
+    display: block;
+    overflow: visible;
+    height: 0;
+    width: 100%;
 }

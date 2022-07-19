@@ -6,7 +6,7 @@ import * as javascript from "./javascript.liquid";
 import * as php from "./php.liquid";
 import * as python from "./python.liquid";
 import * as ruby from "./ruby.liquid";
-import * as swift from "./swift.liquid"
+import * as swift from "./swift.liquid";
 import * as ws_wscat from "./ws_wscat.liquid";
 import * as ws_csharp from "./ws_csharp.liquid";
 import * as ws_javascript from "./ws_javascript.liquid";

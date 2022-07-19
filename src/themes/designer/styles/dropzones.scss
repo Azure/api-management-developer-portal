@@ -77,7 +77,6 @@
 
 .dropzone {
     margin: 10px 0;
-    
 
     .dropzone-controls {
         padding: 12px;
@@ -91,6 +90,11 @@
         border: 1px solid $form-control-border;
         @include tabable();
         @include pseudo-transparent-bckg();
+    }
+
+    .dropzone-footer {
+        display: block;
+        height: 1.5em;
     }
 }
 

@@ -241,18 +241,27 @@ export class MapiObjectStorage implements IObjectStorage {
                 };
             }
 
-            const resource = this.paperbitsKeyToArmResource(key);
-            const contentType = this.getContentTypeFromResource(resource);
+            const resourcePath = this.paperbitsKeyToArmResource(key);
+            const contentType = this.getContentTypeFromResource(resourcePath);
             const isLocalized = localizedContentTypes.includes(contentType);
-            const item = await this.apiClient.get<T>(`${resource}`, [await this.apiClient.getPortalHeader("getObject")]);
-            const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
+            const contentItem = await this.apiClient.get<T>(resourcePath, [await this.apiClient.getPortalHeader("getObject")]);
+            const converted = this.convertArmContractToPaperbitsContract(contentItem, isLocalized);
 
             if (key.startsWith("blocks/")) {
                 this.delocalizeBlock(converted);
             }
 
             if (key.includes("settings") || key.includes("styles")) {
-                return (<any>converted).nodes[0];
+                const result = (<any>converted).nodes[0];
+                const segments = key.split("/");
+
+                if (segments.length > 1) {
+                    const path = segments.slice(1).join("/");
+                    return Objects.getObjectAt(path, result);
+                }
+                else {
+                    return result;
+                }
             }
 
             if (key.includes("navigationItems")) {

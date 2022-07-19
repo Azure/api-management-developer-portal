@@ -52,7 +52,7 @@ import { ChangePasswordModule } from "./components/users/change-password/ko/chan
 import { ChangePasswordEditorModule } from "./components/users/change-password/ko/changePasswordEditor.module";
 import { MapiTenantService } from "./services/mapiTenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/validationSummary.module";
-import { ValidationSummaryDesignModule } from "./components/users/validation-summary/validationSummary.design.module"
+import { ValidationSummaryDesignModule } from "./components/users/validation-summary/validationSummary.design.module";
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
