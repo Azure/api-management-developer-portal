@@ -1,7 +1,7 @@
 import { OVERRIDE_PORT_KEY } from "@azure/api-management-custom-widgets-scaffolder";
 import {
-    buildBlobDataSrc,
-    EDITOR_DATA_KEY,
+    buildBlobDataPath,
+    APIM_EDITOR_DATA_KEY,
     TEditorData,
     TEnvironment,
     TValuesCommon
@@ -27,7 +27,7 @@ export async function buildWidgetSource(
 
     // tslint:disable-next-line:triple-equals
     const url = new URL(developmentSrc == null ? (
-        await blobStorage.getDownloadUrlWithoutToken(`${buildBlobDataSrc(model.name)}${filePath}`)
+        await blobStorage.getDownloadUrlWithoutToken(`${buildBlobDataPath(model.name)}${filePath}`)
     ) : developmentSrc + filePath);
 
     url.pathname = decodeURIComponent(url.pathname);
@@ -38,7 +38,7 @@ export async function buildWidgetSource(
         instanceId: model.instanceId,
         environment,
     };
-    url.searchParams.append(EDITOR_DATA_KEY, encodeURIComponent(JSON.stringify(data)));
+    url.searchParams.append(APIM_EDITOR_DATA_KEY, encodeURIComponent(JSON.stringify(data)));
 
     return {override: developmentSrc, src: url.toString()};
 }
