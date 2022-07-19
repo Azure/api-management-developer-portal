@@ -15,6 +15,6 @@ export default class DataApiClient extends ApiClient {
 
     protected override async setBaseUrl() {
         const settings = await this.settingsProvider.getSettings();
-        this.backendUrl = Utils.getDeveloperPrefix(settings[Constants.SettingNames.backendUrl] || "");
+        this.backendUrl = Utils.getUrlWithDeveloperPrefix(settings[Constants.SettingNames.backendUrl] || "");
     }
 }
