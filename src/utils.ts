@@ -28,11 +28,11 @@ export class Utils {
         }
     }
 
-    public static getDeveloperEndpoint(backendUrl: string): string {
+    public static getDeveloperPrefix(backendUrl: string): string {
         return `${ensureTrailingSlash(backendUrl)}developer`
     }
 
-    public static getMapiEndpoint(backendUrl: string): string {
+    public static getMapiPrefix(backendUrl: string): string {
         return `${ensureTrailingSlash(backendUrl)}mapi`
     }
 
