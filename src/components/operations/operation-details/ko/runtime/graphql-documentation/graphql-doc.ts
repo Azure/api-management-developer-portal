@@ -15,11 +15,11 @@ import { GraphqlTypesForDocumentation, GraphqlCustomFieldNames } from "../../../
 })
 
 export class GraphqlDocumentation {
-
     public readonly selectedType: ko.Observable<string>;
     public readonly filter: ko.Observable<string>;
-
     public readonly working: ko.Observable<boolean>;
+    
+    private koSubscriptions: ko.Subscription;
 
     constructor(
         private readonly graphDocService: GraphDocService
@@ -43,7 +43,7 @@ export class GraphqlDocumentation {
         this.working(true);
         await this.graphDocService.initialize();
         this.selectedType(GraphqlTypesForDocumentation[this.graphDocService.currentSelected()[GraphqlCustomFieldNames.type]()]);
-        this.graphDocService.currentSelected.subscribe(this.onCurrentSelectedChange);
+        this.koSubscriptions = this.graphDocService.currentSelected.subscribe(this.onCurrentSelectedChange);
         this.working(false);
     }
 
@@ -53,6 +53,7 @@ export class GraphqlDocumentation {
 
     @OnDestroyed()
     public dispose(): void {
+        this.koSubscriptions?.dispose();
         this.graphDocService.router.removeRouteChangeListener(this.graphDocService.onRouteChangeGraph);
     }
 
@@ -64,9 +65,5 @@ export class GraphqlDocumentation {
         if (selected) {
             this.selectedType(GraphqlTypesForDocumentation[this.graphDocService.currentSelected()[GraphqlCustomFieldNames.type]()]);
         }
-    }
-
-    public selectType(type: string) {
-        this.selectedType(type);
     }
 }

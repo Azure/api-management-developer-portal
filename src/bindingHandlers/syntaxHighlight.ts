@@ -56,7 +56,7 @@ ko.bindingHandlers["syntaxHighlight"] = {
                     highlightLanguage = "ruby";
                     break;
                 case "swift":
-                    highlightLanguage = "swift"
+                    highlightLanguage = "swift";
                     break;
                 case "xml":
                     highlightLanguage = "xml";

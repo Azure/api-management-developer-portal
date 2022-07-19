@@ -5,7 +5,8 @@ import { IApiClient } from "../clients";
 import { Identity } from "../contracts/identity";
 import ITenantService from "../services/ITenantService";
 import { BackendService } from "../services/backendService";
-import { DelegationAction } from "../contracts/tenantSettings";
+import { DelegationAction, DelegationParameters } from "../contracts/tenantSettings";
+import { clear } from "idb-keyval";
 
 export class SignOutRouteGuard implements RouteGuard {
     constructor(
@@ -33,9 +34,13 @@ export class SignOutRouteGuard implements RouteGuard {
                         const identity = await this.apiClient.get<Identity>("/identity", [await this.apiClient.getPortalHeader("delegationSignOut")]);
 
                         if (identity) {
-                            const redirectUrl = await this.backendService.getDelegationUrl(DelegationAction.signOut, { userId: identity.id });
+                            const delegationParam = {};
+                            delegationParam[DelegationParameters.UserId] =  identity.id;
+                            const redirectUrl = await this.backendService.getDelegationString(DelegationAction.signOut, delegationParam);
                             if (redirectUrl) {
-                                window.open(redirectUrl, "_self");
+                                this.authenticator.clearAccessToken();
+                                await clear(); // clear cache in indexedDB
+                                location.assign(redirectUrl);
                             }
                         }
                     }
@@ -54,6 +59,7 @@ export class SignOutRouteGuard implements RouteGuard {
         }
 
         this.authenticator.clearAccessToken();
+        await clear(); // clear cache in indexedDB
         location.assign(Constants.pageUrlHome);
     }
 }

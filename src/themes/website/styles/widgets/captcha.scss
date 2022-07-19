@@ -1,0 +1,14 @@
+.captcha {
+    min-height: 220px;
+    padding-bottom: 10px;
+
+    .captcha-toggle {
+        white-space: nowrap;
+    }
+
+    .captcha-challenge {
+        min-height: 70px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+}

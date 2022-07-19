@@ -16,12 +16,12 @@
             padding: 0 10px;
             text-decoration: none;
             font-weight: bold;
+            @include selection();
 
             &:active,
             &:focus,
             &:hover {
                 outline: none;
-                @include selection();
             }
         }
 

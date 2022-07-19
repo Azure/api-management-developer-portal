@@ -2,14 +2,16 @@ import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import * as GraphQL from "graphql";
 import * as monaco from "monaco-editor";
-import loader from '@monaco-editor/loader';
-import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
+import loader from "@monaco-editor/loader";
+import { Component, OnDestroyed, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
+import { ConsoleHost } from "./../../../../../models/console/consoleHost";
+import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
 import template from "./graphql-console.html";
 import graphqlExplorer from "./graphql-explorer.html";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlTypes, GraphqlCustomFieldNames, GraphqlMetaField, graphqlSubProtocol } from "./../../../../../constants";
+import { QueryEditorSettings, VariablesEditorSettings, ResponseSettings, GraphqlTypes, GraphqlCustomFieldNames, GraphqlMetaField, graphqlSubProtocol, GraphqlProtocols, GqlWsMessageType } from "./../../../../../constants";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { ApiService } from "../../../../../services/apiService";
@@ -37,9 +39,9 @@ export class GraphqlConsole {
         query: ko.Observable<GraphQLTreeNode>,
         mutation: ko.Observable<GraphQLTreeNode>,
         subscription: ko.Observable<GraphQLTreeNode>
-    }
+    };
 
-    private globalNodes: ko.ObservableArray<GraphQLTreeNode>
+    private globalNodes: ko.ObservableArray<GraphQLTreeNode>;
 
     private schema: string;
     public filter: ko.Observable<string>;
@@ -58,12 +60,15 @@ export class GraphqlConsole {
     public readonly collapsedQuery: ko.Observable<boolean>;
     public readonly collapsedMutation: ko.Observable<boolean>;
     public readonly collapsedSubscription: ko.Observable<boolean>;
+    public readonly collapsedParameters: ko.Observable<boolean>;
+    public readonly queryParameters: ko.ObservableArray<ConsoleParameter>;
     public readonly headers: ko.ObservableArray<ConsoleHeader>;
     public readonly editorErrors: ko.ObservableArray<string>;
     public readonly variables: ko.Observable<string>;
     public readonly response: ko.Observable<string>;
     public readonly isContentValid: ko.Observable<boolean>;
     public backendUrl: string;
+    public readonly host: ConsoleHost;
 
     public readonly isSubscriptionOperation: ko.Observable<boolean>;
 
@@ -72,7 +77,7 @@ export class GraphqlConsole {
     public readonly displayWsConsole: ko.Observable<boolean>;
     private ws: WebsocketClient;
     public readonly wsLogItems: ko.ObservableArray<object>;
-
+    private koSubscriptions: ko.Subscription[] = [];
 
     constructor(
         private readonly routeHelper: RouteHelper,
@@ -87,13 +92,16 @@ export class GraphqlConsole {
         this.collapsedQuery = ko.observable(true);
         this.collapsedMutation = ko.observable(true);
         this.collapsedSubscription = ko.observable(true);
+        this.collapsedParameters = ko.observable(true);
         this.editorErrors = ko.observableArray([]);
         this.api = ko.observable<Api>();
         this.sendingRequest = ko.observable(false);
         this.authorizationServer = ko.observable();
+        this.hostnames = ko.observable();
+        this.host = new ConsoleHost();
+        this.queryParameters = ko.observableArray();
         this.headers = ko.observableArray();
         this.document = ko.observable();
-        this.operationUrl = ko.observable();
         this.variables = ko.observable();
         this.response = ko.observable();
         this.filter = ko.observable("");
@@ -104,7 +112,7 @@ export class GraphqlConsole {
             query: ko.observable(),
             mutation: ko.observable(),
             subscription: ko.observable()
-        }
+        };
         this.globalNodes = ko.observableArray([]);
 
         this.isSubscriptionOperation = ko.observable(false);
@@ -119,7 +127,7 @@ export class GraphqlConsole {
     public api: ko.Observable<Api>;
 
     @Param()
-    public operationUrl: ko.Observable<string>;
+    public hostnames: ko.Observable<string[]>;
 
     @Param()
     public authorizationServer: ko.Observable<AuthorizationServer>;
@@ -131,8 +139,8 @@ export class GraphqlConsole {
     public async initialize(): Promise<void> {
         await this.resetConsole();
         await this.loadingMonaco();
-        this.document.subscribe(this.onDocumentChange);
-        this.response.subscribe(this.onResponseChange);
+        this.koSubscriptions.push(this.document.subscribe(this.onDocumentChange));
+        this.koSubscriptions.push(this.response.subscribe(this.onResponseChange));
         this.backendUrl = await this.settingsProvider.getSetting<string>("backendUrl");
     }
 
@@ -146,14 +154,21 @@ export class GraphqlConsole {
         this.working(true);
         this.sendingRequest(false);
 
-        let defaultHeader = new ConsoleHeader();
+        const defaultHeader = new ConsoleHeader();
         defaultHeader.name("Content-Type");
         defaultHeader.value("application/json");
         this.headers.push(defaultHeader);
 
-        const graphQLSchemas = await this.apiService.getSchemas(this.api());
-        this.schema = graphQLSchemas.value.find(s => s.graphQLSchema)?.graphQLSchema;
-        await this.buildTree(this.schema);
+        if (this.hostnames()) {
+            this.host.hostname(this.hostnames()[0]);
+        }
+
+        const graphQLSchema = await this.apiService.getGQLSchema(selectedApi.id);
+        if (graphQLSchema) {
+            this.schema = graphQLSchema.graphQLSchema;
+            this.buildTree(this.schema);    
+        }
+        
         this.availableOperations();
         this.selectByDefault();
         this.isSubscriptionOperation(this.document().trim().startsWith(GraphqlTypes.subscription));
@@ -167,9 +182,9 @@ export class GraphqlConsole {
     private selectByDefault(): void {
         const type = this.graphDocService.currentSelected()[GraphqlCustomFieldNames.type]();
         this.operationNodes[type]().toggle(true);
-        const name = this.graphDocService.currentSelected()['name'];
+        const name = this.graphDocService.currentSelected()["name"];
 
-        for (let child of this.operationNodes[type]().children()) {
+        for (const child of this.operationNodes[type]().children()) {
             if (child.label() === name) {
                 child.toggle();
                 break;
@@ -190,10 +205,10 @@ export class GraphqlConsole {
         this.responseEditor.setValue(Utils.formatJson(response));
     }
 
-    documentToTree() {
+    public documentToTree(): void {
         try {
             const ast = GraphQL.parse(this.document(), { noLocation: true });
-            for (let node of this.globalNodes()) {
+            for (const node of this.globalNodes()) {
                 node?.clear();
                 node?.toggle(true, false);
             }
@@ -214,7 +229,7 @@ export class GraphqlConsole {
                         } else if (node.kind === GraphQL.Kind.INLINE_FRAGMENT) {
                             targetNode = curNode.children().find(n => !n.isInputNode() && n.label() === node.typeCondition.name.value);
                         } else {
-                            let inputNode = <GraphQLInputTreeNode>curNode.children().find(n => n.isInputNode() && n.label() === node.name.value);
+                            const inputNode = <GraphQLInputTreeNode>curNode.children().find(n => n.isInputNode() && n.label() === node.name.value);
                             if (node.value.kind === GraphQL.Kind.STRING) {
                                 inputNode.inputValue(`"${node.value.value}"`);
                             } else if (node.value.kind === GraphQL.Kind.BOOLEAN || node.value.kind === GraphQL.Kind.INT
@@ -250,8 +265,9 @@ export class GraphqlConsole {
                         if (node.kind === GraphQL.Kind.OPERATION_DEFINITION) {
                             (<GraphQLOutputTreeNode>curNode).variables = variables;
                         }
-                        if (!(node.kind === GraphQL.Kind.FIELD && node.name.value === GraphqlMetaField.typename))
+                        if (!(node.kind === GraphQL.Kind.FIELD && node.name.value === GraphqlMetaField.typename)) {
                             curNode = curNode.parent();
+                        }
                     }
                 }
             });
@@ -303,10 +319,10 @@ export class GraphqlConsole {
         payload = JSON.stringify({
             query: this.document(),
             variables: this.variables() && this.variables().length > 0 ? JSON.parse(this.variables()) : null
-        })
+        });
 
         const request: HttpRequest = {
-            url: this.operationUrl(),
+            url: this.requestUrl(),
             method: "POST",
             headers: this.addSystemHeaders(),
             body: payload
@@ -329,6 +345,14 @@ export class GraphqlConsole {
         finally {
             this.sendingRequest(false);
         }
+    }
+
+    private requestUrl(): string {
+        const protocol = this.api().protocols.includes(GraphqlProtocols.https) ? GraphqlProtocols.https : GraphqlProtocols.http;
+        const urlTemplate = this.getRequestPath();
+        let result = this.host.hostname() ? `${protocol}://${this.host.hostname()}` : "";
+        result += Utils.ensureLeadingSlash(urlTemplate);
+        return result;
     }
 
     private addSystemHeaders() {
@@ -408,7 +432,7 @@ export class GraphqlConsole {
             }
         };
 
-        let settings = { ...defaultSettings, ...editorSettings.config }
+        const settings = { ...defaultSettings, ...editorSettings.config };
 
         this[editorSettings.id] = (<any>window).monaco.editor.create(document.getElementById(editorSettings.id), settings);
 
@@ -425,7 +449,7 @@ export class GraphqlConsole {
                             this.document(value);
                         }
                         this.documentToTree();
-                    }, 500)
+                    }, 500);
                 }
                 if (editorSettings.id === VariablesEditorSettings.id) {
                     this.variables(value);
@@ -469,10 +493,10 @@ export class GraphqlConsole {
      */
     private createFieldStringFromNodes(nodes: GraphQLTreeNode[], level: number): string {
         let selectedNodes: string[] = [];
-        for (let node of nodes) {
-            let inputNodes: GraphQLInputTreeNode[] = []
-            let outputNodes: GraphQLTreeNode[] = [];
-            for (let child of node.children()) {
+        for (const node of nodes) {
+            const inputNodes: GraphQLInputTreeNode[] = [];
+            const outputNodes: GraphQLTreeNode[] = [];
+            for (const child of node.children()) {
                 if (child instanceof GraphQLInputTreeNode) {
                     inputNodes.push(child);
                 } else {
@@ -497,7 +521,7 @@ export class GraphqlConsole {
             if (level === 0) {
                 result = selectedNodes.join("\n\n");
             } else {
-                result = ` {\n${selectedNodes.join("\n")}\n${"\t".repeat(level - 1)}}`
+                result = ` {\n${selectedNodes.join("\n")}\n${"\t".repeat(level - 1)}}`;
             }
         }
         return result;
@@ -508,7 +532,7 @@ export class GraphqlConsole {
     private checkingGeneration(node: GraphQLTreeNode): boolean {
         const allOperations = <string[]>[GraphqlTypes.query, GraphqlTypes.mutation, GraphqlTypes.subscription];
         const isOperation = allOperations.includes(node.label());
-        if ((node.selected() && !isOperation) || (node.selected() && isOperation && node.hasActiveChild())) {   
+        if ((node.selected() && !isOperation) || (node.selected() && isOperation && node.hasActiveChild())) {
             return true;
         }
         return false;
@@ -533,14 +557,14 @@ export class GraphqlConsole {
      * @returns string of argument of the declaration. For example, (a : 1)
      */
     private createArgumentStringFromNode(nodes: GraphQLInputTreeNode[], firstLevel: boolean): string {
-        let selectedNodes: string[] = [];
-        for (let node of nodes) {
+        const selectedNodes: string[] = [];
+        for (const node of nodes) {
             if (node.selected()) {
-                let type = getType(node.data.type);
+                const type = getType(node.data.type);
                 if (node.isScalarType() || node.isEnumType()) {
                     selectedNodes.push(`${node.label()}: ${node.inputValue()}`);
                 } else if (type instanceof GraphQL.GraphQLInputObjectType) {
-                    selectedNodes.push(`${node.label()}: { ${this.createArgumentStringFromNode(node.children(), false)} }`)
+                    selectedNodes.push(`${node.label()}: { ${this.createArgumentStringFromNode(node.children(), false)} }`);
                 }
             }
         }
@@ -548,8 +572,8 @@ export class GraphqlConsole {
     }
 
     public gqlFieldName(name: string, isRequired: boolean, isInputNode: boolean): string {
-        let gqlFieldName = name += (isRequired && isInputNode) ? '*' : '';
-        gqlFieldName = gqlFieldName += (isInputNode) ? ':' : '';
+        let gqlFieldName = name += (isRequired && isInputNode) ? "*" : "";
+        gqlFieldName = gqlFieldName += (isInputNode) ? ":" : "";
         return gqlFieldName;
     }
 
@@ -558,7 +582,7 @@ export class GraphqlConsole {
     }
 
     public collapsedType(type: string): boolean {
-        const varName = 'collapsed' + type;
+        const varName = "collapsed" + type;
         return this[varName]();
     }
 
@@ -567,7 +591,7 @@ export class GraphqlConsole {
             const node = this.operationNodes[this.graphDocService.typeIndexer()[type]]();
             node.toggle(true);
             this.globalNodes.push(node);
-        })
+        });
     }
 
     public getOperationNode(type: string) {
@@ -600,16 +624,59 @@ export class GraphqlConsole {
         this.wsProcessing(true);
         this.displayWsConsole(true);
 
-        let url = this.operationUrl();
-
-        if (url.startsWith("https://")) {
-            url = "wss://" + url.substring(8);
-        } else if (url.startsWith("http://")) {
-            url = "ws://" + url.substring(7)
-        }
+        const url = this.wsUrl();
 
         this.initWebSocket();
         this.ws.connect(url, graphqlSubProtocol);
+    }
+
+    private wsUrl(): string {
+        const protocol = this.api().protocols.includes(GraphqlProtocols.wss) ? GraphqlProtocols.wss : GraphqlProtocols.ws;
+        const urlTemplate = this.getRequestPath();
+        const result = `${protocol}://${this.host.hostname()}${Utils.ensureLeadingSlash(urlTemplate)}`;
+        return result;
+    }
+
+    private getRequestPath(getHidden: boolean = false): string {
+        let versionPath = "";
+        const api = this.api();
+
+        if (api.apiVersionSet && api.apiVersion && api.apiVersionSet.versioningScheme === "Segment") {
+            versionPath = `/${api.apiVersion}`;
+        }
+
+        let requestUrl = "";
+        const parameters = this.queryParameters();
+
+        parameters.forEach(parameter => {
+            if (parameter.value()) {
+                const parameterPlaceholder = parameter.name() !== "*" ? `{${parameter.name()}}` : "*";
+                const encodedValue = Utils.encodeURICustomized(parameter.value());
+                if (requestUrl.indexOf(parameterPlaceholder) > -1) {
+                    requestUrl = requestUrl.replace(parameterPlaceholder,
+                        !getHidden || !parameter.secret ? encodedValue
+                            : (parameter.revealed() ? encodedValue : parameter.value().replace(/./g, "•")));
+                }
+                else {
+                    requestUrl = this.addParam(requestUrl, Utils.encodeURICustomized(parameter.name()),
+                        !getHidden || !parameter.secret ? encodedValue
+                            : (parameter.revealed() ? encodedValue : parameter.value().replace(/./g, "•")));
+                }
+            }
+        });
+
+        if (api.apiVersionSet && api.apiVersionSet.versioningScheme === "Query") {
+            requestUrl = this.addParam(requestUrl, api.apiVersionSet.versionQueryName, api.apiVersion);
+        }
+
+        return `${api.path}${versionPath}${requestUrl}`;
+    }
+
+    private addParam(uri: string, name: string, value: string): string {
+        const separator = uri.indexOf("?") >= 0 ? "&" : "?";
+        const paramString = !value || value === "" ? name : name + "=" + value;
+
+        return uri + separator + paramString;
     }
 
     public clearWsLogs(): void {
@@ -622,11 +689,11 @@ export class GraphqlConsole {
             this.wsProcessing(false);
             this.wsConnected(true);
             this.ws.send(JSON.stringify({
-                type: "connection_init",
+                type: GqlWsMessageType.connection_init,
                 payload: {}
             }));
             this.ws.send(JSON.stringify({
-                type: "subscribe",
+                type: GqlWsMessageType.subscribe,
                 id: "1",
                 payload: {
                     query: this.document(),
@@ -640,8 +707,8 @@ export class GraphqlConsole {
             }
             if (data.logType === LogItemType.GetData) {
                 try {
-                    let json = JSON.parse(data.logData);
-                    if (json["type"] == "next" && "payload" in json) {
+                    const json = JSON.parse(data.logData);
+                    if (json["type"] == GqlWsMessageType.next && "payload" in json) {
                         data.logData = JSON.stringify(json["payload"], null, 2);
                         this.wsLogItems.unshift(data);
                     }
@@ -651,8 +718,8 @@ export class GraphqlConsole {
             }
             else if (data.logType === LogItemType.SendData) {
                 try {
-                    let json = JSON.parse(data.logData);
-                    if (json["type"] == "subscribe" && "payload" in json) {
+                    const json = JSON.parse(data.logData);
+                    if (json["type"] == GqlWsMessageType.subscribe && "payload" in json) {
                         data.logData = JSON.stringify(json["payload"], null, 2);
                         this.wsLogItems.unshift(data);
                     }
@@ -661,11 +728,11 @@ export class GraphqlConsole {
                 }
             }
             else if (data.logType === LogItemType.Connection) {
-                if (data.logData.includes('Disconnected')) {
+                if (data.logData.includes("Disconnected")) {
                     return;
                 }
-                if (data.logData.includes('Disconnecting from')) {
-                    data.logData = data.logData.replace('Disconnecting', 'Disconnected');
+                if (data.logData.includes("Disconnecting from")) {
+                    data.logData = data.logData.replace("Disconnecting", "Disconnected");
                 }
                 this.wsLogItems.unshift(data);
             }
@@ -676,11 +743,17 @@ export class GraphqlConsole {
         this.ws.onError = (error: string) => {
             this.wsProcessing(false);
             this.wsConnected(false);
-        }
+        };
     }
 
     private editorValidations(): void {
         this.editorErrors([]);
+
+        const hasWsProtocol = !!this.api().protocols.find(p => p == GraphqlProtocols.ws || p == GraphqlProtocols.wss);
+        if (this.isSubscriptionOperation() && !hasWsProtocol) {
+            this.editorErrors.push("Live subscriptions are not supported for this API");
+        }
+
         const markers = (<any>window).monaco.editor.getModelMarkers({});
         if (!!markers.find(m => m.severity >= 5 && m.owner == "graphqlQuery")) {
             this.editorErrors.push("Syntax error in 'Query editor'");
@@ -705,4 +778,21 @@ export class GraphqlConsole {
         this.wsConnect();
     }
 
+    public toggleSecretParameter(parameter: ConsoleParameter): void {
+        parameter.toggleRevealed();
+    }
+
+    public removeQueryParameter(parameter: ConsoleParameter): void {
+        this.queryParameters.remove(parameter);
+    }
+
+    public addQueryParameter(): void {
+        const newParameter = new ConsoleParameter();
+        this.queryParameters.push(newParameter);
+    }
+
+    @OnDestroyed()
+    public dispose(): void {
+        this.koSubscriptions?.forEach(s => s.dispose());
+    }
 }

@@ -12,6 +12,7 @@ export class SubscriptionsViewModelBinder implements ViewModelBinder<Subscriptio
 
             viewModel["widgetBinding"] = {
                 displayName: "User: Subscriptions",
+                layer: bindingContext?.layer,
                 model: model,
                 flow: ComponentFlow.Block,
                 draggable: true,

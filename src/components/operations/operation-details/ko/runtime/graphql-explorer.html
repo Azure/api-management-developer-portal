@@ -1,5 +1,5 @@
 <ul role="list" class="gql-list-group">
-    <!-- ko foreach: { data: operationNode.children(), as: 'nodeChild' } -->
+    <!-- ko fastForEach: { data: operationNode.children(), as: 'nodeChild' } -->
     <li role="presentation">
         <!-- ko if: nodeChild.label().includes($parent.filter) -->
             <div role="presentation" data-bind="attr: {name: nodeChild.label()}" class="presentation-item">

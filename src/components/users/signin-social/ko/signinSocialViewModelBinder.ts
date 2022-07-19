@@ -30,6 +30,7 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
             viewModel["widgetBinding"] = {
                 name: "signinSocial",
                 displayName: "Sign-in button: OAuth",
+                layer: bindingContext?.layer,
                 draggable: true,
                 editor: "signin-social-editor",
                 model: model,

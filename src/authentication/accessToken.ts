@@ -44,7 +44,7 @@ export class AccessToken {
             throw new Error(`SharedAccessSignature token format is not valid.`);
         }
 
-        const userId = match[1] === "integration" ? null : match[1];
+        const userId = match[1];
         const dateTime = match[2];
         const year = dateTime.substr(0, 4);
         const month = dateTime.substr(4, 2);

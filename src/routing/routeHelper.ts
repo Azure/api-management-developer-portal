@@ -16,7 +16,7 @@ export class RouteHelper {
         const route = this.router.getCurrentRoute();
         const params = new URLSearchParams(route.hash ? `?${route.hash}` : "");
 
-        if(value) {
+        if (value) {
             params.set(name, value);
         } else {
             params.delete(name);

@@ -43,6 +43,13 @@ export enum AadEndpoints {
     legacy = "login.windows.net"
 }
 
+export enum AadClientLibrary {
+    v1 = "v1",
+    v2 = "v2"
+}
+
+export const AadClientLibraryV2 = "MSAL-2";
+
 /**
  * Types of direction (e.g. for sorting of elements in a table)
  */
@@ -174,6 +181,25 @@ export enum GraphqlTypes {
 }
 
 /**
+* Graphql protocols
+*/
+export enum GraphqlProtocols {
+    http = "http",
+    https = "https",
+    ws = "ws",
+    wss = "wss"
+}
+
+/**
+* Graphql websocket message type
+*/
+export enum GqlWsMessageType {
+    connection_init = "connection_init",
+    subscribe = "subscribe",
+    next = "next"
+}
+
+/**
 * Graphql types for documentation
 */
 export enum GraphqlTypesForDocumentation {
@@ -193,13 +219,7 @@ export enum GraphqlCustomFieldNames {
     type = "collectionTypeForDoc",
 }
 
-export enum GraphqlDefaultScalarTypes {
-    int = "Int",
-    float = "Float",
-    string = "String",
-    boolean = "Boolean",
-    id = "ID"
-}
+export const GraphqlDefaultScalarTypes = ["Int", "Float", "String", "Boolean", "ID"]
 
 export enum GraphqlFieldTypes {
     args = "args",
@@ -224,6 +244,11 @@ export enum SettingNames {
     aadClientConfig = "aad",
     aadB2CClientConfig = "aadB2C",
     developerPortalType = "developerPortalType"
+}
+
+export enum DeveloperPortalType {
+    selfHosted = "self-hosted-portal",
+    managed = "dev-portal"
 }
 
 /**
@@ -283,4 +308,11 @@ export const reservedCharTuplesForOData: [string, string][] = [["'", "''"]];
 /**
  * List of allowed attributes for a sandboxed iframe.
  */
-export const iframeSandboxAllows = "allow-scripts allow-modals allow-forms allow-downloads allow-popups-to-escape-sandbox allow-top-navigation allow-presentation allow-orientation-lock allow-pointer-lock";
+export const iframeSandboxAllows = "allow-scripts allow-modals allow-forms allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-presentation allow-orientation-lock allow-pointer-lock";
+
+/**
+ * List of downloadable content types
+ */
+export const downloadableTypes = ["image", "video", "audio", "zip", "pdf"];
+
+export const WarningBackendUrlMissing = `Backend URL is missing. See setting <i>backendUrl</i> in the configuration file <i>config.design.json</i>. OAuth authentication in Test console and Captcha widget requires <i>backendUrl</i> setting in config.runtime.json, pointing to your APIM service developer portal URL. In addition, it requires the origin to be specified in CORS settings (e.g. https://contoso.com). <a href="https://aka.ms/apimdocs/portal/self-hosted-settings" target="_blank">Learn more</a>.`

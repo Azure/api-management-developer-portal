@@ -15,7 +15,7 @@
         </div>
     </div>
     <div class="d-contents" role="rowgroup">
-        <!-- ko foreach: { data: $component.referenceFieldList(reference), as: 'field' } -->
+        <!-- ko fastForEach: { data: $component.referenceFieldList(reference), as: 'field' } -->
         <div class="d-contents" role="row">
             <!-- ko ifnot: $parent.reference.type == 'unionType' -->
             <div role="cell" class="text-truncate"

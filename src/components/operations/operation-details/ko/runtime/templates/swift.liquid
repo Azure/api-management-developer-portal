@@ -15,9 +15,9 @@ request.allHTTPHeaderFields = headers
 {% if request.body != blank %}
 // Request body
 {%- if request.bodyFormat == "raw" -%}
-{%- assign formattedBody = request.body | replace:'"','\\"' 
-formattedBody = formattedBody | replace: '\r\n', ' ' 
-formattedBody = formattedBody | replace: '     ', ' ' %}
+{%- assign formattedBody = request.body | replace:'"','\\"' -%}
+{%- assign formattedBody = formattedBody | replace: '\r\n', ' ' -%}
+{%- assign formattedBody = formattedBody | replace: '     ', ' ' %}
 let postString = "{{formattedBody}}"
 request.httpBody = postString.data(using: .utf8)
 {%- elsif  request.bodyFormat == "binary" %}

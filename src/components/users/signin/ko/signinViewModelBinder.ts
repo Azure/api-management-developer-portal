@@ -31,6 +31,7 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
             viewModel["widgetBinding"] = {
                 name: "signin",
                 displayName: "Sign-in form: Basic",
+                layer: bindingContext?.layer,
                 model: model,
                 flow: ComponentFlow.Block,
                 draggable: true,
@@ -48,14 +49,14 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
         if (isDelegationEnabled) {
             const delegationParam = {};
             delegationParam[DelegationParameters.ReturnUrl] = "/";
-            const delegationUrl = await this.backendService.getDelegationUrl(DelegationAction.signIn, delegationParam);
+            const delegationUrl = await this.backendService.getDelegationUrlFromServer(DelegationAction.signIn, delegationParam);
 
             if (delegationUrl) {
                 params["delegationUrl"] = delegationUrl;
             }
         }
 
-        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
+        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done
         const termsOfService = await this.getTermsOfService();
         if (termsOfService.text) params["termsOfUse"] = termsOfService.text;
         if (termsOfService.consentRequired) params["isConsentRequired"] = termsOfService.consentRequired;

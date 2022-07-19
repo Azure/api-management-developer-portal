@@ -2,7 +2,10 @@ import { InversifyInjector } from "@paperbits/common/injection";
 import { CoreRuntimeModule } from "@paperbits/core/core.runtime.module";
 import { StyleRuntimeModule } from "@paperbits/styles/styles.runtime.module";
 import { ApimRuntimeModule } from "./apim.runtime.module";
-import {staticDataEnvironment} from "./../environmentConstants"
+import { staticDataEnvironment } from "./../environmentConstants";
+import { define } from "mime";
+
+define({ "application/x-zip-compressed": ["zip"] }, true);
 
 const injector = new InversifyInjector();
 injector.bindModule(new CoreRuntimeModule());

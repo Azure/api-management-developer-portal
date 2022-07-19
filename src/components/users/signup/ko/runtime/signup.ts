@@ -5,11 +5,12 @@ import template from "./signup.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { BackendService } from "../../../../../services/backendService";
-import { UsersService } from "../../../../../services/usersService";
+import { UsersService } from "../../../../../services";
 import { SignupRequest } from "../../../../../contracts/signupRequest";
-import { ValidationReport } from "../../../../../contracts/validationReport";
-
-declare var WLSPHIP0;
+import { CaptchaData } from "../../../../../models/captchaData";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
+import { Router } from "@paperbits/common/routing/router";
 
 @RuntimeComponent({
     selector: "signup-runtime"
@@ -28,8 +29,13 @@ export class Signup {
     public readonly consented: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
     public readonly captcha: ko.Observable<string>;
+    
+    public setCaptchaValidation: (captchaValidator: ko.Observable<string>) => void;
+    public refreshCaptcha: () => Promise<void>;
+    public readonly captchaData: ko.Observable<CaptchaData>;
 
     constructor(
+        private readonly router: Router,
         private readonly usersService: UsersService,
         private readonly eventManager: EventManager,
         private readonly backendService: BackendService) {
@@ -47,6 +53,7 @@ export class Signup {
         this.captcha = ko.observable();
         this.delegationUrl = ko.observable();
         this.requireHipCaptcha = ko.observable();
+        this.captchaData = ko.observable();
 
         validation.init({
             insertMessages: false,
@@ -104,6 +111,12 @@ export class Signup {
                     } else {
                         this.usersService.navigateToHome();
                     }
+                } else {
+                    const redirectUrl = this.delegationUrl();
+
+                    if (redirectUrl) {
+                        await this.router.navigateTo(redirectUrl);
+                    }
                 }
             }
         }
@@ -114,6 +127,11 @@ export class Signup {
 
             throw error;
         }
+    }
+    
+    public onCaptchaCreated(captchaValidate: (captchaValidator: ko.Observable<string>) => void, refreshCaptcha: () => Promise<void>) {
+        this.setCaptchaValidation = captchaValidate;
+        this.refreshCaptcha = refreshCaptcha;
     }
 
     /**
@@ -130,31 +148,9 @@ export class Signup {
             lastName: this.lastName
         };
 
-        let captchaSolution;
-        let captchaFlowId;
-        let captchaToken;
-        let captchaType;
-
         if (isCaptchaRequired) {
             validationGroup["captcha"] = this.captcha;
-
-            WLSPHIP0.verify((solution, token, param) => {
-                WLSPHIP0.clientValidation();
-
-                if (WLSPHIP0.error !== 0) {
-                    this.captcha(null); // is not valid
-                    return;
-                }
-                else {
-                    captchaSolution = solution;
-                    captchaToken = token;
-                    captchaType = WLSPHIP0.type;
-                    const flowIdElement = <HTMLInputElement>document.getElementById("FlowId");
-                    captchaFlowId = flowIdElement.value;
-                    this.captcha("valid");
-                    return;
-                }
-            }, "");
+            this.setCaptchaValidation(this.captcha);
         }
 
         if (this.termsEnabled() && this.isConsentRequired()) {
@@ -167,11 +163,7 @@ export class Signup {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            const validationReport: ValidationReport = {
-                source: "signup",
-                errors: clientErrors
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, ErrorSources.signup, clientErrors);
             return;
         }
 
@@ -185,13 +177,16 @@ export class Signup {
 
         try {
             this.working(true);
+            dispatchErrors(this.eventManager, ErrorSources.signup, []);
 
             if (isCaptchaRequired) {
+                const captchaRequestData = this.captchaData();
                 const createSignupRequest: SignupRequest = {
-                    solution: captchaSolution,
-                    flowId: captchaFlowId,
-                    token: captchaToken,
-                    type: captchaType,
+                    challenge: captchaRequestData.challenge, 
+                    solution: captchaRequestData.solution?.solution,
+                    flowId: captchaRequestData.solution?.flowId,
+                    token: captchaRequestData.solution?.token,
+                    type: captchaRequestData.solution?.type,
                     signupData: mapiSignupData
                 };
 
@@ -203,36 +198,13 @@ export class Signup {
 
             this.isUserRequested(true);
 
-            const validationReport: ValidationReport = {
-                source: "signup",
-                errors: []
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
         }
         catch (error) {
             if (isCaptchaRequired) {
-                WLSPHIP0.reloadHIP();
+                await this.refreshCaptcha();
             }
 
-            let errorMessages: string[];
-
-            if (error.code === "ValidationError") {
-                const details: any[] = error.details;
-
-                if (details && details.length > 0) {
-                    errorMessages = details.map(item => `${item.message}`);
-                }
-            }
-            else {
-                errorMessages = [Constants.genericHttpRequestError];
-            }
-
-            const validationReport: ValidationReport = {
-                source: "signup",
-                errors: errorMessages
-            };
-
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            parseAndDispatchError(this.eventManager, ErrorSources.signup, error, Constants.genericHttpRequestError);
         }
         finally {
             this.working(false);

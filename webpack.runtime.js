@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const packageJson = require("./package.json");
 
 
 const runtimeConfig = {
@@ -62,11 +63,14 @@ const runtimeConfig = {
         new CopyWebpackPlugin({
             patterns: [
                 { from: `./src/themes/website/styles/fonts`, to: "styles/fonts" },
-                { from: `node_modules/monaco-editor/min/vs`, to: `assets/monaco-editor/vs` },
-                { from: `./src/themes/website/assets` }
+                { from: `./src/themes/website/assets` },
+                { from: `./js/HipObject.js`, to: "scripts/js" },
+                { from: `./src/themes/website/images`, to: `assets/images` },
+                { from: `node_modules/monaco-editor/min/vs`, to: `assets/monaco-editor/vs` }
             ]
         }),
-        new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
+        new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }),
+        new webpack.DefinePlugin({ "process.env.VERSION": JSON.stringify(packageJson.version) })
     ],
     resolve: {
         extensions: [".js", ".ts", ".jsx", ".tsx", ".html", ".scss"],

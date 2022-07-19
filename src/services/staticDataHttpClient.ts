@@ -34,15 +34,15 @@ export class StaticDataHttpClient implements HttpClient {
 
     public async send<T>(request: HttpRequest): Promise<HttpResponse<T>> {
         if (request.method === undefined) {
-            request.method = 'GET';
+            request.method = "GET";
         }
 
-        let response = new HttpResponse<T>();
+        const response = new HttpResponse<T>();
         await this.ensureInitialized();
         let result: any;
 
 
-        let urlWithoutParameters = request.url.split('?')[0];
+        const urlWithoutParameters = request.url.split("?")[0];
 
         if (request.url.match("contentTypes\/.*\/contentItems\/")) {
             response.statusCode = 200;

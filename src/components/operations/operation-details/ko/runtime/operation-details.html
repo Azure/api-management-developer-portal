@@ -47,6 +47,7 @@
                         <div role="columnheader" class="table-preset-head text-truncate">In</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Required</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Type</div>
+                        <div role="columnheader" class="table-preset-head">Example</div>
                         <div role="columnheader" class="table-preset-head">Description</div>
                     </div>
                 </div>
@@ -59,15 +60,18 @@
                         <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
                         <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type"></div>
                         <div role="cell">
-                            <span data-bind="markdown: parameter.description"></span>
-
                             <!-- ko foreach: { data: parameter.examples, as: 'example' } -->
                             <p>
-                                <span data-bind="text: example.title"></span>:
+                                <!-- ko ifnot: example.title === "default" && !example.description && parameter.examples.length === 1 -->
+                                    <span data-bind="text: example.title"></span>:
+                                <!-- /ko -->
                                 <span data-bind="text: example.value" class="text-monospace text-wrap"></span>
                                 <span data-bind="text: example.description" class="d-block"></span>
                             </p>
                             <!-- /ko -->
+                        </div>
+                        <div role="cell">
+                            <span data-bind="markdown: parameter.description"></span>
                         </div>
                     </div>
                     <!-- /ko -->
@@ -78,12 +82,13 @@
             <!-- ko if: operation().request && operation().request.headers && operation().request.headers.length > 0 -->
             <h4>Request headers</h4>
 
-            <div role="table" class="table-preset table-preset-headers">
+            <div role="table" class="table-preset table-preset-headers-request">
                 <div class="d-contents" role="rowgroup">
                     <div class="d-contents" role="row">
                         <div role="columnheader" class="table-preset-head text-truncate">Name</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Required</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Type</div>
+                        <div role="columnheader" class="table-preset-head">Example</div>
                         <div role="columnheader" class="table-preset-head">Description</div>
                     </div>
                 </div>
@@ -96,8 +101,6 @@
                         <div role="cell" class="text-truncate text-monospace"
                             data-bind="text: header.type, attr: { title: header.type }"></div>
                         <div role="cell">
-                            <span data-bind="markdown: header.description"></span>
-
                             <!-- ko foreach: { data: header.examples, as: 'example' } -->
                             <p>
                                 <span data-bind="text: example.title"></span>:
@@ -105,6 +108,9 @@
                                 <span data-bind="text: example.description" class="d-block"></span>
                             </p>
                             <!-- /ko -->
+                        </div>
+                        <div role="cell">
+                            <span data-bind="markdown: header.description"></span>
                         </div>
                     </div>
                     <!-- /ko -->
@@ -138,7 +144,7 @@
                     <!-- /ko -->
 
                     <!-- ko if: representation.formParameters?.length > 0 -->
-                    <div role="table" class="table-preset table-preset-params">
+                    <div role="table" class="table-preset table-preset-body">
                         <div class="d-contents" role="rowgroup">
                             <div class="d-contents" role="row">
                                 <div role="columnheader" class="table-preset-head text-truncate">Name</div>
@@ -186,7 +192,7 @@
             <!-- ko if: response.headers && response.headers.length > 0 -->
             <h4>Response headers</h4>
 
-            <div role="table" class="table-preset table-preset-headers">
+            <div role="table" class="table-preset table-preset-headers-response">
                 <div class="d-contents" role="rowgroup">
                     <div class="d-contents" role="row">
                         <div role="columnheader" class="table-preset-head text-truncate">Name</div>
@@ -338,15 +344,15 @@
 <!-- ko if: $component.consoleIsOpen -->
 <!-- ko ifnot: apiType() === 'graphql' -->
 <div class="detachable-right flex-grow animation-fade-in">
-    <operation-console class="test flex flex-column gql-console-height" data-bind="dialog: {}"
+    <operation-console class="flex flex-column consoles operation-console" data-bind="dialog: {}"
         params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
     </operation-console>
 </div>
 <!-- /ko -->
 <!-- ko if: apiType() === 'graphql' -->
 <div class="detachable-right graphql-console-width flex-grow animation-fade-in">
-    <graphql-console class="gql-console-height flex flex-column" data-bind="dialog: {}"
-        params="{ api: api, operationUrl: $component.requestUrlSample, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
+    <graphql-console class="flex flex-column consoles" data-bind="dialog: {}"
+        params="{ api: api, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
     </graphql-console>
 </div>
 <!-- /ko -->
