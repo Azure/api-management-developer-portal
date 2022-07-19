@@ -44,7 +44,7 @@
       <!-- ko if: !!$component.config -->
       <p>
         Last deploy<br/>
-        <span data-bind="text: $component.config.deployed ? new Date(config.deployed).toLocaleString() : 'The widget hasn’t been deployed yet.'"></span>
+        <span data-bind="text: $component.config.deployedOn ? new Date(config.deployedOn).toLocaleString() : 'The widget hasn\'t been deployed yet.'"></span>
       </p>
 
       <h2>Get started with the development</h2>

@@ -7,7 +7,7 @@ import { widgetCategory } from "./constants";
 
 export interface TCustomWidgetConfig extends TCustomWidgetCommonConfig {
   name: string;
-  deployed?: string;
+  deployedOn?: string;
   override?: string | boolean;
 }
 

@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import { TScaffoldTech, TECHNOLOGIES, displayNameToName } from "@azure/api-management-custom-widgets-scaffolder";
-import { buildBlobConfigSrc, buildBlobDataSrc } from "@azure/api-management-custom-widgets-tools";
+import { buildBlobConfigPath, buildBlobDataPath } from "@azure/api-management-custom-widgets-tools";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import * as Utils from "@paperbits/common/utils";
@@ -82,10 +82,10 @@ export class CreateWidget {
         // const configDeploy = await buildConfigDeploy();
 
         const content = Utils.stringToUnit8Array(JSON.stringify(config));
-        await this.blobStorage.uploadBlob(buildBlobConfigSrc(name), content);
+        await this.blobStorage.uploadBlob(buildBlobConfigPath(name), content);
 
         const fallbackUiUnit8 = Utils.stringToUnit8Array(fallbackUi);
-        const dataPath = buildBlobDataSrc(name);
+        const dataPath = buildBlobDataPath(name);
         await this.blobStorage.uploadBlob(`/${dataPath}index.html`, fallbackUiUnit8);
         await this.blobStorage.uploadBlob(`/${dataPath}editor.html`, fallbackUiUnit8);
 
@@ -101,8 +101,8 @@ export class CreateWidget {
 
         if (!confirm(`This operation is in-reversible, are you sure you want to delete custom widget '${this.config.displayName}'?`)) return;
 
-        const blobsToDelete = await this.blobStorage.listBlobs(buildBlobDataSrc(this.config.name));
-        blobsToDelete.push(buildBlobConfigSrc(this.config.name));
+        const blobsToDelete = await this.blobStorage.listBlobs(buildBlobDataPath(this.config.name));
+        blobsToDelete.push(buildBlobConfigPath(this.config.name));
         await Promise.all(blobsToDelete.map(blobKey => this.blobStorage.deleteBlob(blobKey)));
 
         this.configDelete(this.config);
