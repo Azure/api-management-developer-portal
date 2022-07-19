@@ -3,6 +3,7 @@ import { HttpClient } from "@paperbits/common/http";
 import { IAuthenticator } from "../authentication";
 import ApiClient from "./apiClient";
 import * as Constants from "./../constants";
+import { Utils } from "../utils";
 
 export default class MapiClient extends ApiClient {
     constructor(
@@ -14,6 +15,6 @@ export default class MapiClient extends ApiClient {
 
     protected override async setBaseUrl() {
         const settings = await this.settingsProvider.getSettings();
-        this.backendUrl = settings[Constants.SettingNames.backendUrl] || "";
+        this.backendUrl = Utils.getMapiEndpoint(settings[Constants.SettingNames.backendUrl] || "");
     }
 }

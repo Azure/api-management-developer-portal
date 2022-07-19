@@ -32,6 +32,10 @@ export class Utils {
         return `${ensureTrailingSlash(backendUrl)}developer`
     }
 
+    public static getMapiEndpoint(backendUrl: string): string {
+        return `${ensureTrailingSlash(backendUrl)}mapi`
+    }
+
     public static groupBy<T>(array: T[], valueAccessor: (item: T) => string): T[][] {
         const grouping = array.reduce((groups, item) => {
             let val = valueAccessor(item);
