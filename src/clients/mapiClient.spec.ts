@@ -42,4 +42,26 @@ describe("Mapi Client", async () => {
         assert.isTrue(result.isValid);
     });
 
+    it("Mapi client should never prefix user using header & token", async () => {
+
+        //arrange
+        const httpClient = new MockHttpClient();
+        const settings = await settingsProvider.getSettings();
+        const path = "isValid"
+        const mockUrl = `${Utils.getBaseUrlWithMapiSuffix(settings[Constants.SettingNames.backendUrl])}/${path}`
+        httpClient.mock()
+            .get(mockUrl)
+            .reply(200, {
+                isValid: true
+            } as Validity);
+
+        const apiClient = new MapiClient(httpClient, authenticator, settingsProvider);
+
+        //act
+        var result = await apiClient.get<Validity>(path, [Utils.getIsUserResourceHeader()]);
+
+        //assert
+        assert.isTrue(result.isValid);
+    });
+
 });

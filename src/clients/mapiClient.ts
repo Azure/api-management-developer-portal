@@ -17,4 +17,8 @@ export default class MapiClient extends ApiClient {
         const settings = await this.settingsProvider.getSettings();
         this.backendUrl = Utils.getBaseUrlWithMapiSuffix(settings[Constants.SettingNames.backendUrl] || "");
     }
+
+    protected setUserPrefix(query: string): string {
+        return query;
+    }
 }

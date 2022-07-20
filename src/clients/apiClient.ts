@@ -27,6 +27,8 @@ export default abstract class ApiClient implements IApiClient {
 
     protected abstract setBaseUrl(): Promise<void>;
 
+    protected abstract setUserPrefix(query: string, userId?: string): string;
+
     private async ensureInitialized(): Promise<void> {
         if (!this.initializePromise) {
             this.initializePromise = this.initialize();
@@ -121,8 +123,9 @@ export default abstract class ApiClient implements IApiClient {
                 }
             }
 
+
             if (!!isUserResourceHeader && isUserResourceHeader.value == "true") {
-                httpRequest.url = Utils.ensureUserPrefixed(httpRequest.url, accessToken?.userId);
+                httpRequest.url = this.setUserPrefix(httpRequest.url, accessToken?.userId);
             }
         }
 

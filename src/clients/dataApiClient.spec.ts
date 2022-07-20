@@ -42,7 +42,7 @@ describe("Data API Client", async () => {
         assert.isTrue(result.isValid);
     });
 
-    it("Makes auth requests when logged in & if it isuser resource", async () => {
+    it("Makes auth requests when logged in & if it is user resource", async () => {
 
         //arrange
         const httpClient = new MockHttpClient();
