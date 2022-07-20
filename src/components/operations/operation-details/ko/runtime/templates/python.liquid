@@ -2,21 +2,25 @@
 import urllib.request, json
 
 try:
-    url = "{{requestUrl}}"
+    url = "{{console.requestUrl}}"
 
     hdr ={
     # Request headers
-{%- for header in request.meaningfulHeaders %}
-    '{{header.name}}': '{{header.displayedValue}}',
+{%- for header in console.request.meaningfulHeaders %}
+    {% if showSecrets == false and header.secret -%}
+        '{{header.name}}': '{{header.hiddenValue}}',
+    {%- else -%}
+        '{{header.name}}': '{{header.value}}',
+    {%- endif -%}
 {%- endfor %}
     }
-{% if request.body != blank %}
+{% if console.request.body != blank %}
     # Request body
-{%- if request.bodyFormat == "raw" %}
+{%- if console.request.bodyFormat == "raw" %}
     data =  {{request.body}}
     data = json.dumps(data)
     req = urllib.request.Request(url, headers=hdr, data = bytes(data.encode("utf-8")))
-{%- elsif  request.bodyFormat == "binary" %}
+{%- elsif  console.request.bodyFormat == "binary" %}
     with open('< path/to/{{request.binary.name}} >', 'rb') as f:
         data = f.read()
     req = urllib.request.Request(url, headers=hdr, data = bytes(data))
@@ -24,7 +28,7 @@ try:
 {% else %}
     req = urllib.request.Request(url, headers=hdr)
 {% endif %}
-    req.get_method = lambda: '{{method}}'
+    req.get_method = lambda: '{{console.method}}'
     response = urllib.request.urlopen(req)
     print(response.getcode())
     print(response.read())

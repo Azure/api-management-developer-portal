@@ -24,7 +24,6 @@ import { templates } from "./templates/templates";
 import { LogItem, WebsocketClient } from "./websocketClient";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ConsoleRepresentation } from "../../../../../models/console/consoleRepresentation";
-import { cloneDeep } from "lodash";
 import { saveAs } from "file-saver";
 import { getExtension } from "mime";
 import { Logger } from "@paperbits/common/logging";
@@ -350,7 +349,7 @@ export class OperationConsole {
 
     public async updateRequestSummary(): Promise<void> {
         const template = templates[this.selectedLanguage()];
-        const codeSample = await TemplatingService.render(template, ko.toJS(this.consoleOperation));
+        const codeSample = await TemplatingService.render(template, { console: ko.toJS(this.consoleOperation), showSecrets: this.secretsRevealed });
 
         this.codeSample(codeSample);
     }
@@ -404,12 +403,12 @@ export class OperationConsole {
 
             while (true) {
                 const { done, value } = await reader.read();
-          
+
                 if (done) {
                     break;
                 }
 
-                chunks.push(value); 
+                chunks.push(value);
             }
 
             const blob = new Blob(chunks, { type: contentTypeHeaderValue });
@@ -638,9 +637,6 @@ export class OperationConsole {
 
     public toggleRequestSummarySecrets(): void {
         this.secretsRevealed(!this.secretsRevealed());
-        this.consoleOperation().request.meaningfulHeaders().forEach(header => header.revealed(this.secretsRevealed()));
-        this.consoleOperation().request.queryParameters().forEach(header => header.revealed(this.secretsRevealed()));
-
         this.updateRequestSummary();
     }
 
@@ -653,17 +649,8 @@ export class OperationConsole {
     }
 
     public async getPlainTextCodeSample(): Promise<string> {
-        const clonedConsoleOperation = cloneDeep(this.consoleOperation());
-        clonedConsoleOperation.request.meaningfulHeaders()
-            .filter(header => header.secret)
-            .forEach(header => header.revealed(true));
-
-        clonedConsoleOperation.request.queryParameters()
-            .filter(parameter => parameter.secret)
-            .forEach(parameter => parameter.revealed(true));
-
         const template = templates[this.selectedLanguage()];
-        return await TemplatingService.render(template, ko.toJS(clonedConsoleOperation));
+        return await TemplatingService.render(template, { console: ko.toJS(this.consoleOperation), showSecrets: true });
     }
 
     public getApiReferenceUrl(): string {
@@ -687,14 +674,14 @@ export class OperationConsole {
     }
 
     public logCopyEvent(): void {
-        this.logger.trackEvent("CodeSampleCopied", {"language": this.selectedLanguage(), "message": "Code sample copied to clipboard"});
+        this.logger.trackEvent("CodeSampleCopied", { "language": this.selectedLanguage(), "message": "Code sample copied to clipboard" });
     }
 
     public logLanguageUpdated(): void {
-        this.logger.trackEvent("CodeLanguageChange", {"language": this.selectedLanguage(), "message": "Code sample language changed"});
+        this.logger.trackEvent("CodeLanguageChange", { "language": this.selectedLanguage(), "message": "Code sample language changed" });
     }
 
     public logSentRequest(apiName: string, operationName: string, apiMethod: string, responseCode: string): void {
-        this.logger.trackEvent("TestConsoleRequest", {"apiName": apiName, "operationName": operationName, "apiMethod": apiMethod, "responseCode": responseCode});
+        this.logger.trackEvent("TestConsoleRequest", { "apiName": apiName, "operationName": operationName, "apiMethod": apiMethod, "responseCode": responseCode });
     }
 }
