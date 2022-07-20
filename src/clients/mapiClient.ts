@@ -15,6 +15,6 @@ export default class MapiClient extends ApiClient {
 
     protected override async setBaseUrl() {
         const settings = await this.settingsProvider.getSettings();
-        this.backendUrl = Utils.getUrlWithMapiPrefix(settings[Constants.SettingNames.backendUrl] || "");
+        this.backendUrl = Utils.getBaseUrlWithMapiSuffix(settings[Constants.SettingNames.backendUrl] || "");
     }
 }
