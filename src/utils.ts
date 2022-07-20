@@ -28,11 +28,11 @@ export class Utils {
         }
     }
 
-    public static getUrlWithDeveloperPrefix(backendUrl: string): string {
+    public static getBaseUrlWithDeveloperSuffix(backendUrl: string): string {
         return `${ensureTrailingSlash(backendUrl)}developer`
     }
 
-    public static getUrlWithMapiPrefix(backendUrl: string): string {
+    public static getBaseUrlWithMapiSuffix(backendUrl: string): string {
         return `${ensureTrailingSlash(backendUrl)}mapi`
     }
 
