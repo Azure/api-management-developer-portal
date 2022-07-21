@@ -183,13 +183,7 @@ export class OperationDetails {
         this.api(api);
 
         this.closeConsole();
-
-        if (api.authenticationSettings.oAuth2.authorizationServer) {
-            this.apiDocumentationAuthServers([api.authenticationSettings.oAuth2.authorizationServer]);
-            this.testConsoleAuthServer(api.authenticationSettings.oAuth2.authorizationServer);
-            return;
-        }
-
+        
         if (api.authenticationSettings.oAuth2AuthenticationSettings) {
             this.apiDocumentationAuthServers(api.authenticationSettings.oAuth2AuthenticationSettings.
                 filter(x => x.authorizationServer.useInApiDocumentation)
@@ -197,6 +191,12 @@ export class OperationDetails {
 
             this.testConsoleAuthServer(api.authenticationSettings.oAuth2AuthenticationSettings.
                 find(x => x.authorizationServer.useInTestConsole)?.authorizationServer)
+            return;
+        }
+
+        if (api.authenticationSettings.oAuth2.authorizationServer) {
+            this.apiDocumentationAuthServers([api.authenticationSettings.oAuth2.authorizationServer]);
+            this.testConsoleAuthServer(api.authenticationSettings.oAuth2.authorizationServer);
             return;
         }
 
