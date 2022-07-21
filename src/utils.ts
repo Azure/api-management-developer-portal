@@ -28,10 +28,20 @@ export class Utils {
         }
     }
 
+    /**
+     * Suffixes developer endpoint to the given url.
+     * @param backendUrl Url to suffix
+     * @returns Suffixed url
+     */
     public static getBaseUrlWithDeveloperSuffix(backendUrl: string): string {
         return `${ensureTrailingSlash(backendUrl)}developer`
     }
 
+    /**
+     * Suffixes mapi endpoint to the given url.
+     * @param backendUrl Url to suffix
+     * @returns Suffixed url
+     */
     public static getBaseUrlWithMapiSuffix(backendUrl: string): string {
         return `${ensureTrailingSlash(backendUrl)}mapi`
     }
@@ -66,6 +76,7 @@ export class Utils {
      * Depending on authorization, we need to prefix users resource before requests.
      * @param query query to be formatted.
      * @param userId user identifier to be prefixed. i.e. /users/123456789
+     * @returns User prefixed query or as it is.
      */
     public static ensureUserPrefixed(query: string, userId: string): string {
         if (!query.startsWith("/users") && !!userId && userId !== "integration") {
@@ -80,6 +91,7 @@ export class Utils {
      * Some resources are available for guests and users.
      * Depending on authorization, we need to prefix users resource before requests.
      * To decide if it is a resource for guest only or users as well, we check this header.
+     * @returns HttpHeader that indicates the resource can be user resource or not.
      */
     public static getIsUserResourceHeader(): HttpHeader {
         return {
