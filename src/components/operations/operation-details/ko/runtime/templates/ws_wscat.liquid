@@ -1,1 +1,5 @@
-wscat -c {{displayedWsUrl}}
+{%- if showSecrets == false -%}
+wscat -c {{console.hiddenWsUrl}}
+{% else -%}
+wscat -c {{console.wsUrl}}
+{%- endif -%}
