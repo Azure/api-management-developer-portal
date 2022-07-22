@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import template from "./signin-aad-b2c.html";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { EventManager } from "@paperbits/common/events";
-import { Component, OnMounted, Param, RuntimeComponent } from "@paperits/common/ko/decorators";
+import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { AadClientLibrary, SettingNames } from "../../../../../constants";
 import { AadB2CClientConfig } from "../../../../../contracts/aadB2CClientConfig";
 import { AadService, AadServiceV2, IAadService } from "../../../../../services";

@@ -377,8 +377,8 @@ export class OperationConsole {
         this.sendRequest();
     }
 
-    public async sendFromBrowser<T>(url: string, method: string, headers: ConsoleHeader[], body: any, operationName: string) {
-        const headersRequest: HeadersInit = {};
+    public async sendFromBrowser(url: string, method: string, headers: ConsoleHeader[], body: any, operationName: string) {
+        let headersRequest: HeadersInit = {};
 
         headers.forEach(header => {
             if (!headersRequest[header.name()]) {
