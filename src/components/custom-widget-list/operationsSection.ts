@@ -5,7 +5,7 @@ const helpText =
     "<p>Custom widgets let you extend the developer portal’s functionality in a modular way. For example, you can implement an integration with a support system, reuse it on several pages, and source-control the code in a git repository.</p>";
 
 export class OperationsSectionToolButton implements ToolButton {
-    public readonly iconClass: string = "paperbits-icon paperbits-paint-bucket-40";
+    public readonly iconClass: string = "paperbits-icon paperbits-puzzle-10";
     public readonly title: string = "Custom widgets";
     public readonly tooltip: string = helpText;
 
