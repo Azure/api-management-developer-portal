@@ -166,9 +166,9 @@ export class GraphqlConsole {
         const graphQLSchema = await this.apiService.getGQLSchema(selectedApi.id);
         if (graphQLSchema) {
             this.schema = graphQLSchema.graphQLSchema;
-            this.buildTree(this.schema);    
+            this.buildTree(this.schema);
         }
-        
+
         this.availableOperations();
         this.selectByDefault();
         this.isSubscriptionOperation(this.document().trim().startsWith(GraphqlTypes.subscription));
@@ -315,8 +315,7 @@ export class GraphqlConsole {
         }
         this.sendingRequest(true);
 
-        let payload: string;
-        payload = JSON.stringify({
+        const payload = JSON.stringify({
             query: this.document(),
             variables: this.variables() && this.variables().length > 0 ? JSON.parse(this.variables()) : null
         });
