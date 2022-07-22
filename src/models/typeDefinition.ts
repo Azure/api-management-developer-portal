@@ -401,7 +401,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
 
                             break;
 
-                        case "object":
+                        case "object": {
                             const objectProperty = new TypeDefinitionObjectProperty(propertyNameToDisplay, propertySchemaObject, isRequired, true, definitions);
 
                             if (!propertySchemaObject.$ref && propertySchemaObject.properties && !nested) {
@@ -412,8 +412,9 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                                 props.push(objectProperty);
                             }
                             break;
+                        }
 
-                        case "array":
+                        case "array": {
                             const arrayProperty = new TypeDefinitionPrimitiveProperty(propertyNameToDisplay, propertySchemaObject, isRequired);
 
                             if (!propertySchemaObject.items) {
@@ -439,6 +440,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                             }
 
                             break;
+                        }
 
                         case "combination":
                             props.push(new TypeDefinitionCombinationProperty(propertyNameToDisplay, propertySchemaObject, isRequired));
