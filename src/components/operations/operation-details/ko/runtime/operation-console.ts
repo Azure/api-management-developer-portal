@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
+import { HttpClient, HttpRequest } from "@paperbits/common/http";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { downloadableTypes, RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
 import { Api } from "../../../../../models/api";
@@ -377,7 +377,7 @@ export class OperationConsole {
         this.sendRequest();
     }
 
-    public async sendFromBrowser<T>(url: string, method: string, headers: ConsoleHeader[], body: any, operationName: string) {
+    public async sendFromBrowser(url: string, method: string, headers: ConsoleHeader[], body: any, operationName: string) {
         let headersRequest: HeadersInit = {};
 
         headers.forEach(header => {
@@ -392,7 +392,7 @@ export class OperationConsole {
             body: body
         });
 
-        let headersString = '';
+        let headersString = "";
         response.headers.forEach((value, name) => headersString += `${name}: ${value}\n`);
 
         const contentTypeHeaderValue = response.headers.get(KnownHttpHeaders.ContentType);
@@ -422,7 +422,7 @@ export class OperationConsole {
             const fileExtension = getExtension(contentTypeHeaderValue);
 
             if (fileExtension) {
-                saveAs(blob, operationName + '.' + fileExtension);
+                saveAs(blob, operationName + "." + fileExtension);
             } else {
                 saveAs(blob, operationName);
             }
@@ -459,7 +459,7 @@ export class OperationConsole {
             ? Buffer.from(responsePackage.body.data)
             : null;
 
-        let headersString = responsePackage.headers.map(x => `${x.name}: ${x.value}`).join("\n");
+        const headersString = responsePackage.headers.map(x => `${x.name}: ${x.value}`).join("\n");
         const contentTypeHeader = responsePackage.headers.find(x => x.name === KnownHttpHeaders.ContentType.toLowerCase());
 
         const response: any = {
@@ -520,11 +520,9 @@ export class OperationConsole {
 
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
 
-            const responseStatusText = !!response.statusText
-                ? response.statusText
-                : knownStatusCode
-                    ? knownStatusCode.description
-                    : "Unknown";
+            const responseStatusText = response.statusText || knownStatusCode
+                ? knownStatusCode.description
+                : "Unknown";
 
             this.responseStatusCode(response.statusCode.toString());
             this.responseStatusText(responseStatusText);
