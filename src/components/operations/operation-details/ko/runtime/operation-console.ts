@@ -378,10 +378,17 @@ export class OperationConsole {
     }
 
     public async sendFromBrowser<T>(url: string, method: string, headers: ConsoleHeader[], body: any, operationName: string) {
-        const stringifiedHeaders: object = headers.map(header => `${header.name()}: ${header.value()}`);
+        let headersRequest: HeadersInit = {};
+
+        headers.forEach(header => {
+            if (!headersRequest[header.name()]) {
+                headersRequest[header.name()] = [];
+            }
+            headersRequest[header.name()].push(header.value())
+        });
         const response = await fetch(url, {
             method: method,
-            headers: { ...stringifiedHeaders },
+            headers: headersRequest,
             body: body
         });
 
