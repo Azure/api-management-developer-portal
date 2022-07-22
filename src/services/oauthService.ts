@@ -1,22 +1,22 @@
 import * as ClientOAuth2 from "client-oauth2";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { HttpClient, HttpMethod } from "@paperbits/common/http";
+import { Logger } from "@paperbits/common/logging";
 import { AuthorizationServer } from "../models/authorizationServer";
+import { KnownHttpHeaders } from "../models/knownHttpHeaders";
+import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { Utils } from "../utils";
 import { GrantTypes } from "./../constants";
-import { OpenIdConnectMetadata } from "./../contracts/openIdConnectMetadata";
 import { UnauthorizedError } from "./../errors/unauthorizedError";
-import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { BackendService } from "./backendService";
-import { KnownMimeTypes } from "../models/knownMimeTypes";
+
 
 export class OAuthService {
-    private environmentPromise: Promise<string>;
-
     constructor(
         private readonly httpClient: HttpClient,
         private readonly backendService: BackendService,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly logger: Logger
     ) { }
 
     public async getAuthServer(authorizationServerId: string, openidProviderId: string): Promise<AuthorizationServer> {
@@ -49,14 +49,17 @@ export class OAuthService {
 
         switch (grantType) {
             case GrantTypes.implicit:
+                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.implicit });
                 accessToken = await this.authenticateImplicit(backendUrl, authorizationServer);
                 break;
 
             case GrantTypes.authorizationCode:
+                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.authorizationCode });
                 accessToken = await this.authenticateCode(backendUrl, authorizationServer);
                 break;
 
             case GrantTypes.clientCredentials:
+                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.clientCredentials });
                 accessToken = await this.authenticateClientCredentials(backendUrl, authorizationServer, apiName);
                 break;
 
@@ -182,6 +185,8 @@ export class OAuthService {
         }
 
         if (response.statusCode === 400) {
+            this.logger.trackEvent("TestConsoleOAuthError", { grantType: GrantTypes.clientCredentials, response: response.toText() })
+
             const error = response.toObject();
 
             if (error.message !== "Authorization server configuration not found.") { // message from legacy flow
@@ -235,31 +240,15 @@ export class OAuthService {
             body: JSON.stringify({ username: username, password: password })
         });
 
+        if (response.statusCode == 200) {
+            const tokenInfo = response.toObject();
+            return `${Utils.toTitleCase(tokenInfo.accessTokenType)} ${tokenInfo.accessToken}`;
+        }
+
         if (response.statusCode === 401) {
             throw new UnauthorizedError("Unable to authenticate. Verify the credentials you entered are correct.");
         }
 
-        const tokenInfo = response.toObject();
-
-        return `${Utils.toTitleCase(tokenInfo.accessTokenType)} ${tokenInfo.accessToken}`;
-    }
-
-    public async discoverOAuthServer(metadataEndpoint: string): Promise<AuthorizationServer> {
-        const response = await this.httpClient.send<OpenIdConnectMetadata>({ url: metadataEndpoint });
-        const metadata = response.toObject();
-
-        const server = new AuthorizationServer();
-        server.authorizationEndpoint = metadata.authorization_endpoint;
-        server.tokenEndpoint = metadata.token_endpoint;
-        server.scopes = ["openid"];
-
-        // Leaving only "implicit" grant flow until backend gets deployed.
-        const supportedGrantTypes = [GrantTypes.implicit.toString(), GrantTypes.authorizationCode.toString()];
-
-        server.grantTypes = metadata.grant_types_supported
-            ? metadata.grant_types_supported.filter(grantType => supportedGrantTypes.includes(grantType))
-            : [GrantTypes.implicit, GrantTypes.authorizationCode];
-
-        return server;
+        throw new Error(`Unable to authenticate. Response: ${response.toText()}`);
     }
 }
