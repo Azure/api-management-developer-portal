@@ -36,10 +36,10 @@ jobs:
           --format @microsoft/eslint-formatter-sarif 
           --output-file ./eslint-results.sarif
         continue-on-error: true
-
+        
       - name: Upload report artifacts
-        uses: actions/upload-artifact@v2
+        uses: github/codeql-action/upload-sarif@v2
         with:
-          name: eslint-reports
-          path: ${{ github.workspace }}/_eslint-reports
+          sarif_file: ./eslint-results.sarif
+          wait-for-processing: true
         continue-on-error: true
