@@ -754,7 +754,7 @@ export class GraphqlConsole {
         }
 
         const markers = (<any>window).monaco.editor.getModelMarkers({});
-        if (!!markers.find(m => m.severity >= 5 && m.owner == "graphqlQuery")) {
+        if (markers.find(m => m.severity >= 5 && m.owner == "graphqlQuery")) {
             this.editorErrors.push("Syntax error in 'Query editor'");
         }
         try {

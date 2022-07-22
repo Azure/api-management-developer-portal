@@ -39,7 +39,7 @@ export class MapiBlobStorage implements IBlobStorage {
         else if (blobStorageUrl) {
             const parsedUrl = new URL(blobStorageUrl);
 
-            const containerSegment = !!blobStorageContainer
+            const containerSegment = blobStorageContainer
                 ? blobStorageContainer
                 : defaultContainerName;
 
