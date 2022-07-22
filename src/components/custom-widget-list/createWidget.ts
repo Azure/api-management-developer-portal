@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import { TScaffoldTech, TECHNOLOGIES, displayNameToName } from "@azure/api-management-custom-widgets-scaffolder";
+import { ScaffoldTech, TECHNOLOGIES, displayNameToName } from "@azure/api-management-custom-widgets-scaffolder";
 import { buildBlobConfigPath, buildBlobDataPath } from "@azure/api-management-custom-widgets-tools";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
@@ -11,7 +11,7 @@ import template from "./createWidget.html";
 // tslint:disable-next-line:no-implicit-dependencies
 import fallbackUi from "!!raw-loader!./fallbackUi.html";
 
-const techToName: Record<TScaffoldTech, string> = {
+const techToName: Record<ScaffoldTech, string> = {
     typescript: "TypeScript",
     react: "React",
 }
@@ -26,7 +26,7 @@ const buildScaffoldCommand = ({displayName, technology}: TCustomWidgetConfig): s
 })
 export class CreateWidget {
     public readonly displayName: ko.Observable<string>;
-    public readonly technology: ko.Observable<TScaffoldTech | null>;
+    public readonly technology: ko.Observable<ScaffoldTech | null>;
     // public readonly sourceControl: ko.Observable<TScaffoldSourceControl>;
     public readonly commandToScaffold: ko.Observable<string>;
     public readonly customWidgetConfigs: ko.Observable<TCustomWidgetConfig[]>;
