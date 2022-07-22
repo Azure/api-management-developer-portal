@@ -35,10 +35,9 @@ jobs:
           --config .eslintrc.cjs
           --format @microsoft/eslint-formatter-sarif 
           --output-file ./eslint-results.sarif
-        continue-on-error: true
 
-      - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@v2
+      - name: Upload report artifacts
+        uses: actions/upload-artifact@v2
         with:
-          sarif_file: ./eslint-results.sarif
-          wait-for-processing: true
+          name: eslint-reports
+          path: ${{ github.workspace }}/_eslint-reports
