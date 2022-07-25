@@ -42,7 +42,7 @@ export class OperationDetails {
     public readonly hostnames: ko.Observable<string[]>;
     public readonly working: ko.Observable<boolean>;
     public readonly apiDocumentationAuthServers: ko.Observable<AuthorizationServer[]>;
-    public readonly testConsoleAuthServer: ko.Observable<AuthorizationServer>;
+    public readonly testConsoleAuthServers: ko.Observable<AuthorizationServer[]>;
     public readonly apiType: ko.Observable<string>;
     public readonly protocol: ko.Computed<string>;
 
@@ -56,7 +56,7 @@ export class OperationDetails {
         this.sampleHostname = ko.observable();
         this.hostnames = ko.observable();
         this.apiDocumentationAuthServers = ko.observable();
-        this.testConsoleAuthServer = ko.observable();
+        this.testConsoleAuthServers = ko.observable();
         this.api = ko.observable();
         this.schemas = ko.observableArray([]);
         this.tags = ko.observableArray([]);
@@ -189,10 +189,11 @@ export class OperationDetails {
                 filter(x => x.authorizationServer.useInApiDocumentation)
                 .map(x => x.authorizationServer));
 
-            this.testConsoleAuthServer(api.authenticationSettings.oAuth2AuthenticationSettings.
-                find(x => x.authorizationServer.useInTestConsole)?.authorizationServer)
-            
-                return;
+            this.testConsoleAuthServers(api.authenticationSettings.oAuth2AuthenticationSettings.
+                filter(x => x.authorizationServer.useInTestConsole)
+                .map(x => x.authorizationServer))
+
+            return;
         }
 
         if (api.authenticationSettings.oAuth2.authorizationServer) {
@@ -201,7 +202,7 @@ export class OperationDetails {
             }
 
             if (api.authenticationSettings.oAuth2.authorizationServer.useInTestConsole) {
-                this.testConsoleAuthServer(api.authenticationSettings.oAuth2.authorizationServer);
+                this.testConsoleAuthServers([api.authenticationSettings.oAuth2.authorizationServer]);
             }
 
             return;
@@ -217,7 +218,7 @@ export class OperationDetails {
                 }
 
                 if (authServer.useInApiDocumentation) {
-                    this.testConsoleAuthServer(authServer);
+                    this.testConsoleAuthServers([authServer]);
                 }
             }
         }

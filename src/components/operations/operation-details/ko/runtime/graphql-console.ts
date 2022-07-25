@@ -96,7 +96,7 @@ export class GraphqlConsole {
         this.editorErrors = ko.observableArray([]);
         this.api = ko.observable<Api>();
         this.sendingRequest = ko.observable(false);
-        this.authorizationServer = ko.observable();
+        this.authorizationServers = ko.observable();
         this.hostnames = ko.observable();
         this.host = new ConsoleHost();
         this.queryParameters = ko.observableArray();
@@ -130,7 +130,7 @@ export class GraphqlConsole {
     public hostnames: ko.Observable<string[]>;
 
     @Param()
-    public authorizationServer: ko.Observable<AuthorizationServer>;
+    public authorizationServers: ko.Observable<AuthorizationServer[]>;
 
     @Param()
     public useCorsProxy: ko.Observable<boolean>;
