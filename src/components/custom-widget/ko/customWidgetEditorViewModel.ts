@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import { TEnvironment } from "@azure/api-management-custom-widgets-tools";
+import { Environment } from "@azure/api-management-custom-widgets-tools";
 import { WidgetEditor } from "@paperbits/common/widgets";
 import { Component, Event, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
@@ -63,7 +63,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.customInputValue.subscribe(this.applyCustomInputValueChanges);
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
 
-        const environment = await this.settingsProvider.getSetting<string>("environment") as TEnvironment;
+        const environment = await this.settingsProvider.getSetting<string>("environment") as Environment;
         const widgetSource = await buildWidgetSource(this.blobStorage, this.model, environment, "editor.html");
         this.src(widgetSource.src);
     }
