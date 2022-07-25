@@ -24,9 +24,9 @@ export class OAuthService {
 
             authServer = await this.getOauth2ServerByApiId(apiId);
 
-            // if (!authServer) {
-            //     authServer = await this.getOpenidconnectServerByApiId(apiId);
-            // }
+            if (!authServer) {
+                authServer = await this.getOpenidconnectServerByApiId(apiId);
+            }
 
             return authServer ?? undefined;
         }
@@ -38,37 +38,25 @@ export class OAuthService {
 
     private async getOauth2ServerByApiId(apiId: string): Promise<AuthorizationServer> {
         try {
-            const authServer = await this.apiClient.get<AuthorizationServerForClient>(`/apis/${apiId}/authProviders/oauth2`, [await this.apiClient.getPortalHeader("getAuthorizationServer"), Utils.getIsUserResourceHeader()]);
-            let authorizationServer = new AuthorizationServer(authServer);
-            return authorizationServer
+            const oauthServer = await this.apiClient.get<AuthorizationServerForClient>(`/apis/${apiId}/authProviders/oauth2`, [await this.apiClient.getPortalHeader("getAuthorizationServer"), Utils.getIsUserResourceHeader()]);
+            const authServer = new AuthorizationServer(oauthServer);
+            return authServer
         }
         catch (error) {
             return undefined
         }
     }
 
-    //TODO: implement
-    // private async getOpenidconnectServerByApiId(apiId: string): Promise<AuthorizationServer> {
-    //     try {
-    //         const authServer = await this.apiClient.get<AuthorizationServerForClient>(`/apis/${apiId}/authProviders/openidconnect`, [await this.apiClient.getPortalHeader("getAuthorizationServer"), Utils.getIsUserResourceHeader()]);
-    //         const provider = new OpenIdConnectProvider(authServer);
-    //         try {
-    //             const openIdServer = await this.discoverOAuthServer(provider.metadataEndpoint);
-    //             openIdServer.name = provider.name;
-    //             openIdServer.displayName = provider.displayName;
-    //             openIdServer.description = provider.description;
-    //             return openIdServer
-    //         }
-    //         catch (error) {
-    //             // Swallow discovery errors until publishing-related notification channel gets implemented.
-    //             return undefined
-    //         }
-    //     }
-    //     catch (error) {
-    //         //handle error
-    //         return undefined
-    //     }
-    // }
+    private async getOpenidconnectServerByApiId(apiId: string): Promise<AuthorizationServer> {
+        try {
+            const openidConnectProvider = await this.apiClient.get<AuthorizationServerForClient>(`/apis/${apiId}/authProviders/openidconnect`, [await this.apiClient.getPortalHeader("getAuthorizationServer"), Utils.getIsUserResourceHeader()]);
+            const authServer = new AuthorizationServer(openidConnectProvider);
+            return authServer;
+        }
+        catch (error) {
+            return undefined
+        }
+    }
 
     /**
      * Acquires access token using specified grant flow.
