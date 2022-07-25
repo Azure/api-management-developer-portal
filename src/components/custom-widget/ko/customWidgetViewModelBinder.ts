@@ -1,4 +1,4 @@
-import { TEnvironment } from "@azure/api-management-custom-widgets-tools";
+import { Environment } from "@azure/api-management-custom-widgets-tools";
 import { Bag } from "@paperbits/common";
 import { EventManager, Events } from "@paperbits/common/events";
 import { ComponentFlow, IWidgetBinding } from "@paperbits/common/editing";
@@ -35,7 +35,7 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
         viewModel.name(model.name);
         viewModel.instanceId(model.instanceId);
 
-        const environment = await this.settingsProvider.getSetting<string>("environment") as TEnvironment;
+        const environment = await this.settingsProvider.getSetting<string>("environment") as Environment;
         const widgetSource = await buildWidgetSource(this.blobStorage, model, environment, "index.html");
         viewModel.src(widgetSource.src);
 

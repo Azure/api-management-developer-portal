@@ -2,9 +2,9 @@ import { OVERRIDE_PORT_KEY } from "@azure/api-management-custom-widgets-scaffold
 import {
     buildBlobDataPath,
     APIM_EDITOR_DATA_KEY,
-    TEditorData,
-    TEnvironment,
-    TValuesCommon
+    EditorData,
+    Environment,
+    ValuesCommon
 } from "@azure/api-management-custom-widgets-tools";
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
@@ -17,7 +17,7 @@ export const OVERRIDE_CONFIG_SESSION_KEY_PREFIX = OVERRIDE_PORT_KEY + "_";
 export async function buildWidgetSource(
     blobStorage: MapiBlobStorage,
     model: CustomWidgetModel,
-    environment: TEnvironment,
+    environment: Environment,
     filePath: string,
 ): Promise<{ override: string | null, src: string }> {
     // check is necessary during publishing as window.sessionStorage.getItem throws "DOMException {}  node:internal/process/promises:279"
@@ -32,7 +32,7 @@ export async function buildWidgetSource(
 
     url.pathname = decodeURIComponent(url.pathname);
 
-    const data: TEditorData<TValuesCommon> = {
+    const data: EditorData<ValuesCommon> = {
         values: JSON.parse(model.customInputValue).values,
         origin: window.location.origin, // TODO later once connected to BE origin during publish
         instanceId: model.instanceId,

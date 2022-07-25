@@ -1,4 +1,4 @@
-import { APIM_ASK_FOR_SECRETS_MESSAGE_KEY, TSecrets } from "@azure/api-management-custom-widgets-tools";
+import { APIM_ASK_FOR_SECRETS_MESSAGE_KEY, Secrets } from "@azure/api-management-custom-widgets-tools";
 
 function listenForSecretsRequests(): void {
     window.addEventListener("message", ({data}) => {
@@ -12,7 +12,7 @@ function listenForSecretsRequests(): void {
                 : window.document.getElementById(instanceId)
         ) as HTMLIFrameElement;
 
-        const secrets: TSecrets = {token: "the secret token", userId: "42"} // TODO actual values
+        const secrets: Secrets = {token: "the secret token", userId: "42"} // TODO actual values
         widgetIFrame.contentWindow.postMessage({[APIM_ASK_FOR_SECRETS_MESSAGE_KEY]: secrets}, "*");
     });
 }
