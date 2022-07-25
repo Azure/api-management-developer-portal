@@ -1,10 +1,9 @@
 export interface AuthorizationServerForClient {
-    name: string;
 
     /**
      * Authorization server name, e.g. "contoso-auth".
      */
-    displayName: string;
+    name: string;
 
     /**
      * Description of the authorization server. Can contain HTML formatting tags.
@@ -37,5 +36,5 @@ export interface AuthorizationServerForClient {
      * Should be provided in the form of a string containing space-delimited values.
      * Example: ["profile", "email"]
      */
-    scopes: string[];
+    defaultScope: string;
 }

@@ -16,12 +16,12 @@ export class AuthorizationServer {
         }
 
         this.name = contract.name;
-        this.displayName = contract.displayName;
+        this.displayName = contract.name;
         this.description = contract.description;
         this.clientId = contract.clientId;
         this.authorizationEndpoint = contract.authorizationEndpoint;
         this.tokenEndpoint = contract.tokenEndpoint;
-        this.scopes = contract.scopes;
+        this.scopes = contract.defaultScope?.split(" ") || [];
 
         if (!contract.grantTypes) {
             return;

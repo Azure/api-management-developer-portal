@@ -7,33 +7,68 @@ import { GrantTypes } from "./../constants";
 import { OpenIdConnectMetadata } from "./../contracts/openIdConnectMetadata";
 import { UnauthorizedError } from "./../errors/unauthorizedError";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
-import { BackendService } from "./backendService";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
+import { AuthorizationServerForClient } from "../contracts/authorizationServer";
+import { IApiClient } from "../clients";
 
 export class OAuthService {
     constructor(
         private readonly httpClient: HttpClient,
-        private readonly backendService: BackendService,
+        private readonly apiClient: IApiClient,
         private readonly settingsProvider: ISettingsProvider
     ) { }
 
-    public async getAuthServer(authorizationServerId: string, openidProviderId: string): Promise<AuthorizationServer> {
+    public async getAuthServer(apiId: string): Promise<AuthorizationServer> {
         try {
-            if (authorizationServerId) {
-                const authServer = await this.backendService.getAuthorizationServer(authorizationServerId);
-                return authServer;
-            }
-            if (openidProviderId) {
-                const authServer = await this.backendService.getOpenIdConnectProvider(openidProviderId);
-                return authServer;
-            }
+            let authServer: AuthorizationServer;
 
-            return undefined;
+            authServer = await this.getOauth2ServerByApiId(apiId);
+
+            // if (!authServer) {
+            //     authServer = await this.getOpenidconnectServerByApiId(apiId);
+            // }
+
+            return authServer ?? undefined;
         }
         catch (error) {
             throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);
         }
     }
+
+
+    private async getOauth2ServerByApiId(apiId: string): Promise<AuthorizationServer> {
+        try {
+            const authServer = await this.apiClient.get<AuthorizationServerForClient>(`/apis/${apiId}/authProviders/oauth2`, [await this.apiClient.getPortalHeader("getAuthorizationServer"), Utils.getIsUserResourceHeader()]);
+            let authorizationServer = new AuthorizationServer(authServer);
+            return authorizationServer
+        }
+        catch (error) {
+            return undefined
+        }
+    }
+
+    //TODO: implement
+    // private async getOpenidconnectServerByApiId(apiId: string): Promise<AuthorizationServer> {
+    //     try {
+    //         const authServer = await this.apiClient.get<AuthorizationServerForClient>(`/apis/${apiId}/authProviders/openidconnect`, [await this.apiClient.getPortalHeader("getAuthorizationServer"), Utils.getIsUserResourceHeader()]);
+    //         const provider = new OpenIdConnectProvider(authServer);
+    //         try {
+    //             const openIdServer = await this.discoverOAuthServer(provider.metadataEndpoint);
+    //             openIdServer.name = provider.name;
+    //             openIdServer.displayName = provider.displayName;
+    //             openIdServer.description = provider.description;
+    //             return openIdServer
+    //         }
+    //         catch (error) {
+    //             // Swallow discovery errors until publishing-related notification channel gets implemented.
+    //             return undefined
+    //         }
+    //     }
+    //     catch (error) {
+    //         //handle error
+    //         return undefined
+    //     }
+    // }
 
     /**
      * Acquires access token using specified grant flow.
