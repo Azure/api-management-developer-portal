@@ -22,7 +22,7 @@ export class ConsoleOperation {
     public readonly hasBody: ko.Observable<boolean>;
     public readonly request: ConsoleRequest;
     public urlTemplate: string;
-    public readonly displayedWsUrl: ko.Computed<string>;
+    public readonly hiddenWsUrl: ko.Computed<string>;
     public readonly canHaveBody: boolean;
 
     constructor(api: Api, operation: Operation) {
@@ -67,7 +67,7 @@ export class ConsoleOperation {
             return result;
         });
 
-        this.displayedWsUrl = ko.computed(() => {
+        this.hiddenWsUrl = ko.computed(() => {
             const protocol = this.api.protocols.indexOf("wss") !== -1 ? "wss" : "wss";
             const urlTemplate = this.getRequestPath(true);
             const result = `${protocol}://${this.host.hostname()}${Utils.ensureLeadingSlash(urlTemplate)}`;
@@ -119,12 +119,12 @@ export class ConsoleOperation {
                 if (requestUrl.indexOf(parameterPlaceholder) > -1) {
                     requestUrl = requestUrl.replace(parameterPlaceholder,
                         !getHidden || !parameter.secret ? Utils.encodeURICustomized(parameter.value())
-                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, "•")));
+                            : parameter.value().replace(/./g, "•"));
                 }
                 else {
                     requestUrl = this.addParam(requestUrl, Utils.encodeURICustomized(parameter.name()),
                         !getHidden || !parameter.secret ? Utils.encodeURICustomized(parameter.value())
-                            : (parameter.revealed() ? Utils.encodeURICustomized(parameter.value()) : parameter.value().replace(/./g, "•")));
+                            : parameter.value().replace(/./g, "•"));
                 }
             }
         });

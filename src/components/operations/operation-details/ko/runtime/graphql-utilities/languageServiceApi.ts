@@ -34,7 +34,9 @@ export class LanguageServiceApi {
     private _languageId: string;
     private _worker: WorkerAccessor | null;
     private _workerPromise: Promise<WorkerAccessor>;
-    private _resolveWorkerPromise: (value: WorkerAccessor) => void = () => { };
+    private _resolveWorkerPromise: (value: WorkerAccessor) => void = () => {
+        // do nothing
+    };
     private _schemaString: string | null = null;
     private _externalFragmentDefinitions:
         | string

@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
+import { HttpClient, HttpRequest } from "@paperbits/common/http";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { downloadableTypes, RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
 import { Api } from "../../../../../models/api";
@@ -24,7 +24,6 @@ import { templates } from "./templates/templates";
 import { LogItem, WebsocketClient } from "./websocketClient";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ConsoleRepresentation } from "../../../../../models/console/consoleRepresentation";
-import { cloneDeep } from "lodash";
 import { saveAs } from "file-saver";
 import { getExtension } from "mime";
 import { Logger } from "@paperbits/common/logging";
@@ -350,7 +349,7 @@ export class OperationConsole {
 
     public async updateRequestSummary(): Promise<void> {
         const template = templates[this.selectedLanguage()];
-        const codeSample = await TemplatingService.render(template, ko.toJS(this.consoleOperation));
+        const codeSample = await TemplatingService.render(template, { console: ko.toJS(this.consoleOperation), showSecrets: this.secretsRevealed });
 
         this.codeSample(codeSample);
     }
@@ -378,15 +377,22 @@ export class OperationConsole {
         this.sendRequest();
     }
 
-    public async sendFromBrowser<T>(url: string, method: string, headers: ConsoleHeader[], body: any, operationName: string) {
-        const stringifiedHeaders: object = headers.map(header => `${header.name()}: ${header.value()}`);
+    public async sendFromBrowser(url: string, method: string, headers: ConsoleHeader[], body: any, operationName: string) {
+        let headersRequest: HeadersInit = {};
+
+        headers.forEach(header => {
+            if (!headersRequest[header.name()]) {
+                headersRequest[header.name()] = [];
+            }
+            headersRequest[header.name()].push(header.value())
+        });
         const response = await fetch(url, {
             method: method,
-            headers: { ...stringifiedHeaders },
+            headers: headersRequest,
             body: body
         });
 
-        let headersString = '';
+        let headersString = "";
         response.headers.forEach((value, name) => headersString += `${name}: ${value}\n`);
 
         const contentTypeHeaderValue = response.headers.get(KnownHttpHeaders.ContentType);
@@ -404,19 +410,19 @@ export class OperationConsole {
 
             while (true) {
                 const { done, value } = await reader.read();
-          
+
                 if (done) {
                     break;
                 }
 
-                chunks.push(value); 
+                chunks.push(value);
             }
 
             const blob = new Blob(chunks, { type: contentTypeHeaderValue });
             const fileExtension = getExtension(contentTypeHeaderValue);
 
             if (fileExtension) {
-                saveAs(blob, operationName + '.' + fileExtension);
+                saveAs(blob, operationName + "." + fileExtension);
             } else {
                 saveAs(blob, operationName);
             }
@@ -453,7 +459,7 @@ export class OperationConsole {
             ? Buffer.from(responsePackage.body.data)
             : null;
 
-        let headersString = responsePackage.headers.map(x => `${x.name}: ${x.value}`).join("\n");
+        const headersString = responsePackage.headers.map(x => `${x.name}: ${x.value}`).join("\n");
         const contentTypeHeader = responsePackage.headers.find(x => x.name === KnownHttpHeaders.ContentType.toLowerCase());
 
         const response: any = {
@@ -514,11 +520,9 @@ export class OperationConsole {
 
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
 
-            const responseStatusText = !!response.statusText
-                ? response.statusText
-                : knownStatusCode
-                    ? knownStatusCode.description
-                    : "Unknown";
+            const responseStatusText = response.statusText || knownStatusCode
+                ? knownStatusCode.description
+                : "Unknown";
 
             this.responseStatusCode(response.statusCode.toString());
             this.responseStatusText(responseStatusText);
@@ -638,9 +642,6 @@ export class OperationConsole {
 
     public toggleRequestSummarySecrets(): void {
         this.secretsRevealed(!this.secretsRevealed());
-        this.consoleOperation().request.meaningfulHeaders().forEach(header => header.revealed(this.secretsRevealed()));
-        this.consoleOperation().request.queryParameters().forEach(header => header.revealed(this.secretsRevealed()));
-
         this.updateRequestSummary();
     }
 
@@ -653,17 +654,8 @@ export class OperationConsole {
     }
 
     public async getPlainTextCodeSample(): Promise<string> {
-        const clonedConsoleOperation = cloneDeep(this.consoleOperation());
-        clonedConsoleOperation.request.meaningfulHeaders()
-            .filter(header => header.secret)
-            .forEach(header => header.revealed(true));
-
-        clonedConsoleOperation.request.queryParameters()
-            .filter(parameter => parameter.secret)
-            .forEach(parameter => parameter.revealed(true));
-
         const template = templates[this.selectedLanguage()];
-        return await TemplatingService.render(template, ko.toJS(clonedConsoleOperation));
+        return await TemplatingService.render(template, { console: ko.toJS(this.consoleOperation), showSecrets: true });
     }
 
     public getApiReferenceUrl(): string {
@@ -687,14 +679,14 @@ export class OperationConsole {
     }
 
     public logCopyEvent(): void {
-        this.logger.trackEvent("CodeSampleCopied", {"language": this.selectedLanguage(), "message": "Code sample copied to clipboard"});
+        this.logger.trackEvent("CodeSampleCopied", { "language": this.selectedLanguage(), "message": "Code sample copied to clipboard" });
     }
 
     public logLanguageUpdated(): void {
-        this.logger.trackEvent("CodeLanguageChange", {"language": this.selectedLanguage(), "message": "Code sample language changed"});
+        this.logger.trackEvent("CodeLanguageChange", { "language": this.selectedLanguage(), "message": "Code sample language changed" });
     }
 
     public logSentRequest(apiName: string, operationName: string, apiMethod: string, responseCode: string): void {
-        this.logger.trackEvent("TestConsoleRequest", {"apiName": apiName, "operationName": operationName, "apiMethod": apiMethod, "responseCode": responseCode});
+        this.logger.trackEvent("TestConsoleRequest", { "apiName": apiName, "operationName": operationName, "apiMethod": apiMethod, "responseCode": responseCode });
     }
 }
