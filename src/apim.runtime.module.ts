@@ -84,6 +84,7 @@ import { AadServiceV2 } from "./services/aadServiceV2";
 import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
 import { staticDataEnvironment } from "./../environmentConstants"
 import { DataTenantService } from "./services/dataTenantService";
+import { DelegationService } from "./services/delegationService";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -156,6 +157,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bind("pagination", Pagination);
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
+        injector.bindSingleton("delegationService", DelegationService);
 
         if (process.env.NODE_ENV === staticDataEnvironment) {
             injector.bind("httpClient", StaticDataHttpClient);
