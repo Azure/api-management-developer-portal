@@ -9,7 +9,6 @@ import { Toast, ViewManager } from "@paperbits/common/ui";
 import { MapiBlobStorage } from "../../../persistence";
 import { widgetName, widgetDisplayName, widgetEditorSelector } from "../constants";
 import { CustomWidgetModel } from "../customWidgetModel";
-import listenForSecretsRequests from "../listenForSecretsRequests";
 import { CustomWidgetViewModel } from "./customWidgetViewModel";
 import { buildWidgetSource } from "./utils";
 
@@ -22,10 +21,7 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
         private readonly settingsProvider: ISettingsProvider,
         private readonly blobStorage: MapiBlobStorage,
         private readonly viewManager: ViewManager,
-    ) {
-        // TODO move somewhere else
-        listenForSecretsRequests();
-    }
+    ) { }
 
     public async updateViewModel(model: CustomWidgetModel, viewModel: CustomWidgetViewModel, bindingContext: Bag<any>): Promise<void> {
         if (model.styles) {
