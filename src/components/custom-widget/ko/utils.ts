@@ -33,7 +33,7 @@ export async function buildWidgetSource(
     url.pathname = decodeURIComponent(url.pathname);
 
     const data: EditorData<ValuesCommon> = {
-        values: JSON.parse(model.customInputValue).values,
+        values: JSON.parse(model.customInputValue).values ?? {},
         origin: window.location.origin, // TODO later once connected to BE origin during publish
         instanceId: model.instanceId,
         environment,
