@@ -20,13 +20,6 @@ export class DelegationService implements IDelegationService {
         private readonly apiClient: IApiClient,
         private readonly settingsProvider: ISettingsProvider) { }
 
-    private async initialize() {
-        if (!this.developerPortalType) {
-            const settings = await this.settingsProvider.getSettings();
-            this.developerPortalType = settings[SettingNames.developerPortalType] || DeveloperPortalType.selfHosted;
-        }
-    }
-
     private async getDelegationSettings(): Promise<DelegationSettings> {
         return await this.apiClient.get(`/delegation/settings`);
     }
@@ -50,7 +43,10 @@ export class DelegationService implements IDelegationService {
     }
 
     public async getUserDelegationUrl(action: DelegationAction, userId: string, productId?: string, subscriptionId?: string): Promise<string> {
-        await this.initialize();
+        if (!this.developerPortalType) {
+            const settings = await this.settingsProvider.getSettings();
+            this.developerPortalType = settings[SettingNames.developerPortalType] || DeveloperPortalType.selfHosted;
+        }
 
         if (this.developerPortalType === DeveloperPortalType.managed) {
             var delegationParameters = {
