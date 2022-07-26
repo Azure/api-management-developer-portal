@@ -14,6 +14,7 @@ import fallbackUi from "!!raw-loader!./fallbackUi.html";
 const techToName: Record<ScaffoldTech, string> = {
     typescript: "TypeScript",
     react: "React",
+    vue: "Vue",
 }
 
 // TODO finish the command
