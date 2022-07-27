@@ -32,7 +32,7 @@ export class UsersService {
      * @param username {string} User name.
      * @param password {string} Password.
      */
-     public async signInWithBasic(username: string, password: string): Promise<void> {
+    public async signInWithBasic(username: string, password: string): Promise<void> {
         const credentials = `Basic ${btoa(`${username}:${password}`)}`;
         const userId = await this.authenticate(credentials);
 
@@ -194,7 +194,7 @@ export class UsersService {
     /**
      * Updates user profile data.
      * @param userId {string} Unique user identifier.
-     * @param updateUserData 
+     * @param updateUserData
      */
     public async updateUser(userId: string, firstName: string, lastName: string): Promise<User> {
         const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.mapiClient.getPortalHeader("updateUser")];
