@@ -3,28 +3,32 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { AccessToken, IAuthenticator } from "../../authentication";
 import { managementApiVersion, SettingNames } from "../../constants";
 
-class ListenForSecretsRequests {
+export class ListenForSecretsRequests {
     constructor(authenticator: IAuthenticator, settingsProvider: ISettingsProvider) {
         window.addEventListener("message", async ({data}) => {
             const value = data[APIM_ASK_FOR_SECRETS_MESSAGE_KEY];
             if (!value || !("instanceId" in value)) return
 
             const { instanceId, targetModule } = value;
+            const environment = await settingsProvider.getSetting<string>("environment");
             const widgetIFrame = (
-                targetModule === "app"
+                targetModule === "app" && environment === "development"
                     ? window.frames[0].document.getElementById(instanceId)
                     : window.document.getElementById(instanceId)
             ) as HTMLIFrameElement;
 
-            const token = await authenticator.getAccessTokenAsString()
-            let { userId } = AccessToken.parse(token);
-            if (userId === "integration") userId = "1"; // TODO ok?
-            const managementApiUrl = await settingsProvider.getSetting(SettingNames.managementApiUrl) as string
-            const secrets: Secrets = { token, userId, managementApiUrl, apiVersion: managementApiVersion };
+            const managementApiUrl = await settingsProvider.getSetting<string>(SettingNames.managementApiUrl)
+            const secrets: Secrets = { managementApiUrl, apiVersion: managementApiVersion };
 
-            widgetIFrame.contentWindow.postMessage({[APIM_ASK_FOR_SECRETS_MESSAGE_KEY]: secrets}, "*");
+            const token = await authenticator.getAccessTokenAsString();
+            if (token) {
+                let { userId } = AccessToken.parse(token);
+                if (userId === "integration") userId = "1"; // TODO ok?
+                secrets.token = token
+                secrets.userId = userId
+            }
+
+            widgetIFrame.contentWindow.postMessage({[APIM_ASK_FOR_SECRETS_MESSAGE_KEY]: secrets}, "*"); // value.origin
         });
     }
 }
-
-export default ListenForSecretsRequests

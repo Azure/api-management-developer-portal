@@ -25,7 +25,6 @@ export async function buildWidgetSource(
         ? window.sessionStorage.getItem(OVERRIDE_CONFIG_SESSION_KEY_PREFIX + model.name)
         : null;
 
-    // tslint:disable-next-line:triple-equals
     const url = new URL(developmentSrc == null ? (
         await blobStorage.getDownloadUrlWithoutToken(`${buildBlobDataPath(model.name)}${filePath}`)
     ) : developmentSrc + filePath);
@@ -34,7 +33,7 @@ export async function buildWidgetSource(
 
     const data: EditorData<ValuesCommon> = {
         values: JSON.parse(model.customInputValue).values ?? {},
-        origin: window.location.origin, // TODO later once connected to BE origin during publish
+        // origin: window.location.origin, // TODO later once connected to BE origin during publish
         instanceId: model.instanceId,
         environment,
     };

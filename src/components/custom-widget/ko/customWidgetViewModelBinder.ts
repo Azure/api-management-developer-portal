@@ -13,14 +13,11 @@ import { CustomWidgetViewModel } from "./customWidgetViewModel";
 import { buildWidgetSource } from "./utils";
 
 export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidgetModel, CustomWidgetViewModel>  {
-    private toast: Toast;
-
     constructor(
         private readonly eventManager: EventManager,
         private readonly styleCompiler: StyleCompiler,
         private readonly settingsProvider: ISettingsProvider,
         private readonly blobStorage: MapiBlobStorage,
-        private readonly viewManager: ViewManager,
     ) { }
 
     public async updateViewModel(model: CustomWidgetModel, viewModel: CustomWidgetViewModel, bindingContext: Bag<any>): Promise<void> {
@@ -34,13 +31,6 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
         const environment = await this.settingsProvider.getSetting<string>("environment") as Environment;
         const widgetSource = await buildWidgetSource(this.blobStorage, model, environment, "index.html");
         viewModel.src(widgetSource.src);
-
-        if (widgetSource.override) {
-            let message = `Custom widget "${model.widgetDisplayName}" URL is overridden`;
-            if (typeof widgetSource.override === "string") message += ` with ${widgetSource.override}`;
-            if (this.toast) this.viewManager.removeToast(this.toast);
-            this.toast = this.viewManager.addToast("Custom widget override", message);
-        }
     }
 
     public async modelToViewModel(model: CustomWidgetModel, viewModel?: CustomWidgetViewModel, bindingContext?: Bag<any>): Promise<CustomWidgetViewModel> {

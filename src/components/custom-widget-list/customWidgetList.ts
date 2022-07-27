@@ -1,5 +1,4 @@
 ﻿import * as ko from "knockout";
-// import { saveAs } from "file-saver";
 import { View, ViewManager } from "@paperbits/common/ui";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component } from "@paperbits/common/ko/decorators";
