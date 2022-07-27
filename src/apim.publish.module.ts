@@ -26,7 +26,6 @@ import { ResetPasswordModule } from "./components/users/reset-password/resetPass
 import { ConfirmPasswordModule } from "./components/users/confirm-password/ko/confirmPassword.module";
 import { ChangePasswordModule } from "./components/users/change-password/ko/changePassword.module";
 import { ReportsModule } from "./components/reports/ko/reports.module";
-import { MapiTenantService } from "./services/mapiTenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/validationSummary.module";
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
@@ -40,6 +39,7 @@ import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
 import { staticDataEnvironment } from "./../environmentConstants"
 import { MapiClient } from "./clients";
+import { DelegationService } from "./services/delegationService";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -66,7 +66,6 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ReportsModule());
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new CustomHtmlPublishModule());
-        injector.bindSingleton("tenantService", MapiTenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("userService", StaticUserService);
         injector.bindSingleton("roleService", StaticRoleService);
@@ -79,6 +78,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("oauthService", OAuthService);
+        injector.bindSingleton("delegationService", DelegationService);
 
         injector.bindSingleton("runtimeConfigBuilder", RuntimeConfigBuilder);
         injector.bindToCollection("publishers", AadConfigPublisher);

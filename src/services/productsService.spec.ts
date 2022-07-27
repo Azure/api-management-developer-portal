@@ -1,12 +1,11 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
-import { ConsoleLogger } from "@paperbits/common/logging";
 import { ProductService } from "./productService";
 import { DataApiClient } from "../clients";
 import { MockHttpClient, starterProduct } from "../../tests/mocks";
 import { StaticAuthenticator } from "../components/staticAuthenticator";
 import { StaticSettingsProvider } from "../components/staticSettingsProvider";
-import { DataTenantService } from "./dataTenantService";
+import { DelegationService } from "./delegationService";
 
 
 const settingsProvider = new StaticSettingsProvider({
@@ -19,16 +18,15 @@ const authenticator = new StaticAuthenticator();
 describe("Product service", async () => {
     it("Returns list of products", async () => {
         const httpClient = new MockHttpClient();
-        const logger = new ConsoleLogger();
 
         httpClient.mock()
             .get("/products")
             .reply(200, { value: [starterProduct] });
 
         const apiClient = new DataApiClient(httpClient, authenticator, settingsProvider);
-        const tenantService = new DataTenantService(apiClient);
+        const delegationService = new DelegationService(apiClient, settingsProvider);
 
-        const productService = new ProductService(apiClient, tenantService);
+        const productService = new ProductService(apiClient, delegationService);
         const products = await productService.getProducts();
 
         expect(products.length).to.equals(1);
@@ -36,16 +34,15 @@ describe("Product service", async () => {
 
     it("Returns specific product", async () => {
         const httpClient = new MockHttpClient();
-        const logger = new ConsoleLogger();
 
         httpClient.mock()
             .get("/products/starter")
             .reply(200, starterProduct);
 
         const apiClient = new DataApiClient(httpClient, authenticator, settingsProvider);
-        const tenantService = new DataTenantService(apiClient);
+        const delegationService = new DelegationService(apiClient, settingsProvider);
 
-        const productService = new ProductService(apiClient, tenantService);
+        const productService = new ProductService(apiClient, delegationService);
         const product = await productService.getProduct("/products/starter");
 
         expect(product.displayName).to.equal(product.displayName);

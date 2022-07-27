@@ -1,3 +1,4 @@
+import { Bag } from "@paperbits/common";
 import { DelegationAction } from "../contracts/tenantSettings";
 
 /**
@@ -9,7 +10,7 @@ export default interface IDelegationService {
      * Checks if signin delegation is enabled
      * @returns true if signin delegation is enabled
      */
-    isSigninDelegationEnabled(): Promise<boolean>;
+    isUserRegistrationDelegationEnabled(): Promise<boolean>;
 
     /**
      * Checks if subscription delegation is enabled
@@ -18,21 +19,25 @@ export default interface IDelegationService {
     isSubscriptionDelegationEnabled(): Promise<boolean>
 
     /**
-     * Get delegation signin url
-     * @param returnUrl - url to redirect to after signin
-     * @returns delegation signin url
+     * Get delegation sign-in url
+     * @param returnUrl - url to redirect to after sign-in
+     * @returns delegation sign-in url
      */
     getDelegationSigninUrl(returnUrl: string): Promise<string>
 
     /**
-     * Get delegation url
+     * Get delegation sign-up url
+     * @param returnUrl - url to redirect to after sign-up
+     * @returns delegation sign-up url
+     */
+    getDelegationSignupUrl(returnUrl: string): Promise<string>
+
+    /**
+     * Get user specific delegation url
      * @param action - delegation action
-     * @param userId
-     * @param productId
-     * @param subscriptionId
+     * @param userId - specific user
+     * @param delegationParameters - delegation parameters e.g. productId, subscriptionId
      * @returns delegation url
      */
-    getUserDelegationUrl(action: DelegationAction, userId: string, productId?: string, subscriptionId?: string): Promise<string>
+    getUserDelegationUrl(userId: string, action: DelegationAction, delegationParameters: Bag<string>): Promise<string>
 }
-
-//TODO:hh signup action?, some delegations without userId?

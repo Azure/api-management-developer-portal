@@ -1,12 +1,13 @@
 import { IApiClient } from "../clients";
-import { DelegationAction, DelegationActionPath } from "../contracts/tenantSettings";
+import { DelegationAction, DelegationActionPath, DelegationParameters } from "../contracts/tenantSettings";
 import { DeveloperPortalType, SettingNames } from "../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { DelegationSettings } from "../contracts/delegationSettings";
 import IDelegationService from "./IDelegationService";
+import { Bag } from "@paperbits/common";
 
-interface SigninDelegationResponse {
-    ssoLoginUri: string;
+interface DelegationResponse {
+    ssoUri: string;
 }
 
 interface UserDelegationResponse {
@@ -24,7 +25,7 @@ export class DelegationService implements IDelegationService {
         return await this.apiClient.get(`/delegation/settings`);
     }
 
-    public async isSigninDelegationEnabled(): Promise<boolean> {
+    public async isUserRegistrationDelegationEnabled(): Promise<boolean> {
         const delegationSettings = await this.getDelegationSettings();
         return delegationSettings?.signin;
     }
@@ -36,24 +37,27 @@ export class DelegationService implements IDelegationService {
 
     public async getDelegationSigninUrl(returnUrl: string): Promise<string> {
         var payload = {
-            returnUrl: returnUrl
+            [DelegationParameters.ReturnUrl]: returnUrl
         }
-        const response = await this.apiClient.post<SigninDelegationResponse>("/delegation/urls/signin", null, JSON.stringify(payload));
-        return response.ssoLoginUri;
+        const response = await this.apiClient.post<DelegationResponse>("/delegation/urls/signin", null, JSON.stringify(payload));
+        return response.ssoUri;
     }
 
-    public async getUserDelegationUrl(action: DelegationAction, userId: string, productId?: string, subscriptionId?: string): Promise<string> {
+    public async getDelegationSignupUrl(returnUrl: string): Promise<string> {
+        var payload = {
+            [DelegationParameters.ReturnUrl]: returnUrl
+        }
+        const response = await this.apiClient.post<DelegationResponse>("/delegation/urls/signup", null, JSON.stringify(payload));
+        return response.ssoUri;
+    }
+
+    public async getUserDelegationUrl(userId: string, action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
         if (!this.developerPortalType) {
             const settings = await this.settingsProvider.getSettings();
             this.developerPortalType = settings[SettingNames.developerPortalType] || DeveloperPortalType.selfHosted;
         }
 
         if (this.developerPortalType === DeveloperPortalType.managed) {
-            var delegationParameters = {
-                userId: userId,
-                productId: productId,
-                subscriptionId: subscriptionId,
-            }
             const queryParams = new URLSearchParams();
             Object.keys(delegationParameters).map(key => {
                 const val = delegationParameters[key];
@@ -64,11 +68,7 @@ export class DelegationService implements IDelegationService {
             return `/${DelegationActionPath[action]}?${queryParams.toString()}`;
         }
         else {
-            var payload = {
-                productId: productId,
-                subscriptionId: subscriptionId
-            }
-            const response = await this.apiClient.post<UserDelegationResponse>(`/delegation/urls/users/${userId}/${action}`, null, JSON.stringify(payload));
+            const response = await this.apiClient.post<UserDelegationResponse>(`/delegation/urls/users/${userId}/${action}`, null, JSON.stringify(delegationParameters));
             return response.redirectUrl;
         }
     }

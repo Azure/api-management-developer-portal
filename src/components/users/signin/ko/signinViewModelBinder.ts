@@ -3,10 +3,8 @@ import { ComponentFlow } from "@paperbits/common/editing";
 import { EventManager, Events } from "@paperbits/common/events";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { TermsOfService } from "../../../../contracts/identitySettings";
-import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { IdentityService } from "../../../../services";
-import { BackendService } from "../../../../services/backendService";
-import ITenantService from "../../../../services/ITenantService";
+import IDelegationService from "../../../../services/IDelegationService";
 import { SigninModel } from "../signinModel";
 import { SigninViewModel } from "./signinViewModel";
 
@@ -15,8 +13,7 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
 
     constructor(
         private readonly eventManager: EventManager,
-        private readonly tenantService: ITenantService,
-        private readonly backendService: BackendService,
+        private readonly delegationService: IDelegationService,
         private readonly identityService: IdentityService) { }
 
 
@@ -44,13 +41,10 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
 
         const params = {};
 
-        const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
+        const isDelegationEnabled = await this.delegationService.isUserRegistrationDelegationEnabled();
 
         if (isDelegationEnabled) {
-            const delegationParam = {};
-            delegationParam[DelegationParameters.ReturnUrl] = "/";
-            const delegationUrl = await this.backendService.getDelegationUrlFromServer(DelegationAction.signIn, delegationParam);
-
+            const delegationUrl = await this.delegationService.getDelegationSigninUrl("/");
             if (delegationUrl) {
                 params["delegationUrl"] = delegationUrl;
             }

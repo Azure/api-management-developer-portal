@@ -3,18 +3,15 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ComponentFlow } from "@paperbits/common/editing";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { TermsOfService } from "../../../../contracts/identitySettings";
-import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { IdentityService } from "../../../../services";
-import { BackendService } from "../../../../services/backendService";
-import ITenantService from "../../../../services/ITenantService";
+import IDelegationService from "../../../../services/IDelegationService";
 import { SignupModel } from "../signupModel";
 import { SignupViewModel } from "./signupViewModel";
 
 export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignupViewModel> {
 
     constructor(
-        private readonly tenantService: ITenantService,
-        private readonly backendService: BackendService,
+        private readonly delegationService: IDelegationService,
         private readonly settingsProvider: ISettingsProvider,
         private readonly identityService: IdentityService) { }
 
@@ -38,12 +35,9 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
         const useHipCaptcha = await this.settingsProvider.getSetting<boolean>("useHipCaptcha");
         const params = { requireHipCaptcha: useHipCaptcha === undefined ? true : useHipCaptcha };
 
-        const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
+        const isDelegationEnabled = await this.delegationService.isUserRegistrationDelegationEnabled();
         if (isDelegationEnabled) {
-            const delegationParam = {};
-            delegationParam[DelegationParameters.ReturnUrl] = "/";
-
-            const delegationUrl = await this.backendService.getDelegationUrlFromServer(DelegationAction.signUp, delegationParam);
+            const delegationUrl = await this.delegationService.getDelegationSignupUrl("/");
             if (delegationUrl) {
                 params["delegationUrl"] = delegationUrl;
             }
