@@ -64,12 +64,14 @@ export class UsersService {
 
         const response = await this.httpClient.send<Identity>(request);
 
-        if (response.statusCode !== 200) {
-            const msg = response.statusCode === 400
-                ? "This authentication method has been disabled by website administrator."
-                : "Please provide a valid email and password.";
-            throw new UnauthorizedError(msg);
+        if (response.statusCode === 400) {
+            throw new UnauthorizedError("This authentication method has been disabled by website administrator.");
         }
+
+        if (response.statusCode == 401) {
+            return null; // this indicates that either credentials are incorrect or the user doesn't exist (in case of id_token for AAD or AAD B2C identity providers)
+        }
+
         const sasTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
 
         if (sasTokenHeader) {
