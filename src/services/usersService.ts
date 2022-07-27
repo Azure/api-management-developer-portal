@@ -32,16 +32,16 @@ export class UsersService {
      * @param username {string} User name.
      * @param password {string} Password.
      */
-    public async signIn(username: string, password: string): Promise<string> {
+    public async signInWithBasic(username: string, password: string): Promise<void> {
         const credentials = `Basic ${btoa(`${username}:${password}`)}`;
         const userId = await this.authenticate(credentials);
 
         if (userId) {
-            return userId;
+            return; // successul authentication
         }
 
         this.authenticator.clearAccessToken();
-        return undefined;
+        throw new UnauthorizedError("Please provide a valid email and password.");
     }
 
     /**
@@ -57,7 +57,7 @@ export class UsersService {
             url: `${managementApiUrl}/identity?api-version=${Constants.managementApiVersion}`,
             method: "GET",
             headers: [
-                { name: "Authorization", value: credentials },
+                { name: KnownHttpHeaders.Authorization, value: credentials },
                 await this.mapiClient.getPortalHeader("authenticate")
             ]
         };
@@ -111,7 +111,7 @@ export class UsersService {
         const response = await this.httpClient.send({
             url: `${managementApiUrl}${requestUrl}&api-version=${Constants.managementApiVersion}`,
             method: "PUT",
-            headers: [{ name: "Authorization", value: token }, await this.mapiClient.getPortalHeader("activateUser")]
+            headers: [{ name: KnownHttpHeaders.Authorization, value: token }, await this.mapiClient.getPortalHeader("activateUser")]
         });
 
         await this.getTokenFromResponse(response);
@@ -121,7 +121,7 @@ export class UsersService {
         const headers = [];
 
         if (token) {
-            headers.push({ name: "Authorization", value: token }, await this.mapiClient.getPortalHeader("updatePassword"));
+            headers.push({ name: KnownHttpHeaders.Authorization, value: token }, await this.mapiClient.getPortalHeader("updatePassword"));
         }
 
         const payload = {
@@ -194,7 +194,7 @@ export class UsersService {
     /**
      * Updates user profile data.
      * @param userId {string} Unique user identifier.
-     * @param updateUserData 
+     * @param updateUserData
      */
     public async updateUser(userId: string, firstName: string, lastName: string): Promise<User> {
         const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.mapiClient.getPortalHeader("updateUser")];
@@ -281,8 +281,8 @@ export class UsersService {
         }
 
         const headers = [
-            { name: "Authorization", value: authToken },
-            { name: "If-Match", value: "*" },
+            { name: KnownHttpHeaders.Authorization, value: authToken },
+            { name: KnownHttpHeaders.IfMatch, value: "*" },
             await this.mapiClient.getPortalHeader("changePassword")
         ];
 
