@@ -83,7 +83,7 @@ import { OauthServerConfiguration } from "./components/operations/operation-deta
 import { AadServiceV2 } from "./services/aadServiceV2";
 import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
 import { staticDataEnvironment } from "./../environmentConstants"
-import { DataTenantService } from "./services/dataTenantService";
+import { TenantService } from "./services/tenantService";
 import { DelegationService } from "./services/delegationService";
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -140,7 +140,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("resetPassword", ResetPassword);
         injector.bind("confirmPassword", ConfirmPassword);
         injector.bind("changePassword", ChangePassword);
-        injector.bindSingleton("tenantService", DataTenantService);
+        injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("aadService", AadService);
         injector.bindSingleton("apiClient", DataApiClient);

@@ -4,12 +4,12 @@ import { Subscription } from "../models/subscription";
 import { Product } from "../models/product";
 import { SubscriptionContract, SubscriptionState } from "../contracts/subscription";
 import { ProductContract } from "../contracts/product";
-import ITenantService from "../services/ITenantService";
 import { HttpHeader } from "@paperbits/common/http";
 import * as Constants from "../constants";
 import { Utils } from "../utils";
 import { SearchQuery } from "../contracts/searchQuery";
 import { ApiContract } from "../contracts/api";
+import IDelegationService from "./IDelegationService";
 
 /**
  * A service for management operations with products.
@@ -17,7 +17,7 @@ import { ApiContract } from "../contracts/api";
 export class ProductService {
     constructor(
         private readonly apiClient: IApiClient,
-        private readonly tenantService: ITenantService
+        private readonly delegationService: IDelegationService
     ) { }
 
     /**
@@ -258,7 +258,7 @@ export class ProductService {
             throw new Error(`Parameter "userId" not specified.`);
         }
 
-        const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
+        const isDelegationEnabled = await this.delegationService.isSubscriptionDelegationEnabled();
 
         if (isDelegationEnabled) {
             console.warn("Delegation enabled. Can't create subscription.");
@@ -281,7 +281,7 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
+        const isDelegationEnabled = await this.delegationService.isSubscriptionDelegationEnabled();
 
         if (isDelegationEnabled) {
             console.warn("Delegation enabled. Can't cancel subscription");

@@ -50,7 +50,6 @@ import { ConfirmPasswordEditorModule } from "./components/users/confirm-password
 import { HelpModule } from "./components/help";
 import { ChangePasswordModule } from "./components/users/change-password/ko/changePassword.module";
 import { ChangePasswordEditorModule } from "./components/users/change-password/ko/changePasswordEditor.module";
-import { MapiTenantService } from "./services/mapiTenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/validationSummary.module";
 import { ValidationSummaryDesignModule } from "./components/users/validation-summary/validationSummary.design.module";
 import { BackendService } from "./services/backendService";
@@ -67,6 +66,7 @@ import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
 import MapiClient from "./clients/mapiClient";
+import { DelegationService } from "./services/delegationService";
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -119,7 +119,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new CustomHtmlDesignModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
-        injector.bindSingleton("tenantService", MapiTenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("roleService", StaticRoleService);
         injector.bindSingleton("provisioningService", ProvisionService);
@@ -137,6 +136,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bindToCollection("autostart", RuntimeConfigurator);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
+        injector.bindSingleton("delegationService", DelegationService);
         injector.bind("CodeEditor", CodeEditor);
     }
 }

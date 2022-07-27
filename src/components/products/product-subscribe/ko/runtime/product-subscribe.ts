@@ -7,10 +7,9 @@ import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
-import ITenantService from "../../../../../services/ITenantService";
 import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { BackendService } from "../../../../../services/backendService";
+import IDelegationService from "../../../../../services/IDelegationService";
 
 @RuntimeComponent({
     selector: "product-subscribe-runtime"
@@ -35,8 +34,7 @@ export class ProductSubscribe {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly tenantService: ITenantService,
-        private readonly backendService: BackendService,
+        private readonly delegationService: IDelegationService,
         private readonly productService: ProductService,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
@@ -75,7 +73,7 @@ export class ProductSubscribe {
             this.showTermsOfUse(this.showTermsByDefault());
             this.working(true);
 
-            this.delegationEnabled = await this.isDelegationEnabled();
+            this.delegationEnabled = await this.isSubscriptionDelegationEnabled();
 
             const productName = this.routeHelper.getProductName();
 
@@ -127,8 +125,8 @@ export class ProductSubscribe {
         this.limitReached(limitReached);
     }
 
-    private async isDelegationEnabled(): Promise<boolean> {
-        const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
+    private async isSubscriptionDelegationEnabled(): Promise<boolean> {
+        const isDelegationEnabled = await this.delegationService.isSubscriptionDelegationEnabled();
         return isDelegationEnabled;
     }
 
@@ -154,10 +152,11 @@ export class ProductSubscribe {
 
         try {
             if (this.delegationEnabled) {
+                const userIdentifier = Utils.getResourceName("users", userId);
                 const delegationParam = {};
                 delegationParam[DelegationParameters.ProductId] = productName;
-                delegationParam[DelegationParameters.UserId] = Utils.getResourceName("users", userId);
-                const delegationUrl = await this.backendService.getDelegationString(DelegationAction.subscribe, delegationParam);
+                delegationParam[DelegationParameters.UserId] = userIdentifier
+                const delegationUrl = await this.delegationService.getUserDelegationUrl(userIdentifier, DelegationAction.subscribe, delegationParam);
                 if (delegationUrl) {
                     location.assign(delegationUrl);
                     return;
