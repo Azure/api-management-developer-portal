@@ -40,6 +40,7 @@ import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvi
 import { staticDataEnvironment } from "./../environmentConstants"
 import { MapiClient } from "./clients";
 import { DelegationService } from "./services/delegationService";
+import { StaticDelegationService } from "./services/staticDelegationService";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -78,8 +79,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("oauthService", OAuthService);
-        injector.bindSingleton("delegationService", DelegationService);
-
+        injector.bindSingleton("delegationService", StaticDelegationService);
         injector.bindSingleton("runtimeConfigBuilder", RuntimeConfigBuilder);
         injector.bindToCollection("publishers", AadConfigPublisher);
         injector.bindToCollection("publishers", RuntimeConfigPublisher);

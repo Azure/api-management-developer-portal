@@ -67,6 +67,7 @@ import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.desi
 import { CodeEditor } from "./components/code-editor/code-editor";
 import MapiClient from "./clients/mapiClient";
 import { DelegationService } from "./services/delegationService";
+import { StaticDelegationService } from "./services/staticDelegationService";
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -136,7 +137,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bindToCollection("autostart", RuntimeConfigurator);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
-        injector.bindSingleton("delegationService", DelegationService);
+        injector.bindSingleton("delegationService", StaticDelegationService);
         injector.bind("CodeEditor", CodeEditor);
     }
 }
