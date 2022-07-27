@@ -1,10 +1,14 @@
+import { ViewManager } from "@paperbits/common/ui";
 import { OVERRIDE_PORT_KEY, OVERRIDE_DEFAULT_PORT } from "@azure/api-management-custom-widgets-scaffolder";
 import { BLOB_ROOT, BLOB_CONFIGS_FOLDER, APIM_CONFIG_FILE_NAME } from "@azure/api-management-custom-widgets-tools";
 import { MapiBlobStorage } from "../../persistence";
 import { TCustomWidgetConfig } from "../custom-widget";
 import { OVERRIDE_CONFIG_SESSION_KEY_PREFIX } from "../custom-widget/ko/utils";
 
-async function loadCustomWidgetConfigs(blobStorage: MapiBlobStorage): Promise<TCustomWidgetConfig[]> {
+export  async function loadCustomWidgetConfigs(
+    blobStorage: MapiBlobStorage,
+    viewManager: ViewManager,
+): Promise<TCustomWidgetConfig[]> {
     const overridesPromises = [];
     const sourcesSession = Object.keys(window.sessionStorage)
         .filter((key: string) => key.startsWith(OVERRIDE_CONFIG_SESSION_KEY_PREFIX))
@@ -37,10 +41,16 @@ async function loadCustomWidgetConfigs(blobStorage: MapiBlobStorage): Promise<TC
     overrides.forEach((override, i) => {
         const href = new URL(sources[i]).href;
         window.sessionStorage.setItem(OVERRIDE_CONFIG_SESSION_KEY_PREFIX + override.name, href);
-        configurations[override.name] = {...override, override: href ?? true};
+        const widgetSource = {...override, override: href ?? true};
+        configurations[override.name] = widgetSource
+
+        let message = `Custom widget "${override.displayName}" URL is overridden`;
+        if (typeof widgetSource.override === "string") message += ` with ${widgetSource.override}`;
+        // if (this.toast) this.viewManager.removeToast(this.toast);
+        // this.toast = this.viewManager.addToast("Custom widget override", message);
+        viewManager.addToast("Custom widget override", message);
+
     });
 
     return Object.values(configurations);
 }
-
-export default loadCustomWidgetConfigs;

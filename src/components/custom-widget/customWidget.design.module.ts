@@ -1,7 +1,7 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
 import { CustomWidgetEditorViewModel, CustomWidgetViewModel, CustomWidgetViewModelBinder } from "./ko";
 import { CustomWidgetModelBinder } from ".";
-import ListenForSecretsRequests from "./ListenForSecretsRequests";
+import { ListenForSecretsRequests } from "./ListenForSecretsRequests";
 
 export class CustomWidgetDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
