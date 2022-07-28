@@ -4,7 +4,10 @@ import { AccessToken, IAuthenticator } from "../../authentication";
 import { managementApiVersion, SettingNames } from "../../constants";
 
 export class ListenForSecretsRequests {
-    constructor(authenticator: IAuthenticator, settingsProvider: ISettingsProvider) {
+    constructor(
+        private readonly authenticator: IAuthenticator,
+        private readonly settingsProvider: ISettingsProvider,
+    ) {
         window.addEventListener("message", async ({data}) => {
             const value = data[APIM_ASK_FOR_SECRETS_MESSAGE_KEY];
             if (!value || !("instanceId" in value)) return
