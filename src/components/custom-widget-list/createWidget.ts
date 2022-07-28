@@ -4,6 +4,7 @@ import { buildBlobConfigPath, buildBlobDataPath } from "@azure/api-management-cu
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import * as Utils from "@paperbits/common/utils";
+import { Logger } from "@paperbits/common/logging";
 import { MapiBlobStorage } from "../../persistence";
 import { CustomWidgetHandlers, TCustomWidgetConfig } from "../custom-widget";
 import { CustomWidgetModel } from "./customWidgetModel";
@@ -17,7 +18,6 @@ const techToName: Record<ScaffoldTech, string> = {
     vue: "Vue",
 }
 
-// TODO finish the command
 const buildScaffoldCommand = ({displayName, technology}: TCustomWidgetConfig): string =>
     `npx @azure/api-management-custom-widgets-scaffolder --displayName="${displayName}" --technology="${technology}" --openUrl="${window.location.origin}"`
 
@@ -35,7 +35,8 @@ export class CreateWidget {
 
     constructor(
         private readonly widgetService: IWidgetService,
-        private readonly blobStorage: MapiBlobStorage
+        private readonly blobStorage: MapiBlobStorage,
+        private readonly logger: Logger
     ) {
         this.displayName = ko.observable("");
         this.technology = ko.observable(null);
@@ -95,6 +96,8 @@ export class CreateWidget {
         this.configAdd(config);
 
         this.commandToScaffold(buildScaffoldCommand(config));
+
+        this.logCreateWidget(config)
     }
 
     public async deleteWidget(): Promise<void> {
@@ -107,5 +110,15 @@ export class CreateWidget {
         await Promise.all(blobsToDelete.map(blobKey => this.blobStorage.deleteBlob(blobKey)));
 
         this.configDelete(this.config);
+
+        this.logDeleteWidget(this.config);
+    }
+
+    public logCreateWidget(config: {name: string, displayName: string, technology: ScaffoldTech}): void {
+        this.logger.trackEvent("CustomWidgetCreate", config);
+    }
+
+    public logDeleteWidget(config: {name: string, displayName: string, technology: ScaffoldTech}): void {
+        this.logger.trackEvent("CustomWidgetDelete", config);
     }
 }
