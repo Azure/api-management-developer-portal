@@ -1,14 +1,14 @@
-<div tabindex="0" class="scrollable">
+<!-- ko if: working -->
+<div class="panel panel-dark fit">
+    <spinner class="fit"></spinner>
+</div>
+<!-- /ko -->
 
-    <!-- ko if: working -->
-    <div class="panel panel-dark fit">
-        <spinner class="fit"></spinner>
-    </div>
-    <!-- /ko -->
+<!-- ko ifnot: working -->
+<div class="flex flex-column fit" data-bind="dialog: {}">
+    <div class="flex-item flex-grow animation-fade-in">
 
-    <!-- ko ifnot: working -->
-
-    <div class="panel panel-dark animation-fade-in">
+    <div class="panel panel-dark">
         <button type="button" class="no-border pull-right" data-dismiss="modal" aria-label="Close console"
             data-bind="click: () => { closeGraphqlConsole(); $parent.closeConsole();}">
             <i class="icon-emb icon-emb-simple-remove"></i>
@@ -157,7 +157,7 @@
         </div>
     </div>
 
-    <div class="panel panel-dark animation-fade-in panel-highlight flex-item flex-grow menu menu-horizontal">
+    <div class="panel panel-dark panel-highlight flex-item flex-grow menu menu-horizontal">
 
         <div class="gql-container" data-bind="css: { 'ws-responses': displayWsConsole }">
             <div class="gql-explorer-grid">
@@ -309,5 +309,7 @@
             </div>
         </div>
     </div>
-    <!--/ko-->
+
+    </div>
 </div>
+<!-- /ko -->
