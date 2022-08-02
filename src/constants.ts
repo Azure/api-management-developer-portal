@@ -288,7 +288,7 @@ export const managementApiVersion = "2021-04-01-preview";
  */
 export const portalHeaderName = "x-ms-apim-client";
 
-export const releaseNameFormat = "YYYYMMDDHHmm";
+export const releaseNameFormat = "YYYYMMDDHHmmss";
 
 export const genericHttpRequestError = "Server error. Unable to send request. Please try again later.";
 
