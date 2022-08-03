@@ -13,6 +13,7 @@ import { EventManager } from "@paperbits/common/events/eventManager";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
 import IDelegationService from "../../../../../services/IDelegationService";
+import { Identity } from "../../../../../contracts/identity";
 
 @RuntimeComponent({
     selector: "profile-runtime"
@@ -64,7 +65,8 @@ export class Profile {
         await this.usersService.ensureSignedIn();
 
         const model: User = await this.usersService.getCurrentUser();
-        this.isBasicAccount(model.isBasicAccount);
+        const identity: Identity = await this.usersService.getCurrentUserIdWithProvider();
+        this.isBasicAccount(identity.provider === "Basic");
         this.setUser(model);
     }
 
