@@ -26,7 +26,7 @@ import { SubscriptionsModule } from "./components/users/subscriptions/subscripti
 import { SubscriptionsDesignModule } from "./components/users/subscriptions/subscriptions.design.module";
 import { ProductDetailsModule } from "./components/products/product-details/productDetails.module";
 import { ProductDetailsDesignModule } from "./components/products/product-details/productDetails.design.module";
-import { MapiClient, IdentityService, UsersService } from "./services";
+import { MapiClient, IdentityService } from "./services";
 import { SetupModule } from "./components/setup/setup.module";
 import { ContentModule } from "./components/content";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";
