@@ -47,11 +47,6 @@ export interface UserContract {
      * Collection of user identities.
      */
     identities?: UserIdentity[];
-
-    /**
-     * Basic account identifier.
-     */
-    isBasicAccount?: boolean;
 }
 
 export interface UserIdentity {

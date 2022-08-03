@@ -162,6 +162,33 @@ export class UsersService {
     }
 
     /**
+     * Returns currently authenticated user ID with the provider.
+     */
+    public async getCurrentUserIdWithProvider(): Promise<Identity> {
+        const token = await this.authenticator.getAccessTokenAsString();
+
+        if (!token) {
+            return null;
+        }
+
+        try {
+            const identity = await this.apiClient.get<Identity>("/identity", [await this.apiClient.getPortalHeader("getCurrentUserId")]);
+
+            if (!identity || !identity.id) {
+                return null;
+            }
+
+            return {
+                id: `/users/${identity.id}`,
+                provider: identity.provider
+            }
+        }
+        catch (error) {
+            return null;
+        }
+    }
+
+    /**
      * Checks if current user is authenticated.
      */
     public async isUserSignedIn(): Promise<boolean> {

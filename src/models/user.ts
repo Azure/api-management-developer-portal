@@ -7,7 +7,6 @@ export class User {
     public email: string;
     public state: UserState;
     public registrationDate: Date;
-    public isBasicAccount: boolean;
 
     constructor(contract: UserContract) {
         this.id = contract.id;
@@ -16,7 +15,6 @@ export class User {
         this.email = contract.email;
         this.state = <any>contract.state;
         this.registrationDate = contract.registrationDate;
-        this.isBasicAccount = contract.isBasicAccount;
     }
 }
 
