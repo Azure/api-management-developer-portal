@@ -25,7 +25,7 @@
                     <!-- /ko -->
 
                     <!-- ko ifnot: api.type === 'websocket' -->
-                    <li class="breadcrumb-item">
+                    <li class="breadcrumb-item text-wrap">
                         <span data-bind="text: name"></span>
                     </li>
                     <!-- /ko -->
@@ -33,7 +33,7 @@
             </nav>
 
             <!-- ko ifnot: api.type === 'websocket' -->
-            <div class="text-monospace" data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
+            <div class="text-monospace text-wrap" data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
             <!-- /ko -->
 
             <!-- ko if: $component.hostnameSelectionEnabled() || $component.showHostnameInput() -->
