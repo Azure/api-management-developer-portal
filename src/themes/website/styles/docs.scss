@@ -137,43 +137,38 @@ pre {
 .apis-section {
     padding: 0;
 
-    & > .container,
-    & > .container-fluid {
-        & > .row {
+    &>.container,
+    &>.container-fluid {
+        &>.row {
             padding: 0;
 
-            & > .col {
+            &>.col {
                 padding: 0;
             }
         }
     }
 }
 
-.operation-header {
-    display: flex;
-    justify-content: space-between;
+.open-console-button {
+    margin-left: 10px;
+    font-size: .8em;
+    font-weight: 700;
+    border: none;
+    border-radius: 4px;
+    transition-duration: .4s;
+    height: 30px;
+    background-color: #128930;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
 
-    .open-console-button {
-        margin-left: 10px;
-        font-size: .8em;
-        font-weight: 700;
-        border: none;
-        border-radius: 4px;
-        transition-duration: .4s;
-        height: 30px;
-        background-color: #128930;
-        color: white;
-        cursor: pointer;
-        white-space: nowrap;
+    &:hover {
+        color: #128930;
+        background-color: white;
+    }
 
-        &:hover {
-            color: #128930;
-            background-color: white;
-        }
-
-        &.graph {
-            float: right;
-        }
+    &.graph {
+        float: right;
     }
 }
 
