@@ -7,7 +7,7 @@ import IDelegationService from "./IDelegationService";
 import { Bag } from "@paperbits/common";
 
 interface DelegationResponse {
-    ssoUri: string;
+    ssoUrl: string;
 }
 
 interface UserDelegationResponse {
@@ -40,7 +40,7 @@ export class DelegationService implements IDelegationService {
             [DelegationParameters.ReturnUrl]: returnUrl
         }
         const response = await this.apiClient.post<DelegationResponse>("/delegation/urls/signin", null, JSON.stringify(payload));
-        return response.ssoUri;
+        return response.ssoUrl;
     }
 
     public async getDelegationSignupUrl(returnUrl: string): Promise<string> {
@@ -48,7 +48,7 @@ export class DelegationService implements IDelegationService {
             [DelegationParameters.ReturnUrl]: returnUrl
         }
         const response = await this.apiClient.post<DelegationResponse>("/delegation/urls/signup", null, JSON.stringify(payload));
-        return response.ssoUri;
+        return response.ssoUrl;
     }
 
     public async getUserDelegationUrl(userId: string, action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
