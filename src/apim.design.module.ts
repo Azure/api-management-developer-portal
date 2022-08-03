@@ -26,7 +26,7 @@ import { SubscriptionsModule } from "./components/users/subscriptions/subscripti
 import { SubscriptionsDesignModule } from "./components/users/subscriptions/subscriptions.design.module";
 import { ProductDetailsModule } from "./components/products/product-details/productDetails.module";
 import { ProductDetailsDesignModule } from "./components/products/product-details/productDetails.design.module";
-import { MapiClient, IdentityService } from "./services";
+import { MapiClient, IdentityService, UsersService } from "./services";
 import { SetupModule } from "./components/setup/setup.module";
 import { ContentModule } from "./components/content";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";
@@ -66,6 +66,10 @@ import { ApiProductsEditorModule } from "./components/apis/api-products/ko/apiPr
 import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
+import { MarkdownModule } from "./components/markdown/ko/markdown.module";
+import { MarkdownEditorModule } from "./components/markdown/ko/markdownEditor.module";
+import { MarkdownSupportService } from "./services/markdownSupportService";
+import { MarkdownService } from "./services/markdownService";
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -116,6 +120,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ValidationSummaryDesignModule());
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new CustomHtmlDesignModule());
+        injector.bindModule(new MarkdownModule());
+        injector.bindModule(new MarkdownEditorModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("tenantService", TenantService);
@@ -137,5 +143,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindToCollection("autostart", RuntimeConfigurator);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("CodeEditor", CodeEditor);
+        injector.bind("markdownSupportService", MarkdownSupportService);
+        injector.bind("markdownService", MarkdownService);
     }
 }

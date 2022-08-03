@@ -538,6 +538,9 @@ export class MapiObjectStorage implements IObjectStorage {
             }
             else {
                 contract = contractObject;
+                if (contractObject.type === "markdown") {
+                    return contract;
+                }
             }
         }
 

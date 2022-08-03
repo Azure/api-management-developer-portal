@@ -1,0 +1,7 @@
+<!-- ko ifnot: id -->
+<p style="text-align: center">Choose Markdown document to display.</p>
+<!-- /ko -->
+
+<!-- ko if: id -->
+<markdown-runtime data-bind="attr: { params: runtimeConfig }"></markdown-runtime>
+<!-- /ko -->

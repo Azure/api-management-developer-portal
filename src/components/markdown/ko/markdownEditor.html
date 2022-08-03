@@ -1,0 +1,17 @@
+<fieldset class="form flex-item flex-item-grow">
+    <div class="form-group">
+        <input type="text" id="searchBar" class="form-control" placeholder="Search Markdown..." data-bind="textInput: filter">
+    </div>
+
+<div class="toolbox" style="z-index: 0; box-shadow: none;">
+    <div role="listbox" style="height: 20rem;" class="list-checkboxes" data-bind="foreach: { data: documents, as: 'doc'  }, scrollable: { onEndReach }, listbox: {}">
+        <a href="#" role="option" class="list-item" data-bind="text: doc.properties.en_us.title, activate: $component.selectDocument, css: { 'list-item-checked': $component.isSelected(doc) }">
+        </a>
+        <hr style="background-color: #EDEBE9; border: none; ">
+    </div>
+</div>
+<div style="margin-top: 2rem">
+    <span data-bind="text: formatAmountOfDocuments" style="float: right"></span>
+</div>
+        
+</fieldset>

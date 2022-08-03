@@ -85,7 +85,9 @@ import { OauthServerConfiguration } from "./components/operations/operation-deta
 import { AadServiceV2 } from "./services/aadServiceV2";
 import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
 import { staticDataEnvironment } from "./../environmentConstants";
-
+import { MarkdownRuntime } from "./components/markdown/ko/runtime/markdown-runtime";
+import { MarkdownService } from "./services/markdownService";
+import { MarkdownSupportService } from "./services/markdownSupportService";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -141,6 +143,9 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("resetPassword", ResetPassword);
         injector.bind("confirmPassword", ConfirmPassword);
         injector.bind("changePassword", ChangePassword);
+        injector.bind("markdownRuntime", MarkdownRuntime);
+        injector.bind("markdownSupportService", MarkdownSupportService);
+        injector.bind("markdownService", MarkdownService);
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("aadService", AadService);
