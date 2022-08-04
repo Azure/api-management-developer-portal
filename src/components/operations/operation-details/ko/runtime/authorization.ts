@@ -146,6 +146,7 @@ export class Authorization {
         keyHeader.inputTypeValue("password");
         keyHeader.type = "string";
         keyHeader.required = true;
+        keyHeader.isReadOnly = true;
         keyHeader.value(accessToken);
 
         if (!this.isGraphQL()) {
@@ -190,6 +191,7 @@ export class Authorization {
         keyHeader.inputTypeValue("password");
         keyHeader.type = "string";
         keyHeader.required = true;
+        keyHeader.isReadOnly = true;
         keyHeader.value(subscriptionKey);
 
         if (!this.isGraphQL()) {
@@ -407,6 +409,7 @@ export class Authorization {
         keyParameter.type = "string";
         keyParameter.canRename = false;
         keyParameter.required = true;
+        keyParameter.isReadOnly = true;
         keyParameter.inputType("password");
 
         if (this.isGraphQL()) {

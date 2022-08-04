@@ -69,12 +69,12 @@
                                     <!-- ko if: !parameter.secret-->
                                     <input type="text" autocomplete="off" class="form-control form-control-sm"
                                         placeholder="value" spellcheck="false" aria-label="Parameter value"
-                                        data-bind="textInput: parameter.value">
+                                        data-bind="textInput: parameter.value, attr:{ 'aria-required': parameter.required, 'readonly': parameter.isReadOnly }">
                                     <!-- /ko -->
                                     <!-- ko if: parameter.secret-->
                                     <input autocomplete="off" class="form-control form-control-sm" placeholder="value"
                                         spellcheck="false" aria-label="Parameter value"
-                                        data-bind=" attr: {type: parameter.inputType}, textInput: parameter.value">
+                                        data-bind=" attr: {type: parameter.inputType, 'aria-required': parameter.required, 'readonly': parameter.isReadOnly }, textInput: parameter.value">
                                     <button data-bind="click: () => $component.toggleSecretParameter(parameter)"
                                         class="input-group-addon">
                                         <i
@@ -85,11 +85,13 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- ko ifnot: parameter.required -->
                         <div class="col-1">
                             <a href="#" role="button" data-bind="click: $component.removeQueryParameter"
                                 class="btn-centered-vert btn-inline" aria-label="Remove parameter"><i
                                     class="icon-emb icon-emb-trash"></i></a>
                         </div>
+                        <!-- /ko -->
                     </div>
                 </div>
                 <!-- /ko -->
@@ -134,18 +136,20 @@
                                 <div class="form-group">
                                     <input type="text" autocomplete="off" class="form-control form-control-sm"
                                         placeholder="value" spellcheck="false" aria-label="Header value"
-                                        data-bind="textInput: header.value">
+                                        data-bind="textInput: header.value, attr: { 'readonly': header.isReadOnly, 'aria-required': header.required }">
                                     <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
                                 </div>
                                 <!-- /ko -->
                             </div>
                         </div>
 
+                        <!-- ko ifnot: header.required -->
                         <div class="col-1">
                             <a href="#" role="button" data-bind="click: $component.removeHeader"
                                 class="btn-centered-vert btn-inline" aria-label="Remove header"><i
                                     class="icon-emb icon-emb-trash"></i></a>
                         </div>
+                        <!-- /ko -->
                     </div>
                 </div>
                 <!-- /ko -->

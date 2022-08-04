@@ -14,6 +14,7 @@ export class ConsoleParameter {
     public canRename: boolean;
     public error: ko.Observable<string>;
     public revealed: ko.Observable<boolean>;
+    public isReadOnly: boolean;
 
     public toggleRevealed(): void {
         this.revealed(!this.revealed());
@@ -21,8 +22,8 @@ export class ConsoleParameter {
     }
 
     constructor(contract?: Parameter) {
-        this.name = ko.observable();
-        this.value = ko.observable();
+        this.name = ko.observable(null);
+        this.value = ko.observable(null);
         this.inputType = ko.observable("text");
         this.required = false;
         this.options = [];
@@ -31,23 +32,25 @@ export class ConsoleParameter {
         this.error = ko.observable();
         this.revealed = ko.observable(false);
 
-        if (contract) {
-            this.custom = false;
-            this.name(contract.name);
-            this.value(contract.defaultValue);
-            this.required = contract.required;
-            this.options = contract.values;
-            this.type = contract.type;
-            this.secret = false;
-            this.inputType(this.secret ? "password" : "text");
+        this.name.extend(<any>{ required: { message: `Name is required.` } });
+        
+        if (!contract) {
+            return;
         }
 
+        this.custom = false;
+        this.name(contract.name);
+        this.required = contract.required;
+        this.options = contract.values;
+        this.type = contract.type;
+        this.secret = false;
+        this.inputType(this.secret ? "password" : "text");
         this.canRename = !this.required && this.custom;
-
-        this.name.extend(<any>{ required: { message: `Name is required.` } });
 
         if (this.required) {
             this.value.extend(<any>{ required: { message: `Value is required.` } });
         }
+
+        this.value(contract.defaultValue);
     }
 }

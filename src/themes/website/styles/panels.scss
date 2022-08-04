@@ -35,11 +35,6 @@
                 padding-left: 40px;
             }
 
-            &[readonly] {
-                background: none;
-                border: none;
-            }
-
             &:focus {
                 box-shadow: 0 0 0 .1rem rgba(227, 253, 0, 0.45);
             }
