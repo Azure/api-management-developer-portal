@@ -4,6 +4,7 @@ import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorat
 import {MarkdownModel} from "../markdownModel";
 import { MarkdownSupportService } from "../../../services/markdownSupportService";
 import { MarkdownArmResource } from "../../../contracts/markdown-arm";
+import { MarkdownService } from "../../../services/markdownService";
 
 @Component({
     selector: "markdown-editor",
@@ -20,7 +21,8 @@ export class MarkdownEditor {
     public selectedDocuments: ko.ObservableArray<MarkdownArmResource>;
 
     constructor(
-        private readonly markdownSupportService: MarkdownSupportService
+        private readonly markdownSupportService: MarkdownSupportService,
+        private readonly markdownService: MarkdownService
         ) {
         this.filter = ko.observable();
         this.isWorking = ko.observable();
@@ -77,6 +79,8 @@ export class MarkdownEditor {
     }
 
     public selectDocument(document: MarkdownArmResource): void {
+        const processed = this.markdownService.processMarkdown(document.properties.en_us.content);
+        this.model.compiledContent = processed.toString();
         this.model.id = document.id;
         this.selectedDocuments([document]);
         this.onChange(this.model);

@@ -15,6 +15,7 @@ export class MarkdownModelBinder implements IModelBinder<MarkdownModel> {
         const model = new MarkdownModel();
         if (!contract.id) return model;
         model.id = contract.id;
+        model.compiledContent = contract.compiledContent;
         return model;
     }
 
@@ -27,6 +28,7 @@ export class MarkdownModelBinder implements IModelBinder<MarkdownModel> {
         const contract: MarkdownContract = {
             type: "markdown",
             id: model.id,
+            compiledContent: model.compiledContent,
         };
 
         return contract;

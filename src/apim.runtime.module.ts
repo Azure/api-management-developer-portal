@@ -144,8 +144,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("confirmPassword", ConfirmPassword);
         injector.bind("changePassword", ChangePassword);
         injector.bind("markdownRuntime", MarkdownRuntime);
-        injector.bind("markdownSupportService", MarkdownSupportService);
-        injector.bind("markdownService", MarkdownService);
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("aadService", AadService);
