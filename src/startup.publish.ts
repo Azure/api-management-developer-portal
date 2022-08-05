@@ -6,12 +6,14 @@ import { CoreModule } from "@paperbits/core/core.module";
 import { CorePublishModule } from "@paperbits/core/core.publish.module";
 import { StylePublishModule } from "@paperbits/styles/styles.publish.module";
 import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
+import { PopupPublishModule } from "@paperbits/core/popup/popup.publish.module";
 import { StaticSettingsProvider } from "./components/staticSettingsProvider";
 import { FileSystemBlobStorage } from "./components/filesystemBlobStorage";
 import { ApimPublishModule } from "./apim.publish.module";
 import { PublishingCacheModule } from "./persistence/publishingCacheModule";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { staticDataEnvironment } from "./../environmentConstants";
+
 
 /* Reading settings from configuration file */
 let settingsProvider: ISettingsProvider;
@@ -39,6 +41,7 @@ injector.bindModule(new CoreModule());
 injector.bindModule(new CorePublishModule());
 injector.bindModule(new StylePublishModule());
 injector.bindModule(new ProseMirrorModule());
+injector.bindModule(new PopupPublishModule());
 injector.bindModule(new ApimPublishModule());
 injector.bindInstance("settingsProvider", settingsProvider);
 injector.bindInstance("outputBlobStorage", outputBlobStorage);

@@ -9,8 +9,8 @@ import { PageContract } from "../contracts/page";
 import { LocaleModel } from "@paperbits/common/localization";
 import { PopupInstanceModel } from "@paperbits/core/popup";
 
-
-const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block"];
+const supportedContentTypes = ["pages", "layouts", "files", "uploads", "blocks", "urls", "popups"];
+const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block", "popup"];
 const selectedLocale = "en_us";
 const reservedArmIds = ["containerId", "webContainerId", "appId", "accountId"];
 const reservedPaperbitsIds = ["containerKey", "webContainerKey"];
@@ -394,14 +394,6 @@ export class MapiObjectStorage implements IObjectStorage {
         const isLocalized = localizedContentTypes.includes(contentType);
         const localeSearchPrefix = isLocalized ? `${selectedLocale}/` : "";
 
-        if (key === "popups") {
-            const pageOfPopups: Page<PopupInstanceModel> = {
-                value: []
-            };
-
-            return <any>pageOfPopups;
-        }
-
         if (key === "locales") {
             const pageOfLocales: Page<LocaleModel> = {
                 value: [{
@@ -585,7 +577,7 @@ export class MapiObjectStorage implements IObjectStorage {
         Object.keys(delta).map(key => {
             const firstLevelObject = delta[key];
 
-            if (["pages", "layouts", "files", "uploads", "blocks", "urls"].includes(key)) {
+            if (supportedContentTypes.includes(key)) {
                 Object.keys(firstLevelObject).forEach(subkey => {
                     keys.push(`${key}/${subkey}`);
                 });
