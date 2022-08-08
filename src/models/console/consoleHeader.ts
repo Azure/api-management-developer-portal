@@ -13,7 +13,7 @@ export class ConsoleHeader {
     public revealed: ko.Observable<boolean>;
     public description: string;
     public type: string;
-    public displayedValue: ko.Observable<string>;
+    public hiddenValue: ko.Computed<string>;
 
     public toggleRevealed(): void {
         this.revealed(!this.revealed());
@@ -28,7 +28,6 @@ export class ConsoleHeader {
         this.name = ko.observable();
         this.value = ko.observable();
         this.revealed = ko.observable(false);
-        this.displayedValue = ko.observable();
         this.inputTypeValue = ko.observable("text");
         this.options = [];
         this.required = false;
@@ -36,12 +35,9 @@ export class ConsoleHeader {
         this.custom = true;
         this.type = "string";
         this.description = "Additional header.";
+        this.hiddenValue = ko.computed<string>(() => this.value()?.replace(/./g, "•"));
 
-        this.value.subscribe(() => {
-            this.displayedValue((this.secret && !this.revealed()) ? this.value()?.replace(/./g, "•") : this.value());
-        });
         this.revealed.subscribe(() => {
-            this.displayedValue((this.secret && !this.revealed()) ? this.value().replace(/./g, "•") : this.value());
             this.inputTypeValue(this.secret && !this.revealed() ? "password" : "text");
         });
 

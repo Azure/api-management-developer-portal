@@ -131,13 +131,14 @@ export class XsdSchemaConverter {
 
         jObject.children.forEach(child => {
             switch (child.name) {
-                case "simpleType":
+                case "simpleType": {
                     definition.properties = definition.properties || {};
                     const simpleTypeNode = this.convertSimpleType(child);
                     definition.properties[simpleTypeNode.name] = simpleTypeNode.definition;
                     break;
+                }
 
-                case "complexType":
+                case "complexType": {
                     const complexTypeNode = this.convertComplexType(child);
                     if (complexTypeNode.name) {
                         definition.properties = definition.properties || {};
@@ -148,12 +149,14 @@ export class XsdSchemaConverter {
                     }
 
                     break;
+                }
 
-                case "element":
+                case "element": {
                     const elementNode = this.convertElement(child);
                     definition.properties = definition.properties || {};
                     definition.properties[elementNode.name] = elementNode.definition;
                     break;
+                }
 
                 default:
                     console.warn(`Element "${child.name}" by XSD schema converter.`);

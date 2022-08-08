@@ -247,7 +247,7 @@ export class GraphqlDetails {
 
     private getReferenceUrl(definition: string): string {
         const selected = this.graphSelected();
-        return this.graphDocService.routeHelper.getGraphDefinitionReferenceId(this.graphDocService.selectedApiName(), selected[GraphqlCustomFieldNames.type](), selected['name'], definition);
+        return this.graphDocService.routeHelper.getGraphDefinitionReferenceId(this.graphDocService.selectedApiName(), selected[GraphqlCustomFieldNames.type](), selected["name"], definition);
     }
 
     public switchToTable(schemaView: ko.Observable): void {

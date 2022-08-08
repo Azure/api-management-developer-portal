@@ -15,6 +15,7 @@ export interface ProcessedCombinationPropertiesObject {
     combinationReferenceObjectsArray: TypeDefinition[];
     combinationReferencesNames: string[];
     combinationOtherProperties: Bag<SchemaObjectContract>;
+    combinationRequiredPropereties?: string[];
 }
 
 export abstract class TypeDefinitionPropertyType {
@@ -271,14 +272,23 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
             const processedCombinationPropertiesObject: ProcessedCombinationPropertiesObject = {
                 combinationReferenceObjectsArray: [],
                 combinationReferencesNames: [],
-                combinationOtherProperties: {}
+                combinationOtherProperties: {},
+                combinationRequiredPropereties: []
             };
 
             let processedTypeDefinitionsArray: TypeDefinition[] = [];
 
             const combinationPropertiesProcessed = this.processCombinationProperties(combinationArray, definitions, processedCombinationPropertiesObject);
             processedTypeDefinitionsArray = combinationPropertiesProcessed.combinationReferenceObjectsArray;
-            processedTypeDefinitionsArray.push(new TypeDefinition("Other properties", {properties: combinationPropertiesProcessed.combinationOtherProperties}, definitions));
+            processedTypeDefinitionsArray.push(
+                new TypeDefinition(
+                    "Other properties", 
+                    {
+                        properties: combinationPropertiesProcessed.combinationOtherProperties,
+                        required: combinationPropertiesProcessed.combinationRequiredPropereties
+                    }, 
+                    definitions
+                ));
 
             this.kind = "combination";
             this.type = new TypeDefinitionPropertyTypeCombination(combinationType, combinationPropertiesProcessed.combinationReferencesNames);
@@ -286,7 +296,11 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         }
     }
 
-    private processCombinationProperties(combinationArray: SchemaObjectContract[], definitions: object, processedCombinationPropertiesObject?: ProcessedCombinationPropertiesObject): ProcessedCombinationPropertiesObject {
+    private processCombinationProperties(
+        combinationArray: SchemaObjectContract[],
+        definitions: object,
+        processedCombinationPropertiesObject?: ProcessedCombinationPropertiesObject
+    ): ProcessedCombinationPropertiesObject {
         combinationArray.map((combinationArrayItem) => {
             if (combinationArrayItem.allOf || combinationArrayItem.anyOf || combinationArrayItem.oneOf) {
                 const { combinationType, combinationArray } = this.destructCombination(combinationArrayItem);
@@ -298,7 +312,11 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                 processedCombinationPropertiesObject.combinationReferencesNames.push(combinationReferenceName);
 
                 processedCombinationPropertiesObject.combinationReferenceObjectsArray.push(new TypeDefinition(combinationReferenceName, definitions[combinationReferenceName], definitions));
-            } 
+            }
+
+            if (combinationArrayItem.required) {
+                processedCombinationPropertiesObject.combinationRequiredPropereties = combinationArrayItem.required;
+            }
             
             if (combinationArrayItem.properties) {
                 processedCombinationPropertiesObject.combinationOtherProperties = { ...processedCombinationPropertiesObject.combinationOtherProperties, ...combinationArrayItem.properties };
@@ -383,7 +401,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
 
                             break;
 
-                        case "object":
+                        case "object": {
                             const objectProperty = new TypeDefinitionObjectProperty(propertyNameToDisplay, propertySchemaObject, isRequired, true, definitions);
 
                             if (!propertySchemaObject.$ref && propertySchemaObject.properties && !nested) {
@@ -394,8 +412,9 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                                 props.push(objectProperty);
                             }
                             break;
+                        }
 
-                        case "array":
+                        case "array": {
                             const arrayProperty = new TypeDefinitionPrimitiveProperty(propertyNameToDisplay, propertySchemaObject, isRequired);
 
                             if (!propertySchemaObject.items) {
@@ -421,6 +440,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                             }
 
                             break;
+                        }
 
                         case "combination":
                             props.push(new TypeDefinitionCombinationProperty(propertyNameToDisplay, propertySchemaObject, isRequired));

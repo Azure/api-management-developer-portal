@@ -167,8 +167,8 @@ ko.bindingHandlers["barChart"] = {
                 verticalLine.style("opacity", "1");
                 verticalLineTooltip.style("opacity", "1");
             })
-            .on("mousemove", () => { // mouse moving over canvas
-                const mouse = d3.mouse(chartSvgNode);
+            .on("mousemove", (event) => { // mouse moving over canvas
+                const mouse = d3.pointer(event, chartSvgNode);
                 const mouseX = mouse[0];
 
                 verticalLine

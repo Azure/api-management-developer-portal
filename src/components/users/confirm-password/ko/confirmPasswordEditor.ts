@@ -1,6 +1,5 @@
-import * as ko from "knockout";
 import template from "./confirmPasswordEditor.html";
-import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
+import { Component, Param, Event } from "@paperbits/common/ko/decorators";
 import { ConfirmPasswordModel } from "../confirmPasswordModel";
 
 @Component({
@@ -8,18 +7,9 @@ import { ConfirmPasswordModel } from "../confirmPasswordModel";
     template: template
 })
 export class ConfirmPasswordEditor {
-    constructor() { }
-
     @Param()
     public model: ConfirmPasswordModel;
 
     @Event()
     public onChange: (model: ConfirmPasswordModel) => void;
-
-    @OnMounted()
-    public async initialize(): Promise<void> { }
-
-    private applyChanges(): void {
-        this.onChange(this.model);
-    }
 }

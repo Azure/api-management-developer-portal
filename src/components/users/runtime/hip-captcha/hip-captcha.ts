@@ -50,7 +50,6 @@ export class HipCaptcha {
      */
     @OnMounted()
     public async initialize(): Promise<void> {
-
         try {
             const settings = await this.backendService.getCaptchaSettings();
             this.isNewCaptcha(settings && settings.captchaEnabled);
@@ -61,8 +60,10 @@ export class HipCaptcha {
                 this.working(false);
                 return;
             }
-        } catch { }
-        
+        }
+        catch {
+            // do nothing
+        }
 
         try {
             if (this.isNewCaptcha()) {
@@ -80,10 +81,11 @@ export class HipCaptcha {
                 hipObjScriptElement.onload = this.onLoad;
                 document.body.appendChild(hipObjScriptElement);
             }
-        } finally {
+        }
+        finally {
             this.working(false);
         }
-        
+
         if (this.onInitComplete) {
             this.onInitComplete(this.setValidation, this.refreshCaptcha);
         }
@@ -107,7 +109,7 @@ export class HipCaptcha {
                         testCaptchaRequest: {
                             challengeId: this.challengeData.ChallengeId,
                             inputSolution: undefined
-                        },                
+                        },
                         azureRegion: this.challengeData.AzureRegion,
                         challengeType: this.challengeData.ChallengeType
                     },
@@ -218,8 +220,8 @@ export class HipCaptcha {
         }
     }
 
-    public async refreshCaptcha(): Promise<void> {    
-        this.working(true);    
+    public async refreshCaptcha(): Promise<void> {
+        this.working(true);
         try {
             if (this.isNewCaptcha()) {
                 await this.refreshChallenge();

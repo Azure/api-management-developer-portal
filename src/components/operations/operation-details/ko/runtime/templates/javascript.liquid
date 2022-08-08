@@ -1,19 +1,23 @@
 
-{%- if request.body != blank and request.bodyFormat == "raw" -%}
+{%- if console.request.body != blank and console.request.bodyFormat == "raw" -%}
 // Request body
-const body = {{request.body}};
+const body = {{console.request.body}};
 {%- endif %}
 
-fetch('{{requestUrl}}', {
-        method: '{{method | upcase}}',
-        {%- if request.body != blank %}
+fetch('{{console.requestUrl}}', {
+        method: '{{console.method | upcase}}',
+        {%- if console.request.body != blank %}
         body: JSON.stringify(body),
         {%- endif -%}
-        {% if request.meaningfulHeaders.size > 0 %}
+        {% if console.request.meaningfulHeaders.size > 0 %}
         // Request headers
         headers: {
-        {%- for header in request.meaningfulHeaders %}
-            '{{header.name}}': '{{header.displayedValue}}',
+        {%- for header in console.request.meaningfulHeaders %}
+            {% if showSecrets == false and header.secret -%}
+                '{{header.name}}': '{{header.hiddenValue}}',
+            {%- else -%}
+                '{{header.name}}': '{{header.value}}',
+            {%- endif -%}
         {%- endfor -%}
         {%- endif -%}
         }

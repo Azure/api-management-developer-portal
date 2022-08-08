@@ -10,6 +10,7 @@ import { SignupRequest } from "../../../../../contracts/signupRequest";
 import { CaptchaData } from "../../../../../models/captchaData";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
+import { Router } from "@paperbits/common/routing/router";
 
 @RuntimeComponent({
     selector: "signup-runtime"
@@ -34,6 +35,7 @@ export class Signup {
     public readonly captchaData: ko.Observable<CaptchaData>;
 
     constructor(
+        private readonly router: Router,
         private readonly usersService: UsersService,
         private readonly eventManager: EventManager,
         private readonly backendService: BackendService) {
@@ -108,6 +110,12 @@ export class Signup {
                         console.error("Activate user error: User not found.");
                     } else {
                         this.usersService.navigateToHome();
+                    }
+                } else {
+                    const redirectUrl = this.delegationUrl();
+
+                    if (redirectUrl) {
+                        await this.router.navigateTo(redirectUrl);
                     }
                 }
             }

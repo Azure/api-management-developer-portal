@@ -132,6 +132,11 @@
     overflow: auto;
 }
 
+.stick-to-bottom {
+    bottom: 0;
+    position: sticky;
+}
+
 .combination-type {
     margin-top: 30px;
 }
