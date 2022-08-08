@@ -7,8 +7,8 @@
 <!-- ko ifnot: working -->
 <div class="flex flex-column fit animation-fade-in" data-bind="dialog: {}">
     <div class="flex-item flex-grow">
-        <div class="panel panel-dark close-button" data-bind="with: consoleOperation">
-            <button type="button" tabindex="0" class="no-border pull-right" data-dismiss="modal"
+        <div class="panel panel-dark operation-console" data-bind="with: consoleOperation">
+            <button type="button" tabindex="0" class="no-border pull-right close-button" data-dismiss="modal"
                 aria-label="Close console" data-bind="click: $parents[1].closeConsole">
                 <i class="icon-emb icon-emb-simple-remove"></i>
             </button>
@@ -16,7 +16,7 @@
             <nav aria-label="breadcrumb" style="margin-right: 20px">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="#"
+                        <a href="#" class="console-text"
                             data-bind="text: api.displayName, attr: { href: $component.getApiReferenceUrl() }"></a>
                     </li>
                     <!-- ko if: api.apiVersion -->
@@ -319,7 +319,7 @@
                 </div>
                 <div class="col-2 flex justify-content-end">
                     <!-- ko if: request.isBodyEdited() -->
-                    <i class="icon-emb icon-emb- refresh-button" style="cursor: pointer; display: flex; align-self: center;"
+                    <i class="icon-emb icon-emb-spinner refresh-button" style="cursor: pointer; display: flex; align-self: center;"
                         data-bind="click: $component.revertBody"></i>
                     <!-- /ko -->
                 </div>
@@ -400,7 +400,7 @@
 
             <div class="code-snippet">
                 <div class="code-snippet-heading">
-                    <button class="code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
+                    <button class="console-code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
                         aria-label="Toggle secrets">
                         <!-- ko if: $component.secretsRevealed  -->
                         <i class="icon-emb icon-emb-eye-fill"></i> Hide secrets
@@ -409,7 +409,7 @@
                         <i class="icon-emb icon-emb-eye"></i> Reveal secrets
                         <!-- /ko -->
                     </button>
-                    <button class="code-snippet-command"
+                    <button class="console-code-snippet-command"
                         data-bind="copyToClipboard: $component.getPlainTextCodeSample, click: logCopyEvent"
                         aria-label="Copy to clipboard">
                         <i class="icon-emb icon-emb-duplicate"></i> Copy
@@ -447,7 +447,7 @@
 
             <div class="code-snippet">
                 <div class="code-snippet-heading">
-                    <button class="code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
+                    <button class="console-code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
                         aria-label="Toggle secrets">
                         <!-- ko if: $component.secretsRevealed  -->
                         <i class="icon-emb icon-emb-eye-fill"></i> Hide
@@ -456,7 +456,7 @@
                         <i class="icon-emb icon-emb-eye"></i> Show
                         <!-- /ko -->
                     </button>
-                    <button class="code-snippet-command" data-bind="copyToClipboard: $component.getPlainTextCodeSample"
+                    <button class="console-code-snippet-command" data-bind="copyToClipboard: $component.getPlainTextCodeSample"
                         aria-label="Copy to clipboard">
                         <i class="icon-emb icon-emb-duplicate"></i> Copy
                     </button>
@@ -507,7 +507,7 @@
             <!-- ko if: wsLogItems().length > 0 -->
             <div class="code-snippet">
                 <div class="code-snippet-heading">
-                    <button class="code-snippet-command" data-bind="click: $component.clearLogs, disabled: wsSending"
+                    <button class="console-code-snippet-command" data-bind="click: $component.clearLogs, disabled: wsSending"
                         aria-label="Clear logs">
                         <i class="icon-emb icon-emb-trash icon-button"></i> Clear
                     </button>
