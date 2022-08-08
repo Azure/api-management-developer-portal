@@ -47,7 +47,7 @@ export class AuthorizationServer {
                     convertedResult = "password";
                     break;
                 default:
-                    console.log(`Unsupported grant type ${item}`);
+                    throw new Error(`Unsupported grant type "${item}".`);
             }
             if (convertedResult) {
                 result.push(convertedResult);
