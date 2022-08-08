@@ -16,7 +16,8 @@
             <nav aria-label="breadcrumb" style="margin-right: 20px">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="#" data-bind="text: api.displayName, attr: { href: $component.getApiReferenceUrl() }"></a>
+                        <a href="#"
+                            data-bind="text: api.displayName, attr: { href: $component.getApiReferenceUrl() }"></a>
                     </li>
                     <!-- ko if: api.apiVersion -->
                     <li class="breadcrumb-item">
@@ -129,7 +130,7 @@
                             <div class="input-group has-validation">
                                 <input type="text" autocomplete="off" class="form-control form-control-sm"
                                     placeholder="name" spellcheck="false" aria-label="Parameter name"
-                                    data-bind="textInput: parameter.name">
+                                    data-bind="textInput: parameter.name, attr:{ 'readonly': parameter.required }">
                                 <span class="invalid-feedback" data-bind="validationMessage: parameter.name"></span>
                             </div>
                         </div>
@@ -145,12 +146,13 @@
                                 <!-- ko if: !parameter.secret-->
                                 <input type="text" autocomplete="off" class="form-control form-control-sm"
                                     placeholder="value" spellcheck="false" aria-label="Parameter value"
-                                    data-bind="textInput: parameter.value">
+                                    data-bind="textInput: parameter.value, attr:{ 'aria-required': parameter.required }">
+                                <span class="invalid-feedback" data-bind="validationMessage: parameter.value"></span>
                                 <!-- /ko -->
                                 <!-- ko if: parameter.secret-->
                                 <input autocomplete="off" class="form-control form-control-sm" placeholder="value"
                                     spellcheck="false" aria-label="Parameter value"
-                                    data-bind=" attr: {type: parameter.inputType}, textInput: parameter.value">
+                                    data-bind=" attr: {type: parameter.inputType, 'aria-required': parameter.required }, textInput: parameter.value">
                                 <button data-bind="click: () => $component.toggleSecretParameter(parameter)"
                                     class="input-group-addon">
                                     <i
@@ -161,11 +163,13 @@
                             </div>
                         </div>
                     </div>
+                    <!-- ko ifnot: parameter.required -->
                     <div class="col-1">
                         <a href="#" role="button" data-bind="click: $component.removeQueryParameter"
                             class="btn-centered-vert btn-inline" aria-label="Remove parameter"><i
                                 class="icon-emb icon-emb-trash"></i></a>
                     </div>
+                    <!-- /ko -->
                 </div>
             </div>
             <!-- /ko -->
@@ -177,7 +181,8 @@
             <!-- /ko -->
 
             <h3>Headers
-                <button aria-label="Collapse parameters" class="no-border" data-bind="activate: $component.collapseHeaders">
+                <button aria-label="Collapse parameters" class="no-border"
+                    data-bind="activate: $component.collapseHeaders">
                     <!-- ko if: $component.collapsedHeaders -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
@@ -201,7 +206,7 @@
                             <div class="input-group has-validation">
                                 <input type="text" autocomplete="off" class="form-control form-control-sm"
                                     placeholder="name" spellcheck="false" aria-label="Header name"
-                                    data-bind="textInput: header.name">
+                                    data-bind="textInput: header.name, attr:{ 'readonly': header.required }">
                                 <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
                             </div>
                         </div>
@@ -217,12 +222,12 @@
                                 <!-- ko if: !header.secret -->
                                 <input type="text" autocomplete="off" class="form-control form-control-sm"
                                     placeholder="value" spellcheck="false" aria-label="Header value"
-                                    data-bind="textInput: header.value">
+                                    data-bind="textInput: header.value, attr:{'aria-required': header.required}">
                                 <!-- /ko -->
                                 <!-- ko if: header.secret -->
                                 <input autocomplete="off" class="form-control form-control-sm" placeholder="value"
                                     spellcheck="false" aria-label="Header value"
-                                    data-bind="attr: {type: header.inputTypeValue}, textInput: header.value">
+                                    data-bind="attr: {type: header.inputTypeValue, 'aria-required': header.required}, textInput: header.value">
                                 <button data-bind="click: () => $component.toggleSecretHeader(header)"
                                     class="input-group-addon">
                                     <i
@@ -234,11 +239,13 @@
                             <!-- /ko -->
                         </div>
                     </div>
+                    <!-- ko ifnot: header.required -->
                     <div class="col-1">
                         <a href="#" role="button" data-bind="click: $component.removeHeader"
                             class="btn-centered-vert btn-inline" aria-label="Remove header"><i
                                 class="icon-emb icon-emb-trash"></i></a>
                     </div>
+                    <!-- /ko -->
                 </div>
             </div>
             <!-- /ko -->
@@ -252,7 +259,8 @@
             <!-- ko if: canHaveBody -->
 
             <h3>Body
-                <button aria-label="Collapse parameters" class="no-border" data-bind="activate: $component.collapseBody">
+                <button aria-label="Collapse parameters" class="no-border"
+                    data-bind="activate: $component.collapseBody">
                     <!-- ko if: $component.collapsedBody -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
                     <!-- /ko -->
@@ -288,7 +296,8 @@
                         <label class="form-check-label" for="bodyFormatRaw">Raw</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="bodyFormat" id="bodyFormatBinary" value="binary"
+                        <input class="form-check-input" type="radio" name="bodyFormat" id="bodyFormatBinary"
+                            value="binary"
                             data-bind="checked: request.bodyFormat, attr: { disabled: request.readonlyBodyFormat}">
                         <label class="form-check-label" for="bodyFormatBinary">Binary</label>
                     </div>
@@ -329,8 +338,8 @@
                     data-bind="textInput: request.body"></textarea>
                 <!-- /ko -->
                 <!-- ko if: request.bodyFormat() === 'binary' -->
-                <file-input params="{ onSelect: $component.onFileSelect }" class="form-control" aria-label="Request body"
-                            data-bind="css: { 'is-invalid': !request.binary.isValid() }"></file-input>
+                <file-input params="{ onSelect: $component.onFileSelect }" class="form-control"
+                    aria-label="Request body" data-bind="css: { 'is-invalid': !request.binary.isValid() }"></file-input>
                 <span class="invalid-feedback" data-bind="validationMessage: request.binary"></span>
                 <!-- /ko -->
             </div>
@@ -459,7 +468,8 @@
             </div>
 
             <!-- ko if: $component.codeSample -->
-            <pre data-bind="syntaxHighlight: { code: $component.codeSample, language: $component.selectedLanguage }"></pre>
+            <pre
+                data-bind="syntaxHighlight: { code: $component.codeSample, language: $component.selectedLanguage }"></pre>
             <!-- /ko -->
             <!-- ko if: wsConnected -->
             <h3>Payload</h3>
