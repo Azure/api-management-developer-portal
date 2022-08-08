@@ -14,7 +14,6 @@ export class ConsoleHeader {
     public description: string;
     public type: string;
     public hiddenValue: ko.Computed<string>;
-    public isReadOnly: boolean;
 
     public toggleRevealed(): void {
         this.revealed(!this.revealed());
@@ -55,7 +54,7 @@ export class ConsoleHeader {
         this.type = contract.type;
         this.secret = false;
         this.inputTypeValue(this.secret && !this.revealed() ? "password" : "text");
-        
+
         if (this.required) {
             this.value.extend(<any>{ required: { message: `Value is required.` } });
         }

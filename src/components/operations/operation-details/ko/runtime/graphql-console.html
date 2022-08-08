@@ -69,12 +69,12 @@
                                     <!-- ko if: !parameter.secret-->
                                     <input type="text" autocomplete="off" class="form-control form-control-sm"
                                         placeholder="value" spellcheck="false" aria-label="Parameter value"
-                                        data-bind="textInput: parameter.value, attr:{ 'aria-required': parameter.required, 'readonly': parameter.isReadOnly }">
+                                        data-bind="textInput: parameter.value, attr:{ 'aria-required': parameter.required }">
                                     <!-- /ko -->
                                     <!-- ko if: parameter.secret-->
                                     <input autocomplete="off" class="form-control form-control-sm" placeholder="value"
                                         spellcheck="false" aria-label="Parameter value"
-                                        data-bind=" attr: {type: parameter.inputType, 'aria-required': parameter.required, 'readonly': parameter.isReadOnly }, textInput: parameter.value">
+                                        data-bind=" attr: {type: parameter.inputType, 'aria-required': parameter.required }, textInput: parameter.value">
                                     <button data-bind="click: () => $component.toggleSecretParameter(parameter)"
                                         class="input-group-addon">
                                         <i
@@ -136,7 +136,7 @@
                                 <div class="form-group">
                                     <input type="text" autocomplete="off" class="form-control form-control-sm"
                                         placeholder="value" spellcheck="false" aria-label="Header value"
-                                        data-bind="textInput: header.value, attr: { 'readonly': header.isReadOnly, 'aria-required': header.required }">
+                                        data-bind="textInput: header.value, attr: { 'aria-required': header.required }">
                                     <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
                                 </div>
                                 <!-- /ko -->

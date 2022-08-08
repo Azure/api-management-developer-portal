@@ -14,7 +14,6 @@ export class ConsoleParameter {
     public canRename: boolean;
     public error: ko.Observable<string>;
     public revealed: ko.Observable<boolean>;
-    public isReadOnly: boolean;
 
     public toggleRevealed(): void {
         this.revealed(!this.revealed());
@@ -33,7 +32,7 @@ export class ConsoleParameter {
         this.revealed = ko.observable(false);
 
         this.name.extend(<any>{ required: { message: `Name is required.` } });
-        
+
         if (!contract) {
             return;
         }
