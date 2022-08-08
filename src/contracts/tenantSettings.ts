@@ -32,6 +32,7 @@ export enum DelegationAction {
     subscribe = "Subscribe",
     unsubscribe = "Unsubscribe",
     changeProfile = "ChangeProfile",
+    //[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="False positive")]
     changePassword = "ChangePassword",
     closeAccount = "CloseAccount",
     renew = "Renew"
