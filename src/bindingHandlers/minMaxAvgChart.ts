@@ -20,7 +20,7 @@ ko.bindingHandlers["minMaxAvgChart"] = {
         const minMaxAreaColor = "#ddd";
         const avgLineColor = "#1786d8";
 
-        const dimensions =  [{
+        const dimensions = [{
             displayName: "Max",
             key: "max",
             color: minMaxAreaColor
@@ -127,9 +127,6 @@ ko.bindingHandlers["minMaxAvgChart"] = {
             .attr("fill", "none")
             .attr("stroke-width", 2);
 
-
-        
-
         for (let i = 0; i < dimensions.length; i++) {
             const dimension = dimensions[i];
 
@@ -204,8 +201,8 @@ ko.bindingHandlers["minMaxAvgChart"] = {
                 verticalLine.style("opacity", "1");
                 verticalLineTooltip.style("opacity", "1");
             })
-            .on("mousemove", () => { // mouse moving over canvas
-                const mouse = d3.mouse(chartSvgNode);
+            .on("mousemove", (event) => { // mouse moving over canvas
+                const mouse = d3.pointer(event, chartSvgNode);
                 const mouseX = mouse[0];
 
                 verticalLine

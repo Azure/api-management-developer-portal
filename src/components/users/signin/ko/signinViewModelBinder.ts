@@ -53,7 +53,7 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
         if (isDelegationEnabled) {
             const delegationParam = {};
             delegationParam[DelegationParameters.ReturnUrl] =  "/";
-            const delegationUrl = await this.backendService.getDelegationUrl(DelegationAction.signIn, delegationParam);
+            const delegationUrl = await this.backendService.getDelegationUrlFromServer(DelegationAction.signIn, delegationParam);
 
             if (delegationUrl) {
                 params["delegationUrl"] = delegationUrl;

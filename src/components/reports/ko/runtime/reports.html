@@ -18,7 +18,8 @@
         </div>
     </div>
     <div class="col-md-5">
-        <div data-bind="mapChart: reportByCallsGeo, chart-title: 'API calls map', chart-desc: 'API calls map by geo'">
+        <div id="api"
+            data-bind="mapChart: reportByCallsGeo, chart-title: 'API calls map', chart-desc: 'API calls map by geo'">
         </div>
     </div>
 </div>
@@ -31,7 +32,7 @@
         </div>
     </div>
     <div class="col-md-5">
-        <div
+        <div id="bandwidth"
             data-bind="mapChart: reportByBandwidthGeo, chart-title: 'Data transfer map', chart-desc: 'Data transfer map by geo'">
         </div>
     </div>
@@ -45,7 +46,7 @@
         </div>
     </div>
     <div class="col-md-5">
-        - <div
+        - <div id="latency"
             data-bind="mapChart: reportByLatencyGeo, chart-title: 'API response time map', chart-desc: 'API response time map by geo'">
         </div>
     </div>

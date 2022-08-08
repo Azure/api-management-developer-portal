@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import * as GraphQL from "graphql";
 import * as monaco from "monaco-editor";
-import loader from '@monaco-editor/loader';
+import loader from "@monaco-editor/loader";
 import { Component, OnDestroyed, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 import { ConsoleHost } from "./../../../../../models/console/consoleHost";
@@ -166,9 +166,9 @@ export class GraphqlConsole {
         const graphQLSchema = await this.apiService.getGQLSchema(selectedApi.id);
         if (graphQLSchema) {
             this.schema = graphQLSchema.graphQLSchema;
-            this.buildTree(this.schema);    
+            this.buildTree(this.schema);
         }
-        
+
         this.availableOperations();
         this.selectByDefault();
         this.isSubscriptionOperation(this.document().trim().startsWith(GraphqlTypes.subscription));
@@ -315,8 +315,7 @@ export class GraphqlConsole {
         }
         this.sendingRequest(true);
 
-        let payload: string;
-        payload = JSON.stringify({
+        const payload = JSON.stringify({
             query: this.document(),
             variables: this.variables() && this.variables().length > 0 ? JSON.parse(this.variables()) : null
         });
@@ -755,7 +754,7 @@ export class GraphqlConsole {
         }
 
         const markers = (<any>window).monaco.editor.getModelMarkers({});
-        if (!!markers.find(m => m.severity >= 5 && m.owner == "graphqlQuery")) {
+        if (markers.find(m => m.severity >= 5 && m.owner == "graphqlQuery")) {
             this.editorErrors.push("Syntax error in 'Query editor'");
         }
         try {

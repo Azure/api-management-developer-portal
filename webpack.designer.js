@@ -4,6 +4,7 @@ const { merge } = require("webpack-merge");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const runtimeConfig = require("./webpack.runtime");
+const packageJson = require("./package.json");
 
 
 const designerConfig = {
@@ -71,12 +72,11 @@ const designerConfig = {
                 { from: `./src/config.design.json`, to: `./config.json` },
                 { from: `./src/themes/designer/assets/index.html`, to: "index.html" },
                 { from: `./src/themes/designer/styles/fonts`, to: "editors/styles/fonts" },
-                { from: `./src/libraries`, to: "data" },
-                { from: "./src/config.design.json", to: "config.json" },
                 { from: `./templates/default.json`, to: "editors/templates/default.json" }
             ]
         }),
-        new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
+        new webpack.ProvidePlugin({ Buffer: ["buffer", "Buffer"] }),
+        new webpack.DefinePlugin({ "process.env.VERSION": JSON.stringify(packageJson.version) })
     ],
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"],

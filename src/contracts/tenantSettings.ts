@@ -13,22 +13,28 @@ export interface TenantSettings {
     userRegistrationTermsConsentRequired: boolean;
 }
 
-export enum DelegationActionPath {     
-    signIn = "signin",
-    signUp = "signup",
-    subscribe = "delegation-subscribe",
-    unsubscribe = "delegation-unsubscribe",
-    renew = "delegation-renew",
-    changeProfile = "delegation-changeProfile",
-    changePassword = "change-password",
-    closeAccount = "delegation-closeAccount",
-    signOut = "signout"
+export const DelegationActionPath  = {     
+    SignIn: "signin",
+    SignUp: "signup",
+    Subscribe: "delegation-subscribe",
+    Unsubscribe: "delegation-unsubscribe",
+    Renew: "delegation-renew",
+    ChangeProfile: "delegation-changeProfile",
+    ChangePassword: "change-password",
+    CloseAccount: "delegation-closeAccount",
+    SignOut: "signout"
 }
 
 export enum DelegationAction {     
     signIn = "SignIn",
     signUp = "SignUp",
-    signOut = "SignOut"
+    signOut = "SignOut",
+    subscribe = "Subscribe",
+    unsubscribe = "Unsubscribe",
+    changeProfile = "ChangeProfile",
+    changePassword = "ChangePassword",
+    closeAccount = "CloseAccount",
+    renew = "Renew"
 }
   
 export enum DelegationParameters { 

@@ -4,14 +4,15 @@ import { CaptchaChallenge, CaptchaParams, CaptchaSettings } from "../contracts/c
 import { SignupRequest } from "../contracts/signupRequest";
 import { ResetRequest, ChangePasswordRequest } from "../contracts/resetRequest";
 import { IAuthenticator } from "../authentication";
-import { DelegationAction } from "../contracts/tenantSettings";
+import { DelegationAction, DelegationActionPath } from "../contracts/tenantSettings";
 import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
-import { DeveloperPortalType, SettingNames } from "../constants";
+import { DeveloperPortalType, SettingNames, WarningBackendUrlMissing } from "../constants";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { Utils } from "../utils";
 import { AuthorizationServerForClient } from "../contracts/authorizationServer";
 import { AuthorizationServer } from "../models/authorizationServer";
+import { Bag } from "@paperbits/common/bag";
 
 export class BackendService {
     private portalUrl: string;
@@ -144,7 +145,21 @@ export class BackendService {
         throw new MapiError("Unhandled", "Unable to complete change password request.");
     }
 
-    public async getDelegationUrl(action: DelegationAction, delegationParameters: {}): Promise<string> {
+    public async getDelegationString(action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
+        if (this.developerPortalType === DeveloperPortalType.managed) {
+            const queryParams = new URLSearchParams();
+            Object.keys(delegationParameters).map(key => {
+                const val = delegationParameters[key];
+                queryParams.append(key, val);
+            });
+            return `/${DelegationActionPath[action]}?${queryParams.toString()}`;
+        } else {
+            const delegationUrl = await this.getDelegationUrlFromServer(action, delegationParameters);
+            return delegationUrl;
+        }
+    }
+
+    public async getDelegationUrlFromServer(action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
         const authToken = await this.authenticator.getAccessTokenAsString();
 
         if (!authToken) {
@@ -167,7 +182,7 @@ export class BackendService {
         if (response.statusCode === 200) {
             const result = response.toObject();
             return result["url"];
-        } 
+        }
         else {
             throw Error(response.toText());
         }
@@ -225,7 +240,7 @@ export class BackendService {
                 return response.toObject();
             }
             if (!this.portalUrl && this.developerPortalType === DeveloperPortalType.selfHosted) {
-                console.error(`Backend URL is missing. See setting "backendUrl" in the configuration file config.runtime.json. OAuth authentication in Test console and Captcha widget requires this setting, pointing to your APIM service developer portal URL. In addition, it requires the origin ${location.origin} to be specified in CORS settings.`);
+                console.error(WarningBackendUrlMissing);
             }
         }
         else {

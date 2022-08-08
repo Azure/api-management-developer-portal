@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { request, downloadBlobs, getStorageSasTokenOrThrow } = require("./utils");
+const { request, downloadBlobs, getStorageSasTokenOrThrow, apiVersion } = require("./utils");
 const managementApiEndpoint = process.argv[2];
 const managementApiAccessToken = process.argv[3];
 const destinationFolder = process.argv[4];
@@ -8,7 +8,7 @@ const destinationFolder = process.argv[4];
 
 async function getContentTypes() {
     try {
-        const data = await request("GET", `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/contentTypes?api-version=2019-12-01`, managementApiAccessToken);
+        const data = await request("GET", `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/contentTypes?api-version=${apiVersion}`, managementApiAccessToken);
         const contentTypes = data.value.map(x => x.id.replace("\/contentTypes\/", ""));
 
         return contentTypes;
@@ -21,7 +21,7 @@ async function getContentTypes() {
 async function getContentItems(contentType) {
     try {
         const contentItems = [];
-        let nextPageUrl = `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/contentTypes/${contentType}/contentItems?api-version=2019-12-01`;
+        let nextPageUrl = `https://${managementApiEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/00000/contentTypes/${contentType}/contentItems?api-version=${apiVersion}`;
 
         do {
             const data = await request("GET", nextPageUrl, managementApiAccessToken);

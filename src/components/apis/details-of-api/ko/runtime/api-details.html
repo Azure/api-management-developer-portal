@@ -4,9 +4,9 @@
     <!-- /ko -->
 
     <!-- ko ifnot: working -->
-    <div class="flex-item flex-grow animation-fade-in">
+    <div class="flex-item flex-grow animation-fade-in col-md-auto">
         <!-- ko if: api -->
-        <h1 class="title-text">
+        <h1 class="text-wrap title-text">
             <span data-bind="text: api().displayName"></span>
             <!-- ko if: api().type === 'soap' -->
             <span class="badge api-type-badge">SOAP</span>
@@ -52,17 +52,17 @@
 
         <!-- ko if: api().contact -->
         <h4>Contact</h4>
-            <!-- ko if: api().contact.name -->
-            <div data-bind="text: api().contact.name"></div>
-            <!-- /ko -->
+        <!-- ko if: api().contact.name -->
+        <div data-bind="text: api().contact.name"></div>
+        <!-- /ko -->
 
-            <!-- ko if: api().contact.email -->
-            <div><a data-bind="attr: { href: 'mailto:' + api().contact.email }, text: api().contact.email"></a></div>
-            <!-- /ko -->
+        <!-- ko if: api().contact.email -->
+        <div><a data-bind="attr: { href: 'mailto:' + api().contact.email }, text: api().contact.email"></a></div>
+        <!-- /ko -->
 
-            <!-- ko if: api().contact.url -->
-            <div><a data-bind="attr: { href: api().contact.url }, text: api().contact.url"></a></div>
-            <!-- /ko -->
+        <!-- ko if: api().contact.url -->
+        <div><a data-bind="attr: { href: api().contact.url }, text: api().contact.url"></a></div>
+        <!-- /ko -->
         <!-- /ko -->
 
         <!-- ko if: api().license -->
