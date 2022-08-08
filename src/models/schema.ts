@@ -17,22 +17,25 @@ export class Schema {
         let definitions = {};
 
         switch (definitionType) {
-            case SchemaType.swagger:
+            case SchemaType.swagger: {
                 const swaggerDoc = <SwaggerSchemaContract>contract.properties?.document;
                 definitions = swaggerDoc?.definitions || {};
                 break;
+            }
 
-            case SchemaType.openapi:
+            case SchemaType.openapi: {
                 const openApiDoc = <OpenApiSchemaContract>contract.properties?.document;
                 definitions = openApiDoc?.components?.schemas || {};
                 break;
+            }
 
-            case SchemaType.graphQL:
+            case SchemaType.graphQL: {
                 const graphQLDoc = <GraphQLSchemaContract>contract.properties?.document;
                 this.graphQLSchema = graphQLDoc?.value;
                 break;
+            }
 
-            case SchemaType.xsd:
+            case SchemaType.xsd: {
                 const xsdDoc = <XsdSchemaContract>contract.properties?.document;
 
                 try {
@@ -42,6 +45,7 @@ export class Schema {
                     console.warn(`Unable to parse XSD schema document. Skipping type definition setup.`);
                 }
                 break;
+            }
 
             default:
                 console.warn(`Unsupported schema type: ${definitionType}`);

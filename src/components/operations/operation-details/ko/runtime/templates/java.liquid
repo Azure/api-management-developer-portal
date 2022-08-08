@@ -14,21 +14,26 @@ public class HelloWorld {
 
   public static void main(String[] args) {
     try {
-        String urlString = "{{requestUrl}}";
+        String urlString = "{{console.requestUrl}}";
         URL url = new URL(urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         //Request headers
-{%- for header in request.meaningfulHeaders %}
-        connection.setRequestProperty("{{header.name}}", "{{header.displayedValue}}");
+{%- for header in console.request.meaningfulHeaders %}
+    {% if showSecrets == false and header.secret -%}
+        connection.setRequestProperty("{{header.name}}", "{{header.hiddenValue}}");
+    {% else -%}
+        connection.setRequestProperty("{{header.name}}", "{{header.value}}");
+    {% endif -%}
+        
 {% endfor %}
-        connection.setRequestMethod("{{method}}");
-{% if method == "POST" or method == "PUT" -%}
-    {%- if request.body != blank %}
+        connection.setRequestMethod("{{console.method}}");
+{% if console.method == "POST" or console.method == "PUT" -%}
+    {%- if console.request.body != blank %}
         // Request body
         connection.setDoOutput(true);
-    {%- if request.bodyFormat == "raw"  -%}
-    {%- assign formattedBody = request.body | replace:'"','\\"' -%}
+    {%- if console.request.bodyFormat == "raw"  -%}
+    {%- assign formattedBody = console.request.body | replace:'"','\\"' -%}
     {%- assign formattedBody = formattedBody | replace: '\r\n', ' ' -%}
     {%- assign formattedBody = formattedBody | replace: '\n', ' ' -%}
     {%- assign formattedBody = formattedBody | replace: '     ', ' ' %}
@@ -37,8 +42,8 @@ public class HelloWorld {
             .write(
              "{{formattedBody}}".getBytes()
              );
-    {%- elsif request.bodyFormat == "binary" %}
-        String fileName = "< path/to/{{request.binary.name}} >";
+    {%- elsif console.request.bodyFormat == "binary" %}
+        String fileName = "< path/to/{{console.request.binary.name}} >";
         InputStream is = new FileInputStream(fileName);
         byte[] bytes = new byte[(int) is.available()];
         DataInputStream dataInputStream = new DataInputStream(is);

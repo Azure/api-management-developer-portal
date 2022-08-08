@@ -25,9 +25,9 @@
         <tag-input params="{ scope: $component.tagScope, onChange: onTagsChange }"></tag-input>
     </div>
     <div class="form-group ml-auto">
-        <label for="groupByTag" class="toggle-button-label">Group by tag
+        <label class="toggle-button-label">Group by tag
             <div class="switch">
-                <input id="groupByTag" type="checkbox" data-bind="checked: $component.groupByTag">
+                <input type="checkbox" data-bind="checked: $component.groupByTag">
                 <span class="slider round"></span>
             </div>
         </label>
@@ -61,7 +61,8 @@
         </div>
         <div class="list">
             <!-- ko foreach: { data: group.items, as: 'item' } -->
-            <div role="option" class="list-item table-preset-operations" data-bind="activate: $component.selectOperation, css: { 'selected': $component.selectedOperationName() === item.name }">
+            <div role="option" class="list-item table-preset-operations"
+                data-bind="activate: $component.selectOperation, css: { 'selected': $component.selectedOperationName() === item.name }">
                 <div class="http-method" data-bind="attr: { 'data-method': method }"></div>
                 <div class="widget-text" data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }">
                 </div>

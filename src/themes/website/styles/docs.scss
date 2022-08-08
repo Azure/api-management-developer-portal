@@ -137,12 +137,12 @@ pre {
 .apis-section {
     padding: 0;
 
-    & > .container,
-    & > .container-fluid {
-        & > .row {
+    &>.container,
+    &>.container-fluid {
+        &>.row {
             padding: 0;
 
-            & > .col {
+            &>.col {
                 padding: 0;
             }
         }
@@ -190,12 +190,15 @@ validation-summary {
     display: block;
 }
 
-operation-console {
-    min-height: 100%;
+.consoles {
+    background: $panel-bg-color-highlight;
+    height: 100%;
     border-left: 1px solid #dee2e6;
 
-    .form-control {
-        margin: 0;
+    &.operation-console {
+        .form-control {
+            margin: 0;
+        }
     }
 }
 

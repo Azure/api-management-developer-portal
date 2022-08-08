@@ -174,7 +174,7 @@ export class JObject {
                 break;
 
             case "element":
-            case "template":
+            case "template": {
                 const tag = this.join([this.ns, this.name], ":");
 
                 result += `${lineBreak}<${tag}`;
@@ -199,6 +199,7 @@ export class JObject {
                     result += ` />`;
                 }
                 break;
+            }
 
             case "question":
                 result += this.value;

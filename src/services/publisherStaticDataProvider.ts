@@ -1,6 +1,7 @@
-import path = require("path");
-import  IStaticDataProvider  from "./IStaticDataProvider";
-const fs = require("fs");
+import * as fs from "fs";
+import * as path from "path";
+import IStaticDataProvider from "./IStaticDataProvider";
+
 
 export class PublisherStaticDataProvider implements IStaticDataProvider {
     public getStaticData(objectType: string): Promise<any> {

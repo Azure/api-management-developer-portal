@@ -7,21 +7,23 @@
 <!-- ko ifnot: apiType() === 'websocket' -->
 <!-- ko if: operation -->
 <div class="animation-fade-in">
-    <div class="operation-header">
-        <h2 class="operation-name">
-            <span class="title-text" data-bind="text: operation().displayName"></span>
-        </h2>
+    <div class="row flex flex-row">
+        <div class="col-md-11  text-wrap">
+            <h2 class="operation-name">
+                <span data-bind="text: operation().displayName"></span>
+            </h2>
+        </div>
         <!-- ko if: $component.enableConsole -->
-        <button class="button try-it-button" data-bind="click: $component.openConsole">
-            Try it
-            <i class="icon-emb icon-emb-play"></i>
-        </button>
+        <div class="col-md-1">
+            <button class="button try-it-button" data-bind="click: $component.openConsole">Try it <i
+                    class="icon-emb icon-emb-play"></i>
+            </button>
+        </div>
         <!-- /ko -->
     </div>
 
     <!-- ko if: operation().description  -->
-    <div class="widget-text content-inherit-color content-inherit-font-weight content-inherit-font-style"
-        data-bind="markdown: operation().description"></div>
+    <div data-bind="markdown: operation().description"></div>
     <!-- /ko -->
 
     <!-- ko if: tags().length > 0 -->
@@ -36,7 +38,7 @@
         <h3 class="title-text">Request</h3>
 
         <div class="collapsible-container">
-            <span class="text-monospace widget-text"
+            <span class="text-monospace text-wrap"
                 data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
 
             <!-- ko if: operation().parameters.length > 0 -->
@@ -49,6 +51,7 @@
                         <div role="columnheader" class="table-preset-head text-truncate">In</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Required</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Type</div>
+                        <div role="columnheader" class="table-preset-head">Example</div>
                         <div role="columnheader" class="table-preset-head">Description</div>
                     </div>
                 </div>
@@ -57,22 +60,22 @@
                     <div class="d-contents" role="row">
                         <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
-                        <div role="cell" class="text-truncate table-preset-row" data-bind="text: parameter.in"></div>
-                        <div role="cell" class="text-truncate table-preset-row" data-bind="text: parameter.required">
-                        </div>
-                        <div role="cell" class="text-truncate text-monospace table-preset-row"
-                            data-bind="text: parameter.type"></div>
-                        <div role="cell" class="table-preset-row">
-                            <span class="content-inherit-color content-inherit-font-weight content-inherit-font-style"
-                                data-bind="markdown: parameter.description"></span>
-
+                        <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
+                        <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
+                        <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type"></div>
+                        <div role="cell">
                             <!-- ko foreach: { data: parameter.examples, as: 'example' } -->
-                            <div>
+                            <p>
+                                <!-- ko ifnot: example.title === "default" && !example.description && parameter.examples.length === 1 -->
                                 <span data-bind="text: example.title"></span>:
+                                <!-- /ko -->
                                 <span data-bind="text: example.value" class="text-monospace text-wrap"></span>
                                 <span data-bind="text: example.description" class="d-block"></span>
-                            </div>
+                            </p>
                             <!-- /ko -->
+                        </div>
+                        <div role="cell">
+                            <span data-bind="markdown: parameter.description"></span>
                         </div>
                     </div>
                     <!-- /ko -->
@@ -83,12 +86,13 @@
             <!-- ko if: operation().request && operation().request.headers && operation().request.headers.length > 0 -->
             <h4 class="title-text">Request headers</h4>
 
-            <div role="table" class="table-preset table-preset-headers">
+            <div role="table" class="table-preset table-preset-headers-request">
                 <div class="d-contents" role="rowgroup">
                     <div class="d-contents" role="row">
                         <div role="columnheader" class="table-preset-head text-truncate">Name</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Required</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Type</div>
+                        <div role="columnheader" class="table-preset-head">Example</div>
                         <div role="columnheader" class="table-preset-head">Description</div>
                     </div>
                 </div>
@@ -100,17 +104,17 @@
                         <div role="cell" class="text-truncate table-preset-row" data-bind="text: header.required"></div>
                         <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: header.type, attr: { title: header.type }"></div>
-                        <div role="cell" class="table-preset-row">
-                            <span class="content-inherit-color content-inherit-font-weight content-inherit-font-style"
-                                data-bind="markdown: header.description"></span>
-
+                        <div role="cell">
                             <!-- ko foreach: { data: header.examples, as: 'example' } -->
-                            <div>
+                            <p>
                                 <span data-bind="text: example.title"></span>:
                                 <span data-bind="text: example.value" class="text-monospace text-wrap"></span>
                                 <span data-bind="text: example.description" class="d-block"></span>
-                            </div>
+                            </p>
                             <!-- /ko -->
+                        </div>
+                        <div role="cell">
+                            <span data-bind="markdown: header.description"></span>
                         </div>
                     </div>
                     <!-- /ko -->
@@ -125,8 +129,7 @@
             <h4 class="title-text">Request body</h4>
 
             <!-- ko if: request.description  -->
-            <div class="text-word-break widget-text content-inherit-color content-inherit-font-weight content-inherit-font-style"
-                data-bind="markdown: request.description"></div>
+            <div data-bind="markdown: request.description"></div>
             <!-- /ko -->
 
             <!-- ko if: request.meaningfulRepresentations().length > 0 -->
@@ -145,7 +148,7 @@
                     <!-- /ko -->
 
                     <!-- ko if: representation.formParameters?.length > 0 -->
-                    <div role="table" class="table-preset table-preset-params">
+                    <div role="table" class="table-preset table-preset-body">
                         <div class="d-contents" role="rowgroup">
                             <div class="d-contents" role="row">
                                 <div role="columnheader" class="table-preset-head text-truncate">Name</div>
@@ -178,7 +181,8 @@
 
                     <!-- ko if: representation.examples -->
                     <!-- ko foreach: { data: representation.examples, as: 'example' } -->
-                    <code-snippet params="{ title: example.title, content: example.value, language: example.format }">
+                    <code-snippet
+                        params="{ title: example.title, content: example.value, language: example.format, description: example.description }">
                     </code-snippet>
                     <!-- /ko -->
                     <!-- /ko -->
@@ -199,7 +203,7 @@
             <!-- ko if: response.headers && response.headers.length > 0 -->
             <h4 class="title-text">Response headers</h4>
 
-            <div role="table" class="table-preset table-preset-headers">
+            <div role="table" class="table-preset table-preset-headers-response">
                 <div class="d-contents" role="rowgroup">
                     <div class="d-contents" role="row">
                         <div role="columnheader" class="table-preset-head text-truncate">Name</div>
@@ -243,7 +247,8 @@
 
                     <!-- ko if: representation.examples -->
                     <!-- ko foreach: { data: representation.examples, as: 'example' } -->
-                    <code-snippet params="{ title: example.title, content: example.value, language: example.format }">
+                    <code-snippet
+                        params="{ title: example.title, content: example.value, language: example.format, description: example.description }">
                     </code-snippet>
                     <!-- /ko -->
                     <!-- /ko -->
@@ -297,36 +302,40 @@
 
 <!-- ko if: apiType() === 'websocket' -->
 <!-- ko if: operation -->
-<div class="animation-fade-in">
-    <div class="operation-header">
-        <h2 class="operation-name title-text"></h2>
-        <!-- ko if: $component.enableConsole -->
-        <button class="button try-it-button" data-bind="click: $component.openConsole">
-            Try it
-            <i class="icon-emb icon-emb-play"></i>
-        </button>
-        <!-- /ko -->
+<div class="animation-fade-in row flex flex-row">
+    <div class="col-md-11 text-wrap operation-header">
+        <h2 class="operation-name">
+            <span data-bind="text: operation().displayName"></span>
+        </h2>
     </div>
-
-    <!-- ko if: tags().length > 0 -->
-    <div class="tag-group">
-        <!-- ko foreach: { data: $component.tags, as: 'tag' } -->
-        <span class="tag-card" role="group" data-bind="text: tag"></span>
-        <!-- /ko -->
+    <!-- ko if: $component.enableConsole -->
+    <div class="col-md-1">
+        <button class="button try-it-button" data-bind="click: $component.openConsole">Try it <i
+                class="icon-emb icon-emb-play"></i>
+        </button>
     </div>
     <!-- /ko -->
+</div>
 
-    <div class="collapsible">
-        <h3 class="title-text">Socket URL</h3>
-        <div class="collapsible-container">
-            <span class="text-monospace widget-text" data-bind="text: $component.requestUrlSample"></span>
-        </div>
+<!-- ko if: tags().length > 0 -->
+<div class="tag-group">
+    <!-- ko foreach: { data: $component.tags, as: 'tag' } -->
+    <span class="tag-item" role="group" data-bind="text: tag"></span>
+    <!-- /ko -->
+</div>
+<!-- /ko -->
 
-        <h3 class="title-text">Protocol</h3>
-        <div class="collapsible-container">
-            <span class="text-monospace widget-text" data-bind="text: $component.protocol"></span>
-        </div>
+<div class="collapsible">
+    <h3>Socket URL</h3>
+    <div class="collapsible-container">
+        <span class="text-monospace" data-bind="text: $component.requestUrlSample"></span>
     </div>
+
+    <h3>Protocol</h3>
+    <div class="collapsible-container">
+        <span class="text-monospace" data-bind="text: $component.protocol"></span>
+    </div>
+</div>
 
 </div>
 <!-- /ko -->
@@ -334,15 +343,16 @@
 
 <!-- ko if: apiType() === 'graphql' -->
 <div class="animation-fade-in">
-    <div class="operation-header">
-        <div>
-            <h2 class="title-text">GraphQL endpoint</h2>
-            <span class="monospace widget-text" data-bind="text: $component.requestUrlSample"></span>
+    <div class="row flex flex-row">
+        <div class="col-md-11 text-wrap">
+            <h2>GraphQL endpoint</h2>
+            <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
         </div>
         <!-- ko if: $component.enableConsole -->
-        <div>
-            <button class="button try-it-button" data-bind="click: $component.openConsole">
-                Try it <i class="icon-emb icon-emb-play"></i>
+        <div class="col-md-1">
+            <button class="button try-it-button graph mt-17" data-bind="click: $component.openConsole">Try it <i
+                    class="icon-emb icon-emb-play"></i>
+            </button>
         </div>
         <!-- /ko -->
     </div>
@@ -355,7 +365,7 @@
 <!-- ko if: $component.consoleIsOpen -->
 <!-- ko ifnot: apiType() === 'graphql' -->
 <div class="detachable-right flex-grow animation-fade-in">
-    <operation-console class="flex flex-column consoles operation-console" data-bind="dialog: {}"
+    <operation-console class="block scrollable consoles operation-console"
         params="{ api: api, operation: operation, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
     </operation-console>
 </div>

@@ -9,7 +9,7 @@ import { MapiError } from "../../../../../errors/mapiError";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { UnauthorizedError } from "../../../../../errors/unauthorizedError";
 import { UsersService } from "../../../../../services";
-import { dispatchErrors} from "../../../validation-summary/utils";
+import { dispatchErrors } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
 
 @RuntimeComponent({
@@ -81,7 +81,7 @@ export class Signin {
                 const redirectUrl = this.delegationUrl();
 
                 if (redirectUrl) {
-                    window.open(redirectUrl, "_self");
+                    location.assign(redirectUrl);
                 }
             }
         }
@@ -107,7 +107,7 @@ export class Signin {
         };
 
         const result = validation.group(validationGroup);
-        
+
         const clientErrors = result();
 
         if (clientErrors.length > 0) {
@@ -120,8 +120,8 @@ export class Signin {
         try {
             this.working(true);
 
-            await this.usersService.signIn(this.username(), this.password());
-            
+            await this.usersService.signInWithBasic(this.username(), this.password());
+
             const clientReturnUrl = sessionStorage.getItem("returnUrl");
             const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
 
@@ -130,12 +130,7 @@ export class Signin {
                 return;
             }
 
-            this.navigateToHome();
-
-            dispatchErrors(this.eventManager, ErrorSources.signin, []);
-            const errors = ["Please provide a valid email and password."];
-            this.errorMessages(errors);
-            dispatchErrors(this.eventManager, ErrorSources.signin, errors);
+            this.navigateToHome(); // default redirect
         }
         catch (error) {
             if (error instanceof MapiError) {
@@ -146,13 +141,12 @@ export class Signin {
                 }
 
                 this.errorMessages([error.message]);
-
                 dispatchErrors(this.eventManager, ErrorSources.signin, [error.message]);
-
                 return;
-            } else if (error instanceof UnauthorizedError) {
-                this.errorMessages([error.message]);
+            }
 
+            if (error instanceof UnauthorizedError) {
+                this.errorMessages([error.message]);
                 dispatchErrors(this.eventManager, ErrorSources.signin, [error.message]);
                 return;
             }
