@@ -29,20 +29,20 @@
     <!-- ko if: tags().length > 0 -->
     <div class="tag-group">
         <!-- ko foreach: { data: $component.tags, as: 'tag' } -->
-        <span class="tag-item" role="group" data-bind="text: tag"></span>
+        <span class="tag-card" role="group" data-bind="text: tag"></span>
         <!-- /ko -->
     </div>
     <!-- /ko -->
 
     <div class="collapsible">
-        <h3>Request</h3>
+        <h3 class="title-text">Request</h3>
 
         <div class="collapsible-container">
             <span class="text-monospace text-wrap"
                 data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
 
             <!-- ko if: operation().parameters.length > 0 -->
-            <h4>Request parameters</h4>
+            <h4 class="title-text">Request parameters</h4>
 
             <div role="table" class="table-preset table-preset-params">
                 <div class="d-contents" role="rowgroup">
@@ -58,7 +58,7 @@
                 <div class="d-contents" role="rowgroup">
                     <!-- ko foreach: { data: operation().parameters, as: 'parameter' } -->
                     <div class="d-contents" role="row">
-                        <div role="cell" class="text-truncate text-monospace"
+                        <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
                         <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
                         <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
@@ -84,7 +84,7 @@
             <!-- /ko -->
 
             <!-- ko if: operation().request && operation().request.headers && operation().request.headers.length > 0 -->
-            <h4>Request headers</h4>
+            <h4 class="title-text">Request headers</h4>
 
             <div role="table" class="table-preset table-preset-headers-request">
                 <div class="d-contents" role="rowgroup">
@@ -99,10 +99,10 @@
                 <div class="d-contents" role="rowgroup">
                     <!-- ko foreach: { data: operation().request.headers, as: 'header' } -->
                     <div class="d-contents" role="row">
-                        <div role="cell" class="text-truncate text-monospace"
+                        <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: header.name, attr: { title: header.name }"></div>
-                        <div role="cell" class="text-truncate" data-bind="text: header.required"></div>
-                        <div role="cell" class="text-truncate text-monospace"
+                        <div role="cell" class="text-truncate table-preset-row" data-bind="text: header.required"></div>
+                        <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: header.type, attr: { title: header.type }"></div>
                         <div role="cell">
                             <!-- ko foreach: { data: header.examples, as: 'example' } -->
@@ -126,7 +126,7 @@
 
             <!-- ko with: operation().request, as: 'request' -->
             <!-- ko if: request.isMeaningful() -->
-            <h4>Request body</h4>
+            <h4 class="title-text">Request body</h4>
 
             <!-- ko if: request.description  -->
             <div data-bind="markdown: request.description"></div>
@@ -161,13 +161,18 @@
                         <div class="d-contents" role="rowgroup">
                             <!-- ko foreach: { data: representation.formParameters, as: 'parameter' } -->
                             <div class="d-contents" role="row">
-                                <div role="cell" class="text-truncate text-monospace"
+                                <div role="cell" class="text-truncate text-monospace table-preset-row"
                                     data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
-                                <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
-                                <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
-                                <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type">
+                                <div role="cell" class="text-truncate table-preset-row" data-bind="text: parameter.in">
                                 </div>
-                                <div role="cell" data-bind="markdown: parameter.description"></div>
+                                <div role="cell" class="text-truncate table-preset-row"
+                                    data-bind="text: parameter.required"></div>
+                                <div role="cell" class="text-truncate text-monospace table-preset-row"
+                                    data-bind="text: parameter.type">
+                                </div>
+                                <div role="cell"
+                                    class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                                    data-bind="markdown: parameter.description"></div>
                             </div>
                             <!-- /ko -->
                         </div>
@@ -189,13 +194,14 @@
             <!-- /ko -->
 
             <!-- ko foreach: { data: operation().getMeaningfulResponses(), as: 'response' } -->
-            <h3>Response: <span data-bind="text: response.statusCode"></span></h3>
+            <h3 class="title-text">Response: <span data-bind="text: response.statusCode"></span></h3>
             <!-- ko if: response.description -->
-            <p data-bind="markdown: response.description"></p>
+            <p class="widget-text content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                data-bind="markdown: response.description"></p>
             <!-- /ko -->
 
             <!-- ko if: response.headers && response.headers.length > 0 -->
-            <h4>Response headers</h4>
+            <h4 class="title-text">Response headers</h4>
 
             <div role="table" class="table-preset table-preset-headers-response">
                 <div class="d-contents" role="rowgroup">
@@ -209,12 +215,14 @@
                 <div class="d-contents" role="rowgroup">
                     <!-- ko foreach: { data: response.headers, as: 'header' } -->
                     <div class="d-contents" role="row">
-                        <div role="cell" class="text-truncate text-monospace"
+                        <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: header.name, attr: { title: header.name }"></div>
-                        <div role="cell" class="text-truncate" data-bind="text: header.required"></div>
-                        <div role="cell" class="text-truncate text-monospace"
+                        <div role="cell" class="text-truncate table-preset-row" data-bind="text: header.required"></div>
+                        <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: header.type, attr: { title: header.type }"></div>
-                        <div role="cell" data-bind="markdown: header.description"></div>
+                        <div role="cell"
+                            class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                            data-bind="markdown: header.description"></div>
                     </div>
                     <!-- /ko -->
                 </div>
@@ -252,7 +260,7 @@
     </div>
 
     <!-- ko if: $component.definitions().length > 0 -->
-    <h3>Definitions</h3>
+    <h3 class="title-text">Definitions</h3>
 
     <div role="table" class="table-preset table-preset-definitions">
         <div class="d-contents" role="rowgroup">
@@ -264,11 +272,13 @@
         <div class="d-contents" role="rowgroup">
             <!-- ko foreach: { data: definitions, as: 'definition' } -->
             <div class="d-contents" role="row">
-                <div role="cell" class="text-truncate">
+                <div role="cell" class="text-truncate table-preset-row">
                     <a
                         data-bind="text: definition.name, attr: { title: definition.name, href: $component.getDefinitionReferenceUrl(definition) }"></a>
                 </div>
-                <div role="cell" data-bind="markdown: definition.description"></div>
+                <div role="cell"
+                    class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                    data-bind="markdown: definition.description"></div>
             </div>
             <!-- /ko -->
         </div>
@@ -285,7 +295,7 @@
 
 <!-- ko ifnot: apiType() === 'graphql' -->
 <!-- ko ifnot: operation -->
-<p>No operation selected.</p>
+<p class="widget-text">No operation selected.</p>
 <!-- /ko -->
 <!-- /ko -->
 <!-- /ko -->

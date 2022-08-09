@@ -9,10 +9,10 @@
         </div>
         <div class="table-body" role="rowgroup" data-bind="foreach: { data: definition.properties, as: 'property' }">
             <div class="table-row" role="row">
-                <div role="cell" class="col-4 text-truncate">
+                <div role="cell" class="col-4 text-truncate table-preset-row">
                     <code data-bind="text: property.name, attr: { title: property.name }"></code>
                 </div>
-                <div role="cell" class="col-2 text-truncate">
+                <div role="cell" class="col-2 text-truncate table-preset-row">
                     <!-- ko if: property.type.displayAs === 'reference' -->
                     <code><a data-bind="text: property.type.name, attr: { href: $component.getReferenceUrl(property.type.name), attr: { title: property.type.name } }"></a></code>
                     <!-- /ko -->
@@ -20,7 +20,8 @@
                     <code data-bind="text: property.type.name, attr: { title: property.type.name }"></code>
                     <!-- /ko -->
                 </div>
-                <div role="cell" class="col-6" data-bind="markdown: property.description"></div>
+                <div role="cell table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                    class="col-6" data-bind="markdown: property.description"></div>
             </div>
         </div>
     </div>

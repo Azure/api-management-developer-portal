@@ -203,6 +203,25 @@ export function getWidgetTextStyleDefinition(): ComponentStyleDefinition {
     };
 }
 
+export function getConsoleWidgetTextStyleDefinition(): ComponentStyleDefinition {
+    return {
+        displayName: "Text",
+        plugins: ["typography"],
+        defaults: {
+            typography: {
+                colorKey: "colors/default"
+            }
+        }
+    };
+}
+
+export function getWidgetTitleStyleDefinition(): ComponentStyleDefinition {
+    return {
+        displayName: "Title",
+        plugins: ["typography"]
+    };
+}
+
 export function getTagInputStyleDefinition(): ComponentStyleDefinition {
     return {
         displayName: "Tag Input",
@@ -556,7 +575,15 @@ export function getAlertStyleDefinition(): ComponentStyleDefinition {
 export function getButtonStyleDefinition(): ComponentStyleDefinition {
     return {
         displayName: "Button",
-        plugins: ["background", "typography", "states", "shadow", "size", "margin", "border", "padding"]
+        plugins: ["background", "typography", "states", "shadow", "size", "margin", "border", "padding"],
+        defaults: {
+            allowedStates: [
+                "hover",
+                "focus",
+                "active",
+                "disabled"
+            ],
+        }
     }
 }
 
@@ -650,4 +677,78 @@ export function getTableHeadCellStyleDefinition(): ComponentStyleDefinition {
             }
         }
     };
+}
+
+export function getConsoleInputStyleDefinition(): ComponentStyleDefinition {
+    return {
+        displayName: "Input",
+        plugins: ["typography", "background", "border"],
+        defaults: {
+            typography: {
+                colorKey: "colors/borderColor",
+                fontStyle: "normal",
+                fontWeight: "normal",
+                fontSize: "1rem"
+            },
+            border: {
+                bottom: {
+                    width: "1px",
+                    style: "solid",
+                    colorKey: "colors/borderColor"
+                },
+                top: {
+                    width: "1px",
+                    style: "solid",
+                    colorKey: "colors/borderColor"
+                },
+                left: {
+                    width: "1px",
+                    style: "solid",
+                    colorKey: "colors/borderColor"
+                },
+                right: {
+                    width: "1px",
+                    style: "solid",
+                    colorKey: "colors/borderColor"
+                },
+
+            },
+            padding: {
+                right: 10,
+                bottom: 5
+            }
+        }
+    };
+}
+
+export function getIconButtonStyleDefinition(): ComponentStyleDefinition {
+    return {
+        displayName: "Button",
+        plugins: ["typography", "states", "border", "background"],
+        defaults: {
+            allowedStates: [
+                "hover",
+                "focus",
+                "active",
+                "disabled"
+            ],
+            typography: {
+                colorKey: "colors/default"
+            },
+            border: {
+                bottom: {
+                    width: 0
+                },
+                left: {
+                    width: 0
+                },
+                top: {
+                    width: 0
+                },
+                right: {
+                    width: 0
+                }
+            }
+        }
+    }
 }

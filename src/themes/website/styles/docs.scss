@@ -224,8 +224,6 @@ oauth-server-configuration {
         }
 
         .code-snippet-command {
-            background: none;
-            border: none;
             cursor: pointer;
 
             &:hover {
@@ -238,10 +236,6 @@ oauth-server-configuration {
         .code-snippet-heading {
             background: #EDEBE9;
             border: 1px solid #ccc;
-        }
-
-        .code-snippet-command {
-            border-left: 1px solid #ccc;
         }
     }
 }

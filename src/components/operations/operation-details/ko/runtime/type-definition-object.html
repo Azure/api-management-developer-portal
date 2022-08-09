@@ -1,6 +1,7 @@
 <!-- ko if: properties.length > 0 -->
 
-<div role="table" class="table-preset" data-bind="css: readOnly === true ? 'table-preset-schema-readonly' : 'table-preset-schema'">
+<div role="table" class="table-preset"
+    data-bind="css: readOnly === true ? 'table-preset-schema-readonly' : 'table-preset-schema'">
     <div class="d-contents" role="rowgroup">
         <div class="d-contents" role="row">
             <div role="columnheader" class="table-preset-head text-truncate">Name</div>
@@ -15,14 +16,15 @@
     <div class="d-contents" role="rowgroup">
         <!-- ko foreach: { data: properties, as: 'property' } -->
         <div class="d-contents" role="row">
-            <div role="cell" class="text-truncate" data-bind="text: property.name, attr: { title: property.name }">
+            <div role="cell" class="text-truncate table-preset-row"
+                data-bind="text: property.name, attr: { title: property.name }">
                 <span class="text-monospace" data-bind="text: property.name, attr: { title: property.name }"></span>
             </div>
-            <div role="cell" data-bind="text: property.required"></div>
+            <div role="cell" class="table-preset-row" data-bind="text: property.required"></div>
             <!-- ko if: $parent.readOnly -->
-            <div role="cell" data-bind="text: property.readOnly"></div>
+            <div role="cell" class="table-preset-row" data-bind="text: property.readOnly"></div>
             <!-- /ko -->
-            <div role="cell" class="text-truncate">
+            <div role="cell" class="text-truncate table-preset-row">
                 <!-- ko if: property.type.displayAs === 'primitive' -->
                 <span class="text-monospace"
                     data-bind="text: property.type.name, attr: { title: property.type.name }"></span>
@@ -63,7 +65,9 @@
 
                 <!-- /ko -->
             </div>
-            <div role="cell" data-bind="markdown: property.description"></div>
+            <div role="cell"
+                class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                data-bind="markdown: property.description"></div>
         </div>
         <!-- /ko -->
     </div>
