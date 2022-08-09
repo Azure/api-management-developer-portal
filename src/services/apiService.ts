@@ -23,6 +23,7 @@ import { TagGroup } from "../models/tagGroup";
 import { Bag } from "@paperbits/common";
 import { Tag } from "../models/tag";
 import { get, set } from "idb-keyval";
+import { LruCache } from "@paperbits/common/caching/lruCache";
 
 interface CacheItem {
     value: any;
@@ -33,7 +34,11 @@ const CacheItemRefreshMins = 60;
 
 export class ApiService {
 
-    constructor(private readonly mapiClient: MapiClient) { }
+    private readonly schemaCache: LruCache<Schema>;
+
+    constructor(private readonly mapiClient: MapiClient) {
+        this.schemaCache = new LruCache(100);
+    }
 
     private async addDataToCache(key: string, data: any): Promise<void> {
         if (!data) {
@@ -50,7 +55,7 @@ export class ApiService {
 
     /**
      * Returns APIs matching search request (if specified).
-     * @param searchQuery 
+     * @param searchQuery
      */
     public async getApis(searchQuery?: SearchQuery): Promise<Page<Api>> {
         const skip = searchQuery && searchQuery.skip || 0;
@@ -244,7 +249,7 @@ export class ApiService {
     /**
      * Returns API with specified ID and revision.
      * @param apiId Unique API indentifier.
-     * @param revision 
+     * @param revision
      */
     public async getApi(apiId: string, revision?: string): Promise<Api> {
         if (!apiId) {
@@ -314,7 +319,7 @@ export class ApiService {
 
     /**
      * This is a function to get all change log pages for the API
-     * 
+     *
      * @param apiId A string parameter which is the id of the API
      * @returns all changelog pages
      */
@@ -398,23 +403,28 @@ export class ApiService {
      * @param schemaId {string} ARM-formatted schema identifier.
      */
     public async getApiSchema(schemaId: string): Promise<Schema> {
-        const model = await this.getItemWithRefresh<Schema>(schemaId,  () => this.getApiSchemaData(schemaId));
-        return model;
-    }
-
-    private async getApiSchemaData(schemaId: string): Promise<Schema> {
-        const contract = await this.mapiClient.get<SchemaContract>(schemaId, [await this.mapiClient.getPortalHeader("getApiSchema")]);
+        const cachedSchema = this.schemaCache.getItem(schemaId);
+        if (cachedSchema) {
+            return cachedSchema;
+        }
+        const contract = await this.getItemWithRefresh<SchemaContract>(schemaId,  () => this.getApiSchemaData(schemaId));
         const model = new Schema(contract);
+        this.schemaCache.setItem(schemaId, model);
         return model;
     }
 
-    public async getItemWithRefresh<T>(key: string, refreshFunc: () => Promise<T>): Promise<T> {
+    private async getApiSchemaData(schemaId: string): Promise<SchemaContract> {
+        const contract = await this.mapiClient.get<SchemaContract>(schemaId, [await this.mapiClient.getPortalHeader("getApiSchema")]);
+        return contract;
+    }
+
+    private async getItemWithRefresh<T>(key: string, refreshFunc: () => Promise<T>): Promise<T> {
         const result = await this.getDataFromCache(key);
         if (result) {
             const nowTime = Date.now();
             if (nowTime - result.addTime > CacheItemRefreshMins * 60 * 1000) {
                 setTimeout(async () => {
-                    const refreshResult = await refreshFunc();                    
+                    const refreshResult = await refreshFunc();
                     await this.addDataToCache(key, refreshResult);
                 }, 0);
             }
@@ -426,18 +436,27 @@ export class ApiService {
     }
 
     public async getGQLSchema(apiId: string): Promise<Schema> {
-        const model = await this.getItemWithRefresh<Schema>(apiId,  () => this.getGQLSchemaData(apiId));
-        return model;
-    }
-    private async getGQLSchemaData(apiId: string): Promise<Schema> {
-        const result = await this.mapiClient.get<Page<SchemaContract>>(`${apiId}/schemas`, [await this.mapiClient.getPortalHeader("getSchemas")]);
-        const schemaReferences = result.value;
+        const cachedSchema = this.schemaCache.getItem(apiId);
+        if (cachedSchema) {
+            return cachedSchema;
+        }
+        const contract = await this.getItemWithRefresh<Page<SchemaContract>>(apiId,  () => this.getGQLSchemaData(apiId));
+        const schemaReferences = contract.value;
         const schemaType = this.getSchemasType(schemaReferences);
         if (schemaType === SchemaType.graphQL) {
             const schemaReference = schemaReferences.find(schema => schema.properties.contentType === schemaType);
-            return schemaReference ? new Schema(schemaReference) : undefined;
+            if (schemaReference) {
+                const model = new Schema(schemaReference);
+                this.schemaCache.setItem(apiId, model);
+                return model;
+            }
         }
         return undefined;
+    }
+
+    private async getGQLSchemaData(apiId: string): Promise<Page<SchemaContract>> {
+        const result = await this.mapiClient.get<Page<SchemaContract>>(`${apiId}/schemas`, [await this.mapiClient.getPortalHeader("getSchemas")]);
+        return result;
     }
 
     private getSchemasType(schemas: SchemaContract[]): SchemaType {
