@@ -14,7 +14,7 @@ injector.bindModule(new ApimRuntimeModule());
 
 document.addEventListener("DOMContentLoaded", () => {
     if (process.env.NODE_ENV === staticDataEnvironment) {
-       // sessionStorage.setItem("accessToken", process.env.ACCESS_TOKEN);
+        sessionStorage.setItem("accessToken", process.env.ACCESS_TOKEN);
     }
 
     injector.resolve("autostart");
