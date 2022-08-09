@@ -18,7 +18,7 @@ export class Subscription {
     public userId: string;
     public isExpired: boolean;
     public isAwaitingApproval: boolean;
-    public isRejected: boolean;
+    public isActive: boolean;
 
     constructor(contract?: SubscriptionContract) {
         this.id = Utils.getResourceName("users", contract.id, "shortId");
@@ -39,7 +39,7 @@ export class Subscription {
         this.state = SubscriptionState[contract.properties.state];
         this.isExpired = this.state === SubscriptionState.expired;
         this.isAwaitingApproval = this.state === SubscriptionState.submitted;
-        this.isRejected = this.state === SubscriptionState.rejected;
+        this.isActive = this.state === SubscriptionState.active;
     }
 
     public canBeRenewed(): boolean {
