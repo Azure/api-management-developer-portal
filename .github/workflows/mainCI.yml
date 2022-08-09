@@ -23,7 +23,7 @@ jobs:
           
       - name: Scan for accessibility issues
         env:
-          ACCESS_TOKEN: ${{ secrets.ACESS_TOKEN }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         uses: microsoft/accessibility-insights-action@v2
         with: 
           repo-token: ${{ secrets.GITHUB_TOKEN }}
