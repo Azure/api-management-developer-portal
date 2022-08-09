@@ -70,8 +70,11 @@ export const pageUrlProfile = "/profile";
 export const pageUrlHome = "/";
 export const pageUrl404 = "/404";
 export const pageUrl500 = "/500";
+//[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="False positive")]
 export const pageUrlChangePassword = "/change-password";
+//[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="False positive")]
 export const pageUrlConfirmPassword = "/confirm-password";
+//[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="False positive")]
 export const pageUrlResetPassword = "/reset-password";
 export const pageUrlReference = "/api-details";
 
@@ -278,6 +281,7 @@ export enum GrantTypes {
      * The Resource owner password grant type is used to exchange a username and password for an access
      * token directly. 
      */
+    //[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="False positive")]
     password = "password"
 }
 

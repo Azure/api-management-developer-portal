@@ -131,7 +131,7 @@
                             <div class="input-group has-validation">
                                 <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                     placeholder="name" spellcheck="false" aria-label="Parameter name"
-                                    data-bind="textInput: parameter.name">
+                                    data-bind="textInput: parameter.name, attr:{ 'readonly': parameter.required }">
                                 <span class="invalid-feedback" data-bind="validationMessage: parameter.name"></span>
                             </div>
                         </div>
@@ -147,12 +147,13 @@
                                 <!-- ko if: !parameter.secret-->
                                 <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                     placeholder="value" spellcheck="false" aria-label="Parameter value"
-                                    data-bind="textInput: parameter.value">
+                                    data-bind="textInput: parameter.value, attr:{ 'aria-required': parameter.required }">
+                                <span class="invalid-feedback" data-bind="validationMessage: parameter.value"></span>
                                 <!-- /ko -->
                                 <!-- ko if: parameter.secret-->
                                 <input autocomplete="off" class="form-control form-control-sm input" placeholder="value"
                                     spellcheck="false" aria-label="Parameter value"
-                                    data-bind=" attr: {type: parameter.inputType}, textInput: parameter.value">
+                                    data-bind=" attr: {type: parameter.inputType, 'aria-required': parameter.required }, textInput: parameter.value">
                                 <button data-bind="click: () => $component.toggleSecretParameter(parameter)"
                                     class="input-group-addon reveal-button">
                                     <i
@@ -163,11 +164,13 @@
                             </div>
                         </div>
                     </div>
+                    <!-- ko ifnot: parameter.required -->
                     <div class="col-1">
                         <a href="#" role="button" data-bind="click: $component.removeQueryParameter"
                             class="btn-centered-vert btn-inline ivon-button" aria-label="Remove parameter"><i
                                 class="icon-emb icon-emb-trash icon-button"></i></a>
                     </div>
+                    <!-- /ko -->
                 </div>
             </div>
             <!-- /ko -->
@@ -204,7 +207,7 @@
                             <div class="input-group has-validation">
                                 <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                     placeholder="name" spellcheck="false" aria-label="Header name"
-                                    data-bind="textInput: header.name">
+                                    data-bind="textInput: header.name, attr:{ 'readonly': header.required }">
                                 <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
                             </div>
                         </div>
@@ -220,12 +223,12 @@
                                 <!-- ko if: !header.secret -->
                                 <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                     placeholder="value" spellcheck="false" aria-label="Header value"
-                                    data-bind="textInput: header.value">
+                                    data-bind="textInput: header.value, attr:{'aria-required': header.required}">
                                 <!-- /ko -->
                                 <!-- ko if: header.secret -->
                                 <input autocomplete="off" class="form-control form-control-sm input" placeholder="value"
                                     spellcheck="false" aria-label="Header value"
-                                    data-bind="attr: {type: header.inputTypeValue}, textInput: header.value">
+                                    data-bind="attr: {type: header.inputTypeValue, 'aria-required': header.required}, textInput: header.value">
                                 <button data-bind="click: () => $component.toggleSecretHeader(header)"
                                     class="input-group-addon reveal-button">
                                     <i
@@ -237,11 +240,13 @@
                             <!-- /ko -->
                         </div>
                     </div>
+                    <!-- ko ifnot: header.required -->
                     <div class="col-1">
                         <a href="#" role="button" data-bind="click: $component.removeHeader"
                             class="btn-centered-vert btn-inline" aria-label="Remove header"><i
                                 class="icon-emb icon-emb-trash icon-button"></i></a>
                     </div>
+                    <!-- /ko -->
                 </div>
             </div>
             <!-- /ko -->
