@@ -14,8 +14,7 @@ injector.bindModule(new ApimRuntimeModule());
 
 document.addEventListener("DOMContentLoaded", () => {
     if (process.env.NODE_ENV === staticDataEnvironment) {
-        // Fake token for testing the authenticated version, it's not valid but it respects the regex and contains an expiry date
-        sessionStorage.setItem("accessToken", "6189460d4634612164e10999&292202041536&FWpHkq3S32Bxrgs+Mq0i8XTe6eOkv7zbABcdKAg1mofztdVAY7E8DUdFWC/7991FMuH5I5W1RfuJ0GzUjVsEqQ==");
+        sessionStorage.setItem("accessToken", process.env.ACCESS_TOKEN);
     }
 
     injector.resolve("autostart");
