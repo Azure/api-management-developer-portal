@@ -23,7 +23,8 @@
     </div>
 
     <!-- ko if: operation().description  -->
-    <div data-bind="markdown: operation().description"></div>
+    <div class="widget-text content-inherit-color content-inherit-font-weight content-inherit-font-style"
+        data-bind="markdown: operation().description"></div>
     <!-- /ko -->
 
     <!-- ko if: tags().length > 0 -->
@@ -38,7 +39,7 @@
         <h3 class="title-text">Request</h3>
 
         <div class="collapsible-container">
-            <span class="text-monospace text-wrap"
+            <span class="text-monospace text-wrap widget-text"
                 data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
 
             <!-- ko if: operation().parameters.length > 0 -->
@@ -326,14 +327,14 @@
 <!-- /ko -->
 
 <div class="collapsible">
-    <h3>Socket URL</h3>
+    <h3 class="title-text">Socket URL</h3>
     <div class="collapsible-container">
-        <span class="text-monospace" data-bind="text: $component.requestUrlSample"></span>
+        <span class="text-monospace widget-text" data-bind="text: $component.requestUrlSample"></span>
     </div>
 
-    <h3>Protocol</h3>
+    <h3 class="title-text">Protocol</h3>
     <div class="collapsible-container">
-        <span class="text-monospace" data-bind="text: $component.protocol"></span>
+        <span class="text-monospace widget-text" data-bind="text: $component.protocol"></span>
     </div>
 </div>
 
@@ -345,8 +346,8 @@
 <div class="animation-fade-in">
     <div class="row flex flex-row">
         <div class="col-md-11 text-wrap">
-            <h2>GraphQL endpoint</h2>
-            <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
+            <h2 class="operation-name">GraphQL endpoint</h2>
+            <span class="monospace text-wrap widget-text" data-bind="text: $component.requestUrlSample"></span>
         </div>
         <!-- ko if: $component.enableConsole -->
         <div class="col-md-1">

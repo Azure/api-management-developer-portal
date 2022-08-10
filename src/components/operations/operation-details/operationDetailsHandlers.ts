@@ -62,6 +62,12 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                         value: "#ccc"
                     }
                 },
+                gqlOperationTypeColor: {
+                    displayName: "GraphQL Operation TypeColor",
+                    defaults: {
+                        value: "#b11a04"
+                    }
+                },
             },
             components: {
                 operationDetails: {
@@ -115,7 +121,7 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                                 }
                             }
                         },
-                        titleText: DefaultStyleDefinitions.getWidgetTextStyleDefinition(),
+                        titleText: DefaultStyleDefinitions.getWidgetTitleStyleDefinition(),
                         widgetText: DefaultStyleDefinitions.getWidgetTextStyleDefinition(),
                         tagCard: DefaultStyleDefinitions.getTagCardStyleDefinition(),
                         tablePresetHead: DefaultStyleDefinitions.getTableHeadCellStyleDefinition(),
@@ -156,6 +162,7 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                         connectButton: DefaultStyleDefinitions.getButtonStyleDefinition(),
                         iconButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         collapseButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
+                        explorerCollapseButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         closeButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         refreshButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         consoleCodeSnippetCommand: {
@@ -233,6 +240,24 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                         },
                         consoleText: DefaultStyleDefinitions.getConsoleWidgetTextStyleDefinition(),
                         consoleTitle: DefaultStyleDefinitions.getWidgetTitleStyleDefinition(),
+                        explorerTitle: {
+                            displayName: "Explorer Title",
+                            plugins: ["typography"]
+                        },
+                        operationName: {
+                            displayName: "Operation Name",
+                            plugins: ["typography"]
+                        },
+                        operationTypeGql: {
+                            displayName: "GraphQL Operation Type",
+                            plugins: ["typography"],
+                            defaults: {
+                                typography: {
+                                    fontWeight: "bold",
+                                    colorKey: "colors/gqlOperationTypeColor"
+                                }
+                            }
+                        },
                         input: DefaultStyleDefinitions.getConsoleInputStyleDefinition(),
                         combobox: DefaultStyleDefinitions.getComboboxStyleDefinition(),
                         operationConsole: {

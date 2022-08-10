@@ -5,9 +5,9 @@
 <!-- /ko -->
 
 <!-- ko ifnot: working -->
-<div class="flex flex-column fit animation-fade-in" data-bind="dialog: {}">
+<div class="flex flex-column fit animation-fade-in  operation-console" data-bind="dialog: {}">
     <div class="flex-item flex-grow">
-        <div class="panel panel-dark operation-console" data-bind="with: consoleOperation">
+        <div class="panel panel-dark" data-bind="with: consoleOperation">
             <button type="button" tabindex="0" class="no-border pull-right close-button" data-dismiss="modal"
                 aria-label="Close console" data-bind="click: $parents[1].closeConsole">
                 <i class="icon-emb icon-emb-simple-remove"></i>
