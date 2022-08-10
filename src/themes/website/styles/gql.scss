@@ -310,24 +310,12 @@
     }
 }
 
-.input-node-color {
-    color: $gql-input-node-color;
-}
-
-.not-input-node-color {
-    color: $gql-not-input-node-color;
-}
 
 .presentation-item {
     padding: 2px 10px;
 
     label {
         margin-bottom: 0;
-    }
-
-    select {
-        background-color: $form-control-bg-color;
-        color: $gql-not-input-node-color;
     }
 }
 

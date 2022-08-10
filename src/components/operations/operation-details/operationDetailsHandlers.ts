@@ -68,6 +68,18 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                         value: "#b11a04"
                     }
                 },
+                gqlNotInputNodeColor: {
+                    displayName: "GraphQL Not Input Node Color",
+                    defaults: {
+                        value: "#0F7EBD"
+                    }
+                },
+                gqlInputNodeColor: {
+                    displayName: "GraphQL Input Node Color",
+                    defaults: {
+                        value: "#8b2bb9"
+                    }
+                }
             },
             components: {
                 operationDetails: {
@@ -284,6 +296,24 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                             defaults: {
                                 typography: {
                                     colorKey: "colors/mutedTextColor"
+                                }
+                            }
+                        },
+                        inputNode: {
+                            displayName: "GraphQL Input Node",
+                            plugins: ["typography"],
+                            defaults: {
+                                typography: {
+                                    colorKey: "colors/gqlInputNodeColor"
+                                }
+                            }
+                        },
+                        notInputNode: {
+                            displayName: "GraphQL Not Input Node",
+                            plugins: ["typography"],
+                            defaults: {
+                                typography: {
+                                    colorKey: "colors/gqlNotInputNodeColor"
                                 }
                             }
                         }
