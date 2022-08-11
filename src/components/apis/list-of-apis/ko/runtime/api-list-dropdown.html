@@ -36,7 +36,7 @@
                 <!-- ko foreach: { data: group.items, as: 'item' } -->
                 <a href="#" role="listitem" class="nav-link text-truncate" data-dismiss
                     data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedApiName() === item.name }">
-                    <span data-bind="text: item.displayName"></span>
+                    <span class="widget-text" data-bind="text: item.displayName"></span>
                     <!-- ko if: item.type === 'soap' -->
                     <span class="badge api-type-badge">SOAP</span>
                     <!-- /ko -->
@@ -47,7 +47,7 @@
                     <span class="badge api-type-badge">GraphQL</span>
                     <!-- /ko -->
                     <!-- ko if: item.apiVersion -->
-                    - <span data-bind="text: item.apiVersion"></span>
+                    - <span class="widget-text" data-bind="text: item.apiVersion"></span>
                     <!-- /ko -->
                 </a>
                 <!-- /ko -->
@@ -55,7 +55,7 @@
             <!-- /ko -->
 
             <!-- ko if: apiGroups().length === 0 -->
-            <div class="list-item-empty">No APIs found</div>
+            <div class="widget-text list-item-empty">No APIs found</div>
             <!-- /ko -->
 
             <!-- ko ifnot: working -->

@@ -15,10 +15,10 @@
                     <!-- ko if: nodeChild.isInputNode() && nodeChild.selected() -->
                     <div class="inline-block">
                         <!-- ko if: nodeChild.isScalarType() -->
-                        <input type="text" data-bind="value: nodeChild.inputValue, valueUpdate: 'input', event: { input: nodeChild.changeInput}" class="input"/>
+                        <input type="text" data-bind="value: nodeChild.inputValue, valueUpdate: 'input', event: { input: nodeChild.changeInput}" class="explorer-input"/>
                         <!--/ko-->
                         <!-- ko if: nodeChild.isEnumType() -->
-                        <select data-bind="options: nodeChild.options(), value: nodeChild.inputValue, event: { change: nodeChild.changeInput}" class="input"></select>
+                        <select data-bind="options: nodeChild.options(), value: nodeChild.inputValue, event: { change: nodeChild.changeInput}" class="explorer-input"></select>
                         <!--/ko-->
                     </div>
                     <!--/ko-->

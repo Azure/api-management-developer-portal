@@ -138,6 +138,8 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                         tagCard: DefaultStyleDefinitions.getTagCardStyleDefinition(),
                         tablePresetHead: DefaultStyleDefinitions.getTableHeadCellStyleDefinition(),
                         tablePresetRow: DefaultStyleDefinitions.getTableRowCellStyleDefinition(),
+                        consoleTablePresetHead: DefaultStyleDefinitions.getTableHeadCellStyleDefinition(),
+                        consoleTablePresetRow: DefaultStyleDefinitions.getTableRowCellStyleDefinition(),
                         codeSnippetCommand: {
                             displayName: "Button",
                             plugins: ["typography", "states", "border", "background"],
@@ -175,6 +177,7 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                         iconButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         collapseButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         explorerCollapseButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
+                        operationCollapseButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         closeButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         refreshButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         consoleCodeSnippetCommand: {
@@ -271,6 +274,7 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                             }
                         },
                         input: DefaultStyleDefinitions.getConsoleInputStyleDefinition(),
+                        explorerInput: DefaultStyleDefinitions.getConsoleInputStyleDefinition(),
                         combobox: DefaultStyleDefinitions.getComboboxStyleDefinition(),
                         operationConsole: {
                             displayName: "Test Console",

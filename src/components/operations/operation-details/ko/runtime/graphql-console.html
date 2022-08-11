@@ -169,14 +169,14 @@
                 <div class="gql-explorer-grid">
                     <h4 class="explorer-title">Explorer</h4>
                     <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
-                        <input class="form-control search input" type="search" aria-label="Search"
+                        <input class="form-control search explorer-input" type="search" aria-label="Search"
                             placeholder="Search operations" spellcheck="false" data-bind="textInput: filter" />
 
                         <div class="explorer-operations scrollable">
                             <!-- ko foreach: { data: graphDocService.availableTypes, as: 'type' } -->
                             <div>
                                 <span class="operation-type-gql" data-bind="text: type"></span>
-                                <button class="no-border explorer-collapse-button"
+                                <button class="no-border operation-collapse-button"
                                     data-bind="click: $component.collapse('collapsed' + type)">
                                     <!-- ko if: $component.collapsedType(type) -->
                                     <i class="icon-emb icon-emb-chevron-down"></i>

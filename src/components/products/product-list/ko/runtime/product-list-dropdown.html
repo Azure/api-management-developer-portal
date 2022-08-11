@@ -20,12 +20,12 @@
                 <!-- ko ifnot: working -->
 
                 <!-- ko foreach: { data: products, as: 'product' } -->
-                <a href="#" role="listitem" class="nav-link text-truncate inherit-color" data-dismiss
+                <a href="#" role="listitem" class="nav-link text-truncate widget-text" data-dismiss
                     data-bind="attr: { href: $component.getProductUrl(product) }, text: product.displayName, css: { 'nav-link-active': $component.selectedProduct() === product }"></a>
                 <!-- /ko -->
 
                 <!-- ko if: products().length === 0 -->
-                <span>No products found</span>
+                <span class="widget-text">No products found</span>
                 <!-- /ko -->
 
                 <!-- ko ifnot: working -->

@@ -153,12 +153,13 @@ export class ListOfApisDropdownHandlers implements IWidgetHandler {
                     displayName: "List of APIs Dropdown",
                     plugins: ["margin", "padding", "typography", "background"],
                     components: {
-                        dropdownInput: DefaultStyleDefinitions.getDropdownInputButtonStyleDefinition(),
+                        dropdownInput: DefaultStyleDefinitions.getDropdownInputStyleDefinition(),
                         dropdownInputButton: DefaultStyleDefinitions.getDropdownInputButtonStyleDefinition(),
                         dropdownContainer: DefaultStyleDefinitions.getDropdownContainerStyleDefinition(),
                         searchInput: DefaultStyleDefinitions.getSearchInputStyleDefinition(),
                         tagCard: DefaultStyleDefinitions.getTagCardStyleDefinition(),
-                        apiTypeBadge: DefaultStyleDefinitions.getApiTypeBadgeStyleDefinition()
+                        apiTypeBadge: DefaultStyleDefinitions.getApiTypeBadgeStyleDefinition(),
+                        widgetText: DefaultStyleDefinitions.getWidgetTextStyleDefinition()
                     }
                 }
             }
