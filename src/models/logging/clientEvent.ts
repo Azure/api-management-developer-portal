@@ -15,6 +15,11 @@ export class ClientEvent {
     public eventData: string;
 
     /**
+     * Stack of error if applies.
+     */
+    public exception: string;
+
+    /**
      * ISO representation of current time, e.g. `2022-01-01T00:00:00.000Z`.
      */
     public timestamp: string;
@@ -30,7 +35,8 @@ export class ClientEvent {
             "message": this.message,
             "eventData": this.eventData,
             "timestamp": this.timestamp,
-            "activityId": this.activityId
+            "activityId": this.activityId,
+            "exception": this.exception
         }
     }
 }
