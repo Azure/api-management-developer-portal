@@ -541,9 +541,14 @@ export class OperationConsole {
             this.logSentRequest(this.api().name, consoleOperation.opeationName, method, response.statusCode.toString());
         }
         catch (error) {
-            this.logSentRequest(this.api().name, consoleOperation.opeationName, method, error.code?.toString());
+            var errorCode = "ErrorCodeNotAvailble";
+            if (error.code){
+                errorCode = error.code.toString();
+            }
+
+            this.logSentRequest(this.api().name, consoleOperation.opeationName, method, errorCode);
             
-            if (error.code && error.code === "RequestError") {
+            if (errorCode === "RequestError") {
                 this.requestError(`Since the browser initiates the request, it requires Cross-Origin Resource Sharing (CORS) enabled on the server. <a href="https://aka.ms/AA4e482" target="_blank">Learn more</a>`);
             }
         }
