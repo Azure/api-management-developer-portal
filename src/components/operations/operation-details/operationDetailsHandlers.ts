@@ -62,6 +62,24 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                         value: "#ccc"
                     }
                 },
+                gqlOperationTypeColor: {
+                    displayName: "GraphQL Operation TypeColor",
+                    defaults: {
+                        value: "#b11a04"
+                    }
+                },
+                gqlNotInputNodeColor: {
+                    displayName: "GraphQL Not Input Node Color",
+                    defaults: {
+                        value: "#0F7EBD"
+                    }
+                },
+                gqlInputNodeColor: {
+                    displayName: "GraphQL Input Node Color",
+                    defaults: {
+                        value: "#8b2bb9"
+                    }
+                }
             },
             components: {
                 operationDetails: {
@@ -115,11 +133,13 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                                 }
                             }
                         },
-                        titleText: DefaultStyleDefinitions.getWidgetTextStyleDefinition(),
+                        titleText: DefaultStyleDefinitions.getWidgetTitleStyleDefinition(),
                         widgetText: DefaultStyleDefinitions.getWidgetTextStyleDefinition(),
                         tagCard: DefaultStyleDefinitions.getTagCardStyleDefinition(),
                         tablePresetHead: DefaultStyleDefinitions.getTableHeadCellStyleDefinition(),
                         tablePresetRow: DefaultStyleDefinitions.getTableRowCellStyleDefinition(),
+                        consoleTablePresetHead: DefaultStyleDefinitions.getTableHeadCellStyleDefinition(),
+                        consoleTablePresetRow: DefaultStyleDefinitions.getTableRowCellStyleDefinition(),
                         codeSnippetCommand: {
                             displayName: "Button",
                             plugins: ["typography", "states", "border", "background"],
@@ -156,6 +176,8 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                         connectButton: DefaultStyleDefinitions.getButtonStyleDefinition(),
                         iconButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         collapseButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
+                        explorerCollapseButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
+                        operationCollapseButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         closeButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         refreshButton: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         consoleCodeSnippetCommand: {
@@ -233,7 +255,26 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                         },
                         consoleText: DefaultStyleDefinitions.getConsoleWidgetTextStyleDefinition(),
                         consoleTitle: DefaultStyleDefinitions.getWidgetTitleStyleDefinition(),
+                        explorerTitle: {
+                            displayName: "Explorer Title",
+                            plugins: ["typography"]
+                        },
+                        operationName: {
+                            displayName: "Operation Name",
+                            plugins: ["typography"]
+                        },
+                        operationTypeGql: {
+                            displayName: "GraphQL Operation Type",
+                            plugins: ["typography"],
+                            defaults: {
+                                typography: {
+                                    fontWeight: "bold",
+                                    colorKey: "colors/gqlOperationTypeColor"
+                                }
+                            }
+                        },
                         input: DefaultStyleDefinitions.getConsoleInputStyleDefinition(),
+                        explorerInput: DefaultStyleDefinitions.getConsoleInputStyleDefinition(),
                         combobox: DefaultStyleDefinitions.getComboboxStyleDefinition(),
                         operationConsole: {
                             displayName: "Test Console",
@@ -259,6 +300,24 @@ export class OperationDetailsHandlers implements IWidgetHandler {
                             defaults: {
                                 typography: {
                                     colorKey: "colors/mutedTextColor"
+                                }
+                            }
+                        },
+                        inputNode: {
+                            displayName: "GraphQL Input Node",
+                            plugins: ["typography"],
+                            defaults: {
+                                typography: {
+                                    colorKey: "colors/gqlInputNodeColor"
+                                }
+                            }
+                        },
+                        notInputNode: {
+                            displayName: "GraphQL Not Input Node",
+                            plugins: ["typography"],
+                            defaults: {
+                                typography: {
+                                    colorKey: "colors/gqlNotInputNodeColor"
                                 }
                             }
                         }
