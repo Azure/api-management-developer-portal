@@ -23,14 +23,14 @@ export default interface IDelegationService {
      * @param returnUrl - url to redirect to after sign-in
      * @returns delegation sign-in url
      */
-    getDelegationSigninUrl(returnUrl: string): Promise<string>
+    getDelegatedSigninUrl(returnUrl: string): Promise<string>
 
     /**
      * Get delegation sign-up url
      * @param returnUrl - url to redirect to after sign-up
      * @returns delegation sign-up url
      */
-    getDelegationSignupUrl(returnUrl: string): Promise<string>
+    getDelegatedSignupUrl(returnUrl: string): Promise<string>
 
     /**
      * Get user specific delegation url

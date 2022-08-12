@@ -5,10 +5,10 @@ import { Bag } from "@paperbits/common";
 
 export class StaticDelegationService implements IDelegationService {
 
-    getDelegationSigninUrl(returnUrl: string): Promise<string> {
+    getDelegatedSigninUrl(returnUrl: string): Promise<string> {
         throw new Error("Method not implemented.");
     }
-    getDelegationSignupUrl(returnUrl: string): Promise<string> {
+    getDelegatedSignupUrl(returnUrl: string): Promise<string> {
         throw new Error("Method not implemented.");
     }
     getUserDelegationUrl(userId: string, action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
