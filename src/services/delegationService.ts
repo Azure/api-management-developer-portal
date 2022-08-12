@@ -35,7 +35,7 @@ export class DelegationService implements IDelegationService {
         return delegationSettings?.subscribe
     }
 
-    public async getDelegationSigninUrl(returnUrl: string): Promise<string> {
+    public async getDelegatedSigninUrl(returnUrl: string): Promise<string> {
         var payload = {
             [DelegationParameters.ReturnUrl]: returnUrl
         }
@@ -43,7 +43,7 @@ export class DelegationService implements IDelegationService {
         return response.ssoUrl;
     }
 
-    public async getDelegationSignupUrl(returnUrl: string): Promise<string> {
+    public async getDelegatedSignupUrl(returnUrl: string): Promise<string> {
         var payload = {
             [DelegationParameters.ReturnUrl]: returnUrl
         }

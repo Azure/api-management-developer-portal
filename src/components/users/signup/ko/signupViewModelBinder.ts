@@ -37,7 +37,7 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
 
         const isDelegationEnabled = await this.delegationService.isUserRegistrationDelegationEnabled();
         if (isDelegationEnabled) {
-            const delegationUrl = await this.delegationService.getDelegationSignupUrl("/");
+            const delegationUrl = await this.delegationService.getDelegatedSignupUrl("/");
             if (delegationUrl) {
                 params["delegationUrl"] = delegationUrl;
             }
