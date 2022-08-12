@@ -6,6 +6,7 @@ import { StaticSettingsProvider } from "./../components/staticSettingsProvider";
 import { assert } from "chai";
 import { Utils } from "../utils";
 import * as Constants from "./../constants";
+import { AccessToken } from "../authentication";
 
 interface Validity {
     isValid: boolean;
@@ -48,7 +49,7 @@ describe("Data API Client", async () => {
         const httpClient = new MockHttpClient();
         const authenticator = new StaticAuthenticator();
         const settings = await settingsProvider.getSettings();
-        authenticator.setAccessToken(settings[Constants.SettingNames.managementApiAccessToken]);
+        authenticator.setAccessToken(AccessToken.parse(settings[Constants.SettingNames.managementApiAccessToken]));
 
         const mainPath = "/isValid"
         const path = `/users/${(await authenticator.getAccessToken()).userId}${mainPath}`
