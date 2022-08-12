@@ -37,7 +37,9 @@ export class DetailsOfApiHandlers implements IWidgetHandler {
                             displayName: "Title",
                             plugins: ["typography"]
                         },
-                        apiTypeBadge: DefaultStyleDefinitions.getApiTypeBadgeStyleDefinition()
+                        apiTypeBadge: DefaultStyleDefinitions.getApiTypeBadgeStyleDefinition(),
+                        widgetText: DefaultStyleDefinitions.getWidgetTextStyleDefinition(),
+                        detailsTitle: DefaultStyleDefinitions.getWidgetTitleStyleDefinition()
                     }
                 }
             }

@@ -5,9 +5,9 @@
 <!-- /ko -->
 
 <!-- ko ifnot: working -->
-<div class="flex flex-column fit animation-fade-in" data-bind="dialog: {}">
+<div class="flex flex-column fit animation-fade-in  operation-console" data-bind="dialog: {}">
     <div class="flex-item flex-grow">
-        <div class="panel panel-dark operation-console" data-bind="with: consoleOperation">
+        <div class="panel panel-dark" data-bind="with: consoleOperation">
             <button type="button" tabindex="0" class="no-border pull-right close-button" data-dismiss="modal"
                 aria-label="Close console" data-bind="click: $parents[1].closeConsole">
                 <i class="icon-emb icon-emb-simple-remove"></i>
@@ -324,7 +324,8 @@
                 </div>
                 <div class="col-2 flex justify-content-end">
                     <!-- ko if: request.isBodyEdited() -->
-                    <i class="icon-emb icon-emb-spinner refresh-button" style="cursor: pointer; display: flex; align-self: center;"
+                    <i class="icon-emb icon-emb-spinner refresh-button"
+                        style="cursor: pointer; display: flex; align-self: center;"
                         data-bind="click: $component.revertBody"></i>
                     <!-- /ko -->
                 </div>
@@ -382,8 +383,8 @@
 
         <!-- ko ifnot: api().type === 'websocket' -->
         <div class="panel panel-dark panel-highlight flex-item flex-grow menu menu-horizontal">
-            <h3 class="console-title">HTTP request
-                <button aria-label="Collapse parameters" class="no-border collapse-button"
+            <h3 class="explorer-title">HTTP request
+                <button aria-label="Collapse parameters" class="no-border explorer-collapse-button"
                     data-bind="activate: $component.collapseRequest">
                     <!-- ko if: $component.collapsedRequest -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
@@ -396,7 +397,7 @@
 
             <!-- ko ifnot: $component.collapsedRequest -->
             <!-- ko ifnot: operation().request.isFormData() -->
-            <select aria-label="Programming language" id="requestLanguages" class="form-control input"
+            <select aria-label="Programming language" id="requestLanguages" class="form-control explorer-input"
                 data-bind="value: $component.selectedLanguage">
                 <!-- ko foreach: { data: requestLanguages, as: 'requestLanguage' } -->
                 <option data-bind="value: requestLanguage.value, text: requestLanguage.text"></option>
@@ -432,8 +433,8 @@
 
         <!-- ko if: api().type === 'websocket' -->
         <div class="panel panel-dark panel-highlight flex-item flex-grow menu menu-horizontal">
-            <h3 class="console-title">WebSocket request
-                <button aria-label="Collapse parameters" class="no-border collapse-button"
+            <h3 class="explorer-title">WebSocket request
+                <button aria-label="Collapse parameters" class="no-border explorer-collapse-button"
                     data-bind="activate: $component.collapseRequest">
                     <!-- ko if: $component.collapsedRequest -->
                     <i class="icon-emb icon-emb-chevron-down"></i>
@@ -443,7 +444,7 @@
                     <!-- /ko -->
             </h3>
             <!-- ko ifnot: $component.collapsedRequest -->
-            <select aria-label="Programming language" id="requestLanguages" class="form-control input"
+            <select aria-label="Programming language" id="requestLanguages" class="form-control explorer-input"
                 data-bind="value: $component.selectedLanguage">
                 <!-- ko foreach: { data: requestLanguages, as: 'requestLanguage' } -->
                 <option data-bind="value: requestLanguage.value, text: requestLanguage.text"></option>
@@ -461,8 +462,8 @@
                         <i class="icon-emb icon-emb-eye"></i> Show
                         <!-- /ko -->
                     </button>
-                    <button class="console-code-snippet-command" data-bind="copyToClipboard: $component.getPlainTextCodeSample"
-                        aria-label="Copy to clipboard">
+                    <button class="console-code-snippet-command"
+                        data-bind="copyToClipboard: $component.getPlainTextCodeSample" aria-label="Copy to clipboard">
                         <i class="icon-emb icon-emb-duplicate"></i> Copy
                     </button>
                 </div>
@@ -473,7 +474,7 @@
                 data-bind="syntaxHighlight: { code: $component.codeSample, language: $component.selectedLanguage }"></pre>
             <!-- /ko -->
             <!-- ko if: wsConnected -->
-            <h3 class="console-title">Payload</h3>
+            <h3 class="explorer-title">Payload</h3>
             <div class="flex justify-content-end">
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="wsDataFormat" id="wsDataFormatRaw" value="raw"
@@ -500,7 +501,7 @@
 
             <div class="flex flex-column align-items-end">
                 <div class="btn-group" role="group">
-                    <button type="button send-button" class="button button-primary btn-sm"
+                    <button type="button" class="button button-primary btn-sm send-button"
                         data-bind="click: wsSendData, attr: { disabled: wsSending }, text: wsSendStatus">
                         Send
                     </button>
@@ -508,13 +509,13 @@
             </div>
             <!-- /ko -->
 
-            <h3 class="console-title">Output</h3>
+            <h3 class="explorer-title">Output</h3>
             <!-- ko if: wsLogItems().length > 0 -->
             <div class="code-snippet">
                 <div class="code-snippet-heading">
-                    <button class="console-code-snippet-command" data-bind="click: $component.clearLogs, disabled: wsSending"
-                        aria-label="Clear logs">
-                        <i class="icon-emb icon-emb-trash icon-button"></i> Clear
+                    <button class="console-code-snippet-command"
+                        data-bind="click: $component.clearLogs, disabled: wsSending" aria-label="Clear logs">
+                        <i class="icon-emb icon-emb-trash"></i> Clear
                     </button>
                 </div>
             </div>
@@ -522,20 +523,20 @@
             <div class="table-preset table-preset-ws-logs ws-logs-items" data-bind="scrollintoview: {}">
                 <div class="d-contents" role="rowgroup">
                     <div class="d-contents" role="row">
-                        <div role="columnheader" class="table-preset-head">Name</div>
-                        <div role="columnheader" class="table-preset-head"></div>
-                        <div role="columnheader" class="table-preset-head">Data</div>
+                        <div role="columnheader" class="console-table-preset-head">Name</div>
+                        <div role="columnheader" class="console-table-preset-head"></div>
+                        <div role="columnheader" class="console-table-preset-head">Data</div>
                     </div>
                 </div>
                 <div class="d-contents table-preset-v-scroll" role="rowgroup">
                     <!-- ko foreach: { data: wsLogItems, as: 'item' } -->
                     <div class="d-contents" role="row">
-                        <div role="cell" data-bind="text: item.logTime">
+                        <div role="cell" class="console-table-preset-row" data-bind="text: item.logTime">
                         </div>
-                        <div role="cell">
+                        <div role="cell" class="console-table-preset-row">
                             <i data-bind="attr: { 'ws-log-type': item.logType }"></i>
                         </div>
-                        <div role="cell" class="text-truncate" data-bind="text: item.logData">
+                        <div role="cell" class="text-truncate console-table-preset-row" data-bind="text: item.logData">
                         </div>
                     </div>
                     <!-- /ko -->
@@ -583,13 +584,13 @@
         <div class="flex flex-column align-items-end">
             <div class="btn-group" role="group">
                 <!-- ko if: !$component.sendingRequest() && $component.selectedLanguage() === 'http' -->
-                <button type="button send-button" class="button button-primary btn-sm"
+                <button type="button" class="button button-primary btn-sm send-button"
                     data-bind="click: validateAndSendRequest">
                     Send
                 </button>
                 <!-- /ko -->
                 <!-- ko if: sendingRequest -->
-                <button type="button send-button" class="button button-primary btn-sm" disabled>
+                <button type="button" class="button button-primary btn-sm send-button" disabled>
                     Sending...
                 </button>
                 <!-- /ko -->

@@ -23,7 +23,8 @@
     </div>
 
     <!-- ko if: operation().description  -->
-    <div data-bind="markdown: operation().description"></div>
+    <div class="widget-text content-inherit-color content-inherit-font-weight content-inherit-font-style"
+        data-bind="markdown: operation().description"></div>
     <!-- /ko -->
 
     <!-- ko if: tags().length > 0 -->
@@ -38,7 +39,7 @@
         <h3 class="title-text">Request</h3>
 
         <div class="collapsible-container">
-            <span class="text-monospace text-wrap"
+            <span class="text-monospace text-wrap widget-text"
                 data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
 
             <!-- ko if: operation().parameters.length > 0 -->
@@ -60,10 +61,12 @@
                     <div class="d-contents" role="row">
                         <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
-                        <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
-                        <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
-                        <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type"></div>
-                        <div role="cell">
+                        <div role="cell" class="text-truncate table-preset-row" data-bind="text: parameter.in"></div>
+                        <div role="cell" class="text-truncate table-preset-row" data-bind="text: parameter.required">
+                        </div>
+                        <div role="cell" class="text-truncate text-monospace table-preset-row"
+                            data-bind="text: parameter.type"></div>
+                        <div role="cell" class="table-preset-row">
                             <!-- ko foreach: { data: parameter.examples, as: 'example' } -->
                             <p>
                                 <!-- ko ifnot: example.title === "default" && !example.description && parameter.examples.length === 1 -->
@@ -74,7 +77,8 @@
                             </p>
                             <!-- /ko -->
                         </div>
-                        <div role="cell">
+                        <div role="cell"
+                            class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style">
                             <span data-bind="markdown: parameter.description"></span>
                         </div>
                     </div>
@@ -104,7 +108,7 @@
                         <div role="cell" class="text-truncate table-preset-row" data-bind="text: header.required"></div>
                         <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: header.type, attr: { title: header.type }"></div>
-                        <div role="cell">
+                        <div role="cell" class="table-preset-row">
                             <!-- ko foreach: { data: header.examples, as: 'example' } -->
                             <p>
                                 <span data-bind="text: example.title"></span>:
@@ -113,7 +117,8 @@
                             </p>
                             <!-- /ko -->
                         </div>
-                        <div role="cell">
+                        <div role="cell"
+                            class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style">
                             <span data-bind="markdown: header.description"></span>
                         </div>
                     </div>
@@ -326,14 +331,14 @@
 <!-- /ko -->
 
 <div class="collapsible">
-    <h3>Socket URL</h3>
+    <h3 class="title-text">Socket URL</h3>
     <div class="collapsible-container">
-        <span class="text-monospace" data-bind="text: $component.requestUrlSample"></span>
+        <span class="text-monospace widget-text" data-bind="text: $component.requestUrlSample"></span>
     </div>
 
-    <h3>Protocol</h3>
+    <h3 class="title-text">Protocol</h3>
     <div class="collapsible-container">
-        <span class="text-monospace" data-bind="text: $component.protocol"></span>
+        <span class="text-monospace widget-text" data-bind="text: $component.protocol"></span>
     </div>
 </div>
 
@@ -345,8 +350,8 @@
 <div class="animation-fade-in">
     <div class="row flex flex-row">
         <div class="col-md-11 text-wrap">
-            <h2>GraphQL endpoint</h2>
-            <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
+            <h2 class="operation-name">GraphQL endpoint</h2>
+            <span class="monospace text-wrap widget-text" data-bind="text: $component.requestUrlSample"></span>
         </div>
         <!-- ko if: $component.enableConsole -->
         <div class="col-md-1">

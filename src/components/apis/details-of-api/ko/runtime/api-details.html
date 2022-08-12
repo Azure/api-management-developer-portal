@@ -47,13 +47,14 @@
         </div>
 
         <!-- ko if: api().description  -->
-        <p class="content-inherit-color content-inherit-font-weight content-inherit-font-style" data-bind="markdown: api().description"></p>
+        <p class="widget-text content-inherit-color content-inherit-font-weight content-inherit-font-style"
+            data-bind="markdown: api().description"></p>
         <!-- /ko -->
 
         <!-- ko if: api().contact -->
-        <h4>Contact</h4>
+        <h4 class="details-title">Contact</h4>
         <!-- ko if: api().contact.name -->
-        <div data-bind="text: api().contact.name"></div>
+        <div class="widget-text" data-bind="text: api().contact.name"></div>
         <!-- /ko -->
 
         <!-- ko if: api().contact.email -->
@@ -66,19 +67,19 @@
         <!-- /ko -->
 
         <!-- ko if: api().license -->
-        <h4>License</h4>
+        <h4 class="details-title">License</h4>
         <div><a data-bind="attr: { href: api().license.url }, text: api().license.name"></a></div>
         <!-- /ko -->
 
         <!-- ko if: api().termsOfServiceUrl -->
-        <h4>Additional resources</h4>
+        <h4 class="details-title">Additional resources</h4>
         <div><a data-bind="attr: { href: api().termsOfServiceUrl }">Terms and conditions</a></div>
         <!-- /ko -->
 
         <!-- /ko -->
 
         <!-- ko ifnot: api -->
-        <p>The specified API does not exist.</p>
+        <p class="widget-text">The specified API does not exist.</p>
         <!-- /ko -->
 
     </div>

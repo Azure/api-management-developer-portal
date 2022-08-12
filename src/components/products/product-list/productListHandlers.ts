@@ -96,7 +96,8 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
                                 }
                             }
                         },
-                        dropdownSearchInput: DefaultStyleDefinitions.getSearchInputStyleDefinition()
+                        dropdownSearchInput: DefaultStyleDefinitions.getSearchInputStyleDefinition(),
+                        widgetText: DefaultStyleDefinitions.getWidgetTextStyleDefinition()
                     }
                 }
             }

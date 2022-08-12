@@ -5,24 +5,25 @@
 <!-- /ko -->
 
 <!-- ko ifnot: working -->
-<div class="flex flex-column fit" data-bind="dialog: {}">
+<div class="flex flex-column fit operation-console" data-bind="dialog: {}">
     <div class="flex-item flex-grow animation-fade-in">
 
         <div class="panel panel-dark">
-            <button type="button" class="no-border pull-right" data-dismiss="modal" aria-label="Close console"
-                data-bind="click: () => { closeGraphqlConsole(); $parent.closeConsole();}">
+            <button type="button" class="no-border pull-right close-button" data-dismiss="modal"
+                aria-label="Close console" data-bind="click: () => { closeGraphqlConsole(); $parent.closeConsole();}">
                 <i class="icon-emb icon-emb-simple-remove"></i>
             </button>
 
             <nav aria-label="breadcrumb" class="mr-20">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item text-wrap">
-                        <a href="#" data-bind="text: api().displayName, attr: { href: getApiReferenceUrl() }"></a>
+                        <a href="#" class="console-text"
+                            data-bind="text: api().displayName, attr: { href: getApiReferenceUrl() }"></a>
                     </li>
 
                     <!-- ko if: api().apiVersion -->
                     <li class="breadcrumb-item">
-                        <span data-bind="text: api().apiVersion"></span>
+                        <span class="console-text" data-bind="text: api().apiVersion"></span>
                     </li>
                     <!-- /ko -->
                 </ol>
@@ -33,8 +34,8 @@
                     params="{ api: api, authorizationServer: authorizationServer, headers: headers, queryParameters: queryParameters }">
                 </authorization>
 
-                <h3 class="pt-0">Parameters
-                    <button aria-label="Collapse parameters" class="no-border"
+                <h3 class="pt-0 console-title">Parameters
+                    <button aria-label="Collapse parameters" class="no-border collapse-button"
                         data-bind="click: collapse('collapsedParameters')">
                         <!-- ko if: collapsedParameters -->
                         <i class="icon-emb icon-emb-chevron-down"></i>
@@ -51,7 +52,7 @@
                         <div class="col-4">
                             <div class="form-group">
                                 <div class="input-group has-validation">
-                                    <input type="text" autocomplete="off" class="form-control form-control-sm"
+                                    <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                         placeholder="name" spellcheck="false" aria-label="Parameter name"
                                         data-bind="textInput: parameter.name, attr:{ 'readonly': parameter.required }">
                                     <span class="invalid-feedback" data-bind="validationMessage: parameter.name"></span>
@@ -61,22 +62,22 @@
                         <div class="col-7">
                             <div class="form-group">
                                 <!-- ko if: parameter.options.length > 0 -->
-                                <select class="form-control" aria-label="Parameter value"
+                                <select class="form-control input" aria-label="Parameter value"
                                     data-bind="value: parameter.value, options: parameter.options"></select>
                                 <!-- /ko -->
                                 <div class="input-group">
                                     <!-- ko if: parameter.options.length === 0 -->
                                     <!-- ko if: !parameter.secret-->
-                                    <input type="text" autocomplete="off" class="form-control form-control-sm"
+                                    <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                         placeholder="value" spellcheck="false" aria-label="Parameter value"
                                         data-bind="textInput: parameter.value, attr:{ 'aria-required': parameter.required }">
                                     <!-- /ko -->
                                     <!-- ko if: parameter.secret-->
-                                    <input autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                                        spellcheck="false" aria-label="Parameter value"
+                                    <input autocomplete="off" class="form-control form-control-sm input"
+                                        placeholder="value" spellcheck="false" aria-label="Parameter value"
                                         data-bind=" attr: {type: parameter.inputType, 'aria-required': parameter.required }, textInput: parameter.value">
                                     <button data-bind="click: () => $component.toggleSecretParameter(parameter)"
-                                        class="input-group-addon">
+                                        class="input-group-addon reveal-button">
                                         <i
                                             data-bind="class: parameter.revealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
                                     </button>
@@ -89,21 +90,22 @@
                         <div class="col-1">
                             <a href="#" role="button" data-bind="click: $component.removeQueryParameter"
                                 class="btn-centered-vert btn-inline" aria-label="Remove parameter"><i
-                                    class="icon-emb icon-emb-trash"></i></a>
+                                    class="icon-emb icon-emb-trash icon-button"></i></a>
                         </div>
                         <!-- /ko -->
                     </div>
                 </div>
                 <!-- /ko -->
 
-                <a href="#" role="button" data-bind="click: $component.addQueryParameter">
+                <a href="#" role="button" data-bind="click: $component.addQueryParameter" class="add-button">
                     <i class="icon-emb icon-emb-plus"></i>
                     Add parameter
                 </a>
                 <!-- /ko -->
 
-                <h3 class="pt-0">Headers
-                    <button class="no-border" data-bind="click: collapse('collapsedHeaders')">
+                <h3 class="pt-0 console-title">Headers
+                    <button class="no-border collapse-button" data-bind="click: collapse('collapsedHeaders')"
+                        aria-label="Collapse headers">
                         <!-- ko if: collapsedHeaders -->
                         <i class="icon-emb icon-emb-chevron-down"></i>
                         <!-- /ko -->
@@ -119,7 +121,7 @@
                         <div class="col-4">
                             <div class="form-group">
                                 <div class="input-group has-validation">
-                                    <input type="text" autocomplete="off" class="form-control form-control-sm"
+                                    <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                         placeholder="name" spellcheck="false" aria-label="Header name"
                                         data-bind="textInput: header.name, attr: { 'readonly': header.required }">
                                     <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
@@ -129,12 +131,12 @@
                         <div class="col-7">
                             <div class="form-group">
                                 <!-- ko if: header.options && header.options.length > 0 -->
-                                <select class="form-control" aria-label="Header value"
+                                <select class="form-control input" aria-label="Header value"
                                     data-bind="value: header.value, options: header.options"></select>
                                 <!-- /ko -->
                                 <!-- ko if: !header.options || header.options.length === 0 -->
                                 <div class="form-group">
-                                    <input type="text" autocomplete="off" class="form-control form-control-sm"
+                                    <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                         placeholder="value" spellcheck="false" aria-label="Header value"
                                         data-bind="textInput: header.value, attr: { 'aria-required': header.required }">
                                     <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
@@ -147,14 +149,14 @@
                         <div class="col-1">
                             <a href="#" role="button" data-bind="click: $component.removeHeader"
                                 class="btn-centered-vert btn-inline" aria-label="Remove header"><i
-                                    class="icon-emb icon-emb-trash"></i></a>
+                                    class="icon-emb icon-emb-trash icon-button"></i></a>
                         </div>
                         <!-- /ko -->
                     </div>
                 </div>
                 <!-- /ko -->
 
-                <a href="#" role="button" data-bind="click: addHeader">
+                <a href="#" role="button" data-bind="click: addHeader" class="add-button">
                     <i class="icon-emb icon-emb-plus"></i> Add header
                 </a>
                 <!-- /ko -->
@@ -165,16 +167,17 @@
 
             <div class="gql-container" data-bind="css: { 'ws-responses': displayWsConsole }">
                 <div class="gql-explorer-grid">
-                    <h4>Explorer</h4>
+                    <h4 class="explorer-title">Explorer</h4>
                     <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
-                        <input class="form-control search" type="search" aria-label="Search"
+                        <input class="form-control search explorer-input" type="search" aria-label="Search"
                             placeholder="Search operations" spellcheck="false" data-bind="textInput: filter" />
 
                         <div class="explorer-operations scrollable">
                             <!-- ko foreach: { data: graphDocService.availableTypes, as: 'type' } -->
                             <div>
                                 <span class="operation-type-gql" data-bind="text: type"></span>
-                                <button class="no-border" data-bind="click: $component.collapse('collapsed' + type)">
+                                <button class="no-border operation-collapse-button"
+                                    data-bind="click: $component.collapse('collapsed' + type)">
                                     <!-- ko if: $component.collapsedType(type) -->
                                     <i class="icon-emb icon-emb-chevron-down"></i>
                                     <!-- /ko -->
@@ -193,14 +196,14 @@
                     </div>
                 </div>
                 <div class="gql-query-grid">
-                    <h4>
+                    <h4 class="explorer-title">
                         Query editor
                         <i class="icon-emb icon-emb-info info-icon-size"
                             title="Select a query, mutation, or subscription from the explorer to add it to the test console or begin typing to compose a query."></i>
                     </h4>
                     <div class="query-editor" data-bind="css: {'with-errors': hasErrorEditors()}" id="queryEditor">
                     </div>
-                    <h4 class="mt-30">
+                    <h4 class="mt-30 explorer-title">
                         Query variables
                         <i class="icon-emb icon-emb-info info-icon-size"
                             title="Use variables to reuse the same query or mutation to pass different values."></i>
@@ -213,7 +216,7 @@
                         <!-- ko if: hasErrorEditors() -->
                         <div class="panel panel-dark animation-fade-in gql-editor-errors"
                             data-bind="scrollintoview: {}">
-                            <p>Unable to send the request</p>
+                            <p class="console-text">Unable to send the request</p>
                             <!-- ko foreach: { data: editorErrors, as: 'error' } -->
                             <p class="text-muted mb-unset" data-bind="html: error"></p>
                             <!-- /ko -->
@@ -224,13 +227,13 @@
                             <!-- ko if: !isSubscriptionOperation() || canRestartSubscription() -->
 
                             <!-- ko ifnot: sendingRequest()-->
-                            <button type="button" class="button button-primary btn-sm"
+                            <button type="button" class="button button-primary btn-sm send-button"
                                 data-bind="click: canRestartSubscription() ? restartSubscription : validateAndSendRequest">
                                 Send
                             </button>
                             <!-- /ko -->
                             <!-- ko if: sendingRequest() -->
-                            <button type="button" class="button button-primary btn-sm" disabled>
+                            <button type="button" class="button button-primary btn-sm send-button" disabled>
                                 Sending...
                             </button>
                             <!-- /ko -->
@@ -257,14 +260,14 @@
                     </div>
                 </div>
                 <div class="gql-response-grid">
-                    <h4>Response</h4>
+                    <h4 class="explorer-title">Response</h4>
                     <div class="response-editor" data-bind="css: {'with-ws': displayWsConsole}" id="responseEditor">
                     </div>
 
                     <!-- ko if: displayWsConsole -->
 
                     <div class="mt-30 flex">
-                        <h4>
+                        <h4 class="explorer-title">
                             Subscription
                         </h4>
                         <div class="code-snippet ml-auto">
