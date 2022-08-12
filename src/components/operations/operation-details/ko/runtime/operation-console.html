@@ -324,7 +324,8 @@
                 </div>
                 <div class="col-2 flex justify-content-end">
                     <!-- ko if: request.isBodyEdited() -->
-                    <i class="icon-emb icon-emb-spinner refresh-button" style="cursor: pointer; display: flex; align-self: center;"
+                    <i class="icon-emb icon-emb-spinner refresh-button"
+                        style="cursor: pointer; display: flex; align-self: center;"
                         data-bind="click: $component.revertBody"></i>
                     <!-- /ko -->
                 </div>
@@ -461,8 +462,8 @@
                         <i class="icon-emb icon-emb-eye"></i> Show
                         <!-- /ko -->
                     </button>
-                    <button class="console-code-snippet-command" data-bind="copyToClipboard: $component.getPlainTextCodeSample"
-                        aria-label="Copy to clipboard">
+                    <button class="console-code-snippet-command"
+                        data-bind="copyToClipboard: $component.getPlainTextCodeSample" aria-label="Copy to clipboard">
                         <i class="icon-emb icon-emb-duplicate"></i> Copy
                     </button>
                 </div>
@@ -500,7 +501,7 @@
 
             <div class="flex flex-column align-items-end">
                 <div class="btn-group" role="group">
-                    <button type="button send-button" class="button button-primary btn-sm"
+                    <button type="button" class="button button-primary btn-sm send-button"
                         data-bind="click: wsSendData, attr: { disabled: wsSending }, text: wsSendStatus">
                         Send
                     </button>
@@ -512,8 +513,8 @@
             <!-- ko if: wsLogItems().length > 0 -->
             <div class="code-snippet">
                 <div class="code-snippet-heading">
-                    <button class="console-code-snippet-command" data-bind="click: $component.clearLogs, disabled: wsSending"
-                        aria-label="Clear logs">
+                    <button class="console-code-snippet-command"
+                        data-bind="click: $component.clearLogs, disabled: wsSending" aria-label="Clear logs">
                         <i class="icon-emb icon-emb-trash"></i> Clear
                     </button>
                 </div>
@@ -583,13 +584,13 @@
         <div class="flex flex-column align-items-end">
             <div class="btn-group" role="group">
                 <!-- ko if: !$component.sendingRequest() && $component.selectedLanguage() === 'http' -->
-                <button type="button send-button" class="button button-primary btn-sm"
+                <button type="button" class="button button-primary btn-sm send-button"
                     data-bind="click: validateAndSendRequest">
                     Send
                 </button>
                 <!-- /ko -->
                 <!-- ko if: sendingRequest -->
-                <button type="button send-button" class="button button-primary btn-sm" disabled>
+                <button type="button" class="button button-primary btn-sm send-button" disabled>
                     Sending...
                 </button>
                 <!-- /ko -->
