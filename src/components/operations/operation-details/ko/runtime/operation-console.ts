@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { HttpClient, HttpRequest } from "@paperbits/common/http";
+import { HttpClient, HttpMethod, HttpRequest } from "@paperbits/common/http";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { downloadableTypes, RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
 import { Api } from "../../../../../models/api";
@@ -386,6 +386,9 @@ export class OperationConsole {
             }
             headersRequest[header.name()].push(header.value())
         });
+
+
+
         const response = await fetch(url, {
             method: method,
             headers: headersRequest,
@@ -418,6 +421,10 @@ export class OperationConsole {
                 chunks.push(value);
             }
 
+            /**
+             * TODO: Move saveAs higher in stack.
+             */
+
             const blob = new Blob(chunks, { type: contentTypeHeaderValue });
             const fileExtension = getExtension(contentTypeHeaderValue);
 
@@ -447,8 +454,8 @@ export class OperationConsole {
 
         const proxiedRequest: HttpRequest = {
             url: `${baseProxyUrl}/send`,
-            method: "POST",
-            headers: [{ name: "X-Ms-Api-Name", value: apiName }],
+            method: HttpMethod.post,
+            headers: [{ name: KnownHttpHeaders.XMsApiName, value: apiName }],
             body: formData
         };
 
@@ -464,6 +471,8 @@ export class OperationConsole {
 
         const response: any = {
             headers: headersString,
+
+            // TODO: We don't need separate field for the header
             contentTypeHeader: contentTypeHeader && contentTypeHeader.value,
             statusCode: responsePackage.statusCode,
             statusText: responsePackage.statusMessage,
@@ -542,7 +551,7 @@ export class OperationConsole {
         }
         catch (error) {
             this.logSentRequest(this.api().name, consoleOperation.opeationName, method, error.code?.toString());
-            
+
             if (error.code && error.code === "RequestError") {
                 this.requestError(`Since the browser initiates the request, it requires Cross-Origin Resource Sharing (CORS) enabled on the server. <a href="https://aka.ms/AA4e482" target="_blank">Learn more</a>`);
             }
