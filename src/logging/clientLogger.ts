@@ -36,8 +36,9 @@ export class ClientLogger implements Logger {
         const devPortalEvent = new ClientEvent();
 
         devPortalEvent.eventType = "Error";
-        devPortalEvent.message = properties?.message;
-        devPortalEvent.eventData = JSON.stringify(error);
+        devPortalEvent.message = error?.message;
+        devPortalEvent.eventData = JSON.stringify(properties);
+        devPortalEvent.exception = error?.stack;
 
         this.traceEvent(devPortalEvent);
     }
