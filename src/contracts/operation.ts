@@ -33,14 +33,13 @@ export interface OperationContract {
     templateParameters: ParameterContract[];
 
     /**
-     * Operation method. Example: GET, POST, PUT, DELETE, etc.
+     * Operation version.
      */
-    method: string;
-
-    backend?: string;
-
     version?: string;
 
+    /**
+     * Containing request details.
+     */
     request?: RequestContract;
 
     /**
