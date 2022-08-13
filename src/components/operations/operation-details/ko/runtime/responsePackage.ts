@@ -1,8 +1,8 @@
-import { NameValuePair } from "../../../../../contracts/nameValuePair";
+import { HttpHeader } from "@paperbits/common/http";
 
 export interface ResponsePackage {
     statusCode: number;
     statusMessage: string;
-    headers: NameValuePair[];
+    headers: HttpHeader[];
     body: any;
 }
