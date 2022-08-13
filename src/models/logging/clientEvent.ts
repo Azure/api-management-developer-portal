@@ -29,14 +29,14 @@ export class ClientEvent {
      */
     public activityId: string;
 
-    public toJson(): object{
+    public toJson(): object {
         return {
-            "eventType": this.eventType,
-            "message": this.message,
-            "eventData": this.eventData,
-            "timestamp": this.timestamp,
-            "activityId": this.activityId,
-            "exception": this.exception
+            eventType: this.eventType,
+            message: this.message,
+            eventData: this.eventData,
+            timestamp: this.timestamp,
+            activityId: this.activityId,
+            exception: this.exception
         }
     }
 }
