@@ -7,5 +7,6 @@ export enum KnownHttpHeaders {
     OcpApimTraceLocation = "Ocp-Apim-Trace-Location",
     OcpApimSasToken = "Ocp-Apim-Sas-Token",
     SoapAction = "SOAPAction",
-    IfMatch = "If-Match"
+    IfMatch = "If-Match",
+    XMsApiName = "X-Ms-Api-Name"
 }
