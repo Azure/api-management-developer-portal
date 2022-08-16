@@ -1,13 +1,13 @@
-import { ViewManager } from "@paperbits/common/ui";
+import { EventManager } from "@paperbits/common/events";
 import { OVERRIDE_PORT_KEY, OVERRIDE_DEFAULT_PORT } from "@azure/api-management-custom-widgets-scaffolder";
 import { BLOB_ROOT, BLOB_CONFIGS_FOLDER, APIM_CONFIG_FILE_NAME } from "@azure/api-management-custom-widgets-tools";
 import { MapiBlobStorage } from "../../persistence";
 import { TCustomWidgetConfig } from "../custom-widget";
 import { OVERRIDE_CONFIG_SESSION_KEY_PREFIX } from "../custom-widget/ko/utils";
 
-export  async function loadCustomWidgetConfigs(
+export async function loadCustomWidgetConfigs(
     blobStorage: MapiBlobStorage,
-    viewManager: ViewManager,
+    eventManager: EventManager,
 ): Promise<TCustomWidgetConfig[]> {
     const overridesPromises = [];
     const sourcesSession = Object.keys(window.sessionStorage)
@@ -46,10 +46,10 @@ export  async function loadCustomWidgetConfigs(
 
         let message = `Custom widget "${override.displayName}" URL is overridden`;
         if (typeof widgetSource.override === "string") message += ` with ${widgetSource.override}`;
-        // if (this.toast) this.viewManager.removeToast(this.toast);
-        // this.toast = this.viewManager.addToast("Custom widget override", message);
-        viewManager.addToast("Custom widget override", message);
-
+        eventManager.dispatchEvent("displayHint", { // TODO title
+            key: override.name,
+            content: message
+        });
     });
 
     return Object.values(configurations);
