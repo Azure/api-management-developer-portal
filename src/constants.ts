@@ -1,3 +1,5 @@
+import { OVERRIDE_PORT_KEY } from "@azure/api-management-custom-widgets-scaffolder";
+
 /**
  * APIM service SKU names.
  */
@@ -279,7 +281,7 @@ export enum GrantTypes {
 
     /**
      * The Resource owner password grant type is used to exchange a username and password for an access
-     * token directly. 
+     * token directly.
      */
     //[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="False positive")]
     password = "password"
@@ -310,3 +312,13 @@ export const iframeSandboxAllows = "allow-scripts allow-modals allow-forms allow
 export const downloadableTypes = ["image", "video", "audio", "zip", "pdf"];
 
 export const WarningBackendUrlMissing = `Backend URL is missing. See setting <i>backendUrl</i> in the configuration file <i>config.design.json</i>. OAuth authentication in Test console and Captcha widget requires <i>backendUrl</i> setting in config.runtime.json, pointing to your APIM service developer portal URL. In addition, it requires the origin to be specified in CORS settings (e.g. https://contoso.com). <a href="https://aka.ms/apimdocs/portal/self-hosted-settings" target="_blank">Learn more</a>.`
+
+/**
+ * Signals that the widgets' source is being overridden (for local development). Optionally holds URL to overrides' config files.
+ */
+export const overrideConfigSessionKeyPrefix = OVERRIDE_PORT_KEY + "_";
+
+/**
+ * Key under which is saved in session storage a boolean for dismissed Custom Widget override toasts
+ */
+export const overrideToastSessionKeyPrefix = "MS_APIM_CW_override_toast_dismissed_"
