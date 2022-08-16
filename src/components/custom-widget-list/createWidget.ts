@@ -18,9 +18,6 @@ const techToName: Record<ScaffoldTech, string> = {
     vue: "Vue",
 }
 
-const buildScaffoldCommand = ({displayName, technology}: TCustomWidgetConfig): string =>
-    `npx @azure/api-management-custom-widgets-scaffolder --displayName="${displayName}" --technology="${technology}" --openUrl="${window.location.origin}"`
-
 @Component({
     selector: "custom-widget-create",
     template: template,
@@ -28,8 +25,7 @@ const buildScaffoldCommand = ({displayName, technology}: TCustomWidgetConfig): s
 export class CreateWidget {
     public readonly displayName: ko.Observable<string>;
     public readonly technology: ko.Observable<ScaffoldTech | null>;
-    // public readonly sourceControl: ko.Observable<TScaffoldSourceControl>;
-    public readonly commandToScaffold: ko.Observable<string>;
+    public readonly configNew: ko.Observable<TCustomWidgetConfig | null>;
     public readonly customWidgetConfigs: ko.Observable<TCustomWidgetConfig[]>;
     public readonly techAll = TECHNOLOGIES.map(id => ({id, name: techToName[id]}));
 
@@ -40,8 +36,7 @@ export class CreateWidget {
     ) {
         this.displayName = ko.observable("");
         this.technology = ko.observable(null);
-        // this.sourceControl = ko.observable();
-        this.commandToScaffold = ko.observable();
+        this.configNew = ko.observable(null);
     }
 
     @Param()
@@ -64,7 +59,6 @@ export class CreateWidget {
         if (this.config) {
             this.displayName(this.config.displayName);
             this.technology(this.config.technology);
-            this.commandToScaffold(buildScaffoldCommand(this.config))
         }
     }
 
@@ -80,7 +74,7 @@ export class CreateWidget {
             return;
         }
 
-        const config = {name, displayName, technology}; // , control: this.sourceControl()};
+        const config: TCustomWidgetConfig = {name, displayName, technology};
         // const configDeploy = await buildConfigDeploy();
 
         const content = Utils.stringToUnit8Array(JSON.stringify(config));
@@ -95,7 +89,7 @@ export class CreateWidget {
         this.configs.push(config);
         this.configAdd(config);
 
-        this.commandToScaffold(buildScaffoldCommand(config));
+        this.configNew(config);
 
         this.logCreateWidget(config)
     }

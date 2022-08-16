@@ -5,7 +5,6 @@ import { ComponentFlow, IWidgetBinding } from "@paperbits/common/editing";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { Toast, ViewManager } from "@paperbits/common/ui";
 import { MapiBlobStorage } from "../../../persistence";
 import { widgetName, widgetDisplayName, widgetEditorSelector } from "../constants";
 import { CustomWidgetModel } from "../customWidgetModel";

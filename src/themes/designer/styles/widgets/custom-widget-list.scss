@@ -1,0 +1,58 @@
+.create-widget-form {
+  height: 100%;
+
+  details {
+    summary {
+      list-style: none;
+
+      h2 {
+        cursor: pointer;
+
+        svg {
+          padding: 0 1px;
+          transition: transform .33s ease;
+        }
+      }
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  details[open] {
+    summary h2 svg {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.development-instructions {
+  max-width: 300px;
+  margin: 0;
+  padding: 0 0 0 1.1em;
+
+  li:not(:last-of-type) {
+    padding-bottom: .5em;
+  }
+}
+
+.copy-code {
+  display: flex;
+  padding: 3px 3px 3px 1em;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background: #eee;
+  white-space: nowrap;
+  align-items: center;
+  justify-content: space-between;
+
+  code {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  button {
+    flex-shrink: 0;
+  }
+}
