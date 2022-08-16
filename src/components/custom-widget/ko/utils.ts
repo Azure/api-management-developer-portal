@@ -1,4 +1,3 @@
-import { OVERRIDE_PORT_KEY } from "@azure/api-management-custom-widgets-scaffolder";
 import {
     buildBlobDataPath,
     APIM_EDITOR_DATA_KEY,
@@ -6,13 +5,9 @@ import {
     Environment,
     ValuesCommon
 } from "@azure/api-management-custom-widgets-tools";
+import * as Constants from "../../../constants";
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
-
-/**
- * Signals that the widgets' source is being overridden (for local development). Optionally holds URL to overrides' config files.
- */
-export const OVERRIDE_CONFIG_SESSION_KEY_PREFIX = OVERRIDE_PORT_KEY + "_";
 
 export async function buildWidgetSource(
     blobStorage: MapiBlobStorage,
@@ -22,7 +17,7 @@ export async function buildWidgetSource(
 ): Promise<{ override: string | null, src: string }> {
     // check is necessary during publishing as window.sessionStorage.getItem throws "DOMException {}  node:internal/process/promises:279"
     const developmentSrc = environment !== "publishing"
-        ? window.sessionStorage.getItem(OVERRIDE_CONFIG_SESSION_KEY_PREFIX + model.name)
+        ? window.sessionStorage.getItem(Constants.overrideConfigSessionKeyPrefix + model.name)
         : null;
 
     const url = new URL(developmentSrc == null ? (

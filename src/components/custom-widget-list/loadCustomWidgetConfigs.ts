@@ -1,17 +1,17 @@
-import { EventManager } from "@paperbits/common/events";
+import { ViewManager } from "@paperbits/common/ui";
 import { OVERRIDE_PORT_KEY, OVERRIDE_DEFAULT_PORT } from "@azure/api-management-custom-widgets-scaffolder";
 import { BLOB_ROOT, BLOB_CONFIGS_FOLDER, APIM_CONFIG_FILE_NAME } from "@azure/api-management-custom-widgets-tools";
+import * as Constants from "../../constants";
 import { MapiBlobStorage } from "../../persistence";
 import { TCustomWidgetConfig } from "../custom-widget";
-import { OVERRIDE_CONFIG_SESSION_KEY_PREFIX } from "../custom-widget/ko/utils";
 
 export async function loadCustomWidgetConfigs(
     blobStorage: MapiBlobStorage,
-    eventManager: EventManager,
+    viewManager: ViewManager,
 ): Promise<TCustomWidgetConfig[]> {
     const overridesPromises = [];
     const sourcesSession = Object.keys(window.sessionStorage)
-        .filter((key: string) => key.startsWith(OVERRIDE_CONFIG_SESSION_KEY_PREFIX))
+        .filter((key: string) => key.startsWith(Constants.overrideConfigSessionKeyPrefix))
         .map(key => window.sessionStorage.getItem(key));
     const sourcesSearchParams = new URLSearchParams(window.location.search)
         .getAll(OVERRIDE_PORT_KEY)
@@ -40,16 +40,22 @@ export async function loadCustomWidgetConfigs(
     configs.forEach(config => configurations[config.name] = config);
     overrides.forEach((override, i) => {
         const href = new URL(sources[i]).href;
-        window.sessionStorage.setItem(OVERRIDE_CONFIG_SESSION_KEY_PREFIX + override.name, href);
+        window.sessionStorage.setItem(Constants.overrideConfigSessionKeyPrefix + override.name, href);
         const widgetSource = {...override, override: href ?? true};
         configurations[override.name] = widgetSource
 
+        const sessionStorageKey = Constants.overrideToastSessionKeyPrefix + override.name
+        if (window.sessionStorage.getItem(sessionStorageKey)) return
+
         let message = `Custom widget "${override.displayName}" URL is overridden`;
         if (typeof widgetSource.override === "string") message += ` with ${widgetSource.override}`;
-        eventManager.dispatchEvent("displayHint", { // TODO title
-            key: override.name,
-            content: message
-        });
+        const toast = viewManager.addToast(override.displayName, message, [{
+            title: "Got it",
+            action: async () => {
+                window.sessionStorage.setItem(sessionStorageKey, "true");
+                viewManager.removeToast(toast);
+            }
+        }]);
     });
 
     return Object.values(configurations);
