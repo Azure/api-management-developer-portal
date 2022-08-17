@@ -1,4 +1,5 @@
 import * as ko from "knockout";
+import * as validation from "knockout.validation";
 import { ScaffoldTech, TECHNOLOGIES, displayNameToName } from "@azure/api-management-custom-widgets-scaffolder";
 import { buildBlobConfigPath, buildBlobDataPath } from "@azure/api-management-custom-widgets-tools";
 import { IWidgetService } from "@paperbits/common/widgets";
@@ -37,6 +38,21 @@ export class CreateWidget {
         this.displayName = ko.observable("");
         this.technology = ko.observable(null);
         this.configNew = ko.observable(null);
+
+        validation.rules["customWidgetNameInUse"] = {
+            validator: (displayName: string) =>
+                !this.configs.find(({name}) => name === displayNameToName(displayName)),
+            message: (displayName: string) =>
+                `A widget with alphanumerical signature '${displayNameToName(displayName)}' already exists.`
+        };
+
+        validation.registerExtenders();
+
+        validation.init({
+            insertMessages: false,
+            errorElementClass: "is-invalid",
+            decorateInputElement: true
+        });
     }
 
     @Param()
@@ -59,6 +75,8 @@ export class CreateWidget {
         if (this.config) {
             this.displayName(this.config.displayName);
             this.technology(this.config.technology);
+        } else {
+            this.displayName.extend(<any>{ customWidgetNameInUse: this.displayName })
         }
     }
 
@@ -69,10 +87,7 @@ export class CreateWidget {
 
         const name = displayNameToName(displayName);
 
-        if (this.configs.find((config) => config.name === name)) {
-            alert("A widget with the same alphanumerical signature already exists.");
-            return;
-        }
+        if (this.configs.find((config) => config.name === name)) return;
 
         const config: TCustomWidgetConfig = {name, displayName, technology};
         // const configDeploy = await buildConfigDeploy();

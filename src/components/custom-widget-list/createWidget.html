@@ -1,15 +1,22 @@
-<form class="create-widget-form overflow" data-bind="submit: submitData">
+<form class="create-widget-form" data-bind="submit: submitData">
   <div class="flex flex-column fit">
-    <div class="flex-item flex-item-grow">
+    <div class="flex-item flex-item-grow form" data-bind="scrollable: true">
       <!-- ko if: !configNew() || !!$component.config -->
-      <label class="form-label" for="displayName">
-        Name
-        <input required type="text" id="displayName" class="form-control"
-               data-bind="textInput: displayName, attr: {disabled: !!$component.config}"
-        />
-      </label>
+      <div class="form-group">
+        <label class="form-label" for="displayName">Name</label>
+        <div class="input-group">
+          <input required type="text" id="displayName" class="form-control"
+                 data-bind="textInput: displayName, validationElement: displayName, attr: {disabled: !!$component.config}"
+                 maxlength="2000" spellcheck="false" aria-required="true"
+          />
+          <!-- ko if: displayName() && !$component.config -->
+          <button class="btn btn-danger input-group-btn" data-bind="validationMessageToggle: displayName"
+                  type="button">!</button>
+          <!-- /ko -->
+        </div>
+      </div>
 
-      <div class="row flex flex-row form-group">
+      <div class="form-group">
         <label class="form-check-label">Technology</label>
         <!-- ko foreach: { data: techAll, as: 'techObj'} -->
         <div class="form-check">
@@ -22,7 +29,7 @@
       <!-- /ko -->
 
       <!-- ko if: !!$component.config -->
-      <p>
+      <p style="margin: 0;">
         Last deployed<br/>
         <span data-bind="text: $component.config.deployedOn ? new Date(config.deployedOn).toLocaleString() : 'The widget hasn\'t been deployed yet.'"></span>
       </p>
