@@ -27,7 +27,6 @@ export class CreateWidget {
     public readonly displayName: ko.Observable<string>;
     public readonly technology: ko.Observable<ScaffoldTech | null>;
     public readonly configNew: ko.Observable<TCustomWidgetConfig | null>;
-    public readonly customWidgetConfigs: ko.Observable<TCustomWidgetConfig[]>;
     public readonly techAll = TECHNOLOGIES.map(id => ({id, name: techToName[id]}));
 
     constructor(
