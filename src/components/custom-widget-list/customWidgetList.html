@@ -5,7 +5,10 @@
             <!-- ko foreach: { data: customWidgetConfigs, as: 'config' } -->
             <tr>
                 <td>
-                    <a data-bind="text: config.displayName, click: () => $component.openScaffoldWizard(config)" style="cursor: pointer"></a>
+                    <a data-bind="click: () => $component.openScaffoldWizard(config)" style="cursor: pointer">
+                        <i class="paperbits-icon paperbits-sm paperbits-puzzle-10"></i>
+                        <span data-bind="text: config.displayName"></span>
+                    </a>
                     <!-- ko if: config.override -->
                     <i>(overridden)</i>
                     <!-- /ko -->
