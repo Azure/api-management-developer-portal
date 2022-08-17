@@ -31,7 +31,8 @@ export class ListenForSecretsRequests {
                 secrets.userId = userId
             }
 
-            widgetIFrame.contentWindow.postMessage({[APIM_ASK_FOR_SECRETS_MESSAGE_KEY]: secrets}, "*"); // value.origin
+            const targetOrigin = "*"
+            widgetIFrame.contentWindow.postMessage({[APIM_ASK_FOR_SECRETS_MESSAGE_KEY]: secrets}, targetOrigin); // value.origin
         });
     }
 }
