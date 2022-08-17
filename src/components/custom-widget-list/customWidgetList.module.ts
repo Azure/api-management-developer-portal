@@ -21,7 +21,7 @@ export class CustomWidgetListModule implements IInjectorModule {
         const blobStorage = injector.resolve<MapiBlobStorage>("blobStorage");
         const viewManager = injector.resolve<ViewManager>("viewManager");
         const configsPromise = loadCustomWidgetConfigs(blobStorage, viewManager);
-        injector.bindInstance("customWidgetConfigs", configsPromise);
+        injector.bindInstance("customWidgetConfigsPromise", configsPromise);
         const widgetService = injector.resolve<IWidgetService>("widgetService");
         configsPromise.then(configs => configs.forEach(config =>
             widgetService.registerWidgetHandler(new CustomWidgetHandlers(config))

@@ -18,10 +18,10 @@ export class ContentWorkshop {
         private readonly widgetService: IWidgetService,
         private readonly viewManager: ViewManager,
         private readonly blobStorage: MapiBlobStorage,
-        customWidgetConfigs: Promise<TCustomWidgetConfig[]>,
+        customWidgetConfigsPromise: Promise<TCustomWidgetConfig[]>,
     ) {
         this.customWidgetConfigs = ko.observable();
-        customWidgetConfigs.then(configs =>
+        customWidgetConfigsPromise.then(configs =>
             this.customWidgetConfigs(configs.sort(ContentWorkshop.sortByName))
         );
     }
