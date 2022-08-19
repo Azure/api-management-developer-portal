@@ -139,7 +139,7 @@ export class MapiClient {
         // Do nothing if absolute URL
         if (!httpRequest.url.startsWith("https://") && !httpRequest.url.startsWith("http://")) {
             httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
-        }        
+        }
 
         const url = new URL(httpRequest.url);
 
@@ -244,7 +244,7 @@ export class MapiClient {
             url: requestUrl,
             headers: headers
         });
-        
+
         const takeResult = (result: Page<T>): Promise<T[]> => {
             if (result) {
                 if (Array.isArray(result)) {
@@ -323,7 +323,7 @@ export class MapiClient {
         } catch (error) {
             host = "publishing";
         }
-                
+
         return { name: Constants.portalHeaderName, value: `${this.developerPortalType}|${host}|${eventName || ""}` };
     }
 }
