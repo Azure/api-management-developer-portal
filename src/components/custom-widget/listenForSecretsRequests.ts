@@ -2,6 +2,7 @@ import { APIM_ASK_FOR_SECRETS_MESSAGE_KEY, Secrets } from "@azure/api-management
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { AccessToken, IAuthenticator } from "../../authentication";
 import { managementApiVersion, SettingNames } from "../../constants";
+import { Utils } from "../../utils";
 
 export class ListenForSecretsRequests {
     constructor(
@@ -20,8 +21,11 @@ export class ListenForSecretsRequests {
                     : window.document.getElementById(instanceId)
             ) as HTMLIFrameElement;
 
-            const managementApiUrl = await settingsProvider.getSetting<string>(SettingNames.managementApiUrl)
-            const secrets: Secrets = { managementApiUrl, apiVersion: managementApiVersion };
+            const managementApiUrl = await settingsProvider.getSetting<string>(SettingNames.managementApiUrl);
+            const secrets: Secrets = {
+                managementApiUrl: Utils.ensureUrlArmified(managementApiUrl),
+                apiVersion: managementApiVersion
+            };
 
             const token = await authenticator.getAccessTokenAsString();
             if (token) {

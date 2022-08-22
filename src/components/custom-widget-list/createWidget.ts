@@ -52,6 +52,8 @@ export class CreateWidget {
             errorElementClass: "is-invalid",
             decorateInputElement: true
         });
+
+        this.displayName.extend(<any>{ required: { message: `Name is required.` } });
     }
 
     @Param()
