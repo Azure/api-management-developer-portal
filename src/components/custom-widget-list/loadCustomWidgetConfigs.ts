@@ -9,9 +9,9 @@ export async function loadCustomWidgetConfigs(
     blobStorage: MapiBlobStorage,
     viewManager: ViewManager,
 ): Promise<TCustomWidgetConfig[]> {
-    const sourcesSession = Object.keys(window.sessionStorage)
+    const sourcesSessionKeys = Object.keys(window.sessionStorage)
         .filter((key: string) => key.startsWith(Constants.overrideConfigSessionKeyPrefix))
-        .map(key => window.sessionStorage.getItem(key));
+    const sourcesSession = sourcesSessionKeys.map(key => window.sessionStorage.getItem(key));
     const sourcesSearchParams = new URLSearchParams(window.location.search)
         .getAll(OVERRIDE_PORT_KEY)
         .map(port => new URL("http://localhost:" + (isNaN(parseInt(port)) ? OVERRIDE_DEFAULT_PORT : port)).href);
@@ -36,7 +36,11 @@ export async function loadCustomWidgetConfigs(
 
     configs.forEach(config => configurations[config.name] = config);
     (await Promise.all(overridesPromises)).forEach(({override, source}) => {
-        if (!override) return;
+        if (!override) {
+            const key = sourcesSessionKeys.find(key => window.sessionStorage.getItem(key) === source);
+            if (key) sessionStorage.removeItem(key);
+            return;
+        }
 
         const href = new URL(source).href;
         window.sessionStorage.setItem(Constants.overrideConfigSessionKeyPrefix + override.name, href);
