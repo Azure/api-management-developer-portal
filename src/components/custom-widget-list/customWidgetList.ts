@@ -24,7 +24,7 @@ export class ContentWorkshop {
         this.customWidgetConfigs = ko.observable();
         const refreshConfigs = listConfigBlobs(blobStorage); // in case some configs on the blob storage got deleted/updated/added
         Promise.all([refreshConfigs, customWidgetConfigsPromise]).then(([configBlobs, configsAll]) => {
-            let configs: Record<string, TCustomWidgetConfig> = {};
+            const configs: Record<string, TCustomWidgetConfig> = {};
             configBlobs.forEach(config => configs[config.name] = config);
             configsAll.forEach(config => {
                 if (config.override) configs[config.name] = config
