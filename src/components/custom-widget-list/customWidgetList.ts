@@ -5,6 +5,7 @@ import { Component } from "@paperbits/common/ko/decorators";
 import { MapiBlobStorage } from "../../persistence";
 import { TCustomWidgetConfig } from "../custom-widget";
 import template from "./customWidgetList.html";
+import { listConfigBlobs } from "./loadCustomWidgetConfigs";
 
 
 @Component({
@@ -21,9 +22,15 @@ export class ContentWorkshop {
         customWidgetConfigsPromise: Promise<TCustomWidgetConfig[]>,
     ) {
         this.customWidgetConfigs = ko.observable();
-        customWidgetConfigsPromise.then(configs =>
-            this.customWidgetConfigs(configs.sort(ContentWorkshop.sortByName))
-        );
+        const refreshConfigs = listConfigBlobs(blobStorage); // in case some configs on the blob storage got deleted/updated/added
+        Promise.all([refreshConfigs, customWidgetConfigsPromise]).then(([configBlobs, configsAll]) => {
+            let configs: Record<string, TCustomWidgetConfig> = {};
+            configBlobs.forEach(config => configs[config.name] = config);
+            configsAll.forEach(config => {
+                if (config.override) configs[config.name] = config
+            });
+            this.customWidgetConfigs(Object.values(configs).sort(ContentWorkshop.sortByName))
+        });
     }
 
     private static sortByName(a: TCustomWidgetConfig, b: TCustomWidgetConfig): number {

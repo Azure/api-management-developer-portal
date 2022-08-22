@@ -5,6 +5,27 @@ import * as Constants from "../../constants";
 import { MapiBlobStorage } from "../../persistence";
 import { TCustomWidgetConfig } from "../custom-widget";
 
+export async function listConfigBlobs(blobStorage: MapiBlobStorage): Promise<TCustomWidgetConfig[]> {
+    const configsNames = await blobStorage.listBlobs(`${BLOB_ROOT}/${BLOB_CONFIGS_FOLDER}/`);
+    const configsUint8s = await Promise.all(configsNames.map(blobName => blobStorage.downloadBlob(blobName)));
+    return configsUint8s.map(uint8 => JSON.parse(new TextDecoder().decode(uint8)));
+}
+
+function showToast(viewManager: ViewManager, widgetSource: TCustomWidgetConfig): void {
+    const sessionStorageKey = Constants.overrideToastSessionKeyPrefix + widgetSource.name
+    if (window.sessionStorage.getItem(sessionStorageKey)) return
+
+    let message = `Custom widget "${widgetSource.displayName}" URL is overridden`;
+    if (typeof widgetSource.override === "string") message += ` with ${widgetSource.override}`;
+    const toast = viewManager.addToast(widgetSource.displayName, message, [{
+        title: "Got it",
+        action: async () => {
+            window.sessionStorage.setItem(sessionStorageKey, "true");
+            viewManager.removeToast(toast);
+        }
+    }]);
+}
+
 export async function loadCustomWidgetConfigs(
     blobStorage: MapiBlobStorage,
     viewManager: ViewManager,
@@ -28,13 +49,9 @@ export async function loadCustomWidgetConfigs(
         }
     });
 
-    const configsNames = await blobStorage.listBlobs(`${BLOB_ROOT}/${BLOB_CONFIGS_FOLDER}/`);
-    const configsUint8s = await Promise.all(configsNames.map(blobName => blobStorage.downloadBlob(blobName)));
-    const configs: TCustomWidgetConfig[] = configsUint8s.map(uint8 => JSON.parse(new TextDecoder().decode(uint8)));
-
     const configurations: Record<string, TCustomWidgetConfig> = {};
+    (await listConfigBlobs(blobStorage)).forEach(config => configurations[config.name] = config);
 
-    configs.forEach(config => configurations[config.name] = config);
     (await Promise.all(overridesPromises)).forEach(({override, source}) => {
         if (!override) {
             const key = sourcesSessionKeys.find(key => window.sessionStorage.getItem(key) === source);
@@ -47,18 +64,7 @@ export async function loadCustomWidgetConfigs(
         const widgetSource = {...override, override: href ?? true};
         configurations[override.name] = widgetSource
 
-        const sessionStorageKey = Constants.overrideToastSessionKeyPrefix + override.name
-        if (window.sessionStorage.getItem(sessionStorageKey)) return
-
-        let message = `Custom widget "${override.displayName}" URL is overridden`;
-        if (typeof widgetSource.override === "string") message += ` with ${widgetSource.override}`;
-        const toast = viewManager.addToast(override.displayName, message, [{
-            title: "Got it",
-            action: async () => {
-                window.sessionStorage.setItem(sessionStorageKey, "true");
-                viewManager.removeToast(toast);
-            }
-        }]);
+        showToast(viewManager, widgetSource);
     });
 
     return Object.values(configurations);
