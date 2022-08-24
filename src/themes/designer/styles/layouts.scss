@@ -109,9 +109,9 @@ widget {
     width: 80px;
     white-space: nowrap;
     margin: 5px;
-    @include selection(15px, -5px);
 
     &:hover {
+        @include selection(15px, -5px);
         cursor: pointer;
     }
 }
@@ -158,7 +158,10 @@ widget {
     line-height: 0;
     width: 120px;
     cursor: pointer;
-    @include selection(15px, -10px);
+
+    &:hover {
+        @include selection(15px, -10px);
+    }
 }
 
 .section-container-cfg {

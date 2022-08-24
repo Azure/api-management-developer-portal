@@ -47,9 +47,9 @@
   margin: 5px !important;
   width: 80px !important;
   float: left;
-  @include selection(15px, -5px);
 
   &:hover {
+    @include selection(15px, -5px);
     cursor: pointer;
   }
 }
