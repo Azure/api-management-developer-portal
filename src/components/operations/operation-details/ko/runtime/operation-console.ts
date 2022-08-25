@@ -528,7 +528,7 @@ export class OperationConsole {
             this.responseStatusCode(response.statusCode.toString());
             this.responseStatusText(responseStatusText);
 
-            if (downloadableTypes.some(type => responseContentType.includes(type))) {
+            if (responseContentType && downloadableTypes.some(type => responseContentType.includes(type))) {
                 const blob = new Blob([response.body], { type: responseContentType });
                 const fileExtension = getExtension(responseContentType);
 
@@ -554,17 +554,17 @@ export class OperationConsole {
                 this.responseBody(responseBody);
             }
 
-            this.logSentRequest(this.api().name, consoleOperation.opeationName, method, response.statusCode);
+            this.logSentRequest(this.api().name, consoleOperation.operationName, method, response.statusCode);
         }
         catch (error) {
             if (error instanceof RequestError) {
                 this.requestError(error.message);
-                this.logSentRequest(this.api().name, consoleOperation.opeationName, method);
+                this.logSentRequest(this.api().name, consoleOperation.operationName, method);
                 return;
             }
 
             this.requestError(`Unable to complete request.`);
-            this.logger.trackError(error);   
+            this.logger.trackError(error);
         }
         finally {
             this.sendingRequest(false);
