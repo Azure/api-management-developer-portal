@@ -78,6 +78,7 @@
         "@paperbits/azure": "0.1.526",
         "@paperbits/common": "0.1.526",
         "@paperbits/core": "0.1.526",
+        "@paperbits/forms": "^0.1.526",
         "@paperbits/prosemirror": "0.1.526",
         "@paperbits/styles": "0.1.526",
         "@webcomponents/custom-elements": "1.5.0",
