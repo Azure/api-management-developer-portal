@@ -31,7 +31,14 @@
       <!-- ko if: !!$component.config -->
       <p style="margin: 0;">
         Last deployed<br/>
-        <span data-bind="text: $component.config.deployedOn ? new Date(config.deployedOn).toLocaleString() : 'The widget hasn\'t been deployed yet.'"></span>
+        <!-- TODO Intl.DateTimeFormat(new Date(config.deployedOn)).resolvedOptions().timeZone -->
+        <!-- ko if: !!$component.config.deployedOn -->
+        <span data-bind="text: new Date(config.deployedOn).toLocaleString()"></span><br/>
+        <i data-bind="text: `(${new Date(config.deployedOn).toTimeString().match(/\((.+)\)/)[1]})`"></i>
+        <!-- /ko -->
+        <!-- ko if: !$component.config.deployedOn -->
+        <span>The widget hasn't been deployed yet.</span>
+        <!-- /ko -->
       </p>
 
       <details>
