@@ -541,17 +541,15 @@ export class OperationConsole {
             else {
                 const responseBody = response.body.toString();
 
-                if (responseContentType) {
-                    if (Utils.isJsonContentType(responseContentType)) {
-                        this.responseBody(Utils.formatJson(responseBody));
-                    }
-
-                    if (Utils.isJsonContentType(responseContentType)) {
-                        this.responseBody(Utils.formatXml(responseBody));
-                    }
+                if (responseContentType && Utils.isJsonContentType(responseContentType)) {
+                    this.responseBody(Utils.formatJson(responseBody));
                 }
-
-                this.responseBody(responseBody);
+                else if (responseContentType && Utils.isXmlContentType(responseContentType)) {
+                    this.responseBody(Utils.formatXml(responseBody));
+                }
+                else {
+                    this.responseBody(responseBody);
+                }
             }
 
             this.logSentRequest(this.api().name, consoleOperation.operationName, method, response.statusCode);
