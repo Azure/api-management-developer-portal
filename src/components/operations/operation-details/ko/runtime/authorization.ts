@@ -10,7 +10,6 @@ import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
 import { ConsoleOperation } from "../../../../../models/console/consoleOperation";
 import { templates } from "./templates/templates";
-import { TemplatingService } from "../../../../../services/templatingService";
 import { GrantTypes, TypeOfApi, oauthSessionKey } from "./../../../../../constants";
 import { OAuthService } from "../../../../../services/oauthService";
 import { Product } from "../../../../../models/product";
@@ -53,8 +52,6 @@ export class Authorization {
         this.queryParameters = ko.observableArray<ConsoleParameter>();
         this.consoleOperation = ko.observable<ConsoleOperation>();
         this.templates = templates;
-        this.codeSample = ko.observable<string>();
-        this.selectedLanguage = ko.observable<string>();
         this.authenticated = ko.observable(false);
         this.subscriptionKeyRequired = ko.observable();
         this.username = ko.observable();
@@ -80,10 +77,7 @@ export class Authorization {
     public queryParameters: ko.ObservableArray<ConsoleParameter>;
 
     @Param()
-    public codeSample: ko.Observable<string>;
-
-    @Param()
-    public selectedLanguage: ko.Observable<string>;
+    public updateRequestSummary: () => Promise<void>;
 
 
     @OnMounted()
@@ -259,12 +253,6 @@ export class Authorization {
         await this.setStoredCredentials(serverName, scopeOverride, grantType, accessToken);
 
         this.setAuthorizationHeader(accessToken);
-    }
-
-    public async updateRequestSummary(): Promise<void> {
-        const template = templates[this.selectedLanguage()];
-        const codeSample = await TemplatingService.render(template, ko.toJS(this.consoleOperation));
-        this.codeSample(codeSample);
     }
 
     private findHeader(name: string): ConsoleHeader {

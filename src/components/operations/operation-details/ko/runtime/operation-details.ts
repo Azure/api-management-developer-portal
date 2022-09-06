@@ -20,6 +20,7 @@ import {
     TypeDefinitionPropertyTypePrimitive
 } from "../../../../../models/typeDefinition";
 import { OAuthService } from "../../../../../services/oauthService";
+import { LruCache } from "@paperbits/common/caching/lruCache";
 
 
 @RuntimeComponent({
@@ -30,6 +31,9 @@ import { OAuthService } from "../../../../../services/oauthService";
     template: template
 })
 export class OperationDetails {
+
+    private readonly definitionsCache: LruCache<TypeDefinition[]>;
+
     private readonly definitions: ko.ObservableArray<TypeDefinition>;
     public readonly selectedApiName: ko.Observable<string>;
     public readonly selectedOperationName: ko.Observable<string>;
@@ -109,6 +113,11 @@ export class OperationDetails {
             return api.protocols?.join(", ");
         });
         this.apiType = ko.observable();
+        this.onRouteChange = this.onRouteChange.bind(this);
+
+        this.router.addRouteChangeListener(this.onRouteChange);
+
+        this.definitionsCache = new LruCache(10);
     }
 
     @Param()
@@ -130,7 +139,6 @@ export class OperationDetails {
 
         this.selectedApiName(apiName);
         this.selectedOperationName(operationName);
-        this.router.addRouteChangeListener(this.onRouteChange.bind(this));
 
         if (apiName) {
             await this.loadApi(apiName);
@@ -220,6 +228,12 @@ export class OperationDetails {
     }
 
     public async loadDefinitions(operation: Operation): Promise<void> {
+        const cachedDefinitions = this.definitionsCache.getItem(operation.id);
+        if (cachedDefinitions) {
+            this.definitions(cachedDefinitions);
+            return;
+        }
+
         const schemaIds = [];
         const apiId = `apis/${this.selectedApiName()}/schemas`;
 
@@ -260,7 +274,9 @@ export class OperationDetails {
             }
         }
 
-        this.definitions(definitions.filter(definition => typeNames.indexOf(definition.name) !== -1));
+        const typedDefinitions = definitions.filter(definition => typeNames.indexOf(definition.name) !== -1);
+        this.definitionsCache.setItem(operation.id, typedDefinitions);
+        this.definitions(typedDefinitions);
     }
 
     private lookupReferences(definitions: TypeDefinition[], skipNames: string[]): string[] {

@@ -22,6 +22,7 @@ import { Bag } from "@paperbits/common";
 import { Tag } from "../models/tag";
 import { get, set } from "idb-keyval";
 import { IApiClient } from "../clients";
+import { LruCache } from "@paperbits/common/caching/lruCache";
 
 interface CacheItem {
     value: any;
@@ -32,7 +33,11 @@ const CacheItemRefreshMins = 60;
 
 export class ApiService {
 
-    constructor(private readonly apiClient: IApiClient) { }
+    private readonly schemaCache: LruCache<Schema>;
+
+    constructor(private readonly apiClient: IApiClient) {
+        this.schemaCache = new LruCache(100);
+    }
 
     private async addDataToCache(key: string, data: any): Promise<void> {
         if (!data) {
@@ -393,17 +398,22 @@ export class ApiService {
      * @param schemaId {string} ARM-formatted schema identifier.
      */
     public async getApiSchema(schemaId: string): Promise<Schema> {
-        const model = await this.getItemWithRefresh<Schema>(schemaId, () => this.getApiSchemaData(schemaId));
-        return model;
-    }
-
-    private async getApiSchemaData(schemaId: string): Promise<Schema> {
-        const contract = await this.apiClient.get<SchemaContract>(schemaId, [await this.apiClient.getPortalHeader("getApiSchema"), Utils.getIsUserResourceHeader()]);
+        const cachedSchema = this.schemaCache.getItem(schemaId);
+        if (cachedSchema) {
+            return cachedSchema;
+        }
+        const contract = await this.getItemWithRefresh<SchemaContract>(schemaId, () => this.getApiSchemaData(schemaId));
         const model = new Schema(contract);
+        this.schemaCache.setItem(schemaId, model);
         return model;
     }
 
-    public async getItemWithRefresh<T>(key: string, refreshFunc: () => Promise<T>): Promise<T> {
+    private async getApiSchemaData(schemaId: string): Promise<SchemaContract> {
+        const contract = await this.apiClient.get<SchemaContract>(schemaId, [await this.apiClient.getPortalHeader("getApiSchema"), Utils.getIsUserResourceHeader()]);
+        return contract;
+    }
+
+    private async getItemWithRefresh<T>(key: string, refreshFunc: () => Promise<T>): Promise<T> {
         const result = await this.getDataFromCache(key);
         if (result) {
             const nowTime = Date.now();
@@ -421,18 +431,27 @@ export class ApiService {
     }
 
     public async getGQLSchema(apiId: string): Promise<Schema> {
-        const model = await this.getItemWithRefresh<Schema>(apiId, () => this.getGQLSchemaData(apiId));
-        return model;
-    }
-    private async getGQLSchemaData(apiId: string): Promise<Schema> {
-        const result = await this.apiClient.get<Page<SchemaContract>>(`${apiId}/schemas`, [await this.apiClient.getPortalHeader("getSchemas"), Utils.getIsUserResourceHeader()]);
-        const schemaReferences = result.value;
+        const cachedSchema = this.schemaCache.getItem(apiId);
+        if (cachedSchema) {
+            return cachedSchema;
+        }
+        const contract = await this.getItemWithRefresh<Page<SchemaContract>>(apiId, () => this.getGQLSchemaData(apiId));
+        const schemaReferences = contract.value;
         const schemaType = this.getSchemasType(schemaReferences);
         if (schemaType === SchemaType.graphQL) {
             const schemaReference = schemaReferences.find(schema => schema.contentType === schemaType);
-            return schemaReference ? new Schema(schemaReference) : undefined;
+            if (schemaReference) {
+                const model = new Schema(schemaReference);
+                this.schemaCache.setItem(apiId, model);
+                return model;
+            }
         }
         return undefined;
+    }
+
+    private async getGQLSchemaData(apiId: string): Promise<Page<SchemaContract>> {
+        const result = await this.apiClient.get<Page<SchemaContract>>(`${apiId}/schemas`, [await this.apiClient.getPortalHeader("getSchemas"), Utils.getIsUserResourceHeader()]);
+        return result;
     }
 
     private getSchemasType(schemas: SchemaContract[]): SchemaType {
