@@ -23,6 +23,11 @@ export interface OperationContract {
     description: string;
 
     /**
+     * Operation method.
+     */
+    method: string;
+
+    /**
      * Operation URI template. Cannot be more than 400 characters long.
      */
     urlTemplate: string;

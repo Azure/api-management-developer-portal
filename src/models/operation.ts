@@ -27,6 +27,7 @@ export class Operation {
         this.displayName = contract.name;
         this.description = contract.description;
         this.urlTemplate = contract.urlTemplate;
+        this.method = contract.method;
 
         this.templateParameters = contract.templateParameters
             ? contract.templateParameters.map(x => new Parameter("template", x))
