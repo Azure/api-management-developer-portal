@@ -1,14 +1,15 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
-import template from "./reset-password.html";
 import { EventManager } from "@paperbits/common/events";
-import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
-import { UsersService } from "../../../../../services";
+import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Logger } from "@paperbits/common/logging";
 import { ResetRequest } from "../../../../../contracts/resetRequest";
-import { BackendService } from "../../../../../services/backendService";
 import { CaptchaData } from "../../../../../models/captchaData";
-import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { UsersService } from "../../../../../services";
+import { BackendService } from "../../../../../services/backendService";
 import { ErrorSources } from "../../../validation-summary/constants";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import template from "./reset-password.html";
 
 @RuntimeComponent({
     selector: "reset-password-runtime"
@@ -22,16 +23,16 @@ export class ResetPassword {
     public readonly isResetRequested: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
     public readonly captcha: ko.Observable<string>;
-    
+    public readonly captchaData: ko.Observable<CaptchaData>;
     public setCaptchaValidation: (captchaValidator: ko.Observable<string>) => void;
     public refreshCaptcha: () => Promise<void>;
-    public readonly captchaData: ko.Observable<CaptchaData>;
-
 
     constructor(
         private readonly usersService: UsersService,
         private readonly eventManager: EventManager,
-        private readonly backendService: BackendService) {
+        private readonly backendService: BackendService,
+        private readonly logger: Logger
+    ) {
         this.email = ko.observable();
         this.isResetRequested = ko.observable(false);
         this.working = ko.observable(false);
@@ -64,7 +65,7 @@ export class ResetPassword {
             return;
         }
     }
-    
+
     public onCaptchaCreated(captchaValidate: (captchaValidator: ko.Observable<string>) => void, refreshCaptcha: () => Promise<void>) {
         this.setCaptchaValidation = captchaValidate;
         this.refreshCaptcha = refreshCaptcha;
@@ -74,11 +75,18 @@ export class ResetPassword {
      * Sends user reset password request to Management API.
      */
     public async resetSubmit(): Promise<void> {
-        const isCaptcha = this.requireHipCaptcha();
+        const isCaptchaRequired = this.requireHipCaptcha();
         const validationGroup = { email: this.email };
 
-        if (isCaptcha) {
+        if (isCaptchaRequired) {
             validationGroup["captcha"] = this.captcha;
+
+            if (!this.setCaptchaValidation) {
+                this.logger.trackEvent("CaptchaValidation", { message: "Captcha failed to initialize." });
+                dispatchErrors(this.eventManager, ErrorSources.resetpassword, ["Unable to validate entered characters due to internal errors. Try to refresh the page and repeat the operation."]);
+                return;
+            }
+
             this.setCaptchaValidation(this.captcha);
         }
 
@@ -94,11 +102,11 @@ export class ResetPassword {
 
         try {
             this.working(true);
-            
-            if (isCaptcha) {
+
+            if (isCaptchaRequired) {
                 const captchaRequestData = this.captchaData();
                 const resetRequest: ResetRequest = {
-                    challenge: captchaRequestData.challenge, 
+                    challenge: captchaRequestData.challenge,
                     solution: captchaRequestData.solution?.solution,
                     flowId: captchaRequestData.solution?.flowId,
                     token: captchaRequestData.solution?.token,
@@ -115,7 +123,7 @@ export class ResetPassword {
             dispatchErrors(this.eventManager, ErrorSources.resetpassword, []);
         }
         catch (error) {
-            if (isCaptcha) {
+            if (isCaptchaRequired) {
                 await this.refreshCaptcha();
             }
 
