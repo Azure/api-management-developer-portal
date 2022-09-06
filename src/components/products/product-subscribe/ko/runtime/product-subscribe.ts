@@ -51,7 +51,7 @@ export class ProductSubscribe {
         this.showTermsByDefault = ko.observable(false);
 
         this.canSubscribe = ko.pureComputed((): boolean => {
-            return (this.delegationEnabled || this.subscriptionName().length > 0) && ((this.termsOfUse() && this.consented()) || !!!this.termsOfUse());
+            return (this.delegationEnabled || this.subscriptionName().length > 0) && ((this.termsOfUse() && this.consented()) || !this.termsOfUse());
         });
     }
 

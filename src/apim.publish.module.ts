@@ -35,11 +35,12 @@ import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts
 import { RuntimeConfigPublisher } from "./publishing/runtimeConfigPublisher";
 import { RuntimeConfigBuilder } from "./publishing/runtimeConfigBuilder";
 import { CustomHtmlPublishModule } from "./components/custom-html/customHtml.publish.module";
+import { CustomWidgetPublishModule } from "./components/custom-widget/customWidget.publish.module";
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
 import { staticDataEnvironment } from "./../environmentConstants"
 import { MapiClient } from "./clients";
-import { DelegationService } from "./services/delegationService";
+import { TenantService } from "./services/tenantService";
 import { StaticDelegationService } from "./services/staticDelegationService";
 
 export class ApimPublishModule implements IInjectorModule {
@@ -67,6 +68,8 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ReportsModule());
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new CustomHtmlPublishModule());
+        injector.bindModule(new CustomWidgetPublishModule());
+        injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("userService", StaticUserService);
         injector.bindSingleton("roleService", StaticRoleService);

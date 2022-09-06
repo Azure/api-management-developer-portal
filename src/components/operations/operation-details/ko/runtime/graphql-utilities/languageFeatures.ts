@@ -245,5 +245,7 @@ export class HoverAdapter implements languages.HoverProvider {
         return;
     }
 
-    public dispose() { }
+    public dispose() {
+        // do nothing
+    }
 }

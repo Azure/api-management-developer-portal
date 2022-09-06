@@ -1,27 +1,31 @@
 <?php
 
-$url = "{{requestUrl}}";
+$url = "{{console.requestUrl}}";
 $curl = curl_init($url);
 
-curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "{{method}}");
+curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "{{console.method}}");
 curl_setopt($curl, CURLOPT_URL, $url);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-{% if request.meaningfulHeaders.size > 0 -%}
+{% if console.request.meaningfulHeaders.size > 0 -%}
 # Request headers
 $headers = array(
-{%- for header in request.meaningfulHeaders %}
-    '{{header.name}}: {{header.displayedValue}}',
+{%- for header in console.request.meaningfulHeaders %}
+    {% if showSecrets == false and header.secret -%}
+        '{{header.name}}: {{header.hiddenValue}}',
+    {%- else -%}
+       '{{header.name}}: {{header.value}}',
+    {%- endif -%}
 {%- endfor -%});
 curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 {%- endif %}
-{% if request.body != blank %}
+{% if console.request.body != blank %}
 # Request body
-{% if request.bodyFormat == "raw" -%}
-$request_body = '{{request.body}}';
-{%- elsif  request.bodyFormat == "binary" %}
-$file = fopen("< path\\to\\{{request.binary.name}} >", "r");
-$request_body = fread($file,filesize("< path\\to\\{{request.binary.name}} >"));
+{% if console.request.bodyFormat == "raw" -%}
+$request_body = '{{console.request.body}}';
+{%- elsif  console.request.bodyFormat == "binary" %}
+$file = fopen("< path\\to\\{{console.request.binary.name}} >", "r");
+$request_body = fread($file,filesize("< path\\to\\{{console.request.binary.name}} >"));
 fclose($file);
 {% endif %}
 curl_setopt($curl, CURLOPT_POSTFIELDS, $request_body);

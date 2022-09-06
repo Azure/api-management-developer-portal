@@ -44,7 +44,7 @@ export class AccessTokenRefrsher {
             const response = await this.httpClient.send({
                 method: "GET",
                 url: `${backendUrl}${Utils.ensureLeadingSlash("/identity")}?api-version=${Constants.managementApiVersion}`,
-                headers: [{ name: "Authorization", value: accessToken.toString() }]
+                headers: [{ name: KnownHttpHeaders.Authorization, value: accessToken.toString() }]
             });
             const accessTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
 

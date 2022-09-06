@@ -199,7 +199,6 @@ export default abstract class ApiClient implements IApiClient {
         const error = this.createMapiError(errorResponse.statusCode, requestedUrl, () => errorResponse.toObject().error);
 
         if (error) {
-            error.response = errorResponse;
             throw error;
         }
 

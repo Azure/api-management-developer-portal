@@ -54,43 +54,38 @@ export class ProvisionService {
     private async cleanupContent(): Promise<void> {
         const accessToken = await this.authenticator.getAccessTokenAsString();
 
-        try {
-            const response = await this.apiClient.get(
-                `contentTypes?api-version=${Constants.managementApiVersion}`,
+        const response = await this.apiClient.get(
+            `contentTypes?api-version=${Constants.managementApiVersion}`,
+            [
+                { name: KnownHttpHeaders.IfMatch, value: "*" },
+                { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
+                { name: KnownHttpHeaders.Authorization, value: accessToken },
+                await this.apiClient.getPortalHeader("getContentTypes")
+            ]);
+        const contentTypes = Object.values(response["value"]);
+
+        for (const contentType of contentTypes) {
+            const contentTypeName = contentType["name"];
+            const itemsResponse = await this.apiClient.get(
+                `contentTypes/${contentTypeName}/contentItems?api-version=${Constants.managementApiVersion}`,
                 [
                     { name: KnownHttpHeaders.IfMatch, value: "*" },
                     { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                     { name: KnownHttpHeaders.Authorization, value: accessToken },
-                    await this.apiClient.getPortalHeader("getContentTypes")
+                    await this.apiClient.getPortalHeader("getContentItems")
                 ]);
-            const contentTypes = Object.values(response["value"]);
 
-            for (const contentType of contentTypes) {
-                const contentTypeName = contentType["name"];
-                const itemsResponse = await this.apiClient.get(
-                    `contentTypes/${contentTypeName}/contentItems?api-version=${Constants.managementApiVersion}`,
+            const items = Object.values(itemsResponse["value"]);
+            for (const item of items) {
+                await this.apiClient.delete(
+                    `${item["id"]}?api-version=${Constants.managementApiVersion}`,
                     [
                         { name: KnownHttpHeaders.IfMatch, value: "*" },
                         { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                         { name: KnownHttpHeaders.Authorization, value: accessToken },
-                        await this.apiClient.getPortalHeader("getContentItems")
+                        await this.apiClient.getPortalHeader("resetContent")
                     ]);
-
-                const items = Object.values(itemsResponse["value"]);
-                for (const item of items) {
-                    await this.apiClient.delete(
-                        `${item["id"]}?api-version=${Constants.managementApiVersion}`,
-                        [
-                            { name: KnownHttpHeaders.IfMatch, value: "*" },
-                            { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
-                            { name: KnownHttpHeaders.Authorization, value: accessToken },
-                            await this.apiClient.getPortalHeader("resetContent")
-                        ]);
-                }
             }
-        }
-        catch (error) {
-            throw error;
         }
     }
 

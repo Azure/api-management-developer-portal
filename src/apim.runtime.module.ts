@@ -85,6 +85,7 @@ import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider"
 import { staticDataEnvironment } from "./../environmentConstants"
 import { TenantService } from "./services/tenantService";
 import { DelegationService } from "./services/delegationService";
+import { CustomWidgetRuntimeModule } from "./components/custom-widget/customWidget.runtime.module";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -157,6 +158,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bind("pagination", Pagination);
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
+        injector.bindModule(new CustomWidgetRuntimeModule());
         injector.bindSingleton("delegationService", DelegationService);
 
         if (process.env.NODE_ENV === staticDataEnvironment) {

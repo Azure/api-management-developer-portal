@@ -13,7 +13,7 @@ export class ConsoleHeader {
     public revealed: ko.Observable<boolean>;
     public description: string;
     public type: string;
-    public displayedValue: ko.Observable<string>;
+    public hiddenValue: ko.Computed<string>;
 
     public toggleRevealed(): void {
         this.revealed(!this.revealed());
@@ -25,10 +25,9 @@ export class ConsoleHeader {
     }
 
     constructor(contract?: Parameter) {
-        this.name = ko.observable();
-        this.value = ko.observable();
+        this.name = ko.observable(null);
+        this.value = ko.observable(null);
         this.revealed = ko.observable(false);
-        this.displayedValue = ko.observable();
         this.inputTypeValue = ko.observable("text");
         this.options = [];
         this.required = false;
@@ -36,33 +35,30 @@ export class ConsoleHeader {
         this.custom = true;
         this.type = "string";
         this.description = "Additional header.";
+        this.hiddenValue = ko.computed<string>(() => this.value()?.replace(/./g, "•"));
 
-        this.value.subscribe(() => {
-            this.displayedValue((this.secret && !this.revealed()) ? this.value()?.replace(/./g, "•") : this.value());
-        });
         this.revealed.subscribe(() => {
-            this.displayedValue((this.secret && !this.revealed()) ? this.value().replace(/./g, "•") : this.value());
             this.inputTypeValue(this.secret && !this.revealed() ? "password" : "text");
         });
 
         this.name.extend(<any>{ required: { message: `Name is required.` } });
-
-        if (this.required) {
-            this.value.extend(<any>{ required: { message: `Value is required.` } });
-        }
-
         if (!contract) {
             return;
         }
 
+        this.required = contract.required;
         this.custom = false;
         this.name(contract.name);
-        this.value(contract.defaultValue);
-        this.required = contract.required;
         this.options = contract.values;
         this.description = contract.description ? contract.description : "";
         this.type = contract.type;
         this.secret = false;
         this.inputTypeValue(this.secret && !this.revealed() ? "password" : "text");
+
+        if (this.required) {
+            this.value.extend(<any>{ required: { message: `Value is required.` } });
+        }
+
+        this.value(contract.defaultValue);
     }
 }

@@ -39,7 +39,7 @@ export class MapiBlobStorage implements IBlobStorage {
         else if (blobStorageUrl) {
             const parsedUrl = new URL(blobStorageUrl);
 
-            const containerSegment = !!blobStorageContainer
+            const containerSegment = blobStorageContainer
                 ? blobStorageContainer
                 : defaultContainerName;
 
@@ -64,11 +64,12 @@ export class MapiBlobStorage implements IBlobStorage {
     }
 
     /**
-     * Lists all blobs in storage.
+     * Lists all blobs in storage or with specific prefix (in a specific "folder").
+     * @param blobPrefix Blob prefix.
      */
-    public async listBlobs?(): Promise<string[]> {
+    public async listBlobs?(blobPrefix?: string): Promise<string[]> {
         const client = await this.getStorageClient();
-        return await client.listBlobs();
+        return await client.listBlobs(blobPrefix);
     }
 
     /**
@@ -98,6 +99,16 @@ export class MapiBlobStorage implements IBlobStorage {
     public async getDownloadUrl(blobKey: string): Promise<string> {
         const client = await this.getStorageClient();
         return await client.getDownloadUrl(blobKey);
+    }
+
+    /**
+     * Returns download URL of uploaded blob without token.
+     * @param blobKey Unique blob identifier.
+     */
+    public async getDownloadUrlWithoutToken(blobKey: string): Promise<string> {
+        const url = new URL(await this.getDownloadUrl(blobKey));
+        ["sv", "st", "se", "sr", "sp", "sig"].forEach(key => url.searchParams.delete(key));
+        return url.toString();
     }
 
     /**
