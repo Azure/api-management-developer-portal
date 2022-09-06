@@ -18,6 +18,7 @@ export class CustomWidgetHandlers implements IWidgetHandler {
     public async getWidgetModel(): Promise<CustomWidgetModel> {
         const model = new CustomWidgetModel();
         model.name = this.configuration.name;
+        model.widgetDisplayName = this.configuration.displayName;
         model.customInputValue = "{}";
         StyleHelper.setPluginConfigForLocalStyles(model.styles, "size", sizeStylesInitial);
         model.instanceId = model.name + "_" + Math.random();

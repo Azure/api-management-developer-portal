@@ -7,7 +7,7 @@ export class CustomWidgetModel {
     public name: string;
 
     /**
-     * @deprecated. This name will be shown in editors and custom-widget-binder selector. (this will be removed from here and used only in WidgetHandlers)
+     * This name will be shown in editors and custom-widget-binder selector.
      */
     public widgetDisplayName: string;
 
