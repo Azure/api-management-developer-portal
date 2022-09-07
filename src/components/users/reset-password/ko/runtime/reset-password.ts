@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
+import template from "./reset-password.html";
 import { EventManager } from "@paperbits/common/events";
 import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { Logger } from "@paperbits/common/logging";
@@ -9,7 +10,8 @@ import { UsersService } from "../../../../../services";
 import { BackendService } from "../../../../../services/backendService";
 import { ErrorSources } from "../../../validation-summary/constants";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
-import template from "./reset-password.html";
+import { ValidationMessages } from "../../../validationMessages";
+
 
 @RuntimeComponent({
     selector: "reset-password-runtime"
@@ -46,8 +48,8 @@ export class ResetPassword {
             decorateInputElement: true
         });
 
-        this.email.extend(<any>{ required: { message: `Email is required.` }, email: true });
-        this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
+        this.email.extend(<any>{ required: { message: ValidationMessages.emailRequired }, email: true });
+        this.captcha.extend(<any>{ required: { message: ValidationMessages.captchaRequired } });
     }
 
     @Param()
@@ -79,14 +81,13 @@ export class ResetPassword {
         const validationGroup = { email: this.email };
 
         if (isCaptchaRequired) {
-            validationGroup["captcha"] = this.captcha;
-
             if (!this.setCaptchaValidation) {
                 this.logger.trackEvent("CaptchaValidation", { message: "Captcha failed to initialize." });
-                dispatchErrors(this.eventManager, ErrorSources.resetpassword, ["Unable to validate entered characters due to internal errors. Try to refresh the page and repeat the operation."]);
+                dispatchErrors(this.eventManager, ErrorSources.resetpassword, [ValidationMessages.captchaNotInitialized]);
                 return;
             }
 
+            validationGroup["captcha"] = this.captcha;
             this.setCaptchaValidation(this.captcha);
         }
 
