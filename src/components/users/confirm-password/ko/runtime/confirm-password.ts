@@ -2,10 +2,11 @@ import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./confirm-password.html";
 import { EventManager } from "@paperbits/common/events";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
+import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { UsersService } from "../../../../../services";
-import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ValidationMessages } from "../../../validationMessages";
 
 @RuntimeComponent({
     selector: "confirm-password"
@@ -36,8 +37,8 @@ export class ConfirmPassword {
             decorateInputElement: true
         });
 
-        this.password.extend(<any>{ required: { message: `Password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
-        this.passwordConfirmation.extend(<any>{ required: { message: `Password confirmation is required.` }, equal: { message: "Password confirmation field must be equal to password.", params: this.password } });
+        this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired }, minLength: 8 }); // TODO: password requirements should come from Management API.
+        this.passwordConfirmation.extend(<any>{ equal: { message: ValidationMessages.passwordConfirmationMustMatch, params: this.password } });
     }
 
     /**
