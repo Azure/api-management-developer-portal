@@ -10,6 +10,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 import { UsersService } from "../../../../../services";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
+import { ValidationMessages } from "../../../validationMessages";
 
 
 @RuntimeComponent({
@@ -47,10 +48,10 @@ export class SignupSocial {
             decorateInputElement: true
         });
 
-        this.email.extend(<any>{ required: { message: `Email is required.` }, email: true });
-        this.firstName.extend(<any>{ required: { message: `First name is required.` } });
-        this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
-        this.consented.extend(<any>{ equal: { params: true, message: "You must agree to the terms of use." } });
+        this.email.extend(<any>{ required: { message: ValidationMessages.emailRequired }, email: true });
+        this.firstName.extend(<any>{ required: { message: ValidationMessages.firstNameRequired } });
+        this.lastName.extend(<any>{ required: { message: ValidationMessages.lastNameRequired } });
+        this.consented.extend(<any>{ equal: { params: true, message: ValidationMessages.consentRequired } });
     }
 
     @Param()
