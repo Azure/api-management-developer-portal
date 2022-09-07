@@ -84,14 +84,14 @@ export class ChangePassword {
      * Sends user change password request to Management API.
      */
     public async changePassword(): Promise<void> {
-        const isCaptchaRequired = this.requireHipCaptcha();
+        const captchaIsRequired = this.requireHipCaptcha();
         const validationGroup = {
             password: this.password,
             newPassword: this.newPassword,
             passwordConfirmation: this.passwordConfirmation
         };
 
-        if (isCaptchaRequired) {
+        if (captchaIsRequired) {
             if (!this.setCaptchaValidation) {
                 this.logger.trackEvent("CaptchaValidation", { message: "Captcha failed to initialize." });
                 dispatchErrors(this.eventManager, ErrorSources.resetpassword, [ValidationMessages.captchaNotInitialized]);
@@ -127,7 +127,7 @@ export class ChangePassword {
             this.working(true);
             dispatchErrors(this.eventManager, ErrorSources.changepassword, []);
 
-            if (isCaptchaRequired) {
+            if (captchaIsRequired) {
                 const captchaRequestData = this.captchaData();
                 const resetRequest: ChangePasswordRequest = {
                     challenge: captchaRequestData.challenge,
@@ -144,7 +144,7 @@ export class ChangePassword {
             }
             this.isChangeConfirmed(true);
         } catch (error) {
-            if (isCaptchaRequired) {
+            if (captchaIsRequired) {
                 await this.refreshCaptcha();
             }
 

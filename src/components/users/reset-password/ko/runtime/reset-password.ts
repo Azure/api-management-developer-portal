@@ -77,10 +77,10 @@ export class ResetPassword {
      * Sends user reset password request to Management API.
      */
     public async resetSubmit(): Promise<void> {
-        const isCaptchaRequired = this.requireHipCaptcha();
+        const captchaIsRequired = this.requireHipCaptcha();
         const validationGroup = { email: this.email };
 
-        if (isCaptchaRequired) {
+        if (captchaIsRequired) {
             if (!this.setCaptchaValidation) {
                 this.logger.trackEvent("CaptchaValidation", { message: "Captcha failed to initialize." });
                 dispatchErrors(this.eventManager, ErrorSources.resetpassword, [ValidationMessages.captchaNotInitialized]);
@@ -104,7 +104,7 @@ export class ResetPassword {
         try {
             this.working(true);
 
-            if (isCaptchaRequired) {
+            if (captchaIsRequired) {
                 const captchaRequestData = this.captchaData();
                 const resetRequest: ResetRequest = {
                     challenge: captchaRequestData.challenge,
@@ -124,7 +124,7 @@ export class ResetPassword {
             dispatchErrors(this.eventManager, ErrorSources.resetpassword, []);
         }
         catch (error) {
-            if (isCaptchaRequired) {
+            if (captchaIsRequired) {
                 await this.refreshCaptcha();
             }
 

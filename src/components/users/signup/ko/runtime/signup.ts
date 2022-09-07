@@ -142,7 +142,7 @@ export class Signup {
      * Sends user signup request to Management API.
      */
     public async signup(): Promise<void> {
-        const isCaptchaRequired = this.requireHipCaptcha();
+        const captchaIsRequired = this.requireHipCaptcha();
 
         const validationGroup = {
             email: this.email,
@@ -152,7 +152,7 @@ export class Signup {
             lastName: this.lastName
         };
 
-        if (isCaptchaRequired) {
+        if (captchaIsRequired) {
             if (!this.setCaptchaValidation) {
                 this.logger.trackEvent("CaptchaValidation", { message: "Captcha failed to initialize." });
                 dispatchErrors(this.eventManager, ErrorSources.resetpassword, [ValidationMessages.captchaNotInitialized]);
@@ -190,7 +190,7 @@ export class Signup {
             this.working(true);
             dispatchErrors(this.eventManager, ErrorSources.signup, []);
 
-            if (isCaptchaRequired) {
+            if (captchaIsRequired) {
                 const captchaRequestData = this.captchaData();
                 const createSignupRequest: SignupRequest = {
                     challenge: captchaRequestData.challenge,
@@ -210,7 +210,7 @@ export class Signup {
             this.isUserRequested(true);
         }
         catch (error) {
-            if (isCaptchaRequired) {
+            if (captchaIsRequired) {
                 await this.refreshCaptcha();
             }
 
