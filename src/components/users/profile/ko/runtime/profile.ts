@@ -14,6 +14,7 @@ import { EventManager } from "@paperbits/common/events/eventManager";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
 import { BackendService } from "../../../../../services/backendService";
+import { ValidationMessages } from "../../../validationMessages";
 
 @RuntimeComponent({
     selector: "profile-runtime"
@@ -57,8 +58,8 @@ export class Profile {
             decorateInputElement: true
         });
 
-        this.firstName.extend(<any>{ required: { message: `First name is required.` } });
-        this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
+        this.firstName.extend(<any>{ required: { message: ValidationMessages.firstNameRequired } });
+        this.lastName.extend(<any>{ required: { message: ValidationMessages.lastNameRequired } });
     }
 
     @OnMounted()
@@ -77,7 +78,7 @@ export class Profile {
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
         if (isDelegationEnabled) {
             const delegationParam = {};
-            delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", this.user().id);
+            delegationParam[DelegationParameters.UserId] = Utils.getResourceName("users", this.user().id);
             const delegationUrl = await this.backendService.getDelegationString(action, delegationParam);
             if (delegationUrl) {
                 location.assign(delegationUrl);
@@ -124,7 +125,7 @@ export class Profile {
         if (!this.isEdit()) {
             return;
         }
-        
+
         this.working(true);
         dispatchErrors(this.eventManager, ErrorSources.changeProfile, []);
         try {
