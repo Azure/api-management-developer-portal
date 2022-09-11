@@ -19,6 +19,25 @@ export class OAuthService {
         private readonly logger: Logger
     ) { }
 
+    private async generateCodeChallenge(codeVerifier: string): Promise<string> {
+        const digest = await crypto.subtle.digest("SHA-256",
+            new TextEncoder().encode(codeVerifier));
+
+        return btoa(String.fromCharCode(...new Uint8Array(digest)))
+            .replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_")
+    }
+
+    private generateRandomString(length: number): string {
+        let text = "";
+        const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for (let i = 0; i < length; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+
+        return text;
+    }
+
     public async getAuthServer(authorizationServerId: string, openidProviderId: string): Promise<AuthorizationServer> {
         try {
             if (authorizationServerId) {
@@ -165,6 +184,57 @@ export class OAuthService {
                 reject(error);
             }
         });
+    }
+
+    public async authenticateCodeWithPkce(backendUrl: string, authorizationServer: AuthorizationServer): Promise<void> {
+        const codeVerifier = this.generateRandomString(64);
+        const challengeMethod = crypto.subtle ? "S256" : "plain"
+
+        const codeChallenge = challengeMethod === "S256"
+            ? await this.generateCodeChallenge(codeVerifier)
+            : codeVerifier
+
+        sessionStorage.setItem("code_verifier", codeVerifier);
+
+        const redirectUri = location.href.split("?")[0];
+        const args = new URLSearchParams({
+            response_type: "code",
+            client_id: authorizationServer.clientId,
+            code_challenge_method: challengeMethod,
+            code_challenge: codeChallenge,
+            redirect_uri: redirectUri,
+            scope: authorizationServer.scopes.join(" ")
+        });
+
+        // should be open in new window:
+        location.assign(authorizationServer.authorizationEndpoint + "/?" + args);
+
+        // for quick implementation, we can create a special publisher that would output document for the iframe
+        // longer approach would require backend handlers /signin-oauth/code_pkce/callback/:authserver
+        // or temporary one: /signin-oauth/implicit/callback
+    }
+
+    public async authCodeWithPkceCallback(authorizationServer: AuthorizationServer) {
+        const args = new URLSearchParams(window.location.search);
+        const code = args.get("code");
+
+        const body = new URLSearchParams({
+            client_id: authorizationServer.clientId,
+            code_verifier: sessionStorage.getItem("code_verifier"),
+            grant_type: GrantTypes.authorizationCode,
+            redirect_uri: location.href.replace(location.search, ""),
+            code: code
+        });
+
+        const response = await this.httpClient.send<any>({
+            url: authorizationServer.tokenEndpoint,
+            method: HttpMethod.post,
+            headers: [{ name: KnownHttpHeaders.ContentType, value: "application/x-www-form-urlencoded" }],
+            body: body.toString()
+        });
+
+        const tokenResponse = response.toObject();
+        const accessToken = tokenResponse.access_token;
     }
 
     /**
