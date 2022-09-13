@@ -1,4 +1,5 @@
 import * as ko from "knockout";
+import { KnownHttpHeaders } from "../knownHttpHeaders";
 import { Parameter } from "../parameter";
 
 export class ConsoleHeader {
@@ -52,7 +53,7 @@ export class ConsoleHeader {
         this.options = contract.values;
         this.description = contract.description ? contract.description : "";
         this.type = contract.type;
-        this.secret = false;
+        this.secret = this.name() == KnownHttpHeaders.Authorization ? true : false;
         this.inputTypeValue(this.secret && !this.revealed() ? "password" : "text");
 
         if (this.required) {

@@ -36,6 +36,7 @@ export class Authorization {
     public readonly products: ko.Observable<Product[]>;
     public readonly selectedSubscriptionKey: ko.Observable<string>;
     public readonly collapsedAuth: ko.Observable<boolean>;
+    private deleteAuthorizationHeader: boolean = false;
 
     constructor(
         private readonly sessionManager: SessionManager,
@@ -137,15 +138,21 @@ export class Authorization {
     }
 
     private setAuthorizationHeader(accessToken: string): void {
-        this.removeAuthorizationHeader();
+        const authorizationHeader = this.getAuthorizationHeader();
 
+        if (authorizationHeader) {
+            authorizationHeader.value(accessToken);
+            return;
+        }
+
+        this.deleteAuthorizationHeader = true;
         const keyHeader = new ConsoleHeader();
         keyHeader.name(KnownHttpHeaders.Authorization);
         keyHeader.description = "Subscription key.";
         keyHeader.secret = true;
         keyHeader.inputTypeValue("password");
         keyHeader.type = "string";
-        keyHeader.required = true;
+        keyHeader.required = false;
         keyHeader.value(accessToken);
 
         if (!this.isGraphQL()) {
@@ -172,6 +179,10 @@ export class Authorization {
     private getSubscriptionKeyHeader(): ConsoleHeader {
         const subscriptionKeyHeaderName = this.getSubscriptionKeyHeaderName();
         return this.findHeader(subscriptionKeyHeaderName);
+    }
+
+    private getAuthorizationHeader(): ConsoleHeader {
+        return this.findHeader(KnownHttpHeaders.Authorization);
     }
 
     private setSubscriptionKeyHeader(subscriptionKey: string): void {
@@ -201,29 +212,29 @@ export class Authorization {
         }
     }
 
-    private async clearStoredCredentials(grantTypeChanged?: boolean): Promise<void> {
+    private async clearStoredCredentials(): Promise<void> {
         await this.sessionManager.removeItem(oauthSessionKey);
-
-        if (grantTypeChanged) {
-            this.removeAuthorizationHeader(true);
-        }
     }
 
-    private removeAuthorizationHeader(clearValue: boolean = false): void {
-        const authorizationHeader = this.findHeader(KnownHttpHeaders.Authorization);
+    private removeAuthorizationHeader(): void {
+        const authorizationHeader = this.getAuthorizationHeader();
 
-        if (clearValue && authorizationHeader && authorizationHeader.required) {
-            authorizationHeader.value(null);
-        } else {
-            this.removeHeader(authorizationHeader);
+        if (authorizationHeader) {
+            if (!this.deleteAuthorizationHeader) {
+                authorizationHeader.value(null);
+            } else {
+                this.removeHeader(authorizationHeader);
+            }
         }
+
         this.authenticated(false);
     }
 
     private async onGrantTypeChange(grantType: string): Promise<void> {
-        await this.clearStoredCredentials(true);
+        await this.clearStoredCredentials();
 
         if (!grantType || grantType === GrantTypes.password) {
+            this.removeAuthorizationHeader();
             return;
         }
 
