@@ -239,6 +239,7 @@ export class OperationConsole {
         }
 
         this.consoleOperation().request.headers().forEach(header => header.value.subscribe(_ => this.updateRequestSummary()));
+        this.consoleOperation().request.headers().forEach(header => header.name.subscribe(_ => this.updateRequestSummary()));
         this.consoleOperation().request.body.subscribe(_ => this.updateRequestSummary());
         this.consoleOperation().request.queryParameters().forEach(parameter => parameter.value.subscribe(_ => this.updateRequestSummary()));
 
@@ -320,6 +321,7 @@ export class OperationConsole {
         const newHeader = new ConsoleHeader();
         this.consoleOperation().request.headers.push(newHeader);
         newHeader.value.subscribe(_ => this.updateRequestSummary());
+        newHeader.name.subscribe(_ => this.updateRequestSummary());
 
         this.updateRequestSummary();
     }

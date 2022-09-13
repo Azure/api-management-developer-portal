@@ -142,6 +142,7 @@ export class Authorization {
 
         if (authorizationHeader) {
             authorizationHeader.value(accessToken);
+            this.deleteAuthorizationHeader = false;
             return;
         }
 
@@ -149,7 +150,7 @@ export class Authorization {
         const keyHeader = new ConsoleHeader();
         keyHeader.name(KnownHttpHeaders.Authorization);
         keyHeader.description = "Subscription key.";
-        keyHeader.secret = true;
+        keyHeader.secret(true);
         keyHeader.inputTypeValue("password");
         keyHeader.type = "string";
         keyHeader.required = false;
@@ -197,7 +198,7 @@ export class Authorization {
         const keyHeader = new ConsoleHeader();
         keyHeader.name(subscriptionKeyHeaderName);
         keyHeader.description = "Subscription key.";
-        keyHeader.secret = true;
+        keyHeader.secret(true);
         keyHeader.inputTypeValue("password");
         keyHeader.type = "string";
         keyHeader.required = true;
