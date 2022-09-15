@@ -243,7 +243,7 @@ export class OAuthService {
                     if (response.statusCode === 400) {
                         const error = response.toText();
                         alert(error);
-                        resolve(null);
+                        return;
                     }
 
                     const tokenResponse = response.toObject();
