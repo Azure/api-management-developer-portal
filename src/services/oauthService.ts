@@ -9,6 +9,7 @@ import { Utils } from "../utils";
 import { GrantTypes } from "./../constants";
 import { UnauthorizedError } from "./../errors/unauthorizedError";
 import { BackendService } from "./backendService";
+import { OAuthTokenResponse } from "../contracts/oauthTokenResponse";
 
 
 export class OAuthService {
@@ -75,6 +76,11 @@ export class OAuthService {
             case GrantTypes.authorizationCode:
                 this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.authorizationCode });
                 accessToken = await this.authenticateCode(backendUrl, authorizationServer);
+                break;
+
+            case GrantTypes.authorizationCodeWithPkce:
+                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.authorizationCodeWithPkce });
+                accessToken = await this.authenticateCodeWithPkce(backendUrl, authorizationServer);
                 break;
 
             case GrantTypes.clientCredentials:
@@ -168,8 +174,9 @@ export class OAuthService {
             try {
                 window.open(oauthClient.code.getUri(), "_blank", "width=400,height=500");
 
-                const receiveMessage = async (event: MessageEvent) => {
+                const receiveMessage = async (event: MessageEvent): Promise<void> => {
                     if (!event.data["accessToken"]) {
+                        alert("Unable to authenticate due to internal error.");
                         return;
                     }
 
@@ -186,7 +193,8 @@ export class OAuthService {
         });
     }
 
-    public async authenticateCodeWithPkce(backendUrl: string, authorizationServer: AuthorizationServer): Promise<void> {
+    public async authenticateCodeWithPkce(backendUrl: string, authorizationServer: AuthorizationServer): Promise<string> {
+        const redirectUri = `${backendUrl}/signin-oauth/code-pkce/callback/${authorizationServer.name}`;
         const codeVerifier = this.generateRandomString(64);
         const challengeMethod = crypto.subtle ? "S256" : "plain"
 
@@ -196,7 +204,6 @@ export class OAuthService {
 
         sessionStorage.setItem("code_verifier", codeVerifier);
 
-        const redirectUri = location.href.split("?")[0];
         const args = new URLSearchParams({
             response_type: "code",
             client_id: authorizationServer.clientId,
@@ -206,35 +213,52 @@ export class OAuthService {
             scope: authorizationServer.scopes.join(" ")
         });
 
-        // should be open in new window:
-        location.assign(authorizationServer.authorizationEndpoint + "/?" + args);
+        return new Promise((resolve, reject) => {
+            try {
+                window.open(authorizationServer.authorizationEndpoint + "/?" + args, "_blank", "width=400,height=500");
 
-        // for quick implementation, we can create a special publisher that would output document for the iframe
-        // longer approach would require backend handlers /signin-oauth/code_pkce/callback/:authserver
-        // or temporary one: /signin-oauth/implicit/callback
-    }
+                const receiveMessage = async (event: MessageEvent): Promise<void> => {
+                    const authorizationCode = event.data["code"];
 
-    public async authCodeWithPkceCallback(authorizationServer: AuthorizationServer) {
-        const args = new URLSearchParams(window.location.search);
-        const code = args.get("code");
+                    if (!authorizationCode) {
+                        alert("Unable to authenticate due to internal error.");
+                        return;
+                    }
 
-        const body = new URLSearchParams({
-            client_id: authorizationServer.clientId,
-            code_verifier: sessionStorage.getItem("code_verifier"),
-            grant_type: GrantTypes.authorizationCode,
-            redirect_uri: location.href.replace(location.search, ""),
-            code: code
+                    const body = new URLSearchParams({
+                        client_id: authorizationServer.clientId,
+                        code_verifier: sessionStorage.getItem("code_verifier"),
+                        grant_type: GrantTypes.authorizationCode,
+                        redirect_uri: redirectUri,
+                        code: authorizationCode
+                    });
+
+                    const response = await this.httpClient.send<OAuthTokenResponse>({
+                        url: authorizationServer.tokenEndpoint,
+                        method: HttpMethod.post,
+                        headers: [{ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.UrlEncodedForm }],
+                        body: body.toString()
+                    });
+
+                    if (response.statusCode === 400) {
+                        const error = response.toText();
+                        alert(error);
+                        resolve(null);
+                    }
+
+                    const tokenResponse = response.toObject();
+                    const accessToken = tokenResponse.access_token;
+                    const accessTokenType = tokenResponse.token_type;
+
+                    resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
+                };
+
+                window.addEventListener("message", receiveMessage, false);
+            }
+            catch (error) {
+                reject(error);
+            }
         });
-
-        const response = await this.httpClient.send<any>({
-            url: authorizationServer.tokenEndpoint,
-            method: HttpMethod.post,
-            headers: [{ name: KnownHttpHeaders.ContentType, value: "application/x-www-form-urlencoded" }],
-            body: body.toString()
-        });
-
-        const tokenResponse = response.toObject();
-        const accessToken = tokenResponse.access_token;
     }
 
     /**
