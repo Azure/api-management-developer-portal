@@ -223,13 +223,14 @@ export class UsersService {
      * @param updateUserData
      */
     public async updateUser(userId: string, firstName: string, lastName: string): Promise<User> {
-        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("updateUser"), Utils.getIsUserResourceHeader()];
+        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("updateUser")];
         const payload = {
             firstName: firstName,
             lastName: lastName
         };
-        await this.apiClient.patch<string>(userId, headers, payload);
-        const user = await this.apiClient.get<UserContract>(userId);
+        const resouce = `users/${userId}`;
+        await this.apiClient.patch<string>(resouce, headers, payload);
+        const user = await this.apiClient.get<UserContract>(resouce);
 
         if (user) {
             return new User(user);
@@ -250,7 +251,7 @@ export class UsersService {
                 value: "*"
             };
 
-            await this.apiClient.delete<string>(userId, [header, await this.apiClient.getPortalHeader("deleteUser"), Utils.getIsUserResourceHeader()]);
+            await this.apiClient.delete<string>(`users/${userId}`, [header, await this.apiClient.getPortalHeader("deleteUser")]);
 
             sessionStorage.setItem(Constants.closeAccount, "true");
             this.signOut();
