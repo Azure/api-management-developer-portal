@@ -24,7 +24,7 @@ interface SyntaxHighlightConfig {
 ko.bindingHandlers["syntaxHighlight"] = {
     update: (element: HTMLElement, valueAccessor: () => SyntaxHighlightConfig): void => {
         const config = valueAccessor();
-        let code = ko.unwrap(config.code);
+        let code = ko.unwrap(config.code) || "";
         const language = ko.unwrap(config.language);
 
         const render = async () => {
@@ -76,8 +76,11 @@ ko.bindingHandlers["syntaxHighlight"] = {
                 ko.applyBindingsToNode(element, { text: text }, null);
             }
             else {
-
-                code = code.replaceAll("/", "fwdslsh"); // workaround for PrismJS bug.
+                if (typeof code === "string") {
+                    code = code.replaceAll("/", "fwdslsh"); // workaround for PrismJS bug.
+                } else {
+                    code = "";
+                }
                 let html = Prism.highlight(code, Prism.languages[highlightLanguage], highlightLanguage);
                 html = html.replaceAll("fwdslsh", "/");
 

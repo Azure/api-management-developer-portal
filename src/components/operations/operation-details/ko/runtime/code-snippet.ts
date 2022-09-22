@@ -14,6 +14,7 @@ export class CodeSnippet {
         this.title = ko.observable();
         this.content = ko.observable();
         this.language = ko.observable();
+        this.description = ko.observable();
         this.label = ko.pureComputed(() => this.joinStringParts(this.title(), this.language()));
     }
 
@@ -25,6 +26,9 @@ export class CodeSnippet {
 
     @Param()
     public readonly language: ko.Observable<string>;
+
+    @Param()
+    public readonly description: ko.Observable<string>;
 
     private joinStringParts(...parts: string[]): string {
         return parts.filter(x => !!x).join(" - ");

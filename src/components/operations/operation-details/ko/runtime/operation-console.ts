@@ -1,15 +1,21 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { HttpClient, HttpRequest } from "@paperbits/common/http";
+import { HttpClient, HttpMethod, HttpRequest } from "@paperbits/common/http";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
+import { Logger } from "@paperbits/common/logging";
+import { saveAs } from "file-saver";
+import { getExtension } from "mime";
 import { downloadableTypes, RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
+import { HttpResponse } from "../../../../../contracts/httpResponse";
 import { Api } from "../../../../../models/api";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { ConsoleOperation } from "../../../../../models/console/consoleOperation";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
+import { ConsoleRepresentation } from "../../../../../models/console/consoleRepresentation";
 import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
+import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { KnownStatusCodes } from "../../../../../models/knownStatusCodes";
 import { Operation } from "../../../../../models/operation";
 import { Revision } from "../../../../../models/revision";
@@ -22,11 +28,8 @@ import template from "./operation-console.html";
 import { ResponsePackage } from "./responsePackage";
 import { templates } from "./templates/templates";
 import { LogItem, WebsocketClient } from "./websocketClient";
-import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
-import { ConsoleRepresentation } from "../../../../../models/console/consoleRepresentation";
-import { saveAs } from "file-saver";
-import { getExtension } from "mime";
-import { Logger } from "@paperbits/common/logging";
+import { RequestError } from "../../../../../errors/requestError";
+
 
 @Component({
     selector: "operation-console",
@@ -235,7 +238,8 @@ export class OperationConsole {
             this.setVersionHeader();
         }
 
-        this.consoleOperation().request.meaningfulHeaders().forEach(header => header.value.subscribe(_ => this.updateRequestSummary()));
+        this.consoleOperation().request.headers().forEach(header => header.value.subscribe(_ => this.updateRequestSummary()));
+        this.consoleOperation().request.headers().forEach(header => header.name.subscribe(_ => this.updateRequestSummary()));
         this.consoleOperation().request.body.subscribe(_ => this.updateRequestSummary());
         this.consoleOperation().request.queryParameters().forEach(parameter => parameter.value.subscribe(_ => this.updateRequestSummary()));
 
@@ -317,6 +321,7 @@ export class OperationConsole {
         const newHeader = new ConsoleHeader();
         this.consoleOperation().request.headers.push(newHeader);
         newHeader.value.subscribe(_ => this.updateRequestSummary());
+        newHeader.name.subscribe(_ => this.updateRequestSummary());
 
         this.updateRequestSummary();
     }
@@ -377,63 +382,61 @@ export class OperationConsole {
         this.sendRequest();
     }
 
-    public async sendFromBrowser(url: string, method: string, headers: ConsoleHeader[], body: any, operationName: string) {
-        let headersRequest: HeadersInit = {};
+    /**
+     * Sends HTTP request to API directly from browser.
+     * @param request HTTP request.
+     */
+    public async sendFromBrowser(request: HttpRequest): Promise<HttpResponse> {
+        const headersRequest: HeadersInit = {};
+        request.headers.forEach(header => headersRequest[header.name] = header.value);
 
-        headers.forEach(header => {
-            if (!headersRequest[header.name()]) {
-                headersRequest[header.name()] = [];
-            }
-            headersRequest[header.name()].push(header.value())
-        });
-        const response = await fetch(url, {
-            method: method,
-            headers: headersRequest,
-            body: body
-        });
+        let response: Response;
 
-        let headersString = "";
-        response.headers.forEach((value, name) => headersString += `${name}: ${value}\n`);
-
-        const contentTypeHeaderValue = response.headers.get(KnownHttpHeaders.ContentType);
-
-        const responseReturn: any = {
-            headers: headersString,
-            contentTypeHeader: contentTypeHeaderValue,
-            statusCode: response.status,
-            statusText: response.statusText
-        };
-
-        if (downloadableTypes.some(type => contentTypeHeaderValue.includes(type))) {
-            const reader = response.body.getReader();
-            const chunks = [];
-
-            while (true) {
-                const { done, value } = await reader.read();
-
-                if (done) {
-                    break;
-                }
-
-                chunks.push(value);
-            }
-
-            const blob = new Blob(chunks, { type: contentTypeHeaderValue });
-            const fileExtension = getExtension(contentTypeHeaderValue);
-
-            if (fileExtension) {
-                saveAs(blob, operationName + "." + fileExtension);
-            } else {
-                saveAs(blob, operationName);
-            }
-        } else {
-            responseReturn.body = await response.text();
+        try {
+            response = await fetch(request.url, {
+                method: request.method,
+                headers: headersRequest,
+                body: request.body,
+                redirect: "manual"
+            });
         }
+        catch (error) {
+            throw new RequestError(`Since the browser initiates the request, it requires Cross-Origin Resource Sharing (CORS) enabled on the server. <a href="https://aka.ms/AA4e482" target="_blank">Learn more</a>`);
+        }
+
+        const responseHeaders = [];
+        response.headers.forEach((value, name) => responseHeaders.push({ name: name, value: value }));
+
+        const reader = response.body.getReader();
+        const chunks = [];
+
+        while (true) {
+            const { done, value } = await reader.read();
+
+            if (done) {
+                break;
+            }
+
+            chunks.push(value);
+        }
+
+        const responseBody = Buffer.concat(chunks);
+
+        const responseReturn: HttpResponse = {
+            headers: responseHeaders,
+            statusCode: response.status,
+            statusText: response.statusText,
+            body: responseBody
+        };
 
         return responseReturn;
     }
 
-    public async sendFromProxy<T>(request: HttpRequest) {
+    /**
+     * Sends HTTP request to API using CORS proxy (if configured).
+     * @param request HTTP request.
+     */
+    public async sendFromProxy(request: HttpRequest): Promise<HttpResponse> {
         if (request.body) {
             request.body = Buffer.from(request.body);
         }
@@ -447,27 +450,23 @@ export class OperationConsole {
 
         const proxiedRequest: HttpRequest = {
             url: `${baseProxyUrl}/send`,
-            method: "POST",
-            headers: [{ name: "X-Ms-Api-Name", value: apiName }],
+            method: HttpMethod.post,
+            headers: [{ name: KnownHttpHeaders.XMsApiName, value: apiName }],
             body: formData
         };
 
         const proxiedResponse = await this.httpClient.send<ResponsePackage>(proxiedRequest);
         const responsePackage = proxiedResponse.toObject();
 
-        const responseBodyBuffer = responsePackage.body
+        const responseBody: Buffer = responsePackage.body
             ? Buffer.from(responsePackage.body.data)
             : null;
 
-        const headersString = responsePackage.headers.map(x => `${x.name}: ${x.value}`).join("\n");
-        const contentTypeHeader = responsePackage.headers.find(x => x.name === KnownHttpHeaders.ContentType.toLowerCase());
-
-        const response: any = {
-            headers: headersString,
-            contentTypeHeader: contentTypeHeader && contentTypeHeader.value,
+        const response: HttpResponse = {
+            headers: responsePackage.headers,
             statusCode: responsePackage.statusCode,
             statusText: responsePackage.statusMessage,
-            body: responseBodyBuffer.toString("utf8")
+            body: responseBody
         };
 
         return response;
@@ -512,11 +511,15 @@ export class OperationConsole {
                 body: payload
             };
 
-            const response = this.useCorsProxy()
+            const response: HttpResponse = this.useCorsProxy()
                 ? await this.sendFromProxy(request)
-                : await this.sendFromBrowser(url, method, headers, payload, consoleOperation.name);
+                : await this.sendFromBrowser(request);
 
-            this.responseHeadersString(response.headers);
+            const headersString = response.headers.map(x => `${x.name}: ${x.value}`).join("\n");
+            const contentTypeHeader = response.headers.find(x => x.name === KnownHttpHeaders.ContentType.toLowerCase());
+            const responseContentType = contentTypeHeader?.value;
+
+            this.responseHeadersString(headersString);
 
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
 
@@ -526,25 +529,42 @@ export class OperationConsole {
 
             this.responseStatusCode(response.statusCode.toString());
             this.responseStatusText(responseStatusText);
-            this.responseBody(response.body);
 
-            if (response.contentTypeHeader) {
-                if (response.contentTypeHeader.toLowerCase().includes("json")) {
-                    this.responseBody(Utils.formatJson(this.responseBody()));
+            if (responseContentType && downloadableTypes.some(type => responseContentType.includes(type))) {
+                const blob = new Blob([response.body], { type: responseContentType });
+                const fileExtension = getExtension(responseContentType);
+
+                const fileName = fileExtension
+                    ? consoleOperation.name + "." + fileExtension
+                    : consoleOperation.name;
+
+                saveAs(blob, fileName);
+            }
+            else {
+                const responseBody = response.body.toString();
+
+                if (responseContentType && Utils.isJsonContentType(responseContentType)) {
+                    this.responseBody(Utils.formatJson(responseBody));
                 }
-
-                if (response.contentTypeHeader.toLowerCase().includes("xml")) {
-                    this.responseBody(Utils.formatXml(this.responseBody()));
+                else if (responseContentType && Utils.isXmlContentType(responseContentType)) {
+                    this.responseBody(Utils.formatXml(responseBody));
+                }
+                else {
+                    this.responseBody(responseBody);
                 }
             }
 
-            this.logSentRequest(this.api().name, consoleOperation.opeationName, method, response.statusCode.toString());
+            this.logSentRequest(this.api().name, consoleOperation.operationName, method, response.statusCode);
         }
         catch (error) {
-            this.logSentRequest(this.api().name, consoleOperation.opeationName, method, error.code.toString());
-            if (error.code && error.code === "RequestError") {
-                this.requestError(`Since the browser initiates the request, it requires Cross-Origin Resource Sharing (CORS) enabled on the server. <a href="https://aka.ms/AA4e482" target="_blank">Learn more</a>`);
+            if (error instanceof RequestError) {
+                this.requestError(error.message);
+                this.logSentRequest(this.api().name, consoleOperation.operationName, method);
+                return;
             }
+
+            this.requestError(`Unable to complete request.`);
+            this.logger.trackError(error);
         }
         finally {
             this.sendingRequest(false);
@@ -679,14 +699,14 @@ export class OperationConsole {
     }
 
     public logCopyEvent(): void {
-        this.logger.trackEvent("CodeSampleCopied", { "language": this.selectedLanguage(), "message": "Code sample copied to clipboard" });
+        this.logger.trackEvent("CodeSampleCopied", { language: this.selectedLanguage(), message: "Code sample copied to clipboard" });
     }
 
     public logLanguageUpdated(): void {
-        this.logger.trackEvent("CodeLanguageChange", { "language": this.selectedLanguage(), "message": "Code sample language changed" });
+        this.logger.trackEvent("CodeLanguageChange", { language: this.selectedLanguage(), message: "Code sample language changed" });
     }
 
-    public logSentRequest(apiName: string, operationName: string, apiMethod: string, responseCode: string): void {
-        this.logger.trackEvent("TestConsoleRequest", { "apiName": apiName, "operationName": operationName, "apiMethod": apiMethod, "responseCode": responseCode });
+    public logSentRequest(apiName: string, operationName: string, apiMethod: string, responseCode?: number): void {
+        this.logger.trackEvent("TestConsoleRequest", { apiName: apiName, operationName: operationName, apiMethod: apiMethod, responseCode: responseCode?.toString() });
     }
 }

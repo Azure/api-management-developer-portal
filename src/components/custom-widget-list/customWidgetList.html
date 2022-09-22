@@ -1,0 +1,27 @@
+<div class="flex flex-column fit">
+    <div class="flex-item flex-item-grow overflow">
+        <table style="width: 100%;">
+            <tbody>
+            <!-- ko foreach: { data: customWidgetConfigs, as: 'config' } -->
+            <tr>
+                <td>
+                    <a data-bind="click: () => $component.openScaffoldWizard(config)" style="cursor: pointer">
+                        <i class="paperbits-icon paperbits-sm paperbits-puzzle-10"></i>
+                        <span data-bind="text: config.displayName"></span>
+                    </a>
+                    <!-- ko if: config.override -->
+                    <i>(overridden)</i>
+                    <!-- /ko -->
+                </td>
+            </tr>
+            <!-- /ko -->
+            </tbody>
+        </table>
+    </div>
+    <div class="flex-item">
+        <button class="btn btn-default" data-bind="click: () => $component.openScaffoldWizard()">
+            <i class="paperbits-icon paperbits-simple-add"></i>
+            Create new custom widget
+        </button>
+    </div>
+</div>

@@ -400,4 +400,12 @@ export class Utils {
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
             .join(" ");
     }
+
+    public static isJsonContentType(contentType: string): boolean {
+        return /\bjson\b/i.test(contentType.toLocaleLowerCase());
+    }
+    
+    public static isXmlContentType(contentType: string): boolean {
+        return /\bxml\b/i.test(contentType.toLocaleLowerCase());
+    }
 }

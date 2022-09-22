@@ -7,19 +7,23 @@
 <!-- ko ifnot: apiType() === 'websocket' -->
 <!-- ko if: operation -->
 <div class="animation-fade-in">
-    <div class="operation-header">
-        <h2 class="operation-name">
-            <span data-bind="text: operation().displayName"></span>
-        </h2>
+    <div class="row flex flex-row">
+        <div class="col-md-11  text-wrap">
+            <h2 class="operation-name">
+                <span data-bind="text: operation().displayName"></span>
+            </h2>
+        </div>
         <!-- ko if: $component.enableConsole -->
-        <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i
-                class="icon-emb icon-emb-play"></i>
-        </button>
+        <div class="col-md-1">
+            <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i
+                    class="icon-emb icon-emb-play"></i>
+            </button>
+        </div>
         <!-- /ko -->
     </div>
 
     <!-- ko if: operation().description  -->
-    <div class="text-word-break" data-bind="markdown: operation().description"></div>
+    <div data-bind="markdown: operation().description"></div>
     <!-- /ko -->
 
     <!-- ko if: tags().length > 0 -->
@@ -34,7 +38,7 @@
         <h3>Request</h3>
 
         <div class="collapsible-container">
-            <span class="text-monospace"
+            <span class="text-monospace text-wrap"
                 data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
 
             <!-- ko if:  apiDocumentationAuthServers -->
@@ -133,7 +137,7 @@
             <h4>Request body</h4>
 
             <!-- ko if: request.description  -->
-            <div class="text-word-break" data-bind="markdown: request.description"></div>
+            <div data-bind="markdown: request.description"></div>
             <!-- /ko -->
 
             <!-- ko if: request.meaningfulRepresentations().length > 0 -->
@@ -180,7 +184,8 @@
 
                     <!-- ko if: representation.examples -->
                     <!-- ko foreach: { data: representation.examples, as: 'example' } -->
-                    <code-snippet params="{ title: example.title, content: example.value, language: example.format }">
+                    <code-snippet
+                        params="{ title: example.title, content: example.value, language: example.format, description: example.description }">
                     </code-snippet>
                     <!-- /ko -->
                     <!-- /ko -->
@@ -242,7 +247,8 @@
 
                     <!-- ko if: representation.examples -->
                     <!-- ko foreach: { data: representation.examples, as: 'example' } -->
-                    <code-snippet params="{ title: example.title, content: example.value, language: example.format }">
+                    <code-snippet
+                        params="{ title: example.title, content: example.value, language: example.format, description: example.description }">
                     </code-snippet>
                     <!-- /ko -->
                     <!-- /ko -->
@@ -294,35 +300,40 @@
 
 <!-- ko if: apiType() === 'websocket' -->
 <!-- ko if: operation -->
-<div class="animation-fade-in">
-    <div class="operation-header">
-        <h2 class="operation-name"></h2>
-        <!-- ko if: $component.enableConsole -->
+<div class="animation-fade-in row flex flex-row">
+    <div class="col-md-11 text-wrap">
+        <h2 class="operation-name">
+            <span data-bind="text: operation().displayName"></span>
+        </h2>
+    </div>
+    <!-- ko if: $component.enableConsole -->
+    <div class="col-md-1">
         <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i
                 class="icon-emb icon-emb-play"></i>
         </button>
-        <!-- /ko -->
-    </div>
-
-    <!-- ko if: tags().length > 0 -->
-    <div class="tag-group">
-        <!-- ko foreach: { data: $component.tags, as: 'tag' } -->
-        <span class="tag-item" role="group" data-bind="text: tag"></span>
-        <!-- /ko -->
     </div>
     <!-- /ko -->
+</div>
 
-    <div class="collapsible">
-        <h3>Socket URL</h3>
-        <div class="collapsible-container">
-            <span class="text-monospace" data-bind="text: $component.requestUrlSample"></span>
-        </div>
+<!-- ko if: tags().length > 0 -->
+<div class="tag-group">
+    <!-- ko foreach: { data: $component.tags, as: 'tag' } -->
+    <span class="tag-item" role="group" data-bind="text: tag"></span>
+    <!-- /ko -->
+</div>
+<!-- /ko -->
 
-        <h3>Protocol</h3>
-        <div class="collapsible-container">
-            <span class="text-monospace" data-bind="text: $component.protocol"></span>
-        </div>
+<div class="collapsible">
+    <h3>Socket URL</h3>
+    <div class="collapsible-container">
+        <span class="text-monospace" data-bind="text: $component.requestUrlSample"></span>
     </div>
+
+    <h3>Protocol</h3>
+    <div class="collapsible-container">
+        <span class="text-monospace" data-bind="text: $component.protocol"></span>
+    </div>
+</div>
 
 </div>
 <!-- /ko -->
@@ -330,13 +341,13 @@
 
 <!-- ko if: apiType() === 'graphql' -->
 <div class="animation-fade-in">
-    <div class="operation-header">
-        <div>
+    <div class="row flex flex-row">
+        <div class="col-md-11 text-wrap">
             <h2>GraphQL endpoint</h2>
             <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
         </div>
         <!-- ko if: $component.enableConsole -->
-        <div>
+        <div class="col-md-1">
             <button class="open-console-button graph mt-17" data-bind="click: $component.openConsole">Try it <i
                     class="icon-emb icon-emb-play"></i>
             </button>
@@ -352,8 +363,8 @@
 <!-- ko if: $component.consoleIsOpen -->
 <!-- ko ifnot: apiType() === 'graphql' -->
 <div class="detachable-right flex-grow animation-fade-in">
-    <operation-console class="flex flex-column consoles operation-console" data-bind="dialog: {}"
-        params="{ api: api, operation: operation, hostnames: hostnames, authorizationServers: testConsoleAuthServers, useCorsProxy: useCorsProxy }">
+    <operation-console class="block scrollable consoles operation-console"
+        params="{ api: api, operation: operation, hostnames: hostnames, authorizationServers: associatedAuthServers, useCorsProxy: useCorsProxy }">
     </operation-console>
 </div>
 <!-- /ko -->
