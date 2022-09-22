@@ -192,43 +192,13 @@ export class OperationDetails {
 
         this.closeConsole();
 
-        if (api.authenticationSettings.oAuth2AuthenticationSettings) {
-            this.apiDocumentationAuthServers(api.authenticationSettings.oAuth2AuthenticationSettings.
-                filter(x => x.authorizationServer.useInApiDocumentation)
-                .map(x => x.authorizationServer));
+        const hasAssociatedServers = api.authenticationSettings?.oAuth2AuthenticationSettings ||
+            api.authenticationSettings?.openidAuthenticationSettings
 
-            this.testConsoleAuthServers(api.authenticationSettings.oAuth2AuthenticationSettings.
-                filter(x => x.authorizationServer.useInTestConsole)
-                .map(x => x.authorizationServer))
-
-            return;
-        }
-
-        if (api.authenticationSettings.oAuth2.authorizationServer) {
-            if (api.authenticationSettings.oAuth2.authorizationServer.useInApiDocumentation) {
-                this.apiDocumentationAuthServers([api.authenticationSettings.oAuth2.authorizationServer]);
-            }
-
-            if (api.authenticationSettings.oAuth2.authorizationServer.useInTestConsole) {
-                this.testConsoleAuthServers([api.authenticationSettings.oAuth2.authorizationServer]);
-            }
-
-            return;
-        }
-
-        if (api.authenticationSettings.openid) {
-            const associatedServerId = api.authenticationSettings?.openid?.openidProviderId;
-
-            if (associatedServerId) {
-                const authServer = await this.oauthService.getAuthServer(api.authenticationSettings?.openid?.openidProviderId);
-                if (authServer.useInApiDocumentation) {
-                    this.apiDocumentationAuthServers([authServer]);
-                }
-
-                if (authServer.useInApiDocumentation) {
-                    this.testConsoleAuthServers([authServer]);
-                }
-            }
+        if (hasAssociatedServers) {
+            const associatedAuthServers = await this.oauthService.getAuthServers(api.authenticationSettings?.oAuth2AuthenticationSettings, api.authenticationSettings?.openidAuthenticationSettings);
+            this.apiDocumentationAuthServers(associatedAuthServers.filter(a => a.useInApiDocumentation));
+            this.testConsoleAuthServers(associatedAuthServers.filter(a => a.useInTestConsole));
         }
     }
 

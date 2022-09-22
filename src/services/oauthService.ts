@@ -10,6 +10,7 @@ import { GrantTypes } from "./../constants";
 import { UnauthorizedError } from "./../errors/unauthorizedError";
 import { BackendService } from "./backendService";
 import { OAuthTokenResponse } from "../contracts/oauthTokenResponse";
+import { OAuth2AuthenticationSettings, OpenIdAuthenticationSettings } from "../contracts/authenticationSettings";
 
 
 export class OAuthService {
@@ -39,11 +40,21 @@ export class OAuthService {
         return text;
     }
 
-    public async getAuthServer(authorizationServerId: string, openidProviderId: string): Promise<AuthorizationServer> {
-    public async getAuthServer(openidProviderId: string): Promise<AuthorizationServer> {
+    public async getAuthServers(authorizationServers: OAuth2AuthenticationSettings[], openidProviders: OpenIdAuthenticationSettings[]): Promise<AuthorizationServer[]> {
         try {
-            const authServer = await this.backendService.getOpenIdConnectProvider(openidProviderId);
-            return authServer;
+            if (authorizationServers) {
+                return await Promise.all(authorizationServers.map(async authorizationServer => {
+                    return await this.backendService.getAuthorizationServer(authorizationServer.authorizationServerId);
+                }));
+            }
+
+            if (openidProviders) {
+                return await Promise.all(openidProviders.map(async openidProvider => {
+                    return await this.backendService.getOpenIdConnectProvider(openidProvider.openidProviderId);
+                }));
+            }
+
+            return undefined;
         }
         catch (error) {
             throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);

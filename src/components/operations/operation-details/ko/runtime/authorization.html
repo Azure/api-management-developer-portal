@@ -17,7 +17,7 @@
         <label for="authSerer" class="text-monospace form-label">Authorization server: </label>
     </div>
     <!-- ko if: $component.authorizationServers().length > 1 -->
-    <div class="col-6">
+    <div class="col-7">
         <select id="authServer" class="form-control" data-bind="value: $component.selectedAuthorizationServer">
             <!-- ko foreach: { data: $component.authorizationServers, as: 'authorizationServer' } -->
             <option data-bind="value: authorizationServer, text:authorizationServer.displayName">
