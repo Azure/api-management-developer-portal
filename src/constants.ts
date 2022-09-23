@@ -274,6 +274,12 @@ export enum GrantTypes {
     authorizationCode = "authorization_code",
 
     /**
+     * Proof Key for Code Exchange (abbreviated PKCE) is an extension to the authorization code
+     * flow to prevent CSRF and authorization code injection attacks.
+     */
+    authorizationCodeWithPkce = "authorization_code (PKCE)",
+
+    /**
      * The Client Credentials grant type is used by clients to obtain an access token outside of
      * the context of a user.
      */

@@ -37,6 +37,9 @@ export class AuthorizationServer {
                 case "authorizationCode":
                     convertedResult = "authorization_code";
                     break;
+                case "authorizationCodeWithPkce":
+                    convertedResult = "authorization_code (PKCE)";
+                    break;
                 case "implicit":
                     convertedResult = "implicit";
                     break;

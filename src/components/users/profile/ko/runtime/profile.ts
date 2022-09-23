@@ -14,6 +14,7 @@ import { dispatchErrors, parseAndDispatchError } from "../../../validation-summa
 import { ErrorSources } from "../../../validation-summary/constants";
 import IDelegationService from "../../../../../services/IDelegationService";
 import { Identity } from "../../../../../contracts/identity";
+import { ValidationMessages } from "../../../validationMessages";
 
 @RuntimeComponent({
     selector: "profile-runtime"
@@ -56,8 +57,8 @@ export class Profile {
             decorateInputElement: true
         });
 
-        this.firstName.extend(<any>{ required: { message: `First name is required.` } });
-        this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
+        this.firstName.extend(<any>{ required: { message: ValidationMessages.firstNameRequired } });
+        this.lastName.extend(<any>{ required: { message: ValidationMessages.lastNameRequired } });
     }
 
     @OnMounted()

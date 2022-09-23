@@ -21,5 +21,11 @@ export class CustomWidgetViewModel {
         this.src = ko.observable();
         this.styles = ko.observable();
         this.instanceId = ko.observable();
+
+        window.addEventListener("hashchange", () => {
+            const srcNew = new URL(this.src());
+            srcNew.hash = window.location.hash;
+            this.src(srcNew.toString());
+        });
     }
 }

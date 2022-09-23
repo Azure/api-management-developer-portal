@@ -10,6 +10,8 @@ import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { AuthorizationServerForClient } from "../contracts/authorizationServer";
 import { IApiClient } from "../clients";
+import { OAuthTokenResponse } from "../contracts/oauthTokenResponse";
+
 
 export class OAuthService {
     constructor(
@@ -18,6 +20,25 @@ export class OAuthService {
         private readonly settingsProvider: ISettingsProvider,
         private readonly logger: Logger
     ) { }
+
+    private async generateCodeChallenge(codeVerifier: string): Promise<string> {
+        const digest = await crypto.subtle.digest("SHA-256",
+            new TextEncoder().encode(codeVerifier));
+
+        return btoa(String.fromCharCode(...new Uint8Array(digest)))
+            .replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_")
+    }
+
+    private generateRandomString(length: number): string {
+        let text = "";
+        const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for (let i = 0; i < length; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+
+        return text;
+    }
 
     public async getAuthServer(apiId: string): Promise<AuthorizationServer> {
         try {
@@ -78,6 +99,11 @@ export class OAuthService {
             case GrantTypes.authorizationCode:
                 this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.authorizationCode });
                 accessToken = await this.authenticateCode(backendUrl, authorizationServer);
+                break;
+
+            case GrantTypes.authorizationCodeWithPkce:
+                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.authorizationCodeWithPkce });
+                accessToken = await this.authenticateCodeWithPkce(backendUrl, authorizationServer);
                 break;
 
             case GrantTypes.clientCredentials:
@@ -171,13 +197,82 @@ export class OAuthService {
             try {
                 window.open(oauthClient.code.getUri(), "_blank", "width=400,height=500");
 
-                const receiveMessage = async (event: MessageEvent) => {
+                const receiveMessage = async (event: MessageEvent): Promise<void> => {
                     if (!event.data["accessToken"]) {
+                        alert("Unable to authenticate due to internal error.");
                         return;
                     }
 
                     const accessToken = event.data["accessToken"];
                     const accessTokenType = event.data["accessTokenType"];
+                    resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
+                };
+
+                window.addEventListener("message", receiveMessage, false);
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    public async authenticateCodeWithPkce(backendUrl: string, authorizationServer: AuthorizationServer): Promise<string> {
+        const redirectUri = `${backendUrl}/signin-oauth/code-pkce/callback/${authorizationServer.name}`;
+        const codeVerifier = this.generateRandomString(64);
+        const challengeMethod = crypto.subtle ? "S256" : "plain"
+
+        const codeChallenge = challengeMethod === "S256"
+            ? await this.generateCodeChallenge(codeVerifier)
+            : codeVerifier
+
+        sessionStorage.setItem("code_verifier", codeVerifier);
+
+        const args = new URLSearchParams({
+            response_type: "code",
+            client_id: authorizationServer.clientId,
+            code_challenge_method: challengeMethod,
+            code_challenge: codeChallenge,
+            redirect_uri: redirectUri,
+            scope: authorizationServer.scopes.join(" ")
+        });
+
+        return new Promise((resolve, reject) => {
+            try {
+                window.open(authorizationServer.authorizationEndpoint + "/?" + args, "_blank", "width=400,height=500");
+
+                const receiveMessage = async (event: MessageEvent): Promise<void> => {
+                    const authorizationCode = event.data["code"];
+
+                    if (!authorizationCode) {
+                        alert("Unable to authenticate due to internal error.");
+                        return;
+                    }
+
+                    const body = new URLSearchParams({
+                        client_id: authorizationServer.clientId,
+                        code_verifier: sessionStorage.getItem("code_verifier"),
+                        grant_type: GrantTypes.authorizationCode,
+                        redirect_uri: redirectUri,
+                        code: authorizationCode
+                    });
+
+                    const response = await this.httpClient.send<OAuthTokenResponse>({
+                        url: authorizationServer.tokenEndpoint,
+                        method: HttpMethod.post,
+                        headers: [{ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.UrlEncodedForm }],
+                        body: body.toString()
+                    });
+
+                    if (response.statusCode === 400) {
+                        const error = response.toText();
+                        alert(error);
+                        return;
+                    }
+
+                    const tokenResponse = response.toObject();
+                    const accessToken = tokenResponse.access_token;
+                    const accessTokenType = tokenResponse.token_type;
+
                     resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
                 };
 

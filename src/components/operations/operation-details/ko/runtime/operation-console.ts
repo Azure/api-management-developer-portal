@@ -238,7 +238,8 @@ export class OperationConsole {
             this.setVersionHeader();
         }
 
-        this.consoleOperation().request.meaningfulHeaders().forEach(header => header.value.subscribe(_ => this.updateRequestSummary()));
+        this.consoleOperation().request.headers().forEach(header => header.value.subscribe(_ => this.updateRequestSummary()));
+        this.consoleOperation().request.headers().forEach(header => header.name.subscribe(_ => this.updateRequestSummary()));
         this.consoleOperation().request.body.subscribe(_ => this.updateRequestSummary());
         this.consoleOperation().request.queryParameters().forEach(parameter => parameter.value.subscribe(_ => this.updateRequestSummary()));
 
@@ -320,6 +321,7 @@ export class OperationConsole {
         const newHeader = new ConsoleHeader();
         this.consoleOperation().request.headers.push(newHeader);
         newHeader.value.subscribe(_ => this.updateRequestSummary());
+        newHeader.name.subscribe(_ => this.updateRequestSummary());
 
         this.updateRequestSummary();
     }
@@ -541,17 +543,15 @@ export class OperationConsole {
             else {
                 const responseBody = response.body.toString();
 
-                if (responseContentType) {
-                    if (Utils.isJsonContentType(responseContentType)) {
-                        this.responseBody(Utils.formatJson(responseBody));
-                    }
-
-                    if (Utils.isJsonContentType(responseContentType)) {
-                        this.responseBody(Utils.formatXml(responseBody));
-                    }
+                if (responseContentType && Utils.isJsonContentType(responseContentType)) {
+                    this.responseBody(Utils.formatJson(responseBody));
                 }
-
-                this.responseBody(responseBody);
+                else if (responseContentType && Utils.isXmlContentType(responseContentType)) {
+                    this.responseBody(Utils.formatXml(responseBody));
+                }
+                else {
+                    this.responseBody(responseBody);
+                }
             }
 
             this.logSentRequest(this.api().name, consoleOperation.operationName, method, response.statusCode);
