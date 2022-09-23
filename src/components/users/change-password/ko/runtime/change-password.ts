@@ -1,14 +1,17 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./change-password.html";
-import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { EventManager } from "@paperbits/common/events";
+import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Logger } from "@paperbits/common/logging";
 import { ChangePasswordRequest } from "../../../../../contracts/resetRequest";
-import { BackendService } from "../../../../../services/backendService";
-import { UsersService } from "../../../../../services";
 import { CaptchaData } from "../../../../../models/captchaData";
-import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { UsersService } from "../../../../../services";
+import { BackendService } from "../../../../../services/backendService";
 import { ErrorSources } from "../../../validation-summary/constants";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ValidationMessages } from "../../../validationMessages";
+
 
 @RuntimeComponent({
     selector: "change-password-runtime"
@@ -24,7 +27,7 @@ export class ChangePassword {
     public readonly isChangeConfirmed: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
     public readonly captcha: ko.Observable<string>;
-    
+
     public setCaptchaValidation: (captchaValidator: ko.Observable<string>) => void;
     public refreshCaptcha: () => Promise<void>;
     public readonly captchaData: ko.Observable<CaptchaData>;
@@ -32,7 +35,8 @@ export class ChangePassword {
     constructor(
         private readonly usersService: UsersService,
         private readonly eventManager: EventManager,
-        private readonly backendService: BackendService
+        private readonly backendService: BackendService,
+        private readonly logger: Logger
     ) {
         this.password = ko.observable();
         this.newPassword = ko.observable();
@@ -49,10 +53,10 @@ export class ChangePassword {
             decorateInputElement: true
         });
 
-        this.password.extend(<any>{ required: { message: `Password is required.` } }); // TODO: password requirements should come from Management API.
-        this.newPassword.extend(<any>{ required: { message: `New password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
-        this.passwordConfirmation.extend(<any>{ required: { message: `Password confirmation is required.` }, equal: { message: "Password confirmation field must be equal to new password.", params: this.newPassword } });
-        this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
+        this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired } }); // TODO: password requirements should come from Management API.
+        this.newPassword.extend(<any>{ required: { message: ValidationMessages.newPasswordRequired }, minLength: 8 }); // TODO: password requirements should come from Management API.
+        this.passwordConfirmation.extend(<any>{ equal: { message: ValidationMessages.passwordConfirmationMustMatch, params: this.newPassword } });
+        this.captcha.extend(<any>{ required: { message: ValidationMessages.captchaRequired } });
     }
 
     @Param()
@@ -70,7 +74,7 @@ export class ChangePassword {
             return;
         }
     }
-    
+
     public onCaptchaCreated(captchaValidate: (captchaValidator: ko.Observable<string>) => void, refreshCaptcha: () => Promise<void>) {
         this.setCaptchaValidation = captchaValidate;
         this.refreshCaptcha = refreshCaptcha;
@@ -80,14 +84,20 @@ export class ChangePassword {
      * Sends user change password request to Management API.
      */
     public async changePassword(): Promise<void> {
-        const isCaptcha = this.requireHipCaptcha();
+        const captchaIsRequired = this.requireHipCaptcha();
         const validationGroup = {
             password: this.password,
             newPassword: this.newPassword,
             passwordConfirmation: this.passwordConfirmation
         };
 
-        if (isCaptcha) {
+        if (captchaIsRequired) {
+            if (!this.setCaptchaValidation) {
+                this.logger.trackEvent("CaptchaValidation", { message: "Captcha failed to initialize." });
+                dispatchErrors(this.eventManager, ErrorSources.resetpassword, [ValidationMessages.captchaNotInitialized]);
+                return;
+            }
+
             validationGroup["captcha"] = this.captcha;
             this.setCaptchaValidation(this.captcha);
         }
@@ -117,7 +127,7 @@ export class ChangePassword {
             this.working(true);
             dispatchErrors(this.eventManager, ErrorSources.changepassword, []);
 
-            if (isCaptcha) {
+            if (captchaIsRequired) {
                 const captchaRequestData = this.captchaData();
                 const resetRequest: ChangePasswordRequest = {
                     challenge: captchaRequestData.challenge,
@@ -134,7 +144,7 @@ export class ChangePassword {
             }
             this.isChangeConfirmed(true);
         } catch (error) {
-            if (isCaptcha) {
+            if (captchaIsRequired) {
                 await this.refreshCaptcha();
             }
 

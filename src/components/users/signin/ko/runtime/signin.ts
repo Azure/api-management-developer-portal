@@ -11,6 +11,7 @@ import { UnauthorizedError } from "../../../../../errors/unauthorizedError";
 import { UsersService } from "../../../../../services";
 import { dispatchErrors } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
+import { ValidationMessages } from "../../../validationMessages";
 
 @RuntimeComponent({
     selector: "signin-runtime"
@@ -52,9 +53,9 @@ export class Signin {
             decorateInputElement: true
         });
 
-        this.username.extend(<any>{ required: { message: `Email is required.` }, email: true });
-        this.password.extend(<any>{ required: { message: `Password is required.` } });
-        this.consented.extend(<any>{ equal: { params: true, message: "You must agree to the terms of use." } });
+        this.username.extend(<any>{ required: { message: ValidationMessages.firstNameRequired }, email: true });
+        this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired } });
+        this.consented.extend(<any>{ equal: { params: true, message: ValidationMessages.consentRequired } });
     }
 
     @Param()
