@@ -37,6 +37,7 @@ export class Authorization {
     public readonly selectedSubscriptionKey: ko.Observable<string>;
     public readonly collapsedAuth: ko.Observable<boolean>;
     private deleteAuthorizationHeader: boolean = false;
+    public readonly selectedAuthorizationServer: ko.Observable<AuthorizationServer>;
 
     constructor(
         private readonly sessionManager: SessionManager,
@@ -46,7 +47,8 @@ export class Authorization {
         private readonly productService: ProductService,
     ) {
         this.collapsedAuth = ko.observable(false);
-        this.authorizationServer = ko.observable();
+        this.authorizationServers = ko.observable();
+        this.selectedAuthorizationServer = ko.observable();
         this.selectedGrantType = ko.observable();
         this.api = ko.observable<Api>();
         this.headers = ko.observableArray<ConsoleHeader>();
@@ -63,7 +65,7 @@ export class Authorization {
     }
 
     @Param()
-    public authorizationServer: ko.Observable<AuthorizationServer>;
+    public authorizationServers: ko.Observable<AuthorizationServer[]>;
 
     @Param()
     public api: ko.Observable<Api>;
@@ -87,6 +89,8 @@ export class Authorization {
         this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
         this.selectedGrantType.subscribe(this.onGrantTypeChange);
         this.selectedSubscriptionKey(null);
+        this.selectedAuthorizationServer(this.authorizationServers() ? this.authorizationServers()[0] : null);
+        this.selectedAuthorizationServer.subscribe(() => this.selectedGrantType(null));
         await this.setupOAuth();
         if (this.api().subscriptionRequired) {
             await this.loadSubscriptionKeys();
@@ -98,7 +102,7 @@ export class Authorization {
     }
 
     private async setupOAuth(): Promise<void> {
-        const authorizationServer = this.authorizationServer();
+        const authorizationServer = this.selectedAuthorizationServer();
 
         if (!authorizationServer) {
             this.selectedGrantType(null);
@@ -248,7 +252,7 @@ export class Authorization {
      */
     public async authenticateOAuth(grantType: string): Promise<void> {
         const api = this.api();
-        const authorizationServer = this.authorizationServer();
+        const authorizationServer = this.selectedAuthorizationServer();
         const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
         const serverName = authorizationServer.name;
 
@@ -317,7 +321,7 @@ export class Authorization {
             this.authorizationError(null);
 
             const api = this.api();
-            const authorizationServer = this.authorizationServer();
+            const authorizationServer = this.selectedAuthorizationServer();
             const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
             const serverName = authorizationServer.name;
 

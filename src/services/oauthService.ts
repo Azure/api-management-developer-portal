@@ -11,6 +11,8 @@ import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { AuthorizationServerForClient } from "../contracts/authorizationServer";
 import { IApiClient } from "../clients";
 import { OAuthTokenResponse } from "../contracts/oauthTokenResponse";
+import { PageContract } from "../contracts/page";
+import { Page } from "../models/page";
 
 
 export class OAuthService {
@@ -40,43 +42,14 @@ export class OAuthService {
         return text;
     }
 
-    public async getAuthServer(apiId: string): Promise<AuthorizationServer> {
+    public async getOpenIdAuthServers(apiId: string): Promise<AuthorizationServer[]> {
         try {
-            let authServer: AuthorizationServer;
-
-            authServer = await this.getOauth2ServerByApiId(apiId);
-
-            if (!authServer) {
-                authServer = await this.getOpenidconnectServerByApiId(apiId);
-            }
-
-            return authServer ?? undefined;
+            const authServers = await this.apiClient.get<Page<AuthorizationServerForClient>>(`apis/${apiId}/authServers/openidconnect`, [await this.apiClient.getPortalHeader("getAuthorizationServer"), Utils.getIsUserResourceHeader()]);
+            return authServers.value.map(x => new AuthorizationServer(x));
         }
         catch (error) {
             throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);
-        }
-    }
-
-
-    private async getOauth2ServerByApiId(apiId: string): Promise<AuthorizationServer> {
-        try {
-            const oauthServer = await this.apiClient.get<AuthorizationServerForClient>(`/apis/${apiId}/authServers/oauth2`, [await this.apiClient.getPortalHeader("getAuthorizationServer"), Utils.getIsUserResourceHeader()]);
-            const authServer = new AuthorizationServer(oauthServer);
-            return authServer
-        }
-        catch (error) {
-            return undefined
-        }
-    }
-
-    private async getOpenidconnectServerByApiId(apiId: string): Promise<AuthorizationServer> {
-        try {
-            const openidConnectProvider = await this.apiClient.get<AuthorizationServerForClient>(`/apis/${apiId}/authServers/openidconnect`, [await this.apiClient.getPortalHeader("getAuthorizationServer"), Utils.getIsUserResourceHeader()]);
-            const authServer = new AuthorizationServer(openidConnectProvider);
-            return authServer;
-        }
-        catch (error) {
-            return undefined
+            return undefined;
         }
     }
 
