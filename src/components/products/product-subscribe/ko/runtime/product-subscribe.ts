@@ -8,8 +8,9 @@ import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { TenantService } from "../../../../../services/tenantService";
-import { DelegationParameters, DelegationActionPath } from "../../../../../contracts/tenantSettings";
+import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import { RouteHelper } from "../../../../../routing/routeHelper";
+import { BackendService } from "../../../../../services/backendService";
 
 @RuntimeComponent({
     selector: "product-subscribe-runtime"
@@ -35,6 +36,7 @@ export class ProductSubscribe {
     constructor(
         private readonly usersService: UsersService,
         private readonly tenantService: TenantService,
+        private readonly backendService: BackendService,
         private readonly productService: ProductService,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
@@ -51,7 +53,7 @@ export class ProductSubscribe {
 		this.showTermsByDefault = ko.observable(false);
 
         this.canSubscribe = ko.pureComputed((): boolean => {
-            return (this.delegationEnabled || this.subscriptionName().length > 0) && ((this.termsOfUse() && this.consented()) || !!!this.termsOfUse());
+            return (this.delegationEnabled || this.subscriptionName().length > 0) && ((this.termsOfUse() && this.consented()) || !this.termsOfUse());
         });
     }
 	
@@ -119,7 +121,7 @@ export class ProductSubscribe {
     private async loadSubscriptions(userId: string): Promise<void> {
         const product = this.product();
         const subscriptions = await this.productService.getSubscriptionsForProduct(userId, product.id);
-        const activeSubscriptions = subscriptions.value.filter(item => item.state === SubscriptionState.active) || [];
+        const activeSubscriptions = subscriptions.value.filter(item => item.state === SubscriptionState.active || item.state === SubscriptionState.submitted) || [];
         const numberOfSubscriptions = activeSubscriptions.length;
         const limitReached = (product.subscriptionsLimit || product.subscriptionsLimit === 0) && product.subscriptionsLimit <= numberOfSubscriptions;
         this.limitReached(limitReached);
@@ -152,11 +154,14 @@ export class ProductSubscribe {
 
         try {
             if (this.delegationEnabled) {
-                const delegation = new URLSearchParams();
-                delegation.append(DelegationParameters.ProductId, Utils.getResourceName("products", productId));
-                delegation.append(DelegationParameters.UserId, Utils.getResourceName("users", userId));
-                await this.router.navigateTo(`/${DelegationActionPath.subscribe}?${delegation.toString()}`);
-                return;
+                const delegationParam = {};
+                delegationParam[DelegationParameters.ProductId] =  productName;
+                delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", userId);
+                const delegationUrl = await this.backendService.getDelegationString(DelegationAction.subscribe, delegationParam);
+                if (delegationUrl) {
+                    location.assign(delegationUrl);
+                    return;
+                }
             }
 
             if (!this.subscriptionName()) {

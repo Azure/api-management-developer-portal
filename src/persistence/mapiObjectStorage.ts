@@ -241,18 +241,27 @@ export class MapiObjectStorage implements IObjectStorage {
                 };
             }
 
-            const resource = this.paperbitsKeyToArmResource(key);
-            const contentType = this.getContentTypeFromResource(resource);
+            const resourcePath = this.paperbitsKeyToArmResource(key);
+            const contentType = this.getContentTypeFromResource(resourcePath);
             const isLocalized = localizedContentTypes.includes(contentType);
-            const item = await this.mapiClient.get<T>(`${resource}`, [await this.mapiClient.getPortalHeader("getObject")]);
-            const converted = this.convertArmContractToPaperbitsContract(item, isLocalized);
+            const contentItem = await this.mapiClient.get<T>(resourcePath, [await this.mapiClient.getPortalHeader("getObject")]);
+            const converted = this.convertArmContractToPaperbitsContract(contentItem, isLocalized);
 
             if (key.startsWith("blocks/")) {
                 this.delocalizeBlock(converted);
             }
 
             if (key.includes("settings") || key.includes("styles")) {
-                return (<any>converted).nodes[0];
+                const result = (<any>converted).nodes[0];
+                const segments = key.split("/");
+
+                if (segments.length > 1) {
+                    const path = segments.slice(1).join("/");
+                    return Objects.getObjectAt(path, result);
+                }
+                else {
+                    return result;
+                }
             }
 
             if (key.includes("navigationItems")) {
@@ -385,24 +394,10 @@ export class MapiObjectStorage implements IObjectStorage {
         const isLocalized = localizedContentTypes.includes(contentType);
         const localeSearchPrefix = isLocalized ? `${selectedLocale}/` : "";
 
-        if (key === "popups") {
-            const pageOfPopups: Page<PopupInstanceModel> = {
+        if (key === "popups" || key === "locales") {
+            return  {
                 value: []
             };
-
-            return <any>pageOfPopups;
-        }
-
-        if (key === "locales") {
-            const pageOfLocales: Page<LocaleModel> = {
-                value: [{
-                    key: `contentTypes/locales/contentItem/en_us`,
-                    code: "en-us",
-                    displayName: "English (US)"
-                }]
-            };
-
-            return <any>pageOfLocales;
         }
 
         try {

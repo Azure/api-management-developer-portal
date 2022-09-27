@@ -1,4 +1,5 @@
 import * as ko from "knockout";
+import { KnownHttpHeaders } from "../knownHttpHeaders";
 import { Parameter } from "../parameter";
 
 export class ConsoleHeader {
@@ -9,11 +10,11 @@ export class ConsoleHeader {
     public readonly options: string[];
     public inputTypeValue: ko.Observable<string>;
     public required: boolean;
-    public secret: boolean;
+    public secret: ko.Observable<boolean>;
     public revealed: ko.Observable<boolean>;
     public description: string;
     public type: string;
-    public displayedValue: ko.Observable<string>;
+    public hiddenValue: ko.Computed<string>;
 
     public toggleRevealed(): void {
         this.revealed(!this.revealed());
@@ -25,10 +26,10 @@ export class ConsoleHeader {
     }
 
     constructor(contract?: Parameter) {
-        this.name = ko.observable();
-        this.value = ko.observable();
+        this.name = ko.observable(null);
+        this.value = ko.observable(null);
+        this.secret = ko.observable();
         this.revealed = ko.observable(false);
-        this.displayedValue = ko.observable();
         this.inputTypeValue = ko.observable("text");
         this.options = [];
         this.required = false;
@@ -36,33 +37,39 @@ export class ConsoleHeader {
         this.custom = true;
         this.type = "string";
         this.description = "Additional header.";
+        this.hiddenValue = ko.computed<string>(() => this.value()?.replace(/./g, "•"));
 
-        this.value.subscribe(() => {
-            this.displayedValue((this.secret && !this.revealed()) ? this.value().replace(/./g, '•') : this.value());
+        this.name.subscribe(name => {
+            if (name == KnownHttpHeaders.Authorization) {
+                this.secret(true);
+            } else {
+                this.secret(false);
+            }
         });
+
+        this.secret.subscribe(() => this.inputTypeValue((this.secret() && !this.revealed() ? "password" : "text")));
+
         this.revealed.subscribe(() => {
-            this.displayedValue((this.secret && !this.revealed()) ? this.value().replace(/./g, '•') : this.value());
-            this.inputTypeValue(this.secret && !this.revealed() ? "password" : "text");
+            this.inputTypeValue(this.secret() && !this.revealed() ? "password" : "text");
         });
 
+        this.name.extend(<any>{ required: { message: `Name is required.` } });
         if (!contract) {
             return;
         }
 
+        this.required = contract.required;
         this.custom = false;
         this.name(contract.name);
-        this.value(contract.defaultValue);
-        this.required = contract.required;
         this.options = contract.values;
         this.description = contract.description ? contract.description : "";
         this.type = contract.type;
-        this.secret = false;
-        this.inputTypeValue(this.secret && !this.revealed() ? "password" : "text");
-
-        this.name.extend(<any>{ required: { message: `Name is required.` } });
+        this.secret(this.name() == KnownHttpHeaders.Authorization ? true : false);
 
         if (this.required) {
             this.value.extend(<any>{ required: { message: `Value is required.` } });
         }
+
+        this.value(contract.defaultValue);
     }
 }

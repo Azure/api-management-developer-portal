@@ -15,7 +15,7 @@ export interface SubscriptionContract extends ArmResource {
         state: string;
         stateComment: string;
         ownerId: string;
-    }
+    };
 }
 
 export enum SubscriptionState {

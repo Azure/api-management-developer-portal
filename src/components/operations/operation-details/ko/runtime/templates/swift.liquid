@@ -1,26 +1,30 @@
 import Foundation
 import FoundationNetworking
 
-let url = URL(string: "{{requestUrl}}") 
+let url = URL(string: "{{console.requestUrl}}") 
 var request : URLRequest = URLRequest(url: url!)
-request.httpMethod = "{{method}}"
+request.httpMethod = "{{console.method}}"
 
 // Request headers 
 let headers = [
-{% for header in request.meaningfulHeaders %}
-"{{header.name}}": "{{header.displayedValue}}",
+{% for header in console.request.meaningfulHeaders %}
+    {% if showSecrets == false and header.secret -%}
+        "{{header.name}}": "{{header.hiddenValue}}",
+    {%- else -%}
+        "{{header.name}}": "{{header.value}}",
+    {%- endif -%}
 {%- endfor %}
 ]
 request.allHTTPHeaderFields = headers
-{% if request.body != blank %}
+{% if console.request.body != blank %}
 // Request body
-{%- if request.bodyFormat == "raw" -%}
-{%- assign formattedBody = request.body | replace:'"','\\"' 
-formattedBody = formattedBody | replace: '\r\n', ' ' 
-formattedBody = formattedBody | replace: '     ', ' ' %}
+{%- if console.request.bodyFormat == "raw" -%}
+{%- assign formattedBody = console.request.body | replace:'"','\\"' -%}
+{%- assign formattedBody = formattedBody | replace: '\r\n', ' ' -%}
+{%- assign formattedBody = formattedBody | replace: '     ', ' ' %}
 let postString = "{{formattedBody}}"
 request.httpBody = postString.data(using: .utf8)
-{%- elsif  request.bodyFormat == "binary" %}
+{%- elsif  console.request.bodyFormat == "binary" %}
 let file = "< path/to/{{request.binary.name}} >" 
 var result = ""
 if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {       

@@ -1,4 +1,3 @@
-import * as ko from "knockout";
 import { remark } from "remark";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
@@ -12,7 +11,7 @@ import * as truncateHtml from "truncate-html";
  * A service to process markdown input.
  */
 export class MarkdownService {
-    public processMarkdown(markdown: string): string {
+    public processMarkdown(markdown: string, length?: number): string {
         let processedHtml: string;
 
         remark()

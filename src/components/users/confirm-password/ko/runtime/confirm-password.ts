@@ -1,11 +1,12 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
-import * as Constants from "../../../../../constants";
 import template from "./confirm-password.html";
 import { EventManager } from "@paperbits/common/events";
-import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
-import { UsersService } from "../../../../../services/usersService";
-import { ValidationReport } from "../../../../../contracts/validationReport";
+import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { UsersService } from "../../../../../services";
+import { ErrorSources } from "../../../validation-summary/constants";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ValidationMessages } from "../../../validationMessages";
 
 @RuntimeComponent({
     selector: "confirm-password"
@@ -36,8 +37,8 @@ export class ConfirmPassword {
             decorateInputElement: true
         });
 
-        this.password.extend(<any>{ required: { message: `Password is required.` }, minLength: 8 }); // TODO: password requirements should come from Management API.
-        this.passwordConfirmation.extend(<any>{ required: { message: `Password confirmation is required.` }, equal: { message: "Password confirmation field must be equal to password.", params: this.password } });
+        this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired }, minLength: 8 }); // TODO: password requirements should come from Management API.
+        this.passwordConfirmation.extend(<any>{ equal: { message: ValidationMessages.passwordConfirmationMustMatch, params: this.password } });
     }
 
     /**
@@ -54,15 +55,11 @@ export class ConfirmPassword {
         const queryParams = new URLSearchParams(location.search);
 
         if (!queryParams.has("userid") || !queryParams.has("ticketid") || !queryParams.has("ticket")) {
-            const validationReport: ValidationReport = {
-                source: "confirmpassword",
-                errors: ["Required params not found"]
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Required params not found"]);
             return;
         }
 
-        try {            
+        try {
             this.token = this.usersService.getTokenFromTicketParams(queryParams);
             this.userId = this.usersService.getUserIdFromParams(queryParams);
 
@@ -70,11 +67,7 @@ export class ConfirmPassword {
                 throw new Error("User not found.");
             }
         } catch (error) {
-            const validationReport: ValidationReport = {
-                source: "confirmpassword",
-                errors: ["Activate user error: " + error.message]
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Activate user error: " + error.message]);
         }
     }
 
@@ -91,11 +84,7 @@ export class ConfirmPassword {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            const validationReport: ValidationReport = {
-                source: "confirmpassword",
-                errors: clientErrors
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, ErrorSources.confirmpassword, clientErrors);
             return;
         }
 
@@ -107,26 +96,7 @@ export class ConfirmPassword {
             }, 1000);
         }
         catch (error) {
-            if (error.code === "ValidationError") {
-                const details: any[] = error.details;
-
-                if (details && details.length > 0) {
-                    let message = "";
-                    const errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
-                    const validationReport: ValidationReport = {
-                        source: "confirmpassword",
-                        errors: errorMessages
-                    };
-                    this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-                }
-            }
-            else {
-                const validationReport: ValidationReport = {
-                    source: "confirmpassword",
-                    errors: [Constants.genericHttpRequestError]
-                };
-                this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-            }
+            parseAndDispatchError(this.eventManager, ErrorSources.confirmpassword, error, undefined, detail => `${detail.target}: ${detail.message} \\n`);
         }
     }
 }

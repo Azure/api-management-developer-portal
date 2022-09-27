@@ -1,15 +1,21 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
+import { HttpClient, HttpMethod, HttpRequest } from "@paperbits/common/http";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
-import { RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
+import { Logger } from "@paperbits/common/logging";
+import { saveAs } from "file-saver";
+import { getExtension } from "mime";
+import { downloadableTypes, RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
+import { HttpResponse } from "../../../../../contracts/httpResponse";
 import { Api } from "../../../../../models/api";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { ConsoleOperation } from "../../../../../models/console/consoleOperation";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
+import { ConsoleRepresentation } from "../../../../../models/console/consoleRepresentation";
 import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
+import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { KnownStatusCodes } from "../../../../../models/knownStatusCodes";
 import { Operation } from "../../../../../models/operation";
 import { Revision } from "../../../../../models/revision";
@@ -22,9 +28,8 @@ import template from "./operation-console.html";
 import { ResponsePackage } from "./responsePackage";
 import { templates } from "./templates/templates";
 import { LogItem, WebsocketClient } from "./websocketClient";
-import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
-import { ConsoleRepresentation } from "../../../../../models/console/consoleRepresentation";
-import { cloneDeep } from "lodash";
+import { RequestError } from "../../../../../errors/requestError";
+
 
 @Component({
     selector: "operation-console",
@@ -73,7 +78,8 @@ export class OperationConsole {
         private readonly tenantService: TenantService,
         private readonly httpClient: HttpClient,
         private readonly routeHelper: RouteHelper,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly logger: Logger
     ) {
         this.templates = templates;
 
@@ -172,9 +178,10 @@ export class OperationConsole {
         this.operation.subscribe(this.resetConsole);
         this.selectedLanguage.subscribe(this.updateRequestSummary);
         this.selectedRepresentation.subscribe(representation => {
-            this.consoleOperation().request.selectedRepresentation(representation)
+            this.consoleOperation().request.selectedRepresentation(representation);
             this.updateRequestSummary();
         });
+        this.selectedLanguage.subscribe(this.logLanguageUpdated);
     }
 
     private async resetConsole(): Promise<void> {
@@ -231,7 +238,8 @@ export class OperationConsole {
             this.setVersionHeader();
         }
 
-        this.consoleOperation().request.meaningfulHeaders().forEach(header => header.value.subscribe(_ => this.updateRequestSummary()));
+        this.consoleOperation().request.headers().forEach(header => header.value.subscribe(_ => this.updateRequestSummary()));
+        this.consoleOperation().request.headers().forEach(header => header.name.subscribe(_ => this.updateRequestSummary()));
         this.consoleOperation().request.body.subscribe(_ => this.updateRequestSummary());
         this.consoleOperation().request.queryParameters().forEach(parameter => parameter.value.subscribe(_ => this.updateRequestSummary()));
 
@@ -306,13 +314,14 @@ export class OperationConsole {
     }
 
     public revertBody(): void {
-        this.consoleOperation().request.body(this.selectedRepresentation().sample)
+        this.consoleOperation().request.body(this.selectedRepresentation().sample);
     }
 
     public addHeader(): void {
         const newHeader = new ConsoleHeader();
         this.consoleOperation().request.headers.push(newHeader);
         newHeader.value.subscribe(_ => this.updateRequestSummary());
+        newHeader.name.subscribe(_ => this.updateRequestSummary());
 
         this.updateRequestSummary();
     }
@@ -345,7 +354,7 @@ export class OperationConsole {
 
     public async updateRequestSummary(): Promise<void> {
         const template = templates[this.selectedLanguage()];
-        const codeSample = await TemplatingService.render(template, ko.toJS(this.consoleOperation));
+        const codeSample = await TemplatingService.render(template, { console: ko.toJS(this.consoleOperation), showSecrets: this.secretsRevealed });
 
         this.codeSample(codeSample);
     }
@@ -373,12 +382,61 @@ export class OperationConsole {
         this.sendRequest();
     }
 
-    public async sendFromBrowser<T>(request: HttpRequest): Promise<HttpResponse<T>> {
-        const response = await this.httpClient.send<any>(request);
-        return response;
+    /**
+     * Sends HTTP request to API directly from browser.
+     * @param request HTTP request.
+     */
+    public async sendFromBrowser(request: HttpRequest): Promise<HttpResponse> {
+        const headersRequest: HeadersInit = {};
+        request.headers.forEach(header => headersRequest[header.name] = header.value);
+
+        let response: Response;
+
+        try {
+            response = await fetch(request.url, {
+                method: request.method,
+                headers: headersRequest,
+                body: request.body,
+                redirect: "manual"
+            });
+        }
+        catch (error) {
+            throw new RequestError(`Since the browser initiates the request, it requires Cross-Origin Resource Sharing (CORS) enabled on the server. <a href="https://aka.ms/AA4e482" target="_blank">Learn more</a>`);
+        }
+
+        const responseHeaders = [];
+        response.headers.forEach((value, name) => responseHeaders.push({ name: name, value: value }));
+
+        const reader = response.body.getReader();
+        const chunks = [];
+
+        while (true) {
+            const { done, value } = await reader.read();
+
+            if (done) {
+                break;
+            }
+
+            chunks.push(value);
+        }
+
+        const responseBody = Buffer.concat(chunks);
+
+        const responseReturn: HttpResponse = {
+            headers: responseHeaders,
+            statusCode: response.status,
+            statusText: response.statusText,
+            body: responseBody
+        };
+
+        return responseReturn;
     }
 
-    public async sendFromProxy<T>(request: HttpRequest): Promise<HttpResponse<T>> {
+    /**
+     * Sends HTTP request to API using CORS proxy (if configured).
+     * @param request HTTP request.
+     */
+    public async sendFromProxy(request: HttpRequest): Promise<HttpResponse> {
         if (request.body) {
             request.body = Buffer.from(request.body);
         }
@@ -392,24 +450,23 @@ export class OperationConsole {
 
         const proxiedRequest: HttpRequest = {
             url: `${baseProxyUrl}/send`,
-            method: "POST",
-            headers: [{ name: "X-Ms-Api-Name", value: apiName }],
+            method: HttpMethod.post,
+            headers: [{ name: KnownHttpHeaders.XMsApiName, value: apiName }],
             body: formData
         };
 
         const proxiedResponse = await this.httpClient.send<ResponsePackage>(proxiedRequest);
         const responsePackage = proxiedResponse.toObject();
 
-        const responseBodyBuffer = responsePackage.body
+        const responseBody: Buffer = responsePackage.body
             ? Buffer.from(responsePackage.body.data)
             : null;
 
-        const response: any = {
+        const response: HttpResponse = {
             headers: responsePackage.headers,
             statusCode: responsePackage.statusCode,
             statusText: responsePackage.statusMessage,
-            body: responseBodyBuffer,
-            toText: () => responseBodyBuffer.toString("utf8")
+            body: responseBody
         };
 
         return response;
@@ -419,7 +476,6 @@ export class OperationConsole {
         this.requestError(null);
         this.sendingRequest(true);
         this.responseStatusCode(null);
-
         const consoleOperation = this.consoleOperation();
         const request = consoleOperation.request;
         const url = consoleOperation.requestUrl();
@@ -455,47 +511,60 @@ export class OperationConsole {
                 body: payload
             };
 
-            const response = this.useCorsProxy()
+            const response: HttpResponse = this.useCorsProxy()
                 ? await this.sendFromProxy(request)
                 : await this.sendFromBrowser(request);
 
-            this.responseHeadersString(response.headers.map(x => `${x.name}: ${x.value}`).join("\n"));
+            const headersString = response.headers.map(x => `${x.name}: ${x.value}`).join("\n");
+            const contentTypeHeader = response.headers.find(x => x.name === KnownHttpHeaders.ContentType.toLowerCase());
+            const responseContentType = contentTypeHeader?.value;
+
+            this.responseHeadersString(headersString);
 
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
 
-            const responseStatusText = !!response.statusText
-                ? response.statusText
-                : knownStatusCode
-                    ? knownStatusCode.description
-                    : "Unknown";
+            const responseStatusText = response.statusText || knownStatusCode
+                ? knownStatusCode.description
+                : "Unknown";
 
             this.responseStatusCode(response.statusCode.toString());
             this.responseStatusText(responseStatusText);
-            this.responseBody(response.toText());
 
-            const responseHeaders = response.headers.map(x => {
-                const consoleHeader = new ConsoleHeader();
-                consoleHeader.name(x.name);
-                consoleHeader.value(x.value);
-                return consoleHeader;
-            });
+            if (responseContentType && downloadableTypes.some(type => responseContentType.includes(type))) {
+                const blob = new Blob([response.body], { type: responseContentType });
+                const fileExtension = getExtension(responseContentType);
 
-            const contentTypeHeader = responseHeaders.find((header) => header.name().toLowerCase() === KnownHttpHeaders.ContentType.toLowerCase());
+                const fileName = fileExtension
+                    ? consoleOperation.name + "." + fileExtension
+                    : consoleOperation.name;
 
-            if (contentTypeHeader) {
-                if (contentTypeHeader.value().toLowerCase().indexOf("json") >= 0) {
-                    this.responseBody(Utils.formatJson(this.responseBody()));
+                saveAs(blob, fileName);
+            }
+            else {
+                const responseBody = response.body.toString();
+
+                if (responseContentType && Utils.isJsonContentType(responseContentType)) {
+                    this.responseBody(Utils.formatJson(responseBody));
                 }
-
-                if (contentTypeHeader.value().toLowerCase().indexOf("xml") >= 0) {
-                    this.responseBody(Utils.formatXml(this.responseBody()));
+                else if (responseContentType && Utils.isXmlContentType(responseContentType)) {
+                    this.responseBody(Utils.formatXml(responseBody));
+                }
+                else {
+                    this.responseBody(responseBody);
                 }
             }
+
+            this.logSentRequest(this.api().name, consoleOperation.operationName, method, response.statusCode);
         }
         catch (error) {
-            if (error.code && error.code === "RequestError") {
-                this.requestError(`Since the browser initiates the request, it requires Cross-Origin Resource Sharing (CORS) enabled on the server. <a href="https://aka.ms/AA4e482" target="_blank">Learn more</a>`);
+            if (error instanceof RequestError) {
+                this.requestError(error.message);
+                this.logSentRequest(this.api().name, consoleOperation.operationName, method);
+                return;
             }
+
+            this.requestError(`Unable to complete request.`);
+            this.logger.trackError(error);
         }
         finally {
             this.sendingRequest(false);
@@ -545,7 +614,7 @@ export class OperationConsole {
         }
     }
 
-    private initWebSocket() {
+    private initWebSocket(): void {
         if (!this.ws) {
             this.ws = new WebsocketClient();
             this.ws.onOpen = () => {
@@ -593,9 +662,6 @@ export class OperationConsole {
 
     public toggleRequestSummarySecrets(): void {
         this.secretsRevealed(!this.secretsRevealed());
-        this.consoleOperation().request.meaningfulHeaders().forEach(header => header.revealed(this.secretsRevealed()));
-        this.consoleOperation().request.queryParameters().forEach(header => header.revealed(this.secretsRevealed()));
-
         this.updateRequestSummary();
     }
 
@@ -608,17 +674,8 @@ export class OperationConsole {
     }
 
     public async getPlainTextCodeSample(): Promise<string> {
-        const clonedConsoleOperation = cloneDeep(this.consoleOperation());
-        clonedConsoleOperation.request.meaningfulHeaders()
-            .filter(header => header.secret)
-            .forEach(header => header.revealed(true));
-
-        clonedConsoleOperation.request.queryParameters()
-            .filter(parameter => parameter.secret)
-            .forEach(parameter => parameter.revealed(true));
-
         const template = templates[this.selectedLanguage()];
-        return await TemplatingService.render(template, ko.toJS(clonedConsoleOperation));
+        return await TemplatingService.render(template, { console: ko.toJS(this.consoleOperation), showSecrets: true });
     }
 
     public getApiReferenceUrl(): string {
@@ -641,4 +698,15 @@ export class OperationConsole {
         this.collapsedRequest(!this.collapsedRequest());
     }
 
+    public logCopyEvent(): void {
+        this.logger.trackEvent("CodeSampleCopied", { language: this.selectedLanguage(), message: "Code sample copied to clipboard" });
+    }
+
+    public logLanguageUpdated(): void {
+        this.logger.trackEvent("CodeLanguageChange", { language: this.selectedLanguage(), message: "Code sample language changed" });
+    }
+
+    public logSentRequest(apiName: string, operationName: string, apiMethod: string, responseCode?: number): void {
+        this.logger.trackEvent("TestConsoleRequest", { apiName: apiName, operationName: operationName, apiMethod: apiMethod, responseCode: responseCode?.toString() });
+    }
 }

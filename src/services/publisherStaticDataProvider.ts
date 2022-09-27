@@ -1,15 +1,16 @@
-import path = require("path");
-import  IStaticDataProvider  from "./IStaticDataProvider";
-const fs = require('fs');
+import * as fs from "fs";
+import * as path from "path";
+import IStaticDataProvider from "./IStaticDataProvider";
+
 
 export class PublisherStaticDataProvider implements IStaticDataProvider {
-    getStaticData(objectType: string): Promise<any> {
-        let fullPath = objectType == "defaultStaticData.json" ?
-            path.join(__dirname, '../../tests/mocks/defaultStaticData.json') : path.join(__dirname, '../../templates/default.json');
-        let filePath = path.resolve(fullPath);
+    public getStaticData(objectType: string): Promise<any> {
+        const fullPath = objectType == "defaultStaticData.json" ?
+            path.join(__dirname, "../../tests/mocks/defaultStaticData.json") : path.join(__dirname, "../../templates/default.json");
+        const filePath = path.resolve(fullPath);
 
         return new Promise<any>((resolve, reject) => {
-            fs.readFile(filePath, { encoding: 'utf-8' }, function (err, data) {
+            fs.readFile(filePath, { encoding: "utf-8" }, (err, data) => {
                 if (err) {
                     reject();
                     return;

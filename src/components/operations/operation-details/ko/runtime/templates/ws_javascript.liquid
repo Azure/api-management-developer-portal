@@ -1,4 +1,9 @@
-let socket = new WebSocket("{{displayedWsUrl}}");
+let socket = new WebSocket("
+{%- if showSecrets == false -%}
+    {{console.hiddenWsUrl}}
+{%- else -%}
+    {{console.wsUrl}}
+{%- endif -%}");
 
 socket.onopen = function(e) {
   alert("[open] Connection established");

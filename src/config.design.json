@@ -1,0 +1,7 @@
+{
+    "environment": "development",
+    "subscriptionId": "< subscription ID >",
+    "resourceGroupName": "< resource froup name >",
+    "serviceName": "< service name >",
+    "useHipCaptcha": false
+}

@@ -1,4 +1,4 @@
-import { AuthorizationServerContract } from "./../contracts/authorizationServer";
+import { AuthorizationServerForClient } from "./../contracts/authorizationServer";
 
 export class AuthorizationServer {
     public name: string;
@@ -10,42 +10,52 @@ export class AuthorizationServer {
     public grantTypes: string[];
     public scopes: string[];
 
-
-    constructor(contract?: AuthorizationServerContract) {
+    constructor(contract?: AuthorizationServerForClient) {
         if (!contract) {
             return;
         }
 
         this.name = contract.name;
-        this.displayName = contract.properties.displayName;
-        this.description = contract.properties.description;
-        this.clientId = contract.properties.clientId;
-        this.authorizationEndpoint = contract.properties.authorizationEndpoint;
-        this.tokenEndpoint = contract.properties.tokenEndpoint;
-        this.scopes = !!contract.properties.defaultScope
-            ? contract.properties.defaultScope.split(" ")
-            : [];
+        this.displayName = contract.displayName;
+        this.description = contract.description;
+        this.clientId = contract.clientId;
+        this.authorizationEndpoint = contract.authorizationEndpoint;
+        this.tokenEndpoint = contract.tokenEndpoint;
+        this.scopes = contract.scopes;
 
-        if (!contract.properties.grantTypes) {
+        if (!contract.grantTypes) {
             return;
         }
 
-        this.grantTypes = contract.properties.grantTypes
-            .map(grantType => {
-                switch (grantType) {
-                    case "authorizationCode":
-                        return "authorization_code";
-                    case "implicit":
-                        return "implicit";
-                    case "clientCredentials":
-                        return "client_credentials";
-                    case "resourceOwnerPassword":
-                        return "password";
-                    default:
-                        console.log(`Unsupported grant type ${grantType}`);
-                        return null;
-                }
-            })
-            .filter(grantType => !!grantType);
+        this.grantTypes = this.convertGrantTypes(contract.grantTypes);
+    }
+
+    private convertGrantTypes(grantTypes: string[]): string[] {
+        return grantTypes.reduce((result, item) => {
+            let convertedResult: string;
+            switch (item) {
+                case "authorizationCode":
+                    convertedResult = "authorization_code";
+                    break;
+                case "authorizationCodeWithPkce":
+                    convertedResult = "authorization_code (PKCE)";
+                    break;
+                case "implicit":
+                    convertedResult = "implicit";
+                    break;
+                case "clientCredentials":
+                    convertedResult = "client_credentials";
+                    break;
+                case "resourceOwnerPassword":
+                    convertedResult = "password";
+                    break;
+                default:
+                    throw new Error(`Unsupported grant type "${item}".`);
+            }
+            if (convertedResult) {
+                result.push(convertedResult);
+            }
+            return result;
+        }, []);
     }
 }

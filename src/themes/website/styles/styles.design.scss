@@ -240,12 +240,11 @@ $style-guide-color: #000;
 
 
 .placeholder {
+    height: 100%;
     min-height: 80px;
     font-family: monospace;
     font-size: 12px;
     text-transform: uppercase;
-    height: 100%;
-    width: 100%;
     pointer-events: none;
     display: flex;
     align-items: center;
@@ -255,13 +254,7 @@ $style-guide-color: #000;
     &:before {
         @include fit(5px);
         content: "";
-        background: repeating-linear-gradient(
-            45deg,
-            rgba(0, 0, 0, 0),
-            rgba(0, 0, 0, 0) 10px,
-            rgba(0, 0, 0, 0.05) 10px,
-            rgba(0, 0, 0, 0.05) 20px
-        );
+        background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 10px, rgba(0, 0, 0, 0.05) 10px, rgba(0, 0, 0, 0.05) 20px);
     }
 }
 

@@ -13,20 +13,21 @@
 <!-- /ko -->
 
 <!-- ko if: apiType() === 'graphql' -->
-<graphql-documentation params="{ apiName: $component.selectedApiName, detailsPageUrl: $component.detailsPageUrl }"></graphql-documentation>
+<graphql-documentation params="{ apiName: $component.selectedApiName, detailsPageUrl: $component.detailsPageUrl }">
+</graphql-documentation>
 <!-- /ko -->
 
 <!-- ko ifnot: apiType() === 'websocket' || apiType() === 'graphql'-->
 <div class="form-inline max-w-500">
     <div class="d-block flex-grow mw-170">
-        <input type="search" class="form-control form-control-light" aria-label="Search operations" placeholder="Search operations" spellcheck="false"
-            data-bind="textInput: pattern" />
+        <input type="search" class="form-control form-control-light" aria-label="Search operations"
+            placeholder="Search operations" spellcheck="false" data-bind="textInput: pattern" />
         <tag-input params="{ scope: $component.tagScope, onChange: onTagsChange }"></tag-input>
     </div>
     <div class="form-group ml-auto">
-        <label for="groupByTag">Group by tag
+        <label>Group by tag
             <div class="switch">
-                <input id="groupByTag" type="checkbox" data-bind="checked: $component.groupByTag">
+                <input type="checkbox" data-bind="checked: $component.groupByTag">
                 <span class="slider round"></span>
             </div>
         </label>
@@ -51,27 +52,24 @@
     <!-- /ko -->
 
     <!-- ko ifnot: working -->
-    <div class="animation-fade-in">
+    <div class="animation-fade-in" role="listbox" aria-label="List of operations" data-bind="listbox: {}">
         <!-- ko if: groupByTag -->
 
         <!-- ko foreach: { data: operationGroups, as: 'group' } -->
         <div class="tag-group">
             <span class="tag-item" role="group" data-bind="text: group.tag"></span>
         </div>
-        <ul class="nav" role="list">
+        <div class="list">
             <!-- ko foreach: { data: group.items, as: 'item' } -->
-            <li class="nav-item" role="presentation">
-                <a href="#" role="listitem" class="nav-link"
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
-                    <div class="row">
-                        <span class="col-md-2" data-bind="attr: { 'data-method': method }"></span>
-                        <span class="col-md-10"
-                            data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
-                    </div>
-                </a>
-            </li>
+            <div role="option" class="list-item table-preset-operations"
+                data-bind="activate: $component.selectOperation, css: { 'selected': $component.selectedOperationName() === item.name }">
+                <div class="http-method" data-bind="attr: { 'data-method': method }"></div>
+                <div
+                    data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }">
+                </div>
+            </div>
             <!-- /ko -->
-        </ul>
+        </div>
         <!-- /ko -->
 
         <!-- ko if: operationGroups().length === 0 -->
@@ -93,23 +91,20 @@
     <!-- /ko -->
 
     <!-- ko ifnot: working-->
-    <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
+    <div class="d-block flex-item flex-grow animation-fade-in">
         <!-- ko ifnot: apiType() === 'graphql' -->
         <!-- ko if: operations -->
-        <ul class="nav" role="list">
+        <div class="list" role="listbox" aria-label="List of operations" data-bind="listbox: {}">
             <!-- ko foreach: { data: operations, as: 'item' } -->
-            <li class="nav-item" role="presentation">
-                <a href="#" role="listitem" class="nav-link"
-                    data-bind="attr: { href: $component.getReferenceUrl(item)}, css: { 'nav-link-active': $component.selectedOperationName() === item.name }">
-                    <div class="row">
-                        <span class="col-md-2" data-bind="attr: { 'data-method': method }"></span>
-                        <span class="col-md-10"
-                            data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }"></span>
-                    </div>
-                </a>
-            </li>
+            <div role="option" class="list-item table-preset-operations"
+                data-bind="activate: $component.selectOperation, css: { 'selected': $component.selectedOperationName() === item.name }">
+                <div class="http-method" data-bind="attr: { 'data-method': method }"></div>
+                <div
+                    data-bind="text: ($component.showUrlPath() ? item.urlTemplate : item.displayName), css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }, attr: { title: ($component.showUrlPath() ? item.urlTemplate : item.displayName) }">
+                </div>
+            </div>
             <!-- /ko -->
-        </ul>
+        </div>
         <!-- /ko -->
         <!-- ko if: operations().length === 0 -->
         <div class="list-placeholder list-group-placeholder">

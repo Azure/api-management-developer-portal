@@ -28,6 +28,7 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
             viewModel = new SignupViewModel();
             viewModel["widgetBinding"] = {
                 displayName: "Sign-up form: Basic",
+                layer: bindingContext?.layer,
                 model: model,
                 flow: ComponentFlow.Block,
                 draggable: true
@@ -42,7 +43,7 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
             const delegationParam = {};
             delegationParam[DelegationParameters.ReturnUrl] =  "/";
 
-            const delegationUrl = await this.backendService.getDelegationUrl(DelegationAction.signUp, delegationParam);
+            const delegationUrl = await this.backendService.getDelegationUrlFromServer(DelegationAction.signUp, delegationParam);
             if (delegationUrl) {
                 params["delegationUrl"] = delegationUrl;
             }

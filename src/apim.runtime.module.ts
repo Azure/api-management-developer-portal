@@ -19,6 +19,7 @@ import "./bindingHandlers/minMaxAvgChart";
 import "./bindingHandlers/scrollintoview";
 import "./bindingHandlers/syntaxHighlight";
 import "./bindingHandlers/tab";
+import "./bindingHandlers/fastForeach";
 import { ApiProducts } from "./components/apis/api-products/ko/runtime/api-products";
 import { ApiProductsDropdown } from "./components/apis/api-products/ko/runtime/api-products-dropdown";
 import { ApiProductsTiles } from "./components/apis/api-products/ko/runtime/api-products-tiles";
@@ -63,8 +64,7 @@ import { UnhandledErrorHandler } from "./errors/unhandledErrorHandler";
 import { AadSignOutRouteGuard } from "./routing/aadSignoutRouteGuard";
 import { RouteHelper } from "./routing/routeHelper";
 import { SignOutRouteGuard } from "./routing/signOutRouteGuard";
-import { StaticUserService } from "./services";
-import { AzureActiveDirectoryService } from "./services/aadService";
+import { AadService, StaticUserService } from "./services";
 import { AnalyticsService } from "./services/analyticsService";
 import { ApiService } from "./services/apiService";
 import { BackendService } from "./services/backendService";
@@ -85,8 +85,10 @@ import { DefaultAuthenticator } from "./authentication/defaultAuthenticator";
 import { Pagination } from "./components/pagination/pagination";
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { OauthServerConfiguration } from "./components/operations/operation-details/ko/runtime/oauth-server-configuration";
+import { AadServiceV2 } from "./services/aadServiceV2";
 import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
-import {staticDataEnvironment} from "./../environmentConstants"
+import { staticDataEnvironment } from "./../environmentConstants";
+import { CustomWidgetRuntimeModule } from "./components/custom-widget/customWidget.runtime.module";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -145,7 +147,8 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("changePassword", ChangePassword);
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
-        injector.bindSingleton("aadService", AzureActiveDirectoryService);
+        injector.bindSingleton("aadService", AadService);
+        injector.bindSingleton("aadServiceV2", AadServiceV2);
         injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("settingsProvider", ApimSettingsProvider);
         injector.bindSingleton("httpClient", XmlHttpRequestClient);
@@ -160,6 +163,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("tagInput", TagInput);
         injector.bind("pagination", Pagination);
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
+        injector.bindModule(new CustomWidgetRuntimeModule());
 
         if (process.env.NODE_ENV === staticDataEnvironment) {
             injector.bind("httpClient", StaticDataHttpClient);
@@ -179,6 +183,8 @@ export class ApimRuntimeModule implements IInjectorModule {
         }
         else {
             injector.bindToCollection("autostart", LocationRouteHandler);
+
+            // TODO: We can generate config.json file during publishing
             injector.bindInstance("configFileUri", "/config.runtime.json");
             injector.bindSingleton("settingsProvider", DefaultSettingsProvider);
         }

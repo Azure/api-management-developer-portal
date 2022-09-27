@@ -10,7 +10,6 @@ import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
 import { ConsoleOperation } from "../../../../../models/console/consoleOperation";
 import { templates } from "./templates/templates";
-import { TemplatingService } from "../../../../../services/templatingService";
 import { GrantTypes, TypeOfApi, oauthSessionKey } from "./../../../../../constants";
 import { OAuthService } from "../../../../../services/oauthService";
 import { Product } from "../../../../../models/product";
@@ -37,6 +36,7 @@ export class Authorization {
     public readonly products: ko.Observable<Product[]>;
     public readonly selectedSubscriptionKey: ko.Observable<string>;
     public readonly collapsedAuth: ko.Observable<boolean>;
+    private deleteAuthorizationHeader: boolean = false;
 
     constructor(
         private readonly sessionManager: SessionManager,
@@ -49,11 +49,10 @@ export class Authorization {
         this.authorizationServer = ko.observable();
         this.selectedGrantType = ko.observable();
         this.api = ko.observable<Api>();
-        this.headers = ko.observableArray<ConsoleHeader>();;
+        this.headers = ko.observableArray<ConsoleHeader>();
+        this.queryParameters = ko.observableArray<ConsoleParameter>();
         this.consoleOperation = ko.observable<ConsoleOperation>();
         this.templates = templates;
-        this.codeSample = ko.observable<string>();
-        this.selectedLanguage = ko.observable<string>();
         this.authenticated = ko.observable(false);
         this.subscriptionKeyRequired = ko.observable();
         this.username = ko.observable();
@@ -76,10 +75,10 @@ export class Authorization {
     public headers: ko.ObservableArray<ConsoleHeader>;
 
     @Param()
-    public codeSample: ko.Observable<string>;
+    public queryParameters: ko.ObservableArray<ConsoleParameter>;
 
     @Param()
-    public selectedLanguage: ko.Observable<string>;
+    public updateRequestSummary: () => Promise<void>;
 
 
     @OnMounted()
@@ -139,15 +138,22 @@ export class Authorization {
     }
 
     private setAuthorizationHeader(accessToken: string): void {
-        this.removeAuthorizationHeader();
+        const authorizationHeader = this.getAuthorizationHeader();
 
+        if (authorizationHeader) {
+            authorizationHeader.value(accessToken);
+            this.deleteAuthorizationHeader = false;
+            return;
+        }
+
+        this.deleteAuthorizationHeader = true;
         const keyHeader = new ConsoleHeader();
         keyHeader.name(KnownHttpHeaders.Authorization);
         keyHeader.description = "Subscription key.";
-        keyHeader.secret = true;
+        keyHeader.secret(true);
         keyHeader.inputTypeValue("password");
         keyHeader.type = "string";
-        keyHeader.required = true;
+        keyHeader.required = false;
         keyHeader.value(accessToken);
 
         if (!this.isGraphQL()) {
@@ -176,6 +182,10 @@ export class Authorization {
         return this.findHeader(subscriptionKeyHeaderName);
     }
 
+    private getAuthorizationHeader(): ConsoleHeader {
+        return this.findHeader(KnownHttpHeaders.Authorization);
+    }
+
     private setSubscriptionKeyHeader(subscriptionKey: string): void {
         this.removeSubscriptionKeyHeader();
 
@@ -188,7 +198,7 @@ export class Authorization {
         const keyHeader = new ConsoleHeader();
         keyHeader.name(subscriptionKeyHeaderName);
         keyHeader.description = "Subscription key.";
-        keyHeader.secret = true;
+        keyHeader.secret(true);
         keyHeader.inputTypeValue("password");
         keyHeader.type = "string";
         keyHeader.required = true;
@@ -203,15 +213,21 @@ export class Authorization {
         }
     }
 
-
     private async clearStoredCredentials(): Promise<void> {
         await this.sessionManager.removeItem(oauthSessionKey);
-        this.removeAuthorizationHeader();
     }
 
     private removeAuthorizationHeader(): void {
-        const authorizationHeader = this.findHeader(KnownHttpHeaders.Authorization);
-        this.removeHeader(authorizationHeader);
+        const authorizationHeader = this.getAuthorizationHeader();
+
+        if (authorizationHeader) {
+            if (!this.deleteAuthorizationHeader) {
+                authorizationHeader.value(null);
+            } else {
+                this.removeHeader(authorizationHeader);
+            }
+        }
+
         this.authenticated(false);
     }
 
@@ -219,6 +235,7 @@ export class Authorization {
         await this.clearStoredCredentials();
 
         if (!grantType || grantType === GrantTypes.password) {
+            this.removeAuthorizationHeader();
             return;
         }
 
@@ -250,16 +267,10 @@ export class Authorization {
         this.setAuthorizationHeader(accessToken);
     }
 
-    public async updateRequestSummary(): Promise<void> {
-        const template = templates[this.selectedLanguage()];
-        const codeSample = await TemplatingService.render(template, ko.toJS(this.consoleOperation));
-        this.codeSample(codeSample);
-    }
-
     private findHeader(name: string): ConsoleHeader {
         const searchName = name.toLocaleLowerCase();
 
-        const headers = (this.isGraphQL()) ? this.headers() : this.consoleOperation().request.headers()
+        const headers = (this.isGraphQL()) ? this.headers() : this.consoleOperation().request.headers();
 
         return headers.find(x => x.name()?.toLocaleLowerCase() === searchName);
     }
@@ -380,8 +391,8 @@ export class Authorization {
             return;
         }
 
-        if (this.api().type === TypeOfApi.webSocket) {
-            this.setSubscriptionKeyParameter(subscriptionKey)
+        if (this.api().type === TypeOfApi.webSocket || this.isGraphQL()) {
+            this.setSubscriptionKeyParameter(subscriptionKey);
         } else {
             this.setSubscriptionKeyHeader(subscriptionKey);
         }
@@ -410,15 +421,20 @@ export class Authorization {
         keyParameter.required = true;
         keyParameter.inputType("password");
 
-        this.consoleOperation().request.queryParameters.push(keyParameter);
-        this.updateRequestSummary();
+        if (this.isGraphQL()) {
+            this.queryParameters.push(keyParameter);
+        }
+        else {
+            this.consoleOperation().request.queryParameters.push(keyParameter);
+            this.updateRequestSummary();
+        }
     }
 
     private getSubscriptionKeyParam(): ConsoleParameter {
         const subscriptionKeyParamName = this.getSubscriptionKeyParamName();
         const searchName = subscriptionKeyParamName.toLocaleLowerCase();
-
-        return this.consoleOperation().request.queryParameters().find(x => x.name()?.toLocaleLowerCase() === searchName);
+        const queryParameters = this.isGraphQL() ? this.queryParameters() : this.consoleOperation().request.queryParameters();
+        return queryParameters.find(x => x.name()?.toLocaleLowerCase() === searchName);
     }
 
     private getSubscriptionKeyParamName(): string {
@@ -432,8 +448,13 @@ export class Authorization {
     }
 
     public removeQueryParameter(parameter: ConsoleParameter): void {
-        this.consoleOperation().request.queryParameters.remove(parameter);
-        this.updateRequestSummary();
+        if (this.isGraphQL()) {
+            this.queryParameters.remove(parameter);
+        }
+        else {
+            this.consoleOperation().request.queryParameters.remove(parameter);
+            this.updateRequestSummary();
+        }
     }
 
     public collapseAuth(): void {

@@ -26,6 +26,7 @@
     .color-box {
         float: left;
         position: relative;
+        @include selection(10px);
 
         &.selected:before {
             position: absolute;
@@ -38,10 +39,6 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-        }
-
-        &:hover {
-            @include selection(10px);
         }
     }
 }

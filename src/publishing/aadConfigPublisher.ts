@@ -25,7 +25,8 @@ export class AadConfigPublisher implements IPublisher {
             const aadConfig: AadClientConfig = {
                 clientId: aadIdentityProvider.clientId,
                 authority: aadIdentityProvider.authority,
-                signinTenant: aadIdentityProvider.signinTenant
+                signinTenant: aadIdentityProvider.signinTenant,
+                clientLibrary: aadIdentityProvider.clientLibrary
             };
 
             this.runtimeConfigBuilder.addSetting(SettingNames.aadClientConfig, aadConfig);
@@ -47,6 +48,7 @@ export class AadConfigPublisher implements IPublisher {
                 signinPolicyName: aadB2CIdentityProvider.signinPolicyName,
                 signupPolicyName: aadB2CIdentityProvider.signupPolicyName,
                 passwordResetPolicyName: aadB2CIdentityProvider.passwordResetPolicyName,
+                clientLibrary: aadB2CIdentityProvider.clientLibrary
             };
 
             this.runtimeConfigBuilder.addSetting(SettingNames.aadB2CClientConfig, aadB2CConfig);

@@ -141,8 +141,8 @@ export class Api {
         this.license = contract.properties.license;
         this.termsOfServiceUrl = contract.properties.termsOfServiceUrl;
 
-        if(contract.properties.type) {
-            switch(contract.properties.type) {
+        if (contract.properties.type) {
+            switch (contract.properties.type) {
                 case TypeOfApi.soap:
                     this.typeName = "SOAP";
                     break;

@@ -12,6 +12,7 @@ export class ProfileViewModelBinder implements ViewModelBinder<ProfileModel, Pro
             
             viewModel["widgetBinding"] = {
                 displayName: "User: Profile",
+                layer: bindingContext?.layer,
                 model: model,
                 flow: ComponentFlow.Block,
                 draggable: true,

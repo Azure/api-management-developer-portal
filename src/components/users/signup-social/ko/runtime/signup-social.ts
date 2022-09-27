@@ -5,10 +5,12 @@ import template from "./signup-social.html";
 import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { Router } from "@paperbits/common/routing";
-import { ValidationReport } from "../../../../../contracts/validationReport";
 import { Utils } from "../../../../../utils";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { UsersService } from "../../../../../services";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
+import { ValidationMessages } from "../../../validationMessages";
 
 
 @RuntimeComponent({
@@ -46,10 +48,10 @@ export class SignupSocial {
             decorateInputElement: true
         });
 
-        this.email.extend(<any>{ required: { message: `Email is required.` }, email: true });
-        this.firstName.extend(<any>{ required: { message: `First name is required.` } });
-        this.lastName.extend(<any>{ required: { message: `Last name is required.` } });
-        this.consented.extend(<any>{ equal: { params: true, message: "You must agree to the terms of use." } });
+        this.email.extend(<any>{ required: { message: ValidationMessages.emailRequired }, email: true });
+        this.firstName.extend(<any>{ required: { message: ValidationMessages.firstNameRequired } });
+        this.lastName.extend(<any>{ required: { message: ValidationMessages.lastNameRequired } });
+        this.consented.extend(<any>{ equal: { params: true, message: ValidationMessages.consentRequired } });
     }
 
     @Param()
@@ -101,14 +103,11 @@ export class SignupSocial {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            const validationReport: ValidationReport = {
-                source: "signup",
-                errors: clientErrors
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, ErrorSources.signup, clientErrors);
             return;
         }
 
+        dispatchErrors(this.eventManager, ErrorSources.signup, []);
         try {
             const provider = this.routeHelper.getIdTokenProvider();
             const idToken = this.routeHelper.getIdToken();
@@ -118,35 +117,10 @@ export class SignupSocial {
                 return;
             }
 
-            const validationReport: ValidationReport = {
-                source: "signup",
-                errors: []
-            };
-
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-
             await this.usersService.createUserWithOAuth(provider, idToken, this.firstName(), this.lastName(), this.email());
             await this.router.navigateTo(Constants.pageUrlHome);
-        }
-        catch (error) {
-            let errorMessages: string[];
-
-            if (error.code === "ValidationError") {
-                const details: any[] = error.details;
-
-                if (details && details.length > 0) {
-                    errorMessages = details.map(item => `${item.message}`);
-                }
-            }
-            else {
-                errorMessages = [Constants.genericHttpRequestError];
-            }
-
-            const validationReport: ValidationReport = {
-                source: "signup",
-                errors: errorMessages
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+        } catch (error) {
+            parseAndDispatchError(this.eventManager, ErrorSources.signup, error, Constants.genericHttpRequestError);
         }
     }
 }

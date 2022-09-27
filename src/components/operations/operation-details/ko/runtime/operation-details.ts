@@ -15,9 +15,12 @@ import {
     TypeDefinitionProperty,
     TypeDefinitionPropertyTypeReference,
     TypeDefinitionPropertyTypeArrayOfReference,
-    TypeDefinitionPropertyTypeArrayOfPrimitive
+    TypeDefinitionPropertyTypeArrayOfPrimitive,
+    TypeDefinitionPropertyTypeCombination,
+    TypeDefinitionPropertyTypePrimitive
 } from "../../../../../models/typeDefinition";
 import { OAuthService } from "../../../../../services/oauthService";
+import { LruCache } from "@paperbits/common/caching/lruCache";
 
 
 @RuntimeComponent({
@@ -28,6 +31,9 @@ import { OAuthService } from "../../../../../services/oauthService";
     template: template
 })
 export class OperationDetails {
+
+    private readonly definitionsCache: LruCache<TypeDefinition[]>;
+
     private readonly definitions: ko.ObservableArray<TypeDefinition>;
     public readonly selectedApiName: ko.Observable<string>;
     public readonly selectedOperationName: ko.Observable<string>;
@@ -84,7 +90,7 @@ export class OperationDetails {
             let requestUrl = "";
 
             if (hostname && api.type !== TypeOfApi.webSocket) {
-                requestUrl = 'https://';
+                requestUrl = "https://";
             }
 
             if (hostname) requestUrl += hostname;
@@ -107,6 +113,11 @@ export class OperationDetails {
             return api.protocols?.join(", ");
         });
         this.apiType = ko.observable();
+        this.onRouteChange = this.onRouteChange.bind(this);
+
+        this.router.addRouteChangeListener(this.onRouteChange);
+
+        this.definitionsCache = new LruCache(10);
     }
 
     @Param()
@@ -128,7 +139,6 @@ export class OperationDetails {
 
         this.selectedApiName(apiName);
         this.selectedOperationName(operationName);
-        this.router.addRouteChangeListener(this.onRouteChange.bind(this));
 
         if (apiName) {
             await this.loadApi(apiName);
@@ -218,6 +228,12 @@ export class OperationDetails {
     }
 
     public async loadDefinitions(operation: Operation): Promise<void> {
+        const cachedDefinitions = this.definitionsCache.getItem(operation.id);
+        if (cachedDefinitions) {
+            this.definitions(cachedDefinitions);
+            return;
+        }
+
         const schemaIds = [];
         const apiId = `apis/${this.selectedApiName()}/schemas`;
 
@@ -258,29 +274,59 @@ export class OperationDetails {
             }
         }
 
-        this.definitions(definitions.filter(definition => typeNames.indexOf(definition.name) !== -1));
+        const typedDefinitions = definitions.filter(definition => typeNames.indexOf(definition.name) !== -1);
+        this.definitionsCache.setItem(operation.id, typedDefinitions);
+        this.definitions(typedDefinitions);
     }
 
     private lookupReferences(definitions: TypeDefinition[], skipNames: string[]): string[] {
-        const result = [];
+        const result: string[] = [];
         const objectDefinitions: TypeDefinitionProperty[] = definitions
             .map(definition => definition.properties)
             .filter(definition => !!definition)
             .flat();
 
         objectDefinitions.forEach(definition => {
-            if (definition.kind === "indexed") {
-                result.push(definition.type["name"]);
-            }
-
-            if ((definition.type instanceof TypeDefinitionPropertyTypeReference
-                || definition.type instanceof TypeDefinitionPropertyTypeArrayOfPrimitive
-                || definition.type instanceof TypeDefinitionPropertyTypeArrayOfReference)) {
-                result.push(definition.type.name);
-            }
+            this.processDefinition(definition).forEach(processedDefinition => result.push(processedDefinition));
         });
 
         return result.filter(x => !skipNames.includes(x));
+    }
+
+    private processDefinition(definition: TypeDefinitionProperty, result: string[] = []): string[] {
+        if (definition.kind === "indexed") {
+            result.push(definition.type["name"]);
+        }
+
+        if ((definition.type instanceof TypeDefinitionPropertyTypeReference
+            || definition.type instanceof TypeDefinitionPropertyTypeArrayOfPrimitive
+            || definition.type instanceof TypeDefinitionPropertyTypeArrayOfReference)) {
+            result.push(definition.type.name);
+        }
+
+        if (definition.type instanceof TypeDefinitionPropertyTypeCombination) {
+            if (definition.type.combination) {
+                definition.type.combination.forEach(combinationProperty => {
+                    result.push(combinationProperty["name"]);
+                });
+            } else {
+                definition.type.combinationReferences.forEach(combinationReference => {
+                    result.push(combinationReference);
+                });
+            }
+        }
+
+        if (definition.type instanceof TypeDefinitionPropertyTypePrimitive && definition.type.name === "object") {
+            if (definition.name === "Other properties") {
+                definition["properties"].forEach(definitionProp => {
+                    this.processDefinition(definitionProp).forEach(processedDefinition => result.push(processedDefinition));
+                });
+            } else {
+                result.push(definition.name);
+            }
+        }
+
+        return result;
     }
 
     public async loadGatewayInfo(apiName: string): Promise<void> {

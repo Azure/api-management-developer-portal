@@ -1,108 +1,56 @@
 import * as ClientOAuth2 from "client-oauth2";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { HttpClient, HttpMethod } from "@paperbits/common/http";
-import { AuthorizationServerContract } from "../contracts/authorizationServer";
-import { OpenIdConnectProviderContract } from "../contracts/openIdConnectProvider";
+import { Logger } from "@paperbits/common/logging";
 import { AuthorizationServer } from "../models/authorizationServer";
-import { Utils } from "../utils";
-import { GrantTypes } from "./../constants";
-import { OpenIdConnectMetadata } from "./../contracts/openIdConnectMetadata";
-import { UnauthorizedError } from "./../errors/unauthorizedError";
-import { OpenIdConnectProvider } from "./../models/openIdConnectProvider";
-import { MapiClient } from "./mapiClient";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
+import { Utils } from "../utils";
+import { GrantTypes } from "./../constants";
+import { UnauthorizedError } from "./../errors/unauthorizedError";
+import { BackendService } from "./backendService";
+import { OAuthTokenResponse } from "../contracts/oauthTokenResponse";
+
 
 export class OAuthService {
-    private environmentPromise: Promise<string>;
-
     constructor(
-        private readonly mapiClient: MapiClient,
         private readonly httpClient: HttpClient,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly backendService: BackendService,
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly logger: Logger
     ) { }
 
-    private async getEnvironment(): Promise<string> {
-        if (!this.environmentPromise) {
-            this.environmentPromise = this.settingsProvider.getSetting<string>("environment");
-        }
-        return this.environmentPromise;
+    private async generateCodeChallenge(codeVerifier: string): Promise<string> {
+        const digest = await crypto.subtle.digest("SHA-256",
+            new TextEncoder().encode(codeVerifier));
+
+        return btoa(String.fromCharCode(...new Uint8Array(digest)))
+            .replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_")
     }
 
-    /**
-     * Returns configured OAuth 2.0 and OpenID Connect providers.
-     */
-    public async getOAuthServers(): Promise<AuthorizationServer[]> {
-        const loadedServers = await this.settingsProvider.getSetting<AuthorizationServer[]>("authServers");
-        return loadedServers || [];
+    private generateRandomString(length: number): string {
+        let text = "";
+        const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for (let i = 0; i < length; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+
+        return text;
     }
 
     public async getAuthServer(authorizationServerId: string, openidProviderId: string): Promise<AuthorizationServer> {
-        const env = await this.getEnvironment();
-        if (env !== "development") {
-            const servers = await this.getOAuthServers();
-            let server = undefined;
-            if (servers) {
-                server = servers.find(s => s.name === (authorizationServerId || openidProviderId));
-            }
-            return server;
-        }
-
         try {
-            let authorizationServer: AuthorizationServer;
             if (authorizationServerId) {
-                const authServer = await this.mapiClient.get<AuthorizationServerContract>(`/authorizationServers/${authorizationServerId}`, [await this.mapiClient.getPortalHeader("getAuthorizationServer")]);
-                authorizationServer = new AuthorizationServer(authServer);
-                return authorizationServer;
+                const authServer = await this.backendService.getAuthorizationServer(authorizationServerId);
+                return authServer;
             }
             if (openidProviderId) {
-                const authServer = await this.mapiClient.get<OpenIdConnectProviderContract>(`/openidConnectProviders/${openidProviderId}`, [await this.mapiClient.getPortalHeader("getOpenidConnectProvider")]);
-                const provider = new OpenIdConnectProvider(authServer);
-                try {
-                    const openIdServer = await this.discoverOAuthServer(provider.metadataEndpoint);
-                    openIdServer.name = provider.name;
-                    openIdServer.clientId = provider.clientId;
-                    openIdServer.displayName = provider.displayName;
-                    openIdServer.description = provider.description;
-                    return openIdServer;
-                }
-                catch (error) {
-                    // Swallow discovery errors until publishing-related notification channel gets implemented.
-                }
+                const authServer = await this.backendService.getOpenIdConnectProvider(openidProviderId);
+                return authServer;
             }
 
             return undefined;
-        }
-        catch (error) {
-            throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);
-        }
-    }
-
-    public async loadAllServers(): Promise<AuthorizationServer[]> {
-        try {
-            const authorizationServers = [];
-            const allOAuthServers = await this.mapiClient.getAll<AuthorizationServerContract>("/authorizationServers", [await this.mapiClient.getPortalHeader("getAuthorizationServers")]);
-            const oauthServers = allOAuthServers.map(authServer => new AuthorizationServer(authServer));
-            authorizationServers.push(...oauthServers);
-
-            const allOicdServers = await this.mapiClient.getAll<OpenIdConnectProviderContract>("/openidConnectProviders", [await this.mapiClient.getPortalHeader("getOpenidConnectProviders")]);
-            const oicdServers = allOicdServers.map(authServer => new OpenIdConnectProvider(authServer));
-
-            for (const provider of oicdServers) {
-                try {
-                    const authServer = await this.discoverOAuthServer(provider.metadataEndpoint);
-                    authServer.name = provider.name;
-                    authServer.clientId = provider.clientId;
-                    authServer.displayName = provider.displayName;
-                    authServer.description = provider.description;
-                    authorizationServers.push(authServer);
-                }
-                catch (error) {
-                    // Swallow discovery errors until publishing-related notification channel gets implemented.
-                }
-            }
-
-            return authorizationServers;
         }
         catch (error) {
             throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);
@@ -121,14 +69,22 @@ export class OAuthService {
 
         switch (grantType) {
             case GrantTypes.implicit:
+                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.implicit });
                 accessToken = await this.authenticateImplicit(backendUrl, authorizationServer);
                 break;
 
             case GrantTypes.authorizationCode:
+                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.authorizationCode });
                 accessToken = await this.authenticateCode(backendUrl, authorizationServer);
                 break;
 
+            case GrantTypes.authorizationCodeWithPkce:
+                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.authorizationCodeWithPkce });
+                accessToken = await this.authenticateCodeWithPkce(backendUrl, authorizationServer);
+                break;
+
             case GrantTypes.clientCredentials:
+                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.clientCredentials });
                 accessToken = await this.authenticateClientCredentials(backendUrl, authorizationServer, apiName);
                 break;
 
@@ -218,13 +174,82 @@ export class OAuthService {
             try {
                 window.open(oauthClient.code.getUri(), "_blank", "width=400,height=500");
 
-                const receiveMessage = async (event: MessageEvent) => {
+                const receiveMessage = async (event: MessageEvent): Promise<void> => {
                     if (!event.data["accessToken"]) {
+                        alert("Unable to authenticate due to internal error.");
                         return;
                     }
 
                     const accessToken = event.data["accessToken"];
                     const accessTokenType = event.data["accessTokenType"];
+                    resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
+                };
+
+                window.addEventListener("message", receiveMessage, false);
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    public async authenticateCodeWithPkce(backendUrl: string, authorizationServer: AuthorizationServer): Promise<string> {
+        const redirectUri = `${backendUrl}/signin-oauth/code-pkce/callback/${authorizationServer.name}`;
+        const codeVerifier = this.generateRandomString(64);
+        const challengeMethod = crypto.subtle ? "S256" : "plain"
+
+        const codeChallenge = challengeMethod === "S256"
+            ? await this.generateCodeChallenge(codeVerifier)
+            : codeVerifier
+
+        sessionStorage.setItem("code_verifier", codeVerifier);
+
+        const args = new URLSearchParams({
+            response_type: "code",
+            client_id: authorizationServer.clientId,
+            code_challenge_method: challengeMethod,
+            code_challenge: codeChallenge,
+            redirect_uri: redirectUri,
+            scope: authorizationServer.scopes.join(" ")
+        });
+
+        return new Promise((resolve, reject) => {
+            try {
+                window.open(authorizationServer.authorizationEndpoint + "/?" + args, "_blank", "width=400,height=500");
+
+                const receiveMessage = async (event: MessageEvent): Promise<void> => {
+                    const authorizationCode = event.data["code"];
+
+                    if (!authorizationCode) {
+                        alert("Unable to authenticate due to internal error.");
+                        return;
+                    }
+
+                    const body = new URLSearchParams({
+                        client_id: authorizationServer.clientId,
+                        code_verifier: sessionStorage.getItem("code_verifier"),
+                        grant_type: GrantTypes.authorizationCode,
+                        redirect_uri: redirectUri,
+                        code: authorizationCode
+                    });
+
+                    const response = await this.httpClient.send<OAuthTokenResponse>({
+                        url: authorizationServer.tokenEndpoint,
+                        method: HttpMethod.post,
+                        headers: [{ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.UrlEncodedForm }],
+                        body: body.toString()
+                    });
+
+                    if (response.statusCode === 400) {
+                        const error = response.toText();
+                        alert(error);
+                        return;
+                    }
+
+                    const tokenResponse = response.toObject();
+                    const accessToken = tokenResponse.access_token;
+                    const accessTokenType = tokenResponse.token_type;
+
                     resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
                 };
 
@@ -254,6 +279,8 @@ export class OAuthService {
         }
 
         if (response.statusCode === 400) {
+            this.logger.trackEvent("TestConsoleOAuthError", { grantType: GrantTypes.clientCredentials, response: response.toText() })
+
             const error = response.toObject();
 
             if (error.message !== "Authorization server configuration not found.") { // message from legacy flow
@@ -307,31 +334,15 @@ export class OAuthService {
             body: JSON.stringify({ username: username, password: password })
         });
 
+        if (response.statusCode == 200) {
+            const tokenInfo = response.toObject();
+            return `${Utils.toTitleCase(tokenInfo.accessTokenType)} ${tokenInfo.accessToken}`;
+        }
+
         if (response.statusCode === 401) {
             throw new UnauthorizedError("Unable to authenticate. Verify the credentials you entered are correct.");
         }
 
-        const tokenInfo = response.toObject();
-
-        return `${Utils.toTitleCase(tokenInfo.accessTokenType)} ${tokenInfo.accessToken}`;
-    }
-
-    public async discoverOAuthServer(metadataEndpoint: string): Promise<AuthorizationServer> {
-        const response = await this.httpClient.send<OpenIdConnectMetadata>({ url: metadataEndpoint });
-        const metadata = response.toObject();
-
-        const server = new AuthorizationServer();
-        server.authorizationEndpoint = metadata.authorization_endpoint;
-        server.tokenEndpoint = metadata.token_endpoint;
-        server.scopes = ["openid"];
-
-        // Leaving only "implicit" grant flow until backend gets deployed.
-        const supportedGrantTypes = [GrantTypes.implicit.toString(), GrantTypes.authorizationCode.toString()];
-
-        server.grantTypes = metadata.grant_types_supported
-            ? metadata.grant_types_supported.filter(grantType => supportedGrantTypes.includes(grantType))
-            : [GrantTypes.implicit, GrantTypes.authorizationCode];
-
-        return server;
+        throw new Error(`Unable to authenticate. Response: ${response.toText()}`);
     }
 }

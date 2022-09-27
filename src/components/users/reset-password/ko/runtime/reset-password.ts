@@ -1,15 +1,17 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
-import * as Constants from "../../../../../constants";
 import template from "./reset-password.html";
 import { EventManager } from "@paperbits/common/events";
-import { Component, RuntimeComponent, OnMounted, Param } from "@paperbits/common/ko/decorators";
-import { UsersService } from "../../../../../services/usersService";
+import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Logger } from "@paperbits/common/logging";
 import { ResetRequest } from "../../../../../contracts/resetRequest";
-import { ValidationReport } from "../../../../../contracts/validationReport";
+import { CaptchaData } from "../../../../../models/captchaData";
+import { UsersService } from "../../../../../services";
 import { BackendService } from "../../../../../services/backendService";
+import { ErrorSources } from "../../../validation-summary/constants";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ValidationMessages } from "../../../validationMessages";
 
-declare var WLSPHIP0;
 
 @RuntimeComponent({
     selector: "reset-password-runtime"
@@ -23,16 +25,22 @@ export class ResetPassword {
     public readonly isResetRequested: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
     public readonly captcha: ko.Observable<string>;
+    public readonly captchaData: ko.Observable<CaptchaData>;
+    public setCaptchaValidation: (captchaValidator: ko.Observable<string>) => void;
+    public refreshCaptcha: () => Promise<void>;
 
     constructor(
         private readonly usersService: UsersService,
         private readonly eventManager: EventManager,
-        private readonly backendService: BackendService) {
+        private readonly backendService: BackendService,
+        private readonly logger: Logger
+    ) {
         this.email = ko.observable();
         this.isResetRequested = ko.observable(false);
         this.working = ko.observable(false);
         this.captcha = ko.observable();
         this.requireHipCaptcha = ko.observable();
+        this.captchaData = ko.observable();
 
         validation.init({
             insertMessages: false,
@@ -40,8 +48,8 @@ export class ResetPassword {
             decorateInputElement: true
         });
 
-        this.email.extend(<any>{ required: { message: `Email is required.` }, email: true });
-        this.captcha.extend(<any>{ required: { message: `Captcha is required.` } });
+        this.email.extend(<any>{ required: { message: ValidationMessages.emailRequired }, email: true });
+        this.captcha.extend(<any>{ required: { message: ValidationMessages.captchaRequired } });
     }
 
     @Param()
@@ -60,37 +68,27 @@ export class ResetPassword {
         }
     }
 
+    public onCaptchaCreated(captchaValidate: (captchaValidator: ko.Observable<string>) => void, refreshCaptcha: () => Promise<void>) {
+        this.setCaptchaValidation = captchaValidate;
+        this.refreshCaptcha = refreshCaptcha;
+    }
+
     /**
      * Sends user reset password request to Management API.
      */
     public async resetSubmit(): Promise<void> {
-        const isCaptcha = this.requireHipCaptcha();
+        const captchaIsRequired = this.requireHipCaptcha();
         const validationGroup = { email: this.email };
 
-        let captchaSolution;
-        let captchaFlowId;
-        let captchaToken;
-        let captchaType;
+        if (captchaIsRequired) {
+            if (!this.setCaptchaValidation) {
+                this.logger.trackEvent("CaptchaValidation", { message: "Captcha failed to initialize." });
+                dispatchErrors(this.eventManager, ErrorSources.resetpassword, [ValidationMessages.captchaNotInitialized]);
+                return;
+            }
 
-        if (isCaptcha) {
             validationGroup["captcha"] = this.captcha;
-
-            WLSPHIP0.verify((solution, token, param) => {
-                WLSPHIP0.clientValidation();
-                if (WLSPHIP0.error !== 0) {
-                    this.captcha(null); //is not valid
-                    return;
-                }
-                else {
-                    captchaSolution = solution;
-                    captchaToken = token;
-                    captchaType = WLSPHIP0.type;
-                    const flowIdElement = <HTMLInputElement>document.getElementById("FlowId")
-                    captchaFlowId = flowIdElement.value;
-                    this.captcha("valid");
-                    return;
-                }
-            }, "");
+            this.setCaptchaValidation(this.captcha);
         }
 
         const result = validation.group(validationGroup);
@@ -99,23 +97,21 @@ export class ResetPassword {
 
         if (clientErrors.length > 0) {
             result.showAllMessages();
-            const validationReport: ValidationReport = {
-                source: "resetpassword",
-                errors: clientErrors
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            dispatchErrors(this.eventManager, ErrorSources.resetpassword, clientErrors);
             return;
         }
 
         try {
             this.working(true);
-            
-            if (isCaptcha) {
+
+            if (captchaIsRequired) {
+                const captchaRequestData = this.captchaData();
                 const resetRequest: ResetRequest = {
-                    solution: captchaSolution,
-                    flowId: captchaFlowId,
-                    token: captchaToken,
-                    type: captchaType,
+                    challenge: captchaRequestData.challenge,
+                    solution: captchaRequestData.solution?.solution,
+                    flowId: captchaRequestData.solution?.flowId,
+                    token: captchaRequestData.solution?.token,
+                    type: captchaRequestData.solution?.type,
                     email: this.email()
                 };
                 await this.backendService.sendResetRequest(resetRequest);
@@ -125,37 +121,15 @@ export class ResetPassword {
             }
             this.isResetRequested(true);
 
-            const validationReport: ValidationReport = {
-                source: "resetpassword",
-                errors: []
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        } 
+            dispatchErrors(this.eventManager, ErrorSources.resetpassword, []);
+        }
         catch (error) {
-            if (isCaptcha) {
-                WLSPHIP0.reloadHIP();
+            if (captchaIsRequired) {
+                await this.refreshCaptcha();
             }
 
-            let errorMessages: string[];
-
-            if (error.code === "ValidationError") {
-                const details: any[] = error.details;
-
-                if (details && details.length > 0) {
-                    let message = "";
-                    errorMessages = details.map(item => message = `${message}${item.target}: ${item.message} \n`);
-                }
-            }
-            else {
-                errorMessages = [Constants.genericHttpRequestError];
-            }
-
-            const validationReport: ValidationReport = {
-                source: "resetpassword",
-                errors: errorMessages
-            };
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
-        } 
+            parseAndDispatchError(this.eventManager, ErrorSources.resetpassword, error, undefined, detail => `${detail.target}: ${detail.message} \n`);
+        }
         finally {
             this.working(false);
         }

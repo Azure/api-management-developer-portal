@@ -58,6 +58,7 @@ export class ApiListDropdown {
 
     @OnMounted()
     public async initialize(): Promise<void> {
+        await this.resetSearch();
         await this.checkSelection();
 
         this.pattern

@@ -1,4 +1,5 @@
 @import "mixins.scss";
+
 @font-face {
     font-family: "Icons Embedded";
     src: url("/styles/fonts/icons.eot?a6lw2r");
@@ -137,6 +138,10 @@
 
 .icon-emb-spinner:before {
     content: "\e984";
+}
+
+.icon-emb-power-cord:before {
+    content: "\e9b7";
 }
 
 .icon-svg-wadl {

@@ -1,8 +1,21 @@
+import { Bag } from "@paperbits/common/bag";
 import { SchemaObjectContract } from "../contracts/schema";
 
 export interface DestructedCombination {
-    combinationType: string,
-    combinationArray: SchemaObjectContract[]
+    combinationType: string;
+    combinationArray: SchemaObjectContract[];
+}
+
+export interface PropertiesObject {
+    props: TypeDefinitionProperty[];
+    hasReadOnly: boolean;
+}
+
+export interface ProcessedCombinationPropertiesObject {
+    combinationReferenceObjectsArray: TypeDefinition[];
+    combinationReferencesNames: string[];
+    combinationOtherProperties: Bag<SchemaObjectContract>;
+    combinationRequiredPropereties?: string[];
 }
 
 export abstract class TypeDefinitionPropertyType {
@@ -79,6 +92,11 @@ export abstract class TypeDefinitionProperty {
     public required?: boolean;
 
     /**
+     * Defines if this property has a read-only status.
+     */
+     public readOnly?: boolean;
+
+    /**
      * List of allowed values.
      */
     public enum: any[];
@@ -97,6 +115,7 @@ export abstract class TypeDefinitionProperty {
         this.name = contract.title || name;
         this.description = contract.description;
         this.type = new TypeDefinitionPropertyTypePrimitive(contract.format || contract.type || "object");
+        this.readOnly = contract.readOnly ?? false;
         this.required = isRequired;
 
         if (contract.rawSchemaFormat) {
@@ -144,7 +163,7 @@ export abstract class TypeDefinitionProperty {
         return {
             combinationType,
             combinationArray
-        }
+        };
     }
 }
 
@@ -198,7 +217,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
             const refName = this.getTypeNameFromRef(contract.$ref);
 
             this.type = new TypeDefinitionPropertyTypeReference(refName);
-            this.description = definitions[refName].description ?? '';
+            this.description = definitions[refName] ? definitions[refName].description ?? "" : "";
             return;
         }
 
@@ -208,7 +227,9 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                 arrayProperty.type = new TypeDefinitionPropertyTypeArrayOfReference(this.getTypeNameFromRef(contract.items.$ref));
                 this.properties = [arrayProperty];
             } else if (contract.items.properties) {
-                this.properties = this.processProperties(contract.items, nested, definitions, "[]");
+                const { props, hasReadOnly } = this.processProperties(contract.items, nested, definitions, "[]");
+                this.properties = props;
+                this.readOnly = hasReadOnly;
             }
 
             this.kind = "array";
@@ -237,7 +258,9 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         }
 
         if (contract.properties) { // complex type
-            this.properties = this.processProperties(contract, nested, definitions);
+            const { props, hasReadOnly } = this.processProperties(contract, nested, definitions);
+            this.properties = props;
+            this.readOnly = hasReadOnly;
         }
 
         if (contract.allOf ||
@@ -246,33 +269,61 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         ) {
             const { combinationType, combinationArray } = this.destructCombination(contract);
 
-            const combinationPropertiesProcessed = this.processCombinationProperties(combinationArray, definitions);
+            const processedCombinationPropertiesObject: ProcessedCombinationPropertiesObject = {
+                combinationReferenceObjectsArray: [],
+                combinationReferencesNames: [],
+                combinationOtherProperties: {},
+                combinationRequiredPropereties: []
+            };
+
+            let processedTypeDefinitionsArray: TypeDefinition[] = [];
+
+            const combinationPropertiesProcessed = this.processCombinationProperties(combinationArray, definitions, processedCombinationPropertiesObject);
+            processedTypeDefinitionsArray = combinationPropertiesProcessed.combinationReferenceObjectsArray;
+            processedTypeDefinitionsArray.push(
+                new TypeDefinition(
+                    "Other properties", 
+                    {
+                        properties: combinationPropertiesProcessed.combinationOtherProperties,
+                        required: combinationPropertiesProcessed.combinationRequiredPropereties
+                    }, 
+                    definitions
+                ));
 
             this.kind = "combination";
             this.type = new TypeDefinitionPropertyTypeCombination(combinationType, combinationPropertiesProcessed.combinationReferencesNames);
-            this.properties = combinationPropertiesProcessed.combinationReferenceObjectsArray;
+            this.properties = processedTypeDefinitionsArray;
         }
     }
 
-    private processCombinationProperties(combinationArray: SchemaObjectContract[], definitions: object) {
-        const combinationReferenceObjectsArray: TypeDefinition[] = [];
-        const combinationReferencesNames: string[] = [];
-
+    private processCombinationProperties(
+        combinationArray: SchemaObjectContract[],
+        definitions: object,
+        processedCombinationPropertiesObject?: ProcessedCombinationPropertiesObject
+    ): ProcessedCombinationPropertiesObject {
         combinationArray.map((combinationArrayItem) => {
+            if (combinationArrayItem.allOf || combinationArrayItem.anyOf || combinationArrayItem.oneOf) {
+                const { combinationType, combinationArray } = this.destructCombination(combinationArrayItem);
+                processedCombinationPropertiesObject = this.processCombinationProperties(combinationArray, definitions, processedCombinationPropertiesObject);
+            } 
+            
             if (combinationArrayItem.$ref) {
                 const combinationReferenceName = this.getTypeNameFromRef(combinationArrayItem.$ref);
-                combinationReferencesNames.push(combinationReferenceName);
+                processedCombinationPropertiesObject.combinationReferencesNames.push(combinationReferenceName);
 
-                combinationReferenceObjectsArray.push(new TypeDefinition(combinationReferenceName, definitions[combinationReferenceName], definitions))
-            } else {
-                combinationReferenceObjectsArray.push(new TypeDefinition("Custom properties", combinationArrayItem, definitions))
+                processedCombinationPropertiesObject.combinationReferenceObjectsArray.push(new TypeDefinition(combinationReferenceName, definitions[combinationReferenceName], definitions));
+            }
+
+            if (combinationArrayItem.required) {
+                processedCombinationPropertiesObject.combinationRequiredPropereties = combinationArrayItem.required;
+            }
+            
+            if (combinationArrayItem.properties) {
+                processedCombinationPropertiesObject.combinationOtherProperties = { ...processedCombinationPropertiesObject.combinationOtherProperties, ...combinationArrayItem.properties };
             }
         });
 
-        return {
-            combinationReferenceObjectsArray,
-            combinationReferencesNames
-        };
+        return processedCombinationPropertiesObject;
     }
 
     private flattenNestedObjects(nested: TypeDefinitionObjectProperty, prefix: string): TypeDefinitionProperty[] {
@@ -297,11 +348,12 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
         return result;
     }
 
-    private processProperties(item: SchemaObjectContract, nested: boolean, definitions: object, prefix?: string): TypeDefinitionProperty[] {
+    private processProperties(item: SchemaObjectContract, nested: boolean, definitions: object, prefix?: string): PropertiesObject {
         const props = [];
+        let hasReadOnly = false;
 
         if (!item.properties) {
-            return [];
+            return;
         }
 
         Object
@@ -311,11 +363,9 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                     const propertySchemaObject = item.properties[propertyName];
                     const propertyNameToDisplay = (prefix ? prefix + "." : "") + propertyName;
 
-                    if (!propertySchemaObject) {
-                        return;
-                    }
+                    hasReadOnly = propertySchemaObject.readOnly ?? false;
 
-                    if (propertySchemaObject.readOnly) {
+                    if (!propertySchemaObject) {
                         return;
                     }
 
@@ -351,7 +401,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
 
                             break;
 
-                        case "object":
+                        case "object": {
                             const objectProperty = new TypeDefinitionObjectProperty(propertyNameToDisplay, propertySchemaObject, isRequired, true, definitions);
 
                             if (!propertySchemaObject.$ref && propertySchemaObject.properties && !nested) {
@@ -362,8 +412,9 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                                 props.push(objectProperty);
                             }
                             break;
+                        }
 
-                        case "array":
+                        case "array": {
                             const arrayProperty = new TypeDefinitionPrimitiveProperty(propertyNameToDisplay, propertySchemaObject, isRequired);
 
                             if (!propertySchemaObject.items) {
@@ -389,6 +440,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                             }
 
                             break;
+                        }
 
                         case "combination":
                             props.push(new TypeDefinitionCombinationProperty(propertyNameToDisplay, propertySchemaObject, isRequired));
@@ -403,7 +455,10 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                 }
             });
 
-        return props;
+        return {
+            props,
+            hasReadOnly
+        };
     }
 }
 

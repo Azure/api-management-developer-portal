@@ -6,11 +6,10 @@ import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ISiteService } from "@paperbits/common/sites";
 import { IAuthenticator } from "../../authentication";
-import { Utils } from "../../utils";
 import { Bag } from "@paperbits/common";
-import { SettingNames } from "../../constants";
 import { AzureResourceManagementService } from "../../services/armService";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
+import { DeveloperPortalType, SettingNames, WarningBackendUrlMissing } from "../../constants";
 
 const startupError = `Unable to start the portal`;
 
@@ -53,6 +52,7 @@ export class App {
         if (subscriptionId && resourceGroupName && serviceName) {
             const managementApiUrl = `https://${armEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
             await this.settingsProvider.setSetting(SettingNames.managementApiUrl, managementApiUrl);
+            await this.settingsProvider.setSetting(SettingNames.backendUrl, `https://${serviceName}.developer.azure-api/net`);
         }
 
         const runtimeSettings = await this.getRuntimeSettings();
@@ -64,6 +64,13 @@ export class App {
         if (!settings[SettingNames.managementApiUrl]) {
             this.viewManager.addToast(startupError, `Management API URL is missing. See setting <i>managementApiUrl</i> in the configuration file <i>config.design.json</i>`);
             return;
+        }
+
+        if (!settings["backendUrl"]) {
+            const developerPortalType = settings[SettingNames.developerPortalType] || DeveloperPortalType.selfHosted;
+            if (developerPortalType === DeveloperPortalType.selfHosted) {
+                this.viewManager.addToast("Warning", WarningBackendUrlMissing);
+            }            
         }
 
         try {

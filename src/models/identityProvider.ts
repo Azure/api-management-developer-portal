@@ -1,3 +1,4 @@
+import { AadClientLibrary, AadClientLibraryV2 } from "../constants";
 import { IdentityProviderContract } from "../contracts/identityProvider";
 
 /**
@@ -51,6 +52,11 @@ export class IdentityProvider {
      */
     public passwordResetPolicyName: string;
 
+    /**
+     * The client library to be used in the developer portal
+     */
+    public clientLibrary: AadClientLibrary;
+
     constructor(contract?: IdentityProviderContract) {
         if (!contract) {
             return;
@@ -65,5 +71,6 @@ export class IdentityProvider {
         this.signinPolicyName = contract.properties.signinPolicyName;
         this.signupPolicyName = contract.properties.signupPolicyName;
         this.passwordResetPolicyName = contract.properties.passwordResetPolicyName;
+        this.clientLibrary = contract.properties.clientLibrary === AadClientLibraryV2 ? AadClientLibrary.v2 : AadClientLibrary.v1;
     }
 }

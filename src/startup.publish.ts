@@ -12,7 +12,6 @@ import { ApimPublishModule } from "./apim.publish.module";
 import { PublishingCacheModule } from "./persistence/publishingCacheModule";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { staticDataEnvironment } from "./../environmentConstants"
-import {staticDataEnvironment} from "./../environmentConstants"
 import { useArmConfiguration } from "./configuration/settingsHelper";
 
 
@@ -27,10 +26,10 @@ let settingsProvider: ISettingsProvider;
 
 if (process.env.NODE_ENV === staticDataEnvironment) {
     settingsProvider = new StaticSettingsProvider({
-        "environment": "publishing",
-        "managementApiUrl": "https://contoso.management.azure-api.net",
-        "managementApiAccessToken": "SharedAccessSignature&1&",
-        "useHipCaptcha": false
+        environment: "publishing",
+        managementApiUrl: "https://contoso.management.azure-api.net",
+        managementApiAccessToken: "SharedAccessSignature&1&",
+        useHipCaptcha: false
     });
 }
 else {

@@ -37,7 +37,7 @@ ko.bindingHandlers["markdown"] = {
 
         ko.applyBindingsToNode(element, { html: htmlObservable }, null);
 
-        const html = markdownService.processMarkdown(markdown);
+        const html = markdownService.processMarkdown(markdown, length);
         htmlObservable(html);
     }
 };

@@ -3,10 +3,11 @@ import template from "./signin-aad-b2c.html";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { EventManager } from "@paperbits/common/events";
 import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
-import { SettingNames } from "../../../../../constants";
+import { AadClientLibrary, SettingNames } from "../../../../../constants";
 import { AadB2CClientConfig } from "../../../../../contracts/aadB2CClientConfig";
-import { ValidationReport } from "../../../../../contracts/validationReport";
-import { AzureActiveDirectoryService } from "../../../../../services";
+import { AadService, AadServiceV2, IAadService } from "../../../../../services";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 
 const aadb2cResetPasswordErrorCode = "AADB2C90118";
@@ -19,8 +20,12 @@ const aadb2cResetPasswordErrorCode = "AADB2C90118";
     template: template
 })
 export class SignInAadB2C {
+    private selectedService: IAadService;
+    private aadConfig: AadB2CClientConfig;
+
     constructor(
-        private readonly aadService: AzureActiveDirectoryService,
+        private readonly aadService: AadService,
+        private readonly aadServiceV2: AadServiceV2,
         private readonly eventManager: EventManager,
         private readonly settingsProvider: ISettingsProvider
     ) {
@@ -45,7 +50,16 @@ export class SignInAadB2C {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        await this.aadService.checkCallbacks();
+        this.aadConfig = await this.settingsProvider.getSetting<AadB2CClientConfig>(SettingNames.aadB2CClientConfig);
+
+        if (this.aadConfig) {
+            if (this.aadConfig.clientLibrary === AadClientLibrary.v2) {
+                this.selectedService = this.aadServiceV2;
+            } else {
+                this.selectedService = this.aadService;
+            }
+            await this.selectedService.checkCallbacks();
+        }
     }
 
     /**
@@ -54,20 +68,22 @@ export class SignInAadB2C {
     public async signIn(): Promise<void> {
         this.cleanValidationErrors();
 
-        const config = await this.settingsProvider.getSetting<AadB2CClientConfig>(SettingNames.aadB2CClientConfig);
+        if (!this.aadConfig) {
+            return;
+        }
 
         try {
-            await this.aadService.runAadB2CUserFlow(
-                config.clientId,
-                config.authority,
-                config.signinTenant,
-                config.signinPolicyName,
+            await this.selectedService.runAadB2CUserFlow(
+                this.aadConfig.clientId,
+                this.aadConfig.authority,
+                this.aadConfig.signinTenant,
+                this.aadConfig.signinPolicyName,
                 this.replyUrl());
         }
         catch (error) {
-            if (config.passwordResetPolicyName && error.message.includes(aadb2cResetPasswordErrorCode)) { // Reset password requested
+            if (this.aadConfig.passwordResetPolicyName && error.message.includes(aadb2cResetPasswordErrorCode)) { // Reset password requested
                 try {
-                    await this.aadService.runAadB2CUserFlow(config.clientId, config.authority, config.signinTenant, config.passwordResetPolicyName);
+                    await this.selectedService.runAadB2CUserFlow(this.aadConfig.clientId, this.aadConfig.authority, this.aadConfig.signinTenant, this.aadConfig.passwordResetPolicyName);
                     return;
                 }
                 catch (resetpasswordError) {
@@ -75,30 +91,11 @@ export class SignInAadB2C {
                 }
             }
 
-            let errorDetails: string[];
-
-            if (error.code === "ValidationError") {
-                errorDetails = error.details?.map(detail => detail.message);
-            }
-            else {
-                errorDetails = [error.message];
-            }
-
-            const validationReport: ValidationReport = {
-                source: "socialAcc",
-                errors: errorDetails
-            };
-
-            this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+            parseAndDispatchError(this.eventManager, ErrorSources.signInOAuth, error);
         }
     }
 
     private cleanValidationErrors(): void {
-        const validationReport: ValidationReport = {
-            source: "signInOAuth",
-            errors: []
-        };
-
-        this.eventManager.dispatchEvent("onValidationErrors", validationReport);
+        dispatchErrors(this.eventManager, ErrorSources.signInOAuth, []);
     }
 }

@@ -9,7 +9,7 @@
  *    npm install
  * 
  * 3) Run this script with a valid combination of arguments:
- *    node ./cleanup ^
+ *    node ./generate ^
  *   --subscriptionId < your subscription ID > ^
  *   --resourceGroupName < your resource group name > ^
  *   --serviceName < your service name > ^

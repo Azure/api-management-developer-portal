@@ -46,9 +46,8 @@ export class MapiClient {
     private async initialize(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
 
-        this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || "self-hosted-portal";
+        this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || Constants.DeveloperPortalType.selfHosted;
         const managementApiUrl = settings[Constants.SettingNames.managementApiUrl];
-
 
         if (!managementApiUrl) {
             throw new Error(`Management API URL ("${Constants.SettingNames.managementApiUrl}") setting is missing in configuration file.`);
@@ -140,7 +139,7 @@ export class MapiClient {
         // Do nothing if absolute URL
         if (!httpRequest.url.startsWith("https://") && !httpRequest.url.startsWith("http://")) {
             httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
-        }        
+        }
 
         const url = new URL(httpRequest.url);
 
@@ -203,7 +202,6 @@ export class MapiClient {
         const error = this.createMapiError(errorResponse.statusCode, requestedUrl, () => errorResponse.toObject().error);
 
         if (error) {
-            error.response = errorResponse;
             throw error;
         }
 
@@ -246,7 +244,7 @@ export class MapiClient {
             url: requestUrl,
             headers: headers
         });
-        
+
         const takeResult = (result: Page<T>): Promise<T[]> => {
             if (result) {
                 if (Array.isArray(result)) {
@@ -325,7 +323,7 @@ export class MapiClient {
         } catch (error) {
             host = "publishing";
         }
-                
+
         return { name: Constants.portalHeaderName, value: `${this.developerPortalType}|${host}|${eventName || ""}` };
     }
 }

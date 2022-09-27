@@ -120,12 +120,12 @@ export interface SubscriptionKeyParameterName {
 }
 
 export interface ContactDetails {
-    name?: string,
-    email?: string,
-    url?: string,
+    name?: string;
+    email?: string;
+    url?: string;
 }
 
 export interface LicenseDetails {
-    name: string,
-    url: string
+    name: string;
+    url: string;
 }
