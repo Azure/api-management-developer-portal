@@ -35,7 +35,6 @@ export class Authorization {
     public readonly authorizationError: ko.Observable<string>;
     public readonly products: ko.Observable<Product[]>;
     public readonly selectedSubscriptionKey: ko.Observable<string>;
-    public readonly collapsedAuth: ko.Observable<boolean>;
     private deleteAuthorizationHeader: boolean = false;
 
     constructor(
@@ -45,7 +44,6 @@ export class Authorization {
         private readonly apiService: ApiService,
         private readonly productService: ProductService,
     ) {
-        this.collapsedAuth = ko.observable(false);
         this.authorizationServer = ko.observable();
         this.selectedGrantType = ko.observable();
         this.api = ko.observable<Api>();
@@ -455,9 +453,5 @@ export class Authorization {
             this.consoleOperation().request.queryParameters.remove(parameter);
             this.updateRequestSummary();
         }
-    }
-
-    public collapseAuth(): void {
-        this.collapsedAuth(!this.collapsedAuth());
     }
 }
