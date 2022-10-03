@@ -9,7 +9,7 @@
                  data-bind="textInput: displayName, validationElement: displayName, attr: {disabled: !!$component.config}"
                  maxlength="2000" spellcheck="false" aria-required="true"
           />
-          <!-- ko if: displayName() && !$component.config -->
+          <!-- ko if: !$component.config -->
           <button class="btn btn-danger input-group-btn" data-bind="validationMessageToggle: displayName"
                   type="button">!</button>
           <!-- /ko -->

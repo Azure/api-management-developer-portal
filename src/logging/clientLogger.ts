@@ -79,7 +79,7 @@ export class ClientLogger implements Logger {
             headers: headers,
             body: JSON.stringify(clientEvent.toJson())
         };
-        
+
         this.httpClient.send(request);
     }
 
