@@ -362,7 +362,7 @@
 <!-- /ko -->
 <!-- ko if: apiType() === 'graphql' -->
 <div class="detachable-right graphql-console-width flex-grow animation-fade-in">
-    <graphql-console class="flex flex-column consoles" data-bind="dialog: {}"
+    <graphql-console class="flex flex-column scrollable consoles" data-bind="dialog: {}"
         params="{ api: api, hostnames: hostnames, authorizationServer: associatedAuthServer, useCorsProxy: useCorsProxy }">
     </graphql-console>
 </div>
