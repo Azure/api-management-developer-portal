@@ -53,6 +53,17 @@ export class OAuthService {
         }
     }
 
+    public async getOauthServers(apiId: string): Promise<AuthorizationServer[]> {
+        try {
+            const authServers = await this.apiClient.get<Page<AuthorizationServerForClient>>(`apis/${apiId}/authServers/oauth2`, [await this.apiClient.getPortalHeader("getAuthorizationServer"), Utils.getIsUserResourceHeader()]);
+            return authServers.value.map(x => new AuthorizationServer(x));
+        }
+        catch (error) {
+            throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);
+            return undefined;
+        }
+    }
+
     /**
      * Acquires access token using specified grant flow.
      * @param grantType {string} Requested grant type.
