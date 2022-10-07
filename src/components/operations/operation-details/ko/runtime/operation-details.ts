@@ -195,9 +195,8 @@ export class OperationDetails {
         let associatedAuthServers: AuthorizationServer[];
         if (api.authenticationSettings?.oAuth2AuthenticationSettings.length > 0) {
             associatedAuthServers = await this.oauthService.getOauthServers(api.id);
-        }
-
-        if (api.authenticationSettings?.openidAuthenticationSettings.length > 0) {
+        } 
+        else if (api.authenticationSettings?.openidAuthenticationSettings.length > 0) {
             associatedAuthServers = await this.oauthService.getOpenIdAuthServers(api.id);
         }
 
