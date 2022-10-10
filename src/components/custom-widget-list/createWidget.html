@@ -31,10 +31,10 @@
       <!-- ko if: !!$component.config -->
       <p style="margin: 0;">
         Last deployed<br/>
-        <!-- ko if: !!$component.config.deployedOn -->
+        <!-- ko if: $component.config.deployedOn -->
         <span data-bind="text: new Date(config.deployedOn).toLocaleString(undefined, {timeZoneName: 'short'})"></span><br/>
         <!-- /ko -->
-        <!-- ko if: !$component.config.deployedOn -->
+        <!-- ko ifnot: $component.config.deployedOn -->
         <span>The widget hasn't been deployed yet.</span>
         <!-- /ko -->
       </p>
