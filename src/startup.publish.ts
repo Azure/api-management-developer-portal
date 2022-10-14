@@ -13,6 +13,7 @@ import { PublishingCacheModule } from "./persistence/publishingCacheModule";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { staticDataEnvironment } from "./../environmentConstants";
 
+
 /* Reading settings from configuration file */
 let settingsProvider: ISettingsProvider;
 
