@@ -54,5 +54,6 @@ export const KnownStatusCodes = [
     { code: 507, description: "Insufficient Storage" },
     { code: 508, description: "Loop Detected" },
     { code: 509, description: "Bandwidth Limit Exceeded" },
-    { code: 510, description: "Not Extended" }
+    { code: 510, description: "Not Extended" },
+    { code: 529, description: "Server is overloaded" }
 ];
