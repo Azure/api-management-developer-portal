@@ -37,6 +37,9 @@ export class AuthorizationServer {
                 case "authorizationCode":
                     convertedResult = "authorization_code";
                     break;
+                case "authorizationCodeWithPkce":
+                    convertedResult = "authorization_code (PKCE)";
+                    break;
                 case "implicit":
                     convertedResult = "implicit";
                     break;
@@ -47,7 +50,7 @@ export class AuthorizationServer {
                     convertedResult = "password";
                     break;
                 default:
-                    console.log(`Unsupported grant type ${item}`);
+                    throw new Error(`Unsupported grant type "${item}".`);
             }
             if (convertedResult) {
                 result.push(convertedResult);

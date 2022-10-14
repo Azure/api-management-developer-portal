@@ -1,5 +1,6 @@
 import * as Constants from "./constants";
 import "./bindingHandlers/codeEditor";
+import "./bindingHandlers/copyToClipboard";
 import { UnsavedChangesRouteGuard } from "./routing/unsavedChangesRouteGuard";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";
@@ -29,6 +30,7 @@ import { ProductDetailsDesignModule } from "./components/products/product-detail
 import { MapiClient, IdentityService } from "./services";
 import { SetupModule } from "./components/setup/setup.module";
 import { ContentModule } from "./components/content";
+import { CustomWidgetListModule } from "./components/custom-widget-list";
 import { OperationListModule } from "./components/operations/operation-list/ko/operationList.module";
 import { OperationListEditorModule } from "./components/operations/operation-list/ko/operationListEditor.module";
 import { OperationDetailsDesignModule } from "./components/operations/operation-details/operationDetails.design.module";
@@ -65,6 +67,7 @@ import { ApiProductsModule } from "./components/apis/api-products/ko/apiProducts
 import { ApiProductsEditorModule } from "./components/apis/api-products/ko/apiProductsEditor.module";
 import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
+import { CustomWidgetDesignModule } from "./components/custom-widget/customWidget.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
 
 export class ApimDesignModule implements IInjectorModule {
@@ -100,7 +103,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ProductDetailsDesignModule());
         injector.bindModule(new ProductSubscribeModule());
         injector.bindModule(new ProductSubscribeEditorModule());
-        injector.bindModule(new ContentModule());
         injector.bindModule(new OperationListModule());
         injector.bindModule(new OperationListEditorModule());
         injector.bindModule(new OperationDetailsDesignModule());
@@ -112,10 +114,10 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ConfirmPasswordEditorModule());
         injector.bindModule(new ChangePasswordModule());
         injector.bindModule(new ChangePasswordEditorModule());
-        injector.bindModule(new HelpModule());
         injector.bindModule(new ValidationSummaryDesignModule());
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new CustomHtmlDesignModule());
+        injector.bindModule(new CustomWidgetDesignModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("tenantService", TenantService);
@@ -137,5 +139,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindToCollection("autostart", RuntimeConfigurator);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("CodeEditor", CodeEditor);
+        injector.bindModule(new CustomWidgetListModule()); // needs "blobStorage"
+        injector.bindModule(new ContentModule());
+        injector.bindModule(new HelpModule());
     }
 }

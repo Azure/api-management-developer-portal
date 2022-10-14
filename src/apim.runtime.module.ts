@@ -85,6 +85,7 @@ import { OauthServerConfiguration } from "./components/operations/operation-deta
 import { AadServiceV2 } from "./services/aadServiceV2";
 import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
 import { staticDataEnvironment } from "./../environmentConstants";
+import { CustomWidgetRuntimeModule } from "./components/custom-widget/customWidget.runtime.module";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -159,6 +160,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bind("pagination", Pagination);
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
+        injector.bindModule(new CustomWidgetRuntimeModule());
 
         if (process.env.NODE_ENV === staticDataEnvironment) {
             injector.bind("httpClient", StaticDataHttpClient);

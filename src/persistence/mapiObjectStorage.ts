@@ -393,16 +393,10 @@ export class MapiObjectStorage implements IObjectStorage {
         const isLocalized = localizedContentTypes.includes(contentType);
         const localeSearchPrefix = isLocalized ? `${selectedLocale}/` : "";
 
-        if (key === "locales") {
-            const pageOfLocales: Page<LocaleModel> = {
-                value: [{
-                    key: `contentTypes/locales/contentItem/en_us`,
-                    code: "en-us",
-                    displayName: "English (US)"
-                }]
+        if (key === "popups" || key === "locales") {
+            return  {
+                value: []
             };
-
-            return <any>pageOfLocales;
         }
 
         try {
