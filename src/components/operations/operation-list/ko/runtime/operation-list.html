@@ -57,9 +57,11 @@
 
         <!-- ko foreach: { data: operationGroups, as: 'group' } -->
         <div class="tag-group">
-            <span class="tag-item" role="group" data-bind="text: group.tag"></span>
+            <button class="tag-item tag-item-button" role="button"
+                    data-bind="class: $component.groupTagsCollapsed().has(group.tag) ? 'active' : '', text: group.tag, click: () => $component.groupTagCollapseToggle(group.tag)"
+            ></button>
         </div>
-        <div class="list">
+        <div class="list" data-bind="class: $component.groupTagsCollapsed().has(group.tag) ? 'collapsed' : ''">
             <!-- ko foreach: { data: group.items, as: 'item' } -->
             <div role="option" class="list-item table-preset-operations"
                 data-bind="activate: $component.selectOperation, css: { 'selected': $component.selectedOperationName() === item.name }">

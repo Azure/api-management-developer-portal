@@ -16,6 +16,15 @@
     align-items: center;
     margin: 2px;
     min-height: 2em;
+
+    &.tag-item-button {
+        cursor: pointer;
+
+        &.active {
+            background: black;
+            color: white;
+        }
+    }
 }
 
 .tag-item.tag-add {

@@ -1,6 +1,10 @@
 @import "variables.scss";
 
 .list {
+    &.collapsed {
+        display: none;
+    }
+
     .list-item {
         padding: .5em;
         display: block;
