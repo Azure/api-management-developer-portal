@@ -53,7 +53,7 @@ export class AadServiceV2 implements IAadService {
 
         this.router.getCurrentUrl() === returnUrl
             ? location.reload()
-            : await this.router.navigateTo(sanitizeUrl(returnUrl));
+            : await this.router.navigateTo(Utils.getRelativeUrl(sanitizeUrl(returnUrl)));
     }
 
     /**
