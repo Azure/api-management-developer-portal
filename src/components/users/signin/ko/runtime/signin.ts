@@ -1,7 +1,6 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./signin.html";
-import { sanitizeUrl } from "@braintree/sanitize-url";
 import { EventManager } from "@paperbits/common/events";
 import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing/router";
@@ -128,7 +127,7 @@ export class Signin {
             const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
 
             if (returnUrl) {
-                await this.router.navigateTo(Utils.getRelativeUrl(sanitizeUrl(returnUrl)));
+                await this.router.navigateTo(Utils.sanitizeReturnUrl(returnUrl));
                 return;
             }
 

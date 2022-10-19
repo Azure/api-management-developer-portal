@@ -1,3 +1,4 @@
+import { sanitizeUrl } from "@braintree/sanitize-url";
 import { ArmResource } from "./contracts/armResource";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
@@ -86,6 +87,10 @@ export class Utils {
      */
     public static getRelativeUrl(url: string): string {
         return url.replace(/^(.*\/\/)?[^\/]*/gm, "")
+    }
+
+    public static sanitizeReturnUrl(returnUrl: string): string {
+        return sanitizeUrl(this.getRelativeUrl(returnUrl));
     }
 
     public static formatXml(xml: string): string {
