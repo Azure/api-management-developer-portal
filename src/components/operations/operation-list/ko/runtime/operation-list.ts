@@ -255,8 +255,7 @@ export class OperationList {
 
     public groupTagCollapseToggle(tag: string): void {
         const newSet = this.groupTagsExpanded();
-        if (newSet.has(tag)) newSet.delete(tag);
-        else newSet.add(tag);
+        newSet.has(tag) ? newSet.delete(tag) : newSet.add(tag);
         this.groupTagsExpanded(newSet);
     }
 
