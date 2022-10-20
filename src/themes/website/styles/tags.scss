@@ -1,7 +1,36 @@
-.tag-group {
+.tag-group,
+.tag-group.no-border {
     padding-top: 20px;
     padding-bottom: 10px;
     flex-basis: 100%;
+
+    &.tag-group-collapsible {
+        display: block;
+        outline: none !important;
+
+        .tag-item {
+            cursor: inherit;
+        }
+
+        .icon-emb-chevron-down {
+            display: inline-block;
+            margin-left: -18px;
+            transform: rotate(0);
+            transform-origin: 55% 35%;
+            transition: transform .3s ease;
+        }
+
+        &.active {
+            .tag-item {
+                background: black;
+                color: white;
+            }
+
+            .icon-emb-chevron-down {
+                transform: rotate(-90deg);
+            }
+        }
+    }
 }
 
 .tag-item,
@@ -16,15 +45,6 @@
     align-items: center;
     margin: 2px;
     min-height: 2em;
-
-    &.tag-item-button {
-        cursor: pointer;
-
-        &.active {
-            background: black;
-            color: white;
-        }
-    }
 }
 
 .tag-item.tag-add {
