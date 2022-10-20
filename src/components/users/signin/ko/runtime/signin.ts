@@ -1,7 +1,6 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./signin.html";
-import { sanitizeUrl } from "@braintree/sanitize-url";
 import { EventManager } from "@paperbits/common/events";
 import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing/router";
@@ -12,6 +11,7 @@ import { UsersService } from "../../../../../services";
 import { dispatchErrors } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
 import { ValidationMessages } from "../../../validationMessages";
+import { Utils } from "../../../../../utils";
 
 @RuntimeComponent({
     selector: "signin-runtime"
@@ -40,7 +40,7 @@ export class Signin {
         this.password = ko.observable("");
         this.errorMessages = ko.observableArray([]);
         this.hasErrors = ko.pureComputed(() => this.errorMessages().length > 0);
-        // Next four variables are necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
+        // Next four variables are necessary for displaying Terms of Use. Will be called when the back-end implementation is done
         this.termsEnabled = ko.observable(false);
         this.termsOfUse = ko.observable();
         this.isConsentRequired = ko.observable(false);
@@ -127,7 +127,7 @@ export class Signin {
             const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
 
             if (returnUrl) {
-                await this.router.navigateTo(sanitizeUrl(returnUrl));
+                await this.router.navigateTo(Utils.sanitizeReturnUrl(returnUrl));
                 return;
             }
 
