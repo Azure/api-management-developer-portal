@@ -63,7 +63,8 @@
             <i class="icon-emb icon-emb-chevron-down"></i>
             <span class="tag-item" role="group" data-bind="text: group.tag"></span>
         </button>
-        <div class="list" data-bind="class: $component.groupTagsExpanded().has(group.tag) ? '' : 'collapsed'">
+        <!-- ko if: $component.groupTagsExpanded().has(group.tag) -->
+        <div class="list">
             <!-- ko foreach: { data: group.items, as: 'item' } -->
             <div role="option" class="list-item table-preset-operations"
                 data-bind="activate: $component.selectOperation, css: { 'selected': $component.selectedOperationName() === item.name }">
@@ -74,6 +75,7 @@
             </div>
             <!-- /ko -->
         </div>
+        <!-- /ko -->
         <!-- /ko -->
 
         <!-- ko if: operationGroups().length === 0 -->
