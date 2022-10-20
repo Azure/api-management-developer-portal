@@ -1,3 +1,4 @@
+import { sanitizeUrl } from "@braintree/sanitize-url";
 import { ArmResource } from "./contracts/armResource";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
@@ -79,6 +80,17 @@ export class Utils {
             });
         }
         return result;
+    }
+
+    /**
+     * Returns relative part of the URL.
+     */
+    public static getRelativeUrl(url: string): string {
+        return url.replace(/^(.*\/\/)?[^\/]*/gm, "")
+    }
+
+    public static sanitizeReturnUrl(returnUrl: string): string {
+        return sanitizeUrl(this.getRelativeUrl(returnUrl));
     }
 
     public static formatXml(xml: string): string {
@@ -172,7 +184,7 @@ export class Utils {
 
     /**
      * Formats number of bytes into string.
-     * @param bytes 
+     * @param bytes
      */
     public static formatBytes(bytes: number): string {
         let suffix = " bytes";
@@ -202,7 +214,7 @@ export class Utils {
 
     /**
      * Formats time span into string.
-     * @param bytes 
+     * @param bytes
      */
     public static formatTimespan(milliseconds: number): string {
         let suffix = " ms";
@@ -270,7 +282,7 @@ export class Utils {
     /**
      * Encodes reserved URI character not encoded by the native encodeURI function
      * (encodeURIComponent encodes many characters, which are desired unencoded)
-     * 
+     *
      * @param uri string to be encoded
      * @param additionalReservedTuples optional array of additional reserved tuples to replace
      * @returns encoded string
@@ -358,8 +370,8 @@ export class Utils {
     }
 
     /**
-     * This is a function used to generate long date format like (Weekday, Month, Day, Year) 
-     * 
+     * This is a function used to generate long date format like (Weekday, Month, Day, Year)
+     *
      * @param time time string
      */
     public static formatDateTime(time: string): string {
@@ -404,7 +416,7 @@ export class Utils {
     public static isJsonContentType(contentType: string): boolean {
         return /\bjson\b/i.test(contentType.toLocaleLowerCase());
     }
-    
+
     public static isXmlContentType(contentType: string): boolean {
         return /\bxml\b/i.test(contentType.toLocaleLowerCase());
     }
