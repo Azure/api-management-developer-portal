@@ -38,9 +38,7 @@ export class App {
             if (developerPortalType === DeveloperPortalType.selfHosted) {
                 const toast = this.viewManager.notifyInfo("Settings", WarningBackendUrlMissing, [{
                     title: "Got it",
-                    action: async () => {
-                        this.viewManager.removeToast(toast);
-                    }
+                    action: async () => this.viewManager.removeToast(toast)
                 }]);
             }
         }
