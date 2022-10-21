@@ -39,9 +39,14 @@
     <div class="table-body animation-fade-in" role="presentation">
         <!-- ko if: groupByTag -->
         <!-- ko foreach: { data: apiGroups, as: 'group' } -->
-        <div tabindex="0" class="tag-group" role="presentation">
+        <button
+          class="tag-group tag-group-collapsible no-border"
+          data-bind="class: $component.groupTagsExpanded().has(group.tag) ? '' : 'active', click: () => $component.groupTagCollapseToggle(group.tag)"
+        >
+            <i class="icon-emb icon-emb-chevron-down"></i>
             <span class="tag-item" role="rowgroup" data-bind="text: group.tag"></span>
-        </div>
+        </button>
+        <!-- ko if: $component.groupTagsExpanded().has(group.tag) -->
         <!-- ko foreach: { data: group.items, as: 'item' } -->
         <div class="table-row" role="row">
             <div class="col-5 text-truncate" role="cell">
@@ -67,6 +72,7 @@
             </div>
             <!-- /ko -->
         </div>
+        <!-- /ko -->
         <!-- /ko -->
         <!-- /ko -->
 
