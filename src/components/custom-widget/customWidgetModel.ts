@@ -7,9 +7,9 @@ export class CustomWidgetModel {
     public name: string;
 
     /**
-     * @deprecated. This name will be shown in editors and custom-widget-binder selector. (this will be removed from here and used only in WidgetHandlers)
+     * This name will be shown in editors and custom-widget-binder selector.
      */
-    public widgetDisplayName: string;
+    public displayName: string;
 
     /**
      * This is custom-widget-binder configuration that you pass into iframe that hosts the custom-widget-binder.
