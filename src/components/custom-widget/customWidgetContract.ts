@@ -1,19 +1,24 @@
-import { LocalStyles } from "@paperbits/common/styles";
 import { Contract } from "@paperbits/common";
+import { LocalStyles } from "@paperbits/common/styles";
 
 export interface CustomWidgetContract extends Contract {
     /**
-     * This name is used to identify which custom-widget-binder to load into iframe.
+     * The unique widget identifier.
      */
     name: string;
 
     /**
-     * @deprecated. This name will be shown in editors and custom-widget-binder selector. (this will be removed from here and used only in WidgetHandlers)
+     * The display name used in "Add widget" dialog.
+     */
+    displayName: string;
+
+    /**
+     * @deprecated. The display name used in "Add widget" dialog.
      */
     widgetDisplayName: string;
 
     /**
-     * This is custom-widget-binder configuration that you pass into iframe that hosts the custom-widget-binder.
+     * The configuration passed to custom widget.
      */
     customInputValue: string;
 
@@ -22,5 +27,8 @@ export interface CustomWidgetContract extends Contract {
      */
     instanceKey: string;
 
+    /**
+     * Local styles.
+     */
     styles: LocalStyles;
 }
