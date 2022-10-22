@@ -2,7 +2,7 @@ import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { KnockoutComponentBinder } from "@paperbits/core/ko/knockoutComponentBinder";
 import { CustomWidgetModel } from "./customWidgetModel";
-import { CustomWidgetModelBinder } from "./customWidgetModelBinder";
+import { CustomWidgetModelBinder } from "./customWidgetModelBinder.publish";
 import { CustomWidgetViewModel, CustomWidgetViewModelBinder } from "./ko";
 
 export class CustomWidgetPublishModule implements IInjectorModule {
