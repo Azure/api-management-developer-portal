@@ -24,6 +24,7 @@ export class CustomWidgetListModule implements IInjectorModule {
         const viewManager = injector.resolve<ViewManager>("viewManager");
         const configsPromise = loadCustomWidgetConfigs(blobStorage, viewManager);
         injector.bindInstance("customWidgetConfigsPromise", configsPromise);
+
         const widgetService = injector.resolve<IWidgetService>("widgetService");
         configsPromise.then(configs => configs.forEach(config => {
             widgetService.registerWidget(config.name, {
@@ -35,7 +36,7 @@ export class CustomWidgetListModule implements IInjectorModule {
             });
 
             widgetService.registerWidgetEditor(config.name, {
-                displayName: config.displayName,
+                displayName: config.displayName || config.name,
                 category: widgetCategory,
                 iconClass: "widget-icon widget-icon-component",
                 componentBinder: KnockoutComponentBinder,

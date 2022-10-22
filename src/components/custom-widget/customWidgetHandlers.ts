@@ -6,6 +6,7 @@ import { sizeStylesInitial } from "./ko/constants";
 
 export interface TCustomWidgetConfig extends CustomWidgetCommonConfig {
     name: string;
+    displayName: string;
     deployedOn?: string;
     override?: string | boolean;
 }
@@ -18,7 +19,7 @@ export class CustomWidgetHandlers implements IWidgetHandler {
     public async getWidgetModel(): Promise<CustomWidgetModel> {
         const model = new CustomWidgetModel();
         model.name = this.configuration.name;
-        model.widgetDisplayName = this.configuration.displayName;
+        model.displayName = this.configuration.displayName;
         model.customInputValue = "{}";
         StyleHelper.setPluginConfigForLocalStyles(model.styles, "size", sizeStylesInitial);
         model.instanceId = model.name + "_" + Math.random();
