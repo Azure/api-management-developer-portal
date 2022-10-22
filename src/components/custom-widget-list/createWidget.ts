@@ -7,11 +7,13 @@ import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import * as Utils from "@paperbits/common/utils";
 import { Logger } from "@paperbits/common/logging";
 import { MapiBlobStorage } from "../../persistence";
-import { CustomWidgetHandlers, TCustomWidgetConfig } from "../custom-widget";
+import { CustomWidgetHandlers, CustomWidgetModelBinder, TCustomWidgetConfig, widgetCategory } from "../custom-widget";
 import { CustomWidgetModel } from "./customWidgetModel";
 import template from "./createWidget.html";
 // tslint:disable-next-line:no-implicit-dependencies
 import fallbackUi from "!!raw-loader!./fallbackUi.html";
+import { KnockoutComponentBinder } from "@paperbits/core/ko/knockoutComponentBinder";
+import { CustomWidgetEditorViewModel, CustomWidgetViewModel, CustomWidgetViewModelBinder } from "../custom-widget/ko";
 
 const techToName: Record<ScaffoldTech, string> = {
     typescript: "TypeScript",
@@ -27,7 +29,7 @@ export class CreateWidget {
     public readonly displayName: ko.Observable<string>;
     public readonly technology: ko.Observable<ScaffoldTech | null>;
     public readonly configNew: ko.Observable<TCustomWidgetConfig | null>;
-    public readonly techAll = TECHNOLOGIES.map(id => ({id, name: techToName[id]}));
+    public readonly techAll = TECHNOLOGIES.map(id => ({ id, name: techToName[id] }));
 
     constructor(
         private readonly widgetService: IWidgetService,
@@ -40,7 +42,7 @@ export class CreateWidget {
 
         validation.rules["customWidgetNameInUse"] = {
             validator: (displayName: string) =>
-                !this.configs.find(({name}) => name === displayNameToName(displayName)),
+                !this.configs.find(({ name }) => name === displayNameToName(displayName)),
             message: (displayName: string) =>
                 `A widget with alphanumerical signature '${displayNameToName(displayName)}' already exists.`
         };
@@ -90,8 +92,7 @@ export class CreateWidget {
 
         if (this.configs.find((config) => config.name === name)) return;
 
-        const config: TCustomWidgetConfig = {name, displayName, technology};
-        // const configDeploy = await buildConfigDeploy();
+        const config: TCustomWidgetConfig = { name, displayName, technology };
 
         const content = Utils.stringToUnit8Array(JSON.stringify(config));
         await this.blobStorage.uploadBlob(buildBlobConfigPath(name), content);
@@ -101,12 +102,26 @@ export class CreateWidget {
         await this.blobStorage.uploadBlob(`/${dataPath}index.html`, fallbackUiUnit8);
         await this.blobStorage.uploadBlob(`/${dataPath}editor.html`, fallbackUiUnit8);
 
-        this.widgetService.registerWidgetHandler(new CustomWidgetHandlers(config));
+        this.widgetService.registerWidget(name, {
+            modelDefinition: CustomWidgetModel,
+            componentBinder: KnockoutComponentBinder,
+            componentDefinition: CustomWidgetViewModel,
+            modelBinder: CustomWidgetModelBinder,
+            viewModelBinder: CustomWidgetViewModelBinder
+        });
+
+        this.widgetService.registerWidgetEditor(name, {
+            displayName: displayName,
+            category: widgetCategory,
+            iconClass: "widget-icon widget-icon-component",
+            componentBinder: KnockoutComponentBinder,
+            componentDefinition: CustomWidgetEditorViewModel,
+            handlerComponent: new CustomWidgetHandlers(config)
+        });
+
         this.configs.push(config);
         this.configAdd(config);
-
         this.configNew(config);
-
         this.logCreateWidget(config)
     }
 
@@ -124,11 +139,11 @@ export class CreateWidget {
         this.logDeleteWidget(this.config);
     }
 
-    public logCreateWidget(config: {name: string, displayName: string, technology: ScaffoldTech}): void {
+    public logCreateWidget(config: { name: string, displayName: string, technology: ScaffoldTech }): void {
         this.logger.trackEvent("CustomWidgetCreate", config);
     }
 
-    public logDeleteWidget(config: {name: string, displayName: string, technology: ScaffoldTech}): void {
+    public logDeleteWidget(config: { name: string, displayName: string, technology: ScaffoldTech }): void {
         this.logger.trackEvent("CustomWidgetDelete", config);
     }
 }
