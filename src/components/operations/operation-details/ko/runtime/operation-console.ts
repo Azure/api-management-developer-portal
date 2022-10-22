@@ -53,10 +53,6 @@ export class OperationConsole {
     public readonly isHostnameWildcarded: ko.Computed<boolean>;
     public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
     public readonly wildcardSegment: ko.Observable<string>;
-    public readonly collapsedParameters: ko.Observable<boolean>;
-    public readonly collapsedHeaders: ko.Observable<boolean>;
-    public readonly collapsedBody: ko.Observable<boolean>;
-    public readonly collapsedRequest: ko.Observable<boolean>;
     public isConsumptionMode: boolean;
     public templates: Object;
     public backendUrl: string;
@@ -117,11 +113,6 @@ export class OperationConsole {
         this.wsPayload = ko.observable();
         this.wsDataFormat = ko.observable("raw");
         this.wsLogItems = ko.observableArray([]);
-
-        this.collapsedParameters = ko.observable(false);
-        this.collapsedHeaders = ko.observable(false);
-        this.collapsedBody = ko.observable(false);
-        this.collapsedRequest = ko.observable(false);
 
         this.bodyStash = "";
 
@@ -238,7 +229,8 @@ export class OperationConsole {
             this.setVersionHeader();
         }
 
-        this.consoleOperation().request.meaningfulHeaders().forEach(header => header.value.subscribe(_ => this.updateRequestSummary()));
+        this.consoleOperation().request.headers().forEach(header => header.value.subscribe(_ => this.updateRequestSummary()));
+        this.consoleOperation().request.headers().forEach(header => header.name.subscribe(_ => this.updateRequestSummary()));
         this.consoleOperation().request.body.subscribe(_ => this.updateRequestSummary());
         this.consoleOperation().request.queryParameters().forEach(parameter => parameter.value.subscribe(_ => this.updateRequestSummary()));
 
@@ -320,6 +312,7 @@ export class OperationConsole {
         const newHeader = new ConsoleHeader();
         this.consoleOperation().request.headers.push(newHeader);
         newHeader.value.subscribe(_ => this.updateRequestSummary());
+        newHeader.name.subscribe(_ => this.updateRequestSummary());
 
         this.updateRequestSummary();
     }
@@ -522,7 +515,7 @@ export class OperationConsole {
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
 
             const responseStatusText = response.statusText || knownStatusCode
-                ? knownStatusCode.description
+                ? knownStatusCode?.description
                 : "Unknown";
 
             this.responseStatusCode(response.statusCode.toString());
@@ -541,17 +534,15 @@ export class OperationConsole {
             else {
                 const responseBody = response.body.toString();
 
-                if (responseContentType) {
-                    if (Utils.isJsonContentType(responseContentType)) {
-                        this.responseBody(Utils.formatJson(responseBody));
-                    }
-
-                    if (Utils.isJsonContentType(responseContentType)) {
-                        this.responseBody(Utils.formatXml(responseBody));
-                    }
+                if (responseContentType && Utils.isJsonContentType(responseContentType)) {
+                    this.responseBody(Utils.formatJson(responseBody));
                 }
-
-                this.responseBody(responseBody);
+                else if (responseContentType && Utils.isXmlContentType(responseContentType)) {
+                    this.responseBody(Utils.formatXml(responseBody));
+                }
+                else {
+                    this.responseBody(responseBody);
+                }
             }
 
             this.logSentRequest(this.api().name, consoleOperation.operationName, method, response.statusCode);
@@ -680,22 +671,6 @@ export class OperationConsole {
 
     public getApiReferenceUrl(): string {
         return this.routeHelper.getApiReferenceUrl(this.api().name);
-    }
-
-    public collapseParameters(): void {
-        this.collapsedParameters(!this.collapsedParameters());
-    }
-
-    public collapseHeaders(): void {
-        this.collapsedHeaders(!this.collapsedHeaders());
-    }
-
-    public collapseBody(): void {
-        this.collapsedBody(!this.collapsedBody());
-    }
-
-    public collapseRequest(): void {
-        this.collapsedRequest(!this.collapsedRequest());
     }
 
     public logCopyEvent(): void {

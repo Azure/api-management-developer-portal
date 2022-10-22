@@ -1,6 +1,5 @@
 import * as Msal from "msal";
 import * as Constants from "../constants";
-import { sanitizeUrl } from "@braintree/sanitize-url";
 import { HttpClient } from "@paperbits/common/http";
 import { Router } from "@paperbits/common/routing";
 import { RouteHelper } from "../routing/routeHelper";
@@ -44,11 +43,16 @@ export class AadService implements IAadService {
             }
         }
 
-        const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || Constants.pageUrlHome;
+        const hash = this.router.getHash()
+        let returnUrl = this.routeHelper.getQueryParameter("returnUrl") || Constants.pageUrlHome;
+
+        if (hash) { // special case for server-side redirect when hash part of URL gets discarded
+            returnUrl += `#${hash}`;
+        }
 
         this.router.getCurrentUrl() === returnUrl
             ? location.reload()
-            : await this.router.navigateTo(sanitizeUrl(returnUrl));
+            : await this.router.navigateTo(Utils.sanitizeReturnUrl(returnUrl));
     }
 
     /**

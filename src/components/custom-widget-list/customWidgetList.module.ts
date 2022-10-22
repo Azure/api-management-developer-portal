@@ -9,7 +9,7 @@ import { CreateWidget } from "./createWidget";
 import { loadCustomWidgetConfigs } from "./loadCustomWidgetConfigs";
 import { DevelopmentInstructions } from "./developmentInstructions";
 import { CopyCode } from "./copyCode";
-import { KnockoutComponentBinder } from "@paperbits/core/ko/knockoutComponentBinder";
+import { KnockoutComponentBinder } from "@paperbits/core/ko";
 import { CustomWidgetEditorViewModel, CustomWidgetViewModel, CustomWidgetViewModelBinder } from "../custom-widget/ko";
 
 export class CustomWidgetListModule implements IInjectorModule {

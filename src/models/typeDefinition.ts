@@ -217,7 +217,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
             const refName = this.getTypeNameFromRef(contract.$ref);
 
             this.type = new TypeDefinitionPropertyTypeReference(refName);
-            this.description = definitions[refName].description ?? "";
+            this.description = definitions[refName] ? definitions[refName].description ?? "" : "";
             return;
         }
 
