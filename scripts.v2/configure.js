@@ -1,9 +1,9 @@
 const fs = require('fs'),
     crypto = require('crypto'),
     path = require('path'),
-    configDesignFile = path.join(__dirname, '\\..\\src\\config.design.json'),
-    configPublishFile = path.join(__dirname, '\\..\\src\\config.publish.json'),
-    configRuntimeFile = path.join(__dirname, '\\..\\src\\config.runtime.json');
+    configDesignFile = path.join(__dirname, '..', 'src', 'config.design.json'),
+    configPublishFile = path.join(__dirname, '..', 'src', 'config.publish.json'),
+    configRuntimeFile = path.join(__dirname,  '..', 'src', 'config.runtime.json');
 
 const apimServiceNameValue = process.argv[2];
 const apimAccountKey = process.argv[3];
@@ -70,7 +70,7 @@ function createSharedAccessToken(apimUid, apimAccessKey, validDays) {
     expiryDate.setDate(expiryDate.getDate() + validDays)
 
     let expiry = expiryDate.toISOString().replace(/\d+.\d+Z/, "00.0000000Z")
-    let expiryShort = expiryDate.toISOString().substr(0,16).replace(/[^\d]/g,'',)
+    let expiryShort = expiryDate.toISOString().substring(0,16).replace(/[^\d]/g,'',)
 
     const signature = crypto.createHmac('sha512', apimAccessKey).update(`${apimUid}\n${expiry}`).digest('base64');
     const sasToken = `SharedAccessSignature ${apimUid}&${expiryShort}&${signature}`;
