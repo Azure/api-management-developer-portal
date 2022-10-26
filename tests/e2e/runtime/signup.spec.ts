@@ -12,6 +12,9 @@ describe("User sign-up flow", async () => {
         config = await Utils.getConfig();
         browser = await puppeteer.launch(BrowserLaunchOptions);
     });
+    after(async () => {
+        browser.close();
+    });
 
     it("User can sign-up with basic credentials", async () => {
         const page = await browser.newPage();
@@ -27,9 +30,5 @@ describe("User sign-up flow", async () => {
 
         expect(await page.evaluate(() => document.getElementById("confirmationMessage").textContent))
             .to.equal("Follow the instructions from the email to verify your account.");
-    });
-
-    after(async () => {
-        browser.close();
     });
 });
