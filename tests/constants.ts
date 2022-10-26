@@ -3,5 +3,7 @@ import { LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions } fr
 export const BrowserLaunchOptions: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions = {
     headless: false,
     ignoreHTTPSErrors: true,
-    product: "chrome"
+    product: "chrome",
+    devtools: true,
+    userDataDir: "/puppeteer-data-dir", // necessary for persistant user preferences
 };

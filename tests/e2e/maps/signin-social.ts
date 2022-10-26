@@ -1,7 +1,7 @@
 import { Page } from "puppeteer";
 import { User } from "../../mocks";
 
-export class SigninSocialWidget {
+export class SignInSocialWidget {
     constructor(private readonly page: Page) { }
 
     public async signInWitAadB2C(user: User): Promise<void> {
@@ -15,6 +15,10 @@ export class SigninSocialWidget {
                 await popup.click("#next");
 
                 popup.on("close", () => resolve());
+
+                await new Promise(resolve => {
+                    setTimeout(resolve, 50000000) // just long wait
+                })
             });
         });
 

@@ -18,15 +18,5 @@
                 "password": "< password >"
             }
         }
-    },
-    "signup": {
-        "firstName": "John",
-        "lastName": "Doe",
-        "credentials": {
-            "basic": {
-                "email": "johndoe@contoso.com",
-                "password": "< password >"
-            }
-        }
     }
 }
