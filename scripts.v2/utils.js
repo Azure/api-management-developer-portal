@@ -26,7 +26,7 @@ function listFilesInDirectory(dir) {
 }
 
 /**
- * Attempts to get a develoer portal storage connection string in two ways:
+ * Attempts to get a developer portal storage connection string in two ways:
  * 1) if the connection string is explicitly set by the user, use it.
  * 2) retrieving the connection string from the management API using the instance endpoint and SAS token
  * @param {string} managementApiEndpoint the management endpoint of service instance
