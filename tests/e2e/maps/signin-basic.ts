@@ -1,7 +1,7 @@
 import { Page } from "puppeteer";
 import { User } from "../../mocks/user";
 
-export class SigninBasicWidget {
+export class SignInBasicWidget {
     constructor(private readonly page: Page) { }
 
     public async signInWithBasic(user: User): Promise<void> {
