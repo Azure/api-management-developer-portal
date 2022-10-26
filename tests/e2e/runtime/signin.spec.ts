@@ -4,20 +4,21 @@ import { Utils } from "../../utils";
 import { BrowserLaunchOptions } from "../../constants";
 import { SignInSocialWidget } from "../maps/signin-social";
 import { SignInBasicWidget } from "../maps/signin-basic";
+import { User } from "../../mocks";
 
-export async function signIn(config, page): Promise<boolean> {
+export async function signIn(page: puppeteer.Page, user: User): Promise<void> {
+    const config = await Utils.getConfig();
     await Utils.mock(page, {
-        "/identity": {"id":"foo-bar"},
+        "/identity": {
+            id: config.signin.id
+        },
         "/sso-refresh": "OK",
     });
+
     await page.goto(config.urls.signin);
 
-    const confirmedUser = await Utils.getConfirmedUserBasic();
-
     const signInWidget = new SignInBasicWidget(page);
-    await signInWidget.signInWithBasic(confirmedUser);
-
-    return true;
+    await signInWidget.signInWithBasic(user);
 }
 
 describe("User sign-in flow", async () => {
@@ -28,10 +29,14 @@ describe("User sign-in flow", async () => {
         config = await Utils.getConfig();
         browser = await puppeteer.launch(BrowserLaunchOptions);
     });
+    after(async () => {
+        browser.close();
+    });
 
     it("User can sign-in with basic credentials", async () => {
         const page = await browser.newPage();
-        await signIn(config, page);
+        const confirmedUser = await Utils.getConfirmedUserBasic();
+        await signIn(page, confirmedUser);
         expect(page.url()).to.equal(config.urls.home);
     });
     /*
@@ -51,7 +56,4 @@ describe("User sign-in flow", async () => {
         expect(page.url()).to.equal(config.urls.home);
     });
     /**/
-    after(async () => {
-        browser.close();
-    });
 });

@@ -86,7 +86,7 @@ export class Utils {
             const found = Object.entries(urls).find(([url, body]) => {
                 if (!SrcUtils.getRelativeUrl(request.url()).includes(SrcUtils.getRelativeUrl(url))) return false;
 
-                console.log("MOCK", SrcUtils.getRelativeUrl(request.url()));
+                // console.log("MOCK", SrcUtils.getRelativeUrl(request.url()));
 
                 if (request.isInterceptResolutionHandled()) return;
                 request.respond({
@@ -105,7 +105,7 @@ export class Utils {
             })
 
             if (!found) {
-                console.log("pass", SrcUtils.getRelativeUrl(request.url()));
+                // console.log("pass", SrcUtils.getRelativeUrl(request.url()));
                 if (request.isInterceptResolutionHandled()) return;
                 request.continue(undefined, 0);
             }

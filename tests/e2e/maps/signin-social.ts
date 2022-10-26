@@ -16,9 +16,7 @@ export class SignInSocialWidget {
 
                 popup.on("close", () => resolve());
 
-                await new Promise(resolve => {
-                    setTimeout(resolve, 50000000) // just long wait
-                })
+                await new Promise(resolve => setTimeout(resolve, 50000000)); // just long wait
             });
         });
 

@@ -1,13 +1,11 @@
 import { Page } from "puppeteer";
 
-export class Profile {
+export class ProfileWidget {
     constructor(private readonly page: Page) { }
 
     public async profile(): Promise<void> {
-
-
-        await new Promise(resolve => {
-            setTimeout(resolve, 50000000) // just long wait
-        })
+        await this.page.waitForSelector("profile-runtime .row");
+        await this.page.waitForSelector("subscriptions-runtime .table-row");
+        await this.page.click("[data-bind=\"click: togglePrimaryKey, text: primaryKeyBtnLabel, attr: { 'aria-label': primaryKeyBtnLabel() + ' primary key'}\"]");
     }
 }

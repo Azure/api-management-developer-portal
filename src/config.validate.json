@@ -6,6 +6,8 @@
         "signup": "https://contoso.com/signup"
     },
     "signin": {
+        "id": "foo-bar",
+        "name": "foo-bar-contoso-com",
         "firstName": "John",
         "lastName": "Doe",
         "credentials": {
