@@ -515,7 +515,7 @@ export class OperationConsole {
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
 
             const responseStatusText = response.statusText || knownStatusCode
-                ? knownStatusCode.description
+                ? knownStatusCode?.description
                 : "Unknown";
 
             this.responseStatusCode(response.statusCode.toString());
