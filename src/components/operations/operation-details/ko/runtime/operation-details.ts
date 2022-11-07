@@ -17,7 +17,8 @@ import {
     TypeDefinitionPropertyTypeArrayOfReference,
     TypeDefinitionPropertyTypeArrayOfPrimitive,
     TypeDefinitionPropertyTypeCombination,
-    TypeDefinitionPropertyTypePrimitive
+    TypeDefinitionPropertyTypePrimitive,
+    OperationExamples,
 } from "../../../../../models/typeDefinition";
 import { OAuthService } from "../../../../../services/oauthService";
 import { LruCache } from "@paperbits/common/caching/lruCache";
@@ -49,6 +50,7 @@ export class OperationDetails {
     public readonly associatedAuthServer: ko.Observable<AuthorizationServer>;
     public readonly apiType: ko.Observable<string>;
     public readonly protocol: ko.Computed<string>;
+    public readonly examples: ko.Observable<OperationExamples>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -112,6 +114,8 @@ export class OperationDetails {
 
             return api.protocols?.join(", ");
         });
+        this.examples = ko.observable();
+
         this.apiType = ko.observable();
         this.onRouteChange = this.onRouteChange.bind(this);
 
@@ -210,6 +214,7 @@ export class OperationDetails {
 
         if (operation) {
             await this.loadDefinitions(operation);
+            this.parseExamples(operation);
             this.operation(operation);
         }
         else {
@@ -327,6 +332,37 @@ export class OperationDetails {
         }
 
         return result;
+    }
+
+    private parseExamples(operation: Operation): void {
+        const examples = operation.getMeaningfulResponses().reduce((acc, cur) => {
+            const representations = cur.meaningfulRepresentations();
+            if (!representations || !representations.length) return acc;
+
+            const examplesObj = {}
+            representations.forEach(e => {
+                const value = e.examples?.[0]?.value;
+                if (!value) return;
+
+                let valueObj;
+                try {
+                    valueObj = JSON.parse(value);
+                } catch (e) {
+                    return;
+                }
+
+                examplesObj[e.contentType] = {};
+                Object.entries(valueObj).forEach(([key, val]) => {
+                    examplesObj[e.contentType][key] = typeof val === 'object' ? JSON.stringify(val) : val.toString();
+                })
+            });
+            if (!Object.keys(examplesObj).length) return;
+
+            acc[cur.identifier] = examplesObj;
+            return acc;
+        }, {} as OperationExamples);
+
+        this.examples(examples);
     }
 
     public async loadGatewayInfo(apiName: string): Promise<void> {

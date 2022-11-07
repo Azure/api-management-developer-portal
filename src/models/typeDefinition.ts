@@ -18,6 +18,8 @@ export interface ProcessedCombinationPropertiesObject {
     combinationRequiredPropereties?: string[];
 }
 
+export type OperationExamples = Record<string, Record<string, Record<string, string>>>;
+
 export abstract class TypeDefinitionPropertyType {
     public displayAs: string;
 
@@ -282,11 +284,11 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
             processedTypeDefinitionsArray = combinationPropertiesProcessed.combinationReferenceObjectsArray;
             processedTypeDefinitionsArray.push(
                 new TypeDefinition(
-                    "Other properties", 
+                    "Other properties",
                     {
                         properties: combinationPropertiesProcessed.combinationOtherProperties,
                         required: combinationPropertiesProcessed.combinationRequiredPropereties
-                    }, 
+                    },
                     definitions
                 ));
 
@@ -305,8 +307,8 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
             if (combinationArrayItem.allOf || combinationArrayItem.anyOf || combinationArrayItem.oneOf) {
                 const { combinationType, combinationArray } = this.destructCombination(combinationArrayItem);
                 processedCombinationPropertiesObject = this.processCombinationProperties(combinationArray, definitions, processedCombinationPropertiesObject);
-            } 
-            
+            }
+
             if (combinationArrayItem.$ref) {
                 const combinationReferenceName = this.getTypeNameFromRef(combinationArrayItem.$ref);
                 processedCombinationPropertiesObject.combinationReferencesNames.push(combinationReferenceName);
@@ -317,7 +319,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
             if (combinationArrayItem.required) {
                 processedCombinationPropertiesObject.combinationRequiredPropereties = combinationArrayItem.required;
             }
-            
+
             if (combinationArrayItem.properties) {
                 processedCombinationPropertiesObject.combinationOtherProperties = { ...processedCombinationPropertiesObject.combinationOtherProperties, ...combinationArrayItem.properties };
             }
