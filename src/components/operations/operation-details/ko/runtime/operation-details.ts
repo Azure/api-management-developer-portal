@@ -5,8 +5,8 @@ import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@pap
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
-import { AuthorizationServer } from "./../../../../../models/authorizationServer";
-import { Representation } from "./../../../../../models/representation";
+import { AuthorizationServer } from "../../../../../models/authorizationServer";
+import { Representation } from "../../../../../models/representation";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Utils } from "../../../../../utils";
 import { TypeOfApi } from "../../../../../constants";
@@ -340,8 +340,8 @@ export class OperationDetails {
             if (!representations || !representations.length) return acc;
 
             const examplesObj = {}
-            representations.forEach(e => {
-                const value = e.examples?.[0]?.value;
+            representations.forEach(representation => {
+                const value = representation.examples?.[0]?.value;
                 if (!value) return;
 
                 let valueObj;
@@ -351,9 +351,9 @@ export class OperationDetails {
                     return;
                 }
 
-                examplesObj[e.contentType] = {};
+                examplesObj[representation.contentType] = {};
                 Object.entries(valueObj).forEach(([key, val]) => {
-                    examplesObj[e.contentType][key] = typeof val === 'object' ? JSON.stringify(val) : val.toString();
+                    examplesObj[representation.contentType][key] = typeof val === 'object' ? JSON.stringify(val) : val.toString();
                 })
             });
             if (!Object.keys(examplesObj).length) return;
