@@ -59,7 +59,13 @@ const runtimeConfig = {
         ]
     },
     plugins: [
-        new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" }),
+        new MiniCssExtractPlugin({ 
+            filename: "[name].css", 
+            chunkFilename: "[id].css" 
+        }),
+        new LinkTypePlugin({
+            '**/*.css' : 'text/css'
+        }),
         new CopyWebpackPlugin({
             patterns: [
                 { from: `./src/themes/website/styles/fonts`, to: "styles/fonts" },

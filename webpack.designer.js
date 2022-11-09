@@ -66,6 +66,9 @@ const designerConfig = {
             filename: "[name].css",
             chunkFilename: "[id].css"
         }),
+        new LinkTypePlugin({
+            '**/*.css' : 'text/css'
+        }),
         new CopyWebpackPlugin({
             patterns: [
                 { from: `./src/libraries`, to: "data" },

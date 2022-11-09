@@ -65,7 +65,13 @@ const publisherConfig = {
     },
     plugins: [
         new webpack.IgnorePlugin({ resourceRegExp: /canvas/ }, { resourceRegExp: /jsdom$/ }),
-        new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" }),
+        new MiniCssExtractPlugin({ 
+            filename: "[name].css", 
+            chunkFilename: "[id].css" 
+        }),
+        new LinkTypePlugin({
+            '**/*.css' : 'text/css'
+        }),
         new CopyWebpackPlugin({
             patterns: [
                 { from: `./src/config.publish.json`, to: `config.json` },

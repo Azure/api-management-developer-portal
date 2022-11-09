@@ -79,7 +79,13 @@ const functionConfig = {
         ]
     },
     plugins: [
-        new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: "[id].css" }),
+        new MiniCssExtractPlugin({ 
+            filename: "[name].css", 
+            chunkFilename: "[id].css" 
+        }),
+        new LinkTypePlugin({
+            '**/*.css' : 'text/css'
+        }),
         new CopyWebpackPlugin({
             patterns: [
                 { from: `./examples/function`, to: `./` },
