@@ -87,7 +87,6 @@ import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
-import { CustomWidget } from "./components/custom-widget/ko/runtime/customWidget";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -162,7 +161,6 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bind("pagination", Pagination);
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
-        injector.bind("customWidget", CustomWidget);
         injector.bindModule(new CustomWidgetRuntimeModule());
         injector.bindModule(new RoleBasedSecurityRuntimeModule());
 

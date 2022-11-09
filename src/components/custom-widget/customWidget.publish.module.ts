@@ -7,10 +7,6 @@ import { CustomWidgetViewModel, CustomWidgetViewModelBinder } from "./ko";
 
 export class CustomWidgetPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bind("customWidgetScaffold", CustomWidgetViewModel);
-        injector.bindSingleton("customWidgetModelBinder", CustomWidgetModelBinder);
-        injector.bindSingleton("customWidgetViewModelBinder", CustomWidgetViewModelBinder);
-
         const widgetService = injector.resolve<IWidgetService>("widgetService");
 
         widgetService.registerWidget("custom-widget", {
