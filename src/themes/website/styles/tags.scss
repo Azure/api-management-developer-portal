@@ -5,27 +5,24 @@
     flex-basis: 100%;
 
     &.tag-group-collapsible {
-        display: block;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
         outline: none !important;
-        text-align: left;
+        overflow: hidden;
 
         .tag-item {
             cursor: inherit;
         }
 
         .icon-emb-chevron-down {
-            display: inline-block;
             transform: rotate(0);
-            transform-origin: 55% 35%;
+            transform-origin: 48% 45%;
             transition: transform .3s ease;
         }
 
         &.active {
-            .tag-item {
-                background: black;
-                color: white;
-            }
-
             .icon-emb-chevron-down {
                 transform: rotate(-90deg);
             }

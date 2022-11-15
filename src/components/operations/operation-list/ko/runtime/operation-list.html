@@ -60,8 +60,8 @@
           class="tag-group tag-group-collapsible no-border"
           data-bind="class: $component.groupTagsExpanded().has(group.tag) ? '' : 'active', click: () => $component.groupTagCollapseToggle(group.tag)"
         >
-            <i class="icon-emb icon-emb-chevron-down"></i>
             <span class="tag-item" role="group" data-bind="text: group.tag"></span>
+            <i class="icon-emb icon-emb-chevron-down"></i>
         </button>
         <!-- ko if: $component.groupTagsExpanded().has(group.tag) -->
         <div class="list">
