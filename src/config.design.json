@@ -1,7 +1,8 @@
 {
     "environment": "development",
-    "subscriptionId": "< subscription ID >",
-    "resourceGroupName": "< resource froup name >",
-    "serviceName": "< service name >",
-    "useHipCaptcha": false
+    "useHipCaptcha": false,
+    "armEndpoint": "< armEndpoint >",
+    "aadClientId": "< aadClientId >",
+    "aadLoginRequest": "< aadLoginRequest >",
+    "aadAuthority": "< aadAuthority >"
 }

@@ -1,18 +1,51 @@
 import * as Msal from "@azure/msal-browser";
+import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
 import { IAuthenticator, AccessToken } from ".";
+import { SettingNames } from "../constants";
 
 
-const aadClientId = "a962e1ed-5694-4abe-9e9b-d08d35877efc"; // test app
-const loginRequest = { scopes: ["openid", "profile", "https://management.azure.com/user_impersonation"], account: null };
-const authority = "https://login.microsoftonline.com/common";
-const redirectUri = "https://apimanagement-cors-proxy-df.azure-api.net/portal/signin-aad";
+// const aadClientId = "a962e1ed-5694-4abe-9e9b-d08d35877efc"; // test app PROD
+// const aadClientId = "4c6edb5e-d0fb-4ca1-ac29-8c181c1a9522"; // test app PPE
+
+// const authority = "https://login.microsoftonline.com/common"; // PROD
+// const authority = "https://login.windows-ppe.net/common"; // PPE
+
+// const redirectUri = "https://apimanagement-cors-proxy-df.azure-api.net/portal/signin-aad";
+
+// login example
+// http://localhost:8080?subscriptionId=b8ff56dc-3bc7-4174-a1e8-3726ab15d0e2&resourceGroupName=Admin-ResourceGroup&serviceName=igo-east
 
 export class ArmAuthenticator implements IAuthenticator {
     private accessToken: AccessToken;
+    private loginRequest: Msal.SilentRequest;
     private msalInstance: Msal.PublicClientApplication;
     private authPromise: Promise<AccessToken>;
 
-    constructor() {
+    private initializePromise: Promise<void>;
+
+    constructor(
+        private readonly settingsProvider: ISettingsProvider
+    ) {}
+
+    private async ensureInitialized(): Promise<void> {
+        if (!this.initializePromise) {
+            this.initializePromise = this.initInstance();
+        }
+        return this.initializePromise;
+    }
+
+    private async initInstance(): Promise<void> {
+        const settings = await this.settingsProvider.getSettings();
+        const aadClientId = settings[SettingNames.aadClientId];
+        const authority = settings[SettingNames.aadAuthority];
+        this.loginRequest = settings[SettingNames.aadLoginRequest];
+
+        if (!aadClientId || !authority || !this.loginRequest) {
+            throw new Error("Settings was not provided for Msal.Configuration");
+        }
+
+        const redirectUri = location.origin;
+
         const msalConfig: Msal.Configuration = {
             auth: {
                 clientId: aadClientId,
@@ -29,8 +62,8 @@ export class ArmAuthenticator implements IAuthenticator {
     }
 
     public async checkCallbacks(): Promise<Msal.AuthenticationResult> {
+        await this.ensureInitialized();
         try {
-
             return await this.msalInstance.handleRedirectPromise();
         }
         catch (error) {
@@ -49,6 +82,7 @@ export class ArmAuthenticator implements IAuthenticator {
     }
 
     private async tryAcquireToken(): Promise<AccessToken> {
+        await this.ensureInitialized();
         const account = this.getAccount();
 
         if (!account) {
@@ -59,14 +93,14 @@ export class ArmAuthenticator implements IAuthenticator {
                 return parsedToken;
             }
 
-            await this.msalInstance.acquireTokenRedirect(loginRequest);
+            await this.msalInstance.acquireTokenRedirect(this.loginRequest);
             return;
         }
 
-        loginRequest.account = account;
+        this.loginRequest.account = account;
 
         try {
-            const result = await this.msalInstance.acquireTokenSilent(loginRequest);
+            const result = await this.msalInstance.acquireTokenSilent(this.loginRequest);
             const token = AccessToken.parse(`${result.tokenType} ${result.accessToken}`);
 
             return token;
@@ -74,7 +108,7 @@ export class ArmAuthenticator implements IAuthenticator {
         catch (error) {
             if (error instanceof Msal.InteractionRequiredAuthError) {
                 // fallback to interaction when silent call fails
-                await this.msalInstance.acquireTokenRedirect(loginRequest);
+                await this.msalInstance.acquireTokenRedirect(this.loginRequest);
             }
             else {
                 console.warn(error);
