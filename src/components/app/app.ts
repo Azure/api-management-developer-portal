@@ -42,24 +42,18 @@ export class App {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        const settings = await this.settingsProvider.getSettings();
-
-        const subscriptionId = settings["subscriptionId"];
-        const resourceGroupName = settings[SettingNames.resourceGroupName];
-        const serviceName = settings[SettingNames.serviceName];
-        const armEndpoint = settings[SettingNames.armEndpoint] || "management.azure.com";
-
-        if (subscriptionId && resourceGroupName && serviceName) {
-            const managementApiUrl = `https://${armEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
-            await this.settingsProvider.setSetting(SettingNames.managementApiUrl, managementApiUrl);
-            await this.settingsProvider.setSetting(SettingNames.backendUrl, `https://${serviceName}.developer.azure-api/net`);
+        try {
+            await this.armService.loadSessionSettings();
+        } catch (error) {
+            this.viewManager.addToast(startupError, error);
+            return;
         }
-
         const runtimeSettings = await this.getRuntimeSettings();
         this.sessionManager.setItem("designTimeSettings", runtimeSettings);
         this.viewManager.setHost({ name: "page-host" });
         this.viewManager.showToolboxes();
 
+        const settings = await this.settingsProvider.getSettings();
 
         if (!settings[SettingNames.managementApiUrl]) {
             this.viewManager.addToast(startupError, `Management API URL is missing. See setting <i>managementApiUrl</i> in the configuration file <i>config.design.json</i>`);
@@ -70,7 +64,7 @@ export class App {
             const developerPortalType = settings[SettingNames.developerPortalType] || DeveloperPortalType.selfHosted;
             if (developerPortalType === DeveloperPortalType.selfHosted) {
                 this.viewManager.addToast("Warning", WarningBackendUrlMissing);
-            }            
+            }
         }
 
         try {

@@ -4,6 +4,9 @@ import { HttpClient } from "@paperbits/common/http";
 import { IAuthenticator } from "../authentication/IAuthenticator";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { ServiceDescriptionContract } from "../contracts/service";
+import { SettingNames } from "../constants";
+
+const sessionLoaded = "ArmSessionLoaded";
 
 export class AzureResourceManagementService {
     constructor(
@@ -18,7 +21,7 @@ export class AzureResourceManagementService {
     public async getServiceDescription(): Promise<ServiceDescriptionContract> {
         const managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
         const armAccessToken = await this.authenticator.getAccessTokenAsString();
- 
+
         const serviceDescriptionResponse = await this.httpClient.send<ServiceDescriptionContract>({
             url: `${managementApiUrl}?api-version=${Constants.managementApiVersion}`,
             headers: [{
@@ -60,5 +63,40 @@ export class AzureResourceManagementService {
         const userTokenValue = userToken["value"];
 
         return userTokenValue;
+    }
+
+    public async loadSessionSettings(): Promise<void> {
+        const url = new URL(location.href);
+        const subscriptionId = this.getStoredSetting(url, SettingNames.subscriptionId);
+        const resourceGroupName = this.getStoredSetting(url, SettingNames.resourceGroupName);
+        const serviceName = this.getStoredSetting(url, SettingNames.serviceName);
+
+        const settings = await this.settingsProvider.getSettings();
+        const armEndpoint = this.getStoredSetting(url, SettingNames.armEndpoint) || settings[SettingNames.armEndpoint];
+
+        if (!subscriptionId || !resourceGroupName || !serviceName || !armEndpoint) {
+            throw new Error("Required service parameters (like subscription, resource group, service name) were not provided to start editor");
+        }
+
+        if (subscriptionId && resourceGroupName && serviceName) {
+            const managementApiUrl = `https://${armEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
+            await this.settingsProvider.setSetting(SettingNames.managementApiUrl, managementApiUrl);
+            await this.settingsProvider.setSetting(SettingNames.backendUrl, `https://${serviceName}.developer.azure-api/net`);
+            if(!sessionStorage.getItem(sessionLoaded)) {
+                sessionStorage.setItem(sessionLoaded, "true");
+                location.href = location.origin + location.pathname;
+            }
+        }
+    }
+
+    private getStoredSetting(url: URL, settingName: string): string {
+        let settingValue = url.searchParams.get(settingName);
+        if (settingValue) {
+            settingValue = decodeURIComponent(settingValue);
+            sessionStorage.setItem(settingName, settingValue);
+        } else {
+            settingValue = sessionStorage.getItem(settingName);
+        }
+        return settingValue;
     }
 }
