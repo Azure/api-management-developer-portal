@@ -6,8 +6,6 @@ import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { ServiceDescriptionContract } from "../contracts/service";
 import { SettingNames } from "../constants";
 
-const sessionLoaded = "ArmSessionLoaded";
-
 export class AzureResourceManagementService {
     constructor(
         private readonly httpClient: HttpClient,
@@ -82,8 +80,7 @@ export class AzureResourceManagementService {
             const managementApiUrl = `https://${armEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
             await this.settingsProvider.setSetting(SettingNames.managementApiUrl, managementApiUrl);
             await this.settingsProvider.setSetting(SettingNames.backendUrl, `https://${serviceName}.developer.azure-api.net`);
-            if(!sessionStorage.getItem(sessionLoaded)) {
-                sessionStorage.setItem(sessionLoaded, "true");
+            if(url.searchParams.has(SettingNames.subscriptionId)) {
                 location.href = location.origin + location.pathname;
             }
         }
