@@ -81,7 +81,7 @@ export class AzureResourceManagementService {
         if (subscriptionId && resourceGroupName && serviceName) {
             const managementApiUrl = `https://${armEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
             await this.settingsProvider.setSetting(SettingNames.managementApiUrl, managementApiUrl);
-            await this.settingsProvider.setSetting(SettingNames.backendUrl, `https://${serviceName}.developer.azure-api/net`);
+            await this.settingsProvider.setSetting(SettingNames.backendUrl, `https://${serviceName}.developer.azure-api.net`);
             if(!sessionStorage.getItem(sessionLoaded)) {
                 sessionStorage.setItem(sessionLoaded, "true");
                 location.href = location.origin + location.pathname;
