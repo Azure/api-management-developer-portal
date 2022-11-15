@@ -64,7 +64,7 @@ export class AzureResourceManagementService {
     }
 
     public async loadSessionSettings(): Promise<void> {
-        const url = new URL(location.href);
+        const url = new URL(location.href.toLowerCase());
         const subscriptionId = this.getStoredSetting(url, SettingNames.subscriptionId);
         const resourceGroupName = this.getStoredSetting(url, SettingNames.resourceGroupName);
         const serviceName = this.getStoredSetting(url, SettingNames.serviceName);
@@ -80,13 +80,14 @@ export class AzureResourceManagementService {
             const managementApiUrl = `https://${armEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
             await this.settingsProvider.setSetting(SettingNames.managementApiUrl, managementApiUrl);
             await this.settingsProvider.setSetting(SettingNames.backendUrl, `https://${serviceName}.developer.azure-api.net`);
-            if(url.searchParams.has(SettingNames.subscriptionId)) {
+            if(url.searchParams.has(SettingNames.subscriptionId.toLowerCase())) {
                 location.href = location.origin + location.pathname;
             }
         }
     }
 
     private getStoredSetting(url: URL, settingName: string): string {
+        settingName = settingName.toLowerCase();
         let settingValue = url.searchParams.get(settingName);
         if (settingValue) {
             settingValue = decodeURIComponent(settingValue);
