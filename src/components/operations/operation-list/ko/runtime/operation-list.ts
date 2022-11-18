@@ -27,6 +27,7 @@ export class OperationList {
     public readonly operations: ko.ObservableArray<Operation>;
     public readonly working: ko.Observable<boolean>;
     public readonly groupByTag: ko.Observable<boolean>;
+    public readonly groupTagsExpanded: ko.Observable<Set<string>>;
     public readonly operationGroups: ko.ObservableArray<TagGroup<Operation>>;
     public readonly pattern: ko.Observable<string>;
     public readonly tags: ko.Observable<Tag[]>;
@@ -56,6 +57,7 @@ export class OperationList {
         this.working = ko.observable(false);
         this.groupByTag = ko.observable(false);
         this.defaultGroupByTagToEnabled = ko.observable(false);
+        this.groupTagsExpanded = ko.observable(new Set<string>());
         this.pattern = ko.observable();
         this.tags = ko.observable([]);
         this.pageNumber = ko.observable(1);
@@ -249,6 +251,12 @@ export class OperationList {
 
     public async onTagsChange(tags: Tag[]): Promise<void> {
         this.tags(tags);
+    }
+
+    public groupTagCollapseToggle(tag: string): void {
+        const newSet = this.groupTagsExpanded();
+        newSet.has(tag) ? newSet.delete(tag) : newSet.add(tag);
+        this.groupTagsExpanded(newSet);
     }
 
     @OnDestroyed()
