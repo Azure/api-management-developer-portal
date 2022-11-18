@@ -24,6 +24,7 @@ export class ApiList {
     public readonly pattern: ko.Observable<string>;
     public readonly tags: ko.Observable<Tag[]>;
     public readonly groupByTag: ko.Observable<boolean>;
+    public readonly groupTagsExpanded: ko.Observable<Set<string>>;
     public readonly pageNumber: ko.Observable<number>;
     public readonly totalPages: ko.Observable<number>;
 
@@ -43,6 +44,7 @@ export class ApiList {
         this.apiGroups = ko.observableArray();
         this.groupByTag = ko.observable(false);
         this.defaultGroupByTagToEnabled = ko.observable(false);
+        this.groupTagsExpanded = ko.observable(new Set<string>());
     }
 
     @Param()
@@ -123,6 +125,12 @@ export class ApiList {
     public async resetSearch(): Promise<void> {
         this.pageNumber(1);
         this.loadPageOfApis();
+    }
+
+    public groupTagCollapseToggle(tag: string): void {
+        const newSet = this.groupTagsExpanded();
+        newSet.has(tag) ? newSet.delete(tag) : newSet.add(tag);
+        this.groupTagsExpanded(newSet);
     }
 
     public async onTagsChange(tags: Tag[]): Promise<void> {
