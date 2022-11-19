@@ -24,7 +24,7 @@
 @function unicode($str) {
     @return unquote("\"\\#{$str}\"");
   }
-  
+
   $paperbits-layout-11: unicode(ea03);
   $paperbits-action-74: unicode(ea08);
   $paperbits-align-center: unicode(ea09);
@@ -120,388 +120,388 @@
   $paperbits-divider: unicode(ea7e);
   $paperbits-s-add: unicode(ea7f);
   $paperbits-curved-arrow-left: unicode(ea80);
-  $paperbits-a-security: unicode(ea82);
-  
+  $paperbits-puzzle-10: unicode(ea81);
+
   .paperbits-layout-11::before {
     content: $paperbits-layout-11;
   }
-  
+
   .paperbits-action-74::before {
     content: $paperbits-action-74;
   }
-  
+
   .paperbits-align-center::before {
     content: $paperbits-align-center;
   }
-  
+
   .paperbits-align-justify::before {
     content: $paperbits-align-justify;
   }
-  
+
   .paperbits-align-left-2::before {
     content: $paperbits-align-left-2;
   }
-  
+
   .paperbits-align-right-2::before {
     content: $paperbits-align-right-2;
   }
-  
+
   .paperbits-size::before {
     content: $paperbits-size;
   }
-  
+
   .paperbits-edit-2::before {
     content: $paperbits-edit-2;
   }
-  
+
   .paperbits-code::before {
     content: $paperbits-code;
   }
-  
+
   .paperbits-list-bullet::before {
     content: $paperbits-list-bullet;
   }
-  
+
   .paperbits-list-numbers::before {
     content: $paperbits-list-numbers;
   }
-  
+
   .paperbits-bold::before {
     content: $paperbits-bold;
   }
-  
+
   .paperbits-audio-91::before {
     content: $paperbits-audio-91;
   }
-  
+
   .paperbits-alert-circle-i::before {
     content: $paperbits-alert-circle-i;
   }
-  
+
   .paperbits-chat-45-2::before {
     content: $paperbits-chat-45-2;
   }
-  
+
   .paperbits-drop::before {
     content: $paperbits-drop;
   }
-  
+
   .paperbits-m-location::before {
     content: $paperbits-m-location;
   }
-  
+
   .paperbits-mobile::before {
     content: $paperbits-mobile;
   }
-  
+
   .paperbits-desktop-screen::before {
     content: $paperbits-desktop-screen;
   }
-  
+
   .paperbits-mobile-landscape::before {
     content: $paperbits-mobile-landscape;
   }
-  
+
   .paperbits-player-48::before {
     content: $paperbits-player-48;
   }
-  
+
   .paperbits-tablet-2::before {
     content: $paperbits-tablet-2;
   }
-  
+
   .paperbits-wifi-off::before {
     content: $paperbits-wifi-off;
   }
-  
+
   .paperbits-wifi::before {
     content: $paperbits-wifi;
   }
-  
+
   .paperbits-ban::before {
     content: $paperbits-ban;
   }
-  
+
   .paperbits-single-content-03::before {
     content: $paperbits-single-content-03;
   }
-  
+
   .paperbits-single-copy-04::before {
     content: $paperbits-single-copy-04;
   }
-  
+
   .paperbits-mirror-2::before {
     content: $paperbits-mirror-2;
   }
-  
+
   .paperbits-slider::before {
     content: $paperbits-slider;
   }
-  
+
   .paperbits-image-2::before {
     content: $paperbits-image-2;
   }
-  
+
   .paperbits-paint-bucket-40::before {
     content: $paperbits-paint-bucket-40;
   }
-  
+
   .paperbits-palette::before {
     content: $paperbits-palette;
   }
-  
+
   .paperbits-menu-34::before {
     content: $paperbits-menu-34;
   }
-  
+
   .paperbits-check-2::before {
     content: $paperbits-check-2;
   }
-  
+
   .paperbits-preferences-circle::before {
     content: $paperbits-preferences-circle;
   }
-  
+
   .paperbits-underline::before {
     content: $paperbits-underline;
   }
-  
+
   .paperbits-link-69-2::before {
     content: $paperbits-link-69-2;
   }
-  
+
   .paperbits-capitalize::before {
     content: $paperbits-capitalize;
   }
-  
+
   .paperbits-color::before {
     content: $paperbits-color;
   }
-  
+
   .paperbits-anchor::before {
     content: $paperbits-anchor;
   }
-  
+
   .paperbits-italic::before {
     content: $paperbits-italic;
   }
-  
+
   .paperbits-square-upload::before {
     content: $paperbits-square-upload;
   }
-  
+
   .paperbits-square-download::before {
     content: $paperbits-square-download;
   }
-  
+
   .paperbits-simple-add::before {
     content: $paperbits-simple-add;
   }
-  
+
   .paperbits-simple-remove::before {
     content: $paperbits-simple-remove;
   }
-  
+
   .paperbits-circle-delete::before {
     content: $paperbits-circle-delete;
   }
-  
+
   .paperbits-circle-add::before {
     content: $paperbits-circle-add;
   }
-  
+
   .paperbits-button-2::before {
     content: $paperbits-button-2;
   }
-  
+
   .paperbits-enlarge-circle::before {
     content: $paperbits-enlarge-circle;
   }
-  
+
   .paperbits-align-bottom::before {
     content: $paperbits-align-bottom;
   }
-  
+
   .paperbits-align-right::before {
     content: $paperbits-align-right;
   }
-  
+
   .paperbits-align-top::before {
     content: $paperbits-align-top;
   }
-  
+
   .paperbits-align-center-horizontal::before {
     content: $paperbits-align-center-horizontal;
   }
-  
+
   .paperbits-align-center-vertical::before {
     content: $paperbits-align-center-vertical;
   }
-  
+
   .paperbits-align-left::before {
     content: $paperbits-align-left;
   }
-  
+
   .paperbits-disperse::before {
     content: $paperbits-disperse;
   }
-  
+
   .paperbits-zoom-out::before {
     content: $paperbits-zoom-out;
   }
-  
+
   .paperbits-zoom-in::before {
     content: $paperbits-zoom-in;
   }
-  
+
   .paperbits-trash-simple::before {
     content: $paperbits-trash-simple;
   }
-  
+
   .paperbits-edit-72::before {
     content: $paperbits-edit-72;
   }
-  
+
   .paperbits-form::before {
     content: $paperbits-form;
   }
-  
+
   .paperbits-zoom-99::before {
     content: $paperbits-zoom-99;
   }
-  
+
   .paperbits-crop::before {
     content: $paperbits-crop;
   }
-  
+
   .paperbits-enlarge-vertical::before {
     content: $paperbits-enlarge-vertical;
   }
-  
+
   .paperbits-enlarge-horizontal::before {
     content: $paperbits-enlarge-horizontal;
   }
-  
+
   .paperbits-rotate-right-2::before {
     content: $paperbits-rotate-right-2;
   }
-  
+
   .paperbits-rotate-left-2::before {
     content: $paperbits-rotate-left-2;
   }
-  
+
   .paperbits-margin-right::before {
     content: $paperbits-margin-right;
   }
-  
+
   .paperbits-margin-left::before {
     content: $paperbits-margin-left;
   }
-  
+
   .paperbits-alert::before {
     content: $paperbits-alert;
   }
-  
+
   .paperbits-at-sign::before {
     content: $paperbits-at-sign;
   }
-  
+
   .paperbits-gradient::before {
     content: $paperbits-gradient;
   }
-  
+
   .paperbits-polaroid::before {
     content: $paperbits-polaroid;
   }
-  
+
   .paperbits-marker-2::before {
     content: $paperbits-marker-2;
   }
-  
+
   .paperbits-undo-25::before {
     content: $paperbits-undo-25;
   }
-  
+
   .paperbits-redo-26::before {
     content: $paperbits-redo-26;
   }
-  
+
   .paperbits-floppy-disk::before {
     content: $paperbits-floppy-disk;
   }
-  
+
   .paperbits-upload::before {
     content: $paperbits-upload;
   }
-  
+
   .paperbits-world::before {
     content: $paperbits-world;
   }
-  
+
   .paperbits-wireframe::before {
     content: $paperbits-wireframe;
   }
-  
+
   .paperbits-send::before {
     content: $paperbits-send;
   }
-  
+
   .paperbits-c-question::before {
     content: $paperbits-c-question;
   }
-  
+
   .paperbits-layout-11-2::before {
     content: $paperbits-layout-11-2;
   }
-  
+
   .paperbits-clapperboard::before {
     content: $paperbits-clapperboard;
   }
-  
+
   .paperbits-single-02::before {
     content: $paperbits-single-02;
   }
-  
+
   .paperbits-lightning::before {
     content: $paperbits-lightning;
   }
-  
+
   .paperbits-l-search::before {
     content: $paperbits-l-search;
   }
-  
+
   .paperbits-small-down::before {
     content: $paperbits-small-down;
   }
-  
+
   .paperbits-small-up::before {
     content: $paperbits-small-up;
   }
-  
+
   .paperbits-menu-4::before {
     content: $paperbits-menu-4;
   }
-  
+
   .paperbits-tablet-2-2::before {
     content: $paperbits-tablet-2-2;
   }
-  
+
   .paperbits-strikethrough::before {
     content: $paperbits-strikethrough;
   }
-  
+
   .paperbits-divider::before {
     content: $paperbits-divider;
   }
-  
+
   .paperbits-s-add::before {
     content: $paperbits-s-add;
   }
-  
+
   .paperbits-curved-arrow-left::before {
     content: $paperbits-curved-arrow-left;
   }
-  
-  .paperbits-a-security::before {
-    content: $paperbits-a-security;
+
+  .paperbits-puzzle-10::before {
+    content: $paperbits-puzzle-10;
   }

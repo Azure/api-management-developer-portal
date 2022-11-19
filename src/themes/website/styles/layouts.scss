@@ -381,6 +381,12 @@ html {
     }
 }
 
+section {
+    display: flex;
+    flex-direction: column;
+    flex: none;
+}
+
 .stretch {
     flex: 1;
     height: 100%;

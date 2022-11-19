@@ -5,11 +5,13 @@ import { InversifyInjector } from "@paperbits/common/injection";
 import { IPublisher } from "@paperbits/common/publishing";
 import { CoreModule } from "@paperbits/core/core.module";
 import { CorePublishModule } from "@paperbits/core/core.publish.module";
+import { FormsModule } from "@paperbits/forms/forms.module";
 import { ApimPublishModule } from "../../../../src/apim.publish.module";
 import { StylePublishModule } from "@paperbits/styles/styles.publish.module";
 import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { StaticSettingsProvider } from "../../../../src/components/staticSettingsProvider";
+import { PublishingCacheModule } from "../../../../src/persistence/publishingCacheModule";
 
 
 export async function publish(): Promise<void> {
@@ -40,9 +42,11 @@ export async function publish(): Promise<void> {
     injector.bindModule(new CorePublishModule());
     injector.bindModule(new StylePublishModule());
     injector.bindModule(new ProseMirrorModule());
+    injector.bindModule(new FormsModule());
     injector.bindModule(new ApimPublishModule());
     injector.bindInstance("settingsProvider", settingsProvider);
     injector.bindInstance("outputBlobStorage", outputBlobStorage);
+    injector.bindModule(new PublishingCacheModule());
     injector.resolve("autostart");
 
     const publisher = injector.resolve<IPublisher>("sitePublisher");

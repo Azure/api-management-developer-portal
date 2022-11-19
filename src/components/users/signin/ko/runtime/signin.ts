@@ -1,7 +1,6 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import template from "./signin.html";
-import { sanitizeUrl } from "@braintree/sanitize-url";
 import { EventManager } from "@paperbits/common/events";
 import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing/router";
@@ -11,6 +10,8 @@ import { UnauthorizedError } from "../../../../../errors/unauthorizedError";
 import { UsersService } from "../../../../../services";
 import { dispatchErrors } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
+import { ValidationMessages } from "../../../validationMessages";
+import { Utils } from "../../../../../utils";
 
 @RuntimeComponent({
     selector: "signin-runtime"
@@ -39,7 +40,7 @@ export class Signin {
         this.password = ko.observable("");
         this.errorMessages = ko.observableArray([]);
         this.hasErrors = ko.pureComputed(() => this.errorMessages().length > 0);
-        // Next four variables are necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
+        // Next four variables are necessary for displaying Terms of Use. Will be called when the back-end implementation is done
         this.termsEnabled = ko.observable(false);
         this.termsOfUse = ko.observable();
         this.isConsentRequired = ko.observable(false);
@@ -52,9 +53,9 @@ export class Signin {
             decorateInputElement: true
         });
 
-        this.username.extend(<any>{ required: { message: `Email is required.` }, email: true });
-        this.password.extend(<any>{ required: { message: `Password is required.` } });
-        this.consented.extend(<any>{ equal: { params: true, message: "You must agree to the terms of use." } });
+        this.username.extend(<any>{ required: { message: ValidationMessages.firstNameRequired }, email: true });
+        this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired } });
+        this.consented.extend(<any>{ equal: { params: true, message: ValidationMessages.consentRequired } });
     }
 
     @Param()
@@ -126,7 +127,7 @@ export class Signin {
             const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
 
             if (returnUrl) {
-                await this.router.navigateTo(sanitizeUrl(returnUrl));
+                await this.router.navigateTo(Utils.sanitizeReturnUrl(returnUrl));
                 return;
             }
 
