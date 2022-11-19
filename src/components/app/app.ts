@@ -34,9 +34,13 @@ export class App {
 
         if (!settings["backendUrl"]) {
             const developerPortalType = settings[SettingNames.developerPortalType] || DeveloperPortalType.selfHosted;
+
             if (developerPortalType === DeveloperPortalType.selfHosted) {
-                this.viewManager.addToast("Warning", WarningBackendUrlMissing);
-            }            
+                const toast = this.viewManager.notifyInfo("Settings", WarningBackendUrlMissing, [{
+                    title: "Got it",
+                    action: async () => this.viewManager.removeToast(toast)
+                }]);
+            }
         }
 
         try {

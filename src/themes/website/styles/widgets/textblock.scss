@@ -9,6 +9,9 @@ p:empty {
 }
 
 .ProseMirror {
+    display: block;
+    flex-basis: 100%;
+    max-width: 100%;
     position: relative;
     word-wrap: break-word;
     white-space: pre-wrap;

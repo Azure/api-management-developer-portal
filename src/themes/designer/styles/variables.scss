@@ -54,6 +54,7 @@ $color-watermark: #CCC;
 $link-color: #00AFEF;
 $arrow-active-color: #F58634;
 $icon-base-color: #57585a;
+$selection-corners-color: #757575;
 
 /* Forms */
 $form-control-font-size: 0.9em;
@@ -78,9 +79,9 @@ $spinner-inverted-bg: #fff;
 $spinner-inverted-dot-border-color: #fff;
 
 /* Scrollbars */
-$scrollbar-rail-active-bg: #eee;
+$scrollbar-rail-active-bg: #ddd;
 $scrollbar-thumb-bg: #aaa;
-$scrollbar-thumb-active-bg: #999;
+$scrollbar-thumb-active-bg: #4d4d4d;
 
 /* Layout editor */
 $layout-editor-selection-color: #3c3c3c;
