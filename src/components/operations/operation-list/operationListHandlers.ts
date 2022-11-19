@@ -42,6 +42,7 @@ export class OperationListHandlers implements IWidgetHandler {
                         toggleButtonLabel: DefaultStyleDefinitions.getToggleButtonLabelStyleDefinition(),
                         widgetText: DefaultStyleDefinitions.getWidgetTextStyleDefinition(),
                         tagCard: DefaultStyleDefinitions.getTagCardStyleDefinition(),
+                        tagGroupCollapsible: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                         dropdownInput: DefaultStyleDefinitions.getDropdownInputStyleDefinition(),
                         dropdownInputButton: DefaultStyleDefinitions.getDropdownInputButtonStyleDefinition(),
                         dropdownContainer: DefaultStyleDefinitions.getDropdownContainerStyleDefinition()

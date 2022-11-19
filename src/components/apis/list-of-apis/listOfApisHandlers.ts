@@ -48,7 +48,9 @@ export class ListOfApisHandlers implements IWidgetHandler {
                         tableRow: DefaultStyleDefinitions.getTableRowStyleDefinition(),
                         tableHead: DefaultStyleDefinitions.getTableHeadStyleDefinition(),
                         tagInput: DefaultStyleDefinitions.getTagInputStyleDefinition(),
-                        toggleButtonLabel: DefaultStyleDefinitions.getToggleButtonLabelStyleDefinition()
+                        toggleButtonLabel: DefaultStyleDefinitions.getToggleButtonLabelStyleDefinition(),
+                        tagCard: DefaultStyleDefinitions.getTagCardStyleDefinition(),
+                        tagGroupCollapsible: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                     }
                 }
             }
@@ -98,7 +100,8 @@ export class ListOfApisTilesHandlers implements IWidgetHandler {
                         widgetText: DefaultStyleDefinitions.getWidgetTextStyleDefinition(),
                         tagInput: DefaultStyleDefinitions.getTagInputStyleDefinition(),
                         toggleButtonLabel: DefaultStyleDefinitions.getToggleButtonLabelStyleDefinition(),
-                        tagCard: DefaultStyleDefinitions.getTagCardStyleDefinition()
+                        tagCard: DefaultStyleDefinitions.getTagCardStyleDefinition(),
+                        tagGroupCollapsible: DefaultStyleDefinitions.getIconButtonStyleDefinition(),
                     }
                 }
             }
