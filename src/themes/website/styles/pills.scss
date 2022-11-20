@@ -8,7 +8,7 @@
             border-radius: .25rem;
             font-size: 1.3em;
             padding: 5px 10px;
-            border: 1px solid transparent;
+            border: none;
             background: inherit;
 
             &:hover {
@@ -16,7 +16,7 @@
             }
 
             &.active {
-                border-color: $border-color-active;
+                border: 1px solid $border-color-active;
             }
         }
     }
