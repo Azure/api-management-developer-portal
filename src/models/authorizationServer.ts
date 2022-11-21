@@ -9,6 +9,10 @@ export class AuthorizationServer {
     public tokenEndpoint: string;
     public grantTypes: string[];
     public scopes: string[];
+    public useInTestConsole: boolean;
+    public useInApiDocumentation: boolean;
+    public displayedGrantTypes: string;
+    public displayedScopes: string;
 
     constructor(contract?: AuthorizationServerForClient) {
         if (!contract) {
@@ -22,12 +26,22 @@ export class AuthorizationServer {
         this.authorizationEndpoint = contract.authorizationEndpoint;
         this.tokenEndpoint = contract.tokenEndpoint;
         this.scopes = contract.defaultScope?.split(" ") || [];
+        this.useInApiDocumentation = contract.useInApiDocumentation;
+        this.useInTestConsole = contract.useInTestConsole;
 
         if (!contract.grantTypes) {
             return;
         }
 
         this.grantTypes = this.convertGrantTypes(contract.grantTypes);
+        this.SetDisplayedGrantTypes();
+        this.SetDisplayedScopes();
+    }
+    public SetDisplayedGrantTypes(): void {
+        this.displayedGrantTypes = this.grantTypes.join(", ").toString();
+    }
+    public SetDisplayedScopes(): void {
+        this.displayedScopes = this.scopes?.join(", ").toString();
     }
 
     private convertGrantTypes(grantTypes: string[]): string[] {

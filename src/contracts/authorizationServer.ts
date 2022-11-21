@@ -37,4 +37,14 @@ export interface AuthorizationServerForClient {
      * Example: ["profile", "email"]
      */
     defaultScope: string;
+
+    /**
+     * Is this provider used for the test console?
+     */
+    useInTestConsole: boolean;
+
+    /**
+     * Is this provider used for API documentation?
+     */
+    useInApiDocumentation: boolean;
 }
