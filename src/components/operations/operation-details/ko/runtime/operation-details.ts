@@ -351,12 +351,15 @@ export class OperationDetails {
                     return;
                 }
 
-                examplesObj[representation.contentType] = {};
+                const contentTypeObj = {}
                 Object.entries(valueObj).forEach(([key, val]) => {
-                    examplesObj[representation.contentType][key] = typeof val === 'object' ? JSON.stringify(val) : val.toString();
+                    if (typeof val === 'object') return
+                    contentTypeObj[key] = val.toString();
                 })
+
+                if (Object.keys(contentTypeObj).length) examplesObj[representation.contentType] = contentTypeObj;
             });
-            if (!Object.keys(examplesObj).length) return;
+            if (!Object.keys(examplesObj).length) return acc;
 
             acc[cur.identifier] = examplesObj;
             return acc;
