@@ -1,7 +1,7 @@
 import { AuthenticationSettings } from "./authenticationSettings";
 
 /**
- * Cotract of API
+ * Contract of API
  */
 export interface ApiContract {
     /**
