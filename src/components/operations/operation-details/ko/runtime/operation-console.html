@@ -87,7 +87,7 @@
             </authorization>
 
             <details open class="details-styled">
-                <summary>
+                <summary aria-label="Parameters">
                     <h3>
                         Parameters
                         <i class="icon-emb icon-emb-chevron-down"></i>
@@ -177,7 +177,7 @@
             </details>
 
             <details open class="details-styled">
-                <summary>
+                <summary aria-label="headers">
                     <h3>
                         Headers
                         <i class="icon-emb icon-emb-chevron-down"></i>
@@ -249,7 +249,7 @@
 
             <!-- ko if: canHaveBody -->
             <details open class="details-styled">
-                <summary>
+                <summary aria-label="body">
                     <h3>
                         Body
                         <i class="icon-emb icon-emb-chevron-down"></i>
@@ -278,13 +278,13 @@
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="bodyFormat" id="bodyFormatRaw" value="raw"
                                 data-bind="checked: request.bodyFormat, attr: { disabled: request.readonlyBodyFormat}">
-                            <label class="form-check-label" for="bodyFormatRaw">Raw</label>
+                            <label class="form-check-label" for="bodyFormatRaw" aria-label="Request body format Raw">Raw</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="bodyFormat" id="bodyFormatBinary"
                                 value="binary"
                                 data-bind="checked: request.bodyFormat, attr: { disabled: request.readonlyBodyFormat}">
-                            <label class="form-check-label" for="bodyFormatBinary">Binary</label>
+                            <label class="form-check-label" for="bodyFormatBinary" aria-label="Request body format Binary">Binary</label>
                         </div>
                     </div>
                 </div>
@@ -323,7 +323,7 @@
                     <!-- /ko -->
                     <!-- ko if: request.bodyFormat() === 'binary' -->
                     <file-input params="{ onSelect: $component.onFileSelect }" class="form-control"
-                        aria-label="Request body" data-bind="css: { 'is-invalid': !request.binary.isValid() }"></file-input>
+                        aria-label="Upload file" data-bind="css: { 'is-invalid': !request.binary.isValid() }"></file-input>
                     <span class="invalid-feedback" data-bind="validationMessage: request.binary"></span>
                     <!-- /ko -->
                 </div>
@@ -366,7 +366,7 @@
         <!-- ko ifnot: api().type === 'websocket' -->
         <div class="panel panel-dark panel-highlight flex-item flex-grow menu menu-horizontal">
             <details open class="details-styled">
-                <summary>
+                <summary aria-label="HTTP request">
                     <h3>
                         HTTP request
                         <i class="icon-emb icon-emb-chevron-down"></i>
@@ -411,7 +411,7 @@
         <!-- ko if: api().type === 'websocket' -->
         <div class="panel panel-dark panel-highlight flex-item flex-grow menu menu-horizontal">
             <details open class="details-styled">
-                <summary>
+                <summary aria-label="WebSocket request">
                     <h3>
                         WebSocket request
                         <i class="icon-emb icon-emb-chevron-down"></i>
