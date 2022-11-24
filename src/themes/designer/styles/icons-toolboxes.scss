@@ -121,6 +121,7 @@
   $paperbits-s-add: unicode(ea7f);
   $paperbits-curved-arrow-left: unicode(ea80);
   $paperbits-puzzle-10: unicode(ea81);
+  $paperbits-a-security: unicode(ea82);
 
   .paperbits-layout-11::before {
     content: $paperbits-layout-11;
@@ -504,4 +505,8 @@
 
   .paperbits-puzzle-10::before {
     content: $paperbits-puzzle-10;
+  }
+
+  .paperbits-a-security::before {
+    content: $paperbits-a-security;
   }
