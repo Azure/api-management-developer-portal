@@ -1,8 +1,6 @@
-import { User } from "./mocks";
+import { User } from "./mocks/user";
 import * as crypto from "crypto";
 import * as fs from "fs";
-import { Page } from "puppeteer";
-import { Utils as SrcUtils } from "../src/utils";
 
 export class Utils {
     public static async getConfig(): Promise<any> {
@@ -67,48 +65,5 @@ export class Utils {
         const sasToken = `SharedAccessSignature ${apimUid}&${expiryShort}&${signature}`;
 
         return sasToken;
-    }
-
-    /**
-     * If '--mock' param is present in process.argv, intercepts and mocks API calls.
-     *
-     * @param page puppeteer Page obj
-     * @param urls pairs of URLs and JSON/string body response
-     */
-    public static async mock(page: Page, urls: Record<string, Record<string, any> | string>): Promise<void> {
-        const mock = process.argv.includes("--mock");
-        if (mock) return this.mockPure(page, urls);
-    }
-
-    public static async mockPure(page: Page, urls: Record<string, Record<string, any> | string>): Promise<void> {
-        await page.setRequestInterception(true);
-        page.on('request', request => {
-            const found = Object.entries(urls).find(([url, body]) => {
-                if (!SrcUtils.getRelativeUrl(request.url()).includes(SrcUtils.getRelativeUrl(url))) return false;
-
-                // console.log("MOCK", SrcUtils.getRelativeUrl(request.url()));
-
-                if (request.isInterceptResolutionHandled()) return;
-                request.respond({
-                    status: 200,
-                    contentType: 'application/json',
-                    headers: {
-                        "Access-Control-Allow-Origin": "*",
-                        "Access-Control-Allow-Headers": "*",
-                        "Access-Control-Expose-Headers": "*",
-                        "Date": new Date(),
-                        "Ocp-Apim-Sas-Token": 'token="foo-bar&299910242302&aaaaaaaaaaaaaaaaa/aaaaaaaaaaaaaaaaaa/aaaaaaaaaaaaa/aaaaaaaaaaaaaaaaaaaaa/aaaaaaaaaaaaa==",refresh="true"',
-                    },
-                    body: typeof body === "string" ? body : JSON.stringify(body),
-                }, 1);
-                return true;
-            })
-
-            if (!found) {
-                // console.log("pass", SrcUtils.getRelativeUrl(request.url()));
-                if (request.isInterceptResolutionHandled()) return;
-                request.continue(undefined, 0);
-            }
-        });
     }
 }
