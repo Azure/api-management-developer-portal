@@ -13,6 +13,11 @@ export interface SigninSocialContract extends Contract {
      security?: SecurityContract;
 
     /**
+     * Keys of user roles.
+     */
+     roles?: string[];
+     
+    /**
      * Label on AAD button.
      */
     aadLabel: string;

@@ -16,6 +16,14 @@ export class SigninSocialModelBinder implements IModelBinder<SigninSocialModel> 
     public async contractToModel(contract: SigninSocialContract): Promise<SigninSocialModel> {
         const model = new SigninSocialModel();
 
+        if (contract.roles) { // migration.
+            contract.security = {
+                roles: contract.roles
+            }
+
+            contract.roles = null;
+        }
+
         model.security = contract.security ?? { roles: [BuiltInRoles.everyone.key] };
         model.styles = contract.styles || { appearance: "components/button/default" };
         model.aadLabel = contract.aadLabel || "Azure Active Directory";
