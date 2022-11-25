@@ -5,5 +5,5 @@ export const BrowserLaunchOptions: LaunchOptions & BrowserLaunchArgumentOptions 
     ignoreHTTPSErrors: true,
     product: "chrome",
     devtools: true,
-    userDataDir: "/puppeteer-data-dir", // necessary for persistant user preferences
+    userDataDir: "/puppeteer-data-dir", // necessary for persistent user preferences
 };
