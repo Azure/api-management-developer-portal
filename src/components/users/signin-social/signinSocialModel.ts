@@ -1,3 +1,4 @@
+import { SecurityModel } from "@paperbits/common/security";
 import { LocalStyles } from "@paperbits/common/styles";
 
 export class SigninSocialModel { 
@@ -7,9 +8,9 @@ export class SigninSocialModel {
     public styles: LocalStyles;
 
     /**
-     * Keys of user roles.
+     * Security settings.
      */
-    public roles?: string[];
+     public security?: SecurityModel;
 
     /**
      * Label on AAD button.
