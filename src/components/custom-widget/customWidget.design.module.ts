@@ -8,7 +8,6 @@ import { ListenForSecretsRequests } from "./listenForSecretsRequests";
 
 export class CustomWidgetDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bind("customWidgetScaffold", CustomWidgetViewModel);
         injector.bind("customWidgetScaffoldEditor", CustomWidgetEditorViewModel);
         injector.bindSingleton("customWidgetModelBinder", CustomWidgetModelBinder);
         injector.bindSingleton("customWidgetViewModelBinder", CustomWidgetViewModelBinder);
