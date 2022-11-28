@@ -16,7 +16,7 @@ import { buildWidgetSource } from "./utils";
 
 @Component({
     selector: widgetEditorSelector,
-    template: template
+    template: template,
 })
 export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetModel> {
     public readonly sizeStyleConfig: ko.Observable<SizeStylePluginConfig>;
