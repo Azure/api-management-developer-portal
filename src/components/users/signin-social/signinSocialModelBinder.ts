@@ -7,6 +7,7 @@ import { BuiltInRoles } from "@paperbits/common/user";
 
 const nodeType = "signin-social";
 const oldNodeType = "userSigninSocial";
+const defaultRole = BuiltInRoles.everyone.key;
 
 export class SigninSocialModelBinder implements IModelBinder<SigninSocialModel> {
     public canHandleModel(model: Object): boolean {
@@ -16,15 +17,13 @@ export class SigninSocialModelBinder implements IModelBinder<SigninSocialModel> 
     public async contractToModel(contract: SigninSocialContract): Promise<SigninSocialModel> {
         const model = new SigninSocialModel();
 
-        if (contract.roles) { // migration.
+        if (contract.roles) { // migration from old contracts
             contract.security = {
                 roles: contract.roles
             }
-
-            contract.roles = null;
         }
 
-        model.security = contract.security ?? { roles: [BuiltInRoles.everyone.key] };
+        model.security = contract.security ?? { roles: [defaultRole] };
         model.styles = contract.styles || { appearance: "components/button/default" };
         model.aadLabel = contract.aadLabel || "Azure Active Directory";
         model.aadB2CLabel = contract.aadB2CLabel || "Azure Active Directory B2C";
@@ -46,7 +45,7 @@ export class SigninSocialModelBinder implements IModelBinder<SigninSocialModel> 
             aadB2CLabel: model.aadB2CLabel,
             aadB2CReplyUrl: model.aadB2CReplyUrl,
             styles: model.styles,
-            security: model.security ?? { roles: [BuiltInRoles.everyone.key] }
+            security: model.security ?? { roles: [defaultRole] }
         };
 
         return contract;
