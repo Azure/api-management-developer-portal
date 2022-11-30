@@ -114,7 +114,7 @@ export class OperationDetails {
 
             return api.protocols?.join(", ");
         });
-        this.examples = ko.observable();
+        this.examples = ko.observable({});
 
         this.apiType = ko.observable();
         this.onRouteChange = this.onRouteChange.bind(this);
@@ -135,6 +135,9 @@ export class OperationDetails {
 
     @Param()
     public defaultSchemaView: ko.Observable<string>;
+
+    @Param()
+    public showExamples: boolean;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -214,7 +217,7 @@ export class OperationDetails {
 
         if (operation) {
             await this.loadDefinitions(operation);
-            this.parseExamples(operation);
+            if (this.showExamples) this.parseExamples(operation);
             this.operation(operation);
         }
         else {
