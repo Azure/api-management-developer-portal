@@ -19,6 +19,11 @@ export class OperationDetailsModel {
      */
     public useCorsProxy?: boolean;
 
+    /**
+     * Show operation attribute values examples in a column in tables.
+     */
+    public showExamples?: boolean;
+
     constructor() {
         this.enableConsole = true;
     }
