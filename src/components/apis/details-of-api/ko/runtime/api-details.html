@@ -6,8 +6,17 @@
     <!-- ko ifnot: working -->
     <div class="flex-item flex-grow animation-fade-in col-md-auto">
         <!-- ko if: api -->
-        <h1 class="text-wrap">
+        <h1 class="flex align-items-center text-wrap">
             <span data-bind="text: api().displayName"></span>
+            <!-- ko if: versionApis().length > 0 -->
+            <label class="select-badge">
+                <select id="apiVersions" data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: currentApiVersion">
+                </select>
+                <span class="arrow flex align-items-center justify-content-center">
+                    <i class="icon-emb icon-emb-chevron-down"></i>
+                </span>
+            </label>
+            <!-- /ko -->
             <!-- ko if: api().type === 'soap' -->
             <span class="badge badge-soap">SOAP</span>
             <!-- /ko -->
@@ -21,12 +30,6 @@
 
         <div class="form-inline">
             <div class="form-group">
-                <!-- ko if: versionApis().length > 0 -->
-                <label for="apiVersions">API version: </label>
-                <select id="apiVersions" class="form-control"
-                    data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: currentApiVersion">
-                </select>
-                <!-- /ko -->
                 <!-- ko if: api().type !== 'websocket' && api().type !== 'graphql' -->
                 <select id="apiDefinitions" class="form-control" aria-label="API definitions"
                     data-bind="value: downloadSelected">
