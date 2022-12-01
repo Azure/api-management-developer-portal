@@ -5,8 +5,8 @@ import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@pap
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { ApiService } from "../../../../../services/apiService";
-import { AuthorizationServer } from "./../../../../../models/authorizationServer";
-import { Representation } from "./../../../../../models/representation";
+import { AuthorizationServer } from "../../../../../models/authorizationServer";
+import { Representation } from "../../../../../models/representation";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Utils } from "../../../../../utils";
 import { TypeOfApi } from "../../../../../constants";
@@ -17,7 +17,8 @@ import {
     TypeDefinitionPropertyTypeArrayOfReference,
     TypeDefinitionPropertyTypeArrayOfPrimitive,
     TypeDefinitionPropertyTypeCombination,
-    TypeDefinitionPropertyTypePrimitive
+    TypeDefinitionPropertyTypePrimitive,
+    OperationExamples,
 } from "../../../../../models/typeDefinition";
 import { OAuthService } from "../../../../../services/oauthService";
 import { LruCache } from "@paperbits/common/caching/lruCache";
@@ -49,6 +50,7 @@ export class OperationDetails {
     public readonly associatedAuthServer: ko.Observable<AuthorizationServer>;
     public readonly apiType: ko.Observable<string>;
     public readonly protocol: ko.Computed<string>;
+    public readonly examples: ko.Observable<OperationExamples>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -112,6 +114,8 @@ export class OperationDetails {
 
             return api.protocols?.join(", ");
         });
+        this.examples = ko.observable({});
+
         this.apiType = ko.observable();
         this.onRouteChange = this.onRouteChange.bind(this);
 
@@ -131,6 +135,9 @@ export class OperationDetails {
 
     @Param()
     public defaultSchemaView: ko.Observable<string>;
+
+    @Param()
+    public showExamples: boolean;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -210,6 +217,7 @@ export class OperationDetails {
 
         if (operation) {
             await this.loadDefinitions(operation);
+            if (this.showExamples) this.parseExamples(operation);
             this.operation(operation);
         }
         else {
@@ -327,6 +335,40 @@ export class OperationDetails {
         }
 
         return result;
+    }
+
+    private parseExamples(operation: Operation): void {
+        const examples = operation.getMeaningfulResponses().reduce((acc, cur) => {
+            const representations = cur.meaningfulRepresentations();
+            if (!representations || !representations.length) return acc;
+
+            const examplesObj = {}
+            representations.forEach(representation => {
+                const value = representation.examples?.[0]?.value;
+                if (!value) return;
+
+                let valueObj;
+                try {
+                    valueObj = JSON.parse(value);
+                } catch (e) {
+                    return;
+                }
+
+                const contentTypeObj = {}
+                Object.entries(valueObj).forEach(([key, val]) => {
+                    if (typeof val === 'object') return
+                    contentTypeObj[key] = val.toString();
+                })
+
+                if (Object.keys(contentTypeObj).length) examplesObj[representation.contentType] = contentTypeObj;
+            });
+            if (!Object.keys(examplesObj).length) return acc;
+
+            acc[cur.identifier] = examplesObj;
+            return acc;
+        }, {} as OperationExamples);
+
+        this.examples(examples);
     }
 
     public async loadGatewayInfo(apiName: string): Promise<void> {
