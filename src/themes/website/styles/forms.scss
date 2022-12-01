@@ -249,3 +249,41 @@ input[type=search] {
         right: 0;
     }
 }
+
+.select-badge {
+    margin: 0 .5em;
+    font-family: $font-family-base;
+    font-size: 13px;
+
+    select {
+        padding: .625em 1em;
+        padding-right: 2.75em;
+        border: solid white 1px;
+        border-radius: .875em;
+        background: #D9D9D9;
+        outline: none;
+
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+    .arrow {
+        position: absolute;
+        width: 2em;
+        height: 100%;
+        top: 1px;
+        right: 2px;
+        border-left: solid white 1px;
+        pointer-events: none;
+        /*
+        .icon-emb {
+            transition: transform .5s ease;
+        }
+         */
+    }
+    /*
+    select:focus + .arrow .icon-emb {
+        transform: rotate(-180deg);
+    }
+     */
+}
