@@ -200,6 +200,7 @@ export class Authorization {
         keyHeader.inputTypeValue("password");
         keyHeader.type = "string";
         keyHeader.required = true;
+        keyHeader.value.extend(<any>{ required: { message: `Value is required.` } });
         keyHeader.value(subscriptionKey);
 
         if (!this.isGraphQL()) {
