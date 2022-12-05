@@ -1,11 +1,14 @@
-import { User } from "./mocks/user";
-import * as crypto from "crypto";
 import * as fs from "fs";
+import * as crypto from "crypto";
+import { User } from "./mocks";
 
 export class Utils {
     public static async getConfig(): Promise<any> {
         const configFile = await fs.promises.readFile("./src/config.validate.json", { encoding: "utf-8" });
         const validationConfig = JSON.parse(configFile);
+        Object.keys(validationConfig.urls).forEach(key => {
+            validationConfig.urls[key] = validationConfig.root + validationConfig.urls[key];
+        });
 
         return validationConfig;
     }

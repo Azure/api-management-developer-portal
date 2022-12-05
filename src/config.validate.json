@@ -1,24 +1,10 @@
 {
     "environment": "validation",
+    "root": "http://localhost:8080",
     "urls": {
-        "home": "https://contoso.com",
-        "signin": "https://contoso.com/signin",
-        "signup": "https://contoso.com/signup"
-    },
-    "signin": {
-        "id": "foo-bar",
-        "name": "foo-bar-contoso-com",
-        "firstName": "John",
-        "lastName": "Doe",
-        "credentials": {
-            "basic": {
-                "email": "johndoe@contoso.com",
-                "password": "< password >"
-            },
-            "aadB2C": {
-                "email": "johndoe@contoso.com",
-                "password": "< password >"
-            }
-        }
+        "home": "/",
+        "signin": "/signin",
+        "signup": "/signup",
+        "profile": "/profile"
     }
 }

@@ -21,8 +21,7 @@ describe("User sign-up flow", async () => {
         await page.goto(config.urls.signup);
 
         const signUpWidget = new SignupBasicWidget(page);
-        const randomUser = await Utils.getRandomUser();
-        await signUpWidget.signUpWithBasic(randomUser);
+        await signUpWidget.signUpWithBasic();
 
         expect(await page.evaluate(() => document.getElementById("confirmationMessage").textContent))
             .to.equal("Follow the instructions from the email to verify your account.");
