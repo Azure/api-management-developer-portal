@@ -21,7 +21,7 @@ jobs:
           command: "install"
 
       - pwsh: |        
-          node ./migrate --sourceSubscriptionId "$(sourceSubscriptionId)" --sourceResourceGroupName  "$(sourceResourceGroupName)" --sourceServiceName "$(sourceServiceName)" --destServiceName "$(destServiceName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --sourceTenantId "$(sourceAzureTenantId)" --sourceServicePrincipal "$(sourceServicePrincipal)" --sourceSecret "$(sourceServicePrincipalSecret)"  --destTenantId "$(sourceAzureTenantId)" --destServicePrincipal "$(destServicePrincipal)" --destSecret "$(destServicePrincipalSecret)"
+          node ./migrate --sourceSubscriptionId "$(sourceSubscriptionId)" --sourceResourceGroupName  "$(sourceResourceGroupName)" --sourceServiceName "$(sourceServiceName)" --destServiceName "$(destServiceName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --sourceTenantId "$(sourceAzureTenantId)" --sourceServicePrincipal "$(sourceServicePrincipal)" --sourceSecret "$(sourceServicePrincipalSecret)"  --destTenantId "$(destAzureTenantId)" --destServicePrincipal "$(destServicePrincipal)" --destSecret "$(destServicePrincipalSecret)"
         workingDirectory: "$(System.DefaultWorkingDirectory)/scripts.v3"
         displayName: Run Migrate cmd from $(sourceServiceName) to $(destinationServiceName)
               

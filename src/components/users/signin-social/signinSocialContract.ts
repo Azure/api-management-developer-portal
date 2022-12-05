@@ -1,4 +1,5 @@
 import { Contract } from "@paperbits/common";
+import { SecurityContract } from "@paperbits/common/security";
 
 export interface SigninSocialContract extends Contract {
     /**
@@ -7,10 +8,15 @@ export interface SigninSocialContract extends Contract {
     styles?: any;
 
     /**
+     * Security settings.
+     */
+     security?: SecurityContract;
+
+    /**
      * Keys of user roles.
      */
-    roles?: string[];
-
+     roles?: string[];
+     
     /**
      * Label on AAD button.
      */

@@ -5,8 +5,8 @@ import { CustomWidgetContract } from "./customWidgetContract";
 import { widgetName } from "./constants";
 
 export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> {
-    public canHandleModel(model: unknown, widgetName: string): boolean {
-        return model instanceof CustomWidgetModel && model["name"] == widgetName;
+    public canHandleModel(model: unknown): boolean {
+        return model instanceof CustomWidgetModel;
     }
 
     public async contractToModel(contract: CustomWidgetContract): Promise<CustomWidgetModel> {

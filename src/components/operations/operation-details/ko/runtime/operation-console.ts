@@ -53,10 +53,6 @@ export class OperationConsole {
     public readonly isHostnameWildcarded: ko.Computed<boolean>;
     public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
     public readonly wildcardSegment: ko.Observable<string>;
-    public readonly collapsedParameters: ko.Observable<boolean>;
-    public readonly collapsedHeaders: ko.Observable<boolean>;
-    public readonly collapsedBody: ko.Observable<boolean>;
-    public readonly collapsedRequest: ko.Observable<boolean>;
     public isConsumptionMode: boolean;
     public templates: Object;
     public backendUrl: string;
@@ -117,11 +113,6 @@ export class OperationConsole {
         this.wsPayload = ko.observable();
         this.wsDataFormat = ko.observable("raw");
         this.wsLogItems = ko.observableArray([]);
-
-        this.collapsedParameters = ko.observable(false);
-        this.collapsedHeaders = ko.observable(false);
-        this.collapsedBody = ko.observable(false);
-        this.collapsedRequest = ko.observable(false);
 
         this.bodyStash = "";
 
@@ -524,7 +515,7 @@ export class OperationConsole {
             const knownStatusCode = KnownStatusCodes.find(x => x.code === response.statusCode);
 
             const responseStatusText = response.statusText || knownStatusCode
-                ? knownStatusCode.description
+                ? knownStatusCode?.description
                 : "Unknown";
 
             this.responseStatusCode(response.statusCode.toString());
@@ -680,22 +671,6 @@ export class OperationConsole {
 
     public getApiReferenceUrl(): string {
         return this.routeHelper.getApiReferenceUrl(this.api().name);
-    }
-
-    public collapseParameters(): void {
-        this.collapsedParameters(!this.collapsedParameters());
-    }
-
-    public collapseHeaders(): void {
-        this.collapsedHeaders(!this.collapsedHeaders());
-    }
-
-    public collapseBody(): void {
-        this.collapsedBody(!this.collapsedBody());
-    }
-
-    public collapseRequest(): void {
-        this.collapsedRequest(!this.collapsedRequest());
     }
 
     public logCopyEvent(): void {

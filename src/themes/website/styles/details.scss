@@ -1,0 +1,21 @@
+details.details-styled {
+  summary {
+    list-style: none;
+    cursor: pointer;
+
+    i.icon-emb {
+      display: inline-block;
+      transition: transform .33s ease;
+    }
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  &[open] summary {
+    i.icon-emb {
+      transform: rotate(-180deg);
+    }
+  }
+}

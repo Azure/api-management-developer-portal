@@ -241,7 +241,7 @@
                 <div class="tab-content">
                     <!-- ko if: representation.typeName -->
                     <type-definition
-                        params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation), defaultSchemaView: $component.defaultSchemaView }">
+                        params="{ apiName: $component.api().name, operationName: $component.operation().name, definition: $component.getDefinitionForRepresentation(representation), defaultSchemaView: $component.defaultSchemaView, examples: $component.examples()[response.identifier]?.[representation.contentType] }">
                     </type-definition>
                     <!-- /ko -->
 
