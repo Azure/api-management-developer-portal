@@ -3,7 +3,6 @@ import { expect } from "chai";
 import { Utils } from "../../utils";
 import { BrowserLaunchOptions } from "../../constants";
 import { ProfileWidget } from "../maps/profile";
-import setupMocks from "../mock";
 import { signIn } from "./signin.spec";
 
 describe("User profile", async () => {
@@ -21,14 +20,6 @@ describe("User profile", async () => {
     it("User can visit his profile page", async () => {
         const page = await browser.newPage();
         const confirmedUser = await Utils.getConfirmedUserBasic();
-        const primaryKey = "abc";
-
-        await setupMocks(page, config, confirmedUser, {
-            "/listSecrets?": {
-                primaryKey,
-                "secondaryKey": "123",
-            },
-        });
 
         await signIn(page, config, confirmedUser);
         expect(page.url()).to.equal(config.urls.home);
