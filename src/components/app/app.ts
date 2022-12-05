@@ -6,7 +6,7 @@ import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ISiteService } from "@paperbits/common/sites";
 import { IAuthenticator } from "../../authentication";
-import { SettingNames, WarningBackendUrlMissing } from "../../constants";
+import { DeveloperPortalType, SettingNames, WarningBackendUrlMissing } from "../../constants";
 
 const startupError = `Unable to start the portal`;
 
@@ -30,6 +30,17 @@ export class App {
         if (!settings[SettingNames.backendUrl]) {
             this.viewManager.addToast("Warning", WarningBackendUrlMissing);
             return;
+        }
+
+        if (!settings["backendUrl"]) {
+            const developerPortalType = settings[SettingNames.developerPortalType] || DeveloperPortalType.selfHosted;
+
+            if (developerPortalType === DeveloperPortalType.selfHosted) {
+                const toast = this.viewManager.notifyInfo("Settings", WarningBackendUrlMissing, [{
+                    title: "Got it",
+                    action: async () => this.viewManager.removeToast(toast)
+                }]);
+            }
         }
 
         try {

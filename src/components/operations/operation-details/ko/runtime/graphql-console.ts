@@ -56,11 +56,6 @@ export class GraphqlConsole {
     public readonly document: ko.Observable<string>;
     public readonly sendingRequest: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
-    public readonly collapsedHeaders: ko.Observable<boolean>;
-    public readonly collapsedQuery: ko.Observable<boolean>;
-    public readonly collapsedMutation: ko.Observable<boolean>;
-    public readonly collapsedSubscription: ko.Observable<boolean>;
-    public readonly collapsedParameters: ko.Observable<boolean>;
     public readonly queryParameters: ko.ObservableArray<ConsoleParameter>;
     public readonly headers: ko.ObservableArray<ConsoleHeader>;
     public readonly editorErrors: ko.ObservableArray<string>;
@@ -88,11 +83,6 @@ export class GraphqlConsole {
         private readonly logger: Logger
     ) {
         this.working = ko.observable(true);
-        this.collapsedHeaders = ko.observable(true);
-        this.collapsedQuery = ko.observable(true);
-        this.collapsedMutation = ko.observable(true);
-        this.collapsedSubscription = ko.observable(true);
-        this.collapsedParameters = ko.observable(true);
         this.editorErrors = ko.observableArray([]);
         this.api = ko.observable<Api>();
         this.sendingRequest = ko.observable(false);
@@ -482,7 +472,7 @@ export class GraphqlConsole {
     }
 
     /**
-     * 
+     *
      * @param nodes list of root nodes to generate from
      * @param level level for indent
      * @returns string of generated node, for example:
@@ -538,7 +528,7 @@ export class GraphqlConsole {
     }
 
     /**
-    * 
+    *
     * @param node root node, either query, mutation, or subscription
     * @returns list of variable as string to parse in document. For example, ($lim: Int!)
     */
@@ -574,15 +564,6 @@ export class GraphqlConsole {
         let gqlFieldName = name += (isRequired && isInputNode) ? "*" : "";
         gqlFieldName = gqlFieldName += (isInputNode) ? ":" : "";
         return gqlFieldName;
-    }
-
-    public collapse(collapsible: string): void {
-        this[collapsible](!this[collapsible]());
-    }
-
-    public collapsedType(type: string): boolean {
-        const varName = "collapsed" + type;
-        return this[varName]();
     }
 
     private availableOperations(): void {

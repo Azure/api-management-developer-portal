@@ -333,3 +333,7 @@ body {
 .design-menu-horizontal {
     padding-bottom: 110px;
 }
+
+.external * {
+    pointer-events: none;
+}

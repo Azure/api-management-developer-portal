@@ -5,12 +5,11 @@ import { ArmResource } from "../contracts/armResource";
 import { AppError } from "../errors";
 import { defaultPageSize } from "../constants";
 import { PageContract } from "../contracts/page";
-import { LocaleModel } from "@paperbits/common/localization";
-import { PopupInstanceModel } from "@paperbits/core/popup";
 import { IApiClient } from "../clients";
 
 
-const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block"];
+const supportedKeys = ["pages", "layouts", "files", "uploads", "blocks", "urls", "popups"];
+const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block", "popup"];
 const selectedLocale = "en_us";
 const reservedArmIds = ["containerId", "webContainerId", "appId", "accountId"];
 const reservedPaperbitsIds = ["containerKey", "webContainerKey"];
@@ -571,7 +570,7 @@ export class MapiObjectStorage implements IObjectStorage {
         Object.keys(delta).map(key => {
             const firstLevelObject = delta[key];
 
-            if (["pages", "layouts", "files", "uploads", "blocks", "urls"].includes(key)) {
+            if (supportedKeys.includes(key)) {
                 Object.keys(firstLevelObject).forEach(subkey => {
                     keys.push(`${key}/${subkey}`);
                 });

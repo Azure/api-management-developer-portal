@@ -1,6 +1,7 @@
 import { AadConfigPublisher } from "./publishing/aadConfigPublisher";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
+import { RoleBasedSecurityPublishModule } from "@paperbits/core/security/roleBasedSecurity.publish.module";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
 import { DetailsOfApiModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
@@ -39,9 +40,9 @@ import { CustomWidgetPublishModule } from "./components/custom-widget/customWidg
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
 import { staticDataEnvironment } from "./../environmentConstants"
-import { MapiClient } from "./clients";
 import { TenantService } from "./services/tenantService";
 import { StaticDelegationService } from "./services/staticDelegationService";
+import { MapiClient } from "./clients";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -69,6 +70,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ValidationSummaryModule());
         injector.bindModule(new CustomHtmlPublishModule());
         injector.bindModule(new CustomWidgetPublishModule());
+        injector.bindModule(new RoleBasedSecurityPublishModule());
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("userService", StaticUserService);

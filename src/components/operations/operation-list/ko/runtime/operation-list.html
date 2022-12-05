@@ -56,9 +56,14 @@
         <!-- ko if: groupByTag -->
 
         <!-- ko foreach: { data: operationGroups, as: 'group' } -->
-        <div class="tag-group">
+        <button
+          class="tag-group tag-group-collapsible no-border"
+          data-bind="class: $component.groupTagsExpanded().has(group.tag) ? '' : 'active', click: () => $component.groupTagCollapseToggle(group.tag)"
+        >
             <span class="tag-item" role="group" data-bind="text: group.tag"></span>
-        </div>
+            <i class="icon-emb icon-emb-chevron-down"></i>
+        </button>
+        <!-- ko if: $component.groupTagsExpanded().has(group.tag) -->
         <div class="list">
             <!-- ko foreach: { data: group.items, as: 'item' } -->
             <div role="option" class="list-item table-preset-operations"
@@ -70,6 +75,7 @@
             </div>
             <!-- /ko -->
         </div>
+        <!-- /ko -->
         <!-- /ko -->
 
         <!-- ko if: operationGroups().length === 0 -->

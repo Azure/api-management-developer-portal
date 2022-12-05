@@ -14,7 +14,7 @@ You can **report bugs** or **submit feature requests** in [the repository's Issu
 
 Microsoft Azure Support assistance is limited to managed portals and only the initial setup of self-hosted portals ([documentation](https://aka.ms/apimdocs/selfhostportal)); best effort support is provided for problems that are caused by environmental factors, such as (but not limited to): hosting platform, development environment, network configuration. Other self-hosted portal assistance requests (for example, problem with custom widgets) should be submitted [on Stack Overflow](https://aka.ms/apimso) with the `azure-api-management` tag. **We don't provide support through GitHub Issues**.
 
-We welcome and appreciate [community contributions](CONTRIBUTIONS.md). Refer to the [contribution guidelines](https://aka.ms/apimdocs/portal/contribute) for more information.
+We welcome and appreciate [community contributions](CONTRIBUTIONS.md).
 
 ## <a name="license"></a> License
 

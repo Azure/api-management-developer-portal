@@ -35,7 +35,6 @@ export class Authorization {
     public readonly authorizationError: ko.Observable<string>;
     public readonly products: ko.Observable<Product[]>;
     public readonly selectedSubscriptionKey: ko.Observable<string>;
-    public readonly collapsedAuth: ko.Observable<boolean>;
     private deleteAuthorizationHeader: boolean = false;
     public readonly selectedAuthorizationServer: ko.Observable<AuthorizationServer>;
 
@@ -46,7 +45,6 @@ export class Authorization {
         private readonly apiService: ApiService,
         private readonly productService: ProductService,
     ) {
-        this.collapsedAuth = ko.observable(false);
         this.authorizationServers = ko.observable();
         this.selectedAuthorizationServer = ko.observable();
         this.selectedGrantType = ko.observable();
@@ -206,6 +204,7 @@ export class Authorization {
         keyHeader.inputTypeValue("password");
         keyHeader.type = "string";
         keyHeader.required = true;
+        keyHeader.value.extend(<any>{ required: { message: `Value is required.` } });
         keyHeader.value(subscriptionKey);
 
         if (!this.isGraphQL()) {
@@ -459,9 +458,5 @@ export class Authorization {
             this.consoleOperation().request.queryParameters.remove(parameter);
             this.updateRequestSummary();
         }
-    }
-
-    public collapseAuth(): void {
-        this.collapsedAuth(!this.collapsedAuth());
     }
 }

@@ -59,7 +59,7 @@ export class SignInSocialEditor {
     }
 
     public onRoleSelect(roles: string[]): void {
-        this.model.roles = roles;
+        this.model.security = { roles: roles };
         this.applyChanges();
     }
 

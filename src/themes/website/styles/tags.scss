@@ -1,7 +1,33 @@
-.tag-group {
+.tag-group,
+.tag-group.no-border {
     padding-top: 20px;
     padding-bottom: 10px;
     flex-basis: 100%;
+
+    &.tag-group-collapsible {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        outline: none !important;
+        overflow: hidden;
+
+        .tag-item {
+            cursor: inherit;
+        }
+
+        .icon-emb-chevron-down {
+            transform: rotate(0);
+            transform-origin: 48% 45%;
+            transition: transform .3s ease;
+        }
+
+        &.active {
+            .icon-emb-chevron-down {
+                transform: rotate(-90deg);
+            }
+        }
+    }
 }
 
 .tag-item,
