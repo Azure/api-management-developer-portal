@@ -15,7 +15,9 @@
         "emitDecoratorMetadata": true,
         "allowUnreachableCode": true,
         "sourceMap": true,
-        "incremental": true
+        "incremental": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true
     },
     "include": [
         "./src/**/*",

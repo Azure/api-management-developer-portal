@@ -4,13 +4,12 @@ import { Utils } from "../../utils";
 import { BrowserLaunchOptions } from "../../constants";
 import { SignInSocialWidget } from "../maps/signin-social";
 import { SignInBasicWidget } from "../maps/signin-basic";
-import { User } from "../../mocks";
 
-export async function signIn(page: puppeteer.Page, config: any, user: User): Promise<void> {
+export async function signIn(page: puppeteer.Page, config: any): Promise<void> {
     await page.goto(config.urls.signin);
 
     const signInWidget = new SignInBasicWidget(page);
-    await signInWidget.signInWithBasic(user);
+    await signInWidget.signInWithBasic();
 }
 
 describe("User sign-in flow", async () => {
@@ -27,8 +26,7 @@ describe("User sign-in flow", async () => {
 
     it("User can sign-in with basic credentials", async () => {
         const page = await browser.newPage();
-        const confirmedUser = await Utils.getConfirmedUserBasic();
-        await signIn(page, config, confirmedUser);
+        await signIn(page, config);
         expect(page.url()).to.equal(config.urls.home);
     });
     /*
