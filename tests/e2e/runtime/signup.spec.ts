@@ -3,7 +3,6 @@ import { expect } from "chai";
 import { BrowserLaunchOptions } from "../../constants";
 import { Utils } from "../../utils";
 import { SignupBasicWidget } from "../maps/signup-basic";
-import setupMocks  from "../mock";
 
 describe("User sign-up flow", async () => {
     let config;
@@ -20,8 +19,6 @@ describe("User sign-up flow", async () => {
     it("User can sign-up with basic credentials", async () => {
         const page = await browser.newPage();
         await page.goto(config.urls.signup);
-
-        await setupMocks(page, config);
 
         const signUpWidget = new SignupBasicWidget(page);
         const randomUser = await Utils.getRandomUser();

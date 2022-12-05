@@ -5,7 +5,6 @@ import { BrowserLaunchOptions } from "../../constants";
 import { SignInSocialWidget } from "../maps/signin-social";
 import { SignInBasicWidget } from "../maps/signin-basic";
 import { User } from "../../mocks";
-import setupMocks from "../mock";
 
 export async function signIn(page: puppeteer.Page, config: any, user: User): Promise<void> {
     await page.goto(config.urls.signin);
@@ -29,7 +28,6 @@ describe("User sign-in flow", async () => {
     it("User can sign-in with basic credentials", async () => {
         const page = await browser.newPage();
         const confirmedUser = await Utils.getConfirmedUserBasic();
-        await setupMocks(page, config, confirmedUser);
         await signIn(page, config, confirmedUser);
         expect(page.url()).to.equal(config.urls.home);
     });
