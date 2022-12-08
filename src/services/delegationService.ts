@@ -36,7 +36,7 @@ export class DelegationService implements IDelegationService {
     }
 
     public async getDelegatedSigninUrl(returnUrl: string): Promise<string> {
-        var payload = {
+        const payload = {
             [DelegationParameters.ReturnUrl]: returnUrl
         }
         const response = await this.apiClient.post<DelegationResponse>("/delegation/urls/signin", null, JSON.stringify(payload));
@@ -44,7 +44,7 @@ export class DelegationService implements IDelegationService {
     }
 
     public async getDelegatedSignupUrl(returnUrl: string): Promise<string> {
-        var payload = {
+        const payload = {
             [DelegationParameters.ReturnUrl]: returnUrl
         }
         const response = await this.apiClient.post<DelegationResponse>("/delegation/urls/signup", null, JSON.stringify(payload));

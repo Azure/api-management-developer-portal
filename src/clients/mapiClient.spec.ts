@@ -36,7 +36,7 @@ describe("Mapi Client", async () => {
         const apiClient = new MapiClient(httpClient, authenticator, settingsProvider);
 
         //act
-        var result = await apiClient.get<Validity>(path);
+        const result = await apiClient.get<Validity>(path);
 
         //assert
         assert.isTrue(result.isValid);
@@ -58,7 +58,7 @@ describe("Mapi Client", async () => {
         const apiClient = new MapiClient(httpClient, authenticator, settingsProvider);
 
         //act
-        var result = await apiClient.get<Validity>(path, [Utils.getIsUserResourceHeader()]);
+        const result = await apiClient.get<Validity>(path, [Utils.getIsUserResourceHeader()]);
 
         //assert
         assert.isTrue(result.isValid);

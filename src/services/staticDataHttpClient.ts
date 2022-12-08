@@ -84,8 +84,8 @@ export class StaticDataHttpClient implements HttpClient {
     }
 
     private getShortUrl(url: string): string {
-        let shortUrl = url.replace("https://contoso.developer.azure-api.net/developer", "");
-        return shortUrl.split('?')[0];
+        const shortUrl = url.replace("https://contoso.developer.azure-api.net/developer", "");
+        return shortUrl.split("?")[0];
     }
 
 }
