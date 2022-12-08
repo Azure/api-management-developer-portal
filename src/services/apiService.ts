@@ -373,7 +373,7 @@ export class ApiService {
 
             if (searchQuery.pattern) {
                 const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
-                query = Utils.addQueryParameter(query, `$filter=contains(${searchQuery.propertyName || 'name'},'${pattern}')`);
+                query = Utils.addQueryParameter(query, `$filter=contains(${searchQuery.propertyName || "name"},'${pattern}')`);
             }
 
             top = searchQuery && searchQuery.take || Constants.defaultPageSize;

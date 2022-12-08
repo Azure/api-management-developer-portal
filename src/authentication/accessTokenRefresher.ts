@@ -21,7 +21,7 @@ export class AccessTokenRefrsher {
     private async refreshToken(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
 
-        let backendUrl = Utils.getBaseUrlWithDeveloperSuffix(settings[Constants.SettingNames.backendUrl]);
+        const backendUrl = Utils.getBaseUrlWithDeveloperSuffix(settings[Constants.SettingNames.backendUrl]);
 
         if (!backendUrl) {
             throw new Error(`Management API URL ("${Constants.SettingNames.backendUrl}") setting is missing in configuration file.`);
