@@ -28,10 +28,16 @@
                 data-bind="text: $component.selectedAuthorizationServer().displayName"></label>
         </div>
         <!-- /ko -->
+    </div>
+
+    <div class="row flex flex-row">
+        <div class="col-4">
+            <label for="authFlow" class="text-monospace form-label">Authorization flow: </label>
+        </div>
         <div class="col-7">
             <div class="form-group">
                 <select id="authFlow" class="form-control"
-                        data-bind="options: $component.selectedAuthorizationServer().grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
+                    data-bind="options: $component.selectedAuthorizationServer().grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
                 </select>
             </div>
         </div>
@@ -64,7 +70,7 @@
         <div class="col-7">
             <div class="form-group">
                 <button class="button button-primary"
-                        data-bind="click: $component.authenticateOAuthWithPassword">Authorize</button>
+                    data-bind="click: $component.authenticateOAuthWithPassword">Authorize</button>
             </div>
         </div>
     </div>
@@ -95,7 +101,7 @@
                 <!-- /ko -->
                 <!-- ko if: !$component.products() || $component.products().length === 0 -->
                 <input id="subscriptionKey" type="text" class="form-control" placeholder="subscription key"
-                       data-bind="textInput: $component.selectedSubscriptionKey" />
+                    data-bind="textInput: $component.selectedSubscriptionKey" />
                 <!-- /ko -->
             </div>
         </div>
