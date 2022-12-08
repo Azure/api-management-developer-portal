@@ -17,8 +17,8 @@ export interface ProductContract {
 
     /**
      * Specifies whether subscription approval is required. 
-     * If false, new subscriptions will be approved automatically enabling developers to call the product’s APIs immediately after subscribing. 
-     * If true, administrators must manually approve the subscription before the developer can call any of the product’s APIs. 
+     * If false, new subscriptions will be approved automatically enabling developers to call the product’s APIs immediately after subscribing. 
+     * If true, administrators must manually approve the subscription before the developer can call any of the product’s APIs. 
      * Can be present only if subscriptionRequired property is present and has a value of true.
      */
     approvalRequired: boolean;
@@ -33,7 +33,7 @@ export interface ProductContract {
 
     /**
      * Specifies the number of subscriptions a user can have to this product at the same time. 
-     * Set to null or omit to allow unlimited per user subscriptions. 
+     * Set to null or omit to allow unlimited per user subscriptions. 
      * Can be present only if subscriptionRequired property is present and has a value of false.
      */
     subscriptionsLimit: number;

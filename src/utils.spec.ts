@@ -31,7 +31,7 @@ describe("Utils", () => {
 
         //arrange
         const query = "/apis";
-        let userId = "123"
+        const userId = "123"
 
         //act
         const prefixedQuery = Utils.ensureUserPrefixed(query, userId);
@@ -44,7 +44,7 @@ describe("Utils", () => {
 
         //arrange
         const query = "/apis";
-        let userId = null
+        const userId = null
 
         //act
         const prefixedQuery = Utils.ensureUserPrefixed(query, userId);
@@ -57,7 +57,7 @@ describe("Utils", () => {
 
         //arrange
         const query = "/apis";
-        let userId = "integration"
+        const userId = "integration"
 
         //act
         const prefixedQuery = Utils.ensureUserPrefixed(query, userId);
@@ -70,7 +70,7 @@ describe("Utils", () => {
 
         //arrange
         const query = "/users/123/apis";
-        let userId = "321"
+        const userId = "321"
 
         //act
         const prefixedQuery = Utils.ensureUserPrefixed(query, userId);
