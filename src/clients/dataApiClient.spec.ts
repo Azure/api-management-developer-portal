@@ -37,7 +37,7 @@ describe("Data API Client", async () => {
         const apiClient = new DataApiClient(httpClient, authenticator, settingsProvider);
 
         //act
-        var result = await apiClient.get<Validity>(path);
+        const result = await apiClient.get<Validity>(path);
 
         //assert
         assert.isTrue(result.isValid);
@@ -71,8 +71,8 @@ describe("Data API Client", async () => {
         const apiClient = new DataApiClient(httpClient, authenticator, settingsProvider);
 
         //act
-        var resultWithUser = await apiClient.get<Validity>(mainPath, [Utils.getIsUserResourceHeader()]);
-        var result = await apiClient.get<Validity>(mainPath);
+        const resultWithUser = await apiClient.get<Validity>(mainPath, [Utils.getIsUserResourceHeader()]);
+        const result = await apiClient.get<Validity>(mainPath);
 
         //assert
         assert.isTrue(resultWithUser.isValid);
@@ -102,8 +102,8 @@ describe("Data API Client", async () => {
         const apiClient = new DataApiClient(httpClient, authenticator, settingsProviderMock);
 
         //act
-        var resultWithUserResourceHeader = await apiClient.get<Validity>(mainPath, [Utils.getIsUserResourceHeader()]);
-        var result = await apiClient.get<Validity>(mainPath);
+        const resultWithUserResourceHeader = await apiClient.get<Validity>(mainPath, [Utils.getIsUserResourceHeader()]);
+        const result = await apiClient.get<Validity>(mainPath);
 
         //assert
         assert.isTrue(resultWithUserResourceHeader.isValid);
@@ -133,8 +133,8 @@ describe("Data API Client", async () => {
         const apiClient = new DataApiClient(httpClient, authenticator, settingsProviderMock);
 
         //act
-        var resultWithUserResourceHeader = await apiClient.get<Validity>(mainPath, [Utils.getIsUserResourceHeader()]);
-        var result = await apiClient.get<Validity>(mainPath);
+        const resultWithUserResourceHeader = await apiClient.get<Validity>(mainPath, [Utils.getIsUserResourceHeader()]);
+        const result = await apiClient.get<Validity>(mainPath);
 
         //assert
         assert.isTrue(resultWithUserResourceHeader.isValid);

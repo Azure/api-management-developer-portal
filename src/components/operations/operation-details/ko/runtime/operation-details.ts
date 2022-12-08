@@ -359,7 +359,7 @@ export class OperationDetails {
 
                 const contentTypeObj = {}
                 Object.entries(valueObj).forEach(([key, val]) => {
-                    if (typeof val === 'object') return
+                    if (typeof val === "object") return
                     contentTypeObj[key] = val.toString();
                 })
 
