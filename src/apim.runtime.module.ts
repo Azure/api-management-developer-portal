@@ -37,7 +37,7 @@ import { GraphqlConsole } from "./components/operations/operation-details/ko/run
 import { GraphqlDocumentation } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc";
 import { GraphqlDetails } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc-details";
 import { GraphDocService } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc-service";
-import { OauthServerConfiguration } from "./components/operations/operation-details/ko/runtime/oauth-server-configuration";
+import { SecuritySchemes } from "./components/operations/operation-details/ko/runtime/security-schemes";
 import { OperationConsole } from "./components/operations/operation-details/ko/runtime/operation-console";
 import { OperationDetails } from "./components/operations/operation-details/ko/runtime/operation-details";
 import { TypeDefinitionViewModel } from "./components/operations/operation-details/ko/runtime/type-definition";
@@ -159,7 +159,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("tagInput", TagInput);
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bind("pagination", Pagination);
-        injector.bind("oauthServerConfiguration", OauthServerConfiguration);
+        injector.bind("securitySchemes", SecuritySchemes);
         injector.bindModule(new CustomWidgetRuntimeModule());
         injector.bindSingleton("delegationService", DelegationService);
         injector.bindModule(new RoleBasedSecurityRuntimeModule());
