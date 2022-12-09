@@ -2190,7 +2190,7 @@
             }
         }
     },
-    "https://contoso.developer.azure-api.net/developer/identityProviders": {
+    "https://contoso.developer.azure-api.net/mapi/identityProviders": {
         "statusCode": 200,
         "statusText": "OK",
         "body": {
@@ -2218,7 +2218,7 @@
             }
         ]
     },
-    "https://contoso.developer.azure-api.net/developer/portalsettings/signup": {
+    "https://contoso.developer.azure-api.net/mapi/portalsettings/signup": {
         "statusCode": 200,
         "statusText": "OK",
         "body": {
@@ -2370,7 +2370,7 @@
             }
         ]
     },
-    "https://contoso.developer.azure-api.net/developer/contentTypes/blob/contentItems": {
+    "https://contoso.developer.azure-api.net/mapi/contentTypes/blob/contentItems": {
         "statusCode": 200,
         "statusText": "OK",
         "body": {
@@ -2469,7 +2469,7 @@
             }
         ]
     },
-    "https://contoso.developer.azure-api.net/developer/contentTypes/page/contentItems": {
+    "https://contoso.developer.azure-api.net/mapi/contentTypes/page/contentItems": {
         "statusCode": 200,
         "statusText": "OK",
         "body": {
@@ -2708,7 +2708,7 @@
             }
         ]
     },
-    "https://contoso.developer.azure-api.net/developer/contentTypes/layout/contentItems": {
+    "https://contoso.developer.azure-api.net/mapi/contentTypes/layout/contentItems": {
         "statusCode": 200,
         "statusText": "OK",
         "body": {
