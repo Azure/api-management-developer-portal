@@ -17,8 +17,6 @@ export class SecuritySchemes {
         this.authorizationServers = ko.observable();
     }
 
-
-    //create a new param for apiKeyDetails
     @Param()
     public apiKeyDetails: ko.Observable<ApiKeyDetails>;
 
