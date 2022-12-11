@@ -15,10 +15,11 @@ jobs:
         with:
           node-version: 16.x
 
+      - name: Set registry
+        run: npm config set registry https://registry.npmjs.org/
+
       - name: Install
-        run:
-          npm config set registry https://registry.npmjs.org/
-          npm install
+        run: npm install
 
       - name: Build
         run: npm run build-static-data
