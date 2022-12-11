@@ -27,6 +27,7 @@ jobs:
 
       - name: Install
         run:
+          npm config set registry https://registry.npmjs.org/
           npm install
           npm install @microsoft/eslint-formatter-sarif@2.1.7
 
