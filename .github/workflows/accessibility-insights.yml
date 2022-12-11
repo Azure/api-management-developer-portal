@@ -1,4 +1,4 @@
-name: CI
+name: Accessibility insights
 
 on:
   pull_request:
