@@ -81,7 +81,7 @@ export class ApiService {
             query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
         }
 
-        const pageOfApis = await this.apiClient.get<Page<ApiContract>>(query, [await this.apiClient.getPortalHeader("getApis"), Utils.getIsUserResourceHeader()]);
+        const pageOfApis = await this.apiClient.get<Page<ApiContract>>(query, [Utils.getIsUserResourceHeader()]);
 
         const page = new Page<Api>();
         page.value = pageOfApis.value.map(x => new Api(x));
@@ -100,7 +100,7 @@ export class ApiService {
         }
 
         const query = `/apiVersionSets/${versionSetId}/apis`;
-        const apisPage = await this.apiClient.get<Page<ApiContract>>(query, [await this.apiClient.getPortalHeader("getApisInVersionSet"), Utils.getIsUserResourceHeader()]);
+        const apisPage = await this.apiClient.get<Page<ApiContract>>(query, [Utils.getIsUserResourceHeader()]);
         const result = apisPage.value
             .map(x => new Api(x));
 
@@ -137,7 +137,7 @@ export class ApiService {
         if (odataFilterEntries.length > 0) {
             query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
         }
-        const pageOfOperationsByTag = await this.apiClient.get<PageContract<ApiTagResourceContract>>(query, [await this.apiClient.getPortalHeader("getOperationsByTags"), Utils.getIsUserResourceHeader()]);
+        const pageOfOperationsByTag = await this.apiClient.get<PageContract<ApiTagResourceContract>>(query, [Utils.getIsUserResourceHeader()]);
         const page = new Page<TagGroup<Operation>>();
         const tagGroups: Bag<TagGroup<Operation>> = {};
 
@@ -196,7 +196,7 @@ export class ApiService {
         if (odataFilterEntries.length > 0) {
             query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
         }
-        const pageOfApiTagResources = await this.apiClient.get<PageContract<ApiTagResourceContract>>(query, [await this.apiClient.getPortalHeader("getApisByTags"), Utils.getIsUserResourceHeader()]);
+        const pageOfApiTagResources = await this.apiClient.get<PageContract<ApiTagResourceContract>>(query, [Utils.getIsUserResourceHeader()]);
         const page = new Page<TagGroup<Api>>();
         const tagGroups: Bag<TagGroup<Api>> = {};
 
@@ -239,7 +239,7 @@ export class ApiService {
             throw new Error(`Parameter "operationId" not specified.`);
         }
 
-        const result = await this.apiClient.get<Page<TagContract>>(`${operationId}/tags`, [await this.apiClient.getPortalHeader("getOperationTags"), Utils.getIsUserResourceHeader()]);
+        const result = await this.apiClient.get<Page<TagContract>>(`${operationId}/tags`, [Utils.getIsUserResourceHeader()]);
         return result.value.map(contract => new Tag(contract));
     }
 
@@ -261,7 +261,7 @@ export class ApiService {
 
         apiResourceUri += `?expandApiVersionSet=true`; // TODO: doesn't work in non-ARM resources
 
-        const apiContract = await this.apiClient.get<ApiContract>(apiResourceUri, [await this.apiClient.getPortalHeader("getApi"), Utils.getIsUserResourceHeader()]);
+        const apiContract = await this.apiClient.get<ApiContract>(apiResourceUri, [Utils.getIsUserResourceHeader()]);
 
         if (!apiContract) {
             return null;
@@ -308,7 +308,7 @@ export class ApiService {
             default:
         }
 
-        const headers: HttpHeader[] = [await this.apiClient.getPortalHeader("exportApi"), Utils.getIsUserResourceHeader()];
+        const headers: HttpHeader[] = [Utils.getIsUserResourceHeader()];
         headers.push(header);
         return this.apiClient.get<string>(`apis/${apiId}?export=true`, headers);
     }
@@ -328,7 +328,7 @@ export class ApiService {
         const take = Constants.defaultPageSize;
         apiResourceUri += `/releases?$top=${take}&$skip=${skip}`;
 
-        const changelogContracts = await this.apiClient.get<Page<ChangeLogContract>>(`apis/${apiResourceUri}`, [await this.apiClient.getPortalHeader("getApiChangeLog"), Utils.getIsUserResourceHeader()]);
+        const changelogContracts = await this.apiClient.get<Page<ChangeLogContract>>(`apis/${apiResourceUri}`, [Utils.getIsUserResourceHeader()]);
         if (!changelogContracts) {
             return null;
         }
@@ -337,7 +337,7 @@ export class ApiService {
     }
 
     public async getApiVersionSet(versionSetId: string): Promise<VersionSet> {
-        const versionSetContract = await this.apiClient.get<VersionSetContract>(`apiVersionSets/${versionSetId}`, [await this.apiClient.getPortalHeader("getApiVersionSet"), Utils.getIsUserResourceHeader()]);
+        const versionSetContract = await this.apiClient.get<VersionSetContract>(`apiVersionSets/${versionSetId}`, [Utils.getIsUserResourceHeader()]);
         return new VersionSet(versionSetContract.id, versionSetContract);
     }
 
@@ -346,7 +346,7 @@ export class ApiService {
             throw new Error(`Parameter "operationId" not specified.`);
         }
 
-        const operationContract = await this.apiClient.get<OperationContract>(operationId, [await this.apiClient.getPortalHeader("getOperation"), Utils.getIsUserResourceHeader()]);
+        const operationContract = await this.apiClient.get<OperationContract>(operationId, [Utils.getIsUserResourceHeader()]);
 
         if (!operationContract) {
             return null;
@@ -384,7 +384,7 @@ export class ApiService {
         }
         query = Utils.addQueryParameter(query, `$top=${top || 20}`);
 
-        const result = await this.apiClient.get<Page<OperationContract>>(query, [await this.apiClient.getPortalHeader("getOperations"), Utils.getIsUserResourceHeader()]);
+        const result = await this.apiClient.get<Page<OperationContract>>(query, [Utils.getIsUserResourceHeader()]);
         const page = new Page<Operation>();
 
         page.value = result.value.map(c => new Operation(<any>c));
@@ -410,7 +410,7 @@ export class ApiService {
     }
 
     private async getApiSchemaData(schemaId: string): Promise<SchemaContract> {
-        const contract = await this.apiClient.get<SchemaContract>(schemaId, [await this.apiClient.getPortalHeader("getApiSchema"), Utils.getIsUserResourceHeader()]);
+        const contract = await this.apiClient.get<SchemaContract>(schemaId, [Utils.getIsUserResourceHeader()]);
         return contract;
     }
 
@@ -451,7 +451,7 @@ export class ApiService {
     }
 
     private async getGQLSchemaData(apiId: string): Promise<Page<SchemaContract>> {
-        const result = await this.apiClient.get<Page<SchemaContract>>(`${apiId}/schemas`, [await this.apiClient.getPortalHeader("getSchemas"), Utils.getIsUserResourceHeader()]);
+        const result = await this.apiClient.get<Page<SchemaContract>>(`${apiId}/schemas`, [Utils.getIsUserResourceHeader()]);
         return result;
     }
 
@@ -477,7 +477,7 @@ export class ApiService {
         }
 
         const result = [];
-        const pageOfProducts = await this.apiClient.get<Page<ProductContract>>(`${apiId}/products`, [await this.apiClient.getPortalHeader("getAllApiProducts"), Utils.getIsUserResourceHeader()]);
+        const pageOfProducts = await this.apiClient.get<Page<ProductContract>>(`${apiId}/products`, [Utils.getIsUserResourceHeader()]);
 
         if (pageOfProducts && pageOfProducts.value) {
             pageOfProducts.value.map(item => result.push(new Product(item)));
@@ -502,7 +502,7 @@ export class ApiService {
             query = Utils.addQueryParameter(query, `$filter=(contains(name,'${encodeURIComponent(filter.pattern)}'))`);
         }
 
-        const page = await this.apiClient.get<Page<ProductContract>>(query, [await this.apiClient.getPortalHeader("getApiProductsPage"), Utils.getIsUserResourceHeader()]);
+        const page = await this.apiClient.get<Page<ProductContract>>(query, [Utils.getIsUserResourceHeader()]);
         const result = new Page<Product>();
         result.count = page.count;
         result.nextLink = page.nextLink;
@@ -524,7 +524,7 @@ export class ApiService {
 
         query = Utils.addQueryParameter(query, `$top=${searchQuery.take}`);
 
-        const result = await this.apiClient.get<Page<ApiContract>>(query, [await this.apiClient.getPortalHeader("getProductApis"), Utils.getIsUserResourceHeader()]);
+        const result = await this.apiClient.get<Page<ApiContract>>(query, [Utils.getIsUserResourceHeader()]);
         const page = new Page<Api>();
 
         page.value = result.value.map(item => new Api(item));
@@ -536,7 +536,7 @@ export class ApiService {
 
     public async getHostnames(): Promise<string[]> {
         const query = `gateway/hostnames`;
-        const result = await this.apiClient.get<ApiHostnamesContract>(query, [await this.apiClient.getPortalHeader("getApiHostnames")]);
+        const result = await this.apiClient.get<ApiHostnamesContract>(query);
 
         return result.hostnames;
     }

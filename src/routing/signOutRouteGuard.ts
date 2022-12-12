@@ -29,7 +29,7 @@ export class SignOutRouteGuard implements RouteGuard {
 
                 if (token) {
                     try {
-                        const identity = await this.apiClient.get<Identity>("/identity", [await this.apiClient.getPortalHeader("delegationSignOut")]);
+                        const identity = await this.apiClient.get<Identity>("/identity");
 
                         if (identity) {
                             const delegationParam = {};

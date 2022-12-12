@@ -34,7 +34,7 @@ export class ProductService {
         const query = productId ? `?$filter=scope eq '${productId}'` : "";
 
         try {
-            const pageContract = await this.apiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`, [await this.apiClient.getPortalHeader("getSubscriptions")]);
+            const pageContract = await this.apiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`);
             const subscriptions: Subscription[] = [];
 
             for (const subscriptionContract of pageContract.value) {
@@ -94,7 +94,7 @@ export class ProductService {
         }
 
         const result = [];
-        const pageOfSubscriptions = await this.apiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`, [await this.apiClient.getPortalHeader("getUserSubscriptions")]);
+        const pageOfSubscriptions = await this.apiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
 
         if (!pageOfSubscriptions?.value) {
             return result;
@@ -148,7 +148,7 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        const contract = await this.apiClient.get<SubscriptionContract>(`/subscriptions/${subscriptionId}`, [await this.apiClient.getPortalHeader("getSubscription"), Utils.getIsUserResourceHeader()]);
+        const contract = await this.apiClient.get<SubscriptionContract>(`/subscriptions/${subscriptionId}`, [Utils.getIsUserResourceHeader()]);
 
         if (!contract) {
             return null;
@@ -165,7 +165,7 @@ export class ProductService {
      */
     public async getProducts(getAll: boolean = false): Promise<Product[]> {
         const result = [];
-        const contracts = await this.apiClient.get<Page<ProductContract>>(`/products`, [await this.apiClient.getPortalHeader("getProducts"), Utils.getIsUserResourceHeader()]);
+        const contracts = await this.apiClient.get<Page<ProductContract>>(`/products`, [Utils.getIsUserResourceHeader()]);
 
         if (contracts && contracts.value) {
             if (getAll) {
@@ -193,7 +193,7 @@ export class ProductService {
             query = Utils.addQueryParameter(query, `$filter=(contains(name,'${encodeURIComponent(filter.pattern)}'))`);
         }
 
-        const page = await this.apiClient.get<Page<ProductContract>>(query, [await this.apiClient.getPortalHeader("getProductsPage"), Utils.getIsUserResourceHeader()]);
+        const page = await this.apiClient.get<Page<ProductContract>>(query, [Utils.getIsUserResourceHeader()]);
         const result = new Page<Product>();
         result.count = page.count;
         result.nextLink = page.nextLink;
@@ -210,7 +210,7 @@ export class ProductService {
             throw new Error(`Parameter "productId" not specified.`);
         }
 
-        const contract = await this.apiClient.get<ProductContract>(productId, [await this.apiClient.getPortalHeader("getProduct"), Utils.getIsUserResourceHeader()]);
+        const contract = await this.apiClient.get<ProductContract>(productId, [Utils.getIsUserResourceHeader()]);
 
         if (contract) {
             return new Product(contract);
@@ -227,7 +227,7 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        await this.apiClient.post(`/subscriptions/${subscriptionId}/regeneratePrimaryKey`, [await this.apiClient.getPortalHeader("regeneratePrimaryKey"), Utils.getIsUserResourceHeader()]);
+        await this.apiClient.post(`/subscriptions/${subscriptionId}/regeneratePrimaryKey`, [Utils.getIsUserResourceHeader()]);
 
         return await this.getSubscription(subscriptionId);
     }
@@ -238,7 +238,7 @@ export class ProductService {
      */
     public async regenerateSecondaryKey(subscriptionId: string): Promise<Subscription> {
 
-        await this.apiClient.post(`/subscriptions/${subscriptionId}/regenerateSecondaryKey`, [await this.apiClient.getPortalHeader("regenerateSecondaryKey"), Utils.getIsUserResourceHeader()]);
+        await this.apiClient.post(`/subscriptions/${subscriptionId}/regenerateSecondaryKey`, [Utils.getIsUserResourceHeader()]);
         return await this.getSubscription(subscriptionId);
     }
 
@@ -268,7 +268,7 @@ export class ProductService {
                 scope: productId,
                 name: subscriptionName
             };
-            await this.apiClient.post(userId + subscriptionId, [await this.apiClient.getPortalHeader("createSubscription"), Utils.getIsUserResourceHeader()], payload);
+            await this.apiClient.post(userId + subscriptionId, [Utils.getIsUserResourceHeader()], payload);
         }
     }
 
@@ -287,7 +287,7 @@ export class ProductService {
             console.warn("Delegation enabled. Can't cancel subscription");
         }
         else {
-            const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("cancelSubscription"), Utils.getIsUserResourceHeader()];
+            const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, Utils.getIsUserResourceHeader()];
 
             const payload = {
                 state: SubscriptionState.cancelled
@@ -313,7 +313,7 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionName" not specified.`);
         }
 
-        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("renameSubscription"), Utils.getIsUserResourceHeader()];
+        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, Utils.getIsUserResourceHeader()];
 
         const payload = {
             name: subscriptionName

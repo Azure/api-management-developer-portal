@@ -57,8 +57,7 @@ export class UsersService {
             url: `${backendUrl}/identity?api-version=${Constants.managementApiVersion}`,
             method: "GET",
             headers: [
-                { name: KnownHttpHeaders.Authorization, value: credentials },
-                await this.apiClient.getPortalHeader("authenticate")
+                { name: KnownHttpHeaders.Authorization, value: credentials }
             ]
         };
 
@@ -112,7 +111,7 @@ export class UsersService {
         const response = await this.httpClient.send({
             url: `${backendUrl}${requestUrl}&api-version=${Constants.managementApiVersion}`,
             method: "PUT",
-            headers: [{ name: KnownHttpHeaders.Authorization, value: token }, await this.apiClient.getPortalHeader("activateUser"), Utils.getIsUserResourceHeader()]
+            headers: [{ name: KnownHttpHeaders.Authorization, value: token }, Utils.getIsUserResourceHeader()]
         });
 
         await this.getTokenFromResponse(response);
@@ -122,7 +121,7 @@ export class UsersService {
         const headers = [];
 
         if (token) {
-            headers.push({ name: KnownHttpHeaders.Authorization, value: token }, await this.apiClient.getPortalHeader("updatePassword"), Utils.getIsUserResourceHeader());
+            headers.push({ name: KnownHttpHeaders.Authorization, value: token }, Utils.getIsUserResourceHeader());
         }
 
         const payload = {
@@ -150,7 +149,7 @@ export class UsersService {
         }
 
         try {
-            const identity = await this.apiClient.get<Identity>("/identity", [await this.apiClient.getPortalHeader("getCurrentUserId")]);
+            const identity = await this.apiClient.get<Identity>("/identity");
 
             if (!identity || !identity.id) {
                 return null;
@@ -174,7 +173,7 @@ export class UsersService {
         }
 
         try {
-            const identity = await this.apiClient.get<Identity>("/identity", [await this.apiClient.getPortalHeader("getCurrentUserId")]);
+            const identity = await this.apiClient.get<Identity>("/identity");
 
             if (!identity || !identity.id) {
                 return null;
@@ -208,7 +207,7 @@ export class UsersService {
                 return null;
             }
 
-            const user = await this.apiClient.get<UserContract>(userId, [await this.apiClient.getPortalHeader("getCurrentUser"), Utils.getIsUserResourceHeader()]);
+            const user = await this.apiClient.get<UserContract>(userId, [Utils.getIsUserResourceHeader()]);
 
             return new User(user);
         }
@@ -223,7 +222,7 @@ export class UsersService {
      * @param updateUserData
      */
     public async updateUser(userId: string, firstName: string, lastName: string): Promise<User> {
-        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("updateUser")];
+        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }];
         const payload = {
             firstName: firstName,
             lastName: lastName
@@ -251,7 +250,7 @@ export class UsersService {
                 value: "*"
             };
 
-            await this.apiClient.delete<string>(`users/${userId}`, [header, await this.apiClient.getPortalHeader("deleteUser")]);
+            await this.apiClient.delete<string>(`users/${userId}`, [header]);
 
             sessionStorage.setItem(Constants.closeAccount, "true");
             this.signOut();
@@ -288,12 +287,12 @@ export class UsersService {
     }
 
     public async createSignupRequest(signupRequest: MapiSignupRequest): Promise<void> {
-        await this.apiClient.post("/users", [await this.apiClient.getPortalHeader("createSignupRequest"), Utils.getIsUserResourceHeader()], signupRequest);
+        await this.apiClient.post("/users", [Utils.getIsUserResourceHeader()], signupRequest);
     }
 
     public async createResetPasswordRequest(email: string): Promise<void> {
         const payload = { to: email };
-        await this.apiClient.post(`/confirmations/password`, [await this.apiClient.getPortalHeader("createResetPasswordRequest")], payload);
+        await this.apiClient.post(`/confirmations/password`, null, payload);
     }
 
     public async changePassword(userId: string, newPassword: string): Promise<void> {
@@ -306,7 +305,6 @@ export class UsersService {
         const headers = [
             { name: KnownHttpHeaders.Authorization, value: authToken },
             { name: KnownHttpHeaders.IfMatch, value: "*" },
-            await this.apiClient.getPortalHeader("changePassword"),
             Utils.getIsUserResourceHeader()
         ];
 
@@ -340,7 +338,6 @@ export class UsersService {
             headers: [
                 { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                 { name: KnownHttpHeaders.Authorization, value: `${provider} id_token="${idToken}"` },
-                await this.apiClient.getPortalHeader("createUserWithOAuth"),
                 Utils.getIsUserResourceHeader()
             ],
             body: JSON.stringify(user)

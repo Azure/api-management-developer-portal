@@ -44,7 +44,7 @@ export class OAuthService {
 
     public async getOpenIdAuthServers(apiId: string): Promise<AuthorizationServer[]> {
         try {
-            const authServers = await this.apiClient.get<Page<AuthorizationServerForClient>>(`apis/${apiId}/authServers/openidconnect`, [await this.apiClient.getPortalHeader("getAuthorizationServer"), Utils.getIsUserResourceHeader()]);
+            const authServers = await this.apiClient.get<Page<AuthorizationServerForClient>>(`apis/${apiId}/authServers/openidconnect`, [Utils.getIsUserResourceHeader()]);
             return authServers.value.map(x => new AuthorizationServer(x));
         }
         catch (error) {
@@ -55,7 +55,7 @@ export class OAuthService {
 
     public async getOauthServers(apiId: string): Promise<AuthorizationServer[]> {
         try {
-            const authServers = await this.apiClient.get<Page<AuthorizationServerForClient>>(`apis/${apiId}/authServers/oauth2`, [await this.apiClient.getPortalHeader("getAuthorizationServer"), Utils.getIsUserResourceHeader()]);
+            const authServers = await this.apiClient.get<Page<AuthorizationServerForClient>>(`apis/${apiId}/authServers/oauth2`, [Utils.getIsUserResourceHeader()]);
             return authServers.value.map(x => new AuthorizationServer(x));
         }
         catch (error) {
