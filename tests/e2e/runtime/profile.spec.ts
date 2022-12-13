@@ -4,7 +4,6 @@ import { Utils } from "../../utils";
 import { BrowserLaunchOptions } from "../../constants";
 import { ProfileWidget } from "../maps/profile";
 import { signIn } from "./signin.spec";
-import defaultStaticData from "../../mocks/defaultStaticData.json";
 
 describe("User profile", async () => {
     let config;
@@ -28,6 +27,8 @@ describe("User profile", async () => {
 
         const profileWidget = new ProfileWidget(page);
         await profileWidget.profile();
+
+        const defaultStaticData = await import("../../mocks/defaultStaticData.json");
 
         const staticEmail = defaultStaticData["https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999"].body.properties.email;
         expect(await page.evaluate(() =>
