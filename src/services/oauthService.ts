@@ -222,7 +222,7 @@ export class OAuthService {
 
         return new Promise((resolve, reject) => {
             try {
-                window.open(authorizationServer.authorizationEndpoint + "/?" + args, "_blank", "width=400,height=500");
+                window.open(`${authorizationServer.authorizationEndpoint}?${args}`, "_blank", "width=400,height=500");
 
                 const receiveMessage = async (event: MessageEvent): Promise<void> => {
                     const authorizationCode = event.data["code"];
