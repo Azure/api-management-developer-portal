@@ -43,9 +43,9 @@
 
             <!-- ko if:  apiDocumentationAuthServers()?.length > 0 -->
             <div class="animation-fade-in">
-                <h4>Authorization</h4>
-                <oauth-server-configuration params="{authorizationServers: apiDocumentationAuthServers}">
-                </oauth-server-configuration>
+                <h4>Security Schemes</h4>
+                <security-schemes params="{authorizationServers: apiDocumentationAuthServers, apiKeyDetails: apiKeyDetails}">
+                </security-schemes>
             </div>
             <!-- /ko -->
 

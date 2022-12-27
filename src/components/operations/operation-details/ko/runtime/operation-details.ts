@@ -22,6 +22,7 @@ import {
 } from "../../../../../models/typeDefinition";
 import { OAuthService } from "../../../../../services/oauthService";
 import { LruCache } from "@paperbits/common/caching/lruCache";
+import { ApiKeyDetails, ApiKeyLocation } from "./apiKeyDetails";
 
 @RuntimeComponent({
     selector: "operation-details"
@@ -51,6 +52,7 @@ export class OperationDetails {
     public readonly apiType: ko.Observable<string>;
     public readonly protocol: ko.Computed<string>;
     public readonly examples: ko.Observable<OperationExamples>;
+    public readonly apiKeyDetails: ko.Observable<ApiKeyDetails>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -73,6 +75,7 @@ export class OperationDetails {
         this.definitions = ko.observableArray<TypeDefinition>();
         this.defaultSchemaView = ko.observable("table");
         this.useCorsProxy = ko.observable();
+        this.apiKeyDetails = ko.observable({} as ApiKeyDetails);
         this.requestUrlSample = ko.computed(() => {
 
             const api = this.api();
@@ -199,10 +202,20 @@ export class OperationDetails {
 
         this.closeConsole();
 
+        if (api.typeName.toLocaleLowerCase() === "rest") {
+            this.apiKeyDetails().name = api.subscriptionKeyParameterNames?.header;
+            this.apiKeyDetails().in = ApiKeyLocation.Header;
+        }
+        else {
+            this.apiKeyDetails().name = api.subscriptionKeyParameterNames?.query;
+            this.apiKeyDetails().in = ApiKeyLocation.Query;
+        }
+
+
         let associatedAuthServers: AuthorizationServer[];
         if (api.authenticationSettings?.oAuth2AuthenticationSettings.length > 0) {
             associatedAuthServers = await this.oauthService.getOauthServers(api.id);
-        } 
+        }
         else if (api.authenticationSettings?.openidAuthenticationSettings.length > 0) {
             associatedAuthServers = await this.oauthService.getOpenIdAuthServers(api.id);
         }
