@@ -3,7 +3,7 @@ export class ValidationMessages {
     static emailRequired = `Email is required.`;
     static captchaRequired = `Captcha is required.`;
     static firstNameRequired = `First name is required.`;
-    static lastNameRequired = `First name is required.`;
+    static lastNameRequired = `Last name is required.`;
     static passwordRequired = `Password is required.`;
     static passwordConfirmationMustMatch = `Password confirmation field must be equal to password.`;
     static newPasswordRequired = `New password is required.`;
