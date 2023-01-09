@@ -53,7 +53,7 @@ export class Signin {
             decorateInputElement: true
         });
 
-        this.username.extend(<any>{ required: { message: ValidationMessages.firstNameRequired }, email: true });
+        this.username.extend(<any>{ required: { message: ValidationMessages.emailRequired }, email: true });
         this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired } });
         this.consented.extend(<any>{ equal: { params: true, message: ValidationMessages.consentRequired } });
     }
