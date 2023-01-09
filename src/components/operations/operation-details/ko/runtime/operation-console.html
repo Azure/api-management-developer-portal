@@ -87,7 +87,7 @@
             </authorization>
 
             <details open class="details-styled">
-                <summary>
+                <summary aria-label="Parameters">
                     <h3>
                         Parameters
                         <i class="icon-emb icon-emb-chevron-down"></i>
@@ -177,7 +177,7 @@
             </details>
 
             <details open class="details-styled">
-                <summary>
+                <summary aria-label="headers">
                     <h3>
                         Headers
                         <i class="icon-emb icon-emb-chevron-down"></i>
@@ -218,7 +218,7 @@
                                     <!-- ko if: header.secret() -->
                                     <input autocomplete="off" class="form-control form-control-sm" placeholder="value"
                                         spellcheck="false" aria-label="Header value"
-                                        data-bind="attr: {type: header.inputTypeValue, 'aria-required': header.required}, textInput: header.value">
+                                        data-bind="attr: {type: header.inputTypeValue, 'aria-required': header.required}, textInput: header.value, event: { keyup: $component.updateRequestSummary }">
                                     <button data-bind="click: () => $component.toggleSecretHeader(header)"
                                         class="input-group-addon">
                                         <i
@@ -249,7 +249,7 @@
 
             <!-- ko if: canHaveBody -->
             <details open class="details-styled">
-                <summary>
+                <summary aria-label="body">
                     <h3>
                         Body
                         <i class="icon-emb icon-emb-chevron-down"></i>
@@ -366,7 +366,7 @@
         <!-- ko ifnot: api().type === 'websocket' -->
         <div class="panel panel-dark panel-highlight flex-item flex-grow menu menu-horizontal">
             <details open class="details-styled">
-                <summary>
+                <summary aria-label="HTTP request">
                     <h3>
                         HTTP request
                         <i class="icon-emb icon-emb-chevron-down"></i>
@@ -411,7 +411,7 @@
         <!-- ko if: api().type === 'websocket' -->
         <div class="panel panel-dark panel-highlight flex-item flex-grow menu menu-horizontal">
             <details open class="details-styled">
-                <summary>
+                <summary aria-label="WebSocket request">
                     <h3>
                         WebSocket request
                         <i class="icon-emb icon-emb-chevron-down"></i>

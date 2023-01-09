@@ -1,15 +1,17 @@
+import { SecurityModel } from "@paperbits/common/security";
 import { LocalStyles } from "@paperbits/common/styles";
+import { BuiltInRoles } from "@paperbits/common/user/builtInRoles";
 
-export class SigninSocialModel { 
+export class SigninSocialModel {
     /**
      * Widget local styles.
      */
     public styles: LocalStyles;
 
     /**
-     * Keys of user roles.
+     * Security settings.
      */
-    public roles?: string[];
+    public security?: SecurityModel;
 
     /**
      * Label on AAD button.
@@ -19,7 +21,7 @@ export class SigninSocialModel {
     /**
      * AAD reply URL, e.g. `/signin`.
      */
-     public aadReplyUrl?: string;
+    public aadReplyUrl?: string;
 
     /**
      * Label on AAD B2C button.
@@ -33,5 +35,6 @@ export class SigninSocialModel {
 
     constructor() {
         this.styles = { appearance: "components/button/default" };
+        this.security = { roles: [BuiltInRoles.everyone.key] };
     }
 }
