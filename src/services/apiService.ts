@@ -451,7 +451,7 @@ export class ApiService {
     }
 
     private async getGQLSchemaData(apiId: string): Promise<Page<SchemaContract>> {
-        const result = await this.apiClient.get<Page<SchemaContract>>(`${apiId}/schemas`, [Utils.getIsUserResourceHeader()]);
+        const result = await this.apiClient.get<Page<SchemaContract>>(`/apis/${apiId}/schemas?$expand=document`, [Utils.getIsUserResourceHeader()]);
         return result;
     }
 
