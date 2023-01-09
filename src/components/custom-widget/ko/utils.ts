@@ -34,7 +34,7 @@ export async function buildWidgetSource(
     };
     url.searchParams.append(APIM_EDITOR_DATA_KEY, encodeURIComponent(JSON.stringify(data)));
 
-    const src = url.toString() + window.location.hash;
+    const src = url.toString();
 
     return {override: developmentSrc, src};
 }

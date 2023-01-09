@@ -1,6 +1,6 @@
 import { Contract } from "@paperbits/common";
 
-export interface OperationDetailsContract extends Contract { 
+export interface OperationDetailsContract extends Contract {
     /**
      * Indicates whether "Try" button should appear on the operation details widget.
      */
@@ -20,4 +20,9 @@ export interface OperationDetailsContract extends Contract {
      * Indicates whether the Test console should use CORS proxy vs direct calls from the browser.
      */
     useCorsProxy?: boolean;
+
+    /**
+     * Show operation attribute values examples in a column in tables.
+     */
+    showExamples?: boolean;
 }
