@@ -22,4 +22,3 @@ jobs:
 
       - name: Run tests
         run: npm run unit-test
-        continue-on-error: true
