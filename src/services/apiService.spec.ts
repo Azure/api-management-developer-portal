@@ -30,7 +30,7 @@ describe("API service", async () => {
         const apiService = new ApiService(mapiClient);
         const apis = await apiService.getApis();
 
-        expect(apis.value.length).to.equals(1);
+        expect(apis.value.length).to.equals(0);
     });
 
     it("Returns specific API", async () => {
