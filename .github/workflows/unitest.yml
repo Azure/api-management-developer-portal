@@ -1,0 +1,25 @@
+name: Unit test
+
+on:
+  pull_request:
+    branches: 
+      - master
+
+jobs:
+  unittests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install
+        run:
+          npm install
+
+      - name: Run tests
+        run: npm run unit-test
+        continue-on-error: true
