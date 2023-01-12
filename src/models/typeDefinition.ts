@@ -275,7 +275,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                 combinationReferenceObjectsArray: [],
                 combinationReferencesNames: [],
                 combinationOtherProperties: {},
-                combinationRequiredPropereties: []
+                combinationRequiredPropereties: contract.required || []
             };
 
             let processedTypeDefinitionsArray: TypeDefinition[] = [];
@@ -317,7 +317,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
             }
 
             if (combinationArrayItem.required) {
-                processedCombinationPropertiesObject.combinationRequiredPropereties = combinationArrayItem.required;
+                processedCombinationPropertiesObject.combinationRequiredPropereties.push(...combinationArrayItem.required);
             }
 
             if (combinationArrayItem.properties) {
