@@ -23,7 +23,7 @@ import { Tag } from "../models/tag";
 import { get, set } from "idb-keyval";
 import { IApiClient } from "../clients";
 import { LruCache } from "@paperbits/common/caching/lruCache";
-import { ApiHostnamesContract } from "../contracts/apiHostnames";
+import { ApiHostnameContract } from "../contracts/apiHostname";
 
 interface CacheItem {
     value: any;
@@ -534,10 +534,11 @@ export class ApiService {
         return page;
     }
 
-    public async getHostnames(): Promise<string[]> {
-        const query = `gateway/hostnames`;
-        const result = await this.apiClient.get<ApiHostnamesContract>(query);
+    public async getApiHostnames(apiName: string): Promise<string[]> {
+        const query = `apis/${apiName}/hostnames`;
+        const result = await this.apiClient.get<Page<ApiHostnameContract>>(query, [Utils.getIsUserResourceHeader()]);
+        const hostnameValues = result.value.map(x => x.value);
 
-        return result.hostnames;
+        return hostnameValues;
     }
 }
