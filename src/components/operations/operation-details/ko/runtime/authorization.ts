@@ -108,7 +108,7 @@ export class Authorization {
         }
 
         const api = this.api();
-        const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
+        const scopeOverride = this.getSelectedAuthServerOverrideScope(authorizationServer.name, api);
         const storedCredentials = await this.getStoredCredentials(authorizationServer.name, scopeOverride);
 
         if (storedCredentials) {
@@ -252,7 +252,7 @@ export class Authorization {
     public async authenticateOAuth(grantType: string): Promise<void> {
         const api = this.api();
         const authorizationServer = this.selectedAuthorizationServer();
-        const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
+        const scopeOverride = this.getSelectedAuthServerOverrideScope(authorizationServer.name, api);
         const serverName = authorizationServer.name;
 
         if (scopeOverride) {
@@ -321,7 +321,7 @@ export class Authorization {
 
             const api = this.api();
             const authorizationServer = this.selectedAuthorizationServer();
-            const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
+            const scopeOverride = this.getSelectedAuthServerOverrideScope(authorizationServer.name, api);
             const serverName = authorizationServer.name;
 
             if (scopeOverride) {
@@ -458,5 +458,16 @@ export class Authorization {
             this.consoleOperation().request.queryParameters.remove(parameter);
             this.updateRequestSummary();
         }
+    }
+
+    private getSelectedAuthServerOverrideScope(selectedAuthServerName: string, api: Api): string {
+        const authServers = api.authenticationSettings.oAuth2AuthenticationSettings;
+        if (selectedAuthServerName && authServers) {
+            const foundIndex = authServers.findIndex(e => e.authorizationServer.name == selectedAuthServerName);
+            if (foundIndex >= 0){
+                return authServers[foundIndex].scope;
+            }
+        }
+        return null;
     }
 }
