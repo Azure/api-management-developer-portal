@@ -14,13 +14,13 @@
 <ul class="nav nav-pills" role="tablist">
     <li class="nav-item" role="presentation">
         <button role="tab" class="nav-link active" title="Table view" aria-label="Table view"
-            data-bind="activate: $component.switchToTable, css: { active: $component.schemaView() === 'table' },  tab: {isSelected: $component.schemaView() === 'table'}">
+            data-bind="activate: $component.switchToTable, css: { active: $component.schemaView() === 'table' },  tab: { isSelected: $component.schemaView() === 'table' }">
             <i class="icon-emb icon-emb-list"></i>
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button role="tab" class="nav-link" title="Raw schema view" aria-label="Raw schema view"
-            data-bind="activate: $component.switchToRaw, css: { active: $component.schemaView() === 'raw' }, tab: {isSelected: $component.schemaView() === 'raw'}">
+            data-bind="activate: $component.switchToRaw, css: { active: $component.schemaView() === 'raw' }, tab: { isSelected: $component.schemaView() === 'raw' }">
             <i class="icon-emb icon-emb-brackets"></i>
         </button>
     </li>
