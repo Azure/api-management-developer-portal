@@ -29,14 +29,14 @@
         <h3 data-bind="text: $component.headerName()"></h3>
         <ul class="nav nav-pills" role="tablist">
             <li class="nav-item" role="presentation">
-                <button role="tab" class="nav-link active" title="Table view"
-                    data-bind="activate: () => {switchToTable(graphSelectedSchemaView)}, css: { active: graphSelectedSchemaView() === 'table' }">
+                <button role="tab" class="nav-link active" title="Table view" aria-label="Table view"
+                    data-bind="activate: () => {switchToTable(graphSelectedSchemaView)}, css: { active: graphSelectedSchemaView() === 'table' }, tab: { isSelected: graphSelectedSchemaView() === 'table' }"">
                     <i class="icon-emb icon-emb-list"></i>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button role="tab" class="nav-link" title="Raw schema view"
-                    data-bind="activate: () => {switchToRaw(graphSelectedSchemaView)}, css: { active: graphSelectedSchemaView() === 'raw' }">
+                <button role="tab" class="nav-link" title="Raw schema view" aria-label="Raw schema view" data-bind=" activate: () => { switchToRaw(graphSelectedSchemaView) }, css: { active:
+                    graphSelectedSchemaView() === 'raw' }, tab: { isSelected: graphSelectedSchemaView() === 'raw' }"">
                     <i class="icon-emb icon-emb-brackets"></i>
                 </button>
             </li>
@@ -125,14 +125,14 @@
         <span data-bind="text: $component.getDescription(reference)"></span>
         <ul class="nav nav-pills" role="tablist">
             <li class="nav-item" role="presentation">
-                <button role="tab" class="nav-link active" title="Table view"
-                    data-bind="activate: () => {$component.switchToTable(reference.schemaView)}, css: { active: reference.schemaView() === 'table' }">
+                <button role="tab" class="nav-link active" title="Table view" aria-label="Table view"
+                    data-bind="activate: () => {$component.switchToTable(reference.schemaView)}, css: { active: reference.schemaView() === 'table' }, tab: { isSelected: reference.schemaView() === 'table' }"">
                     <i class="icon-emb icon-emb-list"></i>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button role="tab" class="nav-link" title="Raw schema view"
-                    data-bind="activate: () => {$component.switchToRaw(reference.schemaView)}, css: { active: reference.schemaView() === 'raw' }">
+                <button role="tab" class="nav-link" title="Raw schema view" aria-label="Raw schema view" data-bind=" activate: () => { $component.switchToRaw(reference.schemaView) }, css: { active:
+                    reference.schemaView() === 'raw' }, tab: { isSelected: reference.schemaView() === 'raw' }"">
                     <i class="icon-emb icon-emb-brackets"></i>
                 </button>
             </li>
