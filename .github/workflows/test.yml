@@ -17,4 +17,4 @@ jobs:
         run: npm install
 
       - name: Run tests
-        run: npm run unit-test
+        run: npm run src-spec-test
