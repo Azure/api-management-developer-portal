@@ -10,24 +10,25 @@ import { DelegationService } from "./delegationService";
 
 const settingsProvider = new StaticSettingsProvider({
     backendUrl: "https://contoso.developer.azure-api.net",
-    managementApiAccessToken: "SharedAccessSignature 1&220001010000&000000000000000000000000000=="
 });
 
 const authenticator = new StaticAuthenticator();
 
 describe("Product service", async () => {
+    const productsResource = `/developer/products`
+    const productResource = `/developer/products/starter`
     it("Returns list of products", async () => {
         const httpClient = new MockHttpClient();
 
         httpClient.mock()
-            .get("/products")
+            .get(productsResource)
             .reply(200, { value: [starterProduct] });
 
         const apiClient = new DataApiClient(httpClient, authenticator, settingsProvider);
         const delegationService = new DelegationService(apiClient, settingsProvider);
 
         const productService = new ProductService(apiClient, delegationService);
-        const products = await productService.getProducts();
+        const products = await productService.getProducts(true);
 
         expect(products.length).to.equals(1);
     });
@@ -36,7 +37,7 @@ describe("Product service", async () => {
         const httpClient = new MockHttpClient();
 
         httpClient.mock()
-            .get("/products/starter")
+            .get(productResource)
             .reply(200, starterProduct);
 
         const apiClient = new DataApiClient(httpClient, authenticator, settingsProvider);
