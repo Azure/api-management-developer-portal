@@ -285,31 +285,36 @@ export class ApiService {
             throw new Error(`Parameter "apiId" not specified.`);
         }
 
-        const header: HttpHeader = {
+        const acceptHeader: HttpHeader = {
             name: "Accept",
             value: "application/vnd.swagger.doc+json"
         };
+        const cacheHeader: HttpHeader = {
+            name: "Cache-Control",
+            value: "no-cache"
+        };
         switch (format) {
             case "wadl":
-                header.value = "application/vnd.sun.wadl+xml";
+                acceptHeader.value = "application/vnd.sun.wadl+xml";
                 break;
             case "wsdl":
-                header.value = "application/wsdl+xml";
+                acceptHeader.value = "application/wsdl+xml";
                 break;
             case "swagger": // json 2.0
-                header.value = "application/vnd.swagger.doc+json";
+                acceptHeader.value = "application/vnd.swagger.doc+json";
                 break;
             case "openapi": // yaml 3.0
-                header.value = "application/vnd.oai.openapi";
+                acceptHeader.value = "application/vnd.oai.openapi";
                 break;
             case "openapi+json": // json 3.0
-                header.value = "application/vnd.oai.openapi+json";
+                acceptHeader.value = "application/vnd.oai.openapi+json";
                 break;
             default:
         }
 
         const headers: HttpHeader[] = [Utils.getIsUserResourceHeader()];
-        headers.push(header);
+        headers.push(acceptHeader);
+        headers.push(cacheHeader);
         return this.apiClient.get<string>(`apis/${apiId}?export=true`, headers);
     }
 
