@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
-import { ConsoleLogger } from "@paperbits/common/logging";
 import { ApiService } from "./apiService";
 import { DataApiClient } from "../clients";
 import { MockHttpClient, bookStoreApi } from "./../../tests/mocks";
@@ -9,17 +8,19 @@ import { StaticSettingsProvider } from "./../components/staticSettingsProvider";
 
 const settingsProvider = new StaticSettingsProvider({
     backendUrl: "https://contoso.developer.azure-api.net",
-    managementApiAccessToken: "SharedAccessSignature 1&220001010000&000000000000000000000000000=="
 });
 
 const authenticator = new StaticAuthenticator();
 
 describe("API service", async () => {
+    const apisResource = `/developer/apis`
+    const apiResource = `/developer/apis/book-store-api`
+
     it("Returns list of APIs", async () => {
         const httpClient = new MockHttpClient();
 
         httpClient.mock()
-            .get("/apis")
+            .get(apisResource)
             .reply(200, {
                 value: [bookStoreApi]
             });
@@ -35,13 +36,14 @@ describe("API service", async () => {
         const httpClient = new MockHttpClient();
 
         httpClient.mock()
-            .get("/apis/book-store-api")
+            .get(apiResource)
             .reply(200, bookStoreApi);
+
 
         const apiClient = new DataApiClient(httpClient, authenticator, settingsProvider);
         const apiService = new ApiService(apiClient);
         const api = await apiService.getApi("apis/book-store-api");
 
-        expect(api.displayName).to.equal(bookStoreApi.properties.displayName);
+        expect(api.displayName).to.equal(bookStoreApi.name);
     });
 });
