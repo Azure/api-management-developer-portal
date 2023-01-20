@@ -143,7 +143,9 @@ export class Profile {
         if (isDelegationApplied) {
             return;
         }
-        const confirmed = window.confirm(`Dear ${this.user().firstName} ${this.user().lastName}, \nYou are about to close your account associated with email address ${this.user().email}.\nYou will not be able to sign in to or restore your closed account. Are you sure you want to close your account?`);
+        const confirmed = window.confirm(
+            this.isBasicAccount() ? `Dear ${this.user().firstName} ${this.user().lastName}, \nYou are about to close your account associated with email address ${this.user().email}.\nYou will not be able to sign in to or restore your closed account. Are you sure you want to close your account?`
+            : `Dear ${this.user().firstName} ${this.user().lastName}, \nYou are about to close your account associated with email address ${this.user().email}.\nAre you sure you want to close your account?`);
 
         if (confirmed) {
             await this.usersService.deleteUser(this.user().id);
