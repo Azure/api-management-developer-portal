@@ -144,9 +144,8 @@ export class Profile {
             return;
         }
         const confirmed = window.confirm(
-            this.isBasicAccount() ? `Dear ${this.user().firstName} ${this.user().lastName}, \nYou are about to close your account associated with email address ${this.user().email}.\nYou will not be able to sign in to or restore your closed account. Are you sure you want to close your account?`
-            : `Dear ${this.user().firstName} ${this.user().lastName}, \nYou are about to close your account associated with email address ${this.user().email}.\nAre you sure you want to close your account?`);
-
+            this.isBasicAccount() ? this.getCloseBasicAccountWarning(this.user().firstName, this.user().lastName, this.user().email)
+                : this.getCloseDelegationAccountWarning(this.user().firstName, this.user().lastName, this.user().email));
         if (confirmed) {
             await this.usersService.deleteUser(this.user().id);
         }
@@ -171,4 +170,13 @@ export class Profile {
     public isPasswordChanged(): boolean {
         return this.password() && (this.password() === this.confirmPassword());
     }
+
+    private getCloseBasicAccountWarning(firstName: string, lastName: string, email: string): string {
+        return `Dear ${firstName} ${lastName}, \nYou are about to close your account associated with email address ${email}.\nYou will not be able to sign in to or restore your closed account. Are you sure you want to close your account?`;
+    }
+
+    private getCloseDelegationAccountWarning(firstName: string, lastName: string, email: string): string {
+        return `Dear ${firstName} ${lastName}, \nYou are about to close your account associated with email address ${email}.\nAre you sure you want to close your account?`;
+    }
+
 }
