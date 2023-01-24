@@ -22,7 +22,7 @@ jobs:
   end2end-tests:
     runs-on: ubuntu-latest
     
-    steps:
+    steps:      
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -36,7 +36,7 @@ jobs:
         run: npm run serve-website &
 
       - name: Wait for the server
-        run: scripts\wait-for-server.ps1 -HostName "http://localhost:8080"
+        run: ./scripts/wait-for-server.ps1 -HostName "http://localhost:8080"
         shell: pwsh
 
       - name: Run tests
