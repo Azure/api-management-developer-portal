@@ -29,21 +29,4 @@ describe("User sign-in flow", async () => {
         await signIn(page, config);
         expect(page.url()).to.equal(config.urls.home);
     });
-    /*
-    it("User can sign-in with AAD B2C credentials", async () => {
-        const confirmedUser = await Utils.getConfirmedUserAadB2C();
-
-        if (!confirmedUser) {
-            return; // skipping test
-        }
-
-        const page = await browser.newPage();
-        await page.goto(config.urls.signin);
-
-        const signInSocialWidget = new SignInSocialWidget(page);
-        await signInSocialWidget.signInWitAadB2C(confirmedUser);
-
-        expect(page.url()).to.equal(config.urls.home);
-    });
-    /**/
 });

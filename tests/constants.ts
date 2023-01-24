@@ -1,7 +1,7 @@
 import { LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions } from "puppeteer";
 
 export const BrowserLaunchOptions: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions = {
-    headless: false,
+    headless: true,
     ignoreHTTPSErrors: true,
     product: "chrome",
     devtools: true,
