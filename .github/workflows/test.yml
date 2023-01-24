@@ -36,7 +36,7 @@ jobs:
         run: npm run serve-website &
 
       - name: Wait for the server
-        run: ./scripts/wait-for-server.ps1 -HostName "http://localhost:8080"
+        run: ./.github/workflows/scripts/wait-for-server.ps1 -HostName "http://localhost:8080"
         shell: pwsh
 
       - name: Run tests
