@@ -1986,6 +1986,14 @@ export const worldMapShapes = {
                 arcs: [
                     [-604, -121, -606, -453]
                 ]
+            }, {
+                type: "Polygon",
+                properties: {
+                    name: "Other"
+                },
+                id: "Other",
+                arcs: [
+                ]
             }]
         }
     },
@@ -11706,5 +11714,6 @@ export const countryCodeMappings = {
     EH: "ESH",
     YE: "YEM",
     ZM: "ZMB",
-    ZW: "ZWE"
+    ZW: "ZWE",
+    Other: "Other"
 };
