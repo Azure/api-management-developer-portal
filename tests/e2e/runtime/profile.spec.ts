@@ -32,7 +32,7 @@ describe("User profile", async () => {
 
         const staticEmail = defaultStaticData["https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999"].body.properties.email;
         expect(await page.evaluate(() =>
-            document.querySelector("[data-bind='text: user().email']").textContent
+            document.querySelector("[data-bind='text: usr().email']").textContent
         )).to.equal(staticEmail);
 
         const staticPrimaryKey = defaultStaticData["https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/subscriptions/61fd37461359a02500aad62f/listSecrets"].body.primaryKey;
