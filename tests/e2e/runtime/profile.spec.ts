@@ -34,11 +34,7 @@ describe("User profile", async () => {
         expect(await page.evaluate(() =>
             document.querySelector("[data-bind='text: user().email']").textContent
         )).to.equal(staticEmail);
-        /*
-        expect(await page.evaluate(() =>
-            document.querySelector("subscriptions-runtime .table-body .table-row div").textContent.trim()
-        )).to.equal("You don't have subscriptions.");
-        */
+
         const staticPrimaryKey = defaultStaticData["https://contoso.management.azure-api.net/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999/subscriptions/61fd37461359a02500aad62f/listSecrets"].body.primaryKey;
         expect(await page.evaluate(() =>
             document.querySelector("[data-bind='text: primaryKey']").textContent
