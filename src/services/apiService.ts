@@ -30,7 +30,7 @@ interface CacheItem {
     addTime: number;
 }
 
-const CacheItemRefreshMins = 60;
+const CacheItemRefreshMins = 5;
 
 export class ApiService {
 
