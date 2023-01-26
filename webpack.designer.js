@@ -13,6 +13,7 @@ const designerConfig = {
     entry: {
         "editors/scripts/paperbits": ["./src/startup.design.ts"],
         "editors/styles/paperbits": [`./src/themes/designer/styles/styles.scss`],
+        "editors/scripts/admin": ["./src/admin/admin.tsx"]
     },
     output: {
         filename: "./[name].js",
@@ -33,7 +34,11 @@ const designerConfig = {
                 ]
             },
             {
-                test: /\.tsx?$/,
+                test: /\.(tsx|jsx)?$/,
+                loader: "babel-loader"
+            },
+            {
+                test: /\.(ts)?$/,
                 loader: "ts-loader",
                 options: {
                     allowTsInNodeModules: true
