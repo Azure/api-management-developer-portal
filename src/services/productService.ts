@@ -31,7 +31,7 @@ export class ProductService {
         }
 
         const pageOfSubscriptions = new Page<Subscription>();
-        const query = productId ? `?$filter=scope eq '${productId}'` : "";
+        const query = productId ? `?$filter=endswith(scope, '${productId}')` : "";
 
         try {
             const pageContract = await this.apiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`);
