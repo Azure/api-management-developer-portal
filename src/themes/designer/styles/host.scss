@@ -12,6 +12,16 @@ view-manager {
     height: 100%;
 }
 
+.app-content-wrapper {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+app {
+    width: calc(100% - $admin-panel-width);
+}
+
 .viewport {
     // position: fixed;
     // top: 0;

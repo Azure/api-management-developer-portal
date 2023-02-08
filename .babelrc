@@ -3,5 +3,14 @@
         "@babel/env",
         "@babel/react",
         "@babel/preset-typescript"
+    ],
+    "plugins": [
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "version": "2022-03"
+        //"decoratorsBeforeExport": true
+      }
     ]
+  ]  
 }

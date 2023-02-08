@@ -1,7 +1,59 @@
 #admin-panel {
     background: #fff;
     height: 100%;
-    width: 280px;
-    float: left;
+    width: $admin-panel-width;
     border-right: 1px solid grey;
+}
+
+.side-panel {
+    padding: 12px;
+}
+
+.portal-name {
+    font-size: 20px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.icon-home {
+    width: 18px;
+    height: 20px;
+    background-image: url('./icons/icon-admin-home.svg');
+    margin-right: 7px;
+}
+
+.nav-item {
+    display: block;
+    padding: 10px 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    .nav-item-icon {
+        width: 16px;
+        height: 16px;
+        background-repeat: no-repeat;
+        margin-right: 10px;
+    }
+
+    .icon-pages {
+        background-image: url('./icons/icon-admin-nav-pages.svg');
+    }
+
+    .icon-styles {
+        background-image: url('./icons/icon-admin-nav-styles.svg');
+    }
+
+    .icon-nav {
+        background-image: url('./icons/icon-admin-nav-nav.svg');
+    }
+
+    .icon-settings {
+        background-image: url('./icons/icon-admin-nav-settings.svg');
+    }
+
+    .icon-help {
+        background-image: url('./icons/icon-admin-nav-help.svg');
+    }
 }
