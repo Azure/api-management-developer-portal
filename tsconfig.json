@@ -15,7 +15,8 @@
         "emitDecoratorMetadata": true,
         "allowUnreachableCode": true,
         "sourceMap": true,
-        "incremental": true
+        "incremental": true,
+        "jsx": "react"
     },
     "include": [
         "./src/**/*",
