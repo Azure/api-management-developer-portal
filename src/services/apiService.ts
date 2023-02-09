@@ -541,7 +541,7 @@ export class ApiService {
     public async getApiHostnames(apiName: string, includeAllHostnames: boolean = false): Promise<string[]> {
         let query = `apis/${apiName}/hostnames`;
         if(includeAllHostnames) {
-            query+=`&includeAllHostnames=true`
+            query+=`?includeAllHostnames=true`
         }
         const pageOfHostnames = await this.mapiClient.get<Page<Hostname>>(query, [await this.mapiClient.getPortalHeader("getApiHostnames")]);
         const hostnameValues = pageOfHostnames.value.map(x => x.properties.value);
