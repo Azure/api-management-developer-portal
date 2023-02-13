@@ -1,0 +1,72 @@
+#admin-panel {
+    background: #fff;
+    height: 100%;
+    width: $admin-panel-width;
+    border-right: 1px solid grey;
+    font-family: 'SegoeUI';
+}
+
+.side-panel {
+    padding: 12px;
+}
+
+.portal-name {
+    font-size: 20px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.icon-home {
+    width: 18px;
+    height: 20px;
+    background-image: url('./icons/icon-admin-home.svg');
+    margin-right: 7px;
+}
+
+.nav-item {
+    display: block;
+    padding: 10px 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+
+    .nav-item-icon {
+        width: 16px;
+        height: 16px;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin-right: 10px;
+    }
+
+    .icon-pages {
+        background-image: url('./icons/icon-admin-nav-pages.svg');
+    }
+
+    .icon-styles {
+        background-image: url('./icons/icon-admin-nav-styles.svg');
+    }
+
+    .icon-nav {
+        background-image: url('./icons/icon-admin-nav-nav.svg');
+    }
+
+    .icon-settings {
+        background-image: url('./icons/icon-admin-nav-settings.svg');
+    }
+
+    .icon-help {
+        background-image: url('./icons/icon-admin-nav-help.svg');
+    }
+}
+
+.nav-back-button {
+    border: solid $admin-blue;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 5px;
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+    margin-right: 10px;
+}

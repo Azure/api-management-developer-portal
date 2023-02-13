@@ -23,17 +23,16 @@ injector.bindModule(new ProseMirrorModule());
 injector.bindModule(new PopupDesignModule());
 injector.bindModule(new FormsDesignModule());
 injector.bindModule(new ApimDesignModule());
-injector.bindModule(new ReactModule()); // important!
+injector.bindModule(new ReactModule());
 injector.bindModule(new OfflineModule({ autosave: false }));
 injector.resolve("autostart");
 
 /* Bootstrapping the application */
 document.addEventListener("DOMContentLoaded", () => {
-    // Uncomment me to load the content editor
-    // setImmediate(() => ko.applyBindings(undefined, document.body));
+    setImmediate(() => ko.applyBindings(undefined, document.body));
 
-    // Binding the React app
+    // Binding the React app to element along with container
     const componentBinder = injector.resolve<ComponentBinder>("reactComponentBinder");
     const element = document.getElementById("admin-panel");
-    componentBinder.bind(element, SidePanel); // This will bind the application to element along with container.
+    componentBinder.bind(element, SidePanel);
 });
