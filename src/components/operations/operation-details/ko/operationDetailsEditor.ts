@@ -12,6 +12,7 @@ export class OperationDetailsEditor {
     public readonly enableScrollTo: ko.Observable<boolean>;
     public readonly defaultSchemaView: ko.Observable<string>;
     public readonly useCorsProxy: ko.Observable<boolean>;
+    public readonly includeAllHostnames: ko.Observable<boolean>;
     public readonly showExamples: ko.Observable<boolean>;
 
     constructor() {
@@ -19,6 +20,7 @@ export class OperationDetailsEditor {
         this.enableScrollTo = ko.observable();
         this.defaultSchemaView = ko.observable();
         this.useCorsProxy = ko.observable();
+        this.includeAllHostnames = ko.observable();
         this.showExamples = ko.observable();
     }
 
@@ -32,12 +34,14 @@ export class OperationDetailsEditor {
     public async initialize(): Promise<void> {
         this.enableConsole(this.model.enableConsole);
         this.useCorsProxy(this.model.useCorsProxy);
+        this.includeAllHostnames(this.model.includeAllHostnames);
         this.enableScrollTo(this.model.enableScrollTo);
         this.defaultSchemaView(this.model.defaultSchemaView || "table");
         this.showExamples(this.model.showExamples);
 
         this.enableConsole.subscribe(this.applyChanges);
         this.useCorsProxy.subscribe(this.applyChanges);
+        this.includeAllHostnames.subscribe(this.applyChanges);
         this.enableScrollTo.subscribe(this.applyChanges);
         this.defaultSchemaView.subscribe(this.applyChanges);
         this.showExamples.subscribe(this.applyChanges);
@@ -46,6 +50,7 @@ export class OperationDetailsEditor {
     private applyChanges(): void {
         this.model.enableConsole = this.enableConsole();
         this.model.useCorsProxy = this.useCorsProxy();
+        this.model.includeAllHostnames = this.includeAllHostnames();
         this.model.enableScrollTo = this.enableScrollTo();
         this.model.defaultSchemaView = this.defaultSchemaView();
         this.model.showExamples = this.showExamples();

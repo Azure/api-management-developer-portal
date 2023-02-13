@@ -20,6 +20,11 @@ export class OperationDetailsModel {
     public useCorsProxy?: boolean;
 
     /**
+     * Indicates include all hostnames to the test console.
+     */
+    public includeAllHostnames?: boolean;
+
+    /**
      * Show operation attribute values examples in a column in tables.
      */
     public showExamples?: boolean;
