@@ -41,3 +41,27 @@
     font-weight: normal;
     font-style: normal;
 }
+@font-face {
+    font-family: 'SegoeUI';
+    font-style: normal;
+    font-weight: 400;
+    src: url('fonts/SegoeUI-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'SegoeUI';
+    font-style: italic;
+    font-weight: 600;
+    src: url('fonts/SegoeUI-Italic.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'SegoeUI';
+    font-style: normal;
+    font-weight: 900;
+    src: url('fonts/SegoeUI-Bold.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'SegoeUI';
+    font-style: italic;
+    font-weight: 900;
+    src: url('fonts/SegoeUI-BoldItalic.ttf') format('truetype');
+}
