@@ -72,6 +72,7 @@ export class OperationDetails {
         this.definitions = ko.observableArray<TypeDefinition>();
         this.defaultSchemaView = ko.observable("table");
         this.useCorsProxy = ko.observable();
+        this.includeAllHostnames = ko.observable();
         this.requestUrlSample = ko.computed(() => {
 
             const api = this.api();
@@ -129,6 +130,9 @@ export class OperationDetails {
 
     @Param()
     public useCorsProxy: ko.Observable<boolean>;
+
+    @Param()
+    public includeAllHostnames: ko.Observable<boolean>;
 
     @Param()
     public enableScrollTo: boolean;
@@ -372,7 +376,7 @@ export class OperationDetails {
     }
 
     public async loadGatewayInfo(apiName: string): Promise<void> {
-        const hostnames = await this.apiService.getApiHostnames(apiName);
+        const hostnames = await this.apiService.getApiHostnames(apiName, this.includeAllHostnames());
 
         if (hostnames.length !== 0) {
             this.sampleHostname(hostnames[0]);

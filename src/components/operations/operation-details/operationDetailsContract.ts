@@ -21,6 +21,11 @@ export interface OperationDetailsContract extends Contract {
      */
     useCorsProxy?: boolean;
 
+     /**
+     * Indicates include all hostnames to the test console.
+     */
+     includeAllHostnames?: boolean;
+
     /**
      * Show operation attribute values examples in a column in tables.
      */
