@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Pages } from "./pages";
+import { Pages } from "./pages/pages";
 
 const enum NavItem {
     Main,
