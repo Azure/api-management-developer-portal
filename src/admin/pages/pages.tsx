@@ -5,8 +5,13 @@ import { Query, Operator, Page } from "@paperbits/common/persistence";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
 
+interface PagesState {
+    selectedTab: string,
+    pages: PageContract[],
+    currentPage: string
+}
 
-export class Pages extends React.Component<{}, { pages: PageContract[], currentPage: string }> {
+export class Pages extends React.Component<{}, PagesState> {
     @Resolve("pageService")
     public pageService: IPageService;
 
@@ -18,17 +23,17 @@ export class Pages extends React.Component<{}, { pages: PageContract[], currentP
         super(props);
 
         this.state = {
+            selectedTab: "pages",
             pages: [],
-            currentPage: '/'
+            currentPage: "/"
         }
     }
 
     componentDidMount(): void {
-        this.loadPages()
-        //his.setState({ pages: this.loadPages() })
+        this.loadPages();
     }
 
-    componentDidUpdate(prevProps: Readonly<{}>, prevState: Readonly<{ pages: PageContract[]; currentPage: string; }>, snapshot?: any): void {
+    componentDidUpdate(prevProps: Readonly<{}>, prevState: Readonly<PagesState>, snapshot?: any): void {
         if (prevState.currentPage !== this.state.currentPage) {
             this.router.navigateTo(this.state.currentPage)
         }
@@ -49,7 +54,13 @@ export class Pages extends React.Component<{}, { pages: PageContract[], currentP
 
     render() {
         return <div>
-            {this.state.pages.map(page => <div onClick={ () => this.setState({ currentPage: page.permalink }) }>{page.title}</div>)}
+            <div className="nav-tabs-wrapper">
+                <div className={`nav-tab${this.state.selectedTab === 'pages' ? ' active' : ''}`} onClick={() => this.setState({ selectedTab: 'pages' })}>Pages</div>
+                <div className={`nav-tab${this.state.selectedTab === 'pageLayout'  ? ' active' : ''}`} onClick={() => this.setState({ selectedTab: 'pageLayout' })}>Page layout</div>
+            </div>    
+
+            {this.state.selectedTab === 'pages' && this.state.pages.map(page => <div onClick={ () => this.setState({ currentPage: page.permalink }) }>{page.title}</div>)}
+            {/* {this.state.selectedTab === 'pageLayout' } */}
         </div>
     }
 }

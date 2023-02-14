@@ -70,3 +70,21 @@
     -webkit-transform: rotate(135deg);
     margin-right: 10px;
 }
+
+.nav-tabs-wrapper {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.nav-tab {
+    padding: 8px 0;
+
+    &:not(:last-of-type) {
+        margin-right: 16px;
+    }
+
+    &.active {
+        font-weight: 600;
+        border-bottom: 2px solid $admin-blue;
+    }
+}
