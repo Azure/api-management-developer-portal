@@ -76,6 +76,7 @@ export class OperationDetails {
         this.defaultSchemaView = ko.observable("table");
         this.useCorsProxy = ko.observable();
         this.apiKeyDetails = ko.observable({} as ApiKeyDetails);
+        this.includeAllHostnames = ko.observable();
         this.requestUrlSample = ko.computed(() => {
 
             const api = this.api();
@@ -133,6 +134,9 @@ export class OperationDetails {
 
     @Param()
     public useCorsProxy: ko.Observable<boolean>;
+
+    @Param()
+    public includeAllHostnames: ko.Observable<boolean>;
 
     @Param()
     public enableScrollTo: boolean;

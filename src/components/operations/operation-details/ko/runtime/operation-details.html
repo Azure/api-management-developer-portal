@@ -66,7 +66,7 @@
                 <div class="d-contents" role="rowgroup">
                     <!-- ko foreach: { data: operation().parameters, as: 'parameter' } -->
                     <div class="d-contents" role="row">
-                        <div role="cell" class="text-truncate text-monospace"
+                        <div role="cell" class="text-wrap text-monospace"
                             data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
                         <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
                         <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
@@ -169,7 +169,7 @@
                         <div class="d-contents" role="rowgroup">
                             <!-- ko foreach: { data: representation.formParameters, as: 'parameter' } -->
                             <div class="d-contents" role="row">
-                                <div role="cell" class="text-truncate text-monospace"
+                                <div role="cell" class="text-wrap text-monospace"
                                     data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
                                 <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
                                 <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
