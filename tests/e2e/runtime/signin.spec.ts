@@ -4,6 +4,7 @@ import { Utils } from "../../utils";
 import { BrowserLaunchOptions } from "../../constants";
 import { SignInBasicWidget } from "../maps/signin-basic";
 import { Server } from "http";
+import { UserMockData } from "../../mocks/collection/user";
 
 export async function signIn(page: puppeteer.Page, config: any): Promise<void> {
     await page.goto(config.urls.signin);
@@ -27,7 +28,8 @@ describe("User sign-in flow", async () => {
     });
 
     it("User can sign-in with basic credentials", async () => {
-        server = await Utils.createMockServer(["tests/mocks/collection/user-signin.json"]);
+        var userInfo = new UserMockData();
+        server = await Utils.createMockServer([await userInfo.getSignInResponse()]);
         const page = await browser.newPage();
         await signIn(page, config);
         expect(page.url()).to.equal(config.urls.home);

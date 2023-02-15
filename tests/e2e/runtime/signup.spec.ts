@@ -4,6 +4,7 @@ import { BrowserLaunchOptions } from "../../constants";
 import { Utils } from "../../utils";
 import { SignupBasicWidget } from "../maps/signup-basic";
 import { Server } from "http";
+import { UserMockData } from "../../mocks/collection/user";
 
 describe("User sign-up flow", async () => {
     let config;
@@ -20,14 +21,15 @@ describe("User sign-up flow", async () => {
     });
 
     it("User can sign-up with basic credentials", async () => {
-        server = await Utils.createMockServer(["tests/mocks/collection/user-signup.json"]);
+        var userInfo = new UserMockData();
+        server = await Utils.createMockServer([await userInfo.getUserRegisterResponse("email", "name", "lastname")]);
         const page = await browser.newPage();
         await page.goto(config.urls.signup);
 
         const signUpWidget = new SignupBasicWidget(page);
         await signUpWidget.signUpWithBasic();
 
-        expect(await page.evaluate(() => document.getElementById("confirmationMessage").textContent))
+        expect(await page.evaluate(() => document.getElementById("confirmationMessage")?.textContent))
             .to.equal("Follow the instructions from the email to verify your account.");
     });
     
