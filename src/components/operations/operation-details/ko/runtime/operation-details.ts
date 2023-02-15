@@ -22,7 +22,7 @@ import {
 } from "../../../../../models/typeDefinition";
 import { OAuthService } from "../../../../../services/oauthService";
 import { LruCache } from "@paperbits/common/caching/lruCache";
-
+import { ApiKeyDetails, ApiKeyLocation } from "./apiKeyDetails";
 
 @RuntimeComponent({
     selector: "operation-details"
@@ -47,10 +47,12 @@ export class OperationDetails {
     public readonly sampleHostname: ko.Observable<string>;
     public readonly hostnames: ko.Observable<string[]>;
     public readonly working: ko.Observable<boolean>;
-    public readonly associatedAuthServer: ko.Observable<AuthorizationServer>;
+    public readonly apiDocumentationAuthServers: ko.Observable<AuthorizationServer[]>;
+    public readonly testConsoleAuthServers: ko.Observable<AuthorizationServer[]>;
     public readonly apiType: ko.Observable<string>;
     public readonly protocol: ko.Computed<string>;
     public readonly examples: ko.Observable<OperationExamples>;
+    public readonly apiKeyDetails: ko.Observable<ApiKeyDetails>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -61,7 +63,8 @@ export class OperationDetails {
         this.working = ko.observable(false);
         this.sampleHostname = ko.observable();
         this.hostnames = ko.observable();
-        this.associatedAuthServer = ko.observable();
+        this.apiDocumentationAuthServers = ko.observable();
+        this.testConsoleAuthServers = ko.observable();
         this.api = ko.observable();
         this.schemas = ko.observableArray([]);
         this.tags = ko.observableArray([]);
@@ -72,6 +75,7 @@ export class OperationDetails {
         this.definitions = ko.observableArray<TypeDefinition>();
         this.defaultSchemaView = ko.observable("table");
         this.useCorsProxy = ko.observable();
+        this.apiKeyDetails = ko.observable({} as ApiKeyDetails);
         this.includeAllHostnames = ko.observable();
         this.requestUrlSample = ko.computed(() => {
 
@@ -202,16 +206,28 @@ export class OperationDetails {
 
         this.closeConsole();
 
-        const associatedServerId = api.authenticationSettings?.oAuth2?.authorizationServerId ||
-            api.authenticationSettings?.openid?.openidProviderId;
-
-        let associatedAuthServer = null;
-
-        if (associatedServerId) {
-            associatedAuthServer = await this.oauthService.getAuthServer(api.authenticationSettings?.oAuth2?.authorizationServerId, api.authenticationSettings?.openid?.openidProviderId);
+        if (api.typeName.toLocaleLowerCase() === "rest") {
+            this.apiKeyDetails().name = api.subscriptionKeyParameterNames?.header;
+            this.apiKeyDetails().in = ApiKeyLocation.Header;
+        }
+        else {
+            this.apiKeyDetails().name = api.subscriptionKeyParameterNames?.query;
+            this.apiKeyDetails().in = ApiKeyLocation.Query;
         }
 
-        this.associatedAuthServer(associatedAuthServer);
+
+        let associatedAuthServers: AuthorizationServer[];
+        if (api.authenticationSettings?.oAuth2AuthenticationSettings.length > 0) {
+            associatedAuthServers = await this.oauthService.getOauthServers(api.id);
+        }
+        else if (api.authenticationSettings?.openidAuthenticationSettings.length > 0) {
+            associatedAuthServers = await this.oauthService.getOpenIdAuthServers(api.id);
+        }
+
+        if (associatedAuthServers) {
+            this.apiDocumentationAuthServers(associatedAuthServers.filter(a => a.useInApiDocumentation));
+            this.testConsoleAuthServers(associatedAuthServers.filter(a => a.useInTestConsole));
+        }
     }
 
     public async loadOperation(apiName: string, operationName: string): Promise<void> {
@@ -360,7 +376,7 @@ export class OperationDetails {
 
                 const contentTypeObj = {}
                 Object.entries(valueObj).forEach(([key, val]) => {
-                    if (typeof val === 'object') return
+                    if (typeof val === "object") return
                     contentTypeObj[key] = val.toString();
                 })
 
@@ -376,7 +392,7 @@ export class OperationDetails {
     }
 
     public async loadGatewayInfo(apiName: string): Promise<void> {
-        const hostnames = await this.apiService.getApiHostnames(apiName, this.includeAllHostnames());
+        const hostnames = await this.apiService.getApiHostnames(apiName);
 
         if (hostnames.length !== 0) {
             this.sampleHostname(hostnames[0]);

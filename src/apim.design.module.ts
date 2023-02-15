@@ -29,7 +29,7 @@ import { SubscriptionsModule } from "./components/users/subscriptions/subscripti
 import { SubscriptionsDesignModule } from "./components/users/subscriptions/subscriptions.design.module";
 import { ProductDetailsModule } from "./components/products/product-details/productDetails.module";
 import { ProductDetailsDesignModule } from "./components/products/product-details/productDetails.design.module";
-import { MapiClient, IdentityService } from "./services";
+import { IdentityService } from "./services";
 import { SetupModule } from "./components/setup/setup.module";
 import { ContentModule } from "./components/content";
 import { CustomWidgetListModule } from "./components/custom-widget-list";
@@ -54,7 +54,6 @@ import { ConfirmPasswordEditorModule } from "./components/users/confirm-password
 import { HelpModule } from "./components/help";
 import { ChangePasswordModule } from "./components/users/change-password/ko/changePassword.module";
 import { ChangePasswordEditorModule } from "./components/users/change-password/ko/changePasswordEditor.module";
-import { TenantService } from "./services/tenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/validationSummary.module";
 import { ValidationSummaryDesignModule } from "./components/users/validation-summary/validationSummary.design.module";
 import { BackendService } from "./services/backendService";
@@ -70,6 +69,9 @@ import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CustomWidgetDesignModule } from "./components/custom-widget/customWidget.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
+import MapiClient from "./clients/mapiClient";
+import { DelegationService } from "./services/delegationService";
+import { StaticDelegationService } from "./services/staticDelegationService";
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -122,13 +124,12 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new RoleBasedSecurityDesignModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
-        injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("roleService", StaticRoleService);
         injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("policyService", PolicyService);
-        injector.bindSingleton("mapiClient", MapiClient);
+        injector.bindSingleton("apiClient", MapiClient);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);
@@ -140,6 +141,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bindToCollection("autostart", RuntimeConfigurator);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
+        injector.bindSingleton("delegationService", StaticDelegationService);
         injector.bind("CodeEditor", CodeEditor);
         injector.bindModule(new CustomWidgetListModule()); // needs "blobStorage"
         injector.bindModule(new ContentModule());

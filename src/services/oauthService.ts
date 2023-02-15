@@ -3,19 +3,22 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { HttpClient, HttpMethod } from "@paperbits/common/http";
 import { Logger } from "@paperbits/common/logging";
 import { AuthorizationServer } from "../models/authorizationServer";
-import { KnownHttpHeaders } from "../models/knownHttpHeaders";
-import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { Utils } from "../utils";
 import { GrantTypes } from "./../constants";
 import { UnauthorizedError } from "./../errors/unauthorizedError";
-import { BackendService } from "./backendService";
+import { KnownHttpHeaders } from "../models/knownHttpHeaders";
+import { KnownMimeTypes } from "../models/knownMimeTypes";
+import { AuthorizationServerForClient } from "../contracts/authorizationServer";
+import { IApiClient } from "../clients";
 import { OAuthTokenResponse } from "../contracts/oauthTokenResponse";
+import { PageContract } from "../contracts/page";
+import { Page } from "../models/page";
 
 
 export class OAuthService {
     constructor(
         private readonly httpClient: HttpClient,
-        private readonly backendService: BackendService,
+        private readonly apiClient: IApiClient,
         private readonly settingsProvider: ISettingsProvider,
         private readonly logger: Logger
     ) { }
@@ -39,21 +42,25 @@ export class OAuthService {
         return text;
     }
 
-    public async getAuthServer(authorizationServerId: string, openidProviderId: string): Promise<AuthorizationServer> {
+    public async getOpenIdAuthServers(apiId: string): Promise<AuthorizationServer[]> {
         try {
-            if (authorizationServerId) {
-                const authServer = await this.backendService.getAuthorizationServer(authorizationServerId);
-                return authServer;
-            }
-            if (openidProviderId) {
-                const authServer = await this.backendService.getOpenIdConnectProvider(openidProviderId);
-                return authServer;
-            }
-
-            return undefined;
+            const authServers = await this.apiClient.get<Page<AuthorizationServerForClient>>(`apis/${apiId}/authServers/openidconnect`, [Utils.getIsUserResourceHeader()]);
+            return authServers.value.map(x => new AuthorizationServer(x));
         }
         catch (error) {
             throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);
+            return undefined;
+        }
+    }
+
+    public async getOauthServers(apiId: string): Promise<AuthorizationServer[]> {
+        try {
+            const authServers = await this.apiClient.get<Page<AuthorizationServerForClient>>(`apis/${apiId}/authServers/oauth2`, [Utils.getIsUserResourceHeader()]);
+            return authServers.value.map(x => new AuthorizationServer(x));
+        }
+        catch (error) {
+            throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);
+            return undefined;
         }
     }
 

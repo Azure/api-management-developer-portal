@@ -22,7 +22,7 @@ import { Revision } from "../../../../../models/revision";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 import { TemplatingService } from "../../../../../services/templatingService";
-import { TenantService } from "../../../../../services/tenantService";
+import ITenantService from "../../../../../services/ITenantService";
 import { Utils } from "../../../../../utils";
 import template from "./operation-console.html";
 import { ResponsePackage } from "./responsePackage";
@@ -71,7 +71,7 @@ export class OperationConsole {
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly tenantService: TenantService,
+        private readonly tenantService: ITenantService,
         private readonly httpClient: HttpClient,
         private readonly routeHelper: RouteHelper,
         private readonly settingsProvider: ISettingsProvider,
@@ -100,7 +100,7 @@ export class OperationConsole {
         this.selectedHostname = ko.observable("");
         this.hostnameSelectionEnabled = ko.observable();
         this.isHostnameWildcarded = ko.computed(() => this.selectedHostname().includes("*"));
-        this.authorizationServer = ko.observable();
+        this.authorizationServers = ko.observable();
 
         this.useCorsProxy = ko.observable(false);
         this.wildcardSegment = ko.observable();
@@ -143,7 +143,7 @@ export class OperationConsole {
     public hostnames: ko.Observable<string[]>;
 
     @Param()
-    public authorizationServer: ko.Observable<AuthorizationServer>;
+    public authorizationServers: ko.Observable<AuthorizationServer[]>;
 
     @Param()
     public useCorsProxy: ko.Observable<boolean>;
@@ -194,7 +194,7 @@ export class OperationConsole {
         this.responseStatusText(null);
         this.responseBody(null);
 
-        const operation = await this.apiService.getOperation(selectedOperation.id);
+        const operation = await this.apiService.getOperation(`apis/${selectedApi.id}/operations/${selectedOperation.id}`);
         const consoleOperation = new ConsoleOperation(selectedApi, operation);
         this.consoleOperation(consoleOperation);
 

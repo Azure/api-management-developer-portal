@@ -1,12 +1,12 @@
 import * as Objects from "@paperbits/common";
 import { IObjectStorage, Query, Operator, Page } from "@paperbits/common/persistence";
-import { MapiClient } from "../services/mapiClient";
 import { HttpHeader } from "@paperbits/common/http";
 import { ArmResource } from "../contracts/armResource";
 import { AppError } from "../errors";
 import { defaultPageSize } from "../constants";
 import { PageContract } from "../contracts/page";
-import { LocaleModel } from "@paperbits/common/localization";
+import { IApiClient } from "../clients";
+
 
 const supportedKeys = ["pages", "layouts", "files", "uploads", "blocks", "urls", "popups"];
 const localizedContentTypes = ["page", "layout", "blogpost", "navigation", "block", "popup"];
@@ -16,7 +16,7 @@ const reservedPaperbitsIds = ["containerKey", "webContainerKey"];
 
 
 export class MapiObjectStorage implements IObjectStorage {
-    constructor(private readonly mapiClient: MapiClient) { }
+    constructor(private readonly apiClient: IApiClient) { }
 
     private getContentTypeFromResource(resource: string): string {
         const regex = /contentTypes\/([\w]*)/gm;
@@ -222,8 +222,8 @@ export class MapiObjectStorage implements IObjectStorage {
         const resource = this.paperbitsKeyToArmResource(path);
 
         try {
-            const headers: HttpHeader[] = [await this.mapiClient.getPortalHeader("addObject")];
-            await this.mapiClient.put<T>(resource, headers, { properties: converted });
+            const headers: HttpHeader[] = [await this.apiClient.getPortalHeader("addObject")];
+            await this.apiClient.put<T>(resource, headers, { properties: converted });
         }
         catch (error) {
             throw new AppError(`Could not add object '${path}'.`, error);
@@ -243,7 +243,7 @@ export class MapiObjectStorage implements IObjectStorage {
             const resourcePath = this.paperbitsKeyToArmResource(key);
             const contentType = this.getContentTypeFromResource(resourcePath);
             const isLocalized = localizedContentTypes.includes(contentType);
-            const contentItem = await this.mapiClient.get<T>(resourcePath, [await this.mapiClient.getPortalHeader("getObject")]);
+            const contentItem = await this.apiClient.get<T>(resourcePath, [await this.apiClient.getPortalHeader("getObject")]);
             const converted = this.convertArmContractToPaperbitsContract(contentItem, isLocalized);
 
             if (key.startsWith("blocks/")) {
@@ -283,9 +283,9 @@ export class MapiObjectStorage implements IObjectStorage {
 
         try {
             const headers: HttpHeader[] = [];
-            headers.push({ name: "If-Match", value: "*" }, await this.mapiClient.getPortalHeader("deleteObject"));
+            headers.push({ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("deleteObject"));
 
-            await this.mapiClient.delete(resource, headers);
+            await this.apiClient.delete(resource, headers);
         }
         catch (error) {
             throw new AppError(`Could not delete object '${path}'.`, error);
@@ -332,7 +332,7 @@ export class MapiObjectStorage implements IObjectStorage {
                 delete armContract["type"];
             }
 
-            await this.mapiClient.head<T>(resource);
+            await this.apiClient.head<T>(resource);
             exists = true;
         }
         catch (error) {
@@ -345,13 +345,13 @@ export class MapiObjectStorage implements IObjectStorage {
         }
 
         try {
-            const headers: HttpHeader[] = [await this.mapiClient.getPortalHeader("updateObject")];
+            const headers: HttpHeader[] = [await this.apiClient.getPortalHeader("updateObject")];
 
             if (exists) {
                 headers.push({ name: "If-Match", value: "*" });
             }
 
-            await this.mapiClient.put<T>(resource, headers, { properties: armContract });
+            await this.apiClient.put<T>(resource, headers, { properties: armContract });
         }
         catch (error) {
             throw new AppError(`Could not update object '${key}'.`, error);
@@ -360,7 +360,7 @@ export class MapiObjectStorage implements IObjectStorage {
 
     private async loadNextPage<T>(resource: string, localeSearchPrefix: string, filterQueryString: string, orderQueryString: string, skip: number, isLocalized: boolean): Promise<Page<T>> {
         const url = `${resource}?$skip=${skip}&$top=${defaultPageSize}${filterQueryString}${orderQueryString}`;
-        const pageOfTs = await this.mapiClient.get<PageContract<T>>(url, [await this.mapiClient.getPortalHeader("getPageData")]);
+        const pageOfTs = await this.apiClient.get<PageContract<T>>(url, [await this.apiClient.getPortalHeader("getPageData")]);
         const searchResult = [];
 
         for (const item of pageOfTs.value) {
@@ -443,7 +443,7 @@ export class MapiObjectStorage implements IObjectStorage {
             }
 
             if (key.includes("navigationItems")) {
-                const armContract = await this.mapiClient.get<any>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`, [await this.mapiClient.getPortalHeader("searchObjects")]);
+                const armContract = await this.apiClient.get<any>(`${resource}?$orderby=${localeSearchPrefix}title${filterQueryString}`, [await this.apiClient.getPortalHeader("searchObjects")]);
                 const paperbitsContract = this.convertArmContractToPaperbitsContract(armContract, isLocalized);
                 return paperbitsContract.nodes;
             }

@@ -5,14 +5,12 @@ import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/dec
 import { SubscriptionListItem } from "./subscriptionListItem";
 import { UsersService } from "../../../../../services";
 import { ProductService } from "../../../../../services/productService";
-import { TenantService } from "../../../../../services/tenantService";
 import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import { Utils } from "../../../../../utils";
-import { Router } from "@paperbits/common/routing/router";
 import { EventManager } from "@paperbits/common/events";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
-import { BackendService } from "../../../../../services/backendService";
+import IDelegationService from "../../../../../services/IDelegationService";
 
 @RuntimeComponent({
     selector: "subscriptions-runtime"
@@ -26,9 +24,7 @@ export class Subscriptions {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly tenantService: TenantService,
-        private readonly backendService: BackendService,
-        private readonly router: Router,
+        private readonly delegationService: IDelegationService,
         private readonly productService: ProductService,
         private readonly eventManager: EventManager
     ) {
@@ -137,11 +133,14 @@ export class Subscriptions {
     }
 
     private async applyDelegation(subscriptionId: string): Promise<void> {
-        const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
+        const isDelegationEnabled = await this.delegationService.isSubscriptionDelegationEnabled();
         if (isDelegationEnabled) {
+            const userResource = await this.usersService.getCurrentUserId();
+            const userId = Utils.getResourceName("users", userResource);
             const delegationParam = {};
-            delegationParam[DelegationParameters.SubscriptionId] =  Utils.getResourceName("subscriptions", subscriptionId);
-            const delegationUrl = await this.backendService.getDelegationString(DelegationAction.unsubscribe, delegationParam);
+            delegationParam[DelegationParameters.UserId] = userId
+            delegationParam[DelegationParameters.SubscriptionId] = Utils.getResourceName("subscriptions", subscriptionId);
+            const delegationUrl = await this.delegationService.getUserDelegationUrl(userId, DelegationAction.unsubscribe, delegationParam);
             if (delegationUrl) {
                 location.assign(delegationUrl);
             }

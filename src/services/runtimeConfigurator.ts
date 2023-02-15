@@ -22,10 +22,8 @@ export class RuntimeConfigurator {
         const designTimeSettings = {};
 
         /* Common providers */
-        const managementApiUrl = await this.settingsProvider.getSetting(SettingNames.managementApiUrl);
         const backendUrl = await this.settingsProvider.getSetting(SettingNames.backendUrl);
-        
-        designTimeSettings[SettingNames.managementApiUrl] = managementApiUrl;
+
         designTimeSettings[SettingNames.backendUrl] = backendUrl;
 
         /* Identity providers */

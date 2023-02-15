@@ -14,14 +14,12 @@ const backendUrlValue = `https://${apimServiceNameValue}.developer.azure-api.net
 
 const apimServiceUrlValue = `https://${managementEndpoint}/subscriptions/00000/resourceGroups/00000/providers/Microsoft.ApiManagement/service/${apimServiceNameValue}`;
 
-const apimServiceParameter = "managementApiUrl";
 const apimSasAccessTokenParameter = "managementApiAccessToken";
 const backendUrlParameter = "backendUrl";
 
 fs.readFile(configDesignFile, { encoding: 'utf-8' }, function (err, data) {
     if (!err) {
         const obj = JSON.parse(data);
-        obj[apimServiceParameter] = apimServiceUrlValue;
         obj[apimSasAccessTokenParameter] = apimSasAccessTokenValue;
         obj[backendUrlParameter] = backendUrlValue;
         fs.writeFile(configDesignFile, JSON.stringify(obj, null, 4), function (errWrite) {
@@ -37,7 +35,6 @@ fs.readFile(configDesignFile, { encoding: 'utf-8' }, function (err, data) {
 fs.readFile(configPublishFile, { encoding: 'utf-8' }, function (err, data) {
     if (!err) {
         const obj = JSON.parse(data);
-        obj[apimServiceParameter] = apimServiceUrlValue;
         obj[apimSasAccessTokenParameter] = apimSasAccessTokenValue;
         fs.writeFile(configPublishFile, JSON.stringify(obj, null, 4), function (errWrite) {
             if (errWrite) {
@@ -52,7 +49,6 @@ fs.readFile(configPublishFile, { encoding: 'utf-8' }, function (err, data) {
 fs.readFile(configRuntimeFile, { encoding: 'utf-8' }, function (err, data) {
     if (!err) {
         const obj = JSON.parse(data);
-        obj[apimServiceParameter] = apimServiceUrlValue;
         obj[backendUrlParameter] = backendUrlValue;
         fs.writeFile(configRuntimeFile, JSON.stringify(obj, null, 4), function (errWrite) {
             if (errWrite) {

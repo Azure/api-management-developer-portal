@@ -3,6 +3,9 @@ import { ArmResource } from "./contracts/armResource";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
 import { NameValuePair } from "./contracts/nameValuePair";
+import { ensureTrailingSlash } from "@paperbits/common";
+import { HttpHeader } from "@paperbits/common/http";
+import { isUserResourceHeaderName } from "./constants";
 
 
 export class Utils {
@@ -24,6 +27,24 @@ export class Utils {
         } else {
             throw new Error("Could not parse ID.");
         }
+    }
+
+    /**
+     * Suffixes developer endpoint to the given url.
+     * @param backendUrl Url to suffix
+     * @returns Suffixed url
+     */
+    public static getBaseUrlWithDeveloperSuffix(backendUrl: string): string {
+        return `${ensureTrailingSlash(backendUrl)}developer`
+    }
+
+    /**
+     * Suffixes mapi endpoint to the given url.
+     * @param backendUrl Url to suffix
+     * @returns Suffixed url
+     */
+    public static getBaseUrlWithMapiSuffix(backendUrl: string): string {
+        return `${ensureTrailingSlash(backendUrl)}mapi`
     }
 
     public static groupBy<T>(array: T[], valueAccessor: (item: T) => string): T[][] {
@@ -49,6 +70,35 @@ export class Utils {
         }
 
         return url;
+    }
+
+    /**
+     * Some resources are available for guests and users. i.e /apis and /users/{userId}/apis
+     * Depending on authorization, we need to prefix users resource before requests.
+     * @param query query to be formatted.
+     * @param userId user identifier to be prefixed. i.e. /users/123456789
+     * @returns User prefixed query or as it is.
+     */
+    public static ensureUserPrefixed(query: string, userId: string): string {
+        if (!query.startsWith("/users") && !!userId && userId !== "integration") {
+            const userResource = `/users/${userId}`
+            return (query.startsWith("/") ? userResource : this.ensureTrailingSlash(userResource)) + query;
+        }
+
+        return query;
+    }
+
+    /**
+     * Some resources are available for guests and users.
+     * Depending on authorization, we need to prefix users resource before requests.
+     * To decide if it is a resource for guest only or users as well, we check this header.
+     * @returns HttpHeader that indicates the resource can be user resource or not.
+     */
+    public static getIsUserResourceHeader(): HttpHeader {
+        return {
+            name: isUserResourceHeaderName,
+            value: "true"
+        };
     }
 
     public static ensureTrailingSlash(url: string): string {
@@ -331,26 +381,6 @@ export class Utils {
         if (!!e && e.scrollIntoView) {
             e.scrollIntoView();
         }
-    }
-
-    public static ensureUrlArmified(resourceUrl: string): string {
-        const regex = /subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.ApiManagement\/service/i;
-        const isArmUrl = regex.test(resourceUrl);
-
-        if (isArmUrl) {
-            return resourceUrl;
-        }
-
-        const url = new URL(resourceUrl);
-        const protocol = url.protocol;
-        const hostname = url.hostname;
-        const pathname = url.pathname.endsWith("/")
-            ? url.pathname.substring(0, url.pathname.length - 1)
-            : url.pathname;
-
-        resourceUrl = `${protocol}//${hostname}/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid${pathname}`;
-
-        return resourceUrl;
     }
 
     public static armifyContract(resource: string, contract: any): ArmResource {

@@ -27,8 +27,8 @@ export class App {
     public async initialize(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
 
-        if (!settings["managementApiUrl"]) {
-            this.viewManager.addToast(startupError, `Management API URL is missing. See setting <i>managementApiUrl</i> in the configuration file <i>config.design.json</i>`);
+        if (!settings[SettingNames.backendUrl]) {
+            this.viewManager.addToast("Warning", WarningBackendUrlMissing);
             return;
         }
 

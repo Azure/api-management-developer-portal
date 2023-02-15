@@ -13,30 +13,30 @@ export class Schema {
             return;
         }
 
-        const definitionType = contract.properties?.contentType;
+        const definitionType = contract.contentType;
         let definitions = {};
 
         switch (definitionType) {
             case SchemaType.swagger: {
-                const swaggerDoc = <SwaggerSchemaContract>contract.properties?.document;
+                const swaggerDoc = <SwaggerSchemaContract>contract.document;
                 definitions = swaggerDoc?.definitions || {};
                 break;
             }
 
             case SchemaType.openapi: {
-                const openApiDoc = <OpenApiSchemaContract>contract.properties?.document;
+                const openApiDoc = <OpenApiSchemaContract>contract.document;
                 definitions = openApiDoc?.components?.schemas || {};
                 break;
             }
 
             case SchemaType.graphQL: {
-                const graphQLDoc = <GraphQLSchemaContract>contract.properties?.document;
+                const graphQLDoc = <GraphQLSchemaContract>contract.document;
                 this.graphQLSchema = graphQLDoc?.value;
                 break;
             }
 
             case SchemaType.xsd: {
-                const xsdDoc = <XsdSchemaContract>contract.properties?.document;
+                const xsdDoc = <XsdSchemaContract>contract.document;
 
                 try {
                     definitions = new XsdSchemaConverter().convertXsdSchema(xsdDoc.value);
