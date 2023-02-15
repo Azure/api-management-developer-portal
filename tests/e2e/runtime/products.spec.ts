@@ -35,7 +35,7 @@ describe("Products page", async () => {
         await productWidget.products();
 
         expect(await page.evaluate(() =>
-            document.querySelector("product-list-runtime div.table div.table-body div.table-row")?.childElementCount
+            document.querySelector("product-list-runtime div.table div.table-body div.table-row")?.parentElement?.childElementCount
         )).to.equal(products.productList.length);
     });
 });

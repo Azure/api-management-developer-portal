@@ -6,6 +6,7 @@
         "signin": "/signin",
         "signup": "/signup",
         "profile": "/profile",
-        "products": "/products"
+        "products": "/products",
+        "apis": "/apis"
     }
 }
