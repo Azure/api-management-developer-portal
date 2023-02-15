@@ -7,7 +7,7 @@ import { CorePublishModule } from "@paperbits/core/core.publish.module";
 import { FormsModule } from "@paperbits/forms/forms.module";
 import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
 import { StylePublishModule } from "@paperbits/styles/styles.publish.module";
-import { staticDataEnvironment } from "./../environmentConstants";
+import { staticDataEnvironment, mockStaticDataEnvironment } from "./../environmentConstants";
 import { ApimPublishModule } from "./apim.publish.module";
 import { FileSystemBlobStorage } from "./components/filesystemBlobStorage";
 import { StaticSettingsProvider } from "./components/staticSettingsProvider";
@@ -17,7 +17,7 @@ import { PublishingCacheModule } from "./persistence/publishingCacheModule";
 /* Reading settings from configuration file */
 let settingsProvider: ISettingsProvider;
 
-if (process.env.NODE_ENV === staticDataEnvironment) {
+if (process.env.NODE_ENV === staticDataEnvironment || process.env.NODE_ENV === mockStaticDataEnvironment) {
     settingsProvider = new StaticSettingsProvider({
         environment: "publishing",
         managementApiUrl: "https://contoso.management.azure-api.net",

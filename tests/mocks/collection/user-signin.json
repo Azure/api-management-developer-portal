@@ -1,0 +1,19 @@
+{
+  "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/identity": {
+    "headers": [
+      {
+        "name": "content-type",
+        "value": "application/json; charset=utf-9"
+      },
+      {
+        "name": "ocp-apim-sas-token",
+        "value": "***REMOVED***,refresh=\"true\""
+      }
+    ],
+    "statusCode": 200,
+    "statusText": "OK",
+    "body": {
+      "id": "6189460d4634612164e10999"
+    }
+  }
+}
