@@ -30,7 +30,7 @@ jobs:
         run: npm install
 
       - name: Build static data
-        run: npm run build-static-data
+        run: npm run build-mock-static-data
 
       - name: Start mock server
         run: npm run serve-website &
