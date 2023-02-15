@@ -14,49 +14,6 @@ export class Utils {
         return validationConfig;
     }
 
-    public static async getRandomUser(): Promise<User> {
-        return {
-            firstName: Utils.randomIdentifier(),
-            lastName: Utils.randomIdentifier(),
-            email: `${Utils.randomIdentifier()}@contoso.com`,
-            password: Utils.randomIdentifier()
-        };
-    }
-
-    public static async getConfirmedUserBasic(): Promise<User> {
-        const config = await Utils.getConfig();
-
-        return {
-            firstName: config.signin.firstName,
-            lastName: config.signin.lastName,
-            email: config.signin.credentials.basic.email,
-            password: config.signin.credentials.basic.password
-        };
-    }
-
-    public static async getConfirmedUserAadB2C(): Promise<User> {
-        const config = await Utils.getConfig();
-
-        return {
-            firstName: config.signin.firstName,
-            lastName: config.signin.lastName,
-            email: config.signin.credentials.aadB2C.email,
-            password: config.signin.credentials.aadB2C.password
-        };
-    }
-
-    public static randomIdentifier(length: number = 8): string {
-        let result = "";
-        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        const charactersLength = characters.length;
-
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-
-        return result;
-    }
-
     public static async getSharedAccessToken(apimUid: string, apimAccessKey: string, validDays: number): Promise<string> {
         const expiryDate = new Date();
         expiryDate.setDate(expiryDate.getDate() + validDays);
@@ -69,12 +26,14 @@ export class Utils {
         return sasToken;
     }
 
-    public static async createMockServer(configFiles: string[]) {
+    public static async createMockServer(responses?: Object[]) {
         var obj = {};
-        for (let file of configFiles) {
-            const data = await fs.promises.readFile(file);
-            obj = {...obj, ...JSON.parse(data.toString()) };
+        if (responses?.length){
+            for (let responseObj of responses) {
+                obj = {...obj, ...responseObj };
+            }
         }
+
         var server = http
             .createServer((req, res) => {
                 const urlWithoutParameters = req.url?.split("?")[0];

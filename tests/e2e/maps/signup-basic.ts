@@ -1,5 +1,4 @@
 import { Page } from "puppeteer";
-import { User } from "../../mocks";
 
 export class SignupBasicWidget {
     constructor(private readonly page: Page) { }

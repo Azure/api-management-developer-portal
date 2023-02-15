@@ -5,6 +5,7 @@
         "home": "/",
         "signin": "/signin",
         "signup": "/signup",
-        "profile": "/profile"
+        "profile": "/profile",
+        "products": "/products"
     }
 }
