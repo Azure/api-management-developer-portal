@@ -104,4 +104,7 @@ export class Utils {
         server.listen(8181);
         return server;
     }
+    public static closeServer(server){
+        server.close();
+    }
 }

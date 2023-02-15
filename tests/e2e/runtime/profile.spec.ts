@@ -4,21 +4,24 @@ import { Utils } from "../../utils";
 import { BrowserLaunchOptions } from "../../constants";
 import { ProfileWidget } from "../maps/profile";
 import { signIn } from "./signin.spec";
+import { Server } from "http";
 
 describe("User profile", async () => {
     let config;
     let browser: puppeteer.Browser;
-
+    let server: Server;
+    
     before(async () => {
         config = await Utils.getConfig();
         browser = await puppeteer.launch(BrowserLaunchOptions);
     });
     after(async () => {
         browser.close();
+        Utils.closeServer(server);
     });
 
     it("User can visit his profile page", async () => {
-        var server = await Utils.createMockServer(["tests/mocks/collection/user-signin.json", "tests/mocks/collection/user-info.json"]);
+        server = await Utils.createMockServer(["tests/mocks/collection/user-signin.json", "tests/mocks/collection/user-info.json"]);
         const page = await browser.newPage();
 
         await signIn(page, config);
@@ -35,6 +38,5 @@ describe("User profile", async () => {
         expect(await page.evaluate(() =>
             document.querySelector("[data-bind='text: user().email']").textContent
         )).to.equal(staticEmail);
-        server.close();
     });
 });
