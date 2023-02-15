@@ -1,0 +1,32 @@
+{
+    "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999": {
+        "headers": [
+            {
+                "name": "content-type",
+                "value": "application/json; charset=utf-8"
+            }
+        ],
+        "statusCode": 200,
+        "statusText": "OK",
+        "body": {
+            "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/6189460d4634612164e10999",
+            "type": "Microsoft.ApiManagement/service/users",
+            "name": "6189460d4634612164e10999",
+            "properties": {
+                "firstName": "name",
+                "lastName": "surname",
+                "email": "name.surname@contoso.com",
+                "state": "active",
+                "registrationDate": "2021-11-08T15:45:18.01Z",
+                "note": null,
+                "groups": [],
+                "identities": [
+                    {
+                        "provider": "Basic",
+                        "id": "name.surname@contoso.com"
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -17,6 +17,7 @@ describe("User sign-up flow", async () => {
     });
 
     it("User can sign-up with basic credentials", async () => {
+        var server = await Utils.createMockServer(["tests/mocks/collection/user-signup.json"]);
         const page = await browser.newPage();
         await page.goto(config.urls.signup);
 
@@ -25,5 +26,7 @@ describe("User sign-up flow", async () => {
 
         expect(await page.evaluate(() => document.getElementById("confirmationMessage").textContent))
             .to.equal("Follow the instructions from the email to verify your account.");
+
+        server.close();
     });
 });
