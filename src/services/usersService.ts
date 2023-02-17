@@ -37,7 +37,7 @@ export class UsersService {
         const userId = await this.authenticate(credentials);
 
         if (userId) {
-            return; // successul authentication
+            return; // successful authentication
         }
 
         this.authenticator.clearAccessToken();
@@ -45,7 +45,7 @@ export class UsersService {
     }
 
     /**
-     * Authenticates user with specified credentilas and returns user identifier.
+     * Authenticates user with specified credentials and returns user identifier.
      * @param credentials {string} User credentials passed in "Authorization" header.
      * @returns {string} User identifier.
      */

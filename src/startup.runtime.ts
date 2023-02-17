@@ -13,7 +13,7 @@ injector.bindModule(new StyleRuntimeModule());
 injector.bindModule(new ApimRuntimeModule());
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (process.env.NODE_ENV === staticDataEnvironment) {
+    if (process.env.NODE_ENV === staticDataEnvironment && process.env.ACCESS_TOKEN) {
         sessionStorage.setItem("accessToken", process.env.ACCESS_TOKEN);
     }
 
