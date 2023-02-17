@@ -18,3 +18,27 @@ jobs:
 
       - name: Run tests
         run: npm run test
+  
+  end2end-tests:
+    runs-on: ubuntu-latest
+    
+    steps:      
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install
+        run: npm install
+
+      - name: Build static data
+        run: npm run build-mock-static-data
+
+      - name: Start mock server
+        run: npm run serve-website &
+
+      - name: Wait for the server
+        run: ./.github/scripts/wait-for-server.ps1 -HostName "http://localhost:8080"
+        shell: pwsh
+
+      - name: Run tests
+        run: npm run test-e2e
+      

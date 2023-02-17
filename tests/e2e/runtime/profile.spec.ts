@@ -2,36 +2,40 @@ import * as puppeteer from "puppeteer";
 import { expect } from "chai";
 import { Utils } from "../../utils";
 import { BrowserLaunchOptions } from "../../constants";
-import { SignInBasicWidget } from "../maps/signin-basic";
+import { ProfileWidget } from "../maps/profile";
+import { signIn } from "./signin.spec";
 import { Server } from "http";
 import { UserMockData } from "../../mocks/collection/user";
 
-export async function signIn(page: puppeteer.Page, config: any): Promise<void> {
-    await page.goto(config.urls.signin);
-
-    const signInWidget = new SignInBasicWidget(page);
-    await signInWidget.signInWithBasic();
-}
-
-describe("User sign-in flow", async () => {
+describe("User profile", async () => {
     let config;
     let browser: puppeteer.Browser;
     let server: Server;
-
+    
     before(async () => {
         config = await Utils.getConfig();
         browser = await puppeteer.launch(BrowserLaunchOptions);
     });
     after(async () => {
+        browser.close();
         Utils.closeServer(server);
-        await browser.close();
     });
 
-    it("User can sign-in with basic credentials", async () => {
+    it("User can visit his profile page", async () => {
         var userInfo = new UserMockData();
-        server = await Utils.createMockServer([await userInfo.getSignInResponse()]);
+        server = await Utils.createMockServer([await userInfo.getSignInResponse(), userInfo.getUserInfoResponse()]);
         const page = await browser.newPage();
+
         await signIn(page, config);
         expect(page.url()).to.equal(config.urls.home);
+
+        await page.goto(config.urls.profile);
+
+        const profileWidget = new ProfileWidget(page);
+        await profileWidget.profile();
+
+        expect(await page.evaluate(() =>
+            document.querySelector("[data-bind='text: user().email']")?.textContent
+        )).to.equal(userInfo.email);
     });
 });
