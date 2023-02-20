@@ -1,6 +1,6 @@
 {
     "environment": "publishing",
-    "managementApiUrl": "http://localhost:8181/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid",
+    "managementApiUrl": "http://localhost:8181/",
     "managementApiAccessToken": "SharedAccessSignature...",
     "useHipCaptcha": false
 }

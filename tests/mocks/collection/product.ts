@@ -9,7 +9,7 @@ export class Product{
     
     public getProductResponse(){
         let response = {};
-        var url = `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/${this.productId}`;
+        var url = `/developer/products/${this.productId}`;
         response[url] = {
             "headers": [
                 {
@@ -26,7 +26,7 @@ export class Product{
 
     public getProductBodyResponse(){
         return {
-            "id": `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/${this.productId}`,
+            "id": `${this.productId}`,
             "type": "Microsoft.ApiManagement/service/products",
             "name": this.productId,
             "properties": {
