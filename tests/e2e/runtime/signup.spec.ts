@@ -29,7 +29,7 @@ describe("User sign-up flow", async () => {
         const signUpWidget = new SignupBasicWidget(page);
         await signUpWidget.signUpWithBasic();
 
-        expect(await page.evaluate(() => document.getElementById("confirmationMessage")?.textContent))
+        expect(await signUpWidget.getConfirmationMessageValue())
             .to.equal("Follow the instructions from the email to verify your account.");
     });
     
