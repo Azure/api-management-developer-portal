@@ -1,3 +1,5 @@
+import { Utils } from "../../utils";
+
 export class Api{
     public apiId: string;
     public apiName: string;
@@ -48,5 +50,9 @@ export class Api{
 
     public static getEchoApi(){
         return new Api("echo-api", "Echo api");
+    }
+
+    public static getRandomApi(){
+        return new Api(Utils.randomIdentifier(), Utils.randomIdentifier());
     }
 }
