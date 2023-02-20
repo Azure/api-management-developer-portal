@@ -5,15 +5,15 @@ import template from "./profile.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { Router } from "@paperbits/common/routing/router";
 import { User } from "../../../../../models/user";
-import { UsersService } from "../../../../../services";
+import { UsersService } from "../../../../../services/usersService";
 import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
-import { TenantService } from "../../../../../services/tenantService";
 import { pageUrlChangePassword } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
 import { EventManager } from "@paperbits/common/events/eventManager";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
-import { BackendService } from "../../../../../services/backendService";
+import IDelegationService from "../../../../../services/IDelegationService";
+import { Identity } from "../../../../../contracts/identity";
 import { ValidationMessages } from "../../../validationMessages";
 
 @RuntimeComponent({
@@ -37,8 +37,7 @@ export class Profile {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly tenantService: TenantService,
-        private readonly backendService: BackendService,
+        private readonly delegationService: IDelegationService,
         private readonly eventManager: EventManager,
         private readonly router: Router) {
         this.user = ko.observable();
@@ -67,7 +66,8 @@ export class Profile {
         await this.usersService.ensureSignedIn();
 
         const model: User = await this.usersService.getCurrentUser();
-        this.isBasicAccount(model.isBasicAccount);
+        const identity: Identity = await this.usersService.getCurrentUserIdWithProvider();
+        this.isBasicAccount(identity.provider === "Basic");
         this.setUser(model);
     }
 
@@ -75,11 +75,12 @@ export class Profile {
         if (!this.user()) {
             return false;
         }
-        const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
+        const isDelegationEnabled = await this.delegationService.isUserRegistrationDelegationEnabled();
         if (isDelegationEnabled) {
+            const userId = Utils.getResourceName("users", this.user().id)
             const delegationParam = {};
-            delegationParam[DelegationParameters.UserId] = Utils.getResourceName("users", this.user().id);
-            const delegationUrl = await this.backendService.getDelegationString(action, delegationParam);
+            delegationParam[DelegationParameters.UserId] = userId;
+            const delegationUrl = await this.delegationService.getUserDelegationUrl(userId, action, delegationParam);
             if (delegationUrl) {
                 location.assign(delegationUrl);
             }

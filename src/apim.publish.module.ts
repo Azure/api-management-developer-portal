@@ -2,7 +2,6 @@ import { AadConfigPublisher } from "./publishing/aadConfigPublisher";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { RoleBasedSecurityPublishModule } from "@paperbits/core/security/roleBasedSecurity.publish.module";
-import { MapiClient } from "./services/mapiClient";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
 import { DetailsOfApiModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
@@ -28,7 +27,6 @@ import { ResetPasswordModule } from "./components/users/reset-password/resetPass
 import { ConfirmPasswordModule } from "./components/users/confirm-password/ko/confirmPassword.module";
 import { ChangePasswordModule } from "./components/users/change-password/ko/changePassword.module";
 import { ReportsModule } from "./components/reports/ko/reports.module";
-import { TenantService } from "./services/tenantService";
 import { ValidationSummaryModule } from "./components/users/validation-summary/validationSummary.module";
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
@@ -41,6 +39,10 @@ import { CustomHtmlPublishModule } from "./components/custom-html/customHtml.pub
 import { CustomWidgetPublishModule } from "./components/custom-widget/customWidget.publish.module";
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
+
+import { TenantService } from "./services/tenantService";
+import { StaticDelegationService } from "./services/staticDelegationService";
+import { MapiClient } from "./clients";
 import { staticDataEnvironment,mockStaticDataEnvironment } from "./../environmentConstants";
 
 export class ApimPublishModule implements IInjectorModule {
@@ -78,11 +80,12 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("router", StaticRouter);
         injector.bindSingleton("authenticator", StaticAuthenticator);
-        injector.bindSingleton("mapiClient", MapiClient);
+        injector.bindSingleton("apiClient", MapiClient);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("oauthService", OAuthService);
+        injector.bindSingleton("delegationService", StaticDelegationService);
         injector.bindSingleton("runtimeConfigBuilder", RuntimeConfigBuilder);
         injector.bindToCollection("publishers", AadConfigPublisher);
         injector.bindToCollection("publishers", RuntimeConfigPublisher);

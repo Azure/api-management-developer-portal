@@ -7,7 +7,7 @@ import { Logger } from "@paperbits/common/logging";
 import { IAuthenticator } from "../../authentication/IAuthenticator";
 import { AppError } from "./../../errors/appError";
 import { MapiError } from "../../errors/mapiError";
-import { MapiClient } from "../../services";
+import { IApiClient } from "../../clients";
 
 
 @Component({
@@ -17,7 +17,7 @@ import { MapiClient } from "../../services";
 export class ContentWorkshop {
     constructor(
         private readonly viewManager: ViewManager,
-        private readonly mapiClient: MapiClient,
+        private readonly apiClient: IApiClient,
         private readonly authenticator: IAuthenticator,
         private readonly logger: Logger
     ) { }
@@ -32,7 +32,7 @@ export class ContentWorkshop {
         try {
             const revisionName = moment.utc().format(Constants.releaseNameFormat);
 
-            await this.mapiClient.put(`/portalRevisions/${revisionName}`, null, {
+            await this.apiClient.put(`/portalRevisions/${revisionName}`, null, {
                 properties: { description: "", isCurrent: true }
             });
 

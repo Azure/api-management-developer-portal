@@ -13,7 +13,6 @@ export class Operation {
     public readonly templateParameters: Parameter[];
     public readonly parameters: Parameter[];
     public readonly method: string;
-    public readonly version: string;
     public readonly request: Request;
     public readonly responses: Response[];
     public readonly displayUrlTemplate: string;
@@ -23,24 +22,23 @@ export class Operation {
     }
 
     constructor(contract?: OperationContract) {
-        this.id = Utils.getResourceName("apis", contract.id, "shortId");
-        this.name = contract.name;
-        this.displayName = contract.properties.displayName;
-        this.description = contract.properties.description;
-        this.urlTemplate = contract.properties.urlTemplate;
-        this.method = contract.properties.method;
-        this.version = contract.properties.version;
+        this.id = contract.id
+        this.name = contract.id;
+        this.displayName = contract.name;
+        this.description = contract.description;
+        this.urlTemplate = contract.urlTemplate;
+        this.method = contract.method;
 
-        this.templateParameters = contract.properties.templateParameters
-            ? contract.properties.templateParameters.map(x => new Parameter("template", x))
+        this.templateParameters = contract.templateParameters
+            ? contract.templateParameters.map(x => new Parameter("template", x))
             : [];
 
-        this.request = new Request(contract.properties.request);
+        this.request = new Request(contract.request);
 
         this.parameters = this.templateParameters.concat(this.request.queryParameters);
 
-        this.responses = contract.properties.responses
-            ? contract.properties.responses.map(x => new Response(x))
+        this.responses = contract.responses
+            ? contract.responses.map(x => new Response(x))
             : [];
 
         let connector = this.urlTemplate.includes("?") ? "&" : "?";

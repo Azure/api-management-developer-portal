@@ -1,5 +1,5 @@
 import * as Constants from "../constants";
-import { MapiClient } from "./mapiClient";
+import { IApiClient } from "../clients";
 import { Page } from "../models/page";
 import { ReportRecordByGeo } from "../contracts/reportRecordByGeo";
 import { ReportRecordByTime } from "../contracts/reportRecordByTime";
@@ -16,7 +16,7 @@ import { UsersService } from "./usersService";
  */
 export class AnalyticsService {
     constructor(
-        private readonly mapiClient: MapiClient,
+        private readonly apiClient: IApiClient,
         private readonly usersService: UsersService
     ) { }
 
@@ -29,8 +29,8 @@ export class AnalyticsService {
      */
     public async getReportsByTime(startTime: Date, endTime: Date, interval: number): Promise<Page<ReportRecordByTime>> {
         const userId = await this.usersService.getCurrentUserId();
-        const query = `${userId}/reports/byTime?$filter=timestamp ge ${startTime.toISOString()} and timestamp le ${endTime.toISOString()}&interval=PT${interval}M`;
-        const pageOfRecords = await this.mapiClient.get<Page<ReportRecordByTime>>(query, [await this.mapiClient.getPortalHeader("getReportsByTime")]);
+        const query = `${userId}/reports/ByTime?$filter=timestamp ge ${startTime.toISOString()} and timestamp le ${endTime.toISOString()}&interval=PT${interval}M`;
+        const pageOfRecords = await this.apiClient.get<Page<ReportRecordByTime>>(query);
 
         return pageOfRecords;
     }
@@ -43,8 +43,8 @@ export class AnalyticsService {
      */
     public async getReportsByGeo(startTime: Date, endTime: Date): Promise<Page<ReportRecordByGeo>> {
         const userId = await this.usersService.getCurrentUserId();
-        const query = `${userId}/reports/byGeo?$filter=timestamp ge ${startTime.toISOString()} and timestamp le ${endTime.toISOString()}`;
-        const pageOfRecords = await this.mapiClient.get<Page<ReportRecordByGeo>>(query, [await this.mapiClient.getPortalHeader("getReportsByGeo")]);
+        const query = `${userId}/reports/ByRegion?$filter=timestamp ge ${startTime.toISOString()} and timestamp le ${endTime.toISOString()}`;
+        const pageOfRecords = await this.apiClient.get<Page<ReportRecordByGeo>>(query);
 
         return pageOfRecords;
     }
@@ -64,8 +64,8 @@ export class AnalyticsService {
         const endTime = reportQuery.endTime.toISOString();
 
         const userId = await this.usersService.getCurrentUserId();
-        const query = `${userId}/reports/byProduct?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
-        const pageOfRecords = await this.mapiClient.get<Page<ReportRecordByProduct>>(query, [await this.mapiClient.getPortalHeader("getReportsByProduct")]);
+        const query = `${userId}/reports/ByProduct?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
+        const pageOfRecords = await this.apiClient.get<Page<ReportRecordByProduct>>(query);
 
         return pageOfRecords;
     }
@@ -85,8 +85,8 @@ export class AnalyticsService {
         const endTime = reportQuery.endTime.toISOString();
 
         const userId = await this.usersService.getCurrentUserId();
-        const query = `${userId}/reports/bySubscription?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
-        const pageOfRecords = await this.mapiClient.get<Page<ReportRecordBySubscription>>(query, [await this.mapiClient.getPortalHeader("getReportsBySubscription")]);
+        const query = `${userId}/reports/BySubscription?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
+        const pageOfRecords = await this.apiClient.get<Page<ReportRecordBySubscription>>(query);
 
         return pageOfRecords;
     }
@@ -106,8 +106,8 @@ export class AnalyticsService {
         const endTime = reportQuery.endTime.toISOString();
 
         const userId = await this.usersService.getCurrentUserId();
-        const query = `${userId}/reports/byApi?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
-        const pageOfRecords = await this.mapiClient.get<Page<ReportRecordByApi>>(query, [await this.mapiClient.getPortalHeader("getReportsByApi")]);
+        const query = `${userId}/reports/ByEndpoint?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
+        const pageOfRecords = await this.apiClient.get<Page<ReportRecordByApi>>(query);
 
         return pageOfRecords;
     }
@@ -127,8 +127,8 @@ export class AnalyticsService {
         const endTime = reportQuery.endTime.toISOString();
 
         const userId = await this.usersService.getCurrentUserId();
-        const query = `${userId}/reports/byOperation?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
-        const pageOfRecords = await this.mapiClient.get<Page<ReportRecordByOperation>>(query, [await this.mapiClient.getPortalHeader("getReportsByOperation")]);
+        const query = `${userId}/reports/ByOperation?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
+        const pageOfRecords = await this.apiClient.get<Page<ReportRecordByOperation>>(query);
 
         return pageOfRecords;
     }

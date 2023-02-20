@@ -1,24 +1,23 @@
-import { MapiClient } from "./mapiClient";
+import { IApiClient } from "../clients";
 import { Page } from "../models/page";
 import { Subscription } from "../models/subscription";
 import { Product } from "../models/product";
 import { SubscriptionContract, SubscriptionState } from "../contracts/subscription";
 import { ProductContract } from "../contracts/product";
-import { TenantService } from "../services/tenantService";
 import { HttpHeader } from "@paperbits/common/http";
 import * as Constants from "../constants";
 import { Utils } from "../utils";
 import { SearchQuery } from "../contracts/searchQuery";
-import { SubscriptionSecrets } from "../contracts/subscriptionSecrets";
 import { ApiContract } from "../contracts/api";
+import IDelegationService from "./IDelegationService";
 
 /**
  * A service for management operations with products.
  */
 export class ProductService {
     constructor(
-        private readonly mapiClient: MapiClient,
-        private readonly tenantService: TenantService
+        private readonly apiClient: IApiClient,
+        private readonly delegationService: IDelegationService
     ) { }
 
     /**
@@ -32,29 +31,16 @@ export class ProductService {
         }
 
         const pageOfSubscriptions = new Page<Subscription>();
-        const query = productId ? `?$filter=properties/scope eq '${productId}'` : "";
+        const query = productId ? `?$filter=endswith(scope, '${productId}')` : "";
 
         try {
-            const pageContract = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`, [await this.mapiClient.getPortalHeader("getSubscriptions")]);
-            const promises: Promise<void>[] = [];
+            const pageContract = await this.apiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`);
             const subscriptions: Subscription[] = [];
 
             for (const subscriptionContract of pageContract.value) {
                 const subscription = new Subscription(subscriptionContract);
-
-                const secretPromise = this.mapiClient
-                    .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscriptionContract.name}/listSecrets`, [await this.mapiClient.getPortalHeader("getSubscriptionSecrets")])
-                    .then(secrets => {
-                        subscription.primaryKey = secrets.primaryKey;
-                        subscription.secondaryKey = secrets.secondaryKey;
-                    });
-
-                promises.push(secretPromise);
-
                 subscriptions.push(subscription);
             }
-
-            await Promise.all(promises);
 
             pageOfSubscriptions.value = subscriptions;
             pageOfSubscriptions.count = pageContract.count;
@@ -108,7 +94,7 @@ export class ProductService {
         }
 
         const result = [];
-        const pageOfSubscriptions = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`, [await this.mapiClient.getPortalHeader("getUserSubscriptions")]);
+        const pageOfSubscriptions = await this.apiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`);
 
         if (!pageOfSubscriptions?.value) {
             return result;
@@ -120,40 +106,30 @@ export class ProductService {
         for (const subscription of subscriptions) {
             const subscriptionModel = new Subscription(subscription);
 
-            if (subscription.properties.scope.endsWith("/apis")) {
+            if (subscription.scope.endsWith("/apis")) {
                 subscriptionModel.productName = "All APIs";
             } else
-                if (subscription.properties.scope.includes("/apis/")) {
-                    const apiName = Utils.getResourceName("apis", subscription.properties.scope);
+                if (subscription.scope.includes("/apis/")) {
+                    const apiName = Utils.getResourceName("apis", subscription.scope);
 
-                    const apiPromise = this.mapiClient
-                        .get<ApiContract>(`/apis/${apiName}`)
+                    const apiPromise = this.apiClient
+                        .get<ApiContract>(`/apis/${apiName}`, [Utils.getIsUserResourceHeader()])
                         .then(api => {
-                            subscriptionModel.productName = `API: ${api.properties.displayName}`;
+                            subscriptionModel.productName = `API: ${api.name}`;
                         }).catch(error => console.log(`Get API error: ${error.message}`));
 
                     promises.push(apiPromise);
                 } else {
-                    const productName = Utils.getResourceName("products", subscription.properties.scope);
+                    const productName = Utils.getResourceName("products", subscription.scope);
 
-                    const productPromise = this.mapiClient
-                        .get<ProductContract>(`/products/${productName}`)
+                    const productPromise = this.apiClient
+                        .get<ProductContract>(`/products/${productName}`, [Utils.getIsUserResourceHeader()])
                         .then(product => {
-                            subscriptionModel.productName = product.properties.displayName;
+                            subscriptionModel.productName = product.name;
                         }).catch(error => console.log(`Get product error: ${error.message}`));
 
                     promises.push(productPromise);
                 }
-
-            const secretPromise = this.mapiClient
-                .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscription.name}/listSecrets`)
-                .then(secrets => {
-                    subscriptionModel.primaryKey = secrets.primaryKey;
-                    subscriptionModel.secondaryKey = secrets.secondaryKey;
-                });
-
-            promises.push(secretPromise);
-
             result.push(subscriptionModel);
         }
 
@@ -172,18 +148,13 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        const contract = await this.mapiClient.get<SubscriptionContract>(subscriptionId, [await this.mapiClient.getPortalHeader("getSubscription")]);
+        const contract = await this.apiClient.get<SubscriptionContract>(`/subscriptions/${subscriptionId}`, [Utils.getIsUserResourceHeader()]);
 
         if (!contract) {
             return null;
         }
 
-        const secrets = await this.mapiClient
-            .post<SubscriptionSecrets>(`${subscriptionId}/listSecrets`, [await this.mapiClient.getPortalHeader("getSubscriptionSecrets")]);
-
         const subscripitonModel = new Subscription(contract);
-        subscripitonModel.primaryKey = secrets.primaryKey;
-        subscripitonModel.secondaryKey = secrets.secondaryKey;
 
         return subscripitonModel;
     }
@@ -194,7 +165,7 @@ export class ProductService {
      */
     public async getProducts(getAll: boolean = false): Promise<Product[]> {
         const result = [];
-        const contracts = await this.mapiClient.get<Page<ProductContract>>(`/products`, [await this.mapiClient.getPortalHeader("getProducts")]);
+        const contracts = await this.apiClient.get<Page<ProductContract>>(`/products`, [Utils.getIsUserResourceHeader()]);
 
         if (contracts && contracts.value) {
             if (getAll) {
@@ -202,7 +173,7 @@ export class ProductService {
             }
             else {
                 contracts.value
-                    .filter(x => x.properties.subscriptionRequired === true)
+                    .filter(x => x.subscriptionRequired === true)
                     .map(item => result.push(new Product(item)));
             }
         }
@@ -219,10 +190,10 @@ export class ProductService {
         let query = `/products?$top=${take}&$skip=${skip}`;
 
         if (filter.pattern) {
-            query = Utils.addQueryParameter(query, `$filter=(contains(properties/displayName,'${encodeURIComponent(filter.pattern)}'))`);
+            query = Utils.addQueryParameter(query, `$filter=(contains(name,'${encodeURIComponent(filter.pattern)}'))`);
         }
 
-        const page = await this.mapiClient.get<Page<ProductContract>>(query, [await this.mapiClient.getPortalHeader("getProductsPage")]);
+        const page = await this.apiClient.get<Page<ProductContract>>(query, [Utils.getIsUserResourceHeader()]);
         const result = new Page<Product>();
         result.count = page.count;
         result.nextLink = page.nextLink;
@@ -239,7 +210,7 @@ export class ProductService {
             throw new Error(`Parameter "productId" not specified.`);
         }
 
-        const contract = await this.mapiClient.get<ProductContract>(productId, [await this.mapiClient.getPortalHeader("getProduct")]);
+        const contract = await this.apiClient.get<ProductContract>(productId, [Utils.getIsUserResourceHeader()]);
 
         if (contract) {
             return new Product(contract);
@@ -256,7 +227,7 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        await this.mapiClient.post(`${subscriptionId}/regeneratePrimaryKey`, [await this.mapiClient.getPortalHeader("regeneratePrimaryKey")]);
+        await this.apiClient.post(`/subscriptions/${subscriptionId}/regeneratePrimaryKey`, [Utils.getIsUserResourceHeader()]);
 
         return await this.getSubscription(subscriptionId);
     }
@@ -266,7 +237,8 @@ export class ProductService {
      * @param subscriptionId {string} Subscription unique identifier.
      */
     public async regenerateSecondaryKey(subscriptionId: string): Promise<Subscription> {
-        await this.mapiClient.post(`${subscriptionId}/regenerateSecondaryKey`, [await this.mapiClient.getPortalHeader("regenerateSecondaryKey")]);
+
+        await this.apiClient.post(`/subscriptions/${subscriptionId}/regenerateSecondaryKey`, [Utils.getIsUserResourceHeader()]);
         return await this.getSubscription(subscriptionId);
     }
 
@@ -286,20 +258,17 @@ export class ProductService {
             throw new Error(`Parameter "userId" not specified.`);
         }
 
-        const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
+        const isDelegationEnabled = await this.delegationService.isSubscriptionDelegationEnabled();
 
         if (isDelegationEnabled) {
             console.warn("Delegation enabled. Can't create subscription.");
         }
         else {
             const payload = {
-                properties: {
-                    scope: productId,
-                    name: subscriptionName,
-                    appType: Constants.AppType
-                }
+                scope: productId,
+                name: subscriptionName
             };
-            await this.mapiClient.put(userId + subscriptionId, [await this.mapiClient.getPortalHeader("createSubscription")], payload);
+            await this.apiClient.post(userId + subscriptionId, [Utils.getIsUserResourceHeader()], payload);
         }
     }
 
@@ -312,21 +281,19 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionId" not specified.`);
         }
 
-        const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
+        const isDelegationEnabled = await this.delegationService.isSubscriptionDelegationEnabled();
 
         if (isDelegationEnabled) {
             console.warn("Delegation enabled. Can't cancel subscription");
         }
         else {
-            const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.mapiClient.getPortalHeader("cancelSubscription")];
+            const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, Utils.getIsUserResourceHeader()];
 
             const payload = {
-                properties: {
-                    state: SubscriptionState.cancelled
-                }
+                state: SubscriptionState.cancelled
             };
 
-            await this.mapiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, headers, payload);
+            await this.apiClient.patch(`/subscriptions/${subscriptionId}`, headers, payload);
         }
 
         return await this.getSubscription(subscriptionId);
@@ -346,15 +313,13 @@ export class ProductService {
             throw new Error(`Parameter "subscriptionName" not specified.`);
         }
 
-        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.mapiClient.getPortalHeader("renameSubscription")];
+        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, Utils.getIsUserResourceHeader()];
 
         const payload = {
-            properties: {
-                name: subscriptionName
-            }
+            name: subscriptionName
         };
 
-        await this.mapiClient.patch(`${subscriptionId}?appType=${Constants.AppType}`, headers, payload);
+        await this.apiClient.patch(`/subscriptions/${subscriptionId}`, headers, payload);
 
         return await this.getSubscription(subscriptionId);
     }

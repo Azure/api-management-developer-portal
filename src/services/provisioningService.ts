@@ -4,14 +4,14 @@ import { ViewManager } from "@paperbits/common/ui";
 import { Router } from "@paperbits/common/routing";
 import { AzureBlobStorage } from "@paperbits/azure";
 import * as Constants from "../constants";
-import { MapiClient } from "./mapiClient";
+import { IApiClient } from "../clients";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 
 export class ProvisionService {
     constructor(
         private readonly httpClient: HttpClient,
-        private readonly mapiClient: MapiClient,
+        private readonly apiClient: IApiClient,
         private readonly authenticator: IAuthenticator,
         private readonly viewManager: ViewManager,
         private readonly router: Router,
@@ -36,13 +36,13 @@ export class ProvisionService {
         for (const key of keys) {
             const contentItem = dataObj[key];
             const url = `${key}?api-version=${Constants.managementApiVersion}`;
-            await this.mapiClient.put(
+            await this.apiClient.put(
                 url,
                 [
                     { name: KnownHttpHeaders.IfMatch, value: "*" },
                     { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                     { name: KnownHttpHeaders.Authorization, value: accessToken },
-                    await this.mapiClient.getPortalHeader("provision")
+                    await this.apiClient.getPortalHeader("provision")
                 ],
                 contentItem);
         }
@@ -54,36 +54,36 @@ export class ProvisionService {
     private async cleanupContent(): Promise<void> {
         const accessToken = await this.authenticator.getAccessTokenAsString();
 
-        const response = await this.mapiClient.get(
+        const response = await this.apiClient.get(
             `contentTypes?api-version=${Constants.managementApiVersion}`,
             [
                 { name: KnownHttpHeaders.IfMatch, value: "*" },
                 { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                 { name: KnownHttpHeaders.Authorization, value: accessToken },
-                await this.mapiClient.getPortalHeader("getContentTypes")
+                await this.apiClient.getPortalHeader("getContentTypes")
             ]);
         const contentTypes = Object.values(response["value"]);
 
         for (const contentType of contentTypes) {
             const contentTypeName = contentType["name"];
-            const itemsResponse = await this.mapiClient.get(
+            const itemsResponse = await this.apiClient.get(
                 `contentTypes/${contentTypeName}/contentItems?api-version=${Constants.managementApiVersion}`,
                 [
                     { name: KnownHttpHeaders.IfMatch, value: "*" },
                     { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                     { name: KnownHttpHeaders.Authorization, value: accessToken },
-                    await this.mapiClient.getPortalHeader("getContentItems")
+                    await this.apiClient.getPortalHeader("getContentItems")
                 ]);
 
             const items = Object.values(itemsResponse["value"]);
             for (const item of items) {
-                await this.mapiClient.delete(
+                await this.apiClient.delete(
                     `${item["id"]}?api-version=${Constants.managementApiVersion}`,
                     [
                         { name: KnownHttpHeaders.IfMatch, value: "*" },
                         { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                         { name: KnownHttpHeaders.Authorization, value: accessToken },
-                        await this.mapiClient.getPortalHeader("resetContent")
+                        await this.apiClient.getPortalHeader("resetContent")
                     ]);
             }
         }

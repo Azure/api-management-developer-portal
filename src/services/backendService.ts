@@ -145,49 +145,6 @@ export class BackendService {
         throw new MapiError("Unhandled", "Unable to complete change password request.");
     }
 
-    public async getDelegationString(action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
-        if (this.developerPortalType === DeveloperPortalType.managed) {
-            const queryParams = new URLSearchParams();
-            Object.keys(delegationParameters).map(key => {
-                const val = delegationParameters[key];
-                queryParams.append(key, val);
-            });
-            return `/${DelegationActionPath[action]}?${queryParams.toString()}`;
-        } else {
-            const delegationUrl = await this.getDelegationUrlFromServer(action, delegationParameters);
-            return delegationUrl;
-        }
-    }
-
-    public async getDelegationUrlFromServer(action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
-        const authToken = await this.authenticator.getAccessTokenAsString();
-
-        if (!authToken) {
-            throw Error("Auth token not found");
-        }
-
-        const payload = {
-            delegationAction: action,
-            delegationParameters: delegationParameters
-        };
-
-        const response = await this.httpClient.send(
-            {
-                url: await this.getUrl("/delegation-url"),
-                method: HttpMethod.post,
-                headers: [{ name: KnownHttpHeaders.Authorization, value: authToken }, { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
-                body: JSON.stringify(payload)
-            });
-
-        if (response.statusCode === 200) {
-            const result = response.toObject();
-            return result["url"];
-        }
-        else {
-            throw Error(response.toText());
-        }
-    }
-
     public async getAuthorizationServer(authorizationServerId: string): Promise<AuthorizationServer> {
         let response: HttpResponse<AuthorizationServerForClient>;
         const httpRequest: HttpRequest = {

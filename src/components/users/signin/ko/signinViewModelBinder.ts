@@ -3,23 +3,20 @@ import { ComponentFlow } from "@paperbits/common/editing";
 import { EventManager, Events } from "@paperbits/common/events";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { TermsOfService } from "../../../../contracts/identitySettings";
-import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { IdentityService } from "../../../../services";
-import { BackendService } from "../../../../services/backendService";
-import { TenantService } from "../../../../services/tenantService";
+import IDelegationService from "../../../../services/IDelegationService";
 import { SigninModel } from "../signinModel";
 import { SigninViewModel } from "./signinViewModel";
 
 
 export class SigninViewModelBinder implements ViewModelBinder<SigninModel, SigninViewModel> {
-    
-    constructor(
-        private readonly eventManager: EventManager, 
-        private readonly tenantService: TenantService,
-        private readonly backendService: BackendService,
-        private readonly identityService: IdentityService) {}
 
-    
+    constructor(
+        private readonly eventManager: EventManager,
+        private readonly delegationService: IDelegationService,
+        private readonly identityService: IdentityService) { }
+
+
     public async getTermsOfService(): Promise<TermsOfService> {
         const identitySetting = await this.identityService.getIdentitySetting();
         return identitySetting.properties.termsOfService;
@@ -44,19 +41,16 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
 
         const params = {};
 
-        const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
-        
-        if (isDelegationEnabled) {
-            const delegationParam = {};
-            delegationParam[DelegationParameters.ReturnUrl] =  "/";
-            const delegationUrl = await this.backendService.getDelegationUrlFromServer(DelegationAction.signIn, delegationParam);
+        const isDelegationEnabled = await this.delegationService.isUserRegistrationDelegationEnabled();
 
+        if (isDelegationEnabled) {
+            const delegationUrl = await this.delegationService.getDelegatedSigninUrl("/");
             if (delegationUrl) {
                 params["delegationUrl"] = delegationUrl;
             }
         }
 
-        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
+        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done
         const termsOfService = await this.getTermsOfService();
         if (termsOfService.text) params["termsOfUse"] = termsOfService.text;
         if (termsOfService.consentRequired) params["isConsentRequired"] = termsOfService.consentRequired;

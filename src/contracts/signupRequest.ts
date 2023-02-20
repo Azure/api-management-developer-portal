@@ -21,5 +21,4 @@ export interface MapiSignupRequest {
     state?: string;
     note?: string;
     identities?: { id: string; name: string }[];
-    appType: string;
 }

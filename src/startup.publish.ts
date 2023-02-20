@@ -19,10 +19,10 @@ let settingsProvider: ISettingsProvider;
 
 if (process.env.NODE_ENV === staticDataEnvironment || process.env.NODE_ENV === mockStaticDataEnvironment) {
     settingsProvider = new StaticSettingsProvider({
-        environment: "publishing",
-        managementApiUrl: "https://contoso.management.azure-api.net",
-        managementApiAccessToken: "SharedAccessSignature&1&",
-        useHipCaptcha: false
+        "environment": "publishing",
+        "backendUrl": "https://contoso.developer.azure-api.net",
+        "managementApiAccessToken": "SharedAccessSignature&1&",
+        "useHipCaptcha": false
     });
 }
 else {

@@ -37,7 +37,7 @@ import { GraphqlConsole } from "./components/operations/operation-details/ko/run
 import { GraphqlDocumentation } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc";
 import { GraphqlDetails } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc-details";
 import { GraphDocService } from "./components/operations/operation-details/ko/runtime/graphql-documentation/graphql-doc-service";
-import { OauthServerConfiguration } from "./components/operations/operation-details/ko/runtime/oauth-server-configuration";
+import { SecuritySchemes } from "./components/operations/operation-details/ko/runtime/security-schemes";
 import { OperationConsole } from "./components/operations/operation-details/ko/runtime/operation-console";
 import { OperationDetails } from "./components/operations/operation-details/ko/runtime/operation-details";
 import { TypeDefinitionViewModel } from "./components/operations/operation-details/ko/runtime/type-definition";
@@ -78,15 +78,15 @@ import { AadServiceV2 } from "./services/aadServiceV2";
 import { AnalyticsService } from "./services/analyticsService";
 import { ApiService } from "./services/apiService";
 import { BackendService } from "./services/backendService";
-import { MapiClient } from "./services/mapiClient";
+import DataApiClient from "./clients/dataApiClient";
 import { OAuthService } from "./services/oauthService";
 import { ProductService } from "./services/productService";
-import { ProvisionService } from "./services/provisioningService";
-import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
+import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider";
 import { TagService } from "./services/tagService";
-import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
+import { TenantService } from "./services/tenantService";
+import { DelegationService } from "./services/delegationService";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -146,22 +146,22 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("aadService", AadService);
+        injector.bindSingleton("apiClient", DataApiClient);
         injector.bindSingleton("aadServiceV2", AadServiceV2);
-        injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("settingsProvider", ApimSettingsProvider);
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("routeHelper", RouteHelper);
         injector.bindSingleton("graphDocService", GraphDocService);
         injector.bindSingleton("userService", StaticUserService);
-        injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindSingleton("viewStack", ViewStack);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("tagInput", TagInput);
         injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bind("pagination", Pagination);
-        injector.bind("oauthServerConfiguration", OauthServerConfiguration);
+        injector.bind("securitySchemes", SecuritySchemes);
         injector.bindModule(new CustomWidgetRuntimeModule());
+        injector.bindSingleton("delegationService", DelegationService);
         injector.bindModule(new RoleBasedSecurityRuntimeModule());
 
         if (process.env.NODE_ENV === staticDataEnvironment) {
