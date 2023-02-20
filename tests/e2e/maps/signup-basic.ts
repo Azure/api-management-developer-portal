@@ -10,7 +10,10 @@ export class SignupBasicWidget {
         await this.page.type("#firstName", "Foo");
         await this.page.type("#lastName", "Bar");
         await this.page.click("#signup");
+    }
 
+    public async getConfirmationMessageValue(): Promise<string | undefined | null> {
         await this.page.waitForSelector("#confirmationMessage");
+        return await this.page.evaluate(() => document.getElementById("confirmationMessage")?.textContent);
     }
 }
