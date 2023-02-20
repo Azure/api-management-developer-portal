@@ -33,8 +33,6 @@ describe("Apis page", async () => {
         const apiWidget = new ApisWidget(page);
         await apiWidget.apis();
 
-        expect(await page.evaluate(() =>
-            document.querySelector("api-list div.table div.table-body div.table-row")?.parentElement?.childElementCount
-        )).to.equal(apis.apiList.length);
+        expect(await apiWidget.getApisCount()).to.equal(apis.apiList.length);
     });
 });
