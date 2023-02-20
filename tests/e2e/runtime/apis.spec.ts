@@ -23,8 +23,8 @@ describe("Apis page", async () => {
 
     it("User can see apis on the page", async () => {
         var apis = new Apis();
-        apis.addApi(Api.getEchoApi());
-        apis.addApi(Api.getEchoApi());
+        apis.addApi(Api.getRandomApi());
+        apis.addApi(Api.getRandomApi());
         server = await Utils.createMockServer([apis.getApisListResponse()]);
 
         const page = await browser.newPage();
@@ -33,6 +33,6 @@ describe("Apis page", async () => {
         const apiWidget = new ApisWidget(page);
         await apiWidget.apis();
 
-        expect(await apiWidget.getApissCount()).to.equal(apis.apiList.length);
+        expect(await apiWidget.getApisCount()).to.equal(apis.apiList.length);
     });
 });
