@@ -138,7 +138,7 @@ export class Subscriptions {
             const userResource = await this.usersService.getCurrentUserId();
             const userId = Utils.getResourceName("users", userResource);
             const delegationParam = {};
-            delegationParam[DelegationParameters.UserId] = userId
+            delegationParam[DelegationParameters.UserId] = userId;
             delegationParam[DelegationParameters.SubscriptionId] = Utils.getResourceName("subscriptions", subscriptionId);
             const delegationUrl = await this.delegationService.getUserDelegationUrl(userId, DelegationAction.unsubscribe, delegationParam);
             if (delegationUrl) {

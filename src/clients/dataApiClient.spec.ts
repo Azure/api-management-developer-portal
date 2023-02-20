@@ -12,7 +12,6 @@ interface Validity {
     isValid: boolean;
 }
 
-//TODO: https://msazure.visualstudio.com/One/_workitems/edit/15015393
 describe("Data API Client", async () => {
 
     const settingsProvider = new StaticSettingsProvider({
@@ -21,7 +20,6 @@ describe("Data API Client", async () => {
     });
 
     it("setBaseUrl - Appends /developer", async () => {
-
         //arrange
         const httpClient = new MockHttpClient();
         const authenticator = new StaticAuthenticator();
