@@ -34,8 +34,6 @@ describe("User profile", async () => {
         const profileWidget = new ProfileWidget(page);
         await profileWidget.profile();
 
-        expect(await page.evaluate(() =>
-            document.querySelector("[data-bind='text: user().email']")?.textContent
-        )).to.equal(userInfo.email);
+        expect(await profileWidget.getUserEmail()).to.equal(userInfo.email);
     });
 });
