@@ -155,7 +155,7 @@ export class ProductSubscribe {
                 const userIdentifier = Utils.getResourceName("users", userId);
                 const delegationParam = {};
                 delegationParam[DelegationParameters.ProductId] = productName;
-                delegationParam[DelegationParameters.UserId] = userIdentifier
+                delegationParam[DelegationParameters.UserId] = userIdentifier;
                 const delegationUrl = await this.delegationService.getUserDelegationUrl(userIdentifier, DelegationAction.subscribe, delegationParam);
                 if (delegationUrl) {
                     location.assign(delegationUrl);

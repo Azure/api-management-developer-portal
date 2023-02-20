@@ -11,7 +11,6 @@ interface Validity {
     isValid: boolean;
 }
 
-//TODO: https://msazure.visualstudio.com/One/_workitems/edit/15015393
 describe("Mapi Client", async () => {
 
     const settingsProvider = new StaticSettingsProvider({
