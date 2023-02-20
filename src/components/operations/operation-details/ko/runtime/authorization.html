@@ -1,4 +1,4 @@
-<!-- ko if: $component.authorizationServer() || $component.subscriptionKeyRequired() -->
+<!-- ko if: $component.authorizationServers() || $component.subscriptionKeyRequired() -->
 <details open class="details-styled">
     <summary aria-label="Authorization">
         <h3 class="pt-0">
@@ -7,16 +7,37 @@
         </h3>
     </summary>
 
-    <!-- ko if: $component.authorizationServer -->
+    <!-- ko if: $component.authorizationServers()?.length > 0 -->
     <div class="row flex flex-row">
         <div class="col-4">
-            <label for="authServer" class="text-monospace form-label"
-                   data-bind="text: $component.authorizationServer().displayName"></label>
+            <label for="authSerer" class="text-monospace form-label">Authorization server: </label>
+        </div>
+        <!-- ko if: $component.authorizationServers().length > 1 -->
+        <div class="col-7">
+            <select id="authServer" class="form-control" data-bind="value: $component.selectedAuthorizationServer">
+                <!-- ko foreach: { data: $component.authorizationServers, as: 'authorizationServer' } -->
+                <option data-bind="value: authorizationServer, text:authorizationServer.displayName">
+                </option>
+                <!-- /ko -->
+            </select>
+        </div>
+        <!-- /ko -->
+        <!-- ko if: $component.authorizationServers().length == 1 -->
+        <div class="col-7">
+            <label id="authServer" class="text-monospace form-label"
+                data-bind="text: $component.selectedAuthorizationServer().displayName"></label>
+        </div>
+        <!-- /ko -->
+    </div>
+
+    <div class="row flex flex-row">
+        <div class="col-4">
+            <label for="authFlow" class="text-monospace form-label">Authorization flow: </label>
         </div>
         <div class="col-7">
             <div class="form-group">
-                <select id="authServer" class="form-control"
-                        data-bind="options: $component.authorizationServer().grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
+                <select id="authFlow" class="form-control"
+                    data-bind="options: $component.selectedAuthorizationServer().grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
                 </select>
             </div>
         </div>
@@ -49,7 +70,7 @@
         <div class="col-7">
             <div class="form-group">
                 <button class="button button-primary"
-                        data-bind="click: $component.authenticateOAuthWithPassword">Authorize</button>
+                    data-bind="click: $component.authenticateOAuthWithPassword">Authorize</button>
             </div>
         </div>
     </div>
@@ -80,7 +101,7 @@
                 <!-- /ko -->
                 <!-- ko if: !$component.products() || $component.products().length === 0 -->
                 <input id="subscriptionKey" type="text" class="form-control" placeholder="subscription key"
-                       data-bind="textInput: $component.selectedSubscriptionKey" />
+                    data-bind="textInput: $component.selectedSubscriptionKey" />
                 <!-- /ko -->
             </div>
         </div>

@@ -1,0 +1,158 @@
+
+<h5>ApiKeyAuth:</h5>
+
+<div class="row flex flex-row align-items-center">
+    <div class="col-2">
+        <div class="form-group">
+            <label class="text-monospace form-label">Name</label>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <div class="input-group">
+                <input autocomplete="off" class="form-control form-control-sm" placeholder="value" spellcheck="false"
+                    aria-label="Name" readonly data-bind="textInput: apiKeyDetails.name">
+                <button class="input-group-addon no-border" data-bind="copyToClipboard: apiKeyDetails.name"
+                    aria-label="Copy to clipboard">
+                    <i class="icon-emb icon-emb-duplicate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row flex flex-row align-items-center">
+    <div class="col-2">
+        <div class="form-group">
+            <label class="text-monospace form-label">In</label>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <div class="input-group">
+                <input autocomplete="off" class="form-control form-control-sm" placeholder="value" spellcheck="false"
+                    aria-label="In" readonly data-bind="textInput: apiKeyDetails.in">
+                <button class="input-group-addon no-border" data-bind="copyToClipboard: apiKeyDetails.in"
+                    aria-label="Copy to clipboard">
+                    <i class="icon-emb icon-emb-duplicate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h5>OAuth 2:</h5>
+
+<!-- ko foreach: { data: authorizationServers, as: 'authorizationServer' } -->
+<!-- ko if: $component.displayServersName -->
+<div class="row flex flex-row">
+    <div class="col-auto">
+        <h5 data-bind="text: authorizationServer.displayName"></h5>
+    </div>
+</div>
+<!-- /ko -->
+
+<div class="row flex flex-row align-items-center">
+    <div class="col-2">
+        <div class="form-group">
+            <label class="text-monospace form-label">Description</label>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <div class="input-group">
+                <input autocomplete="off" class="form-control form-control-sm" placeholder="value" spellcheck="false"
+                    aria-label="Supported grant flows" readonly data-bind="textInput: authorizationServer.description">
+                <button class="input-group-addon no-border" data-bind="copyToClipboard: authorizationServer.description"
+                    aria-label="Copy to clipboard">
+                    <i class="icon-emb icon-emb-duplicate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row flex flex-row align-items-center">
+    <div class="col-2">
+        <div class="form-group">
+            <label class="text-monospace form-label">Supported grant flows</label>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <div class="input-group">
+                <input autocomplete="off" class="form-control form-control-sm" placeholder="value" spellcheck="false"
+                    aria-label="Supported grant flows" readonly
+                    data-bind="textInput: authorizationServer.displayedGrantTypes">
+                <button class="input-group-addon no-border"
+                    data-bind="copyToClipboard: authorizationServer.displayedGrantTypes" aria-label="Copy to clipboard">
+                    <i class="icon-emb icon-emb-duplicate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row flex flex-row align-items-center">
+    <div class="col-2">
+        <div class="form-group">
+            <label class="text-monospace form-label">Authorization endpoint</label>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <div class="input-group">
+                <input autocomplete="off" class="form-control form-control-sm" placeholder="value" spellcheck="false"
+                    aria-label="Authorization endpoint" readonly
+                    data-bind="textInput: authorizationServer.authorizationEndpoint">
+
+                <button class="input-group-addon no-border"
+                    data-bind="copyToClipboard: authorizationServer.authorizationEndpoint"
+                    aria-label="Copy to clipboard">
+                    <i class="icon-emb icon-emb-duplicate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row flex flex-row align-items-center">
+    <div class="col-2">
+        <div class="form-group">
+            <label class="text-monospace form-label">Token endpoint</label>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <div class="input-group">
+                <input autocomplete="off" class="form-control form-control-sm" placeholder="value" spellcheck="false"
+                    aria-label="Token endpoint" readonly data-bind="textInput: authorizationServer.tokenEndpoint">
+                <button class="input-group-addon no-border"
+                    data-bind="copyToClipboard: authorizationServer.tokenEndpoint" aria-label="Copy to clipboard">
+                    <i class="icon-emb icon-emb-duplicate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row flex flex-row align-items-center">
+    <div class="col-2">
+        <div class="form-group">
+            <label class="text-monospace form-label">Scopes</label>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <div class="input-group">
+                <input autocomplete="off" class="form-control form-control-sm" placeholder="value" spellcheck="false"
+                    aria-label="Scopes" readonly data-bind="textInput: authorizationServer.displayedScopes">
+                <button class="input-group-addon no-border"
+                    data-bind="copyToClipboard: authorizationServer.displayedScopes" aria-label="Copy to clipboard">
+                    <i class="icon-emb icon-emb-duplicate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /ko -->

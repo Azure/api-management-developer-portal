@@ -1,40 +1,33 @@
 import * as Constants from "./../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { Logger } from "@paperbits/common/logging";
 import { Utils } from "../utils";
-import { TtlCache } from "./ttlCache";
+import { TtlCache } from "../services/ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
 import { MapiError } from "../errors/mapiError";
 import { IAuthenticator, AccessToken } from "../authentication";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { Page } from "../models/page";
+import { injectable } from "inversify";
+import IApiClient from "./IApiClient";
 
-export interface IHttpBatchResponses {
-    responses: IHttpBatchResponse[];
-}
-
-export interface IHttpBatchResponse {
-    httpStatusCode: number;
-    headers: {
-        [key: string]: string;
-    };
-    content: any;
-}
-
-export class MapiClient {
-    private managementApiUrl: string;
+@injectable()
+export default abstract class ApiClient implements IApiClient {
+    protected backendUrl: string;
     private environment: string;
     private developerPortalType: string;
     private initializePromise: Promise<void>;
     private requestCache: TtlCache = new TtlCache();
 
     constructor(
-        private readonly httpClient: HttpClient,
-        private readonly authenticator: IAuthenticator,
-        private readonly settingsProvider: ISettingsProvider,
-        private readonly logger: Logger
+        protected readonly httpClient: HttpClient,
+        protected readonly authenticator: IAuthenticator,
+        protected readonly settingsProvider: ISettingsProvider
     ) { }
+
+    protected abstract setBaseUrl(): Promise<void>;
+
+    protected abstract setUserPrefix(query: string, userId?: string): string;
 
     private async ensureInitialized(): Promise<void> {
         if (!this.initializePromise) {
@@ -46,15 +39,13 @@ export class MapiClient {
     private async initialize(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
 
-        this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || Constants.DeveloperPortalType.selfHosted;
-        const managementApiUrl = settings[Constants.SettingNames.managementApiUrl];
+        await this.setBaseUrl();
 
-        if (!managementApiUrl) {
-            throw new Error(`Management API URL ("${Constants.SettingNames.managementApiUrl}") setting is missing in configuration file.`);
+        if (!this.backendUrl) {
+            throw new Error(`Backend API URL ("${Constants.SettingNames.backendUrl}") setting is missing in configuration file.`);
         }
 
-        this.managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
-
+        this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || Constants.DeveloperPortalTypes.SelfHostedPortal;
         const managementApiAccessToken = settings[Constants.SettingNames.managementApiAccessToken];
 
         if (managementApiAccessToken) {
@@ -114,21 +105,27 @@ export class MapiClient {
         return key;
     }
 
-    protected async makeRequest<T>(httpRequest: HttpRequest): Promise<T> {
+    private async makeRequest<T>(httpRequest: HttpRequest): Promise<T> {
         const authHeader = httpRequest.headers.find(header => header.name === KnownHttpHeaders.Authorization);
         const portalHeader = httpRequest.headers.find(header => header.name === Constants.portalHeaderName);
+        const isUserResourceHeader = httpRequest.headers.find(header => header.name === Constants.isUserResourceHeaderName);
 
         if (!authHeader?.value) {
-            const accessToken = await this.authenticator.getAccessTokenAsString();
+            const accessToken = await this.authenticator.getAccessToken();
 
             if (accessToken) {
-                httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${accessToken}` });
+                httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${accessToken.toString()}` });
             } else {
                 if (!portalHeader) {
                     httpRequest.headers.push(await this.getPortalHeader("unauthorized"));
                 } else {
                     portalHeader.value = `${portalHeader.value}-unauthorized`;
                 }
+            }
+
+
+            if (!!isUserResourceHeader && isUserResourceHeader.value == "true") {
+                httpRequest.url = this.setUserPrefix(httpRequest.url, accessToken?.userId);
             }
         }
 
@@ -138,7 +135,7 @@ export class MapiClient {
 
         // Do nothing if absolute URL
         if (!httpRequest.url.startsWith("https://") && !httpRequest.url.startsWith("http://")) {
-            httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
+            httpRequest.url = `${this.backendUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
         }
 
         const url = new URL(httpRequest.url);

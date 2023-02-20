@@ -1,3 +1,5 @@
+import { AuthorizationServerForClient } from "./authorizationServer";
+
 export interface BearerTokenSendingMethod {
     sendingMethodType: string;
     isChecked: boolean;
@@ -6,6 +8,7 @@ export interface BearerTokenSendingMethod {
 export interface OAuth2AuthenticationSettings {
     authorizationServerId?: string;
     scope?: string;
+    authorizationServer: AuthorizationServerForClient;
 }
 
 export interface OpenIdAuthenticationSettings {
@@ -14,6 +17,6 @@ export interface OpenIdAuthenticationSettings {
 }
 
 export interface AuthenticationSettings {
-    oAuth2?: OAuth2AuthenticationSettings;
-    openid?: OpenIdAuthenticationSettings;
+    oAuth2AuthenticationSettings: OAuth2AuthenticationSettings[];
+    openidAuthenticationSettings: OpenIdAuthenticationSettings[];
 }

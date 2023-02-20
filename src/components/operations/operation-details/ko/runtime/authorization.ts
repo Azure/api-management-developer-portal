@@ -36,6 +36,7 @@ export class Authorization {
     public readonly products: ko.Observable<Product[]>;
     public readonly selectedSubscriptionKey: ko.Observable<string>;
     private deleteAuthorizationHeader: boolean = false;
+    public readonly selectedAuthorizationServer: ko.Observable<AuthorizationServer>;
 
     constructor(
         private readonly sessionManager: SessionManager,
@@ -44,7 +45,8 @@ export class Authorization {
         private readonly apiService: ApiService,
         private readonly productService: ProductService,
     ) {
-        this.authorizationServer = ko.observable();
+        this.authorizationServers = ko.observable();
+        this.selectedAuthorizationServer = ko.observable();
         this.selectedGrantType = ko.observable();
         this.api = ko.observable<Api>();
         this.headers = ko.observableArray<ConsoleHeader>();
@@ -61,7 +63,7 @@ export class Authorization {
     }
 
     @Param()
-    public authorizationServer: ko.Observable<AuthorizationServer>;
+    public authorizationServers: ko.Observable<AuthorizationServer[]>;
 
     @Param()
     public api: ko.Observable<Api>;
@@ -85,6 +87,8 @@ export class Authorization {
         this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
         this.selectedGrantType.subscribe(this.onGrantTypeChange);
         this.selectedSubscriptionKey(null);
+        this.selectedAuthorizationServer(this.authorizationServers() ? this.authorizationServers()[0] : null);
+        this.selectedAuthorizationServer.subscribe(() => this.selectedGrantType(null));
         await this.setupOAuth();
         if (this.api().subscriptionRequired) {
             await this.loadSubscriptionKeys();
@@ -96,7 +100,7 @@ export class Authorization {
     }
 
     private async setupOAuth(): Promise<void> {
-        const authorizationServer = this.authorizationServer();
+        const authorizationServer = this.selectedAuthorizationServer();
 
         if (!authorizationServer) {
             this.selectedGrantType(null);
@@ -104,7 +108,7 @@ export class Authorization {
         }
 
         const api = this.api();
-        const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
+        const scopeOverride = this.getSelectedAuthServerOverrideScope(authorizationServer.name, api);
         const storedCredentials = await this.getStoredCredentials(authorizationServer.name, scopeOverride);
 
         if (storedCredentials) {
@@ -247,8 +251,8 @@ export class Authorization {
      */
     public async authenticateOAuth(grantType: string): Promise<void> {
         const api = this.api();
-        const authorizationServer = this.authorizationServer();
-        const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
+        const authorizationServer = this.selectedAuthorizationServer();
+        const scopeOverride = this.getSelectedAuthServerOverrideScope(authorizationServer.name, api);
         const serverName = authorizationServer.name;
 
         if (scopeOverride) {
@@ -316,8 +320,8 @@ export class Authorization {
             this.authorizationError(null);
 
             const api = this.api();
-            const authorizationServer = this.authorizationServer();
-            const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
+            const authorizationServer = this.selectedAuthorizationServer();
+            const scopeOverride = this.getSelectedAuthServerOverrideScope(authorizationServer.name, api);
             const serverName = authorizationServer.name;
 
             if (scopeOverride) {
@@ -346,7 +350,7 @@ export class Authorization {
             return;
         }
 
-        const pageOfProducts = await this.apiService.getAllApiProducts(this.api().id);
+        const pageOfProducts = await this.apiService.getAllApiProducts(`/apis/${this.api().id}`);
         const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
         const pageOfSubscriptions = await this.productService.getSubscriptions(userId);
         const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === SubscriptionState.active);
@@ -454,5 +458,16 @@ export class Authorization {
             this.consoleOperation().request.queryParameters.remove(parameter);
             this.updateRequestSummary();
         }
+    }
+
+    private getSelectedAuthServerOverrideScope(selectedAuthServerName: string, api: Api): string {
+        const authServers = api.authenticationSettings.oAuth2AuthenticationSettings;
+        if (selectedAuthServerName && authServers) {
+            const foundIndex = authServers.findIndex(e => e.authorizationServer.name == selectedAuthServerName);
+            if (foundIndex >= 0){
+                return authServers[foundIndex].scope;
+            }
+        }
+        return null;
     }
 }

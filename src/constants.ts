@@ -293,12 +293,22 @@ export enum GrantTypes {
     password = "password"
 }
 
-export const managementApiVersion = "2021-04-01-preview";
+export const managementApiVersion = "2022-04-01-preview";
 
 /**
  * Header name to track developer portal type.
  */
 export const portalHeaderName = "x-ms-apim-client";
+
+/**
+ * Header name to know if it is a user resource.
+ */
+export const isUserResourceHeaderName = "IsUserResource";
+
+export enum DeveloperPortalTypes {
+    SelfHostedPortal = "self-hosted-portal",
+    Managed = "managed"
+}
 
 export const releaseNameFormat = "YYYYMMDDHHmmss";
 

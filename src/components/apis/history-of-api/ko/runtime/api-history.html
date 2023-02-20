@@ -25,8 +25,8 @@
                 <!-- ko if: currentPageLog().length > 0 -->
                 <div data-bind="foreach: { data: currentPageLog, as: 'hist' }">
                     <div class="table-row">
-                        <div class="col-3" data-bind="text: hist.properties.createdDateTime"></div>
-                        <div class="col-9" data-bind="markdown: hist.properties.notes"></div>
+                        <div class="col-3" data-bind="text: hist.createdDateTime"></div>
+                        <div class="col-9" data-bind="markdown: hist.notes"></div>
                     </div>
                 </div>
                 <!-- /ko -->
