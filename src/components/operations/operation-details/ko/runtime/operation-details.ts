@@ -233,7 +233,7 @@ export class OperationDetails {
     public async loadOperation(apiName: string, operationName: string): Promise<void> {
         this.working(true);
 
-        const operation = await this.apiService.getOperation(`apis/${apiName}/operations/${operationName}`);
+        const operation = await this.apiService.getOperation(apiName, operationName);
 
         if (operation) {
             await this.loadDefinitions(operation);

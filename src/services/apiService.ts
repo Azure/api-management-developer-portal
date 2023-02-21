@@ -346,12 +346,18 @@ export class ApiService {
         return new VersionSet(versionSetContract.id, versionSetContract);
     }
 
-    public async getOperation(operationId: string): Promise<Operation> {
+    public async getOperation(apiId: string, operationId: string): Promise<Operation> {
         if (!operationId) {
             throw new Error(`Parameter "operationId" not specified.`);
         }
 
-        const operationContract = await this.apiClient.get<OperationContract>(operationId, [Utils.getIsUserResourceHeader()]);
+        if (!apiId) {
+            throw new Error(`Parameter "apiId" not specified.`);
+        }
+        
+        var operationIdentifier = `apis/${apiId}/operations/${operationId}`;
+
+        const operationContract = await this.apiClient.get<OperationContract>(operationIdentifier, [Utils.getIsUserResourceHeader()]);
 
         if (!operationContract) {
             return null;

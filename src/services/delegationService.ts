@@ -61,7 +61,7 @@ export class DelegationService implements IDelegationService {
             const queryParams = new URLSearchParams();
             Object.keys(delegationParameters).map(key => {
                 const val = delegationParameters[key];
-                if (!!val) {
+                if (val) {
                     queryParams.append(key, val);
                 }
             });
