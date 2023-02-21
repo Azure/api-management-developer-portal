@@ -13,7 +13,7 @@ export class Utils {
         if (matches && matches.length > 1) {
             switch (resultType) {
                 case "name":
-                    // Removes operations/ from name in case of API names "operations"
+                    // Removes "operations/"" from name in case of API named "operations"
                     if (matches[1].includes('operations/')) {
                         return matches[1].replace('operations/', '');
                     }
