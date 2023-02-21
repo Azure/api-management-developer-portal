@@ -355,7 +355,7 @@ export class ApiService {
             throw new Error(`Parameter "apiId" not specified.`);
         }
         
-        let operationIdentifier = `apis/${apiId}/operations/${operationId}`;
+        const operationIdentifier = `apis/${apiId}/operations/${operationId}`;
 
         const operationContract = await this.apiClient.get<OperationContract>(operationIdentifier, [Utils.getIsUserResourceHeader()]);
 
