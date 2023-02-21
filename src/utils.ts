@@ -13,8 +13,11 @@ export class Utils {
         if (matches && matches.length > 1) {
             switch (resultType) {
                 case "name":
+                    // Removes operations/ from name in case of API names "operations"
+                    if (matches[1].includes('operations/')) {
+                        return matches[1].replace('operations/', '');
+                    }
                     return matches[1];
-
                 case "shortId":
                     return `/${resource}/${matches[1]}`;
 
