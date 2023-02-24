@@ -1,3 +1,6 @@
 .table {
     overflow: auto;
+    display: block;
+    flex-basis: 100%;
+    max-width: 100%;
 }

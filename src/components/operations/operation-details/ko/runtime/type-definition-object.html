@@ -1,6 +1,6 @@
 <!-- ko if: properties.length > 0 -->
 
-<div role="table" class="table-preset"
+<div role="table" class="table-preset  table-preset-schema"
     data-bind="css: readOnly === true ? 'table-preset-schema-readonly' : 'table-preset-schema'">
     <div class="d-contents" role="rowgroup">
         <div class="d-contents" role="row">
@@ -10,6 +10,9 @@
             <div role="columnheader" class="table-preset-head text-truncate">Read-only</div>
             <!-- /ko -->
             <div role="columnheader" class="table-preset-head text-truncate">Type</div>
+            <!-- ko if: $component.examples -->
+            <div role="columnheader" class="table-preset-head text-truncate">Example</div>
+            <!-- /ko -->
             <div role="columnheader" class="table-preset-head">Description</div>
         </div>
     </div>
@@ -65,9 +68,10 @@
 
                 <!-- /ko -->
             </div>
-            <div role="cell"
-                class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style"
-                data-bind="markdown: property.description"></div>
+            <!-- ko if: $component.examples -->
+            <div role="cell" class="text-truncate table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style" data-bind="text: $component.examples[property.name], attr: {title: $component.examples[property.name]}"></div>
+            <!-- /ko -->
+            <div role="cell" data-bind="markdown: property.description"></div>
         </div>
         <!-- /ko -->
     </div>

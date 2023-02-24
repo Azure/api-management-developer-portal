@@ -219,7 +219,7 @@
                                     <!-- ko if: header.secret() -->
                                     <input autocomplete="off" class="form-control form-control-sm input" placeholder="value"
                                         spellcheck="false" aria-label="Header value"
-                                        data-bind="attr: {type: header.inputTypeValue, 'aria-required': header.required}, textInput: header.value">
+                                        data-bind="attr: {type: header.inputTypeValue, 'aria-required': header.required}, textInput: header.value, event: { keyup: $component.updateRequestSummary }">
                                     <button data-bind="click: () => $component.toggleSecretHeader(header)"
                                         class="input-group-addon reveal-button">
                                         <i
