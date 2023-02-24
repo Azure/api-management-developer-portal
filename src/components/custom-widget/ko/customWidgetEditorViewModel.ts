@@ -7,7 +7,7 @@ import { StyleHelper } from "@paperbits/styles";
 import { ViewManager } from "@paperbits/common/ui";
 import { EventManager, Events } from "@paperbits/common/events";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { iframeSandboxAllows } from "../../../constants";
+import { iframeAllows, iframeSandboxAllows } from "../../../constants";
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
 import { widgetEditorSelector } from "..";
@@ -16,13 +16,14 @@ import { buildWidgetSource } from "./utils";
 
 @Component({
     selector: widgetEditorSelector,
-    template: template
+    template: template,
 })
 export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetModel> {
     public readonly sizeStyleConfig: ko.Observable<SizeStylePluginConfig>;
     public readonly customInputValue: ko.Observable<string>;
     public readonly src: ko.Observable<string>;
     public readonly instanceId: ko.Observable<string>;
+    public readonly iframeAllows: string = iframeAllows;
     public readonly iframeSandboxAllows: string = iframeSandboxAllows;
 
     constructor(

@@ -35,7 +35,7 @@
                 </authorization>
 
                 <details open class="details-styled">
-                    <summary>
+                    <summary  aria-label="Parameters>
                         <h3 class="pt-0 console-title">
                             Parameters
                             <i class="icon-emb icon-emb-chevron-down collapse-button"></i>
@@ -100,7 +100,7 @@
                 </details>
 
                 <details open class="details-styled">
-                    <summary>
+                    <summary aria-label="Headers">
                         <h3 class="pt-0 console-title">
                             Headers
                             <i class="icon-emb icon-emb-chevron-down collapse-button"></i>
@@ -167,7 +167,7 @@
                         <div class="explorer-operations scrollable">
                             <!-- ko foreach: { data: graphDocService.availableTypes, as: 'type' } -->
                             <details open class="details-styled">
-                                <summary>
+                                <summary data-bind="attr: { 'aria-label': type }">
                                     <span class="operation-type-gql" data-bind="text: type"></span>
 
                                     <i class="icon-emb icon-emb-chevron-down"></i>

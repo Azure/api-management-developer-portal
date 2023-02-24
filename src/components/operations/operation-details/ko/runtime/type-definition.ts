@@ -51,6 +51,9 @@ export class TypeDefinitionViewModel {
     @Param()
     public defaultSchemaView: ko.Observable<string>;
 
+    @Param()
+    public examples?: Record<string, string>;
+
     @OnMounted()
     public initialize(): void {
         this.schemaView(this.defaultSchemaView() || "table");

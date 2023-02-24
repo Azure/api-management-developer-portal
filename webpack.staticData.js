@@ -19,7 +19,8 @@ staticData.publisherConfig.plugins.push(new CopyWebpackPlugin({
 
 staticData.publisherRuntimeConfig.mode = "none";
 staticData.publisherRuntimeConfig.plugins.push(new webpack.DefinePlugin({
-    "process.env.NODE_ENV": JSON.stringify(staticDataEnvironment)
+    "process.env.NODE_ENV": JSON.stringify(staticDataEnvironment),
+    "process.env.ACCESS_TOKEN": "\"\"",
 }));
 
 staticData.publisherRuntimeConfig.plugins.push(new CopyWebpackPlugin({

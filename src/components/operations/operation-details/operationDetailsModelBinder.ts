@@ -19,6 +19,8 @@ export class OperationDetailsModelBinder implements IModelBinder<OperationDetail
         model.enableScrollTo = contract.enableScrollTo !== undefined && contract.enableScrollTo === true;
         model.defaultSchemaView = contract.defaultSchemaView || "table";
         model.useCorsProxy = contract.useCorsProxy;
+        model.includeAllHostnames = contract.includeAllHostnames;
+        model.showExamples = contract.showExamples || false;
         model.styles = contract.styles ?? {};
 
         return model;
@@ -31,6 +33,8 @@ export class OperationDetailsModelBinder implements IModelBinder<OperationDetail
             enableScrollTo: model.enableScrollTo,
             defaultSchemaView: model.defaultSchemaView,
             useCorsProxy: model.useCorsProxy,
+            includeAllHostnames: model.includeAllHostnames,
+            showExamples: model.showExamples,
             styles: model.styles
         };
 

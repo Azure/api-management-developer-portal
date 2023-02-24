@@ -25,10 +25,10 @@ Then select Run. This saves and executes your pipeline for the fist time, seen b
 | destServiceName | Destination APIM service name |
 | destSubscriptionId | Destination APIM service resource subscription ID |
 | destResourceGroupName | Destination APIM service resource group name |
-| sourceTenantId | Source Azure tenant ID  |
+| sourceAzureTenantId | Source Azure tenant ID  |
 | sourceServicePrincipal | Source Azure service principal |
 | sourceServicePrincipalSecret | Source Azure service principal secret |
-| destTenantId | Destination Azure tenant ID |
+| destAzureTenantId | Destination Azure tenant ID |
 | destServicePrincipal | Destination Azure service principal|
 | destServicePrincipalSecret | Destination Azure service principal secret |
 | existingEnvUrls | Existing environment URLs (URLs used in the developer portal from source APIM to replace, if we have multiple urls then comma separated values to be given.) |

@@ -15,23 +15,27 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
     ) { }
 
     public stateToIntance(state: WidgetState, componentInstance: CustomWidgetViewModel): void {
-        componentInstance.src(state.src);
-        componentInstance.instanceId(state.instanceId);
-        componentInstance.name(state.name);
+        componentInstance.config(state.config);
         componentInstance.styles(state.styles);
     }
 
     public async modelToState(model: CustomWidgetModel, state: WidgetState): Promise<void> {
-        const environment = await this.settingsProvider.getSetting<string>("environment") as Environment;
+        const config: Record<string, unknown> = {}
+        const environment = await this.settingsProvider.getSetting<Environment>("environment");
         const widgetSource = await buildWidgetSource(this.blobStorage, model, environment, "index.html");
-        state.src = widgetSource.src;
-        state.instanceId = model.instanceId;
-        state.name = model.name;
+        config.environment = environment;
+        config.src = widgetSource.src;
+        config.instanceId = model.instanceId;
+        config.name = model.name;
 
         if (model.styles) {
-            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+            const styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+            state.styles = styles;
+            config.classNames = styles.classNames;
         }
-    }   
+
+        state.config = JSON.stringify(config);
+    }
 
     public canHandleModel(model: CustomWidgetModel): boolean {
         return model instanceof CustomWidgetModel;

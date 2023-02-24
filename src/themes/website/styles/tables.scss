@@ -105,8 +105,16 @@ $body-bg: none;
     grid-template-columns: minmax(150px, 350px) 100px 200px minmax(350px, 1fr);
 }
 
+.table-preset-schema-examples {
+    grid-template-columns: minmax(150px, 350px) 100px 150px 150px minmax(350px, 1fr);
+}
+
 .table-preset-schema-readonly {
     grid-template-columns: minmax(150px, 350px) 100px 100px 200px minmax(350px, 1fr);
+}
+
+.table-preset-schema-examples.table-preset-schema-readonly {
+    grid-template-columns: minmax(150px, 350px) 100px 100px 100px 150px minmax(350px, 1fr);
 }
 
 .table-preset-definitions {
