@@ -20,8 +20,8 @@
                     <button class="btn btn-info" type="button" title="Help"
                         data-bind="tooltip: 'Custom reply URL. If not specified, current page URL will be used.'"></button>
                 </label>
-                <input type="text" class="form-control" placeholder="e.g. https://contoso.com/signin" data-bind="textInput: aadReplyUrl"
-                    maxlength="2000" />
+                <input type="text" class="form-control" placeholder="e.g. https://contoso.com/signin"
+                    data-bind="textInput: aadReplyUrl" maxlength="2000" />
             </div>
         </div>
     </div>
@@ -46,8 +46,8 @@
                     <button class="btn btn-info" type="button" title="Help"
                         data-bind="tooltip: 'Custom reply URL. If not specified, current page URL will be used.'"></button>
                 </label>
-                <input type="text" class="form-control" placeholder="e.g. https://contoso.com/signin" data-bind="textInput: aadB2CReplyUrl"
-                    maxlength="2000" />
+                <input type="text" class="form-control" placeholder="e.g. https://contoso.com/signin"
+                    data-bind="textInput: aadB2CReplyUrl" maxlength="2000" />
             </div>
         </div>
     </div>
@@ -63,10 +63,10 @@
                     <button class="btn btn-info" type="button" title="Help"
                         data-bind="tooltip: 'Predefined appearance from style guide.'"></button>
                 </label>
-                <div class="input-group">
-                    <select id="appearanceStyle" class="form-control"
-                        data-bind="options: appearanceStyles, value: appearanceStyle, optionsText: 'displayName', optionsValue: 'key'"></select>
-                </div>
+                <dropdown id="appearanceStyle"
+                    params="{ options: appearanceStyles, value: appearanceStyle, optionsText: 'displayName', optionsValue: 'key' }"
+                    aria-label="Appearance">
+                </dropdown>
             </div>
             <role-input params="{ selection: model.security.roles, onChange: onRoleSelect }"></role-input>
         </div>
