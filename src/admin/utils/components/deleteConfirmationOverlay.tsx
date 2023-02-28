@@ -23,8 +23,8 @@ const popupStyles = mergeStyleSets({
 
 interface DeleteConfirmationProps {
     deleteItemTitle: string,
-    onDelete: () => void,
-    closeDeleteConfirmation: () => void
+    onConfirm: () => void,
+    onDismiss: () => void
 }
 
 export class DeleteConfirmationOverlay extends React.Component<DeleteConfirmationProps, {}> {
@@ -39,16 +39,16 @@ export class DeleteConfirmationOverlay extends React.Component<DeleteConfirmatio
                     className={popupStyles.root}
                     role="dialog"
                     aria-modal="true"
-                    onDismiss={this.props.closeDeleteConfirmation}
+                    onDismiss={this.props.onDismiss}
                     enableAriaHiddenSiblings={true}
                 >
-                    <Overlay onClick={this.props.closeDeleteConfirmation} />
+                    <Overlay onClick={this.props.onDismiss} />
                     <FocusTrapZone>
                         <div role="document" className={popupStyles.content}>
                             <p>Are you sure you want to delete {this.props.deleteItemTitle}?</p>
                             <Stack horizontal tokens={{ childrenGap: 20 }}>
-                                <PrimaryButton onClick={this.props.onDelete}>Yes</PrimaryButton>
-                                <DefaultButton onClick={this.props.closeDeleteConfirmation}>No</DefaultButton>
+                                <PrimaryButton onClick={this.props.onConfirm}>Yes</PrimaryButton>
+                                <DefaultButton onClick={this.props.onDismiss}>No</DefaultButton>
                             </Stack>
                         </div>
                     </FocusTrapZone>

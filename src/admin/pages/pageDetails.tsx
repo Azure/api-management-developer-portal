@@ -74,8 +74,8 @@ export class PageDetails extends React.Component<PageDetailsProps, PageDetailsSt
             {this.state.showDeleteConfirmation && 
                 <DeleteConfirmationOverlay
                     deleteItemTitle={this.state.page.title}
-                    onDelete={this.deletePage.bind(this)}
-                    closeDeleteConfirmation={this.closeDeleteConfirmation.bind(this)} 
+                    onConfirm={this.deletePage.bind(this)}
+                    onDismiss={this.closeDeleteConfirmation.bind(this)} 
                 />
             }
             <BackButton onClick={this.props.onBackButtonClick} />

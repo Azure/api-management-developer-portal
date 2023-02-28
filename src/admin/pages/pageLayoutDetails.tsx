@@ -64,8 +64,8 @@ export class PageLayoutDetails extends React.Component<PageLayoutProps, PageLayo
              {this.state.showDeleteConfirmation && 
                 <DeleteConfirmationOverlay
                     deleteItemTitle={this.state.layout.title}
-                    onDelete={this.deleteLayout.bind(this)}
-                    closeDeleteConfirmation={this.closeDeleteConfirmation.bind(this)} 
+                    onConfirm={this.deleteLayout.bind(this)}
+                    onDismiss={this.closeDeleteConfirmation.bind(this)} 
                 />
             }
             <BackButton onClick={this.props.onBackButtonClick} />
