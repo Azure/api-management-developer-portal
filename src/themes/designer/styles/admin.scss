@@ -4,6 +4,19 @@
     width: $admin-panel-width;
     border-right: 1px solid grey;
     font-family: 'SegoeUI';
+
+    input[type=search],
+    input[type=text],
+    textarea {
+        font-family: unset;
+        font-weight: unset;
+        font-size: unset;
+        color: unset;
+        border: unset;
+        background-color: unset;
+        display: unset;
+        width: unset;
+    }
 }
 
 .side-panel {
@@ -24,67 +37,6 @@
     margin-right: 7px;
 }
 
-.nav-item {
-    display: block;
-    padding: 10px 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-
-    .nav-item-icon {
-        width: 16px;
-        height: 16px;
-        background-repeat: no-repeat;
-        background-position: center;
-        margin-right: 10px;
-    }
-
-    .icon-pages {
-        background-image: url('./icons/icon-admin-nav-pages.svg');
-    }
-
-    .icon-styles {
-        background-image: url('./icons/icon-admin-nav-styles.svg');
-    }
-
-    .icon-nav {
-        background-image: url('./icons/icon-admin-nav-nav.svg');
-    }
-
-    .icon-settings {
-        background-image: url('./icons/icon-admin-nav-settings.svg');
-    }
-
-    .icon-help {
-        background-image: url('./icons/icon-admin-nav-help.svg');
-    }
-}
-
-.nav-back-button {
-    border: solid $admin-blue;
-    border-width: 0 2px 2px 0;
-    display: inline-block;
-    padding: 5px;
-    transform: rotate(135deg);
-    -webkit-transform: rotate(135deg);
-    margin-right: 10px;
-}
-
-.nav-tabs-wrapper {
-    display: flex;
-    margin-bottom: 20px;
-}
-
-.nav-tab {
-    padding: 8px 0;
-
-    &:not(:last-of-type) {
-        margin-right: 16px;
-    }
-
-    &.active {
-        font-weight: 600;
-        border-bottom: 2px solid $admin-blue;
-    }
+.objects-list {
+    margin: 10px 0 15px;
 }
