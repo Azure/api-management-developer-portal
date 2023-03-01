@@ -101,6 +101,10 @@ export class Subscriptions {
     }
 
     private syncSubscriptionLabelState(subscription: SubscriptionListItem, updatedVM: SubscriptionListItem): void {
+        if(updatedVM.model.productName === undefined) {
+            updatedVM.model.productName = subscription.model.productName;
+        }
+
         if (subscription.primaryKeyBtnLabel() !== updatedVM.primaryKeyBtnLabel()) {
             updatedVM.togglePrimaryKey();
         }
