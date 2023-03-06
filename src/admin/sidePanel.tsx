@@ -3,6 +3,7 @@ import { Pages } from "./pages/pages";
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
 import { IIconProps } from '@fluentui/react';
 import { ActionButton } from '@fluentui/react/lib/Button';
+import { Navigation } from "./navigation/navigation";
 
 initializeIcons();
 
@@ -38,6 +39,8 @@ export class SidePanel extends React.Component<{}, { selectedNavItem: NavItem }>
         switch(navItemValue) {
             case NavItem.Pages:
                 return <Pages onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
+            case NavItem.Navigation:
+                return <Navigation onBackButtonClick={this.handleBackButtonClick.bind(this)} />
 
             default:
                 return (

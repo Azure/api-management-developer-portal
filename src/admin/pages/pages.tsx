@@ -5,9 +5,7 @@ import { Query, Operator } from '@paperbits/common/persistence';
 import { ViewManager } from '@paperbits/common/ui';
 import { Router } from '@paperbits/common/routing';
 import { Resolve } from '@paperbits/react/decorators';
-import { Pivot, PivotItem, IIconProps } from '@fluentui/react';
-import { ActionButton } from '@fluentui/react/lib/Button';
-import { TextField } from '@fluentui/react/lib/TextField';
+import { Pivot, PivotItem, IIconProps, Stack, Text, SearchBox, ActionButton } from '@fluentui/react';
 import { BackButton } from '../utils/components/backButton';
 import { PageDetails } from './pageDetails';
 import { PageLayoutDetails } from './pageLayoutDetails';
@@ -27,7 +25,6 @@ interface PagesProps {
 const addIcon: IIconProps = { iconName: 'Add' };
 const pageIcon: IIconProps = { iconName: 'Page' };
 const layoutIcon: IIconProps = { iconName: 'PageHeaderEdit' };
-const searchIcon: IIconProps = { iconName: 'Search' };
 
 export class Pages extends React.Component<PagesProps, PagesState> {
     @Resolve('pageService')
@@ -127,11 +124,14 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                         selectedKey={this.state.selectedTab}
                         onLinkClick={(item: PivotItem) => this.setState({ selectedTab: item.props.itemKey })}
                     >
-                        <PivotItem headerText="Pages" itemKey='pages'>
-                            <TextField
+                        <PivotItem headerText="Pages" itemKey="pages">
+                            <Stack className="nav-item-description-container">
+                                <Text className="description-title">Pages</Text>
+                                <Text className="description-text">Add or edit pages of your website. Each page has a unique URL, which also automatically defines the layout it is part of.</Text>
+                            </Stack>
+                            <SearchBox
                                 ariaLabel="Search pages"
                                 placeholder="Search pages..."
-                                iconProps={searchIcon}
                                 onChange={(event, searchValue) => this.searchPages(searchValue)}
                                 styles={{ root: { marginTop: 20 } }}
                             />
@@ -153,11 +153,10 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                                 onClick={() => this.handlePageClick({ permalink: '/new-page', title: 'New page' }, true)}
                             />
                         </PivotItem>
-                        <PivotItem headerText="Page layout" itemKey='pageLayouts'>
-                            <TextField
+                        <PivotItem headerText="Page layout" itemKey="pageLayouts">
+                            <SearchBox
                                 ariaLabel="Search layouts"
                                 placeholder="Search layouts..."
-                                iconProps={searchIcon}
                                 onChange={(event, searchValue) => this.searchLayouts(searchValue)}
                                 styles={{ root: { marginTop: 20 } }}
                             />
