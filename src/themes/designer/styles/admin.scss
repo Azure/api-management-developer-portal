@@ -4,7 +4,10 @@
     width: $admin-panel-width;
     border-right: 1px solid grey;
     font-family: 'SegoeUI';
+}
 
+#admin-panel,
+.nav-modal {
     input[type=search],
     input[type=text],
     textarea {
@@ -15,7 +18,7 @@
         border: unset;
         background-color: unset;
         display: unset;
-        width: unset;
+        //width: unset;
     }
 }
 
@@ -39,4 +42,46 @@
 
 .objects-list {
     margin: 10px 0 15px;
+}
+
+.nav-item-description-container {
+    margin: 10px 8px 20px;
+    
+    .description-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+}
+
+.nav-item-outer-stack {
+    width: 100%;
+
+    .nav-item-inner-stack {
+        opacity: 0;
+    }
+
+    &:hover .nav-item-inner-stack {
+        opacity: 1;
+    }
+}
+
+.nav-modal {
+    max-width: 600px;
+    width: 100%;
+}
+
+.nav-modal-header {
+    background-color: #000;
+    padding: 10px 15px 10px 50px;
+}
+
+.nav-modal-header-text {
+    color: #fff;
+    font-size: 18px;
+    padding-right: 20px;
+}
+
+.nav-modal-content {
+    padding: 40px 50px 200px;
 }

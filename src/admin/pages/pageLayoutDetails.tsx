@@ -70,15 +70,18 @@ export class PageLayoutDetails extends React.Component<PageLayoutProps, PageLayo
             }
             <BackButton onClick={this.props.onBackButtonClick} />
             <Stack styles={{ root: { margin: '20px 0' } }}>
-                <TextField label="Title"
+                <TextField
+                    label="Title"
                     value={this.state.layout.title}
                     onChange={(event, newValue) => this.onInputChange('title', newValue)}
                 />
-                <TextField label="Permalink template"
+                <TextField
+                    label="Permalink template"
                     value={this.state.layout.permalinkTemplate}
                     onChange={(event, newValue) => this.onInputChange('permalinkTemplate', newValue)}
                 />
-                <TextField label="Description"
+                <TextField
+                    label="Description"
                     multiline
                     autoAdjustHeight
                     value={this.state.layout.description}

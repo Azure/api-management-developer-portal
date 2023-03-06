@@ -82,21 +82,25 @@ export class PageDetails extends React.Component<PageDetailsProps, PageDetailsSt
             <Pivot aria-label="Page details tabs">
                 <PivotItem headerText="Design">
                     <Stack styles={{ root: { margin: '20px 0' } }}>
-                        <TextField label="Title"
+                        <TextField
+                            label="Title"
                             value={this.state.page.title}
                             onChange={(event, newValue) => this.onInputChange('title', newValue)}
                         />
-                        <TextField label="Permalink"
+                        <TextField
+                            label="Permalink"
                             value={this.state.page.permalink}
                             onChange={(event, newValue) => this.onInputChange('permalink', newValue)}
                         />
-                        <TextField label="Description"
+                        <TextField
+                            label="Description"
                             multiline
                             autoAdjustHeight
                             value={this.state.page.description}
                             onChange={(event, newValue) => this.onInputChange('descriptiion', newValue)}
                         />
-                        <TextField label="Keywords"
+                        <TextField
+                            label="Keywords"
                             placeholder="e.g. about"
                             value={this.state.page.keywords}
                             onChange={(event, newValue) => this.onInputChange('keywords', newValue)}
