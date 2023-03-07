@@ -12,6 +12,7 @@ import { SessionExpirationErrorHandler } from "./errors/sessionExpirationErrorHa
 import { ComponentBinder } from "@paperbits/common/editing";
 import { ReactModule } from "@paperbits/react/react.module";
 import { SidePanel } from "./admin/sidePanel";
+import { TopPanel } from "./admin/topPanel";
 
 
 /* Initializing dependency injection container */
@@ -33,6 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Binding the React app to element along with container
     const componentBinder = injector.resolve<ComponentBinder>("reactComponentBinder");
-    const element = document.getElementById("admin-panel");
-    componentBinder.bind(element, SidePanel);
+    const sidePanel = document.getElementById("admin-side-panel");
+    componentBinder.bind(sidePanel, SidePanel);
+    const topPanel = document.getElementById("admin-top-panel");
+    componentBinder.bind(topPanel, TopPanel);
 });

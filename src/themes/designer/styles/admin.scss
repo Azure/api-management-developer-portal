@@ -1,4 +1,4 @@
-#admin-panel {
+#admin-side-panel {
     background: #fff;
     height: 100%;
     width: $admin-panel-width;
@@ -6,8 +6,8 @@
     font-family: 'SegoeUI';
 }
 
-#admin-panel,
-.nav-modal {
+#admin-side-panel,
+.admin-modal {
     input[type=search],
     input[type=text],
     textarea {
@@ -66,22 +66,36 @@
     }
 }
 
-.nav-modal {
+.admin-modal {
     max-width: 600px;
     width: 100%;
 }
 
-.nav-modal-header {
+.admin-modal-header {
     background-color: #000;
     padding: 10px 15px 10px 50px;
 }
 
-.nav-modal-header-text {
+.admin-modal-header-text {
     color: #fff;
     font-size: 18px;
     padding-right: 20px;
 }
 
-.nav-modal-content {
+.admin-modal-content {
     padding: 40px 50px 200px;
+}
+
+#admin-top-panel {
+    height: 45px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid grey;
+}
+
+.top-panel {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-right: 15px;
 }

@@ -85,16 +85,16 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                 //titleAriaId={titleId}
                 isOpen={true}
                 onDismiss={this.props.onDismiss}
-                containerClassName="nav-modal"
+                containerClassName="admin-modal"
             >
-                <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="nav-modal-header">
-                    <Text className="nav-modal-header-text">Navigation item {this.state.navItem && `/ ` + this.state.navItem.name }</Text>
+                <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
+                    <Text className="admin-modal-header-text">Navigation item {this.state.navItem && `/ ` + this.state.navItem.name }</Text>
                     <Stack horizontal gap={20}>
                         <PrimaryButton text="Save" />
                         <DefaultButton text="Discard" onClick={this.props.onDismiss} />
                     </Stack>
                 </Stack>
-                <div className="nav-modal-content">
+                <div className="admin-modal-content">
                     {this.props.navItem && 
                         <CommandBarButton
                             iconProps={deleteIcon}
