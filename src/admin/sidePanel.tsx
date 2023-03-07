@@ -1,9 +1,11 @@
-import * as React from "react";
+import * as React from 'react';
 import { Pages } from "./pages/pages";
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
 import { IIconProps } from '@fluentui/react';
 import { ActionButton } from '@fluentui/react/lib/Button';
 import { Navigation } from "./navigation/navigation";
+import { SettingsModal } from "./settings/settingsModal";
+import { HelpModal } from './help/helpModal';
 
 initializeIcons();
 
@@ -16,13 +18,17 @@ const enum NavItem {
     Help
 }
 
+interface SidePanelState {
+    selectedNavItem: NavItem
+}
+
 const pageIcon: IIconProps = { iconName: 'Page' };
 const stylesIcon: IIconProps = { iconName: 'Color' };
 const navigationIcon: IIconProps = { iconName: 'GlobalNavButton' };
 const settingsIcon: IIconProps = { iconName: 'Equalizer' };
 const helpIcon: IIconProps = { iconName: 'Help' };
 
-export class SidePanel extends React.Component<{}, { selectedNavItem: NavItem }> {
+export class SidePanel extends React.Component<{}, SidePanelState> {
     constructor(props: any) {
         super(props);
 
@@ -40,8 +46,7 @@ export class SidePanel extends React.Component<{}, { selectedNavItem: NavItem }>
             case NavItem.Pages:
                 return <Pages onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
             case NavItem.Navigation:
-                return <Navigation onBackButtonClick={this.handleBackButtonClick.bind(this)} />
-
+                return <Navigation onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
             default:
                 return (
                     <div className="navigation">
@@ -85,6 +90,8 @@ export class SidePanel extends React.Component<{}, { selectedNavItem: NavItem }>
             <div className="side-panel">
                 <div className="portal-name"><span className="icon-home"></span>mydevportal</div>
                 { this.renderNavItemsSwitch(this.state.selectedNavItem) }
+                { this.state.selectedNavItem === NavItem.Settings && <SettingsModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
+                { this.state.selectedNavItem === NavItem.Help && <HelpModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
             </div>
         )
     }

@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { IIconProps } from '@fluentui/react';
-import { ActionButton } from '@fluentui/react/lib/Button';
+import { ActionButton, IIconProps } from '@fluentui/react';
 
 const backIcon: IIconProps = { iconName: 'ChevronLeftMed' };
 

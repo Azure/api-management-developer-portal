@@ -1,10 +1,10 @@
 import * as React from 'react';
+import { Resolve } from '@paperbits/react/decorators';
 import { IPageService, PageContract } from '@paperbits/common/pages';
 import { ILayoutService, LayoutContract } from '@paperbits/common/layouts';
 import { Query, Operator } from '@paperbits/common/persistence';
 import { ViewManager } from '@paperbits/common/ui';
 import { Router } from '@paperbits/common/routing';
-import { Resolve } from '@paperbits/react/decorators';
 import { Pivot, PivotItem, IIconProps, Stack, Text, SearchBox, ActionButton } from '@fluentui/react';
 import { BackButton } from '../utils/components/backButton';
 import { PageDetails } from './pageDetails';
@@ -126,7 +126,6 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                     >
                         <PivotItem headerText="Pages" itemKey="pages">
                             <Stack className="nav-item-description-container">
-                                <Text className="description-title">Pages</Text>
                                 <Text className="description-text">Add or edit pages of your website. Each page has a unique URL, which also automatically defines the layout it is part of.</Text>
                             </Stack>
                             <SearchBox
@@ -154,6 +153,10 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                             />
                         </PivotItem>
                         <PivotItem headerText="Page layout" itemKey="pageLayouts">
+                            <Stack className="nav-item-description-container">
+                                <Text className="description-text">Add or edit layouts. Layouts let you centralize common content (e.g., navigation bar, footer), which will be applied to pages. 
+                                Each page is automatically matched with a layout based on the URL template.</Text>
+                            </Stack>
                             <SearchBox
                                 ariaLabel="Search layouts"
                                 placeholder="Search layouts..."

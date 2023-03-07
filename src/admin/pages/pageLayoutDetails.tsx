@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { ILayoutService, LayoutContract } from '@paperbits/common/layouts';
 import { Resolve } from '@paperbits/react/decorators';
-import { IIconProps, Stack } from '@fluentui/react';
-import { TextField } from '@fluentui/react/lib/TextField';
-import { CommandBarButton } from '@fluentui/react/lib/Button';
+import { ILayoutService, LayoutContract } from '@paperbits/common/layouts';
+import { CommandBarButton, IIconProps, Stack, TextField } from '@fluentui/react';
 import { BackButton } from '../utils/components/backButton';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 
@@ -78,6 +76,7 @@ export class PageLayoutDetails extends React.Component<PageLayoutProps, PageLayo
                 <TextField
                     label="Permalink template"
                     value={this.state.layout.permalinkTemplate}
+                    disabled={this.state.layout.permalinkTemplate === '/' ? true : false}
                     onChange={(event, newValue) => this.onInputChange('permalinkTemplate', newValue)}
                 />
                 <TextField

@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { IPageService, PageContract } from '@paperbits/common/pages';
 import { Resolve } from '@paperbits/react/decorators';
+import { IPageService, PageContract } from '@paperbits/common/pages';
 import { Router } from '@paperbits/common/routing';
-import { Pivot, PivotItem, IIconProps, Stack } from '@fluentui/react';
-import { TextField } from '@fluentui/react/lib/TextField';
-import { CommandBarButton } from '@fluentui/react/lib/Button';
+import { CommandBarButton, IIconProps, Pivot, PivotItem, Stack, Text, TextField } from '@fluentui/react';
 import { BackButton } from '../utils/components/backButton';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 
@@ -79,8 +77,9 @@ export class PageDetails extends React.Component<PageDetailsProps, PageDetailsSt
                 />
             }
             <BackButton onClick={this.props.onBackButtonClick} />
+            <Text>{this.state.page.title}</Text>
             <Pivot aria-label="Page details tabs">
-                <PivotItem headerText="Design">
+                <PivotItem headerText="Details">
                     <Stack styles={{ root: { margin: '20px 0' } }}>
                         <TextField
                             label="Title"
