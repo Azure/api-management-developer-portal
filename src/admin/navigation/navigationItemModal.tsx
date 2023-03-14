@@ -88,8 +88,8 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                 containerClassName="admin-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text className="admin-modal-header-text">Navigation item {this.state.navItem && `/ ` + this.state.navItem.name }</Text>
-                    <Stack horizontal gap={20}>
+                    <Text className="admin-modal-header-text">Navigation item / {this.state.navItem?.name ?? 'New item' }</Text>
+                    <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <PrimaryButton text="Save" />
                         <DefaultButton text="Discard" onClick={this.props.onDismiss} />
                     </Stack>

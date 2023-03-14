@@ -31,6 +31,7 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
 
     loadSettings = async () => {
         const settings = await this.siteService.getSetting<SiteSettingsContract>('site');
+        console.log(settings);
         this.setState({ settings: settings });
     }
 
@@ -57,7 +58,7 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
                     <Text className="admin-modal-header-text">Settings</Text>
-                    <Stack horizontal gap={20}>
+                    <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <PrimaryButton text="Save" onClick={() => this.saveChanges()} />
                         <DefaultButton text="Discard" onClick={this.props.onDismiss} />
                     </Stack>
