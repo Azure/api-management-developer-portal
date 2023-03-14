@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Pages } from "./pages/pages";
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
-import { IIconProps } from '@fluentui/react';
-import { ActionButton } from '@fluentui/react/lib/Button';
+import { CommandBarButton, IIconProps } from '@fluentui/react';
 import { Navigation } from "./navigation/navigation";
 import { SettingsModal } from "./settings/settingsModal";
 import { HelpModal } from './help/helpModal';
@@ -12,8 +11,10 @@ initializeIcons();
 const enum NavItem {
     Main,
     Pages,
-    Styles,
     Navigation,
+    Styles,
+    Media,
+    CustomWidgets,
     Settings,
     Help
 }
@@ -23,8 +24,10 @@ interface SidePanelState {
 }
 
 const pageIcon: IIconProps = { iconName: 'Page' };
-const stylesIcon: IIconProps = { iconName: 'Color' };
 const navigationIcon: IIconProps = { iconName: 'GlobalNavButton' };
+const stylesIcon: IIconProps = { iconName: 'Color' };
+const mediaIcon: IIconProps = { iconName: 'PhotoVideoMedia' };
+const customWidgetsIcon: IIconProps = { iconName: 'Puzzle' };
 const settingsIcon: IIconProps = { iconName: 'Equalizer' };
 const helpIcon: IIconProps = { iconName: 'Help' };
 
@@ -50,35 +53,47 @@ export class SidePanel extends React.Component<{}, SidePanelState> {
             default:
                 return (
                     <div className="navigation">
-                        <ActionButton
+                        <CommandBarButton
                             iconProps={pageIcon}
                             text="Pages"
                             onClick={() => this.setState({ selectedNavItem: NavItem.Pages })}
-                            styles={{ root: { display: 'block' } }}
+                            className="nav-item-list-button"
                         />
-                        <ActionButton
-                            iconProps={stylesIcon}
-                            text="Styles"
-                            onClick={() => this.setState({ selectedNavItem: NavItem.Styles })}
-                            styles={{ root: { display: 'block' } }}
-                        />
-                        <ActionButton
+                        <CommandBarButton
                             iconProps={navigationIcon}
                             text="Navigation"
                             onClick={() => this.setState({ selectedNavItem: NavItem.Navigation })}
-                            styles={{ root: { display: 'block' } }}
+                            className="nav-item-list-button"
                         />
-                        <ActionButton
+                        <CommandBarButton
+                            iconProps={stylesIcon}
+                            text="Styles"
+                            onClick={() => this.setState({ selectedNavItem: NavItem.Styles })}
+                            className="nav-item-list-button"
+                        />
+                        <CommandBarButton
+                            iconProps={mediaIcon}
+                            text="Media"
+                            onClick={() => this.setState({ selectedNavItem: NavItem.Media })}
+                            className="nav-item-list-button"
+                        />
+                        <CommandBarButton
+                            iconProps={customWidgetsIcon}
+                            text="Custom widgets"
+                            onClick={() => this.setState({ selectedNavItem: NavItem.CustomWidgets })}
+                            className="nav-item-list-button"
+                        />
+                        <CommandBarButton
                             iconProps={settingsIcon}
                             text="Settings"
                             onClick={() => this.setState({ selectedNavItem: NavItem.Settings })}
-                            styles={{ root: { display: 'block' } }}
+                            className="nav-item-list-button"
                         />
-                        <ActionButton
+                        <CommandBarButton
                             iconProps={helpIcon}
                             text="Help"
                             onClick={() => this.setState({ selectedNavItem: NavItem.Help })}
-                            styles={{ root: { display: 'block' } }}
+                            className="nav-item-list-button"
                         />
                     </div>
                 );

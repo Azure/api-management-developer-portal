@@ -46,7 +46,7 @@ export class DeleteConfirmationOverlay extends React.Component<DeleteConfirmatio
                     <FocusTrapZone>
                         <div role="document" className={popupStyles.content}>
                             <p>Are you sure you want to delete {this.props.deleteItemTitle}?</p>
-                            <Stack horizontal gap={20}>
+                            <Stack horizontal tokens={{ childrenGap: 20 }}>
                                 <PrimaryButton onClick={this.props.onConfirm}>Yes</PrimaryButton>
                                 <DefaultButton onClick={this.props.onDismiss}>No</DefaultButton>
                             </Stack>

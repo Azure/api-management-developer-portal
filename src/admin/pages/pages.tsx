@@ -5,16 +5,18 @@ import { ILayoutService, LayoutContract } from '@paperbits/common/layouts';
 import { Query, Operator } from '@paperbits/common/persistence';
 import { ViewManager } from '@paperbits/common/ui';
 import { Router } from '@paperbits/common/routing';
-import { Pivot, PivotItem, IIconProps, Stack, Text, SearchBox, ActionButton } from '@fluentui/react';
+import { CommandBarButton, FontIcon, getTheme, IIconProps, Pivot, PivotItem, SearchBox, Stack, Text } from '@fluentui/react';
 import { BackButton } from '../utils/components/backButton';
-import { PageDetails } from './pageDetails';
-import { PageLayoutDetails } from './pageLayoutDetails';
+import { PageDetailsModal } from './pageDetailsModal';
+import { PageLayoutDetailsModal } from './pageLayoutDetailsModal';
 
 interface PagesState {
     selectedTab: string,
     pages: PageContract[],
+    showPagesModal: boolean,
     selectedPage: PageContract,
     layouts: LayoutContract[],
+    showLayoutModal: boolean,
     selectedLayout: LayoutContract
 }
 
@@ -25,6 +27,9 @@ interface PagesProps {
 const addIcon: IIconProps = { iconName: 'Add' };
 const pageIcon: IIconProps = { iconName: 'Page' };
 const layoutIcon: IIconProps = { iconName: 'PageHeaderEdit' };
+
+const theme = getTheme();
+const iconStyles = { width: '16px', color: theme.palette.themePrimary };
 
 export class Pages extends React.Component<PagesProps, PagesState> {
     @Resolve('pageService')
@@ -45,8 +50,10 @@ export class Pages extends React.Component<PagesProps, PagesState> {
         this.state = {
             selectedTab: 'pages',
             pages: [],
+            showPagesModal: false,
             selectedPage: null,
             layouts: [],
+            showLayoutModal: false,
             selectedLayout: null
         }
     }
@@ -57,12 +64,12 @@ export class Pages extends React.Component<PagesProps, PagesState> {
     }
 
     handlePageDetailsBackButtonClick = () => {
-        this.setState({ selectedPage: null });
+        this.setState({ showPagesModal: false, selectedPage: null });
         this.searchPages();
     }
 
     handlePageLayoutBackButtonClick = () => {
-        this.setState({ selectedLayout: null, selectedTab: 'pageLayouts' });
+        this.setState({ showLayoutModal: false, selectedLayout: null, selectedTab: 'pageLayouts' });
         this.viewManager.setHost({ name: 'page-host' });
         this.searchLayouts();
     }
@@ -74,7 +81,7 @@ export class Pages extends React.Component<PagesProps, PagesState> {
         }
 
         const pagesSearchResult = await this.pageService.search(query);
-        this.setState({ pages: pagesSearchResult.value })
+        this.setState({ pages: pagesSearchResult.value });
 
         return;
     }
@@ -91,99 +98,128 @@ export class Pages extends React.Component<PagesProps, PagesState> {
         return;
     }
 
-    handlePageClick = async (page: PageContract, isNewPage: boolean = false) => {
-        isNewPage && await this.pageService.createPage(page.permalink, page.title, '', '');
-        this.setState({ selectedPage: page });
-        await this.router.navigateTo(page.permalink);
-    }
+    renderPageContent = (page: PageContract) => (
+        <Stack
+            horizontal
+            horizontalAlign="space-between"
+            verticalAlign="center"
+            className="nav-item-outer-stack"
+            onClick={async () => await this.router.navigateTo(page.permalink)}
+        >
+            <Text>{page.title}</Text>
+            <FontIcon
+                iconName="Settings"
+                title="Edit"
+                style={iconStyles}
+                className="nav-item-inner"
+                onClick={(event) => {
+                    event.stopPropagation();
+                    this.setState({ showPagesModal: true, selectedPage: page })}
+                }
+            />
+        </Stack>
+    )
 
-    handleLayoutClick = async (layout: LayoutContract, isNewLayout: boolean = false) => {
-        let newLayout: LayoutContract = null; 
-        if (isNewLayout) newLayout = await this.layoutService.createLayout(layout.title, '', layout.permalinkTemplate);
-        this.viewManager.setHost({ name: 'layout-host', params: { layoutKey: newLayout ? newLayout.key : layout.key } });
-        this.setState({ selectedLayout: layout });
-    }
+    renderPageLayoutContent = (layout: LayoutContract) => (
+        <Stack
+            horizontal
+            horizontalAlign="space-between"
+            verticalAlign="center"
+            className="nav-item-outer-stack"
+            onClick={async () => this.viewManager.setHost({ name: 'layout-host', params: { layoutKey: layout.key } })}
+        >
+            <Text>{layout.title}</Text>
+            <FontIcon
+                iconName="Settings"
+                title="Edit"
+                style={iconStyles}
+                className="nav-item-inner"
+                onClick={(event) => {
+                    event.stopPropagation();
+                    this.setState({ showLayoutModal: true, selectedLayout: layout })}
+                }
+            />
+        </Stack>
+    )
 
     render() {
         return <>
-            {this.state.selectedPage
-                ? <PageDetails
+            {this.state.showPagesModal &&
+                <PageDetailsModal
                     page={this.state.selectedPage}
-                    onBackButtonClick={this.handlePageDetailsBackButtonClick.bind(this)}
+                    onDismiss={this.handlePageDetailsBackButtonClick.bind(this)}
                 />
-                : this.state.selectedLayout
-                    ? <PageLayoutDetails
-                        layout={this.state.selectedLayout}
-                        onBackButtonClick={this.handlePageLayoutBackButtonClick.bind(this)}
-                    />
-                    :
-                <>
-                    <BackButton onClick={this.props.onBackButtonClick} />
-                    <Pivot
-                        aria-label="Pages tabs"
-                        selectedKey={this.state.selectedTab}
-                        onLinkClick={(item: PivotItem) => this.setState({ selectedTab: item.props.itemKey })}
-                    >
-                        <PivotItem headerText="Pages" itemKey="pages">
-                            <Stack className="nav-item-description-container">
-                                <Text className="description-text">Add or edit pages of your website. Each page has a unique URL, which also automatically defines the layout it is part of.</Text>
-                            </Stack>
-                            <SearchBox
-                                ariaLabel="Search pages"
-                                placeholder="Search pages..."
-                                onChange={(event, searchValue) => this.searchPages(searchValue)}
-                                styles={{ root: { marginTop: 20 } }}
-                            />
-                            <div className="objects-list">
-                                {this.state.pages.map(page =>
-                                    <ActionButton
-                                        iconProps={pageIcon}
-                                        text={page.title}
-                                        key={page.key}
-                                        onClick={() => this.handlePageClick(page)}
-                                        styles={{ root: { display: 'block' } }}
-                                    />
-                                )}
-                            </div>
-                            <ActionButton
-                                iconProps={addIcon}
-                                text="Add page"
-                                styles={{ root: { height: 44 } }}
-                                onClick={() => this.handlePageClick({ permalink: '/new-page', title: 'New page' }, true)}
-                            />
-                        </PivotItem>
-                        <PivotItem headerText="Page layout" itemKey="pageLayouts">
-                            <Stack className="nav-item-description-container">
-                                <Text className="description-text">Add or edit layouts. Layouts let you centralize common content (e.g., navigation bar, footer), which will be applied to pages. 
-                                Each page is automatically matched with a layout based on the URL template.</Text>
-                            </Stack>
-                            <SearchBox
-                                ariaLabel="Search layouts"
-                                placeholder="Search layouts..."
-                                onChange={(event, searchValue) => this.searchLayouts(searchValue)}
-                                styles={{ root: { marginTop: 20 } }}
-                            />
-                            <div className="objects-list">
-                                {this.state.layouts.map(layout =>
-                                    <ActionButton
-                                        iconProps={layoutIcon}
-                                        text={layout.title}
-                                        key={layout.key}
-                                        onClick={ () => this.handleLayoutClick(layout) }
-                                        styles={{ root: { display: 'block' } }}
-                                    />
-                                )}
-                            </div>
-                            <ActionButton
-                                iconProps={addIcon}
-                                text="Add layout"
-                                styles={{ root: { height: 44 } }}
-                                onClick={() => this.handleLayoutClick({ permalinkTemplate: '/new-layout', title: 'New layout' }, true)}
-                            />
-                        </PivotItem>
-                    </Pivot>
-                </>
             }
+            {this.state.showLayoutModal &&
+                <PageLayoutDetailsModal
+                    layout={this.state.selectedLayout}
+                    onDismiss={this.handlePageLayoutBackButtonClick.bind(this)}
+                />
+            }
+            <BackButton onClick={this.props.onBackButtonClick} />
+            <Pivot
+                aria-label="Pages tabs"
+                selectedKey={this.state.selectedTab}
+                onLinkClick={(item: PivotItem) => this.setState({ selectedTab: item.props.itemKey })}
+            >
+                <PivotItem headerText="Pages" itemKey="pages">
+                    <Stack className="nav-item-description-container">
+                        <Text className="description-text">Add or edit pages of your website. Each page has a unique URL, which also automatically defines the layout it is part of.</Text>
+                    </Stack>
+                    <CommandBarButton
+                        iconProps={addIcon}
+                        text="Add page"
+                        className="nav-item-list-button"
+                        onClick={() => this.setState({ showPagesModal: true, selectedPage: null })}
+                    />
+                    <SearchBox
+                        ariaLabel="Search pages"
+                        placeholder="Search pages..."
+                        onChange={(event, searchValue) => this.searchPages(searchValue)}
+                        styles={{ root: { marginTop: 20 } }}
+                    />
+                    <div className="objects-list">
+                        {this.state.pages.map(page =>
+                            <CommandBarButton
+                                iconProps={pageIcon}
+                                text={page.title}
+                                key={page.key}
+                                className="nav-item-list-button"
+                                onRenderText={() => this.renderPageContent(page)}
+                            />
+                        )}
+                    </div>
+                </PivotItem>
+                <PivotItem headerText="Page layout" itemKey="pageLayouts">
+                    <Stack className="nav-item-description-container">
+                        <Text className="description-text">Add or edit layouts. Layouts let you centralize common content (e.g., navigation bar, footer), which will be applied to pages. 
+                        Each page is automatically matched with a layout based on the URL template.</Text>
+                    </Stack>
+                    <CommandBarButton
+                        iconProps={addIcon}
+                        text="Add layout"
+                        className="nav-item-list-button"
+                        onClick={() => this.setState({ showLayoutModal: true, selectedLayout: null })}
+                    />
+                    <SearchBox
+                        ariaLabel="Search layouts"
+                        placeholder="Search layouts..."
+                        onChange={(event, searchValue) => this.searchLayouts(searchValue)}
+                        styles={{ root: { marginTop: 20 } }}
+                    />
+                    <div className="objects-list">
+                        {this.state.layouts.map(layout =>
+                            <CommandBarButton
+                                iconProps={layoutIcon}
+                                text={layout.title}
+                                key={layout.key}
+                                className="nav-item-list-button"
+                                onRenderText={() => this.renderPageLayoutContent(layout)}
+                            />
+                        )}
+                    </div>
+                </PivotItem>
+            </Pivot>
         </>
     }
 }

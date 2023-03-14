@@ -54,14 +54,22 @@
     }
 }
 
+.nav-item-list-button {
+    display: block;
+    height: 44px;
+    width: 100%;
+    text-align: left;
+}
+
 .nav-item-outer-stack {
+    height: 44px;
     width: 100%;
 
-    .nav-item-inner-stack {
+    .nav-item-inner {
         opacity: 0;
     }
 
-    &:hover .nav-item-inner-stack {
+    &:hover .nav-item-inner {
         opacity: 1;
     }
 }

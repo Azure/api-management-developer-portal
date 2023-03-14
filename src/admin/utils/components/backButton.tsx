@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ActionButton, IIconProps } from '@fluentui/react';
+import { CommandBarButton, IIconProps } from '@fluentui/react';
 
 const backIcon: IIconProps = { iconName: 'ChevronLeftMed' };
 
@@ -14,10 +14,10 @@ export class BackButton extends React.Component<BackButtonProps, {}> {
 
     render() {
         return <>
-            <ActionButton
+            <CommandBarButton
                 iconProps={backIcon}
                 text="Back"
-                styles={{ root: { height: 44 } }}
+                className="nav-item-list-button"
                 onClick={this.props.onClick}
             />
         </>

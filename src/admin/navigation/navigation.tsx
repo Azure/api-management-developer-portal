@@ -5,7 +5,7 @@ import { INavigationService, NavigationEvents } from '@paperbits/common/navigati
 import { NavigationItemContract } from '@paperbits/common/navigation/navigationItemContract';
 import { Router } from '@paperbits/common/routing';
 import { Resolve } from '@paperbits/react/decorators';
-import { IIconProps, Stack, ActionButton, Nav, INavLinkGroup, INavLink, Text, FontIcon } from '@fluentui/react';
+import { IIconProps, Stack, ActionButton, Nav, INavLinkGroup, INavLink, Text, FontIcon, CommandBarButton } from '@fluentui/react';
 import { BackButton } from '../utils/components/backButton';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 import { NavigationItemModal } from './navigationItemModal';
@@ -78,9 +78,25 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
     renderNavItemContent = (navItem: INavLink) => (
         <Stack horizontal horizontalAlign="space-between" className="nav-item-outer-stack">
             <Text>{navItem.name}</Text>
-            <Stack horizontal verticalAlign="center" gap={10} className="nav-item-inner-stack">
-                <FontIcon iconName="Settings" title="Edit" style={iconStyles} onClick={() => this.setState({ showNavItemModal: true, currentNavItem: navItem })} />
-                <FontIcon iconName="Delete" title="Delete" style={iconStyles} onClick={() => this.setState({ showDeleteConfirmation: true, currentNavItem: navItem })} />
+            <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 10 }} className="nav-item-inner">
+                <FontIcon
+                    iconName="Settings"
+                    title="Edit"
+                    style={iconStyles}
+                    onClick={(event) => {
+                        event.stopPropagation();
+                        this.setState({ showNavItemModal: true, currentNavItem: navItem })}
+                    }
+                />
+                <FontIcon
+                    iconName="Delete"
+                    title="Delete"
+                    style={iconStyles}
+                    onClick={(event) => {
+                        event.stopPropagation();
+                        this.setState({ showDeleteConfirmation: true, currentNavItem: navItem })}
+                    }
+                />
             </Stack>
         </Stack>
     )
@@ -136,10 +152,10 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
                     <Text className="description-title">Navigation</Text>
                     <Text className="description-text">Add or edit navigation menus.</Text>
                 </Stack>
-                <ActionButton
+                <CommandBarButton
                     iconProps={addIcon}
                     text="Add navigation item"
-                    styles={{ root: { height: 44, display: 'block' } }}
+                    className="nav-item-list-button"
                     onClick={() => this.setState({ showNavItemModal: true, currentNavItem: null })}
                 />
                 {/* It seems that you don't have navigation items yet. Would you like to create one? */}
