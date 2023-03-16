@@ -13,6 +13,8 @@ import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.m
 import { ListOfApisEditorModule } from "./components/apis/list-of-apis/ko/listOfApisEditor.module";
 import { DetailsOfApiModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
 import { DetailsOfApiEditorModule } from "./components/apis/details-of-api/ko/detailsOfApiEditor.module";
+import {ApiDetailsPageModule} from "./components/apis/api-details-page/ko/apiDetailsPage.module";
+import { ApiDetailsPageEditorModule } from "./components/apis/api-details-page/ko/apiDetailsPageEditor.module";
 import { HistoryOfApiModule } from "./components/apis/history-of-api/ko/historyOfApi.module";
 import { HistoryOfApiEditorModule } from "./components/apis/history-of-api/ko/historyOfApiEditor.module";
 import { SigninModule } from "./components/users/signin/signin.module";
@@ -70,6 +72,7 @@ import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CustomWidgetDesignModule } from "./components/custom-widget/customWidget.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
+import { ApiDetailsPageModel } from "./components/apis/api-details-page/apiDetailsPageModel";
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -80,6 +83,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ApiProductsEditorModule());
         injector.bindModule(new DetailsOfApiModule());
         injector.bindModule(new DetailsOfApiEditorModule());
+        injector.bindModule(new ApiDetailsPageModule());
+        injector.bindModule(new ApiDetailsPageEditorModule());
         injector.bindModule(new HistoryOfApiModule());
         injector.bindModule(new HistoryOfApiEditorModule());
         injector.bindModule(new SigninModule());

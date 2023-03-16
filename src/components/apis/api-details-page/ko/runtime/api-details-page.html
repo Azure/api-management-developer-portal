@@ -1,0 +1,82 @@
+<div class="page-container">
+    <!-- ko if: working-->
+    <spinner class="fit"></spinner>
+    <!-- /ko -->
+
+    <!-- ko if: api -->
+    <div class="page-title title-background">
+        <h1 class="title-text" data-bind="text: api().displayName">
+        </h1>
+    </div>
+    <div class="page-menu">
+        <div style="padding-left: 32px; height:calc(100% - 50px);
+         width:auto;  padding-right: 32px">
+            <api-list-dropdown></api-list-dropdown>
+
+            <input type="search" class="form-control form-control-light" aria-label="Search this page"
+                placeholder="Search this page" spellcheck="false" data-bind="textInput: pattern" />
+            <!-- ko if: versionApis().length > 0 -->
+            API version
+            <label class="select-badge">
+                <select id="apiVersions"
+                    data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: currentApiVersion">
+                </select>
+                <span class="arrow flex align-items-center justify-content-center">
+                    <i class="icon-emb icon-emb-chevron-down"></i>
+                </span>
+            </label>
+            <!-- /ko -->
+            <hr>
+            <div class="page-menu-list-heading">
+                About
+            </div>
+            <div class="page-menu-list">
+                <!-- ko foreach: { data: staticSelectableMenuItems, as: 'menuItem' } -->
+                <div class="page-menu-list-item" role="option"
+                    data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
+                    <span data-bind="text: menuItem.displayName"></span>
+                </div>
+                <!-- /ko -->
+            </div>
+            <!-- ko if: wikiDocumentationMenuItems()?.length > 0 -->
+            <hr>
+            <div class="page-menu-list-heading">
+                Documentatons
+            </div>
+            <div class="page-menu-list">
+                <!-- ko foreach: { data: wikiDocumentationMenuItems(), as: 'menuItem' } -->
+                <div class="page-menu-list-item" role="option"
+                    data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
+                    <span data-bind="text: menuItem.displayName"></span>
+                </div>
+                <!-- /ko -->
+            </div>
+            <!-- /ko -->
+
+            <!-- ko if: operationsMenuItems()?.length > 0 -->
+            <hr>
+            <div class="page-menu-list-heading">
+                Operations
+            </div>
+            <div class="page-menu-list">
+                <!-- ko foreach: { data: operationsMenuItems(), as: 'menuItem' } -->
+                <div class="page-menu-list-item" role="option"
+                    data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
+                    <span data-bind="text: menuItem.displayName"></span>
+                </div>
+                <!-- /ko -->
+            </div>
+            <!-- /ko -->
+        </div>
+        <div style="height:50px; padding: 0px 32px">
+            <hr>
+            <span>Download API definition</span>
+        </div>
+    </div>
+    <div class="page-content">
+        <!-- ko if: selectedMenuItem().type === 'documentation' -->
+        <wiki-documentation></wiki-documentation>
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+</div>

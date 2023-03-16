@@ -6,6 +6,7 @@ import { MapiClient } from "./services/mapiClient";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { ListOfApisModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
 import { DetailsOfApiModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
+import { ApiDetailsPageModule } from "./components/apis/api-details-page/ko/apiDetailsPage.module";
 import { HistoryOfApiModule } from "./components/apis/history-of-api/ko/historyOfApi.module";
 import { SigninModule } from "./components/users/signin/signin.module";
 import { SigninSocialModule } from "./components/users/signin-social/signinSocial.module";
@@ -48,6 +49,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ListOfApisModule());
         injector.bindModule(new ApiProductsModule());
         injector.bindModule(new DetailsOfApiModule());
+        injector.bindModule(new ApiDetailsPageModule());
         injector.bindModule(new HistoryOfApiModule());
         injector.bindModule(new SigninModule());
         injector.bindModule(new SigninSocialModule());

@@ -24,6 +24,8 @@ import { Bag } from "@paperbits/common";
 import { Tag } from "../models/tag";
 import { get, set } from "idb-keyval";
 import { LruCache } from "@paperbits/common/caching/lruCache";
+import { WikiContract } from "../contracts/wiki";
+import { Wiki } from "../models/wiki";
 
 interface CacheItem {
     value: any;
@@ -407,7 +409,7 @@ export class ApiService {
         if (cachedSchema) {
             return cachedSchema;
         }
-        const contract = await this.getItemWithRefresh<SchemaContract>(schemaId,  () => this.getApiSchemaData(schemaId));
+        const contract = await this.getItemWithRefresh<SchemaContract>(schemaId, () => this.getApiSchemaData(schemaId));
         const model = new Schema(contract);
         this.schemaCache.setItem(schemaId, model);
         return model;
@@ -440,7 +442,7 @@ export class ApiService {
         if (cachedSchema) {
             return cachedSchema;
         }
-        const contract = await this.getItemWithRefresh<Page<SchemaContract>>(apiId,  () => this.getGQLSchemaData(apiId));
+        const contract = await this.getItemWithRefresh<Page<SchemaContract>>(apiId, () => this.getGQLSchemaData(apiId));
         const schemaReferences = contract.value;
         const schemaType = this.getSchemasType(schemaReferences);
         if (schemaType === SchemaType.graphQL) {
@@ -540,12 +542,19 @@ export class ApiService {
 
     public async getApiHostnames(apiName: string, includeAllHostnames: boolean = false): Promise<string[]> {
         let query = `apis/${apiName}/hostnames`;
-        if(includeAllHostnames) {
-            query+=`?includeAllHostnames=true`
+        if (includeAllHostnames) {
+            query += `?includeAllHostnames=true`
         }
         const pageOfHostnames = await this.mapiClient.get<Page<Hostname>>(query, [await this.mapiClient.getPortalHeader("getApiHostnames")]);
         const hostnameValues = pageOfHostnames.value.map(x => x.properties.value);
 
         return hostnameValues;
+    }
+
+    public async getApiWiki(apiId: string): Promise<Wiki> {
+        let query = `apis/${apiId}/wikis/default`;
+        query = Utils.addQueryParameter(query, 'api-version=2022-08-01');
+        const wikiContract = await this.mapiClient.get<WikiContract>(query, [await this.mapiClient.getPortalHeader("getApiWiki")]);
+        return new Wiki(wikiContract);
     }
 }
