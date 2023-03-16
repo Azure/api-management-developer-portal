@@ -67,6 +67,10 @@ export class RouteHelper {
         return this.getHashParameter("graph");
     }
 
+    public getDocumentationId(): string {
+        return this.getHashParameter("documentation");
+    }
+
     /**
      * Returns URL of API details page depending on current route.
      * @param apiName ARM resource name of the API.
@@ -110,6 +114,19 @@ export class RouteHelper {
         }
 
         return `${path}#api=${apiName}&operation=${operationName}`;
+    }
+
+    public getDocumentationReferenceUrl(apiName: string, documentationId: string){
+        if(!apiName){
+            throw new Error(`Parameter "apiName" not specified.`);
+        }
+
+        if(!documentationId){
+            throw new Error(`Parameter "documentationId" not specified.`);
+        }
+
+        const currentPath = this.router.getPath();
+        return `${currentPath}#api=${apiName}&documentation=${documentationId}`;
     }
 
     /**

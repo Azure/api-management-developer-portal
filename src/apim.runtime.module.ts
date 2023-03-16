@@ -26,6 +26,8 @@ import { ApiProducts } from "./components/apis/api-products/ko/runtime/api-produ
 import { ApiProductsDropdown } from "./components/apis/api-products/ko/runtime/api-products-dropdown";
 import { ApiProductsTiles } from "./components/apis/api-products/ko/runtime/api-products-tiles";
 import { ApiDetails } from "./components/apis/details-of-api/ko/runtime/api-details";
+import { ApiDetailsPage } from "./components/apis/api-details-page/ko/runtime/api-details-page";
+import { WikiDocumentation } from "./components/apis/api-details-page/ko/runtime/wikiDocumentation/wiki-documentation";
 import { ApiHistory } from "./components/apis/history-of-api/ko/runtime/api-history";
 import { ApiList, ApiListDropdown, ApiListTiles } from "./components/apis/list-of-apis/ko/runtime";
 import { CustomWidgetRuntimeModule } from "./components/custom-widget/customWidget.runtime.module";
@@ -87,6 +89,7 @@ import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
+import { DocumentationService } from "./services/documentationService";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -104,6 +107,8 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("apiProductsDropdown", ApiProductsDropdown);
         injector.bind("apiProductsTiles", ApiProductsTiles);
         injector.bind("apiDetails", ApiDetails);
+        injector.bind("apiDetailsPage", ApiDetailsPage);
+        injector.bind("wikiDocumentation", WikiDocumentation);
         injector.bind("apiHistory", ApiHistory);
         injector.bind("operationDetails", OperationDetails);
         injector.bind("operationConsole", OperationConsole);
@@ -137,6 +142,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationList", OperationList);
         injector.bind("operationDetails", OperationDetails);
         injector.bind("usersService", UsersService);
+        injector.bind("documentationService", DocumentationService);
         injector.bind("reports", Reports);
         injector.bind("hipCaptcha", HipCaptcha);
         injector.bind("termsOfUse", TermsOfUse);
