@@ -79,6 +79,7 @@ import { AadService } from "./services/aadService";
 import { AadServiceV2 } from "./services/aadServiceV2";
 import { AnalyticsService } from "./services/analyticsService";
 import { ApiService } from "./services/apiService";
+import { MarkdownService } from "./services/markdownService";
 import { BackendService } from "./services/backendService";
 import { MapiClient } from "./services/mapiClient";
 import { OAuthService } from "./services/oauthService";
@@ -120,6 +121,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("codeSnippet", CodeSnippet);
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);
+        injector.bind("markdownService", MarkdownService);
         injector.bind("tagService", TagService);
         injector.bind("productService", ProductService);
         injector.bind("analyticsService", AnalyticsService);
