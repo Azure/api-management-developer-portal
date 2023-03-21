@@ -5,7 +5,7 @@ import { Router } from "@paperbits/common/routing";
 import { ApiService } from "../../../../../services/apiService";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
+import { downloadAPIDefinition } from "../../../../../components/apis/apiUtils";
 
 
 @RuntimeComponent({
@@ -106,43 +106,10 @@ export class ApiDetails {
 
         if (this.api() && this.api().id) {
             let exportObject = await this.apiService.exportApi(this.api().id, definitionType);
-            let fileName = this.api().name;
-            let fileType: string = KnownMimeTypes.Json;
-
-            switch (definitionType) {
-                case "wsdl":
-                case "wadl":
-                    fileType = KnownMimeTypes.Xml;
-                    fileName = `${fileName}.${definitionType}.xml`;
-                    break;
-                case "openapi": // yaml 3.0
-                    fileName = `${fileName}.yaml`;
-                    break;
-                default:
-                    fileName = `${fileName}.json`;
-                    exportObject = JSON.stringify(exportObject, null, 4);
-                    break;
-            }
-            this.download(exportObject, fileName, fileType);
+            downloadAPIDefinition(this.api().name, exportObject, definitionType);
         }
 
         setTimeout(() => this.downloadSelected(""), 100);
-    }
-
-    private download(data: string, filename: string, type: string): void {
-        const file = new Blob([data], { type: type });
-        const downloadLink = document.createElement("a");
-        const url = URL.createObjectURL(file);
-
-        downloadLink.href = url;
-        downloadLink.download = filename;
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-
-        setTimeout(() => {
-            document.body.removeChild(downloadLink);
-            window.URL.revokeObjectURL(url);
-        }, 0);
     }
 
     private onVersionChange(selectedApiName: string): void {
