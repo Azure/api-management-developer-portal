@@ -11,7 +11,6 @@
     }
 }
 
-
 .page-title {
     display: flex;
     align-items: center;
@@ -26,12 +25,14 @@
     background-color: #F5F5F5;
     grid-column-start: 1;
     height: 100%;
+    display: grid;
+    padding-right: 32px;
 
     .select-badge {
         width: 100%;
         margin: 0;
         font-size: 1rem;
-        margin-bottom:16px;
+        margin-bottom: 16px;
 
         select {
             color: #616161;
@@ -47,7 +48,7 @@
         }
     }
 
-    .page-menu-list {
+    .menu-list {
         display: flex;
         flex-direction: column;
         gap: 16px;
@@ -55,7 +56,7 @@
         padding-bottom: 16px;
     }
 
-    .page-menu-list-item {
+    .menu-list-item {
         display: flex;
         padding: 5px 0px 5px 0px;
         cursor: pointer;
@@ -70,13 +71,30 @@
 
     }
 
-    .page-menu-list-heading {
+    .menu-list-heading {
         padding-top: 16px;
         font-weight: bold;
         padding-right: 32px;
     }
-}
 
+    .list-container {
+        height: 100vh;
+        position: sticky;
+        top: 0;
+
+        .items {
+            height: calc(100vh - 50px);
+            overflow-y: auto;
+            padding-left: 32px;
+            overflow-x: clip;
+        }
+
+        .sticky-bottm {
+            height: 50px;
+            padding-left: 32px;
+        }
+    }
+}
 
 .page-content {
     background-color: white;
