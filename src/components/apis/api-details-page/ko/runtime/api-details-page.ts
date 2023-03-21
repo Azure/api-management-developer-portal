@@ -5,7 +5,7 @@ import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 import { Router } from "@paperbits/common/routing";
-import { Wiki } from "../../../../../models/wiki";
+import { downloadAPIDefinition } from "../../../../../components/apis/apiUtils";
 
 interface menuItem {
     displayName: string;
@@ -14,7 +14,7 @@ interface menuItem {
 }
 
 const documentationMenuItemType = "documentation";
-const staticMenuItemType =" static";
+const staticMenuItemType = "static";
 const operationMenuItem = "operation";
 
 
@@ -42,10 +42,7 @@ export class ApiDetailsPage {
     public readonly selectedMenuItem: ko.Observable<menuItem>;
     public readonly wikiDocumentationMenuItems: ko.Observable<menuItem[]>;
     public readonly operationsMenuItems: ko.Observable<menuItem[]>;
-
-
-    // need?
-    public readonly apiWiki: ko.Observable<Wiki>;
+    public readonly selectedDefinition: ko.Observable<string>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -62,12 +59,8 @@ export class ApiDetailsPage {
         this.selectedMenuItem = ko.observable(this.staticSelectableMenuItems[0]);
         this.wikiDocumentationMenuItems = ko.observable([]);
         this.operationsMenuItems = ko.observable([]);
-
-
-        // need?
-        this.apiWiki = ko.observable();
+        this.selectedDefinition = ko.observable();
     }
-
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -82,6 +75,7 @@ export class ApiDetailsPage {
 
         this.router.addRouteChangeListener(this.onRouteChange);
         this.currentApiVersion.subscribe(this.onVersionChange);
+        this.selectedDefinition.subscribe(this.downloadDefinition);
     }
 
     private async onRouteChange(): Promise<void> {
@@ -146,7 +140,6 @@ export class ApiDetailsPage {
         }
     }
 
-
     private onVersionChange(selectedApiName: string): void {
         const apiName = this.routeHelper.getApiName();
 
@@ -156,4 +149,18 @@ export class ApiDetailsPage {
         }
     }
 
+    private async downloadDefinition(): Promise<void> {
+        const definitionType = this.selectedDefinition();
+
+        if (!definitionType) {
+            return;
+        }
+
+        if (this.api() && this.api().id) {
+            let exportObject = await this.apiService.exportApi(this.api().id, definitionType);
+            downloadAPIDefinition(this.api().name, exportObject, definitionType);
+        }
+
+        setTimeout(() => this.selectedDefinition(""), 100);
+    }
 }

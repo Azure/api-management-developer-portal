@@ -83,14 +83,22 @@
         top: 0;
 
         .items {
-            height: calc(100vh - 50px);
+            height: calc(100vh - 90px);
             overflow-y: auto;
             padding-left: 32px;
             overflow-x: clip;
+
+            details summary i {
+                float: right;
+            }
         }
 
-        .sticky-bottm {
-            height: 50px;
+        &.full {
+            height: 100vh;
+        }
+
+        .bottom-item {
+            height: 90px;
             padding-left: 32px;
         }
     }
