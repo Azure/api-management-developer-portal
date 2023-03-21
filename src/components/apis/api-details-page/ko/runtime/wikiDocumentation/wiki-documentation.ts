@@ -38,9 +38,9 @@ export class WikiDocumentation {
 
     private async renderDocumentation(){
         const documentationId = this.routeHelper.getDocumentationId();
-        const markdown = (await this.documentationService.getDocumentation(documentationId)).content;
-
+       
         if (documentationId) {
+            const markdown = (await this.documentationService.getDocumentation(documentationId)).content;
             this.compiledContent(this.markdownService.processMarkdown(markdown));
         }
     }
