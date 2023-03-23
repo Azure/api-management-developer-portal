@@ -10,8 +10,8 @@
     </div>
     <div class="page-menu">
         <div class="list-container">
-            <div class="items" data-bind="{css: {'full': api().type !== 'websocket' || api().type !== 'graphql'}}">
-                <api-list-dropdown params="{ allowSelection: true }"></api-list-dropdown>
+            <div class="items" data-bind="{css: {'full': api().type === 'websocket' || api().type === 'graphql'}}">
+                <api-list-dropdown params="{ allowSelection: true }" class="api-dropdown"></api-list-dropdown>
                 <input type="search" class="form-control form-control-light" aria-label="Search this page"
                     placeholder="Search this page" spellcheck="false" data-bind="textInput: pattern" />
                 <!-- ko if: versionApis().length > 0 -->
@@ -76,6 +76,7 @@
                         <!-- ko foreach: { data: operationsMenuItems(), as: 'menuItem' } -->
                         <div class="menu-list-item" role="option"
                             data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
+                            <div class="http-method" data-bind="attr: { 'data-method': menuItem.method }"></div>
                             <span data-bind="text: menuItem.displayName"></span>
                         </div>
                         <!-- /ko -->
@@ -87,7 +88,7 @@
             <div class="bottom-item">
                 <hr>
                 <label class="select-badge">
-                    <select id="selectedDefinition"  data-bind="value: selectedDefinition">
+                    <select id="selectedDefinition" data-bind="value: selectedDefinition">
                         <option value="" disabled="disabled" selected="selected">Download API definition</option>
                         <option value="openapi">Open API 3 (YAML)</option>
                         <option value="openapi+json">Open API 3 (JSON)</option>

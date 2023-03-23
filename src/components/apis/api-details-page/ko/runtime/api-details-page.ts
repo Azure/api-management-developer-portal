@@ -13,6 +13,10 @@ interface menuItem {
     type: string;
 }
 
+interface operationMenuItem extends menuItem{
+    method: string;
+}
+
 const documentationMenuItemType = "documentation";
 const staticMenuItemType = "static";
 const operationMenuItem = "operation";
@@ -121,7 +125,7 @@ export class ApiDetailsPage {
 
 
         const operations = await this.apiService.getOperations(`apis/${apiName}`);
-        this.operationsMenuItems(operations.value.map(o => { return { value: o.id, displayName: o.displayName, type: operationMenuItem }; }))
+        this.operationsMenuItems(operations.value.map(o => { return { value: o.id, displayName: o.displayName, type: operationMenuItem, method: o.method }; }))
 
 
         this.working(false);
