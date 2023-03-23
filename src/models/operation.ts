@@ -54,6 +54,6 @@ export class Operation {
             })
             .join("");
 
-        this.displayUrlTemplate = `${this.urlTemplate.replace("*", "")}${optionalQueryParameters}`;
+        this.displayUrlTemplate = `${this.urlTemplate.replace("/*", "")}${optionalQueryParameters}`;
     }
 }
