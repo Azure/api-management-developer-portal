@@ -132,7 +132,7 @@ export class ConsoleOperation {
         if (this.api.apiVersionSet && this.api.apiVersionSet.versioningScheme === "Query") {
             requestUrl = this.addParam(requestUrl, this.api.apiVersionSet.versionQueryName, this.api.apiVersion);
         }
-        requestUrl = requestUrl.replace("/*", "/");
+        requestUrl = requestUrl.replace("*", "");
 
         return `${this.api.path}${versionPath}${requestUrl}`;
     }
