@@ -93,7 +93,7 @@
             }
         }
 
-        &.full {
+        .full {
             height: 100vh;
         }
 
@@ -108,4 +108,21 @@
     background-color: white;
     grid-column-start: 2;
     padding-left: 20px;
+}
+
+.api-dropdown {
+    .form-control {
+        border: none;
+        background-color: #F5F5F5;
+
+        span:not(.badge) {
+            font-weight: bold;
+            font-size: x-large;
+        }
+    }
+
+    .input-group-addon {
+        border: none;
+        background-color: #F5F5F5;
+    }
 }
