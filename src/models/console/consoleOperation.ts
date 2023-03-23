@@ -118,7 +118,7 @@ export class ConsoleOperation {
         parameters.forEach(parameter => {
             if (parameter.value()) {
                 const parameterPlaceholder = `{${parameter.name()}}`;
-                console.log(parameterPlaceholder)
+
                 if (requestUrl.indexOf(parameterPlaceholder) > -1) {
                     requestUrl = requestUrl.replace(parameterPlaceholder,
                         !getHidden || !parameter.secret ? Utils.encodeURICustomized(parameter.value())
