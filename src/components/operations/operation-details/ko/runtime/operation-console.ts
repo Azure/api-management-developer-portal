@@ -193,6 +193,7 @@ export class OperationConsole {
         this.responseStatusCode(null);
         this.responseStatusText(null);
         this.responseBody(null);
+        this.requestError(null);
 
         const operation = await this.apiService.getOperation(selectedOperation.id);
         const consoleOperation = new ConsoleOperation(selectedApi, operation);
@@ -378,6 +379,11 @@ export class OperationConsole {
      * @param request HTTP request.
      */
     public async sendFromBrowser(request: HttpRequest): Promise<HttpResponse> {
+
+        if (request.method === HttpMethod.get && request.body) {
+            throw new RequestError("GET requests cannot have a body.");
+        }
+
         const headersRequest: HeadersInit = {};
         request.headers.forEach(header => headersRequest[header.name] = header.value);
 
