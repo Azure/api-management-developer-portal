@@ -100,7 +100,7 @@
     "knockout": "^3.5.1",
     "knockout-mapping": "^2.6.0",
     "knockout.validation": "^2.0.4",
-    "liquidjs": "^9.42.1",
+    "liquidjs": "^10.6.1",
     "lunr": "^2.3.9",
     "mime": "^3.0.0",
     "moment": "^2.29.4",
@@ -117,6 +117,6 @@
     "remark-rehype": "^10.1.0",
     "saxen": "^8.1.2",
     "topojson-client": "^3.1.0",
-    "truncate-html": "^1.0.4"
+    "html-truncate": "1.2.2"
   }
 }
