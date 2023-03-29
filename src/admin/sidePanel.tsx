@@ -5,6 +5,7 @@ import { CommandBarButton, IIconProps } from '@fluentui/react';
 import { Navigation } from "./navigation/navigation";
 import { SettingsModal } from "./settings/settingsModal";
 import { HelpModal } from './help/helpModal';
+import { MediaModal } from './media/mediaModal';
 
 initializeIcons();
 
@@ -40,11 +41,11 @@ export class SidePanel extends React.Component<{}, SidePanelState> {
         };
     }
 
-    handleBackButtonClick = () => {
+    handleBackButtonClick = (): void => {
         this.setState({ selectedNavItem: NavItem.Main });
     }
 
-    renderNavItemsSwitch = (navItemValue: NavItem) => {
+    renderNavItemsSwitch = (navItemValue: NavItem): JSX.Element => {
         switch(navItemValue) {
             case NavItem.Pages:
                 return <Pages onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
@@ -105,6 +106,7 @@ export class SidePanel extends React.Component<{}, SidePanelState> {
             <div className="side-panel">
                 <div className="portal-name"><span className="icon-home"></span>mydevportal</div>
                 { this.renderNavItemsSwitch(this.state.selectedNavItem) }
+                { this.state.selectedNavItem === NavItem.Media && <MediaModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
                 { this.state.selectedNavItem === NavItem.Settings && <SettingsModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
                 { this.state.selectedNavItem === NavItem.Help && <HelpModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
             </div>
