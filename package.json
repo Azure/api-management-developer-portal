@@ -111,6 +111,7 @@
         "prettier": "^2.8.0",
         "prismjs": "^1.29.0",
         "react": "^18.2.0",
+        "react-cropper": "^2.3.2",
         "react-dom": "^18.2.0",
         "rehype-raw": "^6.1.1",
         "rehype-sanitize": "^5.0.1",

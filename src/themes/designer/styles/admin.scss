@@ -94,6 +94,21 @@
     padding: 40px 50px 200px;
 }
 
+.media-modal {
+    width: calc(100% - 300px);
+    max-width: unset;
+}
+
+.media-box {
+    width: 220px;
+    height: 255px;
+    border: 1px solid #8a8886;
+    border-radius: 4px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
 #admin-top-panel {
     height: 45px;
     display: flex;
