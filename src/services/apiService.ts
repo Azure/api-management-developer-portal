@@ -140,36 +140,8 @@ export class ApiService {
         if (odataFilterEntries.length > 0) {
             query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
         }
-        const pageOfOperationsByTag = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(query, [await this.mapiClient.getPortalHeader("getOperationsByTags")]);
-        const page = new Page<TagGroup<Operation>>();
-        const tagGroups: Bag<TagGroup<Operation>> = {};
-
-        pageOfOperationsByTag.value.forEach(x => {
-            const tagContract: TagContract = x.tag ? Utils.armifyContract("tags", x.tag) : null;
-            const operationContract: OperationContract = x.operation ? Utils.armifyContract("operations", x.operation) : null;
-
-            let tagGroup: TagGroup<Operation>;
-            let tagName: string;
-
-            if (tagContract) {
-                tagName = tagContract.properties.displayName;
-            } else {
-                tagName = "Untagged";
-            }
-            tagGroup = tagGroups[tagName];
-
-            if (!tagGroup) {
-                tagGroup = new TagGroup<Operation>();
-                tagGroup.tag = tagName;
-                tagGroups[tagName] = tagGroup;
-            }
-            tagGroup.items.push(new Operation(operationContract));
-        });
-        page.value = Object.keys(tagGroups).map(x => tagGroups[x]);
-        page.nextLink = pageOfOperationsByTag.nextLink;
-        page.count = pageOfOperationsByTag.count;
-
-        return page;
+        const apiTagResource = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(query, [await this.mapiClient.getPortalHeader("getOperationsByTags")]);
+        return this.mapApiTagResourceToOperationsByTags(apiTagResource);
     }
 
     /**
@@ -556,5 +528,54 @@ export class ApiService {
         query = Utils.addQueryParameter(query, 'api-version=2022-08-01');
         const wikiContract = await this.mapiClient.get<WikiContract>(query, [await this.mapiClient.getPortalHeader("getApiWiki")]);
         return new Wiki(wikiContract);
+    }
+
+    public async getApiOperationsByNextLink(nextLink: string): Promise<Page<Operation>> {
+        const page = await this.mapiClient.get<Page<OperationContract>>(nextLink, [await this.mapiClient.getPortalHeader("getOperations")]);
+
+        const result = new Page<Operation>();
+        result.count = page.count;
+        result.nextLink = page.nextLink;
+        result.value = page.value.map(item => new Operation(item));
+
+        return result;
+    }
+
+    public async getApiOperationsByTagsByNextLink(nextLink: string): Promise<Page<TagGroup<Operation>>> {
+        const apiTagResource = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(nextLink, [await this.mapiClient.getPortalHeader("getOperationsByTags")]);
+        return this.mapApiTagResourceToOperationsByTags(apiTagResource);
+    }
+
+    private mapApiTagResourceToOperationsByTags(apiTagResource: PageContract<ApiTagResourceContract>): Page<TagGroup<Operation>> {
+        const page = new Page<TagGroup<Operation>>();
+        const tagGroups: Bag<TagGroup<Operation>> = {};
+
+        apiTagResource.value.forEach(x => {
+            const tagContract: TagContract = x.tag ? Utils.armifyContract("tags", x.tag) : null;
+            const operationContract: OperationContract = x.operation ? Utils.armifyContract("operations", x.operation) : null;
+
+            let tagGroup: TagGroup<Operation>;
+            let tagName: string;
+
+            if (tagContract) {
+                tagName = tagContract.properties.displayName;
+            } else {
+                tagName = "Untagged";
+            }
+            tagGroup = tagGroups[tagName];
+
+            if (!tagGroup) {
+                tagGroup = new TagGroup<Operation>();
+                tagGroup.tag = tagName;
+                tagGroups[tagName] = tagGroup;
+            }
+            tagGroup.items.push(new Operation(operationContract));
+        });
+
+        page.value = Object.keys(tagGroups).map(x => tagGroups[x]);
+        page.nextLink = apiTagResource.nextLink;
+        page.count = apiTagResource.count;
+
+        return page;
     }
 }

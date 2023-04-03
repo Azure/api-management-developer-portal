@@ -1,11 +1,14 @@
 import * as ko from "knockout";
 import template from "./api-details-page.html";
-import { Component, OnMounted, RuntimeComponent } from "@paperbits/common/ko/decorators";
+import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 import { Router } from "@paperbits/common/routing";
 import { downloadAPIDefinition } from "../../../../../components/apis/apiUtils";
+import { Page } from "../../../../../models/page";
+import { Operation } from "../../../../../models/operation";
+import { TagGroup } from "../../../../../models/tagGroup";
 
 interface menuItem {
     displayName: string;
@@ -13,8 +16,13 @@ interface menuItem {
     type: string;
 }
 
-interface operationMenuItem extends menuItem{
+interface operationMenuItem extends menuItem {
     method: string;
+}
+
+interface tagOperationMenuItem {
+    tagName: string;
+    operations: ko.ObservableArray<operationMenuItem>;
 }
 
 const documentationMenuItemType = "documentation";
@@ -41,12 +49,17 @@ export class ApiDetailsPage {
     public readonly working: ko.Observable<boolean>;
     public readonly versionApis: ko.ObservableArray<Api>;
     public readonly pattern: ko.Observable<string>;
-    public readonly selectedApiName: ko.Observable<string>;
     public readonly currentApiVersion: ko.Observable<string>;
     public readonly selectedMenuItem: ko.Observable<menuItem>;
     public readonly wikiDocumentationMenuItems: ko.Observable<menuItem[]>;
     public readonly operationsMenuItems: ko.Observable<menuItem[]>;
+    public readonly operationsByTagsMenuItems: ko.ObservableArray<tagOperationMenuItem>;
     public readonly selectedDefinition: ko.Observable<string>;
+
+    public operationsPageNextLink: ko.Observable<string>;
+
+    @Param()
+    public groupOperationsByTag: ko.Observable<boolean>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -57,13 +70,16 @@ export class ApiDetailsPage {
         this.working = ko.observable(false);
         this.pattern = ko.observable();
         this.versionApis = ko.observableArray([]);
-        this.selectedApiName = ko.observable();
 
         this.currentApiVersion = ko.observable();
         this.selectedMenuItem = ko.observable(this.staticSelectableMenuItems[0]);
         this.wikiDocumentationMenuItems = ko.observable([]);
         this.operationsMenuItems = ko.observable([]);
+        this.operationsByTagsMenuItems = ko.observableArray([]);
         this.selectedDefinition = ko.observable();
+        this.operationsPageNextLink = ko.observable();
+
+        this.groupOperationsByTag = ko.observable(true);
     }
 
     @OnMounted()
@@ -74,7 +90,6 @@ export class ApiDetailsPage {
             return;
         }
 
-        this.selectedApiName(apiName);
         await this.loadApi(apiName);
 
         this.router.addRouteChangeListener(this.onRouteChange);
@@ -85,11 +100,10 @@ export class ApiDetailsPage {
     private async onRouteChange(): Promise<void> {
         const apiName = this.routeHelper.getApiName();
 
-        if (!apiName || apiName === this.selectedApiName()) {
+        if (!apiName || apiName === this.api().name) {
             return;
         }
 
-        this.selectedApiName(apiName);
         await this.loadApi(apiName);
     }
 
@@ -119,14 +133,8 @@ export class ApiDetailsPage {
         this.currentApiVersion(api.name);
         this.api(api);
 
-
-        const wiki = await this.apiService.getApiWiki(apiName);
-        this.wikiDocumentationMenuItems(wiki.documents.map(d => { return { value: d.documentationId, displayName: d.title, type: documentationMenuItemType }; }));
-
-
-        const operations = await this.apiService.getOperations(`apis/${apiName}`);
-        this.operationsMenuItems(operations.value.map(o => { return { value: o.id, displayName: o.displayName, type: operationMenuItem, method: o.method }; }))
-
+        await this.loadWiki();
+        await this.loadOperations();
 
         this.working(false);
     }
@@ -139,8 +147,16 @@ export class ApiDetailsPage {
         this.selectedMenuItem(menuItem);
 
         if (menuItem.type == documentationMenuItemType) {
-            const wikiUrl = this.routeHelper.getDocumentationReferenceUrl(this.selectedApiName(), menuItem.value);
+            const wikiUrl = this.routeHelper.getDocumentationReferenceUrl(this.api().name, menuItem.value);
             this.router.navigateTo(wikiUrl);
+        }
+    }
+
+    public async loadOperations() {
+        if (this.groupOperationsByTag()) {
+            await this.loadOperationsByTags();
+        } else {
+            await this.loadOperationsUngrouped();
         }
     }
 
@@ -166,5 +182,81 @@ export class ApiDetailsPage {
         }
 
         setTimeout(() => this.selectedDefinition(""), 100);
+    }
+
+    private async loadWiki() {
+        const wiki = await this.apiService.getApiWiki(this.api().name);
+        this.wikiDocumentationMenuItems(wiki.documents.map(d => {
+            return {
+                value: d.documentationId,
+                displayName: d.title,
+                type: documentationMenuItemType
+            };
+        }));
+    }
+
+    private async loadOperationsUngrouped(): Promise<void> {
+        let operations: Page<Operation>;
+
+        if (this.operationsPageNextLink()) {
+            operations = await this.apiService.getApiOperationsByNextLink(this.operationsPageNextLink());
+        } else {
+            operations = await this.apiService.getOperations(`apis/${this.api().name}`);
+        }
+
+        this.operationsPageNextLink(operations.nextLink);
+
+        const currentOperations = this.operationsMenuItems();
+        const newOperations = operations.value.map(o => {
+            return {
+                value: o.id,
+                displayName:
+                    o.displayName,
+                type: operationMenuItem,
+                method: o.method
+            };
+        });
+
+        this.operationsMenuItems([...currentOperations, ...newOperations]);
+    }
+
+    private async loadOperationsByTags(): Promise<void> {
+        let operationsByTags: Page<TagGroup<Operation>>;
+
+        if (this.operationsPageNextLink()) {
+            operationsByTags = await this.apiService.getApiOperationsByTagsByNextLink(this.operationsPageNextLink());
+        } else {
+            operationsByTags = await this.apiService.getOperationsByTags(this.api().name);
+        }
+
+        this.operationsPageNextLink(operationsByTags.nextLink);
+
+        const currentOperationsByTags = this.operationsByTagsMenuItems();
+
+        const newOperationsByTags = operationsByTags.value.map(t => {
+            return {
+                tagName: t.tag,
+                operations: t.items.map(op => {
+                    return {
+                        value: op.id,
+                        displayName: op.displayName,
+                        type: operationMenuItem,
+                        method: op.method
+                    };
+                })
+            };
+        });
+
+        for (const tag of newOperationsByTags) {
+            const currentTag = currentOperationsByTags.find(t => t.tagName === tag.tagName);
+            if (currentTag) {
+                const index = currentOperationsByTags.findIndex(t => t.tagName === tag.tagName);
+                currentOperationsByTags[index].operations.push(...tag.operations);
+            } else {
+                currentOperationsByTags.push({tagName: tag.tagName, operations: ko.observableArray(tag.operations)});
+            }
+        }
+
+        this.operationsByTagsMenuItems(currentOperationsByTags);
     }
 }

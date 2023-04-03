@@ -28,7 +28,7 @@
                 <hr>
                 <details open class="details-styled">
                     <summary aria-label="About">
-                        <div class="menu-list-heading">
+                        <div class="menu-list-heading title">
                             About
                             <i class="icon-emb icon-emb-chevron-down"></i>
                         </div>
@@ -47,8 +47,8 @@
                 <hr>
                 <details open class="details-styled">
                     <summary aria-label="Documentations">
-                        <div class="menu-list-heading">
-                            Documentatons
+                        <div class="menu-list-heading title">
+                            Documentations
                             <i class="icon-emb icon-emb-chevron-down"></i>
                         </div>
                     </summary>
@@ -67,7 +67,7 @@
                 <hr>
                 <details open class="details-styled">
                     <summary aria-label="Operations">
-                        <div class="menu-list-heading">
+                        <div class="menu-list-heading title">
                             Operations
                             <i class="icon-emb icon-emb-chevron-down"></i>
                         </div>
@@ -78,6 +78,48 @@
                             data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
                             <div class="http-method" data-bind="attr: { 'data-method': menuItem.method }"></div>
                             <span data-bind="text: menuItem.displayName"></span>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: operationsPageNextLink() -->
+                        <div class="menu-item">
+                            <a href="#" role="button" data-bind="click: loadOperations">Show more</a>
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                </details>
+                <!-- /ko -->
+                <!-- ko if: operationsByTagsMenuItems()?.length > 0 -->
+                <hr>
+                <details open class="details-styled">
+                    <summary aria-label="Operations">
+                        <div class="menu-list-heading title">
+                            Operations
+                            <i class="icon-emb icon-emb-chevron-down"></i>
+                        </div>
+                    </summary>
+                    <div class="menu-list">
+                        <!-- ko foreach: { data: operationsByTagsMenuItems(), as: 'tagMenuItem' } -->
+                        <details class="tag details-styled">
+                            <summary data-bind="attr:{ 'aria-label': 'Tag ' + tagMenuItem.tagName }">
+                                <div class="menu-list-heading">
+                                    <span data-bind="text:tagMenuItem.tagName"></span>
+                                    <i class="icon-emb icon-emb-chevron-down"></i>
+                                </div>
+                            </summary>
+                            <div class="menu-list">
+                                <!-- ko foreach: { data: tagMenuItem.operations, as: 'menuItem' } -->
+                                <div class="menu-list-item" role="option"
+                                    data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
+                                    <div class="http-method" data-bind="attr: { 'data-method': menuItem.method }"></div>
+                                    <span data-bind="text: menuItem.displayName"></span>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                        </details>
+                        <!-- /ko -->
+                        <!-- ko if: operationsPageNextLink() -->
+                        <div class="menu-item">
+                            <a href="#" role="button" data-bind="click: loadOperations">Show more</a>
                         </div>
                         <!-- /ko -->
                     </div>
