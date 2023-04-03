@@ -1,6 +1,6 @@
 .page-container {
     display: grid;
-    grid-template-columns: 25% 75%;
+    grid-template-columns: 30% 70%;
     grid-template-rows: 130px auto;
     height: 100%;
 
@@ -26,7 +26,6 @@
     grid-column-start: 1;
     height: 100%;
     display: grid;
-    padding-right: 32px;
 
     .select-badge {
         width: 100%;
@@ -53,7 +52,6 @@
         flex-direction: column;
         gap: 16px;
         padding-top: 16px;
-        padding-bottom: 16px;
     }
 
     .menu-list-item {
@@ -68,13 +66,19 @@
             border-radius: 0px 5px 5px 0px;
             background: white;
         }
-
     }
 
     .menu-list-heading {
-        padding-top: 16px;
-        font-weight: bold;
         padding-right: 32px;
+        display: flex;
+        align-items: center;
+        flex-wrap: inherit;
+        justify-content: space-between;
+
+        &.title {
+            font-weight: bold;
+        }
+
     }
 
     .list-container {
@@ -87,9 +91,15 @@
             overflow-y: auto;
             padding-left: 32px;
             overflow-x: clip;
+            padding-right: 32px;
+            overflow-wrap: anywhere;
 
             details summary i {
                 float: right;
+            }
+
+            hr {
+                margin: 16px 0;
             }
         }
 
@@ -100,6 +110,7 @@
         .bottom-item {
             height: 90px;
             padding-left: 32px;
+            padding-right: 32px;
         }
     }
 }
@@ -121,8 +132,22 @@
         }
     }
 
+    .text-truncate {
+        white-space: normal;
+    }
+
     .input-group-addon {
         border: none;
         background-color: #F5F5F5;
+    }
+}
+
+.tag {
+    .menu-list-item {
+        padding-left: 15px;
+
+        &.selected {
+            padding-left: 42px;
+        }
     }
 }

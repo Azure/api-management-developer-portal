@@ -13,7 +13,7 @@ details.details-styled {
     display: none;
   }
 
-  &[open] summary {
+  &[open] > summary {
     i.icon-emb {
       transform: rotate(-180deg);
     }
