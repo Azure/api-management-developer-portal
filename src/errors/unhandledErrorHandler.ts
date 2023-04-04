@@ -8,6 +8,8 @@ export class UnhandledErrorHandler {
     }
 
     public handlerError(event: ErrorEvent): void {
+        event.preventDefault();
+        event.stopPropagation();
         this.logger.trackError(event.error).catch((error) => {
             console.error(`Unable to log error: ${event.error} \n Logger issue -> `, error);
         });
