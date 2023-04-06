@@ -1,6 +1,6 @@
 .page-container {
     display: grid;
-    grid-template-columns: 30% 70%;
+    grid-template-columns: 25% 75%;
     grid-template-rows: 130px auto;
     height: 100%;
 
@@ -25,7 +25,7 @@
     background-color: #F5F5F5;
     grid-column-start: 1;
     height: 100%;
-    display: grid;
+    display: block;
 
     .select-badge {
         width: 100%;

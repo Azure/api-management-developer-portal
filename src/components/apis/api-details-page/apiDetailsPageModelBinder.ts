@@ -4,21 +4,34 @@ import { ApiDetailsPageContract } from "./apiDetailsPageContract";
 import { ApiDetailsPageModel } from "./apiDetailsPageModel";
 
 export class ApiDetailsPageModelBinder implements IModelBinder<ApiDetailsPageModel> {
-    canHandleContract?(contract: Contract): boolean {
+    public canHandleContract?(contract: Contract): boolean {
         return contract.type === "apiDetailsPage";
     }
-    canHandleModel?(model: ApiDetailsPageModel, widgetName?: string): boolean {
+
+    public canHandleModel?(model: ApiDetailsPageModel, widgetName?: string): boolean {
         return model instanceof ApiDetailsPageModel;
     }
-    modelToContract(model: ApiDetailsPageModel): Contract {
-        return { type: "apiDetailsPage", styles: model.styles } as ApiDetailsPageContract;
+
+    public modelToContract(model: ApiDetailsPageModel): ApiDetailsPageContract {
+        const contract: ApiDetailsPageContract = {
+            type: "apiDetailsPage",
+            styles: model.styles,
+            groupOperationsByTag: model.groupOperationsByTag,
+            showUrlPath: model.showUrlPath,
+            wrapText: model.wrapText
+        };
+
+        return contract;
     }
+
     public async contractToModel(contract: any, bindingContext?: Bag<any>): Promise<ApiDetailsPageModel> {
         const model = new ApiDetailsPageModel();
-        model.styles = contract.srtyles || {};
+        model.styles = contract.styles || {};
+        model.groupOperationsByTag = contract.groupOperationsByTag || false;
+        model.showUrlPath = contract.showUrlPath || false;
+        model.wrapText = contract.wrapText || false;
 
         return model;
-
     }
 
 }
