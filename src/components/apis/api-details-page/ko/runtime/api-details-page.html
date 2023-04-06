@@ -56,7 +56,7 @@
                         <!-- ko foreach: { data: wikiDocumentationMenuItems(), as: 'menuItem' } -->
                         <div class="menu-list-item" role="option"
                             data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
-                            <span data-bind="text: menuItem.displayName"></span>
+                            <span data-bind="text: menuItem.displayName, css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }"></span>
                         </div>
                         <!-- /ko -->
                     </div>
@@ -77,7 +77,7 @@
                         <div class="menu-list-item" role="option"
                             data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
                             <div class="http-method" data-bind="attr: { 'data-method': menuItem.method }"></div>
-                            <span data-bind="text: menuItem.displayName"></span>
+                            <span data-bind="text: menuItem.displayName, css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }"></span>
                         </div>
                         <!-- /ko -->
                         <!-- ko if: operationsPageNextLink() -->

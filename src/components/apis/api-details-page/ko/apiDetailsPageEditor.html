@@ -1,1 +1,29 @@
-editor
+<fieldset class="form flex-item flex-item-grow" data-bind="scrollable: {}">
+    <div class="form-group form-group-collapsible">
+        <label class="form-label">
+            <a href="#" class="form-group-toggle" title="Toggle section"
+                data-bind="collapse: '#menuCollapse'"></a>
+            <b>Menu</b>
+        </label>
+        <div id="menuCollapse" class="collapse form-group-collapse">
+            <div class="form-group">
+                <label for="groupOperationsByTag" class="form-label">
+                    <input type="checkbox" id="groupOperationsByTag" name="groupOperationsByTag"
+                        data-bind="checked: groupOperationsByTag" />
+                    Group operations by tag
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="showUrlPath" class="form-label">
+                    <input type="checkbox" id="showUrlPath" name="showUrlPath" data-bind="checked: showUrlPath" />
+                    Show URL path
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="wrapText" class="form-label">
+                    <input type="checkbox" id="wrapText" name="wrapText" data-bind="checked: wrapText" />
+                    Wrap menu items text
+                </label>
+            </div>
+        </div>
+</fieldset>

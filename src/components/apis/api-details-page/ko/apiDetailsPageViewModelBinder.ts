@@ -17,6 +17,12 @@ export class ApiDetailsPageViewModelBinder implements ViewModelBinder<ApiDetails
             viewModel = new ApiDetailsPageViewModel();
         }
 
+        viewModel.runtimeConfig(JSON.stringify({
+            groupOperationsByTag: model.groupOperationsByTag,
+            showUrlPath: model.showUrlPath,
+            wrapText: model.wrapText
+        }));
+
         viewModel["widgetBinding"] = {
             displayName: "API Details Page",
             layer: bindingContext?.layer,

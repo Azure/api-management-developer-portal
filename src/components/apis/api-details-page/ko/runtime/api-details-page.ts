@@ -61,6 +61,12 @@ export class ApiDetailsPage {
     @Param()
     public groupOperationsByTag: ko.Observable<boolean>;
 
+    @Param()
+    public showUrlPath: ko.Observable<boolean>;
+
+    @Param()
+    public wrapText: ko.Observable<boolean>;
+
     constructor(
         private readonly apiService: ApiService,
         private readonly routeHelper: RouteHelper,
@@ -79,7 +85,9 @@ export class ApiDetailsPage {
         this.selectedDefinition = ko.observable();
         this.operationsPageNextLink = ko.observable();
 
-        this.groupOperationsByTag = ko.observable(true);
+        this.groupOperationsByTag = ko.observable();
+        this.showUrlPath = ko.observable();
+        this.wrapText = ko.observable();
     }
 
     @OnMounted()
@@ -210,8 +218,7 @@ export class ApiDetailsPage {
         const newOperations = operations.value.map(o => {
             return {
                 value: o.id,
-                displayName:
-                    o.displayName,
+                displayName: this.showUrlPath() ? o.urlTemplate : o.displayName,
                 type: operationMenuItem,
                 method: o.method
             };
@@ -239,7 +246,7 @@ export class ApiDetailsPage {
                 operations: t.items.map(op => {
                     return {
                         value: op.id,
-                        displayName: op.displayName,
+                        displayName: this.showUrlPath() ? op.urlTemplate : op.displayName,
                         type: operationMenuItem,
                         method: op.method
                     };
@@ -253,7 +260,7 @@ export class ApiDetailsPage {
                 const index = currentOperationsByTags.findIndex(t => t.tagName === tag.tagName);
                 currentOperationsByTags[index].operations.push(...tag.operations);
             } else {
-                currentOperationsByTags.push({tagName: tag.tagName, operations: ko.observableArray(tag.operations)});
+                currentOperationsByTags.push({ tagName: tag.tagName, operations: ko.observableArray(tag.operations) });
             }
         }
 
