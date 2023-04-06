@@ -40,6 +40,14 @@
             background: white;
             border: 1px solid #D1D1D1;
             border-radius: 5px;
+
+            &.download{
+                @extend .icon-svg-download;
+                background-position: 5px center;
+                background-size: 1em;
+                background-repeat: no-repeat;
+                padding-left: calc(1em + 10px);
+            }
         }
 
         .arrow {
