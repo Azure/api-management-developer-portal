@@ -48,6 +48,19 @@
             "key": "blocks/new-popup-template",
             "title": "New popup template",
             "type": "popup"
+        },
+        "heading-block-1": {
+            "type": "layout-section",
+            "key": "blocks/heading-block-1",
+            "title": "Feature block 5",
+            "description": "",
+            "contentKey": "files/heading-block-1",
+            "imports": [
+                "styles/colors/semi-trsp-lt-bg",
+                "styles/components/button/no-border",
+                "popups/main-menu-popup",
+                "files/main-menu-popup"
+            ]
         }
     },
     "popups": {
@@ -1578,6 +1591,146 @@
                 {
                     "type": "dismiss-button",
                     "label": "Dismiss"
+                }
+            ]
+        },
+        "heading-block-1": {
+            "type": "layout-section",
+            "styles": {
+                "instance": {
+                    "key": "awgovjdnwn"
+                }
+            },
+            "nodes": [
+                {
+                    "type": "grid",
+                    "nodes": [
+                        {
+                            "type": "grid-cell",
+                            "nodes": [
+                                {
+                                    "type": "picture",
+                                    "width": 80,
+                                    "height": 80,
+                                    "caption": "Logo",
+                                    "styles": {
+                                        "appearance": "components/picture/default"
+                                    },
+                                    "hyperlink": {
+                                        "target": "_self",
+                                        "targetKey": "pages/e0987ca1-f458-b546-7697-7be594b35583"
+                                    }
+                                },
+                                {
+                                    "type": "menu",
+                                    "navigationItemKey": "main",
+                                    "layout": "horizontal",
+                                    "styles": {
+                                        "appearance": "components/menu/default",
+                                        "instance": {
+                                            "display": {
+                                                "md": "inline-block",
+                                                "xs": "none"
+                                            }
+                                        }
+                                    },
+                                    "roles": null
+                                },
+                                {
+                                    "type": "button",
+                                    "label": "☰",
+                                    "styles": {
+                                        "appearance": "components/button/no-border",
+                                        "instance": {
+                                            "display": {
+                                                "xs": "inline-block",
+                                                "md": "none"
+                                            }
+                                        }
+                                    },
+                                    "roles": null,
+                                    "hyperlink": {
+                                        "target": "_popup",
+                                        "targetKey": "popups/main-menu-popup"
+                                    }
+                                }
+                            ],
+                            "role": "article",
+                            "styles": {
+                                "instance": {
+                                    "grid-cell": {
+                                        "xs": {
+                                            "position": {
+                                                "col": 1,
+                                                "row": 1
+                                            },
+                                            "span": {
+                                                "cols": 1,
+                                                "rows": 1
+                                            },
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "between"
+                                            }
+                                        },
+                                        "xl": {
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "between"
+                                            }
+                                        },
+                                        "md": {
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "between"
+                                            }
+                                        },
+                                        "lg": {
+                                            "alignment": {
+                                                "vertical": "center",
+                                                "horizontal": "between"
+                                            }
+                                        }
+                                    },
+                                    "padding": {
+                                        "xs": {
+                                            "top": 10,
+                                            "bottom": 10,
+                                            "left": 10,
+                                            "right": 10
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "styles": {
+                        "instance": {
+                            "margin": {
+                                "xs": {
+                                    "top": 20,
+                                    "left": "auto",
+                                    "right": "auto",
+                                    "bottom": 20
+                                }
+                            },
+                            "size": {
+                                "lg": {
+                                    "maxWidth": 1140
+                                }
+                            },
+                            "grid": {
+                                "xs": {
+                                    "rows": [
+                                        "auto"
+                                    ],
+                                    "cols": [
+                                        "1fr"
+                                    ]
+                                }
+                            }
+                        }
+                    }
                 }
             ]
         },
