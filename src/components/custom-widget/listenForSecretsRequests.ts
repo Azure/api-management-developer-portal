@@ -9,7 +9,7 @@ export class ListenForSecretsRequests {
         private readonly authenticator: IAuthenticator,
         private readonly settingsProvider: ISettingsProvider,
     ) {
-        window.addEventListener("message", async ({data}) => {
+        window.addEventListener("message", async ({ data }) => {
             const value = data[APIM_ASK_FOR_SECRETS_MESSAGE_KEY];
             if (!value || !("instanceId" in value)) return
 
@@ -21,9 +21,9 @@ export class ListenForSecretsRequests {
                     : window.document.getElementById(instanceId)
             ) as HTMLIFrameElement;
 
-            const managementApiUrl = await settingsProvider.getSetting<string>(SettingNames.managementApiUrl);
+            const backendUrl = await settingsProvider.getSetting<string>(SettingNames.backendUrl);
             const secrets: Secrets = {
-                managementApiUrl: Utils.ensureUrlArmified(managementApiUrl),
+                managementApiUrl: Utils.getBaseUrlWithMapiSuffix(backendUrl),
                 apiVersion: managementApiVersion
             };
 
@@ -36,7 +36,7 @@ export class ListenForSecretsRequests {
             }
 
             const targetOrigin = "*"
-            widgetIFrame.contentWindow.postMessage({[APIM_ASK_FOR_SECRETS_MESSAGE_KEY]: secrets}, targetOrigin); // value.origin
+            widgetIFrame.contentWindow.postMessage({ [APIM_ASK_FOR_SECRETS_MESSAGE_KEY]: secrets }, targetOrigin); // value.origin
         });
     }
 }

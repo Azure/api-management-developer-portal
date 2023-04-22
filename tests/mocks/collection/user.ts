@@ -10,7 +10,7 @@ export class UserMockData{
     
     public async getSignInResponse(){
         return {
-            "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/identity":{
+            "/developer/identity":{
                 "headers": [
                 {
                     "name": "content-type",
@@ -33,7 +33,7 @@ export class UserMockData{
     public getUserInfoResponse(){
         let response = {};
         
-        var url = `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/${this.publicId}`;
+        var url = `/developer/users/${this.publicId}`;
         response[url] = {
             "headers": [
                 {
@@ -44,40 +44,39 @@ export class UserMockData{
             "statusCode": 200,
             "statusText": "OK",
             "body": {
-                "id": `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/${this.publicId}`,
+                "id": `${this.publicId}`,
                 "type": "Microsoft.ApiManagement/service/users",
                 "name": this.publicId,
-                "properties": {
-                    "firstName": "name",
-                    "lastName": "surname",
-                    "email": this.email,
-                    "state": "active",
-                    "registrationDate": "2021-11-08T15:45:18.01Z",
-                    "note": null,
-                    "groups": [],
-                    "identities": [
-                        {
-                            "provider": "Basic",
-                            "id": this.publicId
-                        }
-                    ]
-                }
+                "firstName": "name",
+                "lastName": "surname",
+                "email": this.email,
+                "state": "active",
+                "registrationDate": "2021-11-08T15:45:18.01Z",
+                "note": null,
+                "groups": [],
+                "identities": [
+                    {
+                        "provider": "Basic",
+                        "id": this.publicId
+                    }
+                ]
             }
         };
+
         return response;
     }
 
     public getUserRegisterResponse(email: string, firstName: string, lastName: string){
         return {
-            "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users":{   
+            "/developer/users":{   
                 "headers": [
                     {
-                    "name": "content-type",
-                    "value": "application/json; charset=utf-8"
+                        "name": "content-type",
+                        "value": "application/json; charset=utf-8"
                     },
                     {
-                    "name": "location",
-                    "value": `/users/${email}?api-version=2021-04-01-preview`
+                        "name": "location",
+                        "value": `/users/${email}?api-version=2021-04-01-preview`
                     }
                 ],
                 "statusCode": 201,
@@ -91,14 +90,13 @@ export class UserMockData{
                     "registrationDate": "2022-02-04T13:42:26.36Z",
                     "note": null,
                     "groups": [
-                    {
-                        "id": "/groups/developers",
-                        "name": "Developers",
-                        "description": "Developers is a built-in group. Its membership is managed by the system. Signed-in users fall into this group.",
-                        "builtIn": true,
-                        "type": "system",
-                        "externalId": null
-                    }
+                        {
+                            "id": "/groups/developers",
+                            "name": "Developers",
+                            "builtIn": true,
+                            "type": "system",
+                            "externalId": null
+                        }
                     ],
                     "identities": []
                 }

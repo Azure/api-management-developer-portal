@@ -11,7 +11,7 @@ export class Api{
     
     public getApiResponse(){
         let response = {};
-        var url = `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/${this.apiId}`;
+        var url = `/developer/apis/${this.apiId}`;
         response[url] = {
             "headers": [
                 {
@@ -28,7 +28,7 @@ export class Api{
 
     public getApiBodyResponse(){
         return {
-            "id": `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis/${this.apiId}`,
+            "id": `${this.apiId}`,
             "type": "Microsoft.ApiManagement/service/apis",
             "name": this.apiId,
             "properties": {

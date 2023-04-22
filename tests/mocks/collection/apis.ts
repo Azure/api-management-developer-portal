@@ -18,7 +18,7 @@ export class Apis {
         });
         
         return {
-            "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis":{
+            "/developer/apis":{
                 "headers": [
                     {
                         "name": "content-type",

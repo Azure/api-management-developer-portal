@@ -18,7 +18,7 @@ export class Products {
         });
         
         return {
-            "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products":{
+            "/developer/products":{
                 "headers": [
                     {
                         "name": "content-type",

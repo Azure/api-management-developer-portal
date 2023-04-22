@@ -3,11 +3,11 @@ import { PageContract } from "../contracts/page";
 import { Page } from "../models/page";
 import { Tag } from "../models/tag";
 import { Utils } from "../utils";
-import { MapiClient } from "./mapiClient";
+import { IApiClient } from "../clients";
 
 export class TagService {
-    constructor(private readonly mapiClient: MapiClient) { }
-    
+    constructor(private readonly apiClient: IApiClient) { }
+
     public async getTags(scope?: string, filter?: string): Promise<Page<Tag>> {
         let query = "/tags";
 
@@ -16,10 +16,10 @@ export class TagService {
         }
 
         if (filter) {
-            query = Utils.addQueryParameter(query, `$filter=(startswith(properties/displayName,'${filter}'))`);
+            query = Utils.addQueryParameter(query, `$filter=(startswith(name,'${filter}'))`);
         }
 
-        const pageOfTags = await this.mapiClient.get<PageContract<TagContract>>(query, [await this.mapiClient.getPortalHeader("getTags")]);
+        const pageOfTags = await this.apiClient.get<PageContract<TagContract>>(query, [Utils.getIsUserResourceHeader()]);
 
         const page = new Page<Tag>();
         page.value = pageOfTags.value.map(x => new Tag(x));
