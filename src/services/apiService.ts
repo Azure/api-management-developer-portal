@@ -144,6 +144,11 @@ export class ApiService {
         return this.mapApiTagResourceToOperationsByTags(apiTagResource);
     }
 
+    public async getMoreOperationsByTag(nextLink: string): Promise<Page<TagGroup<Operation>>> {
+        const apiTagResource = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(nextLink, [await this.mapiClient.getPortalHeader("getMoreOperationsByTag")]);
+        return this.mapApiTagResourceToOperationsByTags(apiTagResource);
+    }
+
     /**
      * Returns Tag/API pairs matching search request (if specified).
      * @param searchRequest Search request definition.
@@ -335,14 +340,14 @@ export class ApiService {
         return operation;
     }
 
-    public async getOperations(apiId: string, searchQuery?: SearchQuery): Promise<Page<Operation>> {
+    public async getOperations(apiId: string, searchQuery?: SearchQuery, nextLink?: string): Promise<Page<Operation>> {
         if (!apiId) {
             throw new Error(`Parameter "apiId" not specified.`);
         }
 
-        let query = `${apiId}/operations`;
+        let query = nextLink ?? `${apiId}/operations`;
 
-        let top;
+        let top: number;
 
         if (searchQuery) {
             searchQuery.tags.forEach((tag, index) => {
@@ -363,6 +368,17 @@ export class ApiService {
         query = Utils.addQueryParameter(query, `$top=${top || 20}`);
 
         const result = await this.mapiClient.get<Page<OperationContract>>(query, [await this.mapiClient.getPortalHeader("getOperations")]);
+        const page = new Page<Operation>();
+
+        page.value = result.value.map(c => new Operation(<any>c));
+        page.nextLink = result.nextLink;
+        page.count = result.count;
+
+        return page;
+    }
+
+    public async getMoreOperations(nextLink: string): Promise<Page<Operation>> {
+        const result = await this.mapiClient.get<Page<OperationContract>>(nextLink, [await this.mapiClient.getPortalHeader("getMoreOperations")]);
         const page = new Page<Operation>();
 
         page.value = result.value.map(c => new Operation(<any>c));
@@ -528,22 +544,6 @@ export class ApiService {
         query = Utils.addQueryParameter(query, 'api-version=2022-08-01');
         const wikiContract = await this.mapiClient.get<WikiContract>(query, [await this.mapiClient.getPortalHeader("getApiWiki")]);
         return new Wiki(wikiContract);
-    }
-
-    public async getApiOperationsByNextLink(nextLink: string): Promise<Page<Operation>> {
-        const page = await this.mapiClient.get<Page<OperationContract>>(nextLink, [await this.mapiClient.getPortalHeader("getOperations")]);
-
-        const result = new Page<Operation>();
-        result.count = page.count;
-        result.nextLink = page.nextLink;
-        result.value = page.value.map(item => new Operation(item));
-
-        return result;
-    }
-
-    public async getApiOperationsByTagsByNextLink(nextLink: string): Promise<Page<TagGroup<Operation>>> {
-        const apiTagResource = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(nextLink, [await this.mapiClient.getPortalHeader("getOperationsByTags")]);
-        return this.mapApiTagResourceToOperationsByTags(apiTagResource);
     }
 
     private mapApiTagResourceToOperationsByTags(apiTagResource: PageContract<ApiTagResourceContract>): Page<TagGroup<Operation>> {

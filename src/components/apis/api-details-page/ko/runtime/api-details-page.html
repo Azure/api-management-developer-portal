@@ -45,7 +45,7 @@
                 </details>
                 <!-- ko if: wikiDocumentationMenuItems()?.length > 0 -->
                 <hr>
-                <details open class="details-styled">
+                <details open class="details-styled" id="details-wiki">
                     <summary aria-label="Documentations">
                         <div class="menu-list-heading title">
                             Documentations
@@ -53,53 +53,48 @@
                         </div>
                     </summary>
                     <div class="menu-list">
-                        <!-- ko foreach: { data: wikiDocumentationMenuItems(), as: 'menuItem' } -->
+                        <!-- ko foreach: { data: filteredWikiDocumentationMenuItems(), as: 'menuItem' } -->
                         <div class="menu-list-item" role="option"
                             data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
-                            <span data-bind="text: menuItem.displayName, css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }"></span>
+                            <span
+                                data-bind="text: menuItem.displayName, css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }"></span>
                         </div>
                         <!-- /ko -->
                     </div>
                 </details>
                 <!-- /ko -->
 
-                <!-- ko if: operationsMenuItems()?.length > 0 -->
+                <!-- ko if: hasOperations() -->
                 <hr>
-                <details open class="details-styled">
+                <details open class="details-styled" id="details-operations">
                     <summary aria-label="Operations">
                         <div class="menu-list-heading title">
                             Operations
                             <i class="icon-emb icon-emb-chevron-down"></i>
                         </div>
                     </summary>
+                    <!-- ko if: operationsMenuItems()?.length > 0 -->
                     <div class="menu-list">
                         <!-- ko foreach: { data: operationsMenuItems(), as: 'menuItem' } -->
                         <div class="menu-list-item" role="option"
                             data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
                             <div class="http-method" data-bind="attr: { 'data-method': menuItem.method }"></div>
-                            <span data-bind="text: menuItem.displayName, css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }"></span>
+                            <span
+                                data-bind="text: menuItem.displayName, css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }"></span>
                         </div>
                         <!-- /ko -->
                         <!-- ko if: operationsPageNextLink() -->
                         <div class="menu-item">
-                            <a href="#" role="button" data-bind="click: loadOperations">Show more</a>
+                            <a href="#" role="button" data-bind="click: loadMoreOperationsUngruped">Show more</a>
                         </div>
                         <!-- /ko -->
                     </div>
-                </details>
-                <!-- /ko -->
-                <!-- ko if: operationsByTagsMenuItems()?.length > 0 -->
-                <hr>
-                <details open class="details-styled">
-                    <summary aria-label="Operations">
-                        <div class="menu-list-heading title">
-                            Operations
-                            <i class="icon-emb icon-emb-chevron-down"></i>
-                        </div>
-                    </summary>
+                    <!-- /ko -->
+                    <!-- ko if: operationsByTagsMenuItems()?.length > 0 -->
                     <div class="menu-list">
                         <!-- ko foreach: { data: operationsByTagsMenuItems(), as: 'tagMenuItem' } -->
-                        <details class="tag details-styled">
+                        <details class="tag details-styled"
+                            data-bind="{ attr: { 'id': 'details-tag-' + tagMenuItem.tagName } }">
                             <summary data-bind="attr:{ 'aria-label': 'Tag ' + tagMenuItem.tagName }">
                                 <div class="menu-list-heading">
                                     <span data-bind="text:tagMenuItem.tagName"></span>
@@ -119,10 +114,11 @@
                         <!-- /ko -->
                         <!-- ko if: operationsPageNextLink() -->
                         <div class="menu-item">
-                            <a href="#" role="button" data-bind="click: loadOperations">Show more</a>
+                            <a href="#" role="button" data-bind="click: loadMoreOperationsByTags">Show more</a>
                         </div>
                         <!-- /ko -->
                     </div>
+                    <!-- /ko -->
                 </details>
                 <!-- /ko -->
             </div>
