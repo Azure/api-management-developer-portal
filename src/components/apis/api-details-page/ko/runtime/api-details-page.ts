@@ -6,9 +6,8 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 import { Router } from "@paperbits/common/routing";
 import { downloadAPIDefinition } from "../../../../../components/apis/apiUtils";
-import { Page } from "../../../../../models/page";
-import { Operation } from "../../../../../models/operation";
-import { TagGroup } from "../../../../../models/tagGroup";
+import * as Constants from "../../../../../constants";
+import { SearchQuery } from "../../../../../contracts/searchQuery";
 
 interface menuItem {
     displayName: string;
@@ -52,9 +51,11 @@ export class ApiDetailsPage {
     public readonly currentApiVersion: ko.Observable<string>;
     public readonly selectedMenuItem: ko.Observable<menuItem>;
     public readonly wikiDocumentationMenuItems: ko.Observable<menuItem[]>;
+    public readonly filteredWikiDocumentationMenuItems: ko.Observable<menuItem[]>;
     public readonly operationsMenuItems: ko.Observable<menuItem[]>;
     public readonly operationsByTagsMenuItems: ko.ObservableArray<tagOperationMenuItem>;
     public readonly selectedDefinition: ko.Observable<string>;
+    public readonly hasOperations: ko.Observable<boolean>;
 
     public operationsPageNextLink: ko.Observable<string>;
 
@@ -80,10 +81,12 @@ export class ApiDetailsPage {
         this.currentApiVersion = ko.observable();
         this.selectedMenuItem = ko.observable(this.staticSelectableMenuItems[0]);
         this.wikiDocumentationMenuItems = ko.observable([]);
+        this.filteredWikiDocumentationMenuItems = ko.observable([]);
         this.operationsMenuItems = ko.observable([]);
         this.operationsByTagsMenuItems = ko.observableArray([]);
         this.selectedDefinition = ko.observable();
         this.operationsPageNextLink = ko.observable();
+        this.hasOperations = ko.observable();
 
         this.groupOperationsByTag = ko.observable();
         this.showUrlPath = ko.observable();
@@ -103,16 +106,10 @@ export class ApiDetailsPage {
         this.router.addRouteChangeListener(this.onRouteChange);
         this.currentApiVersion.subscribe(this.onVersionChange);
         this.selectedDefinition.subscribe(this.downloadDefinition);
-    }
 
-    private async onRouteChange(): Promise<void> {
-        const apiName = this.routeHelper.getApiName();
-
-        if (!apiName || apiName === this.api().name) {
-            return;
-        }
-
-        await this.loadApi(apiName);
+        this.pattern
+            .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
+            .subscribe(this.search);
     }
 
     public async loadApi(apiName: string): Promise<void> {
@@ -143,6 +140,7 @@ export class ApiDetailsPage {
 
         await this.loadWiki();
         await this.loadOperations();
+        this.hasOperations(this.operationsMenuItems().length > 0 || this.operationsByTagsMenuItems().length > 0);
 
         this.working(false);
     }
@@ -167,6 +165,89 @@ export class ApiDetailsPage {
             await this.loadOperationsUngrouped();
         }
     }
+
+    public async loadMoreOperationsUngruped(): Promise<void> {
+        const operations = await this.apiService.getMoreOperations(this.operationsPageNextLink());
+
+        const currentOperations = this.operationsMenuItems();
+        const newOperations = operations.value.map(o => {
+            return {
+                value: o.id,
+                displayName: this.showUrlPath() ? o.urlTemplate : o.displayName,
+                type: operationMenuItem,
+                method: o.method
+            };
+        });
+
+        const operationsMenuItems = [...currentOperations, ...newOperations];
+
+        this.operationsPageNextLink(operations.nextLink);
+        this.operationsMenuItems(operationsMenuItems);
+    }
+
+    public async loadMoreOperationsByTags(): Promise<void> {
+        const operationsByTags = await this.apiService.getMoreOperationsByTag(this.operationsPageNextLink());
+
+        const operationsMenuItems = this.operationsByTagsMenuItems();
+
+        const newOperationsByTags = operationsByTags.value.map(t => {
+            return {
+                tagName: t.tag,
+                operations: t.items.map(op => {
+                    return {
+                        value: op.id,
+                        displayName: this.showUrlPath() ? op.urlTemplate : op.displayName,
+                        type: operationMenuItem,
+                        method: op.method
+                    };
+                })
+            };
+        });
+
+        for (const tag of newOperationsByTags) {
+            const currentTag = operationsMenuItems.find(t => t.tagName === tag.tagName);
+            if (currentTag) {
+                const index = operationsMenuItems.findIndex(t => t.tagName === tag.tagName);
+                operationsMenuItems[index].operations.push(...tag.operations);
+            } else {
+                operationsMenuItems.push({ tagName: tag.tagName, operations: ko.observableArray(tag.operations) });
+            }
+        }
+
+        this.operationsPageNextLink(operationsByTags.nextLink);
+        this.operationsByTagsMenuItems(operationsMenuItems);
+    }
+
+    private async search() {
+        await this.loadOperations();
+
+        const filteredWikiMenuItems = this.wikiDocumentationMenuItems().filter(x => x.displayName.toLowerCase().includes(this.pattern().toLowerCase()));
+        this.filteredWikiDocumentationMenuItems(filteredWikiMenuItems);
+
+        if (this.operationsMenuItems().length > 0 || this.operationsByTagsMenuItems().length > 0) {
+            document.getElementById('details-operations').setAttribute('open', '');
+
+            this.operationsByTagsMenuItems()?.forEach(x => {
+                const id = 'details-tag-' + x.tagName;
+                document.getElementById(id).setAttribute('open', '');
+            });
+        }
+
+        if (this.filteredWikiDocumentationMenuItems().length > 0) {
+            document.getElementById('details-wiki').setAttribute('open', '');
+        }
+    }
+
+    private async onRouteChange(): Promise<void> {
+        const apiName = this.routeHelper.getApiName();
+
+        if (!apiName || apiName === this.api().name) {
+            return;
+        }
+
+        await this.loadApi(apiName);
+    }
+
 
     private onVersionChange(selectedApiName: string): void {
         const apiName = this.routeHelper.getApiName();
@@ -201,21 +282,15 @@ export class ApiDetailsPage {
                 type: documentationMenuItemType
             };
         }));
+
+        this.filteredWikiDocumentationMenuItems(this.wikiDocumentationMenuItems());
     }
 
     private async loadOperationsUngrouped(): Promise<void> {
-        let operations: Page<Operation>;
+        const searchQuery: SearchQuery = { tags: [], pattern: this.pattern() };
+        const operations = await this.apiService.getOperations(`apis/${this.api().name}`, searchQuery);
 
-        if (this.operationsPageNextLink()) {
-            operations = await this.apiService.getApiOperationsByNextLink(this.operationsPageNextLink());
-        } else {
-            operations = await this.apiService.getOperations(`apis/${this.api().name}`);
-        }
-
-        this.operationsPageNextLink(operations.nextLink);
-
-        const currentOperations = this.operationsMenuItems();
-        const newOperations = operations.value.map(o => {
+        const operationsMenuItems = operations.value.map(o => {
             return {
                 value: o.id,
                 displayName: this.showUrlPath() ? o.urlTemplate : o.displayName,
@@ -224,46 +299,29 @@ export class ApiDetailsPage {
             };
         });
 
-        this.operationsMenuItems([...currentOperations, ...newOperations]);
+        this.operationsPageNextLink(operations.nextLink);
+        this.operationsMenuItems(operationsMenuItems);
     }
 
     private async loadOperationsByTags(): Promise<void> {
-        let operationsByTags: Page<TagGroup<Operation>>;
+        const searchQuery: SearchQuery = { tags: [], pattern: this.pattern() };
+        const operationsByTags = await this.apiService.getOperationsByTags(this.api().name, searchQuery);
 
-        if (this.operationsPageNextLink()) {
-            operationsByTags = await this.apiService.getApiOperationsByTagsByNextLink(this.operationsPageNextLink());
-        } else {
-            operationsByTags = await this.apiService.getOperationsByTags(this.api().name);
-        }
-
-        this.operationsPageNextLink(operationsByTags.nextLink);
-
-        const currentOperationsByTags = this.operationsByTagsMenuItems();
-
-        const newOperationsByTags = operationsByTags.value.map(t => {
+        const operationsMenuItems = operationsByTags.value.map(t => {
             return {
                 tagName: t.tag,
-                operations: t.items.map(op => {
+                operations: ko.observableArray(t.items.map(op => {
                     return {
                         value: op.id,
                         displayName: this.showUrlPath() ? op.urlTemplate : op.displayName,
                         type: operationMenuItem,
                         method: op.method
                     };
-                })
+                }))
             };
         });
 
-        for (const tag of newOperationsByTags) {
-            const currentTag = currentOperationsByTags.find(t => t.tagName === tag.tagName);
-            if (currentTag) {
-                const index = currentOperationsByTags.findIndex(t => t.tagName === tag.tagName);
-                currentOperationsByTags[index].operations.push(...tag.operations);
-            } else {
-                currentOperationsByTags.push({ tagName: tag.tagName, operations: ko.observableArray(tag.operations) });
-            }
-        }
-
-        this.operationsByTagsMenuItems(currentOperationsByTags);
+        this.operationsPageNextLink(operationsByTags.nextLink);
+        this.operationsByTagsMenuItems(operationsMenuItems);
     }
 }
