@@ -146,8 +146,27 @@
         </div>
     </div>
     <div class="page-content">
+        <!-- ko if: selectedMenuItem().type === 'static' -->
+        <!-- ko if: selectedMenuItem().value === 'about' -->
+        <!-- ko template: { name: 'aboutApi', data: {api: api()} } -->
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko if: selectedMenuItem().value === 'products' -->
+        products
+        <!-- /ko -->
+
+        <!-- ko if: selectedMenuItem().value === 'changelog' -->
+        changelog
+        <!-- /ko -->
+        <!-- /ko -->
+
         <!-- ko if: selectedMenuItem().type === 'documentation' -->
         <wiki-documentation></wiki-documentation>
+        <!-- /ko -->
+
+        <!-- ko if: selectedMenuItem().type === 'operation' -->
+        operation
         <!-- /ko -->
     </div>
     <!-- /ko -->
