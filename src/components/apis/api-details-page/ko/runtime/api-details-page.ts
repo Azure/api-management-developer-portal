@@ -8,6 +8,7 @@ import { Router } from "@paperbits/common/routing";
 import { downloadAPIDefinition } from "../../../../../components/apis/apiUtils";
 import * as Constants from "../../../../../constants";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
+import aboutApi from "./staticPages/about-api.html";
 
 interface menuItem {
     displayName: string;
@@ -34,7 +35,10 @@ const operationMenuItem = "operation";
 })
 @Component({
     selector: "api-details-page",
-    template: template
+    template: template,
+    childTemplates: {
+        aboutApi: aboutApi
+    }
 })
 export class ApiDetailsPage {
 

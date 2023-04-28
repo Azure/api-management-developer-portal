@@ -1,0 +1,47 @@
+<div class="page-content">
+    <h3>About this API</h3>
+
+    <!-- ko if: api.description  -->
+    <p data-bind="markdown: api.description"></p>
+    <!-- /ko -->
+
+    <!-- ko if: api.license -->
+    <h5>License</h5>
+    <div>
+        <a data-bind="attr: { href: api.license.url }">
+            <span data-bind="text: api.license.name"></span>
+            <i class="icon-emb icon-emb-open"></i>
+        </a>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: api.termsOfServiceUrl -->
+    <h5>Legal</h5>
+    <div>
+        <a data-bind="attr: { href: api.termsOfServiceUrl }">
+            Terms and conditions
+            <i class="icon-emb icon-emb-open"></i>
+        </a>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: api.contact -->
+    <h5>Contact</h5>
+    <!-- ko if: api.contact.name -->
+    <div data-bind="text: api.contact.name"></div>
+    <!-- /ko -->
+    <!-- ko if: api.contact.email -->
+    <div>
+        <a data-bind="attr: { href: 'mailto:' + api.contact.email }, text: api.contact.email"></a>
+    </div>
+    <!-- /ko -->
+    <!-- ko if: api.contact.url -->
+    <div>
+        <a data-bind="attr: { href: api.contact.url }">
+            <span data-bind="text: api.contact.url"></span>
+            <i class="icon-emb icon-emb-open"></i>
+        </a>
+    </div>
+    <!-- /ko -->
+    <!-- /ko -->
+</div>
