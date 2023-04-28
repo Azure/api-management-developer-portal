@@ -1,6 +1,10 @@
 <div class="page-content">
     <h3>About this API</h3>
 
+    <div style="padding-bottom: 12px;">
+        <span data-bind="text: 'Type: API • Last updated: ' + lastModifiedDate"></span>
+    </div>
+
     <!-- ko if: api.description  -->
     <p data-bind="markdown: api.description"></p>
     <!-- /ko -->
