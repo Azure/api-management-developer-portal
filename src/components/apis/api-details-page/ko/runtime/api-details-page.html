@@ -7,15 +7,15 @@
         <h1 class="title-text" data-bind="text: api() ? api().displayName : 'The specified API does not exsist'">
         </h1>
     </div>
-   
+
     <div class="page-menu">
         <div class="list-container">
-            <div class="items" data-bind="{css: {'full': api() && (api().type === 'websocket' || api().type === 'graphql')}}">
+            <div class="items"
+                data-bind="{css: {'full': api() && (api().type === 'websocket' || api().type === 'graphql')}}">
                 <api-list-dropdown params="{ allowSelection: true }" class="api-dropdown"></api-list-dropdown>
-                <!-- ko if: api -->
                 <input type="search" class="form-control form-control-light" aria-label="Search this page"
                     placeholder="Search this page" spellcheck="false" data-bind="textInput: pattern" />
-                <!-- ko if: versionApis().length > 0 -->
+                <!-- ko if: api && versionApis().length > 0 -->
                 API version
                 <label class="select-badge">
                     <select id="apiVersions"
@@ -44,7 +44,7 @@
                     </div>
 
                 </details>
-                <!-- ko if: wikiDocumentationMenuItems()?.length > 0 -->
+
                 <hr>
                 <details open class="details-styled" id="details-wiki">
                     <summary aria-label="Documentations">
@@ -61,11 +61,13 @@
                                 data-bind="text: menuItem.displayName, css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }"></span>
                         </div>
                         <!-- /ko -->
+
+                        <!-- ko if: filteredWikiDocumentationMenuItems().length == 0 -->
+                        <span>No documentations to display</span>
+                        <!-- /ko -->
                     </div>
                 </details>
-                <!-- /ko -->
 
-                <!-- ko if: hasOperations() -->
                 <hr>
                 <details open class="details-styled" id="details-operations">
                     <summary aria-label="Operations">
@@ -74,7 +76,8 @@
                             <i class="icon-emb icon-emb-chevron-down"></i>
                         </div>
                     </summary>
-                    <!-- ko if: operationsMenuItems()?.length > 0 -->
+
+                    <!-- ko if: !groupOperationsByTag()-->
                     <div class="menu-list">
                         <!-- ko foreach: { data: operationsMenuItems(), as: 'menuItem' } -->
                         <div class="menu-list-item" role="option"
@@ -89,9 +92,13 @@
                             <a href="#" role="button" data-bind="click: loadMoreOperationsUngruped">Show more</a>
                         </div>
                         <!-- /ko -->
+                        <!-- ko if: operationsMenuItems().length == 0 -->
+                        <span>No operations to display</span>
+                        <!-- /ko -->
                     </div>
                     <!-- /ko -->
-                    <!-- ko if: operationsByTagsMenuItems()?.length > 0 -->
+
+                    <!-- ko if: groupOperationsByTag()-->
                     <div class="menu-list">
                         <!-- ko foreach: { data: operationsByTagsMenuItems(), as: 'tagMenuItem' } -->
                         <details class="tag details-styled"
@@ -118,11 +125,12 @@
                             <a href="#" role="button" data-bind="click: loadMoreOperationsByTags">Show more</a>
                         </div>
                         <!-- /ko -->
+                        <!-- ko if: operationsByTagsMenuItems().length == 0 -->
+                        <span>No operations to display</span>
+                        <!-- /ko -->
                     </div>
                     <!-- /ko -->
                 </details>
-                <!-- /ko -->
-                <!-- /ko -->
             </div>
             <!-- ko if: api() && (api().type !== 'websocket' && api().type !== 'graphql') -->
             <div class="bottom-item">
@@ -175,5 +183,4 @@
 
         <!-- /ko -->
     </div>
-   
 </div>
