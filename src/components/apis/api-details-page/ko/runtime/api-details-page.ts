@@ -60,6 +60,7 @@ export class ApiDetailsPage {
     public readonly operationsByTagsMenuItems: ko.ObservableArray<tagOperationMenuItem>;
     public readonly selectedDefinition: ko.Observable<string>;
     public readonly hasOperations: ko.Observable<boolean>;
+    public readonly lastModifiedDate: ko.Observable<string>;
 
     public operationsPageNextLink: ko.Observable<string>;
 
@@ -91,6 +92,7 @@ export class ApiDetailsPage {
         this.selectedDefinition = ko.observable();
         this.operationsPageNextLink = ko.observable();
         this.hasOperations = ko.observable();
+        this.lastModifiedDate = ko.observable();
 
         this.groupOperationsByTag = ko.observable();
         this.showUrlPath = ko.observable();
@@ -99,6 +101,7 @@ export class ApiDetailsPage {
 
     @OnMounted()
     public async initialize(): Promise<void> {
+        this.router.addRouteChangeListener(this.onRouteChange);
         const apiName = this.routeHelper.getApiName();
 
         if (!apiName) {
@@ -107,7 +110,6 @@ export class ApiDetailsPage {
 
         await this.loadApi(apiName);
 
-        this.router.addRouteChangeListener(this.onRouteChange);
         this.currentApiVersion.subscribe(this.onVersionChange);
         this.selectedDefinition.subscribe(this.downloadDefinition);
 
@@ -145,6 +147,9 @@ export class ApiDetailsPage {
         await this.loadWiki();
         await this.loadOperations();
         this.hasOperations(this.operationsMenuItems().length > 0 || this.operationsByTagsMenuItems().length > 0);
+
+        const currentApiVersion = await this.apiService.getCurrentRevision(apiName);
+        this.lastModifiedDate(new Date(currentApiVersion.updatedDateTime).toLocaleDateString());
 
         this.working(false);
     }
@@ -245,7 +250,7 @@ export class ApiDetailsPage {
     private async onRouteChange(): Promise<void> {
         const apiName = this.routeHelper.getApiName();
 
-        if (!apiName || apiName === this.api().name) {
+        if (!apiName || apiName === this.api()?.name) {
             return;
         }
 

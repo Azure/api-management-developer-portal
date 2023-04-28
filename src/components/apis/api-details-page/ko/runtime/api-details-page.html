@@ -3,15 +3,16 @@
     <spinner class="fit"></spinner>
     <!-- /ko -->
 
-    <!-- ko if: api -->
     <div class="page-title title-background">
-        <h1 class="title-text" data-bind="text: api().displayName">
+        <h1 class="title-text" data-bind="text: api() ? api().displayName : 'The specified API does not exsist'">
         </h1>
     </div>
+   
     <div class="page-menu">
         <div class="list-container">
-            <div class="items" data-bind="{css: {'full': api().type === 'websocket' || api().type === 'graphql'}}">
+            <div class="items" data-bind="{css: {'full': api() && (api().type === 'websocket' || api().type === 'graphql')}}">
                 <api-list-dropdown params="{ allowSelection: true }" class="api-dropdown"></api-list-dropdown>
+                <!-- ko if: api -->
                 <input type="search" class="form-control form-control-light" aria-label="Search this page"
                     placeholder="Search this page" spellcheck="false" data-bind="textInput: pattern" />
                 <!-- ko if: versionApis().length > 0 -->
@@ -121,8 +122,9 @@
                     <!-- /ko -->
                 </details>
                 <!-- /ko -->
+                <!-- /ko -->
             </div>
-            <!-- ko if: api().type !== 'websocket' && api().type !== 'graphql' -->
+            <!-- ko if: api() && (api().type !== 'websocket' && api().type !== 'graphql') -->
             <div class="bottom-item">
                 <hr>
                 <label class="select-badge">
@@ -146,9 +148,11 @@
         </div>
     </div>
     <div class="page-content">
+        <!-- ko if: api -->
+
         <!-- ko if: selectedMenuItem().type === 'static' -->
         <!-- ko if: selectedMenuItem().value === 'about' -->
-        <!-- ko template: { name: 'aboutApi', data: {api: api()} } -->
+        <!-- ko template: { name: 'aboutApi', data: {api: api(), lastModifiedDate: lastModifiedDate()} } -->
         <!-- /ko -->
         <!-- /ko -->
 
@@ -168,6 +172,8 @@
         <!-- ko if: selectedMenuItem().type === 'operation' -->
         operation
         <!-- /ko -->
+
+        <!-- /ko -->
     </div>
-    <!-- /ko -->
+   
 </div>

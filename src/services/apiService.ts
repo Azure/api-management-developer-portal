@@ -26,6 +26,8 @@ import { get, set } from "idb-keyval";
 import { LruCache } from "@paperbits/common/caching/lruCache";
 import { WikiContract } from "../contracts/wiki";
 import { Wiki } from "../models/wiki";
+import {RevisionContract} from "../contracts/revision"
+import {Revision} from "../models/revision"
 
 interface CacheItem {
     value: any;
@@ -544,6 +546,14 @@ export class ApiService {
         query = Utils.addQueryParameter(query, 'api-version=2022-08-01');
         const wikiContract = await this.mapiClient.get<WikiContract>(query, [await this.mapiClient.getPortalHeader("getApiWiki")]);
         return new Wiki(wikiContract);
+    }
+
+    public async getCurrentRevision(apiId: string): Promise<Revision>{
+        let query = `apis/${apiId}/revisions`;
+        query = Utils.addQueryParameter(query, `isCurrent eq true`);
+
+        const revisionContract = await this.mapiClient.get<Page<RevisionContract>>(query, [await this.mapiClient.getPortalHeader("getCurrentRevision")]);
+        return new Revision(revisionContract.value[0]);
     }
 
     private mapApiTagResourceToOperationsByTags(apiTagResource: PageContract<ApiTagResourceContract>): Page<TagGroup<Operation>> {
