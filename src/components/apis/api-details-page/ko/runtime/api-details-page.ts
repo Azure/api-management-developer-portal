@@ -59,7 +59,6 @@ export class ApiDetailsPage {
     public readonly operationsMenuItems: ko.Observable<menuItem[]>;
     public readonly operationsByTagsMenuItems: ko.ObservableArray<tagOperationMenuItem>;
     public readonly selectedDefinition: ko.Observable<string>;
-    public readonly hasOperations: ko.Observable<boolean>;
     public readonly lastModifiedDate: ko.Observable<string>;
 
     public operationsPageNextLink: ko.Observable<string>;
@@ -91,7 +90,6 @@ export class ApiDetailsPage {
         this.operationsByTagsMenuItems = ko.observableArray([]);
         this.selectedDefinition = ko.observable();
         this.operationsPageNextLink = ko.observable();
-        this.hasOperations = ko.observable();
         this.lastModifiedDate = ko.observable();
 
         this.groupOperationsByTag = ko.observable();
@@ -146,7 +144,6 @@ export class ApiDetailsPage {
 
         await this.loadWiki();
         await this.loadOperations();
-        this.hasOperations(this.operationsMenuItems().length > 0 || this.operationsByTagsMenuItems().length > 0);
 
         const currentApiVersion = await this.apiService.getCurrentRevision(apiName);
         this.lastModifiedDate(new Date(currentApiVersion.updatedDateTime).toLocaleDateString());
