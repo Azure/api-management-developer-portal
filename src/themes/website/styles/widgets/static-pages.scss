@@ -41,7 +41,7 @@
             border: 1px solid #D1D1D1;
             border-radius: 5px;
 
-            &.download{
+            &.download {
                 @extend .icon-svg-download;
                 background-position: 5px center;
                 background-size: 1em;
@@ -168,5 +168,45 @@
     h5 {
         font-weight: bold;
         padding-top: 24px;
+    }
+
+    .cards-body {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        padding: 15px;
+        min-width: 20vw;
+        max-width: 20vw;
+        border-radius: 15px;
+        margin: 24px 24px 24px 0;
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+
+        .card-title {
+            font-weight: bold;
+            font-size: large
+        }
+
+        .item-type {
+            font-weight: bold;
+            color: #616161;
+            font-size: small;
+        }
+
+        .card-commands {
+            align-self: flex-end;
+            padding: 20px;
+            font-weight: bold;
+        }
+    }
+
+    .show-more-cards {
+        align-self: center;
+        width: 100%;
+        text-align: center;
     }
 }

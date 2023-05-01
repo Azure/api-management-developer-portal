@@ -14,6 +14,7 @@ interface menuItem {
     displayName: string;
     value: string;
     type: string;
+    tooltip?: string;
 }
 
 interface operationMenuItem extends menuItem {
@@ -44,7 +45,7 @@ export class ApiDetailsPage {
 
     public readonly staticSelectableMenuItems: menuItem[] = [
         { displayName: "About this API", value: "about", type: staticMenuItemType },
-        { displayName: "Products that use this API", value: "products", type: staticMenuItemType },
+        { displayName: "Products that use this API", value: "products", type: staticMenuItemType, tooltip:"" },
         { displayName: "Changelog", value: "changelog", type: staticMenuItemType }
     ]
 

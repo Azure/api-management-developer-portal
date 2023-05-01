@@ -26,8 +26,8 @@ import { get, set } from "idb-keyval";
 import { LruCache } from "@paperbits/common/caching/lruCache";
 import { WikiContract } from "../contracts/wiki";
 import { Wiki } from "../models/wiki";
-import {RevisionContract} from "../contracts/revision"
-import {Revision} from "../models/revision"
+import { RevisionContract } from "../contracts/revision"
+import { Revision } from "../models/revision"
 
 interface CacheItem {
     value: any;
@@ -489,13 +489,18 @@ export class ApiService {
     /**
      * Returns page of API products filtered by name.
      */
-    public async getApiProductsPage(apiName: string, filter: SearchQuery): Promise<Page<Product>> {
-        const skip = filter.skip || 0;
-        const take = filter.take || Constants.defaultPageSize;
-        let query = `/apis/${apiName}/products?$top=${take}&$skip=${skip}`;
+    public async getApiProductsPage(apiName: string, filter?: SearchQuery): Promise<Page<Product>> {
+        let query = `/apis/${apiName}/products`;
 
-        if (filter.pattern) {
-            query = Utils.addQueryParameter(query, `$filter=(contains(properties/displayName,'${encodeURIComponent(filter.pattern)}'))`);
+        if (filter) {
+            const skip = filter.skip || 0;
+            const take = filter.take || Constants.defaultPageSize;
+            if (filter.pattern) {
+                query = Utils.addQueryParameter(query, `$filter=(contains(properties/displayName,'${encodeURIComponent(filter.pattern)}'))`);
+            }
+
+            query = Utils.addQueryParameter(query, `$skip=${skip}`);
+            query = Utils.addQueryParameter(query, `$top=${take}`);
         }
 
         const page = await this.mapiClient.get<Page<ProductContract>>(query, [await this.mapiClient.getPortalHeader("getApiProductsPage")]);
@@ -503,6 +508,17 @@ export class ApiService {
         result.count = page.count;
         result.nextLink = page.nextLink;
         result.value = page.value.map(item => new Product(item));
+        return result;
+    }
+
+    public async getApiProductsNextLink(nextLink: string): Promise<Page<Product>> {
+        const page = await this.mapiClient.get<Page<ProductContract>>(nextLink, [await this.mapiClient.getPortalHeader("getApiProducts")]);
+
+        const result = new Page<Product>();
+        result.count = page.count;
+        result.nextLink = page.nextLink;
+        result.value = page.value.map(item => new Product(item));
+
         return result;
     }
 
@@ -548,7 +564,7 @@ export class ApiService {
         return new Wiki(wikiContract);
     }
 
-    public async getCurrentRevision(apiId: string): Promise<Revision>{
+    public async getCurrentRevision(apiId: string): Promise<Revision> {
         let query = `apis/${apiId}/revisions`;
         query = Utils.addQueryParameter(query, `isCurrent eq true`);
 

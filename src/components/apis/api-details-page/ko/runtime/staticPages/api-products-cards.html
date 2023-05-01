@@ -1,0 +1,45 @@
+<h3>Products that use this API</h3>
+<div class="cards">
+    <!-- ko if: working -->
+    <div class="cards-body">
+        <spinner class="fit"></spinner>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko ifnot: working -->
+    <div class="cards-body animation-fade-in">
+        <!-- ko foreach: { data: products, as: 'item' } -->
+        <div class="card">
+            <p class="item-type">PRODUCT</p>
+            <a href="#" data-bind="attr: { href: $component.getProductUrl(item) }">
+                <span class="card-title" data-bind="text: item.displayName"></span>
+            </a>
+            <div class="tile line-clamp">
+                <p class="tile-content" data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
+            </div>
+
+            <hr>
+            <div class="card-commands">
+                <a href="#" data-bind="attr: { href: $component.getProductUrl(item) }">
+                    Go to product
+                    <i class="icon-emb icon-emb-open"></i>
+                </a>
+            </div>
+        </div>
+        <!-- /ko -->
+
+         <!-- ko if: nextLink() -->
+         <div class="show-more-cards">
+            <a href="#" role="button" data-bind="click: loadMoreProducts">Show more</a>
+         </div>
+        <!-- /ko -->
+
+        <!-- ko if: products().length === 0 -->
+        <p>No products found</p>
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+
+    <!-- ko ifnot: working -->
+    <!-- /ko -->
+</div>
