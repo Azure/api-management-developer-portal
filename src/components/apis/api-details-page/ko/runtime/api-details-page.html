@@ -1,8 +1,4 @@
 <div class="page-container">
-    <!-- ko if: working-->
-    <spinner class="fit"></spinner>
-    <!-- /ko -->
-
     <div class="page-title title-background">
         <h1 class="title-text" data-bind="text: api() ? api().displayName : 'The specified API does not exsist'">
         </h1>
@@ -42,7 +38,6 @@
                         </div>
                         <!-- /ko -->
                     </div>
-
                 </details>
 
                 <hr>
@@ -54,6 +49,11 @@
                         </div>
                     </summary>
                     <div class="menu-list">
+                        <!-- ko if: wikiLoading -->
+                        <spinner class="menu-item"></spinner>
+                        <!-- /ko -->
+
+                        <!-- ko ifnot: wikiLoading -->
                         <!-- ko foreach: { data: filteredWikiDocumentationMenuItems(), as: 'menuItem' } -->
                         <div class="menu-list-item" role="option"
                             data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
@@ -64,6 +64,7 @@
 
                         <!-- ko if: filteredWikiDocumentationMenuItems().length == 0 -->
                         <span>No documentations to display</span>
+                        <!-- /ko -->
                         <!-- /ko -->
                     </div>
                 </details>
@@ -79,6 +80,11 @@
 
                     <!-- ko if: !groupOperationsByTag()-->
                     <div class="menu-list">
+                        <!-- ko if: operationsLoading -->
+                        <spinner class="menu-item"></spinner>
+                        <!-- /ko -->
+
+                        <!-- ko ifnot: operationsLoading -->
                         <!-- ko foreach: { data: operationsMenuItems(), as: 'menuItem' } -->
                         <div class="menu-list-item" role="option"
                             data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
@@ -88,18 +94,30 @@
                         </div>
                         <!-- /ko -->
                         <!-- ko if: operationsPageNextLink() -->
+                        <!-- ko if: moreOperationsLoading -->
+                        <spinner class="menu-item"></spinner>
+                        <!-- /ko -->
+
+                        <!-- ko ifnot: moreOperationsLoading -->
                         <div class="menu-item">
                             <a href="#" role="button" data-bind="click: loadMoreOperationsUngruped">Show more</a>
                         </div>
                         <!-- /ko -->
+                        <!-- /ko -->
                         <!-- ko if: operationsMenuItems().length == 0 -->
                         <span>No operations to display</span>
+                        <!-- /ko -->
                         <!-- /ko -->
                     </div>
                     <!-- /ko -->
 
                     <!-- ko if: groupOperationsByTag()-->
                     <div class="menu-list">
+                        <!-- ko if: operationsLoading -->
+                        <spinner class="fit"></spinner>
+                        <!-- /ko -->
+
+                        <!-- ko ifnot: operationsLoading -->
                         <!-- ko foreach: { data: operationsByTagsMenuItems(), as: 'tagMenuItem' } -->
                         <details class="tag details-styled"
                             data-bind="{ attr: { 'id': 'details-tag-' + tagMenuItem.tagName } }">
@@ -121,12 +139,19 @@
                         </details>
                         <!-- /ko -->
                         <!-- ko if: operationsPageNextLink() -->
+                        <!-- ko if: moreOperationsLoading -->
+                        <spinner class="menu-item"></spinner>
+                        <!-- /ko -->
+
+                        <!-- ko ifnot: moreOperationsLoading -->
                         <div class="menu-item">
                             <a href="#" role="button" data-bind="click: loadMoreOperationsByTags">Show more</a>
                         </div>
                         <!-- /ko -->
+                        <!-- /ko -->
                         <!-- ko if: operationsByTagsMenuItems().length == 0 -->
                         <span>No operations to display</span>
+                        <!-- /ko -->
                         <!-- /ko -->
                     </div>
                     <!-- /ko -->
@@ -156,6 +181,12 @@
         </div>
     </div>
     <div class="page-content">
+        <!-- ko if: apiLoading-->
+        <spinner class="fit"></spinner>
+        <!-- /ko -->
+
+        <!-- ko ifnot: apiLoading-->
+
         <!-- ko if: api -->
 
         <!-- ko if: selectedMenuItem().type === 'static' -->
@@ -179,6 +210,8 @@
 
         <!-- ko if: selectedMenuItem().type === 'operation' -->
         <operation-details></operation-details>
+        <!-- /ko -->
+
         <!-- /ko -->
 
         <!-- /ko -->

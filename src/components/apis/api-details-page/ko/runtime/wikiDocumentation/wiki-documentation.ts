@@ -15,7 +15,8 @@ import { MarkdownService } from "../../../../../../services/markdownService";
 })
 
 export class WikiDocumentation {
-    public compiledContent: ko.Observable<string>;
+    public readonly compiledContent: ko.Observable<string>;
+    public readonly working: ko.Observable<boolean>;
 
     constructor(
         private readonly documentationService: DocumentationService,
@@ -24,6 +25,7 @@ export class WikiDocumentation {
         private readonly routeHelper: RouteHelper
     ) {
         this.compiledContent = ko.observable();
+        this.working = ko.observable();
     }
 
     @OnMounted()
@@ -37,11 +39,15 @@ export class WikiDocumentation {
     }
 
     private async renderDocumentation(){
+        this.working(true);
+
         const documentationId = this.routeHelper.getDocumentationId();
        
         if (documentationId) {
             const markdown = (await this.documentationService.getDocumentation(documentationId)).content;
             this.compiledContent(this.markdownService.processMarkdown(markdown));
         }
+
+        this.working(false);
     }
 }

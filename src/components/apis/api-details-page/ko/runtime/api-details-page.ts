@@ -45,12 +45,11 @@ export class ApiDetailsPage {
 
     public readonly staticSelectableMenuItems: menuItem[] = [
         { displayName: "About this API", value: "about", type: staticMenuItemType },
-        { displayName: "Products that use this API", value: "products", type: staticMenuItemType},
+        { displayName: "Products that use this API", value: "products", type: staticMenuItemType },
         { displayName: "Changelog", value: "changelog", type: staticMenuItemType }
     ]
 
     public readonly api: ko.Observable<Api>;
-    public readonly working: ko.Observable<boolean>;
     public readonly versionApis: ko.ObservableArray<Api>;
     public readonly pattern: ko.Observable<string>;
     public readonly currentApiVersion: ko.Observable<string>;
@@ -61,6 +60,11 @@ export class ApiDetailsPage {
     public readonly operationsByTagsMenuItems: ko.ObservableArray<tagOperationMenuItem>;
     public readonly selectedDefinition: ko.Observable<string>;
     public readonly lastModifiedDate: ko.Observable<string>;
+    
+    public readonly apiLoading: ko.Observable<boolean>;
+    public readonly wikiLoading: ko.Observable<boolean>;
+    public readonly operationsLoading: ko.Observable<boolean>;
+    public readonly moreOperationsLoading: ko.Observable<boolean>;
 
     public operationsPageNextLink: ko.Observable<string>;
 
@@ -79,9 +83,13 @@ export class ApiDetailsPage {
         private readonly router: Router,
     ) {
         this.api = ko.observable();
-        this.working = ko.observable(false);
         this.pattern = ko.observable();
         this.versionApis = ko.observableArray([]);
+
+        this.apiLoading = ko.observable(true);
+        this.wikiLoading = ko.observable(true);
+        this.operationsLoading = ko.observable(true);
+        this.moreOperationsLoading = ko.observable(false);
 
         this.currentApiVersion = ko.observable();
         this.selectedMenuItem = ko.observable(this.staticSelectableMenuItems[0]);
@@ -115,7 +123,6 @@ export class ApiDetailsPage {
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.search);
-            console.log("api degtails")
     }
 
     public async loadApi(apiName: string): Promise<void> {
@@ -130,7 +137,7 @@ export class ApiDetailsPage {
             return;
         }
 
-        this.working(true);
+        this.apiLoading(true);
         if (api.apiVersionSet && api.apiVersionSet.id) {
             const apis = await this.apiService.getApisInVersionSet(api.apiVersionSet.id);
             apis.forEach(x => x.apiVersion = x.apiVersion || "Original");
@@ -150,7 +157,7 @@ export class ApiDetailsPage {
         const currentApiVersion = await this.apiService.getCurrentRevision(apiName);
         this.lastModifiedDate(new Date(currentApiVersion.updatedDateTime).toLocaleDateString());
 
-        this.working(false);
+        this.apiLoading(false);
     }
 
     public selectMenuItem(menuItem: menuItem): void {
@@ -172,14 +179,20 @@ export class ApiDetailsPage {
     }
 
     public async loadOperations() {
+        this.operationsLoading(true);
+
         if (this.groupOperationsByTag()) {
             await this.loadOperationsByTags();
         } else {
             await this.loadOperationsUngrouped();
         }
+
+        this.operationsLoading(false);
     }
 
     public async loadMoreOperationsUngruped(): Promise<void> {
+        this.moreOperationsLoading(true);
+
         const operations = await this.apiService.getMoreOperations(this.operationsPageNextLink());
 
         const currentOperations = this.operationsMenuItems();
@@ -196,9 +209,13 @@ export class ApiDetailsPage {
 
         this.operationsPageNextLink(operations.nextLink);
         this.operationsMenuItems(operationsMenuItems);
+
+        this.moreOperationsLoading(false);
     }
 
     public async loadMoreOperationsByTags(): Promise<void> {
+        this.moreOperationsLoading(true);
+
         const operationsByTags = await this.apiService.getMoreOperationsByTag(this.operationsPageNextLink());
 
         const operationsMenuItems = this.operationsByTagsMenuItems();
@@ -229,14 +246,16 @@ export class ApiDetailsPage {
 
         this.operationsPageNextLink(operationsByTags.nextLink);
         this.operationsByTagsMenuItems(operationsMenuItems);
+
+        this.moreOperationsLoading(false);
     }
 
     private async search() {
-        await this.loadOperations();
-
         const filteredWikiMenuItems = this.wikiDocumentationMenuItems().filter(x => x.displayName.toLowerCase().includes(this.pattern().toLowerCase()));
         this.filteredWikiDocumentationMenuItems(filteredWikiMenuItems);
 
+        await this.loadOperations();
+        
         if (this.operationsMenuItems().length > 0 || this.operationsByTagsMenuItems().length > 0) {
             document.getElementById('details-operations').setAttribute('open', '');
 
@@ -287,6 +306,8 @@ export class ApiDetailsPage {
     }
 
     private async loadWiki() {
+        this.wikiLoading(true);
+
         const wiki = await this.apiService.getApiWiki(this.api().name);
         this.wikiDocumentationMenuItems(wiki.documents.map(d => {
             return {
@@ -297,6 +318,8 @@ export class ApiDetailsPage {
         }));
 
         this.filteredWikiDocumentationMenuItems(this.wikiDocumentationMenuItems());
+
+        this.wikiLoading(false);
     }
 
     private async loadOperationsUngrouped(): Promise<void> {
