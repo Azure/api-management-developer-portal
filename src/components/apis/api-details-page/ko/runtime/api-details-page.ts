@@ -14,7 +14,6 @@ interface menuItem {
     displayName: string;
     value: string;
     type: string;
-    tooltip?: string;
 }
 
 interface operationMenuItem extends menuItem {
@@ -46,7 +45,7 @@ export class ApiDetailsPage {
 
     public readonly staticSelectableMenuItems: menuItem[] = [
         { displayName: "About this API", value: "about", type: staticMenuItemType },
-        { displayName: "Products that use this API", value: "products", type: staticMenuItemType, tooltip: "" },
+        { displayName: "Products that use this API", value: "products", type: staticMenuItemType},
         { displayName: "Changelog", value: "changelog", type: staticMenuItemType }
     ]
 
@@ -74,9 +73,6 @@ export class ApiDetailsPage {
     @Param()
     public wrapText: ko.Observable<boolean>;
 
-    @Param()
-    public enableConsole: ko.Observable<boolean>;
-
     constructor(
         private readonly apiService: ApiService,
         private readonly routeHelper: RouteHelper,
@@ -100,7 +96,6 @@ export class ApiDetailsPage {
         this.groupOperationsByTag = ko.observable();
         this.showUrlPath = ko.observable();
         this.wrapText = ko.observable();
-        this.enableConsole = ko.observable(true);
     }
 
     @OnMounted()

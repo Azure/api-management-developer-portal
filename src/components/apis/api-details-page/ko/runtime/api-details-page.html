@@ -39,11 +39,6 @@
                         <div class="menu-list-item" role="option"
                             data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
                             <span data-bind="text: menuItem.displayName"></span>
-                            <!-- ko if: menuItem.tooltip -->
-                            <span class="tooltip" data-bind="attr: { 'title': menuItem.tooltip }" style="padding-left: 5px;">
-                                <i class="icon-emb icon-emb-info"></i>
-                            </span>
-                            <!-- /ko -->
                         </div>
                         <!-- /ko -->
                     </div>
@@ -183,7 +178,7 @@
         <!-- /ko -->
 
         <!-- ko if: selectedMenuItem().type === 'operation' -->
-        <operation-details params="{enableConsole: $component.enableConsole()}"></operation-details>
+        <operation-details></operation-details>
         <!-- /ko -->
 
         <!-- /ko -->
