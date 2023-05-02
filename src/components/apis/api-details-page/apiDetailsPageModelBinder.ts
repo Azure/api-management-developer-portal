@@ -18,7 +18,8 @@ export class ApiDetailsPageModelBinder implements IModelBinder<ApiDetailsPageMod
             styles: model.styles,
             groupOperationsByTag: model.groupOperationsByTag,
             showUrlPath: model.showUrlPath,
-            wrapText: model.wrapText
+            wrapText: model.wrapText,
+            enableConsole: model.enableConsole
         };
 
         return contract;
@@ -30,6 +31,7 @@ export class ApiDetailsPageModelBinder implements IModelBinder<ApiDetailsPageMod
         model.groupOperationsByTag = contract.groupOperationsByTag || false;
         model.showUrlPath = contract.showUrlPath || false;
         model.wrapText = contract.wrapText || false;
+        model.enableConsole = contract.enableConsole || true;
 
         return model;
     }

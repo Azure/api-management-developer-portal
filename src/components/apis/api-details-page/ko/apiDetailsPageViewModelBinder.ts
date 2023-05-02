@@ -20,7 +20,8 @@ export class ApiDetailsPageViewModelBinder implements ViewModelBinder<ApiDetails
         viewModel.runtimeConfig(JSON.stringify({
             groupOperationsByTag: model.groupOperationsByTag,
             showUrlPath: model.showUrlPath,
-            wrapText: model.wrapText
+            wrapText: model.wrapText,
+            enableConsole: model.enableConsole
         }));
 
         viewModel["widgetBinding"] = {

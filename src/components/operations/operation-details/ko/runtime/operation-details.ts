@@ -73,6 +73,7 @@ export class OperationDetails {
         this.defaultSchemaView = ko.observable("table");
         this.useCorsProxy = ko.observable();
         this.includeAllHostnames = ko.observable();
+        this.enableConsole = ko.observable<boolean>();
         this.requestUrlSample = ko.computed(() => {
 
             const api = this.api();
@@ -126,7 +127,7 @@ export class OperationDetails {
     }
 
     @Param()
-    public enableConsole: boolean;
+    public enableConsole: ko.Observable<boolean>;
 
     @Param()
     public useCorsProxy: ko.Observable<boolean>;
@@ -158,6 +159,11 @@ export class OperationDetails {
         if (operationName) {
             await this.loadOperation(apiName, operationName);
         }
+        if(this.enableConsole()) {
+            console.log("enableConsole", this.enableConsole());
+          }
+
+          console.log('oepration-details')
     }
 
     private async onRouteChange(): Promise<void> {
@@ -182,6 +188,9 @@ export class OperationDetails {
         if (apiName && operationName) {
             this.selectedOperationName(operationName);
             await this.loadOperation(apiName, operationName);
+        }
+        if(this.enableConsole()) {
+          console.log("enableConsole route change", this.enableConsole());
         }
     }
 
