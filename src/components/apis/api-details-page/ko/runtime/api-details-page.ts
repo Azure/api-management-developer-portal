@@ -9,7 +9,7 @@ import { downloadAPIDefinition } from "../../../../../components/apis/apiUtils";
 import * as Constants from "../../../../../constants";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import aboutApi from "./staticPages/about-api.html";
-
+import operationDetails from "../../../../operations/operation-details/ko/runtime/operation-details.html";
 interface menuItem {
     displayName: string;
     value: string;
@@ -38,14 +38,15 @@ const operationMenuItem = "operation";
     selector: "api-details-page",
     template: template,
     childTemplates: {
-        aboutApi: aboutApi
-    }
+        aboutApi: aboutApi,
+        operationDetails: operationDetails
+    },
 })
 export class ApiDetailsPage {
 
     public readonly staticSelectableMenuItems: menuItem[] = [
         { displayName: "About this API", value: "about", type: staticMenuItemType },
-        { displayName: "Products that use this API", value: "products", type: staticMenuItemType, tooltip:"" },
+        { displayName: "Products that use this API", value: "products", type: staticMenuItemType, tooltip: "" },
         { displayName: "Changelog", value: "changelog", type: staticMenuItemType }
     ]
 
@@ -73,6 +74,9 @@ export class ApiDetailsPage {
     @Param()
     public wrapText: ko.Observable<boolean>;
 
+    @Param()
+    public enableConsole: ko.Observable<boolean>;
+
     constructor(
         private readonly apiService: ApiService,
         private readonly routeHelper: RouteHelper,
@@ -96,6 +100,7 @@ export class ApiDetailsPage {
         this.groupOperationsByTag = ko.observable();
         this.showUrlPath = ko.observable();
         this.wrapText = ko.observable();
+        this.enableConsole = ko.observable(true);
     }
 
     @OnMounted()
@@ -115,6 +120,7 @@ export class ApiDetailsPage {
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.search);
+            console.log("api degtails")
     }
 
     public async loadApi(apiName: string): Promise<void> {
@@ -163,6 +169,11 @@ export class ApiDetailsPage {
             const wikiUrl = this.routeHelper.getDocumentationReferenceUrl(this.api().name, menuItem.value);
             this.router.navigateTo(wikiUrl);
         }
+
+        if (menuItem.type == operationMenuItem) {
+            const operationUrl = this.routeHelper.getOperationReferenceUrl(this.api().name, menuItem.value);
+            this.router.navigateTo(operationUrl);
+        }
     }
 
     public async loadOperations() {
@@ -179,7 +190,7 @@ export class ApiDetailsPage {
         const currentOperations = this.operationsMenuItems();
         const newOperations = operations.value.map(o => {
             return {
-                value: o.id,
+                value: o.name,
                 displayName: this.showUrlPath() ? o.urlTemplate : o.displayName,
                 type: operationMenuItem,
                 method: o.method
@@ -202,7 +213,7 @@ export class ApiDetailsPage {
                 tagName: t.tag,
                 operations: t.items.map(op => {
                     return {
-                        value: op.id,
+                        value: op.name,
                         displayName: this.showUrlPath() ? op.urlTemplate : op.displayName,
                         type: operationMenuItem,
                         method: op.method
@@ -299,7 +310,7 @@ export class ApiDetailsPage {
 
         const operationsMenuItems = operations.value.map(o => {
             return {
-                value: o.id,
+                value: o.name,
                 displayName: this.showUrlPath() ? o.urlTemplate : o.displayName,
                 type: operationMenuItem,
                 method: o.method
@@ -319,7 +330,7 @@ export class ApiDetailsPage {
                 tagName: t.tag,
                 operations: ko.observableArray(t.items.map(op => {
                     return {
-                        value: op.id,
+                        value: op.name,
                         displayName: this.showUrlPath() ? op.urlTemplate : op.displayName,
                         type: operationMenuItem,
                         method: op.method
