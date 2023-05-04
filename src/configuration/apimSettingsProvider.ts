@@ -21,7 +21,7 @@ export class ApimSettingsProvider implements ISettingsProvider {
     }
 
     private async loadSettings(): Promise<void> {
-        var httpClient = new XmlHttpRequestClient();
+        const httpClient = new XmlHttpRequestClient();
         const commonConfigurationResponse = await httpClient.send<any>({ url: "/config.json" });
         const commonConfiguration = commonConfigurationResponse.toObject();
 
