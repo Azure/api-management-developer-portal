@@ -161,12 +161,11 @@
 }
 
 .page-content {
-    h3 {
+    h2,h3,h4,h5 {
         font-weight: bold;
     }
 
     h5 {
-        font-weight: bold;
         padding-top: 24px;
     }
 
@@ -197,10 +196,16 @@
             font-size: small;
         }
 
-        .card-commands {
-            align-self: flex-end;
-            padding: 20px;
-            font-weight: bold;
+        .commands {
+            .separator {
+                width: 0px;
+                border-right: 2px solid #ccc;
+                height: 20px;
+            }
+
+            a {
+                padding: 0;
+            }
         }
     }
 
@@ -208,5 +213,26 @@
         align-self: center;
         width: 100%;
         text-align: center;
+    }
+
+    .detachable-right {
+        background-color: white;
+    }
+
+    .commands {
+        display: flex;
+        align-self: flex-end;
+        font-weight: bold;
+        padding: 15px 0px;
+
+        .outlined {
+            border: 1px solid;
+            border-radius: 5px;
+        }
+
+        a {
+            padding: 5px;
+            margin: 0px 10px;
+        }
     }
 }
