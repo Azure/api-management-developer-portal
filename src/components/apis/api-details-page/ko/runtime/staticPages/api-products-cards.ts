@@ -16,6 +16,8 @@ export class ApiProductsCards {
     public readonly selectedApiName: ko.Observable<string>;
     public readonly working: ko.Observable<boolean>;
     public readonly nextLink: ko.Observable<string>;
+    public readonly showQuickView: ko.Observable<boolean>;
+    public readonly quickViewProduct: ko.Observable<Product>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -26,6 +28,8 @@ export class ApiProductsCards {
         this.selectedApiName = ko.observable();
         this.working = ko.observable();
         this.nextLink = ko.observable();
+        this.showQuickView = ko.observable(false);
+        this.quickViewProduct = ko.observable();
     }
 
     @OnMounted()
@@ -86,4 +90,16 @@ export class ApiProductsCards {
         await this.loadPageOfProducts();
     }
 
+    public openProductQuickView(product: Product): void {
+        this.showQuickView(true);
+        this.quickViewProduct(product);
+    }
+
+    public closeProductQuickView(): void {
+        this.showQuickView(false);
+    }
+
+    public getFullProductUrl(product: Product): string {
+        return window.location.host + '/' + this.routeHelper.getProductReferenceUrl(product.name, "product");
+    }
 }
