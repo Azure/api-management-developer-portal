@@ -60,7 +60,7 @@ export class ApiDetailsPage {
     public readonly operationsByTagsMenuItems: ko.ObservableArray<tagOperationMenuItem>;
     public readonly selectedDefinition: ko.Observable<string>;
     public readonly lastModifiedDate: ko.Observable<string>;
-    
+
     public readonly apiLoading: ko.Observable<boolean>;
     public readonly wikiLoading: ko.Observable<boolean>;
     public readonly operationsLoading: ko.Observable<boolean>;
@@ -154,8 +154,13 @@ export class ApiDetailsPage {
         await this.loadWiki();
         await this.loadOperations();
 
-        const currentApiVersion = await this.apiService.getCurrentRevision(apiName);
-        this.lastModifiedDate(new Date(currentApiVersion.updatedDateTime).toLocaleDateString());
+        try {
+            const currentApiVersion = await this.apiService.getCurrentRevision(apiName);
+            this.lastModifiedDate(new Date(currentApiVersion.updatedDateTime).toLocaleDateString());
+        }
+        catch (error) {
+            // do nothing
+        }
 
         this.apiLoading(false);
     }
@@ -166,6 +171,11 @@ export class ApiDetailsPage {
         }
 
         this.selectedMenuItem(menuItem);
+
+        if (menuItem.type == staticMenuItemType) {
+            const apiReferenceUrl = this.routeHelper.getApiDetailsPageReference(this.api().name, menuItem.value);
+            this.router.navigateTo(apiReferenceUrl);
+        }
 
         if (menuItem.type == documentationMenuItemType) {
             const wikiUrl = this.routeHelper.getDocumentationReferenceUrl(this.api().name, menuItem.value);
@@ -255,7 +265,7 @@ export class ApiDetailsPage {
         this.filteredWikiDocumentationMenuItems(filteredWikiMenuItems);
 
         await this.loadOperations();
-        
+
         if (this.operationsMenuItems().length > 0 || this.operationsByTagsMenuItems().length > 0) {
             document.getElementById('details-operations').setAttribute('open', '');
 
@@ -275,6 +285,12 @@ export class ApiDetailsPage {
 
         if (!apiName || apiName === this.api()?.name) {
             return;
+        }
+
+        const pageFromRoute = this.routeHelper.getApiDetailsPage();
+        const menuItem = this.staticSelectableMenuItems.find(x => x.value === pageFromRoute);
+        if (menuItem) {
+            this.selectMenuItem(menuItem);
         }
 
         await this.loadApi(apiName);
