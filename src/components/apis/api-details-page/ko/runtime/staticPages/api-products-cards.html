@@ -57,10 +57,11 @@
         </div>
 
         <div style="padding-bottom: 12px;">
-            <div> <span data-bind="text: 'Type: Product • '"></span>
-                <a href="#" data-bind="attr: { href: getProductUrl(quickViewProduct) }">
-                    Go to product
-                    <i class="icon-emb icon-emb-open"></i>
+            <div> <span data-bind="text: 'Type: Product'"></span>
+                <span class="bullet-separator">•</span>
+                <a href="#" data-bind="copyToClipboard: getFullProductUrl(quickViewProduct)">
+                    Copy link
+                    <i class="icon-emb icon-emb-duplicate"></i>
                 </a>
             </div>
         </div>
@@ -76,12 +77,7 @@
 
         <div class="commands">
             <a class="outlined" href="#" data-bind="attr: { href: getProductUrl(quickViewProduct) }">
-                Go to product
-                <i class="icon-emb icon-emb-open"></i>
-            </a>
-            <a href="#" data-bind="copyToClipboard: getFullProductUrl(quickViewProduct)">
-                Copy link
-                <i class="icon-emb icon-emb-duplicate"></i>
+                View Product
             </a>
         </div>
 
