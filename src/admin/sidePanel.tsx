@@ -6,7 +6,6 @@ import { Navigation } from "./navigation/navigation";
 import { SettingsModal } from "./settings/settingsModal";
 import { HelpModal } from './help/helpModal';
 import { MediaModal } from './media/mediaModal';
-
 initializeIcons();
 
 const enum NavItem {
@@ -25,11 +24,11 @@ interface SidePanelState {
 }
 
 const pageIcon: IIconProps = { iconName: 'Page' };
-const navigationIcon: IIconProps = { iconName: 'GlobalNavButton' };
+const navigationIcon: IIconProps = { iconName: 'Nav2DMapView' };
 const stylesIcon: IIconProps = { iconName: 'Color' };
-const mediaIcon: IIconProps = { iconName: 'PhotoVideoMedia' };
+const mediaIcon: IIconProps = { iconName: 'Photo2' };
 const customWidgetsIcon: IIconProps = { iconName: 'Puzzle' };
-const settingsIcon: IIconProps = { iconName: 'Equalizer' };
+const settingsIcon: IIconProps = { iconName: 'Settings' };
 const helpIcon: IIconProps = { iconName: 'Help' };
 
 export class SidePanel extends React.Component<{}, SidePanelState> {
@@ -55,27 +54,27 @@ export class SidePanel extends React.Component<{}, SidePanelState> {
                 return (
                     <div className="navigation">
                         <CommandBarButton
+                            iconProps={navigationIcon}
+                            text="Site menu"
+                            onClick={() => this.setState({ selectedNavItem: NavItem.Navigation })}
+                            className="nav-item-list-button"
+                        />
+                        <CommandBarButton
                             iconProps={pageIcon}
                             text="Pages"
                             onClick={() => this.setState({ selectedNavItem: NavItem.Pages })}
                             className="nav-item-list-button"
                         />
                         <CommandBarButton
-                            iconProps={navigationIcon}
-                            text="Navigation"
-                            onClick={() => this.setState({ selectedNavItem: NavItem.Navigation })}
+                            iconProps={mediaIcon}
+                            text="Media"
+                            onClick={() => this.setState({ selectedNavItem: NavItem.Media })}
                             className="nav-item-list-button"
                         />
                         <CommandBarButton
                             iconProps={stylesIcon}
                             text="Styles"
                             onClick={() => this.setState({ selectedNavItem: NavItem.Styles })}
-                            className="nav-item-list-button"
-                        />
-                        <CommandBarButton
-                            iconProps={mediaIcon}
-                            text="Media"
-                            onClick={() => this.setState({ selectedNavItem: NavItem.Media })}
                             className="nav-item-list-button"
                         />
                         <CommandBarButton

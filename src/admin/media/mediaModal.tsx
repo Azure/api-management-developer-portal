@@ -1,20 +1,26 @@
 import * as React from 'react';
 import { saveAs } from 'file-saver';
+import * as Utils from '@paperbits/common/utils';
 import * as MediaUtils from '@paperbits/common/media/mediaUtils';
 import { Resolve } from '@paperbits/react/decorators';
+import { EventManager } from '@paperbits/common/events';
+import { ViewManager } from '@paperbits/common/ui';
 import { IMediaService } from '@paperbits/common/media';
 import { MediaContract } from '@paperbits/common/media/mediaContract';
 import { Query, Operator } from '@paperbits/common/persistence';
-import { EventManager } from '@paperbits/common/events';
-import { Checkbox, CommandBarButton, DefaultButton, IconButton, IIconProps, Image, ImageFit, IOverflowSetItemProps, Link, Modal, OverflowSet, PrimaryButton, SearchBox, Stack, Text } from '@fluentui/react';
-import { type } from 'os';
-import { MediaDetailsModal } from './mediaDetailsModal';
+import { Checkbox, DefaultButton, IconButton, IIconProps, Image, ImageFit, IOverflowSetItemProps, Link, Modal, OverflowSet, SearchBox, Stack, Text, TextField } from '@fluentui/react';
+import { ImageDetailsModal } from './imageDetailsModal';
+import { NonImageDetailsModal } from './nonImageDetailsModal';
+import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 
 interface MediaModalState {
     media: MediaContract[],
     selectedFiles: MediaContract[],
-    showMediaDetailsModal: boolean,
-    selectedMediaFile: MediaContract
+    selectedMediaFile: MediaContract,
+    fileForRename: string,
+    showImageDetailsModal: boolean,
+    showNonImageDetailsModal: boolean,
+    showDeleteConfirmation: boolean
 }
 
 interface MediaModalProps {
@@ -32,6 +38,9 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
 
     @Resolve('eventManager')
     public eventManager: EventManager;
+    
+    @Resolve('viewManager')
+    public viewManager: ViewManager;
 
     constructor(props: MediaModalProps) {
         super(props);
@@ -39,8 +48,11 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
         this.state = {
             media: [],
             selectedFiles: [],
-            showMediaDetailsModal: false,
-            selectedMediaFile: null
+            selectedMediaFile: null,
+            fileForRename: '',
+            showImageDetailsModal: false,
+            showNonImageDetailsModal: false,
+            showDeleteConfirmation: false
         }
     }
 
@@ -57,14 +69,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
         const mediaSearchResult = await this.mediaService.search(query);
         this.setState({ media: mediaSearchResult.value });
 
-        console.log(mediaSearchResult.value);
-        console.log(this.state.selectedFiles);
-
         return;
-    }
-
-    saveChanges = () => {
-
     }
 
     selectMedia = (file: MediaContract, checked: boolean): void => {
@@ -75,17 +80,28 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
         }
     }
 
-    deleteSelectedFiles = (): void => {
-        this.state.selectedFiles.forEach(async file => await this.mediaService.deleteMedia(file));
-        this.setState({ selectedFiles: [] });
+    uploadMedia = async (): Promise<void> => {
+        const files = await this.viewManager.openUploadDialog();
 
-        //this.eventManager.dispatchEvent('onSaveChanges');
+        await Promise.all(files.map(async file => {
+            const content = await Utils.readFileAsByteArray(file);
+            await this.mediaService.createMedia(file.name, content, file.type);
+        }));
+
+        this.eventManager.dispatchEvent('onSaveChanges');
         this.searchMedia();
     }
 
-    deleteFile = async (file: MediaContract) => {
-        await this.mediaService.deleteMedia(file);
-        //this.eventManager.dispatchEvent('onSaveChanges');
+    linkMedia = async (): Promise<void> => {
+        const newMediaFile = await this.mediaService.createMediaUrl('media.svg', 'https://cdn.paperbits.io/images/logo.svg');
+        this.setState({ selectedMediaFile: newMediaFile, showNonImageDetailsModal: true });
+    }
+
+    deleteMedia = async (): Promise<void> => {
+        await Promise.all(this.state.selectedFiles.map(async file => await this.mediaService.deleteMedia(file)));
+        
+        this.setState({ selectedFiles: [], showDeleteConfirmation: false });
+        this.eventManager.dispatchEvent('onSaveChanges');
         this.searchMedia();
     }
 
@@ -96,21 +112,12 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
     );
       
     onRenderOverflowButton = (overflowItems: any[] | undefined): JSX.Element => {
-        // const buttonStyles: Partial<IButtonStyles> = {
-        //   root: {
-        //     minWidth: 0,
-        //     padding: '0 4px',
-        //     alignSelf: 'stretch',
-        //     height: 'auto',
-        //   },
-        // };
         return (
-          <IconButton
-            title="More options"
-            //styles={buttonStyles}
-            menuIconProps={{ iconName: 'More' }}
-            menuProps={{ items: overflowItems! }}
-          />
+            <IconButton
+                title="More options"
+                menuIconProps={{ iconName: 'More' }}
+                menuProps={{ items: overflowItems! }}
+            />
         );
     };
 
@@ -135,67 +142,111 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
         return null;
     }
 
-    openEditModal = (mediaItem: MediaContract) => {
-        this.setState({ selectedMediaFile: mediaItem, showMediaDetailsModal: true })
+    openEditModal = (mediaItem: MediaContract, thumbnailUrl: string): void => {
+        thumbnailUrl
+            ? this.setState({ selectedMediaFile: mediaItem, showImageDetailsModal: true })
+            : this.setState({ selectedMediaFile: mediaItem, showNonImageDetailsModal: true })
+    }
+
+    closeDeleteConfirmation = (): void => {
+        this.setState({ showDeleteConfirmation: false });
     }
 
     renderMediaItem = (mediaItem: MediaContract): JSX.Element => {
         const thumbnailUrl: string = this.getThumbnailUrl(mediaItem);
-
+        
         return (
             <div className="media-box">
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
                     <Checkbox
-                        ariaLabel="Select image"
+                        ariaLabel="Select media file"
                         onChange={(event, checked) => this.selectMedia(mediaItem, checked)}
+                        checked={!!this.state.selectedFiles.find(file => mediaItem.key === file.key)}
                     />
-                    <IconButton iconProps={editIcon} title="Edit image" onClick={() => this.openEditModal(mediaItem)} />
+                    <IconButton iconProps={editIcon} title="Edit media file" onClick={() => this.openEditModal(mediaItem, thumbnailUrl)} />
                 </Stack>
                 <Image
-                    src={thumbnailUrl}
-                    imageFit={ImageFit.center}
+                    src={thumbnailUrl ?? '/assets/images/no-preview.png'}
+                    imageFit={ImageFit.centerCover}
                     styles={{ root: { flexGrow: 1, marginTop: 10, marginBottom: 20 } }}
                 />
-                <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
-                    <Text>{mediaItem.fileName}</Text>
-                    <OverflowSet
-                        aria-label="Image actions"
-                        overflowItems={[
-                            {
-                                key: 'edit',
-                                name: 'Edit',
-                                onClick: () => this.openEditModal(mediaItem)
-                            },
-                            {
-                                key: 'download',
-                                name: 'Download',
-                                onClick: () => saveAs(mediaItem.downloadUrl, mediaItem.fileName, { type: mediaItem.mimeType })
-                            },
-                            {
-                                key: 'rename',
-                                name: 'Rename'
-                            },
-                            {
-                                key: 'delete',
-                                name: 'Delete',
-                                onClick: () => this.deleteFile(mediaItem)
-                            }
-                        ]}
-                        onRenderOverflowButton={this.onRenderOverflowButton}
-                        onRenderItem={this.onRenderItem}
-                    />
-                </Stack>
+                {this.state.fileForRename === mediaItem.key
+                    ?
+                        <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
+                            <TextField
+                                ariaLabel="Rename file"
+                                defaultValue={mediaItem.fileName}
+                            />
+                            {/* TODO: Check if this is needed and finish if so */}
+                            <IconButton
+                                iconProps={{ iconName: 'CheckMark' }}
+                            />
+                            <IconButton
+                                iconProps={{ iconName: 'Cancel' }}
+                                onClick={() => this.setState({ fileForRename: '' })}
+                            />
+                        </Stack>
+                    :
+                        <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
+                            <Text>{mediaItem.fileName}</Text>
+                            <OverflowSet
+                                aria-label="Image actions"
+                                overflowItems={[
+                                    {
+                                        key: 'edit',
+                                        name: 'Edit',
+                                        onClick: () => this.openEditModal(mediaItem, thumbnailUrl)
+                                    },
+                                    {
+                                        key: 'download',
+                                        name: 'Download',
+                                        onClick: () => saveAs(mediaItem.downloadUrl, mediaItem.fileName, { type: mediaItem.mimeType })
+                                    },
+                                    {
+                                        key: 'rename',
+                                        name: 'Rename',
+                                        onClick: () => this.setState({ fileForRename: mediaItem.key })
+                                    },
+                                    {
+                                        key: 'delete',
+                                        name: 'Delete',
+                                        onClick: () => this.setState({ selectedFiles: [mediaItem], showDeleteConfirmation: true })
+                                    }
+                                ]}
+                                onRenderOverflowButton={this.onRenderOverflowButton}
+                                onRenderItem={this.onRenderItem}
+                            />
+                        </Stack>
+                }
             </div>
         );
     }
 
-
     render(): JSX.Element {
         return <>
-            {this.state.showMediaDetailsModal &&
-                <MediaDetailsModal
+            {this.state.showImageDetailsModal &&
+                <ImageDetailsModal
                     mediaItem={this.state.selectedMediaFile}
-                    onDismiss={this.props.onDismiss}
+                    onDismiss={() => {
+                        this.setState({ showImageDetailsModal: false });
+                        this.searchMedia();
+                    }}
+                />
+            }
+            {this.state.showNonImageDetailsModal &&
+                <NonImageDetailsModal
+                    mediaItem={this.state.selectedMediaFile}
+                    onDismiss={() => {
+                        this.setState({ showNonImageDetailsModal: false });
+                        this.searchMedia();
+                    }}
+                />
+            }
+            {this.state.showDeleteConfirmation &&
+                <DeleteConfirmationOverlay
+                    deleteItemTitle={this.state.selectedFiles.length === 1 ? this.state.selectedFiles[0].fileName : 'selected files'}
+                    onConfirm={this.deleteMedia.bind(this)}
+                    onDismiss={this.closeDeleteConfirmation.bind(this)} 
                 />
             }
             <Modal
@@ -206,9 +257,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
                     <Text className="admin-modal-header-text">Media</Text>
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
-                        {/* TODO: Add disable */}
-                        <PrimaryButton text="Save" onClick={() => this.saveChanges()} /> 
-                        <DefaultButton text="Discard" onClick={this.props.onDismiss} />
+                        <DefaultButton text="Close" onClick={this.props.onDismiss} />
                     </Stack>
                 </Stack>
                 <div className="admin-modal-content">
@@ -218,19 +267,21 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                                 ariaLabel="Search media"
                                 placeholder="Search media..."
                                 onChange={(event, searchValue) => this.searchMedia(searchValue)}
+                                styles={{ root: { width: 220 } }}
                             />
                         </Stack.Item>
                         <Stack.Item>
                             <DefaultButton
                                 iconProps={uploadIcon}
                                 text="Upload files"
-                                //onClick={() => this.setState({ showLayoutModal: true, selectedLayout: null })}
+                                onClick={() => this.uploadMedia()}
                             />
                         </Stack.Item>
                         <Stack.Item>
                             <DefaultButton
                                 iconProps={linkIcon}
-                                text="Link files"
+                                text="Link file"
+                                onClick={() => this.linkMedia()}
                             />
                         </Stack.Item>
                         {this.state.selectedFiles.length > 0 && 
@@ -238,7 +289,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                                 <DefaultButton
                                     iconProps={deleteIcon}
                                     text="Delete selected files"
-                                    onClick={() => this.deleteSelectedFiles()}
+                                    onClick={() => this.setState({ showDeleteConfirmation: true })}
                                 />
                             </Stack.Item>
                         }

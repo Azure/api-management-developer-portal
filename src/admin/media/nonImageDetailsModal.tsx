@@ -1,21 +1,22 @@
 import * as React from 'react';
-import Cropper from 'react-cropper';
-//import 'cropperjs/dist/cropper.css';
+import * as Utils from '@paperbits/common/utils';
 import { Resolve } from '@paperbits/react/decorators';
 import { IMediaService } from '@paperbits/common/media';
 import { MediaContract } from '@paperbits/common/media/mediaContract';
 import { Router } from '@paperbits/common/routing';
 import { EventManager } from '@paperbits/common/events';
-import { CommandBarButton, DefaultButton, IIconProps, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
+import { CommandBarButton, DefaultButton, IconButton, IIconProps, Modal, PrimaryButton, Stack, Text, TextField, TooltipDelay, TooltipHost } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
+import { blob } from 'stream/consumers';
+import { saveAs } from 'file-saver';
 
-interface MediaDetailsModalState {
+interface NonImageDetailsModalState {
     mediaItem: MediaContract,
     showDeleteConfirmation: boolean,
-    copyPage: boolean
+    urlCopied: boolean
 }
 
-interface MediaDetailsModalProps {
+interface NonImageDetailsModalProps {
     mediaItem: MediaContract,
     onDismiss: () => void
 }
@@ -25,9 +26,7 @@ const copyIcon: IIconProps = { iconName: 'Copy' };
 
 const textFieldStyles = { root: { paddingBottom: 15 } };
 
-const cropperRef = React.createRef();
-
-export class MediaDetailsModal extends React.Component<MediaDetailsModalProps, MediaDetailsModalState> {
+export class NonImageDetailsModal extends React.Component<NonImageDetailsModalProps, NonImageDetailsModalState> {
     @Resolve('mediaService')
     public mediaService: IMediaService;
 
@@ -36,15 +35,14 @@ export class MediaDetailsModal extends React.Component<MediaDetailsModalProps, M
 
     @Resolve('eventManager')
     public eventManager: EventManager;
-    cropper: Cropper;
 
-    constructor(props: MediaDetailsModalProps) {
+    constructor(props: NonImageDetailsModalProps) {
         super(props);
 
         this.state = {
             mediaItem: this.props.mediaItem,
             showDeleteConfirmation: false,
-            copyPage: false
+            urlCopied: false
         }
     }
 
@@ -57,7 +55,7 @@ export class MediaDetailsModal extends React.Component<MediaDetailsModalProps, M
         });
     }
 
-    deleteFile = async () => {
+    deleteMedia = async () => {
         await this.mediaService.deleteMedia(this.state.mediaItem);
 
         this.eventManager.dispatchEvent('onSaveChanges');
@@ -68,49 +66,32 @@ export class MediaDetailsModal extends React.Component<MediaDetailsModalProps, M
         this.setState({ showDeleteConfirmation: false });
     }
 
-    savePage = async () => {
-        // if (this.props.page && !this.state.copyPage) {
-        //     await this.pageService.updatePage(this.state.page);
-        // } else {
-        //     const newPage = this.state.page;
-        //     await this.pageService.createPage(newPage.permalink, newPage.title, newPage.description, newPage.keywords);
-        // }
-
-        // this.eventManager.dispatchEvent('onSaveChanges');
-        // this.props.onDismiss();
+    saveMedia = async () => {
+        await this.mediaService.updateMedia(this.state.mediaItem);
+        this.eventManager.dispatchEvent('onSaveChanges');
+        this.props.onDismiss();
     }
-
-    onCrop = () => {
-        // image in dataUrl
-        console.log(this.cropper.getCroppedCanvas().toDataURL());
-    }
-
-    onCropperInit = (cropper) => {
-        this.cropper = cropper;
-    }
-
-
+    
     render() {
         return <>
             {this.state.showDeleteConfirmation && 
                 <DeleteConfirmationOverlay
                     deleteItemTitle={this.state.mediaItem.fileName}
-                    onConfirm={this.deleteFile.bind(this)}
+                    onConfirm={this.deleteMedia.bind(this)}
                     onDismiss={this.closeDeleteConfirmation.bind(this)} 
                 />
             }
             <Modal
                 isOpen={true}
                 onDismiss={this.props.onDismiss}
-                containerClassName="admin-modal media-modal"
+                containerClassName="admin-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
                     <Text className="admin-modal-header-text">Media / { this.state.mediaItem.fileName }</Text>
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <PrimaryButton
                             text="Save"
-                            onClick={() => this.savePage()}
-                            disabled={JSON.stringify(this.props.mediaItem) === JSON.stringify(this.state.mediaItem)}
+                            onClick={() => this.saveMedia()}
                         />
                         <DefaultButton
                             text="Discard"
@@ -119,18 +100,6 @@ export class MediaDetailsModal extends React.Component<MediaDetailsModalProps, M
                     </Stack>
                 </Stack>
                 <div className="admin-modal-content">
-                    <div className="media-details-wrapper">
-                        
-                    </div>
-                    <Cropper
-                        src={this.state.mediaItem.downloadUrl}
-                        style={{ height: 400, width: "100%" }}
-                        // Cropper.js options
-                        //initialAspectRatio={16 / 9}
-                        guides={false}
-                        crop={this.onCrop.bind(this)}
-                        onInitialized={this.onCropperInit.bind(this)}
-                    />
                     <TextField
                         label="File name"
                         value={this.state.mediaItem.fileName}
@@ -145,8 +114,8 @@ export class MediaDetailsModal extends React.Component<MediaDetailsModalProps, M
                     />
                     <TextField
                         label="Reference URL"
-                        //value={this.state.mediaItem.}
-                        onChange={(event, newValue) => this.onInputChange('permalink', newValue)}
+                        value={this.state.mediaItem.downloadUrl}
+                        onChange={(event, newValue) => this.onInputChange('downloadUrl', newValue)}
                         styles={textFieldStyles}
                     />
                     <TextField
