@@ -16,7 +16,8 @@
         "allowUnreachableCode": true,
         "sourceMap": true,
         "incremental": true,
-        "jsx": "react"
+        "jsx": "react",
+        "resolveJsonModule": true
     },
     "include": [
         "./src/**/*",

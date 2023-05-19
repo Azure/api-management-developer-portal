@@ -3,29 +3,34 @@ import { expect } from "chai";
 import { BrowserLaunchOptions } from "../../constants";
 import { Utils } from "../../utils";
 import { SignupBasicWidget } from "../maps/signup-basic";
-
+import { Server } from "http";
+import { UserMockData } from "../../mocks/collection/user";
 
 describe("User sign-up flow", async () => {
     let config;
     let browser: puppeteer.Browser;
+    let server: Server
 
     before(async () => {
         config = await Utils.getConfig();
         browser = await puppeteer.launch(BrowserLaunchOptions);
     });
+    after(async () => {
+        browser.close();
+        Utils.closeServer(server);
+    });
 
     it("User can sign-up with basic credentials", async () => {
+        var userInfo = new UserMockData();
+        server = await Utils.createMockServer([await userInfo.getUserRegisterResponse("email", "name", "lastname")]);
         const page = await browser.newPage();
         await page.goto(config.urls.signup);
 
         const signUpWidget = new SignupBasicWidget(page);
-        const randomUser = await Utils.getRandomUser();
-        await signUpWidget.signUpWithBasic(randomUser);
+        await signUpWidget.signUpWithBasic();
 
-        expect(page.url()).to.equal(config.urls.signup);
+        expect(await signUpWidget.getConfirmationMessageValue())
+            .to.equal("Follow the instructions from the email to verify your account.");
     });
-
-    after(async () => {
-        browser.close();
-    });
+    
 });

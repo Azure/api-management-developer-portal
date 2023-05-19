@@ -32,6 +32,7 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
             enableScrollTo: model.enableScrollTo,
             defaultSchemaView: model.defaultSchemaView,
             useCorsProxy: model.useCorsProxy,
+            includeAllHostnames: model.includeAllHostnames,
             showExamples: model.showExamples,
         };
 
