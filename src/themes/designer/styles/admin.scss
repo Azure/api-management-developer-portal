@@ -76,7 +76,11 @@
 
 .admin-modal {
     max-width: 600px;
-    width: 100%;
+    width: calc(100% - 100px);
+    // This is used to get rid of double scrollbar: https://github.com/microsoft/fluentui/issues/12420
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
 }
 
 .admin-modal-header {
@@ -95,8 +99,11 @@
 }
 
 .media-modal {
-    width: calc(100% - 300px);
-    max-width: unset;
+    max-width: 1780px;
+}
+
+.media-details-modal {
+    max-width: 1200px;
 }
 
 .media-box {
