@@ -3,6 +3,7 @@ import { EventManager } from "@paperbits/common/events";
 import { Subscription } from "../../../../../models/subscription";
 import { dispatchErrors} from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
+import { ValidationMessages } from "../../../validationMessages";
 
 export class SubscriptionListItem {
     private hiddenKey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
@@ -32,6 +33,8 @@ export class SubscriptionListItem {
         this.changedItem = ko.observable();
         this.editName = ko.observable(model.name);
         this.isEdit = ko.observable(false);
+
+        this.editName.extend(<any>{ required: { message: ValidationMessages.subscriptionNameRequired } });
     }
 
     public toggleEdit(): void {
