@@ -1,0 +1,28 @@
+subscriptions-runtime {
+    .table .table-head {
+        @media (max-width: $breakpoint-md) {
+            display: none;
+        }
+    }
+
+    .table .table-row {
+        @media (max-width: $breakpoint-md) {
+            display: block;
+        }
+    
+        > div {
+            @media (max-width: $breakpoint-md) {
+                max-width: 100%;
+            }
+
+            .columnheader {
+                font-weight: bold;
+                margin-bottom: 10px;
+
+                @media (min-width: $breakpoint-md) {
+                    display: none;
+                }
+            }
+        }
+    }
+}
