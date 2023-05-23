@@ -8,4 +8,5 @@ export class ValidationMessages {
     static passwordConfirmationMustMatch = `Password confirmation field must be equal to password.`;
     static newPasswordRequired = `New password is required.`;
     static consentRequired = `You must agree to the terms of use.`;
+    static subscriptionNameRequired = `Subscription name is required.`;
 }
