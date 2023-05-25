@@ -19,7 +19,7 @@ const enum NavItem {
     Help
 }
 
-interface SidePanelState {
+interface LeftPanelState {
     selectedNavItem: NavItem
 }
 
@@ -31,7 +31,7 @@ const customWidgetsIcon: IIconProps = { iconName: 'Puzzle' };
 const settingsIcon: IIconProps = { iconName: 'Settings' };
 const helpIcon: IIconProps = { iconName: 'Help' };
 
-export class SidePanel extends React.Component<{}, SidePanelState> {
+export class LeftPanel extends React.Component<{}, LeftPanelState> {
     constructor(props: any) {
         super(props);
 

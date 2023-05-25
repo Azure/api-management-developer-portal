@@ -9,7 +9,7 @@
 
 view-manager {
     display: flex;
-    height: 100%;
+    height: calc(100% - $admin-top-panel-height);
 }
 
 .app-wrapper {
@@ -18,8 +18,13 @@ view-manager {
     width: 100%;
 }
 
-.main-content-wrapper {
-    width: calc(100% - $admin-panel-width);
+#main-content-wrapper {
+    width: calc(100% - $admin-side-panel-width);
+    transition: all .2s ease-in-out;
+
+    &.is-focused {
+        width: 100%;
+    }
 }
 
 .viewport {

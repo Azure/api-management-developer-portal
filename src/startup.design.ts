@@ -10,9 +10,8 @@ import { ApimDesignModule } from "./apim.design.module";
 import { SessionExpirationErrorHandler } from "./errors/sessionExpirationErrorHandler";
 import { ComponentBinder } from "@paperbits/common/editing";
 import { ReactModule } from "@paperbits/react/react.module";
-import { SidePanel } from "./admin/sidePanel";
-import { TopPanel } from "./admin/topPanel";
-
+import { LeftPanel } from "./admin/leftPanel";
+import { RightPanel } from "./admin/rightPanel";
 
 /* Initializing dependency injection container */
 const injector = new InversifyInjector();
@@ -32,8 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Binding the React app to element along with container
     const componentBinder = injector.resolve<ComponentBinder>("reactComponentBinder");
-    const sidePanel = document.getElementById("admin-side-panel");
-    componentBinder.bind(sidePanel, SidePanel);
-    const topPanel = document.getElementById("admin-top-panel");
-    componentBinder.bind(topPanel, TopPanel);
+    const leftPanel = document.getElementById("admin-left-panel");
+    componentBinder.bind(leftPanel, LeftPanel);
+    const rightPanel = document.getElementById("admin-right-panel");
+    componentBinder.bind(rightPanel, RightPanel);
 });
