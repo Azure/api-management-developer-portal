@@ -1,12 +1,18 @@
-#admin-side-panel {
+#admin-left-panel {
     background: #fff;
     height: 100%;
-    width: $admin-panel-width;
+    width: $admin-side-panel-width;
     border-right: 1px solid grey;
     font-family: 'SegoeUI';
+    overflow: auto;
+    transition: all .2s ease-in-out;
+
+    &.hidden {
+        width: 0;
+    }
 }
 
-#admin-side-panel,
+#admin-left-panel,
 .admin-modal {
     input[type=search],
     input[type=text],
@@ -116,16 +122,31 @@
     flex-direction: column;
 }
 
-#admin-top-panel {
-    height: 45px;
+#admin-right-panel {
+    height: $admin-top-panel-height;
     display: flex;
     align-items: center;
     border-bottom: 1px solid grey;
 }
 
 .top-panel {
-    display: flex;
-    justify-content: space-between;
+    height: 100%;
     width: 100%;
-    padding-right: 15px;
+    padding-right: 20px;
+
+    &.is-focused {
+        background-color: #252423;
+    }
+}
+
+.content-overlay {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: $admin-top-panel-height;
+    cursor: pointer;
+
+    &.hidden {
+        display: none;
+    }
 }
