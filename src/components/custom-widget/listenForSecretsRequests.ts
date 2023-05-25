@@ -23,6 +23,7 @@ export class ListenForSecretsRequests {
 
             const managementApiUrl = await settingsProvider.getSetting<string>(SettingNames.managementApiUrl);
             const secrets: Secrets = {
+                ["parentLocation" as any]: JSON.parse(JSON.stringify(window.location)), // override typescript until new version of the package is released TODO fix
                 managementApiUrl: Utils.ensureUrlArmified(managementApiUrl),
                 apiVersion: managementApiVersion
             };
