@@ -1,0 +1,76 @@
+<!-- ko if: working -->
+<div class="cards-body">
+    <spinner class="fit"></spinner>
+</div>
+<!-- /ko -->
+
+<!-- ko ifnot: working -->
+<div class="changelog-page">
+    <div class="changelog">
+        <h3>Changelog</h3>
+        <!-- ko if: Object.keys(changelogs()).length > 0-->
+        <span data-bind="text: 'Last updated: ' + lastModifiedDate()"></span>
+        <!-- ko foreach: { data: Object.keys(changelogs()), as: 'key' } -->
+        <div>
+            <h5 data-bind="text: key"></h5>
+            <hr>
+            <!-- ko foreach: { data: $component.changelogs()[key], as: 'item' } -->
+            <div class="changelog-item" data-bind=" attr: { id: item.createdDateTime }">
+                <span class="title"
+                    data-bind="text: new Date(item.createdDateTime).toISOString().substring(0, 10)"></span>
+                <span class="notes" data-bind="text: item.notes"></span>
+            </div>
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
+        <!-- ko if: nextLink -->
+
+        <!-- ko if: moreChangelogsLoading -->
+        <spinner></spinner>
+        <!-- /ko -->
+
+        <!-- ko ifnot: moreChangelogsLoading -->
+        <a href="#" role="button" data-bind="click: loadMoreChangelogs">Show more</a>
+        <!-- /ko -->
+
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko if: Object.keys(changelogs()).length == 0 -->
+        <span>No records to display</span>
+        <!-- /ko -->
+    </div>
+
+    <!-- ko if: Object.keys(changelogs()).length > 0 -->
+    <div class="changelog-menu">
+        <div class="header">
+            <h5>On this page</h5>
+        </div>
+        <div class="content">
+            <!-- ko foreach: { data: Object.keys(changelogs()), as: 'key' } -->
+            <div>
+                <h5 data-bind="text: key"></h5>
+                <!-- ko foreach: { data: $component.changelogs()[key], as: 'item' } -->
+                <div class="menu-item" data-bind="attr: { id: 'menu-' + item.createdDateTime }">
+                    <a href="#" role="button" data-bind="text: new Date(item.createdDateTime).toISOString().substring(0, 10), 
+                        click: $component.scrollToDate"></a>
+                </div>
+                <!-- /ko -->
+            </div>
+            <!-- /ko -->
+            <!-- ko if: nextLink -->
+
+            <!-- ko if: moreChangelogsLoading -->
+            <spinner></spinner>
+            <!-- /ko -->
+
+            <!-- ko ifnot: moreChangelogsLoading -->
+            <a href="#" role="button" data-bind="click: loadMoreChangelogs">Show more</a>
+            <!-- /ko -->
+
+            <!-- /ko -->
+        </div>
+    </div>
+    <!-- /ko -->
+</div>
+<!-- /ko -->

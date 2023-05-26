@@ -18,6 +18,7 @@ export class ApiProductsCards {
     public readonly nextLink: ko.Observable<string>;
     public readonly showQuickView: ko.Observable<boolean>;
     public readonly quickViewProduct: ko.Observable<Product>;
+    public readonly moreProductsLoading: ko.Observable<boolean>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -30,6 +31,7 @@ export class ApiProductsCards {
         this.nextLink = ko.observable();
         this.showQuickView = ko.observable(false);
         this.quickViewProduct = ko.observable();
+        this.moreProductsLoading = ko.observable(false);
     }
 
     @OnMounted()
@@ -62,7 +64,7 @@ export class ApiProductsCards {
 
     public async loadMoreProducts(): Promise<void> {
         try {
-            this.working(true);
+            this.moreProductsLoading(true);
             const pageOfProducts = await this.apiService.getApiProductsNextLink(this.nextLink());
             this.products.push(...pageOfProducts.value);
             this.nextLink(pageOfProducts.nextLink);
@@ -71,7 +73,7 @@ export class ApiProductsCards {
             throw new Error(`Unable to load API products. Error: ${error.message}`);
         }
         finally {
-            this.working(false);
+            this.moreProductsLoading(false);
         }
     }
 

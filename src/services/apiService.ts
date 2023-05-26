@@ -28,6 +28,7 @@ import { WikiContract } from "../contracts/wiki";
 import { Wiki } from "../models/wiki";
 import { RevisionContract } from "../contracts/revision"
 import { Revision } from "../models/revision"
+import { ApiChangeLog } from "../models/apiChangelog";
 
 interface CacheItem {
     value: any;
@@ -304,7 +305,7 @@ export class ApiService {
      * @param apiId A string parameter which is the id of the API
      * @returns all changelog pages
      */
-    public async getApiChangeLog(apiId: string, skip: number): Promise<Page<ChangeLogContract>> {
+    public async getApiChangeLog(apiId: string, skip: number): Promise<Page<ApiChangeLog>> {
         if (!apiId) {
             throw new Error(`Parameter "apiId" not specified.`);
         }
@@ -313,12 +314,26 @@ export class ApiService {
         const take = Constants.defaultPageSize;
         apiResourceUri += `/releases?$top=${take}&$skip=${skip}`;
 
-        const changelogContracts = await this.mapiClient.get<Page<ChangeLogContract>>(apiResourceUri, [await this.mapiClient.getPortalHeader("getApiChangeLog")]);
-        if (!changelogContracts) {
-            return null;
-        }
+        const result = await this.mapiClient.get<Page<ChangeLogContract>>(apiResourceUri, [await this.mapiClient.getPortalHeader("getApiChangeLog")]);
 
-        return changelogContracts;
+        const page = new Page<ApiChangeLog>();
+
+        page.value = result.value.map(c => new ApiChangeLog(<any>c));
+        page.nextLink = result.nextLink;
+        page.count = result.count;
+
+        return page;
+    }
+
+    public async getMoreApiChangelogs(nextLink: string): Promise<Page<ApiChangeLog>> {
+        const result = await this.mapiClient.get<Page<ChangeLogContract>>(nextLink, [await this.mapiClient.getPortalHeader("getMoreApiChangelogs")]);
+        const page = new Page<ApiChangeLog>();
+
+        page.value = result.value.map(c => new ApiChangeLog(<any>c));
+        page.nextLink = result.nextLink;
+        page.count = result.count;
+
+        return page;
     }
 
     public async getApiVersionSet(versionSetId: string): Promise<VersionSet> {
