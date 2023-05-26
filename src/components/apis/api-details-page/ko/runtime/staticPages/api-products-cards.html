@@ -34,7 +34,13 @@
 
         <!-- ko if: nextLink() -->
         <div class="show-more-cards">
+            <!-- ko if: moreProductsLoading -->
+            <spinner class="fit"></spinner>
+            <!-- /ko -->
+
+            <!-- ko ifnot: moreProductsLoading -->
             <a href="#" role="button" data-bind="click: loadMoreProducts">Show more</a>
+            <!-- /ko -->
         </div>
         <!-- /ko -->
 
@@ -56,7 +62,7 @@
             </button>
         </div>
 
-        <div style="padding-bottom: 12px;">
+        <div class="pb-12">
             <div> <span data-bind="text: 'Type: Product'"></span>
                 <span class="bullet-separator">•</span>
                 <a href="#" data-bind="copyToClipboard: getFullProductUrl(quickViewProduct)">
@@ -73,7 +79,7 @@
         <span data-bind="text: quickViewProduct().terms"></span>
         <!-- /ko -->
 
-        <hr style="margin: 20px 0px;" />
+        <hr class="mt-20 mb-20" />
 
         <div class="commands">
             <a class="outlined" href="#" data-bind="attr: { href: getProductUrl(quickViewProduct) }">
