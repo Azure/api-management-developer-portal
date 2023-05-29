@@ -380,7 +380,7 @@ export class OperationConsole {
      */
     public async sendFromBrowser(request: HttpRequest): Promise<HttpResponse> {
 
-        if (request.method === HttpMethod.get && request.body) {
+        if ((request.method === HttpMethod.get || request.method === HttpMethod.head) && request.body) {
             throw new RequestError("GET requests cannot have a body.");
         }
 
