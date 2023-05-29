@@ -8,10 +8,18 @@ export class UnhandledErrorHandler {
     }
 
     public handlerError(event: ErrorEvent): void {
-        this.logger.trackError(event.error);
+        event.preventDefault();
+        event.stopPropagation();
+        this.logger.trackError(event.error).catch((error) => {
+            console.error(`Unable to log error: ${event.error} \n Logger issue -> `, error);
+        });
     }
 
     public handlerPromiseRejection(event: PromiseRejectionEvent): void {
-        this.logger.trackError(event.reason);
+        event.preventDefault();
+        event.stopPropagation();
+        this.logger.trackError(event.reason).catch((error) => {
+            console.error(`Unable to log Promise Rejection: ${event.reason} \n Logger issue -> `, error);
+        });
     }
 }
