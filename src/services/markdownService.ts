@@ -5,7 +5,7 @@ import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
-import * as truncateHtml from "truncate-html";
+import * as truncate from "html-truncate";
 
 /**
  * A service to process markdown input.
@@ -29,7 +29,7 @@ export class MarkdownService {
             })
             .use(rehypeStringify)
             .process(markdown, (err: any, html: any) => {
-                processedHtml = truncateHtml.default(html, { length: length, reserveLastWord: true });
+                processedHtml = truncate(html.value, length, {truncateLastWord: false});
             });
 
         return processedHtml;
