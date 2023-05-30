@@ -7,6 +7,12 @@
             <div role="columnheader" class="col-1 text-truncate">Action</div>
         </div>
     </div>
+    <!-- ko if: working -->
+    <div class="table-body">
+        <spinner></spinner>
+    </div>
+    <!-- /ko -->
+    <!-- ko ifnot: working -->
     <div role="rowgroup" class="table-body">
         <!-- ko if: subscriptions().length === 0 -->
         <div role="row" class="table-row">
@@ -32,7 +38,8 @@
 
                             <!-- ko if: $data.isEdit -->
                             <div class="input-group has-validation">
-                                <input type="text" class="form-control" data-bind="value: editName" aria-required="true" />
+                                <input type="text" class="form-control" data-bind="value: editName"
+                                    aria-required="true" />
                                 <span class="invalid-feedback" data-bind="validationMessage: editName"></span>
                             </div>
                             <!-- /ko -->
@@ -145,4 +152,9 @@
         <!-- /ko -->
         <!-- /ko -->
     </div>
+
+    <!-- ko if: $component.totalPages() > 1 -->
+    <pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }"></pagination>
+    <!-- /ko -->
+    <!-- /ko -->
 </div>

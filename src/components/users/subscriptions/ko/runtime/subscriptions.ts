@@ -13,6 +13,8 @@ import { EventManager } from "@paperbits/common/events";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
 import { BackendService } from "../../../../../services/backendService";
+import { SearchQuery } from "../../../../../contracts/searchQuery";
+import * as Constants from "../../../../../constants";
 
 @RuntimeComponent({
     selector: "subscriptions-runtime"
@@ -23,6 +25,10 @@ import { BackendService } from "../../../../../services/backendService";
 })
 export class Subscriptions {
     public readonly subscriptions: ko.ObservableArray<SubscriptionListItem>;
+    public readonly pageNumber: ko.Observable<number>;
+    public readonly totalPages: ko.Observable<number>;
+    public readonly working: ko.Observable<boolean>;
+    private userId: string;
 
     constructor(
         private readonly usersService: UsersService,
@@ -33,24 +39,47 @@ export class Subscriptions {
         private readonly eventManager: EventManager
     ) {
         this.subscriptions = ko.observableArray();
+        this.pageNumber = ko.observable(1);
+        this.totalPages = ko.observable(0);
+        this.working = ko.observable();
     }
 
     @OnMounted()
     public initialize(): void {
         this.loadUser();
+
+        this.pageNumber
+            .subscribe(this.loadSubscriptions.bind(this));
     }
 
     private async loadUser(): Promise<void> {
-        const userId = await this.usersService.ensureSignedIn();
-
-        await this.loadSubscriptions(userId);
+        this.userId = await this.usersService.ensureSignedIn();
+        await this.loadSubscriptions();
     }
 
-    private async loadSubscriptions(userId: string): Promise<void> {
-        const models = await this.productService.getUserSubscriptionsWithProductName(userId);
-        const subscriptions = models.map(item => new SubscriptionListItem(item, this.eventManager));
+    private async loadSubscriptions(): Promise<void> {
+        try {
+            this.working(true);
+            const pageNumber = this.pageNumber() - 1;
 
-        this.subscriptions(subscriptions);
+            const query: SearchQuery = {
+                skip: pageNumber * Constants.defaultPageSize,
+                take: Constants.defaultPageSize
+            };
+
+            const subscriptionsPage = await this.productService.getUserSubscriptionsWithProductName(this.userId, query);
+            const subscriptions = subscriptionsPage.value.map(item => new SubscriptionListItem(item, this.eventManager));
+
+            const totalItems = subscriptionsPage.count;
+            this.totalPages(Math.ceil(totalItems / Constants.defaultPageSize));
+
+            this.subscriptions(subscriptions);
+        } catch (error) {
+            throw new Error(`Unable to load subscriptions. Error: ${error.message}`);
+        }
+        finally {
+            this.working(false);
+        }
     }
 
     public timeToString(date: Date): string {
@@ -101,7 +130,7 @@ export class Subscriptions {
     }
 
     private syncSubscriptionLabelState(subscription: SubscriptionListItem, updatedVM: SubscriptionListItem): void {
-        if(updatedVM.model.productName === undefined) {
+        if (updatedVM.model.productName === undefined) {
             updatedVM.model.productName = subscription.model.productName;
         }
 
@@ -144,7 +173,7 @@ export class Subscriptions {
         const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
         if (isDelegationEnabled) {
             const delegationParam = {};
-            delegationParam[DelegationParameters.SubscriptionId] =  Utils.getResourceName("subscriptions", subscriptionId);
+            delegationParam[DelegationParameters.SubscriptionId] = Utils.getResourceName("subscriptions", subscriptionId);
             const delegationUrl = await this.backendService.getDelegationString(DelegationAction.unsubscribe, delegationParam);
             if (delegationUrl) {
                 location.assign(delegationUrl);
