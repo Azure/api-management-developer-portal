@@ -101,7 +101,7 @@
 }
 
 .admin-modal-content {
-    padding: 40px 50px 200px;
+    padding: 40px 50px 150px;
 }
 
 .media-modal {
@@ -148,5 +148,24 @@
 
     &.hidden {
         display: none;
+    }
+}
+
+.collapsible-section {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: all .3s ease-in-out;
+
+    &.hidden {
+        max-height: 0;
+    }
+}
+
+.collapsible-arrow {
+    margin-right: 10px;
+    transition: all .3s ease-in-out;
+
+    &.opened {
+        transform: rotate(-180deg);
     }
 }

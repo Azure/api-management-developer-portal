@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { Pages } from "./pages/pages";
+import { Resolve } from '@paperbits/react/decorators';
+import { ViewManager } from '@paperbits/common/ui';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
 import { CommandBarButton, IIconProps } from '@fluentui/react';
 import { Navigation } from "./navigation/navigation";
 import { SettingsModal } from "./settings/settingsModal";
 import { HelpModal } from './help/helpModal';
 import { MediaModal } from './media/mediaModal';
+import { CustomWidgets } from './custom-widgets/customWidgets';
 initializeIcons();
 
 const enum NavItem {
@@ -32,6 +35,9 @@ const settingsIcon: IIconProps = { iconName: 'Settings' };
 const helpIcon: IIconProps = { iconName: 'Help' };
 
 export class LeftPanel extends React.Component<{}, LeftPanelState> {
+    @Resolve('viewManager')
+    public viewManager: ViewManager;
+
     constructor(props: any) {
         super(props);
 
@@ -50,6 +56,8 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                 return <Pages onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
             case NavItem.Navigation:
                 return <Navigation onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
+            case NavItem.CustomWidgets:
+                return <CustomWidgets onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
             default:
                 return (
                     <div className="navigation">
@@ -74,7 +82,10 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                         <CommandBarButton
                             iconProps={stylesIcon}
                             text="Styles"
-                            onClick={() => this.setState({ selectedNavItem: NavItem.Styles })}
+                            onClick={() => {
+                                this.setState({ selectedNavItem: NavItem.Styles });
+                                this.viewManager.setHost({ name: "style-guide" }, true);
+                            }}
                             className="nav-item-list-button"
                         />
                         <CommandBarButton

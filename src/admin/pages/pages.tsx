@@ -5,7 +5,8 @@ import { ILayoutService, LayoutContract } from '@paperbits/common/layouts';
 import { Query, Operator } from '@paperbits/common/persistence';
 import { ViewManager } from '@paperbits/common/ui';
 import { Router } from '@paperbits/common/routing';
-import { CommandBarButton, FontIcon, getTheme, IIconProps, Pivot, PivotItem, SearchBox, Stack, Text } from '@fluentui/react';
+import { CommandBarButton, FontIcon, IIconProps, Pivot, PivotItem, SearchBox, Stack, Text } from '@fluentui/react';
+import { lightTheme } from '../utils/themes';
 import { BackButton } from '../utils/components/backButton';
 import { PageDetailsModal } from './pageDetailsModal';
 import { PageLayoutDetailsModal } from './pageLayoutDetailsModal';
@@ -28,8 +29,7 @@ const addIcon: IIconProps = { iconName: 'Add' };
 const pageIcon: IIconProps = { iconName: 'Page' };
 const layoutIcon: IIconProps = { iconName: 'PageHeaderEdit' };
 
-const theme = getTheme();
-const iconStyles = { width: '16px', color: theme.palette.themePrimary };
+const iconStyles = { width: '16px', color: lightTheme.palette.themePrimary };
 
 export class Pages extends React.Component<PagesProps, PagesState> {
     @Resolve('pageService')
