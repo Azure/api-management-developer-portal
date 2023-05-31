@@ -109,9 +109,7 @@ export class ProductService {
 
         const skip = searchRequest && searchRequest.skip || 0;
         const take = searchRequest && searchRequest.take || Constants.defaultPageSize;
-
-        let query = `${userId}/subscriptions?$top=${take}&$skip=${skip}`;
-
+        const query = `${userId}/subscriptions?$top=${take}&$skip=${skip}`;
 
         const result = [];
         const pageOfSubscriptions = await this.mapiClient.get<Page<SubscriptionContract>>(query, [await this.mapiClient.getPortalHeader("getUserSubscriptions")]);
