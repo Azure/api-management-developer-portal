@@ -1,6 +1,6 @@
 import * as Objects from "@paperbits/common/objects";
 import { EventManager } from "@paperbits/common/events";
-import { HttpClient } from "@paperbits/common/http";
+import { XmlHttpRequestClient } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
 
@@ -9,7 +9,6 @@ export class ApimSettingsProvider implements ISettingsProvider {
     private initializePromise: Promise<void>;
 
     constructor(
-        private readonly httpClient: HttpClient,
         private readonly eventManager: EventManager,
         private readonly sessionManager: SessionManager
     ) { }
@@ -22,7 +21,8 @@ export class ApimSettingsProvider implements ISettingsProvider {
     }
 
     private async loadSettings(): Promise<void> {
-        const commonConfigurationResponse = await this.httpClient.send<any>({ url: "/config.json" });
+        const httpClient = new XmlHttpRequestClient();
+        const commonConfigurationResponse = await httpClient.send<any>({ url: "/config.json" });
         const commonConfiguration = commonConfigurationResponse.toObject();
 
         const searializedDesignTimeSettings = await this.sessionManager?.getItem("designTimeSettings");
@@ -32,7 +32,7 @@ export class ApimSettingsProvider implements ISettingsProvider {
             Object.assign(commonConfiguration, designTimeSettings);
         }
         else {
-            const apimsConfigurationResponse = await this.httpClient.send<any>({ url: "/config-apim.json" });
+            const apimsConfigurationResponse = await httpClient.send<any>({ url: "/config-apim.json" });
 
             if (apimsConfigurationResponse.statusCode === 200) {
                 const apimConfiguration = apimsConfigurationResponse.toObject();

@@ -41,7 +41,8 @@ import { CustomHtmlPublishModule } from "./components/custom-html/customHtml.pub
 import { CustomWidgetPublishModule } from "./components/custom-widget/customWidget.publish.module";
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
-import { staticDataEnvironment,mockStaticDataEnvironment } from "./../environmentConstants";
+import { staticDataEnvironment, mockStaticDataEnvironment } from "./../environmentConstants";
+import { NodeHttpClient } from "./http/nodeHttpClient";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -86,7 +87,8 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("runtimeConfigBuilder", RuntimeConfigBuilder);
         injector.bindToCollection("publishers", AadConfigPublisher);
         injector.bindToCollection("publishers", RuntimeConfigPublisher);
-        
+        injector.bind("httpClient", NodeHttpClient);
+
         if (process.env.NODE_ENV === staticDataEnvironment || process.env.NODE_ENV === mockStaticDataEnvironment) {
             injector.bind("httpClient", StaticDataHttpClient);
             injector.bind("dataProvider", PublisherStaticDataProvider);
