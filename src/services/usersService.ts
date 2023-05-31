@@ -33,7 +33,7 @@ export class UsersService {
      * @param password {string} Password.
      */
     public async signInWithBasic(username: string, password: string): Promise<void> {
-        const credentials = `Basic ${Buffer.from(`${username}:${password}`, 'utf8').toString('base64')}`;
+        const credentials = `Basic ${Buffer.from(`${username}:${password}`, "utf8").toString("base64")}`;
         const userId = await this.authenticate(credentials);
 
         if (userId) {
