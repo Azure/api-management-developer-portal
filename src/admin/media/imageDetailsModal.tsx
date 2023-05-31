@@ -9,14 +9,14 @@ import { Router } from '@paperbits/common/routing';
 import { EventManager } from '@paperbits/common/events';
 import { DefaultButton, IconButton, Modal, PrimaryButton, Stack, Text, TextField, TooltipDelay, TooltipHost } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
+import { CopyableTextField } from '../utils/components/copyableTextField';
 
 interface ImageDetailsModalState {
     mediaItem: MediaContract,
     showDeleteConfirmation: boolean,
     croppedImage: Object,
     dragMode: string,
-    cropperDisabled: boolean,
-    urlCopied: boolean
+    cropperDisabled: boolean
 }
 
 interface ImageDetailsModalProps {
@@ -49,8 +49,7 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
             showDeleteConfirmation: false,
             croppedImage: {},
             dragMode: 'crop',
-            cropperDisabled: false,
-            urlCopied: false
+            cropperDisabled: false
         }
     }
 
@@ -89,25 +88,6 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
         this.eventManager.dispatchEvent('onSaveChanges');
         this.props.onDismiss();
     }
-
-    renderCopyButton = () => (
-        <TooltipHost
-            content={this.state.urlCopied ? 'Copied to clipboard!' : 'Copy Reference URL'}
-            id='copytooltip'
-            delay={TooltipDelay.zero}
-            onTooltipToggle={(isTooltipVisible: boolean) => !isTooltipVisible && this.setState({ urlCopied: false }) }
-        >
-            <IconButton
-                iconProps={{ iconName: 'Copy', styles: cropperIconsStyles }}
-                onClick={() => {
-                    navigator.clipboard.writeText(this.state.mediaItem.downloadUrl);
-                    this.setState({ urlCopied: true });
-                }}
-                styles={{ rootHovered: { backgroundColor: 'transparent' }, rootPressed: { backgroundColor: 'transparent' } }}
-                aria-describedby='copytooltip'
-            />   
-        </TooltipHost>
-    )
 
     onCropperInit = (cropper) => {
         this.cropper = cropper;
@@ -224,7 +204,6 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
                                     onClick={() => {
                                         this.cropper.disable();
                                         this.setState({ cropperDisabled: true });
-                                        //this.onInputChange('')
                                     }}
                                 />
                                 <IconButton
@@ -258,12 +237,10 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
                                 onChange={(event, newValue) => this.onInputChange('permalink', newValue)}
                                 styles={textFieldStyles}
                             />
-                            <TextField
-                                label="Reference URL"
-                                value={this.state.mediaItem.downloadUrl}
-                                onRenderSuffix={() => this.renderCopyButton()}
-                                styles={textFieldStyles}
-                                readOnly
+                            <CopyableTextField
+                                fieldLabel="Reference URL"
+                                showLabel={true}
+                                copyableValue={this.state.mediaItem.downloadUrl}
                             />
                             <TextField
                                 label="Description"
