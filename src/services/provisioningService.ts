@@ -30,7 +30,7 @@ export class ProvisionService {
         const accessToken = await this.authenticator.getAccessTokenAsString();
 
         if (!accessToken) {
-            this.viewManager.notifyError(`Unable to setup website`, `Management API access token is empty or invald.`);
+            this.viewManager.notifyError(`Unable to setup website`, `Management API access token is empty or invalid.`);
         }
 
         for (const key of keys) {

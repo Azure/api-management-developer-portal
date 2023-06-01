@@ -49,7 +49,7 @@ injector.resolve("autostart");
 /* Allowing self-signed certificates for HTTP requests */
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 
-/* Bulding dependency injection container */
+/* Building dependency injection container */
 const publisher = injector.resolve<IPublisher>("sitePublisher");
 
 /* Running actual publishing */
