@@ -19,6 +19,11 @@ export class ApiDetailsPageModelBinder implements IModelBinder<ApiDetailsPageMod
             groupOperationsByTag: model.groupOperationsByTag,
             showUrlPath: model.showUrlPath,
             wrapText: model.wrapText,
+            enableConsole: model.enableConsole,
+            showExamples: model.showExamples,
+            includeAllHostnames: model.includeAllHostnames,
+            useCorsProxy: model.useCorsProxy,
+            defaultSchemaView: model.defaultSchemaView
         };
 
         return contract;
@@ -30,6 +35,11 @@ export class ApiDetailsPageModelBinder implements IModelBinder<ApiDetailsPageMod
         model.groupOperationsByTag = contract.groupOperationsByTag || false;
         model.showUrlPath = contract.showUrlPath || false;
         model.wrapText = contract.wrapText || false;
+        model.enableConsole = contract.enableConsole || false;
+        model.showExamples = contract.showExamples || false;
+        model.includeAllHostnames = contract.includeAllHostnames || false;
+        model.useCorsProxy = contract.useCorsProxy || false;
+        model.defaultSchemaView = contract.defaultSchemaView || "table";
 
         return model;
     }

@@ -21,6 +21,11 @@ export class ApiDetailsPageViewModelBinder implements ViewModelBinder<ApiDetails
             groupOperationsByTag: model.groupOperationsByTag,
             showUrlPath: model.showUrlPath,
             wrapText: model.wrapText,
+            enableConsole: model.enableConsole,
+            showExamples: model.showExamples,
+            includeAllHostnames: model.includeAllHostnames,
+            useCorsProxy: model.useCorsProxy,
+            defaultSchemaView: model.defaultSchemaView
         }));
 
         viewModel["widgetBinding"] = {
