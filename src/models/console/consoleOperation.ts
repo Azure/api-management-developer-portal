@@ -110,7 +110,7 @@ export class ConsoleOperation {
         }
 
         let requestUrl = this.urlTemplate;
-        let parameters = this.templateParameters().concat(this.request.queryParameters());
+        const parameters = this.templateParameters().concat(this.request.queryParameters());
 
         const wildcardName = "{*}"
         requestUrl = requestUrl.replace("*", wildcardName);
