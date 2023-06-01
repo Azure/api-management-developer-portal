@@ -65,6 +65,7 @@ export class ApiDetailsPage {
     public readonly wikiLoading: ko.Observable<boolean>;
     public readonly operationsLoading: ko.Observable<boolean>;
     public readonly moreOperationsLoading: ko.Observable<boolean>;
+    public readonly operationDetailsConfig: ko.Observable<string>;
 
     public operationsPageNextLink: ko.Observable<string>;
 
@@ -76,6 +77,9 @@ export class ApiDetailsPage {
 
     @Param()
     public wrapText: ko.Observable<boolean>;
+
+    @Param()
+    public enableConsole: ko.Observable<boolean>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -104,6 +108,9 @@ export class ApiDetailsPage {
         this.groupOperationsByTag = ko.observable();
         this.showUrlPath = ko.observable();
         this.wrapText = ko.observable();
+
+        this.operationDetailsConfig = ko.observable();
+        this.enableConsole = ko.observable();
     }
 
     @OnMounted()
@@ -123,6 +130,9 @@ export class ApiDetailsPage {
         this.pattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.search);
+
+        const config = JSON.stringify({ "enableConsole": this.enableConsole() });
+        this.operationDetailsConfig(config);
     }
 
     public async loadApi(apiName: string): Promise<void> {
