@@ -102,16 +102,25 @@ export class ProductService {
      * Returns user subscriptions with product name.
      * @param userId {string} User unique identifier.
      */
-    public async getUserSubscriptionsWithProductName(userId: string): Promise<Subscription[]> {
+    public async getUserSubscriptionsWithProductName(userId: string, searchRequest?: SearchQuery): Promise<Page<Subscription>> {
         if (!userId) {
             throw new Error(`Parameter "userId" not specified.`);
         }
 
+        const skip = searchRequest && searchRequest.skip || 0;
+        const take = searchRequest && searchRequest.take || Constants.defaultPageSize;
+        const query = `${userId}/subscriptions?$top=${take}&$skip=${skip}`;
+
         const result = [];
-        const pageOfSubscriptions = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions`, [await this.mapiClient.getPortalHeader("getUserSubscriptions")]);
+        const pageOfSubscriptions = await this.mapiClient.get<Page<SubscriptionContract>>(query, [await this.mapiClient.getPortalHeader("getUserSubscriptions")]);
+
+        const page = new Page<Subscription>();
+        page.count = pageOfSubscriptions.count;
+        page.nextLink = pageOfSubscriptions.nextLink;
+        page.value = result;
 
         if (!pageOfSubscriptions?.value) {
-            return result;
+            return page;
         }
 
         const subscriptions = pageOfSubscriptions.value;
@@ -159,7 +168,7 @@ export class ProductService {
 
         await Promise.all(promises);
 
-        return result;
+        return page;
     }
 
     /**
