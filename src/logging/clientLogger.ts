@@ -67,8 +67,11 @@ export class ClientLogger implements Logger {
         clientEvent.timestamp = datetime.toISOString();
         clientEvent.activityId = uuidv4();
 
+        const developerPortalType = await this.settingsProvider.getSetting<string>(Constants.SettingNames.developerPortalType) || Constants.DeveloperPortalType.selfHosted;
+
         const headers: HttpHeader[] = [];
         headers.push({ name: "client-version", value: this.clientVersion });
+        headers.push({ name: "developer-portal-type", value: developerPortalType });
 
         const request: HttpRequest = {
             url: await this.getBackendUrl() + `/trace`,
