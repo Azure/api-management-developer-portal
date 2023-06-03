@@ -122,11 +122,11 @@ a:hover {
     color: #0056b3;
     text-decoration: underline;
 }
-a:not([href]) {
+a:not([href]):not([role]) {
     color: inherit;
     text-decoration: none;
 }
-a:not([href]):hover {
+a:not([href]):not([role]):hover {
     color: inherit;
     text-decoration: none;
 }
