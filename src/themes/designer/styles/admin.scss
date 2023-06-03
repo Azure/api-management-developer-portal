@@ -10,6 +10,14 @@
     &.hidden {
         width: 0;
     }
+
+    @media (max-width: $breakpoint-md) {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 100;
+    }
 }
 
 #admin-left-panel,
@@ -32,18 +40,31 @@
     padding: 12px;
 }
 
-.portal-name {
-    font-size: 20px;
-    margin-bottom: 30px;
-    display: flex;
-    align-items: center;
+.admin-side-panel-opener {
+    margin-left: 10px;
+
+    @media (min-width: $breakpoint-md) {
+        display: none;
+    }
 }
 
-.icon-home {
-    width: 18px;
-    height: 20px;
-    background-image: url('./icons/icon-admin-home.svg');
-    margin-right: 7px;
+.admin-side-panel-closer {
+    cursor: pointer;
+
+    @media (min-width: $breakpoint-md) {
+        display: none;
+    }
+}
+
+.portal-name-container {
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.portal-name {
+    font-size: 20px;
+    margin-left: 10px;
 }
 
 .objects-list {
@@ -127,6 +148,14 @@
     display: flex;
     align-items: center;
     border-bottom: 1px solid grey;
+
+    &.mobile-small {
+        height: 90px;
+
+        .top-panel-content {
+            height: auto;
+        }
+    }
 }
 
 .top-panel {
@@ -136,6 +165,17 @@
 
     &.is-focused {
         background-color: #252423;
+    }
+}
+
+.top-panel-content {
+    height: 100%;
+}
+
+.top-panel-command-button .ms-Button-textContainer,
+.top-panel-dropdown .ms-Dropdown-title span {
+    @media (max-width: $breakpoint-md) {
+        display: none;
     }
 }
 
@@ -168,4 +208,10 @@
     &.opened {
         transform: rotate(-180deg);
     }
+}
+
+
+// CHECK THIS!!!!!
+.toolbox-position-right-top {
+    display: none !important;
 }

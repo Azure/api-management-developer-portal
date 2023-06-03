@@ -5,16 +5,19 @@ import { OfflineObjectStorage } from '@paperbits/common/persistence';
 import { Resolve } from '@paperbits/react/decorators';
 import { ContentWorkshop } from '../components/content';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
-import { CommandBarButton, DefaultButton, Dropdown, Icon, IDropdownOption, IIconProps, PrimaryButton, Stack, ThemeProvider } from '@fluentui/react';
+import { CommandBarButton, DefaultButton, Dropdown, Icon, IconButton, IDropdownOption, IIconProps, PrimaryButton, Stack, ThemeProvider } from '@fluentui/react';
 import { lightTheme, darkTheme } from './utils/themes';
+import { mobileBreakpoint, smallMobileBreakpoint } from './utils/variables';
 initializeIcons();
 
 interface RightPanelState {
     selectedScreenSize: IDropdownOption,
     isFocusedState: boolean,
+    isSmallMobile: boolean,
     hasUnsavedChanges: boolean,
     canUndo: boolean,
     canRedo: boolean,
+    mobileMenuIsOpened: boolean,
     dropdownIconStyles: object
 }
 
@@ -34,6 +37,7 @@ const dropdownStyles = { title: { border: 'none' } };
 const iconStyles = { root: { color: darkTheme.callingPalette.iconWhite } };
 const undoIcon: IIconProps = { iconName: 'Undo', styles: iconStyles };
 const redoIcon: IIconProps = { iconName: 'Redo', styles: iconStyles };
+const sidePanelToggleIcon: IIconProps = { iconName: 'GlobalNavButton', styles: { root: { color: lightTheme.palette.themePrimary } } };
 
 export class RightPanel extends React.Component<{}, RightPanelState> {
     @Resolve('viewManager')
@@ -54,15 +58,48 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
         this.state = {
             selectedScreenSize: screenSizeOptions[0],
             isFocusedState: false,
+            isSmallMobile: window.innerWidth < smallMobileBreakpoint,
             hasUnsavedChanges: false,
             canUndo: false,
             canRedo: false,
+            mobileMenuIsOpened: false,
             dropdownIconStyles: { marginRight: '8px', color: lightTheme.palette.themePrimary }
         };
     }
 
     componentDidMount(): void {
         this.eventManager.addEventListener('onDataChange', this.onDataChange.bind(this));
+        window.addEventListener('resize', this.checkScreenSize.bind(this));
+        this.checkScreenSize();
+    }
+
+    componentWillUnmount() {
+        this.eventManager.removeEventListener('onDataChange', this.onDataChange.bind(this));
+        window.removeEventListener('resize', this.checkScreenSize.bind(this));
+    }
+
+    checkScreenSize = (): void => {
+        if (!this.state.isFocusedState) {
+            if (window.innerWidth < mobileBreakpoint) {
+                if (!this.state.mobileMenuIsOpened) {
+                    document.getElementById('admin-left-panel').classList.add('hidden');
+                    document.getElementById('main-content-wrapper').classList.add('is-focused');
+                }
+            } else {
+                document.getElementById('admin-left-panel').classList.remove('hidden');
+                document.getElementById('main-content-wrapper').classList.remove('is-focused');
+                this.setState({ mobileMenuIsOpened: false });
+            }
+        }
+
+        if (window.innerWidth < smallMobileBreakpoint) {
+            this.setState({ isSmallMobile: true });
+
+            if (this.state.isFocusedState) document.getElementById('admin-right-panel').classList.add('mobile-small');
+        } else {
+            this.setState({ isSmallMobile: false });
+            document.getElementById('admin-right-panel').classList.remove('mobile-small');
+        }
     }
 
     onDataChange = async (): Promise<void> => {
@@ -82,8 +119,13 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                 color: this.state.isFocusedState ? lightTheme.palette.themePrimary : darkTheme.callingPalette.iconWhite
             }
         });
-        document.getElementById('admin-left-panel').classList.toggle('hidden');
-        document.getElementById('main-content-wrapper').classList.toggle('is-focused');
+
+        if (window.innerWidth >= mobileBreakpoint) {
+            document.getElementById('admin-left-panel').classList.toggle('hidden');
+            document.getElementById('main-content-wrapper').classList.toggle('is-focused');
+        }
+
+        if (window.innerWidth < smallMobileBreakpoint) document.getElementById('admin-right-panel').classList.toggle('mobile-small');
     }
 
     renderDropdownOption = (option: IDropdownOption): JSX.Element => (
@@ -114,6 +156,7 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                 onRenderTitle={this.renderTitle}
                 options={accessOptions}
                 styles={dropdownStyles}
+                className="top-panel-dropdown"
             />
             <Dropdown
                 defaultSelectedKey="xl"
@@ -123,8 +166,30 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                 options={screenSizeOptions}
                 onChange={(event, option) => this.viewManager.setViewport(option.key.toString())}
                 styles={dropdownStyles}
+                className="top-panel-dropdown"
             />
         </Stack>
+    )
+
+    renderSaveDiscardButtons = (): JSX.Element => (
+        <>
+            <PrimaryButton
+                text="Save"
+                onClick={() => {
+                    this.eventManager.dispatchEvent('onSaveChanges');
+                    this.viewManager.setHost({ name: 'page-host' });
+                }}
+                disabled={!this.state.hasUnsavedChanges}
+                styles={{ root: { margin: '0 20px 0 10px' } }}
+            />
+            <DefaultButton
+                text="Discard"
+                onClick={() => {
+                    this.toggleFocusedState();
+                    this.viewManager.setHost({ name: 'page-host' });
+                }}
+            />
+        </>
     )
  
     public render(): JSX.Element {
@@ -136,7 +201,7 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                             horizontal
                             horizontalAlign="space-between"
                             verticalAlign="center"
-                            styles={{ root: { height: '100%' } }}
+                            className="top-panel-content"
                         >
                             {this.state.isFocusedState
                                 ?
@@ -147,31 +212,36 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                                                 iconProps={undoIcon}
                                                 text="Undo"
                                                 onClick={() => this.eventManager.dispatchEvent("onUndo")}
-                                                className="nav-item-list-button"
+                                                className="nav-item-list-button top-panel-command-button"
                                                 disabled={!this.state.canUndo}
                                             />
                                             <CommandBarButton
                                                 iconProps={redoIcon}
                                                 text="Redo"
                                                 onClick={() => this.eventManager.dispatchEvent("onRedo")}
-                                                className="nav-item-list-button"
+                                                className="nav-item-list-button top-panel-command-button"
                                                 disabled={!this.state.canRedo}
                                             />
-                                            <PrimaryButton
-                                                text="Save"
-                                                onClick={() => this.eventManager.dispatchEvent('onSaveChanges')}
-                                                disabled={!this.state.hasUnsavedChanges}
-                                                styles={{ root: { margin: '0 20px 0 10px' } }}
-                                            />
-                                            <DefaultButton
-                                                text="Discard"
-                                                onClick={() => this.toggleFocusedState()}
-                                            />
+                                            {!this.state.isSmallMobile && this.renderSaveDiscardButtons()}
                                         </Stack>
                                     </>
                                 :
                                     <>
-                                        {this.renderDropdowns()}
+                                        <Stack
+                                            horizontal
+                                            horizontalAlign="space-between"
+                                            verticalAlign="center"
+                                        >
+                                            <IconButton
+                                                iconProps={sidePanelToggleIcon}
+                                                className="admin-side-panel-opener"
+                                                onClick={() => {
+                                                    this.setState({ mobileMenuIsOpened: true });
+                                                    document.getElementById('admin-left-panel').classList.remove('hidden');
+                                                }}
+                                            />
+                                            {this.renderDropdowns()}
+                                        </Stack>
                                         <PrimaryButton
                                             text="Publish site"
                                             onClick={() => this.contentWorkshop.publish()}
@@ -179,6 +249,7 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                                     </>
                             }
                         </Stack>
+                        {(this.state.isFocusedState && this.state.isSmallMobile) && this.renderSaveDiscardButtons()}
                     </div>
                 </ThemeProvider>
                 <div

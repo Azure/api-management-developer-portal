@@ -3,12 +3,14 @@ import { Pages } from "./pages/pages";
 import { Resolve } from '@paperbits/react/decorators';
 import { ViewManager } from '@paperbits/common/ui';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
-import { CommandBarButton, IIconProps } from '@fluentui/react';
+import { CommandBarButton, Icon, IIconProps, Stack, Text } from '@fluentui/react';
 import { Navigation } from "./navigation/navigation";
 import { SettingsModal } from "./settings/settingsModal";
 import { HelpModal } from './help/helpModal';
 import { MediaModal } from './media/mediaModal';
 import { CustomWidgets } from './custom-widgets/customWidgets';
+import { lightTheme } from './utils/themes';
+import { mobileBreakpoint } from './utils/variables';
 initializeIcons();
 
 const enum NavItem {
@@ -23,7 +25,8 @@ const enum NavItem {
 }
 
 interface LeftPanelState {
-    selectedNavItem: NavItem
+    selectedNavItem: NavItem,
+    isMobile: boolean
 }
 
 const pageIcon: IIconProps = { iconName: 'Page' };
@@ -34,6 +37,8 @@ const customWidgetsIcon: IIconProps = { iconName: 'Puzzle' };
 const settingsIcon: IIconProps = { iconName: 'Settings' };
 const helpIcon: IIconProps = { iconName: 'Help' };
 
+const iconStyles = { root: { color: lightTheme.palette.themePrimary, fontSize: 20 } };
+
 export class LeftPanel extends React.Component<{}, LeftPanelState> {
     @Resolve('viewManager')
     public viewManager: ViewManager;
@@ -42,12 +47,30 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
         super(props);
 
         this.state = {
-            selectedNavItem: NavItem.Main
+            selectedNavItem: NavItem.Main,
+            isMobile: window.innerWidth < mobileBreakpoint
         };
+    }
+
+    componentDidMount(): void {
+        window.addEventListener('resize', this.checkScreenSize.bind(this));
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.checkScreenSize.bind(this));
+    }
+
+    checkScreenSize = (): void => {
+        if (window.innerWidth < mobileBreakpoint) {
+            this.setState({ isMobile: true });
+        } else {
+            this.setState({ isMobile: false });
+        }
     }
 
     handleBackButtonClick = (): void => {
         this.setState({ selectedNavItem: NavItem.Main });
+        this.viewManager.setHost({ name: 'page-host' });
     }
 
     renderNavItemsSwitch = (navItemValue: NavItem): JSX.Element => {
@@ -85,6 +108,7 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                             onClick={() => {
                                 this.setState({ selectedNavItem: NavItem.Styles });
                                 this.viewManager.setHost({ name: "style-guide" }, true);
+                                if (window.innerWidth < mobileBreakpoint) document.getElementById('admin-left-panel').classList.add('hidden');
                             }}
                             className="nav-item-list-button"
                         />
@@ -114,7 +138,21 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
     public render(): JSX.Element {
         return (
             <div className="side-panel">
-                <div className="portal-name"><span className="icon-home"></span>mydevportal</div>
+                <Stack horizontal className="portal-name-container">
+                    <Stack horizontal verticalAlign="center">
+                        <Icon iconName="Home" styles={iconStyles} />
+                        <Text className="portal-name">mydevportal</Text>
+                    </Stack>
+                    <Icon
+                        iconName="Cancel"
+                        className="admin-side-panel-closer"
+                        styles={iconStyles}
+                        onClick={() => {
+                            this.setState({ selectedNavItem: NavItem.Main });
+                            document.getElementById('admin-left-panel').classList.add('hidden');
+                        }}
+                    />
+                </Stack>
                 { this.renderNavItemsSwitch(this.state.selectedNavItem) }
                 { this.state.selectedNavItem === NavItem.Media && <MediaModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
                 { this.state.selectedNavItem === NavItem.Settings && <SettingsModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
