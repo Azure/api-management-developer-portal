@@ -9,7 +9,7 @@
 <div class="animation-fade-in">
     <div class="row flex flex-row">
         <div class="col-md-11  text-wrap">
-            <h2 class="operation-name">
+            <h2 id="operation-name">
                 <span data-bind="text: operation().displayName"></span>
             </h2>
         </div>
@@ -294,7 +294,7 @@
 <!-- ko if: operation -->
 <div class="animation-fade-in row flex flex-row">
     <div class="col-md-11 text-wrap">
-        <h2 class="operation-name">
+        <h2 id="operation-name">
             <span data-bind="text: operation().displayName"></span>
         </h2>
     </div>
@@ -335,7 +335,7 @@
 <div class="animation-fade-in">
     <div class="row flex flex-row">
         <div class="col-md-11 text-wrap">
-            <h2>GraphQL endpoint</h2>
+            <h2 id="operation-name">GraphQL endpoint</h2>
             <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
         </div>
         <!-- ko if: $component.enableConsole -->
