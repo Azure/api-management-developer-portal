@@ -147,6 +147,7 @@ export class OperationDetails {
     public async initialize(): Promise<void> {
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
+        const graphName = this.routeHelper.getGraphName();
 
         this.selectedApiName(apiName);
         this.selectedOperationName(operationName);
@@ -158,11 +159,20 @@ export class OperationDetails {
         if (operationName) {
             await this.loadOperation(apiName, operationName);
         }
+
+        if (this.enableScrollTo && (operationName || graphName)) {
+            this.scrollToOperation();
+        }
     }
 
     private async onRouteChange(): Promise<void> {
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
+        const graphName = this.routeHelper.getGraphName();
+
+        if (this.enableScrollTo && (operationName || graphName)) {
+            this.scrollToOperation();
+        }
 
         if (apiName && apiName !== this.selectedApiName()) {
             this.selectedApiName(apiName);
@@ -232,11 +242,6 @@ export class OperationDetails {
         this.tags(operationTags.map(tag => tag.name));
 
         this.working(false);
-
-        if (this.enableScrollTo) {
-            const headerElement = document.querySelector(".operation-header");
-            headerElement && headerElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
-        }
     }
 
     public async loadDefinitions(operation: Operation): Promise<void> {
@@ -421,6 +426,11 @@ export class OperationDetails {
         const operationName = this.operation().name;
 
         return this.routeHelper.getDefinitionAnchor(apiName, operationName, definition.name);
+    }
+
+    private scrollToOperation() {
+        const headerElement = document.getElementById("operation-name");
+        headerElement && headerElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
     }
 
     @OnDestroyed()
