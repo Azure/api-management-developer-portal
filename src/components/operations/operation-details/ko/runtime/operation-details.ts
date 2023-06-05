@@ -234,7 +234,7 @@ export class OperationDetails {
         this.working(false);
 
         if (this.enableScrollTo) {
-            const headerElement = document.querySelector(".operation-header");
+            const headerElement = document.querySelector(".operation-name");
             headerElement && headerElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
         }
     }
