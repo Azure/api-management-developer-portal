@@ -1,8 +1,4 @@
-﻿@import "animation.scss";
-@import "variables.scss";
-@import "mixins.scss";
-
-$tip-width: 10px;
+﻿$tip-width: 10px;
 
 .balloon {
     @include surface();
