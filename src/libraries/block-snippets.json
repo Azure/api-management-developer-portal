@@ -120,8 +120,7 @@
                                                 "vertical": "start"
                                             }
                                         }
-                                    },
-                                    "key": "pic-cell-1"
+                                    }
                                 }
                             }
                         },
@@ -179,10 +178,10 @@
                                     },
                                     "padding": {
                                         "xs": {
-                                            "top": 10,
-                                            "left": 10,
-                                            "right": 10,
-                                            "bottom": 10
+                                            "top": 20,
+                                            "left": 20,
+                                            "right": 20,
+                                            "bottom": 20
                                         }
                                     }
                                 }
@@ -230,8 +229,7 @@
                                                 "vertical": "start"
                                             }
                                         }
-                                    },
-                                    "key": "pic-cell-2"
+                                    }
                                 }
                             }
                         },
@@ -291,13 +289,12 @@
                                             }
                                         }
                                     },
-                                    "key": "sbedpikqxt",
                                     "padding": {
                                         "xs": {
-                                            "top": 10,
-                                            "left": 10,
-                                            "right": 10,
-                                            "bottom": 10
+                                            "top": 20,
+                                            "left": 20,
+                                            "right": 20,
+                                            "bottom": 20
                                         }
                                     }
                                 }
@@ -345,8 +342,7 @@
                                                 "vertical": "start"
                                             }
                                         }
-                                    },
-                                    "key": "pic-cell-3"
+                                    }
                                 }
                             }
                         },
@@ -406,13 +402,12 @@
                                             }
                                         }
                                     },
-                                    "key": "wstqpnzhqu",
                                     "padding": {
                                         "xs": {
-                                            "top": 10,
-                                            "left": 10,
-                                            "right": 10,
-                                            "bottom": 10
+                                            "top": 20,
+                                            "left": 20,
+                                            "right": 20,
+                                            "bottom": 20
                                         }
                                     }
                                 }
@@ -454,9 +449,13 @@
                             },
                             "margin": {
                                 "xs": {
-                                    "top": 20,
                                     "left": "auto",
-                                    "right": "auto",
+                                    "right": "auto"
+                                }
+                            },
+                            "padding": {
+                                "xs": {
+                                    "top": 20,
                                     "bottom": 20
                                 }
                             }
@@ -550,10 +549,10 @@
                                     },
                                     "padding": {
                                         "xs": {
-                                            "top": 10,
-                                            "left": 10,
-                                            "right": 10,
-                                            "bottom": 10
+                                            "top": 20,
+                                            "left": 20,
+                                            "right": 20,
+                                            "bottom": 20
                                         }
                                     }
                                 }
@@ -639,13 +638,12 @@
                                             }
                                         }
                                     },
-                                    "key": "tkexthlmvi",
                                     "padding": {
                                         "xs": {
-                                            "top": 10,
-                                            "left": 10,
-                                            "right": 10,
-                                            "bottom": 10
+                                            "top": 20,
+                                            "left": 20,
+                                            "right": 20,
+                                            "bottom": 20
                                         }
                                     }
                                 }
@@ -732,13 +730,12 @@
                                             }
                                         }
                                     },
-                                    "key": "rwecujswjm",
                                     "padding": {
                                         "xs": {
-                                            "top": 10,
-                                            "left": 10,
-                                            "right": 10,
-                                            "bottom": 10
+                                            "top": 20,
+                                            "left": 20,
+                                            "right": 20,
+                                            "bottom": 20
                                         }
                                     }
                                 }
@@ -776,9 +773,13 @@
                             },
                             "margin": {
                                 "xs": {
-                                    "top": 20,
                                     "left": "auto",
-                                    "right": "auto",
+                                    "right": "auto"
+                                }
+                            },
+                            "padding": {
+                                "xs": {
+                                    "top": 20,
                                     "bottom": 20
                                 }
                             }
@@ -841,10 +842,10 @@
                                     },
                                     "padding": {
                                         "xs": {
-                                            "top": 10,
-                                            "left": 10,
-                                            "right": 10,
-                                            "bottom": 10
+                                            "top": 20,
+                                            "left": 20,
+                                            "right": 20,
+                                            "bottom": 20
                                         }
                                     }
                                 }
@@ -939,10 +940,10 @@
                                     },
                                     "padding": {
                                         "xs": {
-                                            "top": 10,
-                                            "left": 10,
-                                            "right": 10,
-                                            "bottom": 10
+                                            "top": 20,
+                                            "left": 20,
+                                            "right": 20,
+                                            "bottom": 20
                                         }
                                     }
                                 }
@@ -978,9 +979,13 @@
                             },
                             "margin": {
                                 "xs": {
-                                    "top": 20,
                                     "left": "auto",
-                                    "right": "auto",
+                                    "right": "auto"
+                                }
+                            },
+                            "padding": {
+                                "xs": {
+                                    "top": 20,
                                     "bottom": 20
                                 }
                             }
@@ -1043,10 +1048,10 @@
                                     },
                                     "padding": {
                                         "xs": {
-                                            "top": 10,
-                                            "left": 10,
-                                            "right": 10,
-                                            "bottom": 10
+                                            "top": 20,
+                                            "left": 20,
+                                            "right": 20,
+                                            "bottom": 20
                                         }
                                     }
                                 }
@@ -1141,10 +1146,10 @@
                                     },
                                     "padding": {
                                         "xs": {
-                                            "top": 10,
-                                            "left": 10,
-                                            "right": 10,
-                                            "bottom": 10
+                                            "top": 20,
+                                            "left": 20,
+                                            "right": 20,
+                                            "bottom": 20
                                         }
                                     }
                                 }
@@ -1180,9 +1185,13 @@
                             },
                             "margin": {
                                 "xs": {
-                                    "top": 20,
                                     "left": "auto",
-                                    "right": "auto",
+                                    "right": "auto"
+                                }
+                            },
+                            "padding": {
+                                "xs": {
+                                    "top": 20,
                                     "bottom": 20
                                 }
                             }
@@ -1193,11 +1202,6 @@
         },
         "feature-block-5": {
             "type": "layout-section",
-            "styles": {
-                "instance": {
-                    "key": "glndfxsebe"
-                }
-            },
             "nodes": [
                 {
                     "type": "grid",
@@ -1263,10 +1267,10 @@
                                             "styles": {
                                                 "instance": {
                                                     "padding": {
-                                                        "top": 10,
-                                                        "left": 10,
-                                                        "right": 10,
-                                                        "bottom": 10
+                                                        "top": 20,
+                                                        "left": 20,
+                                                        "right": 20,
+                                                        "bottom": 20
                                                     }
                                                 }
                                             }
@@ -1292,8 +1296,7 @@
                                             },
                                             "size": {
                                                 "width": 300
-                                            },
-                                            "key": "xrsrqictjg"
+                                            }
                                         }
                                     },
                                     "nodes": [
@@ -1332,10 +1335,10 @@
                                             "styles": {
                                                 "instance": {
                                                     "padding": {
-                                                        "top": 10,
-                                                        "left": 10,
-                                                        "right": 10,
-                                                        "bottom": 10
+                                                        "top": 20,
+                                                        "left": 20,
+                                                        "right": 20,
+                                                        "bottom": 20
                                                     }
                                                 }
                                             }
@@ -1400,10 +1403,10 @@
                                             "styles": {
                                                 "instance": {
                                                     "padding": {
-                                                        "top": 10,
-                                                        "left": 10,
-                                                        "right": 10,
-                                                        "bottom": 10
+                                                        "top": 20,
+                                                        "left": 20,
+                                                        "right": 20,
+                                                        "bottom": 20
                                                     }
                                                 }
                                             }
@@ -1444,10 +1447,10 @@
                             },
                             "padding": {
                                 "xs": {
-                                    "top": 10,
-                                    "bottom": 10,
-                                    "left": 10,
-                                    "right": 10
+                                    "top": 20,
+                                    "bottom": 20,
+                                    "left": 20,
+                                    "right": 20
                                 }
                             },
                             "size": {
@@ -1485,10 +1488,10 @@
                             },
                             "padding": {
                                 "xs": {
-                                    "top": 10,
-                                    "bottom": 10,
-                                    "left": 10,
-                                    "right": 10
+                                    "top": 20,
+                                    "bottom": 20,
+                                    "left": 20,
+                                    "right": 20
                                 }
                             },
                             "size": {
@@ -1596,11 +1599,6 @@
         },
         "heading-block-1": {
             "type": "layout-section",
-            "styles": {
-                "instance": {
-                    "key": "awgovjdnwn"
-                }
-            },
             "nodes": [
                 {
                     "type": "grid",
@@ -1694,10 +1692,10 @@
                                     },
                                     "padding": {
                                         "xs": {
-                                            "top": 10,
-                                            "bottom": 10,
-                                            "left": 10,
-                                            "right": 10
+                                            "top": 20,
+                                            "bottom": 20,
+                                            "left": 20,
+                                            "right": 0
                                         }
                                     }
                                 }
@@ -1708,9 +1706,13 @@
                         "instance": {
                             "margin": {
                                 "xs": {
-                                    "top": 20,
                                     "left": "auto",
-                                    "right": "auto",
+                                    "right": "auto"
+                                }
+                            },
+                            "padding": {
+                                "xs": {
+                                    "top": 20,
                                     "bottom": 20
                                 }
                             },
