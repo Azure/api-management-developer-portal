@@ -10,6 +10,13 @@ import * as Constants from "../../../../../constants";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import aboutApi from "./staticPages/about-api.html";
 import operationDetails from "../../../../operations/operation-details/ko/runtime/operation-details.html";
+import { GraphDocService } from "../../../../operations/operation-details/ko/runtime/graphql-documentation/graphql-doc-service";
+
+interface breadcrumbItem {
+    title: string;
+    url: string;
+}
+
 interface menuItem {
     displayName: string;
     value: string;
@@ -60,6 +67,8 @@ export class ApiDetailsPage {
     public readonly operationsByTagsMenuItems: ko.ObservableArray<tagOperationMenuItem>;
     public readonly selectedDefinition: ko.Observable<string>;
     public readonly lastModifiedDate: ko.Observable<string>;
+    public readonly breadcrumbItems: ko.Observable<breadcrumbItem[]>;
+    public readonly graphqlTypes: ko.ObservableArray<string>;
 
     public readonly apiLoading: ko.Observable<boolean>;
     public readonly wikiLoading: ko.Observable<boolean>;
@@ -85,6 +94,7 @@ export class ApiDetailsPage {
         private readonly apiService: ApiService,
         private readonly routeHelper: RouteHelper,
         private readonly router: Router,
+        private readonly graphDocService: GraphDocService
     ) {
         this.api = ko.observable();
         this.pattern = ko.observable();
@@ -104,6 +114,7 @@ export class ApiDetailsPage {
         this.selectedDefinition = ko.observable();
         this.operationsPageNextLink = ko.observable();
         this.lastModifiedDate = ko.observable();
+        this.graphqlTypes = ko.observableArray([]);
 
         this.groupOperationsByTag = ko.observable();
         this.showUrlPath = ko.observable();
@@ -111,6 +122,8 @@ export class ApiDetailsPage {
 
         this.operationDetailsConfig = ko.observable();
         this.enableConsole = ko.observable();
+
+        this.breadcrumbItems = ko.observableArray([]);
     }
 
     @OnMounted()
@@ -123,6 +136,21 @@ export class ApiDetailsPage {
         }
 
         await this.loadApi(apiName);
+
+        const selectedPage = this.routeHelper.getApiDetailsPage();
+        if (selectedPage) {
+            this.selectMenuItem(this.staticSelectableMenuItems.find(x => x.value === selectedPage));
+        }
+
+        const selectedDocumentation = this.routeHelper.getDocumentationId();
+        if (selectedDocumentation) {
+            this.selectMenuItem(this.wikiDocumentationMenuItems().find(x => x.value === selectedDocumentation));
+        }
+
+        const selectedOperation = this.routeHelper.getOperationName();
+        if (selectedOperation) {
+            this.selectMenuItem(this.operationsMenuItems().find(x => x.value === selectedOperation));
+        }
 
         this.currentApiVersion.subscribe(this.onVersionChange);
         this.selectedDefinition.subscribe(this.downloadDefinition);
@@ -160,6 +188,7 @@ export class ApiDetailsPage {
 
         this.currentApiVersion(api.name);
         this.api(api);
+        this.initializeBreadcrumbItems();
 
         await this.loadWiki();
         await this.loadOperations();
@@ -176,6 +205,11 @@ export class ApiDetailsPage {
     }
 
     public selectMenuItem(menuItem: menuItem): void {
+        const breadcrumbs = this.breadcrumbItems();
+        breadcrumbs.pop();
+        breadcrumbs.push({ title: menuItem.displayName, url: "" });
+        this.breadcrumbItems(breadcrumbs);
+
         if (this.selectedMenuItem() === menuItem) {
             return;
         }
@@ -201,14 +235,25 @@ export class ApiDetailsPage {
     public async loadOperations() {
         this.operationsLoading(true);
 
-        if (this.groupOperationsByTag()) {
-            await this.loadOperationsByTags();
+        if (this.api().type == "graphql") {
+            await this.loadGraphQlOperations();
         } else {
-            await this.loadOperationsUngrouped();
+            if (this.groupOperationsByTag()) {
+                await this.loadOperationsByTags();
+            } else {
+                await this.loadOperationsUngrouped();
+            }
         }
 
         this.operationsLoading(false);
     }
+
+    public async loadGraphQlOperations() {
+        await this.graphDocService.initialize();
+
+        this.graphqlTypes(this.graphDocService.availableTypes());
+    }
+
 
     public async loadMoreOperationsUngruped(): Promise<void> {
         this.moreOperationsLoading(true);
@@ -386,4 +431,13 @@ export class ApiDetailsPage {
         this.operationsPageNextLink(operationsByTags.nextLink);
         this.operationsByTagsMenuItems(operationsMenuItems);
     }
+
+    private initializeBreadcrumbItems() {
+        const apiReferenceUrl = this.routeHelper.getApiReferenceUrl(this.api().name);
+        this.breadcrumbItems([{ title: "Home", url: "/" },
+        { title: "APIs", url: "/apis" },
+        { title: this.api().name, url: apiReferenceUrl },
+        { title: this.staticSelectableMenuItems[0].displayName, url: apiReferenceUrl }])
+    }
+
 }

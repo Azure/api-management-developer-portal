@@ -1,6 +1,6 @@
 .page-container {
     display: grid;
-    grid-template-columns: 25% 75%;
+    grid-template-columns: 450px auto;
     grid-template-rows: 130px auto;
     height: 100%;
 
@@ -127,12 +127,6 @@
     }
 }
 
-.page-content {
-    background-color: white;
-    grid-column-start: 2;
-    padding-left: 20px;
-}
-
 .api-dropdown {
     .form-control {
         border: none;
@@ -165,6 +159,9 @@
 }
 
 .page-content {
+    background-color: white;
+    grid-column-start: 2;
+    padding-left: 20px;
 
     h2,
     h3,
@@ -174,7 +171,23 @@
     }
 
     h5 {
+        margin-top: 24px;
+    }
+
+    h3 {
+        margin-top: 0px;
+    }
+
+    .breadcrumb {
         padding-top: 24px;
+        padding-bottom: 16px;
+
+        .breadcrumb-item+.breadcrumb-item {
+            &::before {
+                font-family: "Icons Embedded";
+                content: '\e904';
+            }
+        }
     }
 
     .cards-body {

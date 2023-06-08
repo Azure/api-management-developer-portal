@@ -78,6 +78,12 @@
                         </div>
                     </summary>
 
+                    <!-- ko if: api()?.type === 'graphql' -->
+                    <select class="form-control form-control-light" aria-label="Operations"
+                        data-bind="options: graphqlTypes"></select>
+                    <!-- /ko -->
+
+                    <!-- ko ifnot: api()?.type === 'graphql' -->
                     <!-- ko if: !groupOperationsByTag()-->
                     <div class="menu-list" role="listbox" aria-label="Operations">
                         <!-- ko if: operationsLoading -->
@@ -156,6 +162,7 @@
                         <!-- /ko -->
                     </div>
                     <!-- /ko -->
+                    <!-- /ko -->
                 </details>
             </div>
             <!-- ko if: api() && (api().type !== 'websocket' && api().type !== 'graphql') -->
@@ -188,6 +195,16 @@
         <!-- /ko -->
 
         <!-- ko ifnot: apiLoading-->
+
+        <nav aria-label="breadcrumb" class="mr-20">
+            <ol class="breadcrumb">
+                <!-- ko foreach: { data: breadcrumbItems, as: 'item' } -->
+                <li class="breadcrumb-item text-wrap">
+                    <a href="#" data-bind="text: item.title, attr: { href: item.url}"></a>
+                </li>
+                <!-- /ko -->
+            </ol>
+        </nav>
 
         <!-- ko if: api -->
 
