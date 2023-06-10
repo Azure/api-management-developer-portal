@@ -148,7 +148,7 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
                 containerClassName="admin-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text className="admin-modal-header-text">Custom widget / { this.state.customWidget.displayName }</Text>
+                    <Text block nowrap className="admin-modal-header-text">Custom widget / { this.state.customWidget.displayName }</Text>
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
                         {!this.state.isEdit &&
                             <PrimaryButton

@@ -97,7 +97,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                 containerClassName="admin-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text className="admin-modal-header-text">Page / { this.state.page.title }</Text>
+                    <Text block nowrap className="admin-modal-header-text">Page / { this.state.page.title }</Text>
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <PrimaryButton
                             text="Save"
@@ -143,7 +143,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                         multiline
                         autoAdjustHeight
                         value={this.state.page.description}
-                        onChange={(event, newValue) => this.onInputChange('descriptiion', newValue)}
+                        onChange={(event, newValue) => this.onInputChange('description', newValue)}
                         styles={textFieldStyles}
                     />
                     <TextField

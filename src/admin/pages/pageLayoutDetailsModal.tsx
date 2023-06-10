@@ -93,7 +93,7 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
                 containerClassName="admin-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text className="admin-modal-header-text">Layout / { this.state.layout.title }</Text>
+                    <Text block nowrap className="admin-modal-header-text">Layout / { this.state.layout.title }</Text>
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <PrimaryButton
                             text="Save"
@@ -140,7 +140,7 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
                         multiline
                         autoAdjustHeight
                         value={this.state.layout.description}
-                        onChange={(event, newValue) => this.onInputChange('descriptiion', newValue)}
+                        onChange={(event, newValue) => this.onInputChange('description', newValue)}
                     />
                 </div>
             </Modal>

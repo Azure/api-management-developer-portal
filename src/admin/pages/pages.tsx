@@ -128,7 +128,7 @@ export class Pages extends React.Component<PagesProps, PagesState> {
             className="nav-item-outer-stack"
             onClick={async () => this.viewManager.setHost({ name: 'layout-host', params: { layoutKey: layout.key } })}
         >
-            <Text>{layout.title}</Text>
+            <Text block nowrap className="nav-item-title">{layout.title}</Text>
             <FontIcon
                 iconName="Settings"
                 title="Edit"
