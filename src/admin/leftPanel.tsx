@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { Pages } from "./pages/pages";
 import { Resolve } from '@paperbits/react/decorators';
 import { ViewManager } from '@paperbits/common/ui';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
 import { CommandBarButton, Icon, IIconProps, Stack, Text } from '@fluentui/react';
-import { Navigation } from "./navigation/navigation";
-import { SettingsModal } from "./settings/settingsModal";
+import { Pages } from './pages/pages';
+import { Navigation } from './navigation/navigation';
+import { Urls } from './urls/urls';
+import { SettingsModal } from './settings/settingsModal';
 import { HelpModal } from './help/helpModal';
 import { MediaModal } from './media/mediaModal';
 import { CustomWidgets } from './custom-widgets/customWidgets';
@@ -17,6 +18,7 @@ const enum NavItem {
     Main,
     Pages,
     Navigation,
+    URLs,
     Styles,
     Media,
     CustomWidgets,
@@ -31,6 +33,7 @@ interface LeftPanelState {
 
 const pageIcon: IIconProps = { iconName: 'Page' };
 const navigationIcon: IIconProps = { iconName: 'Nav2DMapView' };
+const urlIcon: IIconProps = { iconName: 'Link' };
 const stylesIcon: IIconProps = { iconName: 'Color' };
 const mediaIcon: IIconProps = { iconName: 'Photo2' };
 const customWidgetsIcon: IIconProps = { iconName: 'Puzzle' };
@@ -79,6 +82,8 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                 return <Pages onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
             case NavItem.Navigation:
                 return <Navigation onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
+            case NavItem.URLs:
+                return <Urls onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
             case NavItem.CustomWidgets:
                 return <CustomWidgets onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
             default:
@@ -94,6 +99,12 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                             iconProps={pageIcon}
                             text="Pages"
                             onClick={() => this.setState({ selectedNavItem: NavItem.Pages })}
+                            className="nav-item-list-button"
+                        />
+                        <CommandBarButton
+                            iconProps={urlIcon}
+                            text="URLs"
+                            onClick={() => this.setState({ selectedNavItem: NavItem.URLs })}
                             className="nav-item-list-button"
                         />
                         <CommandBarButton
