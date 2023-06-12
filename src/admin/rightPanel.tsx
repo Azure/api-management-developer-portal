@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ToastContainer } from 'react-toastify';
 import { ViewManager } from '@paperbits/common/ui';
 import { EventManager } from '@paperbits/common/events';
 import { OfflineObjectStorage } from '@paperbits/common/persistence';
@@ -256,6 +257,7 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                     className={`content-overlay${this.state.isFocusedState ? ' hidden' : ''}`}
                     onClick={() => this.toggleFocusedState()}
                 ></div>
+                <ToastContainer hideProgressBar={true} />
             </>
         )
     }
