@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as crypto from "crypto";
-import { User } from "./mocks";
 import * as http from "http";
+import { ConsoleMessage, Page } from 'puppeteer';
 
 export class Utils {
     public static async getConfig(): Promise<any> {
@@ -94,4 +94,15 @@ export class Utils {
             server.emit("ready");
         });
     }
+
+    public static async  getBrowserNewPage(browser): Promise<Page>{
+        const page = await browser.newPage();
+            
+        page.on('console', async (message: ConsoleMessage) => {
+            console.log(message.text());
+        });
+
+        return page;
+    }
+
 }

@@ -29,7 +29,7 @@ describe("Products page", async () => {
         server = Utils.createMockServer([products.getProductListResponse()]);
 
         async function validate(){            
-            const page = await browser.newPage();
+            const page = await Utils.getBrowserNewPage(browser);
             await page.goto(config.urls.products);
 
             const productWidget = new ProductseWidget(page);

@@ -28,12 +28,15 @@ describe("Apis page", async () => {
         server = Utils.createMockServer([apis.getApisListResponse()]);
         
         async function validate(){            
-            const page = await browser.newPage();
+            const page = await Utils.getBrowserNewPage(browser);
+            
             await page.goto(config.urls.apis);
-        
+            
+
+
             const apiWidget = new ApisWidget(page);
             await apiWidget.apis();
-
+            
             expect(await apiWidget.getApisCount()).to.equal(apis.apiList.length);
         }
         

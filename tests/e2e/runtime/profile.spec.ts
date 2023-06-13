@@ -26,7 +26,7 @@ describe("User profile", async () => {
         server = Utils.createMockServer([ userInfo.getSignInResponse(), userInfo.getUserInfoResponse()]);
 
         async function validate(){
-            const page = await browser.newPage();
+            const page = await Utils.getBrowserNewPage(browser);
 
             await signIn(page, config);
             expect(page.url()).to.equal(config.urls.home);
