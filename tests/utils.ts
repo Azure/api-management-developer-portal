@@ -76,7 +76,9 @@ export class Utils {
         return server;
     }
     public static closeServer(server){
-        server.close();
+        if (server != null){
+            server.close();
+        }
     }
 
     public static startTest(server, validate, done){
@@ -92,5 +94,4 @@ export class Utils {
             server.emit("ready");
         });
     }
-
 }
