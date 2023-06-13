@@ -255,10 +255,10 @@ export class OperationDetails {
 
     public async loadRequestExamples(operation: Operation): Promise<void> {
         const representations = operation.request.meaningfulRepresentations();
-        let requestExamples = {};
+        const requestExamples = {};
         if (representations && representations.length) {
             for(let i = 0; i < representations.length; i++) {
-                let value = representations[i].examples?.[0];
+                const value = representations[i].examples?.[0];
                 if (!value) continue;
                 requestExamples[representations[i].contentType] =  ko.observable(value.title);
             }
