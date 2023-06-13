@@ -20,17 +20,22 @@ describe("User sign-up flow", async () => {
         Utils.closeServer(server);
     });
 
-    it("User can sign-up with basic credentials", async () => {
+    it("User can sign-up with basic credentials", (done) => {
         var userInfo = new UserMockData();
-        server = await Utils.createMockServer([await userInfo.getUserRegisterResponse("email", "name", "lastname")]);
-        const page = await browser.newPage();
-        await page.goto(config.urls.signup);
+        server = Utils.createMockServer([userInfo.getUserRegisterResponse("email", "name", "lastname")]);
 
-        const signUpWidget = new SignupBasicWidget(page);
-        await signUpWidget.signUpWithBasic();
+        async function validate(){
+            const page = await browser.newPage();
+            await page.goto(config.urls.signup);
 
-        expect(await signUpWidget.getConfirmationMessageValue())
+            const signUpWidget = new SignupBasicWidget(page);
+            await signUpWidget.signUpWithBasic();
+
+            expect(await signUpWidget.getConfirmationMessageValue())
             .to.equal("Follow the instructions from the email to verify your account.");
+        }
+
+        Utils.startTest(server, validate, done);
     });
     
 });

@@ -21,19 +21,23 @@ describe("User profile", async () => {
         Utils.closeServer(server);
     });
 
-    it("User can visit his profile page", async () => {
+    it("User can visit his profile page", (done) => {
         var userInfo = new UserMockData();
-        server = await Utils.createMockServer([await userInfo.getSignInResponse(), userInfo.getUserInfoResponse()]);
-        const page = await browser.newPage();
+        server = Utils.createMockServer([ userInfo.getSignInResponse(), userInfo.getUserInfoResponse()]);
 
-        await signIn(page, config);
-        expect(page.url()).to.equal(config.urls.home);
+        async function validate(){
+            const page = await browser.newPage();
 
-        await page.goto(config.urls.profile);
+            await signIn(page, config);
+            expect(page.url()).to.equal(config.urls.home);
 
-        const profileWidget = new ProfileWidget(page);
-        await profileWidget.profile();
+            await page.goto(config.urls.profile);
 
-        expect(await profileWidget.getUserEmail()).to.equal(userInfo.email);
+            const profileWidget = new ProfileWidget(page);
+            await profileWidget.profile();
+
+            expect(await profileWidget.getUserEmail()).to.equal(userInfo.email);
+        }
+        Utils.startTest(server, validate, done);
     });
 });

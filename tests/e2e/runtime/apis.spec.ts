@@ -21,18 +21,22 @@ describe("Apis page", async () => {
         Utils.closeServer(server);
     });
 
-    it("User can see apis on the page", async () => {
+    it("User can see apis on the page", function(done){
         var apis = new Apis();
         apis.addApi(Api.getRandomApi());
         apis.addApi(Api.getRandomApi());
-        server = await Utils.createMockServer([apis.getApisListResponse()]);
+        server = Utils.createMockServer([apis.getApisListResponse()]);
+        
+        async function validate(){            
+            const page = await browser.newPage();
+            await page.goto(config.urls.apis);
+        
+            const apiWidget = new ApisWidget(page);
+            await apiWidget.apis();
 
-        const page = await browser.newPage();
-        await page.goto(config.urls.apis);
-
-        const apiWidget = new ApisWidget(page);
-        await apiWidget.apis();
-
-        expect(await apiWidget.getApisCount()).to.equal(apis.apiList.length);
+            expect(await apiWidget.getApisCount()).to.equal(apis.apiList.length);
+        }
+        
+        Utils.startTest(server, validate, done);
     });
 });
