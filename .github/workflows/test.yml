@@ -33,7 +33,7 @@ jobs:
         run: npm install
 
       - name: Clear user directory before tests
-        run: Remove-Item -Path "/puppeteer-data-dir" -Recurse -Force
+        run: if (Test-Path -Path "/puppeteer-data-dir") { Remove-Item -Path "/puppeteer-data-dir" -Recurse -Force }
         shell: pwsh
 
       - name: Build static data
