@@ -175,11 +175,30 @@
                     <!-- /ko -->
 
                     <!-- ko if: representation.examples -->
-                    <!-- ko foreach: { data: representation.examples, as: 'example' } -->
+                    <!-- ko if: representation.examples.length > 1 -->
+                        <div class="row flex flex-row example-form-control">
+                            <div class="col-12">
+                                <label data-bind="attr : { for: 'select' + representation.contentType + '_' + $index() }, text: 'Examples'"></label>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <select class="form-control" data-bind="options: representation.examples, value: $component.selectedRepresentatnionsValue()[representation.contentType] ,optionsValue: 'title', optionsText: 'title', attr : {title: 'Representation examples selector', id: 'select-' + representation.contentType + '_' + $index() }"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ko foreach: { data: representation.examples, as: 'example' } -->
+                        <code-snippet data-bind="visible: $component.selectedRepresentatnionsValue()[representation.contentType]() == example.title"
+                            params="{ title: example.title, content: example.value, language: example.format, description: example.description }">
+                        </code-snippet>
+                        <!-- /ko -->
+                    <!-- /ko -->
+
+                    <!-- ko if: representation.examples.length == 1 -->
                     <code-snippet
-                        params="{ title: example.title, content: example.value, language: example.format, description: example.description }">
+                        params="{ title: representation.examples[0].title, content: representation.examples[0].value, language: representation.examples[0].format, description: representation.examples[0].description }">
                     </code-snippet>
                     <!-- /ko -->
+
                     <!-- /ko -->
                 </div>
             </div>
