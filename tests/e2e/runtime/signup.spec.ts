@@ -16,7 +16,7 @@ describe("User sign-up flow", async () => {
         browser = await puppeteer.launch(BrowserLaunchOptions);
     });
     after(async () => {
-        browser.close();
+        await browser.close();
         Utils.closeServer(server);
     });
 

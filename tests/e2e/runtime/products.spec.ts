@@ -17,7 +17,7 @@ describe("Products page", async () => {
         browser = await puppeteer.launch(BrowserLaunchOptions);
     });
     after(async () => {
-        browser.close();
+        await browser.close();
         Utils.closeServer(server);
     });
 
