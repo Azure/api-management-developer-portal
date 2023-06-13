@@ -21,19 +21,22 @@ describe("Products page", async () => {
         Utils.closeServer(server);
     });
 
-    it("User can see producst on the page", async () => {
+    it("User can see producst on the page", (done) => {
         var products = new Products();
         products.addProduct(Product.getStartedProduct());
         products.addProduct(Product.getUnlimitedProduct());
 
-        server = await Utils.createMockServer([products.getProductListResponse()]);
+        server = Utils.createMockServer([products.getProductListResponse()]);
 
-        const page = await browser.newPage();
-        await page.goto(config.urls.products);
+        async function validate(){            
+            const page = await browser.newPage();
+            await page.goto(config.urls.products);
 
-        const productWidget = new ProductseWidget(page);
-        await productWidget.products();
+            const productWidget = new ProductseWidget(page);
+            await productWidget.products();
 
-        expect(await productWidget.getProductsCount()).to.equal(products.productList.length);
+            expect(await productWidget.getProductsCount()).to.equal(products.productList.length);
+        }
+        Utils.startTest(server, validate, done);
     });
 });

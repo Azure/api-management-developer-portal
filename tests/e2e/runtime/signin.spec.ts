@@ -27,11 +27,15 @@ describe("User sign-in flow", async () => {
         await browser.close();
     });
 
-    it("User can sign-in with basic credentials", async () => {
+    it("User can sign-in with basic credentials", (done) => {
         var userInfo = new UserMockData();
-        server = await Utils.createMockServer([await userInfo.getSignInResponse()]);
-        const page = await browser.newPage();
-        await signIn(page, config);
-        expect(page.url()).to.equal(config.urls.home);
+        server = Utils.createMockServer([userInfo.getSignInResponse()]);
+        async function validate(){
+            const page = await browser.newPage();
+            await signIn(page, config);
+            expect(page.url()).to.equal(config.urls.home);
+        }
+
+        Utils.startTest(server, validate, done);
     });
 });

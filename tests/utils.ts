@@ -14,7 +14,7 @@ export class Utils {
         return validationConfig;
     }
 
-    public static async getSharedAccessToken(apimUid: string, apimAccessKey: string, validDays: number): Promise<string> {
+    public static getSharedAccessToken(apimUid: string, apimAccessKey: string, validDays: number): string {
         const expiryDate = new Date();
         expiryDate.setDate(expiryDate.getDate() + validDays);
 
@@ -38,7 +38,7 @@ export class Utils {
         return result;
     }
 
-    public static async createMockServer(responses?: Object[]) {
+    public static createMockServer(responses?: Object[]) {
         var obj = {};
         if (responses?.length){
             for (let responseObj of responses) {
@@ -72,10 +72,25 @@ export class Utils {
                 }
             });
         
-        server.listen(8181);
+        
         return server;
     }
     public static closeServer(server){
         server.close();
     }
+
+    public static startTest(server, validate, done){
+        server.on("ready", () => {
+            validate().then(() => {
+                done();
+            }).catch((err) => {
+                done(err);
+            })
+        });
+
+        server.listen(8181, function(){
+            server.emit("ready");
+        });
+    }
+
 }
