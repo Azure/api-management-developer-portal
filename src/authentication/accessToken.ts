@@ -33,7 +33,7 @@ export class AccessToken {
             return AccessToken.parseSharedAccessSignature(tokenValue);
         }
 
-        throw new Error("SharedAccessSignature token format is not valid. value="+ value);
+        throw new Error(`SharedAccessSignature token format is not valid.`);
     }
 
     private static parseSharedAccessSignature(value: string): AccessToken {
@@ -41,7 +41,7 @@ export class AccessToken {
         const match = regex.exec(value);
 
         if (!match || match.length < 3) {
-            throw new Error("SharedAccessSignature token format is not valid. value="+ value);
+            throw new Error(`SharedAccessSignature token format is not valid.`);
         }
 
         const userId = match[1];
