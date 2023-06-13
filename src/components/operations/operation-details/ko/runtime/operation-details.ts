@@ -237,12 +237,9 @@ export class OperationDetails {
 
         if (operation) {
             await this.loadDefinitions(operation);
-            if (this.showExamples) this.parseExamples(operation);
+            if (this.showExamples) this.parseResponseExamples(operation);
 
-
-            if(!operation) return null;
-
-            this.loadExamples(operation);
+            this.loadRequestExamples(operation);
 
             this.operation(operation);
         }
@@ -256,13 +253,13 @@ export class OperationDetails {
         this.working(false);
     }
 
-    public async loadExamples(operation: Operation): Promise<void> {
-        const representations = operation.request.meaningfulRepresentations().map(a => {return {...a}});
+    public async loadRequestExamples(operation: Operation): Promise<void> {
+        const representations = operation.request.meaningfulRepresentations();
         let requestExamples = {};
         if (representations && representations.length) {
-            for(var i = 0; i < representations.length; i++) {
+            for(let i = 0; i < representations.length; i++) {
                 let value = representations[i].examples?.[0];
-                if (!value) return;
+                if (!value) continue;
                 requestExamples[representations[i].contentType] =  ko.observable(value.title);
             }
         }
@@ -371,7 +368,7 @@ export class OperationDetails {
         return result;
     }
 
-    private parseExamples(operation: Operation): void {
+    private parseResponseExamples(operation: Operation): void {
         const examples = operation.getMeaningfulResponses().reduce((acc, cur) => {
             const representations = cur.meaningfulRepresentations();
             if (!representations || !representations.length) return acc;
