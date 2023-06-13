@@ -31,7 +31,7 @@ describe("User sign-in flow", async () => {
         var userInfo = new UserMockData();
         server = Utils.createMockServer([userInfo.getSignInResponse()]);
         async function validate(){
-            const page = await browser.newPage();
+            const page = await Utils.getBrowserNewPage(browser);
             await signIn(page, config);
             expect(page.url()).to.equal(config.urls.home);
         }

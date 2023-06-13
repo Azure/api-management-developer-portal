@@ -25,7 +25,7 @@ describe("User sign-up flow", async () => {
         server = Utils.createMockServer([userInfo.getUserRegisterResponse("email", "name", "lastname")]);
 
         async function validate(){
-            const page = await browser.newPage();
+            const page = await Utils.getBrowserNewPage(browser);
             await page.goto(config.urls.signup);
 
             const signUpWidget = new SignupBasicWidget(page);
