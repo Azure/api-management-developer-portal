@@ -24,7 +24,7 @@ export class ApimSettingsProvider implements ISettingsProvider {
     private async loadSettings(): Promise<void> {
         const commonConfigurationResponse = await this.httpClient.send<any>({ url: "/config.json" });
         const commonConfiguration = commonConfigurationResponse.toObject();
-
+        console.log(commonConfiguration);
         const searializedDesignTimeSettings = await this.sessionManager?.getItem("designTimeSettings");
 
         if (searializedDesignTimeSettings) {
