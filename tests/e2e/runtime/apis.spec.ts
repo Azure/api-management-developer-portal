@@ -32,8 +32,6 @@ describe("Apis page", async () => {
             
             await page.goto(config.urls.apis);
             
-
-
             const apiWidget = new ApisWidget(page);
             await apiWidget.apis();
             
