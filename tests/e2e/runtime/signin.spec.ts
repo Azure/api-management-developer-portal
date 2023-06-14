@@ -27,7 +27,7 @@ describe("User sign-in flow", async () => {
         await browser.close();
     });
 
-    it("User can sign-in with basic credentials", (done) => {
+    it("User can sign-in with basic credentials", async () => {
         var userInfo = new UserMockData();
         server = Utils.createMockServer([userInfo.getSignInResponse()]);
         async function validate(){
@@ -36,6 +36,6 @@ describe("User sign-in flow", async () => {
             expect(page.url()).to.equal(config.urls.home);
         }
 
-        Utils.startTest(server, validate, done);
+        await Utils.startTest(server, validate);
     });
 });
