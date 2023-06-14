@@ -6,6 +6,7 @@ import { CommandBarButton, Icon, IIconProps, Stack, Text } from '@fluentui/react
 import { Pages } from './pages/pages';
 import { Navigation } from './navigation/navigation';
 import { Urls } from './urls/urls';
+import { Popups } from './popups/popups';
 import { SettingsModal } from './settings/settingsModal';
 import { HelpModal } from './help/helpModal';
 import { MediaModal } from './media/mediaModal';
@@ -19,6 +20,7 @@ const enum NavItem {
     Pages,
     Navigation,
     URLs,
+    Popups,
     Styles,
     Media,
     CustomWidgets,
@@ -34,6 +36,7 @@ interface LeftPanelState {
 const pageIcon: IIconProps = { iconName: 'Page' };
 const navigationIcon: IIconProps = { iconName: 'Nav2DMapView' };
 const urlIcon: IIconProps = { iconName: 'Link' };
+const popupsIcon: IIconProps = { iconName: 'Documentation' };
 const stylesIcon: IIconProps = { iconName: 'Color' };
 const mediaIcon: IIconProps = { iconName: 'Photo2' };
 const customWidgetsIcon: IIconProps = { iconName: 'Puzzle' };
@@ -84,6 +87,8 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                 return <Navigation onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
             case NavItem.URLs:
                 return <Urls onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
+            case NavItem.Popups:
+                return <Popups onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
             case NavItem.CustomWidgets:
                 return <CustomWidgets onBackButtonClick={this.handleBackButtonClick.bind(this)} />;
             default:
@@ -105,6 +110,12 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                             iconProps={urlIcon}
                             text="URLs"
                             onClick={() => this.setState({ selectedNavItem: NavItem.URLs })}
+                            className="nav-item-list-button"
+                        />
+                        <CommandBarButton
+                            iconProps={popupsIcon}
+                            text="Popups"
+                            onClick={() => this.setState({ selectedNavItem: NavItem.Popups })}
                             className="nav-item-list-button"
                         />
                         <CommandBarButton
