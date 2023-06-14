@@ -17,22 +17,27 @@ describe("Apis page", async () => {
         browser = await puppeteer.launch(BrowserLaunchOptions);
     });
     after(async () => {
-        browser.close();
+        await browser.close();
         Utils.closeServer(server);
     });
 
-    it("User can see apis on the page", async () => {
+    it("User can see apis on the page", async () =>{
         var apis = new Apis();
         apis.addApi(Api.getRandomApi());
         apis.addApi(Api.getRandomApi());
-        server = await Utils.createMockServer([apis.getApisListResponse()]);
-
-        const page = await browser.newPage();
-        await page.goto(config.urls.apis);
-
-        const apiWidget = new ApisWidget(page);
-        await apiWidget.apis();
-
-        expect(await apiWidget.getApisCount()).to.equal(apis.apiList.length);
+        server = Utils.createMockServer([apis.getApisListResponse()]);
+        
+        async function validate(){            
+            const page = await Utils.getBrowserNewPage(browser);
+            
+            await page.goto(config.urls.apis);
+            
+            const apiWidget = new ApisWidget(page);
+            await apiWidget.apis();
+            
+            expect(await apiWidget.getApisCount()).to.equal(apis.apiList.length);
+        }
+        
+        await Utils.startTest(server, validate);
     });
 });
