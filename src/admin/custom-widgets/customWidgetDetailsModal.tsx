@@ -14,7 +14,7 @@ import { MapiBlobStorage } from '../../persistence';
 import { ChoiceGroup, CommandBarButton, DefaultButton, IChoiceGroupOption, Icon, IIconProps, Link, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 import { CopyableTextField } from '../utils/components/copyableTextField';
-import { CW_NAME, validateField } from '../utils/validator';
+import { UNIQUE_REQUIRED, validateField } from '../utils/validator';
 
 interface CustomWidgetDetailsModalState {
     isEdit: boolean, 
@@ -126,7 +126,7 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
 
         const name = displayNameToName(displayName);
         const isValidName = !!!this.props.customWidgets.find((config) => config.name === name);
-        const errorMessage = validateField(CW_NAME, displayName, isValidName);
+        const errorMessage = validateField(UNIQUE_REQUIRED, displayName, isValidName);
 
         this.setState({ saveButtonDisabled: errorMessage.length !== 0 });
 

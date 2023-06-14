@@ -145,6 +145,10 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
+
+    &.media-selection-block {
+        cursor: pointer;
+    }
 }
 
 #admin-right-panel {
