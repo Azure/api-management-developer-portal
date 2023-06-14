@@ -4,7 +4,7 @@ import { IUrlService, UrlContract } from '@paperbits/common/urls';
 import { EventManager } from '@paperbits/common/events';
 import { CommandBarButton, DefaultButton, IIconProps, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
-import { REQUIRED, URL, validateField } from '../utils/validator';
+import { REQUIRED, URL_REQUIRED, validateField } from '../utils/validator';
 
 interface UrlDetailsModalState {
     url: UrlContract,
@@ -116,7 +116,7 @@ export class UrlDetailsModal extends React.Component<UrlDetailsModalProps, UrlDe
                         value={this.state.url.permalink}
                         onChange={(event, newValue) => this.onInputChange('permalink', newValue)}
                         styles={textFieldStyles}
-                        onGetErrorMessage={(value) => validateField(URL, value)}
+                        onGetErrorMessage={(value) => validateField(URL_REQUIRED, value)}
                     />
                     <TextField
                         label="Description"
