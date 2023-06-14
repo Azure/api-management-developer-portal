@@ -80,25 +80,29 @@ export class Utils {
         }
     }
 
-    public static startTest(server, validate, done){
-        server.on("ready", () => {
-            validate().then(() => {
-                done();
-            }).catch((err) => {
-                done(err);
-            })
-        });
+    public static startTest(server, validate): Promise<void>{
+        return new Promise((resolve, reject) => {
+            server.on("ready", () => {
+                validate().then(() => {
+                    resolve();
+                }).catch((err) => {
+                    reject(err);
+                });
+            });
 
-        server.listen(8181,"127.0.0.1", function(){
-            server.emit("ready");
-        });
+            server.listen(8181,"127.0.0.1", function(){
+                server.emit("ready");
+            });
+       });
     }
 
     public static async  getBrowserNewPage(browser): Promise<Page>{
         const page = await browser.newPage();
             
         page.on('console', async (message: ConsoleMessage) => {
-            console.log(message.text());
+            if (message.type() === 'error') {
+                console.error(message.text());
+            }
         });
 
         return page;

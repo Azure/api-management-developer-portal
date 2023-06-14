@@ -21,7 +21,7 @@ describe("Products page", async () => {
         Utils.closeServer(server);
     });
 
-    it("User can see producst on the page", (done) => {
+    it("User can see producst on the page", async () => {
         var products = new Products();
         products.addProduct(Product.getStartedProduct());
         products.addProduct(Product.getUnlimitedProduct());
@@ -37,6 +37,6 @@ describe("Products page", async () => {
 
             expect(await productWidget.getProductsCount()).to.equal(products.productList.length);
         }
-        Utils.startTest(server, validate, done);
+        await Utils.startTest(server, validate);
     });
 });

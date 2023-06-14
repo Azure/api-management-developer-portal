@@ -21,7 +21,7 @@ describe("User profile", async () => {
         Utils.closeServer(server);
     });
 
-    it("User can visit his profile page", (done) => {
+    it("User can visit his profile page", async () => {
         var userInfo = new UserMockData();
         server = Utils.createMockServer([ userInfo.getSignInResponse(), userInfo.getUserInfoResponse()]);
 
@@ -38,6 +38,6 @@ describe("User profile", async () => {
 
             expect(await profileWidget.getUserEmail()).to.equal(userInfo.email);
         }
-        Utils.startTest(server, validate, done);
+        await Utils.startTest(server, validate);
     });
 });

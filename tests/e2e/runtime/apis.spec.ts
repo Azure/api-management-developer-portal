@@ -21,7 +21,7 @@ describe("Apis page", async () => {
         Utils.closeServer(server);
     });
 
-    it("User can see apis on the page", function(done){
+    it("User can see apis on the page", async () =>{
         var apis = new Apis();
         apis.addApi(Api.getRandomApi());
         apis.addApi(Api.getRandomApi());
@@ -38,6 +38,6 @@ describe("Apis page", async () => {
             expect(await apiWidget.getApisCount()).to.equal(apis.apiList.length);
         }
         
-        Utils.startTest(server, validate, done);
+        await Utils.startTest(server, validate);
     });
 });

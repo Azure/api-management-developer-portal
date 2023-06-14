@@ -20,7 +20,7 @@ describe("User sign-up flow", async () => {
         Utils.closeServer(server);
     });
 
-    it("User can sign-up with basic credentials", (done) => {
+    it("User can sign-up with basic credentials", async () => {
         var userInfo = new UserMockData();
         server = Utils.createMockServer([userInfo.getUserRegisterResponse("email", "name", "lastname")]);
 
@@ -35,7 +35,7 @@ describe("User sign-up flow", async () => {
             .to.equal("Follow the instructions from the email to verify your account.");
         }
 
-        Utils.startTest(server, validate, done);
+        await Utils.startTest(server, validate);
     });
     
 });
