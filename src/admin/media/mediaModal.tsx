@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { saveAs } from 'file-saver';
 import * as Utils from '@paperbits/common/utils';
-import * as MediaUtils from '@paperbits/common/media/mediaUtils';
 import { Resolve } from '@paperbits/react/decorators';
 import { EventManager } from '@paperbits/common/events';
 import { ViewManager } from '@paperbits/common/ui';
@@ -9,15 +8,17 @@ import { IMediaService } from '@paperbits/common/media';
 import { MediaContract } from '@paperbits/common/media/mediaContract';
 import { Query, Operator } from '@paperbits/common/persistence';
 import { Checkbox, DefaultButton, IconButton, IIconProps, Image, ImageFit, IOverflowSetItemProps, Link, Modal, OverflowSet, SearchBox, Stack, Text, TextField } from '@fluentui/react';
+import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
+import { getThumbnailUrl } from '../utils/helpers';
 import { ImageDetailsModal } from './imageDetailsModal';
 import { NonImageDetailsModal } from './nonImageDetailsModal';
-import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 
 interface MediaModalState {
     media: MediaContract[],
     selectedFiles: MediaContract[],
     selectedMediaFile: MediaContract,
     fileForRename: string,
+    fileNewName: string,
     showImageDetailsModal: boolean,
     showNonImageDetailsModal: boolean,
     showDeleteConfirmation: boolean
@@ -50,6 +51,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
             selectedFiles: [],
             selectedMediaFile: null,
             fileForRename: '',
+            fileNewName: '',
             showImageDetailsModal: false,
             showNonImageDetailsModal: false,
             showDeleteConfirmation: false
@@ -105,6 +107,18 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
         this.searchMedia();
     }
 
+    renameMedia = async (mediaItem: MediaContract): Promise<void> => {
+        const updatedMedia: MediaContract = {
+            ...mediaItem,
+            fileName: this.state.fileNewName
+        }
+        await this.mediaService.updateMedia(updatedMedia);
+        this.eventManager.dispatchEvent('onSaveChanges');
+
+        this.setState({ fileForRename: '', fileNewName: '' });
+        this.searchMedia();
+    }
+
     onRenderItem = (item: IOverflowSetItemProps): JSX.Element => (
         <Link styles={{ root: { marginRight: 10 } }} onClick={item.onClick}>
             {item.name}
@@ -121,27 +135,6 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
         );
     };
 
-    getThumbnailUrl = (mediaItem: MediaContract): string => {
-        if (mediaItem.mimeType?.startsWith('video')) {
-            let thumbnailUrl: string = '';
-            MediaUtils.getVideoThumbnailAsDataUrlFromUrl(mediaItem.downloadUrl).then(result => thumbnailUrl = result);
-
-            return thumbnailUrl;
-        }
-
-        if (mediaItem.mimeType?.startsWith('image')) {
-            let thumbnailUrl = mediaItem.downloadUrl;
-
-            if (mediaItem.variants) {
-                thumbnailUrl = MediaUtils.getThumbnailUrl(mediaItem);
-            }
-
-            return thumbnailUrl;
-        }
-
-        return null;
-    }
-
     openEditModal = (mediaItem: MediaContract, thumbnailUrl: string): void => {
         thumbnailUrl
             ? this.setState({ selectedMediaFile: mediaItem, showImageDetailsModal: true })
@@ -153,7 +146,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
     }
 
     renderMediaItem = (mediaItem: MediaContract): JSX.Element => {
-        const thumbnailUrl: string = this.getThumbnailUrl(mediaItem);
+        const thumbnailUrl: string = getThumbnailUrl(mediaItem);
         
         return (
             <div className="media-box">
@@ -176,14 +169,15 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                             <TextField
                                 ariaLabel="Rename file"
                                 defaultValue={mediaItem.fileName}
+                                onChange={(event, newValue) => this.setState({ fileNewName: newValue })}
                             />
-                            {/* TODO: Check if this is needed and finish if so */}
                             <IconButton
                                 iconProps={{ iconName: 'CheckMark' }}
+                                onClick={() => this.renameMedia(mediaItem)}
                             />
                             <IconButton
                                 iconProps={{ iconName: 'Cancel' }}
-                                onClick={() => this.setState({ fileForRename: '' })}
+                                onClick={() => this.setState({ fileForRename: '', fileNewName: '' })}
                             />
                         </Stack>
                     :
