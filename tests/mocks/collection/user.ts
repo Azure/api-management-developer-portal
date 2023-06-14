@@ -8,7 +8,7 @@ export class UserMockData{
         this.publicId = "example-example-example";
     }
     
-    public async getSignInResponse(){
+    public getSignInResponse(){
         return {
             "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/identity":{
                 "headers": [
@@ -18,7 +18,7 @@ export class UserMockData{
                 },
                 {
                     "name": "ocp-apim-sas-token",
-                    "value": await Utils.getSharedAccessToken(this.publicId, "accesskey", 1)
+                    "value": Utils.getSharedAccessToken(this.publicId, "accesskey", 1)
                 }
                 ],
                 "statusCode": 200,
