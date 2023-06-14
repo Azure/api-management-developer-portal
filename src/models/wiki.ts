@@ -2,7 +2,6 @@ import { WikiContract } from "../contracts/wiki";
 
 export class WikiDocument {
     documentationId: string;
-    title: string;
 }
 
 export class Wiki {
@@ -13,7 +12,6 @@ export class Wiki {
             return;
         }
 
-        // TO DO: map actual title here
-        this.documents = contract.properties.documents.map(d => { return { documentationId: d.documentationId, title: d.documentationId }; });
+        this.documents = contract.properties.documents;
     }
 }

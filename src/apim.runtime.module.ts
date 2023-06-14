@@ -28,6 +28,7 @@ import { ApiProductsTiles } from "./components/apis/api-products/ko/runtime/api-
 import { ApiDetails } from "./components/apis/details-of-api/ko/runtime/api-details";
 import { ApiDetailsPage } from "./components/apis/api-details-page/ko/runtime/api-details-page";
 import { ApiProductsCards } from "./components/apis/api-details-page/ko/runtime/staticPages/api-products-cards";
+import { NavMenu } from "./components/apis/api-details-page/ko/runtime/menu/nav-menu";
 import { Changelog } from "./components/apis/api-details-page/ko/runtime/staticPages/changelog";
 import { WikiDocumentation } from "./components/apis/api-details-page/ko/runtime/wikiDocumentation/wiki-documentation";
 import { ApiHistory } from "./components/apis/history-of-api/ko/runtime/api-history";
@@ -112,6 +113,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("apiDetails", ApiDetails);
         injector.bind("apiDetailsPage", ApiDetailsPage);
         injector.bind("apiProductsCards", ApiProductsCards);
+        injector.bind("navMenu", NavMenu);
         injector.bind("changelog", Changelog);
         injector.bind("wikiDocumentation", WikiDocumentation);
         injector.bind("apiHistory", ApiHistory);
