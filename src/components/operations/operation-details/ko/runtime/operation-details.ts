@@ -52,6 +52,9 @@ export class OperationDetails {
     public readonly protocol: ko.Computed<string>;
     public readonly examples: ko.Observable<OperationExamples>;
 
+    public readonly selectedRepresentatnionsValue: ko.Observable<object>;
+
+
     constructor(
         private readonly apiService: ApiService,
         private readonly oauthService: OAuthService,
@@ -73,6 +76,8 @@ export class OperationDetails {
         this.defaultSchemaView = ko.observable("table");
         this.useCorsProxy = ko.observable();
         this.includeAllHostnames = ko.observable();
+        this.selectedRepresentatnionsValue = ko.observable<object>();
+        
         this.requestUrlSample = ko.computed(() => {
 
             const api = this.api();
@@ -115,6 +120,7 @@ export class OperationDetails {
 
             return api.protocols?.join(", ");
         });
+
         this.examples = ko.observable({});
 
         this.apiType = ko.observable();
@@ -147,6 +153,7 @@ export class OperationDetails {
     public async initialize(): Promise<void> {
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
+        const graphName = this.routeHelper.getGraphName();
 
         this.selectedApiName(apiName);
         this.selectedOperationName(operationName);
@@ -158,11 +165,20 @@ export class OperationDetails {
         if (operationName) {
             await this.loadOperation(apiName, operationName);
         }
+
+        if (this.enableScrollTo && (operationName || graphName)) {
+            this.scrollToOperation();
+        }
     }
 
     private async onRouteChange(): Promise<void> {
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
+        const graphName = this.routeHelper.getGraphName();
+
+        if (this.enableScrollTo && (operationName || graphName)) {
+            this.scrollToOperation();
+        }
 
         if (apiName && apiName !== this.selectedApiName()) {
             this.selectedApiName(apiName);
@@ -221,7 +237,10 @@ export class OperationDetails {
 
         if (operation) {
             await this.loadDefinitions(operation);
-            if (this.showExamples) this.parseExamples(operation);
+            if (this.showExamples) this.parseResponseExamples(operation);
+
+            this.loadRequestExamples(operation);
+
             this.operation(operation);
         }
         else {
@@ -232,11 +251,19 @@ export class OperationDetails {
         this.tags(operationTags.map(tag => tag.name));
 
         this.working(false);
+    }
 
-        if (this.enableScrollTo) {
-            const headerElement = document.querySelector(".operation-header");
-            headerElement && headerElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
+    public async loadRequestExamples(operation: Operation): Promise<void> {
+        const representations = operation.request.meaningfulRepresentations();
+        const requestExamples = {};
+        if (representations && representations.length) {
+            for(let i = 0; i < representations.length; i++) {
+                const value = representations[i].examples?.[0];
+                if (!value) continue;
+                requestExamples[representations[i].contentType] =  ko.observable(value.title);
+            }
         }
+        this.selectedRepresentatnionsValue(requestExamples);
     }
 
     public async loadDefinitions(operation: Operation): Promise<void> {
@@ -341,11 +368,11 @@ export class OperationDetails {
         return result;
     }
 
-    private parseExamples(operation: Operation): void {
+    private parseResponseExamples(operation: Operation): void {
         const examples = operation.getMeaningfulResponses().reduce((acc, cur) => {
             const representations = cur.meaningfulRepresentations();
             if (!representations || !representations.length) return acc;
-
+            
             const examplesObj = {}
             representations.forEach(representation => {
                 const value = representation.examples?.[0]?.value;
@@ -421,6 +448,11 @@ export class OperationDetails {
         const operationName = this.operation().name;
 
         return this.routeHelper.getDefinitionAnchor(apiName, operationName, definition.name);
+    }
+
+    private scrollToOperation() {
+        const headerElement = document.getElementById("operation-name");
+        headerElement && headerElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
     }
 
     @OnDestroyed()

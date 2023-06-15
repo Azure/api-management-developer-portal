@@ -1,8 +1,4 @@
-﻿@import "variables.scss";
-@import "buttons.scss";
-
-
-.tools-paragraph-style {
+﻿.tools-paragraph-style {
     @include tabable();
     display: block;
     padding: 5px 10px;
