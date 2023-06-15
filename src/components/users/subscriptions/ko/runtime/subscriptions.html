@@ -7,6 +7,12 @@
             <div role="columnheader" class="col-1 text-truncate">Action</div>
         </div>
     </div>
+    <!-- ko if: working -->
+    <div class="table-body">
+        <spinner></spinner>
+    </div>
+    <!-- /ko -->
+    <!-- ko ifnot: working -->
     <div role="rowgroup" class="table-body">
         <!-- ko if: subscriptions().length === 0 -->
         <div role="row" class="table-row">
@@ -19,6 +25,7 @@
         <!-- ko foreach: subscriptions -->
         <div role="row" class="table-row">
             <div role="cell" class="col-8">
+                <div class="columnheader">Subscription details</div>
                 <div role="table">
                     <div role="row" class="row">
                         <div role="rowheader" class="col-md-3">
@@ -30,7 +37,11 @@
                             <!-- /ko -->
 
                             <!-- ko if: $data.isEdit -->
-                            <input type="text" class="form-control" data-bind="value: editName" />
+                            <div class="input-group has-validation">
+                                <input type="text" class="form-control" data-bind="value: editName"
+                                    aria-required="true" />
+                                <span class="invalid-feedback" data-bind="validationMessage: editName"></span>
+                            </div>
                             <!-- /ko -->
                         </div>
                         <div role="cell" class="col-md-3">
@@ -121,13 +132,16 @@
                 </div>
             </div>
             <div role="cell" class="col-2 text-wrap">
+                <div class="columnheader">Product</div>
                 <span data-bind="text: model.productName"></span>
             </div>
             <div role="cell" class="col-1">
+                <div class="columnheader">State</div>
                 <span data-bind="text: model.state"></span>
             </div>
             <div role="cell" class="col-1">
                 <!-- ko if: $data.model.canBeCancelled() -->
+                <div class="columnheader">Action</div>
                 <a class="btn-link" href="#" data-bind="click: $parent.cancelSubscription"
                     aria-label="Cancel subscription">
                     Cancel
@@ -138,4 +152,9 @@
         <!-- /ko -->
         <!-- /ko -->
     </div>
+
+    <!-- ko if: $component.totalPages() > 1 -->
+    <pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }"></pagination>
+    <!-- /ko -->
+    <!-- /ko -->
 </div>

@@ -6,4 +6,5 @@ export const BrowserLaunchOptions: LaunchOptions & BrowserLaunchArgumentOptions 
     product: "chrome",
     devtools: true,
     userDataDir: "/puppeteer-data-dir", // necessary for persistent user preferences
+    args: [ '--incognito' ]
 };

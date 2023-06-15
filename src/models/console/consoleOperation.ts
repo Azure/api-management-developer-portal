@@ -112,9 +112,12 @@ export class ConsoleOperation {
         let requestUrl = this.urlTemplate;
         const parameters = this.templateParameters().concat(this.request.queryParameters());
 
+        const wildcardName = "{*}"
+        requestUrl = requestUrl.replace("*", wildcardName);
+
         parameters.forEach(parameter => {
             if (parameter.value()) {
-                const parameterPlaceholder = parameter.name() !== "*" ? `{${parameter.name()}}` : "*";
+                const parameterPlaceholder = `{${parameter.name()}}`;
 
                 if (requestUrl.indexOf(parameterPlaceholder) > -1) {
                     requestUrl = requestUrl.replace(parameterPlaceholder,
@@ -132,7 +135,8 @@ export class ConsoleOperation {
         if (this.api.apiVersionSet && this.api.apiVersionSet.versioningScheme === "Query") {
             requestUrl = this.addParam(requestUrl, this.api.apiVersionSet.versionQueryName, this.api.apiVersion);
         }
-        requestUrl = requestUrl.replace("/*", "");
+
+        requestUrl = requestUrl.replace(wildcardName, "");
 
         return `${this.api.path}${versionPath}${requestUrl}`;
     }
