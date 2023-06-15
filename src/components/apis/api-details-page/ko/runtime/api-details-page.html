@@ -58,7 +58,7 @@
         <!-- /ko -->
 
         <!-- ko if: selectedMenuItem()?.type === 'operation' || selectedMenuItem()?.type === 'graphql'-->
-        <operation-details data-bind="attr: { params: operationDetailsConfig }" class="pt-12"></operation-details>
+        <div data-bind="component: {name: 'operation-details', params: operationDetailsConfig}"></div>
         <!-- /ko -->
 
         <!-- /ko -->
