@@ -247,7 +247,7 @@
                 <!-- /ko -->
             </details>
 
-            <!-- ko if: canHaveBody -->
+            <!-- ko if: canHaveBody || hasBody() -->
             <details open class="details-styled">
                 <summary aria-label="body">
                     <h3>
@@ -364,7 +364,7 @@
         </div>
 
         <!-- ko ifnot: api().type === 'websocket' -->
-        <div class="panel panel-dark panel-highlight flex-item flex-grow menu menu-horizontal">
+        <div class="panel panel-dark panel-highlight flex-item flex-grow">
             <details open class="details-styled">
                 <summary aria-label="HTTP request">
                     <h3>
@@ -409,7 +409,7 @@
         <!-- /ko -->
 
         <!-- ko if: api().type === 'websocket' -->
-        <div class="panel panel-dark panel-highlight flex-item flex-grow menu menu-horizontal">
+        <div class="panel panel-dark panel-highlight flex-item flex-grow">
             <details open class="details-styled">
                 <summary aria-label="WebSocket request">
                     <h3>
@@ -540,7 +540,7 @@
         <!-- /ko -->
 
         <!-- ko if: responseStatusCode -->
-        <div class="panel panel-dark menu menu-horizontal" data-bind="scrollintoview: {}">
+        <div class="panel panel-dark" data-bind="scrollintoview: {}">
 
             <h3>HTTP response</h3>
             <pre><span>HTTP/1.1</span> <span data-bind="attr: { 'data-code': responseStatusCode  }"><span data-bind="text: responseStatusCode, attr: { 'data-code':responseStatusCode  }"></span> <span data-bind="text: responseStatusText"></span></span>
