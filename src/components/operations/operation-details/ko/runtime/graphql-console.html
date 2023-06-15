@@ -50,7 +50,8 @@
                                         <input type="text" autocomplete="off" class="form-control form-control-sm"
                                             placeholder="name" spellcheck="false" aria-label="Parameter name"
                                             data-bind="textInput: parameter.name, attr:{ 'readonly': parameter.required }">
-                                        <span class="invalid-feedback" data-bind="validationMessage: parameter.name"></span>
+                                        <span class="invalid-feedback"
+                                            data-bind="validationMessage: parameter.name"></span>
                                     </div>
                                 </div>
                             </div>
@@ -68,8 +69,8 @@
                                             data-bind="textInput: parameter.value, attr:{ 'aria-required': parameter.required }">
                                         <!-- /ko -->
                                         <!-- ko if: parameter.secret-->
-                                        <input autocomplete="off" class="form-control form-control-sm" placeholder="value"
-                                            spellcheck="false" aria-label="Parameter value"
+                                        <input autocomplete="off" class="form-control form-control-sm"
+                                            placeholder="value" spellcheck="false" aria-label="Parameter value"
                                             data-bind=" attr: {type: parameter.inputType, 'aria-required': parameter.required }, textInput: parameter.value">
                                         <button data-bind="click: () => $component.toggleSecretParameter(parameter)"
                                             class="input-group-addon">
@@ -77,6 +78,8 @@
                                                 data-bind="class: parameter.revealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
                                         </button>
                                         <!-- /ko -->
+                                        <span class="invalid-feedback"
+                                            data-bind="validationMessage: parameter.value"></span>
                                         <!-- /ko -->
                                     </div>
                                 </div>
@@ -115,7 +118,8 @@
                                         <input type="text" autocomplete="off" class="form-control form-control-sm"
                                             placeholder="name" spellcheck="false" aria-label="Header name"
                                             data-bind="textInput: header.name, attr: { 'readonly': header.required }">
-                                        <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
+                                        <span class="invalid-feedback"
+                                            data-bind="validationMessage: header.name"></span>
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +134,8 @@
                                         <input type="text" autocomplete="off" class="form-control form-control-sm"
                                             placeholder="value" spellcheck="false" aria-label="Header value"
                                             data-bind="textInput: header.value, attr: { 'aria-required': header.required }">
-                                        <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
+                                        <span class="invalid-feedback"
+                                            data-bind="validationMessage: header.value"></span>
                                     </div>
                                     <!-- /ko -->
                                 </div>
@@ -199,11 +204,11 @@
                     <div class="flex flex-column align-items-end">
 
                         <!-- ko if: hasErrorEditors() -->
-                        <div class="panel panel-dark animation-fade-in gql-editor-errors"
+                        <div class="alert alert-danger animation-fade-in gql-editor-errors"
                             data-bind="scrollintoview: {}">
                             <p>Unable to send the request</p>
                             <!-- ko foreach: { data: editorErrors, as: 'error' } -->
-                            <p class="text-muted mb-unset" data-bind="html: error"></p>
+                            <p data-bind="html: error"></p>
                             <!-- /ko -->
                         </div>
                         <!-- /ko -->
