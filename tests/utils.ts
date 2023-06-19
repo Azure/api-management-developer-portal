@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as crypto from "crypto";
-import { User } from "./mocks";
 import * as http from "http";
+import { ConsoleMessage, Page } from 'puppeteer';
 
 export class Utils {
     public static async getConfig(): Promise<any> {
@@ -14,7 +14,7 @@ export class Utils {
         return validationConfig;
     }
 
-    public static async getSharedAccessToken(apimUid: string, apimAccessKey: string, validDays: number): Promise<string> {
+    public static getSharedAccessToken(apimUid: string, apimAccessKey: string, validDays: number): string {
         const expiryDate = new Date();
         expiryDate.setDate(expiryDate.getDate() + validDays);
 
@@ -38,7 +38,7 @@ export class Utils {
         return result;
     }
 
-    public static async createMockServer(responses?: Object[]) {
+    public static createMockServer(responses?: Object[]) {
         var obj = {};
         if (responses?.length){
             for (let responseObj of responses) {
@@ -72,10 +72,40 @@ export class Utils {
                 }
             });
         
-        server.listen(8181);
         return server;
     }
     public static closeServer(server){
-        server.close();
+        if (server != null){
+            server.close();
+        }
     }
+
+    public static startTest(server, validate): Promise<void>{
+        return new Promise((resolve, reject) => {
+            server.on("ready", () => {
+                validate().then(() => {
+                    resolve();
+                }).catch((err) => {
+                    reject(err);
+                });
+            });
+
+            server.listen(8181,"127.0.0.1", function(){
+                server.emit("ready");
+            });
+       });
+    }
+
+    public static async  getBrowserNewPage(browser): Promise<Page>{
+        const page = await browser.newPage();
+            
+        page.on('console', async (message: ConsoleMessage) => {
+            if (message.type() === 'error') {
+                console.error(message.text());
+            }
+        });
+
+        return page;
+    }
+
 }
