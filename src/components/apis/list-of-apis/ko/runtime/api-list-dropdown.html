@@ -23,17 +23,61 @@
 
             <!-- <tag-input params="{ scope: 'apis', onChange: onTagsChange }"></tag-input> -->
 
+            <div>
+                <label>Group by tag
+                    <div class="switch">
+                        <input type="checkbox" data-bind="checked: $component.groupByTag">
+                        <span class="slider round"></span>
+                    </div>
+                </label>
+            </div>
+
             <!-- ko if: working -->
             <spinner class="block" role="presentation"></spinner>
             <!-- /ko -->
 
             <!-- ko ifnot: working -->
+            <!-- ko if: groupByTag -->
             <!-- ko foreach: { data: apiGroups, as: 'group' } -->
-            <div class="tag-group">
-                <span class="tag-item" role="group" data-bind="text: group.tag"></span>
+            <div>
+                <button class="tag-group tag-group-collapsible no-border"
+                    data-bind="class: $component.groupTagsExpanded().has(group.tag) ? '' : 'active', click: () => $component.groupTagCollapseToggle(group.tag)">
+                    <span class="tag-item" role="rowgroup" data-bind="text: group.tag"></span>
+                    <i class="icon-emb icon-emb-chevron-down"></i>
+                </button>
+                <!-- ko if: $component.groupTagsExpanded().has(group.tag) -->
+                <div class="menu menu-vertical" role="list">
+                    <!-- ko foreach: { data: group.items, as: 'item' } -->
+                    <a href="#" role="listitem" class="nav-link text-truncate" data-dismiss
+                        data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedApiName() === item.name }">
+                        <span data-bind="text: item.displayName"></span>
+                        <!-- ko if: item.type === 'soap' -->
+                        <span class="badge badge-soap">SOAP</span>
+                        <!-- /ko -->
+                        <!-- ko if: item.type === 'websocket' -->
+                        <span class="badge badge-soap">WebSocket</span>
+                        <!-- /ko -->
+                        <!-- ko if: item.type === 'graphql' -->
+                        <span class="badge badge-soap">GraphQL</span>
+                        <!-- /ko -->
+                        <!-- ko if: item.apiVersion -->
+                        - <span data-bind="text: item.apiVersion"></span>
+                        <!-- /ko -->
+                    </a>
+                    <!-- /ko -->
+                </div>
+                <!-- /ko -->
             </div>
+            <!-- /ko -->
+
+            <!-- ko if: apiGroups().length === 0 -->
+            <div class="list-item-empty">No APIs found</div>
+            <!-- /ko -->
+            <!-- /ko -->
+
+            <!-- ko ifnot: groupByTag -->
+            <!-- ko foreach: { data: apis, as: 'item' } -->
             <div class="menu menu-vertical" role="list">
-                <!-- ko foreach: { data: group.items, as: 'item' } -->
                 <a href="#" role="listitem" class="nav-link text-truncate" data-dismiss
                     data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedApiName() === item.name }">
                     <span data-bind="text: item.displayName"></span>
@@ -50,12 +94,12 @@
                     - <span data-bind="text: item.apiVersion"></span>
                     <!-- /ko -->
                 </a>
-                <!-- /ko -->
             </div>
             <!-- /ko -->
 
-            <!-- ko if: apiGroups().length === 0 -->
+            <!-- ko if: apis().length === 0 -->
             <div class="list-item-empty">No APIs found</div>
+            <!-- /ko -->
             <!-- /ko -->
 
             <!-- ko ifnot: working -->

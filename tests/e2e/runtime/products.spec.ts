@@ -17,7 +17,7 @@ describe("Products page", async () => {
         browser = await puppeteer.launch(BrowserLaunchOptions);
     });
     after(async () => {
-        browser.close();
+        await browser.close();
         Utils.closeServer(server);
     });
 
@@ -26,14 +26,17 @@ describe("Products page", async () => {
         products.addProduct(Product.getStartedProduct());
         products.addProduct(Product.getUnlimitedProduct());
 
-        server = await Utils.createMockServer([products.getProductListResponse()]);
+        server = Utils.createMockServer([products.getProductListResponse()]);
 
-        const page = await browser.newPage();
-        await page.goto(config.urls.products);
+        async function validate(){            
+            const page = await Utils.getBrowserNewPage(browser);
+            await page.goto(config.urls.products);
 
-        const productWidget = new ProductseWidget(page);
-        await productWidget.products();
+            const productWidget = new ProductseWidget(page);
+            await productWidget.products();
 
-        expect(await productWidget.getProductsCount()).to.equal(products.productList.length);
+            expect(await productWidget.getProductsCount()).to.equal(products.productList.length);
+        }
+        await Utils.startTest(server, validate);
     });
 });

@@ -29,7 +29,7 @@ export class MarkdownService {
             })
             .use(rehypeStringify)
             .process(markdown, (err: any, html: any) => {
-                processedHtml = truncate(html.value, length, {truncateLastWord: false});
+                processedHtml = truncate(html.value, length, { truncateLastWord: false, keepImageTag: true });
             });
 
         return processedHtml;

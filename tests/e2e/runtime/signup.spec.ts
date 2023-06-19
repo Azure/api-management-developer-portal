@@ -16,21 +16,26 @@ describe("User sign-up flow", async () => {
         browser = await puppeteer.launch(BrowserLaunchOptions);
     });
     after(async () => {
-        browser.close();
+        await browser.close();
         Utils.closeServer(server);
     });
 
     it("User can sign-up with basic credentials", async () => {
         var userInfo = new UserMockData();
-        server = await Utils.createMockServer([await userInfo.getUserRegisterResponse("email", "name", "lastname")]);
-        const page = await browser.newPage();
-        await page.goto(config.urls.signup);
+        server = Utils.createMockServer([userInfo.getUserRegisterResponse("email", "name", "lastname")]);
 
-        const signUpWidget = new SignupBasicWidget(page);
-        await signUpWidget.signUpWithBasic();
+        async function validate(){
+            const page = await Utils.getBrowserNewPage(browser);
+            await page.goto(config.urls.signup);
 
-        expect(await signUpWidget.getConfirmationMessageValue())
+            const signUpWidget = new SignupBasicWidget(page);
+            await signUpWidget.signUpWithBasic();
+
+            expect(await signUpWidget.getConfirmationMessageValue())
             .to.equal("Follow the instructions from the email to verify your account.");
+        }
+
+        await Utils.startTest(server, validate);
     });
     
 });
