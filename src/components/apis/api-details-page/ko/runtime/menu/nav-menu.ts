@@ -162,7 +162,7 @@ export class NavMenu {
         }
 
         if (menuItem.type == graphqlMenuItem) {
-            const graphUrl = this.graphDocService.routeHelper.getGraphReferenceUrl(this.api().name, this.graphDocService.typeIndexer()[this.graphqlSelectedType()], menuItem.value);;
+            const graphUrl = this.graphDocService.routeHelper.getGraphReferenceUrl(this.api().name, this.graphDocService.typeIndexer()[this.graphqlSelectedType()], menuItem.value);
             this.router.navigateTo(graphUrl);
         }
     }
@@ -289,16 +289,16 @@ export class NavMenu {
         await this.loadOperations();
 
         if (this.operationsMenuItems().length > 0 || this.operationsByTagsMenuItems().length > 0) {
-            document.getElementById('details-operations').setAttribute('open', '');
+            document.getElementById("details-operations").setAttribute("open", "");
 
             this.operationsByTagsMenuItems()?.forEach(x => {
-                const id = 'details-tag-' + x.tagName;
-                document.getElementById(id).setAttribute('open', '');
+                const id = "details-tag-" + x.tagName;
+                document.getElementById(id).setAttribute("open", "");
             });
         }
 
         if (this.filteredWikiDocumentationMenuItems().length > 0) {
-            document.getElementById('details-wiki').setAttribute('open', '');
+            document.getElementById("details-wiki").setAttribute("open", "");
         }
     }
 
@@ -390,7 +390,7 @@ export class NavMenu {
         }
 
         if (this.api() && this.api().id) {
-            let exportObject = await this.apiService.exportApi(this.api().id, definitionType);
+            const exportObject = await this.apiService.exportApi(this.api().id, definitionType);
             downloadAPIDefinition(this.api().name, exportObject, definitionType);
         }
 

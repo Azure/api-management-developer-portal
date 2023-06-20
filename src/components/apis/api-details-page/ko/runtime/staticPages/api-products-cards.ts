@@ -102,6 +102,6 @@ export class ApiProductsCards {
     }
 
     public getFullProductUrl(product: Product): string {
-        return window.location.host + '/' + this.routeHelper.getProductReferenceUrl(product.name, "product");
+        return window.location.host + "/" + this.routeHelper.getProductReferenceUrl(product.name, "product");
     }
 }

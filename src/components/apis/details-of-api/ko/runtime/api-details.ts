@@ -105,7 +105,7 @@ export class ApiDetails {
         }
 
         if (this.api() && this.api().id) {
-            let exportObject = await this.apiService.exportApi(this.api().id, definitionType);
+            const exportObject = await this.apiService.exportApi(this.api().id, definitionType);
             downloadAPIDefinition(this.api().name, exportObject, definitionType);
         }
 
