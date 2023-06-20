@@ -9,7 +9,7 @@ export class DocumentationService {
 
     public async getDocumentation(documentationId: string): Promise<Documentation> {
         let query = `documentations/${documentationId}`;
-        query = Utils.addQueryParameter(query, 'api-version=2022-08-01');
+        query = Utils.addQueryParameter(query, "api-version=2022-08-01");
         const documentationContract = await this.mapiClient.get<DocumentationContract>(query, [await this.mapiClient.getPortalHeader("getDocumentation")]);
         
         return new Documentation(documentationContract);

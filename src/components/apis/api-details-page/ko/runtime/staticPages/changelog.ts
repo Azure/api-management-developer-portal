@@ -65,24 +65,24 @@ export class Changelog {
 
         this.lastModifiedDate(new Date(changeLog.value[0]?.createdDateTime).toLocaleDateString());
 
-        window.addEventListener('scroll', () => {
+        window.addEventListener("scroll", () => {
             if (this.ignoreNextScrollEvent) {
                 return;
             }
             let isItemSelected = false;
-            const changelogItems = document.querySelectorAll('.changelog-item');
+            const changelogItems = document.querySelectorAll(".changelog-item");
 
             changelogItems.forEach(changlogitem => {
                 if (changlogitem instanceof HTMLElement) {
                     const menuItemTop = changlogitem.getBoundingClientRect().top;
                     const menuItemBottom = changlogitem.getBoundingClientRect().bottom;
 
-                    const menuItem = document.getElementById('menu-' + changlogitem.id);
+                    const menuItem = document.getElementById("menu-" + changlogitem.id);
                     if (menuItemTop >= 0 && menuItemBottom <= window.innerHeight && !isItemSelected) {
-                        menuItem.classList.add('selected');
+                        menuItem.classList.add("selected");
                         isItemSelected = true;
                     } else {
-                        menuItem.classList.remove('selected');
+                        menuItem.classList.remove("selected");
                     }
                 }
             });
@@ -100,13 +100,13 @@ export class Changelog {
             element.scrollIntoView({ behavior: "smooth" });
         }
 
-        const elementToSelect = document.getElementById('menu-' + item.createdDateTime);
+        const elementToSelect = document.getElementById("menu-" + item.createdDateTime);
         if (elementToSelect) {
 
-            const menuItems = document.querySelectorAll('.menu-item');
+            const menuItems = document.querySelectorAll(".menu-item");
 
             menuItems.forEach(menuItem => {
-                menuItem.classList.remove('selected');
+                menuItem.classList.remove("selected");
             });
             elementToSelect.classList.add("selected");
         }
@@ -130,7 +130,7 @@ export class Changelog {
         this.apiService.getMoreApiChangelogs(this.nextLink());
 
         const changeLog = await this.apiService.getMoreApiChangelogs(this.nextLink());
-        let dictionary = this.changelogs();
+        const dictionary = this.changelogs();
 
         changeLog.value.forEach(entity => {
             const createdDateTime = entity.createdDateTime;

@@ -574,7 +574,7 @@ export class ApiService {
 
     public async getApiWiki(apiId: string): Promise<Wiki> {
         let query = `apis/${apiId}/wikis/default`;
-        query = Utils.addQueryParameter(query, 'api-version=2022-08-01');
+        query = Utils.addQueryParameter(query, "api-version=2022-08-01");
         const wikiContract = await this.mapiClient.get<WikiContract>(query, [await this.mapiClient.getPortalHeader("getApiWiki")]);
         return new Wiki(wikiContract);
     }
