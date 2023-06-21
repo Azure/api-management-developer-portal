@@ -11,12 +11,12 @@
     <div class="row flex flex-row">
         <div class="col-4">
             <label for="authServer" class="text-monospace form-label"
-                   data-bind="text: $component.authorizationServer().displayName"></label>
+                data-bind="text: $component.authorizationServer().displayName"></label>
         </div>
         <div class="col-7">
             <div class="form-group">
                 <select id="authServer" class="form-control"
-                        data-bind="options: $component.authorizationServer().grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
+                    data-bind="options: $component.authorizationServer().grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
                 </select>
             </div>
         </div>
@@ -49,7 +49,7 @@
         <div class="col-7">
             <div class="form-group">
                 <button class="button button-primary"
-                        data-bind="click: $component.authenticateOAuthWithPassword">Authorize</button>
+                    data-bind="click: $component.authenticateOAuthWithPassword">Authorize</button>
             </div>
         </div>
     </div>
@@ -79,8 +79,15 @@
                 </select>
                 <!-- /ko -->
                 <!-- ko if: !$component.products() || $component.products().length === 0 -->
-                <input id="subscriptionKey" type="text" class="form-control" placeholder="subscription key"
-                       data-bind="textInput: $component.selectedSubscriptionKey" />
+                <div class="input-group">
+                    <input id="subscriptionKey" class="form-control" placeholder="subscription key"
+                        data-bind="textInput: $component.selectedSubscriptionKey, attr: { type: subscriptionKeyRevealed() ? 'text' : 'password' }"
+                        aria-required="true" />
+                    <button data-bind="click: toggleSubscriptionKey" class="input-group-addon">
+                        <i
+                            data-bind="class: subscriptionKeyRevealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
+                    </button>
+                </div>
                 <!-- /ko -->
             </div>
         </div>
