@@ -579,13 +579,14 @@ export class ApiService {
         return new Wiki(wikiContract);
     }
 
-    public async getCurrentRevision(apiId: string): Promise<Revision> {
-        let query = `apis/${apiId}/revisions`;
-        query = Utils.addQueryParameter(query, `isCurrent eq true`);
+    public async getLastModifiedDate(apiId: string): Promise<string> {
+        let query = `${apiId}/releases`;
+        query = Utils.addQueryParameter(query, `$orderBy=createdDateTime`);
+        query = Utils.addQueryParameter(query, `$top=1`);
 
-        const revisionContract = await this.mapiClient.get<Page<RevisionContract>>(query, [await this.mapiClient.getPortalHeader("getCurrentRevision")]);
-        return new Revision(revisionContract.value[0]);
-    }
+        const changelog = await this.mapiClient.get<Page<ChangeLogContract>>(query, [await this.mapiClient.getPortalHeader("getApiChangeLog")]);
+        return changelog?.value[0]?.properties.createdDateTime;
+    } 
 
     private mapApiTagResourceToOperationsByTags(apiTagResource: PageContract<ApiTagResourceContract>): Page<TagGroup<Operation>> {
         const page = new Page<TagGroup<Operation>>();
