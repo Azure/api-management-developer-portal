@@ -137,12 +137,9 @@ export class ApiDetailsPage {
         this.api(api);
         this.initializeBreadcrumbItems();
 
-        try {
-            const currentApiVersion = await this.apiService.getCurrentRevision(apiName);
-            this.lastModifiedDate(new Date(currentApiVersion.updatedDateTime).toLocaleDateString());
-        }
-        catch (error) {
-            // do nothing
+        const lastModifiedDate = await this.apiService.getLastModifiedDate(`apis/${apiName}`);
+        if (lastModifiedDate) {
+            this.lastModifiedDate(new Date(lastModifiedDate).toLocaleDateString());
         }
 
         this.apiLoading(false);
