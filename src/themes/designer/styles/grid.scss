@@ -1,43 +1,3 @@
-// .cell {
-//     border: 1px dashed #ccc;
-//     text-align: center;
-//     position: relative;
-//     overflow: auto;
-// }
-
-// .resize-handle {
-//     position: absolute;
-//     border-radius: 50%;
-//     width: 15px;
-//     height: 15px;
-//     background: #00afef;
-
-//     &.resize-handle-top {
-//         top: 0;
-//         left: 50%;
-//         transform: translateX(-50%) translateY(-50%);
-//         cursor: ns-resize;
-//     }
-//     &.resize-handle-bottom {
-//         bottom: 0;
-//         left: 50%;
-//         transform: translateX(-50%) translateY(50%);
-//         cursor: ns-resize;
-//     }
-//     &.resize-handle-left {
-//         top: 50%;
-//         left: 0;
-//         transform: translateX(-50%) translateY(-50%);
-//         cursor: ew-resize;
-//     }
-//     &.resize-handle-right {
-//         top: 50%;
-//         right: 0;
-//         transform: translateX(50%) translateY(-50%);
-//         cursor: ew-resize;
-//     }
-// }
-
 .snippet-grid {
   display: grid;
   grid-template-columns: repeat(12, 10px);
@@ -46,9 +6,12 @@
   column-gap: 0 !important;
   margin: 5px !important;
   width: 80px !important;
+  height: 50px !important;
   float: left;
+  padding: 2px;
 
-  &:hover {
+  &:hover,
+  &:focus {
     @include selection(15px, -5px);
     cursor: pointer;
   }
@@ -57,11 +20,11 @@
 .snippet-grid-cell {
   background: #d9d9d9;
   outline: 1px solid gray;
-  min-width: 15px;
-  min-height: 20px;
+  min-width: 10px;
+  min-height: 10px;
   margin: 2px;
 
-  &[role="article"] {
+  &[future-role="article"] {
     background: #bfbfbf;
   }
 }

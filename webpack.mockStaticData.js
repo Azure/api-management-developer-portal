@@ -12,12 +12,6 @@ staticData.publisherConfig.plugins.push(new webpack.DefinePlugin({
 }));
 
 staticData.publisherRuntimeConfig.mode = "none";
-staticData.publisherRuntimeConfig.plugins.push(new CopyWebpackPlugin({
-    patterns: [
-        { from: `./src/config.validate.publish.json`, to: `config.json` , force: true },
-        { from: `./src/config.validate.runtime.json`, to: `assets/config.json` , force: true },
-    ]
-}));
 
 staticData.publisherConfig.mode = "none";
 staticData.publisherConfig.plugins.push(new CopyWebpackPlugin({

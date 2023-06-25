@@ -66,6 +66,42 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    &:hover + .text-truncate-tooltip {
+        display: block;
+    }
+}
+
+// Not used yet but can be for a truncatable text
+// Usage  example: <div role="columnheader" class="col-2"><div class="text-truncate">Product</div><div class="text-truncate-tooltip">Product</div></div>
+.text-truncate-tooltip {
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #000;
+    background-color: hsla(0, 0%, 20%, 0.9);
+    color: #fff;
+    font-weight: normal;
+    border-radius: 5px;
+    width: max-content;
+    padding: 5px 10px;
+    z-index: 1;
+    display: none;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        margin-top: -16px;
+        z-index: 1001;
+        background: transparent;
+        border: 6px solid transparent;
+        transform: translateX(-50%);
+        border-top-color: transparent;
+        border-bottom-color: #000;
+        border-bottom-color: hsla(0, 0%, 20%, 0.9);
+    }
 }
 
 .inherit-color {

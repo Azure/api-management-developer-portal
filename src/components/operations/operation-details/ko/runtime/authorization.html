@@ -1,22 +1,22 @@
 <!-- ko if: $component.authorizationServer() || $component.subscriptionKeyRequired() -->
 <details open class="details-styled">
-    <summary  aria-label="Authorization">
-        <h3 class="pt-0 console-title">
+    <summary aria-label="Authorization">
+        <h3 class="pt-0">
             Authorization
-            <i class="icon-emb icon-emb-chevron-down collapse-button"></i>
+            <i class="icon-emb icon-emb-chevron-down"></i>
         </h3>
     </summary>
 
     <!-- ko if: $component.authorizationServer -->
     <div class="row flex flex-row">
         <div class="col-4">
-            <label for="authServer" class="text-monospace form-label console-text"
-                   data-bind="text: $component.authorizationServer().displayName"></label>
+            <label for="authServer" class="text-monospace form-label"
+                data-bind="text: $component.authorizationServer().displayName"></label>
         </div>
         <div class="col-7">
             <div class="form-group">
-                <select id="authServer" class="form-control input"
-                        data-bind="options: $component.authorizationServer().grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
+                <select id="authServer" class="form-control"
+                    data-bind="options: $component.authorizationServer().grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
                 </select>
             </div>
         </div>
@@ -24,21 +24,21 @@
     <!-- ko if: $component.selectedGrantType() === 'password' && !$component.authenticated() -->
     <div class="row flex flex-row">
         <div class="col-4">
-            <label for="username" class="text-monospace form-label console-text">Username</label>
+            <label for="username" class="text-monospace form-label">Username</label>
         </div>
         <div class="col-7">
             <div class="form-group">
-                <input type="text" id="username" class="form-control input" data-bind="textInput: $component.username" />
+                <input type="text" id="username" class="form-control" data-bind="textInput: $component.username" />
             </div>
         </div>
     </div>
     <div class="row flex flex-row">
         <div class="col-4">
-            <label for="password" class="text-monospace form-label console-text">Password</label>
+            <label for="password" class="text-monospace form-label">Password</label>
         </div>
         <div class="col-7">
             <div class="form-group">
-                <input type="password" id="password" class="form-control input" data-bind="textInput: $component.password" />
+                <input type="password" id="password" class="form-control" data-bind="textInput: $component.password" />
                 <span class="invalid-feedback" data-bind="text: $component.authorizationError"></span>
             </div>
         </div>
@@ -49,7 +49,7 @@
         <div class="col-7">
             <div class="form-group">
                 <button class="button button-primary"
-                        data-bind="click: $component.authenticateOAuthWithPassword">Authorize</button>
+                    data-bind="click: $component.authenticateOAuthWithPassword">Authorize</button>
             </div>
         </div>
     </div>
@@ -61,14 +61,14 @@
     <!-- ko if: $component.subscriptionKeyRequired -->
     <div class="row flex flex-row">
         <div class="col-4">
-            <label for="subscriptionKey " class="text-monospace form-label console-text">
+            <label for="subscriptionKey" class="text-monospace form-label">
                 Subscription key
             </label>
         </div>
         <div class="col-7">
             <div class="form-group">
                 <!-- ko if: $component.products() && $component.products().length > 0 -->
-                <select id="subscriptionKey" class="form-control input" data-bind="value: $component.selectedSubscriptionKey">
+                <select id="subscriptionKey" class="form-control" data-bind="value: $component.selectedSubscriptionKey">
                     <!-- ko foreach: { data: $component.products, as: 'product' } -->
                     <optgroup data-bind="attr: { label: product.name }">
                         <!-- ko foreach: { data: product.subscriptionKeys, as: 'subscriptionKey' } -->
@@ -79,8 +79,15 @@
                 </select>
                 <!-- /ko -->
                 <!-- ko if: !$component.products() || $component.products().length === 0 -->
-                <input id="subscriptionKey" type="text" class="form-control input" placeholder="subscription key"
-                       data-bind="textInput: $component.selectedSubscriptionKey" />
+                <div class="input-group">
+                    <input id="subscriptionKey" class="form-control" placeholder="subscription key"
+                        data-bind="textInput: $component.selectedSubscriptionKey, attr: { type: subscriptionKeyRevealed() ? 'text' : 'password' }"
+                        aria-required="true" />
+                    <button data-bind="click: toggleSubscriptionKey" class="input-group-addon">
+                        <i
+                            data-bind="class: subscriptionKeyRevealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
+                    </button>
+                </div>
                 <!-- /ko -->
             </div>
         </div>

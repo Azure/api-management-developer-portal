@@ -193,6 +193,7 @@ export class OperationConsole {
         this.responseStatusCode(null);
         this.responseStatusText(null);
         this.responseBody(null);
+        this.requestError(null);
 
         const operation = await this.apiService.getOperation(selectedOperation.id);
         const consoleOperation = new ConsoleOperation(selectedApi, operation);
@@ -346,6 +347,7 @@ export class OperationConsole {
     public async updateRequestSummary(): Promise<void> {
         const template = templates[this.selectedLanguage()];
         const codeSample = await TemplatingService.render(template, { console: ko.toJS(this.consoleOperation), showSecrets: this.secretsRevealed });
+        this.requestError(null);
 
         this.codeSample(codeSample);
     }
@@ -367,6 +369,7 @@ export class OperationConsole {
 
         if (clientErrors.length > 0) {
             validationGroup.showAllMessages();
+            this.requestError("Required fields are missing or incomplete. Please review the request and ensure all required information is provided. Look for highlighted areas with error indicators.");
             return;
         }
 
@@ -378,6 +381,11 @@ export class OperationConsole {
      * @param request HTTP request.
      */
     public async sendFromBrowser(request: HttpRequest): Promise<HttpResponse> {
+
+        if ((request.method === HttpMethod.get || request.method === HttpMethod.head) && request.body) {
+            throw new RequestError("GET requests cannot have a body.");
+        }
+
         const headersRequest: HeadersInit = {};
         request.headers.forEach(header => headersRequest[header.name] = header.value);
 
@@ -575,6 +583,7 @@ export class OperationConsole {
         const clientErrors = validationGroup();
 
         if (clientErrors.length > 0) {
+            this.requestError("Required fields are missing or incomplete. Please review the request and ensure all required information is provided. Look for highlighted areas with error indicators.");
             validationGroup.showAllMessages();
             return;
         }

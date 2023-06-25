@@ -5,25 +5,24 @@
 <!-- /ko -->
 
 <!-- ko ifnot: working -->
-<div class="flex flex-column fit operation-console" data-bind="dialog: {}">
+<div class="flex flex-column fit" data-bind="dialog: {}">
     <div class="flex-item flex-grow animation-fade-in">
 
         <div class="panel panel-dark">
-            <button type="button" class="no-border pull-right close-button" data-dismiss="modal"
-                aria-label="Close console" data-bind="click: () => { closeGraphqlConsole(); $parent.closeConsole();}">
+            <button type="button" class="no-border pull-right" data-dismiss="modal" aria-label="Close console"
+                data-bind="click: () => { closeGraphqlConsole(); $parent.closeConsole();}">
                 <i class="icon-emb icon-emb-simple-remove"></i>
             </button>
 
             <nav aria-label="breadcrumb" class="mr-20">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item text-wrap">
-                        <a href="#" class="console-text"
-                            data-bind="text: api().displayName, attr: { href: getApiReferenceUrl() }"></a>
+                        <a href="#" data-bind="text: api().displayName, attr: { href: getApiReferenceUrl() }"></a>
                     </li>
 
                     <!-- ko if: api().apiVersion -->
                     <li class="breadcrumb-item">
-                        <span class="console-text" data-bind="text: api().apiVersion"></span>
+                        <span data-bind="text: api().apiVersion"></span>
                     </li>
                     <!-- /ko -->
                 </ol>
@@ -35,10 +34,10 @@
                 </authorization>
 
                 <details open class="details-styled">
-                    <summary  aria-label="Parameters">
-                        <h3 class="pt-0 console-title">
+                    <summary aria-label="Parameters">
+                        <h3 class="pt-0">
                             Parameters
-                            <i class="icon-emb icon-emb-chevron-down collapse-button"></i>
+                            <i class="icon-emb icon-emb-chevron-down"></i>
                         </h3>
                     </summary>
 
@@ -48,10 +47,11 @@
                             <div class="col-4">
                                 <div class="form-group">
                                     <div class="input-group has-validation">
-                                        <input type="text" autocomplete="off" class="form-control form-control-sm input"
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm"
                                             placeholder="name" spellcheck="false" aria-label="Parameter name"
                                             data-bind="textInput: parameter.name, attr:{ 'readonly': parameter.required }">
-                                        <span class="invalid-feedback" data-bind="validationMessage: parameter.name"></span>
+                                        <span class="invalid-feedback"
+                                            data-bind="validationMessage: parameter.name"></span>
                                     </div>
                                 </div>
                             </div>
@@ -64,13 +64,13 @@
                                     <div class="input-group">
                                         <!-- ko if: parameter.options.length === 0 -->
                                         <!-- ko if: !parameter.secret-->
-                                        <input type="text" autocomplete="off" class="form-control form-control-sm input"
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm"
                                             placeholder="value" spellcheck="false" aria-label="Parameter value"
                                             data-bind="textInput: parameter.value, attr:{ 'aria-required': parameter.required }">
                                         <!-- /ko -->
                                         <!-- ko if: parameter.secret-->
-                                        <input autocomplete="off" class="form-control form-control-sm input" placeholder="value"
-                                            spellcheck="false" aria-label="Parameter value"
+                                        <input autocomplete="off" class="form-control form-control-sm"
+                                            placeholder="value" spellcheck="false" aria-label="Parameter value"
                                             data-bind=" attr: {type: parameter.inputType, 'aria-required': parameter.required }, textInput: parameter.value">
                                         <button data-bind="click: () => $component.toggleSecretParameter(parameter)"
                                             class="input-group-addon">
@@ -78,6 +78,8 @@
                                                 data-bind="class: parameter.revealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
                                         </button>
                                         <!-- /ko -->
+                                        <span class="invalid-feedback"
+                                            data-bind="validationMessage: parameter.value"></span>
                                         <!-- /ko -->
                                     </div>
                                 </div>
@@ -86,14 +88,14 @@
                             <div class="col-1">
                                 <a href="#" role="button" data-bind="click: $component.removeQueryParameter"
                                     class="btn-centered-vert btn-inline" aria-label="Remove parameter"><i
-                                        class="icon-emb icon-emb-trash icon-button"></i></a>
+                                        class="icon-emb icon-emb-trash"></i></a>
                             </div>
                             <!-- /ko -->
                         </div>
                     </div>
                     <!-- /ko -->
 
-                    <a href="#" role="button" data-bind="click: $component.addQueryParameter" class="add-button">
+                    <a href="#" role="button" data-bind="click: $component.addQueryParameter">
                         <i class="icon-emb icon-emb-plus"></i>
                         Add parameter
                     </a>
@@ -101,9 +103,9 @@
 
                 <details open class="details-styled">
                     <summary aria-label="Headers">
-                        <h3 class="pt-0 console-title">
+                        <h3 class="pt-0">
                             Headers
-                            <i class="icon-emb icon-emb-chevron-down collapse-button"></i>
+                            <i class="icon-emb icon-emb-chevron-down"></i>
                         </h3>
                     </summary>
 
@@ -113,10 +115,11 @@
                             <div class="col-4">
                                 <div class="form-group">
                                     <div class="input-group has-validation">
-                                        <input type="text" autocomplete="off" class="form-control form-control-sm input"
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm"
                                             placeholder="name" spellcheck="false" aria-label="Header name"
                                             data-bind="textInput: header.name, attr: { 'readonly': header.required }">
-                                        <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
+                                        <span class="invalid-feedback"
+                                            data-bind="validationMessage: header.name"></span>
                                     </div>
                                 </div>
                             </div>
@@ -128,10 +131,11 @@
                                     <!-- /ko -->
                                     <!-- ko if: !header.options || header.options.length === 0 -->
                                     <div class="form-group">
-                                        <input type="text" autocomplete="off" class="form-control form-control-sm input"
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm"
                                             placeholder="value" spellcheck="false" aria-label="Header value"
                                             data-bind="textInput: header.value, attr: { 'aria-required': header.required }">
-                                        <span class="invalid-feedback" data-bind="validationMessage: header.value"></span>
+                                        <span class="invalid-feedback"
+                                            data-bind="validationMessage: header.value"></span>
                                     </div>
                                     <!-- /ko -->
                                 </div>
@@ -141,27 +145,27 @@
                             <div class="col-1">
                                 <a href="#" role="button" data-bind="click: $component.removeHeader"
                                     class="btn-centered-vert btn-inline" aria-label="Remove header"><i
-                                        class="icon-emb icon-emb-trash icon-button"></i></a>
+                                        class="icon-emb icon-emb-trash"></i></a>
                             </div>
                             <!-- /ko -->
                         </div>
                     </div>
                     <!-- /ko -->
 
-                    <a href="#" role="button" data-bind="click: addHeader" class="add-button">
+                    <a href="#" role="button" data-bind="click: addHeader">
                         <i class="icon-emb icon-emb-plus"></i> Add header
                     </a>
                 </details>
             </div>
         </div>
 
-        <div class="panel panel-dark panel-highlight flex-item flex-grow menu menu-horizontal">
+        <div class="panel panel-dark panel-highlight flex-item flex-grow">
 
             <div class="gql-container" data-bind="css: { 'ws-responses': displayWsConsole }">
                 <div class="gql-explorer-grid">
-                    <h4 class="explorer-title">Explorer</h4>
+                    <h4>Explorer</h4>
                     <div class="menu menu-vertical d-block flex-item flex-grow animation-fade-in">
-                        <input class="form-control search explorer-input" type="search" aria-label="Search"
+                        <input class="form-control search" type="search" aria-label="Search"
                             placeholder="Search operations" spellcheck="false" data-bind="textInput: filter" />
 
                         <div class="explorer-operations scrollable">
@@ -182,14 +186,14 @@
                     </div>
                 </div>
                 <div class="gql-query-grid">
-                    <h4 class="explorer-title">
+                    <h4>
                         Query editor
                         <i class="icon-emb icon-emb-info info-icon-size"
                             title="Select a query, mutation, or subscription from the explorer to add it to the test console or begin typing to compose a query."></i>
                     </h4>
                     <div class="query-editor" data-bind="css: {'with-errors': hasErrorEditors()}" id="queryEditor">
                     </div>
-                    <h4 class="mt-30 explorer-title">
+                    <h4 class="mt-30">
                         Query variables
                         <i class="icon-emb icon-emb-info info-icon-size"
                             title="Use variables to reuse the same query or mutation to pass different values."></i>
@@ -200,11 +204,11 @@
                     <div class="flex flex-column align-items-end">
 
                         <!-- ko if: hasErrorEditors() -->
-                        <div class="panel panel-dark animation-fade-in gql-editor-errors"
+                        <div class="alert alert-danger animation-fade-in gql-editor-errors"
                             data-bind="scrollintoview: {}">
-                            <p class="console-text">Unable to send the request</p>
+                            <p>Unable to send the request</p>
                             <!-- ko foreach: { data: editorErrors, as: 'error' } -->
-                            <p class="text-muted mb-unset" data-bind="html: error"></p>
+                            <p data-bind="html: error"></p>
                             <!-- /ko -->
                         </div>
                         <!-- /ko -->
@@ -213,13 +217,13 @@
                             <!-- ko if: !isSubscriptionOperation() || canRestartSubscription() -->
 
                             <!-- ko ifnot: sendingRequest()-->
-                            <button type="button" class="button button-primary btn-sm send-button"
+                            <button type="button" class="button button-primary btn-sm"
                                 data-bind="click: canRestartSubscription() ? restartSubscription : validateAndSendRequest">
                                 Send
                             </button>
                             <!-- /ko -->
                             <!-- ko if: sendingRequest() -->
-                            <button type="button" class="button button-primary btn-sm send-button" disabled>
+                            <button type="button" class="button button-primary btn-sm" disabled>
                                 Sending...
                             </button>
                             <!-- /ko -->
@@ -246,14 +250,14 @@
                     </div>
                 </div>
                 <div class="gql-response-grid">
-                    <h4 class="explorer-title">Response</h4>
+                    <h4>Response</h4>
                     <div class="response-editor" data-bind="css: {'with-ws': displayWsConsole}" id="responseEditor">
                     </div>
 
                     <!-- ko if: displayWsConsole -->
 
                     <div class="mt-30 flex">
-                        <h4 class="explorer-title">
+                        <h4>
                             Subscription
                         </h4>
                         <div class="code-snippet ml-auto">
@@ -264,7 +268,7 @@
                                 </button>
                                 <button class="code-snippet-command" data-bind="click: clearWsLogs"
                                     aria-label="Clear logs">
-                                    <i class="icon-emb icon-emb- icon-button"></i> Clear logs
+                                    <i class="icon-emb icon-emb-trash"></i> Clear logs
                                 </button>
                                 <button class="code-snippet-command" data-bind="click: closeWs" aria-label="Close WS">
                                     <i class="icon-emb icon-emb-simple-remove"></i> Close WS
