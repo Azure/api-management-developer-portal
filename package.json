@@ -82,7 +82,6 @@
     "@paperbits/common": "0.1.587",
     "@paperbits/core": "0.1.587",
     "@paperbits/forms": "0.1.587",
-    "@paperbits/prosemirror": "0.1.587",
     "@paperbits/styles": "0.1.587",
     "@webcomponents/custom-elements": "1.5.1",
     "@webcomponents/shadydom": "^1.10.0",
