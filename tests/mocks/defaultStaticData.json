@@ -2754,9 +2754,21 @@
     "statusCode": 200,
     "statusText": "OK",
     "body": {
-      "value": [],
-      "count": 0
-    },
+        "value": [
+          {
+            "id": "/contentTypes/popup/contentItems/main-menu-popup",
+            "type": "Microsoft.ApiManagement/service/contentTypes/contentItems",
+            "name": "main-menu-popup",
+            "properties": {
+              "en_us": {
+                "title": "Main menu popup",
+                "documentId": "contentTypes/document/contentItems/main-menu-popup"
+              }
+            }
+          }
+        ],
+        "count": 1
+      },
     "headers": [
       {
         "name": "content-type",
