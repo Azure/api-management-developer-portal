@@ -48,7 +48,12 @@ export class StaticDataHttpClient implements HttpClient {
             response.statusCode = 200;
             response.statusText = "OK";
             response.headers = [{ name: "content-type", value: "application/json; charset=utf-8" }];
-            response.body = Buffer.from(JSON.stringify(this.defaultDataObject[this.getShortUrl(request.url)]));
+            
+            const body = this.defaultDataObject[this.getShortUrl(request.url)];
+            if (body && "type" in body){
+                body["id"] = this.getShortUrl(request.url);
+            }
+            response.body = Buffer.from(JSON.stringify(body));
 
             return response;
         }

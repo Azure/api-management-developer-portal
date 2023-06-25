@@ -19,6 +19,7 @@ import { Tag } from "../../../../../models/tag";
     template: template
 })
 export class ApiListDropdown {
+    public readonly apis: ko.ObservableArray<Api>;
     public readonly apiGroups: ko.ObservableArray<TagGroup<Api>>;
     public readonly selectedApi: ko.Observable<Api>;
     public readonly selectedApiName: ko.Observable<string>;
@@ -28,14 +29,20 @@ export class ApiListDropdown {
     public readonly pageNumber: ko.Observable<number>;
     public readonly totalPages: ko.Observable<number>;
     public readonly selection: ko.Computed<string>;
+    public readonly groupByTag: ko.Observable<boolean>;
+    public readonly groupTagsExpanded: ko.Observable<Set<string>>;
 
     constructor(
         private readonly apiService: ApiService,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
     ) {
+        this.apis = ko.observableArray([]);
         this.detailsPageUrl = ko.observable();
         this.allowSelection = ko.observable(false);
+        this.defaultGroupByTagToEnabled = ko.observable(false);
+        this.groupByTag = ko.observable(false);
+        this.groupTagsExpanded = ko.observable(new Set<string>());
         this.working = ko.observable();
         this.selectedApi = ko.observable();
         this.selectedApiName = ko.observable();
@@ -56,8 +63,14 @@ export class ApiListDropdown {
     @Param()
     public detailsPageUrl: ko.Observable<string>;
 
+    @Param()
+    public defaultGroupByTagToEnabled: ko.Observable<boolean>;
+
+
     @OnMounted()
     public async initialize(): Promise<void> {
+        this.groupByTag(this.defaultGroupByTagToEnabled());
+        
         await this.resetSearch();
         await this.checkSelection();
 
@@ -66,6 +79,9 @@ export class ApiListDropdown {
             .subscribe(this.resetSearch);
 
         this.tags
+            .subscribe(this.resetSearch);
+
+        this.groupByTag
             .subscribe(this.resetSearch);
 
         this.router.addRouteChangeListener(this.onRouteChange);
@@ -94,26 +110,39 @@ export class ApiListDropdown {
      * Loads page of APIs.
      */
     public async loadPageOfApis(): Promise<void> {
+        const pageNumber = this.pageNumber() - 1;
+
+        const query: SearchQuery = {
+            pattern: this.pattern(),
+            tags: this.tags(),
+            skip: pageNumber * Constants.defaultPageSize,
+            take: Constants.defaultPageSize
+        };
+
         try {
             this.working(true);
 
-            const pageNumber = this.pageNumber() - 1;
+            let totalItems: number;
 
-            const query: SearchQuery = {
-                pattern: this.pattern(),
-                tags: this.tags(),
-                skip: pageNumber * Constants.defaultPageSize,
-                take: Constants.defaultPageSize
-            };
+            if (this.groupByTag()) {
+                const pageOfTagResources = await this.apiService.getApisByTags(query);
+                const apiGroups = pageOfTagResources.value;
 
-            const pageOfTagResources = await this.apiService.getApisByTags(query);
-            const apiGroups = pageOfTagResources.value;
-            this.apiGroups(apiGroups);
+                this.apiGroups(apiGroups);
+                totalItems = pageOfTagResources.count;
+            }
+            else {
+                const pageOfApis = await this.apiService.getApis(query);
+                const apis = pageOfApis ? pageOfApis.value : [];
 
-            this.totalPages(Math.ceil(pageOfTagResources.count / Constants.defaultPageSize));
+                this.apis(apis);
+                totalItems = pageOfApis.count;
+            }
+
+            this.totalPages(Math.ceil(totalItems / Constants.defaultPageSize));
         }
         catch (error) {
-            throw new Error(`Unable to load APIs. ${error.message}`);
+            throw new Error(`Unable to load APIs. Error: ${error.message}`);
         }
         finally {
             this.working(false);
@@ -147,6 +176,12 @@ export class ApiListDropdown {
 
     public async onTagsChange(tags: Tag[]): Promise<void> {
         this.tags(tags);
+    }
+
+    public groupTagCollapseToggle(tag: string): void {
+        const newSet = this.groupTagsExpanded();
+        newSet.has(tag) ? newSet.delete(tag) : newSet.add(tag);
+        this.groupTagsExpanded(newSet);
     }
 
     @OnDestroyed()

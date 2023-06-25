@@ -1,5 +1,4 @@
-﻿@import "variables.scss";
-@mixin hide-text() {
+﻿@mixin hide-text() {
   text-indent: -9999px;
   white-space: nowrap;
 }
