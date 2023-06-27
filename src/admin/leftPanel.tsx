@@ -11,6 +11,7 @@ import { SettingsModal } from './settings/settingsModal';
 import { HelpModal } from './help/helpModal';
 import { MediaModal } from './media/mediaModal';
 import { CustomWidgets } from './custom-widgets/customWidgets';
+import { OnboardingModal } from './onboardingModal';
 import { lightTheme } from './utils/themes';
 import { mobileBreakpoint } from './utils/variables';
 initializeIcons();
@@ -30,7 +31,8 @@ const enum NavItem {
 
 interface LeftPanelState {
     selectedNavItem: NavItem,
-    isMobile: boolean
+    isMobile: boolean,
+    showOnboardingModal: boolean
 }
 
 const pageIcon: IIconProps = { iconName: 'Page' };
@@ -54,11 +56,14 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
 
         this.state = {
             selectedNavItem: NavItem.Main,
-            isMobile: window.innerWidth < mobileBreakpoint
+            isMobile: window.innerWidth < mobileBreakpoint,
+            showOnboardingModal: false
         };
     }
 
     componentDidMount(): void {
+        if (!localStorage.getItem('isOnboardingSeen')) this.setState({ showOnboardingModal: true });
+
         window.addEventListener('resize', this.checkScreenSize.bind(this));
     }
 
@@ -77,6 +82,11 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
     handleBackButtonClick = (): void => {
         this.setState({ selectedNavItem: NavItem.Main });
         this.viewManager.setHost({ name: 'page-host' });
+    }
+    
+    handleOnboardingModalClose = (): void => {
+        this.setState({ showOnboardingModal: false });
+        localStorage.setItem('isOnboardingSeen', 'true');
     }
 
     renderNavItemsSwitch = (navItemValue: NavItem): JSX.Element => {
@@ -159,27 +169,30 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
 
     public render(): JSX.Element {
         return (
-            <div className="side-panel">
-                <Stack horizontal className="portal-name-container">
-                    <Stack horizontal verticalAlign="center">
-                        <Icon iconName="Home" styles={iconStyles} />
-                        <Text className="portal-name">mydevportal</Text>
+            <>
+                {this.state.showOnboardingModal && <OnboardingModal onDismiss={this.handleOnboardingModalClose.bind(this)} />}
+                <div className="side-panel">
+                    <Stack horizontal className="portal-name-container">
+                        <Stack horizontal verticalAlign="center">
+                            <Icon iconName="Home" styles={iconStyles} />
+                            <Text className="portal-name">mydevportal</Text>
+                        </Stack>
+                        <Icon
+                            iconName="Cancel"
+                            className="admin-side-panel-closer"
+                            styles={iconStyles}
+                            onClick={() => {
+                                this.setState({ selectedNavItem: NavItem.Main });
+                                document.getElementById('admin-left-panel').classList.add('hidden');
+                            }}
+                        />
                     </Stack>
-                    <Icon
-                        iconName="Cancel"
-                        className="admin-side-panel-closer"
-                        styles={iconStyles}
-                        onClick={() => {
-                            this.setState({ selectedNavItem: NavItem.Main });
-                            document.getElementById('admin-left-panel').classList.add('hidden');
-                        }}
-                    />
-                </Stack>
-                { this.renderNavItemsSwitch(this.state.selectedNavItem) }
-                { this.state.selectedNavItem === NavItem.Media && <MediaModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
-                { this.state.selectedNavItem === NavItem.Settings && <SettingsModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
-                { this.state.selectedNavItem === NavItem.Help && <HelpModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
-            </div>
+                    { this.renderNavItemsSwitch(this.state.selectedNavItem) }
+                    { this.state.selectedNavItem === NavItem.Media && <MediaModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
+                    { this.state.selectedNavItem === NavItem.Settings && <SettingsModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
+                    { this.state.selectedNavItem === NavItem.Help && <HelpModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
+                </div>
+            </>
         )
     }
 }
