@@ -455,7 +455,7 @@ export class Reports {
         this.reportByCallsGeo(chartConfigCallsGeo);
 
 
-        /* Bandwith */
+        /* Bandwidth */
         const recordsBandwidth: BarChartRecord[] = reportsByTime.value.map(x => {
             return {
                 timestamp: new Date(x.timestamp),
