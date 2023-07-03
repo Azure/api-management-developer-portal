@@ -102,7 +102,7 @@ export const reservedPermalinks = [
 ];
 
 /**
- * Maximum number of items to request from Managament API.
+ * Maximum number of items to request from Management API.
  */
 export const defaultPageSize = 50;
 
