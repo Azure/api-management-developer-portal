@@ -21,6 +21,7 @@ export interface ApiDetailsPageContract extends Contract {
      * Widget local styles
      */
     styles?: LocalStyles;
+    
     /**
     * Indicates whether "Try" button should appear on the operation details widget.
     */
