@@ -9,7 +9,7 @@
         border: 1px solid #D1D1D1;
         border-radius: 5px;
     }
-    
+
     .select-badge {
         width: 100%;
         margin: 0;
@@ -48,7 +48,7 @@
     padding: 30px;
 
     .select-badge {
-        width:80px;
+        width: 80px;
         margin-left: 15px;
 
         select {
@@ -137,7 +137,7 @@
     }
 }
 
-.api-dropdown {
+.entities-dropdown {
     .form-control {
         border: none;
         background-color: #F5F5F5;
@@ -332,6 +332,27 @@
 
                 a {
                     color: black;
+                }
+            }
+        }
+    }
+
+    .info-block {
+        background-color: #CFE4FA;
+        border-left: 10px solid #0F6CBD;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .table {
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 0 15px;
+
+        .table-row {
+            >div {
+                .form-control {
+                    margin-bottom: 0;
                 }
             }
         }

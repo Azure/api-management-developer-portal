@@ -6,13 +6,8 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 import { Router } from "@paperbits/common/routing";
 import aboutApi from "./staticPages/about-api.html";
-import { menuItem } from "./menu/nav-menu";
+import { menuItem, breadcrumbItem } from "../../../common/Utils";
 import operationDetails from "../../../../operations/operation-details/ko/runtime/operation-details.html";
-
-interface breadcrumbItem {
-    title: string;
-    url: string;
-}
 
 @RuntimeComponent({
     selector: "api-details-page"
@@ -27,7 +22,6 @@ interface breadcrumbItem {
 })
 export class ApiDetailsPage {
     public readonly api: ko.Observable<Api>;
-
     public readonly lastModifiedDate: ko.Observable<string>;
     public readonly breadcrumbItems: ko.Observable<breadcrumbItem[]>;
     public readonly apiLoading: ko.Observable<boolean>;

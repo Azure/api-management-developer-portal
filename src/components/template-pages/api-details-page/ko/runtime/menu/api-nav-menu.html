@@ -1,6 +1,6 @@
 <div class="list-container">
     <div class="items" data-bind="{css: {'full': api() && (api().type === 'websocket' || api().type === 'graphql')}}">
-        <api-list-dropdown params="{ allowSelection: true }" class="api-dropdown"></api-list-dropdown>
+        <api-list-dropdown params="{ allowSelection: true }" class="entities-dropdown"></api-list-dropdown>
         <input type="search" class="form-control form-control-light" aria-label="Search this page"
             placeholder="Search this page" spellcheck="false" data-bind="textInput: pattern" />
         <!-- ko if: api && versionApis().length > 0 -->

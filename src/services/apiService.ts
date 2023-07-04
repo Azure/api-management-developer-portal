@@ -537,19 +537,21 @@ export class ApiService {
         return result;
     }
 
-    public async getProductApis(productId: string, searchQuery: SearchQuery): Promise<Page<Api>> {
+    public async getProductApis(productId: string, searchQuery?: SearchQuery): Promise<Page<Api>> {
         let query = `${productId}/apis`;
 
-        if (searchQuery.pattern) {
-            const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
-            query = Utils.addQueryParameter(query, `$filter=contains(properties/displayName,'${pattern}')`);
-        }
+        if (searchQuery) {
+            const skip = searchQuery.skip || 0;
+            const take = searchQuery.take || Constants.defaultPageSize;
 
-        if (searchQuery.skip) {
-            query = Utils.addQueryParameter(query, `$skip=${searchQuery.skip}`);
-        }
+            if (searchQuery.pattern) {
+                const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
+                query = Utils.addQueryParameter(query, `$filter=contains(properties/displayName,'${pattern}')`);
+            }
 
-        query = Utils.addQueryParameter(query, `$top=${searchQuery.take}`);
+            query = Utils.addQueryParameter(query, `$skip=${skip}`);
+            query = Utils.addQueryParameter(query, `$top=${take}`);
+        }
 
         const result = await this.mapiClient.get<Page<ApiContract>>(query, [await this.mapiClient.getPortalHeader("getProductApis")]);
         const page = new Page<Api>();
@@ -559,6 +561,17 @@ export class ApiService {
         page.count = result.count;
 
         return page;
+    }
+
+    public async getProductApisNextLink(nextLink: string): Promise<Page<Api>> {
+        const page = await this.mapiClient.get<Page<ApiContract>>(nextLink, [await this.mapiClient.getPortalHeader("getApiProducts")]);
+
+        const result = new Page<Api>();
+        result.count = page.count;
+        result.nextLink = page.nextLink;
+        result.value = page.value.map(item => new Api(item));
+
+        return result;
     }
 
     public async getApiHostnames(apiName: string, includeAllHostnames: boolean = false): Promise<string[]> {
@@ -586,7 +599,7 @@ export class ApiService {
 
         const changelog = await this.mapiClient.get<Page<ChangeLogContract>>(query, [await this.mapiClient.getPortalHeader("getApiChangeLog")]);
         return changelog?.value[0]?.properties.createdDateTime;
-    } 
+    }
 
     private mapApiTagResourceToOperationsByTags(apiTagResource: PageContract<ApiTagResourceContract>): Page<TagGroup<Operation>> {
         const page = new Page<TagGroup<Operation>>();

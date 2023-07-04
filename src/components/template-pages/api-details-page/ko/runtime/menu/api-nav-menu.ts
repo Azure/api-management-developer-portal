@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import * as _ from "lodash";
-import template from "./nav-menu.html";
+import template from "./api-nav-menu.html";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { RouteHelper } from "../../../../../../routing/routeHelper";
 import { Router } from "@paperbits/common/routing";
@@ -9,14 +9,9 @@ import { Api } from "../../../../../../models/api";
 import { ApiService } from "../../../../../../services/apiService";
 import { GraphDocService } from "../../../../../operations/operation-details/ko/runtime/graphql-documentation/graphql-doc-service";
 import { SearchQuery } from "../../../../../../contracts/searchQuery";
-import { downloadAPIDefinition } from "../../../../apiUtils";
+import { downloadAPIDefinition } from "../../../../../apis/apiUtils";
 import { GraphqlTypesForDocumentation, GraphqlCustomFieldNames } from "../../../../../../constants";
-
-export interface menuItem {
-    displayName: string;
-    value: string;
-    type: string;
-}
+import { menuItem, menuItemType } from "../../../../common/Utils";
 
 interface operationMenuItem extends menuItem {
     method: string;
@@ -27,20 +22,15 @@ interface tagOperationMenuItem {
     operations: ko.ObservableArray<operationMenuItem>;
 }
 
-const documentationMenuItemType = "documentation";
-const staticMenuItemType = "static";
-const operationMenuItem = "operation";
-const graphqlMenuItem = "graphql";
-
 @Component({
-    selector: "nav-menu",
+    selector: "api-nav-menu",
     template: template,
 })
-export class NavMenu {
+export class ApiNavMenu {
     public readonly staticSelectableMenuItems: menuItem[] = [
-        { displayName: "About this API", value: "about", type: staticMenuItemType },
-        { displayName: "Products that use this API", value: "products", type: staticMenuItemType },
-        { displayName: "Changelog", value: "changelog", type: staticMenuItemType }
+        { displayName: "About this API", value: "about", type: menuItemType.staticMenuItemType },
+        { displayName: "Products that use this API", value: "products", type: menuItemType.staticMenuItemType },
+        { displayName: "Changelog", value: "changelog", type: menuItemType.staticMenuItemType }
     ];
 
     public readonly wikiDocumentationMenuItems: ko.Observable<menuItem[]>;
@@ -78,7 +68,7 @@ export class NavMenu {
 
     @Param()
     public readonly apiLoading: ko.Observable<boolean>;
-    
+
     @Param()
     public readonly versionApis: ko.ObservableArray<Api>;
 
@@ -89,7 +79,8 @@ export class NavMenu {
         private readonly routeHelper: RouteHelper,
         private readonly router: Router,
         private readonly apiService: ApiService,
-        private readonly graphDocService: GraphDocService) {
+        private readonly graphDocService: GraphDocService
+    ) {
         this.selectedMenuItem = ko.observable();
         this.wikiDocumentationMenuItems = ko.observable([]);
         this.filteredWikiDocumentationMenuItems = ko.observable([]);
@@ -146,22 +137,22 @@ export class NavMenu {
 
         this.selectedMenuItem(menuItem);
 
-        if (menuItem.type == staticMenuItemType) {
+        if (menuItem.type == menuItemType.staticMenuItemType) {
             const apiReferenceUrl = this.routeHelper.getApiDetailsPageReference(this.api().name, menuItem.value);
             this.router.navigateTo(apiReferenceUrl);
         }
 
-        if (menuItem.type == documentationMenuItemType) {
-            const wikiUrl = this.routeHelper.getDocumentationReferenceUrl(this.api().name, menuItem.value);
+        if (menuItem.type == menuItemType.documentationMenuItemType) {
+            const wikiUrl = this.routeHelper.getApiDocumentationReferenceUrl(this.api().name, menuItem.value);
             this.router.navigateTo(wikiUrl);
         }
 
-        if (menuItem.type == operationMenuItem) {
+        if (menuItem.type == menuItemType.operationMenuItem) {
             const operationUrl = this.routeHelper.getOperationReferenceUrl(this.api().name, menuItem.value);
             this.router.navigateTo(operationUrl);
         }
 
-        if (menuItem.type == graphqlMenuItem) {
+        if (menuItem.type == menuItemType.graphqlMenuItem) {
             const graphUrl = this.graphDocService.routeHelper.getGraphReferenceUrl(this.api().name, this.graphDocService.typeIndexer()[this.graphqlSelectedType()], menuItem.value);
             this.router.navigateTo(graphUrl);
         }
@@ -193,7 +184,7 @@ export class NavMenu {
             return {
                 value: o.name,
                 displayName: this.showUrlPath() ? o.urlTemplate : o.displayName,
-                type: operationMenuItem,
+                type: menuItemType.operationMenuItem,
                 method: o.method
             };
         });
@@ -220,7 +211,7 @@ export class NavMenu {
                     return {
                         value: op.name,
                         displayName: this.showUrlPath() ? op.urlTemplate : op.displayName,
-                        type: operationMenuItem,
+                        type: menuItemType.operationMenuItem,
                         method: op.method
                     };
                 })
@@ -273,11 +264,11 @@ export class NavMenu {
             return {
                 value: node.name,
                 displayName: node.name,
-                type: graphqlMenuItem,
+                type: menuItemType.graphqlMenuItem,
             };
         }));
 
-        if (this.selectedMenuItem()?.type == graphqlMenuItem) {
+        if (this.selectedMenuItem()?.type == menuItemType.graphqlMenuItem) {
             this.selectMenuItem(this.graphqlNodes()[0]);
         }
     }
@@ -310,7 +301,7 @@ export class NavMenu {
             return {
                 value: d.documentationId,
                 displayName: d.documentationId,
-                type: documentationMenuItemType
+                type: menuItemType.documentationMenuItemType
             };
         }));
 
@@ -327,7 +318,7 @@ export class NavMenu {
             return {
                 value: o.name,
                 displayName: this.showUrlPath() ? o.urlTemplate : o.displayName,
-                type: operationMenuItem,
+                type: menuItemType.operationMenuItem,
                 method: o.method
             };
         });
@@ -347,7 +338,7 @@ export class NavMenu {
                     return {
                         value: op.name,
                         displayName: this.showUrlPath() ? op.urlTemplate : op.displayName,
-                        type: operationMenuItem,
+                        type: menuItemType.operationMenuItem,
                         method: op.method
                     };
                 }))
@@ -365,7 +356,7 @@ export class NavMenu {
             return;
         }
 
-        const selectedPage = this.routeHelper.getApiDetailsPage();
+        const selectedPage = this.routeHelper.getDetailsPage();
         if (selectedPage) {
             this.selectMenuItem(this.staticSelectableMenuItems.find(x => x.value === selectedPage));
         }

@@ -11,6 +11,8 @@ import { Utils } from "../utils";
 import { SearchQuery } from "../contracts/searchQuery";
 import { SubscriptionSecrets } from "../contracts/subscriptionSecrets";
 import { ApiContract } from "../contracts/api";
+import { Wiki } from "../models/wiki";
+import { WikiContract } from "../contracts/wiki";
 
 /**
  * A service for management operations with products.
@@ -26,16 +28,17 @@ export class ProductService {
      * @param userId {string} User unique identifier.
      * @param productId {string} Product unique identifier.
      */
-    public async getSubscriptions(userId: string, productId?: string): Promise<Page<Subscription>> {
-        if (!userId) {
-            throw new Error(`Parameter "userId" not specified.`);
+    public async getSubscriptions(userId?: string, productId?: string, nextLink?: string): Promise<Page<Subscription>> {
+        if (!userId && !nextLink) {
+            throw new Error(`At least one of parameters "userId" and "nextLink" should be specified.`);
         }
+        let query = nextLink ? nextLink : `${userId}/subscriptions`;
 
         const pageOfSubscriptions = new Page<Subscription>();
-        const query = productId ? `?$filter=properties/scope eq '${productId}'` : "";
+        query += productId ? `?$filter=properties/scope eq '${productId}'` : "";
 
         try {
-            const pageContract = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`, [await this.mapiClient.getPortalHeader("getSubscriptions")]);
+            const pageContract = await this.mapiClient.get<Page<SubscriptionContract>>(query, [await this.mapiClient.getPortalHeader("getSubscriptions")]);
             const promises: Promise<void>[] = [];
             const subscriptions: Subscription[] = [];
 
@@ -96,6 +99,10 @@ export class ProductService {
 
             throw new Error(`Unable to retrieve subscriptions for user with ID "${userId}". Error: ${error.message}`);
         }
+    }
+
+    public async getMoreSubscriptionsForProduct(nextLink: string) {
+        return await this.getSubscriptions(nextLink);
     }
 
     /**
@@ -382,5 +389,12 @@ export class ProductService {
         return scope.endsWith("/apis")
             || (apiName && scope.endsWith(`/apis/${apiName}`))
             || (productName && scope.endsWith(`/products/${productName}`));
+    }
+
+    public async getProductWiki(productId: string): Promise<Wiki> {
+        let query = `products/${productId}/wikis/default`;
+        query = Utils.addQueryParameter(query, "api-version=2022-08-01");
+        const wikiContract = await this.mapiClient.get<WikiContract>(query, [await this.mapiClient.getPortalHeader("getProductWiki")]);
+        return new Wiki(wikiContract);
     }
 }

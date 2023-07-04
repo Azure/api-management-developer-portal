@@ -1,0 +1,60 @@
+<div class="page-container">
+    <div class="page-title title-background">
+        <h1 class="title-text"
+            data-bind="text: product() ? product().displayName : 'The specified product does not exsist'"></h1>
+    </div>
+
+    <div class="page-menu">
+        <product-nav-menu params="{ product: product, selectedMenuItem: selectedMenuItem, wrapText: wrapText, productLoading:
+                productLoading }"></product-nav-menu>
+    </div>
+
+    <div class="page-content">
+        <!-- ko if: productLoading-->
+        <spinner class="fit"></spinner>
+        <!-- /ko -->
+
+        <!-- ko ifnot: productLoading-->
+        <nav aria-label="breadcrumb" class="mr-20">
+            <ol class="breadcrumb">
+                <!-- ko foreach: { data: breadcrumbItems, as: 'item' } -->
+                <li class="breadcrumb-item text-wrap">
+                    <a href="#" data-bind="text: item.title, attr: { href: item.url}"></a>
+                </li>
+                <!-- /ko -->
+            </ol>
+        </nav>
+
+        <!-- ko if: product -->
+
+        <!-- ko if: selectedMenuItem()?.type === 'static' -->
+        <!-- ko if: selectedMenuItem()?.value === 'about' -->
+        <h3>About this Product</h3>
+
+        <div class="pb-12">
+            <span> type: Product</span>
+        </div>
+
+        <!-- ko if: product().description  -->
+        <p data-bind="markdown: product().description"></p>
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko if: selectedMenuItem()?.value === 'apis' -->
+        <product-apis-cards></product-apis-cards>
+        <!-- /ko -->
+
+        <!-- ko if: selectedMenuItem()?.value === 'subscriptions' -->
+        <product-details-page-subscriptions params="{ product: product}"></product-details-page-subscriptions>
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko if: selectedMenuItem()?.type === 'documentation' -->
+        <wiki-documentation></wiki-documentation>
+        <!-- /ko -->
+
+        <!-- /ko -->
+
+        <!-- /ko -->
+    </div>
+</div>

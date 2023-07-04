@@ -148,6 +148,10 @@
     content: "\e912";
 }
 
+.icon-emb-edit:before {
+    content: "\e913";
+  }
+
 .icon-svg-wadl {
     @include icon-18px();
     background-color: transparent;

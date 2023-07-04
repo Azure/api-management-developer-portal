@@ -21,7 +21,7 @@ export class RouteHelper {
         } else {
             params.delete(name);
         }
-        
+
         this.router.navigateTo(`#${params.toString()}`);
     }
 
@@ -71,7 +71,7 @@ export class RouteHelper {
         return this.getHashParameter("documentation");
     }
 
-    public getApiDetailsPage(): string {
+    public getDetailsPage(): string {
         return this.getHashParameter("page");
     }
 
@@ -120,17 +120,30 @@ export class RouteHelper {
         return `${path}#api=${apiName}&operation=${operationName}`;
     }
 
-    public getDocumentationReferenceUrl(apiName: string, documentationId: string){
-        if(!apiName){
+    public getApiDocumentationReferenceUrl(apiName: string, documentationId: string) {
+        if (!apiName) {
             throw new Error(`Parameter "apiName" not specified.`);
         }
 
-        if(!documentationId){
+        if (!documentationId) {
             throw new Error(`Parameter "documentationId" not specified.`);
         }
 
         const currentPath = this.router.getPath();
         return `${currentPath}#api=${apiName}&documentation=${documentationId}`;
+    }
+
+    public getProductDocumentationReferenceUrl(productName: string, documentationId: string) {
+        if (!productName) {
+            throw new Error(`Parameter "productName" not specified.`);
+        }
+
+        if (!documentationId) {
+            throw new Error(`Parameter "documentationId" not specified.`);
+        }
+
+        const currentPath = this.router.getPath();
+        return `${currentPath}#product=${productName}&documentation=${documentationId}`;
     }
 
     public getApiDetailsPageReference(apiName: string, pageName: string): string {
@@ -153,7 +166,7 @@ export class RouteHelper {
      * @param graph ARM resource name of the graph.
      * @param detailsPageUrl Relative URL of operation details page.
      */
-     public getGraphReferenceUrl(apiName: string, type: string, graph: string, detailsPageUrl: string = ""): string {
+    public getGraphReferenceUrl(apiName: string, type: string, graph: string, detailsPageUrl: string = ""): string {
 
         let path = "";
         const currentPath = this.router.getPath();
@@ -172,7 +185,7 @@ export class RouteHelper {
      * @param graph ARM resource name of the graph.
      * @param definition Name of the definition.
      */
-     public getGraphDefinitionReferenceId(apiName: string, type: string, graph: string, definition: string): string {
+    public getGraphDefinitionReferenceId(apiName: string, type: string, graph: string, definition: string): string {
         if (!apiName) {
             throw new Error(`Parameter "apiName" not specified.`);
         }
