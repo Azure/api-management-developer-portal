@@ -14,7 +14,7 @@ export class SigninSocialPublishModule implements IInjectorModule {
 
         const widgetService = injector.resolve<IWidgetService>("widgetService");
 
-        widgetService.registerWidget("signinSocial", {
+        widgetService.registerWidget("signin-social", {
             modelDefinition: SigninSocialModel,
             componentBinder: KnockoutComponentBinder,
             componentDefinition: SigninSocialViewModel,

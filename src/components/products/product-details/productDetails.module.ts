@@ -13,8 +13,8 @@ export class ProductDetailsPublishModule implements IInjectorModule {
         injector.bindSingleton("productDetailsViewModelBinder", ProductDetailsViewModelBinder)
 
         const widgetService = injector.resolve<IWidgetService>("widgetService");
-
-        widgetService.registerWidget("productDetails", {
+    
+        widgetService.registerWidget("product-details", {
             modelDefinition: ProductDetailsModel,
             componentBinder: KnockoutComponentBinder,
             componentDefinition: ProductDetailsViewModel,

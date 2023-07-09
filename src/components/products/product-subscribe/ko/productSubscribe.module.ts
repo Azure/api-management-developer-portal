@@ -18,12 +18,13 @@ export class ProductSubscribePublishModule implements IInjectorModule {
 
         const widgetService = injector.resolve<IWidgetService>("widgetService");
 
-        widgetService.registerWidget("productSubscribe", {
+        widgetService.registerWidget("product-subscribe", {
             modelDefinition: ProductSubscribeModel,
             componentBinder: KnockoutComponentBinder,
             componentDefinition: ProductSubscribeViewModel,
             modelBinder: ProductSubscribeModelBinder,
             viewModelBinder: ProductSubscribeViewModelBinder
         });
+
     }
 }
