@@ -6,18 +6,11 @@ import { ProductApisContract } from "./productApisContract";
 
 export class ProductApisModelBinder implements IModelBinder<ProductApisModel> {
     constructor(private readonly permalinkResolver: IPermalinkResolver) { }
-    
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === "product-apis";
-    }
-
-    public canHandleModel(model: Object): boolean {
-        return model instanceof ProductApisModel;
-    }
 
     public async contractToModel(contract: ProductApisContract): Promise<ProductApisModel> {
         const model = new ProductApisModel();
         model.layout = contract.itemStyleView || "list";
+        model.styles = contract.styles ?? {};
 
         if (contract.detailsPageHyperlink) {
             model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.detailsPageHyperlink);
@@ -31,11 +24,12 @@ export class ProductApisModelBinder implements IModelBinder<ProductApisModel> {
             type: "product-apis",
             itemStyleView: model.layout,
             detailsPageHyperlink: model.detailsPageHyperlink
-            ? {
-                target: model.detailsPageHyperlink.target,
-                targetKey: model.detailsPageHyperlink.targetKey
-            }
-            : null
+                ? {
+                    target: model.detailsPageHyperlink.target,
+                    targetKey: model.detailsPageHyperlink.targetKey
+                }
+                : null,
+            styles: model.styles
         };
 
         return contract;

@@ -12,8 +12,6 @@ import { SecurityModel } from "@paperbits/common/security";
 export class SigninSocialViewModel {
     public readonly aadConfig: ko.Observable<string>;
     public readonly aadB2CConfig: ko.Observable<string>;
-    public readonly aadLabel: ko.Observable<string>;
-    public readonly aadB2CLabel: ko.Observable<string>;
     public readonly styles: ko.Observable<StyleModel>;
     public readonly security: ko.Observable<SecurityModel>;
     public readonly mode: ko.Observable<string>;
@@ -22,8 +20,6 @@ export class SigninSocialViewModel {
     constructor() {
         this.aadConfig = ko.observable<string>();
         this.aadB2CConfig = ko.observable<string>();
-        this.aadLabel = ko.observable<string>();
-        this.aadB2CLabel = ko.observable<string>();
         this.styles = ko.observable<StyleModel>();
         this.security = ko.observable<SecurityModel>();
         this.mode = ko.observable<string>();

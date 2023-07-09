@@ -1,13 +1,25 @@
-import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { ProductDetailsModelBinder } from "./productDetailsModelBinder";
-import { ProductDetailsViewModelBinder } from "./ko/productDetailsViewModelBinder";
+import { IInjector, IInjectorModule } from "@paperbits/common/injection";
+import { IWidgetService } from "@paperbits/common/widgets";
+import { KnockoutComponentBinder } from "@paperbits/core/ko";
 import { ProductDetailsViewModel } from "./ko/productDetailsViewModel";
+import { ProductDetailsViewModelBinder } from "./ko/productDetailsViewModelBinder";
+import { ProductDetailsModel } from "./productDetailsModel";
+import { ProductDetailsModelBinder } from "./productDetailsModelBinder";
 
 
-export class ProductDetailsModule implements IInjectorModule {
+export class ProductDetailsPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bind("productDetails", ProductDetailsViewModel);
-        injector.bindToCollection("modelBinders", ProductDetailsModelBinder);
-        injector.bindToCollection("viewModelBinders", ProductDetailsViewModelBinder);
+        injector.bindSingleton("productDetailsModelBinder", ProductDetailsModelBinder);
+        injector.bindSingleton("productDetailsViewModelBinder", ProductDetailsViewModelBinder)
+
+        const widgetService = injector.resolve<IWidgetService>("widgetService");
+
+        widgetService.registerWidget("productDetails", {
+            modelDefinition: ProductDetailsModel,
+            componentBinder: KnockoutComponentBinder,
+            componentDefinition: ProductDetailsViewModel,
+            modelBinder: ProductDetailsModelBinder,
+            viewModelBinder: ProductDetailsViewModelBinder
+        });
     }
 }
