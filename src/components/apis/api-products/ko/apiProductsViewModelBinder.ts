@@ -1,43 +1,19 @@
-import { Bag } from "@paperbits/common";
-import { EventManager, Events } from "@paperbits/common/events";
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { ApiProductsViewModel } from "./apiProductsViewModel";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ApiProductsModel } from "../apiProductsModel";
-import { ComponentFlow } from "@paperbits/common/editing";
+import { ApiProductsViewModel } from "./apiProductsViewModel";
 
 export class ApiProductsViewModelBinder implements ViewModelBinder<ApiProductsModel, ApiProductsViewModel> {
-    constructor(private readonly eventManager: EventManager) { }
-    
-    public async modelToViewModel(model: ApiProductsModel, viewModel?: ApiProductsViewModel, bindingContext?: Bag<any>): Promise<ApiProductsViewModel> {
-        if (!viewModel) {
-            viewModel = new ApiProductsViewModel();
-        }
-
-        viewModel.layout(model.layout);
-
-        viewModel.runtimeConfig(JSON.stringify({
-            detailsPageUrl: model.detailsPageHyperlink
-                ? model.detailsPageHyperlink.href
-                : undefined
+    public stateToInstance(state: WidgetState, componentInstance: ApiProductsViewModel): void {
+        componentInstance.layout(state.layout);
+        componentInstance.runtimeConfig(JSON.stringify({
+            detailsPageUrl: state.detailsPageUrl
         }));
-
-        viewModel["widgetBinding"] = {
-            displayName: "API: Products" + (model.layout === "list" ? "" : ` (${model.layout})`),
-            layer: bindingContext?.layer,
-            model: model,
-            draggable: true,
-            flow: ComponentFlow.Block,
-            editor: "api-products-editor",
-            applyChanges: async (updatedModel: ApiProductsModel) => {
-                await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                this.eventManager.dispatchEvent(Events.ContentUpdate);
-            }
-        };
-
-        return viewModel;
     }
 
-    public canHandleModel(model: ApiProductsModel): boolean {
-        return model instanceof ApiProductsModel;
+    public async modelToState(model: ApiProductsModel, state: WidgetState): Promise<void> {
+        state.layout = model.layout;
+        state.detailsPageUrl = model.detailsPageHyperlink
+            ? model.detailsPageHyperlink.href
+            : undefined
     }
 }
