@@ -1,47 +1,34 @@
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { EventManager, Events } from "@paperbits/common/events";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { OperationDetailsViewModel } from "./operationDetailsViewModel";
 import { OperationDetailsModel } from "../operationDetailsModel";
-import { Bag } from "@paperbits/common";
-import { ComponentFlow } from "@paperbits/common/editing";
-
+import { StyleCompiler } from "@paperbits/common/styles";
 
 export class OperationDetailsViewModelBinder implements ViewModelBinder<OperationDetailsModel, OperationDetailsViewModel> {
-    constructor(private readonly eventManager: EventManager) { }
+    constructor(private readonly styleCompiler: StyleCompiler) { }
 
-    public async modelToViewModel(model: OperationDetailsModel, viewModel?: OperationDetailsViewModel, bindingContext?: Bag<any>): Promise<OperationDetailsViewModel> {
-        if (!viewModel) {
-            viewModel = new OperationDetailsViewModel();
+    public stateToInstance(state: WidgetState, componentInstance: OperationDetailsViewModel): void {
+        componentInstance.styles(state.styles);
 
-            viewModel["widgetBinding"] = {
-                displayName: "Operation: Details",
-                layer: bindingContext?.layer,
-                model: model,
-                draggable: true,
-                flow: ComponentFlow.Block,
-                editor: "operation-details-editor",
-                applyChanges: async (updatedModel: OperationDetailsModel) => {
-                    await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                    this.eventManager.dispatchEvent(Events.ContentUpdate);
-                }
-            };
-        }
-
-        const runtimeConfig = {
-            enableConsole: model.enableConsole,
-            enableScrollTo: model.enableScrollTo,
-            defaultSchemaView: model.defaultSchemaView,
-            useCorsProxy: model.useCorsProxy,
-            includeAllHostnames: model.includeAllHostnames,
-            showExamples: model.showExamples,
-        };
-
-        viewModel.config(JSON.stringify(runtimeConfig));
-
-        return viewModel;
+        componentInstance.config(JSON.stringify({
+            enableConsole: state.enableConsole,
+            enableScrollTo: state.enableScrollTo,
+            defaultSchemaView: state.defaultSchemaView,
+            useCorsProxy: state.useCorsProxy,
+            includeAllHostnames: state.includeAllHostnames,
+            showExamples: state.showExamples
+        }));
     }
 
-    public canHandleModel(model: OperationDetailsModel): boolean {
-        return model instanceof OperationDetailsModel;
+    public async modelToState(model: OperationDetailsModel, state: WidgetState): Promise<void> {
+        state.enableConsole = model.enableConsole;
+        state.enableScrollTo = model.enableScrollTo;
+        state.defaultSchemaView = model.defaultSchemaView;
+        state.useCorsProxy = model.useCorsProxy;
+        state.includeAllHostnames = model.includeAllHostnames;
+        state.showExamples = model.showExamples;
+
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }

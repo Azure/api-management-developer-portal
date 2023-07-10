@@ -3,7 +3,7 @@ import template from "./customHtmlEditorView.html";
 import { WidgetEditor } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
 import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
-import { HTMLInjectionModel } from "../customHtmlModel";
+import { CustomHtmlModel } from "../customHtmlModel";
 import { widgetEditorSelector } from "..";
 import { StyleHelper } from "@paperbits/styles";
 import { ViewManager } from "@paperbits/common/ui";
@@ -13,7 +13,7 @@ import { EventManager, Events } from "@paperbits/common/events";
     selector: widgetEditorSelector,
     template: template
 })
-export class CustomHtmlEditorViewModel implements WidgetEditor<HTMLInjectionModel> {
+export class CustomHtmlEditorViewModel implements WidgetEditor<CustomHtmlModel> {
     public readonly htmlCode: ko.Observable<string>;
     public readonly inheritStyling: ko.Observable<boolean>;
     public readonly sizeStyleConfig: ko.Observable<SizeStylePluginConfig>;
@@ -28,10 +28,10 @@ export class CustomHtmlEditorViewModel implements WidgetEditor<HTMLInjectionMode
     }
 
     @Param()
-    public model: HTMLInjectionModel;
+    public model: CustomHtmlModel;
 
     @Event()
-    public onChange: (model: HTMLInjectionModel) => void;
+    public onChange: (model: CustomHtmlModel) => void;
 
     @OnMounted()
     public async initialize(): Promise<void> {

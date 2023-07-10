@@ -1,22 +1,23 @@
-import { Bag } from "@paperbits/common";
-import { EventManager, Events } from "@paperbits/common/events";
-import { ComponentFlow, IWidgetBinding } from "@paperbits/common/editing";
-import { widgetName, widgetDisplayName, widgetEditorSelector } from "../constants";
-import { CustomHtmlViewModel } from "./customHtmlViewModel";
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { StyleCompiler } from "@paperbits/common/styles";
-import { JssCompiler } from "@paperbits/styles/jssCompiler";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { HTMLInjectionModel } from "../customHtmlModel";
+import { StyleCompiler } from "@paperbits/common/styles";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { JssCompiler } from "@paperbits/styles/jssCompiler";
+import { CustomHtmlModel } from "../customHtmlModel";
+import { CustomHtmlViewModel } from "./customHtmlViewModel";
 
-export class CustomHtmlViewModelBinder implements ViewModelBinder<HTMLInjectionModel, CustomHtmlViewModel>  {
+
+export class CustomHtmlViewModelBinder implements ViewModelBinder<CustomHtmlModel, CustomHtmlViewModel>  {
     constructor(
-        private readonly eventManager: EventManager,
         private readonly styleCompiler: StyleCompiler,
         private readonly settingsProvider: ISettingsProvider,
     ) { }
 
-    public async updateViewModel(model: HTMLInjectionModel, viewModel: CustomHtmlViewModel, bindingContext: Bag<any>): Promise<void> {
+    public stateToInstance(state: WidgetState, componentInstance: CustomHtmlViewModel): void {
+        componentInstance.styles(state.styles);
+        componentInstance.htmlCode(state.htmlCode);
+    }
+
+    public async modelToState(model: CustomHtmlModel, state: WidgetState): Promise<void> {
         let htmlInheritedStyles: string = "";
 
         if (model.inheritStyling) {
@@ -33,40 +34,10 @@ export class CustomHtmlViewModelBinder implements ViewModelBinder<HTMLInjectionM
             }
         }
 
+        state.htmlCode = htmlInheritedStyles + model.htmlCode;
+
         if (model.styles) {
-            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager));
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
-
-        viewModel.htmlCode(htmlInheritedStyles + model.htmlCode);
-    }
-
-    public async modelToViewModel(model: HTMLInjectionModel, viewModel?: CustomHtmlViewModel, bindingContext?: Bag<any>): Promise<CustomHtmlViewModel> {
-        if (!viewModel) {
-            viewModel = new CustomHtmlViewModel();
-
-            const binding: IWidgetBinding<HTMLInjectionModel, CustomHtmlViewModel> = {
-                name: widgetName,
-                displayName: widgetDisplayName,
-                layer: bindingContext?.layer,
-                model: model,
-                flow: ComponentFlow.Block,
-                editor: widgetEditorSelector,
-                draggable: true,
-                applyChanges: async () => {
-                    await this.updateViewModel(model, viewModel, bindingContext);
-                    this.eventManager.dispatchEvent(Events.ContentUpdate);
-                }
-            };
-
-            viewModel["widgetBinding"] = binding;
-        }
-
-        this.updateViewModel(model, viewModel, bindingContext);
-
-        return viewModel;
-    }
-
-    public canHandleModel(model: HTMLInjectionModel): boolean {
-        return model instanceof HTMLInjectionModel;
     }
 }
