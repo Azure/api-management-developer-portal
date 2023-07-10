@@ -1,27 +1,18 @@
-import { ViewModelBinder } from "@paperbits/common/widgets";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ReportsViewModel } from "./reportsViewModel";
 import { ReportsModel } from "../reportsModel";
-import { Bag } from "@paperbits/common";
-import { ComponentFlow } from "@paperbits/common/editing";
+import { StyleCompiler } from "@paperbits/common/styles";
 
 export class ReportsViewModelBinder implements ViewModelBinder<ReportsModel, ReportsViewModel> {
-    public async modelToViewModel(model: ReportsModel, viewModel?: ReportsViewModel, bindingContext?: Bag<any>): Promise<ReportsViewModel> {
-        if (!viewModel) {
-            viewModel = new ReportsViewModel();
-        }
+    constructor(private readonly styleCompiler: StyleCompiler) { }
 
-        viewModel["widgetBinding"] = {
-            displayName: "Reports",
-            layer: bindingContext?.layer,
-            model: model,
-            flow: ComponentFlow.Block,
-            draggable: true
-        };
-
-        return viewModel;
+    public stateToInstance(state: WidgetState, componentInstance: ReportsViewModel): void {
+        componentInstance.styles(state.styles);
     }
 
-    public canHandleModel(model: ReportsModel): boolean {
-        return model instanceof ReportsModel;
+    public async modelToState(model: ReportsModel, state: WidgetState): Promise<void> {
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }
