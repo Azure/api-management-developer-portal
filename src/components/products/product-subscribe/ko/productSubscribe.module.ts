@@ -1,11 +1,30 @@
-import { IInjectorModule, IInjector } from "@paperbits/common/injection";
+import { IInjector, IInjectorModule } from "@paperbits/common/injection";
+import { IWidgetService } from "@paperbits/common/widgets";
+import { KnockoutComponentBinder } from "@paperbits/core/ko";
+import { ProductSubscribeHandlers } from "../productSubscribeHandlers";
+import { ProductSubscribeModel } from "../productSubscribeModel";
 import { ProductSubscribeModelBinder } from "../productSubscribeModelBinder";
+import { ProductSubscribeEditor } from "./productSubscribeEditor";
+import { ProductSubscribeViewModel } from "./productSubscribeViewModel";
 import { ProductSubscribeViewModelBinder } from "./productSubscribeViewModelBinder";
 
 
-export class ProductSubscribeModule implements IInjectorModule {
+export class ProductSubscribePublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bindToCollection("modelBinders", ProductSubscribeModelBinder);
-        injector.bindToCollection("viewModelBinders", ProductSubscribeViewModelBinder);
+        injector.bind("productSubscribeEditor", ProductSubscribeEditor);
+        injector.bindSingleton("productSubscribeModelBinder", ProductSubscribeModelBinder);
+        injector.bindSingleton("productSubscribeViewModelBinder", ProductSubscribeViewModelBinder)
+        injector.bindSingleton("productSubscribeHandlers", ProductSubscribeHandlers);
+
+        const widgetService = injector.resolve<IWidgetService>("widgetService");
+
+        widgetService.registerWidget("product-subscribe", {
+            modelDefinition: ProductSubscribeModel,
+            componentBinder: KnockoutComponentBinder,
+            componentDefinition: ProductSubscribeViewModel,
+            modelBinder: ProductSubscribeModelBinder,
+            viewModelBinder: ProductSubscribeViewModelBinder
+        });
+
     }
 }

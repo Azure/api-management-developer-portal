@@ -1,35 +1,26 @@
 import { widgetName } from "./constants";
 import { IModelBinder } from "@paperbits/common/editing";
-import { HTMLInjectionModel } from "./customHtmlModel";
+import { CustomHtmlModel } from "./customHtmlModel";
 import { Contract } from "@paperbits/common";
-import { HTMLInjectionContract } from "./customHtmlContract";
+import { CustomHtmlContract } from "./customHtmlContract";
 import { htmlCodeInitial } from "./ko/constants";
 
-export class HTMLInjectionModelBinder implements IModelBinder<HTMLInjectionModel> {
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === widgetName;
-    }
-
-    public canHandleModel(model: any): boolean {
-        return model instanceof HTMLInjectionModel;
-    }
-
-    public async contractToModel(contract: HTMLInjectionContract): Promise<HTMLInjectionModel> {
-        const model = new HTMLInjectionModel();
+export class CustomHtmlModelBinder implements IModelBinder<CustomHtmlModel> {
+    public async contractToModel(contract: CustomHtmlContract): Promise<CustomHtmlModel> {
+        const model = new CustomHtmlModel();
         model.htmlCode = contract.htmlCode ?? htmlCodeInitial;
         model.inheritStyling = contract.inheritStyling ?? true;
         model.styles = contract.styles || {};
         return model;
     }
 
-    public modelToContract(model: HTMLInjectionModel): Contract {
-        const contract: HTMLInjectionContract = {
+    public modelToContract(model: CustomHtmlModel): Contract {
+        const contract: CustomHtmlContract = {
             type: widgetName,
             htmlCode: model.htmlCode,
             inheritStyling: model.inheritStyling,
             styles: model.styles
         };
-
         return contract;
     }
 }

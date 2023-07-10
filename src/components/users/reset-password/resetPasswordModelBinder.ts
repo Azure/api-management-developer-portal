@@ -5,18 +5,9 @@ import { ResetPasswordContract } from "./resetPasswordContract";
 
 
 export class ResetPasswordModelBinder implements IModelBinder<ResetPasswordModel> {
-
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === "reset-password";
-    }
-    public canHandleModel(model: Object): boolean {
-        return model instanceof ResetPasswordModel;
-    }
-
     public async contractToModel(contract: ResetPasswordContract): Promise<ResetPasswordModel> {
         const model = new ResetPasswordModel();
         model.requireHipCaptcha = contract.requireHipCaptcha;
-
         return model;
     }
 

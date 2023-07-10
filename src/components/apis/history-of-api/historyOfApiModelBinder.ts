@@ -4,13 +4,8 @@ import { HistoryOfApiModel } from "./historyOfApiModel";
 import { HistoryOfApiContract } from "./historyOfApiContract";
 import { IPermalinkResolver } from "@paperbits/common/permalinks/IPermalinkResolver";
 
-
 export class HistoryOfApiModelBinder implements IModelBinder<HistoryOfApiModel> {
     constructor(private readonly permalinkResolver: IPermalinkResolver) { }
-    
-    public canHandleModel(model: Object): boolean {
-        return model instanceof HistoryOfApiModel;
-    }
 
     public async contractToModel(contract: HistoryOfApiContract): Promise<HistoryOfApiModel> {
         const model = new HistoryOfApiModel();
@@ -18,12 +13,9 @@ export class HistoryOfApiModelBinder implements IModelBinder<HistoryOfApiModel> 
         if (contract.detailsPageHyperlink) {
             model.detailsPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.detailsPageHyperlink);
         }
+        model.styles = contract.styles ?? {};
 
         return model;
-    }
-
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === "historyOfApi";
     }
 
     public modelToContract(model: HistoryOfApiModel): Contract {
@@ -33,7 +25,8 @@ export class HistoryOfApiModelBinder implements IModelBinder<HistoryOfApiModel> 
                 ? {
                     target: model.detailsPageHyperlink.target,
                     targetKey: model.detailsPageHyperlink.targetKey
-                } : null
+                } : null,
+            styles: model.styles
         };
 
         return contract;
