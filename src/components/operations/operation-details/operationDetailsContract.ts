@@ -1,4 +1,5 @@
 import { Contract } from "@paperbits/common";
+import { LocalStyles } from "@paperbits/common/styles";
 
 export interface OperationDetailsContract extends Contract {
     /**
@@ -30,4 +31,9 @@ export interface OperationDetailsContract extends Contract {
      * Show operation attribute values examples in a column in tables.
      */
     showExamples?: boolean;
+
+    /**
+     * Widget local styles.
+     */
+    styles?: LocalStyles;
 }

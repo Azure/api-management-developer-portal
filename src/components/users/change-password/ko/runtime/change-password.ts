@@ -113,7 +113,7 @@ export class ChangePassword {
         }
 
         const user = await this.usersService.getCurrentUser();
-        const credentials = `Basic ${btoa(`${user.email}:${this.password()}`)}`;
+        const credentials = `Basic ${Buffer.from(`${user.email}:${this.password()}`, "utf8").toString("base64")}`;
         let userId = await this.usersService.authenticate(credentials);
 
         if (!userId) {

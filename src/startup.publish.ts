@@ -5,7 +5,6 @@ import { InversifyInjector } from "@paperbits/common/injection";
 import { IPublisher } from "@paperbits/common/publishing";
 import { CorePublishModule } from "@paperbits/core/core.publish.module";
 import { FormsModule } from "@paperbits/forms/forms.module";
-import { ProseMirrorModule } from "@paperbits/prosemirror/prosemirror.module";
 import { StylePublishModule } from "@paperbits/styles/styles.publish.module";
 import { staticDataEnvironment, mockStaticDataEnvironment } from "./../environmentConstants";
 import { ApimPublishModule } from "./apim.publish.module";
@@ -38,7 +37,6 @@ const outputBlobStorage = new FileSystemBlobStorage("./dist/website");
 const injector = new InversifyInjector();
 injector.bindModule(new CorePublishModule());
 injector.bindModule(new StylePublishModule());
-injector.bindModule(new ProseMirrorModule());
 injector.bindModule(new FormsModule());
 injector.bindModule(new ApimPublishModule());
 injector.bindInstance("settingsProvider", settingsProvider);
@@ -49,7 +47,7 @@ injector.resolve("autostart");
 /* Allowing self-signed certificates for HTTP requests */
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 
-/* Bulding dependency injection container */
+/* Building dependency injection container */
 const publisher = injector.resolve<IPublisher>("sitePublisher");
 
 /* Running actual publishing */
