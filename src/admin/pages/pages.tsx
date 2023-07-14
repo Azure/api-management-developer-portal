@@ -69,7 +69,7 @@ export class Pages extends React.Component<PagesProps, PagesState> {
     }
 
     handlePageLayoutBackButtonClick = () => {
-        this.setState({ showLayoutModal: false, selectedLayout: null, selectedTab: 'pageLayouts' });
+        this.setState({ showLayoutModal: false, selectedLayout: null, selectedTab: 'layouts' });
         this.viewManager.setHost({ name: 'page-host' });
         this.searchLayouts();
     }
@@ -190,7 +190,7 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                         )}
                     </div>
                 </PivotItem>
-                <PivotItem headerText="Page layout" itemKey="pageLayouts">
+                <PivotItem headerText="Layouts" itemKey="layouts">
                     <Stack className="nav-item-description-container">
                         <Text className="description-text">Add or edit layouts. Layouts let you centralize common content (e.g., navigation bar, footer), which will be applied to pages. 
                         Each page is automatically matched with a layout based on the URL template.</Text>

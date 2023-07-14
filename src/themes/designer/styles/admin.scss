@@ -6,6 +6,7 @@
     font-family: 'SegoeUI';
     overflow: auto;
     transition: all .2s ease-in-out;
+    z-index: 10000;
 
     &.hidden {
         width: 0;
@@ -63,7 +64,7 @@
 }
 
 .portal-name {
-    font-size: 20px;
+    font-size: 18px;
     margin-left: 10px;
 }
 

@@ -3,10 +3,13 @@ import { ToastContainer } from 'react-toastify';
 import { ViewManager } from '@paperbits/common/ui';
 import { EventManager } from '@paperbits/common/events';
 import { OfflineObjectStorage } from '@paperbits/common/persistence';
+import { IPageService } from '@paperbits/common/pages';
+import { ILayoutService } from '@paperbits/common/layouts';
+import { Router } from '@paperbits/common/routing';
 import { Resolve } from '@paperbits/react/decorators';
 import { ContentWorkshop } from '../components/content';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
-import { CommandBarButton, DefaultButton, Dropdown, Icon, IconButton, IDropdownOption, IIconProps, PrimaryButton, Stack, ThemeProvider } from '@fluentui/react';
+import { CommandBarButton, DefaultButton, Dropdown, Icon, IconButton, IDropdownOption, IIconProps, PrimaryButton, Stack, Text, ThemeProvider } from '@fluentui/react';
 import { lightTheme, darkTheme } from './utils/themes';
 import { mobileBreakpoint, smallMobileBreakpoint } from './utils/variables';
 initializeIcons();
@@ -19,8 +22,15 @@ interface RightPanelState {
     canUndo: boolean,
     canRedo: boolean,
     mobileMenuIsOpened: boolean,
-    dropdownIconStyles: object
+    dropdownIconStyles: object,
+    pageName: string
 }
+
+const enum HostNames {
+    Page = 'page-host',
+    Layout = 'layout-host',
+    Styles = 'style-guide'
+};
 
 const screenSizeOptions: IDropdownOption[] = [
     { key: 'xl', text: 'Extra large screen', data: { icon: 'TVMonitor' } },
@@ -33,7 +43,7 @@ const screenSizeOptions: IDropdownOption[] = [
 const accessOptions: IDropdownOption[] = [
     { key: 'all', text: 'All groups', data: { icon: 'People' } }
 ];
-;
+
 const dropdownStyles = { title: { border: 'none' } };
 const iconStyles = { root: { color: darkTheme.callingPalette.iconWhite } };
 const undoIcon: IIconProps = { iconName: 'Undo', styles: iconStyles };
@@ -53,6 +63,15 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
     @Resolve('contentWorkshop')
     public contentWorkshop: ContentWorkshop;
 
+    @Resolve('router')
+    public router: Router;
+
+    @Resolve('pageService')
+    public pageService: IPageService;
+
+    @Resolve('layoutService')
+    public layoutService: ILayoutService;
+
     constructor(props: any) {
         super(props);
 
@@ -64,7 +83,8 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
             canUndo: false,
             canRedo: false,
             mobileMenuIsOpened: false,
-            dropdownIconStyles: { marginRight: '8px', color: lightTheme.palette.themePrimary }
+            dropdownIconStyles: { marginRight: '8px', color: lightTheme.palette.themePrimary },
+            pageName: ''
         };
     }
 
@@ -74,9 +94,32 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
         this.checkScreenSize();
     }
 
+    componentDidUpdate(prevProps: Readonly<{}>, prevState: Readonly<RightPanelState>, snapshot?: any): void {
+        if (this.state.isFocusedState && !prevState.isFocusedState) {
+            const host = this.viewManager.getHost();
+            if (host.name === HostNames.Page) {
+                this.getPageName();
+            } else if (host.name == HostNames.Layout) {
+                this.getLayoutName(host);
+            } else if (host.name === HostNames.Styles) {
+                this.setState({ pageName: 'Styles' });
+            }
+        }
+    }
+
     componentWillUnmount() {
         this.eventManager.removeEventListener('onDataChange', this.onDataChange.bind(this));
         window.removeEventListener('resize', this.checkScreenSize.bind(this));
+    }
+
+    getPageName = async (): Promise<void> => {
+        const page = await this.pageService.getPageByPermalink(this.router.getPath());
+        if (page) this.setState({ pageName: 'Page: ' + page.title });
+    }
+
+    getLayoutName = async (host): Promise<void> => {
+        const layout = await this.layoutService.getLayoutByKey(host.params?.layoutKey);
+        if (layout) this.setState({ pageName: 'Layout: ' + layout.title });
     }
 
     checkScreenSize = (): void => {
@@ -142,10 +185,31 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
         </Stack>
     )
 
+    // This is added because using renderDropdownOption is not working in some cases
+    // TODO: fix this duplicate function
+    renderCACDropdownOption = (option: IDropdownOption, optionText): JSX.Element => (
+        <Stack horizontal verticalAlign="center">
+            {option.data && option.data.icon && (
+                <Icon
+                    style={this.state.dropdownIconStyles}
+                    iconName={option.data.icon}
+                    title={option.data.icon}
+                />
+            )}
+            <span>{optionText}</span>
+        </Stack>
+    )
+
     renderTitle = (options: IDropdownOption[]): JSX.Element => {
         const option = options[0];
       
         return this.renderDropdownOption(option);
+    }
+
+    renderCACTitle = (options: IDropdownOption[]): JSX.Element => {
+        const option = options[0];
+
+        return this.renderCACDropdownOption(option, 'View as: ' + option.text);
     }
 
     renderDropdowns = (): JSX.Element => (
@@ -153,8 +217,8 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
             <Dropdown
                 defaultSelectedKey="all"
                 ariaLabel="Access group selector"
-                onRenderOption={this.renderDropdownOption}
-                onRenderTitle={this.renderTitle}
+                //onRenderOption={this.renderDropdownOption}
+                onRenderTitle={this.renderCACTitle}
                 options={accessOptions}
                 styles={dropdownStyles}
                 className="top-panel-dropdown"
@@ -181,13 +245,17 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                     this.viewManager.setHost({ name: 'page-host' });
                 }}
                 disabled={!this.state.hasUnsavedChanges}
-                styles={{ root: { margin: '0 20px 0 10px' } }}
+                styles={{ root: { margin: '0 20px 0 10px', color: '#ffffff' }, rootDisabled: { backgroundColor: '#f3f2f1', color: '#a19f9d' } }}
             />
             <DefaultButton
                 text="Discard"
                 onClick={() => {
                     this.toggleFocusedState();
                     this.viewManager.setHost({ name: 'page-host' });
+                }}
+                styles={{ 
+                    root: { backgroundColor: '#ffffff', color: '#323130' },
+                    rootHovered: { backgroundColor: '#ffffff', color: '#323130' }
                 }}
             />
         </>
@@ -207,7 +275,10 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                             {this.state.isFocusedState
                                 ?
                                     <>
-                                        {this.renderDropdowns()}
+                                        <Stack horizontal verticalAlign="center">
+                                            <Text styles={{ root: { padding: '0 15px' } }}>{this.state.pageName}</Text>
+                                            {this.renderDropdowns()}
+                                        </Stack>
                                         <Stack horizontal verticalAlign="center">
                                             <CommandBarButton
                                                 iconProps={undoIcon}

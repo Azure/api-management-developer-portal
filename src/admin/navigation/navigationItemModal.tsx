@@ -15,6 +15,7 @@ import { ToastNotification } from '../utils/components/toastNotification';
 
 interface NavigationItemModalState {
     selectedLinkOption: string,
+    selectedUrlType: string,
     navItem: NavigationItemContract,
     navItemsDropdown: IDropdownOption[],
     showDeleteConfirmation: boolean,
@@ -36,11 +37,13 @@ interface NavigationItemModalProps {
 }
 
 const enum LinkOptionKey {
-    NoLink = 'noLink',
     Page = 'page',
+    Anchor = 'anchor',
+    Url = 'url',
     SavedUrl = 'savedUrl',
     NewUrl = 'newUrl',
-    Media = 'media'
+    Media = 'media',
+    NoLink = 'noLink'
 }
 
 const enum LinkActionOptionKey {
@@ -50,11 +53,16 @@ const enum LinkActionOptionKey {
 }
 
 const linkOptions: IDropdownOption[] = [
-    { key: LinkOptionKey.NoLink, text: 'No link' },
     { key: LinkOptionKey.Page, text: 'Page' },
-    { key: LinkOptionKey.SavedUrl, text: 'Saved website URL' },
-    { key: LinkOptionKey.NewUrl, text: 'New website URL' },
-    { key: LinkOptionKey.Media, text: 'Media' }
+    { key: LinkOptionKey.Anchor, text: 'Anchor' },
+    { key: LinkOptionKey.Url, text: 'URL' },
+    { key: LinkOptionKey.Media, text: 'Media' },
+    { key: LinkOptionKey.NoLink, text: 'No link' }
+];
+
+const urlTypeOptions: IChoiceGroupOption[] = [
+    { key: LinkOptionKey.SavedUrl, text: 'Saved URL', styles: { field: { padding: 0 }} },
+    { key: LinkOptionKey.NewUrl, text: 'New URL', styles: { field: { padding: 0 }} }
 ];
 
 const mediaLinkActionOptions: IChoiceGroupOption[] = [
@@ -88,6 +96,7 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
 
         this.state = {
             selectedLinkOption: LinkOptionKey.NoLink,
+            selectedUrlType: LinkOptionKey.SavedUrl,
             navItem: this.props.navItem ?? { key: '', label: 'New site menu item', targetWindow: LinkActionOptionKey.Self },
             navItemsDropdown: [],
             showDeleteConfirmation: false,
@@ -144,7 +153,7 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                 selectedLinkType = LinkOptionKey.Page;
             } else if (targetType === 'urls') {
                 url = navItem.targetKey;
-                selectedLinkType = LinkOptionKey.SavedUrl;
+                selectedLinkType = LinkOptionKey.Url;
             } else {
                 selectedLinkType = LinkOptionKey.Media;
                 media = await this.mediaService.getMediaByKey(navItem.targetKey);
@@ -419,7 +428,17 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                         />
                     }
 
-                    {this.state.selectedLinkOption === LinkOptionKey.SavedUrl &&
+                    {this.state.selectedLinkOption === LinkOptionKey.Url && 
+                        <ChoiceGroup
+                            label="Select method"
+                            options={urlTypeOptions}
+                            selectedKey={this.state.selectedUrlType}
+                            onChange={(event, option) => this.setState({ selectedUrlType: option.key })}
+                            styles={{ root: { paddingBottom: 15 } }}
+                        />
+                    }
+
+                    {(this.state.selectedLinkOption === LinkOptionKey.Url && this.state.selectedUrlType === LinkOptionKey.SavedUrl) &&
                         <Dropdown
                             label="Select URL"
                             placeholder="Click to select an existing URL..."
@@ -430,12 +449,13 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                         />
                     }
 
-                    {this.state.selectedLinkOption === LinkOptionKey.NewUrl &&
+                    {(this.state.selectedLinkOption === LinkOptionKey.Url && this.state.selectedUrlType === LinkOptionKey.NewUrl) &&
                         <TextField
                             label="Enter new URL"
                             placeholder="Enter a new URL"
                             styles={{ root: { paddingBottom: 15 } }}
                             onChange={(event, newValue) => this.onInputChange(LinkOptionKey.NewUrl, newValue)}
+                            value={this.state.navItem?.[LinkOptionKey.NewUrl] ?? 'https://'}
                             onGetErrorMessage={(value) => validateField(URL, value)}
                         />
                     }

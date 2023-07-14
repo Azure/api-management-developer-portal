@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Resolve } from '@paperbits/react/decorators';
 import { ViewManager } from '@paperbits/common/ui';
+import { Router } from '@paperbits/common/routing';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
 import { CommandBarButton, Icon, IIconProps, Stack, Text } from '@fluentui/react';
 import { Pages } from './pages/pages';
@@ -50,6 +51,9 @@ const iconStyles = { root: { color: lightTheme.palette.themePrimary, fontSize: 2
 export class LeftPanel extends React.Component<{}, LeftPanelState> {
     @Resolve('viewManager')
     public viewManager: ViewManager;
+
+    @Resolve('router')
+    public router: Router;
 
     constructor(props: any) {
         super(props);
@@ -173,9 +177,9 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                 {this.state.showOnboardingModal && <OnboardingModal onDismiss={this.handleOnboardingModalClose.bind(this)} />}
                 <div className="side-panel">
                     <Stack horizontal className="portal-name-container">
-                        <Stack horizontal verticalAlign="center">
+                        <Stack horizontal verticalAlign="center" onClick={async () => await this.router.navigateTo('/')} styles={{ root: { cursor: 'pointer' } }}>
                             <Icon iconName="Home" styles={iconStyles} />
-                            <Text className="portal-name">mydevportal</Text>
+                            <Text className="portal-name">Home</Text>
                         </Stack>
                         <Icon
                             iconName="Cancel"
