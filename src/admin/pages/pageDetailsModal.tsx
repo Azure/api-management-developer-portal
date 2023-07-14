@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Resolve } from '@paperbits/react/decorators';
 import { IPageService, PageContract } from '@paperbits/common/pages';
-import { Router } from '@paperbits/common/routing';
 import { EventManager } from '@paperbits/common/events';
 import { CommandBarButton, DefaultButton, IIconProps, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
+import { LabelWithInfo } from '../utils/components/labelWithInfo';
 
 interface PageDetailsModalState {
     page: PageContract,
@@ -26,9 +26,6 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
     @Resolve('pageService')
     public pageService: IPageService;
 
-    @Resolve('router')
-    public router: Router;
-
     @Resolve('eventManager')
     public eventManager: EventManager;
 
@@ -43,12 +40,24 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
     }
 
     onInputChange = async (field: string, newValue: string) => {
-        this.setState({
-            page: {
-                ...this.state.page,
-                [field]: newValue
-            }
-        });
+        if (!this.props.page && field === 'title') {
+            const permalink = newValue.replace(/\s+/g, '-').toLowerCase();
+
+            this.setState({
+                page: {
+                    ...this.state.page,
+                    'title': newValue,
+                    'permalink': '/' + permalink
+                }
+            });
+        } else {
+            this.setState({
+                page: {
+                    ...this.state.page,
+                    [field]: newValue
+                }
+            });
+        }
     }
 
     deletePage = async () => {
@@ -63,7 +72,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
     }
 
     copyPage = async () => {
-        this.setState({ copyPage: true, page: {
+        this.setState({ copyPage: true, page: { 
             ...this.state.page,
             permalink: this.state.page.permalink + '-copy',
             title: this.state.page.title + ' (copy)'
@@ -127,7 +136,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                         </>
                     }
                     <TextField
-                        label="Title"
+                        onRenderLabel={() => <LabelWithInfo label="Name" info="This is how the page name will be displayed in the site menu." />}
                         value={this.state.page.title}
                         onChange={(event, newValue) => this.onInputChange('title', newValue)}
                         styles={textFieldStyles}
@@ -139,7 +148,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                         styles={textFieldStyles}
                     />
                     <TextField
-                        label="Description"
+                        onRenderLabel={() => <LabelWithInfo label="Description" info="Add text about the page and its content as if you were describing it to someone who is blind.Add text about the page and its content as if you were describing it to someone who is blind." />}
                         multiline
                         autoAdjustHeight
                         value={this.state.page.description}

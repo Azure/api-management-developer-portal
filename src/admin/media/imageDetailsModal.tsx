@@ -4,7 +4,6 @@ import Cropper from 'react-cropper';
 import * as Utils from '@paperbits/common/utils';
 import { Resolve } from '@paperbits/react/decorators';
 import { IMediaService, MediaContract } from '@paperbits/common/media';
-import { Router } from '@paperbits/common/routing';
 import { EventManager } from '@paperbits/common/events';
 import { DefaultButton, IconButton, Modal, PrimaryButton, Stack, Text, TextField, TooltipDelay, TooltipHost } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
@@ -31,9 +30,6 @@ const flipHorizontallyStyles = { root: { color: '#000', transform: 'rotate(45deg
 export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, ImageDetailsModalState> {
     @Resolve('mediaService')
     public mediaService: IMediaService;
-
-    @Resolve('router')
-    public router: Router;
 
     @Resolve('eventManager')
     public eventManager: EventManager;
