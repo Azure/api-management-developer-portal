@@ -5,7 +5,7 @@ import * as ko from "knockout";
  */
 export class ReportRecordByOperationViewModel {
     /**
-     * Operaion identifier, e.g. "/apis/httpbin/operations/get".
+     * Operation identifier, e.g. "/apis/httpbin/operations/get".
      */
     public operationId: ko.Observable<string>;
 

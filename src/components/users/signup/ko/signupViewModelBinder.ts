@@ -1,7 +1,6 @@
-import { Bag } from "@paperbits/common";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { ComponentFlow } from "@paperbits/common/editing";
-import { ViewModelBinder } from "@paperbits/common/widgets";
+import { StyleCompiler } from "@paperbits/common/styles";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { TermsOfService } from "../../../../contracts/identitySettings";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { IdentityService } from "../../../../services";
@@ -16,53 +15,49 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
         private readonly tenantService: TenantService,
         private readonly backendService: BackendService,
         private readonly settingsProvider: ISettingsProvider,
-        private readonly identityService: IdentityService) { }
+        private readonly identityService: IdentityService,
+        private readonly styleCompiler: StyleCompiler
+    ) { }
 
     public async getTermsOfService(): Promise<TermsOfService> {
         const identitySetting = await this.identityService.getIdentitySetting();
         return identitySetting.properties.termsOfService;
     }
 
-    public async modelToViewModel(model: SignupModel, viewModel?: SignupViewModel, bindingContext?: Bag<any>): Promise<SignupViewModel> {
-        if (!viewModel) {
-            viewModel = new SignupViewModel();
-            viewModel["widgetBinding"] = {
-                displayName: "Sign-up form: Basic",
-                layer: bindingContext?.layer,
-                model: model,
-                flow: ComponentFlow.Block,
-                draggable: true
-            };
-        }
+    public stateToInstance(state: WidgetState, componentInstance: SignupViewModel): void {
+        componentInstance.styles(state.styles);
 
+        componentInstance.runtimeConfig(JSON.stringify({
+            termsOfUse: state.termsOfUse,
+            isConsentRequired: state.isConsentRequired,
+            termsEnabled: state.termsEnabled,
+            requireHipCaptcha: state.requireHipCaptcha
+        }));
+    }
+
+    public async modelToState(model: SignupModel, state: WidgetState): Promise<void> {
         const useHipCaptcha = await this.settingsProvider.getSetting<boolean>("useHipCaptcha");
-        const params = { requireHipCaptcha: useHipCaptcha === undefined ? true : useHipCaptcha };
-
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
+
         if (isDelegationEnabled) {
             const delegationParam = {};
-            delegationParam[DelegationParameters.ReturnUrl] =  "/";
+            delegationParam[DelegationParameters.ReturnUrl] = "/";
 
             const delegationUrl = await this.backendService.getDelegationUrlFromServer(DelegationAction.signUp, delegationParam);
+
             if (delegationUrl) {
-                params["delegationUrl"] = delegationUrl;
+                state.delegationUrl = delegationUrl;
             }
         }
 
         const termsOfService = await this.getTermsOfService();
-        if (termsOfService.text) params["termsOfUse"] = termsOfService.text;
-        if (termsOfService.consentRequired) params["isConsentRequired"] = termsOfService.consentRequired;
-        if (termsOfService.enabled) params["termsEnabled"] = termsOfService.enabled;
-        
-        if (Object.keys(params).length !== 0) {
-            const runtimeConfig = JSON.stringify(params);
-            viewModel.runtimeConfig(runtimeConfig);
+        state.termsOfUse = termsOfService.text;
+        state.isConsentRequired = termsOfService.consentRequired;
+        state.termsEnabled = termsOfService.enabled;
+        state.requireHipCaptcha = useHipCaptcha === undefined ? true : useHipCaptcha
+
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
-
-        return viewModel;
-    }
-
-    public canHandleModel(model: SignupModel): boolean {
-        return model instanceof SignupModel;
     }
 }

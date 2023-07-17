@@ -347,6 +347,7 @@ export class OperationConsole {
     public async updateRequestSummary(): Promise<void> {
         const template = templates[this.selectedLanguage()];
         const codeSample = await TemplatingService.render(template, { console: ko.toJS(this.consoleOperation), showSecrets: this.secretsRevealed });
+        this.requestError(null);
 
         this.codeSample(codeSample);
     }
@@ -368,6 +369,7 @@ export class OperationConsole {
 
         if (clientErrors.length > 0) {
             validationGroup.showAllMessages();
+            this.requestError("Required fields are missing or incomplete. Please review the request and ensure all required information is provided. Look for highlighted areas with error indicators.");
             return;
         }
 
@@ -581,6 +583,7 @@ export class OperationConsole {
         const clientErrors = validationGroup();
 
         if (clientErrors.length > 0) {
+            this.requestError("Required fields are missing or incomplete. Please review the request and ensure all required information is provided. Look for highlighted areas with error indicators.");
             validationGroup.showAllMessages();
             return;
         }
