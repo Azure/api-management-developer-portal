@@ -320,7 +320,7 @@ FastForEach.prototype.getPendingDeleteFor = function (data) {
     return this.pendingDeletes[index];
 };
 
-// tries to find the existing pending delete info for this data item, and if it can't, it registeres one
+// tries to find the existing pending delete info for this data item, and if it can't, it registers one
 FastForEach.prototype.getOrCreatePendingDeleteFor = function (data) {
     let pd = this.getPendingDeleteFor(data);
     if (pd) {

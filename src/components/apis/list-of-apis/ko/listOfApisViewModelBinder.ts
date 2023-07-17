@@ -1,48 +1,36 @@
-import { ViewModelBinder } from "@paperbits/common/widgets";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ListOfApisViewModel } from "./listOfApisViewModel";
 import { ListOfApisModel } from "../listOfApisModel";
-import { Bag } from "@paperbits/common";
-import { EventManager, Events } from "@paperbits/common/events";
-import { ComponentFlow } from "@paperbits/common/editing";
+import { StyleCompiler } from "@paperbits/common/styles";
 
 
 export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisModel, ListOfApisViewModel> {
+    constructor(private readonly styleCompiler: StyleCompiler) { }
 
-    constructor(private readonly eventManager: EventManager) { }
+    public stateToInstance(state: WidgetState, componentInstance: ListOfApisViewModel): void {
+        componentInstance.styles(state.styles);
+        componentInstance.layout(state.layout);
 
-    public async modelToViewModel(model: ListOfApisModel, viewModel?: ListOfApisViewModel, bindingContext?: Bag<any>): Promise<ListOfApisViewModel> {
-        if (!viewModel) {
-            viewModel = new ListOfApisViewModel();
-        }
-
-        viewModel.layout(model.layout);
-
-        viewModel.runtimeConfig(JSON.stringify({
-            allowSelection: model.allowSelection,
-            showApiType: model.showApiType,
-            defaultGroupByTagToEnabled: model.defaultGroupByTagToEnabled,
-            detailsPageUrl: model.detailsPageHyperlink
-                ? model.detailsPageHyperlink.href
-                : undefined
+        componentInstance.runtimeConfig(JSON.stringify({
+            allowSelection: state.allowSelection,
+            showApiType: state.showApiType,
+            defaultGroupByTagToEnabled: state.defaultGroupByTagToEnabled,
+            detailsPageUrl: state.detailsPageUrl
         }));
-
-        viewModel["widgetBinding"] = {
-            displayName: "List of APIs" + (model.layout === "list" ? "" : ` (${model.layout})`),
-            layer: bindingContext?.layer,
-            model: model,
-            draggable: true,
-            flow: ComponentFlow.Block,
-            editor: "list-of-apis-editor",
-            applyChanges: async (updatedModel: ListOfApisModel) => {
-                await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                this.eventManager.dispatchEvent(Events.ContentUpdate);
-            }
-        };
-
-        return viewModel;
     }
 
-    public canHandleModel(model: ListOfApisModel): boolean {
-        return model instanceof ListOfApisModel;
+    public async modelToState(model: ListOfApisModel, state: WidgetState): Promise<void> {
+        state.layout = model.layout;
+
+        state.allowSelection = model.allowSelection,
+            state.showApiType = model.showApiType,
+            state.defaultGroupByTagToEnabled = model.defaultGroupByTagToEnabled,
+            state.detailsPageUrl = model.detailsPageHyperlink
+                ? model.detailsPageHyperlink.href
+                : undefined
+
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }
