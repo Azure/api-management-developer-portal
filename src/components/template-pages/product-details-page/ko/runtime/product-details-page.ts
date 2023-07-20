@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import { Component, OnMounted, Param, RuntimeComponent } from "@paperbits/common/ko/decorators";
 import template from "./product-details-page.html";
 import { Product } from "../../../../../models/product";
-import { breadcrumbItem, menuItem } from "../../../common/Utils";
+import { breadcrumbItem, menuItem, menuItemType } from "../../../common/Utils";
 import { ProductService } from "../../../../../services/productService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Router } from "@paperbits/common/routing";
@@ -44,11 +44,27 @@ export class ProductDetailsPage {
         this.loadProduct(productName);
 
         this.selectedMenuItem.subscribe((menuItem) => {
+            let url = ""
+
+            if (menuItem.type === menuItemType.staticMenuItemType) {
+                url = this.routeHelper.getProductDetailsPageReference(this.product().name, menuItem.value);
+            }
+
+            if (menuItem.type === menuItemType.documentationMenuItemType) {
+                url = this.routeHelper.getProductDocumentationReferenceUrl(this.product().name, menuItem.value);
+            }
+
+            console.log(url);
+
             const breadcrumbs = this.breadcrumbItems();
             breadcrumbs.pop();
-            breadcrumbs.push({ title: menuItem.displayName, url: "" });
+            breadcrumbs.push({ title: menuItem.displayName, url: url });
             this.breadcrumbItems(breadcrumbs);
         });
+    }
+
+    public openSubscribeForm(){
+        alert("Subscribe form opened");
     }
 
     private async loadProduct(productName: string): Promise<void> {
@@ -81,7 +97,7 @@ export class ProductDetailsPage {
         const productReferenceUrl = this.routeHelper.getProductReferenceUrl(this.product().name);
         this.breadcrumbItems([{ title: "Home", url: "/" },
         { title: "Products", url: "/products" },
-        { title: this.product().name, url: productReferenceUrl },
+        { title: this.product().name, url: this.routeHelper.getProductDetailsPageReference(this.product().name, "about") },
         { title: "About this Product", url: productReferenceUrl }])
     }
 }

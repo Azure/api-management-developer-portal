@@ -6,7 +6,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 import { Router } from "@paperbits/common/routing";
 import aboutApi from "./staticPages/about-api.html";
-import { menuItem, breadcrumbItem } from "../../../common/Utils";
+import { menuItem, breadcrumbItem, menuItemType } from "../../../common/Utils";
 import operationDetails from "../../../../operations/operation-details/ko/runtime/operation-details.html";
 
 @RuntimeComponent({
@@ -93,9 +93,23 @@ export class ApiDetailsPage {
         this.operationDetailsConfig(config);
 
         this.selectedMenuItem.subscribe((menuItem) => {
+            let url = ""
+
+            if (menuItem.type === menuItemType.staticMenuItemType) {
+                url = this.routeHelper.getProductDetailsPageReference(this.api().name, menuItem.value);
+            }
+
+            if (menuItem.type === menuItemType.operationMenuItem) {
+                url = this.routeHelper.getOperationReferenceUrl(this.api().name, menuItem.value);
+            }
+
+            if (menuItem.type === menuItemType.documentationMenuItemType) {
+                url = this.routeHelper.getProductDocumentationReferenceUrl(this.api().name, menuItem.value);
+            }
+
             const breadcrumbs = this.breadcrumbItems();
             breadcrumbs.pop();
-            breadcrumbs.push({ title: menuItem.displayName, url: "" });
+            breadcrumbs.push({ title: menuItem.displayName, url: url });
             this.breadcrumbItems(breadcrumbs);
         });
 
@@ -152,7 +166,7 @@ export class ApiDetailsPage {
         const apiReferenceUrl = this.routeHelper.getApiReferenceUrl(this.api().name);
         this.breadcrumbItems([{ title: "Home", url: "/" },
         { title: "APIs", url: "/apis" },
-        { title: this.api().name, url: apiReferenceUrl },
+        { title: this.api().name, url: this.routeHelper.getApiDetailsPageReference(this.api().name, "about") },
         { title: "About this API", url: apiReferenceUrl }])
     }
 

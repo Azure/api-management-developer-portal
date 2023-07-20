@@ -159,6 +159,19 @@ export class RouteHelper {
         return `${currentPath}#api=${apiName}&page=${pageName}`;
     }
 
+    public getProductDetailsPageReference(productName: string, pageName: string): string {
+        if (!productName) {
+            throw new Error(`Parameter "productName" not specified.`);
+        }
+
+        if (!pageName) {
+            throw new Error(`Parameter "pageName" not specified.`);
+        }
+
+        const currentPath = this.router.getPath();
+        return `${currentPath}#product=${productName}&page=${pageName}`;
+    }
+
     /**
      * Returns URL of graph details page depending on current route.
      * @param apiName ARM resource name of the API.

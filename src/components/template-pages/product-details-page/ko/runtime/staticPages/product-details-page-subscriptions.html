@@ -1,49 +1,46 @@
 <h3>Subscriptions</h3>
-<p>Below are your subscriptions for this product</p>
+
+<!-- ko ifnot: isUserSignedIn() -->
+<p>
+    You need to sign in to see your subscriptions.
+</p>
+<!-- /ko -->
 
 <!-- ko if: working -->
-<div class="table-body">
-    <spinner></spinner>
-</div>
+<spinner class="fit"></spinner>
 <!-- /ko -->
 
 <!-- ko ifnot: working -->
+<!-- ko if: isUserSignedIn() -->
+<p>Below are your subscriptions for this product</p>
+
 <div class="info-block">
     <b>Maximum subscriptions: </b>
     <span
         data-bind="text: 'A total of ' + product().subscriptionsLimit + ' subscriptions can be created for this product.'"></span>
 </div>
+
 <div class="table">
-
-    <!-- ko if: !isUserSignedIn() -->
-    <p>
-        You need to sign in to see your subscriptions.
-    </p>
-    <!-- /ko -->
-
-    <!-- ko if: subscriptions().length === 0 && isUserSignedIn()-->
+    <!-- ko if: subscriptions().length === 0-->
     <p>
         You don't have subscriptions yet.
     </p>
     <!-- /ko -->
 
-    <!-- ko if: subscriptions().length > 0 && isUserSignedIn()-->
+    <!-- ko if: subscriptions().length > 0-->
     <div class="table-head">
-        <div class="table-row">
-            <div class="col-md-4">Name</div>
-            <div class="col-md-2">Date created</div>
-            <div class="col-md-2">Status</div>
-            <div class="col-md-2">Action</div>
+        <div class="table-row" role="row">
+            <div class="col-6">Name</div>
+            <div class="col-2">Date created</div>
+            <div class="col-2">Status</div>
+            <div class="col-2">Action</div>
         </div>
     </div>
-    <!-- /ko -->
 
     <div class="table-body">
         <!-- ko foreach: { data: subscriptions, as: 'subscription' } -->
         <div class="table-row">
-            <div class="col-md-4 flex flex-row" role="cell">
-
-
+            <div class="col-6 flex flex-row" role="cell">
                 <!-- ko ifnot: $data.isEdit -->
                 <div style="width: calc(100%-90px)" class="text-truncate">
                     <span data-bind="text: model.name"></span>
@@ -57,39 +54,60 @@
                 <!-- /ko -->
 
 
-                <div class="align-self-center ml-20" style="width: 90px;">
-                    <!-- ko ifnot: $data.isEdit -->
+                <!-- ko ifnot: $data.isEdit -->
+                <div class="align-self-center ml-20">
                     <a role="button" class="btn-link" href="#" data-bind="click: toggleEdit"
                         aria-label="Rename subscription"> <i class="icon-emb icon-emb-edit"></i></a>
-                    <!-- /ko -->
-
-                    <!-- ko if: $data.isEdit -->
-                    <div>
-                        <a role="button" class="btn-link" href="#" data-bind="click: $parent.renameSubscription"
-                            aria-label="Save subscription name">Save</a> |
-                        <a role="button" class="btn-link" href="#" data-bind="click: toggleEdit"
-                            aria-label="Cancel subscription rename">Cancel</a>
-                    </div>
-                    <!-- /ko -->
                 </div>
+                <!-- /ko -->
 
+                <!-- ko if: $data.isEdit -->
+                <div class="align-self-center ml-20">
+                    <a role="button" class="btn-link" href="#" data-bind="click: $parent.renameSubscription"
+                        aria-label="Save subscription name">Save</a> |
+                    <a role="button" class="btn-link" href="#" data-bind="click: toggleEdit"
+                        aria-label="Cancel subscription rename">Cancel</a>
+                </div>
+                <!-- /ko -->
             </div>
-            <div class="col-md-2" role="cell"
-                data-bind="text: subscription.model.createdDate.toLocaleDateString('en-US')"></div>
-            <div class="col-md-2" role="cell" data-bind="text: subscription.model.state"></div>
-            <div class="col-md-2" role="cell" data-bind="text: 'Cancel'"></div>
+            <div class="col-2" role="cell" data-bind="text: subscription.model.createdDate.toLocaleDateString('en-US')">
+            </div>
+            <div class="col-2" role="cell" data-bind="text: subscription.model.state"></div>
+            <div class="col-2" role="cell">
+                <!-- ko if: $data.model.canBeCancelled() -->
+                <a role="button" class="btn-link" href="#" data-bind="click: $component.cancelSubscription"
+                    aria-label="Cancel subscription">Cancel</a>
+                <!-- /ko -->
+            </div>
         </div>
         <!-- /ko -->
+
+        <!-- ko if: nextLink()-->
+        <!-- ko if: loadModeSubscriptions()-->
+        <spinner></spinner>
+        <!-- /ko -->
+
+        <!-- ko ifnot: loadModeSubscriptions()-->
+        <div class="table-row">
+            <div class="col-auto">
+                <a href="#" data-bind="click: loadMoreSubscriptions">Show more</a>
+            </div>
+        </div>
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <div class="table-row">
+            <div class="col-auto">
+                <div class="text-truncate">
+                    <a href="#" data-bind="click: openSubscribeForm">
+                        <i class="icon-emb icon-emb-plus"></i>
+                        <span>Subscribe</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
+    <!-- /ko -->
 </div>
-<!-- ko if: nextLink()-->
-
-<!-- ko if: loadModeSubscriptions()-->
-<spinner></spinner>
-<!-- /ko -->
-
-<!-- ko ifnot: loadModeSubscriptions()-->
-<a href="#" data-bind="click: loadMoreSubscriptions">Show more</a>
-<!-- /ko -->
 <!-- /ko -->
 <!-- /ko -->

@@ -29,9 +29,10 @@ export class ProductService {
      * @param productId {string} Product unique identifier.
      */
     public async getSubscriptions(userId?: string, productId?: string, nextLink?: string): Promise<Page<Subscription>> {
-        if (!userId && !nextLink) {
-            throw new Error(`At least one of parameters "userId" and "nextLink" should be specified.`);
+        if (!userId) {
+            throw new Error(`Parameter "userId" not specified.`);
         }
+
         let query = nextLink ? nextLink : `${userId}/subscriptions`;
 
         const pageOfSubscriptions = new Page<Subscription>();
@@ -101,8 +102,8 @@ export class ProductService {
         }
     }
 
-    public async getMoreSubscriptionsForProduct(nextLink: string) {
-        return await this.getSubscriptions(nextLink);
+    public async getMoreSubscriptionsForProduct(userId: string, nextLink: string) {
+        return await this.getSubscriptions(userId, null, nextLink);
     }
 
     /**

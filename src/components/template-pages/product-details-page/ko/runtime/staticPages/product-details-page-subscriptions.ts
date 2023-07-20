@@ -10,7 +10,11 @@ import { TenantService } from "../../../../../../services/tenantService";
 import { Subscription } from "../../../../../../models/subscription";
 import { Product } from "../../../../../../models/product";
 import { SubscriptionListItem } from "../../../../../users/subscriptions/ko/runtime/subscriptionListItem";
+import { Utils } from "../../../../../../utils";
+import { DelegationParameters, DelegationAction } from "../../../../../../contracts/tenantSettings";
 import { EventManager } from "@paperbits/common/events";
+import { parseAndDispatchError } from "../../../../../users/validation-summary/utils";
+import { ErrorSources } from "../../../../../users/validation-summary/constants";
 
 @Component({
     selector: "product-details-page-subscriptions",
@@ -25,6 +29,9 @@ export class ProdutDetailsPageSubscriptions {
 
     @Param()
     public readonly product: ko.Observable<Product>;
+
+    @Param()
+    public readonly openSubscribeForm: () => void;
 
     constructor(
         private readonly usersService: UsersService,
@@ -48,7 +55,7 @@ export class ProdutDetailsPageSubscriptions {
         await this.loadProductSubscriptions();
     }
 
-    public async renameSubscription(subscription: SubscriptionListItem){
+    public async renameSubscription(subscription: SubscriptionListItem): Promise<void> {
         try {
             const updated = await this.productService.renameSubscription(subscription.model.id, subscription.editName());
             const updatedVM = new SubscriptionListItem(updated, this.eventManager);
@@ -56,23 +63,57 @@ export class ProdutDetailsPageSubscriptions {
             this.subscriptions.replace(subscription, updatedVM);
             subscription.toggleEdit();
         } catch (error) {
-           // parseAndDispatchError(this.eventManager, ErrorSources.renameSubscription, error);
+            parseAndDispatchError(this.eventManager, ErrorSources.renameSubscription, error);
         }
     }
 
-    public async loadMoreSubscriptions() {
+    public async loadMoreSubscriptions(): Promise<void> {
         this.loadModeSubscriptions(true);
 
-        const pageOfSubscriptions = await this.productService.getMoreSubscriptionsForProduct(this.nextLink());
+        const userId = await this.usersService.getCurrentUserId();
+        if (!userId) {
+            return;
+        }
+
+        const pageOfSubscriptions = await this.productService.getMoreSubscriptionsForProduct(userId, this.nextLink());
         const subscriptions = pageOfSubscriptions.value.map(item => new SubscriptionListItem(item, this.eventManager));
-        this.subscriptions(subscriptions);
+        const newSubscriptions = this.subscriptions().concat(subscriptions);
+
+        this.subscriptions(newSubscriptions);
         this.nextLink(pageOfSubscriptions.nextLink);
 
         this.loadModeSubscriptions(false);
     }
 
+    public async cancelSubscription(subscription: SubscriptionListItem): Promise<void> {
+        if (!subscription || !subscription.model || !subscription.model.id) {
+            return;
+        }
+        const subscriptionId = subscription.model.id;
+
+        subscription.isSRegenerating(true);
+
+        try {
+            await this.applyDelegation(subscriptionId);
+            const updated = await this.productService.cancelSubscription(subscriptionId);
+            const updatedVM = new SubscriptionListItem(updated, this.eventManager);
+            this.syncSubscriptionLabelState(subscription, updatedVM);
+            this.subscriptions.replace(subscription, updatedVM);
+        }
+        catch (error) {
+            if (error.code === "Unauthorized") {
+                this.usersService.navigateToSignin();
+                return;
+            }
+
+        } finally {
+            subscription.isSRegenerating(false);
+        }
+    }
+
     private async loadProductSubscriptions(): Promise<void> {
         const userId = await this.usersService.getCurrentUserId();
+        //this.isUserSignedIn(false);
         this.isUserSignedIn(!!userId);
 
         if (!userId) {
@@ -120,6 +161,18 @@ export class ProdutDetailsPageSubscriptions {
         }
         if (subscription.secondaryKeyBtnLabel() !== updatedVM.secondaryKeyBtnLabel()) {
             updatedVM.toggleSecondaryKey();
+        }
+    }
+
+    private async applyDelegation(subscriptionId: string): Promise<void> {
+        const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
+        if (isDelegationEnabled) {
+            const delegationParam = {};
+            delegationParam[DelegationParameters.SubscriptionId] = Utils.getResourceName("subscriptions", subscriptionId);
+            const delegationUrl = await this.backendService.getDelegationString(DelegationAction.unsubscribe, delegationParam);
+            if (delegationUrl) {
+                location.assign(delegationUrl);
+            }
         }
     }
 }

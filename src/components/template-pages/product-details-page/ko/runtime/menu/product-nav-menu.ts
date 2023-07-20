@@ -56,6 +56,7 @@ export class ProductNavMenu {
         this.productLoading.subscribe(async (newValue) => {
             if (!newValue) {
                 await this.loadWiki();
+                // to do: [0]
                 this.selectMenuItem(this.staticSelectableMenuItems[2]);
             }
         });
@@ -74,6 +75,11 @@ export class ProductNavMenu {
         }
 
         this.selectedMenuItem(menuItem);
+
+        if (menuItem.type == menuItemType.staticMenuItemType) {
+            const productReferenceUrl = this.routeHelper.getProductDetailsPageReference(this.product().name, menuItem.value);
+            this.router.navigateTo(productReferenceUrl);
+        }
 
         if (menuItem.type == menuItemType.documentationMenuItemType) {
             const wikiUrl = this.routeHelper.getProductDocumentationReferenceUrl(this.product().name, menuItem.value);
