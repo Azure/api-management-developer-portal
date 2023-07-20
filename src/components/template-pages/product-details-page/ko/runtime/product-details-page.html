@@ -2,6 +2,10 @@
     <div class="page-title title-background">
         <h1 class="title-text"
             data-bind="text: product() ? product().displayName : 'The specified product does not exsist'"></h1>
+        <button class="subscribe-button" data-bind="click: openSubscribeForm">
+            <span>Subscribe</span>
+            <i class="icon-emb icon-emb-plus"></i>
+        </button>
     </div>
 
     <div class="page-menu">
@@ -45,7 +49,8 @@
         <!-- /ko -->
 
         <!-- ko if: selectedMenuItem()?.value === 'subscriptions' -->
-        <product-details-page-subscriptions params="{ product: product}"></product-details-page-subscriptions>
+        <product-details-page-subscriptions
+            params="{ product: product, openSubscribeForm: openSubscribeForm}"></product-details-page-subscriptions>
         <!-- /ko -->
         <!-- /ko -->
 

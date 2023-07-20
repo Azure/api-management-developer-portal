@@ -2,16 +2,6 @@
     <div class="page-title title-background">
         <h1 class="title-text" data-bind="text: api() ? api().displayName : 'The specified API does not exsist'">
         </h1>
-        <!-- ko if: api && versionApis().length > 0 -->
-        <label class="select-badge">
-            <select id="apiVersions" aria-label="API versions"
-                data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: currentApiVersion">
-            </select>
-            <span class="arrow flex align-items-center justify-content-center">
-                <i class="icon-emb icon-emb-chevron-down"></i>
-            </span>
-        </label>
-        <!-- /ko -->
     </div>
 
     <div class="page-menu">
