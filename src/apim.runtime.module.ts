@@ -31,6 +31,7 @@ import { ApiProductsCards } from "./components/template-pages/api-details-page/k
 import { ApiNavMenu } from "./components/template-pages/api-details-page/ko/runtime/menu/api-nav-menu";
 import {ProductNavMenu} from "./components/template-pages/product-details-page/ko/runtime/menu/product-nav-menu";
 import { ProductApisCards } from "./components/template-pages/product-details-page/ko/runtime/staticPages/product-apis-cards";
+import { SubscriptionForm } from "./components/template-pages/product-details-page/ko/runtime/subscripion-form/subscription-form";
 import { Changelog } from "./components/template-pages/api-details-page/ko/runtime/staticPages/changelog";
 import { WikiDocumentation } from "./components/template-pages/common/ko/runtime/wikiDocumentation/wiki-documentation";
 import { ProdutDetailsPageSubscriptions } from "./components/template-pages/product-details-page/ko/runtime/staticPages/product-details-page-subscriptions";
@@ -120,6 +121,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("apiNavmenu", ApiNavMenu);
         injector.bind("productNavmenu", ProductNavMenu);
         injector.bind("productApisCards", ProductApisCards);
+        injector.bind("subsctiptionForm", SubscriptionForm);
         injector.bind("changelog", Changelog);
         injector.bind("wikiDocumentation", WikiDocumentation);
         injector.bind("produtDetailsPageSubscriptions", ProdutDetailsPageSubscriptions);

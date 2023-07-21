@@ -354,3 +354,49 @@
         }
     }
 }
+
+.widget-popup-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+
+    &.show {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .popup-content {
+        background-color: white;
+        z-index: 99999;
+        position: absolute;
+        border-radius: 5px;
+    }
+}
+
+.subscription-form {
+    width: 500px;
+
+    .panel-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+
+        h3 {
+            margin-top: 20px;
+        }
+    }
+
+    .terms-of-use {
+        border: 1px solid;
+        padding: 7px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        max-height: 300px;
+    }
+}
