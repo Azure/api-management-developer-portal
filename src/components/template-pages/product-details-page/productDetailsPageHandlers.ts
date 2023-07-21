@@ -52,7 +52,7 @@ export class ProductDetailsPageHandlers implements IWidgetHandler {
                         },
                         subscribeButton: {
                             displayName: "Subscribe button",
-                            plugins: ["margin", "padding", "typography", "size", "background", "states", "border"],
+                            plugins: ["margin", "padding", "typography", "size", "background", "main", "border"],
                             defaults: {
                                 allowedStates: [
                                     "hover",
@@ -110,8 +110,66 @@ export class ProductDetailsPageHandlers implements IWidgetHandler {
                                         typography: {
                                             colorKey: "colors/titleBackgorundColor",
                                         }
+                                    },
+                                    disabled: {
+                                        typography: {
+                                            colorKey: "colors/HUebs",
+                                        },
+                                        border: {
+                                            left: {
+                                                width: 2,
+                                                style: "solid",
+                                                colorKey: "colors/HUebs"
+                                            },
+                                            right: {
+                                                width: 2,
+                                                style: "solid",
+                                                colorKey: "colors/HUebs"
+                                            },
+                                            top: {
+                                                width: 2,
+                                                style: "solid",
+                                                colorKey: "colors/HUebs"
+                                            },
+                                            bottom: {
+                                                width: 2,
+                                                style: "solid",
+                                                colorKey: "colors/HUebs"
+                                            }
+                                        },
                                     }
                                 }
+                            }
+                        },
+                        createButton: {
+                            displayName: "Create button",
+                            plugins: ["margin", "padding", "typography", "size", "background", "states", "border"],
+                            defaults: {
+                                allowedStates: [
+                                    "hover",
+                                    "focus",
+                                    "active",
+                                    "disabled"
+                                ],
+                                padding: {
+                                    left: 30,
+                                    right: 30
+                                },
+                                shadow: {
+                                    shadowKey:"shadows/none"
+                                }
+                            }
+                        },
+                        discardButton: {
+                            displayName: "Discard button",
+                            plugins: ["margin", "padding", "typography", "size", "background", "states", "border"],
+                            defaults: {
+                                allowedStates: [
+                                    "hover",
+                                    "focus",
+                                    "active",
+                                    "disabled"
+                                ],
                             }
                         }
                     }

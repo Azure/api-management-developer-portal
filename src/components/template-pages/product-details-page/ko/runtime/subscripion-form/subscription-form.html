@@ -1,0 +1,47 @@
+<div class="panel subscription-form">
+    <div class="panel-header">
+        <h3>Create subscription</h3>
+        <button type="button" tabindex="0" class="no-border pull-right" data-dismiss="modal"
+            aria-label="Close subscription form" data-bind="click: closeSubscriptionForm(false)">
+            <i class="icon-emb icon-emb-simple-remove"></i>
+        </button>
+    </div>
+    <div>
+        <!-- ko ifnot: isDelegationEnabled() -->
+        <div class="form-group">
+            <label for="subscriptionName">Subscription name *</label>
+            <input id="subscriptionName" aria-required="true" type="text" class="form-control"
+                data-bind="textInput: subscriptionName" />
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: product()?.terms -->
+        <div class="form-group">
+            <label for="termsOfUse">Terms of use</label>
+            <div id="termsOfUse" class="terms-of-use" data-bind="html: product()?.terms"></div>
+        </div>
+        <input id="consentCheckbox" type="checkbox" class="form-check-input" data-bind="checked: consented" />
+        <label for="consentCheckbox" class="form-check-label"> I agree to the Terms of Use.</label>
+        <!-- /ko -->
+
+        <!-- ko if: working() -->
+        <spinner></spinner>
+        <!-- /ko -->
+
+        <!-- ko ifnot: working() -->
+        <div class="panel-footer">
+            <button type="button" class="button button-primary create-button"
+                data-bind="click: subscribe, enable: canSubscribe">Create</button>
+            <button type="button discard-button" class="button"
+                data-bind="click: closeSubscriptionForm">Discard</button>
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: hasError() -->
+        <div class="alert alert-danger" data-bind="scrollintoview: {}">
+            <p>Unable to create subscription</p>
+            <p>Something went wrong. Please try again later.</p>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>

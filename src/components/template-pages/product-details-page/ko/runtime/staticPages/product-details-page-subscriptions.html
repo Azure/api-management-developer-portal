@@ -96,16 +96,19 @@
         <!-- /ko -->
         <!-- /ko -->
 
+        <!-- ko if: canCreateNewSubscription()-->
         <div class="table-row">
             <div class="col-auto">
                 <div class="text-truncate">
-                    <a href="#" data-bind="click: openSubscribeForm">
+                    <a href="#" data-bind="click: openSubscriptionForm">
                         <i class="icon-emb icon-emb-plus"></i>
                         <span>Subscribe</span>
                     </a>
                 </div>
             </div>
         </div>
+        <!-- /ko -->
+        
     </div>
     <!-- /ko -->
 </div>

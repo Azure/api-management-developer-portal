@@ -28,10 +28,16 @@ export class ProdutDetailsPageSubscriptions {
     public readonly loadModeSubscriptions: ko.Observable<boolean>;
 
     @Param()
+    public readonly canCreateNewSubscription: ko.Observable<boolean>;
+
+    @Param()
     public readonly product: ko.Observable<Product>;
 
     @Param()
-    public readonly openSubscribeForm: () => void;
+    public readonly openSubscriptionForm: () => void;
+
+    @Param()
+    public readonly calculateCanCreateNewSubscription: () => Promise<void>;
 
     constructor(
         private readonly usersService: UsersService,
@@ -48,6 +54,7 @@ export class ProdutDetailsPageSubscriptions {
         this.nextLink = ko.observable();
         this.product = ko.observable();
         this.loadModeSubscriptions = ko.observable(false);
+        this.canCreateNewSubscription = ko.observable();
     }
 
     @OnMounted()
@@ -99,6 +106,7 @@ export class ProdutDetailsPageSubscriptions {
             const updatedVM = new SubscriptionListItem(updated, this.eventManager);
             this.syncSubscriptionLabelState(subscription, updatedVM);
             this.subscriptions.replace(subscription, updatedVM);
+            await this.calculateCanCreateNewSubscription();
         }
         catch (error) {
             if (error.code === "Unauthorized") {
