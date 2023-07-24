@@ -67,12 +67,10 @@ export const test = configurationTest.extend({
 });
 
 test.beforeEach(async ( { cleanUp } ) => {
-    console.log("initializing clean up functions");
     cleanUp =  [];
 });
 
 test.afterEach(async ( { cleanUp } ) => {
-    console.log("amount of clean up functions: " + cleanUp.length);
     for (const cleanUpFunction of cleanUp) {
         await cleanUpFunction();
     }
