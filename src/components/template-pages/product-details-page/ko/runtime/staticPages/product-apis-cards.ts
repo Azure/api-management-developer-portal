@@ -94,8 +94,8 @@ export class ProductApisCards {
         this.showQuickView(false);
     }
 
-    public getFullApiUrl(api: Api): string {
-        return window.location.host + "/" + this.routeHelper.getProductReferenceUrl(api.name, "api-details");
+    public getFullApiUrl(api: ko.Observable<Api>): string {
+        return window.location.host + "/" + this.routeHelper.getApiReferenceUrl(api().name, "api-details");
     }
 
     public getApiUrl(api: Api): string {

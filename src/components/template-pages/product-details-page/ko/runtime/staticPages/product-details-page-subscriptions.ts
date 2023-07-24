@@ -119,9 +119,17 @@ export class ProdutDetailsPageSubscriptions {
         }
     }
 
+    public signIn(): void {
+        this.usersService.navigateToSignin();
+    }
+
+    public signUp(): void {
+        this.usersService.navigateToSignup();
+    }
+
     private async loadProductSubscriptions(): Promise<void> {
+        this.working(true);
         const userId = await this.usersService.getCurrentUserId();
-        //this.isUserSignedIn(false);
         this.isUserSignedIn(!!userId);
 
         if (!userId) {
@@ -133,8 +141,6 @@ export class ProdutDetailsPageSubscriptions {
         if (!productName) {
             return;
         }
-
-        this.working(true);
 
         try {
             const pageOfSubscriptions = await this.productService.getSubscriptionsForProduct(userId, `/products/${productName}`);

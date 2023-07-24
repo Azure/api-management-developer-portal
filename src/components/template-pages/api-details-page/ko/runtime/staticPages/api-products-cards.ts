@@ -101,7 +101,7 @@ export class ApiProductsCards {
         this.showQuickView(false);
     }
 
-    public getFullProductUrl(product: Product): string {
-        return window.location.host + "/" + this.routeHelper.getProductReferenceUrl(product.name, "product");
+    public getFullProductUrl(product: ko.Observable<Product>): string {
+        return window.location.host + "/" + this.routeHelper.getProductReferenceUrl(product().name, "product");
     }
 }

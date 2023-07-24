@@ -156,7 +156,7 @@ export class ProductDetailsPageHandlers implements IWidgetHandler {
                                     right: 30
                                 },
                                 shadow: {
-                                    shadowKey:"shadows/none"
+                                    shadowKey: "shadows/none"
                                 }
                             }
                         },
@@ -170,6 +170,50 @@ export class ProductDetailsPageHandlers implements IWidgetHandler {
                                     "active",
                                     "disabled"
                                 ],
+                            }
+                        },
+                        signInButton: {
+                            displayName: "Sign in button",
+                            plugins: ["margin", "padding", "typography", "size", "background", "states", "border"],
+                            defaults: {
+                                allowedStates: [
+                                    "hover",
+                                    "focus",
+                                    "active",
+                                    "disabled"
+                                ],
+                                padding: {
+                                    left: 30,
+                                    right: 30
+                                },
+                                shadow: {
+                                    shadowKey: "shadows/none"
+                                }
+                            }
+                        },
+                        signUpButton: {
+                            displayName: "Sign up button",
+                            plugins: ["margin", "padding", "typography", "size", "background", "states", "border"],
+                            defaults: {
+                                allowedStates: [
+                                    "hover",
+                                    "focus",
+                                    "active",
+                                    "disabled"
+                                ],
+                            }
+                        },
+                        highlightSelectedItem: {
+                            displayName: "Highlight selected item",
+                            plugins: ["border"],
+                            defaults: {
+                                border: {
+                                    left: {
+                                        width: 5,
+                                        style: "solid",
+                                        colorKey: "colors/Bqr2r"
+                                    }
+                                }
                             }
                         }
                     }

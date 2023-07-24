@@ -14,7 +14,7 @@ import * as Constants from "../../../../../../constants";
 })
 export class ProductNavMenu {
     public readonly staticSelectableMenuItems: menuItem[] = [
-        { displayName: "About this Product", value: "about", type: menuItemType.staticMenuItemType },
+        { displayName: "Details", value: "details", type: menuItemType.staticMenuItemType },
         { displayName: "APIs included", value: "apis", type: menuItemType.staticMenuItemType },
         { displayName: "Subscriptions", value: "subscriptions", type: menuItemType.staticMenuItemType }
     ];
@@ -47,7 +47,7 @@ export class ProductNavMenu {
         this.productLoading = ko.observable();
         this.wikiDocumentationMenuItems = ko.observable([]);
         this.filteredWikiDocumentationMenuItems = ko.observable([]);
-        this.wikiLoading = ko.observable();
+        this.wikiLoading = ko.observable(true);
         this.product = ko.observable();
     }
 
@@ -56,8 +56,7 @@ export class ProductNavMenu {
         this.productLoading.subscribe(async (newValue) => {
             if (!newValue) {
                 await this.loadWiki();
-                // to do: [0]
-                this.selectMenuItem(this.staticSelectableMenuItems[2]);
+                this.selectMenuItem(this.staticSelectableMenuItems[0]);
             }
         });
 
@@ -104,11 +103,10 @@ export class ProductNavMenu {
         this.wikiLoading(false);
     }
 
-
     private async onRouteChange(): Promise<void> {
         const productName = this.routeHelper.getProductName();
 
-        if (!productName || productName === this.product()?.name) {
+        if (!productName) {
             return;
         }
 

@@ -43,11 +43,24 @@ export class ApiDetailsPageHandlers implements IWidgetHandler {
                         titleText: {
                             displayName: "Title text",
                             plugins: ["typography"],
-                            defaults:{
+                            defaults: {
                                 typography: {
                                     fontWeight: "normal",
                                     colorKey: "colors/primaryText"
                                 },
+                            }
+                        },
+                        highlightSelectedItem: {
+                            displayName: "Highlight selected item",
+                            plugins: ["border"],
+                            defaults: {
+                                border: {
+                                    left: {
+                                        width: 5,
+                                        style: "solid",
+                                        colorKey: "colors/Bqr2r"
+                                    }
+                                }
                             }
                         }
                     }
