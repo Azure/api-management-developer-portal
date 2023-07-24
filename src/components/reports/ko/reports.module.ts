@@ -1,11 +1,25 @@
-import { IInjectorModule, IInjector } from "@paperbits/common/injection";
+import { IInjector, IInjectorModule } from "@paperbits/common/injection";
+import { IWidgetService } from "@paperbits/common/widgets";
+import { KnockoutComponentBinder } from "@paperbits/core/ko";
+import { ReportsModel } from "../reportsModel";
 import { ReportsModelBinder } from "../reportsModelBinder";
+import { ReportsViewModel } from "./reportsViewModel";
 import { ReportsViewModelBinder } from "./reportsViewModelBinder";
 
 
-export class ReportsModule implements IInjectorModule {
+export class ReportsPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bindToCollection("modelBinders", ReportsModelBinder);
-        injector.bindToCollection("viewModelBinders", ReportsViewModelBinder);
+        injector.bindSingleton("reportsModelBinder", ReportsModelBinder);
+        injector.bindSingleton("reportsViewModelBinder", ReportsViewModelBinder)
+
+        const widgetService = injector.resolve<IWidgetService>("widgetService");
+
+        widgetService.registerWidget("reports", {
+            modelDefinition: ReportsModel,
+            componentBinder: KnockoutComponentBinder,
+            componentDefinition: ReportsViewModel,
+            modelBinder: ReportsModelBinder,
+            viewModelBinder: ReportsViewModelBinder
+        });
     }
 }

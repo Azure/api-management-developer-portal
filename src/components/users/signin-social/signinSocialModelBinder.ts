@@ -6,14 +6,9 @@ import { BuiltInRoles } from "@paperbits/common/user";
 
 
 const nodeType = "signin-social";
-const oldNodeType = "userSigninSocial";
 const defaultRole = BuiltInRoles.everyone.key;
 
 export class SigninSocialModelBinder implements IModelBinder<SigninSocialModel> {
-    public canHandleModel(model: Object): boolean {
-        return model instanceof SigninSocialModel;
-    }
-
     public async contractToModel(contract: SigninSocialContract): Promise<SigninSocialModel> {
         const model = new SigninSocialModel();
 
@@ -31,10 +26,6 @@ export class SigninSocialModelBinder implements IModelBinder<SigninSocialModel> 
         model.aadB2CReplyUrl = contract.aadB2CReplyUrl;
 
         return model;
-    }
-
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === nodeType || contract.type === oldNodeType;
     }
 
     public modelToContract(model: SigninSocialModel): Contract {
