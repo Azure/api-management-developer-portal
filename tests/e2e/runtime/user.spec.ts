@@ -1,6 +1,7 @@
 import { test, expect } from "../playwright-test";
 import { SignInBasicWidget } from "../maps/signin-basic";
 import { ProfileWidget } from "../maps/profile";
+import { HomePageWidget } from "../maps/home";
 import { SignupBasicWidget } from "../maps/signup-basic";
 import { User } from "../../mocks/collection/user";
 import { Templating } from "../../templating";
@@ -17,8 +18,10 @@ test.describe("user-sign-in", async () => {
         
         async function validate(){
             const signInWidget = new SignInBasicWidget(page, configuration);
+            const homePageWidget = new HomePageWidget(page);
+
             await signInWidget.signInWithBasic(userInfo);
-            expect(page.url()).toBe(configuration['urls']['home']);
+            await homePageWidget.waitRuntimeInit();
             await page.close();
         }
 
@@ -37,10 +40,12 @@ test.describe("user-sign-in", async () => {
         
         async function validate(){
             const signInWidget = new SignInBasicWidget(page, configuration);
-            await signInWidget.signInWithBasic(userInfo);
-            expect(page.url()).toBe(configuration['urls']['home']);
+            const homePageWidget = new HomePageWidget(page);
 
-            await page.goto(configuration['urls']['profile']);
+            await signInWidget.signInWithBasic(userInfo);
+            await homePageWidget.waitRuntimeInit();
+
+            await page.goto(configuration['urls']['profile'], { waitUntil: 'domcontentloaded' });
 
             const profileWidget = new ProfileWidget(page);
             await profileWidget.waitRuntimeInit();

@@ -4,30 +4,15 @@ export class ProductseWidget {
     constructor(private readonly page: Page) { }
 
     public async waitRuntimeInit(): Promise<void> {
-        await this.page.waitForSelector("product-list-runtime");
-        await this.page.waitForSelector("product-list-runtime div.table div.table-body div.table-row");
+        await this.page.locator("product-list-runtime").waitFor();
     }
 
-    public async getProductsCount(): Promise<number | undefined> {
-        return await this.page.evaluate(() =>
-            document.querySelector("product-list-runtime div.table div.table-body div.table-row")?.parentElement?.childElementCount
-        );
-    }
-
-    public async getProductByName(productName: string): Promise<object | null> {
-        const products = await this.page.$$('product-list-runtime div.table div.table-body div.table-row a');
-
-        for (let i = 0; i < products.length; i++) {
-            const productNameHtml = await (await products[i].getProperty('innerText')).jsonValue();
-            if (productNameHtml == productName){
-                return products[i];
-            }
-        }
-        return null;
+    public async getProductByName(productName: string): Promise<string | null> {
+        return await this.page.locator('product-list-runtime div.table div.table-body div.table-row a').filter({ hasText: productName }).first().innerText();
     }
 
     public async goToProductPage(baseUrl, productId: string): Promise<void>{
-        await this.page.goto(`${baseUrl}/product#product=${productId}`);
+        await this.page.goto(`${baseUrl}/product#product=${productId}`, { waitUntil: 'domcontentloaded' });
     }
 
     public async subscribeToProduct(baseUrl, productId: string, subscriptionName: string): Promise<void> {

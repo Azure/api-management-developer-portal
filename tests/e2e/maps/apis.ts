@@ -4,20 +4,12 @@ export class ApisWidget {
     constructor(private readonly page: Page) { }
 
     public async waitRuntimeInit(): Promise<void> {
-        await this.page.waitForSelector("api-list");
-        await this.page.waitForSelector("api-list div.table div.table-body div.table-row");
+        await this.page.locator("api-list").waitFor();
+        
     }
 
-    public async getApiByName(apiName: string): Promise<object | null> {
-        const apis = await this.page.$$('api-list div.table div.table-body div.table-row a');
-
-        for (let i = 0; i < apis.length; i++) {
-            const productNameHtml = await (await apis[i].getProperty('innerText')).jsonValue();
-            if (productNameHtml == apiName){
-                return apis[i];
-            }
-        }
-        return null;
+    public async getApiByName(apiName: string): Promise<string | null> {
+        return await this.page.locator('api-list div.table div.table-body div.table-row a').filter({ hasText: apiName }).first().innerText();
     }
 
     public async getApisCount(): Promise<number | undefined> {
