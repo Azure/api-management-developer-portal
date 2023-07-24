@@ -19,7 +19,7 @@ export class User extends Resource{
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
-        this.accessToken = Utils.getSharedAccessToken(this.publicId, "accesskey", 1);
+        this.accessToken = Utils.getSharedAccessToken(this.publicId, Utils.randomIdentifier(), 1);
 
         this.responseContract = this.getResponseContract();
     }
