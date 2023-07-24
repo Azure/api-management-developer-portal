@@ -20,7 +20,7 @@ test.describe("products-page", async () => {
         }
         
         async function validate(){  
-            await page.goto(configuration['urls']['products']);
+            await page.goto(configuration['urls']['products'], { waitUntil: 'domcontentloaded' });
 
             const productWidget = new ProductseWidget(page);
             await productWidget.waitRuntimeInit();

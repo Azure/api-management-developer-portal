@@ -1,6 +1,7 @@
 import { test, expect } from "../playwright-test";
 import { SignInBasicWidget } from "../maps/signin-basic";
 import { ProfileWidget } from "../maps/profile";
+import { HomePageWidget } from "../maps/home";
 import { ProductseWidget } from "../maps/products";
 import { User } from "../../mocks/collection/user";
 import { Subscription } from "../../mocks/collection/subscription";
@@ -31,13 +32,14 @@ test.describe("user-resources", async () => {
             const signInWidget = new SignInBasicWidget(page, configuration);
             const profileWidget = new ProfileWidget(page);
             const productsWidget = new ProductseWidget(page);
+            const homePageWidget = new HomePageWidget(page);
 
             //sign in
             await signInWidget.signInWithBasic(userInfo);
-            expect(page.url()).toBe(configuration['urls']['home']);
+            await homePageWidget.waitRuntimeInit();
 
             // subscribe to product
-            await page.goto(configuration['urls']['products']+"/"+product1.productId);
+            await page.goto(configuration['urls']['products']+"/"+product1.productId, { waitUntil: 'domcontentloaded' });
             await productsWidget.subscribeToProduct(configuration['root'], product1.productId, subscription.displayName);
             await profileWidget.waitRuntimeInit();
             

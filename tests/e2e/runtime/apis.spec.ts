@@ -22,7 +22,7 @@ test.describe("apis-page", async () => {
         }
         
         async function validate(){  
-            await page.goto(configuration['urls']['apis']);
+            await page.goto(configuration['urls']['apis'], { waitUntil: 'domcontentloaded' });
             
             const apiWidget = new ApisWidget(page);
             await apiWidget.waitRuntimeInit();
