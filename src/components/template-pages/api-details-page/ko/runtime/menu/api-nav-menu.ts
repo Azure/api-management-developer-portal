@@ -28,8 +28,8 @@ interface tagOperationMenuItem {
 })
 export class ApiNavMenu {
     public readonly staticSelectableMenuItems: menuItem[] = [
-        { displayName: "About this API", value: "about", type: menuItemType.staticMenuItemType },
-        { displayName: "Products that use this API", value: "products", type: menuItemType.staticMenuItemType },
+        { displayName: "Details", value: "details", type: menuItemType.staticMenuItemType },
+        { displayName: "Associated products", value: "products", type: menuItemType.staticMenuItemType },
         { displayName: "Changelog", value: "changelog", type: menuItemType.staticMenuItemType }
     ];
 
@@ -352,7 +352,7 @@ export class ApiNavMenu {
     private async onRouteChange(): Promise<void> {
         const apiName = this.routeHelper.getApiName();
 
-        if (!apiName || apiName === this.api()?.name) {
+        if (!apiName) {
             return;
         }
 

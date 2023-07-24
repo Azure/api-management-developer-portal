@@ -24,7 +24,7 @@ export class SubscriptionForm {
     product: ko.Observable<Product>;
 
     @Param()
-    closeSubscriptionForm: (reloadSubscriptions?: boolean) => void;
+    closeSubscriptionForm: () => void;
 
     constructor(private readonly usersService: UsersService,
         private readonly productService: ProductService,
@@ -93,7 +93,7 @@ export class SubscriptionForm {
             await this.productService.createSubscription(subscriptionId, userId, `/products/${this.product().name}`, this.subscriptionName());
 
 
-            this.closeSubscriptionForm(true);
+            this.closeSubscriptionForm();
         }
         catch (error) {
             this.hasError(true);

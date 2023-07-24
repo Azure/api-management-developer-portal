@@ -16,7 +16,7 @@
             <div class="menu-list" role="listbox" aria-label="About this Product">
                 <!-- ko foreach: { data: staticSelectableMenuItems, as: 'menuItem' } -->
                 <div class="menu-list-item" role="option"
-                    data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
+                    data-bind="activate: $component.selectMenuItem, css: { 'selected highlight-selected-item': $component.selectedMenuItem() == menuItem }">
                     <span data-bind="text: menuItem.displayName"></span>
                 </div>
                 <!-- /ko -->
@@ -25,13 +25,13 @@
 
         <hr>
         <details open class="details-styled" id="details-wiki">
-            <summary aria-label="Documentations">
+            <summary aria-label="Documentation">
                 <div class="menu-list-heading title">
-                    Documentations
+                    Documentation
                     <i class="icon-emb icon-emb-chevron-down"></i>
                 </div>
             </summary>
-            <div class="menu-list" role="listbox" aria-label="Documentations">
+            <div class="menu-list" role="listbox" aria-label="Documentation">
                 <!-- ko if: wikiLoading -->
                 <spinner class="menu-list-item"></spinner>
                 <!-- /ko -->
@@ -39,14 +39,14 @@
                 <!-- ko ifnot: wikiLoading -->
                 <!-- ko foreach: { data: filteredWikiDocumentationMenuItems(), as: 'menuItem' } -->
                 <div class="menu-list-item" role="option"
-                    data-bind="activate: $component.selectMenuItem, css: { 'selected': $component.selectedMenuItem() == menuItem }">
+                    data-bind="activate: $component.selectMenuItem, css: { 'selected highlight-selected-item': $component.selectedMenuItem() == menuItem }">
                     <span
                         data-bind="text: menuItem.displayName, css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }"></span>
                 </div>
                 <!-- /ko -->
 
                 <!-- ko if: filteredWikiDocumentationMenuItems().length == 0 -->
-                <span>No documentations to display</span>
+                <span>No documentation to display</span>
                 <!-- /ko -->
                 <!-- /ko -->
             </div>

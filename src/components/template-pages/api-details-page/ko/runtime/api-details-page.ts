@@ -96,7 +96,7 @@ export class ApiDetailsPage {
             let url = ""
 
             if (menuItem.type === menuItemType.staticMenuItemType) {
-                url = this.routeHelper.getProductDetailsPageReference(this.api().name, menuItem.value);
+                url = this.routeHelper.getApiDetailsPageReference(this.api().name, menuItem.value);
             }
 
             if (menuItem.type === menuItemType.operationMenuItem) {
@@ -166,8 +166,8 @@ export class ApiDetailsPage {
         const apiReferenceUrl = this.routeHelper.getApiReferenceUrl(this.api().name);
         this.breadcrumbItems([{ title: "Home", url: "/" },
         { title: "APIs", url: "/apis" },
-        { title: this.api().name, url: this.routeHelper.getApiDetailsPageReference(this.api().name, "about") },
-        { title: "About this API", url: apiReferenceUrl }])
+        { title: this.api().name, url: this.routeHelper.getApiDetailsPageReference(this.api().name, "details") },
+        { title: "Details", url: apiReferenceUrl }])
     }
 
     private onVersionChange(selectedApiName: string): void {

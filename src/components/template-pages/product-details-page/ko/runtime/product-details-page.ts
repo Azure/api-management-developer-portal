@@ -72,12 +72,8 @@ export class ProductDetailsPage {
         this.showSubscribeForm(true);
     }
 
-    public closeSubscriptionForm(reloadSubscriptions?: boolean) {
+    public closeSubscriptionForm() {
         this.showSubscribeForm(false);
-
-        if (!!reloadSubscriptions) {
-            this.loadProduct(this.product().name);
-        }
     }
 
     public async calculateCanCreateNewSubscription(): Promise<void> {
@@ -127,7 +123,7 @@ export class ProductDetailsPage {
         const productReferenceUrl = this.routeHelper.getProductReferenceUrl(this.product().name);
         this.breadcrumbItems([{ title: "Home", url: "/" },
         { title: "Products", url: "/products" },
-        { title: this.product().name, url: this.routeHelper.getProductDetailsPageReference(this.product().name, "about") },
-        { title: "About this Product", url: productReferenceUrl }])
+        { title: this.product().name, url: this.routeHelper.getProductDetailsPageReference(this.product().name, "details") },
+        { title: "Details", url: productReferenceUrl }])
     }
 }
