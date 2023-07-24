@@ -20,7 +20,7 @@ jobs:
         run: npm run test
   
   end2end-tests:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     
     steps:      
       - name: Checkout code
@@ -31,6 +31,12 @@ jobs:
           node-version: 18
       - name: Install
         run: npm install
+
+      - name: Compile
+        run: npx tsc -p tests\tsconfig.json
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
 
       - name: Build static data
         run: npm run build-mock-static-data
@@ -43,5 +49,4 @@ jobs:
         shell: pwsh
 
       - name: Run tests
-        run: npm run test-e2e
-      
+        run: npx playwright test /tests --workers 1
