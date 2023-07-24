@@ -78,7 +78,7 @@ export class ApiProductsCards {
     }
 
     public getProductUrl(product: Product): string {
-        return this.routeHelper.getProductReferenceUrl(product.name, "product");
+        return this.routeHelper.getProductReferenceUrl(product.name, "/product");
     }
 
     private async onRouteChange(): Promise<void> {

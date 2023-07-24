@@ -39,6 +39,9 @@ export class ProdutDetailsPageSubscriptions {
     @Param()
     public readonly calculateCanCreateNewSubscription: () => Promise<void>;
 
+    @Param()
+    public readonly subscriptionCreated: ko.Observable<boolean>;
+
     constructor(
         private readonly usersService: UsersService,
         private readonly productService: ProductService,
@@ -55,6 +58,14 @@ export class ProdutDetailsPageSubscriptions {
         this.product = ko.observable();
         this.loadModeSubscriptions = ko.observable(false);
         this.canCreateNewSubscription = ko.observable();
+        this.subscriptionCreated = ko.observable(false);
+
+        this.subscriptionCreated.subscribe(async (isCreated) => {
+            if(isCreated) {
+                await this.loadProductSubscriptions();
+            }
+        });
+
     }
 
     @OnMounted()
@@ -133,12 +144,14 @@ export class ProdutDetailsPageSubscriptions {
         this.isUserSignedIn(!!userId);
 
         if (!userId) {
+            this.working(false);
             return;
         }
 
         const productName = this.routeHelper.getProductName();
 
         if (!productName) {
+            this.working(false);
             return;
         }
 

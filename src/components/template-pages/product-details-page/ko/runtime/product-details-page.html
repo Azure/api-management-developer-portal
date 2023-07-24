@@ -1,7 +1,7 @@
 <div id="widgetPopupContainer" class="widget-popup-container" data-bind="css: { 'show': showSubscribeForm() }">
     <div class="popup-content">
         <subscription-form
-            params="{closeSubscriptionForm: closeSubscriptionForm, product: product}"></subscription-form>
+            params="{closeSubscriptionForm: closeSubscriptionForm, product: product, subscriptionCreated: subscriptionCreated}"></subscription-form>
     </div>
 </div>
 
@@ -58,7 +58,7 @@
 
         <!-- ko if: selectedMenuItem()?.value === 'subscriptions' -->
         <product-details-page-subscriptions
-            params="{ product: product, openSubscriptionForm: openSubscriptionForm, canCreateNewSubscription: canCreateNewSubscription, calculateCanCreateNewSubscription: calculateCanCreateNewSubscription }"></product-details-page-subscriptions>
+            params="{ product: product, openSubscriptionForm: openSubscriptionForm, canCreateNewSubscription: canCreateNewSubscription, calculateCanCreateNewSubscription: calculateCanCreateNewSubscription, subscriptionCreated: subscriptionCreated }"></product-details-page-subscriptions>
         <!-- /ko -->
         <!-- /ko -->
 

@@ -1,5 +1,10 @@
 <h3>Subscriptions</h3>
 
+<!-- ko if: working -->
+<spinner class="fit"></spinner>
+<!-- /ko -->
+
+<!-- ko ifnot: working -->
 <!-- ko ifnot: isUserSignedIn() -->
 <p>
     You need to sign in or create an account to see your subscriptions.
@@ -10,11 +15,6 @@
 </div>
 <!-- /ko -->
 
-<!-- ko if: working -->
-<spinner class="fit"></spinner>
-<!-- /ko -->
-
-<!-- ko ifnot: working -->
 <!-- ko if: isUserSignedIn() -->
 <p>Below are your subscriptions for this product</p>
 
