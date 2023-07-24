@@ -49,4 +49,4 @@ jobs:
         shell: pwsh
 
       - name: Run tests
-        run: npx playwright test /tests --workers 1
+        run: npx playwright test tests/ --workers 1
