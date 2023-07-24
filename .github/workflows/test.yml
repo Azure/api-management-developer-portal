@@ -33,7 +33,7 @@ jobs:
         run: npm install
 
       - name: Compile
-        run: npx tsc -p tests\tsconfig.json
+        run: npx tsc -p tests/tsconfig.json
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
