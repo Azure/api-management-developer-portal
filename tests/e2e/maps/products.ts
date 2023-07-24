@@ -35,6 +35,5 @@ export class ProductseWidget {
         await this.page.waitForSelector("product-subscribe-runtime form button");
         await this.page.type("product-subscribe-runtime form input", subscriptionName);
         await this.page.click("product-subscribe-runtime form button");
-        await this.page.waitForNavigation({ waitUntil: "domcontentloaded" });
     }
 }
