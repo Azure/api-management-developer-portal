@@ -26,6 +26,9 @@ export class SubscriptionForm {
     @Param()
     closeSubscriptionForm: () => void;
 
+    @Param()
+    subscriptionCreated: ko.Observable<boolean>;
+
     constructor(private readonly usersService: UsersService,
         private readonly productService: ProductService,
         private readonly tenantService: TenantService,
@@ -37,6 +40,7 @@ export class SubscriptionForm {
         this.working = ko.observable(false);
         this.hasError = ko.observable(false);
         this.isDelegationEnabled = ko.observable(false);
+        this.subscriptionCreated = ko.observable(false);
 
         this.product = ko.observable();
 
@@ -92,7 +96,7 @@ export class SubscriptionForm {
             const subscriptionId = `/subscriptions/${Utils.getBsonObjectId()}`;
             await this.productService.createSubscription(subscriptionId, userId, `/products/${this.product().name}`, this.subscriptionName());
 
-
+            this.subscriptionCreated(true);
             this.closeSubscriptionForm();
         }
         catch (error) {

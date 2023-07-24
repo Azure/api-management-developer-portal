@@ -23,6 +23,7 @@ export class ProductDetailsPage {
     public readonly selectedMenuItem: ko.Observable<menuItem>;
     public readonly showSubscribeForm: ko.Observable<boolean>;
     public readonly canCreateNewSubscription: ko.Observable<boolean>;
+    public readonly subscriptionCreated: ko.Observable<boolean>;
 
     @Param()
     public wrapText: ko.Observable<boolean>;
@@ -41,6 +42,7 @@ export class ProductDetailsPage {
         this.showSubscribeForm = ko.observable(false);
         this.canCreateNewSubscription = ko.observable(false);
         this.calculateCanCreateNewSubscription = this.calculateCanCreateNewSubscription.bind(this);
+        this.subscriptionCreated = ko.observable();
     }
 
     @OnMounted()

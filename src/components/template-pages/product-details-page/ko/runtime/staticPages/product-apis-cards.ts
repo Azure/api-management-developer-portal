@@ -99,7 +99,6 @@ export class ProductApisCards {
     }
 
     public getApiUrl(api: Api): string {
-        return this.routeHelper.getApiReferenceUrl(api.name, "api-details");
+        return this.routeHelper.getApiReferenceUrl(api.name, "/api-details");
     }
-
 }
