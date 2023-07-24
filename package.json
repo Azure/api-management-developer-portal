@@ -17,7 +17,6 @@
         "build-publisher": "webpack --config webpack.publisher.js",
         "build-runtime": "webpack --config webpack.runtime.js",
         "build-function": "webpack --config webpack.function.js",
-        "test-e2e": "node node_modules/mocha/bin/_mocha -r mocha.js tests/e2e/**/*.spec.ts --timeout 3000000",
         "test": "node node_modules/mocha/bin/_mocha -r mocha.js src/**/*.spec.ts",
         "deploy-function": "npm run build-function && cd dist/function && func azure functionapp publish < function app name >",
         "publish": "webpack --config webpack.publisher.js && node dist/publisher/index.js && npm run serve-website",
@@ -69,7 +68,9 @@
         "webpack": "5.76.1",
         "webpack-cli": "5.0.1",
         "webpack-dev-server": "4.12.0",
-        "webpack-merge": "5.8.0"
+        "webpack-merge": "5.8.0",
+        "playwright": "1.35.1",
+        "@playwright/test": "1.35.1"
     },
   "dependencies": {
     "@azure/api-management-custom-widgets-scaffolder": "^1.0.0-beta.2",

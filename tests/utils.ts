@@ -1,10 +1,9 @@
 import * as fs from "fs";
 import * as crypto from "crypto";
 import * as http from "http";
-import { ConsoleMessage, Page } from 'puppeteer';
 
 export class Utils {
-    public static async getConfig(): Promise<any> {
+    public static async getConfigAsync(): Promise<object> {
         const configFile = await fs.promises.readFile("./src/config.validate.json", { encoding: "utf-8" });
         const validationConfig = JSON.parse(configFile);
         Object.keys(validationConfig.urls).forEach(key => {
@@ -12,6 +11,28 @@ export class Utils {
         });
 
         return validationConfig;
+    }
+
+    public static getTestData(testKey: string): object {
+        const configFile = fs.readFileSync("./tests/mocks/mockServerData.json", { encoding: "utf-8" });
+        const validationConfig = JSON.parse(configFile);
+        if(validationConfig[testKey] == undefined){
+            throw new Error(`Test data not found for ${testKey}`);
+        }
+        return validationConfig[testKey];
+    }
+
+    public static async IsLocalEnv(): Promise<boolean> {
+        let config = await Utils.getConfigAsync();
+        return config["isLocalRun"] === true;
+    }
+
+    public static addQueryParameter(uri: string, name: string, value?: string): string {
+        uri += `${uri.indexOf("?") >= 0 ? "&" : "?"}${name}`;
+        if (value) {
+            uri += `=${value}`;
+        }
+        return uri;
     }
 
     public static getSharedAccessToken(apimUid: string, apimAccessKey: string, validDays: number): string {
@@ -26,9 +47,13 @@ export class Utils {
         return sasToken;
     }
 
-    public static randomIdentifier(length: number = 8): string {
+    public static randomIdentifier(length: number = 8, includeNumers = true): string {
         let result = "";
-        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        if (includeNumers){
+            characters = characters + "0123456789";
+        }
+
         const charactersLength = characters.length;
 
         for (let i = 0; i < length; i++) {
@@ -38,12 +63,18 @@ export class Utils {
         return result;
     }
 
-    public static createMockServer(responses?: Object[]) {
-        var obj = {};
-        if (responses?.length){
-            for (let responseObj of responses) {
-                obj = {...obj, ...responseObj };
+    public static createMockServer(responses?: Object) {
+        var obj = {...responses} ?? {};
+        for (const key in obj) {
+            var newKey = key;
+
+            if (obj[key]["methods"] && obj[key]["methods"].length > 0){
+                const methods = `(${obj[key]["methods"].join("|")})`;
+                newKey = `${methods}/${key}`;    
+            }else{
+                newKey = `(GET|POST|PUT|DELETE|OPTIONS)/${key}`;    
             }
+            obj[key]['regex'] = new RegExp("^" + newKey + "$");
         }
 
         var server = http
@@ -54,13 +85,27 @@ export class Utils {
                 res.setHeader("Access-Control-Allow-Headers", "*");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.setHeader("Access-Control-Expose-Headers", "*");
-                if (urlWithoutParameters && obj[urlWithoutParameters] != undefined) {
-                    var response = obj[urlWithoutParameters];
-                    var headers = {};
-                    response.headers.forEach(element => {
-                        res.setHeader(element.name, element.value);
-                        headers[element.name] = element.value;
-                    });
+
+                var urlToSearch = `${req.method}/${urlWithoutParameters}`;
+                var response = null;
+
+                for (const key in obj) {
+                    if (obj[key]['regex'].test(urlToSearch)) {
+                        response = {...obj[key]};
+                        delete response['regex'];
+                        break;
+                    }
+                }
+
+                if (response != null && response != undefined) {
+                    // default header response, the specified header 
+                    res.setHeader("Content-Type", "application/json");
+
+                    if (response.headers && response.headers.length > 0){
+                        response.headers.forEach(element => {
+                            res.setHeader(element.name, element.value);
+                        });
+                    }
                     
                     res.writeHead(response.statusCode);
                     res.write(Buffer.from(JSON.stringify(response.body)));
@@ -79,33 +124,4 @@ export class Utils {
             server.close();
         }
     }
-
-    public static startTest(server, validate): Promise<void>{
-        return new Promise((resolve, reject) => {
-            server.on("ready", () => {
-                validate().then(() => {
-                    resolve();
-                }).catch((err) => {
-                    reject(err);
-                });
-            });
-
-            server.listen(8181,"127.0.0.1", function(){
-                server.emit("ready");
-            });
-       });
-    }
-
-    public static async  getBrowserNewPage(browser): Promise<Page>{
-        const page = await browser.newPage();
-            
-        page.on('console', async (message: ConsoleMessage) => {
-            if (message.type() === 'error') {
-                console.error(message.text());
-            }
-        });
-
-        return page;
-    }
-
 }
