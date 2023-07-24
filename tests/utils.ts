@@ -72,7 +72,7 @@ export class Utils {
                 const methods = `(${obj[key]["methods"].join("|")})`;
                 newKey = `${methods}/${key}`;    
             }else{
-                newKey = `(GET|POST|PUT|DELETE|OPTIONS)/${key}`;    
+                newKey = `(GET|POST|PUT|DELETE|OPTIONS)/${key}`;
             }
             obj[key]['regex'] = new RegExp("^" + newKey + "$");
         }
