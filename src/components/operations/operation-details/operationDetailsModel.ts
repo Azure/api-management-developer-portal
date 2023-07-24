@@ -1,3 +1,5 @@
+import { LocalStyles } from "@paperbits/common/styles";
+
 export class OperationDetailsModel {
     /**
      * Indicates whether "Try" button should appear on the operation details widget.
@@ -28,6 +30,11 @@ export class OperationDetailsModel {
      * Show operation attribute values examples in a column in tables.
      */
     public showExamples?: boolean;
+
+    /**
+     * Widget local styles.
+     */
+    public styles: LocalStyles = {};
 
     constructor() {
         this.enableConsole = true;

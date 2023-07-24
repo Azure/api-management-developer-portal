@@ -1,43 +1,27 @@
-import { ViewModelBinder } from "@paperbits/common/widgets";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { HistoryOfApiViewModel } from "./historyOfApiViewModel";
 import { HistoryOfApiModel } from "../historyOfApiModel";
-import { Bag } from "@paperbits/common";
-import { EventManager, Events } from "@paperbits/common/events";
-import { ComponentFlow } from "@paperbits/common/editing";
+import { StyleCompiler } from "@paperbits/common/styles";
 
 
 export class HistoryOfApiViewModelBinder implements ViewModelBinder<HistoryOfApiModel, HistoryOfApiViewModel> {
-    
-    constructor(private readonly eventManager: EventManager) { }
+    constructor(private readonly styleCompiler: StyleCompiler) { }
 
-    public async modelToViewModel(model: HistoryOfApiModel, viewModel?: HistoryOfApiViewModel, bindingContext?: Bag<any>): Promise<HistoryOfApiViewModel> {
-        if (!viewModel) {
-            viewModel = new HistoryOfApiViewModel();
-        }
+    public stateToInstance(state: WidgetState, componentInstance: HistoryOfApiViewModel): void {
+        componentInstance.styles(state.styles);
 
-        viewModel.runtimeConfig(JSON.stringify({
-            detailsPageUrl: model.detailsPageHyperlink
-                ? model.detailsPageHyperlink.href
-                : undefined
+        componentInstance.runtimeConfig(JSON.stringify({
+            detailsPageUrl: state.detailsPageUrl
         }));
-
-        viewModel["widgetBinding"] = {
-            displayName: "API: Change history",
-            layer: bindingContext?.layer,
-            model: model,
-            draggable: true,
-            flow: ComponentFlow.Block,
-            editor: "history-of-api-editor",
-            applyChanges: async (updatedModel: HistoryOfApiModel) => {
-                await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                this.eventManager.dispatchEvent(Events.ContentUpdate);
-            }
-        };
-
-        return viewModel;
     }
 
-    public canHandleModel(model: HistoryOfApiModel): boolean {
-        return model instanceof HistoryOfApiModel;
+    public async modelToState(model: HistoryOfApiModel, state: WidgetState): Promise<void> {
+        state.detailsPageUrl = model.detailsPageHyperlink
+            ? model.detailsPageHyperlink.href
+            : undefined
+
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }
