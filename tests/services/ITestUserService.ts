@@ -1,5 +1,5 @@
 import { UserContract } from "../../src/contracts/user";
-export interface IUserService {
+export interface ITestUserService {
     
     putUser(userId: string, userContract: UserContract): Promise<UserContract> ;
 

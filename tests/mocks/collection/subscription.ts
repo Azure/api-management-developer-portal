@@ -1,5 +1,5 @@
 import { SubscriptionContract } from "../../../src/contracts/subscription";
-import { Utils } from "../../utils";
+import { TestUtils } from "../../testUtils";
 import { Resource } from "./resource";
 import { User } from "./user";
 import { Product } from "./product";
@@ -52,20 +52,20 @@ export class Subscription extends Resource{
                 endDate: new Date().toISOString(),
                 expirationDate: new Date().toISOString(),
                 notificationDate: new Date().toISOString(),
-                primaryKey: Utils.randomIdentifier(10),
-                scope: Utils.randomIdentifier(5),
-                secondaryKey: Utils.randomIdentifier(10),
+                primaryKey: TestUtils.randomIdentifier(10),
+                scope: TestUtils.randomIdentifier(5),
+                secondaryKey: TestUtils.randomIdentifier(10),
                 startDate: new Date().toISOString(),
                 state: "active",
-                stateComment: Utils.randomIdentifier(10),
-                ownerId: Utils.randomIdentifier(5)
+                stateComment: TestUtils.randomIdentifier(10),
+                ownerId: TestUtils.randomIdentifier(5)
             }
         };
     }
 
     public static getRandomSubscription(testId: string, user: User, product: Product){
-        var displayName = Utils.randomIdentifier(5);
-        var id = Utils.randomIdentifier(5);
+        var displayName = TestUtils.randomIdentifier(5);
+        var id = TestUtils.randomIdentifier(5);
         return new Subscription(testId, user, product, id, displayName);
     }
 }

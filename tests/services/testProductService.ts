@@ -1,8 +1,8 @@
 import { MapiClient } from "../mapiClient";
 import { ProductContract } from "../../src/contracts/product";
-import { IProductService } from "./IProductService";
+import { ITestProductService } from "./ITestProductService";
 
-export class ProductService implements IProductService {
+export class TestProductService implements ITestProductService {
     private readonly mapiClient: MapiClient
     constructor() { 
         this.mapiClient = MapiClient.Instance;

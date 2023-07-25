@@ -1,8 +1,8 @@
 import { ApiContract } from "../../src/contracts/api";
 import { MapiClient } from "../mapiClient";
-import { IApiService } from "./IApiService";
+import { ITestApiService } from "./ITestApiService";
 
-export class ApiService implements IApiService {
+export class TestApiService implements ITestApiService {
     private readonly mapiClient: MapiClient
     constructor() { 
         this.mapiClient = MapiClient.Instance;
@@ -13,7 +13,7 @@ export class ApiService implements IApiService {
             throw new Error(`Parameter "apiId" not specified.`);
         }
 
-        const contract = await this.mapiClient.put<ApiContract>(apiId, null, apiContract);
+        const contract = await this.mapiClient.put<ApiContract>(apiId, [], apiContract);
         return contract;
     }
     

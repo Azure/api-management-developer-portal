@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as crypto from "crypto";
 import * as http from "http";
 
-export class Utils {
+export class TestUtils {
     public static async getConfigAsync(): Promise<object> {
         const configFile = await fs.promises.readFile("./src/config.validate.json", { encoding: "utf-8" });
         const validationConfig = JSON.parse(configFile);
@@ -23,7 +23,7 @@ export class Utils {
     }
 
     public static async IsLocalEnv(): Promise<boolean> {
-        let config = await Utils.getConfigAsync();
+        let config = await TestUtils.getConfigAsync();
         return config["isLocalRun"] === true;
     }
 

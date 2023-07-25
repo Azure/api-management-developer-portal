@@ -1,4 +1,4 @@
-import { Utils } from "../../utils";
+import { TestUtils } from "../../testUtils";
 import { ApiContract } from "../../../src/contracts/api";
 import { Resource } from "./resource";
 
@@ -45,6 +45,6 @@ export class Api extends Resource{
     }
 
     public static getRandomApi(testId: string){
-        return new Api(testId, Utils.randomIdentifier(), Utils.randomIdentifier(), Utils.randomIdentifier());
+        return new Api(testId, TestUtils.randomIdentifier(), TestUtils.randomIdentifier(), TestUtils.randomIdentifier());
     }
 }

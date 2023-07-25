@@ -1,5 +1,5 @@
 import * as Constants from "../src/constants";
-import { Utils } from "./utils";
+import { TestUtils } from "./testUtils";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
 import { XmlHttpRequestClient } from "@paperbits/common/http";
 import { KnownHttpHeaders } from "../src/models/knownHttpHeaders";
@@ -16,7 +16,7 @@ export class MapiClient {
     }
 
     private async initialize(): Promise<void> {
-        const settings = await Utils.getConfigAsync();
+        const settings = await TestUtils.getConfigAsync();
         this.token = settings["accessToken"];
         this.managementApiUrl = settings["managementUrl"];
     }
@@ -56,7 +56,7 @@ export class MapiClient {
     protected async makeRequest<T>(httpRequest: HttpRequest): Promise<T> {
         const url = new URL(httpRequest.url);
         if (!url.searchParams.has("api-version")) {
-            httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${Constants.managementApiVersion}`);
+            httpRequest.url = TestUtils.addQueryParameter(httpRequest.url, `api-version=${Constants.managementApiVersion}`);
         }
 
         let response: HttpResponse<T>;
