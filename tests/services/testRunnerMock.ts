@@ -1,11 +1,11 @@
-import { Utils } from "../utils";
+import { TestUtils } from "../testUtils";
 import { ITestRunner } from "./ITestRunner";
 
 export class TestRunnerMock implements ITestRunner {
     public  runTest(validate: () => Promise<void>, populateData: () => Promise<void>, data: object ): Promise<void> {
         return new Promise(async (resolve, reject) => {
             
-            let server = Utils.createMockServer(data);
+            let server = TestUtils.createMockServer(data);
             let error = undefined;
             server.on("ready", () => {
                 validate().then(() => {

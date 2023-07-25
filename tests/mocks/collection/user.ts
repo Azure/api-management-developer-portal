@@ -1,5 +1,5 @@
 import { UserContract } from "../../../src/contracts/user";
-import { Utils } from "../../utils";
+import { TestUtils } from "../../testUtils";
 import { Resource } from "./resource";
 
 export class User extends Resource{
@@ -19,7 +19,7 @@ export class User extends Resource{
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
-        this.accessToken = Utils.getSharedAccessToken(this.publicId, Utils.randomIdentifier(), 1);
+        this.accessToken = TestUtils.getSharedAccessToken(this.publicId, TestUtils.randomIdentifier(), 1);
 
         this.responseContract = this.getResponseContract();
     }
@@ -64,11 +64,11 @@ export class User extends Resource{
     }
 
     public static getRandomUser(testId: string){
-        var email = `${Utils.randomIdentifier(4, false)}@${Utils.randomIdentifier(4, false)}.${Utils.randomIdentifier(4, false)}`;
-        var publicId = `${Utils.randomIdentifier(3)}-${Utils.randomIdentifier(3)}-${Utils.randomIdentifier(3)}`;
-        var firstName = Utils.randomIdentifier(3);
-        var lastName = Utils.randomIdentifier(3);
-        var password = Utils.randomIdentifier(10);
+        var email = `${TestUtils.randomIdentifier(4, false)}@${TestUtils.randomIdentifier(4, false)}.${TestUtils.randomIdentifier(4, false)}`;
+        var publicId = `${TestUtils.randomIdentifier(3)}-${TestUtils.randomIdentifier(3)}-${TestUtils.randomIdentifier(3)}`;
+        var firstName = TestUtils.randomIdentifier(3);
+        var lastName = TestUtils.randomIdentifier(3);
+        var password = TestUtils.randomIdentifier(10);
         return new User(testId, email, publicId, firstName, lastName, password);
     }
 }

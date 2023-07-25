@@ -1,5 +1,5 @@
 import { ProductContract } from "../../src/contracts/product";
-export interface IProductService {
+export interface ITestProductService {
     
     putProduct(productId: string, productContract: ProductContract): Promise<ProductContract>;
 

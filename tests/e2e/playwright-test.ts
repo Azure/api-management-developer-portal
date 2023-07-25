@@ -1,22 +1,22 @@
 import { test as base } from '@playwright/test';
-import { Utils } from '../utils';
-import { ApiService } from '../services/apiService';
-import { UserService } from '../services/userService';
-import { ProductService } from '../services/productService';
+import { TestUtils } from '../testUtils';
+import { TestApiService } from '../services/testApiService';
+import { TestUserService } from '../services/testUserService';
+import { TestProductService } from '../services/testProductService';
 import { ITestRunner } from '../services/ITestRunner';
 import { TestRunnerMock } from '../services/testRunnerMock';
 import { TestRunner } from '../services/testRunner';
 
-let configurationTest = base.extend<{}, { configuration: Object, cleanUp: Array<Function>, apiService: ApiService, userService: UserService, productService: ProductService, testRunner: ITestRunner }>({
+let configurationTest = base.extend<{}, { configuration: Object, cleanUp: Array<Function>, apiService: TestApiService, userService: TestUserService, productService: TestProductService, testRunner: ITestRunner }>({
   configuration: [async ({}, use) => {
     let configuration = {};
-    configuration = await Utils.getConfigAsync();
+    configuration = await TestUtils.getConfigAsync();
     await use(configuration);
   }, { scope: 'worker' }],
   
   testRunner: [async ({}, use) => {
     let testRunner: ITestRunner;
-    if (!(await Utils.IsLocalEnv())){
+    if (!(await TestUtils.IsLocalEnv())){
         testRunner = new TestRunner();
     }else{
         testRunner = new TestRunnerMock();
@@ -25,17 +25,17 @@ let configurationTest = base.extend<{}, { configuration: Object, cleanUp: Array<
   }, { scope: 'worker' }],
 
   apiService: [async ({}, use) => {
-    let apiService = new ApiService();
+    let apiService = new TestApiService();
     await use(apiService);
   }, { scope: 'worker' }],
 
   productService: [async ({}, use) => {
-    let productService = new ProductService();
+    let productService = new TestProductService();
     await use(productService);
   }, { scope: 'worker' }],
 
   userService: [async ({}, use) => {
-    let userService = new UserService();
+    let userService = new TestUserService();
     await use(userService);
   }, { scope: 'worker' }],
 
@@ -58,7 +58,7 @@ let configurationTest = base.extend<{}, { configuration: Object, cleanUp: Array<
 export const test = configurationTest.extend({
     mockedData: async ({ }, use, testInfo) => {
         let testTitle = `${testInfo.titlePath[1]}-${testInfo.titlePath[2]}`;
-        var dataToUse = Utils.getTestData(testTitle);
+        var dataToUse = TestUtils.getTestData(testTitle);
         let mockedData = {};
         mockedData["data"] = dataToUse;
         mockedData["testName"] = testTitle;

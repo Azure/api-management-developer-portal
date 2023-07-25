@@ -1,5 +1,5 @@
 import { ProductContract } from "../../../src/contracts/product";
-import { Utils } from "../../utils";
+import { TestUtils } from "../../testUtils";
 import { Resource } from "./resource";
 
 export class Product extends Resource{
@@ -46,7 +46,7 @@ export class Product extends Resource{
     }
 
     public static getRandomProduct(testId: string){
-        var productName = Utils.randomIdentifier();
+        var productName = TestUtils.randomIdentifier();
         return new Product(testId, productName, productName);
     }
 }

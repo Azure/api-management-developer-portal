@@ -1,5 +1,5 @@
 import { ApiContract } from "../../src/contracts/api";
-export interface IApiService {
+export interface ITestApiService {
     
     putApi(apiId: string, apiContract: ApiContract): Promise<ApiContract> ;
 
