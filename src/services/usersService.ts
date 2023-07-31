@@ -144,6 +144,9 @@ export class UsersService {
      * Returns currently authenticated user ID.
      */
     public async getCurrentUserId(): Promise<string> {
+        // to do
+        //return "/users/malincrist-microsoft-com";
+        //return null;
         const token = await this.authenticator.getAccessTokenAsString();
 
         if (!token) {

@@ -15,7 +15,7 @@ import * as Constants from "../../../../../../constants";
 export class ProductNavMenu {
     public readonly staticSelectableMenuItems: menuItem[] = [
         { displayName: "Details", value: "details", type: menuItemType.staticMenuItemType },
-        { displayName: "APIs included", value: "apis", type: menuItemType.staticMenuItemType },
+        { displayName: "Associated APIs", value: "apis", type: menuItemType.staticMenuItemType },
         { displayName: "Subscriptions", value: "subscriptions", type: menuItemType.staticMenuItemType }
     ];
 

@@ -160,6 +160,7 @@ export class ProdutDetailsPageSubscriptions {
             const subscriptions = pageOfSubscriptions.value.map(item => new SubscriptionListItem(item, this.eventManager));
             this.subscriptions(subscriptions);
             this.nextLink(pageOfSubscriptions.nextLink);
+            await this.calculateCanCreateNewSubscription();
         }
         catch (error) {
             if (error.code === "Unauthorized") {

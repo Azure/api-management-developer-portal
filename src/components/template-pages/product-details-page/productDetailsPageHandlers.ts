@@ -137,6 +137,9 @@ export class ProductDetailsPageHandlers implements IWidgetHandler {
                                                 colorKey: "colors/HUebs"
                                             }
                                         },
+                                        background: {
+                                            colorKey: "colors/titleBackgorundColor"
+                                        }
                                     }
                                 }
                             }

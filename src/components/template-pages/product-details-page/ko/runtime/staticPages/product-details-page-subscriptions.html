@@ -16,22 +16,15 @@
 <!-- /ko -->
 
 <!-- ko if: isUserSignedIn() -->
-<p>Below are your subscriptions for this product</p>
+<span
+    data-bind="text: 'Manage your subscriptions. You can create at most ' + product().subscriptionsLimit + ' subscriptions to this product.'"></span>
 
-<div class="info-block">
-    <b>Maximum subscriptions: </b>
-    <span
-        data-bind="text: 'A total of ' + product().subscriptionsLimit + ' subscriptions can be created for this product.'"></span>
+<div class="info-block" data-bind="css: { 'show': !canCreateNewSubscription() }">
+    <b>Subscription limit reached: </b>
+    <span>You have reached the maximum number of subscriptions to this product.</span>
 </div>
 
 <div class="table">
-    <!-- ko if: subscriptions().length === 0-->
-    <p>
-        You don't have subscriptions yet.
-    </p>
-    <!-- /ko -->
-
-    <!-- ko if: subscriptions().length > 0-->
     <div class="table-head">
         <div class="table-row" role="row">
             <div class="col-6">Name</div>
@@ -100,6 +93,16 @@
         <!-- /ko -->
         <!-- /ko -->
 
+        <!-- ko if: subscriptions().length === 0-->
+        <div class="table-row">
+            <div class="col-auto">
+                <div class="text-truncate">
+                    You don't have subscriptions yet.
+                </div>
+            </div>
+        </div>
+        <!-- /ko -->
+
         <!-- ko if: canCreateNewSubscription()-->
         <div class="table-row">
             <div class="col-auto">
@@ -112,9 +115,7 @@
             </div>
         </div>
         <!-- /ko -->
-
     </div>
-    <!-- /ko -->
 </div>
 <!-- /ko -->
 <!-- /ko -->

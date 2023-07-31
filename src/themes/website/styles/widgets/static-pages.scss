@@ -101,9 +101,10 @@
         height: 100vh;
         position: sticky;
         top: 0;
+        margin-top: 20px;
 
         .items {
-            height: calc(100vh - 90px);
+            height: 100vh;
             overflow-y: auto;
             padding-left: 32px;
             overflow-x: clip;
@@ -118,27 +119,23 @@
                 margin: 16px 0;
             }
         }
-
-        .full {
-            height: 100vh;
-        }
-
-        .bottom-item {
-            height: 90px;
-            padding-left: 32px;
-            padding-right: 32px;
-        }
     }
 }
 
 .entities-dropdown {
     .form-control {
         border: none;
-        background-color: #F5F5F5;
+        background-color: white;
+        border-radius: 5px;
+    }
 
-        span:not(.badge) {
-            font-weight: bold;
-            font-size: x-large;
+    .input-group {
+        border: 1px solid #D1D1D1;
+        border-radius: 5px;
+        margin-bottom: 0;
+
+        button {
+            border-radius: 5px !important;
         }
     }
 
@@ -148,7 +145,7 @@
 
     .input-group-addon {
         border: none;
-        background-color: #F5F5F5;
+        background-color: white;
     }
 }
 
@@ -163,7 +160,7 @@
 }
 
 .page-content {
-    max-width: 562px;
+    max-width: 1270px;
     background-color: white;
     grid-column-start: 2;
     padding-left: 20px;
@@ -208,8 +205,7 @@
 
     .card {
         padding: 15px;
-        min-width: 20vw;
-        max-width: 20vw;
+        width: 400px;
         border-radius: 15px;
         margin: 24px 24px 24px 0;
         display: flex;
@@ -333,10 +329,16 @@
     }
 
     .info-block {
+        margin-top: 10px;
         background-color: #CFE4FA;
         border-left: 10px solid #0F6CBD;
         border-radius: 10px;
         padding: 10px;
+        display: none;
+
+        &.show {
+            display: block;
+        }
     }
 
     .table {

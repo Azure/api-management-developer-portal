@@ -1,4 +1,4 @@
-<h3>APIs in this prduct</h3>
+<h3>Associated APIs</h3>
 <div class="cards">
     <!-- ko if: working -->
     <div class="cards-body">
@@ -72,7 +72,7 @@
             </div>
         </div>
 
-        <span data-bind="text: quickViewApi().description"></span>
+        <span data-bind="markdown: quickViewApi().description"></span>
 
         <!-- ko if: quickViewApi().terms -->
         <h5>Legal</h5>
