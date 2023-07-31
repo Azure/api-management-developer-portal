@@ -1,8 +1,7 @@
 <div class="list-container">
-    <div class="items" data-bind="{css: {'full': api() && (api().type === 'websocket' || api().type === 'graphql')}}">
+    <div class="items">
+        API
         <api-list-dropdown params="{ allowSelection: true }" class="entities-dropdown"></api-list-dropdown>
-        <input type="search" class="form-control form-control-light" aria-label="Search this page"
-            placeholder="Search this page" spellcheck="false" data-bind="textInput: pattern" />
         <!-- ko if: api && versionApis().length > 0 -->
         API version
         <label class="select-badge">
@@ -14,6 +13,8 @@
             </span>
         </label>
         <!-- /ko -->
+        <input type="search" class="form-control form-control-light" aria-label="Search for documentation and operations"
+            placeholder="Search for documentation and operations" spellcheck="false" data-bind="textInput: pattern" />
         <hr>
         <details open class="details-styled">
             <summary aria-label="About">
@@ -192,27 +193,26 @@
             <!-- /ko -->
             <!-- /ko -->
         </details>
+        <!-- ko if: api() && (api().type !== 'websocket' && api().type !== 'graphql') -->
+        <div class="pt-40">
+            <hr>
+            <label class="select-badge">
+                <select id="selectedDefinition" data-bind="value: selectedDefinition" class="download"
+                    aria-label="Download API definition">
+                    <option value="" disabled="disabled" selected="selected">Download API definition</option>
+                    <option value="openapi">Open API 3 (YAML)</option>
+                    <option value="openapi+json">Open API 3 (JSON)</option>
+                    <option value="swagger"> Open API 2 (JSON)</option>
+                    <option value="wadl">WADL</option>
+                    <!-- ko if: api().type === 'soap' -->
+                    <option value="wsdl">WSDL</option>
+                    <!-- /ko -->
+                </select>
+                <span class="arrow flex align-items-center justify-content-center">
+                    <i class="icon-emb icon-emb-chevron-down"></i>
+                </span>
+            </label>
+        </div>
+        <!-- /ko -->
     </div>
-    <!-- ko if: api() && (api().type !== 'websocket' && api().type !== 'graphql') -->
-    <div class="bottom-item">
-        <hr>
-        <label class="select-badge">
-            <select id="selectedDefinition" data-bind="value: selectedDefinition" class="download"
-                aria-label="Download API definition">
-                <option value="" disabled="disabled" selected="selected">Download API definition</option>
-                <option value="openapi">Open API 3 (YAML)</option>
-                <option value="openapi+json">Open API 3 (JSON)</option>
-                <option value="swagger"> Open API 2 (JSON)</option>
-                <option value="wadl">WADL</option>
-                <!-- ko if: api().type === 'soap' -->
-                <option value="wsdl">WSDL</option>
-                <!-- /ko -->
-            </select>
-            <span class="arrow flex align-items-center justify-content-center">
-                <i class="icon-emb icon-emb-chevron-down"></i>
-            </span>
-        </label>
-    </div>
-    <!-- /ko -->
-
 </div>

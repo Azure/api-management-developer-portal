@@ -12,7 +12,6 @@
             data-bind="text: product() ? product().displayName : 'The specified product does not exsist'"></h1>
         <button class="subscribe-button" data-bind="enable: canCreateNewSubscription ,click: openSubscriptionForm">
             <span>Subscribe</span>
-            <i class="icon-emb icon-emb-plus"></i>
         </button>
     </div>
 
@@ -41,7 +40,7 @@
 
         <!-- ko if: selectedMenuItem()?.type === 'static' -->
         <!-- ko if: selectedMenuItem()?.value === 'details' -->
-        <h3>About this Product</h3>
+        <h3>Details</h3>
 
         <div class="pb-12">
             <span> type: Product</span>

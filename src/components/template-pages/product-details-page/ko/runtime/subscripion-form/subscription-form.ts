@@ -68,6 +68,8 @@ export class SubscriptionForm {
     }
 
     public async subscribe(): Promise<void> {
+        this.subscriptionCreated(false);
+        
         if (!this.canSubscribe()) {
             return;
         }
