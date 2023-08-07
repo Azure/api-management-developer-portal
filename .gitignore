@@ -7,4 +7,5 @@ node_modules/
 src/config.design.json
 src/config.publish.json
 src/config.runtime.json
-
+test-results/
+tsconfig.tsbuildinfo

@@ -1,0 +1,133 @@
+{
+    "products-page-published-products-visible-to-guests": {
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products":{
+            "statusCode": 200,
+            "body": {
+                "value": [
+                    "object{{product1.responseContract}}",
+                    "object{{product2.responseContract}}"
+                ],
+                "count": 2
+            }
+        }
+    },
+    "user-sign-in-user-can-sign-in-with-basic-credentials": {
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/identity":{
+            "headers": [
+                {
+                    "name": "ocp-apim-sas-token",
+                    "value": "{{user1.accessToken}}"
+                }
+            ],
+            "statusCode": 200,
+            "body": {
+                "id": "test-contoso-com"
+            }
+        }
+    },
+    "user-sign-in-user-can-visit-his-profile-page": {
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/identity":{
+            "headers": [
+                {
+                    "name": "ocp-apim-sas-token",
+                    "value": "{{user1.accessToken}}"
+                }
+            ],
+            "statusCode": 200,
+            "body": {
+                "id": "{{user1.publicId}}"
+            }
+        },
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/{{user1.publicId}}":{
+            "statusCode": 200,
+            "body": "object{{user1.responseContract}}"
+        }
+    },
+    "apis-page-published-apis-visible-to-guests": {
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis":{
+            "statusCode": 200,
+            "body": {
+                "value": [
+                    "object{{api1.responseContract}}"
+                ],
+                "count": 1
+            }
+        }
+    },
+    "user-resources-user-can-subscribe-to-product-and-see-subscription-key":{
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/identity":{
+            "headers": [
+                {
+                    "name": "ocp-apim-sas-token",
+                    "value": "{{user1.accessToken}}"
+                }
+            ],
+            "statusCode": 200,
+            "body": {
+                "id": "{{user1.publicId}}"
+            }
+        },
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/{{user1.publicId}}":{
+            "statusCode": 200,
+            "body": "object{{user1.responseContract}}"
+        },
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/{{product1.productId}}":{
+            "statusCode": 200,
+            "body": "object{{product1.responseContract}}"
+        },
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products":{
+            "statusCode": 200,
+            "body": {
+                "value": [
+                    "object{{product1.responseContract}}"
+                ],
+                "count": 1
+            }
+        },
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/{{product1.productId}}/apis":{
+            "statusCode": 200,
+            "body": {
+                "value": [
+                    
+                ],
+                "count": 0
+            }
+        },
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/tenant/settings":{
+            "statusCode": 200,
+            "body": {
+                
+                "id": "/settings/public",
+                "settings": {
+                    "CustomPortalSettings.UserRegistrationTerms": null,
+                    "CustomPortalSettings.UserRegistrationTermsEnabled": "False",
+                    "CustomPortalSettings.UserRegistrationTermsConsentRequired": "False",
+                    "CustomPortalSettings.DelegationEnabled": "False",
+                    "CustomPortalSettings.DelegationUrl": "",
+                    "CustomPortalSettings.DelegatedSubscriptionEnabled": "False"
+                }
+            }
+        },
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/{{user1.publicId}}/subscriptions":{
+            "statusCode": 200,
+            "body": {
+                "value": [
+                  "object{{subscription1.responseContract}}"
+                ],
+                "count": 1
+            }
+        },
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/{{user1.publicId}}/subscriptions/{{subscription1.id}}/listSecrets":{
+            "statusCode": 200,
+            "body": {
+                "primaryKey": "primaryKey",
+                "secondaryKey": "secondaryKey"
+            }
+        },
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/{{user1.publicId}}/subscriptions/.*":{
+            "methods": ["PUT", "OPTIONS"],
+            "statusCode": 201,
+            "body": {}
+        }
+    }
+}
