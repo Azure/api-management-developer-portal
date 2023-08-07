@@ -1,42 +1,35 @@
-import * as puppeteer from "puppeteer";
-import { expect } from "chai";
-import { Utils } from "../../utils";
-import { BrowserLaunchOptions } from "../../constants";
-import { Server } from "http";
-import { Products } from "../../mocks/collection/products";
 import { Product } from "../../mocks/collection/product";
 import { ProductseWidget } from "../maps/products";
+import { test, expect } from '../playwright-test';
+import { Templating } from "../../templating";
 
-describe("Products page", async () => {
-    let config;
-    let browser: puppeteer.Browser;
-    let server: Server;
-    
-    before(async () => {
-        config = await Utils.getConfig();
-        browser = await puppeteer.launch(BrowserLaunchOptions);
-    });
-    after(async () => {
-        await browser.close();
-        Utils.closeServer(server);
-    });
+test.describe("products-page", async () => {
+    test("published-products-visible-to-guests", async function ({page, configuration, cleanUp, mockedData, productService, testRunner})  { 
+        var product1: Product = Product.getRandomProduct("product1");
+        var product2: Product = Product.getRandomProduct("product2");
 
-    it("User can see producst on the page", async () => {
-        var products = new Products();
-        products.addProduct(Product.getStartedProduct());
-        products.addProduct(Product.getUnlimitedProduct());
+        mockedData.data = Templating.updateTemplate(JSON.stringify(mockedData.data), product1, product2);
 
-        server = Utils.createMockServer([products.getProductListResponse()]);
-
-        async function validate(){            
-            const page = await Utils.getBrowserNewPage(browser);
-            await page.goto(config.urls.products);
+        async function populateData(): Promise<any>{            
+            await productService.putProduct("products/"+product1.productId, product1.getContract());
+            await productService.putProductGroup("products/"+product1.productId, "groups/guests");
+            await productService.putProduct("products/"+product2.productId, product2.getContract());
+            await productService.putProductGroup("products/"+product2.productId, "groups/guests");
+            cleanUp.push(async () => productService.deleteProduct("products/"+product1.productId, true));
+            cleanUp.push(async () => productService.deleteProduct("products/"+product2.productId, true));
+        }
+        
+        async function validate(){  
+            await page.goto(configuration['urls']['products'], { waitUntil: 'domcontentloaded' });
 
             const productWidget = new ProductseWidget(page);
-            await productWidget.products();
-
-            expect(await productWidget.getProductsCount()).to.equal(products.productList.length);
+            await productWidget.waitRuntimeInit();
+            var product1Html = await productWidget.getProductByName(product1.productName);
+            var product2Html = await productWidget.getProductByName(product2.productName);
+            expect(product1Html).not.toBe(null);
+            expect(product2Html).not.toBe(null);
         }
-        await Utils.startTest(server, validate);
+        
+        await testRunner.runTest(validate, populateData, mockedData.data);
     });
 });

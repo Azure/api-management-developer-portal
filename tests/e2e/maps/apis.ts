@@ -1,10 +1,15 @@
-import { Page } from "puppeteer";
+import { Page } from "playwright";
 
 export class ApisWidget {
     constructor(private readonly page: Page) { }
 
-    public async apis(): Promise<void> {
-        await this.page.waitForSelector("api-list div.table div.table-body div.table-row");
+    public async waitRuntimeInit(): Promise<void> {
+        await this.page.locator("api-list").waitFor();
+        
+    }
+
+    public async getApiByName(apiName: string): Promise<string | null> {
+        return await this.page.locator('api-list div.table div.table-body div.table-row a').filter({ hasText: apiName }).first().innerText();
     }
 
     public async getApisCount(): Promise<number | undefined> {
