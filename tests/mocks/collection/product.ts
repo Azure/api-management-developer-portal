@@ -1,51 +1,52 @@
-export class Product{
+import { ProductContract } from "../../../src/contracts/product";
+import { TestUtils } from "../../testUtils";
+import { Resource } from "./resource";
+
+export class Product extends Resource{
     public productId: string;
     public productName: string;
+    public responseContract: ProductContract;
     
-    public constructor(productId: string, productName: string){
+    public constructor(testId: string, productId: string, productName: string){
+        super(testId);
         this.productId = productId;
         this.productName = productName;
-    }
-    
-    public getProductResponse(){
-        let response = {};
-        var url = `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/${this.productId}`;
-        response[url] = {
-            "headers": [
-                {
-                  "name": "content-type",
-                  "value": "application/json; charset=utf-8"
-                }
-              ],
-              "statusCode": 200,
-              "statusText": "OK",
-              "body": this.getProductBodyResponse()
-        };
-        return response;
+        this.responseContract = this.getResponseContract();
     }
 
-    public getProductBodyResponse(){
+    private getProperties(): any{
         return {
-            "id": `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/${this.productId}`,
-            "type": "Microsoft.ApiManagement/service/products",
-            "name": this.productId,
-            "properties": {
-                "displayName": this.productName,
-                "description": "Subscribers will be able to run 5 calls/minute up to a maximum of 100 calls/week.",
-                "terms": "",
-                "subscriptionRequired": true,
-                "approvalRequired": false,
-                "subscriptionsLimit": 1,
-                "state": "published"
-            }
+            displayName: this.productName,
+            description: "",
+            approvalRequired: false,
+            state: "published",
+            subscriptionRequired: true,
+            subscriptionsLimit: 2,
+            terms: ""
+        }
+    }
+
+    public getContract(): ProductContract{
+        return {
+            properties: this.getProperties()
         };
     }
 
-    public static getStartedProduct(){
-        return new Product("starter", "Starter");
+    public getResponseContract(): ProductContract{
+        return {
+            id: `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/${this.productId}`,
+            type: "Microsoft.ApiManagement/service/products",
+            name: this.productId,
+            properties: this.getProperties()
+        };
     }
 
-    public static getUnlimitedProduct(){
-        return new Product("unlimited", "Unlimited");
+    public getRequestId(): string{
+        return `products/${this.productId}`;
+    }
+
+    public static getRandomProduct(testId: string){
+        var productName = TestUtils.randomIdentifier();
+        return new Product(testId, productName, productName);
     }
 }
