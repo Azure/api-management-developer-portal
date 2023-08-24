@@ -1,28 +1,19 @@
-import { Bag } from "@paperbits/common";
-import { ComponentFlow } from "@paperbits/common/editing";
-import { ViewModelBinder } from "@paperbits/common/widgets";
+import { StyleCompiler } from "@paperbits/common/styles";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ValidationSummaryModel } from "../validationSummaryModel";
 import { ValidationSummaryViewModel } from "./validationSummaryViewModel";
 
 
 export class ValidationSummaryViewModelBinder implements ViewModelBinder<ValidationSummaryModel, ValidationSummaryViewModel> {
-    public async modelToViewModel(model: ValidationSummaryModel, viewModel?: ValidationSummaryViewModel, bindingContext?: Bag<any>): Promise<ValidationSummaryViewModel> {
-        if (!viewModel) {
-            viewModel = new ValidationSummaryViewModel();
+    constructor(private readonly styleCompiler: StyleCompiler) { }
 
-            viewModel["widgetBinding"] = {
-                displayName: "Validation summary",
-                layer: bindingContext?.layer,
-                model: model,
-                flow: ComponentFlow.Block,
-                draggable: true
-            };
-        }
-
-        return viewModel;
+    public stateToInstance(state: WidgetState, componentInstance: ValidationSummaryViewModel): void {
+        componentInstance.styles(state.styles);
     }
 
-    public canHandleModel(model: ValidationSummaryModel): boolean {
-        return model instanceof ValidationSummaryModel;
+    public async modelToState(model: ValidationSummaryModel, state: WidgetState): Promise<void> {
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }

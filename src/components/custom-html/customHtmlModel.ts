@@ -1,6 +1,6 @@
 import { LocalStyles } from "@paperbits/common/styles";
 
-export class HTMLInjectionModel {
+export class CustomHtmlModel {
     public htmlCode: string;
     public inheritStyling: boolean;
 

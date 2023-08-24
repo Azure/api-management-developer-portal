@@ -1,31 +1,19 @@
-import { Bag } from "@paperbits/common";
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { ComponentFlow } from "@paperbits/common/editing";
-import { ProfileViewModel } from "./profileViewModel";
+import { StyleCompiler } from "@paperbits/common/styles";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ProfileModel } from "../profileModel";
+import { ProfileViewModel } from "./profileViewModel";
 
 
 export class ProfileViewModelBinder implements ViewModelBinder<ProfileModel, ProfileViewModel> {
-    public async modelToViewModel(model: ProfileModel, viewModel?: ProfileViewModel, bindingContext?: Bag<any>): Promise<ProfileViewModel> {
-        if (!viewModel) {
-            viewModel = new ProfileViewModel();
-            
-            viewModel["widgetBinding"] = {
-                displayName: "User: Profile",
-                layer: bindingContext?.layer,
-                model: model,
-                flow: ComponentFlow.Block,
-                draggable: true,
-                applyChanges: async (updatedModel: ProfileModel) => {
-                    this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                }
-            };
-        }
+    constructor(private readonly styleCompiler: StyleCompiler) { }
 
-        return viewModel;
+    public stateToInstance(state: WidgetState, componentInstance: ProfileViewModel): void {
+        componentInstance.styles(state.styles);
     }
 
-    public canHandleModel(model: ProfileModel): boolean {
-        return model instanceof ProfileModel;
+    public async modelToState(model: ProfileModel, state: WidgetState): Promise<void> {
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }

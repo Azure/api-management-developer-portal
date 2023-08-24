@@ -262,7 +262,6 @@ export class UsersService {
      */
     public async ensureSignedIn(): Promise<string> {
         const userId = await this.getCurrentUserId();
-
         if (!userId) {
             this.navigateToSignin();
             return; // intentionally exiting without resolving the promise.

@@ -2,7 +2,7 @@
 // and callback functions for displaying items outside the control.
 
 //-------------------------------------------------------------------------------------------------
-// The following varible name is defined by partner
+// The following variable name is defined by partner
 // Make sure it has no conflicts to any other your variable names.
 // The name defined here influence how to generate get hip URL that has format "http://p.client.hip.live.com/GetHIP/GetWLSPHIP0/<the namedefined here>?". 
 // Replace '<   >' there with the name here.  

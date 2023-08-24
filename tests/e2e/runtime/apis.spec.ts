@@ -1,43 +1,36 @@
-import * as puppeteer from "puppeteer";
-import { expect } from "chai";
-import { Utils } from "../../utils";
-import { BrowserLaunchOptions } from "../../constants";
-import { Server } from "http";
-import { Apis } from "../../mocks/collection/apis";
-import { Api } from "../../mocks/collection/api";
+import { Product } from "../../mocks/collection/product";
 import { ApisWidget } from "../maps/apis";
+import { test, expect } from '../playwright-test';
+import { Api } from "../../mocks/collection/api";
+import { Templating } from "../../templating";
 
-describe("Apis page", async () => {
-    let config;
-    let browser: puppeteer.Browser;
-    let server: Server;
-    
-    before(async () => {
-        config = await Utils.getConfig();
-        browser = await puppeteer.launch(BrowserLaunchOptions);
-    });
-    after(async () => {
-        await browser.close();
-        Utils.closeServer(server);
-    });
+test.describe("apis-page", async () => {
+    test("published-apis-visible-to-guests", async function ({page, configuration, cleanUp, mockedData, productService, apiService, testRunner})  {
+        var product1: Product = Product.getRandomProduct("product1");
+        var api: Api = Api.getRandomApi("api1");
 
-    it("User can see apis on the page", async () =>{
-        var apis = new Apis();
-        apis.addApi(Api.getRandomApi());
-        apis.addApi(Api.getRandomApi());
-        server = Utils.createMockServer([apis.getApisListResponse()]);
+        mockedData.data = Templating.updateTemplate(JSON.stringify(mockedData.data), api);
         
-        async function validate(){            
-            const page = await Utils.getBrowserNewPage(browser);
-            
-            await page.goto(config.urls.apis);
-            
-            const apiWidget = new ApisWidget(page);
-            await apiWidget.apis();
-            
-            expect(await apiWidget.getApisCount()).to.equal(apis.apiList.length);
+        async function populateData(): Promise<any>{
+            await productService.putProduct("products/"+product1.productId, product1.getContract());
+            await productService.putProductGroup("products/"+product1.productId, "groups/guests");
+            cleanUp.push(async () => productService.deleteProduct("products/"+product1.productId, true));
+
+            await apiService.putApi("apis/"+api.apiId, api.getContract());
+            await apiService.putApiProduct("products/"+product1.productId, "apis/"+api.apiId);
+            cleanUp.push(async () => apiService.deleteApi("apis/"+api.apiId));
         }
         
-        await Utils.startTest(server, validate);
+        async function validate(){  
+            await page.goto(configuration['urls']['apis'], { waitUntil: 'domcontentloaded' });
+            
+            const apiWidget = new ApisWidget(page);
+            await apiWidget.waitRuntimeInit();
+            
+            var apiHtml = await apiWidget.getApiByName(api.apiName);
+            expect(apiHtml).not.toBe(null);
+        }
+        
+        await testRunner.runTest(validate, populateData, mockedData.data);
     });
 });

@@ -1,11 +1,55 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { ProductApisHandlers, ProductApisTilesHandlers } from "../productApisHandlers";
+import { ProductApisHandlers } from "../productApisHandlers";
 import { ProductApisEditor } from "./productApisEditor";
+import { KnockoutComponentBinder } from "@paperbits/core/ko";
+import { IWidgetService } from "@paperbits/common/widgets";
+import { ProductApisModelBinder } from "../productApisModelBinder";
+import { ProductApisViewModelBinder } from "./productApisViewModelBinder";
+import { ProductApisViewModel } from "./productApisViewModel";
+import { ProductApisModel } from "../productApisModel";
+
 
 export class ProductApisEditorModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bind("productApisEditor", ProductApisEditor);
-        injector.bindToCollection("widgetHandlers", ProductApisHandlers, "productApisHandlers");
-        injector.bindToCollection("widgetHandlers", ProductApisTilesHandlers, "productApisTilesHandlers");
+        injector.bindSingleton("productApisModelBinder", ProductApisModelBinder);
+        injector.bindSingleton("productApisViewModelBinder", ProductApisViewModelBinder)
+        injector.bindSingleton("productApisHandlers", ProductApisHandlers);
+
+        const widgetService = injector.resolve<IWidgetService>("widgetService");
+
+        widgetService.registerWidget("product-apis", {
+            modelDefinition: ProductApisModel,
+            componentBinder: KnockoutComponentBinder,
+            componentDefinition: ProductApisViewModel,
+            modelBinder: ProductApisModelBinder,
+            viewModelBinder: ProductApisViewModelBinder
+        });
+
+        widgetService.registerWidgetEditor("product-apis", {
+            displayName: "Operation: Details",
+            category: "APIs",
+            iconClass: "widget-icon widget-icon-api-management",
+            componentBinder: KnockoutComponentBinder,
+            componentDefinition: ProductApisEditor,
+            handlerComponent: ProductApisHandlers
+        });
+
+        widgetService.registerWidget("product-apis-tiles", {
+            modelDefinition: ProductApisModel,
+            componentBinder: KnockoutComponentBinder,
+            componentDefinition: ProductApisViewModel,
+            modelBinder: ProductApisModelBinder,
+            viewModelBinder: ProductApisViewModelBinder
+        });
+
+        widgetService.registerWidgetEditor("product-apis-tiles", {
+            displayName: "Operation: Details (tiles)",
+            category: "APIs",
+            iconClass: "widget-icon widget-icon-api-management",
+            componentBinder: KnockoutComponentBinder,
+            componentDefinition: ProductApisEditor,
+            handlerComponent: ProductApisHandlers
+        });
     }
 }

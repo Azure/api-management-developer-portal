@@ -1,5 +1,6 @@
 import { Contract } from "@paperbits/common";
 import { HyperlinkContract } from "@paperbits/common/editing";
+import { LocalStyles } from "@paperbits/common/styles";
 
 /**
  * Operation list widget configuration.
@@ -19,7 +20,7 @@ export interface OperationListContract extends Contract {
      * Allow switching between URL paths and operation names
      */
     showToggleUrlPath: boolean;
-    
+
     /**
      * Show URL paths instead of operation names by default.
      */
@@ -34,4 +35,9 @@ export interface OperationListContract extends Contract {
      * Link to a page that contains operation details.
      */
     detailsPageHyperlink?: HyperlinkContract;
+
+    /**
+     * Widget local styles.
+     */
+    styles?: LocalStyles;
 }

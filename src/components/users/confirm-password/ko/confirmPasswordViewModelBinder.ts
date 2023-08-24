@@ -1,28 +1,18 @@
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { Bag } from "@paperbits/common";
-import { ConfirmPasswordViewModel } from "./confirmPasswordViewModel";
+import { StyleCompiler } from "@paperbits/common/styles";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ConfirmPasswordModel } from "../confirmPasswordModel";
-import { ComponentFlow } from "@paperbits/common/editing";
+import { ConfirmPasswordViewModel } from "./confirmPasswordViewModel";
 
+export class ConfirmPasswordViewModelBinder implements ViewModelBinder<ConfirmPasswordModel, ConfirmPasswordViewModel> {
+    constructor(private readonly styleCompiler: StyleCompiler) { }
 
-
-export class ConfirmPassworViewModelBinder implements ViewModelBinder<ConfirmPasswordModel, ConfirmPasswordViewModel> {
-    public async modelToViewModel(model: ConfirmPasswordModel, viewModel?: ConfirmPasswordViewModel, bindingContext?: Bag<any>): Promise<ConfirmPasswordViewModel> {
-        if (!viewModel) {
-            viewModel = new ConfirmPasswordViewModel();
-            viewModel["widgetBinding"] = {
-                displayName: "Password: Confirmation form",
-                layer: bindingContext?.layer,
-                model: model,
-                flow: ComponentFlow.Block,
-                draggable: true
-            };
-        }
-
-        return viewModel;
+    public stateToInstance(state: WidgetState, componentInstance: ConfirmPasswordViewModel): void {
+        componentInstance.styles(state.styles);
     }
 
-    public canHandleModel(model: ConfirmPasswordModel): boolean {
-        return model instanceof ConfirmPasswordModel;
+    public async modelToState(model: ConfirmPasswordModel, state: WidgetState): Promise<void> {
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }

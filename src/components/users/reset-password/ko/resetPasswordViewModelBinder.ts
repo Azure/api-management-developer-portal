@@ -1,34 +1,19 @@
-import { ViewModelBinder } from "@paperbits/common/widgets";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ResetPasswordViewModel } from "./resetPasswordViewModel";
 import { ResetPasswordModel } from "../resetPasswordModel";
-import { Bag } from "@paperbits/common";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { ComponentFlow } from "@paperbits/common/editing";
 
 export class ResetPasswordViewModelBinder implements ViewModelBinder<ResetPasswordModel, ResetPasswordViewModel> {
-
     constructor(private readonly settingsProvider: ISettingsProvider) {}
-    
-    public async modelToViewModel(model: ResetPasswordModel, viewModel?: ResetPasswordViewModel, bindingContext?: Bag<any>): Promise<ResetPasswordViewModel> {
-        if (!viewModel) {
-            viewModel = new ResetPasswordViewModel();
-            viewModel["widgetBinding"] = {
-                displayName: "Password: Reset form",
-                layer: bindingContext?.layer,
-                model: model,
-                flow: ComponentFlow.Block,
-                draggale: true
-            };
-        }
 
-        const useHipCaptcha = await this.settingsProvider.getSetting<boolean>("useHipCaptcha");
-
-        viewModel.runtimeConfig(JSON.stringify({ requireHipCaptcha: useHipCaptcha === undefined ? true : useHipCaptcha }));
-
-        return viewModel;
+    public stateToInstance(state: WidgetState, componentInstance: ResetPasswordViewModel): void {
+        componentInstance.runtimeConfig(JSON.stringify({
+            requireHipCaptcha: state.useHipCaptcha === undefined ? true : state.useHipCaptcha
+        }));
     }
 
-    public canHandleModel(model: ResetPasswordModel): boolean {
-        return model instanceof ResetPasswordModel;
+    public async modelToState(model: ResetPasswordModel, state: WidgetState): Promise<void> {
+        const useHipCaptcha = await this.settingsProvider.getSetting<boolean>("useHipCaptcha");
+        state.requireHipCaptcha = useHipCaptcha;
     }
 }
