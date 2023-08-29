@@ -1,55 +1,39 @@
-import { Bag } from "@paperbits/common";
-import { ComponentFlow } from "@paperbits/common/components";
-import { EventManager, Events } from "@paperbits/common/events";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { ApiDetailsPageHandlers } from "../apiDetailsPageHandlers";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ApiDetailsPageModel } from "../apiDetailsPageModel";
 import { ApiDetailsPageViewModel } from "./apiDetailsPageViewModel";
 
 export class ApiDetailsPageViewModelBinder implements ViewModelBinder<ApiDetailsPageModel, ApiDetailsPageViewModel> {
     constructor(
-        private readonly eventManager: EventManager,
         private readonly styleCompiler: StyleCompiler) { }
 
-    public async modelToViewModel(model: ApiDetailsPageModel, viewModel?: ApiDetailsPageViewModel, bindingContext?: Bag<any>): Promise<ApiDetailsPageViewModel> {
-        if (!viewModel) {
-            viewModel = new ApiDetailsPageViewModel();
-        }
+    public stateToInstance<TState, TInstance>(state: WidgetState, componentInstance: ApiDetailsPageViewModel): void {
+        componentInstance.styles(state.styles);
 
-        viewModel.runtimeConfig(JSON.stringify({
-            groupOperationsByTag: model.groupOperationsByTag,
-            showUrlPath: model.showUrlPath,
-            wrapText: model.wrapText,
-            enableConsole: model.enableConsole,
-            showExamples: model.showExamples,
-            includeAllHostnames: model.includeAllHostnames,
-            useCorsProxy: model.useCorsProxy,
-            defaultSchemaView: model.defaultSchemaView
+        componentInstance.runtimeConfig(JSON.stringify({
+            groupOperationsByTag: state.groupOperationsByTag,
+            showUrlPath: state.showUrlPath,
+            wrapText: state.wrapText,
+            enableConsole: state.enableConsole,
+            showExamples: state.showExamples,
+            includeAllHostnames: state.includeAllHostnames,
+            useCorsProxy: state.useCorsProxy,
+            defaultSchemaView: state.defaultSchemaView
         }));
-
-        viewModel["widgetBinding"] = {
-            displayName: "API Details Page",
-            layer: bindingContext?.layer,
-            model: model,
-            draggable: true,
-            flow: ComponentFlow.Block,
-            editor: "api-details-page-editor",
-            handler: ApiDetailsPageHandlers,
-            applyChanges: async (updatedModel: ApiDetailsPageModel) => {
-                await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                this.eventManager.dispatchEvent(Events.ContentUpdate);
-            }
-        };
-
-        if (model.styles) {
-            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, ApiDetailsPageHandlers));
-        }
-
-        return viewModel;
     }
 
-    public canHandleModel(model: ApiDetailsPageModel): boolean {
-        return model instanceof ApiDetailsPageModel;
+    public async modelToState(model: ApiDetailsPageModel, state: WidgetState): Promise<void> {
+        state.groupOperationsByTag = model.groupOperationsByTag;
+        state.showUrlPath = model.showUrlPath;
+        state.wrapText = model.wrapText;
+        state.enableConsole = model.enableConsole;
+        state.showExamples = model.showExamples;
+        state.includeAllHostnames = model.includeAllHostnames;
+        state.useCorsProxy = model.useCorsProxy;
+        state.defaultSchemaView = model.defaultSchemaView;
+
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }
