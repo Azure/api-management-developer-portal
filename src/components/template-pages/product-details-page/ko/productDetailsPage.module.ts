@@ -5,6 +5,7 @@ import { ProductDetailsPageModel } from "../productDetailsPageModel";
 import { ProductDetailsPageViewModel } from "./productDetailsPageViewModel";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
+import { ProductDetailsPageHandlers } from "../productDetailsPageHandlers";
 
 export class ProductDetailsPageModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -27,7 +28,7 @@ export class ProductDetailsPageModule implements IInjectorModule {
             iconClass: "widget-icon widget-icon-api-management",
             componentBinder: KnockoutComponentBinder,
             componentDefinition: ProductDetailsPageViewModel,
-            handlerComponent: ProductDetailsPageViewModelBinder
+            handlerComponent: ProductDetailsPageHandlers
         });
     }
 }
