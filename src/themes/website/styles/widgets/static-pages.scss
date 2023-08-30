@@ -1,6 +1,6 @@
 .page-container {
     display: grid;
-    grid-template-columns: 450px auto;
+    grid-template-columns: 450px calc(100vw - 465px);
     grid-template-rows: 130px auto;
     height: 100%;
 
