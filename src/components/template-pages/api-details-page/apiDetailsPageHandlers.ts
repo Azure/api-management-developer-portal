@@ -11,9 +11,9 @@ export class ApiDetailsPageHandlers implements IWidgetHandler {
         return {
             colors: {
                 titleBackgorundColor: {
-                    displayName: "Title background",
+                    displayName: "Static page title background",
                     defaults: {
-                        value: "#3F4D50"
+                        value: "#155F9C"
                     }
                 }
             },

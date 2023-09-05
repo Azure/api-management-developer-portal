@@ -47,9 +47,13 @@ export class ApiProductsCards {
     }
 
     public async loadPageOfProducts(): Promise<void> {
+        const apiName = this.selectedApiName();
+        if (!apiName) {
+            return;
+        }
+        
         try {
             this.working(true);
-            const apiName = this.selectedApiName();
             const pageOfProducts = await this.apiService.getApiProductsPage(apiName, {});
             this.products(pageOfProducts.value);
             this.nextLink(pageOfProducts.nextLink);
