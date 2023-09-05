@@ -131,6 +131,10 @@ export class ApiNavMenu {
     }
 
     public selectMenuItem(menuItem: menuItem): void {
+        if(!menuItem) {
+            return;
+        }
+        
         if (this.selectedMenuItem() === menuItem) {
             return;
         }
