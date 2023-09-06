@@ -132,6 +132,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                                 iconProps={copyIcon}
                                 text="Copy page"
                                 onClick={() => this.copyPage()}
+                                styles={{ root: { height: 44, marginBottom: 30 } }}
                             />
                         </>
                     }

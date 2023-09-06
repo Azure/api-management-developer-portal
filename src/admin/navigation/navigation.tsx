@@ -21,6 +21,13 @@ interface PagesProps {
     onBackButtonClick: () => void
 }
 
+const enum ItemPosition {
+    FIRST,
+    LAST,
+    FIRST_AND_LAST,
+    NOT_FIRST_OR_LAST
+}
+
 const addIcon: IIconProps = { iconName: 'Add' };
 const iconStyles = { width: '16px' };
 
@@ -110,31 +117,162 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
         return null;
     }
 
-    renderNavItemContent = (navItem: INavLink): JSX.Element => (
-        <Stack horizontal horizontalAlign="space-between" className="nav-item-outer-stack">
-            <Text>{navItem.name}</Text>
-            <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 10 }} className="nav-item-inner">
-                <FontIcon
-                    iconName="Settings"
-                    title="Edit"
-                    style={iconStyles}
-                    onClick={(event) => {
-                        event.stopPropagation();
-                        this.setState({ showNavigationItemModal: true, currentNavItem: this.findNavItemByKey(this.state.navigationItems, navItem.key) })}
+    findParentItemKey = (array: NavigationItemContract[], childKey: string, parentKey: string = ''): string => {
+        for (const obj of array) {
+            if (obj.key === childKey) {
+                return parentKey;
+            }
+
+            if (obj.navigationItems && obj.navigationItems.length > 0) {
+                const nestedParentKey = this.findParentItemKey(obj.navigationItems, childKey, obj.key);
+                if (nestedParentKey !== null) {
+                    return nestedParentKey;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    moveItemUp = async (array: NavigationItemContract[], parentKey: string, itemKey: string): Promise<void> => {
+        const updatedArray = JSON.parse(JSON.stringify(array)); // Create a deep copy of the array
+
+        const moveItemUpRecursive = (items: NavigationItemContract[], parentKey: string) => {
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+
+                if (item.key === itemKey) {
+                    // Move the item up within its parent's navigationItems array
+                    if (i > 0) {
+                        [items[i - 1], items[i]] = [items[i], items[i - 1]];
                     }
-                />
-                <FontIcon
-                    iconName="Delete"
-                    title="Delete"
-                    style={iconStyles}
-                    onClick={(event) => {
-                        event.stopPropagation();
-                        this.setState({ showDeleteConfirmation: true, currentNavItem: this.findNavItemByKey(this.state.navigationItems, navItem.key) })}
+                    return true;
+                }
+
+                if (item.navigationItems) {
+                    // Recursively search in nested items
+                    if (moveItemUpRecursive(item.navigationItems, item.key)) {
+                        return true;
                     }
-                />
+                }
+            }
+            return false;
+        };
+
+        moveItemUpRecursive(updatedArray, parentKey);
+
+        await this.navigationService.updateNavigation(updatedArray);
+        this.eventManager.dispatchEvent('onSaveChanges');
+
+        this.loadNavigationItems();
+    }
+
+    moveItemDown = async (array: NavigationItemContract[], parentKey: string, itemKey: string): Promise<void> => {
+        const updatedArray = JSON.parse(JSON.stringify(array)); // Create a deep copy of the array
+
+        const moveItemDownRecursive = (items, parentKey) => {
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+
+                if (item.key === itemKey) {
+                    // Move the item down within its parent's navigationItems array
+                    if (i < items.length - 1) {
+                        [items[i], items[i + 1]] = [items[i + 1], items[i]];
+                    }
+                    return true;
+                }
+
+                if (item.navigationItems) {
+                    // Recursively search in nested items
+                    if (moveItemDownRecursive(item.navigationItems, item.key)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
+        moveItemDownRecursive(updatedArray, parentKey);
+
+        await this.navigationService.updateNavigation(updatedArray);
+        this.eventManager.dispatchEvent('onSaveChanges');
+
+        this.loadNavigationItems();
+    }
+
+    checkItemPosition = (itemKey: string): ItemPosition => {
+        const navItems = this.state.navigationItems;
+        const parent = navItems.find(obj => obj.key === this.findParentItemKey(this.state.navigationItems, itemKey));
+
+        let isFirst = null;
+        let isLast = null;
+
+        if (!parent) {
+            // Handle top-level items
+            isFirst = navItems[0].key === itemKey;
+            isLast = navItems[navItems.length - 1].key === itemKey;
+        }
+
+
+        if (parent && parent.navigationItems && parent.navigationItems.length > 0) {
+            isFirst = parent.navigationItems[0].key === itemKey;
+            isLast = parent.navigationItems[parent.navigationItems.length - 1].key === itemKey;
+        }
+
+        if (isFirst && isLast) {
+            return ItemPosition.FIRST_AND_LAST;
+        } else if (isFirst) {
+            return ItemPosition.FIRST;
+        } else if (isLast) {
+            return ItemPosition.LAST;
+        }
+
+        return null;
+    }
+
+    renderNavItemContent = (navItem: INavLink): JSX.Element => {
+        const itemPosition = this.checkItemPosition(navItem.key);
+
+        return (
+            <Stack horizontal horizontalAlign="space-between" className="nav-item-outer-stack">
+                <Text className="nav-item-name">{navItem.name}</Text>
+                <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 10 }} className="nav-item-inner">
+                    {(itemPosition !== ItemPosition.FIRST && itemPosition !== ItemPosition.FIRST_AND_LAST) &&
+                        <FontIcon
+                            iconName="ChevronUpMed"
+                            title="Move up"
+                            style={iconStyles}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                this.moveItemUp(this.state.navigationItems, this.findParentItemKey(this.state.navigationItems, navItem.key), navItem.key)
+                            }}
+                        />
+                    }
+                    {(itemPosition !== ItemPosition.LAST && itemPosition !== ItemPosition.FIRST_AND_LAST) &&
+                        <FontIcon
+                            iconName="ChevronDownMed"
+                            title="Move down"
+                            style={iconStyles}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                this.moveItemDown(this.state.navigationItems, this.findParentItemKey(this.state.navigationItems, navItem.key), navItem.key)
+                            }}
+                        />
+                    }
+                    <FontIcon
+                        iconName="Settings"
+                        title="Edit"
+                        style={iconStyles}
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            this.setState({ showNavigationItemModal: true, currentNavItem: this.findNavItemByKey(this.state.navigationItems, navItem.key) })
+                        }
+                        }
+                    />
+                </Stack>
             </Stack>
-        </Stack>
-    )
+        );
+    }
 
     render(): JSX.Element {
         return <>

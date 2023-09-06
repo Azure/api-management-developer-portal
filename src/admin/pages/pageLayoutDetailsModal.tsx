@@ -119,6 +119,7 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
                                 iconProps={copyIcon}
                                 text="Copy layout"
                                 onClick={() => this.copyLayout()}
+                                styles={{ root: { height: 44, marginBottom: 30 } }}
                             />
                         </>
                     }
