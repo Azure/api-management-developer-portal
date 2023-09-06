@@ -7,10 +7,12 @@ import { IMediaService, MediaContract } from '@paperbits/common/media';
 import { EventManager } from '@paperbits/common/events';
 import { Query } from '@paperbits/common/persistence';
 import { Resolve } from '@paperbits/react/decorators';
+import { AnchorUtils } from '@paperbits/core/text/anchorUtils';
 import { ChoiceGroup, CommandBarButton, DefaultButton, Dropdown, IChoiceGroupOption, IDropdownOption, IIconProps, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { MediaSelectionItemModal } from '../media/mediaSelectionItemModal';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 import { REQUIRED, URL, validateField } from '../utils/validator';
+import { lightTheme } from '../utils/themes';
 import { ToastNotification } from '../utils/components/toastNotification';
 
 interface NavigationItemModalState {
@@ -21,8 +23,10 @@ interface NavigationItemModalState {
     showDeleteConfirmation: boolean,
     showMediaSelectionModal: boolean,
     pageDropdownOptions: IDropdownOption[],
+    anchorDropdownOptions: IDropdownOption[],
     urlDropdownOptions: IDropdownOption[],
     selectedPage: string,
+    selectedAnchor: string,
     selectedUrl: string,
     selectedMedia: MediaContract,
     targetWindow: string,
@@ -37,13 +41,13 @@ interface NavigationItemModalProps {
 }
 
 const enum LinkOptionKey {
+    NoLink = 'noLink',
     Page = 'page',
     Anchor = 'anchor',
     Url = 'url',
     SavedUrl = 'savedUrl',
     NewUrl = 'newUrl',
-    Media = 'media',
-    NoLink = 'noLink'
+    Media = 'media'
 }
 
 const enum LinkActionOptionKey {
@@ -53,11 +57,11 @@ const enum LinkActionOptionKey {
 }
 
 const linkOptions: IDropdownOption[] = [
+    { key: LinkOptionKey.NoLink, text: 'No link' },
     { key: LinkOptionKey.Page, text: 'Page' },
     { key: LinkOptionKey.Anchor, text: 'Anchor' },
     { key: LinkOptionKey.Url, text: 'URL' },
-    { key: LinkOptionKey.Media, text: 'Media' },
-    { key: LinkOptionKey.NoLink, text: 'No link' }
+    { key: LinkOptionKey.Media, text: 'Media' }
 ];
 
 const urlTypeOptions: IChoiceGroupOption[] = [
@@ -102,8 +106,10 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
             showDeleteConfirmation: false,
             showMediaSelectionModal: false,
             pageDropdownOptions: [],
+            anchorDropdownOptions: [],
             urlDropdownOptions: [],
             selectedPage: '',
+            selectedAnchor: '',
             selectedUrl: '',
             selectedMedia: null,
             targetWindow: LinkActionOptionKey.Self,
@@ -142,13 +148,19 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
     processNavItem = async (): Promise<void> => {
         const navItem = this.props.navItem;
         let page = '';
+        let anchor = '';
         let url = '';
         let media = null;
         let selectedLinkType = LinkOptionKey.NoLink;
 
         if (navItem.targetKey) {
             const targetType = navItem.targetKey?.split('/')[0];
-            if (targetType === 'pages') {
+            if (navItem.anchor) {
+                page = navItem.targetKey;
+                anchor = navItem.anchor;
+                selectedLinkType = LinkOptionKey.Anchor;
+                this.processAnchorsForDropdown(navItem.targetKey);
+            } else if (targetType === 'pages') {
                 page = navItem.targetKey;
                 selectedLinkType = LinkOptionKey.Page;
             } else if (targetType === 'urls') {
@@ -162,6 +174,7 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
 
         this.setState({
             selectedPage: page,
+            selectedAnchor: anchor,
             selectedUrl: url,
             selectedMedia: media,
             selectedLinkOption: selectedLinkType,
@@ -184,6 +197,23 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
         });
 
         this.setState({ pageDropdownOptions: dropdownItems });
+    }
+
+    processAnchorsForDropdown = async (pageKey: string): Promise<void> => {
+        const pageContent = await this.pageService.getPageContent(pageKey);
+        const children = AnchorUtils.getHeadingNodes(pageContent, 1, 6);
+
+        const dropdownItems = [];
+
+        children.filter(anchor => anchor.nodes?.length > 0)
+            .forEach(anchor => {
+                dropdownItems.push({
+                    key: anchor.identifier || anchor.attrs?.key,
+                    text: anchor.nodes[0]?.text
+                });
+            });
+
+        this.setState({ anchorDropdownOptions: dropdownItems });
     }
 
     processUrlsForDropdown = async (): Promise<void> => {
@@ -285,11 +315,15 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                     items.splice(i, 1); // remove from current parent
 
                     const updatedItem = { ...item, ...updates }; // updated item
-                    const newParent = updatedArray.find(obj => obj.key === newParentKey);
 
-                    if (newParent) {
-                        if (!newParent.navigationItems) newParent.navigationItems = [];
-                        newParent.navigationItems.push(updatedItem);
+                    if (!newParentKey) {
+                        // If newParentKey is not provided, move the item to the top level
+                        updatedArray.push(updatedItem);
+                    } else {
+                        const newParent = updatedArray.find(obj => obj.key === newParentKey);
+                        if (newParent && newParent.navigationItems) {
+                            newParent.navigationItems.push(updatedItem);
+                        }
                     }
 
                     return true;
@@ -326,11 +360,18 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
             }
 
             if (this.props.navItem.targetKey || this.state.selectedLinkOption !== LinkOptionKey.NoLink) {
-                updatedValues.targetKey = newUrlKey ?? this.state.selectedMedia?.key ?? this.state.navItem[this.state.selectedLinkOption],
-                updatedValues.targetWindow = this.state.targetWindow
+                if (this.state.selectedLinkOption === LinkOptionKey.Anchor) {
+                    updatedValues.targetKey = this.state.navItem[LinkOptionKey.Page];
+                    updatedValues.anchor = this.state.navItem.anchor;
+                } else {
+                    updatedValues.targetKey = newUrlKey ?? this.state.selectedMedia?.key ?? this.state.navItem[this.state.selectedLinkOption];
+                }
+
+                updatedValues.targetWindow = this.state.targetWindow;
+
             }
 
-            if (this.state.navItem['parent'] && this.state.parentItem !== this.state.navItem['parent']) {
+            if (this.state.parentItem !== this.state.navItem['parent']) {
                 updatedValues.navigationItems = this.props.navItem.navigationItems;
 
                 updatedNavigation = this.moveItemToNewParent(this.props.navItems, this.props.navItem.key, this.state.navItem['parent'], updatedValues);
@@ -345,8 +386,14 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
             }
 
             if (this.state.selectedLinkOption !== LinkOptionKey.NoLink) {
-                newNavItem.targetKey = newUrlKey ?? this.state.selectedMedia?.key ?? this.state.navItem[this.state.selectedLinkOption],
-                newNavItem.targetWindow = this.state.targetWindow
+                if (this.state.selectedLinkOption === LinkOptionKey.Anchor) {
+                    newNavItem.targetKey = this.state.navItem[LinkOptionKey.Page];
+                    newNavItem.anchor = this.state.navItem.anchor;
+                } else {
+                    newNavItem.targetKey = newUrlKey ?? this.state.selectedMedia?.key ?? this.state.navItem[this.state.selectedLinkOption];
+                }
+
+                newNavItem.targetWindow = this.state.targetWindow;
             }
 
             updatedNavigation = this.addNewItem(this.props.navItems, this.state.navItem['parent'] ?? '', newNavItem);
@@ -410,22 +457,54 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                         label="Link to"
                         options={linkOptions}
                         selectedKey={this.state.selectedLinkOption}
-                        onChange={(event, option) => this.setState({ 
-                            selectedLinkOption: option.key.toString(),
-                            targetWindow: option.key === LinkOptionKey.Media ? LinkActionOptionKey.Download : LinkActionOptionKey.Self
-                        })}
+                        onChange={(event, option) => {
+                            this.setState({ 
+                                selectedLinkOption: option.key.toString(),
+                                targetWindow: option.key === LinkOptionKey.Media ? LinkActionOptionKey.Download : LinkActionOptionKey.Self
+                            });
+                            if (option.key.toString() === LinkOptionKey.Anchor && this.state.selectedPage !== '') {
+                                this.processAnchorsForDropdown(this.state.selectedPage);
+                            }
+                    }}
                         styles={{ root: { paddingBottom: 15 } }}
                     />
 
-                    {this.state.selectedLinkOption === LinkOptionKey.Page &&
+                    {(this.state.selectedLinkOption === LinkOptionKey.Page || this.state.selectedLinkOption === LinkOptionKey.Anchor) &&
                         <Dropdown
                             label="Select page"
                             placeholder="Click to select a page..."
                             options={this.state.pageDropdownOptions}
                             defaultSelectedKey={this.state.selectedPage}
-                            onChange={(event, option) => this.onInputChange(LinkOptionKey.Page, option.key.toString())}
+                            onChange={(event, option) => {
+                                this.setState({ selectedPage: option.key.toString() });
+                                this.processAnchorsForDropdown(option.key.toString());
+                                this.onInputChange(LinkOptionKey.Page, option.key.toString());
+                            }}
                             styles={{ root: { paddingBottom: 15 } }}
                         />
+                    }
+
+                    {this.state.selectedLinkOption === LinkOptionKey.Anchor && 
+                        (
+                            (this.state.selectedPage !== '' && this.state.anchorDropdownOptions.length === 0) 
+                                ?
+                                    <Text 
+                                        block 
+                                        styles={{ root: { paddingBottom: 15, color: lightTheme.callingPalette.callRed } }}
+                                    >
+                                        There are no anchors on this page, please, select another page or select "Page" as a "Link to" option.
+                                    </Text>
+                                : 
+                                    this.state.anchorDropdownOptions.length > 0 &&
+                                        <Dropdown
+                                            label="Select anchor"
+                                            placeholder="Click to select an anchor..."
+                                            options={this.state.anchorDropdownOptions}
+                                            defaultSelectedKey={this.state.selectedAnchor}
+                                            onChange={(event, option) => this.onInputChange(LinkOptionKey.Anchor, option.key.toString())}
+                                            styles={{ root: { paddingBottom: 15 } }}
+                                        />
+                        )
                     }
 
                     {this.state.selectedLinkOption === LinkOptionKey.Url && 

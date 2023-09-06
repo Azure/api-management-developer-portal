@@ -97,8 +97,17 @@
         opacity: 0;
     }
 
-    &:hover .nav-item-inner {
-        opacity: 1;
+    &:hover {
+        .nav-item-inner {
+            opacity: 1;
+        }
+
+        .nav-item-name {
+            max-width: 130px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
     }
 }
 
@@ -193,6 +202,7 @@
     height: 100%;
     width: 100%;
     top: $admin-top-panel-height;
+    z-index: 1000;
     cursor: pointer;
 
     &.hidden {
@@ -243,12 +253,17 @@
 
     .carousel-text-container {
         padding: 32px 32px 88px;
+        position: unset;
     }
 
     .carousel-header {
         font-size: 20px;
         font-weight: bold;
         margin-bottom: 16px;
+    }
+
+    .slide {
+        position: unset;
     }
 }
 

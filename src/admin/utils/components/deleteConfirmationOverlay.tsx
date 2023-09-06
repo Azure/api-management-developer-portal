@@ -43,7 +43,7 @@ export class DeleteConfirmationOverlay extends React.Component<DeleteConfirmatio
                     enableAriaHiddenSiblings={true}
                 >
                     <Overlay onClick={this.props.onDismiss} />
-                    <FocusTrapZone>
+                    <FocusTrapZone style={{ position: 'unset' }}>
                         <div role="document" className={popupStyles.content}>
                             <p>Are you sure you want to delete {this.props.deleteItemTitle}?</p>
                             <Stack horizontal tokens={{ childrenGap: 20 }}>
