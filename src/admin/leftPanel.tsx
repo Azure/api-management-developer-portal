@@ -3,7 +3,7 @@ import { Resolve } from '@paperbits/react/decorators';
 import { ViewManager } from '@paperbits/common/ui';
 import { Router } from '@paperbits/common/routing';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
-import { CommandBarButton, Icon, IIconProps, Stack, Text } from '@fluentui/react';
+import { CommandBarButton, Icon, IIconProps, Separator, Stack, Text } from '@fluentui/react';
 import { Pages } from './pages/pages';
 import { Navigation } from './navigation/navigation';
 import { Urls } from './urls/urls';
@@ -27,6 +27,7 @@ const enum NavItem {
     Media,
     CustomWidgets,
     Settings,
+    New,
     Help
 }
 
@@ -44,6 +45,7 @@ const stylesIcon: IIconProps = { iconName: 'Color' };
 const mediaIcon: IIconProps = { iconName: 'Photo2' };
 const customWidgetsIcon: IIconProps = { iconName: 'Puzzle' };
 const settingsIcon: IIconProps = { iconName: 'Settings' };
+const rocketIcon: IIconProps = { iconName: 'Rocket' };
 const helpIcon: IIconProps = { iconName: 'Help' };
 
 const iconStyles = { root: { color: lightTheme.palette.themePrimary, fontSize: 20 } };
@@ -109,15 +111,15 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                 return (
                     <div className="navigation">
                         <CommandBarButton
-                            iconProps={navigationIcon}
-                            text="Site menu"
-                            onClick={() => this.setState({ selectedNavItem: NavItem.Navigation })}
-                            className="nav-item-list-button"
-                        />
-                        <CommandBarButton
                             iconProps={pageIcon}
                             text="Pages"
                             onClick={() => this.setState({ selectedNavItem: NavItem.Pages })}
+                            className="nav-item-list-button"
+                        />
+                        <CommandBarButton
+                            iconProps={navigationIcon}
+                            text="Site menu"
+                            onClick={() => this.setState({ selectedNavItem: NavItem.Navigation })}
                             className="nav-item-list-button"
                         />
                         <CommandBarButton
@@ -128,7 +130,7 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                         />
                         <CommandBarButton
                             iconProps={popupsIcon}
-                            text="Popups"
+                            text="Pop-ups"
                             onClick={() => this.setState({ selectedNavItem: NavItem.Popups })}
                             className="nav-item-list-button"
                         />
@@ -158,6 +160,13 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                             iconProps={settingsIcon}
                             text="Settings"
                             onClick={() => this.setState({ selectedNavItem: NavItem.Settings })}
+                            className="nav-item-list-button"
+                        />
+                        <Separator />
+                        <CommandBarButton
+                            iconProps={rocketIcon}
+                            text="What's new"
+                            onClick={() => this.setState({ selectedNavItem: NavItem.New, showOnboardingModal: true })}
                             className="nav-item-list-button"
                         />
                         <CommandBarButton

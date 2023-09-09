@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Carousel, { ControlProps } from 'nuka-carousel';
-import { DefaultButton, IconButton, Image, ImageFit, Modal, PrimaryButton, Stack, Text } from '@fluentui/react';
+import { DefaultButton, IconButton, Image, ImageFit, Link, Modal, PrimaryButton, Stack, Text } from '@fluentui/react';
 
 interface OnboardingModalState {
     currentSlide: number
@@ -61,8 +61,14 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                                 styles={{ root: { height: 360 } }}
                             />
                             <Stack className="carousel-text-container">
-                                <Text block className="carousel-header">✨ Introducing the new enhanced Admin experience!</Text>
-                                <Text block>We've reimagined the admin experience to make sure you get to the important stuff fast and can focus on what you need. Let's take a look!</Text>
+                                <Text block className="carousel-header">✨ Introducing new, improved developer portal editor and API and product details widgets!</Text>
+                                <Text block>We redesigned the portal editor interface to boost your productivity and enhance the interactions with your favorite features and tools. 
+                                The new API and product details widgets elevate the experience of developer portal for visitors and enable you to publish supplemental documentation.</Text>
+                                <Text block>What's new:</Text>
+                                <ul>
+                                    <li><Text>Improved developer portal editor.</Text></li>
+                                    <li><Text>Redesigned API and product details widgets with the support for custom Markdown documentation.</Text></li>
+                                </ul>
                             </Stack>
                         </div>
                         <div>
@@ -72,8 +78,13 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                                 styles={{ root: { height: 360 } }}
                             />
                             <Stack className="carousel-text-container">
-                                <Text block className="carousel-header">Streamlined Left Navigation</Text>
-                                <Text block>We have redesigned the left navigation menu to make it even more intuitive and user-friendly. Finding your way around the admin interface is now easier than ever.</Text>
+                                <Text block className="carousel-header">Get a fresh look at the new editor experience</Text>
+                                <Text block>We re-organized the new portal editor layout around three core elements, making site management a breeze. Rest assured, all your favorite features remain intact - we have not added or removed any functionality.</Text>
+                                <ul>
+                                    <li><Text>Left side menu: Easily locate all the features you need to manage and customize your site.</Text></li>
+                                    <li><Text>Top toolbar menu: Quickly save and publish changes or switch between editing options.</Text></li>
+                                    <li><Text>Content area: Effortlessly edit the content of your pages in a focused, uncluttered view.</Text></li>
+                                </ul>
                             </Stack>
                         </div>
                         <div>
@@ -83,8 +94,10 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                                 styles={{ root: { height: 360 } }}
                             />
                             <Stack className="carousel-text-container">
-                                <Text block className="carousel-header">Improved Layout Organization</Text>
-                                <Text block>Layouts have been moved into dedicated pages, allowing for a more organized and structured admin experience. You'll find everything neatly categorized, enabling efficient management of your portal's design.</Text>
+                                <Text block className="carousel-header">Elevate API and product documentation</Text>
+                                <Text block>We redesigned the API and product details widgets, placing essential information right at your developers' fingertips. The new widgets combine functionality that was previously implemented with several standalone widgets for easier management and maintainability. 
+                                They feature a user-friendly left navigation panel with a dedicated area for custom documentation, which you can author using Markdown in the Azure portal.</Text>
+                                <Text block><Link underline target="_blank" href="https://aka.ms/apimdocs/portal/markdown">Learn more about creating custom documentation.</Link></Text>
                             </Stack>
                         </div>
                         <div>
@@ -94,8 +107,13 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                                 styles={{ root: { height: 360 } }}
                             />
                             <Stack className="carousel-text-container">
-                                <Text block className="carousel-header">Convenient Save and Publish</Text>
-                                <Text block>We've made it simpler to save and publish your portal with just a single click. Look no further than the top toolbar to effortlessly update and share your changes.</Text>
+                                <Text block className="carousel-header">Explore resources and get help</Text>
+                                <Text block>Whether you require assistance, seek comprehensive guidance, or want to share feedback, we've got you covered.</Text>
+                                <ul>
+                                    <li><Text block>Documentation: Access our library of <Link underline target="_blank" href="https://aka.ms/apimdocs/portal">documentation</Link> to gain an understanding of developer portal features and functionality.</Text></li>
+                                    <li><Text block>Give feedback: Provide feedback or report a bug in our <Link underline target="_blank" href="https://aka.ms/apimdevportal">GitHub repository</Link>.</Text></li>
+                                    <li><Text block>Support: Contact support via the Azure portal interface of your API Management service.</Text></li>
+                                </ul>
                             </Stack>
                         </div>
                     </Carousel>

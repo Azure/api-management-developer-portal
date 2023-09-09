@@ -255,6 +255,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                     </Stack>
                 </Stack>
                 <div className="admin-modal-content">
+                    <Text block styles={{ root: { marginBottom: 20 } }}>Manage media files, like images or documents, for use across developer portal pages.</Text>
                     <Stack horizontal wrap verticalAlign="center" tokens={{ childrenGap: 12 }} styles={{ root: { marginBottom: 20 } }}>
                         <Stack.Item>
                             <SearchBox

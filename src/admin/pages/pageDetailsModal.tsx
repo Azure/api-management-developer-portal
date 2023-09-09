@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Resolve } from '@paperbits/react/decorators';
 import { IPageService, PageContract } from '@paperbits/common/pages';
+import { PermalinkService } from '@paperbits/common/permalinks';
 import { EventManager } from '@paperbits/common/events';
 import { CommandBarButton, DefaultButton, IIconProps, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
@@ -25,6 +26,9 @@ const textFieldStyles = { root: { paddingBottom: 15 } };
 export class PageDetailsModal extends React.Component<PageDetailsModalProps, PageDetailsModalState> {
     @Resolve('pageService')
     public pageService: IPageService;
+    
+    @Resolve('permalinkService')
+    public permalinkService: PermalinkService;
 
     @Resolve('eventManager')
     public eventManager: EventManager;
@@ -143,9 +147,15 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                         styles={textFieldStyles}
                     />
                     <TextField
-                        label="Permalink"
+                        onRenderLabel={() => 
+                            <LabelWithInfo
+                                label="Permalink path"
+                                info={`URL path of the page that's appended to the developer portal hostname. For example, "/contact" would make this page available under "www.contoso.com/contact". Permalink path needs to be unique for every page and is used to match it against a defined layout.`} 
+                            />
+                        }
                         value={this.state.page.permalink}
                         onChange={(event, newValue) => this.onInputChange('permalink', newValue)}
+                        onGetErrorMessage={async (value) => await this.pageService.getPageByPermalink(value) ? 'Permalink is already used' : ''} // TODO: USE PERMALINK SERVICE?
                         styles={textFieldStyles}
                     />
                     <TextField

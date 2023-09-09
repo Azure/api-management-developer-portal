@@ -71,8 +71,8 @@ const urlTypeOptions: IChoiceGroupOption[] = [
 
 const mediaLinkActionOptions: IChoiceGroupOption[] = [
     { key: LinkActionOptionKey.Download, text: 'Download file', styles: { field: { padding: 0 }} },
-    { key: LinkActionOptionKey.Self, text: 'Open in same window', styles: { field: { padding: 0 }} },
-    { key: LinkActionOptionKey.Blank, text: 'Open in new window', styles: { field: { padding: 0 }} }
+    { key: LinkActionOptionKey.Self, text: 'Open in the same window', styles: { field: { padding: 0 }} },
+    { key: LinkActionOptionKey.Blank, text: 'Open in a new window', styles: { field: { padding: 0 }} }
 ];
 
 const nonMediaLinkActionOptions: IChoiceGroupOption[] = mediaLinkActionOptions.filter(option => option.key !== LinkActionOptionKey.Download);

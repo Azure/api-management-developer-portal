@@ -35,7 +35,7 @@ export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, P
         super(props);
 
         this.state = {
-            popup: this.props.popup ?? { title: 'New popup', description: '' },
+            popup: this.props.popup ?? { title: 'New pop-up', description: '' },
             showDeleteConfirmation: false
         }
     }
@@ -94,7 +94,7 @@ export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, P
                 containerClassName="admin-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text block nowrap className="admin-modal-header-text">Popup / { this.state.popup.title }</Text>
+                    <Text block nowrap className="admin-modal-header-text">Pop-up / { this.state.popup.title }</Text>
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <PrimaryButton
                             text="Save"
@@ -132,7 +132,7 @@ export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, P
                         styles={textFieldStyles}
                     />
                     <DefaultButton
-                        text="Open popup"
+                        text="Open pop-up"
                         onClick={() => this.openPopup()}
                     />
                 </div>

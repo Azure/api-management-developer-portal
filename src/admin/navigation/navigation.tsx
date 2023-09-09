@@ -295,7 +295,7 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
                 <BackButton onClick={this.props.onBackButtonClick} />
                 <Stack className="nav-item-description-container">
                     <Text className="description-title">Site menu</Text>
-                    <Text className="description-text">Manage and organize your website main menu.</Text>
+                    <Text className="description-text">Manage and organize navigation of your developer portal. After you create a menu, you can add it to a page or layout with the "menu" widget.</Text>
                 </Stack>
                 <CommandBarButton
                     iconProps={addIcon}

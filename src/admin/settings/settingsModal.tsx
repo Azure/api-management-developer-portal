@@ -6,13 +6,16 @@ import { EventManager } from '@paperbits/common/events';
 import { CommandBarButton, DefaultButton, Image, ImageFit, Label, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { MediaSelectionItemModal } from '../media/mediaSelectionItemModal';
 import { getThumbnailUrl } from '../utils/helpers';
+import { ResetDetailsWorkshop } from '../../components/content';
 
 interface SettingsModalState {
     initialSettings: SiteSettingsContract,
     settings: SiteSettingsContract,
     faviconThumbnailUrl: string,
     selectedFavicon: MediaContract,
-    showMediaSelectionModal: boolean
+    showMediaSelectionModal: boolean,
+    showResetConfirmation: boolean,
+    resetConfirmation: string
 }
 
 interface SettingsModalProps {
@@ -31,6 +34,9 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
     @Resolve('eventManager')
     public eventManager: EventManager;
 
+    @Resolve('resetDetailsWorkshop')
+    public resetDetailsWorkshop: ResetDetailsWorkshop;
+
     constructor(props: SettingsModalProps) {
         super(props);
 
@@ -39,7 +45,9 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
             settings: null,
             faviconThumbnailUrl: '',
             selectedFavicon: null,
-            showMediaSelectionModal: false
+            showMediaSelectionModal: false,
+            showResetConfirmation: false,
+            resetConfirmation: ''
         }
     }
 
@@ -152,7 +160,31 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
                         label="Author"
                         value={this.state.settings ? this.state.settings.author : ''}
                         onChange={(event, newValue) => this.onInputChange('author', newValue)}
+                        styles={{ root: { paddingBottom: 30 } }}
                     />
+                    <DefaultButton text="Reset content" onClick={() => this.setState({ showResetConfirmation: true })} />
+                    <Stack
+                        horizontalAlign="start"
+                        className={`collapsible-section${!this.state.showResetConfirmation ? ' hidden' : ''}`}
+                        styles={{ root: { paddingTop: 20 } }}
+                    >
+                        <Text block>Resetting the content will restore the portal to its initial state. It will replace all the pages, layouts,
+                        customizations, uploaded media, etc. with the default content.</Text>
+                        <Text block>Resetting the content will not remove the published version of the portal.</Text>
+                        <Text block>Are you sure you want to reset the portal's content? Type "yes" in the field below to confirm.</Text>
+                        <TextField
+                            placeholder="Confirm by entering yes"
+                            onChange={(event, value) => this.setState({ resetConfirmation: value })}
+                            styles={{ root: { width: '100%', padding: '20px 0 5px' } }}
+                        />
+                        <CommandBarButton
+                            iconProps={{ iconName: 'CheckMark' }}
+                            text="Reset content"
+                            onClick={() => this.resetDetailsWorkshop.reset()}
+                            styles={{ root: { height: 44 } }}
+                            disabled={this.state.resetConfirmation !== 'yes'}
+                        />
+                    </Stack>
                 </div>
             </Modal>
         </>

@@ -4,6 +4,7 @@ import { ILayoutService, LayoutContract } from '@paperbits/common/layouts';
 import { EventManager } from '@paperbits/common/events';
 import { CommandBarButton, DefaultButton, IIconProps, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
+import { LabelWithInfo } from '../utils/components/labelWithInfo';
 
 interface PageLayoutModalState {
     layout: LayoutContract,
@@ -130,7 +131,12 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
                         styles={textFieldStyles}
                     />
                     <TextField
-                        label="Permalink template"
+                        onRenderLabel={() => 
+                            <LabelWithInfo
+                                label="Permalink path template"
+                                info={`Permalink path template determines the pages that are displayed using this layout. For example, "*" would apply this layout to all pages, "/contact" would apply this layout only to a page with permalink path "/contact", and "/contact/*" would apply this layout to all pages with permalink starting with "/contact/". `}
+                            />
+                        }
                         value={this.state.layout.permalinkTemplate}
                         disabled={this.props.layout?.permalinkTemplate === '/' ? true : false}
                         onChange={(event, newValue) => this.onInputChange('permalinkTemplate', newValue)}
