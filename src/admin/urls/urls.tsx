@@ -92,7 +92,7 @@ export class Urls extends React.Component<UrlsProps, UrlsState> {
             }
             <BackButton onClick={this.props.onBackButtonClick} />
             <Stack className="nav-item-description-container">
-                <Text className="description-text">Add or edit URLs pointing to external resources.</Text>
+                <Text className="description-text">Manage URLs pointing to external resources. You can use these URLs in menus, buttons, hyperlinks, and other elements.</Text>
             </Stack>
             <CommandBarButton
                 iconProps={addIcon}

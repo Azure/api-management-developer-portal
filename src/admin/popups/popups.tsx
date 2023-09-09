@@ -90,11 +90,11 @@ export class Popups extends React.Component<PopupsProps, PopupsState> {
             }
             <BackButton onClick={this.props.onBackButtonClick} />
             <Stack className="nav-item-description-container">
-                <Text className="description-text">Add or edit popups - floating windows shown on top of page content. It gets invoked and dismissed by user actions, like clicking or hovering over a link, button, map marker, etc.</Text>
+                <Text className="description-text">Manage pop-ups - floating windows displayed on top of page content, which are invoked by users' actions, like clicking or hovering over links, buttons, or other elements.</Text>
             </Stack>
             <CommandBarButton
                 iconProps={addIcon}
-                text="Add popup"
+                text="Add pop-up"
                 className="nav-item-list-button"
                 onClick={() => this.setState({ showPopupDetailsModal: true, selectedUPopup: null })}
             />

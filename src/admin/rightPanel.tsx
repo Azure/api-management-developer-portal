@@ -249,7 +249,9 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
             />
             <DefaultButton
                 text="Discard"
-                onClick={() => {
+                onClick={async () => {
+                    await this.offlineObjectStorage.discardChanges();
+                    this.eventManager.dispatchEvent('onDataPush');
                     this.toggleFocusedState();
                     this.viewManager.setHost({ name: 'page-host' });
                 }}
