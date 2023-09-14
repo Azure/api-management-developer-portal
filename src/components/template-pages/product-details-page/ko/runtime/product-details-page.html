@@ -1,0 +1,72 @@
+<div id="widgetPopupContainer" class="widget-popup-container" data-bind="css: { 'show': showSubscribeForm() }">
+    <div class="popup-content">
+        <subscription-form
+            params="{closeSubscriptionForm: closeSubscriptionForm, product: product, subscriptionCreated: subscriptionCreated}"></subscription-form>
+    </div>
+</div>
+
+</div>
+<div class="page-container">
+    <div class="page-title title-background">
+        <h1 class="title-text"
+            data-bind="text: product() ? product().displayName : 'The specified product does not exsist'"></h1>
+        <button class="subscribe-button" data-bind="enable: canCreateNewSubscription ,click: openSubscriptionForm">
+            <span>Subscribe</span>
+        </button>
+    </div>
+
+    <div class="page-menu">
+        <product-nav-menu params="{ product: product, selectedMenuItem: selectedMenuItem, wrapText: wrapText, productLoading:
+                productLoading }"></product-nav-menu>
+    </div>
+
+    <div class="page-content">
+        <!-- ko if: productLoading-->
+        <spinner class="fit"></spinner>
+        <!-- /ko -->
+
+        <!-- ko ifnot: productLoading-->
+        <nav aria-label="breadcrumb" class="mr-20">
+            <ol class="breadcrumb">
+                <!-- ko foreach: { data: breadcrumbItems, as: 'item' } -->
+                <li class="breadcrumb-item text-wrap">
+                    <a href="#" data-bind="text: item.title, attr: { href: item.url}"></a>
+                </li>
+                <!-- /ko -->
+            </ol>
+        </nav>
+
+        <!-- ko if: product -->
+
+        <!-- ko if: selectedMenuItem()?.type === 'static' -->
+        <!-- ko if: selectedMenuItem()?.value === 'details' -->
+        <h3>Details</h3>
+
+        <div class="pb-12">
+            <span>Type: Product</span>
+        </div>
+
+        <!-- ko if: product().description  -->
+        <p data-bind="markdown: product().description"></p>
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko if: selectedMenuItem()?.value === 'apis' -->
+        <product-apis-cards></product-apis-cards>
+        <!-- /ko -->
+
+        <!-- ko if: selectedMenuItem()?.value === 'subscriptions' -->
+        <product-details-page-subscriptions
+            params="{ product: product, openSubscriptionForm: openSubscriptionForm, canCreateNewSubscription: canCreateNewSubscription, calculateCanCreateNewSubscription: calculateCanCreateNewSubscription, subscriptionCreated: subscriptionCreated }"></product-details-page-subscriptions>
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko if: selectedMenuItem()?.type === 'documentation' -->
+        <wiki-documentation></wiki-documentation>
+        <!-- /ko -->
+
+        <!-- /ko -->
+
+        <!-- /ko -->
+    </div>
+</div>

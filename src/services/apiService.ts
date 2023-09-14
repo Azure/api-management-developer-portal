@@ -24,6 +24,11 @@ import { Bag } from "@paperbits/common";
 import { Tag } from "../models/tag";
 import { get, set } from "idb-keyval";
 import { LruCache } from "@paperbits/common/caching/lruCache";
+import { WikiContract } from "../contracts/wiki";
+import { Wiki } from "../models/wiki";
+import { RevisionContract } from "../contracts/revision"
+import { Revision } from "../models/revision"
+import { ApiChangeLog } from "../models/apiChangelog";
 
 interface CacheItem {
     value: any;
@@ -138,36 +143,13 @@ export class ApiService {
         if (odataFilterEntries.length > 0) {
             query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
         }
-        const pageOfOperationsByTag = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(query, [await this.mapiClient.getPortalHeader("getOperationsByTags")]);
-        const page = new Page<TagGroup<Operation>>();
-        const tagGroups: Bag<TagGroup<Operation>> = {};
+        const apiTagResource = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(query, [await this.mapiClient.getPortalHeader("getOperationsByTags")]);
+        return this.mapApiTagResourceToOperationsByTags(apiTagResource);
+    }
 
-        pageOfOperationsByTag.value.forEach(x => {
-            const tagContract: TagContract = x.tag ? Utils.armifyContract("tags", x.tag) : null;
-            const operationContract: OperationContract = x.operation ? Utils.armifyContract("operations", x.operation) : null;
-
-            let tagGroup: TagGroup<Operation>;
-            let tagName: string;
-
-            if (tagContract) {
-                tagName = tagContract.properties.displayName;
-            } else {
-                tagName = "Untagged";
-            }
-            tagGroup = tagGroups[tagName];
-
-            if (!tagGroup) {
-                tagGroup = new TagGroup<Operation>();
-                tagGroup.tag = tagName;
-                tagGroups[tagName] = tagGroup;
-            }
-            tagGroup.items.push(new Operation(operationContract));
-        });
-        page.value = Object.keys(tagGroups).map(x => tagGroups[x]);
-        page.nextLink = pageOfOperationsByTag.nextLink;
-        page.count = pageOfOperationsByTag.count;
-
-        return page;
+    public async getMoreOperationsByTag(nextLink: string): Promise<Page<TagGroup<Operation>>> {
+        const apiTagResource = await this.mapiClient.get<PageContract<ApiTagResourceContract>>(nextLink, [await this.mapiClient.getPortalHeader("getMoreOperationsByTag")]);
+        return this.mapApiTagResourceToOperationsByTags(apiTagResource);
     }
 
     /**
@@ -323,7 +305,7 @@ export class ApiService {
      * @param apiId A string parameter which is the id of the API
      * @returns all changelog pages
      */
-    public async getApiChangeLog(apiId: string, skip: number): Promise<Page<ChangeLogContract>> {
+    public async getApiChangeLog(apiId: string, skip: number): Promise<Page<ApiChangeLog>> {
         if (!apiId) {
             throw new Error(`Parameter "apiId" not specified.`);
         }
@@ -332,12 +314,26 @@ export class ApiService {
         const take = Constants.defaultPageSize;
         apiResourceUri += `/releases?$top=${take}&$skip=${skip}`;
 
-        const changelogContracts = await this.mapiClient.get<Page<ChangeLogContract>>(apiResourceUri, [await this.mapiClient.getPortalHeader("getApiChangeLog")]);
-        if (!changelogContracts) {
-            return null;
-        }
+        const result = await this.mapiClient.get<Page<ChangeLogContract>>(apiResourceUri, [await this.mapiClient.getPortalHeader("getApiChangeLog")]);
 
-        return changelogContracts;
+        const page = new Page<ApiChangeLog>();
+
+        page.value = result.value.map(c => new ApiChangeLog(<any>c));
+        page.nextLink = result.nextLink;
+        page.count = result.count;
+
+        return page;
+    }
+
+    public async getMoreApiChangelogs(nextLink: string): Promise<Page<ApiChangeLog>> {
+        const result = await this.mapiClient.get<Page<ChangeLogContract>>(nextLink, [await this.mapiClient.getPortalHeader("getMoreApiChangelogs")]);
+        const page = new Page<ApiChangeLog>();
+
+        page.value = result.value.map(c => new ApiChangeLog(<any>c));
+        page.nextLink = result.nextLink;
+        page.count = result.count;
+
+        return page;
     }
 
     public async getApiVersionSet(versionSetId: string): Promise<VersionSet> {
@@ -361,14 +357,14 @@ export class ApiService {
         return operation;
     }
 
-    public async getOperations(apiId: string, searchQuery?: SearchQuery): Promise<Page<Operation>> {
+    public async getOperations(apiId: string, searchQuery?: SearchQuery, nextLink?: string): Promise<Page<Operation>> {
         if (!apiId) {
             throw new Error(`Parameter "apiId" not specified.`);
         }
 
-        let query = `${apiId}/operations`;
+        let query = nextLink ?? `${apiId}/operations`;
 
-        let top;
+        let top: number;
 
         if (searchQuery) {
             searchQuery.tags.forEach((tag, index) => {
@@ -398,6 +394,17 @@ export class ApiService {
         return page;
     }
 
+    public async getMoreOperations(nextLink: string): Promise<Page<Operation>> {
+        const result = await this.mapiClient.get<Page<OperationContract>>(nextLink, [await this.mapiClient.getPortalHeader("getMoreOperations")]);
+        const page = new Page<Operation>();
+
+        page.value = result.value.map(c => new Operation(<any>c));
+        page.nextLink = result.nextLink;
+        page.count = result.count;
+
+        return page;
+    }
+
     /**
      * Returns API schema with specified identifier.
      * @param schemaId {string} ARM-formatted schema identifier.
@@ -407,7 +414,7 @@ export class ApiService {
         if (cachedSchema) {
             return cachedSchema;
         }
-        const contract = await this.getItemWithRefresh<SchemaContract>(schemaId,  () => this.getApiSchemaData(schemaId));
+        const contract = await this.getItemWithRefresh<SchemaContract>(schemaId, () => this.getApiSchemaData(schemaId));
         const model = new Schema(contract);
         this.schemaCache.setItem(schemaId, model);
         return model;
@@ -440,7 +447,7 @@ export class ApiService {
         if (cachedSchema) {
             return cachedSchema;
         }
-        const contract = await this.getItemWithRefresh<Page<SchemaContract>>(apiId,  () => this.getGQLSchemaData(apiId));
+        const contract = await this.getItemWithRefresh<Page<SchemaContract>>(apiId, () => this.getGQLSchemaData(apiId));
         const schemaReferences = contract.value;
         const schemaType = this.getSchemasType(schemaReferences);
         if (schemaType === SchemaType.graphQL) {
@@ -497,13 +504,18 @@ export class ApiService {
     /**
      * Returns page of API products filtered by name.
      */
-    public async getApiProductsPage(apiName: string, filter: SearchQuery): Promise<Page<Product>> {
-        const skip = filter.skip || 0;
-        const take = filter.take || Constants.defaultPageSize;
-        let query = `/apis/${apiName}/products?$top=${take}&$skip=${skip}`;
+    public async getApiProductsPage(apiName: string, filter?: SearchQuery): Promise<Page<Product>> {
+        let query = `/apis/${apiName}/products`;
 
-        if (filter.pattern) {
-            query = Utils.addQueryParameter(query, `$filter=(contains(properties/displayName,'${encodeURIComponent(filter.pattern)}'))`);
+        if (filter) {
+            const skip = filter.skip || 0;
+            const take = filter.take || Constants.defaultPageSize;
+            if (filter.pattern) {
+                query = Utils.addQueryParameter(query, `$filter=(contains(properties/displayName,'${encodeURIComponent(filter.pattern)}'))`);
+            }
+
+            query = Utils.addQueryParameter(query, `$skip=${skip}`);
+            query = Utils.addQueryParameter(query, `$top=${take}`);
         }
 
         const page = await this.mapiClient.get<Page<ProductContract>>(query, [await this.mapiClient.getPortalHeader("getApiProductsPage")]);
@@ -514,19 +526,32 @@ export class ApiService {
         return result;
     }
 
-    public async getProductApis(productId: string, searchQuery: SearchQuery): Promise<Page<Api>> {
+    public async getApiProductsNextLink(nextLink: string): Promise<Page<Product>> {
+        const page = await this.mapiClient.get<Page<ProductContract>>(nextLink, [await this.mapiClient.getPortalHeader("getApiProducts")]);
+
+        const result = new Page<Product>();
+        result.count = page.count;
+        result.nextLink = page.nextLink;
+        result.value = page.value.map(item => new Product(item));
+
+        return result;
+    }
+
+    public async getProductApis(productId: string, searchQuery?: SearchQuery): Promise<Page<Api>> {
         let query = `${productId}/apis`;
 
-        if (searchQuery.pattern) {
-            const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
-            query = Utils.addQueryParameter(query, `$filter=contains(properties/displayName,'${pattern}')`);
-        }
+        if (searchQuery) {
+            const skip = searchQuery.skip || 0;
+            const take = searchQuery.take || Constants.defaultPageSize;
 
-        if (searchQuery.skip) {
-            query = Utils.addQueryParameter(query, `$skip=${searchQuery.skip}`);
-        }
+            if (searchQuery.pattern) {
+                const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
+                query = Utils.addQueryParameter(query, `$filter=contains(properties/displayName,'${pattern}')`);
+            }
 
-        query = Utils.addQueryParameter(query, `$top=${searchQuery.take}`);
+            query = Utils.addQueryParameter(query, `$skip=${skip}`);
+            query = Utils.addQueryParameter(query, `$top=${take}`);
+        }
 
         const result = await this.mapiClient.get<Page<ApiContract>>(query, [await this.mapiClient.getPortalHeader("getProductApis")]);
         const page = new Page<Api>();
@@ -538,14 +563,74 @@ export class ApiService {
         return page;
     }
 
+    public async getProductApisNextLink(nextLink: string): Promise<Page<Api>> {
+        const page = await this.mapiClient.get<Page<ApiContract>>(nextLink, [await this.mapiClient.getPortalHeader("getApiProducts")]);
+
+        const result = new Page<Api>();
+        result.count = page.count;
+        result.nextLink = page.nextLink;
+        result.value = page.value.map(item => new Api(item));
+
+        return result;
+    }
+
     public async getApiHostnames(apiName: string, includeAllHostnames: boolean = false): Promise<string[]> {
         let query = `apis/${apiName}/hostnames`;
-        if(includeAllHostnames) {
-            query+=`?includeAllHostnames=true`
+        if (includeAllHostnames) {
+            query += `?includeAllHostnames=true`
         }
         const pageOfHostnames = await this.mapiClient.get<Page<Hostname>>(query, [await this.mapiClient.getPortalHeader("getApiHostnames")]);
         const hostnameValues = pageOfHostnames.value.map(x => x.properties.value);
 
         return hostnameValues;
+    }
+
+    public async getApiWiki(apiId: string): Promise<Wiki> {
+        let query = `apis/${apiId}/wikis/default`;
+        query = Utils.addQueryParameter(query, "api-version=2022-08-01");
+        const wikiContract = await this.mapiClient.get<WikiContract>(query, [await this.mapiClient.getPortalHeader("getApiWiki")]);
+        return new Wiki(wikiContract);
+    }
+
+    public async getLastModifiedDate(apiId: string): Promise<string> {
+        let query = `${apiId}/releases`;
+        query = Utils.addQueryParameter(query, `$orderBy=createdDateTime`);
+        query = Utils.addQueryParameter(query, `$top=1`);
+
+        const changelog = await this.mapiClient.get<Page<ChangeLogContract>>(query, [await this.mapiClient.getPortalHeader("getApiChangeLog")]);
+        return changelog?.value[0]?.properties.createdDateTime;
+    }
+
+    private mapApiTagResourceToOperationsByTags(apiTagResource: PageContract<ApiTagResourceContract>): Page<TagGroup<Operation>> {
+        const page = new Page<TagGroup<Operation>>();
+        const tagGroups: Bag<TagGroup<Operation>> = {};
+
+        apiTagResource.value.forEach(x => {
+            const tagContract: TagContract = x.tag ? Utils.armifyContract("tags", x.tag) : null;
+            const operationContract: OperationContract = x.operation ? Utils.armifyContract("operations", x.operation) : null;
+
+            let tagGroup: TagGroup<Operation>;
+            let tagName: string;
+
+            if (tagContract) {
+                tagName = tagContract.properties.displayName;
+            } else {
+                tagName = "Untagged";
+            }
+            tagGroup = tagGroups[tagName];
+
+            if (!tagGroup) {
+                tagGroup = new TagGroup<Operation>();
+                tagGroup.tag = tagName;
+                tagGroups[tagName] = tagGroup;
+            }
+            tagGroup.items.push(new Operation(operationContract));
+        });
+
+        page.value = Object.keys(tagGroups).map(x => tagGroups[x]);
+        page.nextLink = apiTagResource.nextLink;
+        page.count = apiTagResource.count;
+
+        return page;
     }
 }

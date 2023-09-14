@@ -12,6 +12,12 @@ import { RoleBasedSecurityDesignModule } from "@paperbits/core/security/roleBase
 import { ListOfApisDesignModule } from "./components/apis/list-of-apis/ko/listOfApisEditor.module";
 import { DetailsOfApiDesignModule } from "./components/apis/details-of-api/ko/detailsOfApiEditor.module";
 import { HistoryOfApiEditorModule as HistoryOfApiDesignModule } from "./components/apis/history-of-api/ko/historyOfApiEditor.module";
+
+import { ApiDetailsPageModule } from "./components/template-pages/api-details-page/ko/apiDetailsPage.module";
+import { ApiDetailsPageEditorModule } from "./components/template-pages/api-details-page/ko/apiDetailsPageEditor.module";
+import { ProductDetailsPageModule } from "./components/template-pages/product-details-page/ko/productDetailsPage.module";
+import { ProductDetailsPageEditorModule } from "./components/template-pages/product-details-page/ko/productDetailsPageEditor.module";
+
 import { SigninDesignModule } from "./components/users/signin/signin.design.module";
 import { SigninSocialEditorModule as SigninSocialDesignModule } from "./components/users/signin-social/signinSocial.design.module";
 import { SignupSocialDesignModule } from "./components/users/signup-social/signupSocial.design.module";
@@ -49,6 +55,7 @@ import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CustomWidgetDesignModule } from "./components/custom-widget/customWidget.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
+import { ApiDetailsPageModel } from "./components/template-pages/api-details-page/apiDetailsPageModel";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -76,6 +83,11 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ConfirmPasswordDesignModule());
         injector.bindModule(new ChangePasswordDesignModule());
         injector.bindModule(new ValidationSummaryDesignModule());
+
+        injector.bindModule(new ApiDetailsPageModule());
+        injector.bindModule(new ApiDetailsPageEditorModule());
+        injector.bindModule(new ProductDetailsPageModule());
+        injector.bindModule(new ProductDetailsPageEditorModule());
         injector.bindModule(new CustomHtmlDesignModule());
         injector.bindModule(new CustomWidgetDesignModule());
         injector.bindModule(new RoleBasedSecurityDesignModule());

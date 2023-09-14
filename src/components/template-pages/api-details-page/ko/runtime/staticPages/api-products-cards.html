@@ -1,0 +1,92 @@
+<h3>Products that use this API</h3>
+<div class="cards">
+    <!-- ko if: working -->
+    <div class="cards-body">
+        <spinner class="fit"></spinner>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko ifnot: working -->
+    <div class="cards-body animation-fade-in">
+        <!-- ko foreach: { data: products, as: 'item' } -->
+        <div class="card">
+            <p class="item-type">PRODUCT</p>
+            <a href="#" data-bind="attr: { href: $component.getProductUrl(item) }">
+                <span class="card-title" data-bind="text: item.displayName"></span>
+            </a>
+            <div class="tile line-clamp">
+                <p class="tile-content" data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
+            </div>
+
+            <hr>
+            <div class="commands">
+                <a href="#" role="button" data-bind="click: $component.openProductQuickView">
+                    Quick view
+                </a>
+                <div class="separator"></div>
+                <a href="#" data-bind="attr: { href: $component.getProductUrl(item) }">
+                    Go to product
+                    <i class="icon-emb icon-emb-open"></i>
+                </a>
+            </div>
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: nextLink() -->
+        <div class="show-more-cards">
+            <!-- ko if: moreProductsLoading -->
+            <spinner class="fit"></spinner>
+            <!-- /ko -->
+
+            <!-- ko ifnot: moreProductsLoading -->
+            <a href="#" role="button" data-bind="click: loadMoreProducts">Show more</a>
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: products().length === 0 -->
+        <p>No products found</p>
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+</div>
+
+<!-- ko if: showQuickView() && quickViewProduct() -->
+<div class="detachable-right scrollable">
+    <div class="panel">
+        <div style="display: flex; justify-content: space-between">
+            <h2 data-bind="text: quickViewProduct().name"></h2>
+            <button type="button" tabindex="0" class="no-border pull-right" data-dismiss="modal"
+                aria-label="Close product quick view" data-bind="click: closeProductQuickView">
+                <i class="icon-emb icon-emb-simple-remove"></i>
+            </button>
+        </div>
+
+        <div class="pb-12">
+            <div> <span data-bind="text: 'Type: Product'"></span>
+                <span class="bullet-separator">•</span>
+                <a href="#" data-bind="copyToClipboard: getFullProductUrl(quickViewProduct)">
+                    Copy link
+                    <i class="icon-emb icon-emb-duplicate"></i>
+                </a>
+            </div>
+        </div>
+
+        <span data-bind="markdown: quickViewProduct().description"></span>
+
+        <!-- ko if: quickViewProduct().terms -->
+        <h5>Legal</h5>
+        <span data-bind="text: quickViewProduct().terms"></span>
+        <!-- /ko -->
+
+        <hr class="mt-20 mb-20" />
+
+        <div class="commands">
+            <a class="outlined" href="#" data-bind="attr: { href: getProductUrl(quickViewProduct()) }">
+                View Product
+            </a>
+        </div>
+
+    </div>
+</div>
+<!-- /ko -->

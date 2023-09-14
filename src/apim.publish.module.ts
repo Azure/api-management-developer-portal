@@ -14,6 +14,8 @@ import { SignupSocialPublishModule } from "./components/users/signup-social/sign
 import { ProfilePublishModule } from "./components/users/profile/profile.module";
 import { SubscriptionsPublishModule } from "./components/users/subscriptions/subscriptions.module";
 import { ProductDetailsPublishModule } from "./components/products/product-details/productDetails.module";
+import { ApiDetailsPageModule } from "./components/template-pages/api-details-page/ko/apiDetailsPage.module";
+import { ProductDetailsPageModule } from "./components/template-pages/product-details-page/ko/productDetailsPage.module";
 import { StaticRouter } from "./components/staticRouter";
 import { StaticUserService } from "./services/userService";
 import { StaticAuthenticator } from "./components/staticAuthenticator";
@@ -67,6 +69,8 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ChangePasswordPublishModule());
         injector.bindModule(new ReportsPublishModule());
         injector.bindModule(new ValidationSummaryPublishModule());
+        injector.bindModule(new ApiDetailsPageModule());
+        injector.bindModule(new ProductDetailsPageModule());
         injector.bindModule(new CustomHtmlPublishModule());
         injector.bindModule(new CustomWidgetPublishModule());
         injector.bindModule(new RoleBasedSecurityPublishModule());

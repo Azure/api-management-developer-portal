@@ -1,0 +1,218 @@
+<div class="list-container">
+    <div class="items">
+        API
+        <api-list-dropdown params="{ allowSelection: true }" class="entities-dropdown"></api-list-dropdown>
+        <!-- ko if: api && versionApis().length > 0 -->
+        API version
+        <label class="select-badge">
+            <select id="apiVersions" aria-label="API versions"
+                data-bind="options: versionApis, optionsValue: 'name', optionsText: 'apiVersion', value: currentApiVersion">
+            </select>
+            <span class="arrow flex align-items-center justify-content-center">
+                <i class="icon-emb icon-emb-chevron-down"></i>
+            </span>
+        </label>
+        <!-- /ko -->
+        <input type="search" class="form-control form-control-light" aria-label="Search for documentation and operations"
+            placeholder="Search for documentation and operations" spellcheck="false" data-bind="textInput: pattern" />
+        <hr>
+        <details open class="details-styled">
+            <summary aria-label="About">
+                <div class="menu-list-heading title">
+                    About
+                    <i class="icon-emb icon-emb-chevron-down"></i>
+                </div>
+            </summary>
+            <div class="menu-list" role="listbox" aria-label="About this API">
+                <!-- ko foreach: { data: staticSelectableMenuItems, as: 'menuItem' } -->
+                <div class="menu-list-item" role="option"
+                    data-bind="activate: $component.selectMenuItem, css: { 'selected highlight-selected-item': $component.selectedMenuItem() == menuItem }">
+                    <span data-bind="text: menuItem.displayName"></span>
+                </div>
+                <!-- /ko -->
+            </div>
+        </details>
+
+        <hr>
+        <details open class="details-styled" id="details-wiki">
+            <summary aria-label="Documentation">
+                <div class="menu-list-heading title">
+                    Documentation
+                    <i class="icon-emb icon-emb-chevron-down"></i>
+                </div>
+            </summary>
+            <div class="menu-list" role="listbox" aria-label="Documentation">
+                <!-- ko if: wikiLoading -->
+                <spinner class="menu-list-item"></spinner>
+                <!-- /ko -->
+
+                <!-- ko ifnot: wikiLoading -->
+                <!-- ko foreach: { data: filteredWikiDocumentationMenuItems(), as: 'menuItem' } -->
+                <div class="menu-list-item" role="option"
+                    data-bind="activate: $component.selectMenuItem, css: { 'selected highlight-selected-item': $component.selectedMenuItem() == menuItem }">
+                    <span
+                        data-bind="text: menuItem.displayName, css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }"></span>
+                </div>
+                <!-- /ko -->
+
+                <!-- ko if: filteredWikiDocumentationMenuItems().length == 0 -->
+                <span>No documentation to display</span>
+                <!-- /ko -->
+                <!-- /ko -->
+            </div>
+        </details>
+
+        <hr>
+        <details open class="details-styled" id="details-operations">
+            <summary aria-label="Operations">
+                <div class="menu-list-heading title">
+                    Operations
+                    <i class="icon-emb icon-emb-chevron-down"></i>
+                </div>
+            </summary>
+
+            <!-- ko if: api()?.type === 'graphql' -->
+
+            <!-- ko if: graphqlLoading -->
+            <spinner class="menu-list-item"></spinner>
+            <!-- /ko -->
+
+            <!-- ko ifnot: graphqlLoading -->
+            <div class="form-group">
+                <div class="input-group" tabindex="0" role="button" data-toggle="dropdown" aria-label="Types">
+                    <div class="form-control">
+                        <span data-bind="text: graphqlSelectedType"></span>
+                    </div>
+                    <button class="input-group-addon no-border">
+                        <i class="icon-emb icon-emb-chevron-down"></i>
+                    </button>
+                    <div class="dropdown">
+                        <div class="menu menu-vertical" role="list">
+                            <!-- ko fastForEach: { data: graphDocService.availableTypes, as: 'type' } -->
+                            <div tabindex="0" role="listitem" class="nav-link text-truncate operation-pointer"
+                                data-dismiss
+                                data-bind="click: () => { $component.graphqlSelectedType(type) }, text: type, css: { 'nav-link-active': $component.graphqlSelectedType() === type }">
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                        <!-- ko if: graphDocService.availableTypes().length === 0 -->
+                        <p>No operations found</p>
+                        <!-- /ko -->
+                    </div>
+                </div>
+            </div>
+            <!-- ko foreach: { data: graphqlNodes(), as: 'menuItem' } -->
+            <div class="menu-list-item" role="option"
+                data-bind="activate: $component.selectMenuItem, css: { 'selected highlight-selected-item': $component.selectedMenuItem() == menuItem }">
+                <div class="http-method" data-bind="attr: { 'data-method': menuItem.method }"></div>
+                <span
+                    data-bind="text: menuItem.displayName, css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }"></span>
+            </div>
+            <!-- /ko -->
+            <!-- /ko -->
+            <!-- /ko -->
+
+            <!-- ko ifnot: api()?.type === 'graphql' -->
+            <!-- ko if: !groupOperationsByTag()-->
+            <div class="menu-list" role="listbox" aria-label="Operations">
+                <!-- ko if: operationsLoading -->
+                <spinner class="menu-list-item"></spinner>
+                <!-- /ko -->
+
+                <!-- ko ifnot: operationsLoading -->
+                <!-- ko foreach: { data: operationsMenuItems(), as: 'menuItem' } -->
+                <div class="menu-list-item" role="option"
+                    data-bind="activate: $component.selectMenuItem, css: { 'selected highlight-selected-item': $component.selectedMenuItem() == menuItem }">
+                    <div class="http-method" data-bind="attr: { 'data-method': menuItem.method }"></div>
+                    <span
+                        data-bind="text: menuItem.displayName, css: { 'text-truncate': !$component.wrapText(), 'text-wrap': $component.wrapText() }"></span>
+                </div>
+                <!-- /ko -->
+                <!-- ko if: operationsPageNextLink() -->
+                <!-- ko if: moreOperationsLoading -->
+                <spinner class="menu-list-item"></spinner>
+                <!-- /ko -->
+
+                <!-- ko ifnot: moreOperationsLoading -->
+                <a href="#" class="menu-list-item" role="option" data-bind="click: loadMoreOperationsUngruped">Show
+                    more</a>
+                <!-- /ko -->
+                <!-- /ko -->
+                <!-- ko if: operationsMenuItems().length == 0 -->
+                <span>No operations to display</span>
+                <!-- /ko -->
+                <!-- /ko -->
+            </div>
+            <!-- /ko -->
+
+            <!-- ko if: groupOperationsByTag()-->
+            <div class="menu-list" role="group" aria-label="Operations grouped by tags">
+                <!-- ko if: operationsLoading -->
+                <spinner class="fit"></spinner>
+                <!-- /ko -->
+
+                <!-- ko ifnot: operationsLoading -->
+                <!-- ko foreach: { data: operationsByTagsMenuItems(), as: 'tagMenuItem' } -->
+
+                <details class="tag details-styled" role="group"
+                    data-bind="{ attr: { 'id': 'details-tag-' + tagMenuItem.tagName } }">
+                    <summary data-bind="attr:{ 'aria-label': 'Tag ' + tagMenuItem.tagName }">
+                        <div class="menu-list-heading">
+                            <span data-bind="text:tagMenuItem.tagName"></span>
+                            <i class="icon-emb icon-emb-chevron-down"></i>
+                        </div>
+                    </summary>
+                    <div role="listbox" aria-label="Operations">
+                        <!-- ko foreach: { data: tagMenuItem.operations, as: 'menuItem' } -->
+                        <div class="menu-list-item" role="option"
+                            data-bind="activate: $component.selectMenuItem, css: { 'selected highlight-selected-item': $component.selectedMenuItem() == menuItem }">
+                            <div class="http-method" data-bind="attr: { 'data-method': menuItem.method }">
+                            </div>
+                            <span data-bind="text: menuItem.displayName"></span>
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                </details>
+
+                <!-- /ko -->
+                <!-- ko if: operationsPageNextLink() -->
+                <!-- ko if: moreOperationsLoading -->
+                <spinner class="menu-list-item"></spinner>
+                <!-- /ko -->
+
+                <!-- ko ifnot: moreOperationsLoading -->
+                <a href="#" class="menu-list-item" role="button" data-bind="click: loadMoreOperationsByTags">Show
+                    more</a>
+                <!-- /ko -->
+                <!-- /ko -->
+                <!-- ko if: operationsByTagsMenuItems().length == 0 -->
+                <span>No operations to display</span>
+                <!-- /ko -->
+                <!-- /ko -->
+            </div>
+            <!-- /ko -->
+            <!-- /ko -->
+        </details>
+        <!-- ko if: api() && (api().type !== 'websocket' && api().type !== 'graphql') -->
+        <div class="pt-40">
+            <hr>
+            <label class="select-badge">
+                <select id="selectedDefinition" data-bind="value: selectedDefinition" class="download"
+                    aria-label="Download API definition">
+                    <option value="" disabled="disabled" selected="selected">Download API definition</option>
+                    <option value="openapi">Open API 3 (YAML)</option>
+                    <option value="openapi+json">Open API 3 (JSON)</option>
+                    <option value="swagger"> Open API 2 (JSON)</option>
+                    <option value="wadl">WADL</option>
+                    <!-- ko if: api().type === 'soap' -->
+                    <option value="wsdl">WSDL</option>
+                    <!-- /ko -->
+                </select>
+                <span class="arrow flex align-items-center justify-content-center">
+                    <i class="icon-emb icon-emb-chevron-down"></i>
+                </span>
+            </label>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>

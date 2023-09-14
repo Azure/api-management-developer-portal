@@ -144,6 +144,14 @@
     content: "\e9b7";
 }
 
+.icon-emb-open:before {
+    content: "\e912";
+}
+
+.icon-emb-edit:before {
+    content: "\e913";
+  }
+
 .icon-svg-wadl {
     @include icon-18px();
     background-color: transparent;
@@ -173,4 +181,8 @@
 
 .info-icon-size {
     font-size: 13px;
+}
+
+.icon-svg-download {
+    background-image: url("./icons/icon-download.svg");
 }

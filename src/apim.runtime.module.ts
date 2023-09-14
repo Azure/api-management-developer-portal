@@ -26,6 +26,16 @@ import { ApiProducts } from "./components/apis/api-products/ko/runtime/api-produ
 import { ApiProductsDropdown } from "./components/apis/api-products/ko/runtime/api-products-dropdown";
 import { ApiProductsTiles } from "./components/apis/api-products/ko/runtime/api-products-tiles";
 import { ApiDetails } from "./components/apis/details-of-api/ko/runtime/api-details";
+import { ApiDetailsPage } from "./components/template-pages/api-details-page/ko/runtime/api-details-page";
+import { ApiProductsCards } from "./components/template-pages/api-details-page/ko/runtime/staticPages/api-products-cards";
+import { ApiNavMenu } from "./components/template-pages/api-details-page/ko/runtime/menu/api-nav-menu";
+import {ProductNavMenu} from "./components/template-pages/product-details-page/ko/runtime/menu/product-nav-menu";
+import { ProductApisCards } from "./components/template-pages/product-details-page/ko/runtime/staticPages/product-apis-cards";
+import { SubscriptionForm } from "./components/template-pages/product-details-page/ko/runtime/subscripion-form/subscription-form";
+import { Changelog } from "./components/template-pages/api-details-page/ko/runtime/staticPages/changelog";
+import { WikiDocumentation } from "./components/template-pages/common/ko/runtime/wikiDocumentation/wiki-documentation";
+import { ProdutDetailsPageSubscriptions } from "./components/template-pages/product-details-page/ko/runtime/staticPages/product-details-page-subscriptions";
+import { ProductDetailsPage } from "./components/template-pages/product-details-page/ko/runtime/product-details-page";
 import { ApiHistory } from "./components/apis/history-of-api/ko/runtime/api-history";
 import { ApiList, ApiListDropdown, ApiListTiles } from "./components/apis/list-of-apis/ko/runtime";
 import { CustomWidgetRuntimeModule } from "./components/custom-widget/customWidget.runtime.module";
@@ -77,6 +87,7 @@ import { AadService } from "./services/aadService";
 import { AadServiceV2 } from "./services/aadServiceV2";
 import { AnalyticsService } from "./services/analyticsService";
 import { ApiService } from "./services/apiService";
+import { MarkdownService } from "./services/markdownService";
 import { BackendService } from "./services/backendService";
 import { MapiClient } from "./services/mapiClient";
 import { OAuthService } from "./services/oauthService";
@@ -87,6 +98,7 @@ import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
+import { DocumentationService } from "./services/documentationService";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -104,6 +116,16 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("apiProductsDropdown", ApiProductsDropdown);
         injector.bind("apiProductsTiles", ApiProductsTiles);
         injector.bind("apiDetails", ApiDetails);
+        injector.bind("apiDetailsPage", ApiDetailsPage);
+        injector.bind("apiProductsCards", ApiProductsCards);
+        injector.bind("apiNavmenu", ApiNavMenu);
+        injector.bind("productNavmenu", ProductNavMenu);
+        injector.bind("productApisCards", ProductApisCards);
+        injector.bind("subsctiptionForm", SubscriptionForm);
+        injector.bind("changelog", Changelog);
+        injector.bind("wikiDocumentation", WikiDocumentation);
+        injector.bind("produtDetailsPageSubscriptions", ProdutDetailsPageSubscriptions);
+        injector.bind("productDetailsPage", ProductDetailsPage);
         injector.bind("apiHistory", ApiHistory);
         injector.bind("operationDetails", OperationDetails);
         injector.bind("operationConsole", OperationConsole);
@@ -115,6 +137,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("codeSnippet", CodeSnippet);
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);
+        injector.bind("markdownService", MarkdownService);
         injector.bind("tagService", TagService);
         injector.bind("productService", ProductService);
         injector.bind("analyticsService", AnalyticsService);
@@ -137,6 +160,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("operationList", OperationList);
         injector.bind("operationDetails", OperationDetails);
         injector.bind("usersService", UsersService);
+        injector.bind("documentationService", DocumentationService);
         injector.bind("reports", Reports);
         injector.bind("hipCaptcha", HipCaptcha);
         injector.bind("termsOfUse", TermsOfUse);

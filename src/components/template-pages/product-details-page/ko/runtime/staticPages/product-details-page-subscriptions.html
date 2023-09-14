@@ -1,0 +1,121 @@
+<h3>Subscriptions</h3>
+
+<!-- ko if: working -->
+<spinner class="fit"></spinner>
+<!-- /ko -->
+
+<!-- ko ifnot: working -->
+<!-- ko ifnot: isUserSignedIn() -->
+<p>
+    You need to sign in or create an account to see your subscriptions.
+</p>
+<div class="flex flex-column" style="padding:0 150px">
+    <button class="button button-primary sign-in-button" data-bind="click: signIn">Sign in</button>
+    <button class="button sign-up-button" data-bind="click: signUp">Create an account</button>
+</div>
+<!-- /ko -->
+
+<!-- ko if: isUserSignedIn() -->
+<span
+    data-bind="text: 'Manage your subscriptions. You can create at most ' + product().subscriptionsLimit + ' subscriptions to this product.'"></span>
+
+<div class="info-block" data-bind="css: { 'show': !canCreateNewSubscription() }">
+    <b>Subscription limit reached: </b>
+    <span>You have reached the maximum number of subscriptions to this product.</span>
+</div>
+
+<div class="table">
+    <div class="table-head">
+        <div class="table-row" role="row">
+            <div class="col-6">Name</div>
+            <div class="col-2">Date created</div>
+            <div class="col-2">Status</div>
+            <div class="col-2">Action</div>
+        </div>
+    </div>
+
+    <div class="table-body">
+        <!-- ko foreach: { data: subscriptions, as: 'subscription' } -->
+        <div class="table-row">
+            <div class="col-6 flex flex-row" role="cell">
+                <!-- ko ifnot: $data.isEdit -->
+                <div style="width: calc(100%-90px)" class="text-truncate">
+                    <span data-bind="text: model.name"></span>
+                </div>
+                <!-- /ko -->
+
+                <!-- ko if: $data.isEdit -->
+                <div>
+                    <input type="text" class="form-control" data-bind="value: editName" aria-required="true" />
+                </div>
+                <!-- /ko -->
+
+
+                <!-- ko ifnot: $data.isEdit -->
+                <div class="align-self-center ml-20">
+                    <a role="button" class="btn-link" href="#" data-bind="click: toggleEdit"
+                        aria-label="Rename subscription"> <i class="icon-emb icon-emb-edit"></i></a>
+                </div>
+                <!-- /ko -->
+
+                <!-- ko if: $data.isEdit -->
+                <div class="align-self-center ml-20">
+                    <a role="button" class="btn-link" href="#" data-bind="click: $parent.renameSubscription"
+                        aria-label="Save subscription name">Save</a> |
+                    <a role="button" class="btn-link" href="#" data-bind="click: toggleEdit"
+                        aria-label="Cancel subscription rename">Cancel</a>
+                </div>
+                <!-- /ko -->
+            </div>
+            <div class="col-2" role="cell" data-bind="text: subscription.model.createdDate.toLocaleDateString('en-US')">
+            </div>
+            <div class="col-2" role="cell" data-bind="text: subscription.model.state"></div>
+            <div class="col-2" role="cell">
+                <!-- ko if: $data.model.canBeCancelled() -->
+                <a role="button" class="btn-link" href="#" data-bind="click: $component.cancelSubscription"
+                    aria-label="Cancel subscription">Cancel</a>
+                <!-- /ko -->
+            </div>
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: nextLink()-->
+        <!-- ko if: loadModeSubscriptions()-->
+        <spinner></spinner>
+        <!-- /ko -->
+
+        <!-- ko ifnot: loadModeSubscriptions()-->
+        <div class="table-row">
+            <div class="col-auto">
+                <a href="#" data-bind="click: loadMoreSubscriptions">Show more</a>
+            </div>
+        </div>
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko if: subscriptions().length === 0-->
+        <div class="table-row">
+            <div class="col-auto">
+                <div class="text-truncate">
+                    You don't have subscriptions yet.
+                </div>
+            </div>
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: canCreateNewSubscription()-->
+        <div class="table-row">
+            <div class="col-auto">
+                <div class="text-truncate">
+                    <a href="#" data-bind="click: openSubscriptionForm">
+                        <i class="icon-emb icon-emb-plus"></i>
+                        <span>Subscribe</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+<!-- /ko -->
+<!-- /ko -->

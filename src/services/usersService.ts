@@ -144,6 +144,9 @@ export class UsersService {
      * Returns currently authenticated user ID.
      */
     public async getCurrentUserId(): Promise<string> {
+        // to do
+        //return "/users/malincrist-microsoft-com";
+        //return null;
         const token = await this.authenticator.getAccessTokenAsString();
 
         if (!token) {
@@ -244,6 +247,10 @@ export class UsersService {
 
     public navigateToSignin(): void {
         this.router.navigateTo(Constants.pageUrlSignIn);
+    }
+
+    public navigateToSignup(): void{
+        this.router.navigateTo(Constants.pageUrlSignUp);
     }
 
     public navigateToHome(): void {

@@ -21,10 +21,12 @@ export class MarkdownService {
             .use(rehypeRaw)
             .use(rehypeSanitize, {
                 ...defaultSchema,
+                tagNames: [...defaultSchema.tagNames, "video"],
                 attributes: {
                     "*": ["className", "role", "style"],
                     "img": ["src", "alt", "width", "height"],
-                    "a": ["href", "target"]
+                    "a": ["href", "target"],
+                    "video": ["src", "type", "controls", "width", "height"]
                 }
             })
             .use(rehypeStringify)

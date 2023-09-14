@@ -1,0 +1,58 @@
+<div class="page-container">
+    <div class="page-title title-background">
+        <h1 class="title-text" data-bind="text: api() ? api().displayName : 'The specified API does not exsist'">
+        </h1>
+    </div>
+
+    <div class="page-menu">
+        <api-nav-menu
+            params="{ api: api, groupOperationsByTag: groupOperationsByTag, showUrlPath: showUrlPath, wrapText: wrapText, apiLoading: apiLoading, selectedMenuItem: selectedMenuItem, versionApis: versionApis, currentApiVersion: currentApiVersion}">
+        </api-nav-menu>
+    </div>
+    <div class="page-content">
+        <!-- ko if: apiLoading-->
+        <spinner class="fit"></spinner>
+        <!-- /ko -->
+
+        <!-- ko ifnot: apiLoading-->
+
+        <nav aria-label="breadcrumb" class="mr-20">
+            <ol class="breadcrumb">
+                <!-- ko foreach: { data: breadcrumbItems, as: 'item' } -->
+                <li class="breadcrumb-item text-wrap">
+                    <a href="#" data-bind="text: item.title, attr: { href: item.url}"></a>
+                </li>
+                <!-- /ko -->
+            </ol>
+        </nav>
+
+        <!-- ko if: api -->
+
+        <!-- ko if: selectedMenuItem()?.type === 'static' -->
+        <!-- ko if: selectedMenuItem()?.value === 'details' -->
+        <!-- ko template: { name: 'aboutApi', data: {api: api(), lastModifiedDate: lastModifiedDate()} } -->
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko if: selectedMenuItem()?.value === 'products' -->
+        <api-products-cards></api-products-cards>
+        <!-- /ko -->
+
+        <!-- ko if: selectedMenuItem()?.value === 'changelog' -->
+        <changelog></changelog>
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko if: selectedMenuItem()?.type === 'documentation' -->
+        <wiki-documentation></wiki-documentation>
+        <!-- /ko -->
+
+        <!-- ko if: selectedMenuItem()?.type === 'operation' || selectedMenuItem()?.type === 'graphql'-->
+        <div data-bind="component: {name: 'operation-details', params: operationDetailsConfig}"></div>
+        <!-- /ko -->
+
+        <!-- /ko -->
+
+        <!-- /ko -->
+    </div>
+</div>
