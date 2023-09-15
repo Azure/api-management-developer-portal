@@ -635,7 +635,7 @@ export class GraphqlConsole {
             versionPath = `/${api.apiVersion}`;
         }
 
-        let requestUrl = "";
+        let requestUrl = `${api.path}${versionPath}`;
         const parameters = this.queryParameters();
 
         parameters.forEach(parameter => {
@@ -659,7 +659,7 @@ export class GraphqlConsole {
             requestUrl = this.addParam(requestUrl, api.apiVersionSet.versionQueryName, api.apiVersion);
         }
 
-        return `${api.path}${versionPath}${requestUrl}`;
+        return requestUrl;
     }
 
     private addParam(uri: string, name: string, value: string): string {
