@@ -116,9 +116,14 @@ export abstract class TypeDefinitionProperty {
     constructor(name: string, contract: SchemaObjectContract, isRequired: boolean) {
         this.name = contract.title || name;
         this.description = contract.description;
-        this.type = new TypeDefinitionPropertyTypePrimitive(contract.format || contract.type || "object");
         this.readOnly = contract.readOnly ?? false;
         this.required = isRequired;
+
+        const typeAndFormat = 
+            contract.type 
+                ? contract.format ? contract.type + ' (' + contract.format + ')' : contract.type
+                : 'object';
+        this.type = new TypeDefinitionPropertyTypePrimitive(typeAndFormat);
 
         if (contract.rawSchemaFormat) {
             this.rawSchema = contract.rawSchema;
@@ -365,7 +370,7 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
                     const propertySchemaObject = item.properties[propertyName];
                     const propertyNameToDisplay = (prefix ? prefix + "." : "") + propertyName;
 
-                    hasReadOnly = propertySchemaObject.readOnly ?? false;
+                    if (!hasReadOnly) hasReadOnly = propertySchemaObject.readOnly ?? false;
 
                     if (!propertySchemaObject) {
                         return;
