@@ -111,6 +111,14 @@ export class GraphqlConsole {
         this.wsProcessing = ko.observable(false);
         this.displayWsConsole = ko.observable(false);
         this.wsLogItems = ko.observableArray([]);
+
+        validation.registerExtenders();
+
+        validation.init({
+            insertMessages: false,
+            errorElementClass: "is-invalid",
+            decorateInputElement: true
+        });
     }
 
     @Param()
@@ -286,12 +294,14 @@ export class GraphqlConsole {
 
     public async validateAndSendRequest(): Promise<void> {
         const headers = this.headers();
-        const parameters = [].concat(headers);
+        const queryParameters = this.queryParameters();
+        const parameters = [].concat(headers, queryParameters);
         const validationGroup = validation.group(parameters.map(x => x.value), { live: true });
         const clientErrors = validationGroup();
 
         if (clientErrors.length > 0) {
             validationGroup.showAllMessages();
+            this.editorErrors.push("Required fields are missing or incomplete. Please review the request and ensure all required information is provided. Look for highlighted areas with error indicators.");
             return;
         }
 
@@ -625,7 +635,7 @@ export class GraphqlConsole {
             versionPath = `/${api.apiVersion}`;
         }
 
-        let requestUrl = "";
+        let requestUrl = `${api.path}${versionPath}`;
         const parameters = this.queryParameters();
 
         parameters.forEach(parameter => {
@@ -649,7 +659,7 @@ export class GraphqlConsole {
             requestUrl = this.addParam(requestUrl, api.apiVersionSet.versionQueryName, api.apiVersion);
         }
 
-        return `${api.path}${versionPath}${requestUrl}`;
+        return requestUrl;
     }
 
     private addParam(uri: string, name: string, value: string): string {

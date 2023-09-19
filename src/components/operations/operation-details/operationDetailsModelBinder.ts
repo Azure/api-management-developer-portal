@@ -4,15 +4,6 @@ import { OperationDetailsModel } from "./operationDetailsModel";
 import { OperationDetailsContract } from "./operationDetailsContract";
 
 export class OperationDetailsModelBinder implements IModelBinder<OperationDetailsModel> {
-
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === "operationDetails";
-    }
-
-    public canHandleModel(model: Object): boolean {
-        return model instanceof OperationDetailsModel;
-    }
-
     public async contractToModel(contract: OperationDetailsContract): Promise<OperationDetailsModel> {
         const model = new OperationDetailsModel();
         model.enableConsole = contract.enableConsole === true || contract.enableConsole === undefined;
@@ -21,7 +12,7 @@ export class OperationDetailsModelBinder implements IModelBinder<OperationDetail
         model.useCorsProxy = contract.useCorsProxy;
         model.includeAllHostnames = contract.includeAllHostnames;
         model.showExamples = contract.showExamples || false;
-
+        model.styles = contract.styles ?? {};
         return model;
     }
 
@@ -34,8 +25,8 @@ export class OperationDetailsModelBinder implements IModelBinder<OperationDetail
             useCorsProxy: model.useCorsProxy,
             includeAllHostnames: model.includeAllHostnames,
             showExamples: model.showExamples,
+            styles: model.styles
         };
-
         return contract;
     }
 }

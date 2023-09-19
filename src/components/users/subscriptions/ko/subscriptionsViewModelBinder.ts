@@ -1,31 +1,19 @@
-import { Bag } from "@paperbits/common";
-import { ComponentFlow } from "@paperbits/common/editing";
-import { ViewModelBinder } from "@paperbits/common/widgets";
+import { StyleCompiler } from "@paperbits/common/styles";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { SubscriptionsModel } from "../subscriptionsModel";
 import { SubscriptionsViewModel } from "./subscriptionsViewModel";
 
 
 export class SubscriptionsViewModelBinder implements ViewModelBinder<SubscriptionsModel, SubscriptionsViewModel> {
-    public async modelToViewModel(model: SubscriptionsModel, viewModel?: SubscriptionsViewModel, bindingContext?: Bag<any>): Promise<SubscriptionsViewModel> {
-        if (!viewModel) {
-            viewModel = new SubscriptionsViewModel();
+    constructor(private readonly styleCompiler: StyleCompiler) { }
 
-            viewModel["widgetBinding"] = {
-                displayName: "User: Subscriptions",
-                layer: bindingContext?.layer,
-                model: model,
-                flow: ComponentFlow.Block,
-                draggable: true,
-                applyChanges: async (updatedModel: SubscriptionsModel) => {
-                    this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                }
-            };
-        }
-
-        return viewModel;
+    public stateToInstance(state: WidgetState, componentInstance: SubscriptionsViewModel): void {
+        componentInstance.styles(state.styles);
     }
 
-    public canHandleModel(model: SubscriptionsModel): boolean {
-        return model instanceof SubscriptionsModel;
+    public async modelToState(model: SubscriptionsModel, state: WidgetState): Promise<void> {
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }

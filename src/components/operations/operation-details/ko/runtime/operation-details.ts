@@ -52,6 +52,9 @@ export class OperationDetails {
     public readonly protocol: ko.Computed<string>;
     public readonly examples: ko.Observable<OperationExamples>;
 
+    public readonly selectedRepresentatnionsValue: ko.Observable<object>;
+
+
     constructor(
         private readonly apiService: ApiService,
         private readonly oauthService: OAuthService,
@@ -73,6 +76,9 @@ export class OperationDetails {
         this.defaultSchemaView = ko.observable("table");
         this.useCorsProxy = ko.observable();
         this.includeAllHostnames = ko.observable();
+        this.selectedRepresentatnionsValue = ko.observable<object>();
+        this.showExamples = ko.observable(false);
+
         this.requestUrlSample = ko.computed(() => {
 
             const api = this.api();
@@ -115,6 +121,7 @@ export class OperationDetails {
 
             return api.protocols?.join(", ");
         });
+
         this.examples = ko.observable({});
 
         this.apiType = ko.observable();
@@ -141,7 +148,7 @@ export class OperationDetails {
     public defaultSchemaView: ko.Observable<string>;
 
     @Param()
-    public showExamples: boolean;
+    public showExamples: ko.Observable<boolean>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -231,7 +238,10 @@ export class OperationDetails {
 
         if (operation) {
             await this.loadDefinitions(operation);
-            if (this.showExamples) this.parseExamples(operation);
+            if (this.showExamples()) this.parseResponseExamples(operation);
+
+            this.loadRequestExamples(operation);
+
             this.operation(operation);
         }
         else {
@@ -242,6 +252,19 @@ export class OperationDetails {
         this.tags(operationTags.map(tag => tag.name));
 
         this.working(false);
+    }
+
+    public async loadRequestExamples(operation: Operation): Promise<void> {
+        const representations = operation.request.meaningfulRepresentations();
+        const requestExamples = {};
+        if (representations && representations.length) {
+            for(let i = 0; i < representations.length; i++) {
+                const value = representations[i].examples?.[0];
+                if (!value) continue;
+                requestExamples[representations[i].contentType] =  ko.observable(value.title);
+            }
+        }
+        this.selectedRepresentatnionsValue(requestExamples);
     }
 
     public async loadDefinitions(operation: Operation): Promise<void> {
@@ -346,7 +369,7 @@ export class OperationDetails {
         return result;
     }
 
-    private parseExamples(operation: Operation): void {
+    private parseResponseExamples(operation: Operation): void {
         const examples = operation.getMeaningfulResponses().reduce((acc, cur) => {
             const representations = cur.meaningfulRepresentations();
             if (!representations || !representations.length) return acc;
