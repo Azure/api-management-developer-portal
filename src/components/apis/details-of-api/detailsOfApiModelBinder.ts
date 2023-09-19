@@ -7,23 +7,16 @@ import { IPermalinkResolver } from "@paperbits/common/permalinks";
 
 export class DetailsOfApiModelBinder implements IModelBinder<DetailsOfApiModel> {
     constructor(private readonly permalinkResolver: IPermalinkResolver) { }
-    
-    public canHandleModel(model: Object): boolean {
-        return model instanceof DetailsOfApiModel;
-    }
 
     public async contractToModel(contract: DetailsOfApiContract): Promise<DetailsOfApiModel> {
         const model = new DetailsOfApiModel();
-
+        model.styles = contract.styles ?? {};
+        
         if (contract.changeLogPageHyperlink) {
             model.changeLogPageHyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.changeLogPageHyperlink);
         }
 
         return model;
-    }
-
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === "detailsOfApi";
     }
 
     public modelToContract(model: DetailsOfApiModel): Contract {
@@ -33,7 +26,8 @@ export class DetailsOfApiModelBinder implements IModelBinder<DetailsOfApiModel> 
                 ? {
                     target: model.changeLogPageHyperlink.target,
                     targetKey: model.changeLogPageHyperlink.targetKey
-                } : null
+                } : null,
+            styles: model.styles
         };
 
         return searchResultConfig;

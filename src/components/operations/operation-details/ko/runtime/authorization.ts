@@ -35,6 +35,7 @@ export class Authorization {
     public readonly authorizationError: ko.Observable<string>;
     public readonly products: ko.Observable<Product[]>;
     public readonly selectedSubscriptionKey: ko.Observable<string>;
+    public readonly subscriptionKeyRevealed: ko.Observable<boolean>;
     private deleteAuthorizationHeader: boolean = false;
 
     constructor(
@@ -58,6 +59,7 @@ export class Authorization {
         this.authorizationError = ko.observable();
         this.products = ko.observable();
         this.selectedSubscriptionKey = ko.observable();
+        this.subscriptionKeyRevealed = ko.observable(false);
     }
 
     @Param()
@@ -89,6 +91,18 @@ export class Authorization {
         if (this.api().subscriptionRequired) {
             await this.loadSubscriptionKeys();
         }
+
+        if (this.subscriptionKeyRequired()) {
+            if (this.api().type === TypeOfApi.webSocket || this.isGraphQL()) {
+                this.setSubscriptionKeyParameter();
+            } else {
+                this.setSubscriptionKeyHeader();
+            }
+        }
+    }
+
+    public toggleSubscriptionKey(): void {
+        this.subscriptionKeyRevealed(!this.subscriptionKeyRevealed());
     }
 
     private isGraphQL(): boolean {
@@ -184,13 +198,8 @@ export class Authorization {
         return this.findHeader(KnownHttpHeaders.Authorization);
     }
 
-    private setSubscriptionKeyHeader(subscriptionKey: string): void {
+    private setSubscriptionKeyHeader(subscriptionKey?: string): void {
         this.removeSubscriptionKeyHeader();
-
-        if (!subscriptionKey) {
-            return;
-        }
-
         const subscriptionKeyHeaderName = this.getSubscriptionKeyHeaderName();
 
         const keyHeader = new ConsoleHeader();
@@ -401,24 +410,20 @@ export class Authorization {
         }
     }
 
-    private setSubscriptionKeyParameter(subscriptionKey: string): void {
+    private setSubscriptionKeyParameter(subscriptionKey?: string): void {
         const subscriptionKeyParam = this.getSubscriptionKeyParam();
         this.removeQueryParameter(subscriptionKeyParam);
-
-        if (!subscriptionKey) {
-            return;
-        }
-
         const subscriptionKeyParamName = this.getSubscriptionKeyParamName();
 
         const keyParameter = new ConsoleParameter();
         keyParameter.name(subscriptionKeyParamName);
-        keyParameter.value(subscriptionKey);
         keyParameter.secret = true;
         keyParameter.type = "string";
         keyParameter.canRename = false;
         keyParameter.required = true;
         keyParameter.inputType("password");
+        keyParameter.value.extend(<any>{ required: { message: `Value is required.` } });
+        keyParameter.value(subscriptionKey);
 
         if (this.isGraphQL()) {
             this.queryParameters.push(keyParameter);

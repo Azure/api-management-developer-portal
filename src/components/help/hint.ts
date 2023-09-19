@@ -1,5 +1,5 @@
 /**
- * Entity describing the issue and its potential soultion.
+ * Entity describing the issue and its potential solution.
  */
 export interface Hint {
     /**
@@ -8,7 +8,7 @@ export interface Hint {
     issue: string;
 
     /**
-     * Free text explaning what can be done to resolve this issue.
+     * Free text explaining what can be done to resolve this issue.
      */
     suggestion: string;
 }
