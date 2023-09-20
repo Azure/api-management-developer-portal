@@ -420,4 +420,43 @@ export class Utils {
     public static isXmlContentType(contentType: string): boolean {
         return /\bxml\b/i.test(contentType.toLocaleLowerCase());
     }
+
+    public static isExcelOrCsvContentType(contentType: string): boolean {
+        return /\bcsv\b/i.test(contentType.toLocaleLowerCase())
+            || /\bopenxmlformats\b/i.test(contentType.toLocaleLowerCase())
+            || /\bms-excel\b/i.test(contentType.toLocaleLowerCase());
+    }
+
+    public static hasContentDispositionHeaderWithAttachment(headerString: string): boolean {
+        return /attachment/i.test(headerString);
+    }
+
+    public static extractFilenameFromContentDispositionHeader(headerString: string): string | null {
+        if (!headerString) {
+            return null;
+        }
+
+        const patterns = [
+            /filename\*=[^']+'\w*'"([^"]+)";?/i,
+            /filename\*=[^']+'\w*'([^;]+);?/i,
+            /filename="([^;]*);?"/i,
+            /filename=([^;]*);?/i
+        ];
+
+        let filename = [];
+        patterns.some(regex => {
+            filename = regex.exec(headerString)
+            return filename !== null
+        });
+
+        if (filename !== null && filename.length > 1) {
+            try {
+              return decodeURIComponent(filename[1])
+            } catch(e) {
+              return null;
+            }
+        }
+
+        return null;
+    }
 }

@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import * as validation from "knockout.validation";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { HttpClient, HttpMethod, HttpRequest } from "@paperbits/common/http";
+import { HttpClient, HttpMethod, HttpRequest, HttpHeader } from "@paperbits/common/http";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { Logger } from "@paperbits/common/logging";
 import { saveAs } from "file-saver";
@@ -529,15 +529,13 @@ export class OperationConsole {
             this.responseStatusCode(response.statusCode.toString());
             this.responseStatusText(responseStatusText);
 
+            const contentDispositionHeader = response.headers.find(x => x.name === KnownHttpHeaders.ContentDisposition.toLowerCase());
             if (responseContentType && downloadableTypes.some(type => responseContentType.includes(type))) {
-                const blob = new Blob([response.body], { type: responseContentType });
-                const fileExtension = getExtension(responseContentType);
-
-                const fileName = fileExtension
-                    ? consoleOperation.name + "." + fileExtension
-                    : consoleOperation.name;
-
-                saveAs(blob, fileName);
+                this.saveAsBlob(response, responseContentType, consoleOperation);
+            }
+            else if (responseContentType && this.downloadAsAttachment(responseContentType, contentDispositionHeader)) {
+                const filename = Utils.extractFilenameFromContentDispositionHeader(contentDispositionHeader.value);
+                this.saveAsBlob(response, responseContentType, consoleOperation, filename);
             }
             else {
                 const responseBody = response.body.toString();
@@ -568,6 +566,24 @@ export class OperationConsole {
         finally {
             this.sendingRequest(false);
         }
+    }
+
+    private saveAsBlob(response: HttpResponse, responseContentType: string, consoleOperation: ConsoleOperation, fileName?: string) {
+        const blob = new Blob([response.body], { type: responseContentType });
+
+        if (!fileName) {
+            const fileExtension = getExtension(responseContentType);
+            fileName = fileExtension
+                ? consoleOperation.name + "." + fileExtension
+                : consoleOperation.name;
+        }
+        saveAs(blob, fileName);
+    }
+
+    private downloadAsAttachment(responseContentType: string, contentDispositionHeader?: HttpHeader) {
+        return Utils.isExcelOrCsvContentType(responseContentType) 
+            && !!contentDispositionHeader
+            && Utils.hasContentDispositionHeaderWithAttachment(contentDispositionHeader.value);
     }
 
     private ws: WebsocketClient;
