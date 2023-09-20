@@ -77,7 +77,8 @@ export class OperationDetails {
         this.useCorsProxy = ko.observable();
         this.includeAllHostnames = ko.observable();
         this.selectedRepresentatnionsValue = ko.observable<object>();
-        
+        this.showExamples = ko.observable(false);
+
         this.requestUrlSample = ko.computed(() => {
 
             const api = this.api();
@@ -147,7 +148,7 @@ export class OperationDetails {
     public defaultSchemaView: ko.Observable<string>;
 
     @Param()
-    public showExamples: boolean;
+    public showExamples: ko.Observable<boolean>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
@@ -237,7 +238,7 @@ export class OperationDetails {
 
         if (operation) {
             await this.loadDefinitions(operation);
-            if (this.showExamples) this.parseResponseExamples(operation);
+            if (this.showExamples()) this.parseResponseExamples(operation);
 
             this.loadRequestExamples(operation);
 
@@ -372,7 +373,7 @@ export class OperationDetails {
         const examples = operation.getMeaningfulResponses().reduce((acc, cur) => {
             const representations = cur.meaningfulRepresentations();
             if (!representations || !representations.length) return acc;
-            
+
             const examplesObj = {}
             representations.forEach(representation => {
                 const value = representation.examples?.[0]?.value;
