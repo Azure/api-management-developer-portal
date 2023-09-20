@@ -121,8 +121,8 @@ export abstract class TypeDefinitionProperty {
 
         const typeAndFormat = 
             contract.type 
-                ? contract.format ? contract.type + ' (' + contract.format + ')' : contract.type
-                : 'object';
+                ? contract.format ? contract.type + " (" + contract.format + ")" : contract.type
+                : "object";
         this.type = new TypeDefinitionPropertyTypePrimitive(typeAndFormat);
 
         if (contract.rawSchemaFormat) {
