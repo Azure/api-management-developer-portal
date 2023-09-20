@@ -44,14 +44,14 @@
             <!-- ko if: operation().parameters.length > 0 -->
             <h4>Request parameters</h4>
 
-            <div role="table" class="table-preset table-preset-params">
+            <div role="table" class="table-preset" data-bind="css: { 'table-preset-params': !showExamples(), 'table-preset-params-examples': showExamples }">
                 <div class="d-contents" role="rowgroup">
                     <div class="d-contents" role="row">
                         <div role="columnheader" class="table-preset-head text-truncate">Name</div>
                         <div role="columnheader" class="table-preset-head text-truncate">In</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Required</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Type</div>
-                        <div role="columnheader" class="table-preset-head">Example</div>
+                        <div role="columnheader" class="table-preset-head cell-examples">Example</div>
                         <div role="columnheader" class="table-preset-head">Description</div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                         <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
                         <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
                         <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type"></div>
-                        <div role="cell">
+                        <div role="cell" class="cell-examples">
                             <!-- ko foreach: { data: parameter.examples, as: 'example' } -->
                             <p>
                                 <!-- ko ifnot: example.title === "default" && !example.description && parameter.examples.length === 1 -->
@@ -86,13 +86,13 @@
             <!-- ko if: operation().request && operation().request.headers && operation().request.headers.length > 0 -->
             <h4>Request headers</h4>
 
-            <div role="table" class="table-preset table-preset-headers-request">
+            <div role="table" class="table-preset" data-bind="css: { 'table-preset-headers-request': !showExamples(), 'table-preset-headers-request-examples': showExamples }">
                 <div class="d-contents" role="rowgroup">
                     <div class="d-contents" role="row">
                         <div role="columnheader" class="table-preset-head text-truncate">Name</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Required</div>
                         <div role="columnheader" class="table-preset-head text-truncate">Type</div>
-                        <div role="columnheader" class="table-preset-head">Example</div>
+                        <div role="columnheader" class="table-preset-head cell-examples">Example</div>
                         <div role="columnheader" class="table-preset-head">Description</div>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
                         <div role="cell" class="text-truncate" data-bind="text: header.required"></div>
                         <div role="cell" class="text-truncate text-monospace"
                             data-bind="text: header.type, attr: { title: header.type }"></div>
-                        <div role="cell">
+                        <div role="cell" class="cell-examples">
                             <!-- ko foreach: { data: header.examples, as: 'example' } -->
                             <p>
                                 <span data-bind="text: example.title"></span>:
