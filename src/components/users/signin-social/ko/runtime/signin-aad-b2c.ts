@@ -32,7 +32,7 @@ export class SignInAadB2C {
         this.classNames = ko.observable();
         this.label = ko.observable();
         this.replyUrl = ko.observable();
-        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
+        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done
         this.termsOfUse = ko.observable();
     }
 
@@ -44,7 +44,7 @@ export class SignInAadB2C {
 
     @Param()
     public replyUrl: ko.Observable<string>;
-    
+
     @Param()
     public termsOfUse: ko.Observable<string>;
 
@@ -58,7 +58,13 @@ export class SignInAadB2C {
             } else {
                 this.selectedService = this.aadService;
             }
-            await this.selectedService.checkCallbacks();
+            await this.selectedService.checkCallbacks( // missing handling of reset password request?
+                this.aadConfig.clientId,
+                this.aadConfig.authority,
+                this.aadConfig.signinTenant,
+                this.aadConfig.signinPolicyName,
+                this.replyUrl()
+            );
         }
     }
 
