@@ -1,14 +1,21 @@
 import * as React from 'react';
+import { isEqual } from 'lodash';
 import { Resolve } from '@paperbits/react/decorators';
 import { ISiteService, SiteSettingsContract } from '@paperbits/common/sites';
 import { IMediaService, MediaContract } from '@paperbits/common/media';
 import { EventManager } from '@paperbits/common/events';
-import { CommandBarButton, DefaultButton, Image, ImageFit, Label, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
+import { Checkbox, CommandBarButton, DefaultButton, Image, ImageFit, Label, Modal, Pivot, PivotItem, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { MediaSelectionItemModal } from '../media/mediaSelectionItemModal';
 import { getThumbnailUrl } from '../utils/helpers';
 import { ResetDetailsWorkshop } from '../../components/content';
 
+const enum Tab {
+    Basic = 'basic',
+    Advanced = 'advanced'
+}
+
 interface SettingsModalState {
+    selectedTab: string,
     initialSettings: SiteSettingsContract,
     settings: SiteSettingsContract,
     faviconThumbnailUrl: string,
@@ -41,6 +48,7 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
         super(props);
 
         this.state = {
+            selectedTab: Tab.Basic,
             initialSettings: null,
             settings: null,
             faviconThumbnailUrl: '',
@@ -92,8 +100,13 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
     }
 
     saveChanges = async (): Promise<void> => {
-        await this.siteService.setSetting('site', this.state.settings);
-        this.eventManager.dispatchEvent('onSaveChanges');
+        if (this.state.selectedTab === Tab.Advanced) {
+            this.resetDetailsWorkshop.reset();
+        } else {
+            await this.siteService.setSetting('site', this.state.settings);
+            this.eventManager.dispatchEvent('onSaveChanges');
+        }
+
         this.props.onDismiss();
     }
 
@@ -116,75 +129,85 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
                         <PrimaryButton
                             text="Save"
                             onClick={() => this.saveChanges()}
-                            disabled={JSON.stringify(this.state.initialSettings) === JSON.stringify(this.state.settings)}
+                            disabled={(this.state.selectedTab === Tab.Basic && isEqual(this.state.initialSettings, this.state.settings))
+                            || (this.state.selectedTab === Tab.Advanced && this.state.resetConfirmation !== 'yes')}
                         />
                         <DefaultButton text="Discard" onClick={this.props.onDismiss} />
                     </Stack>
                 </Stack>
                 <div className="admin-modal-content">
-                    <Label>Favicon</Label>
-                    <Stack horizontal verticalAlign="center">
-                        <Image
-                            src={this.state.faviconThumbnailUrl ?? '/assets/images/no-preview.png'}
-                            imageFit={ImageFit.centerCover}
-                            styles={{ root: { height: 60, width: 60, margin: '15px 15px 15px 0' } }}
-                        />
-                        <CommandBarButton
-                            iconProps={{ iconName: 'Upload' }}
-                            text="Setup favicon"
-                            onClick={() => this.setState({ showMediaSelectionModal: true })}
-                            styles={{ root: { height: 44 } }}
-                        />
-                    </Stack>
-                    <TextField
-                        label="Title"
-                        value={this.state.settings ? this.state.settings.title : ''}
-                        onChange={(event, newValue) => this.onInputChange('title', newValue)}
-                        styles={inputStyles}
-                    />
-                    <TextField
-                        label="Description"
-                        multiline
-                        autoAdjustHeight
-                        value={this.state.settings ? this.state.settings.description : ''}
-                        onChange={(event, newValue) => this.onInputChange('description', newValue)}
-                        styles={inputStyles}
-                    />
-                    <TextField
-                        label="Keywords"
-                        value={this.state.settings ? this.state.settings.keywords : ''}
-                        onChange={(event, newValue) => this.onInputChange('keywords', newValue)}
-                        styles={inputStyles}
-                    />
-                    <TextField
-                        label="Author"
-                        value={this.state.settings ? this.state.settings.author : ''}
-                        onChange={(event, newValue) => this.onInputChange('author', newValue)}
-                        styles={{ root: { paddingBottom: 30 } }}
-                    />
-                    <DefaultButton text="Reset content" onClick={() => this.setState({ showResetConfirmation: true })} />
-                    <Stack
-                        horizontalAlign="start"
-                        className={`collapsible-section${!this.state.showResetConfirmation ? ' hidden' : ''}`}
-                        styles={{ root: { paddingTop: 20 } }}
+                    <Pivot
+                        aria-label="Settings tabs"
+                        selectedKey={this.state.selectedTab}
+                        onLinkClick={(item: PivotItem) => this.setState({ selectedTab: item.props.itemKey, showResetConfirmation: false, resetConfirmation: '' })}
+                        styles={{ root: { marginBottom: 20 } }}
                     >
-                        <Text block>Resetting the content will restore the portal to its initial state. It will replace all the pages, layouts,
-                        customizations, uploaded media, etc. with the default content.</Text>
-                        <Text block>Resetting the content will not remove the published version of the portal.</Text>
-                        <Text block>Are you sure you want to reset the portal's content? Type "yes" in the field below to confirm.</Text>
-                        <TextField
-                            placeholder="Confirm by entering yes"
-                            onChange={(event, value) => this.setState({ resetConfirmation: value })}
-                            styles={{ root: { width: '100%', padding: '20px 0 5px' } }}
-                        />
-                        <CommandBarButton
-                            iconProps={{ iconName: 'CheckMark' }}
-                            text="Reset content"
-                            onClick={() => this.resetDetailsWorkshop.reset()}
-                            styles={{ root: { height: 44 } }}
-                            disabled={this.state.resetConfirmation !== 'yes'}
-                        />
-                    </Stack>
+                        <PivotItem headerText="Basic" itemKey={Tab.Basic}>
+                            <Label>Favicon</Label>
+                            <Stack horizontal verticalAlign="center">
+                                <Image
+                                    src={this.state.faviconThumbnailUrl ?? '/assets/images/no-preview.png'}
+                                    imageFit={ImageFit.centerCover}
+                                    styles={{ root: { height: 60, width: 60, margin: '15px 15px 15px 0' } }}
+                                />
+                                <CommandBarButton
+                                    iconProps={{ iconName: 'Upload' }}
+                                    text="Setup favicon"
+                                    onClick={() => this.setState({ showMediaSelectionModal: true })}
+                                    styles={{ root: { height: 44 } }}
+                                />
+                            </Stack>
+                            <TextField
+                                label="Title"
+                                value={this.state.settings ? this.state.settings.title : ''}
+                                onChange={(event, newValue) => this.onInputChange('title', newValue)}
+                                styles={inputStyles}
+                            />
+                            <TextField
+                                label="Description"
+                                multiline
+                                autoAdjustHeight
+                                value={this.state.settings ? this.state.settings.description : ''}
+                                onChange={(event, newValue) => this.onInputChange('description', newValue)}
+                                styles={inputStyles}
+                            />
+                            <TextField
+                                label="Keywords"
+                                value={this.state.settings ? this.state.settings.keywords : ''}
+                                onChange={(event, newValue) => this.onInputChange('keywords', newValue)}
+                                styles={inputStyles}
+                            />
+                            <TextField
+                                label="Author"
+                                value={this.state.settings ? this.state.settings.author : ''}
+                                onChange={(event, newValue) => this.onInputChange('author', newValue)}
+                                styles={{ root: { paddingBottom: 30 } }}
+                            />
+                        </PivotItem>
+                        <PivotItem headerText="Advanced" itemKey={Tab.Advanced}>
+                            <Stack className="reset-content-wrapper">
+                                <Text block styles={{ root: { fontWeight: 600 } }}>Restore website to default state</Text>
+                                <Text block>Restoring the site will reset the site to its original default state. It will replace all the pages, layouts, customizations, uploaded media, with the default content.</Text>
+                                <Text block>Resetting the content will not remove the published version of the portal. To remove the developer portal, go the API Management instance, navigate to the settings page and disable the portal.</Text>
+                                <Checkbox
+                                    label="Check to restore website"
+                                    checked={this.state.showResetConfirmation}
+                                    onChange={() => this.setState({ showResetConfirmation: !this.state.showResetConfirmation })}
+                                    styles={{ root: { padding: '10px 0 15px' } }}
+                                />
+                                <Stack  className={`collapsible-section${!this.state.showResetConfirmation ? ' hidden' : ''}`}>
+                                <Text block>Type "yes" in the field below to confirm you would like to reset the portal. Click "Save" to submit.</Text>
+                                    <TextField
+                                        placeholder="Confirm by entering yes"
+                                        description="Use lower-case when typing yes."
+                                        value={this.state.resetConfirmation}
+                                        onChange={(event, value) => this.setState({ resetConfirmation: value })}
+                                        styles={{ root: { width: '100%', padding: '10px 0 5px' } }}
+                                    />
+                                </Stack>
+                            </Stack>
+                        </PivotItem>
+                    </Pivot>
                 </div>
             </Modal>
         </>
