@@ -1,20 +1,25 @@
 import * as React from 'react';
 import Cropper from 'react-cropper';
 //import 'cropperjs/dist/cropper.css';
+import { isEqual, isEmpty } from 'lodash';
 import * as Utils from '@paperbits/common/utils';
 import { Resolve } from '@paperbits/react/decorators';
 import { IMediaService, MediaContract } from '@paperbits/common/media';
+import { PermalinkService } from '@paperbits/common/permalinks';
 import { EventManager } from '@paperbits/common/events';
-import { DefaultButton, IconButton, Modal, PrimaryButton, Stack, Text, TextField, TooltipDelay, TooltipHost } from '@fluentui/react';
+import { ActionButton, DefaultButton, IconButton, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 import { CopyableTextField } from '../utils/components/copyableTextField';
+import { REQUIRED, UNIQUE_REQUIRED, URL_REQUIRED, validateField } from '../utils/validator';
+import { reservedPermalinks } from '../../constants';
 
 interface ImageDetailsModalState {
     mediaItem: MediaContract,
     showDeleteConfirmation: boolean,
     croppedImage: Object,
     dragMode: string,
-    cropperDisabled: boolean
+    cropperDisabled: boolean,
+    errors: object
 }
 
 interface ImageDetailsModalProps {
@@ -31,6 +36,9 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
     @Resolve('mediaService')
     public mediaService: IMediaService;
 
+    @Resolve('permalinkService')
+    public permalinkService: PermalinkService;
+
     @Resolve('eventManager')
     public eventManager: EventManager;
 
@@ -44,32 +52,63 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
             showDeleteConfirmation: false,
             croppedImage: {},
             dragMode: 'crop',
-            cropperDisabled: false
+            cropperDisabled: false,
+            errors: {}
         }
     }
 
-    onInputChange = async (field: string, newValue: string) => {
+    onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
+        let errorMessage = '';
+        let errors = {};
+
+        if (field === 'permalink') {
+            errorMessage = await this.validatePermalink(newValue);
+        } else if (validationType) {
+            errorMessage = validateField(validationType, newValue);
+        }
+
+        if (errorMessage !== '' && !this.state.errors[field]) {
+            errors = { ...this.state.errors, [field]: errorMessage };
+        } else if (errorMessage === '' && this.state.errors[field]) {
+            const { [field as keyof typeof this.state.errors]: error, ...rest } = this.state.errors;
+            errors = rest;
+        } else {
+            errors = this.state.errors;
+        }
+
         this.setState({
             mediaItem: {
                 ...this.state.mediaItem,
                 [field]: newValue
-            }
+            },
+            errors
         });
     }
 
-    deleteMedia = async () => {
+    validatePermalink = async (permalink: string): Promise<string> => {
+        if (permalink === this.props.mediaItem?.permalink) return '';
+
+        const isPermalinkNotDefined = await this.permalinkService.isPermalinkDefined(permalink) && !reservedPermalinks.includes(permalink);
+        let errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
+
+        if (errorMessage === '') errorMessage = validateField(URL_REQUIRED, permalink);
+
+        return errorMessage;
+    }
+
+    deleteMedia = async (): Promise<void> => {
         await this.mediaService.deleteMedia(this.state.mediaItem);
 
         this.eventManager.dispatchEvent('onSaveChanges');
         this.props.onDismiss();
     }
 
-    closeDeleteConfirmation = () => {
+    closeDeleteConfirmation = (): void => {
         this.setState({ showDeleteConfirmation: false });
     }
 
-    saveMedia = async () => {
-        let file;
+    saveMedia = async (): Promise<void> => {
+        let file: Uint8Array;
 
         if (this.state.cropperDisabled) {
             this.cropper.getCroppedCanvas().toBlob(async blob => {
@@ -84,11 +123,11 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
         this.props.onDismiss();
     }
 
-    onCropperInit = (cropper) => {
+    onCropperInit = (cropper: Cropper): void => {
         this.cropper = cropper;
     }
 
-    render() {
+    render(): JSX.Element {
         return <>
             {this.state.showDeleteConfirmation && 
                 <DeleteConfirmationOverlay
@@ -108,7 +147,7 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
                         <PrimaryButton
                             text="Save"
                             onClick={() => this.saveMedia()}
-                            disabled={JSON.stringify(this.props.mediaItem) === JSON.stringify(this.state.mediaItem) && !this.state.cropperDisabled}
+                            disabled={!isEmpty(this.state.errors) || (isEqual(this.props.mediaItem, this.state.mediaItem) && !this.state.cropperDisabled)}
                         />
                         <DefaultButton
                             text="Discard"
@@ -192,30 +231,26 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
                                     onClick={() => this.cropper.getData().scaleY == 1 ? this.cropper.scaleY(-1) : this.cropper.scaleY(1)}
                                     disabled={this.state.cropperDisabled}
                                 />
-                                <IconButton
-                                    iconProps={{ iconName: 'CheckMark', styles: cropperIconsStyles }}
-                                    title="Crop"
-                                    ariaLabel="Crop"
-                                    onClick={() => {
-                                        this.cropper.disable();
-                                        this.setState({ cropperDisabled: true });
-                                    }}
-                                />
-                                <IconButton
-                                    iconProps={{ iconName: 'RevToggleKey', styles: cropperIconsStyles }}
-                                    title="Reset"
+                            </Stack>
+                            <Stack horizontalAlign="center">
+                                <ActionButton
+                                    text="Reset"
                                     ariaLabel="Reset"
                                     onClick={() => {
                                         this.cropper.enable();
                                         this.cropper.reset();
                                         this.setState({ cropperDisabled: false });
                                     }}
+                                    styles={{ root: { width: 'fit-content', margin: '10px 0' }, label: { fontWeight: 600 } }}
                                 />
-                                <IconButton
-                                    iconProps={{ iconName: 'Delete', styles: cropperIconsStyles }}
-                                    title="Delete"
-                                    ariaLabel="Delete"
-                                    onClick={() => this.setState({ showDeleteConfirmation: true })}
+                                <DefaultButton
+                                    text="Apply edits"
+                                    ariaLabel="Apply edits"
+                                    onClick={() => {
+                                        this.cropper.disable();
+                                        this.setState({ cropperDisabled: true });
+                                    }}
+                                    styles={{ root: { width: 'fit-content' } }}
                                 />
                             </Stack>
                         </Stack.Item>
@@ -223,14 +258,18 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
                             <TextField
                                 label="File name"
                                 value={this.state.mediaItem.fileName}
-                                onChange={(event, newValue) => this.onInputChange('fileName', newValue)}
+                                onChange={(event, newValue) => this.onInputChange('fileName', newValue, REQUIRED)}
+                                errorMessage={this.state.errors['fileName'] ?? ''}
                                 styles={textFieldStyles}
+                                required
                             />
                             <TextField
                                 label="Permalink"
                                 value={this.state.mediaItem.permalink}
                                 onChange={(event, newValue) => this.onInputChange('permalink', newValue)}
+                                errorMessage={this.state.errors['permalink'] ?? ''}
                                 styles={textFieldStyles}
+                                required
                             />
                             <CopyableTextField
                                 fieldLabel="Reference URL"

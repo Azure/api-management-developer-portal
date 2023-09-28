@@ -12,7 +12,7 @@ export class BackButton extends React.Component<BackButtonProps, {}> {
         super(props);
     }
 
-    render() {
+    render(): JSX.Element {
         return <>
             <CommandBarButton
                 iconProps={backIcon}

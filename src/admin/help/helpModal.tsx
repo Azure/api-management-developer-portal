@@ -12,7 +12,7 @@ interface HelpModalProps {
     onDismiss: () => void
 }
 
-const headerStyles = { root: { padding: '25px 0 15px' } };
+const headerStyles = { root: { paddingTop: 15 } };
 
 export class HelpModal extends React.Component<HelpModalProps, HelpModalState> {
     @Resolve('policyService')
@@ -31,7 +31,7 @@ export class HelpModal extends React.Component<HelpModalProps, HelpModalState> {
         this.setTips();
     }
 
-    setTips = async () => {
+    setTips = async (): Promise<void> => {
         const tips: HelpModalState = this.state;
 
         const globalPolicyXml = await this.policyService.getPolicyXmlForGlobalScope();
@@ -47,7 +47,7 @@ export class HelpModal extends React.Component<HelpModalProps, HelpModalState> {
         this.setState(tips);
     }
 
-    render() {
+    render(): JSX.Element {
         return <>
             <Modal
                 isOpen={true}
@@ -59,33 +59,28 @@ export class HelpModal extends React.Component<HelpModalProps, HelpModalState> {
                     <DefaultButton text="Close" onClick={this.props.onDismiss} />
                 </Stack>
                 <div className="admin-modal-content">
-                    <Text block variant="large" styles={{ root: { paddingBottom: 15 }}}>General</Text>
-                    <Text block>
-                        Go to <Link href="https://aka.ms/apimdocs/portal" target="_blank">this documentation article</Link> to learn more about
-                        the API Management developer portal.
-                    </Text>
-                    {this.state.showCors && 
-                        <>
-                            <Text block variant="large" styles={headerStyles}>Setup CORS policy</Text>
-                            <Text block>
-                                The interactive console of the Developer portal makes client-side API requests directly from the browser, this requires
-                                Cross-Origin Resource Sharing (CORS) enabled on the server.
-                            </Text>
-                            <Text block>
-                                You can enable it by adding a CORS policy on your API(s). <Link href="https://aka.ms/AA4e482" target="_blank">Learn more</Link>
-                            </Text>
-                        </>
-                    }
-                    {this.state.showDomain && 
-                        <>
-                            <Text block variant="large" styles={headerStyles}>Setup custom domain</Text>
-                            <Text block>
-                                By default, your API Management service instance is available through *.azure-api.net subdomain (e.g.
-                                contoso.developer.azure-api.net). You can also expose the service through your own domain name, such as contoso.com.
-                                <Link href="https://docs.microsoft.com/en-us/azure/api-management/configure-custom-domain" target="_blank">Learn more</Link>
-                            </Text>
-                        </>
-                    }
+                    <Text block variant="large" styles={headerStyles}>Getting started</Text>
+                    <ul>
+                        <li><Text block><Link href="https://aka.ms/apimdocs/portal" target="_blank">Overview</Link> of the developer portal.</Text></li>
+                        <li><Text block><Link href="https://aka.ms/apimdocs/customizeportal" target="_blank">Get started</Link> with a step-by-step tutorial.</Text></li>
+                    </ul>
+                    
+                    <Text block variant="large" styles={headerStyles}>How-to</Text>
+                    <ul>
+                        <li><Text block><Link href="https://aka.ms/apimdocs/portal/cors" target="_blank">Enable CORS</Link></Text></li>
+                        <li><Text block><Link href="https://aka.ms/apimdocs/portal/access" target="_blank">Secure access</Link></Text></li>
+                        <li><Text block><Link href="https://aka.ms/apimdocs/portalcustomization" target="_blank">Add custom features</Link></Text></li>
+                    </ul>
+
+                    <Text block variant="large" styles={headerStyles}>Give feedback</Text>
+                    <ul>
+                        <li><Text block>Read release notes, report issues, or request features in the <Link href="https://github.com/Azure/api-management-developer-portal" target="_blank">GitHub repo</Link>.</Text></li>
+                    </ul>
+
+                    <Text block variant="large" styles={headerStyles}>Support</Text>
+                    <ul>
+                        <li><Text block>For solutions and support, contact Azure support using the Azure portal interface of your API Management service under <b>Help &gt; Support + Troubleshooting</b> in the table of contents. </Text></li>
+                    </ul>
                 </div>
             </Modal>
         </>

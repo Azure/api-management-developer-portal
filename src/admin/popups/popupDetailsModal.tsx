@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { isEqual, isEmpty } from 'lodash';
 import { Resolve } from '@paperbits/react/decorators';
 import { IPopupService, PopupContract } from '@paperbits/common/popups';
 import { EventManager, Events } from '@paperbits/common/events';
@@ -10,7 +11,8 @@ import { mobileBreakpoint } from '../utils/variables';
 
 interface PopupDetailsModalState {
     popup: PopupContract,
-    showDeleteConfirmation: boolean
+    showDeleteConfirmation: boolean,
+    errors: object
 }
 
 interface PopupDetailsModalProps {
@@ -36,16 +38,34 @@ export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, P
 
         this.state = {
             popup: this.props.popup ?? { title: 'New pop-up', description: '' },
-            showDeleteConfirmation: false
+            showDeleteConfirmation: false,
+            errors: {}
         }
     }
 
-    onInputChange = async (field: string, newValue: string): Promise<void> => {
+    onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
+        let errorMessage = '';
+        let errors = {};
+
+        if (validationType) {
+            errorMessage = validateField(validationType, newValue);
+        }
+
+        if (errorMessage !== '' && !this.state.errors[field]) {
+            errors = { ...this.state.errors, [field]: errorMessage };
+        } else if (errorMessage === '' && this.state.errors[field]) {
+            const { [field as keyof typeof this.state.errors]: error, ...rest } = this.state.errors;
+            errors = rest;
+        } else {
+            errors = this.state.errors;
+        }
+
         this.setState({
             popup: {
                 ...this.state.popup,
                 [field]: newValue
-            }
+            },
+            errors
         });
     }
 
@@ -99,7 +119,7 @@ export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, P
                         <PrimaryButton
                             text="Save"
                             onClick={() => this.savePopup()}
-                            disabled={JSON.stringify(this.props.popup) === JSON.stringify(this.state.popup)}
+                            disabled={isEqual(this.props.popup, this.state.popup) || !isEmpty(this.state.errors)}
                         />
                         <DefaultButton
                             text="Discard"
@@ -113,15 +133,16 @@ export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, P
                             iconProps={deleteIcon}
                             text="Delete"
                             onClick={() => this.setState({ showDeleteConfirmation: true })}
-                            styles={{ root: { height: 44, marginBottom: 30 } }}
+                            className="command-bar-button"
                         />
                     }
                     <TextField
                         label="Title"
                         value={this.state.popup.title}
-                        onChange={(event, newValue) => this.onInputChange('title', newValue)}
+                        onChange={(event, newValue) => this.onInputChange('title', newValue, REQUIRED)}
+                        errorMessage={this.state.errors['title'] ?? ''}
                         styles={textFieldStyles}
-                        onGetErrorMessage={(value) => validateField(REQUIRED, value)}
+                        required
                     />
                     <TextField
                         label="Description"
@@ -131,10 +152,12 @@ export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, P
                         onChange={(event, newValue) => this.onInputChange('description', newValue)}
                         styles={textFieldStyles}
                     />
-                    <DefaultButton
-                        text="Open pop-up"
-                        onClick={() => this.openPopup()}
-                    />
+                    {this.props.popup && 
+                        <DefaultButton
+                            text="Open pop-up"
+                            onClick={() => this.openPopup()}
+                        />
+                    }
                 </div>
             </Modal>
         </>

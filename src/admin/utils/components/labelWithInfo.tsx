@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { DirectionalHint, Icon, Stack, Text, TooltipDelay, TooltipHost } from '@fluentui/react';
+import { lightTheme } from '../themes';
 
 interface LabelWithInfoProps {
     label: string,
-    info: string
+    info: string,
+    required?: boolean
 }
 
 export class LabelWithInfo extends React.Component<LabelWithInfoProps, {}> {
@@ -11,10 +13,11 @@ export class LabelWithInfo extends React.Component<LabelWithInfoProps, {}> {
         super(props);
     }
 
-    render() {
+    render(): JSX.Element {
         return <>
             <Stack horizontal verticalAlign="center" styles={{ root: { padding: '5px 0' } }}>
                 <Text styles={{ root: { fontWeight: 600 } }}>{this.props.label}</Text>
+                {this.props.required && <Text styles={{ root: { color: lightTheme.semanticColors.errorText, fontWeight: 600, paddingLeft: 4 } }}>*</Text>}
                 <TooltipHost
                     id={this.props.label}
                     content={this.props.info}

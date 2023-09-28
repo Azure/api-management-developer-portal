@@ -28,6 +28,7 @@ const enum NavItem {
     CustomWidgets,
     Settings,
     New,
+    Feedback,
     Help
 }
 
@@ -45,7 +46,8 @@ const stylesIcon: IIconProps = { iconName: 'Color' };
 const mediaIcon: IIconProps = { iconName: 'Photo2' };
 const customWidgetsIcon: IIconProps = { iconName: 'Puzzle' };
 const settingsIcon: IIconProps = { iconName: 'Settings' };
-const rocketIcon: IIconProps = { iconName: 'Rocket' };
+const whatsNewIcon: IIconProps = { iconName: 'Rocket' };
+const feedbackIcon: IIconProps = { iconName: 'Megaphone' };
 const helpIcon: IIconProps = { iconName: 'Help' };
 
 const iconStyles = { root: { color: lightTheme.palette.themePrimary, fontSize: 20 } };
@@ -164,9 +166,20 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                         />
                         <Separator />
                         <CommandBarButton
-                            iconProps={rocketIcon}
+                            iconProps={whatsNewIcon}
                             text="What's new"
                             onClick={() => this.setState({ selectedNavItem: NavItem.New, showOnboardingModal: true })}
+                            className="nav-item-list-button"
+                        />
+                        <CommandBarButton
+                            iconProps={feedbackIcon}
+                            onRenderText={() => 
+                                <Text block styles={{ root: { flexGrow: 1, margin: '0 4px' } }}>
+                                    Give feedback
+                                    <Icon iconName="OpenInNewWindow" styles={{ root: { paddingLeft: 5 } }} />
+                                </Text>
+                            }
+                            onClick={() => window.open('https://github.com/Azure/api-management-developer-portal', '_blank', 'noreferrer')}
                             className="nav-item-list-button"
                         />
                         <CommandBarButton

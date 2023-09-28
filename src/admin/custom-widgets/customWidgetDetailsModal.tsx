@@ -62,7 +62,7 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
         }
     }
 
-    onInputChange = async (field: string, newValue: string) => {
+    onInputChange = async (field: string, newValue: string): Promise<void> => {
         this.setState({
             customWidget: {
                 ...this.state.customWidget,
@@ -71,7 +71,7 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
         });
     }
 
-    deleteCustomWidget = async () => {
+    deleteCustomWidget = async (): Promise<void> => {
         const blobsToDelete = await this.blobStorage.listBlobs(buildBlobDataPath(this.state.customWidget.name));
         blobsToDelete.push(buildBlobConfigPath(this.state.customWidget.name));
         await Promise.all(blobsToDelete.map(blobKey => this.blobStorage.deleteBlob(blobKey)));
@@ -80,11 +80,11 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
         this.props.onDismiss();
     }
 
-    closeDeleteConfirmation = () => {
+    closeDeleteConfirmation = (): void => {
         this.setState({ showDeleteConfirmation: false });
     }
 
-    saveCustomWidget = async () => {
+    saveCustomWidget = async (): Promise<void> => {
         const name = displayNameToName(this.state.customWidget.displayName);
         const config: TCustomWidgetConfig = {
             name,
@@ -133,7 +133,7 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
         return errorMessage;
     }
 
-    render() {
+    render(): JSX.Element {
         return <>
             {this.state.showDeleteConfirmation && 
                 <DeleteConfirmationOverlay
@@ -179,6 +179,7 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
                         styles={textFieldStyles}
                         onGetErrorMessage={(value) => this.validateCustomWidgetName(value)}
                         disabled={this.state.isEdit}
+                        required
                     />
                     <ChoiceGroup
                         label="Technology"

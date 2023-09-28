@@ -135,8 +135,8 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
         );
     };
 
-    openEditModal = (mediaItem: MediaContract, thumbnailUrl: string): void => {
-        thumbnailUrl
+    openEditModal = (mediaItem: MediaContract, thumbnailUrl: string, blobKey: string): void => {
+        thumbnailUrl && blobKey
             ? this.setState({ selectedMediaFile: mediaItem, showImageDetailsModal: true })
             : this.setState({ selectedMediaFile: mediaItem, showNonImageDetailsModal: true })
     }
@@ -149,14 +149,14 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
         const thumbnailUrl: string = getThumbnailUrl(mediaItem);
         
         return (
-            <div className="media-box">
+            <div className="media-box" key={mediaItem.key}>
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
                     <Checkbox
                         ariaLabel="Select media file"
                         onChange={(event, checked) => this.selectMedia(mediaItem, checked)}
                         checked={!!this.state.selectedFiles.find(file => mediaItem.key === file.key)}
                     />
-                    <IconButton iconProps={editIcon} title="Edit media file" onClick={() => this.openEditModal(mediaItem, thumbnailUrl)} />
+                    <IconButton iconProps={editIcon} title="Edit media file" onClick={() => this.openEditModal(mediaItem, thumbnailUrl, mediaItem.blobKey)} />
                 </Stack>
                 <Image
                     src={thumbnailUrl ?? '/assets/images/no-preview.png'}
@@ -189,7 +189,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                                     {
                                         key: 'edit',
                                         name: 'Edit',
-                                        onClick: () => this.openEditModal(mediaItem, thumbnailUrl)
+                                        onClick: () => this.openEditModal(mediaItem, thumbnailUrl, mediaItem.blobKey)
                                     },
                                     {
                                         key: 'download',

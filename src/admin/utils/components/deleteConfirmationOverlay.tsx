@@ -32,7 +32,7 @@ export class DeleteConfirmationOverlay extends React.Component<DeleteConfirmatio
         super(props);
     }
 
-    render() {
+    render(): JSX.Element {
         return <>
             <Layer>
                 <Popup

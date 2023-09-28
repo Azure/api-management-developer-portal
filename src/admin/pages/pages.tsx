@@ -63,18 +63,18 @@ export class Pages extends React.Component<PagesProps, PagesState> {
         this.searchLayouts();
     }
 
-    handlePageDetailsBackButtonClick = () => {
+    handlePageDetailsBackButtonClick = (): void => {
         this.setState({ showPagesModal: false, selectedPage: null });
         this.searchPages();
     }
 
-    handlePageLayoutBackButtonClick = () => {
+    handlePageLayoutBackButtonClick = (): void => {
         this.setState({ showLayoutModal: false, selectedLayout: null, selectedTab: 'layouts' });
         this.viewManager.setHost({ name: 'page-host' });
         this.searchLayouts();
     }
 
-    searchPages = async (searchPattern: string = '') => {
+    searchPages = async (searchPattern: string = ''): Promise<void> => {
         const query = Query.from().orderBy('title');
         if (searchPattern) {
             query.where('title', Operator.contains, searchPattern);
@@ -82,23 +82,19 @@ export class Pages extends React.Component<PagesProps, PagesState> {
 
         const pagesSearchResult = await this.pageService.search(query);
         this.setState({ pages: pagesSearchResult.value });
-
-        return;
     }
 
-    searchLayouts = async (searchPattern: string = '') => {
+    searchLayouts = async (searchPattern: string = ''): Promise<void> => {
         const query = Query.from().orderBy('title');
         if (searchPattern) {
             query.where('title', Operator.contains, searchPattern);
         }
 
         const layoutsSearchResult = await this.layoutService.search(query);
-        this.setState({ layouts: layoutsSearchResult.value })
-
-        return;
+        this.setState({ layouts: layoutsSearchResult.value });
     }
 
-    renderPageContent = (page: PageContract) => (
+    renderPageContent = (page: PageContract): JSX.Element => (
         <Stack
             horizontal
             horizontalAlign="space-between"
@@ -120,7 +116,7 @@ export class Pages extends React.Component<PagesProps, PagesState> {
         </Stack>
     )
 
-    renderPageLayoutContent = (layout: LayoutContract) => (
+    renderPageLayoutContent = (layout: LayoutContract): JSX.Element => (
         <Stack
             horizontal
             horizontalAlign="space-between"
@@ -142,7 +138,7 @@ export class Pages extends React.Component<PagesProps, PagesState> {
         </Stack>
     )
 
-    render() {
+    render(): JSX.Element {
         return <>
             {this.state.showPagesModal &&
                 <PageDetailsModal
