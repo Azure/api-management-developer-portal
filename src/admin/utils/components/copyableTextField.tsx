@@ -20,7 +20,7 @@ export class CopyableTextField extends React.Component<CopyableTextFieldProps, C
         }
     }
 
-    renderCopyButton = () => (
+    renderCopyButton = (): JSX.Element => (
         <TooltipHost
             content={this.state.valueCopied ? 'Copied to clipboard!' : `Copy ${this.props.fieldLabel}`}
             id='copytooltip'
@@ -39,7 +39,7 @@ export class CopyableTextField extends React.Component<CopyableTextFieldProps, C
         </TooltipHost>
     )
 
-    render() {
+    render(): JSX.Element {
         return <>
             <TextField
                 label={this.props.showLabel && this.props.fieldLabel}

@@ -1,19 +1,18 @@
 import * as React from 'react';
-import * as Utils from '@paperbits/common/utils';
+import { isEqual, isEmpty } from 'lodash';
 import { Resolve } from '@paperbits/react/decorators';
 import { IMediaService } from '@paperbits/common/media';
 import { MediaContract } from '@paperbits/common/media/mediaContract';
-import { Router } from '@paperbits/common/routing';
+import { PermalinkService } from '@paperbits/common/permalinks';
 import { EventManager } from '@paperbits/common/events';
-import { CommandBarButton, DefaultButton, IconButton, IIconProps, Modal, PrimaryButton, Stack, Text, TextField, TooltipDelay, TooltipHost } from '@fluentui/react';
-import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
-import { blob } from 'stream/consumers';
-import { saveAs } from 'file-saver';
+import { DefaultButton, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
+import { CopyableTextField } from '../utils/components/copyableTextField';
+import { REQUIRED, UNIQUE_REQUIRED, URL_REQUIRED, validateField } from '../utils/validator';
+import { reservedPermalinks } from '../../constants';
 
 interface NonImageDetailsModalState {
     mediaItem: MediaContract,
-    showDeleteConfirmation: boolean,
-    urlCopied: boolean
+    errors: object
 }
 
 interface NonImageDetailsModalProps {
@@ -21,17 +20,14 @@ interface NonImageDetailsModalProps {
     onDismiss: () => void
 }
 
-const deleteIcon: IIconProps = { iconName: 'Delete' };
-const copyIcon: IIconProps = { iconName: 'Copy' };
-
 const textFieldStyles = { root: { paddingBottom: 15 } };
 
 export class NonImageDetailsModal extends React.Component<NonImageDetailsModalProps, NonImageDetailsModalState> {
     @Resolve('mediaService')
     public mediaService: IMediaService;
 
-    @Resolve('router')
-    public router: Router;
+    @Resolve('permalinkService')
+    public permalinkService: PermalinkService;
 
     @Resolve('eventManager')
     public eventManager: EventManager;
@@ -41,46 +37,57 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
 
         this.state = {
             mediaItem: this.props.mediaItem,
-            showDeleteConfirmation: false,
-            urlCopied: false
+            errors: {}
         }
     }
 
-    onInputChange = async (field: string, newValue: string) => {
+    onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
+        let errorMessage = '';
+        let errors = {};
+
+        if (field === 'permalink') {
+            errorMessage = await this.validatePermalink(newValue);
+        } else if (validationType) {
+            errorMessage = validateField(validationType, newValue);
+        }
+
+        if (errorMessage !== '' && !this.state.errors[field]) {
+            errors = { ...this.state.errors, [field]: errorMessage };
+        } else if (errorMessage === '' && this.state.errors[field]) {
+            const { [field as keyof typeof this.state.errors]: error, ...rest } = this.state.errors;
+            errors = rest;
+        } else {
+            errors = this.state.errors;
+        }
+
         this.setState({
             mediaItem: {
                 ...this.state.mediaItem,
                 [field]: newValue
-            }
+            },
+            errors
         });
     }
 
-    deleteMedia = async () => {
-        await this.mediaService.deleteMedia(this.state.mediaItem);
+    validatePermalink = async (permalink: string): Promise<string> => {
+        if (permalink === this.props.mediaItem?.permalink) return '';
 
-        this.eventManager.dispatchEvent('onSaveChanges');
-        this.props.onDismiss();
+        const isPermalinkNotDefined = await this.permalinkService.isPermalinkDefined(permalink) && !reservedPermalinks.includes(permalink);
+        let errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
+
+        if (errorMessage === '') errorMessage = validateField(URL_REQUIRED, permalink);
+
+        return errorMessage;
     }
 
-    closeDeleteConfirmation = () => {
-        this.setState({ showDeleteConfirmation: false });
-    }
-
-    saveMedia = async () => {
+    saveMedia = async (): Promise<void> => {
         await this.mediaService.updateMedia(this.state.mediaItem);
         this.eventManager.dispatchEvent('onSaveChanges');
         this.props.onDismiss();
     }
     
-    render() {
+    render(): JSX.Element {
         return <>
-            {this.state.showDeleteConfirmation && 
-                <DeleteConfirmationOverlay
-                    deleteItemTitle={this.state.mediaItem.fileName}
-                    onConfirm={this.deleteMedia.bind(this)}
-                    onDismiss={this.closeDeleteConfirmation.bind(this)} 
-                />
-            }
             <Modal
                 isOpen={true}
                 onDismiss={this.props.onDismiss}
@@ -92,6 +99,7 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
                         <PrimaryButton
                             text="Save"
                             onClick={() => this.saveMedia()}
+                            disabled={isEqual(this.props.mediaItem, this.state.mediaItem) || !isEmpty(this.state.errors)}
                         />
                         <DefaultButton
                             text="Discard"
@@ -103,20 +111,23 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
                     <TextField
                         label="File name"
                         value={this.state.mediaItem.fileName}
-                        onChange={(event, newValue) => this.onInputChange('fileName', newValue)}
+                        onChange={(event, newValue) => this.onInputChange('fileName', newValue, REQUIRED)}
+                        errorMessage={this.state.errors['fileName'] ?? ''}
                         styles={textFieldStyles}
+                        required
                     />
                     <TextField
                         label="Permalink"
                         value={this.state.mediaItem.permalink}
                         onChange={(event, newValue) => this.onInputChange('permalink', newValue)}
+                        errorMessage={this.state.errors['permalink'] ?? ''}
                         styles={textFieldStyles}
+                        required
                     />
-                    <TextField
-                        label="Reference URL"
-                        value={this.state.mediaItem.downloadUrl}
-                        onChange={(event, newValue) => this.onInputChange('downloadUrl', newValue)}
-                        styles={textFieldStyles}
+                    <CopyableTextField
+                        fieldLabel="Reference URL"
+                        showLabel={true}
+                        copyableValue={this.state.mediaItem.downloadUrl}
                     />
                     <TextField
                         label="Description"

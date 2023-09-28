@@ -44,12 +44,12 @@ export class Urls extends React.Component<UrlsProps, UrlsState> {
         this.searchUrls();
     }
 
-    handlePageDetailsBackButtonClick = () => {
+    handlePageDetailsBackButtonClick = (): void => {
         this.setState({ showUrlDetailsModal: false, selectedUrl: null });
         this.searchUrls();
     }
 
-    searchUrls = async (searchPattern: string = '') => {
+    searchUrls = async (searchPattern: string = ''): Promise<void> => {
         const query = Query.from().orderBy('title');
         if (searchPattern) {
             query.where('title', Operator.contains, searchPattern);
@@ -57,11 +57,9 @@ export class Urls extends React.Component<UrlsProps, UrlsState> {
 
         const urlsSearchResult = await this.urlService.search(query);
         this.setState({ urls: urlsSearchResult.value });
-
-        return;
     }
 
-    renderUrlContent = (url: UrlContract) => (
+    renderUrlContent = (url: UrlContract): JSX.Element => (
         <Stack
             horizontal
             horizontalAlign="space-between"
@@ -82,7 +80,7 @@ export class Urls extends React.Component<UrlsProps, UrlsState> {
         </Stack>
     )
 
-    render() {
+    render(): JSX.Element {
         return <>
             {this.state.showUrlDetailsModal &&
                 <UrlDetailsModal

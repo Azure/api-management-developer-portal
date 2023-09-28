@@ -1,9 +1,11 @@
 import * as React from 'react';
 import * as Utils from '@paperbits/common';
+import { isEqual, isEmpty } from 'lodash';
 import { INavigationService, NavigationItemContract } from '@paperbits/common/navigation';
 import { IPageService } from '@paperbits/common/pages';
 import { IUrlService } from '@paperbits/common/urls';
 import { IMediaService, MediaContract } from '@paperbits/common/media';
+import { PermalinkService } from '@paperbits/common/permalinks';
 import { EventManager } from '@paperbits/common/events';
 import { Query } from '@paperbits/common/persistence';
 import { Resolve } from '@paperbits/react/decorators';
@@ -11,9 +13,11 @@ import { AnchorUtils } from '@paperbits/core/text/anchorUtils';
 import { ChoiceGroup, CommandBarButton, DefaultButton, Dropdown, IChoiceGroupOption, IDropdownOption, IIconProps, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { MediaSelectionItemModal } from '../media/mediaSelectionItemModal';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
-import { REQUIRED, URL, validateField } from '../utils/validator';
+import { REQUIRED, REQUIRED_MESSAGE, UNIQUE_REQUIRED, URL_REQUIRED, URL_REQUIRED_MESSAGE, validateField } from '../utils/validator';
 import { lightTheme } from '../utils/themes';
 import { ToastNotification } from '../utils/components/toastNotification';
+import { LabelWithInfo } from '../utils/components/labelWithInfo';
+import { reservedPermalinks } from '../../constants';
 
 interface NavigationItemModalState {
     selectedLinkOption: string,
@@ -27,10 +31,11 @@ interface NavigationItemModalState {
     urlDropdownOptions: IDropdownOption[],
     selectedPage: string,
     selectedAnchor: string,
-    selectedUrl: string,
+    selectedSavedUrl: string,
     selectedMedia: MediaContract,
     targetWindow: string,
-    parentItem: string
+    parentItem: string,
+    errors: object
 }
 
 interface NavigationItemModalProps {
@@ -79,6 +84,8 @@ const nonMediaLinkActionOptions: IChoiceGroupOption[] = mediaLinkActionOptions.f
 
 const deleteIcon: IIconProps = { iconName: 'Delete' };
 
+const newItemKey = 'new-item';
+
 export class NavigationItemModal extends React.Component<NavigationItemModalProps, NavigationItemModalState> {
     @Resolve('navigationService')
     public navigationService: INavigationService;
@@ -91,6 +98,9 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
 
     @Resolve('mediaService')
     public mediaService: IMediaService;
+
+    @Resolve('permalinkService')
+    public permalinkService: PermalinkService;
 
     @Resolve('eventManager')
     public eventManager: EventManager;
@@ -110,31 +120,68 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
             urlDropdownOptions: [],
             selectedPage: '',
             selectedAnchor: '',
-            selectedUrl: '',
+            selectedSavedUrl: '',
             selectedMedia: null,
             targetWindow: LinkActionOptionKey.Self,
-            parentItem: ''
+            parentItem: '',
+            errors: {}
         }
     }
 
     componentDidMount(): void {
         this.processPagesForDropdown();
         this.processUrlsForDropdown();
-        this.setState({ navItemsDropdown: this.processNavItemsForDropdown(this.props.navItems, [{ key: '', text: 'None' }]) });
+        this.setState({ navItemsDropdown: this.processNavItemsForDropdown(this.props.navItems, [{ key: newItemKey, text: 'New menu item' }]) });
         if (this.props.navItem) this.processNavItem();
     }
 
-    onInputChange = async (field: string, newValue: string): Promise<void> => {
+    removeError = (field: string): object => {
+        const { [field as keyof typeof this.state.errors]: error, ...rest } = this.state.errors;
+        return rest;
+    }
+
+    onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
+        let errorMessage = '';
+        let errors = {};
+
+        if (field === LinkOptionKey.NewUrl) {
+            errorMessage = await this.validatePermalink(newValue);
+        } else if (validationType) {
+            errorMessage = validateField(validationType, newValue);
+        }
+
+        if (errorMessage !== '' && !this.state.errors[field]) {
+            errors = { ...this.state.errors, [field]: errorMessage };
+        } else if (errorMessage === '' && this.state.errors[field]) {
+            errors = this.removeError(field);
+        } else {
+            errors = this.state.errors;
+        }
+
+        if (field !== 'label' && field !== LinkOptionKey.NewUrl && this.state.errors[field]) {
+            errors = this.removeError(field);
+        }
+
         this.setState({
             navItem: {
                 ...this.state.navItem,
                 [field]: newValue
-            }
+            },
+            errors
         });
     }
 
+    validatePermalink = async (permalink: string): Promise<string> => {
+        const isPermalinkNotDefined = await this.permalinkService.isPermalinkDefined(permalink) && !reservedPermalinks.includes(permalink);
+        let errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
+
+        if (errorMessage === '') errorMessage = validateField(URL_REQUIRED, permalink);
+
+        return errorMessage;
+    }
+
     selectMedia = (mediaItem: MediaContract): void => {
-        this.setState({ selectedMedia: mediaItem, showMediaSelectionModal: false });
+        this.setState({ selectedMedia: mediaItem, showMediaSelectionModal: false, errors: this.removeError(LinkOptionKey.Media) });
     }
 
     closeDeleteConfirmation = (): void => {
@@ -175,7 +222,7 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
         this.setState({
             selectedPage: page,
             selectedAnchor: anchor,
-            selectedUrl: url,
+            selectedSavedUrl: url,
             selectedMedia: media,
             selectedLinkOption: selectedLinkType,
             targetWindow: navItem.targetWindow ?? (media ? LinkActionOptionKey.Download : LinkActionOptionKey.Self),
@@ -213,7 +260,11 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                 });
             });
 
-        this.setState({ anchorDropdownOptions: dropdownItems });
+        if (dropdownItems.length === 0) {
+            this.setState({ errors: { [LinkOptionKey.Anchor]: `This page doesn't have an anchor. To create an anchor, go to Menu > Pages, then, select page to add one.` } });
+        } else {
+            this.setState({ anchorDropdownOptions: dropdownItems, errors: this.removeError(LinkOptionKey.Anchor) });
+        }
     }
 
     processUrlsForDropdown = async (): Promise<void> => {
@@ -264,6 +315,23 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
         return null;
     }
 
+    findNavItemByKey = (navItems: NavigationItemContract[], value: string): NavigationItemContract => {
+        for (const obj of navItems) {
+            if (obj.key === value) {
+                return obj;
+            }
+
+            if (obj.navigationItems && obj.navigationItems.length > 0) {
+                const result = this.findNavItemByKey(obj.navigationItems, value);
+                if (result !== null) {
+                    return result;
+                }
+            }
+        }
+
+        return null;
+    }
+
     addNewItem = (array: NavigationItemContract[], parent: string, newObject: NavigationItemContract): NavigationItemContract[] => {
         if (parent === '') {
             array.push(newObject);
@@ -292,7 +360,7 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
     updateItem = (array: NavigationItemContract[], key: string, updates: NavigationItemContract): NavigationItemContract[] => {
         return array.map(obj => {
             if (obj.key === key) {
-                return { ...obj, ...updates };
+                return updates;
             }
 
             if (obj.navigationItems && obj.navigationItems.length > 0) {
@@ -314,14 +382,15 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                 if (item.key === itemKey) {
                     items.splice(i, 1); // remove from current parent
 
-                    const updatedItem = { ...item, ...updates }; // updated item
+                    const updatedItem = updates;
 
-                    if (!newParentKey) {
-                        // If newParentKey is not provided, move the item to the top level
+                    if (newParentKey === newItemKey) {
+                        // move the item to the top level
                         updatedArray.push(updatedItem);
                     } else {
-                        const newParent = updatedArray.find(obj => obj.key === newParentKey);
-                        if (newParent && newParent.navigationItems) {
+                        const newParent = this.findNavItemByKey(updatedArray, newParentKey);
+                        if (newParent) {
+                            newParent.navigationItems = newParent.navigationItems || [];
                             newParent.navigationItems.push(updatedItem);
                         }
                     }
@@ -345,10 +414,36 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
     }
 
     saveItem = async (): Promise<void> => {
+        let errors = {};
+        const errorMessage = REQUIRED_MESSAGE;
+
+        if (this.state.selectedLinkOption === LinkOptionKey.Page && !this.state.selectedPage) {
+            errors = { [LinkOptionKey.Page]: errorMessage };
+        } else if (this.state.selectedLinkOption === LinkOptionKey.Anchor) {
+            if (!this.state.selectedPage) {
+                errors = { [LinkOptionKey.Page]: errorMessage };
+            } else if (!this.state.selectedAnchor) {
+                errors = { [LinkOptionKey.Anchor]: errorMessage };
+            }
+        } else if (this.state.selectedLinkOption === LinkOptionKey.Url) {
+            if (this.state.selectedUrlType === LinkOptionKey.SavedUrl && !this.state.selectedSavedUrl) {
+                errors = { [LinkOptionKey.SavedUrl]: errorMessage };
+            } else if (this.state.selectedUrlType === LinkOptionKey.NewUrl && !this.state.navItem?.[LinkOptionKey.NewUrl]) {
+                errors = { [LinkOptionKey.NewUrl]: URL_REQUIRED_MESSAGE };
+            }
+        } else if (this.state.selectedLinkOption === LinkOptionKey.Media && !this.state.selectedMedia) {
+            errors = { media: 'Please, select a media file' };
+        }
+
+        if (!isEmpty(errors)) {
+            this.setState({ errors });
+            return;
+        }
+
         let updatedNavigation: NavigationItemContract[] = this.props.navItems;
         let newUrlKey = null;
 
-        if (this.state.selectedLinkOption === LinkOptionKey.NewUrl) {
+        if (this.state.selectedLinkOption === LinkOptionKey.Url && this.state.selectedUrlType === LinkOptionKey.NewUrl) {
             const newUrl = await this.urlService.createUrl(this.state.navItem[LinkOptionKey.NewUrl], this.state.navItem[LinkOptionKey.NewUrl]);
             newUrlKey = newUrl.key;
         }
@@ -359,19 +454,22 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                 label: this.state.navItem.label,
             }
 
-            if (this.props.navItem.targetKey || this.state.selectedLinkOption !== LinkOptionKey.NoLink) {
+            if (this.state.selectedLinkOption !== LinkOptionKey.NoLink) {
                 if (this.state.selectedLinkOption === LinkOptionKey.Anchor) {
-                    updatedValues.targetKey = this.state.navItem[LinkOptionKey.Page];
+                    updatedValues.targetKey = this.state.selectedPage;
                     updatedValues.anchor = this.state.navItem.anchor;
+                } else if (this.state.selectedLinkOption === LinkOptionKey.Url) {
+                    updatedValues.targetKey = newUrlKey ?? this.state.navItem[LinkOptionKey.SavedUrl] ?? this.state.navItem.targetKey;
                 } else {
-                    updatedValues.targetKey = newUrlKey ?? this.state.selectedMedia?.key ?? this.state.navItem[this.state.selectedLinkOption];
+                    updatedValues.targetKey = this.state.selectedMedia?.key ?? this.state.navItem[this.state.selectedLinkOption] ?? this.state.navItem.targetKey;
                 }
 
                 updatedValues.targetWindow = this.state.targetWindow;
 
+                if (this.props.navItem.navigationItems) updatedValues.navigationItems = this.props.navItem.navigationItems;
             }
 
-            if (this.state.parentItem !== this.state.navItem['parent']) {
+            if (this.state.navItem['parent'] && this.state.navItem['parent'] !== this.state.parentItem) {
                 updatedValues.navigationItems = this.props.navItem.navigationItems;
 
                 updatedNavigation = this.moveItemToNewParent(this.props.navItems, this.props.navItem.key, this.state.navItem['parent'], updatedValues);
@@ -430,7 +528,13 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                         <PrimaryButton
                             text="Save"
                             onClick={() => this.saveItem()}
-                            disabled={JSON.stringify(this.props.navItem) === JSON.stringify(this.state.navItem)}
+                            disabled={
+                                !isEmpty(this.state.errors) ||
+                                (isEqual(this.props.navItem, this.state.navItem) 
+                                    && this.props.navItem?.targetWindow === this.state.targetWindow
+                                    && ((this.props.navItem?.targetKey && this.state.selectedLinkOption !== LinkOptionKey.NoLink)
+                                    || (this.props.navItem?.anchor && this.state.selectedLinkOption === LinkOptionKey.Anchor)))
+                                }
                         />
                         <DefaultButton text="Discard" onClick={this.props.onDismiss} />
                     </Stack>
@@ -441,16 +545,17 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                             iconProps={deleteIcon}
                             text="Delete"
                             onClick={() => this.setState({ showDeleteConfirmation: true })}
-                            styles={{ root: { height: 44, marginBottom: 30 } }}
+                            className="command-bar-button"
                         />
                     }
                     <TextField
                         label="Name"
                         value={this.state.navItem ? this.state.navItem.label : 'New link item'}
                         placeholder="i.e. Orders"
-                        onChange={(event, newValue) => this.onInputChange('label', newValue)}
+                        onChange={(event, newValue) => this.onInputChange('label', newValue, REQUIRED)}
+                        errorMessage={this.state.errors['label']}
                         styles={{ root: { paddingBottom: 15 } }}
-                        onGetErrorMessage={(value) => validateField(REQUIRED, value)}
+                        required
                     />
 
                     <Dropdown
@@ -458,14 +563,18 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                         options={linkOptions}
                         selectedKey={this.state.selectedLinkOption}
                         onChange={(event, option) => {
-                            this.setState({ 
+                            let errors = this.state.errors;
+                            if (option.key.toString() !== LinkOptionKey.Anchor) errors = this.removeError(LinkOptionKey.Anchor);
+
+                            this.setState({
                                 selectedLinkOption: option.key.toString(),
-                                targetWindow: option.key === LinkOptionKey.Media ? LinkActionOptionKey.Download : LinkActionOptionKey.Self
+                                targetWindow: option.key === LinkOptionKey.Media ? LinkActionOptionKey.Download : LinkActionOptionKey.Self,
+                                errors
                             });
                             if (option.key.toString() === LinkOptionKey.Anchor && this.state.selectedPage !== '') {
                                 this.processAnchorsForDropdown(this.state.selectedPage);
                             }
-                    }}
+                        }}
                         styles={{ root: { paddingBottom: 15 } }}
                     />
 
@@ -474,37 +583,32 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                             label="Select page"
                             placeholder="Click to select a page..."
                             options={this.state.pageDropdownOptions}
-                            defaultSelectedKey={this.state.selectedPage}
+                            selectedKey={this.state.selectedPage}
                             onChange={(event, option) => {
-                                this.setState({ selectedPage: option.key.toString() });
-                                this.processAnchorsForDropdown(option.key.toString());
                                 this.onInputChange(LinkOptionKey.Page, option.key.toString());
+                                this.setState({ selectedPage: option.key.toString() });
+                                if (this.state.selectedLinkOption === LinkOptionKey.Anchor) this.processAnchorsForDropdown(option.key.toString());
                             }}
                             styles={{ root: { paddingBottom: 15 } }}
+                            errorMessage={this.state.errors[LinkOptionKey.Page]}
+                            required
                         />
                     }
 
                     {this.state.selectedLinkOption === LinkOptionKey.Anchor && 
-                        (
-                            (this.state.selectedPage !== '' && this.state.anchorDropdownOptions.length === 0) 
-                                ?
-                                    <Text 
-                                        block 
-                                        styles={{ root: { paddingBottom: 15, color: lightTheme.callingPalette.callRed } }}
-                                    >
-                                        There are no anchors on this page, please, select another page or select "Page" as a "Link to" option.
-                                    </Text>
-                                : 
-                                    this.state.anchorDropdownOptions.length > 0 &&
-                                        <Dropdown
-                                            label="Select anchor"
-                                            placeholder="Click to select an anchor..."
-                                            options={this.state.anchorDropdownOptions}
-                                            defaultSelectedKey={this.state.selectedAnchor}
-                                            onChange={(event, option) => this.onInputChange(LinkOptionKey.Anchor, option.key.toString())}
-                                            styles={{ root: { paddingBottom: 15 } }}
-                                        />
-                        )
+                        <Dropdown
+                            label="Select anchor"
+                            placeholder="Click to select an anchor..."
+                            options={this.state.anchorDropdownOptions}
+                            selectedKey={this.state.selectedAnchor}
+                            onChange={(event, option) => {
+                                this.onInputChange(LinkOptionKey.Anchor, option.key.toString());
+                                this.setState({ selectedAnchor: option.key.toString() });
+                            }}
+                            styles={{ root: { paddingBottom: 15 } }}
+                            errorMessage={this.state.errors[LinkOptionKey.Anchor]}
+                            required
+                        />
                     }
 
                     {this.state.selectedLinkOption === LinkOptionKey.Url && 
@@ -522,9 +626,14 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                             label="Select URL"
                             placeholder="Click to select an existing URL..."
                             options={this.state.urlDropdownOptions}
-                            defaultSelectedKey={this.state.selectedUrl}
-                            onChange={(event, option) => this.onInputChange(LinkOptionKey.SavedUrl, option.key.toString())}
+                            selectedKey={this.state.selectedSavedUrl}
+                            onChange={(event, option) => {
+                                this.onInputChange(LinkOptionKey.SavedUrl, option.key.toString());
+                                this.setState({ selectedSavedUrl: option.key.toString() });
+                            }}
+                            errorMessage={this.state.errors[LinkOptionKey.SavedUrl]}
                             styles={{ root: { paddingBottom: 15 } }}
+                            required
                         />
                     }
 
@@ -533,15 +642,24 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                             label="Enter new URL"
                             placeholder="Enter a new URL"
                             styles={{ root: { paddingBottom: 15 } }}
-                            onChange={(event, newValue) => this.onInputChange(LinkOptionKey.NewUrl, newValue)}
+                            onChange={(event, newValue) => this.onInputChange(LinkOptionKey.NewUrl, newValue, URL_REQUIRED)}
+                            errorMessage={this.state.errors[LinkOptionKey.NewUrl]}
                             value={this.state.navItem?.[LinkOptionKey.NewUrl] ?? 'https://'}
-                            onGetErrorMessage={(value) => validateField(URL, value)}
+                            required
                         />
                     }
 
                     {this.state.selectedLinkOption === LinkOptionKey.Media &&
                         <>
                             {this.state.selectedMedia && <Text block styles={{ root: { paddingBottom: 15, fontWeight: 'bold' } }}>{this.state.selectedMedia.fileName}</Text>}
+                            {this.state.errors[LinkOptionKey.Media] && 
+                                <Text 
+                                    block 
+                                    styles={{ root: { paddingBottom: 15, color: lightTheme.callingPalette.callRed } }}
+                                >
+                                    {this.state.errors[LinkOptionKey.Media]}
+                                </Text>
+                            }
                             <DefaultButton
                                 text={`Select ${this.state.selectedMedia ? 'another ' : ''}file`}
                                 onClick={() => this.setState({ showMediaSelectionModal: true })}
@@ -551,19 +669,26 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                     }
                     
                     <Dropdown
-                        label="Site menu item parent"
+                        onRenderLabel={() => 
+                            <LabelWithInfo
+                                label="Assign location"
+                                info={`Assign to an existing menu item or select new menu item to create a top-level menu item.`} 
+                            />
+                        }
                         placeholder="Click to select a parent..."
                         options={this.state.navItemsDropdown}
-                        defaultSelectedKey={this.state.parentItem}
+                        defaultSelectedKey={this.state.parentItem !== '' ? this.state.parentItem : newItemKey}
                         onChange={(event, option) => this.onInputChange('parent', option.key.toString())}
                         styles={{ root: { paddingBottom: 15 } }}
                     />
-                    <ChoiceGroup
-                        label="Link actions"
-                        options={this.state.selectedLinkOption === LinkOptionKey.Media ? mediaLinkActionOptions : nonMediaLinkActionOptions}
-                        selectedKey={this.state.targetWindow}
-                        onChange={(event, option) => this.setState({ targetWindow: option.key })}
-                    />
+                    {this.state.selectedLinkOption !== LinkOptionKey.NoLink &&
+                        <ChoiceGroup
+                            label="Link actions"
+                            options={this.state.selectedLinkOption === LinkOptionKey.Media ? mediaLinkActionOptions : nonMediaLinkActionOptions}
+                            selectedKey={this.state.targetWindow}
+                            onChange={(event, option) => this.setState({ targetWindow: option.key })}
+                        />
+                    }
                 </div>
             </Modal>
         </>

@@ -66,7 +66,8 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
                 key: navItem.key,
                 name: navItem.label,
                 url: '',
-                targetKey: navItem.targetKey || ''
+                targetKey: navItem.targetKey || '',
+                isExpanded: true
             };
             
             if (navItem.navigationItems) newNode.links = this.structureNavItems(navItem.navigationItems);
@@ -202,7 +203,7 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
 
     checkItemPosition = (itemKey: string): ItemPosition => {
         const navItems = this.state.navigationItems;
-        const parent = navItems.find(obj => obj.key === this.findParentItemKey(this.state.navigationItems, itemKey));
+        const parent = this.findNavItemByKey(navItems, this.findParentItemKey(navItems, itemKey));
 
         let isFirst = null;
         let isLast = null;
@@ -212,7 +213,6 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
             isFirst = navItems[0].key === itemKey;
             isLast = navItems[navItems.length - 1].key === itemKey;
         }
-
 
         if (parent && parent.navigationItems && parent.navigationItems.length > 0) {
             isFirst = parent.navigationItems[0].key === itemKey;

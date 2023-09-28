@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { isEqual, isEmpty } from 'lodash';
 import { Resolve } from '@paperbits/react/decorators';
 import { IPageService, PageContract } from '@paperbits/common/pages';
 import { PermalinkService } from '@paperbits/common/permalinks';
@@ -6,11 +7,14 @@ import { EventManager } from '@paperbits/common/events';
 import { CommandBarButton, DefaultButton, IIconProps, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 import { LabelWithInfo } from '../utils/components/labelWithInfo';
+import { REQUIRED, UNIQUE_REQUIRED, validateField } from '../utils/validator';
+import { reservedPermalinks } from '../../constants';
 
 interface PageDetailsModalState {
     page: PageContract,
     showDeleteConfirmation: boolean,
-    copyPage: boolean
+    copyPage: boolean,
+    errors: object
 }
 
 interface PageDetailsModalProps {
@@ -39,43 +43,79 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
         this.state = {
             page: this.props.page ?? { permalink: '/new-page', title: 'New page', description: '', keywords: '' },
             showDeleteConfirmation: false,
-            copyPage: false
+            copyPage: false,
+            errors: {}
         }
     }
 
-    onInputChange = async (field: string, newValue: string) => {
+    onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
+        let errorMessage = '';
+        let permalinkErrorMessage = '';
+        let page = {};
+        let errors = {};
+
+        if (field === 'permalink') {
+            errorMessage = await this.validatePermalink(newValue);
+        } else if (validationType) {
+            errorMessage = validateField(validationType, newValue);
+        }
+
         if (!this.props.page && field === 'title') {
             const permalink = newValue.replace(/\s+/g, '-').toLowerCase();
+            permalinkErrorMessage = await this.validatePermalink('/' + permalink);
 
-            this.setState({
-                page: {
-                    ...this.state.page,
-                    'title': newValue,
-                    'permalink': '/' + permalink
-                }
-            });
+            page = {
+                ...this.state.page,
+                'title': newValue,
+                'permalink': '/' + permalink
+            };
         } else {
-            this.setState({
-                page: {
-                    ...this.state.page,
-                    [field]: newValue
-                }
-            });
+            page = {
+                ...this.state.page,
+                [field]: newValue
+            };
         }
+
+        if (errorMessage !== '' && !this.state.errors[field]) {
+            errors = { ...this.state.errors, [field]: errorMessage };
+        } else if (errorMessage === '' && this.state.errors[field]) {
+            const { [field as keyof typeof this.state.errors]: error, ...rest } = this.state.errors;
+            errors = rest;
+        } else {
+            errors = this.state.errors;
+        }
+
+        if (permalinkErrorMessage !== '' && !errors['permalink']) {
+            errors = { ...errors, permalink: permalinkErrorMessage };
+        } else if (permalinkErrorMessage === '' && errors['permalink']) {
+            const { ['permalink' as keyof typeof errors]: error, ...rest } = errors;
+            errors = rest;
+        }
+        
+        this.setState({ page, errors });
     }
 
-    deletePage = async () => {
+    validatePermalink = async (permalink: string): Promise<string> => {
+        if (permalink === this.props.page?.permalink) return '';
+
+        const isPermalinkNotDefined = await this.permalinkService.isPermalinkDefined(permalink) && !reservedPermalinks.includes(permalink);
+        const errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
+
+        return errorMessage;
+    }
+
+    deletePage = async (): Promise<void> => {
         await this.pageService.deletePage(this.state.page);
 
         this.eventManager.dispatchEvent('onSaveChanges');
         this.props.onDismiss();
     }
 
-    closeDeleteConfirmation = () => {
+    closeDeleteConfirmation = (): void => {
         this.setState({ showDeleteConfirmation: false });
     }
 
-    copyPage = async () => {
+    copyPage = async (): Promise<void> => {
         this.setState({ copyPage: true, page: { 
             ...this.state.page,
             permalink: this.state.page.permalink + '-copy',
@@ -83,7 +123,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
         }});
     }
 
-    savePage = async () => {
+    savePage = async (): Promise<void> => {
         if (this.props.page && !this.state.copyPage) {
             await this.pageService.updatePage(this.state.page);
         } else {
@@ -95,7 +135,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
         this.props.onDismiss();
     }
 
-    render() {
+    render(): JSX.Element {
         return <>
             {this.state.showDeleteConfirmation && 
                 <DeleteConfirmationOverlay
@@ -115,7 +155,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                         <PrimaryButton
                             text="Save"
                             onClick={() => this.savePage()}
-                            disabled={JSON.stringify(this.props.page) === JSON.stringify(this.state.page)}
+                            disabled={isEqual(this.props.page, this.state.page) || !isEmpty(this.state.errors)}
                         />
                         <DefaultButton
                             text="Discard"
@@ -130,36 +170,44 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                                 iconProps={deleteIcon}
                                 text="Delete"
                                 onClick={() => this.setState({ showDeleteConfirmation: true })}
-                                styles={{ root: { height: 44, marginBottom: 30 } }}
+                                className="command-bar-button"
                             />
                             <CommandBarButton
                                 iconProps={copyIcon}
                                 text="Copy page"
                                 onClick={() => this.copyPage()}
-                                styles={{ root: { height: 44, marginBottom: 30 } }}
+                                className="command-bar-button"
                             />
                         </>
                     }
                     <TextField
-                        onRenderLabel={() => <LabelWithInfo label="Name" info="This is how the page name will be displayed in the site menu." />}
+                        onRenderLabel={() => 
+                            <LabelWithInfo
+                                label="Name"
+                                info="This is how the page name will be displayed in the site menu."
+                                required
+                            />}
                         value={this.state.page.title}
-                        onChange={(event, newValue) => this.onInputChange('title', newValue)}
+                        onChange={(event, newValue) => this.onInputChange('title', newValue, REQUIRED)}
+                        errorMessage={this.state.errors['title'] ?? ''}
                         styles={textFieldStyles}
                     />
                     <TextField
                         onRenderLabel={() => 
                             <LabelWithInfo
                                 label="Permalink path"
-                                info={`URL path of the page that's appended to the developer portal hostname. For example, "/contact" would make this page available under "www.contoso.com/contact". Permalink path needs to be unique for every page and is used to match it against a defined layout.`} 
+                                info={`URL path of the page that's -appended to the developer portal hostname. For example, "/contact" would make this page available under "www.contoso.com/contact". Permalink path needs to be unique for every page and is used to match it against a defined layout.`} 
+                                required
                             />
                         }
                         value={this.state.page.permalink}
                         onChange={(event, newValue) => this.onInputChange('permalink', newValue)}
-                        onGetErrorMessage={async (value) => await this.pageService.getPageByPermalink(value) ? 'Permalink is already used' : ''} // TODO: USE PERMALINK SERVICE?
+                        errorMessage={this.state.errors['permalink'] ?? ''}
+                        disabled={reservedPermalinks.includes(this.props.page?.permalink)}
                         styles={textFieldStyles}
                     />
                     <TextField
-                        onRenderLabel={() => <LabelWithInfo label="Description" info="Add text about the page and its content as if you were describing it to someone who is blind.Add text about the page and its content as if you were describing it to someone who is blind." />}
+                        onRenderLabel={() => <LabelWithInfo label="Description" info="Add text about the page and its content as if you were describing it to someone who is blind." />}
                         multiline
                         autoAdjustHeight
                         value={this.state.page.description}

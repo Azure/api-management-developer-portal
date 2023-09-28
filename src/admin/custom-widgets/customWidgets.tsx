@@ -45,12 +45,12 @@ export class CustomWidgets extends React.Component<CustomWidgetsProps, CustomWid
         this.searchCustomWidgets();
     }
 
-    handleCustomWidgetModalClose = () => {
+    handleCustomWidgetModalClose = (): void => {
         this.setState({ showCustomWidgetModal: false, selectedCustomWidget: null });
         this.searchCustomWidgets();
     }
 
-    searchCustomWidgets = async () => {
+    searchCustomWidgets = async (): Promise<void> => {
         const configsPromise = loadCustomWidgetConfigs(this.blobStorage, this.viewManager);
         const refreshConfigs = listConfigBlobs(this.blobStorage); // in case some configs on the blob storage got deleted/updated/added
 
@@ -65,7 +65,7 @@ export class CustomWidgets extends React.Component<CustomWidgetsProps, CustomWid
         });
     }
 
-    renderCustomWidgetContent = (customWidget: TCustomWidgetConfig) => (
+    renderCustomWidgetContent = (customWidget: TCustomWidgetConfig): JSX.Element => (
         <Stack
             horizontal
             horizontalAlign="space-between"
@@ -86,7 +86,7 @@ export class CustomWidgets extends React.Component<CustomWidgetsProps, CustomWid
         </Stack>
     )
 
-    render() {
+    render(): JSX.Element {
         return <>
             {this.state.showCustomWidgetModal &&
                 <CustomWidgetDetailsModal

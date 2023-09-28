@@ -40,10 +40,6 @@ const screenSizeOptions: IDropdownOption[] = [
     { key: 'xs', text: 'Extra small screen', data: { icon: 'MobileSelected' } }
 ];
 
-const accessOptions: IDropdownOption[] = [
-    { key: 'all', text: 'All groups', data: { icon: 'People' } }
-];
-
 const dropdownStyles = { title: { border: 'none' } };
 const iconStyles = { root: { color: darkTheme.callingPalette.iconWhite } };
 const undoIcon: IIconProps = { iconName: 'Undo', styles: iconStyles };
@@ -185,44 +181,14 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
         </Stack>
     )
 
-    // This is added because using renderDropdownOption is not working in some cases
-    // TODO: fix this duplicate function
-    renderCACDropdownOption = (option: IDropdownOption, optionText): JSX.Element => (
-        <Stack horizontal verticalAlign="center">
-            {option.data && option.data.icon && (
-                <Icon
-                    style={this.state.dropdownIconStyles}
-                    iconName={option.data.icon}
-                    title={option.data.icon}
-                />
-            )}
-            <span>{optionText}</span>
-        </Stack>
-    )
-
     renderTitle = (options: IDropdownOption[]): JSX.Element => {
         const option = options[0];
       
         return this.renderDropdownOption(option);
     }
 
-    renderCACTitle = (options: IDropdownOption[]): JSX.Element => {
-        const option = options[0];
-
-        return this.renderCACDropdownOption(option, 'View as: ' + option.text);
-    }
-
     renderDropdowns = (): JSX.Element => (
         <Stack horizontal>
-            <Dropdown
-                defaultSelectedKey="all"
-                ariaLabel="Access group selector"
-                //onRenderOption={this.renderDropdownOption}
-                onRenderTitle={this.renderCACTitle}
-                options={accessOptions}
-                styles={dropdownStyles}
-                className="top-panel-dropdown"
-            />
             <Dropdown
                 defaultSelectedKey="xl"
                 ariaLabel="Screen size selector"
@@ -248,7 +214,7 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                 styles={{ root: { margin: '0 20px 0 10px', color: '#ffffff' }, rootDisabled: { backgroundColor: '#f3f2f1', color: '#a19f9d' } }}
             />
             <DefaultButton
-                text="Discard"
+                text={this.state.hasUnsavedChanges ? 'Discard' : 'Close'}
                 onClick={async () => {
                     await this.offlineObjectStorage.discardChanges();
                     this.eventManager.dispatchEvent('onDataPush');

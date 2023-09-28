@@ -11,7 +11,7 @@ import { PopupDetailsModal } from './popupDetailsModal';
 interface PopupsState {
     popups: PopupContract[],
     showPopupDetailsModal: boolean,
-    selectedUPopup: PopupContract
+    selectedPopup: PopupContract
 }
 
 interface PopupsProps {
@@ -36,7 +36,7 @@ export class Popups extends React.Component<PopupsProps, PopupsState> {
         this.state = {
             popups: [],
             showPopupDetailsModal: false,
-            selectedUPopup: null
+            selectedPopup: null
         }
     }
 
@@ -45,7 +45,7 @@ export class Popups extends React.Component<PopupsProps, PopupsState> {
     }
 
     handlePageDetailsBackButtonClick = (): void => {
-        this.setState({ showPopupDetailsModal: false, selectedUPopup: null });
+        this.setState({ showPopupDetailsModal: false, selectedPopup: null });
         this.searchPopups();
     }
 
@@ -74,7 +74,7 @@ export class Popups extends React.Component<PopupsProps, PopupsState> {
                 className="nav-item-inner"
                 onClick={(event) => {
                     event.stopPropagation();
-                    this.setState({ showPopupDetailsModal: true, selectedUPopup: popup })}
+                    this.setState({ showPopupDetailsModal: true, selectedPopup: popup })}
                 }
             />
         </Stack>
@@ -84,7 +84,7 @@ export class Popups extends React.Component<PopupsProps, PopupsState> {
         return <>
             {this.state.showPopupDetailsModal &&
                 <PopupDetailsModal
-                    popup={this.state.selectedUPopup}
+                    popup={this.state.selectedPopup}
                     onDismiss={this.handlePageDetailsBackButtonClick.bind(this)}
                 />
             }
@@ -96,7 +96,7 @@ export class Popups extends React.Component<PopupsProps, PopupsState> {
                 iconProps={addIcon}
                 text="Add pop-up"
                 className="nav-item-list-button"
-                onClick={() => this.setState({ showPopupDetailsModal: true, selectedUPopup: null })}
+                onClick={() => this.setState({ showPopupDetailsModal: true, selectedPopup: null })}
             />
             <SearchBox
                 ariaLabel="Search popups"

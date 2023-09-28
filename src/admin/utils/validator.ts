@@ -3,6 +3,11 @@ export const UNIQUE_REQUIRED = 'unique-required';
 export const URL = 'url';
 export const URL_REQUIRED = 'url-required';
 
+export const REQUIRED_MESSAGE = 'This field is required';
+export const UNIQUE_REQUIRED_MESSAGE = 'Field value is required and must be unique';
+export const URL_MESSAGE = 'Field value should be a valid URL';
+export const URL_REQUIRED_MESSAGE = 'Field value is required and should be a valid URL';
+
 export const validateField = (validationType: string, value: string, customValidation?: boolean): string => {
     let isValid: boolean = true;
     let errorMessage: string = '';
@@ -13,19 +18,19 @@ export const validateField = (validationType: string, value: string, customValid
     switch (validationType) {
         case REQUIRED:
             isValid = value.length > 0;
-            errorMessage = isValid ? '' : 'This field is required';
+            errorMessage = isValid ? '' : REQUIRED_MESSAGE;
             break;
         case UNIQUE_REQUIRED:
             isValid = value.length > 0 && customValidation;
-            errorMessage = isValid ? '' : 'Field value is required and must be unique';
+            errorMessage = isValid ? '' : UNIQUE_REQUIRED_MESSAGE;
             break;
         case URL:
-            isValid =  value.length === 0 || (absoluteUrlRegex.test(value) || relativeUrlRegex.test(value));
-            errorMessage = isValid ? '' : 'Field value should be a valid URL';
+            isValid = value.length === 0 || (absoluteUrlRegex.test(value) || relativeUrlRegex.test(value));
+            errorMessage = isValid ? '' : URL_MESSAGE;
             break;
         case URL_REQUIRED:
             isValid = value.length > 0 && (absoluteUrlRegex.test(value) || relativeUrlRegex.test(value));
-            errorMessage = isValid ? '' : 'Field value is required and should be a valid URL';
+            errorMessage = isValid ? '' : URL_REQUIRED_MESSAGE;
             break;
     }
 
