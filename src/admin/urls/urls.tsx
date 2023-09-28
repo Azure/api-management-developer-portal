@@ -4,6 +4,7 @@ import { IUrlService, UrlContract } from '@paperbits/common/urls';
 import { Query, Operator } from '@paperbits/common/persistence';
 import { ViewManager } from '@paperbits/common/ui';
 import { CommandBarButton, FontIcon, IIconProps, SearchBox, Stack, Text } from '@fluentui/react';
+import { getAllValues } from '../utils/helpers';
 import { lightTheme } from '../utils/themes';
 import { BackButton } from '../utils/components/backButton';
 import { UrlDetailsModal } from './urlDetailsModal';
@@ -56,7 +57,8 @@ export class Urls extends React.Component<UrlsProps, UrlsState> {
         }
 
         const urlsSearchResult = await this.urlService.search(query);
-        this.setState({ urls: urlsSearchResult.value });
+        const allUrls = await getAllValues(urlsSearchResult, urlsSearchResult.value);
+        this.setState({ urls: allUrls });
     }
 
     renderUrlContent = (url: UrlContract): JSX.Element => (

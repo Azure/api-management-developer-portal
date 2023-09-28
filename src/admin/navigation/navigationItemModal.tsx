@@ -14,6 +14,7 @@ import { ChoiceGroup, CommandBarButton, DefaultButton, Dropdown, IChoiceGroupOpt
 import { MediaSelectionItemModal } from '../media/mediaSelectionItemModal';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 import { REQUIRED, REQUIRED_MESSAGE, UNIQUE_REQUIRED, URL_REQUIRED, URL_REQUIRED_MESSAGE, validateField } from '../utils/validator';
+import { getAllValues } from '../utils/helpers';
 import { lightTheme } from '../utils/themes';
 import { ToastNotification } from '../utils/components/toastNotification';
 import { LabelWithInfo } from '../utils/components/labelWithInfo';
@@ -233,10 +234,11 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
     processPagesForDropdown = async (): Promise<void> => {
         const query = Query.from().orderBy('title');
         const pagesSearchResult = await this.pageService.search(query);
+        const allPages = await getAllValues(pagesSearchResult, pagesSearchResult.value);
 
         const dropdownItems = [];
 
-        pagesSearchResult.value.forEach(page => {
+        allPages.forEach(page => {
             dropdownItems.push({
                 key: page.key,
                 text: page.title
@@ -270,10 +272,11 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
     processUrlsForDropdown = async (): Promise<void> => {
         const query = Query.from().orderBy('title');
         const urlsSearchResult = await this.urlService.search(query);
+        const allUrls = await getAllValues(urlsSearchResult, urlsSearchResult.value);
 
         const dropdownItems = [];
 
-        urlsSearchResult.value.forEach(url => {
+        allUrls.forEach(url => {
             dropdownItems.push({
                 key: url.key,
                 text: url.title
