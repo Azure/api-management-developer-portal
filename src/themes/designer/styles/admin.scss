@@ -303,6 +303,16 @@
     margin-bottom: 30px;
 }
 
+.reset-content-wrapper {
+    padding: 20px;
+    border: 1px solid #c4314b;
+    border-radius: 5px;
+
+    > span {
+        padding: 5px 0;
+    }
+}
+
 // CHECK THIS!!!!!
 .toolbox-position-right-top {
     display: none !important;
