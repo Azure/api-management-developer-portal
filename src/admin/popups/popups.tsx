@@ -4,6 +4,7 @@ import { IPopupService, PopupContract } from '@paperbits/common/popups';
 import { Query, Operator } from '@paperbits/common/persistence';
 import { ViewManager } from '@paperbits/common/ui';
 import { CommandBarButton, FontIcon, IIconProps, SearchBox, Stack, Text } from '@fluentui/react';
+import { getAllValues } from '../utils/helpers';
 import { lightTheme } from '../utils/themes';
 import { BackButton } from '../utils/components/backButton';
 import { PopupDetailsModal } from './popupDetailsModal';
@@ -56,7 +57,8 @@ export class Popups extends React.Component<PopupsProps, PopupsState> {
         }
 
         const popupsSearchResult = await this.popupService.search(query);
-        this.setState({ popups: popupsSearchResult.value });
+        const allPopups = await getAllValues(popupsSearchResult, popupsSearchResult.value);
+        this.setState({ popups: allPopups });
     }
 
     renderPopupContent = (popup: PopupContract): JSX.Element => (

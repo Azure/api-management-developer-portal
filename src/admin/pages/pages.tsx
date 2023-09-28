@@ -6,6 +6,7 @@ import { Query, Operator } from '@paperbits/common/persistence';
 import { ViewManager } from '@paperbits/common/ui';
 import { Router } from '@paperbits/common/routing';
 import { CommandBarButton, FontIcon, IIconProps, Pivot, PivotItem, SearchBox, Stack, Text } from '@fluentui/react';
+import { getAllValues } from '../utils/helpers';
 import { lightTheme } from '../utils/themes';
 import { BackButton } from '../utils/components/backButton';
 import { PageDetailsModal } from './pageDetailsModal';
@@ -81,7 +82,8 @@ export class Pages extends React.Component<PagesProps, PagesState> {
         }
 
         const pagesSearchResult = await this.pageService.search(query);
-        this.setState({ pages: pagesSearchResult.value });
+        const allPages = await getAllValues(pagesSearchResult, pagesSearchResult.value);
+        this.setState({ pages: allPages });
     }
 
     searchLayouts = async (searchPattern: string = ''): Promise<void> => {
@@ -91,7 +93,8 @@ export class Pages extends React.Component<PagesProps, PagesState> {
         }
 
         const layoutsSearchResult = await this.layoutService.search(query);
-        this.setState({ layouts: layoutsSearchResult.value });
+        const allLayouts = await getAllValues(layoutsSearchResult, layoutsSearchResult.value);
+        this.setState({ layouts: allLayouts });
     }
 
     renderPageContent = (page: PageContract): JSX.Element => (

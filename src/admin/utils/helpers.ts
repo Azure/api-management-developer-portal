@@ -21,3 +21,18 @@ export const getThumbnailUrl = (mediaItem: MediaContract): string => {
 
     return null;
 }
+
+// any is used as type because this helper function works for all kind of search values
+export const getAllValues = async (page: any, values: any) => {
+    if (page.takeNext === undefined || page.takeNext === null) return values;
+
+    const nextPage = await page.takeNext();
+
+    if (nextPage?.value.length > 0) {
+        values = [...values, ...nextPage.value];
+
+        return await getAllValues(nextPage, values);
+    }
+    
+    return values;
+}

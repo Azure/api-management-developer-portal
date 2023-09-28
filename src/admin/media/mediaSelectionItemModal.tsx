@@ -8,6 +8,7 @@ import { IMediaService } from '@paperbits/common/media';
 import { MediaContract } from '@paperbits/common/media/mediaContract';
 import { Query, Operator } from '@paperbits/common/persistence';
 import { DefaultButton, IIconProps, Image, ImageFit, IOverflowSetItemProps, Link, Modal, SearchBox, Stack, Text } from '@fluentui/react';
+import { getAllValues } from '../utils/helpers';
 import { NonImageDetailsModal } from './nonImageDetailsModal';
 
 interface MediaSelectionItemModalState {
@@ -55,7 +56,8 @@ export class MediaSelectionItemModal extends React.Component<MediaSelectionItemM
         }
 
         const mediaSearchResult = await this.mediaService.search(query);
-        this.setState({ media: mediaSearchResult.value });
+        const allMedia = await getAllValues(mediaSearchResult, mediaSearchResult.value);
+        this.setState({ media: allMedia });
 
         return;
     }

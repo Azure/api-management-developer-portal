@@ -9,7 +9,7 @@ import { MediaContract } from '@paperbits/common/media/mediaContract';
 import { Query, Operator } from '@paperbits/common/persistence';
 import { Checkbox, DefaultButton, IconButton, IIconProps, Image, ImageFit, IOverflowSetItemProps, Link, Modal, OverflowSet, SearchBox, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
-import { getThumbnailUrl } from '../utils/helpers';
+import { getAllValues, getThumbnailUrl } from '../utils/helpers';
 import { ImageDetailsModal } from './imageDetailsModal';
 import { NonImageDetailsModal } from './nonImageDetailsModal';
 
@@ -69,7 +69,8 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
         }
 
         const mediaSearchResult = await this.mediaService.search(query);
-        this.setState({ media: mediaSearchResult.value });
+        const allMedia = await getAllValues(mediaSearchResult, mediaSearchResult.value);
+        this.setState({ media: allMedia });
 
         return;
     }
