@@ -24,7 +24,7 @@ export class ProductListDropdown {
     public readonly selectedProductName: ko.Observable<string>;
     public readonly pattern: ko.Observable<string>;
     public readonly pageNumber: ko.Observable<number>;
-    public readonly totalPages: ko.Observable<number>;
+    public readonly nextPage: ko.Observable<boolean>;
     public readonly expanded: ko.Observable<boolean>;
     public readonly selection: ko.Computed<string>;
 
@@ -39,7 +39,7 @@ export class ProductListDropdown {
         this.selectedId = ko.observable();
         this.pattern = ko.observable();
         this.pageNumber = ko.observable(1);
-        this.totalPages = ko.observable(0);
+        this.nextPage = ko.observable();
         this.products = ko.observableArray();
         this.selectedProduct = ko.observable();
         this.selectedProductName = ko.observable();
@@ -105,7 +105,7 @@ export class ProductListDropdown {
             const pageOfProducts = await this.productService.getProductsPage(query);
 
             this.products(pageOfProducts.value);
-            this.totalPages(Math.ceil(pageOfProducts.count / Constants.defaultPageSize));
+            this.nextPage(!!pageOfProducts.nextLink);
 
             const productName = this.routeHelper.getProductName();
 
@@ -128,7 +128,7 @@ export class ProductListDropdown {
     public getProductUrl(product: Product): string {
         return this.routeHelper.getProductReferenceUrl(product.name, this.detailsPageUrl());
     }
-    
+
     @OnDestroyed()
     public dispose(): void {
         this.router.removeRouteChangeListener(this.onRouteChange);

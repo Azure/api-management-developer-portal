@@ -85,9 +85,9 @@
     <!-- /ko -->
 
     <!-- ko ifnot: working -->
-    <!-- ko if: $component.totalPages() > 1 -->
+    <!-- ko if: $component.nextPage() || $component.pageNumber() > 1 -->
     <div class="cards-footer">
-        <pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }"></pagination>
+        <pagination params="{ pageNumber: $component.pageNumber, nextPage: $component.nextPage }"></pagination>
     </div>
     <!-- /ko -->
     <!-- /ko -->
