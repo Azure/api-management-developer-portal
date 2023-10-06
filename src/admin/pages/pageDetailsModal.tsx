@@ -85,11 +85,13 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
             errors = this.state.errors;
         }
 
-        if (permalinkErrorMessage !== '' && !errors['permalink']) {
-            errors = { ...errors, permalink: permalinkErrorMessage };
-        } else if (permalinkErrorMessage === '' && errors['permalink']) {
-            const { ['permalink' as keyof typeof errors]: error, ...rest } = errors;
-            errors = rest;
+        if (!this.props.page && field === 'title') {
+            if (permalinkErrorMessage !== '' && !errors['permalink']) {
+                errors = { ...errors, permalink: permalinkErrorMessage };
+            } else if (permalinkErrorMessage === '' && errors['permalink']) {
+                const { ['permalink' as keyof typeof errors]: error, ...rest } = errors;
+                errors = rest;
+            }
         }
         
         this.setState({ page, errors });
@@ -124,6 +126,14 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
     }
 
     savePage = async (): Promise<void> => {
+        if (this.state.page.permalink === '/new-page') { 
+            const permalinkError = await this.validatePermalink(this.state.page.permalink);
+            if (permalinkError) {
+                this.setState({ errors: { permalink: permalinkError } });
+                return;
+            }
+        }
+
         if (this.props.page && !this.state.copyPage) {
             await this.pageService.updatePage(this.state.page);
         } else {
@@ -164,7 +174,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                     </Stack>
                 </Stack>
                 <div className="admin-modal-content">
-                    {this.props.page && 
+                    {(this.props.page && !reservedPermalinks.includes(this.props.page.permalink)) &&
                         <>
                             <CommandBarButton
                                 iconProps={deleteIcon}
@@ -207,7 +217,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                         styles={textFieldStyles}
                     />
                     <TextField
-                        onRenderLabel={() => <LabelWithInfo label="Description" info="Add text about the page and its content as if you were describing it to someone who is blind." />}
+                        onRenderLabel={() => <LabelWithInfo label="Description" info="This description helps search engines and users understand the content and purpose of this page." />}
                         multiline
                         autoAdjustHeight
                         value={this.state.page.description}
