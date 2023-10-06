@@ -7,7 +7,7 @@ import { ViewManager } from '@paperbits/common/ui';
 import { IMediaService } from '@paperbits/common/media';
 import { MediaContract } from '@paperbits/common/media/mediaContract';
 import { Query, Operator } from '@paperbits/common/persistence';
-import { Checkbox, DefaultButton, IconButton, IIconProps, Image, ImageFit, IOverflowSetItemProps, Link, Modal, OverflowSet, SearchBox, Stack, Text, TextField } from '@fluentui/react';
+import { Checkbox, DefaultButton, IconButton, IIconProps, Image, ImageFit, IOverflowSetItemProps, Link, Modal, OverflowSet, SearchBox, Spinner, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 import { getAllValues, getThumbnailUrl } from '../utils/helpers';
 import { ImageDetailsModal } from './imageDetailsModal';
@@ -21,7 +21,8 @@ interface MediaModalState {
     fileNewName: string,
     showImageDetailsModal: boolean,
     showNonImageDetailsModal: boolean,
-    showDeleteConfirmation: boolean
+    showDeleteConfirmation: boolean,
+    isLoading: boolean
 }
 
 interface MediaModalProps {
@@ -54,7 +55,8 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
             fileNewName: '',
             showImageDetailsModal: false,
             showNonImageDetailsModal: false,
-            showDeleteConfirmation: false
+            showDeleteConfirmation: false,
+            isLoading: false
         }
     }
 
@@ -63,6 +65,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
     }
 
     searchMedia = async (searchPattern: string = ''): Promise<void> => {
+        this.setState({ isLoading: true });
         const query = Query.from().orderBy('fileName');
         if (searchPattern) {
             query.where('fileName', Operator.contains, searchPattern);
@@ -70,9 +73,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
 
         const mediaSearchResult = await this.mediaService.search(query);
         const allMedia = await getAllValues(mediaSearchResult, mediaSearchResult.value);
-        this.setState({ media: allMedia });
-
-        return;
+        this.setState({ media: allMedia, isLoading: false });
     }
 
     selectMedia = (file: MediaContract, checked: boolean): void => {
@@ -163,6 +164,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                     src={thumbnailUrl ?? '/assets/images/no-preview.png'}
                     imageFit={ImageFit.centerCover}
                     styles={{ root: { flexGrow: 1, marginTop: 10, marginBottom: 20 } }}
+                    shouldStartVisible
                 />
                 {this.state.fileForRename === mediaItem.key
                     ?
@@ -290,9 +292,12 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                             </Stack.Item>
                         }
                     </Stack>
+                    {this.state.isLoading && <Spinner styles={{ root: { paddingBottom: 20 } }} />}
                     <Stack horizontal tokens={{ childrenGap: 20 }} wrap>
-                        {this.state.media.map(mediaItem =>
-                            this.renderMediaItem(mediaItem)
+                        {this.state.media.length === 0 && !this.state.isLoading
+                            ? <Text block>It seems that you don't have media items yet.</Text>
+                            : this.state.media.map(mediaItem =>
+                                this.renderMediaItem(mediaItem)
                         )}
                     </Stack>
                 </div>

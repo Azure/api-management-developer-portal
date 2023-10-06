@@ -28,10 +28,6 @@ interface DeleteConfirmationProps {
 }
 
 export class DeleteConfirmationOverlay extends React.Component<DeleteConfirmationProps, {}> {
-    constructor(props: DeleteConfirmationProps) {
-        super(props);
-    }
-
     render(): JSX.Element {
         return <>
             <Layer>

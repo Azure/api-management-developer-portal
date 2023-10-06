@@ -332,4 +332,10 @@ export const overrideConfigSessionKeyPrefix = OVERRIDE_PORT_KEY + "_";
 /**
  * Key under which is saved in session storage a boolean for dismissed Custom Widget override toasts
  */
-export const overrideToastSessionKeyPrefix = "MS_APIM_CW_override_toast_dismissed_"
+export const overrideToastSessionKeyPrefix = "MS_APIM_CW_override_toast_dismissed_";
+
+/**
+ * Styling constants
+ */
+export const mobileBreakpoint = 768;
+export const smallMobileBreakpoint = 400;

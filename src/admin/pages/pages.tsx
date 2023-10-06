@@ -5,7 +5,7 @@ import { ILayoutService, LayoutContract } from '@paperbits/common/layouts';
 import { Query, Operator } from '@paperbits/common/persistence';
 import { ViewManager } from '@paperbits/common/ui';
 import { Router } from '@paperbits/common/routing';
-import { CommandBarButton, FontIcon, IIconProps, Pivot, PivotItem, SearchBox, Stack, Text } from '@fluentui/react';
+import { CommandBarButton, FontIcon, IIconProps, Pivot, PivotItem, SearchBox, Spinner, Stack, Text } from '@fluentui/react';
 import { getAllValues } from '../utils/helpers';
 import { lightTheme } from '../utils/themes';
 import { BackButton } from '../utils/components/backButton';
@@ -19,7 +19,8 @@ interface PagesState {
     selectedPage: PageContract,
     layouts: LayoutContract[],
     showLayoutModal: boolean,
-    selectedLayout: LayoutContract
+    selectedLayout: LayoutContract,
+    isLoading: boolean
 }
 
 interface PagesProps {
@@ -55,24 +56,25 @@ export class Pages extends React.Component<PagesProps, PagesState> {
             selectedPage: null,
             layouts: [],
             showLayoutModal: false,
-            selectedLayout: null
+            selectedLayout: null,
+            isLoading: false
         }
     }
 
     componentDidMount(): void {
-        this.searchPages();
-        this.searchLayouts();
+        this.setState({ isLoading: true });
+        Promise.all([this.searchPages(), this.searchLayouts()]).finally(() => this.setState({ isLoading: false }));
     }
 
     handlePageDetailsBackButtonClick = (): void => {
-        this.setState({ showPagesModal: false, selectedPage: null });
-        this.searchPages();
+        this.setState({ showPagesModal: false, selectedPage: null, isLoading: true });
+        Promise.all([this.searchPages()]).finally(() => this.setState({ isLoading: false }));
     }
 
     handlePageLayoutBackButtonClick = (): void => {
-        this.setState({ showLayoutModal: false, selectedLayout: null, selectedTab: 'layouts' });
+        this.setState({ showLayoutModal: false, selectedLayout: null, selectedTab: 'layouts', isLoading: true });
         this.viewManager.setHost({ name: 'page-host' });
-        this.searchLayouts();
+        Promise.all([this.searchLayouts()]).finally(() => this.setState({ isLoading: false }));
     }
 
     searchPages = async (searchPattern: string = ''): Promise<void> => {
@@ -178,6 +180,7 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                         styles={{ root: { marginTop: 20 } }}
                     />
                     <div className="objects-list">
+                        {this.state.isLoading && <Spinner />}
                         {this.state.pages.map(page =>
                             <CommandBarButton
                                 iconProps={pageIcon}
@@ -207,6 +210,7 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                         styles={{ root: { marginTop: 20 } }}
                     />
                     <div className="objects-list">
+                        {this.state.isLoading && <Spinner />}
                         {this.state.layouts.map(layout =>
                             <CommandBarButton
                                 iconProps={layoutIcon}

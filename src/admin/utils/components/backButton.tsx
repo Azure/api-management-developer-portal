@@ -8,10 +8,6 @@ interface BackButtonProps {
 }
 
 export class BackButton extends React.Component<BackButtonProps, {}> {
-    constructor(props: BackButtonProps) {
-        super(props);
-    }
-
     render(): JSX.Element {
         return <>
             <CommandBarButton

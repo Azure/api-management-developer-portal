@@ -9,10 +9,6 @@ interface LabelWithInfoProps {
 }
 
 export class LabelWithInfo extends React.Component<LabelWithInfoProps, {}> {
-    constructor(props: LabelWithInfoProps) {
-        super(props);
-    }
-
     render(): JSX.Element {
         return <>
             <Stack horizontal verticalAlign="center" styles={{ root: { padding: '5px 0' } }}>

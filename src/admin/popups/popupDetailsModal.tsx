@@ -7,7 +7,7 @@ import { ViewManager } from '@paperbits/common/ui';
 import { CommandBarButton, DefaultButton, IIconProps, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 import { REQUIRED, validateField } from '../utils/validator';
-import { mobileBreakpoint } from '../utils/variables';
+import { mobileBreakpoint } from '../../constants';
 
 interface PopupDetailsModalState {
     popup: PopupContract,

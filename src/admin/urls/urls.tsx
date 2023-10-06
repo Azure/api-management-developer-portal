@@ -3,7 +3,7 @@ import { Resolve } from '@paperbits/react/decorators';
 import { IUrlService, UrlContract } from '@paperbits/common/urls';
 import { Query, Operator } from '@paperbits/common/persistence';
 import { ViewManager } from '@paperbits/common/ui';
-import { CommandBarButton, FontIcon, IIconProps, SearchBox, Stack, Text } from '@fluentui/react';
+import { CommandBarButton, FontIcon, IIconProps, SearchBox, Spinner, Stack, Text } from '@fluentui/react';
 import { getAllValues } from '../utils/helpers';
 import { lightTheme } from '../utils/themes';
 import { BackButton } from '../utils/components/backButton';
@@ -12,7 +12,8 @@ import { UrlDetailsModal } from './urlDetailsModal';
 interface UrlsState {
     urls: UrlContract[],
     showUrlDetailsModal: boolean,
-    selectedUrl: UrlContract
+    selectedUrl: UrlContract,
+    isLoading: boolean
 }
 
 interface UrlsProps {
@@ -37,17 +38,19 @@ export class Urls extends React.Component<UrlsProps, UrlsState> {
         this.state = {
             urls: [],
             showUrlDetailsModal: false,
-            selectedUrl: null
+            selectedUrl: null,
+            isLoading: false
         }
     }
 
     componentDidMount(): void {
-        this.searchUrls();
+        this.setState({ isLoading: true });
+        Promise.all([this.searchUrls()]).finally(() => this.setState({ isLoading: false }));
     }
 
     handlePageDetailsBackButtonClick = (): void => {
-        this.setState({ showUrlDetailsModal: false, selectedUrl: null });
-        this.searchUrls();
+        this.setState({ showUrlDetailsModal: false, selectedUrl: null, isLoading: true });
+        Promise.all([this.searchUrls()]).finally(() => this.setState({ isLoading: false }));
     }
 
     searchUrls = async (searchPattern: string = ''): Promise<void> => {
@@ -107,14 +110,17 @@ export class Urls extends React.Component<UrlsProps, UrlsState> {
                 styles={{ root: { marginTop: 20 } }}
             />
             <div className="objects-list">
-                {this.state.urls.map(url =>
-                    <CommandBarButton
-                        iconProps={linkIcon}
-                        text={url.title}
-                        key={url.key}
-                        className="nav-item-list-button"
-                        onRenderText={() => this.renderUrlContent(url)}
-                    />
+                {this.state.isLoading && <Spinner />}
+                {this.state.urls.length === 0 && !this.state.isLoading
+                    ? <Text block className="nav-item-description-container">It seems that you don't have URLs yet. Would you like to create one?</Text>
+                    : this.state.urls.map(url =>
+                        <CommandBarButton
+                            iconProps={linkIcon}
+                            text={url.title}
+                            key={url.key}
+                            className="nav-item-list-button"
+                            onRenderText={() => this.renderUrlContent(url)}
+                        />
                 )}
             </div>
         </>

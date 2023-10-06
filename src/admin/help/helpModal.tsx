@@ -55,21 +55,21 @@ export class HelpModal extends React.Component<HelpModalProps, HelpModalState> {
                 containerClassName="admin-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text className="admin-modal-header-text">Help</Text>
+                    <Text className="admin-modal-header-text">Help and resources</Text>
                     <DefaultButton text="Close" onClick={this.props.onDismiss} />
                 </Stack>
                 <div className="admin-modal-content">
                     <Text block variant="large" styles={headerStyles}>Getting started</Text>
                     <ul>
                         <li><Text block><Link href="https://aka.ms/apimdocs/portal" target="_blank">Overview</Link> of the developer portal.</Text></li>
-                        <li><Text block><Link href="https://aka.ms/apimdocs/customizeportal" target="_blank">Get started</Link> with a step-by-step tutorial.</Text></li>
+                        <li><Text block><Link href="https://aka.ms/apimdocs/customizeportal" target="_blank">Access and customize the developer portal</Link> with a step-by-step tutorial.</Text></li>
                     </ul>
                     
                     <Text block variant="large" styles={headerStyles}>How-to</Text>
                     <ul>
                         <li><Text block><Link href="https://aka.ms/apimdocs/portal/cors" target="_blank">Enable CORS</Link></Text></li>
-                        <li><Text block><Link href="https://aka.ms/apimdocs/portal/access" target="_blank">Secure access</Link></Text></li>
-                        <li><Text block><Link href="https://aka.ms/apimdocs/portalcustomization" target="_blank">Add custom features</Link></Text></li>
+                        <li><Text block><Link href="https://aka.ms/apimdocs/portal/access" target="_blank">Secure access to the API Management developer portal</Link></Text></li>
+                        <li><Text block><Link href="https://aka.ms/apimdocs/portalcustomization" target="_blank">Add custom features to the developer portal</Link></Text></li>
                     </ul>
 
                     <Text block variant="large" styles={headerStyles}>Give feedback</Text>

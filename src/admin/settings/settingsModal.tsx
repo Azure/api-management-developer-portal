@@ -3,8 +3,9 @@ import { isEqual } from 'lodash';
 import { Resolve } from '@paperbits/react/decorators';
 import { ISiteService, SiteSettingsContract } from '@paperbits/common/sites';
 import { IMediaService, MediaContract } from '@paperbits/common/media';
+import { MetaDataSetter } from "@paperbits/common/meta/metaDataSetter";
 import { EventManager } from '@paperbits/common/events';
-import { Checkbox, CommandBarButton, DefaultButton, Image, ImageFit, Label, Modal, Pivot, PivotItem, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
+import { Checkbox, CommandBarButton, DefaultButton, Icon, Image, ImageFit, Label, Link, Modal, Pivot, PivotItem, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { MediaSelectionItemModal } from '../media/mediaSelectionItemModal';
 import { getThumbnailUrl } from '../utils/helpers';
 import { ResetDetailsWorkshop } from '../../components/content';
@@ -66,7 +67,8 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
     componentDidUpdate(prevProps: Readonly<SettingsModalProps>, prevState: Readonly<SettingsModalState>, snapshot?: any): void {
         if (this.state.selectedFavicon !== prevState.selectedFavicon) {
             this.getFaviconThumbnailUrl(this.state.selectedFavicon);
-            this.onInputChange('faviconSourceKey', this.state.selectedFavicon.key)
+            this.onInputChange('faviconSourceKey', this.state.selectedFavicon.key);
+            MetaDataSetter.setFavIcon(this.state.selectedFavicon.downloadUrl);
         }
     }
 
@@ -187,16 +189,15 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
                         <PivotItem headerText="Advanced" itemKey={Tab.Advanced}>
                             <Stack className="reset-content-wrapper">
                                 <Text block styles={{ root: { fontWeight: 600 } }}>Restore website to default state</Text>
-                                <Text block>Restoring the site will reset the site to its original default state. It will replace all the pages, layouts, customizations, uploaded media, with the default content.</Text>
-                                <Text block>Resetting the content will not remove the published version of the portal. To remove the developer portal, go the API Management instance, navigate to the settings page and disable the portal.</Text>
+                                <Text block>By resetting the website, all the pages, layouts, customizations, and uploaded media, will be deleted. The published version of the developer portal will not be deleted.</Text>
                                 <Checkbox
-                                    label="Check to restore website"
+                                    label="Yes, reset the website to default state"
                                     checked={this.state.showResetConfirmation}
                                     onChange={() => this.setState({ showResetConfirmation: !this.state.showResetConfirmation })}
                                     styles={{ root: { padding: '10px 0 15px' } }}
                                 />
                                 <Stack  className={`collapsible-section${!this.state.showResetConfirmation ? ' hidden' : ''}`}>
-                                <Text block>Type "yes" in the field below to confirm you would like to reset the portal. Click "Save" to submit.</Text>
+                                <Text block>Type "yes" to confirm you would like to reset the portal. Click "Save" to submit.</Text>
                                     <TextField
                                         placeholder="Confirm by entering yes"
                                         description="Use lower-case when typing yes."
@@ -205,6 +206,8 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
                                         styles={{ root: { width: '100%', padding: '10px 0 5px' } }}
                                     />
                                 </Stack>
+                                {/* This will be added once link is provided */}
+                                {/* <Link href="" target="_blank" styles={{ root: { paddingTop: 20 } }}>How do I remove the published version of the developer portal? <Icon iconName="OpenInNewWindow" styles={{ root: { paddingLeft: 5 } }} /></Link> */}
                             </Stack>
                         </PivotItem>
                     </Pivot>

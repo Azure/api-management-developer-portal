@@ -56,63 +56,55 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                     >
                         <div>
                             <Image
-                                src="/assets/images/nature.jpg"
+                                src="/assets/images/onboarding-1.png"
                                 imageFit={ImageFit.centerCover}
                                 styles={{ root: { height: 360 } }}
                             />
                             <Stack className="carousel-text-container">
-                                <Text block className="carousel-header">✨ Introducing new, improved developer portal editor and API and product details widgets!</Text>
-                                <Text block>We redesigned the portal editor interface to boost your productivity and enhance the interactions with your favorite features and tools. 
-                                The new API and product details widgets elevate the experience of developer portal for visitors and enable you to publish supplemental documentation.</Text>
-                                <Text block>What's new:</Text>
+                                <Text block className="carousel-header">Introducing the improved developer portal and API and product details pages!</Text>
+                                <Text block>We redesigned the developer portal layout to help maximize your productivity. We also added a new API details page and product details page widget so that you can display custom documentation.</Text>
+                            </Stack>
+                        </div>
+                        <div>
+                            <Image
+                                src="/assets/images/onboarding-2.png"
+                                imageFit={ImageFit.centerCover}
+                                styles={{ root: { height: 360 } }}
+                            />
+                            <Stack className="carousel-text-container">
+                                <Text block className="carousel-header">A new look and greater efficiency</Text>
+                                <Text block>The developer portal editor has a new layout that emphasizes site management. We reorganized the core elements that you interact with most, but all your favorite features are still here:</Text>
                                 <ul>
-                                    <li><Text>Improved developer portal editor.</Text></li>
-                                    <li><Text>Redesigned API and product details widgets with the support for custom Markdown documentation.</Text></li>
+                                    <li><Text><Text className="bolder-text">Menu:</Text> Easily locate the features you need to manage and customize your site.</Text></li>
+                                    <li><Text><Text className="bolder-text">Toolbar menu:</Text> Quickly save and publish changes or switch between editing options.</Text></li>
+                                    <li><Text><Text className="bolder-text">Content area:</Text> Edit content in a more focused workspace.</Text></li>
                                 </ul>
                             </Stack>
                         </div>
                         <div>
                             <Image
-                                src="/assets/images/nature.jpg"
+                                src="/assets/images/onboarding-3.png"
                                 imageFit={ImageFit.centerCover}
                                 styles={{ root: { height: 360 } }}
                             />
                             <Stack className="carousel-text-container">
-                                <Text block className="carousel-header">Get a fresh look at the new editor experience</Text>
-                                <Text block>We re-organized the new portal editor layout around three core elements, making site management a breeze. Rest assured, all your favorite features remain intact - we have not added or removed any functionality.</Text>
-                                <ul>
-                                    <li><Text>Left side menu: Easily locate all the features you need to manage and customize your site.</Text></li>
-                                    <li><Text>Top toolbar menu: Quickly save and publish changes or switch between editing options.</Text></li>
-                                    <li><Text>Content area: Effortlessly edit the content of your pages in a focused, uncluttered view.</Text></li>
-                                </ul>
+                                <Text block className="carousel-header">Display custom documentation with new details pages</Text>
+                                <Text block>The redesigned API and product details pages improve functionality by making custom documentation readily accessible to your developers. Custom documentation is created and configured through your API Management service and displayed in the developer portal.</Text>
                             </Stack>
                         </div>
                         <div>
                             <Image
-                                src="/assets/images/nature.jpg"
+                                src="/assets/images/onboarding-4.png"
                                 imageFit={ImageFit.centerCover}
                                 styles={{ root: { height: 360 } }}
                             />
                             <Stack className="carousel-text-container">
-                                <Text block className="carousel-header">Elevate API and product documentation</Text>
-                                <Text block>We redesigned the API and product details widgets, placing essential information right at your developers' fingertips. The new widgets combine functionality that was previously implemented with several standalone widgets for easier management and maintainability. 
-                                They feature a user-friendly left navigation panel with a dedicated area for custom documentation, which you can author using Markdown in the Azure portal.</Text>
-                                <Text block><Link underline target="_blank" href="https://aka.ms/apimdocs/portal/markdown">Learn more about creating custom documentation.</Link></Text>
-                            </Stack>
-                        </div>
-                        <div>
-                            <Image
-                                src="/assets/images/nature.jpg"
-                                imageFit={ImageFit.centerCover}
-                                styles={{ root: { height: 360 } }}
-                            />
-                            <Stack className="carousel-text-container">
-                                <Text block className="carousel-header">Explore resources and get help</Text>
-                                <Text block>Whether you require assistance, seek comprehensive guidance, or want to share feedback, we've got you covered.</Text>
+                                <Text block className="carousel-header">Access information and customer support</Text>
+                                <Text block>We grouped helpful resources to support your site management needs. Access them through the Help and resources section of the menu:</Text>
                                 <ul>
-                                    <li><Text block>Documentation: Access our library of <Link underline target="_blank" href="https://aka.ms/apimdocs/portal">documentation</Link> to gain an understanding of developer portal features and functionality.</Text></li>
-                                    <li><Text block>Give feedback: Provide feedback or report a bug in our <Link underline target="_blank" href="https://aka.ms/apimdevportal">GitHub repository</Link>.</Text></li>
-                                    <li><Text block>Support: Contact support via the Azure portal interface of your API Management service.</Text></li>
+                                    <li><Text block><Text className="bolder-text">Documentation and tutorials:</Text> Access our library of <Link underline target="_blank" href="https://aka.ms/apimdocs/portal">documentation</Link> to gain a deeper understanding of our features and functionality.</Text></li>
+                                    <li><Text block><Text className="bolder-text">Feedback:</Text> Share your experience or report a bug in our <Link underline target="_blank" href="https://aka.ms/apimdevportal">GitHub repository</Link>.</Text></li>
+                                    <li><Text block><Text className="bolder-text">Support:</Text> Request assistance through your API Management service.</Text></li>
                                 </ul>
                             </Stack>
                         </div>

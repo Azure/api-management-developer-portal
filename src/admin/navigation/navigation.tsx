@@ -3,7 +3,7 @@ import { EventManager } from '@paperbits/common/events';
 import { INavigationService } from '@paperbits/common/navigation';
 import { NavigationItemContract } from '@paperbits/common/navigation/navigationItemContract';
 import { Resolve } from '@paperbits/react/decorators';
-import { CommandBarButton, FontIcon, IIconProps, INavLink, INavLinkGroup, Nav, Stack, Text } from '@fluentui/react';
+import { CommandBarButton, FontIcon, IIconProps, INavLink, INavLinkGroup, Nav, Spinner, Stack, Text } from '@fluentui/react';
 import { BackButton } from '../utils/components/backButton';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 import { NavigationItemModal } from './navigationItemModal';
@@ -14,7 +14,8 @@ interface NavigationState {
     hoveredNavItem: string,
     currentNavItem: NavigationItemContract,
     showDeleteConfirmation: boolean,
-    showNavigationItemModal: boolean
+    showNavigationItemModal: boolean,
+    isLoading: boolean
 }
 
 interface PagesProps {
@@ -47,7 +48,8 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
             hoveredNavItem: null,
             currentNavItem: null,
             showDeleteConfirmation: false,
-            showNavigationItemModal: false
+            showNavigationItemModal: false,
+            isLoading: false
         }
     }
 
@@ -56,8 +58,10 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
     }
 
     loadNavigationItems = async (): Promise<void> => {
-        const navItems = await this.navigationService.getNavigationItems();
-        this.setState({ navigationItems: navItems, navigationItemsToRender: [{ links: this.structureNavItems(navItems) }]});
+        this.setState({ isLoading: true });
+        Promise.all([this.navigationService.getNavigationItems()])
+            .then(navItems => this.setState({ navigationItems: navItems[0], navigationItemsToRender: [{ links: this.structureNavItems(navItems[0]) }]}))
+            .finally(() => this.setState({ isLoading: false }));
     }
 
     structureNavItems = (navItems: NavigationItemContract[]): INavLink[] => (
@@ -303,12 +307,16 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
                     className="nav-item-list-button"
                     onClick={() => this.setState({ showNavigationItemModal: true, currentNavItem: null })}
                 />
-                {/* It seems that you don't have navigation items yet. Would you like to create one? */}
-                <Nav
-                    ariaLabel="Site menu"
-                    groups={this.state.navigationItemsToRender}
-                    onRenderLink={(item) => this.renderNavItemContent(item)}
-                />
+                {this.state.isLoading && <Spinner />}
+                {this.state.navigationItemsToRender.length === 0 && !this.state.isLoading
+                    ? <Text block className="nav-item-description-container">It seems that you don't have site menu items yet. Would you like to create one?</Text>
+                    : 
+                        <Nav
+                            ariaLabel="Site menu"
+                            groups={this.state.navigationItemsToRender}
+                            onRenderLink={(item) => this.renderNavItemContent(item)}
+                        />
+                }
             </>
         </>
     }
