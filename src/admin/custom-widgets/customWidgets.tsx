@@ -4,7 +4,7 @@ import { ViewManager } from '@paperbits/common/ui';
 import { MapiBlobStorage } from '../../persistence';
 import { TCustomWidgetConfig } from '../../components/custom-widget';
 import { listConfigBlobs, loadCustomWidgetConfigs } from '../../components/custom-widget-list/loadCustomWidgetConfigs';
-import { CommandBarButton, FontIcon, IIconProps, Stack, Text } from '@fluentui/react';
+import { CommandBarButton, FontIcon, IIconProps, Spinner, Stack, Text } from '@fluentui/react';
 import { BackButton } from '../utils/components/backButton';
 import { CustomWidgetDetailsModal } from './customWidgetDetailsModal';
 import { lightTheme } from '../utils/themes';
@@ -12,7 +12,8 @@ import { lightTheme } from '../utils/themes';
 interface CustomWidgetsState {
     customWidgets: TCustomWidgetConfig[],
     showCustomWidgetModal: boolean,
-    selectedCustomWidget: TCustomWidgetConfig
+    selectedCustomWidget: TCustomWidgetConfig,
+    isLoading: boolean
 }
 
 interface CustomWidgetsProps {
@@ -38,15 +39,17 @@ export class CustomWidgets extends React.Component<CustomWidgetsProps, CustomWid
             customWidgets: [],
             showCustomWidgetModal: false,
             selectedCustomWidget: null,
+            isLoading: false
         }
     }
 
     componentDidMount(): void {
+        this.setState({ isLoading: true });
         this.searchCustomWidgets();
     }
 
     handleCustomWidgetModalClose = (): void => {
-        this.setState({ showCustomWidgetModal: false, selectedCustomWidget: null });
+        this.setState({ showCustomWidgetModal: false, selectedCustomWidget: null, isLoading: true });
         this.searchCustomWidgets();
     }
 
@@ -62,7 +65,7 @@ export class CustomWidgets extends React.Component<CustomWidgetsProps, CustomWid
             });
             
             this.setState({ customWidgets: Object.values(configs)});
-        });
+        }).finally(() => this.setState({ isLoading: false }));
     }
 
     renderCustomWidgetContent = (customWidget: TCustomWidgetConfig): JSX.Element => (
@@ -109,14 +112,17 @@ export class CustomWidgets extends React.Component<CustomWidgetsProps, CustomWid
                 onClick={() => this.setState({ showCustomWidgetModal: true, selectedCustomWidget: null })}
             />
             <div className="objects-list">
-                {this.state.customWidgets.map(customWidget =>
-                    <CommandBarButton
-                        iconProps={widgetIcon}
-                        text={customWidget.displayName}
-                        key={customWidget.name}
-                        className="nav-item-list-button"
-                        onRenderText={() => this.renderCustomWidgetContent(customWidget)}
-                    />
+                {this.state.isLoading && <Spinner />}
+                {this.state.customWidgets.length === 0 && !this.state.isLoading
+                    ? <Text block className="nav-item-description-container">It seems that you don't have custom widgets yet. Would you like to create one?</Text>
+                    : this.state.customWidgets.map(customWidget =>
+                        <CommandBarButton
+                            iconProps={widgetIcon}
+                            text={customWidget.displayName}
+                            key={customWidget.name}
+                            className="nav-item-list-button"
+                            onRenderText={() => this.renderCustomWidgetContent(customWidget)}
+                        />
                 )}
             </div>
         </>

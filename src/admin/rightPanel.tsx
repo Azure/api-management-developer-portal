@@ -11,7 +11,7 @@ import { ContentWorkshop } from '../components/content';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
 import { CommandBarButton, DefaultButton, Dropdown, Icon, IconButton, IDropdownOption, IIconProps, PrimaryButton, Stack, Text, ThemeProvider } from '@fluentui/react';
 import { lightTheme, darkTheme } from './utils/themes';
-import { mobileBreakpoint, smallMobileBreakpoint } from './utils/variables';
+import { mobileBreakpoint, smallMobileBreakpoint } from '../constants';
 initializeIcons();
 
 interface RightPanelState {

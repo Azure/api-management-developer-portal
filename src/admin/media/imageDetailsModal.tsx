@@ -7,7 +7,7 @@ import { Resolve } from '@paperbits/react/decorators';
 import { IMediaService, MediaContract } from '@paperbits/common/media';
 import { PermalinkService } from '@paperbits/common/permalinks';
 import { EventManager } from '@paperbits/common/events';
-import { ActionButton, DefaultButton, IconButton, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
+import { ActionButton, DefaultButton, IconButton, Modal, PrimaryButton, Spinner, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 import { CopyableTextField } from '../utils/components/copyableTextField';
 import { REQUIRED, UNIQUE_REQUIRED, URL_REQUIRED, validateField } from '../utils/validator';
@@ -19,7 +19,8 @@ interface ImageDetailsModalState {
     croppedImage: Object,
     dragMode: string,
     cropperDisabled: boolean,
-    errors: object
+    errors: object,
+    isLoading: boolean
 }
 
 interface ImageDetailsModalProps {
@@ -53,7 +54,8 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
             croppedImage: {},
             dragMode: 'crop',
             cropperDisabled: false,
-            errors: {}
+            errors: {},
+            isLoading: true
         }
     }
 
@@ -158,6 +160,14 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
                 <div className="admin-modal-content">
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <Stack.Item style={{ width: '65%' }}>
+                            {this.state.isLoading &&
+                                <Spinner styles={{ root: {
+                                    position: 'absolute',
+                                    height: 450,
+                                    width: 'calc(100% - 10px)',
+                                    zIndex: 1
+                                }}} />
+                            }
                             <Cropper
                                 src={this.state.mediaItem.downloadUrl}
                                 onInitialized={this.onCropperInit.bind(this)}
@@ -165,6 +175,7 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
                                 guides={false}
                                 responsive
                                 restore
+                                onLoad={() => this.setState({ isLoading: false })}
                             />
                             <Stack horizontal horizontalAlign="center" tokens={{ childrenGap: 10 }} styles={{ root: { marginTop: 25 } }}>
                                 <IconButton

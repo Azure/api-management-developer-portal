@@ -8,10 +8,6 @@ interface ToastNotificationProps {
 }
 
 export class ToastNotification extends React.Component<ToastNotificationProps, {}> {
-    constructor(props: ToastNotificationProps) {
-        super(props);
-    }
-
     render(): JSX.Element {
         return <>
             <Stack horizontal verticalAlign="center">

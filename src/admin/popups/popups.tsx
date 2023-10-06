@@ -3,7 +3,7 @@ import { Resolve } from '@paperbits/react/decorators';
 import { IPopupService, PopupContract } from '@paperbits/common/popups';
 import { Query, Operator } from '@paperbits/common/persistence';
 import { ViewManager } from '@paperbits/common/ui';
-import { CommandBarButton, FontIcon, IIconProps, SearchBox, Stack, Text } from '@fluentui/react';
+import { CommandBarButton, FontIcon, IIconProps, SearchBox, Spinner, Stack, Text } from '@fluentui/react';
 import { getAllValues } from '../utils/helpers';
 import { lightTheme } from '../utils/themes';
 import { BackButton } from '../utils/components/backButton';
@@ -12,7 +12,8 @@ import { PopupDetailsModal } from './popupDetailsModal';
 interface PopupsState {
     popups: PopupContract[],
     showPopupDetailsModal: boolean,
-    selectedPopup: PopupContract
+    selectedPopup: PopupContract,
+    isLoading: boolean
 }
 
 interface PopupsProps {
@@ -37,17 +38,19 @@ export class Popups extends React.Component<PopupsProps, PopupsState> {
         this.state = {
             popups: [],
             showPopupDetailsModal: false,
-            selectedPopup: null
+            selectedPopup: null,
+            isLoading: false
         }
     }
 
     componentDidMount(): void {
-        this.searchPopups();
+        this.setState({ isLoading: true });
+        Promise.all([this.searchPopups()]).finally(() => this.setState({ isLoading: false }));
     }
 
     handlePageDetailsBackButtonClick = (): void => {
-        this.setState({ showPopupDetailsModal: false, selectedPopup: null });
-        this.searchPopups();
+        this.setState({ showPopupDetailsModal: false, selectedPopup: null, isLoading: true });
+        Promise.all([this.searchPopups()]).finally(() => this.setState({ isLoading: false }));
     }
 
     searchPopups = async (searchPattern: string = ''): Promise<void> => {
@@ -107,14 +110,17 @@ export class Popups extends React.Component<PopupsProps, PopupsState> {
                 styles={{ root: { marginTop: 20 } }}
             />
             <div className="objects-list">
-                {this.state.popups.map(popup =>
-                    <CommandBarButton
-                        iconProps={popupIcon}
-                        text={popup.title}
-                        key={popup.key}
-                        className="nav-item-list-button"
-                        onRenderText={() => this.renderPopupContent(popup)}
-                    />
+                {this.state.isLoading && <Spinner />}
+                {this.state.popups.length === 0 && !this.state.isLoading
+                    ? <Text block className="nav-item-description-container">It seems that you don't have pop-ups yet. Would you like to create one?</Text>
+                    : this.state.popups.map(popup =>
+                        <CommandBarButton
+                            iconProps={popupIcon}
+                            text={popup.title}
+                            key={popup.key}
+                            className="nav-item-list-button"
+                            onRenderText={() => this.renderPopupContent(popup)}
+                        />
                 )}
             </div>
         </>

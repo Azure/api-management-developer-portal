@@ -14,7 +14,7 @@ import { MediaModal } from './media/mediaModal';
 import { CustomWidgets } from './custom-widgets/customWidgets';
 import { OnboardingModal } from './onboardingModal';
 import { lightTheme } from './utils/themes';
-import { mobileBreakpoint } from './utils/variables';
+import { mobileBreakpoint } from '../constants';
 initializeIcons();
 
 const enum NavItem {

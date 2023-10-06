@@ -9,6 +9,8 @@ export const URL_MESSAGE = 'Field value should be a valid URL';
 export const URL_REQUIRED_MESSAGE = 'Field value is required and should be a valid URL';
 
 export const validateField = (validationType: string, value: string, customValidation?: boolean): string => {
+    if (value === undefined) return;
+
     let isValid: boolean = true;
     let errorMessage: string = '';
 
