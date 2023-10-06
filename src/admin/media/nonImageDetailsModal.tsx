@@ -3,7 +3,6 @@ import { isEqual, isEmpty } from 'lodash';
 import { Resolve } from '@paperbits/react/decorators';
 import { IMediaService } from '@paperbits/common/media';
 import { MediaContract } from '@paperbits/common/media/mediaContract';
-import { PermalinkService } from '@paperbits/common/permalinks';
 import { EventManager } from '@paperbits/common/events';
 import { DefaultButton, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { CopyableTextField } from '../utils/components/copyableTextField';
@@ -25,9 +24,6 @@ const textFieldStyles = { root: { paddingBottom: 15 } };
 export class NonImageDetailsModal extends React.Component<NonImageDetailsModalProps, NonImageDetailsModalState> {
     @Resolve('mediaService')
     public mediaService: IMediaService;
-
-    @Resolve('permalinkService')
-    public permalinkService: PermalinkService;
 
     @Resolve('eventManager')
     public eventManager: EventManager;
@@ -72,7 +68,7 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
     validatePermalink = async (permalink: string): Promise<string> => {
         if (permalink === this.props.mediaItem?.permalink) return '';
 
-        const isPermalinkNotDefined = await this.permalinkService.isPermalinkDefined(permalink) && !reservedPermalinks.includes(permalink);
+        const isPermalinkNotDefined = !(await this.mediaService.getMediaByPermalink(permalink)) && !reservedPermalinks.includes(permalink);
         let errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
 
         if (errorMessage === '') errorMessage = validateField(URL_REQUIRED, permalink);
@@ -81,6 +77,15 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
     }
 
     saveMedia = async (): Promise<void> => {
+        const permalinkError = await this.validatePermalink(this.state.mediaItem.permalink);
+        if (permalinkError) {
+            this.setState({ errors: { permalink: permalinkError } });
+
+            return;
+        }
+
+        return;
+
         await this.mediaService.updateMedia(this.state.mediaItem);
         this.eventManager.dispatchEvent('onSaveChanges');
         this.props.onDismiss();

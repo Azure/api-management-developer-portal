@@ -5,7 +5,6 @@ import { isEqual, isEmpty } from 'lodash';
 import * as Utils from '@paperbits/common/utils';
 import { Resolve } from '@paperbits/react/decorators';
 import { IMediaService, MediaContract } from '@paperbits/common/media';
-import { PermalinkService } from '@paperbits/common/permalinks';
 import { EventManager } from '@paperbits/common/events';
 import { ActionButton, DefaultButton, IconButton, Modal, PrimaryButton, Spinner, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
@@ -36,9 +35,6 @@ const flipHorizontallyStyles = { root: { color: '#000', transform: 'rotate(45deg
 export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, ImageDetailsModalState> {
     @Resolve('mediaService')
     public mediaService: IMediaService;
-
-    @Resolve('permalinkService')
-    public permalinkService: PermalinkService;
 
     @Resolve('eventManager')
     public eventManager: EventManager;
@@ -90,7 +86,7 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
     validatePermalink = async (permalink: string): Promise<string> => {
         if (permalink === this.props.mediaItem?.permalink) return '';
 
-        const isPermalinkNotDefined = await this.permalinkService.isPermalinkDefined(permalink) && !reservedPermalinks.includes(permalink);
+        const isPermalinkNotDefined = !(await this.mediaService.getMediaByPermalink(permalink)) && !reservedPermalinks.includes(permalink);
         let errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
 
         if (errorMessage === '') errorMessage = validateField(URL_REQUIRED, permalink);

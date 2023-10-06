@@ -2,7 +2,6 @@ import * as React from 'react';
 import { isEqual, isEmpty } from 'lodash';
 import { Resolve } from '@paperbits/react/decorators';
 import { ILayoutService, LayoutContract } from '@paperbits/common/layouts';
-import { PermalinkService } from '@paperbits/common/permalinks';
 import { EventManager } from '@paperbits/common/events';
 import { CommandBarButton, DefaultButton, IIconProps, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
@@ -30,9 +29,6 @@ const textFieldStyles = { root: { paddingBottom: 15 } };
 export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps, PageLayoutModalState> {
     @Resolve('layoutService')
     public layoutService: ILayoutService;
-
-    @Resolve('permalinkService')
-    public permalinkService: PermalinkService;
 
     @Resolve('eventManager')
     public eventManager: EventManager;
@@ -79,7 +75,7 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
     validatePermalink = async (permalink: string): Promise<string> => {
         if (permalink === this.props.layout?.permalinkTemplate) return '';
 
-        const isPermalinkNotDefined = await this.permalinkService.isPermalinkDefined(permalink) && !reservedPermalinks.includes(permalink);
+        const isPermalinkNotDefined = !(await this.layoutService.getLayoutByPermalinkTemplate(permalink)) && !reservedPermalinks.includes(permalink);
         const errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
 
         return errorMessage;
@@ -105,6 +101,15 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
     }
 
     saveLayout = async (): Promise<void> => {
+        if (this.state.layout.permalinkTemplate === '/new-layout') { 
+            const permalinkError = await this.validatePermalink(this.state.layout.permalinkTemplate);
+            if (permalinkError) {
+                this.setState({ errors: { permalinkTemplate: permalinkError } });
+            
+                return;
+            }
+        }
+
         if (this.props.layout && !this.state.copyLayout) {
             await this.layoutService.updateLayout(this.state.layout);
         } else {
