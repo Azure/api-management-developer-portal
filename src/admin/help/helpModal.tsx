@@ -74,7 +74,7 @@ export class HelpModal extends React.Component<HelpModalProps, HelpModalState> {
 
                     <Text block variant="large" styles={headerStyles}>Give feedback</Text>
                     <ul>
-                        <li><Text block>Read release notes, report issues, or request features in the <Link href="https://github.com/Azure/api-management-developer-portal" target="_blank">GitHub repo</Link>.</Text></li>
+                        <li><Text block>Read release notes, report issues, or request features in the <Link href="https://github.com/Azure/api-management-developer-portal/issues" target="_blank">GitHub repo</Link>.</Text></li>
                     </ul>
 
                     <Text block variant="large" styles={headerStyles}>Support</Text>

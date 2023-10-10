@@ -179,7 +179,7 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                                     <Icon iconName="OpenInNewWindow" styles={{ root: { paddingLeft: 5 } }} />
                                 </Text>
                             }
-                            onClick={() => window.open('https://github.com/Azure/api-management-developer-portal', '_blank', 'noreferrer')}
+                            onClick={() => window.open('https://github.com/Azure/api-management-developer-portal/issues', '_blank', 'noreferrer')}
                             className="nav-item-list-button"
                         />
                         <CommandBarButton
