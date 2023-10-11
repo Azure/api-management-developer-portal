@@ -161,8 +161,14 @@ export class AadServiceV2 implements IAadService {
 
     /**
      * Ensures that all redirect-based callbacks are processed.
+     *
+     * @param {string} clientId - Azure Active Directory B2C client ID.
+     * @param {string} tenant - Tenant, e.g. `contoso.b2clogin.com`.
+     * @param {string} instance - Instance, e.g. `contoso.onmicrosoft.com`.
+     * @param {string} userFlow - User flow, e.g. `B2C_1_signinsignup`.
+     * @param {string} replyUrl - Reply URL, e.g. `https://contoso.com/signin`.
      */
-    public async checkCallbacks(): Promise<void> {
+    public async checkCallbacks(clientId: string, tenant: string, instance: string, userFlow: string, replyUrl?: string): Promise<void> {
         /**
          * There is a bug with signing-in through popup in MSAL library that
          * which results in opening original sign-in page in the same popup.
@@ -172,8 +178,21 @@ export class AadServiceV2 implements IAadService {
             return;
         }
 
-        const msalConfig = {};
-        const msalInstance = new msal.PublicClientApplication(<any>msalConfig);
+        const auth = `https://${tenant}/tfp/${instance}/${userFlow}`;
+
+        const msalConfig: msal.Configuration = {
+            auth: {
+                clientId: clientId,
+                authority: auth,
+                knownAuthorities: [tenant]
+            }
+        };
+
+        if (replyUrl) {
+            msalConfig.auth.redirectUri = replyUrl;
+        }
+
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
         await msalInstance.loginPopup();
 
         window.close();

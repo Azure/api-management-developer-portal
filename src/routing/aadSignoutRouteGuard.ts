@@ -28,9 +28,13 @@ export class AadSignOutRouteGuard implements RouteGuard {
             return true;
         }
 
+        const auth = `https://${config.authority}/tfp/${config.signinTenant}/${config.signinPolicyName}`;
+
         const msalConfig = {
             auth: {
                 clientId: config.clientId,
+                authority: auth,
+                knownAuthorities: [config.authority],
                 postLogoutRedirectUri: location.origin
             }
         };
@@ -48,6 +52,7 @@ export class AadSignOutRouteGuard implements RouteGuard {
         this.authenticator.clearAccessToken();
         msalInstance.logoutPopup({
             postLogoutRedirectUri: location.origin,
+            authority: auth,
             mainWindowRedirectUri: location.origin
         }); // actual sign-out from AAD/B2C
 
