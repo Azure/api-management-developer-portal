@@ -14,7 +14,7 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
         private readonly blobStorage: MapiBlobStorage,
     ) { }
 
-    public stateToIntance(state: WidgetState, componentInstance: CustomWidgetViewModel): void {
+    public stateToInstance(state: WidgetState, componentInstance: CustomWidgetViewModel): void {
         componentInstance.config(state.config);
         componentInstance.styles(state.styles);
     }
