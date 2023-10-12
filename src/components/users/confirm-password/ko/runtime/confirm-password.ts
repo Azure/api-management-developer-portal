@@ -21,7 +21,7 @@ export class ConfirmPassword {
     public readonly password: ko.Observable<string>;
     public readonly passwordConfirmation: ko.Observable<string>;
     public readonly isResetConfirmed: ko.Observable<boolean>;
-    public readonly working: ko.Observable<boolean>;
+    public readonly isResetPasswordDisabled: ko.Observable<boolean>;
 
     constructor(
         private readonly usersService: UsersService,
@@ -29,7 +29,7 @@ export class ConfirmPassword {
         this.password = ko.observable();
         this.passwordConfirmation = ko.observable();
         this.isResetConfirmed = ko.observable(false);
-        this.working = ko.observable(false);
+        this.isResetPasswordDisabled = ko.observable(false);
 
         validation.init({
             insertMessages: false,
@@ -49,12 +49,15 @@ export class ConfirmPassword {
         this.userId = await this.usersService.getCurrentUserId();
 
         if (this.userId) {
+            this.isResetPasswordDisabled(true);
+            dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Cannot reset password for a signed in user."]);
             return;
         }
 
         const queryParams = new URLSearchParams(location.search);
 
         if (!queryParams.has("userid") || !queryParams.has("ticketid") || !queryParams.has("ticket")) {
+            this.isResetPasswordDisabled(true);
             dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Required params not found"]);
             return;
         }
@@ -67,6 +70,7 @@ export class ConfirmPassword {
                 throw new Error("User not found.");
             }
         } catch (error) {
+            this.isResetPasswordDisabled(true);
             dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Activate user error: " + error.message]);
         }
     }
@@ -75,6 +79,11 @@ export class ConfirmPassword {
      * Sends user resetPswd request to Management API.
      */
     public async resetPswd(): Promise<void> {
+        if (this.token == undefined || this.userId == undefined) {
+            dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Required params not found"]);
+            return;
+        }
+
         const result = validation.group({
             password: this.password,
             passwordConfirmation: this.passwordConfirmation
