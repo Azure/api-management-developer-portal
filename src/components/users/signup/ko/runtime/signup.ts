@@ -66,7 +66,7 @@ export class Signup {
         });
 
         this.email.extend(<any>{ required: { message: ValidationMessages.emailRequired }, email: true });
-        this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired }, minLength: 8 }); // TODO: password requirements should come from Management API.
+       // this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired }, passwordValidator: {} });
         this.passwordConfirmation.extend(<any>{ equal: { message: ValidationMessages.passwordConfirmationMustMatch, params: this.password } });
         this.firstName.extend(<any>{ required: { message: ValidationMessages.firstNameRequired } });
         this.lastName.extend(<any>{ required: { message: ValidationMessages.lastNameRequired } });
@@ -155,7 +155,7 @@ export class Signup {
         if (captchaIsRequired) {
             if (!this.setCaptchaValidation) {
                 this.logger.trackEvent("CaptchaValidation", { message: "Captcha failed to initialize." });
-                dispatchErrors(this.eventManager, ErrorSources.resetpassword, [ValidationMessages.captchaNotInitialized]);
+                dispatchErrors(this.eventManager, ErrorSources.signup, [ValidationMessages.captchaNotInitialized]);
                 return;
             }
 
