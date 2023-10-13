@@ -1,22 +1,26 @@
 import * as ko from "knockout";
 import { ValidationMessages } from "../components/users/validationMessages";
 ko.extenders.passwordValidator = (target) => {
-    target.extend({ 
+    target.extend({
         validation: {
             validator: (value) => {
-                var minLength = 8;
-                var requiredCategories = 2;
-                var uppercaseRegex = /[A-Z]/;
-                var lowercaseRegex = /[a-z]/;
-                var numbersRegex = /[0-9]/;
-                var symbolsRegex = new RegExp("[!@#$%^&*()_+{}\\[\\]:;<>,.?~\\-]");
-                var categories = 0;
+                if (value.length < 8) {
+                    return false;
+                }
+
+                const requiredCategories = 2;
+                const uppercaseRegex = /[A-Z]/;
+                const lowercaseRegex = /[a-z]/;
+                const numbersRegex = /[0-9]/;
+                const symbolsRegex = new RegExp("[!@#$%^&*()_+{}\\[\\]:;<>,.?~\\-]");
+
+                let categories = 0;
                 if (uppercaseRegex.test(value)) categories++;
                 if (lowercaseRegex.test(value)) categories++;
                 if (numbersRegex.test(value)) categories++;
                 if (symbolsRegex.test(value)) categories++;
-                var isValid = value.length >= minLength && categories >= requiredCategories;
-                return isValid;
+                
+                return categories >= requiredCategories;
             },
             message: ValidationMessages.passwordCriteria
         }
