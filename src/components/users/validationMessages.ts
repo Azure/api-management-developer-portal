@@ -5,6 +5,7 @@ export class ValidationMessages {
     static firstNameRequired = `First name is required.`;
     static lastNameRequired = `Last name is required.`;
     static passwordRequired = `Password is required.`;
+    static passwordCriteria = `Passwords must have at least 8 characters and contain at least two of the following: uppercase letters, lowercase letters, numbers, and symbols`;
     static passwordConfirmationMustMatch = `Password confirmation field must be equal to password.`;
     static newPasswordRequired = `New password is required.`;
     static consentRequired = `You must agree to the terms of use.`;
