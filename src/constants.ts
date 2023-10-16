@@ -293,7 +293,7 @@ export enum GrantTypes {
     password = "password"
 }
 
-export const managementApiVersion = "2021-04-01-preview";
+export const managementApiVersion = "2021-08-01";
 
 /**
  * Header name to track developer portal type.
