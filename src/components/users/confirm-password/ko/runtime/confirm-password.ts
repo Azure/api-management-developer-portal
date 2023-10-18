@@ -29,7 +29,7 @@ export class ConfirmPassword {
         this.password = ko.observable();
         this.passwordConfirmation = ko.observable();
         this.isResetConfirmed = ko.observable(false);
-        this.isResetPasswordDisabled = ko.observable(false);
+        this.isResetPasswordDisabled = ko.observable(true);
 
         validation.init({
             insertMessages: false,
@@ -49,7 +49,6 @@ export class ConfirmPassword {
         this.userId = await this.usersService.getCurrentUserId();
 
         if (this.userId) {
-            this.isResetPasswordDisabled(true);
             dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Cannot reset password for a signed in user."]);
             return;
         }
@@ -57,7 +56,6 @@ export class ConfirmPassword {
         const queryParams = new URLSearchParams(location.search);
 
         if (!queryParams.has("userid") || !queryParams.has("ticketid") || !queryParams.has("ticket")) {
-            this.isResetPasswordDisabled(true);
             dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Required params not found"]);
             return;
         }
@@ -70,9 +68,10 @@ export class ConfirmPassword {
                 throw new Error("User not found.");
             }
         } catch (error) {
-            this.isResetPasswordDisabled(true);
             dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Activate user error: " + error.message]);
         }
+
+        this.isResetPasswordDisabled(false);
     }
 
     /**
