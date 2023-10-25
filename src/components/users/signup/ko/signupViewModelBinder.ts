@@ -1,9 +1,6 @@
-import { Bag } from "@paperbits/common";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { ComponentFlow } from "@paperbits/common/editing";
-import { EventManager, Events } from "@paperbits/common/events";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { ViewModelBinder } from "@paperbits/common/widgets";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { TermsOfService } from "../../../../contracts/identitySettings";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { IdentityService } from "../../../../services";
@@ -12,6 +9,7 @@ import { TenantService } from "../../../../services/tenantService";
 import { SignupHandlers } from "../signupHandlers";
 import { SignupModel } from "../signupModel";
 import { SignupViewModel } from "./signupViewModel";
+import { EventManager } from "@paperbits/common/events";
 
 export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignupViewModel> {
 
@@ -20,62 +18,48 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
         private readonly backendService: BackendService,
         private readonly settingsProvider: ISettingsProvider,
         private readonly identityService: IdentityService,
-        private readonly styleCompiler: StyleCompiler) { }
+        private readonly styleCompiler: StyleCompiler
+    ) { }
 
     public async getTermsOfService(): Promise<TermsOfService> {
         const identitySetting = await this.identityService.getIdentitySetting();
         return identitySetting.properties.termsOfService;
     }
 
-    public async modelToViewModel(model: SignupModel, viewModel?: SignupViewModel, bindingContext?: Bag<any>): Promise<SignupViewModel> {
-        if (!viewModel) {
-            viewModel = new SignupViewModel();
-            viewModel["widgetBinding"] = {
-                displayName: "Sign-up form: Basic",
-                layer: bindingContext?.layer,
-                model: model,
-                flow: ComponentFlow.Block,
-                draggable: true,
-                handler: SignupHandlers,
-                applyChanges: async (updatedModel: SignupModel) => {
-                    this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                    this.eventManager.dispatchEvent(Events.ContentUpdate);
-                }
-            };
-        }
+    public stateToInstance(state: WidgetState, componentInstance: SignupViewModel): void {
+        componentInstance.styles(state.styles);
 
+        componentInstance.runtimeConfig(JSON.stringify({
+            termsOfUse: state.termsOfUse,
+            isConsentRequired: state.isConsentRequired,
+            termsEnabled: state.termsEnabled,
+            requireHipCaptcha: state.requireHipCaptcha
+        }));
+    }
+
+    public async modelToState(model: SignupModel, state: WidgetState): Promise<void> {
         const useHipCaptcha = await this.settingsProvider.getSetting<boolean>("useHipCaptcha");
-        const params = { requireHipCaptcha: useHipCaptcha === undefined ? true : useHipCaptcha };
-
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
+
         if (isDelegationEnabled) {
             const delegationParam = {};
             delegationParam[DelegationParameters.ReturnUrl] = "/";
 
             const delegationUrl = await this.backendService.getDelegationUrlFromServer(DelegationAction.signUp, delegationParam);
+
             if (delegationUrl) {
-                params["delegationUrl"] = delegationUrl;
+                state.delegationUrl = delegationUrl;
             }
         }
 
         const termsOfService = await this.getTermsOfService();
-        if (termsOfService.text) params["termsOfUse"] = termsOfService.text;
-        if (termsOfService.consentRequired) params["isConsentRequired"] = termsOfService.consentRequired;
-        if (termsOfService.enabled) params["termsEnabled"] = termsOfService.enabled;
-
-        if (Object.keys(params).length !== 0) {
-            const runtimeConfig = JSON.stringify(params);
-            viewModel.runtimeConfig(runtimeConfig);
-        }
+        state.termsOfUse = termsOfService.text;
+        state.isConsentRequired = termsOfService.consentRequired;
+        state.termsEnabled = termsOfService.enabled;
+        state.requireHipCaptcha = useHipCaptcha === undefined ? true : useHipCaptcha
 
         if (model.styles) {
-            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, SignupHandlers));
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
-
-        return viewModel;
-    }
-
-    public canHandleModel(model: SignupModel): boolean {
-        return model instanceof SignupModel;
     }
 }

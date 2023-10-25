@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "lib": [
+            "dom",
+            "es2019"
+        ],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noStrictGenericChecks": true,
+        "ignoreDeprecations": "5.0",
+        "removeComments": true,
+        "noLib": false,
+        "skipLibCheck": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "allowUnreachableCode": true,
+        "sourceMap": true,
+        "incremental": false,
+        "resolveJsonModule": true,
+        "noEmit": false
+    },
+    "include": [
+        "../node_modules/@paperbits/common/http/*",
+    ]
+}

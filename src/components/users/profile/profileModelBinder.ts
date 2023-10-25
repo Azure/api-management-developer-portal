@@ -5,17 +5,8 @@ import { ProfileContract } from "./profileContract";
 
 
 const nodeType = "profile";
-const oldNodeType = "userDetails";
 
 export class ProfileModelBinder implements IModelBinder<ProfileModel> {
-    public canHandleModel(model: Object): boolean {
-        return model instanceof ProfileModel;
-    }
-
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === nodeType || contract.type === oldNodeType;
-    }
-
     public async contractToModel(contract: ProfileContract): Promise<ProfileModel> {
         const model = new ProfileModel();
         model.styles = contract.styles ?? {};

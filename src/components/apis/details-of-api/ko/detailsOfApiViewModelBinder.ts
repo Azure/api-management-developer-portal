@@ -1,51 +1,27 @@
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { DetailsOfApiViewModel } from "./detailsOfApiViewModel";
-import { DetailsOfApiModel } from "../detailsOfApiModel";
-import { Bag } from "@paperbits/common";
-import { EventManager, Events } from "@paperbits/common/events";
-import { ComponentFlow } from "@paperbits/common/editing";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { DetailsOfApiHandlers } from "../detailsOfApiHandlers";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { DetailsOfApiModel } from "../detailsOfApiModel";
+import { DetailsOfApiViewModel } from "./detailsOfApiViewModel";
 
 
 export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApiModel, DetailsOfApiViewModel> {
+    constructor(private readonly styleCompiler: StyleCompiler) { }
 
-    constructor(private readonly eventManager: EventManager,
-        private readonly styleCompiler: StyleCompiler) { }
+    public stateToInstance(state: WidgetState, componentInstance: DetailsOfApiViewModel): void {
+        componentInstance.styles(state.styles);
 
-    public async modelToViewModel(model: DetailsOfApiModel, viewModel?: DetailsOfApiViewModel, bindingContext?: Bag<any>): Promise<DetailsOfApiViewModel> {
-        if (!viewModel) {
-            viewModel = new DetailsOfApiViewModel();
-        }
-
-        viewModel.runtimeConfig(JSON.stringify({
-            changeLogPageUrl: model.changeLogPageHyperlink
-                ? model.changeLogPageHyperlink.href
+        componentInstance.runtimeConfig(JSON.stringify({
+            changeLogPageUrl: state.changeLogPageHyperlink
+                ? state.changeLogPageHyperlink.href
                 : undefined
         }));
-
-        viewModel["widgetBinding"] = {
-            displayName: "API: Details",
-            layer: bindingContext?.layer,
-            model: model,
-            draggable: true,
-            handler: DetailsOfApiHandlers,
-            flow: ComponentFlow.Block,
-            editor: "details-of-api-editor",
-            applyChanges: async (updatedModel: DetailsOfApiModel) => {
-                await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                this.eventManager.dispatchEvent(Events.ContentUpdate);
-            }
-        };
-
-        if (model.styles) {
-            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, DetailsOfApiHandlers));
-        }
-
-        return viewModel;
     }
 
-    public canHandleModel(model: DetailsOfApiModel): boolean {
-        return model instanceof DetailsOfApiModel;
+    public async modelToState(model: DetailsOfApiModel, state: WidgetState): Promise<void> {
+        state.changeLogPageHyperlink = model.changeLogPageHyperlink;
+
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }

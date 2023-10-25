@@ -1,20 +1,11 @@
-﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
-import { StyleDefinition } from "@paperbits/common/styles";
+﻿import { IWidgetHandler } from "@paperbits/common/editing";
 import { ProductListModel } from "./productListModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
+import { StyleDefinition } from "@paperbits/common/styles";
 
 export class ProductListHandlers implements IWidgetHandler {
-    public async getWidgetOrder(): Promise<IWidgetOrder> {
-        const widgetOrder: IWidgetOrder = {
-            name: "productList",
-            category: "Products",
-            displayName: "List of products",
-            iconClass: "widget-icon widget-icon-api-management",
-            requires: ["html"],
-            createModel: async () => new ProductListModel("list")
-        };
-
-        return widgetOrder;
+    public async getWidgetModel(): Promise<ProductListModel> {
+        return new ProductListModel("list");
     }
 
     public getStyleDefinitions(): StyleDefinition {
@@ -49,17 +40,8 @@ export class ProductListHandlers implements IWidgetHandler {
 }
 
 export class ProductListDropdownHandlers implements IWidgetHandler {
-    public async getWidgetOrder(): Promise<IWidgetOrder> {
-        const widgetOrder: IWidgetOrder = {
-            name: "productListDropdown",
-            category: "Products",
-            displayName: "List of products (dropdown)",
-            iconClass: "widget-icon widget-icon-api-management",
-            requires: ["html"],
-            createModel: async () => new ProductListModel("dropdown")
-        };
-
-        return widgetOrder;
+    public async getWidgetModel(): Promise<ProductListModel> {
+        return new ProductListModel("dropdown");
     }
     public getStyleDefinitions(): StyleDefinition {
         return {
@@ -106,17 +88,8 @@ export class ProductListDropdownHandlers implements IWidgetHandler {
 }
 
 export class ProductListTilesHandlers implements IWidgetHandler {
-    public async getWidgetOrder(): Promise<IWidgetOrder> {
-        const widgetOrder: IWidgetOrder = {
-            name: "productListTiles",
-            category: "Products",
-            displayName: "List of products (tiles)",
-            iconClass: "widget-icon widget-icon-api-management",
-            requires: ["html"],
-            createModel: async () => new ProductListModel("tiles")
-        };
-
-        return widgetOrder;
+    public async getWidgetModel(): Promise<ProductListModel> {
+        return new ProductListModel("tiles");
     }
 
     public getStyleDefinitions(): StyleDefinition {

@@ -1,45 +1,19 @@
-import { Bag } from "@paperbits/common";
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { ComponentFlow } from "@paperbits/common/editing";
-import { ProfileViewModel } from "./profileViewModel";
-import { ProfileModel } from "../profileModel";
-import { EventManager, Events } from "@paperbits/common/events";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { ProfileHandlers } from "../profileHandlers";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { ProfileModel } from "../profileModel";
+import { ProfileViewModel } from "./profileViewModel";
 
 
 export class ProfileViewModelBinder implements ViewModelBinder<ProfileModel, ProfileViewModel> {
-    constructor(
-        private readonly eventManager: EventManager,
-        private readonly styleCompiler: StyleCompiler) { }
+    constructor(private readonly styleCompiler: StyleCompiler) { }
 
-    public async modelToViewModel(model: ProfileModel, viewModel?: ProfileViewModel, bindingContext?: Bag<any>): Promise<ProfileViewModel> {
-        if (!viewModel) {
-            viewModel = new ProfileViewModel();
-
-            viewModel["widgetBinding"] = {
-                displayName: "User: Profile",
-                layer: bindingContext?.layer,
-                model: model,
-                flow: ComponentFlow.Block,
-                draggable: true,
-                handler: ProfileHandlers,
-                applyChanges: async (updatedModel: ProfileModel) => {
-                    this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                    this.eventManager.dispatchEvent(Events.ContentUpdate);
-
-                }
-            };
-        }
-
-        if (model.styles) {
-            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, ProfileHandlers));
-        }
-
-        return viewModel;
+    public stateToInstance(state: WidgetState, componentInstance: ProfileViewModel): void {
+        componentInstance.styles(state.styles);
     }
 
-    public canHandleModel(model: ProfileModel): boolean {
-        return model instanceof ProfileModel;
+    public async modelToState(model: ProfileModel, state: WidgetState): Promise<void> {
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }

@@ -1,20 +1,11 @@
-﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
-import { StyleDefinition } from "@paperbits/common/styles";
+﻿import { IWidgetHandler } from "@paperbits/common/editing";
 import { DetailsOfApiModel } from "./detailsOfApiModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
+import { StyleDefinition } from "@paperbits/common/styles";
 
 export class DetailsOfApiHandlers implements IWidgetHandler {
-    public async getWidgetOrder(): Promise<IWidgetOrder> {
-        const widgetOrder: IWidgetOrder = {
-            name: "apiDetails",
-            category: "APIs",
-            displayName: "API: Details",
-            iconClass: "widget-icon widget-icon-api-management",
-            requires: ["html"],
-            createModel: async () => new DetailsOfApiModel()
-        };
-
-        return widgetOrder;
+    public async getWidgetModel(): Promise<DetailsOfApiModel> {
+        return new DetailsOfApiModel();
     }
     public getStyleDefinitions(): StyleDefinition {
         return {

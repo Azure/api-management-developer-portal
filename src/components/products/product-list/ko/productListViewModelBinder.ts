@@ -1,11 +1,8 @@
-import { Bag } from "@paperbits/common";
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { EventManager, Events } from "@paperbits/common/events";
-import { ProductListViewModel } from "./productListViewModel";
-import { ProductListModel } from "../productListModel";
-import { ComponentFlow } from "@paperbits/common/editing";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { ProductListDropdownHandlers, ProductListHandlers, ProductListTilesHandlers } from "../productListHandlers";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { ProductListDropdownHandlers, ProductListHandlers } from "../productListHandlers";
+import { ProductListModel } from "../productListModel";
+import { ProductListViewModel } from "./productListViewModel";
 
 const handlerForLayout = {
     list: ProductListHandlers,
@@ -13,48 +10,27 @@ const handlerForLayout = {
 };
 
 export class ProductListViewModelBinder implements ViewModelBinder<ProductListModel, ProductListViewModel> {
-    constructor(
-        private readonly eventManager: EventManager,
-        private readonly styleCompiler: StyleCompiler) { }
+    constructor(private readonly styleCompiler: StyleCompiler) { }
 
-    public async modelToViewModel(model: ProductListModel, viewModel?: ProductListViewModel, bindingContext?: Bag<any>): Promise<ProductListViewModel> {
-        if (!viewModel) {
-            viewModel = new ProductListViewModel();
-        }
-
-        viewModel.layout(model.layout);
-
-        viewModel.runtimeConfig(JSON.stringify({
-            allowSelection: model.allowSelection,
-            detailsPageUrl: model.detailsPageHyperlink
-                ? model.detailsPageHyperlink.href
+    public stateToInstance(state: WidgetState, componentInstance: ProductListViewModel): void {
+        componentInstance.styles(state.styles);
+        componentInstance.layout(state.layout);
+        
+        componentInstance.runtimeConfig(JSON.stringify({
+            allowSelection: state.allowSelection,
+            detailsPageUrl: state.detailsPageHyperlink
+                ? state.detailsPageHyperlink.href
                 : undefined
         }));
-
-        const handler = handlerForLayout[model.layout] ?? ProductListTilesHandlers;
-
-        viewModel["widgetBinding"] = {
-            displayName: "List of products" + (model.layout === "list" ? "" : ` (${model.layout})`),
-            layer: bindingContext?.layer,
-            model: model,
-            draggable: true,
-            handler: handler,
-            flow: ComponentFlow.Block,
-            editor: "product-list-editor",
-            applyChanges: async (updatedModel: ProductListModel) => {
-                await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                this.eventManager.dispatchEvent(Events.ContentUpdate);
-            }
-        };
-
-        if (model.styles) {
-            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, handler));
-        }
-
-        return viewModel;
     }
 
-    public canHandleModel(model: ProductListModel): boolean {
-        return model instanceof ProductListModel;
+    public async modelToState(model: ProductListModel, state: WidgetState): Promise<void> {
+        state.allowSelection = model.allowSelection;
+        state.detailsPageHyperlink = model.detailsPageHyperlink;
+        state.layout=model.layout;
+
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }

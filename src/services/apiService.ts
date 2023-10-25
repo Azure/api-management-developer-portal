@@ -248,7 +248,7 @@ export class ApiService {
 
     /**
      * Returns API with specified ID and revision.
-     * @param apiId Unique API indentifier.
+     * @param apiId Unique API identifier.
      * @param revision
      */
     public async getApi(apiId: string, revision?: string): Promise<Api> {
@@ -399,7 +399,7 @@ export class ApiService {
     }
 
     /**
-     * Returns API schema with sepcified identifier.
+     * Returns API schema with specified identifier.
      * @param schemaId {string} ARM-formatted schema identifier.
      */
     public async getApiSchema(schemaId: string): Promise<Schema> {

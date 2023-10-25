@@ -86,6 +86,13 @@ $body-bg: none;
 }
 
 .table-preset-params {
+    grid-template-columns: minmax(150px, 350px) 100px 100px 200px minmax(350px, 1fr);
+}
+.table-preset-params .cell-examples {
+    display: none;
+}
+
+.table-preset-params-examples {
     grid-template-columns: minmax(150px, 350px) 100px 100px 200px minmax(350px, 1fr) minmax(350px, 1fr);
 }
 
@@ -94,6 +101,13 @@ $body-bg: none;
 }
 
 .table-preset-headers-request {
+    grid-template-columns: minmax(150px, 350px) 100px 200px minmax(350px, 1fr);
+}
+.table-preset-headers-request .cell-examples {
+    display: none;
+}
+
+.table-preset-headers-request-examples {
     grid-template-columns: minmax(150px, 350px) 100px 200px minmax(350px, 1fr) minmax(350px, 1fr);
 }
 

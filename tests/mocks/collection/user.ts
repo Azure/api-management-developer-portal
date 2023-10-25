@@ -1,108 +1,74 @@
-import {Utils} from "../../utils";
-export class UserMockData{
-    public email;
-    public publicId;
+import { UserContract } from "../../../src/contracts/user";
+import { TestUtils } from "../../testUtils";
+import { Resource } from "./resource";
 
-    public constructor(){
-        this.email = "example@example.example";
-        this.publicId = "example-example-example";
-    }
+export class User extends Resource{
+    public email: string;
+    public publicId: string;
+    public firstName: string;
+    public lastName: string;
+    public password: string;
+
+    public accessToken: string;
+    public responseContract: any;
     
-    public getSignInResponse(){
+    public constructor(testId: string, email: string, publicId: string, firstName: string, lastName: string, password: string){
+        super(testId);
+        this.email = email;
+        this.publicId = publicId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.accessToken = TestUtils.getSharedAccessToken(this.publicId, TestUtils.randomIdentifier(), 1);
+
+        this.responseContract = this.getResponseContract();
+    }
+
+    private getProperties(): any{
         return {
-            "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/identity":{
-                "headers": [
-                {
-                    "name": "content-type",
-                    "value": "application/json; charset=utf-9"
-                },
-                {
-                    "name": "ocp-apim-sas-token",
-                    "value": Utils.getSharedAccessToken(this.publicId, "accesskey", 1)
-                }
-                ],
-                "statusCode": 200,
-                "statusText": "OK",
-                "body": {
-                    "id": this.publicId
-                }
+            email: this.email,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            state: "active",
+            password: this.password,
+            appType: "developerPortal"
+        };
+    }
+
+    public getRequestContract(): UserContract{
+        return {
+            properties: this.getProperties()
+        };
+    }
+
+    public getResponseContract(): any{
+        return {
+            id: `/subscriptions/000/resourceGroups/000/providers/Microsoft.ApiManagement/service/sid/users/${this.publicId}`,
+            type: "Microsoft.ApiManagement/service/users",
+            name: this.publicId,
+            properties: {
+                email: this.email,
+                firstName: this.firstName,
+                lastName: this.lastName,
+                state: "active",
+                registrationDate : "2021-01-17T19:07:23.67Z",
+                note: null,
+                identities: [
+                    {
+                        provider: "Basic",
+                        id: this.email
+                    }
+                ]
             }
         };
     }
 
-    public getUserInfoResponse(){
-        let response = {};
-        
-        var url = `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/${this.publicId}`;
-        response[url] = {
-            "headers": [
-                {
-                    "name": "content-type",
-                    "value": "application/json; charset=utf-8"
-                }
-            ],
-            "statusCode": 200,
-            "statusText": "OK",
-            "body": {
-                "id": `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/${this.publicId}`,
-                "type": "Microsoft.ApiManagement/service/users",
-                "name": this.publicId,
-                "properties": {
-                    "firstName": "name",
-                    "lastName": "surname",
-                    "email": this.email,
-                    "state": "active",
-                    "registrationDate": "2021-11-08T15:45:18.01Z",
-                    "note": null,
-                    "groups": [],
-                    "identities": [
-                        {
-                            "provider": "Basic",
-                            "id": this.publicId
-                        }
-                    ]
-                }
-            }
-        };
-        return response;
-    }
-
-    public getUserRegisterResponse(email: string, firstName: string, lastName: string){
-        return {
-            "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users":{   
-                "headers": [
-                    {
-                    "name": "content-type",
-                    "value": "application/json; charset=utf-8"
-                    },
-                    {
-                    "name": "location",
-                    "value": `/users/${email}?api-version=2021-04-01-preview`
-                    }
-                ],
-                "statusCode": 201,
-                "statusText": "Created",
-                "body": {
-                    "id": `/users/${email}`,
-                    "firstName": firstName,
-                    "lastName": lastName,
-                    "email": email,
-                    "state": "pending",
-                    "registrationDate": "2022-02-04T13:42:26.36Z",
-                    "note": null,
-                    "groups": [
-                    {
-                        "id": "/groups/developers",
-                        "name": "Developers",
-                        "description": "Developers is a built-in group. Its membership is managed by the system. Signed-in users fall into this group.",
-                        "builtIn": true,
-                        "type": "system",
-                        "externalId": null
-                    }
-                    ],
-                    "identities": []
-                }
-            }
-        }
+    public static getRandomUser(testId: string){
+        var email = `${TestUtils.randomIdentifier(4, false)}@${TestUtils.randomIdentifier(4, false)}.${TestUtils.randomIdentifier(4, false)}`;
+        var publicId = `${TestUtils.randomIdentifier(3)}-${TestUtils.randomIdentifier(3)}-${TestUtils.randomIdentifier(3)}`;
+        var firstName = TestUtils.randomIdentifier(3);
+        var lastName = TestUtils.randomIdentifier(3);
+        var password = TestUtils.randomIdentifier(10);
+        return new User(testId, email, publicId, firstName, lastName, password);
     }
 }

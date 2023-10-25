@@ -5,18 +5,8 @@ import { SignupContract } from "./signupContract";
 
 
 const nodeType = "signup";
-const oldNodeType = "user-signup";
 
 export class SignupModelBinder implements IModelBinder<SignupModel> {
-
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === nodeType || contract.type === oldNodeType;
-    }
-
-    public canHandleModel(model: Object): boolean {
-        return model instanceof SignupModel;
-    }
-
     public async contractToModel(contract: SignupContract): Promise<SignupModel> {
         const model = new SignupModel();
         model.requireHipCaptcha = contract.requireHipCaptcha;

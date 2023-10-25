@@ -8,14 +8,6 @@ const nodeType = "subscriptions";
 const oldNodeType = "userSubscriptions";
 
 export class SubscriptionsModelBinder implements IModelBinder<SubscriptionsModel> {
-    public canHandleModel(model: Object): boolean {
-        return model instanceof SubscriptionsModel;
-    }
-
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === nodeType || contract.type === oldNodeType;
-    }
-
     public async contractToModel(contract: SubscriptionsContract): Promise<SubscriptionsModel> {
         const model = new SubscriptionsModel();
         model.styles = contract.styles ?? {};
