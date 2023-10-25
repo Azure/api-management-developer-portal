@@ -1,20 +1,12 @@
-﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
-import { StyleDefinition } from "@paperbits/common/styles";
+﻿import { IWidgetHandler } from "@paperbits/common/editing";
 import { ReportsModel } from "./reportsModel";
 import * as DefaultStyleDefinitions from "../defaultStyleDefinitions";
+import { StyleDefinition } from "@paperbits/common/styles";
+
 
 export class ReportsHandlers implements IWidgetHandler {
-    public async getWidgetOrder(): Promise<IWidgetOrder> {
-        const widgetOrder: IWidgetOrder = {
-            name: "reports",
-            category: "Analytics",
-            displayName: "Reports",
-            iconClass: "widget-icon widget-icon-api-management",
-            requires: ["html"],
-            createModel: async () => new ReportsModel()
-        };
-
-        return widgetOrder;
+    public async getWidgetModel(): Promise<ReportsModel> {
+        return new ReportsModel()
     }
 
     public getStyleDefinitions(): StyleDefinition {

@@ -1,42 +1,19 @@
-import { ViewModelBinder } from "@paperbits/common/widgets";
-import { ProductSubscriptionsViewModel } from "./productSubscriptionsViewModel";
-import { ProductSubscriptionsModel } from "../productSubscriptionsModel";
-import { Bag } from "@paperbits/common";
-import { ComponentFlow } from "@paperbits/common/editing";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { ProductSubscriptionsHandlers } from "../productSubscriptionsHandlers";
-import { EventManager, Events } from "@paperbits/common/events";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { ProductSubscriptionsModel } from "../productSubscriptionsModel";
+import { ProductSubscriptionsViewModel } from "./productSubscriptionsViewModel";
+
 
 export class ProductSubscriptionsViewModelBinder implements ViewModelBinder<ProductSubscriptionsModel, ProductSubscriptionsViewModel> {
-    constructor(
-        private readonly eventManager: EventManager,
-        private readonly styleCompiler: StyleCompiler) { }
-    public async modelToViewModel(model: ProductSubscriptionsModel, viewModel?: ProductSubscriptionsViewModel, bindingContext?: Bag<any>): Promise<ProductSubscriptionsViewModel> {
-        if (!viewModel) {
-            viewModel = new ProductSubscriptionsViewModel();
+    constructor( private readonly styleCompiler: StyleCompiler) { }
 
-            viewModel["widgetBinding"] = {
-                displayName: "Product: Subscriptions",
-                layer: bindingContext?.layer,
-                model: model,
-                flow: ComponentFlow.Block,
-                draggable: true,
-                handler: ProductSubscriptionsHandlers,
-                applyChanges: async (updatedModel: ProductSubscriptionsModel) => {
-                    await this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                    this.eventManager.dispatchEvent(Events.ContentUpdate);
-                }
-            };
-        }
-
-        if (model.styles) {
-            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, ProductSubscriptionsHandlers));
-        }
-
-        return viewModel;
+    public stateToInstance(state: WidgetState, componentInstance: ProductSubscriptionsViewModel): void {
+        componentInstance.styles(state.styles);
     }
 
-    public canHandleModel(model: ProductSubscriptionsModel): boolean {
-        return model instanceof ProductSubscriptionsModel;
+    public async modelToState(model: ProductSubscriptionsModel, state: WidgetState): Promise<void> {
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }

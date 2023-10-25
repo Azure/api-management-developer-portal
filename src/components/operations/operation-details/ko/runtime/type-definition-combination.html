@@ -1,6 +1,6 @@
 <!-- ko if: properties.length > 0 -->
 
-<div class="combination-type">
+<div class="combination-type widget-text">
     <h5><span data-bind="text: type.combinationType"></span>:</h5>
     <!-- ko foreach: { data: type.combinationReferences, as: 'reference'} -->
     <div>
@@ -12,7 +12,7 @@
 
 
 <!-- ko foreach: { data: properties, as: 'property' } -->
-    <h4 data-bind="text: property.name"></h4>
+    <h4 class="widget-text" data-bind="text: property.name"></h4>
 
     <!-- ko if: (property.kind === 'object' || property.kind === 'array') && property.properties -->
     <!-- ko template: { name: 'typeDefinitionObject', data: property } -->

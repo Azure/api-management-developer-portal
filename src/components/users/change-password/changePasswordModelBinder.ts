@@ -5,15 +5,6 @@ import { ChangePasswordContract } from "./changePasswordContract";
 
 
 export class ChangePasswordModelBinder implements IModelBinder<ChangePasswordModel> {
-
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === "change-password";
-    }
-
-    public canHandleModel(model: Object): boolean {
-        return model instanceof ChangePasswordModel;
-    }
-
     public async contractToModel(contract: ChangePasswordContract): Promise<ChangePasswordModel> {
         const model = new ChangePasswordModel();
         model.requireHipCaptcha = contract.requireHipCaptcha;

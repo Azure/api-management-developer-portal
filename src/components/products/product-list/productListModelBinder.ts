@@ -8,15 +8,6 @@ import { ProductListContract } from "./productListContract";
 export class ProductListModelBinder implements IModelBinder<ProductListModel> {
     constructor(private readonly permalinkResolver: IPermalinkResolver) { }
 
-    public canHandleModel(model: Object): boolean {
-        return model instanceof ProductListModel;
-    }
-
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === "product-list"
-            || contract.type === "productList"; // for backward compatibility
-    }
-
     public async contractToModel(contract: ProductListContract): Promise<ProductListModel> {
         const model = new ProductListModel();
 

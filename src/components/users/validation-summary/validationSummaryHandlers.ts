@@ -1,20 +1,12 @@
-import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
-import { StyleDefinition } from "@paperbits/common/styles";
+import { IWidgetHandler } from "@paperbits/common/editing";
 import { ValidationSummaryModel } from "../validation-summary/validationSummaryModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
+import { StyleDefinition } from "@paperbits/common/styles";
+
 
 export class ValidationSummaryHandlers implements IWidgetHandler {
-    public async getWidgetOrder(): Promise<IWidgetOrder> {
-        const widgetOrder: IWidgetOrder = {
-            name: "validation-summary",
-            category: "User",
-            displayName: "Validation summary",
-            iconClass: "widget-icon widget-icon-api-management",
-            requires: ["html"],
-            createModel: async () => new ValidationSummaryModel()
-        };
-
-        return widgetOrder;
+    public async getWidgetModel(): Promise<ValidationSummaryModel> {
+        return new ValidationSummaryModel()
     }
     public getStyleDefinitions(): StyleDefinition {
         return {

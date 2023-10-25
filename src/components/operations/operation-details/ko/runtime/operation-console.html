@@ -5,10 +5,10 @@
 <!-- /ko -->
 
 <!-- ko ifnot: working -->
-<div class="flex flex-column fit animation-fade-in" data-bind="dialog: {}">
+<div class="flex flex-column fit animation-fade-in operation-console" data-bind="dialog: {}">
     <div class="flex-item flex-grow">
         <div class="panel panel-dark" data-bind="with: consoleOperation">
-            <button type="button" tabindex="0" class="no-border pull-right" data-dismiss="modal"
+            <button type="button" tabindex="0" class="no-border pull-right close-button" data-dismiss="modal"
                 aria-label="Close console" data-bind="click: $parents[1].closeConsole">
                 <i class="icon-emb icon-emb-simple-remove"></i>
             </button>
@@ -16,17 +16,17 @@
             <nav aria-label="breadcrumb" style="margin-right: 20px">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="#"
+                        <a href="#" class="console-text"
                             data-bind="text: api.displayName, attr: { href: $component.getApiReferenceUrl() }"></a>
                     </li>
                     <!-- ko if: api.apiVersion -->
-                    <li class="breadcrumb-item">
+                    <li class="breadcrumb-item console-text">
                         <span data-bind="text: api.apiVersion"></span>
                     </li>
                     <!-- /ko -->
 
                     <!-- ko ifnot: api.type === 'websocket' -->
-                    <li class="breadcrumb-item text-wrap">
+                    <li class="breadcrumb-item text-wrap console-text">
                         <span data-bind="text: name"></span>
                     </li>
                     <!-- /ko -->
@@ -34,29 +34,29 @@
             </nav>
 
             <!-- ko ifnot: api.type === 'websocket' -->
-            <div class="text-monospace text-wrap" data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
+            <div class="text-monospace text-wrap console-text" data-bind="text: urlTemplate, attr: { 'data-method': method }"></div>
             <!-- /ko -->
 
             <!-- ko if: $component.hostnameSelectionEnabled() || $component.showHostnameInput() -->
-            <h3>Host</h3>
+            <h3 class="console-title">Host</h3>
 
             <div class="row flex flex-row">
                 <div class="col-4">
-                    <label for="hostname" class="text-monospace form-label">
+                    <label for="hostname" class="text-monospace form-label console-text">
                         Hostname
                     </label>
                 </div>
                 <div class="col-7">
                     <div class="form-group">
                         <!-- ko if: $component.hostnameSelectionEnabled -->
-                        <select id="hostname" class="form-control" data-bind="value: $component.selectedHostname">
+                        <select id="hostname" class="form-control explorer-input" data-bind="value: $component.selectedHostname">
                             <!-- ko foreach: { data: $component.hostnames, as: 'hostname' } -->
                             <option data-bind="value: hostname, text: hostname"></option>
                             <!-- /ko -->
                         </select>
                         <!-- /ko -->
                         <!-- ko if: $component.showHostnameInput -->
-                        <input id="hostname" type="text" autocomplete="off" class="form-control form-control-sm"
+                        <input id="hostname" type="text" autocomplete="off" class="form-control form-control-sm input"
                             placeholder="hostname" spellcheck="false"
                             data-bind="event: { keyup: $component.updateRequestSummary }, textInput: $component.selectedHostname">
                         <!-- /ko -->
@@ -68,13 +68,13 @@
             <!-- ko if: $component.isHostnameWildcarded -->
             <div class="row flex flex-row">
                 <div class="col-4">
-                    <label for="wildcardSegment" class="text-monospace form-label">
+                    <label for="wildcardSegment" class="text-monospace form-label console-text">
                         Wildcard segment
                     </label>
                 </div>
                 <div class="col-7">
                     <div class="form-group">
-                        <input id="wildcardSegment" type="text" autocomplete="off" class="form-control form-control-sm"
+                        <input id="wildcardSegment" type="text" autocomplete="off" class="form-control form-control-sm input"
                             placeholder="name" spellcheck="false"
                             data-bind="event: { keyup: $component.updateRequestSummary }, textInput: $component.wildcardSegment">
                     </div>
@@ -88,9 +88,9 @@
 
             <details open class="details-styled">
                 <summary aria-label="Parameters">
-                    <h3>
+                    <h3 class="console-title">
                         Parameters
-                        <i class="icon-emb icon-emb-chevron-down"></i>
+                        <i class="icon-emb icon-emb-chevron-down collapse-button"></i>
                     </h3>
                 </summary>
 
@@ -98,18 +98,18 @@
                 <div data-bind="foreach: { data: templateParameters, as: 'parameter' }">
                     <div class="row flex flex-row">
                         <div class="col-4">
-                            <label class="text-monospace form-label" data-bind="text: parameter.name">
+                            <label class="text-monospace form-label console-text" data-bind="text: parameter.name">
                             </label>
                         </div>
                         <div class="col-7">
                             <div class="form-group">
                                 <!-- ko if: parameter.options.length > 0 -->
-                                <select class="form-control" aria-label="Parameter value"
+                                <select class="form-control input" aria-label="Parameter value"
                                     data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                                 <!-- /ko -->
                                 <!-- ko if: parameter.options.length === 0 -->
                                 <div class="input-group has-validation">
-                                    <input type="text" autocomplete="off" class="form-control form-control-sm"
+                                    <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                         placeholder="value" spellcheck="false" aria-label="Parameter value"
                                         data-bind="event: { keyup: $component.updateRequestSummary }, textInput: parameter.value">
                                     <span class="invalid-feedback"
@@ -125,7 +125,7 @@
                         <div class="col-4">
                             <div class="form-group">
                                 <div class="input-group has-validation">
-                                    <input type="text" autocomplete="off" class="form-control form-control-sm"
+                                    <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                         placeholder="name" spellcheck="false" aria-label="Parameter name"
                                         data-bind="textInput: parameter.name, attr:{ 'readonly': parameter.required }">
                                     <span class="invalid-feedback" data-bind="validationMessage: parameter.name"></span>
@@ -135,22 +135,22 @@
                         <div class="col-7">
                             <div class="form-group">
                                 <!-- ko if: parameter.options.length > 0 -->
-                                <select class="form-control" aria-label="Parameter value"
+                                <select class="form-control input" aria-label="Parameter value"
                                     data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                                 <!-- /ko -->
                                 <div class="input-group">
                                     <!-- ko if: parameter.options.length === 0 -->
                                     <!-- ko if: !parameter.secret-->
-                                    <input type="text" autocomplete="off" class="form-control form-control-sm"
+                                    <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                         placeholder="value" spellcheck="false" aria-label="Parameter value"
                                         data-bind="textInput: parameter.value, attr:{ 'aria-required': parameter.required }">
                                     <!-- /ko -->
                                     <!-- ko if: parameter.secret-->
-                                    <input autocomplete="off" class="form-control form-control-sm" placeholder="value"
+                                    <input autocomplete="off" class="form-control form-control-sm input" placeholder="value"
                                         spellcheck="false" aria-label="Parameter value"
                                         data-bind=" attr: {type: parameter.inputType, 'aria-required': parameter.required }, textInput: parameter.value">
                                     <button data-bind="click: () => $component.toggleSecretParameter(parameter)"
-                                        class="input-group-addon">
+                                        class="input-group-addon reveal-button">
                                         <i
                                             data-bind="class: parameter.revealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
                                     </button>
@@ -165,14 +165,14 @@
                         <div class="col-1">
                             <a href="#" role="button" data-bind="click: $component.removeQueryParameter"
                                 class="btn-centered-vert btn-inline" aria-label="Remove parameter"><i
-                                    class="icon-emb icon-emb-trash"></i></a>
+                                    class="icon-emb icon-emb-trash icon-button"></i></a>
                         </div>
                         <!-- /ko -->
                     </div>
                 </div>
                 <!-- /ko -->
 
-                <a href="#" role="button" data-bind="click: $component.addQueryParameter">
+                <a href="#" role="button" class="add-button" data-bind="click: $component.addQueryParameter">
                     <i class="icon-emb icon-emb-plus"></i>
                     Add parameter
                 </a>
@@ -180,14 +180,14 @@
 
             <details open class="details-styled">
                 <summary aria-label="headers">
-                    <h3>
+                    <h3 class="console-title">
                         Headers
-                        <i class="icon-emb icon-emb-chevron-down"></i>
+                        <i class="icon-emb icon-emb-chevron-down collapse-button"></i>
                     </h3>
                 </summary>
 
                 <!-- ko if: api.type === 'websocket' -->
-                <span>Headers are not supported in the test console for WebSocket APIs.</span>
+                <span class="console-text">Headers are not supported in the test console for WebSocket APIs.</span>
                 <!-- /ko -->
 
                 <!-- ko ifnot: api.type === 'websocket' -->
@@ -197,7 +197,7 @@
                         <div class="col-4">
                             <div class="form-group">
                                 <div class="input-group has-validation">
-                                    <input type="text" autocomplete="off" class="form-control form-control-sm"
+                                    <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                         placeholder="name" spellcheck="false" aria-label="Header name"
                                         data-bind="textInput: header.name, attr:{ 'readonly': header.required }">
                                     <span class="invalid-feedback" data-bind="validationMessage: header.name"></span>
@@ -207,22 +207,22 @@
                         <div class="col-7">
                             <div class="form-group">
                                 <!-- ko if: header.options && header.options.length > 0 -->
-                                <select class="form-control" aria-label="Header value"
+                                <select class="form-control input" aria-label="Header value"
                                     data-bind="value: header.value, options: header.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
                                 <!-- /ko -->
                                 <!-- ko if: !header.options || header.options.length === 0 -->
                                 <div class="input-group has-validation">
                                     <!-- ko if: !header.secret() -->
-                                    <input type="text" autocomplete="off" class="form-control form-control-sm"
+                                    <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                         placeholder="value" spellcheck="false" aria-label="Header value"
                                         data-bind="textInput: header.value, attr:{'aria-required': header.required}">
                                     <!-- /ko -->
                                     <!-- ko if: header.secret() -->
-                                    <input autocomplete="off" class="form-control form-control-sm" placeholder="value"
+                                    <input autocomplete="off" class="form-control form-control-sm input" placeholder="value"
                                         spellcheck="false" aria-label="Header value"
                                         data-bind="attr: {type: header.inputTypeValue, 'aria-required': header.required}, textInput: header.value, event: { keyup: $component.updateRequestSummary }">
                                     <button data-bind="click: () => $component.toggleSecretHeader(header)"
-                                        class="input-group-addon">
+                                        class="input-group-addon reveal-button">
                                         <i
                                             data-bind="class: header.revealed() ? 'icon-emb icon-emb-eye-fill' :'icon-emb icon-emb-eye'"></i>
                                     </button>
@@ -236,14 +236,14 @@
                         <div class="col-1">
                             <a href="#" role="button" data-bind="click: $component.removeHeader"
                                 class="btn-centered-vert btn-inline" aria-label="Remove header"><i
-                                    class="icon-emb icon-emb-trash"></i></a>
+                                    class="icon-emb icon-emb-trash icon-button"></i></a>
                         </div>
                         <!-- /ko -->
                     </div>
                 </div>
                 <!-- /ko -->
 
-                <a href="#" role="button" data-bind="click: $component.addHeader">
+                <a href="#" class="add-button" role="button" data-bind="click: $component.addHeader">
                     <i class="icon-emb icon-emb-plus"></i> Add header
                 </a>
                 <!-- /ko -->
@@ -252,14 +252,14 @@
             <!-- ko if: canHaveBody || hasBody() -->
             <details open class="details-styled">
                 <summary aria-label="body">
-                    <h3>
+                    <h3 class="console-title">
                         Body
-                        <i class="icon-emb icon-emb-chevron-down"></i>
+                        <i class="icon-emb icon-emb-chevron-down collapse-button"></i>
                     </h3>
                 </summary>
 
                 <!-- ko if: !hasBody() -->
-                <a href="#" role="button" data-bind="click: $component.addBody">
+                <a href="#" class="add-button" role="button" data-bind="click: $component.addBody">
                     <i class="icon-emb icon-emb-plus"></i> Add body
                 </a>
                 <!-- /ko -->
@@ -267,29 +267,29 @@
                 <!-- ko if: hasBody() -->
                 <div class="row flex flex-row form-group">
                     <div class="col-5">
-                        <label class="form-check-label">Request body format</label>
+                        <label class="form-check-label console-text">Request body format</label>
                     </div>
                     <div class="col-7 flex">
                         <!-- ko if: request.readonlyBodyFormat -->
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="bodyFormat" id="bodyFormatForm"
+                            <input class="form-check-input input" type="radio" name="bodyFormat" id="bodyFormatForm"
                                 value="form"
                                 data-bind="checked: request.bodyFormat, attr: { disabled: request.readonlyBodyFormat}">
-                            <label class="form-check-label" for="bodyFormatRaw">Form-data</label>
+                            <label class="form-check-label console-text" for="bodyFormatRaw">Form-data</label>
                         </div>
                         <!-- /ko -->
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="bodyFormat" id="bodyFormatRaw"
+                            <input class="form-check-input input" type="radio" name="bodyFormat" id="bodyFormatRaw"
                                 value="raw"
                                 data-bind="checked: request.bodyFormat, attr: { disabled: request.readonlyBodyFormat}">
-                            <label class="form-check-label" for="bodyFormatRaw"
+                            <label class="form-check-label console-text" for="bodyFormatRaw"
                                 aria-label="Request body format Raw">Raw</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="bodyFormat" id="bodyFormatBinary"
+                            <input class="form-check-input input" type="radio" name="bodyFormat" id="bodyFormatBinary"
                                 value="binary"
                                 data-bind="checked: request.bodyFormat, attr: { disabled: request.readonlyBodyFormat}">
-                            <label class="form-check-label" for="bodyFormatBinary"
+                            <label class="form-check-label console-text" for="bodyFormatBinary"
                                 aria-label="Request body format Binary">Binary</label>
                         </div>
                     </div>
@@ -298,11 +298,11 @@
                 <!-- ko if: request.bodyFormat() === 'raw' && request.representations?.length > 0 -->
                 <div class="row flex flex-row form-group">
                     <div class="col-5">
-                        <label class="form-check-label">Sample request body</label>
+                        <label class="form-check-label console-text">Sample request body</label>
                     </div>
                     <div class="col-5">
                         <div class="flex form-check form-check-inline">
-                            <select aria-label="Sample request body" id="requestRepresentations" class="form-control"
+                            <select aria-label="Sample request body" id="requestRepresentations" class="form-control input"
                                 data-bind="value: $component.selectedRepresentation">
                                 <!-- ko foreach: { data: request.representations, as: 'representation' } -->
                                 <option
@@ -314,7 +314,7 @@
                     </div>
                     <div class="col-2 flex justify-content-end">
                         <!-- ko if: request.isBodyEdited() -->
-                        <i class="icon-emb icon-emb-spinner" style="cursor: pointer; display: flex; align-self: center;"
+                        <i class="icon-emb icon-emb-spinner refresh-button" style="cursor: pointer; display: flex; align-self: center;"
                             data-bind="click: $component.revertBody"></i>
                         <!-- /ko -->
                     </div>
@@ -338,13 +338,13 @@
                 <!-- ko if: request.readonlyBodyFormat -->
                 <div data-bind="foreach: { data: request.bodyDataItems, as: 'item' }">
                     <div class="input-label">
-                        <span class="text-monospace item-label" data-bind="text: item.name"></span><span
+                        <span class="text-monospace item-label console-text" data-bind="text: item.name"></span><span
                             class="text-monospace" data-bind="text: '(type: ' + item.type() + ')'"></span>
                     </div>
                     <div class="form-group">
                         <!-- ko if: item.bodyFormat() === 'string' -->
                         <div class="input-group">
-                            <input type="text" autocomplete="off" class="form-control form-control-sm"
+                            <input type="text" autocomplete="off" class="form-control form-control-sm input"
                                 spellcheck="false" data-bind="textInput: item.body">
                         </div>
                         <!-- /ko -->
@@ -365,7 +365,7 @@
                 <div class="col-1">
                     <a href="#" role="button" data-bind="click: $component.removeBody"
                         class="btn-centered-vert btn-inline" aria-label="Remove body"><i
-                            class="icon-emb icon-emb-trash"></i></a>
+                            class="icon-emb icon-emb-trash icon-button"></i></a>
                 </div>
                 <!-- /ko -->
             </details>
@@ -376,14 +376,14 @@
         <div class="panel panel-dark panel-highlight flex-item flex-grow">
             <details open class="details-styled">
                 <summary aria-label="HTTP request">
-                    <h3>
+                    <h3 class="explorer-title">
                         HTTP request
-                        <i class="icon-emb icon-emb-chevron-down"></i>
+                        <i class="icon-emb icon-emb-chevron-down explorer-collapse-button"></i>
                     </h3>
                 </summary>
 
                 <!-- ko ifnot: operation().request.isFormData() -->
-                <select aria-label="Programming language" id="requestLanguages" class="form-control"
+                <select aria-label="Programming language" id="requestLanguages" class="form-control explorer-input"
                     data-bind="value: $component.selectedLanguage">
                     <!-- ko foreach: { data: requestLanguages, as: 'requestLanguage' } -->
                     <option data-bind="value: requestLanguage.value, text: requestLanguage.text"></option>
@@ -392,7 +392,7 @@
 
                 <div class="code-snippet">
                     <div class="code-snippet-heading">
-                        <button class="code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
+                        <button class="console-code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
                             aria-label="Toggle secrets">
                             <!-- ko if: $component.secretsRevealed  -->
                             <i class="icon-emb icon-emb-eye-fill"></i> Hide secrets
@@ -401,7 +401,7 @@
                             <i class="icon-emb icon-emb-eye"></i> Reveal secrets
                             <!-- /ko -->
                         </button>
-                        <button class="code-snippet-command"
+                        <button class="console-code-snippet-command"
                             data-bind="copyToClipboard: $component.getPlainTextCodeSample, click: logCopyEvent"
                             aria-label="Copy to clipboard">
                             <i class="icon-emb icon-emb-duplicate"></i> Copy
@@ -421,13 +421,13 @@
         <div class="panel panel-dark panel-highlight flex-item flex-grow">
             <details open class="details-styled">
                 <summary aria-label="WebSocket request">
-                    <h3>
+                    <h3 class="explorer-title">
                         WebSocket request
-                        <i class="icon-emb icon-emb-chevron-down"></i>
+                        <i class="icon-emb icon-emb-chevron-down explorer-collapse-button"></i>
                     </h3>
                 </summary>
 
-                <select aria-label="Programming language" id="requestLanguages" class="form-control"
+                <select aria-label="Programming language" id="requestLanguages" class="form-control explorer-input"
                     data-bind="value: $component.selectedLanguage">
                     <!-- ko foreach: { data: requestLanguages, as: 'requestLanguage' } -->
                     <option data-bind="value: requestLanguage.value, text: requestLanguage.text"></option>
@@ -436,7 +436,7 @@
 
                 <div class="code-snippet">
                     <div class="code-snippet-heading">
-                        <button class="code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
+                        <button class="console-code-snippet-command" data-bind="click: toggleRequestSummarySecrets"
                             aria-label="Toggle secrets">
                             <!-- ko if: $component.secretsRevealed  -->
                             <i class="icon-emb icon-emb-eye-fill"></i> Hide
@@ -445,7 +445,7 @@
                             <i class="icon-emb icon-emb-eye"></i> Show
                             <!-- /ko -->
                         </button>
-                        <button class="code-snippet-command"
+                        <button class="console-code-snippet-command"
                             data-bind="copyToClipboard: $component.getPlainTextCodeSample"
                             aria-label="Copy to clipboard">
                             <i class="icon-emb icon-emb-duplicate"></i> Copy
@@ -458,17 +458,17 @@
                     data-bind="syntaxHighlight: { code: $component.codeSample, language: $component.selectedLanguage }"></pre>
                 <!-- /ko -->
                 <!-- ko if: wsConnected -->
-                <h3>Payload</h3>
+                <h3 class="console-title">Payload</h3>
                 <div class="flex justify-content-end">
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="wsDataFormat" id="wsDataFormatRaw"
                             value="raw" data-bind="checked: wsDataFormat">
-                        <label class="form-check-label" for="wsDataFormatRaw">Raw</label>
+                        <label class="form-check-label console-text" for="wsDataFormatRaw">Raw</label>
                     </div>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="wsDataFormat" id="wsDataFormatBinary"
                             value="binary" data-bind="checked: wsDataFormat">
-                        <label class="form-check-label" for="wsDataFormatBinary">Binary</label>
+                        <label class="form-check-label console-text" for="wsDataFormatBinary">Binary</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -494,13 +494,13 @@
                 </div>
                 <!-- /ko -->
 
-                <h3>Output</h3>
+                <h3 class="explorer-title">Output</h3>
                 <!-- ko if: wsLogItems().length > 0 -->
                 <div class="code-snippet">
                     <div class="code-snippet-heading">
-                        <button class="code-snippet-command"
+                        <button class="console-code-snippet-command"
                             data-bind="click: $component.clearLogs, disabled: wsSending" aria-label="Clear logs">
-                            <i class="icon-emb icon-emb-trash"></i> Clear
+                            <i class="icon-emb icon-emb-trash icon-button"></i> Clear
                         </button>
                     </div>
                 </div>
@@ -544,20 +544,20 @@
 
         <!-- ko if: requestError -->
         <div class="alert alert-danger" data-bind="scrollintoview: {}">
-            <p>Unable to complete the request</p>
-            <p data-bind="html: requestError"></p>
+            <p class="console-text">Unable to complete the request</p>
+            <p data-bind="html: requestError" class="console-text"></p>
         </div>
         <!-- /ko -->
 
         <!-- ko if: responseStatusCode -->
         <div class="panel panel-dark" data-bind="scrollintoview: {}">
 
-            <h3>HTTP response</h3>
-            <pre><span>HTTP/1.1</span> <span data-bind="attr: { 'data-code': responseStatusCode  }"><span data-bind="text: responseStatusCode, attr: { 'data-code':responseStatusCode  }"></span> <span data-bind="text: responseStatusText"></span></span>
+            <h3 class="console-title">HTTP response</h3>
+            <pre><span class="console-text">HTTP/1.1</span> <span data-bind="attr: { 'data-code': responseStatusCode  }"><span data-bind="text: responseStatusCode, attr: { 'data-code':responseStatusCode  }"></span> <span data-bind="text: responseStatusText"></span></span>
 
-<span data-bind="text: responseHeadersString"></span>
+<span class="console-text" data-bind="text: responseHeadersString"></span>
 
-<span data-bind="text: responseBody"></span></pre>
+<span class="console-text" data-bind="text: responseBody"></span></pre>
         </div>
         <!--/ko-->
     </div>
@@ -567,12 +567,12 @@
         <div class="flex flex-column align-items-end">
             <div class="btn-group" role="group">
                 <!-- ko if: !$component.sendingRequest() && $component.selectedLanguage() === 'http' -->
-                <button type="button" class="button button-primary btn-sm" data-bind="click: validateAndSendRequest">
+                <button type="button" class="button button-primary btn-sm send-button" data-bind="click: validateAndSendRequest">
                     Send
                 </button>
                 <!-- /ko -->
                 <!-- ko if: sendingRequest -->
-                <button type="button" class="button button-primary btn-sm" disabled>
+                <button type="button" class="button button-primary btn-sm send-button" disabled>
                     Sending...
                 </button>
                 <!-- /ko -->
@@ -582,13 +582,13 @@
         <div class="flex flex-column align-items-end">
             <div class="btn-group" role="group">
                 <!-- ko ifnot: wsConnected -->
-                <button type="button" class="button button-primary btn-sm"
+                <button type="button" class="button button-primary btn-sm connect-button"
                     data-bind="click: wsConnect, attr: { disabled: wsConnecting }, text: wsStatus">
                     Connect
                 </button>
                 <!-- /ko -->
                 <!-- ko if: wsConnected -->
-                <button type="button" class="button button-primary btn-sm"
+                <button type="button" class="button button-primary btn-sm connect-button"
                     data-bind="click: wsDisconnect, attr: { disabled: wsSending }">
                     Disconnect
                 </button>

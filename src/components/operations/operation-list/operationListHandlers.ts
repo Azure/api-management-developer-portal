@@ -1,20 +1,11 @@
-﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
-import { StyleDefinition } from "@paperbits/common/styles";
+﻿import { IWidgetHandler } from "@paperbits/common/editing";
 import { OperationListModel } from "./operationListModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
+import { StyleDefinition } from "@paperbits/common/styles";
 
 export class OperationListHandlers implements IWidgetHandler {
-    public async getWidgetOrder(): Promise<IWidgetOrder> {
-        const widgetOrder: IWidgetOrder = {
-            name: "operationList",
-            category: "Operations",
-            displayName: "List of operations",
-            iconClass: "widget-icon widget-icon-api-management",
-            requires: ["html"],
-            createModel: async () => new OperationListModel()
-        };
-
-        return widgetOrder;
+    public async getWidgetModel(): Promise<OperationListModel> {
+        return new OperationListModel();
     }
 
     public getStyleDefinitions(): StyleDefinition {

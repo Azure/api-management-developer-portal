@@ -7,14 +7,6 @@ import { ProductApisContract } from "./productApisContract";
 export class ProductApisModelBinder implements IModelBinder<ProductApisModel> {
     constructor(private readonly permalinkResolver: IPermalinkResolver) { }
 
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === "product-apis";
-    }
-
-    public canHandleModel(model: Object): boolean {
-        return model instanceof ProductApisModel;
-    }
-
     public async contractToModel(contract: ProductApisContract): Promise<ProductApisModel> {
         const model = new ProductApisModel();
         model.layout = contract.itemStyleView || "list";

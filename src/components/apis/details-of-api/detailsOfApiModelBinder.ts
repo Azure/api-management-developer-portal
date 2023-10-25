@@ -8,10 +8,6 @@ import { IPermalinkResolver } from "@paperbits/common/permalinks";
 export class DetailsOfApiModelBinder implements IModelBinder<DetailsOfApiModel> {
     constructor(private readonly permalinkResolver: IPermalinkResolver) { }
 
-    public canHandleModel(model: Object): boolean {
-        return model instanceof DetailsOfApiModel;
-    }
-
     public async contractToModel(contract: DetailsOfApiContract): Promise<DetailsOfApiModel> {
         const model = new DetailsOfApiModel();
         model.styles = contract.styles ?? {};
@@ -21,10 +17,6 @@ export class DetailsOfApiModelBinder implements IModelBinder<DetailsOfApiModel> 
         }
 
         return model;
-    }
-
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === "detailsOfApi";
     }
 
     public modelToContract(model: DetailsOfApiModel): Contract {

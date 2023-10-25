@@ -32,6 +32,11 @@
         vertical-align: middle;
     }
 
+    .form-inline input[type=search] {
+        width: 100%;
+        max-width: 200px;
+    }
+
     .form-inline .form-control-plaintext {
         display: inline-block;
     }
@@ -126,6 +131,9 @@
 }
 
 input[type=search] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     @extend .icon-svg-magnifier;
     background-position: 5px center;
     background-size: 1em;

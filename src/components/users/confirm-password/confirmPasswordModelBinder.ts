@@ -5,19 +5,10 @@ import { ConfirmPasswordContract } from "./confirmPasswordContract";
 
 
 export class ConfirmPasswordModelBinder implements IModelBinder<ConfirmPasswordModel> {
-    public canHandleModel(model: Object): boolean {
-        return model instanceof ConfirmPasswordModel;
-    }
-
     public async contractToModel(contract: ConfirmPasswordContract): Promise<ConfirmPasswordModel> {
         const model = new ConfirmPasswordModel();
         model.styles = contract.styles ?? {};
-
         return model;
-    }
-
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === "confirmPassword";
     }
 
     public modelToContract(model: ConfirmPasswordModel): Contract {
@@ -25,7 +16,6 @@ export class ConfirmPasswordModelBinder implements IModelBinder<ConfirmPasswordM
             type: "confirmPassword",
             styles: model.styles
         };
-
         return contract;
     }
 }

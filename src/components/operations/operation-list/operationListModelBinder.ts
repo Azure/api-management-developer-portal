@@ -1,4 +1,3 @@
-import { Contract } from "@paperbits/common";
 import { IModelBinder } from "@paperbits/common/editing";
 import { IPermalinkResolver } from "@paperbits/common/permalinks";
 import { OperationListModel } from "./operationListModel";
@@ -6,14 +5,6 @@ import { OperationListContract } from "./operationListContract";
 
 export class OperationListModelBinder implements IModelBinder<OperationListModel> {
     constructor(private readonly permalinkResolver: IPermalinkResolver) { }
-
-    public canHandleContract(contract: Contract): boolean {
-        return contract.type === "operationList";
-    }
-
-    public canHandleModel(model: Object): boolean {
-        return model instanceof OperationListModel;
-    }
 
     public async contractToModel(contract: OperationListContract): Promise<OperationListModel> {
         const model = new OperationListModel();

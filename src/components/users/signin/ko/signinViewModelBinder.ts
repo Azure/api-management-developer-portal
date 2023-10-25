@@ -1,8 +1,5 @@
-import { Bag } from "@paperbits/common";
-import { ComponentFlow } from "@paperbits/common/editing";
-import { EventManager, Events } from "@paperbits/common/events";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { ViewModelBinder } from "@paperbits/common/widgets";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { TermsOfService } from "../../../../contracts/identitySettings";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { IdentityService } from "../../../../services";
@@ -16,7 +13,6 @@ import { SigninViewModel } from "./signinViewModel";
 export class SigninViewModelBinder implements ViewModelBinder<SigninModel, SigninViewModel> {
     
     constructor(
-        private readonly eventManager: EventManager, 
         private readonly tenantService: TenantService,
         private readonly backendService: BackendService,
         private readonly identityService: IdentityService,
@@ -27,58 +23,39 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
         const identitySetting = await this.identityService.getIdentitySetting();
         return identitySetting.properties.termsOfService;
     }
+       
+    public stateToInstance(state: WidgetState, componentInstance: SigninViewModel): void {
+        componentInstance.styles(state.styles);
 
-    public async modelToViewModel(model: SigninModel, viewModel?: SigninViewModel, bindingContext?: Bag<any>): Promise<SigninViewModel> {
-        if (!viewModel) {
-            viewModel = new SigninViewModel();
-            viewModel["widgetBinding"] = {
-                name: "signin",
-                displayName: "Sign-in form: Basic",
-                layer: bindingContext?.layer,
-                model: model,
-                flow: ComponentFlow.Block,
-                draggable: true,
-                handler: SigninHandlers,
-                applyChanges: async (updatedModel: SigninModel) => {
-                    this.modelToViewModel(updatedModel, viewModel, bindingContext);
-                    this.eventManager.dispatchEvent(Events.ContentUpdate);
-                }
-            };
-        }
+        componentInstance.runtimeConfig(JSON.stringify({
+            termsOfUse: state.termsOfUse,
+            isConsentRequired: state.isConsentRequired,
+            termsEnabled: state.termsEnabled,
+            requireHipCaptcha: state.requireHipCaptcha
+        }));
+    }
 
-        const params = {};
-
+    public async modelToState(model: SigninModel, state: WidgetState): Promise<void> {
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
-        
+
         if (isDelegationEnabled) {
             const delegationParam = {};
-            delegationParam[DelegationParameters.ReturnUrl] =  "/";
+            delegationParam[DelegationParameters.ReturnUrl] = "/";
+
             const delegationUrl = await this.backendService.getDelegationUrlFromServer(DelegationAction.signIn, delegationParam);
 
             if (delegationUrl) {
-                params["delegationUrl"] = delegationUrl;
+                state.delegationUrl = delegationUrl;
             }
         }
 
-        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
         const termsOfService = await this.getTermsOfService();
-        if (termsOfService.text) params["termsOfUse"] = termsOfService.text;
-        if (termsOfService.consentRequired) params["isConsentRequired"] = termsOfService.consentRequired;
-        if (termsOfService.enabled) params["termsEnabled"] = termsOfService.enabled;
-
-        if (Object.keys(params).length !== 0) {
-            const runtimeConfig = JSON.stringify(params);
-            viewModel.runtimeConfig(runtimeConfig);
-        }
+        state.termsOfUse = termsOfService.text;
+        state.isConsentRequired = termsOfService.consentRequired;
+        state.termsEnabled = termsOfService.enabled;
 
         if (model.styles) {
-            viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager, SigninHandlers));
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
-
-        return viewModel;
-    }
-
-    public canHandleModel(model: SigninModel): boolean {
-        return model instanceof SigninModel;
     }
 }

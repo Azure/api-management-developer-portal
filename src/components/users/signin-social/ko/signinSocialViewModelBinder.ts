@@ -1,20 +1,16 @@
-import { ComponentFlow } from "@paperbits/common/editing";
-import { Bag } from "@paperbits/common";
-import { EventManager, Events } from "@paperbits/common/events";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { ViewModelBinder } from "@paperbits/common/widgets";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { TermsOfService } from "../../../../contracts/identitySettings";
 import { IdentityService } from "../../../../services/identityService";
 import { SigninSocialModel } from "../signinSocialModel";
 import { SigninSocialViewModel } from "./signinSocialViewModel";
-import { ISettingsProvider } from "@paperbits/common/configuration";
 
 
 export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocialModel, SigninSocialViewModel> {
     constructor(
         private readonly identityService: IdentityService,
         private readonly styleCompiler: StyleCompiler,
-        private readonly eventManager: EventManager,
         private readonly settingsProvider: ISettingsProvider
     ) { }
 
@@ -23,27 +19,15 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
         return identitySetting.properties.termsOfService;
     }
 
-    public async modelToViewModel(model: SigninSocialModel, viewModel?: SigninSocialViewModel, bindingContext?: Bag<any>): Promise<SigninSocialViewModel> {
-        if (!viewModel) {
-            viewModel = new SigninSocialViewModel();
+    public stateToInstance(state: WidgetState, componentInstance: SigninSocialViewModel): void {
+        componentInstance.styles(state.styles);
+        componentInstance.aadConfig(JSON.stringify(state.aadConfig));
+        componentInstance.aadB2CConfig(JSON.stringify(state.aadB2CConfig));
+    }
 
-            viewModel["widgetBinding"] = {
-                name: "signinSocial",
-                displayName: "Sign-in button: OAuth",
-                layer: bindingContext?.layer,
-                draggable: true,
-                editor: "signin-social-editor",
-                model: model,
-                flow: ComponentFlow.Inline,
-                applyChanges: () => {
-                    this.modelToViewModel(model, viewModel, bindingContext);
-                    this.eventManager.dispatchEvent(Events.ContentUpdate);
-                }
-            };
-        }
+    public async modelToState(model: SigninSocialModel, state: WidgetState): Promise<void> {
+        state.security = model.security;
 
-        viewModel.security(model.security);
-        
         let classNames;
 
         if (model.styles) {
@@ -61,33 +45,28 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
         const termsOfUse = (termsOfService.text && termsOfService.enabled) ? termsOfService.text : undefined;
 
         if (aadIdentityProvider) {
-            const aadConfig = {
+            state.aadConfig = {
                 classNames: classNames,
                 label: model.aadLabel,
                 replyUrl: model.aadReplyUrl || undefined,
                 termsOfUse: aadB2CIdentityProvider ? undefined : termsOfUse // display terms of use only once if both configs are present
             };
-            viewModel.aadConfig(JSON.stringify(aadConfig));
         }
 
         if (aadB2CIdentityProvider) {
-            const aadB2CConfig = {
+            state.aadB2CConfig = {
                 classNames: classNames,
                 label: model.aadB2CLabel,
                 replyUrl: model.aadB2CReplyUrl || undefined,
                 termsOfUse
             };
-
-            viewModel.aadB2CConfig(JSON.stringify(aadB2CConfig));
         }
 
         const settings = await this.settingsProvider.getSettings();
-        viewModel.mode(settings["environment"]);
+        state.mode = settings["environment"];
 
-        return viewModel;
-    }
-
-    public canHandleModel(model: SigninSocialModel): boolean {
-        return model instanceof SigninSocialModel;
+        if (model.styles) {
+            state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
+        }
     }
 }

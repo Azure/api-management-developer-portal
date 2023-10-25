@@ -1,20 +1,11 @@
-﻿import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
+﻿import { IWidgetHandler } from "@paperbits/common/editing";
+import { ListOfApisModel } from "./listOfApisModel";
 import { StyleDefinition } from "@paperbits/common/styles";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
-import { ListOfApisModel } from "./listOfApisModel";
 
 export class ListOfApisHandlers implements IWidgetHandler {
-    public async getWidgetOrder(): Promise<IWidgetOrder> {
-        const widgetOrder: IWidgetOrder = {
-            name: "listOfApis",
-            category: "APIs",
-            displayName: "List of APIs",
-            iconClass: "widget-icon widget-icon-api-management",
-            requires: ["html"],
-            createModel: async () => new ListOfApisModel("list")
-        };
-
-        return widgetOrder;
+    public async getWidgetModel(): Promise<ListOfApisModel> {
+        return new ListOfApisModel("list");
     }
 
     public getStyleDefinitions(): StyleDefinition {
@@ -59,17 +50,8 @@ export class ListOfApisHandlers implements IWidgetHandler {
 }
 
 export class ListOfApisTilesHandlers implements IWidgetHandler {
-    public async getWidgetOrder(): Promise<IWidgetOrder> {
-        const widgetOrder: IWidgetOrder = {
-            name: "listOfApisTiles",
-            category: "APIs",
-            displayName: "List of APIs (tiles)",
-            iconClass: "widget-icon widget-icon-api-management",
-            requires: ["html"],
-            createModel: async () => new ListOfApisModel("tiles")
-        };
-
-        return widgetOrder;
+    public async getWidgetModel(): Promise<ListOfApisModel> {
+        return new ListOfApisModel("tiles");
     }
 
     public getStyleDefinitions(): StyleDefinition {
@@ -110,17 +92,8 @@ export class ListOfApisTilesHandlers implements IWidgetHandler {
 }
 
 export class ListOfApisDropdownHandlers implements IWidgetHandler {
-    public async getWidgetOrder(): Promise<IWidgetOrder> {
-        const widgetOrder: IWidgetOrder = {
-            name: "listOfApisDropdown",
-            category: "APIs",
-            displayName: "List of APIs (dropdown)",
-            iconClass: "widget-icon widget-icon-api-management",
-            requires: ["html"],
-            createModel: async () => new ListOfApisModel("dropdown")
-        };
-
-        return widgetOrder;
+    public async getWidgetModel(): Promise<ListOfApisModel> {
+        return new ListOfApisModel("dropdown");
     }
 
     public getStyleDefinitions(): StyleDefinition {

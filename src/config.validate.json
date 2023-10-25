@@ -1,5 +1,6 @@
 {
     "environment": "validation",
+    "isLocalRun": true,
     "root": "http://localhost:8080",
     "urls": {
         "home": "/",

@@ -27,7 +27,7 @@
             <!-- ko if: $parent.readOnly -->
             <div role="cell" class="table-preset-row" data-bind="text: property.readOnly"></div>
             <!-- /ko -->
-            <div role="cell" class="text-truncate table-preset-row">
+            <div role="cell" class="text-truncate table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style">
                 <!-- ko if: property.type.displayAs === 'primitive' -->
                 <span class="text-monospace"
                     data-bind="text: property.type.name, attr: { title: property.type.name }"></span>
@@ -61,7 +61,7 @@
                 <!-- /ko -->
 
                 <!-- ko if: item.displayAs === 'primitive' -->
-                <span class="text-monospace" data-bind="text: item, attr: { title: item.name }"></span>
+                <span class="text-monospace" data-bind="text: item.name, attr: { title: item.name }"></span>
                 <!-- /ko -->
 
                 <!-- /ko -->
@@ -71,7 +71,7 @@
             <!-- ko if: $component.examples -->
             <div role="cell" class="text-truncate table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style" data-bind="text: $component.examples[property.name], attr: {title: $component.examples[property.name]}"></div>
             <!-- /ko -->
-            <div role="cell" data-bind="markdown: property.description"></div>
+            <div role="cell" class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style" data-bind="markdown: property.description"></div>
         </div>
         <!-- /ko -->
     </div>

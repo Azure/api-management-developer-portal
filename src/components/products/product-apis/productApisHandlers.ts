@@ -1,20 +1,11 @@
-import { IWidgetOrder, IWidgetHandler } from "@paperbits/common/editing";
-import { StyleDefinition } from "@paperbits/common/styles";
+import { IWidgetHandler } from "@paperbits/common/editing";
 import { ProductApisModel } from "./productApisModel";
 import * as DefaultStyleDefinitions from "../../defaultStyleDefinitions";
+import { StyleDefinition } from "@paperbits/common/styles";
 
 export class ProductApisHandlers implements IWidgetHandler {
-    public async getWidgetOrder(): Promise<IWidgetOrder> {
-        const widgetOrder: IWidgetOrder = {
-            name: "product-apis",
-            category: "Products",
-            displayName: "Product: APIs",
-            iconClass: "widget-icon widget-icon-api-management",
-            requires: ["html"],
-            createModel: async () => new ProductApisModel("list")
-        };
-
-        return widgetOrder;
+    public async getWidgetModel(): Promise<ProductApisModel> {
+        return new ProductApisModel("list")
     }
 
     public getStyleDefinitions(): StyleDefinition {
@@ -61,17 +52,8 @@ export class ProductApisHandlers implements IWidgetHandler {
 }
 
 export class ProductApisTilesHandlers implements IWidgetHandler {
-    public async getWidgetOrder(): Promise<IWidgetOrder> {
-        const widgetOrder: IWidgetOrder = {
-            name: "product-apis-tiles",
-            category: "Products",
-            displayName: "Product: APIs (tiles)",
-            iconClass: "widget-icon widget-icon-api-management",
-            requires: ["html"],
-            createModel: async () => new ProductApisModel("tiles")
-        };
-
-        return widgetOrder;
+    public async getWidgetModel(): Promise<ProductApisModel> {
+        return new ProductApisModel("tiles")
     }
 
     public getStyleDefinitions(): StyleDefinition {
