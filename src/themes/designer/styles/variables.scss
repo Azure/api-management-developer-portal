@@ -3,7 +3,6 @@ $breakpoint-xs: 0;
 $breakpoint-sm: 576px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 992px;
-$breakpoint-ml: 1080px;
 $breakpoint-xl: 1200px;
 
 $grid-breakpoints: (
@@ -11,7 +10,6 @@ $grid-breakpoints: (
     sm: 576px,
     md: 768px,
     lg: 992px,
-    ml: 1080px,
     xl: 1200px
   ) !default;
 
@@ -27,7 +25,7 @@ $toolbox-background: #fff;
 $toolbox-btn-size: 45px;
 $toolbox-btn-padding: 5px;
 $toolbox-btn-active-bg: #F9FBFC;
-$toolbox-btn-active-border: #767676;
+$toolbox-btn-active-border: #96989A;
 $toolbox-border-radius: 10px;
 $toolbox-padding: 8px;
 
@@ -47,11 +45,11 @@ $button-link-color: #99c248;
 $balloon-background: $toolbox-background;
 
 /* Palette */
-$tab-selected-color: #7BA119;
-$collapse-button-color: #5b5f61;
-$color-base: #252525;
+$tab-selected-color: #A8CF45;
+$collapse-button-color: #91D8F7;
+$color-base: #5b5f61;
 $color-danger: #e46969;
-$color-info: #5b5f61;
+$color-info: #91D8F7;
 $color-watermark: #CCC;
 $link-color: #00AFEF;
 $arrow-active-color: #F58634;
@@ -60,10 +58,10 @@ $selection-corners-color: #757575;
 
 /* Forms */
 $form-control-font-size: 0.9em;
-$form-control-border: #7f7f7fd9;
-$form-control-border-focused: #57585a;
+$form-control-border: #e6e7e8;
+$form-control-border-focused: #61b2e8;
 $form-control-bg: #ffffff;
-$form-control-bg-readonly: #ffffff;
+$form-control-bg-readonly: #fff;
 $form-control-bg-disabled: #e6e7e8;
 $form-control-padding: 7px;
 $form-control-focus-color: #61b2e8;

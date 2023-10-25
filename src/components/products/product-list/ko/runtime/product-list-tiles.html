@@ -1,33 +1,35 @@
 <div class="form-inline max-w-500">
-    <input type="search" class="form-control form-control-light" aria-label="Search" placeholder="Search products" spellcheck="false"
-        data-bind="textInput: pattern" />
+    <input type="search" class="form-control form-control-light search-input" aria-label="Search"
+        placeholder="Search products" spellcheck="false" data-bind="textInput: pattern" />
 </div>
 
-<div class="cards">
+<div>
     <!-- ko if: working -->
-    <div class="cards-body">
+    <div>
         <spinner class="fit"></spinner>
     </div>
     <!-- /ko -->
 
     <!-- ko ifnot: working -->
-    <div class="cards-body animation-fade-in">
+    <div class="animation-fade-in">
 
         <!-- ko foreach: { data: products, as: 'item' } -->
         <a href="#" data-bind="attr: { href: $component.getProductUrl(item) }">
-            <div class="card item-tile">
-                <h3>
+            <div class="product-card">
+                <h3 class="card-title">
                     <span data-bind="text: item.displayName"></span>
                 </h3>
                 <div class="tile line-clamp">
-                    <p class="tile-content" data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
+                    <p class="tile-content card-text 
+                    content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                        data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
                 </div>
             </div>
         </a>
         <!-- /ko -->
 
         <!-- ko if: products().length === 0 -->
-        <p>No products found</p>
+        <p class="widget-text">No products found</p>
         <!-- /ko -->
 
     </div>

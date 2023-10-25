@@ -6,19 +6,18 @@
     <!-- ko ifnot: apiWorking -->
     <div class="flex-item flex-grow animation-fade-in">
         <!-- ko if: api -->
-        <a href="#" class="nav-link text-truncate" data-bind="attr: { href: $component.getReferenceUrl() }">&lt&lt Go back to the
+        <a href="#" class="nav-link text-truncate" data-bind="attr: { href: $component.getReferenceUrl() }">&lt&lt Go
+            back to the
             API reference page.</a>
-        <h2 data-bind="text: api().displayName"></h2>
+        <h2 class="widget-text" data-bind="text: api().displayName"></h2>
         <div style="background-color:white">
             <div class="table">
                 <div class="table-head">
-                    <div class="table-row">
-                        <div class="col-3">
-                            Release date
-                        </div>
-                        <div class="col-9">
-                            Notes
-                        </div>
+                    <div class="col-3">
+                        Release date
+                    </div>
+                    <div class="col-9">
+                        Notes
                     </div>
                 </div>
                 <!-- ko ifnot: changeLogWorking -->
@@ -26,7 +25,8 @@
                 <div data-bind="foreach: { data: currentPageLog, as: 'hist' }">
                     <div class="table-row">
                         <div class="col-3" data-bind="text: hist.properties.createdDateTime"></div>
-                        <div class="col-9" data-bind="markdown: hist.properties.notes"></div>
+                        <div class="col-9 content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                            data-bind="markdown: hist.properties.notes"></div>
                     </div>
                 </div>
                 <!-- /ko -->

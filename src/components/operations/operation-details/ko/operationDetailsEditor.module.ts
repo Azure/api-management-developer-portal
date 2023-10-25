@@ -1,12 +1,12 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { OperationDetailsEditor } from "./ko/operationDetailsEditor";
-import { OperationDetailsViewModel } from "./ko/operationDetailsViewModel";
-import { OperationDetailsViewModelBinder } from "./ko/operationDetailsViewModelBinder";
-import { OperationDetailsHandlers } from "./operationDetailsHandlers";
-import { OperationDetailsModel } from "./operationDetailsModel";
-import { OperationDetailsModelBinder } from "./operationDetailsModelBinder";
+import { OperationDetailsEditor } from "./operationDetailsEditor";
+import { OperationDetailsViewModel } from "./operationDetailsViewModel";
+import { OperationDetailsViewModelBinder } from "./operationDetailsViewModelBinder";
+import { OperationDetailsHandlers } from "../operationDetailsHandlers";
+import { OperationDetailsModel } from "../operationDetailsModel";
+import { OperationDetailsModelBinder } from "../operationDetailsModelBinder";
 
 
 export class OperationDetailsDesignModule implements IInjectorModule {

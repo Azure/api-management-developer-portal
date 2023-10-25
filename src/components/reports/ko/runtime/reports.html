@@ -1,18 +1,16 @@
 <div class="btn-group" role="group" aria-label="Time range">
-    <button class="button button-default"
-        data-bind="click: setTimeRange1Hour, disable: selectedPeriod() == '1hour'">Last hour</button>
-    <button class="button button-default"
-        data-bind="click: setTimeRange1Day, disable: selectedPeriod() == '1day'">Today</button>
-    <button class="button button-default"
-        data-bind="click: setTimeRange7Days, disable: selectedPeriod() == '7days'">Last 7 days</button>
-    <button class="button button-default"
-        data-bind="click: setTimeRange30Days, disable: selectedPeriod() == '30days'">Last 30 days</button>
-    <button class="button button-default"
+    <button class="button" data-bind="click: setTimeRange1Hour, disable: selectedPeriod() == '1hour'">Last hour</button>
+    <button class="button" data-bind="click: setTimeRange1Day, disable: selectedPeriod() == '1day'">Today</button>
+    <button class="button" data-bind="click: setTimeRange7Days, disable: selectedPeriod() == '7days'">Last 7
+        days</button>
+    <button class="button" data-bind="click: setTimeRange30Days, disable: selectedPeriod() == '30days'">Last 30
+        days</button>
+    <button class="button ninety-days-button"
         data-bind="click: setTimeRange90Days, disable: selectedPeriod() == '90days'">Last 90 days</button>
 </div>
 
 
-<h2>API calls</h2>
+<h2 class="title-text">API calls</h2>
 <div class="row">
     <div class="col-md-7">
         <div
@@ -26,7 +24,7 @@
     </div>
 </div>
 
-<h2>Data transfer</h2>
+<h2 class="title-text">Data transfer</h2>
 <div class="row">
     <div class="col-md-7">
         <div
@@ -40,7 +38,7 @@
     </div>
 </div>
 
-<h2>API response times</h2>
+<h2 class="title-text">API response times</h2>
 <div class="row">
     <div class="col-md-7">
         <div
@@ -55,7 +53,7 @@
 </div>
 
 <section>
-    <h2>Products</h2>
+    <h2 class="title-text">Products</h2>
 
     <!-- ko if: reportByProductHasData -->
     <div role="table" class="table-preset table-preset-reports">
@@ -160,16 +158,16 @@
         <div class="d-contents" role="rowgroup">
             <!-- ko foreach: { data: $component.reportByProduct, as: 'record' } -->
             <div class="d-contents" role="row">
-                <div role="cell">
+                <div role="cell" class="table-preset-row">
                     <a class="ap-action" data-bind="attr: { href: record.productlink }, text: record.productName"></a>
                 </div>
-                <div role="cell" data-bind="text: record.callCountSuccess"></div>
-                <div role="cell" data-bind="text: record.callCountBlocked"></div>
-                <div role="cell" data-bind="text: record.callCountFailed"></div>
-                <div role="cell" data-bind="text: record.callCountOther"></div>
-                <div role="cell" data-bind="text: record.callCountTotal"></div>
-                <div role="cell" data-bind="text: record.apiTimeAvg"></div>
-                <div role="cell" data-bind="text: record.bandwidth"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountSuccess"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountBlocked"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountFailed"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountOther"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountTotal"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.apiTimeAvg"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.bandwidth"></div>
             </div>
             <!-- /ko -->
         </div>
@@ -184,7 +182,7 @@
     <!-- /ko -->
 
     <!-- ko ifnot: reportByProductHasData -->
-    <p>No data to display</p>
+    <p class="widget-text">No data to display</p>
     <!-- /ko -->
 
     <!-- ko if: reportByProductWorking -->
@@ -193,7 +191,7 @@
 </section>
 
 <section>
-    <h2>Subscriptions</h2>
+    <h2 class="title-text">Subscriptions</h2>
 
     <!-- ko if: reportBySubscriptionHasData -->
     <div role="table" class="table-preset table-preset-reports">
@@ -303,16 +301,16 @@
         <div class="d-contents" role="rowgroup">
             <!-- ko foreach: { data: $component.reportBySubscription, as: 'record' } -->
             <div class="d-contents" role="row">
-                <div role="cell" class="text-truncate">
+                <div role="cell" class="table-preset-row" class="text-truncate">
                     <span data-bind="text: record.subscriptionName"></span>
                 </div>
-                <div role="cell" data-bind="text: record.callCountSuccess"></div>
-                <div role="cell" data-bind="text: record.callCountBlocked"></div>
-                <div role="cell" data-bind="text: record.callCountFailed"></div>
-                <div role="cell" data-bind="text: record.callCountOther"></div>
-                <div role="cell" data-bind="text: record.callCountTotal"></div>
-                <div role="cell" data-bind="text: record.apiTimeAvg"></div>
-                <div role="cell" data-bind="text: record.bandwidth"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountSuccess"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountBlocked"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountFailed"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountOther"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountTotal"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.apiTimeAvg"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.bandwidth"></div>
             </div>
             <!-- /ko -->
         </div>
@@ -327,7 +325,7 @@
     <!-- /ko -->
 
     <!-- ko ifnot: reportBySubscriptionHasData -->
-    <p>No data to display</p>
+    <p class="widget-text">No data to display</p>
     <!-- /ko -->
 
     <!-- ko if: reportBySubscriptionWorking -->
@@ -336,7 +334,7 @@
 </section>
 
 <section>
-    <h2>APIs</h2>
+    <h2 class="title-text">APIs</h2>
 
     <!-- ko if: reportByApiHasData -->
     <div role="table" class="table-preset table-preset-reports">
@@ -441,16 +439,16 @@
         <div class="d-contents" role="rowgroup">
             <!--ko foreach: { data: $component.reportByApi, as: 'record' }-->
             <div class="d-contents" role="row">
-                <div role="cell" class="text-truncate">
+                <div role="cell" class="table-preset-row" class="text-truncate">
                     <span data-bind="text: record.apiName"></span>
                 </div>
-                <div role="cell" data-bind="text: record.callCountSuccess"></div>
-                <div role="cell" data-bind="text: record.callCountBlocked"></div>
-                <div role="cell" data-bind="text: record.callCountFailed"></div>
-                <div role="cell" data-bind="text: record.callCountOther"></div>
-                <div role="cell" data-bind="text: record.callCountTotal"></div>
-                <div role="cell" data-bind="text: record.apiTimeAvg"></div>
-                <div role="cell" data-bind="text: record.bandwidth"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountSuccess"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountBlocked"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountFailed"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountOther"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountTotal"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.apiTimeAvg"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.bandwidth"></div>
             </div>
             <!--/ko-->
         </div>
@@ -464,7 +462,7 @@
     <!-- /ko -->
 
     <!-- ko ifnot: reportByApiHasData -->
-    <p>No data to display</p>
+    <p class="widget-text">No data to display</p>
     <!-- /ko -->
 
     <!-- ko if: reportByApiWorking -->
@@ -473,7 +471,7 @@
 </section>
 
 <section>
-    <h2>Operations</h2>
+    <h2 class="title-text">Operations</h2>
 
     <!-- ko if: reportByOperationHasData -->
     <div role="table" class="table-preset table-preset-reports">
@@ -580,16 +578,16 @@
         <div class="d-contents" role="rowgroup">
             <!-- ko foreach: { data: $component.reportByOperation, as: 'record' } -->
             <div class="d-contents" role="row">
-                <div role="cell" class="text-truncate">
+                <div role="cell" class="table-preset-row" class="text-truncate">
                     <span data-bind="text: record.operationName"></span>
                 </div>
-                <div role="cell" data-bind="text: record.callCountSuccess"></div>
-                <div role="cell" data-bind="text: record.callCountBlocked"></div>
-                <div role="cell" data-bind="text: record.callCountFailed"></div>
-                <div role="cell" data-bind="text: record.callCountOther"></div>
-                <div role="cell" data-bind="text: record.callCountTotal"></div>
-                <div role="cell" data-bind="text: record.apiTimeAvg"></div>
-                <div role="cell" data-bind="text: record.bandwidth"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountSuccess"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountBlocked"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountFailed"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountOther"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.callCountTotal"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.apiTimeAvg"></div>
+                <div role="cell" class="table-preset-row" data-bind="text: record.bandwidth"></div>
             </div>
             <!-- /ko -->
         </div>
@@ -604,7 +602,7 @@
     <!-- /ko -->
 
     <!-- ko ifnot: reportByOperationHasData -->
-    <p>No data to display</p>
+    <p class="widget-text">No data to display</p>
     <!-- /ko -->
 
     <!-- ko if: reportByOperationWorking -->

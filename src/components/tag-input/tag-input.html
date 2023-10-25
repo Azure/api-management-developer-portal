@@ -1,6 +1,6 @@
 <div class="flex flex-wrap">
     <!--ko foreach: { data: selection, as: 'tag' } -->
-    <div tabindex="0" href="#" class="tag-item">
+    <div tabindex="0" href="#" class="tag-card">
         <span data-bind="text: tag.name"></span>
 
         <button class="no-border tag-remove" aria-label="Remove tag" data-bind="activate: $component.removeTag">
@@ -8,8 +8,8 @@
         </button>
     </div>
     <!-- /ko -->
-    
-    <div tabindex="0" class="tag-item tag-add" role="button" title="Add tags to search query"
+
+    <div tabindex="0" class="tag-input" role="button" title="Add tags to search query"
         data-bind="balloon: { template: { name: 'tagList', data: $component }, closeOn: $component.onDismiss }">
         <i class="icon-emb icon-emb-add-filter"></i>
     </div>

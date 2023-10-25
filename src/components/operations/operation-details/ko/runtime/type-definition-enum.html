@@ -7,10 +7,10 @@
     </div>
     <div class="d-contents" role="rowgroup">
         <div class="d-contents" role="row">
-            <div role="cell" class="text-truncate"
+            <div role="cell" class="text-truncate table-preset-row"
                 data-bind="markdown: definition.type.name, attr: { title: definition.type.name }"></div>
 
-            <div role="cell">
+            <div role="cell" class="table-preset-row">
                 <!-- ko foreach: { data: definition.enum, as: 'value' } -->
                 <!-- ko if: $index() > 0 -->,
                 <!-- /ko -->

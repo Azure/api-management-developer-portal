@@ -24,7 +24,7 @@ import { SetupModule } from "./components/setup/setup.module";
 import { ContentModule } from "./components/content";
 import { CustomWidgetListModule } from "./components/custom-widget-list";
 import { OperationListEditorModule as OperationListDesignModule } from "./components/operations/operation-list/ko/operationListEditor.module";
-import { OperationDetailsDesignModule } from "./components/operations/operation-details/operationDetails.design.module";
+import { OperationDetailsDesignModule } from "./components/operations/operation-details/ko/operationDetailsEditor.module";
 import { ProductListEditorModule as ProductListDesignModule } from "./components/products/product-list/ko/productListEditor.module";
 import { ProductSubscribeEditorModule as ProductSubscribeDesignModule } from "./components/products/product-subscribe/ko/productSubscribeEditor.module";
 import { ProductApisEditorModule as ProductApisDesignModule } from "./components/products/product-apis/ko/productApisEditor.module";

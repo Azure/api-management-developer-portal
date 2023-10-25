@@ -1,19 +1,19 @@
 <div class="table">
 
     <!-- ko if: !isUserSignedIn() -->
-    <p>
+    <div>
         You need to sign in to see your subscriptions.
-    </p>
+    </div>
     <!-- /ko -->
 
     <!-- ko if: subscriptions().length === 0 && isUserSignedIn()-->
-    <p>
+    <div>
         You don't have subscriptions yet.
-    </p>
+    </div>
     <!-- /ko -->
     <!-- ko if: subscriptions().length > 0 && isUserSignedIn()-->
-    <div class="table-head">
-        <div class="table-row">
+    <div>
+        <div class="table-head">
             <div class="col-md-5">Name</div>
             <div class="col-md-7">Status</div>
         </div>

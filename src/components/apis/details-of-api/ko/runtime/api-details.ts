@@ -7,7 +7,6 @@ import { Api } from "../../../../../models/api";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 
-
 @RuntimeComponent({
     selector: "api-details"
 })

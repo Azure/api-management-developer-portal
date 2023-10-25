@@ -1,11 +1,11 @@
 <div class="form-inline max-w-500">
     <div class="d-block flex-grow">
-        <input type="search" class="form-control form-control-light" aria-label="Search APIs" placeholder="Search APIs"
+        <input type="search" class="form-control form-control-light search-input" aria-label="Search APIs" placeholder="Search APIs"
             spellcheck="false" data-bind="textInput: pattern" />
         <tag-input params="{ scope: 'apis', onChange: onTagsChange }"></tag-input>
     </div>
     <div class="form-group ml-auto">
-        <label>Group by tag
+        <label class="toggle-button-label">Group by tag
             <div class="switch">
                 <input type="checkbox" data-bind="checked: $component.groupByTag">
                 <span class="slider round"></span>
@@ -14,36 +14,37 @@
     </div>
 </div>
 
-<div class="cards">
+<div>
     <!-- ko if: working -->
-    <div class="cards-body">
+    <div>
         <spinner class="fit"></spinner>
     </div>
     <!-- /ko -->
 
     <!-- ko ifnot: working -->
-    <div class="cards-body animation-fade-in">
+    <div class="animation-fade-in">
         <!-- ko if: groupByTag -->
         <!-- ko foreach: { data: apiGroups, as: 'group' } -->
         <button
           class="tag-group tag-group-collapsible no-border"
           data-bind="class: $component.groupTagsExpanded().has(group.tag) ? '' : 'active', click: () => $component.groupTagCollapseToggle(group.tag)"
         >
-            <span class="tag-item" role="group" data-bind="text: group.tag"></span>
+            <span class="tag-card" role="group" data-bind="text: group.tag"></span>
             <i class="icon-emb icon-emb-chevron-down"></i>
         </button>
 
         <!-- ko if: $component.groupTagsExpanded().has(group.tag) -->
         <!-- ko foreach: { data: group.items, as: 'item' } -->
         <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
-            <div class="card item-tile">
-                <h3>
+            <div class="api-card">
+                <h3 class="card-title">
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.apiVersion -->
                     - <span data-bind="text: item.apiVersion"></span>
                     <!-- /ko -->
                 </h3>
-                <p class="tile-content" data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
+                <p class="tile-content card-text content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                    data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
             </div>
         </a>
         <!-- /ko -->
@@ -61,15 +62,16 @@
 
         <!-- ko foreach: { data: apis, as: 'item' } -->
         <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item) }">
-            <div class="card item-tile">
-                <h3>
+            <div class="api-card">
+                <h3 class="card-title">
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.apiVersion -->
                     - <span data-bind="text: item.apiVersion"></span>
                     <!-- /ko -->
                 </h3>
                 <div class="tile line-clamp">
-                    <p class="tile-content" data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
+                    <p class="tile-content card-text content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                        data-bind="markdown: { source: item.description, truncateAt: 250 }"></p>
                 </div>
             </div>
         </a>
@@ -77,7 +79,7 @@
 
 
         <!-- ko if: apis().length === 0 -->
-        <p>No APIs found</p>
+        <p class="widget-text">No APIs found</p>
         <!-- /ko -->
 
         <!-- /ko -->

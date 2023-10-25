@@ -5,6 +5,7 @@ import { DelegationAction, DelegationParameters } from "../../../../contracts/te
 import { IdentityService } from "../../../../services";
 import { BackendService } from "../../../../services/backendService";
 import { TenantService } from "../../../../services/tenantService";
+import { SigninHandlers } from "../signinHandlers";
 import { SigninModel } from "../signinModel";
 import { SigninViewModel } from "./signinViewModel";
 

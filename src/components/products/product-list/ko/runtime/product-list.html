@@ -1,13 +1,13 @@
 <div class="form-inline max-w-500">
-    <input type="search" class="form-control form-control-light" aria-label="Search" placeholder="Search products" spellcheck="false"
-        data-bind="textInput: pattern" />
+    <input type="search" class="form-control form-control-light search-input" aria-label="Search"
+        placeholder="Search products" spellcheck="false" data-bind="textInput: pattern" />
 </div>
 
-<div class="table">
-    <div class="table-head">
-        <div class="table-row">
-            <div class="col-5">Name</div>
-            <div class="col-7">Description</div>
+<div class="table" role="table" aria-label="Products">
+    <div role="rowgroup">
+        <div class="table-head" role="row">
+            <div class="col-5" role="columnheader">Name</div>
+            <div class="col-7" role="columnheader">Description</div>
         </div>
     </div>
 
@@ -20,12 +20,13 @@
     <!-- ko ifnot: working -->
     <div class="table-body animation-fade-in">
         <!-- ko foreach: { data: products, as: 'product' } -->
-        <div class="table-row">
-            <div class="col-5 text-truncate">
+        <div class="table-row" role="row">
+            <div class="col-5 text-truncate" role="cell">
                 <a data-bind="attr: { href: $component.getProductUrl(product) }, text: product.displayName"></a>
             </div>
-            <div class="col-7">
-                <span data-bind="markdown: { source: product.description, truncateAt: 250 }"></span>
+            <div class="col-7" role="cell">
+                <span class="content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                    data-bind="markdown: { source: product.description, truncateAt: 250 }"></span>
             </div>
         </div>
         <!-- /ko -->

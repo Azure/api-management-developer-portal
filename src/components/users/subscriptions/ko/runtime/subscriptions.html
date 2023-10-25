@@ -1,11 +1,9 @@
 <div role="table" class="table">
-    <div role="rowgroup" class="table-head">
-        <div role="row" class="table-row">
-            <div role="columnheader" class="col-8 text-truncate">Subscription details</div>
-            <div role="columnheader" class="col-2 text-truncate">Product</div>
-            <div role="columnheader" class="col-1 text-truncate">State</div>
-            <div role="columnheader" class="col-1 text-truncate">Action</div>
-        </div>
+    <div role="row" class="table-head">
+        <div role="columnheader" class="col-8 text-truncate">Subscription details</div>
+        <div role="columnheader" class="col-2 text-truncate">Product</div>
+        <div role="columnheader" class="col-1 text-truncate">State</div>
+        <div role="columnheader" class="col-1 text-truncate">Action</div>
     </div>
     <!-- ko if: working -->
     <div class="table-body">
@@ -85,7 +83,7 @@
                         <div role="rowheader" class="col-md-3">
                             Primary key
                         </div>
-                        <div role="cell" class="col-md-6 text-wrap">
+                        <div role="cell" class="col-md-6 text-wrap table-preset-row">
                             <code data-bind="text: primaryKey"></code>
                         </div>
                         <div role="cell" class="col-md-3 nowrap">
@@ -108,7 +106,7 @@
 
                     <div role="row" class="row">
                         <div role="rowheader" class="col-md-3">Secondary key</div>
-                        <div role="cell" class="col-md-6 text-wrap">
+                        <div role="cell" class="col-md-6 text-wrap table-preset-row">
                             <code data-bind="text: secondaryKey"></code>
                         </div>
                         <div role="cell" class="col-md-3 nowrap">

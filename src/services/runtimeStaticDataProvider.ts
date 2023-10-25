@@ -4,6 +4,7 @@ import IStaticDataProvider from "./IStaticDataProvider";
 
 export class RuntimeStaticDataProvider implements IStaticDataProvider {
     private readonly httpClient: XmlHttpRequestClient;
+
     constructor() {
         this.httpClient = new XmlHttpRequestClient();
     }

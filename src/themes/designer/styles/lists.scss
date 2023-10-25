@@ -34,10 +34,10 @@
         height: 16px;
         left: -16px;
         position: absolute;
-        @include selection(8px, -3px);
 
         &:focus,
         &:hover {
+            @include selection(8px, -3px);
             outline: none;
             cursor: pointer;
         }
@@ -62,7 +62,6 @@
     text-decoration: none;
     color: $color-base;
     padding: 0 5px;
-    @include selection(5px);
 
     .paperbits-icon {
         padding: 0 5px;
@@ -79,6 +78,14 @@
     &:focus,
     &:hover {
         outline: none;
+    }
+
+    &:hover {
+        @include selection();
+    }
+
+    &:focus {
+        @include selection();
     }
 
     &.selected {

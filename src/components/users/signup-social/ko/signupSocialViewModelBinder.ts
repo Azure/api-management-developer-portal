@@ -5,10 +5,11 @@ import { SignupSocialModel } from "../signupSocialModel";
 import { SignupSocialViewModel } from "./signupSocialViewModel";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { StyleCompiler } from "@paperbits/common/styles";
+import { EventManager } from "@paperbits/common/events";
 
 
 export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocialModel, SignupSocialViewModel> {
-    constructor(
+    constructor(private readonly eventManager: EventManager,
         private readonly identityService: IdentityService,
         private readonly settingsProvider: ISettingsProvider,
         private readonly styleCompiler: StyleCompiler

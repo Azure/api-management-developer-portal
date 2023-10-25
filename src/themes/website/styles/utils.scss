@@ -104,6 +104,10 @@
     }
 }
 
+.inherit-color {
+    color: inherit !important;
+}
+
 .text-wrap {
     word-wrap: break-word;
     min-width: 0;
@@ -114,7 +118,6 @@
 }
 
 .text-hide {
-    font: 0/0 a;
     color: transparent;
     text-shadow: none;
     background-color: transparent;
@@ -188,4 +191,25 @@
 
 .mr-20 {
     margin-right: 20px;
+}
+
+/*  the markdown surrounds the text with a <p> tag that has properties defined in global styles
+    that will overwrite the style defined for the element
+*/
+.content-inherit-color {
+    p {
+        color: inherit;
+    }
+}
+
+.content-inherit-font-weight {
+    p {
+        font-weight: inherit;
+    }
+}
+
+.content-inherit-font-style {
+    p {
+        font-style: inherit;
+    }
 }

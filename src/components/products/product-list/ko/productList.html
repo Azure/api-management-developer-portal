@@ -1,11 +1,11 @@
 <!-- ko if: layout() === 'list' -->
-<product-list-runtime data-bind="attr: { params: runtimeConfig }"></product-list-runtime>
+<product-list-runtime class="product-list" data-bind="attr: { params: runtimeConfig }, styled: styles"></product-list-runtime>
 <!-- /ko -->
 
 <!-- ko if: layout() === 'dropdown' -->
-<product-list-dropdown-runtime data-bind="attr: { params: runtimeConfig }"></product-list-dropdown-runtime>
+<product-list-dropdown-runtime class ="product-list-dropdown" data-bind="attr: { params: runtimeConfig }, styled: styles"></product-list-dropdown-runtime>
 <!-- /ko -->
 
 <!-- ko if: layout() === 'tiles' -->
-<product-list-tiles-runtime data-bind="attr: { params: runtimeConfig }"></product-list-tiles-runtime>
+<product-list-tiles-runtime class ="product-list-tiles" data-bind="attr: { params: runtimeConfig }, styled: styles"></product-list-tiles-runtime>
 <!-- /ko -->

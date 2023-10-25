@@ -3,7 +3,6 @@ import { ListOfApisViewModel } from "./listOfApisViewModel";
 import { ListOfApisModel } from "../listOfApisModel";
 import { StyleCompiler } from "@paperbits/common/styles";
 
-
 export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisModel, ListOfApisViewModel> {
     constructor(private readonly styleCompiler: StyleCompiler) { }
 

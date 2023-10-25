@@ -1,14 +1,15 @@
 <!-- ko if: $component.anchor -->
-<h4 class="text-truncate flex-grow"
+<h4 class="text-truncate flex-grow widget-text"
     data-bind="text: $component.name, attr: { id: $component.getReferenceId(definition) }">
 </h4>
 <!-- /ko -->
 <!-- ko ifnot: $component.anchor -->
-<h4 class="text-truncate flex-grow" data-bind="text: $component.name"></h4>
+<h4 class="text-truncate flex-grow widget-text" data-bind="text: $component.name"></h4>
 <!-- /ko -->
 
 <!-- ko if: $component.description -->
-<p data-bind="markdown: $component.description"></p>
+<p class="widget-text content-inherit-color content-inherit-font-weight content-inherit-font-style"
+    data-bind="markdown: $component.description"></p>
 <!-- /ko -->
 
 <ul class="nav nav-pills" role="tablist">

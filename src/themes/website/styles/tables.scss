@@ -23,7 +23,7 @@ $body-bg: none;
         border-bottom: (2 * $table-border-width) solid $table-border-color;
     }
 
-    tbody + tbody {
+    tbody+tbody {
         border-top: (2 * $table-border-width) solid $table-border-color;
     }
 
@@ -41,7 +41,7 @@ $body-bg: none;
         flex-basis: 100%;
         border-top: 1px solid #dee2e6;
 
-        > div {
+        >div {
             padding: .75rem;
             vertical-align: top;
         }
@@ -71,7 +71,7 @@ $body-bg: none;
     margin: 20px 0;
 }
 
-.table-preset > .d-contents > .d-contents > div {
+.table-preset>.d-contents>.d-contents>div {
     padding: 8px;
 }
 
@@ -144,7 +144,12 @@ $body-bg: none;
 
     .table-preset-head {
         button {
-            text-align: left;
+            text-align: inherit;
+            color: inherit;
+            font-size: inherit;
+            font-style: inherit;
+            text-shadow: inherit;
+            letter-spacing: inherit;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -169,7 +174,7 @@ $body-bg: none;
     border: 1px solid rgba(0, 0, 0, 0.5);
     max-height: 250px;
 
-    & > .d-contents > .d-contents > div {
+    &>.d-contents>.d-contents>div {
         padding: 4px;
         vertical-align: middle;
     }

@@ -6,12 +6,14 @@ import { DelegationAction, DelegationParameters } from "../../../../contracts/te
 import { IdentityService } from "../../../../services";
 import { BackendService } from "../../../../services/backendService";
 import { TenantService } from "../../../../services/tenantService";
+import { SignupHandlers } from "../signupHandlers";
 import { SignupModel } from "../signupModel";
 import { SignupViewModel } from "./signupViewModel";
+import { EventManager } from "@paperbits/common/events";
 
 export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignupViewModel> {
 
-    constructor(
+    constructor(private readonly eventManager: EventManager,
         private readonly tenantService: TenantService,
         private readonly backendService: BackendService,
         private readonly settingsProvider: ISettingsProvider,

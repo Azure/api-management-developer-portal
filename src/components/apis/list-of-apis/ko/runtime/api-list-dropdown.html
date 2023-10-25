@@ -1,24 +1,24 @@
 <div class="form-group">
     <div class="input-group" tabindex="0" aria-label="APIs">
-        <div class="form-control text-truncate" data-toggle="dropdown" role="button">
+        <div class="form-control text-truncate dropdown-input" data-toggle="dropdown" role="button">
             <span data-bind="text: selection"></span>
             <!-- ko if: selectedApi() -->
             <!-- ko if: selectedApi().type === 'soap' -->
-            <span class="badge badge-soap">SOAP</span>
+            <span class="badge api-type-badge">SOAP</span>
             <!-- /ko -->
             <!-- ko if: selectedApi().type === 'websocket' -->
-            <span class="badge badge-soap">WebSocket</span>
+            <span class="badge api-type-badge">WebSocket</span>
             <!-- /ko -->
             <!-- ko if: selectedApi().type === 'graphql' -->
-            <span class="badge badge-soap">GraphQL</span>
+            <span class="badge api-type-badge">GraphQL</span>
             <!-- /ko -->
             <!-- /ko -->
         </div>
-        <button class="input-group-addon no-border" data-toggle="dropdown" aria-label="Expand APIs list">
+        <button class="input-group-addon no-border dropdown-input-button" data-toggle="dropdown" aria-label="Expand APIs list">
             <i class="icon-emb icon-emb-chevron-down"></i>
         </button>
-        <div class="dropdown">
-            <input type="search" class="form-control form-control-light" aria-label="Search" placeholder="Search APIs"
+        <div class="dropdown dropdown-container">
+            <input type="search" class="form-control form-control-light search-input" aria-label="Search" placeholder="Search APIs"
                 data-bind="textInput: pattern" autofocus />
 
             <!-- <tag-input params="{ scope: 'apis', onChange: onTagsChange }"></tag-input> -->
@@ -50,15 +50,15 @@
                     <!-- ko foreach: { data: group.items, as: 'item' } -->
                     <a href="#" role="listitem" class="nav-link text-truncate" data-dismiss
                         data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedApiName() === item.name }">
-                        <span data-bind="text: item.displayName"></span>
+                        <span class="widget-text" data-bind="text: item.displayName"></span>
                         <!-- ko if: item.type === 'soap' -->
-                        <span class="badge badge-soap">SOAP</span>
+                        <span class="badge api-type-badge">SOAP</span>
                         <!-- /ko -->
                         <!-- ko if: item.type === 'websocket' -->
-                        <span class="badge badge-soap">WebSocket</span>
+                        <span class="badge api-type-badge">WebSocket</span>
                         <!-- /ko -->
                         <!-- ko if: item.type === 'graphql' -->
-                        <span class="badge badge-soap">GraphQL</span>
+                        <span class="badge api-type-badge">GraphQL</span>
                         <!-- /ko -->
                         <!-- ko if: item.apiVersion -->
                         - <span data-bind="text: item.apiVersion"></span>
@@ -71,7 +71,7 @@
             <!-- /ko -->
 
             <!-- ko if: apiGroups().length === 0 -->
-            <div class="list-item-empty">No APIs found</div>
+            <div class="widget-text list-item-empty">No APIs found</div>
             <!-- /ko -->
             <!-- /ko -->
 
@@ -82,13 +82,13 @@
                     data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedApiName() === item.name }">
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.type === 'soap' -->
-                    <span class="badge badge-soap">SOAP</span>
+                    <span class="badge api-type-badge">SOAP</span>
                     <!-- /ko -->
                     <!-- ko if: item.type === 'websocket' -->
-                    <span class="badge badge-soap">WebSocket</span>
+                    <span class="badge api-type-badge">WebSocket</span>
                     <!-- /ko -->
                     <!-- ko if: item.type === 'graphql' -->
-                    <span class="badge badge-soap">GraphQL</span>
+                    <span class="badge api-type-badge">GraphQL</span>
                     <!-- /ko -->
                     <!-- ko if: item.apiVersion -->
                     - <span data-bind="text: item.apiVersion"></span>
@@ -98,7 +98,7 @@
             <!-- /ko -->
 
             <!-- ko if: apis().length === 0 -->
-            <div class="list-item-empty">No APIs found</div>
+            <div class="widget-text list-item-empty">No APIs found</div>
             <!-- /ko -->
             <!-- /ko -->
 

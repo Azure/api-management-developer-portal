@@ -9,13 +9,13 @@
 <div class="animation-fade-in">
     <div class="row flex flex-row">
         <div class="col-md-11  text-wrap">
-            <h2 id="operation-name">
+            <h2 class="title-text" id="operation-name" class="operation-name">
                 <span data-bind="text: operation().displayName"></span>
             </h2>
         </div>
         <!-- ko if: $component.enableConsole -->
         <div class="col-md-1">
-            <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i
+            <button class="button try-it-button" data-bind="click: $component.openConsole">Try it <i
                     class="icon-emb icon-emb-play"></i>
             </button>
         </div>
@@ -23,28 +23,30 @@
     </div>
 
     <!-- ko if: operation().description  -->
-    <div data-bind="markdown: operation().description"></div>
+    <div class="widget-text content-inherit-color content-inherit-font-weight content-inherit-font-style"
+        data-bind="markdown: operation().description"></div>
     <!-- /ko -->
 
     <!-- ko if: tags().length > 0 -->
     <div class="tag-group">
         <!-- ko foreach: { data: $component.tags, as: 'tag' } -->
-        <span class="tag-item" role="group" data-bind="text: tag"></span>
+        <span class="tag-card" role="group" data-bind="text: tag"></span>
         <!-- /ko -->
     </div>
     <!-- /ko -->
 
     <div class="collapsible">
-        <h3>Request</h3>
+        <h3 class="widget-text">Request</h3>
 
         <div class="collapsible-container">
-            <span class="text-monospace text-wrap"
+            <span class="text-monospace text-wrap widget-text"
                 data-bind="text: $component.requestUrlSample, attr: { 'data-method': operation().method }"></span>
 
             <!-- ko if: operation().parameters.length > 0 -->
-            <h4>Request parameters</h4>
+            <h4 class="widget-text">Request parameters</h4>
 
-            <div role="table" class="table-preset" data-bind="css: { 'table-preset-params': !showExamples(), 'table-preset-params-examples': showExamples }">
+            <div role="table" class="table-preset table-preset-params"
+                data-bind="css: { 'table-preset-params': !showExamples(), 'table-preset-params-examples': showExamples }">
                 <div class="d-contents" role="rowgroup">
                     <div class="d-contents" role="row">
                         <div role="columnheader" class="table-preset-head text-truncate">Name</div>
@@ -58,12 +60,12 @@
                 <div class="d-contents" role="rowgroup">
                     <!-- ko foreach: { data: operation().parameters, as: 'parameter' } -->
                     <div class="d-contents" role="row">
-                        <div role="cell" class="text-wrap text-monospace"
+                        <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
-                        <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
-                        <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
-                        <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type"></div>
-                        <div role="cell" class="cell-examples">
+                        <div role="cell" class="text-truncate table-preset-row" data-bind="text: parameter.in"></div>
+                        <div role="cell" class="text-truncate table-preset-row" data-bind="text: parameter.required"></div>
+                        <div role="cell" class="text-truncate text-monospace table-preset-row" data-bind="text: parameter.type"></div>
+                        <div role="cell" class="cell-examples table-preset-row">
                             <!-- ko foreach: { data: parameter.examples, as: 'example' } -->
                             <p>
                                 <!-- ko ifnot: example.title === "default" && !example.description && parameter.examples.length === 1 -->
@@ -74,7 +76,7 @@
                             </p>
                             <!-- /ko -->
                         </div>
-                        <div role="cell">
+                        <div role="cell" class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style">
                             <span data-bind="markdown: parameter.description"></span>
                         </div>
                     </div>
@@ -84,9 +86,10 @@
             <!-- /ko -->
 
             <!-- ko if: operation().request && operation().request.headers && operation().request.headers.length > 0 -->
-            <h4>Request headers</h4>
+            <h4 class="widget-text">Request headers</h4>
 
-            <div role="table" class="table-preset" data-bind="css: { 'table-preset-headers-request': !showExamples(), 'table-preset-headers-request-examples': showExamples }">
+            <div role="table" class="table-preset table-preset-headers-request"
+                data-bind="css: { 'table-preset-headers-request': !showExamples(), 'table-preset-headers-request-examples': showExamples }">
                 <div class="d-contents" role="rowgroup">
                     <div class="d-contents" role="row">
                         <div role="columnheader" class="table-preset-head text-truncate">Name</div>
@@ -99,12 +102,12 @@
                 <div class="d-contents" role="rowgroup">
                     <!-- ko foreach: { data: operation().request.headers, as: 'header' } -->
                     <div class="d-contents" role="row">
-                        <div role="cell" class="text-truncate text-monospace"
+                        <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: header.name, attr: { title: header.name }"></div>
-                        <div role="cell" class="text-truncate" data-bind="text: header.required"></div>
-                        <div role="cell" class="text-truncate text-monospace"
+                        <div role="cell" class="text-truncate table-preset-row" data-bind="text: header.required"></div>
+                        <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: header.type, attr: { title: header.type }"></div>
-                        <div role="cell" class="cell-examples">
+                        <div role="cell" class="cell-examples table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style">
                             <!-- ko foreach: { data: header.examples, as: 'example' } -->
                             <p>
                                 <span data-bind="text: example.title"></span>:
@@ -113,7 +116,7 @@
                             </p>
                             <!-- /ko -->
                         </div>
-                        <div role="cell">
+                        <div role="cell" class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style">
                             <span data-bind="markdown: header.description"></span>
                         </div>
                     </div>
@@ -126,7 +129,7 @@
 
             <!-- ko with: operation().request, as: 'request' -->
             <!-- ko if: request.isMeaningful() -->
-            <h4>Request body</h4>
+            <h4 class="widget-text">Request body</h4>
 
             <!-- ko if: request.description  -->
             <div data-bind="markdown: request.description"></div>
@@ -161,13 +164,18 @@
                         <div class="d-contents" role="rowgroup">
                             <!-- ko foreach: { data: representation.formParameters, as: 'parameter' } -->
                             <div class="d-contents" role="row">
-                                <div role="cell" class="text-wrap text-monospace"
+                                <div role="cell" class="text-truncate text-monospace table-preset-row"
                                     data-bind="text: parameter.name, attr: { title: parameter.name }"></div>
-                                <div role="cell" class="text-truncate" data-bind="text: parameter.in"></div>
-                                <div role="cell" class="text-truncate" data-bind="text: parameter.required"></div>
-                                <div role="cell" class="text-truncate text-monospace" data-bind="text: parameter.type">
+                                <div role="cell" class="text-truncate table-preset-row" data-bind="text: parameter.in">
                                 </div>
-                                <div role="cell" data-bind="markdown: parameter.description"></div>
+                                <div role="cell" class="text-truncate table-preset-row"
+                                    data-bind="text: parameter.required"></div>
+                                <div role="cell" class="text-truncate text-monospace table-preset-row"
+                                    data-bind="text: parameter.type">
+                                </div>
+                                <div role="cell" class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                                    class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                                    data-bind="markdown: parameter.description"></div>
                             </div>
                             <!-- /ko -->
                         </div>
@@ -176,21 +184,24 @@
 
                     <!-- ko if: representation.examples -->
                     <!-- ko if: representation.examples.length > 1 -->
-                        <div class="row flex flex-row example-form-control">
-                            <div class="col-12">
-                                <label data-bind="attr : { for: 'select' + representation.contentType + '_' + $index() }, text: 'Examples'"></label>
-                            </div>
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <select class="form-control" data-bind="options: representation.examples, value: $component.selectedRepresentatnionsValue()[representation.contentType] ,optionsValue: 'title', optionsText: 'title', attr : {title: 'Representation examples selector', id: 'select-' + representation.contentType + '_' + $index() }"></select>
-                                </div>
+                    <div class="row flex flex-row example-form-control">
+                        <div class="col-12">
+                            <label
+                                data-bind="attr : { for: 'select' + representation.contentType + '_' + $index() }, text: 'Examples'"></label>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <select class="form-control"
+                                    data-bind="options: representation.examples, value: $component.selectedRepresentatnionsValue()[representation.contentType] ,optionsValue: 'title', optionsText: 'title', attr : {title: 'Representation examples selector', id: 'select-' + representation.contentType + '_' + $index() }"></select>
                             </div>
                         </div>
-                        <!-- ko foreach: { data: representation.examples, as: 'example' } -->
-                        <code-snippet data-bind="visible: $component.selectedRepresentatnionsValue()[representation.contentType]() == example.title"
-                            params="{ title: example.title, content: example.value, language: example.format, description: example.description }">
-                        </code-snippet>
-                        <!-- /ko -->
+                    </div>
+                    <!-- ko foreach: { data: representation.examples, as: 'example' } -->
+                    <code-snippet
+                        data-bind="visible: $component.selectedRepresentatnionsValue()[representation.contentType]() == example.title"
+                        params="{ title: example.title, content: example.value, language: example.format, description: example.description }">
+                    </code-snippet>
+                    <!-- /ko -->
                     <!-- /ko -->
 
                     <!-- ko if: representation.examples.length == 1 -->
@@ -208,13 +219,14 @@
             <!-- /ko -->
 
             <!-- ko foreach: { data: operation().getMeaningfulResponses(), as: 'response' } -->
-            <h3>Response: <span data-bind="text: response.statusCode"></span></h3>
+            <h3 class="widget-text">Response: <span data-bind="text: response.statusCode"></span></h3>
             <!-- ko if: response.description -->
-            <p data-bind="markdown: response.description"></p>
+            <p class="widget-text content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                data-bind="markdown: response.description"></p>
             <!-- /ko -->
 
             <!-- ko if: response.headers && response.headers.length > 0 -->
-            <h4>Response headers</h4>
+            <h4 class="widget-text">Response headers</h4>
 
             <div role="table" class="table-preset table-preset-headers-response">
                 <div class="d-contents" role="rowgroup">
@@ -228,12 +240,14 @@
                 <div class="d-contents" role="rowgroup">
                     <!-- ko foreach: { data: response.headers, as: 'header' } -->
                     <div class="d-contents" role="row">
-                        <div role="cell" class="text-truncate text-monospace"
+                        <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: header.name, attr: { title: header.name }"></div>
-                        <div role="cell" class="text-truncate" data-bind="text: header.required"></div>
-                        <div role="cell" class="text-truncate text-monospace"
+                        <div role="cell" class="text-truncate table-preset-row" data-bind="text: header.required"></div>
+                        <div role="cell" class="text-truncate text-monospace table-preset-row"
                             data-bind="text: header.type, attr: { title: header.type }"></div>
-                        <div role="cell" data-bind="markdown: header.description"></div>
+                        <div role="cell"
+                            class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                            data-bind="markdown: header.description"></div>
                     </div>
                     <!-- /ko -->
                 </div>
@@ -271,7 +285,7 @@
     </div>
 
     <!-- ko if: $component.definitions().length > 0 -->
-    <h3>Definitions</h3>
+    <h3 class="widget-text">Definitions</h3>
 
     <div role="table" class="table-preset table-preset-definitions">
         <div class="d-contents" role="rowgroup">
@@ -283,11 +297,13 @@
         <div class="d-contents" role="rowgroup">
             <!-- ko foreach: { data: definitions, as: 'definition' } -->
             <div class="d-contents" role="row">
-                <div role="cell" class="text-truncate">
+                <div role="cell" class="text-truncate table-preset-row">
                     <a
                         data-bind="text: definition.name, attr: { title: definition.name, href: $component.getDefinitionReferenceUrl(definition) }"></a>
                 </div>
-                <div role="cell" data-bind="markdown: definition.description"></div>
+                <div role="cell"
+                    class="table-preset-row content-inherit-color content-inherit-font-weight content-inherit-font-style"
+                    data-bind="markdown: definition.description"></div>
             </div>
             <!-- /ko -->
         </div>
@@ -304,7 +320,7 @@
 
 <!-- ko ifnot: apiType() === 'graphql' -->
 <!-- ko ifnot: operation -->
-<p>No operation selected.</p>
+<p class="widget-text">No operation selected.</p>
 <!-- /ko -->
 <!-- /ko -->
 <!-- /ko -->
@@ -312,14 +328,14 @@
 <!-- ko if: apiType() === 'websocket' -->
 <!-- ko if: operation -->
 <div class="animation-fade-in row flex flex-row">
-    <div class="col-md-11 text-wrap">
-        <h2 id="operation-name">
+    <div class="col-md-11 text-wrap operation-header">
+        <h2 class="title-text" id="operation-name" class="operation-name">
             <span data-bind="text: operation().displayName"></span>
         </h2>
     </div>
     <!-- ko if: $component.enableConsole -->
     <div class="col-md-1">
-        <button class="open-console-button" data-bind="click: $component.openConsole">Try it <i
+        <button class="button try-it-button" data-bind="click: $component.openConsole">Try it <i
                 class="icon-emb icon-emb-play"></i>
         </button>
     </div>
@@ -329,20 +345,20 @@
 <!-- ko if: tags().length > 0 -->
 <div class="tag-group">
     <!-- ko foreach: { data: $component.tags, as: 'tag' } -->
-    <span class="tag-item" role="group" data-bind="text: tag"></span>
+    <span class="tag-card" role="group" data-bind="text: tag"></span>
     <!-- /ko -->
 </div>
 <!-- /ko -->
 
 <div class="collapsible">
-    <h3>Socket URL</h3>
+    <h3 class="widget-text">Socket URL</h3>
     <div class="collapsible-container">
-        <span class="text-monospace" data-bind="text: $component.requestUrlSample"></span>
+        <span class="widget-text" class="text-monospace" data-bind="text: $component.requestUrlSample"></span>
     </div>
 
-    <h3>Protocol</h3>
+    <h3 class="widget-text">Protocol</h3>
     <div class="collapsible-container">
-        <span class="text-monospace" data-bind="text: $component.protocol"></span>
+        <span class="widget-text" class="text-monospace" data-bind="text: $component.protocol"></span>
     </div>
 </div>
 
@@ -355,11 +371,11 @@
     <div class="row flex flex-row">
         <div class="col-md-11 text-wrap">
             <h2 id="operation-name">GraphQL endpoint</h2>
-            <span class="monospace" data-bind="text: $component.requestUrlSample"></span>
+            <span class="widget-text" class="monospace" data-bind="text: $component.requestUrlSample"></span>
         </div>
         <!-- ko if: $component.enableConsole -->
         <div class="col-md-1">
-            <button class="open-console-button graph mt-17" data-bind="click: $component.openConsole">Try it <i
+            <button class="button try-it-button graph mt-17" data-bind="click: $component.openConsole">Try it <i
                     class="icon-emb icon-emb-play"></i>
             </button>
         </div>

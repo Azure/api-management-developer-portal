@@ -1,11 +1,11 @@
 <!-- ko if: layout() === 'list' -->
-<api-list data-bind="attr: { params: runtimeConfig }"></api-list>
+<api-list class="list-of-apis" data-bind="attr: { params: runtimeConfig}, styled: styles"></api-list>
 <!-- /ko -->
 
 <!-- ko if: layout() === 'dropdown' -->
-<api-list-dropdown data-bind="attr: { params: runtimeConfig }"></api-list-dropdown>
+<api-list-dropdown class="list-of-apis-dropdown" data-bind="attr: { params: runtimeConfig }, styled: styles"></api-list-dropdown>
 <!-- /ko -->
 
 <!-- ko if: layout() === 'tiles' -->
-<api-list-tiles data-bind="attr: { params: runtimeConfig }"></api-list-tiles>
+<api-list-tiles class="list-of-apis-tiles" data-bind="attr: { params: runtimeConfig }, styled: styles"></api-list-tiles>
 <!-- /ko -->
