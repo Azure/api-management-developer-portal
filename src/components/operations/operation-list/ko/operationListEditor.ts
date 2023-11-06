@@ -14,6 +14,7 @@ export class OperationListEditor {
     public readonly showToggleUrlPath: ko.Observable<boolean>;
     public readonly defaultShowUrlPath: ko.Observable<boolean>;
     public readonly defaultGroupByTagToEnabled: ko.Observable<boolean>;
+    public readonly defaultAllGroupTagsExpanded: ko.Observable<boolean>;
     public readonly hyperlink: ko.Observable<HyperlinkModel>;
     public readonly hyperlinkTitle: ko.Computed<string>;
 
@@ -23,6 +24,7 @@ export class OperationListEditor {
         this.showToggleUrlPath = ko.observable();
         this.defaultShowUrlPath = ko.observable();
         this.defaultGroupByTagToEnabled = ko.observable(false);
+        this.defaultAllGroupTagsExpanded = ko.observable(false);
         this.hyperlink = ko.observable();
         this.hyperlinkTitle = ko.computed<string>(() => this.hyperlink() ? this.hyperlink().title : "Add a link...");
     }
@@ -40,6 +42,7 @@ export class OperationListEditor {
         this.showToggleUrlPath(this.model.showToggleUrlPath);
         this.defaultShowUrlPath(this.model.defaultShowUrlPath);
         this.defaultGroupByTagToEnabled(this.model.defaultGroupByTagToEnabled);
+        this.defaultAllGroupTagsExpanded(this.model.defaultAllGroupTagsExpanded);
         this.hyperlink(this.model.detailsPageHyperlink);
 
         this.allowSelection.subscribe(this.applyChanges);
@@ -47,6 +50,7 @@ export class OperationListEditor {
         this.showToggleUrlPath.subscribe(this.applyChanges);
         this.defaultShowUrlPath.subscribe(this.applyChanges);
         this.defaultGroupByTagToEnabled.subscribe(this.applyChanges);
+        this.defaultAllGroupTagsExpanded.subscribe(this.applyChanges);
     }
 
     private applyChanges(): void {
@@ -55,6 +59,7 @@ export class OperationListEditor {
         this.model.showToggleUrlPath = this.showToggleUrlPath();
         this.model.defaultShowUrlPath = this.defaultShowUrlPath();
         this.model.defaultGroupByTagToEnabled = this.defaultGroupByTagToEnabled();
+        this.model.defaultAllGroupTagsExpanded = this.defaultAllGroupTagsExpanded();
         this.model.detailsPageHyperlink = this.hyperlink();
         this.onChange(this.model);
     }

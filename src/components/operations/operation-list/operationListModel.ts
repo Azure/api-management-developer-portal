@@ -28,6 +28,11 @@ export class OperationListModel {
     public defaultGroupByTagToEnabled: boolean;
 
     /**
+     * Default to expand all GroupTags.
+     */
+    public defaultAllGroupTagsExpanded: boolean;
+
+    /**
      * Link to a page that contains operation details.
      */
     public detailsPageHyperlink: HyperlinkModel;
