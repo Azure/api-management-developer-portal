@@ -14,6 +14,7 @@ export class OperationListModelBinder implements IModelBinder<OperationListModel
         model.showToggleUrlPath = contract.showToggleUrlPath;
         model.defaultShowUrlPath = contract.defaultShowUrlPath;
         model.defaultGroupByTagToEnabled = contract.defaultGroupByTagToEnabled === true;
+        model.defaultAllGroupTagsExpanded = contract.defaultAllGroupTagsExpanded === true;
         model.styles = contract.styles ?? {};
 
         if (contract.detailsPageHyperlink) {
@@ -31,6 +32,7 @@ export class OperationListModelBinder implements IModelBinder<OperationListModel
             showToggleUrlPath: model.showToggleUrlPath,
             defaultShowUrlPath: model.defaultShowUrlPath,
             defaultGroupByTagToEnabled: model.defaultGroupByTagToEnabled,
+            defaultAllGroupTagsExpanded: model.defaultAllGroupTagsExpanded,
             detailsPageHyperlink: model.detailsPageHyperlink
                 ? {
                     target: model.detailsPageHyperlink.target,
