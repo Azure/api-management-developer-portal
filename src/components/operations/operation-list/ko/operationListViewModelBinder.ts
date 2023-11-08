@@ -16,6 +16,7 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
             showToggleUrlPath: state.showToggleUrlPath,
             defaultShowUrlPath: state.defaultShowUrlPath,
             defaultGroupByTagToEnabled: state.defaultGroupByTagToEnabled,
+            defaultAllGroupTagsExpanded: state.defaultAllGroupTagsExpanded,
             detailsPageUrl: state.detailsPageUrl
         }));
     }
@@ -26,6 +27,7 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
         state.showToggleUrlPath = model.showToggleUrlPath;
         state.defaultShowUrlPath = model.defaultShowUrlPath;
         state.defaultGroupByTagToEnabled = model.defaultGroupByTagToEnabled;
+        state.defaultAllGroupTagsExpanded = model.defaultAllGroupTagsExpanded;
         state.detailsPageUrl = model.detailsPageHyperlink
             ? model.detailsPageHyperlink.href
             : undefined
