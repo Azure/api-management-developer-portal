@@ -27,7 +27,7 @@ export class ProductApisEditorModule implements IInjectorModule {
         });
 
         widgetService.registerWidgetEditor("product-apis", {
-            displayName: "Operation: Details",
+            displayName: "Product: APIs",
             category: "APIs",
             iconClass: "widget-icon widget-icon-api-management",
             componentBinder: KnockoutComponentBinder,
@@ -44,7 +44,7 @@ export class ProductApisEditorModule implements IInjectorModule {
         });
 
         widgetService.registerWidgetEditor("product-apis-tiles", {
-            displayName: "Operation: Details (tiles)",
+            displayName: "Product: APIs (tiles)",
             category: "APIs",
             iconClass: "widget-icon widget-icon-api-management",
             componentBinder: KnockoutComponentBinder,
