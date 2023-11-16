@@ -32,7 +32,7 @@ export class OperationList {
     public readonly pattern: ko.Observable<string>;
     public readonly tags: ko.Observable<Tag[]>;
     public readonly pageNumber: ko.Observable<number>;
-    public readonly totalPages: ko.Observable<number>;
+    public readonly nextPage: ko.Observable<boolean>;
     public readonly tagScope: ko.Computed<string>;
     public readonly showUrlPath: ko.Observable<boolean>;
     public readonly apiType: ko.Observable<string>;
@@ -62,7 +62,7 @@ export class OperationList {
         this.pattern = ko.observable();
         this.tags = ko.observable([]);
         this.pageNumber = ko.observable(1);
-        this.totalPages = ko.observable(0);
+        this.nextPage = ko.observable();
 
         this.tagScope = ko.computed(() => this.selectedApiName() ? `apis/${this.selectedApiName()}` : "");
         this.apiType = ko.observable();
@@ -200,7 +200,7 @@ export class OperationList {
         const operationGroups = pageOfOperationsByTag.value;
 
         this.operationGroups(operationGroups);
-        this.totalPages(Math.ceil(pageOfOperationsByTag.count / Constants.defaultPageSize));
+        this.nextPage(!!pageOfOperationsByTag.nextLink);
     }
 
     private async loadPageOfOperations(): Promise<void> {
@@ -214,7 +214,7 @@ export class OperationList {
         const pageOfOperations = await this.apiService.getOperations(`apis/${apiName}`, this.searchRequest);
 
         this.operations(pageOfOperations.value);
-        this.totalPages(Math.ceil(pageOfOperations.count / Constants.defaultPageSize));
+        this.nextPage(!!pageOfOperations.nextLink);
     }
 
     public selectOperation(operation: Operation): void {

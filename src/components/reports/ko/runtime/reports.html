@@ -175,9 +175,9 @@
         </div>
     </div>
 
-    <!-- ko if: $component.reportByProductTotalPages() > 1 -->
+    <!-- ko if: $component.reportByProductNextPage() || $component.reportByProductPageNumber() > 1 -->
     <pagination
-        params="{ pageNumber: $component.reportByProductPageNumber, totalPages: $component.reportByProductTotalPages }">
+        params="{ pageNumber: $component.reportByProductPageNumber, nextPage: $component.reportByProductNextPage }">
     </pagination>
     <!-- /ko -->
 
@@ -318,9 +318,9 @@
         </div>
     </div>
 
-    <!-- ko if: $component.reportBySubscriptionTotalPages() > 1 -->
+    <!-- ko if: $component.reportBySubscriptionNextPage() || $component.reportBySubscriptionPageNumber() > 1 -->
     <pagination
-        params="{ pageNumber: $component.reportBySubscriptionPageNumber, totalPages: $component.reportBySubscriptionTotalPages }">
+        params="{ pageNumber: $component.reportBySubscriptionPageNumber, nextPage: $component.reportBySubscriptionNextPage }">
     </pagination>
     <!-- /ko -->
 
@@ -456,8 +456,9 @@
         </div>
     </div>
 
-    <!-- ko if: $component.reportByApiTotalPages() > 1 -->
-    <pagination params="{ pageNumber: $component.reportByApiPageNumber, totalPages: $component.reportByApiTotalPages }">
+    <!-- ko if: $component.reportByApiNextPage() || $component.reportByApiPageNumber() > 1 -->
+    <pagination
+        params="{ pageNumber: $component.reportByApiPageNumber, nextPage: $component.reportByApiNextPage }">
     </pagination>
     <!-- /ko -->
 
@@ -595,9 +596,9 @@
         </div>
     </div>
 
-    <!-- ko if: $component.reportByOperationTotalPages() > 1 -->
+    <!-- ko if: $component.reportByOperationNextPage() || $component.reportByOperationPageNumber() > 1 -->
     <pagination
-        params="{ pageNumber: $component.reportByOperationPageNumber, totalPages: $component.reportByOperationTotalPages }">
+        params="{ pageNumber: $component.reportByOperationPageNumber, nextPage: $component.reportByOperationNextPage }">
     </pagination>
     <!-- /ko -->
 

@@ -26,7 +26,7 @@ import * as Constants from "../../../../../constants";
 export class Subscriptions {
     public readonly subscriptions: ko.ObservableArray<SubscriptionListItem>;
     public readonly pageNumber: ko.Observable<number>;
-    public readonly totalPages: ko.Observable<number>;
+    public readonly nextPage: ko.Observable<boolean>;
     public readonly working: ko.Observable<boolean>;
     private userId: string;
 
@@ -40,7 +40,7 @@ export class Subscriptions {
     ) {
         this.subscriptions = ko.observableArray();
         this.pageNumber = ko.observable(1);
-        this.totalPages = ko.observable(0);
+        this.nextPage = ko.observable();
         this.working = ko.observable();
     }
 
@@ -70,8 +70,7 @@ export class Subscriptions {
             const subscriptionsPage = await this.productService.getUserSubscriptionsWithProductName(this.userId, query);
             const subscriptions = subscriptionsPage.value.map(item => new SubscriptionListItem(item, this.eventManager));
 
-            const totalItems = subscriptionsPage.count;
-            this.totalPages(Math.ceil(totalItems / Constants.defaultPageSize));
+            this.nextPage(!!subscriptionsPage.nextLink);
 
             this.subscriptions(subscriptions);
         } catch (error) {
