@@ -20,7 +20,7 @@ export class ProductSubscriptions {
     public readonly working: ko.Observable<boolean>;
     public readonly subscriptions: ko.ObservableArray<Subscription>;
     public readonly pageNumber: ko.Observable<number>;
-    public readonly totalPages: ko.Observable<number>;
+    public readonly nextPage: ko.Observable<string>;
 
     constructor(
         private readonly usersService: UsersService,
@@ -32,7 +32,7 @@ export class ProductSubscriptions {
         this.working = ko.observable();
         this.subscriptions = ko.observableArray();
         this.pageNumber = ko.observable(1);
-        this.totalPages = ko.observable(0);
+        this.nextPage = ko.observable();
     }
 
     @OnMounted()
@@ -64,7 +64,7 @@ export class ProductSubscriptions {
             const pageOfSubscriptions = await this.productService.getSubscriptionsForProduct(userId, `/products/${productName}`);
 
             this.subscriptions(pageOfSubscriptions.value);
-            this.totalPages(Math.ceil(pageOfSubscriptions.count / Constants.defaultPageSize));
+            this.nextPage(pageOfSubscriptions.nextLink);
         }
         catch (error) {
             if (error.code === "Unauthorized") {

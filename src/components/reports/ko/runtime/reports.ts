@@ -40,7 +40,7 @@ export class Reports {
     public readonly reportByProductOrder: ko.Observable<string>;
     public readonly reportByProductOrderAscending: ko.Observable<boolean>;
     public readonly reportByProductPageNumber: ko.Observable<number>;
-    public readonly reportByProductTotalPages: ko.Observable<number>;
+    public readonly reportByProductNextPage: ko.Observable<boolean>;
     public readonly reportByProductWorking: ko.Observable<boolean>;
     public readonly reportByProductHasData: ko.Computed<boolean>;
 
@@ -48,7 +48,7 @@ export class Reports {
     public readonly reportBySubscriptionOrder: ko.Observable<string>;
     public readonly reportBySubscriptionOrderAscending: ko.Observable<boolean>;
     public readonly reportBySubscriptionPageNumber: ko.Observable<number>;
-    public readonly reportBySubscriptionTotalPages: ko.Observable<number>;
+    public readonly reportBySubscriptionNextPage: ko.Observable<boolean>;
     public readonly reportBySubscriptionWorking: ko.Observable<boolean>;
     public readonly reportBySubscriptionHasData: ko.Computed<boolean>;
 
@@ -56,7 +56,7 @@ export class Reports {
     public readonly reportByApiOrder: ko.Observable<string>;
     public readonly reportByApiOrderAscending: ko.Observable<boolean>;
     public readonly reportByApiPageNumber: ko.Observable<number>;
-    public readonly reportByApiTotalPages: ko.Observable<number>;
+    public readonly reportByApiNextPage: ko.Observable<boolean>;
     public readonly reportByApiWorking: ko.Observable<boolean>;
     public readonly reportByApiHasData: ko.Computed<boolean>;
 
@@ -64,7 +64,7 @@ export class Reports {
     public readonly reportByOperationOrder: ko.Observable<string>;
     public readonly reportByOperationOrderAscending: ko.Observable<boolean>;
     public readonly reportByOperationPageNumber: ko.Observable<number>;
-    public readonly reportByOperationTotalPages: ko.Observable<number>;
+    public readonly reportByOperationNextPage: ko.Observable<boolean>;
     public readonly reportByOperationWorking: ko.Observable<boolean>;
     public readonly reportByOperationHasData: ko.Computed<boolean>;
 
@@ -84,7 +84,7 @@ export class Reports {
         this.reportByProductOrder = ko.observable("callCountSuccess");
         this.reportByProductOrderAscending = ko.observable(false);
         this.reportByProductPageNumber = ko.observable(1);
-        this.reportByProductTotalPages = ko.observable(0);
+        this.reportByProductNextPage = ko.observable();
         this.reportByProductWorking = ko.observable(false);
         this.reportByProductHasData = ko.computed(() => this.reportByProduct().length !== 0);
 
@@ -92,7 +92,7 @@ export class Reports {
         this.reportBySubscriptionOrder = ko.observable("callCountSuccess");
         this.reportBySubscriptionOrderAscending = ko.observable(false);
         this.reportBySubscriptionPageNumber = ko.observable(1);
-        this.reportBySubscriptionTotalPages = ko.observable(0);
+        this.reportBySubscriptionNextPage = ko.observable();
         this.reportBySubscriptionWorking = ko.observable(false);
         this.reportBySubscriptionHasData = ko.computed(() => this.reportBySubscription().length !== 0);
 
@@ -100,7 +100,7 @@ export class Reports {
         this.reportByApiOrder = ko.observable("callCountSuccess");
         this.reportByApiOrderAscending = ko.observable(false);
         this.reportByApiPageNumber = ko.observable(1);
-        this.reportByApiTotalPages = ko.observable(0);
+        this.reportByApiNextPage = ko.observable();
         this.reportByApiWorking = ko.observable(false);
         this.reportByApiHasData = ko.computed(() => this.reportByApi().length !== 0);
 
@@ -108,7 +108,7 @@ export class Reports {
         this.reportByOperationOrder = ko.observable("callCountSuccess");
         this.reportByOperationOrderAscending = ko.observable(false);
         this.reportByOperationPageNumber = ko.observable(1);
-        this.reportByOperationTotalPages = ko.observable(0);
+        this.reportByOperationNextPage = ko.observable();
         this.reportByOperationWorking = ko.observable(false);
         this.reportByOperationHasData = ko.computed(() => this.reportByOperation().length !== 0);
     }
@@ -195,7 +195,7 @@ export class Reports {
         });
 
         this.reportByProduct(viewModels);
-        this.reportByProductTotalPages(Math.ceil(pageOfRecords.count / Constants.defaultPageSize));
+        this.reportByProductNextPage(!!pageOfRecords.nextLink);
         this.reportByProductWorking(false);
     }
 
@@ -249,7 +249,7 @@ export class Reports {
         });
 
         this.reportBySubscription(viewModels);
-        this.reportBySubscriptionTotalPages(Math.ceil(pageOfRecords.count / Constants.defaultPageSize));
+        this.reportBySubscriptionNextPage(!!pageOfRecords.nextLink);
         this.reportBySubscriptionWorking(false);
     }
 
@@ -301,7 +301,7 @@ export class Reports {
         });
 
         this.reportByApi(viewModels);
-        this.reportByApiTotalPages(Math.ceil(pageOfRecords.count / Constants.defaultPageSize));
+        this.reportByApiNextPage(!!pageOfRecords.nextLink);
         this.reportByApiWorking(false);
     }
 
@@ -352,7 +352,7 @@ export class Reports {
         });
 
         this.reportByOperation(viewModels);
-        this.reportByOperationTotalPages(Math.ceil(pageOfRecords.count / Constants.defaultPageSize));
+        this.reportByOperationNextPage(!!pageOfRecords.nextLink);
         this.reportByOperationWorking(false);
     }
 
