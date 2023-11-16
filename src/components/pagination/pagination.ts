@@ -17,10 +17,11 @@ export class Pagination {
     constructor() {
         this.pageNumber = ko.observable(1);
         this.totalPages = ko.observable();
-        this.canGoPrevPage = ko.computed(() => this.totalPages() > 0 && this.pageNumber() > Constants.firstPage);
-        this.canGoFirstPage = ko.computed(() => this.totalPages() > 0 && this.pageNumber() > Constants.firstPage);
-        this.canGoNextPage = ko.computed(() => this.totalPages() > this.pageNumber());
-        this.canGoLastPage = ko.computed(() => this.totalPages() > this.pageNumber());
+        this.nextPage = ko.observable();
+        this.canGoPrevPage = ko.computed(() => (this.nextPage() !== undefined || this.totalPages() > 0) && this.pageNumber() > Constants.firstPage);
+        this.canGoFirstPage = ko.computed(() => (this.nextPage() !== undefined || this.totalPages() > 0) && this.pageNumber() > Constants.firstPage);
+        this.canGoNextPage = ko.computed(() => this.nextPage() === true || this.totalPages() > this.pageNumber());
+        this.canGoLastPage = ko.computed(() => this.totalPages() === undefined && this.totalPages() > this.pageNumber());
         this.pageNumbers = ko.observable([]);
     }
 
@@ -30,6 +31,9 @@ export class Pagination {
     @Param()
     public totalPages: ko.Observable<number>;
 
+    @Param()
+    public nextPage: ko.Observable<boolean | undefined>;
+
     public onPageChange: (pageNumber: number) => void;
 
     @OnMounted()
@@ -38,6 +42,8 @@ export class Pagination {
     }
 
     public updatePageNumbers(): void {
+        if (this.nextPage() !== undefined) return;
+
         const totalPages = this.totalPages();
         const pageNumber = this.pageNumber();
 
