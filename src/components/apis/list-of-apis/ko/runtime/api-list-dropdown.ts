@@ -27,7 +27,7 @@ export class ApiListDropdown {
     public readonly pattern: ko.Observable<string>;
     public readonly tags: ko.Observable<Tag[]>;
     public readonly pageNumber: ko.Observable<number>;
-    public readonly totalPages: ko.Observable<number>;
+    public readonly nextPage: ko.Observable<boolean>;
     public readonly selection: ko.Computed<string>;
     public readonly groupByTag: ko.Observable<boolean>;
     public readonly groupTagsExpanded: ko.Observable<Set<string>>;
@@ -49,7 +49,7 @@ export class ApiListDropdown {
         this.pattern = ko.observable();
         this.tags = ko.observable([]);
         this.pageNumber = ko.observable(1);
-        this.totalPages = ko.observable(0);
+        this.nextPage = ko.observable();
         this.apiGroups = ko.observableArray();
         this.selection = ko.computed(() => {
             const api = ko.unwrap(this.selectedApi);
@@ -70,7 +70,7 @@ export class ApiListDropdown {
     @OnMounted()
     public async initialize(): Promise<void> {
         this.groupByTag(this.defaultGroupByTagToEnabled());
-        
+
         await this.resetSearch();
         await this.checkSelection();
 
@@ -122,24 +122,24 @@ export class ApiListDropdown {
         try {
             this.working(true);
 
-            let totalItems: number;
+            let nextLink: string | null;
 
             if (this.groupByTag()) {
                 const pageOfTagResources = await this.apiService.getApisByTags(query);
                 const apiGroups = pageOfTagResources.value;
 
                 this.apiGroups(apiGroups);
-                totalItems = pageOfTagResources.count;
+                nextLink = pageOfTagResources.nextLink;
             }
             else {
                 const pageOfApis = await this.apiService.getApis(query);
                 const apis = pageOfApis ? pageOfApis.value : [];
 
                 this.apis(apis);
-                totalItems = pageOfApis.count;
+                nextLink = pageOfApis.nextLink;
             }
 
-            this.totalPages(Math.ceil(totalItems / Constants.defaultPageSize));
+            this.nextPage(!!nextLink);
         }
         catch (error) {
             throw new Error(`Unable to load APIs. Error: ${error.message}`);

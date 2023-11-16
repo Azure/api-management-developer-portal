@@ -24,7 +24,7 @@ export class ProductList {
     public readonly working: ko.Observable<boolean>;
     public readonly pattern: ko.Observable<string>;
     public readonly pageNumber: ko.Observable<number>;
-    public readonly totalPages: ko.Observable<number>;
+    public readonly nextPage: ko.Observable<boolean>;
 
     constructor(
         private readonly usersService: UsersService,
@@ -39,7 +39,7 @@ export class ProductList {
         this.working = ko.observable(true);
         this.pattern = ko.observable();
         this.pageNumber = ko.observable(1);
-        this.totalPages = ko.observable(0);
+        this.nextPage = ko.observable();
     }
 
     @Param()
@@ -73,7 +73,7 @@ export class ProductList {
 
             const pageOfProducts = await this.productService.getProductsPage(query);
             this.products(pageOfProducts.value);
-            this.totalPages(Math.ceil(pageOfProducts.count / Constants.defaultPageSize));
+            this.nextPage(!!pageOfProducts.nextLink);
 
             if (this.allowSelection() && !this.selectedProductName()) {
                 this.selectFirstProduct();
