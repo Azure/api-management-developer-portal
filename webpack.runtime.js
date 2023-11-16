@@ -66,6 +66,7 @@ const runtimeConfig = {
                 { from: `./src/themes/website/assets` },
                 { from: `./js/HipObject.js`, to: "scripts/js" },
                 { from: `./src/themes/website/images`, to: `assets/images` },
+                { from: `./src/themes/designer/images`, to: `assets/images` },
                 { from: `node_modules/monaco-editor/min/vs`, to: `assets/monaco-editor/vs` }
             ]
         }),

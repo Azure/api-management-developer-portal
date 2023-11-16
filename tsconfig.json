@@ -17,6 +17,7 @@
         "allowUnreachableCode": true,
         "sourceMap": true,
         "incremental": true,
+        "jsx": "react",
         "resolveJsonModule": true
     },
     "include": [
