@@ -54,8 +54,8 @@
 
 
     <!-- ko ifnot: working -->
-    <!-- ko if: $component.totalPages() > 1 -->
-    <pagination params="{ pageNumber: $component.pageNumber, totalPages: $component.totalPages }"></pagination>
+    <!-- ko if: $component.nextPage() || $component.pageNumber() > 1 -->
+    <pagination params="{ pageNumber: $component.pageNumber, nextPage: $component.nextPage }"></pagination>
     <!-- /ko -->
     <!-- /ko -->
 </div>
