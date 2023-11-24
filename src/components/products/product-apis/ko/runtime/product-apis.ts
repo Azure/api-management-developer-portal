@@ -21,7 +21,7 @@ export class ProductApis {
     public readonly working: ko.Observable<boolean>;
     public readonly pattern: ko.Observable<string>;
     public readonly pageNumber: ko.Observable<number>;
-    public readonly totalPages: ko.Observable<number>;
+    public readonly nextPage: ko.Observable<boolean>;
 
     constructor(
         private readonly apiService: ApiService,
@@ -33,7 +33,7 @@ export class ProductApis {
         this.working = ko.observable();
         this.pattern = ko.observable();
         this.pageNumber = ko.observable(1);
-        this.totalPages = ko.observable(0);
+        this.nextPage = ko.observable();
     }
 
     @Param()
@@ -83,7 +83,7 @@ export class ProductApis {
 
             const pageOfApis = await this.apiService.getProductApis(`products/${productName}`, query);
             this.apis(pageOfApis.value);
-            this.totalPages(Math.ceil(pageOfApis.count / Constants.defaultPageSize));
+            this.nextPage(!!pageOfApis.nextLink);
         }
         catch (error) {
             throw new Error(`Unable to load APIs. Error: ${error.message}`);
