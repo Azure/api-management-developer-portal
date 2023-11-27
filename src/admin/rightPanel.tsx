@@ -198,6 +198,7 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                 onChange={(event, option) => this.viewManager.setViewport(option.key.toString())}
                 styles={dropdownStyles}
                 className="top-panel-dropdown"
+                dropdownWidth={170}
             />
         </Stack>
     )
@@ -211,7 +212,7 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                     this.viewManager.setHost({ name: 'page-host' });
                 }}
                 disabled={!this.state.hasUnsavedChanges}
-                styles={{ root: { margin: '0 20px 0 10px', color: '#ffffff' }, rootDisabled: { backgroundColor: '#f3f2f1', color: '#a19f9d' } }}
+                styles={{ root: { margin: '0 20px 0 10px', backgroundColor: '#1e74bc', color: '#ffffff' }, rootDisabled: { backgroundColor: '#f3f2f1', color: '#a19f9d' } }}
             />
             <DefaultButton
                 text={this.state.hasUnsavedChanges ? 'Discard' : 'Close'}

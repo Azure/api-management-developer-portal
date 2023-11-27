@@ -247,7 +247,7 @@
         // Pagination
         div:nth-child(4) {
             align-items: unset !important;
-            top: 370px !important;
+            top: 383px !important;
         }
     }
 
@@ -288,13 +288,13 @@
         background: #949494 !important;
         margin: 0 2px;
 
+        &.active {
+            background-color: #0078D4 !important;
+        }
+
         svg {
             display: none;
         }
-    }
-
-    .paging-item.active .carousel-dot {
-        background-color: #0078D4 !important;
     }
 }
 
