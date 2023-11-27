@@ -49,7 +49,6 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                     />
                     <Carousel
                         slideIndex={this.state.currentSlide}
-                        enableKeyboardControls
                         defaultControlsConfig={{ pagingDotsClassName: 'carousel-dot', pagingDotsContainerClassName: 'carousel-dots-container' }}
                         renderCenterLeftControls={(props: ControlProps) => this.renderPrevButton(props)}
                         renderCenterRightControls={(props: ControlProps) => this.renderNextButton(props)}
@@ -59,6 +58,7 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                                 src="/assets/images/onboarding-1.png"
                                 imageFit={ImageFit.centerCover}
                                 styles={{ root: { height: 360 } }}
+                                alt="Introducing the improved developer portal and API and product details pages!"
                             />
                             <Stack className="carousel-text-container">
                                 <Text block className="carousel-header">Introducing the improved developer portal and API and product details pages!</Text>
@@ -70,6 +70,7 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                                 src="/assets/images/onboarding-2.png"
                                 imageFit={ImageFit.centerCover}
                                 styles={{ root: { height: 360 } }}
+                                alt="A new look and greater efficiency"
                             />
                             <Stack className="carousel-text-container">
                                 <Text block className="carousel-header">A new look and greater efficiency</Text>
@@ -86,6 +87,7 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                                 src="/assets/images/onboarding-3.png"
                                 imageFit={ImageFit.centerCover}
                                 styles={{ root: { height: 360 } }}
+                                alt="isplay custom documentation with new details pages"
                             />
                             <Stack className="carousel-text-container">
                                 <Text block className="carousel-header">Display custom documentation with new details pages</Text>
@@ -97,6 +99,7 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                                 src="/assets/images/onboarding-4.png"
                                 imageFit={ImageFit.centerCover}
                                 styles={{ root: { height: 360 } }}
+                                alt="Access information and customer support"
                             />
                             <Stack className="carousel-text-container">
                                 <Text block className="carousel-header">Access information and customer support</Text>
