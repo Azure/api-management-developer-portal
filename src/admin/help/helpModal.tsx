@@ -12,7 +12,7 @@ interface HelpModalProps {
     onDismiss: () => void
 }
 
-const headerStyles = { root: { paddingTop: 15 } };
+const headerStyles = { root: { paddingTop: 15, margin: 0 } };
 
 export class HelpModal extends React.Component<HelpModalProps, HelpModalState> {
     @Resolve('policyService')
@@ -59,25 +59,25 @@ export class HelpModal extends React.Component<HelpModalProps, HelpModalState> {
                     <DefaultButton text="Close" onClick={this.props.onDismiss} />
                 </Stack>
                 <div className="admin-modal-content">
-                    <Text block variant="large" styles={headerStyles}>Getting started</Text>
+                    <Text as="h3" block variant="large" styles={headerStyles}>Getting started</Text>
                     <ul>
                         <li><Text block><Link href="https://aka.ms/apimdocs/portal" target="_blank">Overview</Link> of the developer portal.</Text></li>
                         <li><Text block><Link href="https://aka.ms/apimdocs/customizeportal" target="_blank">Access and customize the developer portal</Link> with a step-by-step tutorial.</Text></li>
                     </ul>
                     
-                    <Text block variant="large" styles={headerStyles}>How-to</Text>
+                    <Text as="h3" block variant="large" styles={headerStyles}>How-to</Text>
                     <ul>
                         <li><Text block><Link href="https://aka.ms/apimdocs/portal/cors" target="_blank">Enable CORS</Link></Text></li>
                         <li><Text block><Link href="https://aka.ms/apimdocs/portal/access" target="_blank">Secure access to the API Management developer portal</Link></Text></li>
                         <li><Text block><Link href="https://aka.ms/apimdocs/portalcustomization" target="_blank">Add custom features to the developer portal</Link></Text></li>
                     </ul>
 
-                    <Text block variant="large" styles={headerStyles}>Give feedback</Text>
+                    <Text as="h3" block variant="large" styles={headerStyles}>Give feedback</Text>
                     <ul>
                         <li><Text block>Read release notes, report issues, or request features in the <Link href="https://github.com/Azure/api-management-developer-portal/issues" target="_blank">GitHub repo</Link>.</Text></li>
                     </ul>
 
-                    <Text block variant="large" styles={headerStyles}>Support</Text>
+                    <Text as="h3" block variant="large" styles={headerStyles}>Support</Text>
                     <ul>
                         <li><Text block>For solutions and support, contact Azure support using the Azure portal interface of your API Management service under <b>Help &gt; Support + Troubleshooting</b> in the table of contents. </Text></li>
                     </ul>

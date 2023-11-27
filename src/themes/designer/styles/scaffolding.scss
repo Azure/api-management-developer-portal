@@ -9,6 +9,10 @@ body {
 
 * {
     @include box-sizing(border-box);
+    //position: relative;
+}
+
+app * {
     position: relative;
 }
 
