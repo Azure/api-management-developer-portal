@@ -32,6 +32,11 @@ export interface OperationListContract extends Contract {
     defaultGroupByTagToEnabled?: boolean;
 
     /**
+     * Default to expand all GroupTags.
+     */
+    defaultAllGroupTagsExpanded: boolean;
+
+    /**
      * Link to a page that contains operation details.
      */
     detailsPageHyperlink?: HyperlinkContract;
