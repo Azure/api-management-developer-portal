@@ -1,0 +1,323 @@
+#admin-left-panel {
+    background: #fff;
+    height: 100%;
+    width: $admin-side-panel-width;
+    border-right: 1px solid grey;
+    font-family: 'SegoeUI';
+    overflow: auto;
+    transition: all .2s ease-in-out;
+    z-index: 10000;
+
+    &.hidden {
+        width: 0;
+    }
+
+    @media (max-width: $breakpoint-md) {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 100;
+    }
+}
+
+#admin-left-panel,
+.admin-modal {
+    input[type=search],
+    input[type=text],
+    textarea {
+        font-family: unset;
+        font-weight: unset;
+        font-size: unset;
+        color: unset;
+        border: unset;
+        background-color: unset;
+        display: unset;
+        //width: unset;
+    }
+}
+
+.side-panel {
+    padding: 12px;
+}
+
+.admin-side-panel-opener {
+    margin-left: 10px;
+
+    @media (min-width: $breakpoint-md) {
+        display: none;
+    }
+}
+
+.admin-side-panel-closer {
+    cursor: pointer;
+
+    @media (min-width: $breakpoint-md) {
+        display: none;
+    }
+}
+
+.portal-name-container {
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.portal-name {
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+.objects-list {
+    margin: 10px 0 15px;
+}
+
+.nav-item-description-container {
+    margin: 10px 8px 20px;
+    
+    .description-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+}
+
+.nav-item-list-button {
+    display: block;
+    height: 44px;
+    width: 100%;
+    text-align: left;
+}
+
+.nav-item-outer-stack {
+    height: 44px;
+    width: 100%;
+
+    .nav-item-inner {
+        opacity: 0;
+    }
+
+    &:hover {
+        .nav-item-inner {
+            opacity: 1;
+        }
+
+        .nav-item-name {
+            max-width: 130px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+}
+
+.nav-item-title {
+    max-width: 200px;
+}
+
+.admin-modal {
+    max-width: 600px;
+    width: calc(100% - 100px);
+    // This is used to get rid of double scrollbar: https://github.com/microsoft/fluentui/issues/12420
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+}
+
+.admin-modal-header {
+    background-color: #000;
+    padding: 10px 15px 10px 50px;
+}
+
+.admin-modal-header-text {
+    color: #fff;
+    font-size: 18px;
+    padding-right: 20px;
+}
+
+.admin-modal-content {
+    padding: 40px 50px 150px;
+}
+
+.media-modal {
+    max-width: 1780px;
+}
+
+.media-details-modal {
+    max-width: 1200px;
+}
+
+.media-box {
+    width: 220px;
+    height: 255px;
+    border: 1px solid #8a8886;
+    border-radius: 4px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+
+    &.media-selection-block {
+        cursor: pointer;
+    }
+}
+
+#admin-right-panel {
+    height: $admin-top-panel-height;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid grey;
+
+    &.mobile-small {
+        height: 90px;
+
+        .top-panel-content {
+            height: auto;
+        }
+    }
+}
+
+.top-panel {
+    height: 100%;
+    width: 100%;
+    padding-right: 20px;
+
+    &.is-focused {
+        background-color: #252423;
+    }
+}
+
+.top-panel-content {
+    height: 100%;
+}
+
+.top-panel-command-button .ms-Button-textContainer,
+.top-panel-dropdown .ms-Dropdown-title span {
+    @media (max-width: $breakpoint-md) {
+        display: none;
+    }
+}
+
+.content-overlay {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: $admin-top-panel-height;
+    z-index: 1000;
+    cursor: pointer;
+
+    &.hidden {
+        display: none;
+    }
+}
+
+.collapsible-section {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: all .3s ease-in-out;
+
+    &.hidden {
+        max-height: 0;
+    }
+}
+
+.collapsible-arrow {
+    margin-right: 10px;
+    transition: all .3s ease-in-out;
+
+    &.opened {
+        transform: rotate(-180deg);
+    }
+}
+
+.onboarding-modal {
+    .slider-container {
+        // important!s are necessary to override default carousel behaviour
+        // Previous button
+        div:nth-child(2) {
+            display: block !important;
+            inset: auto 123px 32px auto !important;
+        }
+
+        // Next button
+        div:nth-child(3) {
+            display: block !important;
+            inset: auto 32px 32px auto !important;
+        }
+
+        // Pagination
+        div:nth-child(4) {
+            align-items: unset !important;
+            top: 383px !important;
+        }
+    }
+
+    .carousel-text-container {
+        padding: 32px 32px 88px;
+        position: unset;
+    }
+
+    .carousel-header {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 16px;
+    }
+
+    .slide {
+        position: unset;
+    }
+}
+
+.onboarding-modal-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, .4);
+    border-radius: 4px;
+    z-index: 10;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, .3);
+    }
+}
+
+.carousel-dots-container {
+    .carousel-dot {
+        height: 4px;
+        width: 32px;
+        border-radius: 8px;
+        background: #949494 !important;
+        margin: 0 2px;
+
+        &.active {
+            background-color: #0078D4 !important;
+        }
+
+        svg {
+            display: none;
+        }
+    }
+}
+
+.command-bar-button {
+    height: 44px;
+    margin-bottom: 30px;
+}
+
+.reset-content-wrapper {
+    padding: 20px;
+    border: 1px solid #c4314b;
+    border-radius: 5px;
+
+    > span {
+        padding: 5px 0;
+    }
+}
+
+.bolder-text {
+    font-weight: 600;
+}
+
+// CHECK THIS!!!!!
+// .toolbox-position-right-top {
+//     display: none !important;
+// }

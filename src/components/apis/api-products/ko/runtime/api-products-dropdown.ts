@@ -21,7 +21,7 @@ export class ApiProductsDropdown {
   public readonly working: ko.Observable<boolean>;
   public readonly pattern: ko.Observable<string>;
   public readonly pageNumber: ko.Observable<number>;
-  public readonly totalPages: ko.Observable<number>;
+  public readonly nextPage: ko.Observable<boolean>;
   public readonly selectedProduct: ko.Observable<Product>;
   public readonly selectedProductName: ko.Observable<string>;
   public readonly selection: ko.Computed<string>;
@@ -38,7 +38,7 @@ export class ApiProductsDropdown {
     this.working = ko.observable();
     this.pattern = ko.observable();
     this.pageNumber = ko.observable(1);
-    this.totalPages = ko.observable(0);
+    this.nextPage = ko.observable();
     this.selectedProduct = ko.observable();
     this.selectedProductName = ko.observable();
     this.selection = ko.computed(() => {
@@ -49,7 +49,7 @@ export class ApiProductsDropdown {
 
   @Param()
   public allowSelection: ko.Observable<boolean>;
-  
+
   @Param()
   public detailsPageUrl: ko.Observable<string>;
 
@@ -110,13 +110,13 @@ export class ApiProductsDropdown {
             skip: pageNumber * Constants.defaultPageSize,
             take: Constants.defaultPageSize
         };
-      
+
       const apiName = this.selectedApiName();
 
       const pageOfProducts = await this.apiService.getApiProductsPage(apiName, query);
 
       this.products(pageOfProducts.value);
-      this.totalPages(Math.ceil(pageOfProducts.count / Constants.defaultPageSize));
+      this.nextPage(!!pageOfProducts.nextLink);
 
       const productName = this.routeHelper.getProductName();
 

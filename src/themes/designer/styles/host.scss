@@ -7,14 +7,36 @@
     // box-shadow: 0 5px 10px #c6c6c6;
 }
 
+view-manager {
+    display: flex;
+    height: calc(100% - $admin-top-panel-height);
+}
+
+.app-wrapper {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+#main-content-wrapper {
+    width: calc(100% - $admin-side-panel-width);
+    transition: all .2s ease-in-out;
+
+    &.is-focused {
+        width: 100%;
+    }
+}
+
 .viewport {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 0;
+    // position: fixed;
+    // top: 0;
+    // left: 0;
+    // right: 0;
+    // bottom: 0;
+    // padding: 0;
     background: #ececec;
+    width: 100%;
+    height: 100%;
 
     &.viewport-xl {
         padding-left: 0;
