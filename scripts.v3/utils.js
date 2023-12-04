@@ -65,13 +65,13 @@ class HttpClient {
 
         return new Promise((resolve, reject) => {
             const req = https.request(requestUrl.toString(), options, (resp) => {
-                let data = '';
-
+                let chunks = [];
                 resp.on('data', (chunk) => {
-                    data += chunk;
+                    chunks.push(chunk);
                 });
 
                 resp.on('end', () => {
+                    let data = Buffer.concat(chunks).toString('utf8');
                     switch (resp.statusCode) {
                         case 200:
                         case 201:
