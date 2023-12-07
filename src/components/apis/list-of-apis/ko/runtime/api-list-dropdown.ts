@@ -184,6 +184,10 @@ export class ApiListDropdown {
         this.groupTagsExpanded(newSet);
     }
 
+    public closeDropdown(): void {
+        document.getElementById('api-list-dropdown').classList.remove('show');
+    }
+
     @OnDestroyed()
     public dispose(): void {
         this.router.removeRouteChangeListener(this.onRouteChange);
