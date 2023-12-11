@@ -29,6 +29,7 @@ export class ProductApis {
         private readonly routeHelper: RouteHelper
     ) {
         this.detailsPageUrl = ko.observable();
+        this.detailsPageTarget = ko.observable();
         this.apis = ko.observableArray([]);
         this.working = ko.observable();
         this.pattern = ko.observable();
@@ -38,6 +39,9 @@ export class ProductApis {
 
     @Param()
     public detailsPageUrl: ko.Observable<string>;
+
+    @Param()
+    public detailsPageTarget: ko.Observable<string>;
 
     @OnMounted()
     public async initialize(): Promise<void> {

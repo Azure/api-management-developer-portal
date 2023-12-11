@@ -23,7 +23,7 @@
         <!-- ko foreach: { data: apis, as: 'item' } -->
         <div class="table-row">
             <div class="col-5 text-truncate">
-                <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item), title: item.displayName }">
+                <a href="#" data-bind="attr: { href: $component.getReferenceUrl(item), target: $component.detailsPageTarget(), title: item.displayName }">
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.type === 'soap' -->
                     <span class="badge badge-soap">SOAP</span>
