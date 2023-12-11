@@ -185,7 +185,11 @@ export class ApiListDropdown {
     }
 
     public closeDropdown(): void {
-        document.getElementById('api-list-dropdown').classList.remove('show');
+        const apiDropdowns = document.getElementsByClassName('api-list-dropdown');
+        for (var i = 0; i < apiDropdowns.length; i++) {
+            if (apiDropdowns[i].classList.contains('show'))
+                apiDropdowns[i].classList.remove('show');
+        }
     }
 
     @OnDestroyed()
