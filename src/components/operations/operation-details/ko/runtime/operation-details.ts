@@ -99,7 +99,7 @@ export class OperationDetails {
             let requestUrl = "";
 
             if (hostname && api.type !== TypeOfApi.webSocket) {
-                requestUrl = "https://";
+                requestUrl = (api.protocols?.[0] ?? "https") + "://";
             }
 
             if (hostname) requestUrl += hostname;
@@ -346,7 +346,7 @@ export class OperationDetails {
 
         if (definition.type instanceof TypeDefinitionPropertyTypeCombination) {
             result.push(definition.name);
-            
+
             if (definition.type.combination) {
                 definition.type.combination.forEach(combinationProperty => {
                     result.push(combinationProperty["name"]);
