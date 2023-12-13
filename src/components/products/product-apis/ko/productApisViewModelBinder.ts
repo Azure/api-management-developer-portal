@@ -13,7 +13,10 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
         componentInstance.runtimeConfig(JSON.stringify({
             detailsPageUrl: state.detailsPageHyperlink
                 ? state.detailsPageHyperlink.href
-                : undefined
+                : undefined,
+            detailsPageTarget: state.detailsPageHyperlink
+                ? state.detailsPageHyperlink.target
+                : undefined,
         }));
     }
 
