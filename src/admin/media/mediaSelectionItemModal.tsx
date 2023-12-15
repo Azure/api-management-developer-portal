@@ -110,7 +110,7 @@ export class MediaSelectionItemModal extends React.Component<MediaSelectionItemM
         const thumbnailUrl: string = this.getThumbnailUrl(mediaItem);
         
         return (
-            <div className="media-box media-selection-block" onClick={() => this.props.selectMedia(mediaItem)}>
+            <div className="media-box media-selection-block" onClick={() => this.props.selectMedia(mediaItem)} key={mediaItem.key}>
                 <Image
                     src={thumbnailUrl ?? '/assets/images/no-preview.png'}
                     imageFit={ImageFit.centerCover}
