@@ -1,4 +1,3 @@
-import { managementApiVersion } from "../constants";
 import { TenantSettings } from "../contracts/tenantSettings";
 import { MapiClient } from "./mapiClient";
 
