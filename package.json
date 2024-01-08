@@ -71,8 +71,8 @@
         "webpack-merge": "5.9.0"
     },
     "dependencies": {
-        "@azure/api-management-custom-widgets-scaffolder": "^1.0.0-beta.2",
-        "@azure/api-management-custom-widgets-tools": "^1.0.0-beta.1",
+        "@azure/api-management-custom-widgets-scaffolder": "^1.0.0-beta.4",
+        "@azure/api-management-custom-widgets-tools": "^1.0.0-beta.2",
         "@azure/msal-browser": "^2.37.1",
         "@braintree/sanitize-url": "6.0.4",
         "@fluentui/font-icons-mdl2": "^8.5.9",
