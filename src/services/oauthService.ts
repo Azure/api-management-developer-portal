@@ -183,6 +183,7 @@ export class OAuthService {
                     const accessToken = event.data["accessToken"];
                     const accessTokenType = event.data["accessTokenType"];
                     resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
+                    window.removeEventListener("message", receiveMessage, false);
                 };
 
                 window.addEventListener("message", receiveMessage, false);
@@ -251,6 +252,7 @@ export class OAuthService {
                     const accessTokenType = tokenResponse.token_type;
 
                     resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
+                    window.removeEventListener("message", receiveMessage, false);
                 };
 
                 window.addEventListener("message", receiveMessage, false);
