@@ -121,10 +121,8 @@ export class OAuthService {
         });
 
         return new Promise((resolve, reject) => {
-            try {
-                window.open(oauthClient.token.getUri(), "_blank", "width=400,height=500");
-
-                const receiveMessage = async (event: MessageEvent) => {
+            const receiveMessage = async (event: MessageEvent): Promise<void> => {
+                try {
                     const tokenHash = event.data["uri"];
 
                     if (!tokenHash) {
@@ -139,8 +137,17 @@ export class OAuthService {
                     else if (tokenInfo.data?.id_token) {
                         resolve(`Bearer ${tokenInfo.data.id_token}`);
                     }
-                };
+                }
+                catch (error) {
+                    reject(error);
+                }
+                finally {
+                    window.removeEventListener("message", receiveMessage, false);
+                }
+            };
 
+            try {
+                window.open(oauthClient.token.getUri(), "_blank", "width=400,height=500");
                 window.addEventListener("message", receiveMessage, false);
             }
             catch (error) {
@@ -171,10 +178,8 @@ export class OAuthService {
         });
 
         return new Promise<string>((resolve, reject) => {
-            try {
-                window.open(oauthClient.code.getUri(), "_blank", "width=400,height=500");
-
-                const receiveMessage = async (event: MessageEvent): Promise<void> => {
+            const receiveMessage = async (event: MessageEvent): Promise<void> => {
+                try {
                     if (!event.data["accessToken"]) {
                         alert("Unable to authenticate due to internal error.");
                         return;
@@ -183,9 +188,17 @@ export class OAuthService {
                     const accessToken = event.data["accessToken"];
                     const accessTokenType = event.data["accessTokenType"];
                     resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
+                }
+                catch (error) {
+                    reject(error);
+                }
+                finally {
                     window.removeEventListener("message", receiveMessage, false);
-                };
+                }
+            };
 
+            try {
+                window.open(oauthClient.code.getUri(), "_blank", "width=400,height=500");
                 window.addEventListener("message", receiveMessage, false);
             }
             catch (error) {
@@ -215,10 +228,8 @@ export class OAuthService {
         });
 
         return new Promise((resolve, reject) => {
-            try {
-                window.open(`${authorizationServer.authorizationEndpoint}?${args}`, "_blank", "width=400,height=500");
-
-                const receiveMessage = async (event: MessageEvent): Promise<void> => {
+            const receiveMessage = async (event: MessageEvent): Promise<void> => {
+                try {
                     const authorizationCode = event.data["code"];
 
                     if (!authorizationCode) {
@@ -252,9 +263,17 @@ export class OAuthService {
                     const accessTokenType = tokenResponse.token_type;
 
                     resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
+                }
+                catch (error) {
+                    reject(error);
+                }
+                finally {
                     window.removeEventListener("message", receiveMessage, false);
-                };
+                }
+            };
 
+            try {
+                window.open(`${authorizationServer.authorizationEndpoint}?${args}`, "_blank", "width=400,height=500");
                 window.addEventListener("message", receiveMessage, false);
             }
             catch (error) {
@@ -300,10 +319,8 @@ export class OAuthService {
         }
 
         return new Promise<string>((resolve, reject) => {
-            try {
-                window.open(uri, "_blank", "width=400,height=500");
-
-                const receiveMessage = async (event: MessageEvent) => {
+            const receiveMessage = async (event: MessageEvent): Promise<void> => {
+                try {
                     if (!event.data["accessToken"]) {
                         return;
                     }
@@ -311,8 +328,17 @@ export class OAuthService {
                     const accessToken = event.data["accessToken"];
                     const accessTokenType = event.data["accessTokenType"];
                     resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
-                };
+                }
+                catch (error) {
+                    reject(error);
+                }
+                finally {
+                    window.removeEventListener("message", receiveMessage, false);
+                }
+            }
 
+            try {
+                window.open(uri, "_blank", "width=400,height=500");
                 window.addEventListener("message", receiveMessage, false);
             }
             catch (error) {
