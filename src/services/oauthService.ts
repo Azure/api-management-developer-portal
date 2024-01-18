@@ -120,33 +120,24 @@ export class OAuthService {
             query: query
         });
 
-        return new Promise((resolve, reject) => {
-            try {
-                window.open(oauthClient.token.getUri(), "_blank", "width=400,height=500");
+        const listener = async (event: MessageEvent): Promise<string> => {
+            const tokenHash = event.data["uri"];
 
-                const receiveMessage = async (event: MessageEvent) => {
-                    const tokenHash = event.data["uri"];
-
-                    if (!tokenHash) {
-                        return;
-                    }
-
-                    const tokenInfo = await oauthClient.token.getToken(redirectUri + tokenHash);
-
-                    if (tokenInfo.accessToken) {
-                        resolve(`${Utils.toTitleCase(tokenInfo.tokenType)} ${tokenInfo.accessToken}`);
-                    }
-                    else if (tokenInfo.data?.id_token) {
-                        resolve(`Bearer ${tokenInfo.data.id_token}`);
-                    }
-                };
-
-                window.addEventListener("message", receiveMessage, false);
+            if (!tokenHash) {
+                return;
             }
-            catch (error) {
-                reject(error);
+
+            const tokenInfo = await oauthClient.token.getToken(redirectUri + tokenHash);
+
+            if (tokenInfo.accessToken) {
+                return `${Utils.toTitleCase(tokenInfo.tokenType)} ${tokenInfo.accessToken}`;
             }
-        });
+            else if (tokenInfo.data?.id_token) {
+                return `Bearer ${tokenInfo.data.id_token}`;
+            }
+        };
+
+        return this.openAuthPopup(oauthClient.token.getUri(), listener);
     }
 
     /**
@@ -170,27 +161,18 @@ export class OAuthService {
             query: query
         });
 
-        return new Promise<string>((resolve, reject) => {
-            try {
-                window.open(oauthClient.code.getUri(), "_blank", "width=400,height=500");
-
-                const receiveMessage = async (event: MessageEvent): Promise<void> => {
-                    if (!event.data["accessToken"]) {
-                        alert("Unable to authenticate due to internal error.");
-                        return;
-                    }
-
-                    const accessToken = event.data["accessToken"];
-                    const accessTokenType = event.data["accessTokenType"];
-                    resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
-                };
-
-                window.addEventListener("message", receiveMessage, false);
+        const listener = async (event: MessageEvent): Promise<string> => {
+            if (!event.data["accessToken"]) {
+                alert("Unable to authenticate due to internal error.");
+                return;
             }
-            catch (error) {
-                reject(error);
-            }
-        });
+
+            const accessToken = event.data["accessToken"];
+            const accessTokenType = event.data["accessTokenType"];
+            return `${Utils.toTitleCase(accessTokenType)} ${accessToken}`;
+        }
+
+        return this.openAuthPopup(oauthClient.code.getUri(), listener);
     }
 
     public async authenticateCodeWithPkce(backendUrl: string, authorizationServer: AuthorizationServer): Promise<string> {
@@ -213,52 +195,43 @@ export class OAuthService {
             scope: authorizationServer.scopes.join(" ")
         });
 
-        return new Promise((resolve, reject) => {
-            try {
-                window.open(`${authorizationServer.authorizationEndpoint}?${args}`, "_blank", "width=400,height=500");
+        const listener = async (event: MessageEvent): Promise<string> => {
+            const authorizationCode = event.data["code"];
 
-                const receiveMessage = async (event: MessageEvent): Promise<void> => {
-                    const authorizationCode = event.data["code"];
-
-                    if (!authorizationCode) {
-                        alert("Unable to authenticate due to internal error.");
-                        return;
-                    }
-
-                    const body = new URLSearchParams({
-                        client_id: authorizationServer.clientId,
-                        code_verifier: sessionStorage.getItem("code_verifier"),
-                        grant_type: GrantTypes.authorizationCode,
-                        redirect_uri: redirectUri,
-                        code: authorizationCode
-                    });
-
-                    const response = await this.httpClient.send<OAuthTokenResponse>({
-                        url: authorizationServer.tokenEndpoint,
-                        method: HttpMethod.post,
-                        headers: [{ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.UrlEncodedForm }],
-                        body: body.toString()
-                    });
-
-                    if (response.statusCode === 400) {
-                        const error = response.toText();
-                        alert(error);
-                        return;
-                    }
-
-                    const tokenResponse = response.toObject();
-                    const accessToken = tokenResponse.access_token;
-                    const accessTokenType = tokenResponse.token_type;
-
-                    resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
-                };
-
-                window.addEventListener("message", receiveMessage, false);
+            if (!authorizationCode) {
+                alert("Unable to authenticate due to internal error.");
+                return;
             }
-            catch (error) {
-                reject(error);
+
+            const body = new URLSearchParams({
+                client_id: authorizationServer.clientId,
+                code_verifier: sessionStorage.getItem("code_verifier"),
+                grant_type: GrantTypes.authorizationCode,
+                redirect_uri: redirectUri,
+                code: authorizationCode
+            });
+
+            const response = await this.httpClient.send<OAuthTokenResponse>({
+                url: authorizationServer.tokenEndpoint,
+                method: HttpMethod.post,
+                headers: [{ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.UrlEncodedForm }],
+                body: body.toString()
+            });
+
+            if (response.statusCode === 400) {
+                const error = response.toText();
+                alert(error);
+                return;
             }
-        });
+
+            const tokenResponse = response.toObject();
+            const accessToken = tokenResponse.access_token;
+            const accessTokenType = tokenResponse.token_type;
+
+            return `${Utils.toTitleCase(accessTokenType)} ${accessToken}`;
+        };
+
+        return this.openAuthPopup(`${authorizationServer.authorizationEndpoint}?${args}`, listener);
     }
 
     /**
@@ -297,26 +270,17 @@ export class OAuthService {
             uri += `?scopes=${encodeURIComponent(scopesString)}`;
         }
 
-        return new Promise<string>((resolve, reject) => {
-            try {
-                window.open(uri, "_blank", "width=400,height=500");
-
-                const receiveMessage = async (event: MessageEvent) => {
-                    if (!event.data["accessToken"]) {
-                        return;
-                    }
-
-                    const accessToken = event.data["accessToken"];
-                    const accessTokenType = event.data["accessTokenType"];
-                    resolve(`${Utils.toTitleCase(accessTokenType)} ${accessToken}`);
-                };
-
-                window.addEventListener("message", receiveMessage, false);
+        const listener = async (event: MessageEvent): Promise<string> => {
+            if (!event.data["accessToken"]) {
+                return;
             }
-            catch (error) {
-                reject(error);
-            }
-        });
+
+            const accessToken = event.data["accessToken"];
+            const accessTokenType = event.data["accessTokenType"];
+            return `${Utils.toTitleCase(accessTokenType)} ${accessToken}`;
+        };
+
+        return this.openAuthPopup(uri, listener);
     }
 
     public async authenticatePassword(username: string, password: string, authorizationServer: AuthorizationServer): Promise<string> {
@@ -344,5 +308,41 @@ export class OAuthService {
         }
 
         throw new Error(`Unable to authenticate. Response: ${response.toText()}`);
+    }
+
+    private ensurePopupIsClosed(popup: Window, receiveMessage: (event: MessageEvent<any>) => any): void {
+        const checkPopup = setInterval(() => {
+            if (!popup || popup.closed) {
+                clearInterval(checkPopup);
+                window.removeEventListener("message", receiveMessage, false);
+            }
+        }, 1000);
+    }
+
+    private openAuthPopup(uri: string, listener: (event: MessageEvent<any>) => any): Promise<string> {
+        return new Promise<string>((resolve, reject) => {
+            try {
+                const popup = window.open(uri, "_blank", "width=400,height=500");
+
+                const receiveMessage = async (event: MessageEvent<any>) => {
+                    try {
+                        const result = await listener(event);
+                        resolve(result);
+                    }
+                    catch (error) {
+                        reject(error);
+                    }
+                    finally {
+                        window.removeEventListener("message", listener, false);
+                    }
+                };
+
+                window.addEventListener("message", receiveMessage, false);
+                this.ensurePopupIsClosed(popup, receiveMessage);
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
     }
 }
