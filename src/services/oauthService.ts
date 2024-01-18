@@ -147,8 +147,9 @@ export class OAuthService {
             };
 
             try {
-                window.open(oauthClient.token.getUri(), "_blank", "width=400,height=500");
+                const popup = window.open(oauthClient.token.getUri(), "_blank", "width=400,height=500");
                 window.addEventListener("message", receiveMessage, false);
+                this.ensurePopupIsClosed(popup, receiveMessage);
             }
             catch (error) {
                 reject(error);
@@ -198,8 +199,9 @@ export class OAuthService {
             };
 
             try {
-                window.open(oauthClient.code.getUri(), "_blank", "width=400,height=500");
+                const popup = window.open(oauthClient.code.getUri(), "_blank", "width=400,height=500");
                 window.addEventListener("message", receiveMessage, false);
+                this.ensurePopupIsClosed(popup, receiveMessage);
             }
             catch (error) {
                 reject(error);
@@ -273,8 +275,9 @@ export class OAuthService {
             };
 
             try {
-                window.open(`${authorizationServer.authorizationEndpoint}?${args}`, "_blank", "width=400,height=500");
+                const popup = window.open(`${authorizationServer.authorizationEndpoint}?${args}`, "_blank", "width=400,height=500");
                 window.addEventListener("message", receiveMessage, false);
+                this.ensurePopupIsClosed(popup, receiveMessage);
             }
             catch (error) {
                 reject(error);
@@ -338,8 +341,9 @@ export class OAuthService {
             }
 
             try {
-                window.open(uri, "_blank", "width=400,height=500");
+                const popup = window.open(uri, "_blank", "width=400,height=500");
                 window.addEventListener("message", receiveMessage, false);
+                this.ensurePopupIsClosed(popup, receiveMessage);
             }
             catch (error) {
                 reject(error);
@@ -373,4 +377,14 @@ export class OAuthService {
 
         throw new Error(`Unable to authenticate. Response: ${response.toText()}`);
     }
+
+    private ensurePopupIsClosed(popup: Window, receiveMessage: (event: MessageEvent<any>) => any): void {
+        const checkPopup = setInterval(() => {
+            if (!popup || popup.closed) {
+                clearInterval(checkPopup);
+                window.removeEventListener("message", receiveMessage, false);
+            }
+        }, 1000);
+    }
+
 }
