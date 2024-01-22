@@ -81,6 +81,8 @@ export class ApiService {
             query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
         }
 
+        query = Utils.addQueryParameter(query, "skipWorkspaces=true");
+
         const pageOfApis = await this.mapiClient.get<Page<ApiContract>>(query, [await this.mapiClient.getPortalHeader("getApis")]);
 
         const page = new Page<Api>();
