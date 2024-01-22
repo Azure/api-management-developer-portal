@@ -110,12 +110,14 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
     }
 
     renameMedia = async (mediaItem: MediaContract): Promise<void> => {
-        const updatedMedia: MediaContract = {
-            ...mediaItem,
-            fileName: this.state.fileNewName
+        if (this.state.fileNewName) {
+            const updatedMedia: MediaContract = {
+                ...mediaItem,
+                fileName: this.state.fileNewName
+            }
+            await this.mediaService.updateMedia(updatedMedia);
+            this.eventManager.dispatchEvent('onSaveChanges');
         }
-        await this.mediaService.updateMedia(updatedMedia);
-        this.eventManager.dispatchEvent('onSaveChanges');
 
         this.setState({ fileForRename: '', fileNewName: '' });
         this.searchMedia();
