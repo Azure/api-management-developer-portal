@@ -98,7 +98,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
     }
 
     validatePermalink = async (permalink: string): Promise<string> => {
-        if (permalink === this.props.page?.permalink) return '';
+        if (!this.state.copyPage && permalink === this.props.page?.permalink) return '';
 
         const isPermalinkNotDefined = await this.permalinkService.isPermalinkDefined(permalink) && !reservedPermalinks.includes(permalink);
         const errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
