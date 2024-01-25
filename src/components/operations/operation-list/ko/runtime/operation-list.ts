@@ -142,7 +142,6 @@ export class OperationList {
     }
 
     public async loadOperations(): Promise<void> {
-
         if (this.groupByTag()) {
             this.operationGroups([]);
             this.searchRequest = { pattern: this.pattern(), tags: this.tags(), grouping: "tag" };
@@ -194,6 +193,11 @@ export class OperationList {
     }
 
     private async loadOfOperationsByTag(): Promise<void> {
+        const apiName = this.selectedApiName();
+        if (!apiName) {
+            return;
+        }
+
         this.searchRequest.skip = (this.pageNumber() - 1) * Constants.defaultPageSize;
 
         const pageOfOperationsByTag = await this.apiService.getOperationsByTags(this.selectedApiName(), this.searchRequest);
@@ -205,7 +209,6 @@ export class OperationList {
 
     private async loadPageOfOperations(): Promise<void> {
         const apiName = this.selectedApiName();
-
         if (!apiName) {
             return;
         }
