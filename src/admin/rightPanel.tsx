@@ -49,6 +49,9 @@ const undoIcon: IIconProps = { iconName: 'Undo', styles: iconStyles };
 const redoIcon: IIconProps = { iconName: 'Redo', styles: iconStyles };
 const sidePanelToggleIcon: IIconProps = { iconName: 'GlobalNavButton', styles: { root: { color: lightTheme.palette.themePrimary } } };
 
+const anonymousKey: string = 'anonymous';
+const anonymousName: string = 'Anonymous';
+
 export class RightPanel extends React.Component<{}, RightPanelState> {
     @Resolve('viewManager')
     public viewManager: ViewManager;
@@ -87,8 +90,8 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
             mobileMenuIsOpened: false,
             dropdownIconStyles: { marginRight: '8px', color: lightTheme.palette.themePrimary },
             pageName: '',
-            roles: [{ key: 'anonymous', name: 'Anonymous' }],
-            rolesOptions: [{ key: 'anonymous', text: 'Anonymous' }]
+            roles: [{ key: anonymousKey, name: anonymousName }],
+            rolesOptions: [{ key: anonymousKey, text: anonymousName }]
         };
     }
 
@@ -232,7 +235,7 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
     renderDropdowns = (): JSX.Element => (
         <Stack horizontal>
             <Dropdown
-                defaultSelectedKey="anonymous"
+                defaultSelectedKey={anonymousKey}
                 ariaLabel="Role view selector"
                 onRenderTitle={this.renderRoleTitle}
                 options={this.state.rolesOptions}
