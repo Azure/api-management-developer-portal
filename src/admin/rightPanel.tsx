@@ -5,6 +5,7 @@ import { EventManager } from '@paperbits/common/events';
 import { OfflineObjectStorage } from '@paperbits/common/persistence';
 import { IPageService } from '@paperbits/common/pages';
 import { ILayoutService } from '@paperbits/common/layouts';
+import { RoleModel, RoleService } from '@paperbits/common/user';
 import { Router } from '@paperbits/common/routing';
 import { Resolve } from '@paperbits/react/decorators';
 import { ContentWorkshop } from '../components/content';
@@ -23,7 +24,9 @@ interface RightPanelState {
     canRedo: boolean,
     mobileMenuIsOpened: boolean,
     dropdownIconStyles: object,
-    pageName: string
+    pageName: string,
+    roles: RoleModel[],
+    rolesOptions: IDropdownOption[]
 }
 
 const enum HostNames {
@@ -68,6 +71,9 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
     @Resolve('layoutService')
     public layoutService: ILayoutService;
 
+    @Resolve('roleService')
+    public roleService: RoleService;
+
     constructor(props: any) {
         super(props);
 
@@ -80,7 +86,9 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
             canRedo: false,
             mobileMenuIsOpened: false,
             dropdownIconStyles: { marginRight: '8px', color: lightTheme.palette.themePrimary },
-            pageName: ''
+            pageName: '',
+            roles: [{ key: 'anonymous', name: 'Anonymous' }],
+            rolesOptions: [{ key: 'anonymous', text: 'Anonymous' }]
         };
     }
 
@@ -88,6 +96,7 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
         this.eventManager.addEventListener('onDataChange', this.onDataChange.bind(this));
         window.addEventListener('resize', this.checkScreenSize.bind(this));
         this.checkScreenSize();
+        this.getRoles();
     }
 
     componentDidUpdate(prevProps: Readonly<{}>, prevState: Readonly<RightPanelState>, snapshot?: any): void {
@@ -106,6 +115,22 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
     componentWillUnmount() {
         this.eventManager.removeEventListener('onDataChange', this.onDataChange.bind(this));
         window.removeEventListener('resize', this.checkScreenSize.bind(this));
+    }
+
+    getRoles = async (): Promise<void> => {
+        const roles = await this.roleService.getRoles();
+
+        if (!roles) return;
+
+        const dropdownItems = [];
+        roles.forEach(page => {
+            dropdownItems.push({
+                key: page.key,
+                text: page.name
+            });
+        });
+
+        this.setState({ roles, rolesOptions: dropdownItems });
     }
 
     getPageName = async (): Promise<void> => {
@@ -181,14 +206,41 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
         </Stack>
     )
 
+    renderRoleDropdownOption = (option: IDropdownOption): JSX.Element => (
+        <Stack horizontal verticalAlign="center">
+            <Icon
+                style={this.state.dropdownIconStyles}
+                iconName="People"
+                title="People"
+            />
+            <span>View as: {option.text}</span>
+        </Stack>
+    )
+
     renderTitle = (options: IDropdownOption[]): JSX.Element => {
         const option = options[0];
       
         return this.renderDropdownOption(option);
     }
 
+    renderRoleTitle = (options: IDropdownOption[]): JSX.Element => {
+        const option = options[0];
+
+        return this.renderRoleDropdownOption(option);
+    }
+
     renderDropdowns = (): JSX.Element => (
         <Stack horizontal>
+            <Dropdown
+                defaultSelectedKey="anonymous"
+                ariaLabel="Role view selector"
+                onRenderTitle={this.renderRoleTitle}
+                options={this.state.rolesOptions}
+                onChange={(event, option) => this.viewManager.setViewRoles([this.state.roles.find(role => role.key === option.key)])}
+                styles={dropdownStyles}
+                className="top-panel-dropdown"
+                dropdownWidth={170}
+            />
             <Dropdown
                 defaultSelectedKey="xl"
                 ariaLabel="Screen size selector"
