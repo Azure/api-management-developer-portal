@@ -54,6 +54,10 @@ export class Subscriptions {
 
     private async loadUser(): Promise<void> {
         this.userId = await this.usersService.ensureSignedIn();
+        if(!this.userId){
+            return;
+        }
+        
         await this.loadSubscriptions();
     }
 
