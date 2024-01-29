@@ -94,7 +94,6 @@ export class Authorization {
         }
 
         this.selectedGrantType.subscribe(this.onGrantTypeChange);
-        this.selectedSubscriptionKey(null);
         this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
         await this.setupOAuth();
         if (this.api().subscriptionRequired) {
