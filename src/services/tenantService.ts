@@ -12,7 +12,7 @@ export class TenantService {
      */
     public async getSettings(): Promise<TenantSettings> {
         const result = await this.mapiClient.get("/settings/public", [await this.mapiClient.getPortalHeader("getSettings")]);
-        return result && result["settings"];
+        return result && result["properties"] && result["properties"]["settings"];
     }
 
     /**
