@@ -93,7 +93,7 @@
                 "count": 0
             }
         },
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/tenant/settings":{
+        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/settings/public":{
             "statusCode": 200,
             "body": {
                 
