@@ -22,6 +22,7 @@ interface MediaModalState {
     showImageDetailsModal: boolean,
     showNonImageDetailsModal: boolean,
     showDeleteConfirmation: boolean,
+    isLinking: boolean,
     isLoading: boolean
 }
 
@@ -56,6 +57,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
             showImageDetailsModal: false,
             showNonImageDetailsModal: false,
             showDeleteConfirmation: false,
+            isLinking: false,
             isLoading: false
         }
     }
@@ -98,7 +100,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
 
     linkMedia = async (): Promise<void> => {
         const newMediaFile = await this.mediaService.createMediaUrl('media.svg', 'https://cdn.paperbits.io/images/logo.svg');
-        this.setState({ selectedMediaFile: newMediaFile, showNonImageDetailsModal: true });
+        this.setState({ selectedMediaFile: newMediaFile, showNonImageDetailsModal: true, isLinking: true });
     }
 
     deleteMedia = async (): Promise<void> => {
@@ -110,12 +112,14 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
     }
 
     renameMedia = async (mediaItem: MediaContract): Promise<void> => {
-        const updatedMedia: MediaContract = {
-            ...mediaItem,
-            fileName: this.state.fileNewName
+        if (this.state.fileNewName) {
+            const updatedMedia: MediaContract = {
+                ...mediaItem,
+                fileName: this.state.fileNewName
+            }
+            await this.mediaService.updateMedia(updatedMedia);
+            this.eventManager.dispatchEvent('onSaveChanges');
         }
-        await this.mediaService.updateMedia(updatedMedia);
-        this.eventManager.dispatchEvent('onSaveChanges');
 
         this.setState({ fileForRename: '', fileNewName: '' });
         this.searchMedia();
@@ -233,8 +237,9 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
             {this.state.showNonImageDetailsModal &&
                 <NonImageDetailsModal
                     mediaItem={this.state.selectedMediaFile}
+                    isLinking={this.state.isLinking}
                     onDismiss={() => {
-                        this.setState({ showNonImageDetailsModal: false });
+                        this.setState({ showNonImageDetailsModal: false, isLinking: false });
                         this.searchMedia();
                     }}
                 />
