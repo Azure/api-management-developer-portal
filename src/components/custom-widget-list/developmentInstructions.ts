@@ -5,7 +5,7 @@ import { TCustomWidgetConfig } from "../custom-widget";
 import template from "./developmentInstructions.html";
 
 const buildScaffoldCommand = ({displayName, technology}: TCustomWidgetConfig): string =>
-    `npx @azure/api-management-custom-widgets-scaffolder --displayName="${displayName}" --technology="${technology}" --openUrl="${window.location.origin}"`
+    `npx @azure/api-management-custom-widgets-scaffolder@latest --displayName="${displayName}" --technology="${technology}" --openUrl="${window.location.origin}"`
 
 @Component({
     selector: "development-instructions",
