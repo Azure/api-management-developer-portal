@@ -37,7 +37,7 @@ export class ConfirmPassword {
             decorateInputElement: true
         });
 
-        this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired }, minLength: 8 }); // TODO: password requirements should come from Management API.
+        this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired }, passwordValidator: {} });
         this.passwordConfirmation.extend(<any>{ equal: { message: ValidationMessages.passwordConfirmationMustMatch, params: this.password } });
     }
 

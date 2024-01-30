@@ -5,43 +5,49 @@
 <!-- ko ifnot: isUserRequested -->
 <form data-bind="submit: signup">
     <fieldset data-bind="attr: { disabled: working}">
-        <div class="form-group">
+        <div class="form-group has-validation">
             <label for="email">Email *</label>
-            <input aria-required="true" autofocus="autofocus" spellcheck="false" class="form-control" id="email" name="email"
-                autocomplete="email" placeholder="e.g. name@example.com" type="email" data-bind="textInput: email">
+            <input aria-required="true" autofocus="autofocus" spellcheck="false" class="form-control" id="email"
+                name="email" autocomplete="email" placeholder="e.g. name@example.com" type="email"
+                data-bind="textInput: email">
+            <span class="invalid-feedback" data-bind="validationMessage: email"></span>
         </div>
-        <div class="form-group">
+        <div class="form-group has-validation">
             <label for="password">Password *</label>
-            <input aria-required="true" class="form-control" id="password" name="password"
-                autocomplete="new-password" type="password" data-bind="textInput: password">
+            <input aria-required="true" class="form-control" id="password" name="password" autocomplete="new-password"
+                type="password" data-bind="textInput: password">
+            <span class="invalid-feedback" data-bind="validationMessage: password"></span>
         </div>
-        <div class="form-group">
+        <div class="form-group has-validation">
             <label for="confirmPassword">Confirm password *</label>
             <input aria-required="true" class="form-control" id="confirmPassword" name="confirm"
-                autocomplete="new-password" type="password"
-                data-bind="textInput: passwordConfirmation">
+                autocomplete="new-password" type="password" data-bind="textInput: passwordConfirmation">
+            <span class="invalid-feedback" data-bind="validationMessage: passwordConfirmation"></span>
         </div>
-        <div class="form-group">
+        <div class="form-group has-validation">
             <label for="firstName">First name *</label>
-            <input aria-required="true" class="form-control" id="firstName" name="firstName"
-                placeholder="e.g. John" type="text" data-bind="textInput: firstName">
+            <input aria-required="true" class="form-control" id="firstName" name="firstName" placeholder="e.g. John"
+                type="text" data-bind="textInput: firstName">
+            <span class="invalid-feedback" data-bind="validationMessage: firstName"></span>
         </div>
-        <div class="form-group">
+        <div class="form-group has-validation">
             <label for="lastName">Last name *</label>
-            <input aria-required="true" class="form-control" id="lastName" name="lastName"
-                placeholder="e.g. Doe" type="text" data-bind="textInput: lastName">
+            <input aria-required="true" class="form-control" id="lastName" name="lastName" placeholder="e.g. Doe"
+                type="text" data-bind="textInput: lastName">
+            <span class="invalid-feedback" data-bind="validationMessage: lastName"></span>
         </div>
 
         <!-- ko if: requireHipCaptcha -->
         <hip-captcha params="{ captchaData: captchaData, onInitComplete: onCaptchaCreated }"></hip-captcha>
-        <!-- /ko -->       
-        
+        <!-- /ko -->
+
         <!-- ko if: termsEnabled && termsOfUse -->
-        <terms-of-use params="{ isConsentRequired: isConsentRequired, consented: consented, termsOfUse: termsOfUse }"></terms-of-use>
+        <terms-of-use
+            params="{ isConsentRequired: isConsentRequired, consented: consented, termsOfUse: termsOfUse }"></terms-of-use>
         <!-- /ko -->
 
         <div class="form-group">
-            
+
             <!-- ko ifnot: working -->
             <button type="button" id="signup" class="button button-primary" data-bind="click: signup">
                 Sign up

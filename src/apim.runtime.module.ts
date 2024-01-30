@@ -13,6 +13,7 @@ import { RoleBasedSecurityRuntimeModule } from "@paperbits/core/security/roleBas
 import { staticDataEnvironment } from "./../environmentConstants";
 import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import "./bindingHandlers/acceptChange";
+import "./bindingHandlers/passwordValidator";
 import "./bindingHandlers/barChart";
 import "./bindingHandlers/copyToClipboard";
 import "./bindingHandlers/fastForeach";
