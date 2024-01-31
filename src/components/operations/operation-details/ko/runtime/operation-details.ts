@@ -454,8 +454,14 @@ export class OperationDetails {
     }
 
     private scrollToOperation() {
-        const headerElement = document.getElementById("operation-name");
-        headerElement && headerElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
+        if (this.routeHelper.getDefinitionName()) {
+            const definitionId = this.router.getHash();
+            const definitionElement = document.getElementById(definitionId);
+            definitionElement && definitionElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
+        } else {
+            const headerElement = document.getElementById("operation-name");
+            headerElement && headerElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
+        }
     }
 
     @OnDestroyed()
