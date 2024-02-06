@@ -83,7 +83,7 @@
         "@paperbits/common": "0.1.592",
         "@paperbits/core": "0.1.592",
         "@paperbits/forms": "0.1.592",
-        "@paperbits/react": "1.0.7",
+        "@paperbits/react": "1.0.8",
         "@paperbits/styles": "0.1.592",
         "@webcomponents/custom-elements": "1.6.0",
         "@webcomponents/shadydom": "^1.11.0",

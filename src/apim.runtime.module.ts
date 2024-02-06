@@ -87,6 +87,7 @@ import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
+import { ApisListV2RuntimeModule } from "./components/v2/apis-list/apisListV2.runtime.module";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -163,6 +164,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
         injector.bindModule(new CustomWidgetRuntimeModule());
         injector.bindModule(new RoleBasedSecurityRuntimeModule());
+        injector.bindModule(new ApisListV2RuntimeModule());
 
         if (process.env.NODE_ENV === staticDataEnvironment) {
             injector.bind("httpClient", StaticDataHttpClient);
