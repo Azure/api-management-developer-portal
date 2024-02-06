@@ -49,6 +49,7 @@ import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CustomWidgetDesignModule } from "./components/custom-widget/customWidget.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
+import { ApisListV2DesignModule } from "./components/v2/apis-list/apisListV2.design.module";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -79,6 +80,7 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new CustomHtmlDesignModule());
         injector.bindModule(new CustomWidgetDesignModule());
         injector.bindModule(new RoleBasedSecurityDesignModule());
+        injector.bindModule(new ApisListV2DesignModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("tenantService", TenantService);
