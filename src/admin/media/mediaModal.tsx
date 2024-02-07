@@ -7,6 +7,7 @@ import { ViewManager } from '@paperbits/common/ui';
 import { IMediaService } from '@paperbits/common/media';
 import { MediaContract } from '@paperbits/common/media/mediaContract';
 import { Query, Operator } from '@paperbits/common/persistence';
+import { MimeTypes } from '@paperbits/common';
 import { Checkbox, DefaultButton, IconButton, IIconProps, Image, ImageFit, IOverflowSetItemProps, Link, Modal, OverflowSet, SearchBox, Spinner, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 import { getAllValues, getThumbnailUrl } from '../utils/helpers';
@@ -99,7 +100,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
     }
 
     linkMedia = async (): Promise<void> => {
-        const newMediaFile = await this.mediaService.createMediaUrl('media.svg', 'https://cdn.paperbits.io/images/logo.svg');
+        const newMediaFile = await this.mediaService.createMediaUrl('media.svg', 'https://cdn.paperbits.io/images/logo.svg', MimeTypes.imageSvg);
         this.setState({ selectedMediaFile: newMediaFile, showNonImageDetailsModal: true, isLinking: true });
     }
 
