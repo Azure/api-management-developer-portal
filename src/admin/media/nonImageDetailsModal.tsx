@@ -82,7 +82,7 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
     validatePermalink = async (permalink: string): Promise<string> => {
         if (permalink === this.props.mediaItem?.permalink) return '';
 
-        const isPermalinkNotDefined = !(await this.mediaService.getMediaByPermalink(permalink)) && !reservedPermalinks.includes(permalink);
+        const isPermalinkNotDefined = permalink && !(await this.mediaService.getMediaByPermalink(permalink)) && !reservedPermalinks.includes(permalink);
         let errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
 
         if (errorMessage === '') errorMessage = validateField(URL_REQUIRED, permalink);
