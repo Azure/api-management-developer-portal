@@ -34,4 +34,14 @@ export class OpenIdConnectProvider {
      */
 
     public clientId: string;
+
+    /**
+     * Is this provider used for the test console?
+     */
+    useInTestConsole: boolean;
+
+    /**
+     * Is this provider used for API documentation?
+     */
+    useInApiDocumentation: boolean;
 }
