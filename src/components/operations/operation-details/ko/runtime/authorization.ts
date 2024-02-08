@@ -123,8 +123,10 @@ export class Authorization {
         }
 
         const api = this.api();
-        const scopeOverride = this.getSelectedAuthServerOverrideScope(authorizationServer.name, api.authenticationSettings?.oAuth2AuthenticationSettings);
-        const storedCredentials = await this.getStoredCredentials(authorizationServer.name, scopeOverride);
+        const serverName = authorizationServer.name;
+
+        const scopeOverride = this.getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
+        const storedCredentials = await this.getStoredCredentials(serverName, scopeOverride);
 
 
         if (storedCredentials) {
