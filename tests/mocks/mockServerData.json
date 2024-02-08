@@ -96,15 +96,19 @@
         "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/settings/public":{
             "statusCode": 200,
             "body": {
-                
-                "id": "/settings/public",
-                "settings": {
-                    "CustomPortalSettings.UserRegistrationTerms": null,
-                    "CustomPortalSettings.UserRegistrationTermsEnabled": "False",
-                    "CustomPortalSettings.UserRegistrationTermsConsentRequired": "False",
-                    "CustomPortalSettings.DelegationEnabled": "False",
-                    "CustomPortalSettings.DelegationUrl": "",
-                    "CustomPortalSettings.DelegatedSubscriptionEnabled": "False"
+                "id": "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/settings/public",
+                "type": "Microsoft.ApiManagement/service/settings",
+                "name": "public",
+                "properties": {
+                    "settings": {
+                        "CustomPortalSettings.UserRegistrationTerms": "",
+                        "CustomPortalSettings.UserRegistrationTermsEnabled": "False",
+                        "CustomPortalSettings.UserRegistrationTermsConsentRequired": "False",
+                        "CustomPortalSettings.DelegationEnabled": "False",
+                        "CustomPortalSettings.DelegationUrl": "",
+                        "CustomPortalSettings.DelegatedSubscriptionEnabled": "False",
+                        "CustomPortalSettings.RequireUserSigninEnabled": "True"
+                    }
                 }
             }
         },
