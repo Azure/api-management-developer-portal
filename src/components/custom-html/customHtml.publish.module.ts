@@ -2,7 +2,7 @@ import { IInjectorModule, IInjector } from "@paperbits/common/injection";
 import { CustomHtmlViewModel } from "./ko/customHtmlViewModel";
 import { CustomHtmlModelBinder } from "./customHtmlModelBinder";
 import { CustomHtmlViewModelBinder } from "./ko/customHtmlViewModelBinder";
-import { widgetName } from "../custom-widget";
+import { widgetName } from "./constants";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { CustomHtmlModel } from "./customHtmlModel";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";

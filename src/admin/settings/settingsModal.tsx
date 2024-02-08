@@ -73,10 +73,13 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
     }
 
     loadSettings = async (): Promise<void> => {
-        const settings = await this.siteService.getSetting<SiteSettingsContract>('site');
-        const faviconFile = await this.mediaService.getMediaByKey(settings.faviconSourceKey);
+        const settings = await this.siteService.getSetting<SiteSettingsContract>('site');        
         this.setState({ initialSettings: settings, settings: settings });
-        this.getFaviconThumbnailUrl(faviconFile);
+
+        if (settings.faviconSourceKey) {
+            const faviconFile = await this.mediaService.getMediaByKey(settings.faviconSourceKey);
+            this.getFaviconThumbnailUrl(faviconFile); 
+        }
     }
 
     getFaviconThumbnailUrl = async (faviconFile: MediaContract): Promise<void> => {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DirectionalHint, Icon, Stack, Text, TooltipDelay, TooltipHost } from '@fluentui/react';
+import { DirectionalHint, IconButton, Stack, Text, TooltipDelay, TooltipHost } from '@fluentui/react';
 import { lightTheme } from '../themes';
 
 interface LabelWithInfoProps {
@@ -21,10 +21,10 @@ export class LabelWithInfo extends React.Component<LabelWithInfoProps, {}> {
                     delay={TooltipDelay.zero}
                     styles={{ root: { display: 'flex', marginLeft: 5 } }}
                 >
-                    <Icon
-                        iconName="Info"
-                        styles={{ root: { cursor: 'pointer' } }}
+                    <IconButton
+                        iconProps={{ iconName: 'Info' }}
                         aria-describedby={this.props.label}
+                        styles={{ root: { color: 'grey', width: 16, height: 16 }, icon: { fontSize: 14, height: 14 } }}
                     />
                 </TooltipHost>
             </Stack>

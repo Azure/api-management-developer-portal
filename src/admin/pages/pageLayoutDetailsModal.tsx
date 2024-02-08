@@ -73,9 +73,9 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
     }
 
     validatePermalink = async (permalink: string): Promise<string> => {
-        if (permalink === this.props.layout?.permalinkTemplate) return '';
+        if (!this.state.copyLayout && permalink === this.props.layout?.permalinkTemplate) return '';
 
-        const isPermalinkNotDefined = !(await this.layoutService.getLayoutByPermalinkTemplate(permalink)) && !reservedPermalinks.includes(permalink);
+        const isPermalinkNotDefined = permalink ? !(await this.layoutService.getLayoutByPermalinkTemplate(permalink)) : true && !reservedPermalinks.includes(permalink);
         const errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
 
         return errorMessage;
@@ -95,7 +95,7 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
     copyLayout = async (): Promise<void> => {
         this.setState({ copyLayout: true, layout: {
             ...this.state.layout,
-            permalinkTemplate: null,
+            permalinkTemplate: this.state.layout.permalinkTemplate + '-copy',
             title: this.state.layout.title + ' (copy)'
         }});
     }

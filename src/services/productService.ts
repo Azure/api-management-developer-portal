@@ -231,6 +231,8 @@ export class ProductService {
             query = Utils.addQueryParameter(query, `$filter=(contains(properties/displayName,'${encodeURIComponent(filter.pattern)}'))`);
         }
 
+        query = Utils.addQueryParameter(query, "skipWorkspaces=true");
+
         const page = await this.mapiClient.get<Page<ProductContract>>(query, [await this.mapiClient.getPortalHeader("getProductsPage")]);
         const result = new Page<Product>();
         result.count = page.count;

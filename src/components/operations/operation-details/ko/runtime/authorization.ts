@@ -86,16 +86,6 @@ export class Authorization {
     @OnMounted()
     public async initialize(): Promise<void> {
         this.subscriptionKeyRequired(!!this.api().subscriptionRequired);
-        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
-        this.selectedGrantType.subscribe(this.onGrantTypeChange);
-        this.selectedSubscriptionKey(null);
-        this.selectedAuthorizationServer(this.authorizationServers() ? this.authorizationServers()[0] : null);
-        this.selectedAuthorizationServer.subscribe(() => this.selectedGrantType(null));
-
-        await this.setupOAuth();
-        if (this.api().subscriptionRequired) {
-            await this.loadSubscriptionKeys();
-        }
 
         if (this.subscriptionKeyRequired()) {
             if (this.api().type === TypeOfApi.webSocket || this.isGraphQL()) {
@@ -103,6 +93,16 @@ export class Authorization {
             } else {
                 this.setSubscriptionKeyHeader();
             }
+        }
+
+        this.selectedGrantType.subscribe(this.onGrantTypeChange);
+        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
+        this.selectedAuthorizationServer(this.authorizationServers() ? this.authorizationServers()[0] : null);
+        this.selectedAuthorizationServer.subscribe(() => this.selectedGrantType(null));
+
+        await this.setupOAuth();
+        if (this.api().subscriptionRequired) {
+            await this.loadSubscriptionKeys();
         }
     }
 
