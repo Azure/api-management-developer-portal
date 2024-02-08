@@ -176,8 +176,11 @@ export class OperationDetails {
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
         const graphName = this.routeHelper.getGraphName();
+        const definitionName = this.routeHelper.getDefinitionName();
 
-        if (this.enableScrollTo && (operationName || graphName)) {
+        if (definitionName) {
+            this.scrollToDefinition();
+        } else if (this.enableScrollTo && (operationName || graphName)) {
             this.scrollToOperation();
         }
 
@@ -456,6 +459,12 @@ export class OperationDetails {
     private scrollToOperation() {
         const headerElement = document.getElementById("operation-name");
         headerElement && headerElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
+    }
+
+    private scrollToDefinition() {
+        const definitionId = this.router.getHash();
+        const definitionElement = document.getElementById(definitionId);
+        definitionElement && definitionElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
     }
 
     @OnDestroyed()
