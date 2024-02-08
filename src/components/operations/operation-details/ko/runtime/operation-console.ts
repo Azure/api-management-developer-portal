@@ -100,7 +100,7 @@ export class OperationConsole {
         this.selectedHostname = ko.observable("");
         this.hostnameSelectionEnabled = ko.observable();
         this.isHostnameWildcarded = ko.computed(() => this.selectedHostname().includes("*"));
-        this.authorizationServer = ko.observable();
+        this.authorizationServers = ko.observable();
 
         this.useCorsProxy = ko.observable(false);
         this.wildcardSegment = ko.observable();
@@ -143,7 +143,7 @@ export class OperationConsole {
     public hostnames: ko.Observable<string[]>;
 
     @Param()
-    public authorizationServer: ko.Observable<AuthorizationServer>;
+    public authorizationServers: ko.Observable<AuthorizationServer[]>;
 
     @Param()
     public useCorsProxy: ko.Observable<boolean>;
