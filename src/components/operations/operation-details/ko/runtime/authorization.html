@@ -26,7 +26,7 @@
         <!-- ko if: $component.authorizationServers().length == 1 -->
         <div class="col-7">
             <label id="authServer" class="text-monospace form-label"
-                data-bind="text: $component.selectedAuthorizationServer().name"></label>
+                data-bind="text: $component.selectedAuthorizationServer()?.name"></label>
         </div>
         <!-- /ko -->
     </div>
@@ -38,7 +38,7 @@
         <div class="col-7">
             <div class="form-group">
                 <select id="authFlow" class="form-control"
-                    data-bind="options: $component.selectedAuthorizationServer().grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
+                    data-bind="options: $component.selectedAuthorizationServer()?.grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
             </div>
         </div>
     </div>
