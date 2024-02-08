@@ -68,6 +68,13 @@ export class RouteHelper {
     }
 
     /**
+     * Returns ARM resource name of the definition specified in hash parameter of the current route, e.g. "users".
+     */
+    public getDefinitionName(): string {
+        return this.getHashParameter("definition");
+    }
+
+    /**
      * Returns URL of API details page depending on current route.
      * @param apiName ARM resource name of the API.
      * @param detailsPageUrl Relative URL of API details page.
