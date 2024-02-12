@@ -11,6 +11,8 @@ import { UsersService } from "../../../../../services";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
 import { ValidationMessages } from "../../../validationMessages";
+import { Logger } from "@paperbits/common/logging";
+import { eventTypes } from "../../../../../logging/clientLogger";
 
 
 @RuntimeComponent({
@@ -31,7 +33,8 @@ export class SignupSocial {
         private readonly eventManager: EventManager,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper,
-        private readonly usersService: UsersService
+        private readonly usersService: UsersService,
+        private readonly logger: Logger
     ) {
         this.email = ko.observable("");
         this.firstName = ko.observable("");
@@ -81,6 +84,8 @@ export class SignupSocial {
         this.firstName(jwtToken.given_name);
         this.lastName(jwtToken.family_name);
         this.email(jwtToken.email || jwtToken.emails?.[0]);
+
+        this.logger.trackEvent(eventTypes.trace, { message: "Signup social component initialized." });
     }
 
     /**
@@ -120,7 +125,7 @@ export class SignupSocial {
             await this.usersService.createUserWithOAuth(provider, idToken, this.firstName(), this.lastName(), this.email());
             await this.router.navigateTo(Constants.pageUrlHome);
         } catch (error) {
-            parseAndDispatchError(this.eventManager, ErrorSources.signup, error, Constants.genericHttpRequestError);
+            parseAndDispatchError(this.eventManager, ErrorSources.signup, error, this.logger, Constants.genericHttpRequestError);
         }
     }
 }

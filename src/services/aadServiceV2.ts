@@ -6,6 +6,8 @@ import { RouteHelper } from "../routing/routeHelper";
 import { Utils } from "../utils";
 import { UsersService } from "./usersService";
 import { IAadService } from "./IAadService";
+import { Logger } from "@paperbits/common/logging";
+import { eventTypes } from "../logging/clientLogger";
 
 /**
  * Service for operations with Azure Active Directory identity provider.
@@ -15,7 +17,8 @@ export class AadServiceV2 implements IAadService {
         private readonly router: Router,
         private readonly routeHelper: RouteHelper,
         private readonly usersService: UsersService,
-        private readonly httpClient: HttpClient
+        private readonly httpClient: HttpClient,
+        private readonly logger: Logger
     ) { }
 
     /**
@@ -23,11 +26,12 @@ export class AadServiceV2 implements IAadService {
      * @param {string} idToken - ID token.
      * @param {string} provider - Provider type, `Aad` or `AadB2C`.
      */
-    private async exchangeIdToken(idToken: string, provider: string): Promise<void> {
+    private async exchangeIdToken(idToken: string, provider: string, calledFrom: eventTypes): Promise<void> {
         const credentials = `${provider} id_token="${idToken}"`;
         const userId = await this.usersService.authenticate(credentials);
 
         if (!userId) { // User not registered with APIM.
+            this.logger.trackEvent(calledFrom, { message: "User not registered with APIM. Starting signup flow." });
             const jwtToken = Utils.parseJwt(idToken);
             const firstName = jwtToken.given_name;
             const lastName = jwtToken.family_name;
@@ -37,6 +41,7 @@ export class AadServiceV2 implements IAadService {
                 await this.usersService.createUserWithOAuth(provider, idToken, firstName, lastName, email);
             }
             else {
+                this.logger.trackEvent(calledFrom, { message: "User data not found in ID token. Navigating to signup URL." });
                 const signupUrl = this.routeHelper.getIdTokenReferenceUrl(provider, idToken);
                 await this.router.navigateTo(signupUrl);
                 return;
@@ -102,7 +107,8 @@ export class AadServiceV2 implements IAadService {
         const response = await msalInstance.loginPopup(loginRequest);
 
         if (response.idToken) {
-            await this.exchangeIdToken(response.idToken, Constants.IdentityProviders.aad);
+            await this.exchangeIdToken(response.idToken, Constants.IdentityProviders.aad, eventTypes.aadLogin);
+            this.logger.trackEvent(eventTypes.aadLogin, { message: "Login successful." });
         }
     }
 
@@ -155,7 +161,11 @@ export class AadServiceV2 implements IAadService {
         const response = await msalInstance.loginPopup(loginRequest);
 
         if (response.idToken) {
-            await this.exchangeIdToken(response.idToken, Constants.IdentityProviders.aadB2C);
+            await this.exchangeIdToken(response.idToken, Constants.IdentityProviders.aadB2C, eventTypes.aadB2CLogin);
+            this.logger.trackEvent(eventTypes.aadB2CLogin, { message: "Login successful." });
+        }
+        else {
+            this.logger.trackEvent(eventTypes.aadB2CLogin, { message: "AadB2C Login failed: ID token not found in response." });
         }
     }
 
