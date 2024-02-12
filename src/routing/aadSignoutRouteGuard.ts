@@ -40,6 +40,8 @@ export class AadSignOutRouteGuard implements RouteGuard {
         };
 
         const msalInstance = new msal.PublicClientApplication(msalConfig);
+        await msalInstance.initialize();
+        
         const currentAccounts = msalInstance.getAllAccounts();
         const signedInUserAccount = currentAccounts?.length > 0 && currentAccounts[0];
 
