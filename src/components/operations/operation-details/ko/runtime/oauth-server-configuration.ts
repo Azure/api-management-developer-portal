@@ -7,24 +7,19 @@ import { AuthorizationServer } from "../../../../../models/authorizationServer";
     selector: "oauth-server-configuration",
     template: template,
 })
-
 export class OauthServerConfiguration {
 
-    public displayedGrantFlows: ko.Observable<string>;
-    public displayedScopes: ko.Observable<string>;
+    public displayServersName: boolean;
 
     constructor() {
-        this.authorizationServer = ko.observable();
-        this.displayedGrantFlows = ko.observable();
-        this.displayedScopes = ko.observable();
+        this.authorizationServers = ko.observable();
     }
 
     @Param()
-    public authorizationServer: ko.Observable<AuthorizationServer>;
+    public authorizationServers: ko.Observable<AuthorizationServer[]>;
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        this.displayedGrantFlows(this.authorizationServer().grantTypes.join(", ").toString());
-        this.displayedScopes(this.authorizationServer().scopes.join(", ").toString());
+        this.displayServersName = this.authorizationServers().length > 1;
     }
 }
