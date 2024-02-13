@@ -28,8 +28,7 @@ export class ApisListV2Runtime extends React.Component {
                     Click me
                 </button>
                 <div>
-                    <label htmlFor="clickCount">Click count:</label>
-                    <b id="clickCount">{this.state.clickCount}</b>
+                    <label htmlFor="clickCount">Click count:</label> <b id="clickCount">{this.state.clickCount}</b>
                 </div>
             </div>
         );

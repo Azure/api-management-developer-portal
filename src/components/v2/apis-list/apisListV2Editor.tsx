@@ -33,7 +33,6 @@ export class ApisListV2Editor extends React.Component {
     public render(): JSX.Element {
         return (
             <div>
-                <p>This is your widget editor that is yet to be implemented.</p>
                 <div id="basicCollapse" className="collapse form-group-collapse">
                     <div className="form-group">
                         <label htmlFor="initialCount" className="form-label">Initial count</label>
