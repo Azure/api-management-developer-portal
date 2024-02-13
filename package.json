@@ -28,7 +28,7 @@
         "lint:fix": "eslint src/**/*.ts --fix"
     },
     "devDependencies": {
-        "@azure/storage-blob": "12.16.0",
+        "@azure/storage-blob": "^12.17.0",
         "@playwright/test": "1.35.1",
         "@types/chai": "^4.3.6",
         "@types/google-maps": "^3.2.3",
