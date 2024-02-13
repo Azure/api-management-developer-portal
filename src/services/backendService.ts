@@ -224,6 +224,41 @@ export class BackendService {
         return new AuthorizationServer(contract);
     }
 
+    public async getOpenIdConnectProvidersByApi(apiId: string): Promise<AuthorizationServerForClient[]> {
+        let response: HttpResponse<AuthorizationServerForClient[]>;
+        const httpRequest: HttpRequest = {
+            method: HttpMethod.get,
+            url: await this.getUrl(`${apiId}/openidConnectProviders`)
+        };
+
+        try {
+            response = await this.httpClient.send<any>(httpRequest);
+        }
+        catch (error) {
+            throw new Error(`Unable to complete request. Error: ${error.message}`);
+        }
+
+        return this.handleResponse<AuthorizationServerForClient[]>(response, httpRequest.url);
+    }
+
+    public async getAuthorizationServersByApi(apiId: string): Promise<AuthorizationServerForClient[]> {
+        let response: HttpResponse<AuthorizationServerForClient[]>;
+        const httpRequest: HttpRequest = {
+            method: HttpMethod.get,
+            url: await this.getUrl(`${apiId}/authorizationServers`)
+        };
+
+        try {
+            response = await this.httpClient.send<any>(httpRequest);
+        }
+        catch (error) {
+            throw new Error(`Unable to complete request. Error: ${error.message}`);
+        }
+
+        return this.handleResponse<AuthorizationServerForClient[]>(response, httpRequest.url);
+
+    }
+
     private async getUrl(path: string): Promise<string> {
         if (!this.portalUrl && !this.developerPortalType) {
             const settings = await this.settingsProvider.getSettings();

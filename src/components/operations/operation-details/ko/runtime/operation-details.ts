@@ -47,7 +47,8 @@ export class OperationDetails {
     public readonly sampleHostname: ko.Observable<string>;
     public readonly hostnames: ko.Observable<string[]>;
     public readonly working: ko.Observable<boolean>;
-    public readonly associatedAuthServer: ko.Observable<AuthorizationServer>;
+    public readonly apiDocumentationAuthServers: ko.Observable<AuthorizationServer[]>;
+    public readonly testConsoleAuthServers: ko.Observable<AuthorizationServer[]>;
     public readonly apiType: ko.Observable<string>;
     public readonly protocol: ko.Computed<string>;
     public readonly examples: ko.Observable<OperationExamples>;
@@ -64,7 +65,8 @@ export class OperationDetails {
         this.working = ko.observable(false);
         this.sampleHostname = ko.observable();
         this.hostnames = ko.observable();
-        this.associatedAuthServer = ko.observable();
+        this.apiDocumentationAuthServers = ko.observable();
+        this.testConsoleAuthServers = ko.observable();
         this.api = ko.observable();
         this.schemas = ko.observableArray([]);
         this.tags = ko.observableArray([]);
@@ -176,8 +178,11 @@ export class OperationDetails {
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
         const graphName = this.routeHelper.getGraphName();
+        const definitionName = this.routeHelper.getDefinitionName();
 
-        if (this.enableScrollTo && (operationName || graphName)) {
+        if (definitionName) {
+            this.scrollToDefinition();
+        } else if (this.enableScrollTo && (operationName || graphName)) {
             this.scrollToOperation();
         }
 
@@ -219,16 +224,18 @@ export class OperationDetails {
 
         this.closeConsole();
 
-        const associatedServerId = api.authenticationSettings?.oAuth2?.authorizationServerId ||
-            api.authenticationSettings?.openid?.openidProviderId;
-
-        let associatedAuthServer = null;
-
-        if (associatedServerId) {
-            associatedAuthServer = await this.oauthService.getAuthServer(api.authenticationSettings?.oAuth2?.authorizationServerId, api.authenticationSettings?.openid?.openidProviderId);
+        let associatedAuthServers: AuthorizationServer[];
+        if (api.authenticationSettings?.oAuth2AuthenticationSettings?.length > 0) {
+            associatedAuthServers = await this.oauthService.getOauthServers(api.id);
+        } 
+        else if (api.authenticationSettings?.openidAuthenticationSettings?.length > 0) {
+            associatedAuthServers = await this.oauthService.getOpenIdAuthServers(api.id);
         }
 
-        this.associatedAuthServer(associatedAuthServer);
+        if (associatedAuthServers) {
+            this.apiDocumentationAuthServers(associatedAuthServers.filter(a => a.useInApiDocumentation));
+            this.testConsoleAuthServers(associatedAuthServers.filter(a => a.useInTestConsole));
+        }
     }
 
     public async loadOperation(apiName: string, operationName: string): Promise<void> {
@@ -456,6 +463,12 @@ export class OperationDetails {
     private scrollToOperation() {
         const headerElement = document.getElementById("operation-name");
         headerElement && headerElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
+    }
+
+    private scrollToDefinition() {
+        const definitionId = this.router.getHash();
+        const definitionElement = document.getElementById(definitionId);
+        definitionElement && definitionElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
     }
 
     @OnDestroyed()
