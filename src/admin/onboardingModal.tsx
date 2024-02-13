@@ -82,7 +82,7 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                                 </ul>
                             </Stack>
                         </div>
-                        <div>
+                        {/* <div>
                             <Image
                                 src="/assets/images/onboarding-3.png"
                                 imageFit={ImageFit.centerCover}
@@ -93,7 +93,7 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                                 <Text block className="carousel-header">Display custom documentation with new details pages</Text>
                                 <Text block>The redesigned API and product details pages improve functionality by making custom documentation readily accessible to your developers. Custom documentation is created and configured through your API Management service and displayed in the developer portal.</Text>
                             </Stack>
-                        </div>
+                        </div> */}
                         <div>
                             <Image
                                 src="/assets/images/onboarding-4.png"
