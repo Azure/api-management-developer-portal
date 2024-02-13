@@ -1,3 +1,4 @@
+import { ReactModule } from "@paperbits/react/react.module";
 import { AadConfigPublisher } from "./publishing/aadConfigPublisher";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
@@ -46,6 +47,7 @@ import { ApisListV2PublishModule } from "./components/v2/apis-list/apisListV2.pu
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
+        injector.bindModule(new ReactModule());
         injector.bindModule(new ListOfApisPublishModule());
         injector.bindModule(new ApiProductsPublishModule());
         injector.bindModule(new DetailsOfApiPublishModule());

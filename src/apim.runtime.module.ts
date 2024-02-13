@@ -1,3 +1,4 @@
+import { ReactModule } from "@paperbits/react/react.module";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSessionManager";
@@ -92,6 +93,7 @@ import { ApisListV2RuntimeModule } from "./components/v2/apis-list/apisListV2.ru
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
+        injector.bindModule(new ReactModule());
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindToCollection("autostart", BalloonBindingHandler);

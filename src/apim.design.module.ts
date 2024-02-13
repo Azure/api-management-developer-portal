@@ -1,3 +1,4 @@
+import { ReactModule } from "@paperbits/react/react.module";
 import * as Constants from "./constants";
 import "./bindingHandlers/codeEditor";
 import "./bindingHandlers/copyToClipboard";
@@ -55,6 +56,7 @@ import { ApisListV2DesignModule } from "./components/v2/apis-list/apisListV2.des
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindModule(new SetupModule());
+        injector.bindModule(new ReactModule());
         injector.bindModule(new ListOfApisDesignModule());
         injector.bindModule(new ApiProductsDesignModule());
         injector.bindModule(new DetailsOfApiDesignModule());

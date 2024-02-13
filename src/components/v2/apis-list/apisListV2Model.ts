@@ -13,9 +13,5 @@ export class ApisListV2Model {
 
     constructor() {
         this.initialCount = 0;
-
-        this.styles = {
-            appearance: "components/card/default"
-        };
     }
 }
