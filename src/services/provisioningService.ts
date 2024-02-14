@@ -7,6 +7,7 @@ import * as Constants from "../constants";
 import { MapiClient } from "./mapiClient";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 
 export class ProvisionService {
     constructor(
@@ -15,7 +16,8 @@ export class ProvisionService {
         private readonly authenticator: IAuthenticator,
         private readonly viewManager: ViewManager,
         private readonly router: Router,
-        private readonly blobStorage: AzureBlobStorage
+        private readonly blobStorage: AzureBlobStorage,
+        private readonly settingsProvider: ISettingsProvider
     ) { }
 
     private async fetchData(url: string): Promise<Object> {
@@ -27,6 +29,15 @@ export class ProvisionService {
         const dataUrl = `/editors/templates/default.json`;
         const dataObj = await this.fetchData(dataUrl);
         const keys = Object.keys(dataObj);
+
+        const backendUrl = await this.settingsProvider.getSetting<string>("backendUrl") || `https://${location.hostname}`;
+        dataObj["/contentTypes/blob/contentItems/hero-gradient"]["properties"]["downloadUrl"] = backendUrl + "/assets/images/hero-gradient.jpg"
+        dataObj["/contentTypes/blob/contentItems/featured-1"]["properties"]["downloadUrl"] = backendUrl + "/assets/images/featured-1.jpg"
+        dataObj["/contentTypes/blob/contentItems/featured-2"]["properties"]["downloadUrl"] = backendUrl + "/assets/images/featured-2.jpg"
+        dataObj["/contentTypes/blob/contentItems/featured-3"]["properties"]["downloadUrl"] = backendUrl + "/assets/images/featured-3.jpg"
+        dataObj["/contentTypes/blob/contentItems/contoso-black"]["properties"]["downloadUrl"] = backendUrl + "/assets/images/contoso-black.png"
+        dataObj["/contentTypes/blob/contentItems/logo-contoso-small"]["properties"]["downloadUrl"] = backendUrl + "/assets/images/logo-contoso-small.png"
+
         const accessToken = await this.authenticator.getAccessTokenAsString();
 
         if (!accessToken) {
