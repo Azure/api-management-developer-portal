@@ -74,7 +74,7 @@
         "@azure/api-management-custom-widgets-scaffolder": "^1.0.0-beta.4",
         "@azure/api-management-custom-widgets-tools": "^1.0.0-beta.2",
         "@azure/msal-browser": "^3.9.0",
-        "@braintree/sanitize-url": "6.0.4",
+        "@braintree/sanitize-url": "^7.0.0",
         "@fluentui/font-icons-mdl2": "^8.5.9",
         "@fluentui/react": "^8.105.11",
         "@microsoft/applicationinsights-web": "^3.0.2",
