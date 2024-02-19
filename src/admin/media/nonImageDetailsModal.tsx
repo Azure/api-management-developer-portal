@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { isEqual, isEmpty } from 'lodash';
+import { isEqual, isEmpty, debounce } from 'lodash';
 import { Resolve } from '@paperbits/react/decorators';
 import { IMediaService } from '@paperbits/common/media';
 import { MediaContract } from '@paperbits/common/media/mediaContract';
@@ -39,6 +39,17 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
     }
 
     onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
+        this.setState({
+            mediaItem: {
+                ...this.state.mediaItem,
+                [field]: newValue
+            }
+        });
+
+        this.runValidation(field, newValue, validationType);
+    }
+
+    runValidation = debounce(async (field: string, newValue: string, validationType?: string): Promise<void> => {
         let errorMessage = '';
         let errors = {};
 
@@ -57,14 +68,8 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
             errors = this.state.errors;
         }
 
-        this.setState({
-            mediaItem: {
-                ...this.state.mediaItem,
-                [field]: newValue
-            },
-            errors
-        });
-    }
+        this.setState({ errors });
+    }, 300)
 
     onReferenceUrlChange = (): void => {
         if (!this.state.errors['downloadUrl'] && this.state.mediaItem.fileName === 'media.svg') {
