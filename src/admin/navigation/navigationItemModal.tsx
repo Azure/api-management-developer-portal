@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Utils from '@paperbits/common';
-import { isEqual, isEmpty } from 'lodash';
+import { isEqual, isEmpty, debounce } from 'lodash';
 import { INavigationService, NavigationItemContract } from '@paperbits/common/navigation';
 import { IPageService } from '@paperbits/common/pages';
 import { IUrlService } from '@paperbits/common/urls';
@@ -142,6 +142,17 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
     }
 
     onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
+      this.setState({
+            navItem: {
+                ...this.state.navItem,
+                [field]: newValue
+            }
+        });
+
+        this.runValidation(field, newValue, validationType);
+    }
+
+    runValidation = debounce(async (field: string, newValue: string, validationType?: string): Promise<void> => {
         let errorMessage = '';
         let errors = {};
 
@@ -163,14 +174,8 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
             errors = this.removeError(field);
         }
 
-        this.setState({
-            navItem: {
-                ...this.state.navItem,
-                [field]: newValue
-            },
-            errors
-        });
-    }
+        this.setState({ errors });
+    }, 300)
 
     validatePermalink = async (permalink: string): Promise<string> => {
         const isPermalinkNotDefined = await this.permalinkService.isPermalinkDefined(permalink) && !reservedPermalinks.includes(permalink);
