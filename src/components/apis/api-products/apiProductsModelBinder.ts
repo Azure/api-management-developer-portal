@@ -19,7 +19,7 @@ export class ApiProductsModelBinder implements IModelBinder<ApiProductsModel> {
 
     public modelToContract(model: ApiProductsModel): ApiProductsContract {
         const contract: ApiProductsContract = {
-            type: "api-products",
+            type: "apiProducts",
             itemStyleView: model.layout,
             detailsPageHyperlink: model.detailsPageHyperlink
             ? {
