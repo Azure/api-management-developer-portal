@@ -19,13 +19,15 @@ export class ApiProductsDesignModule implements IInjectorModule {
 
         const widgetService = injector.resolve<IWidgetService>("widgetService");
 
-        widgetService.registerWidget("apiProducts", {
+        const apiProductsWidget = {
             modelDefinition: ApiProductsModel,
             componentBinder: KnockoutComponentBinder,
             componentDefinition: ApiProductsViewModel,
             modelBinder: ApiProductsModelBinder,
             viewModelBinder: ApiProductsViewModelBinder
-        });
+        };
+
+        widgetService.registerWidget("api-products", apiProductsWidget);
 
         widgetService.registerWidgetEditor("apiProducts", {
             displayName: "API: Products",
@@ -36,15 +38,9 @@ export class ApiProductsDesignModule implements IInjectorModule {
             handlerComponent: ApiProductsHandlers
         });
 
-        widgetService.registerWidget("apiProductsDropdown", {
-            modelDefinition: ApiProductsModel,
-            componentBinder: KnockoutComponentBinder,
-            componentDefinition: ApiProductsViewModel,
-            modelBinder: ApiProductsModelBinder,
-            viewModelBinder: ApiProductsViewModelBinder
-        });
+        widgetService.registerWidget("api-products-dropdown", apiProductsWidget);
 
-        widgetService.registerWidgetEditor("apiProductsDropdown", {
+        widgetService.registerWidgetEditor("api-products-dropdown", {
             displayName: "API: Products (dropdown)",
             category: "APIs",
             iconClass: "widget-icon widget-icon-api-management",
@@ -53,15 +49,9 @@ export class ApiProductsDesignModule implements IInjectorModule {
             handlerComponent: ApiProductsDropdownHandlers
         });
 
-        widgetService.registerWidget("apiProductsTiles", {
-            modelDefinition: ApiProductsModel,
-            componentBinder: KnockoutComponentBinder,
-            componentDefinition: ApiProductsViewModel,
-            modelBinder: ApiProductsModelBinder,
-            viewModelBinder: ApiProductsViewModelBinder
-        });
+        widgetService.registerWidget("api-products-tiles", apiProductsWidget);
 
-        widgetService.registerWidgetEditor("apiProductsTiles", {
+        widgetService.registerWidgetEditor("api-products-tiles", {
             displayName: "API: Products (tiles)",
             category: "APIs",
             iconClass: "widget-icon widget-icon-api-management",
