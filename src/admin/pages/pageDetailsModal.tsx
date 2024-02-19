@@ -48,6 +48,27 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
         }
     }
 
+    onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
+        let permalink = '';
+
+        if (!this.props.page && field === 'title') {
+            permalink = newValue.replace(/\s+/g, '-').toLowerCase();
+
+            this.setState({ page: {
+                ...this.state.page,
+                'title': newValue,
+                'permalink': '/' + permalink
+            }});
+        } else {
+            this.setState({ page: {
+                ...this.state.page,
+                [field]: newValue
+            }});
+        }
+
+        this.runValidation(field, newValue, validationType, permalink);
+    }
+
     runValidation = debounce(async (field: string, newValue: string, validationType?: string, permalink?: string): Promise<void> => {
         let errorMessage = '';
         let permalinkErrorMessage = '';
@@ -83,27 +104,6 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
         
         this.setState({ errors });
     }, 300);
-
-    onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
-        let permalink = '';
-
-        if (!this.props.page && field === 'title') {
-            permalink = newValue.replace(/\s+/g, '-').toLowerCase();
-
-            this.setState({ page: {
-                ...this.state.page,
-                'title': newValue,
-                'permalink': '/' + permalink
-            }});
-        } else {
-            this.setState({ page: {
-                ...this.state.page,
-                [field]: newValue
-            }});
-        }
-
-        this.runValidation(field, newValue, validationType, permalink);
-    }
 
     validatePermalink = async (permalink: string): Promise<string> => {
         if (!this.state.copyPage && permalink === this.props.page?.permalink) return '';
