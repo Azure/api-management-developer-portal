@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { isEqual, isEmpty } from 'lodash';
+import { isEqual, isEmpty, debounce } from 'lodash';
 import { Resolve } from '@paperbits/react/decorators';
 import { ILayoutService, LayoutContract } from '@paperbits/common/layouts';
 import { EventManager } from '@paperbits/common/events';
@@ -45,6 +45,17 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
     }
 
     onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
+        this.setState({
+            layout: {
+                ...this.state.layout,
+                [field]: newValue
+            }
+        });
+
+        this.runValidation(field, newValue, validationType);
+    }
+
+    runValidation = debounce(async (field: string, newValue: string, validationType?: string): Promise<void> => {
         let errorMessage = '';
         let errors = {};
 
@@ -63,14 +74,8 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
             errors = this.state.errors;
         }
 
-        this.setState({
-            layout: {
-                ...this.state.layout,
-                [field]: newValue
-            },
-            errors
-        });
-    }
+        this.setState({ errors });
+    }, 300)
 
     validatePermalink = async (permalink: string): Promise<string> => {
         if (!this.state.copyLayout && permalink === this.props.layout?.permalinkTemplate) return '';
