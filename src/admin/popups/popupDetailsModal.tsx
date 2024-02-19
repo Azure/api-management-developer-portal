@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { isEqual, isEmpty } from 'lodash';
+import { isEqual, isEmpty, debounce } from 'lodash';
 import { Resolve } from '@paperbits/react/decorators';
 import { IPopupService, PopupContract } from '@paperbits/common/popups';
 import { EventManager, Events } from '@paperbits/common/events';
@@ -44,6 +44,17 @@ export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, P
     }
 
     onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
+        this.setState({
+            popup: {
+                ...this.state.popup,
+                [field]: newValue
+            }
+        });
+
+        this.runValidation(field, newValue, validationType);
+    }
+
+    runValidation = debounce(async (field: string, newValue: string, validationType?: string): Promise<void> => {
         let errorMessage = '';
         let errors = {};
 
@@ -60,14 +71,8 @@ export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, P
             errors = this.state.errors;
         }
 
-        this.setState({
-            popup: {
-                ...this.state.popup,
-                [field]: newValue
-            },
-            errors
-        });
-    }
+        this.setState({ errors });
+    }, 300)
 
     closeDeleteConfirmation = (): void => {
         this.setState({ showDeleteConfirmation: false });

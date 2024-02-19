@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { isEqual, isEmpty } from 'lodash';
+import { isEqual, isEmpty, debounce } from 'lodash';
 import { Resolve } from '@paperbits/react/decorators';
 import { IPageService, PageContract } from '@paperbits/common/pages';
 import { PermalinkService } from '@paperbits/common/permalinks';
@@ -49,9 +49,29 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
     }
 
     onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
+        let permalink = '';
+
+        if (!this.props.page && field === 'title') {
+            permalink = newValue.replace(/\s+/g, '-').toLowerCase();
+
+            this.setState({ page: {
+                ...this.state.page,
+                'title': newValue,
+                'permalink': '/' + permalink
+            }});
+        } else {
+            this.setState({ page: {
+                ...this.state.page,
+                [field]: newValue
+            }});
+        }
+
+        this.runValidation(field, newValue, validationType, permalink);
+    }
+
+    runValidation = debounce(async (field: string, newValue: string, validationType?: string, permalink?: string): Promise<void> => {
         let errorMessage = '';
         let permalinkErrorMessage = '';
-        let page = {};
         let errors = {};
 
         if (field === 'permalink') {
@@ -60,20 +80,8 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
             errorMessage = validateField(validationType, newValue);
         }
 
-        if (!this.props.page && field === 'title') {
-            const permalink = newValue.replace(/\s+/g, '-').toLowerCase();
+        if (permalink) {
             permalinkErrorMessage = await this.validatePermalink('/' + permalink);
-
-            page = {
-                ...this.state.page,
-                'title': newValue,
-                'permalink': '/' + permalink
-            };
-        } else {
-            page = {
-                ...this.state.page,
-                [field]: newValue
-            };
         }
 
         if (errorMessage !== '' && !this.state.errors[field]) {
@@ -94,8 +102,8 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
             }
         }
         
-        this.setState({ page, errors });
-    }
+        this.setState({ errors });
+    }, 300);
 
     validatePermalink = async (permalink: string): Promise<string> => {
         if (!this.state.copyPage && permalink === this.props.page?.permalink) return '';
