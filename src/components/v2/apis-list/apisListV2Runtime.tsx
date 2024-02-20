@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Button, FluentProvider, webLightTheme } from "@fluentui/react-components";
 
 export interface ApisListV2State {
     clickCount: number;
@@ -23,14 +24,16 @@ export class ApisListV2Runtime extends React.Component {
 
     public render(): JSX.Element {
         return (
+            <FluentProvider theme={webLightTheme}>
             <div className="text text-align-center">
-                <button className="button" onClick={this.increaseCount}>
+                <Button className="button" onClick={this.increaseCount}>
                     Click me
-                </button>
+                </Button>
                 <div>
                     <label htmlFor="clickCount">Click count:</label> <b id="clickCount">{this.state.clickCount}</b>
                 </div>
             </div>
+            </FluentProvider>
         );
     }
 }
