@@ -8,6 +8,8 @@ import { AadClientLibrary, SettingNames, defaultAadTenantName } from "../../../.
 import { AadClientConfig } from "../../../../../contracts/aadClientConfig";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
+import { Logger } from "@paperbits/common/logging";
+import { eventTypes } from "../../../../../logging/clientLogger";
 
 @RuntimeComponent({
     selector: "signin-aad"
@@ -23,7 +25,8 @@ export class SignInAad {
         private readonly aadService: AadService,
         private readonly aadServiceV2: AadServiceV2,
         private readonly eventManager: EventManager,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly logger: Logger
     ) {
         this.classNames = ko.observable();
         this.label = ko.observable();
@@ -49,20 +52,26 @@ export class SignInAad {
      */
     public async signIn(): Promise<void> {
         dispatchErrors(this.eventManager, ErrorSources.signInOAuth, []);
+        this.logger.trackEvent(eventTypes.aadLogin, { message: "Initiating AAD login" });
+        
         try {
             const config = await this.settingsProvider.getSetting<AadClientConfig>(SettingNames.aadClientConfig);
 
             if (config) {
                 if (config.clientLibrary === AadClientLibrary.v2) {
                     this.selectedService = this.aadServiceV2;
-                } else {
+                }
+                else {
                     this.selectedService = this.aadService;
                 }
 
                 await this.selectedService.signInWithAad(config.clientId, config.authority, config.signinTenant || defaultAadTenantName, this.replyUrl());
             }
+            else {
+                this.logger.trackEvent(eventTypes.aadLogin, { message: "AAD client config is not set" });
+            }
         } catch (error) {
-            parseAndDispatchError(this.eventManager, ErrorSources.signInOAuth, error);
+            parseAndDispatchError(this.eventManager, ErrorSources.signInOAuth, error, this.logger);
         }
     }
 }
