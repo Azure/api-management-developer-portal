@@ -7,6 +7,7 @@ import { UsersService } from "../../../../../services";
 import { ErrorSources } from "../../../validation-summary/constants";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ValidationMessages } from "../../../validationMessages";
+import { Logger } from "@paperbits/common/logging";
 
 @RuntimeComponent({
     selector: "confirm-password"
@@ -25,7 +26,8 @@ export class ConfirmPassword {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly eventManager: EventManager) {
+        private readonly eventManager: EventManager,
+        private readonly logger: Logger) {
         this.password = ko.observable();
         this.passwordConfirmation = ko.observable();
         this.isResetConfirmed = ko.observable(false);
@@ -104,7 +106,7 @@ export class ConfirmPassword {
             }, 1000);
         }
         catch (error) {
-            parseAndDispatchError(this.eventManager, ErrorSources.confirmpassword, error, undefined, detail => `${detail.target}: ${detail.message} \\n`);
+            parseAndDispatchError(this.eventManager, ErrorSources.confirmpassword, error, this.logger, undefined, detail => `${detail.target}: ${detail.message} \\n`);
         }
     }
 }

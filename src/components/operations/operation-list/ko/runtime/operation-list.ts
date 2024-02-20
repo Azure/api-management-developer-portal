@@ -119,7 +119,7 @@ export class OperationList {
             .subscribe(this.loadOperations);
 
         if (this.defaultAllGroupTagsExpanded()) {
-            let groups = new Set<string>()
+            const groups = new Set<string>()
             this.operationGroups().map(g => {groups.add(g.tag)})
             this.groupTagsExpanded(groups);
         }
