@@ -15,6 +15,7 @@ import { dispatchErrors, parseAndDispatchError } from "../../../validation-summa
 import { ErrorSources } from "../../../validation-summary/constants";
 import { BackendService } from "../../../../../services/backendService";
 import { ValidationMessages } from "../../../validationMessages";
+import { Logger } from "@paperbits/common/logging";
 
 @RuntimeComponent({
     selector: "profile-runtime"
@@ -40,7 +41,8 @@ export class Profile {
         private readonly tenantService: TenantService,
         private readonly backendService: BackendService,
         private readonly eventManager: EventManager,
-        private readonly router: Router) {
+        private readonly router: Router,
+        private readonly logger: Logger) {
         this.user = ko.observable();
         this.firstName = ko.observable();
         this.lastName = ko.observable();
@@ -133,7 +135,7 @@ export class Profile {
             this.setUser(user);
             await this.toggleEdit();
         } catch (error) {
-            parseAndDispatchError(this.eventManager, ErrorSources.changeProfile, error);
+            parseAndDispatchError(this.eventManager, ErrorSources.changeProfile, error, this.logger);
         }
         this.working(false);
     }

@@ -214,7 +214,7 @@ export class Signup {
                 await this.refreshCaptcha();
             }
 
-            parseAndDispatchError(this.eventManager, ErrorSources.signup, error, Constants.genericHttpRequestError);
+            parseAndDispatchError(this.eventManager, ErrorSources.signup, error, this.logger, Constants.genericHttpRequestError);
         }
         finally {
             this.working(false);

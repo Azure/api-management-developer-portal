@@ -128,7 +128,7 @@ export class ResetPassword {
                 await this.refreshCaptcha();
             }
 
-            parseAndDispatchError(this.eventManager, ErrorSources.resetpassword, error, undefined, detail => `${detail.target}: ${detail.message} \n`);
+            parseAndDispatchError(this.eventManager, ErrorSources.resetpassword, error, this.logger, undefined, detail => `${detail.target}: ${detail.message} \n`);
         }
         finally {
             this.working(false);

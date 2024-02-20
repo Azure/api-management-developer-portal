@@ -8,6 +8,8 @@ import { AadB2CClientConfig } from "../../../../../contracts/aadB2CClientConfig"
 import { AadService, AadServiceV2, IAadService } from "../../../../../services";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
+import { Logger } from "@paperbits/common/logging";
+import { eventTypes } from "../../../../../logging/clientLogger";
 
 
 const aadb2cResetPasswordErrorCode = "AADB2C90118";
@@ -27,7 +29,8 @@ export class SignInAadB2C {
         private readonly aadService: AadService,
         private readonly aadServiceV2: AadServiceV2,
         private readonly eventManager: EventManager,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly logger: Logger
     ) {
         this.classNames = ko.observable();
         this.label = ko.observable();
@@ -44,7 +47,7 @@ export class SignInAadB2C {
 
     @Param()
     public replyUrl: ko.Observable<string>;
-    
+
     @Param()
     public termsOfUse: ko.Observable<string>;
 
@@ -60,15 +63,22 @@ export class SignInAadB2C {
             }
             await this.selectedService.checkCallbacks();
         }
+        else {
+            this.logger.trackEvent(eventTypes.aadB2CLogin, { message: "AAD B2C client configuration is missing." });
+        }
+
+        this.logger.trackEvent(eventTypes.aadB2CLogin, { message: "Signin AAD B2C component initialized." });
     }
 
     /**
      * Initiates signing-in with Azure Active Directory B2C.
      */
     public async signIn(): Promise<void> {
+        this.logger.trackEvent(eventTypes.aadB2CLogin, { message: "Login initiated." });
         this.cleanValidationErrors();
 
         if (!this.aadConfig) {
+            this.logger.trackEvent(eventTypes.aadB2CLogin, { message: "AAD B2C client configuration is missing." })
             return;
         }
 
@@ -91,7 +101,7 @@ export class SignInAadB2C {
                 }
             }
 
-            parseAndDispatchError(this.eventManager, ErrorSources.signInOAuth, error);
+            parseAndDispatchError(this.eventManager, ErrorSources.signInOAuth, error, this.logger);
         }
     }
 
