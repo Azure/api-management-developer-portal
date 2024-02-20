@@ -29,7 +29,7 @@ export class ApiProductsDesignModule implements IInjectorModule {
 
         widgetService.registerWidget("api-products", apiProductsWidget);
 
-        widgetService.registerWidgetEditor("apiProducts", {
+        widgetService.registerWidgetEditor("api-products", {
             displayName: "API: Products",
             category: "APIs",
             iconClass: "widget-icon widget-icon-api-management",
