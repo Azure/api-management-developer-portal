@@ -4,8 +4,6 @@ import { StyleRuntimeModule } from "@paperbits/styles/styles.runtime.module";
 import { ApimRuntimeModule } from "./apim.runtime.module";
 import { staticDataEnvironment } from "./../environmentConstants";
 import { define } from "mime";
-import { ApiListRuntime } from "./components/apis/list-of-apis/react/runtime/api-list";
-import { ComponentBinder } from "@paperbits/common/editing";
 
 define({ "application/x-zip-compressed": ["zip"] }, true);
 
