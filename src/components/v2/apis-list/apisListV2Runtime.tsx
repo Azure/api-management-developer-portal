@@ -9,6 +9,8 @@ import {
     webLightTheme
 } from "@fluentui/react-components";
 import { Link } from "@fluentui/react";
+import { Resolve } from "@paperbits/react/decorators";
+import { ApiService } from "../../../services/apiService";
 
 const columns = [
     {columnKey: "name", label: "Name"},
@@ -23,6 +25,9 @@ export interface ApisListV2State {
 }
 
 export class ApisListV2Runtime extends React.Component {
+    @Resolve('apiService')
+    public apiService: ApiService;
+
     public state: ApisListV2State;
 
     constructor(props) {
@@ -42,6 +47,8 @@ export class ApisListV2Runtime extends React.Component {
     }
 
     public render(): JSX.Element {
+        console.log(this.apiService.getApis().then(console.log))
+
         return (
             <FluentProvider theme={webLightTheme}>
                 <Table size={"small"} aria-label={"APIs List table"}>

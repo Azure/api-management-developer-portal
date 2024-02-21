@@ -1,8 +1,16 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import {
-    FluentProvider,
-    webLightTheme,
-    Table, TableBody, TableCell, TableCellLayout, TableHeader, TableHeaderCell, TableRow
+  FluentProvider,
+  Table,
+  TableBody,
+  TableCell,
+  TableCellLayout,
+  TableHeader,
+  TableHeaderCell,
+  TableRow,
+  webLightTheme,
+  Spinner,
 } from "@fluentui/react-components";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import * as Constants from "../../../../../constants";
@@ -12,14 +20,6 @@ import { Resolve } from "@paperbits/react/decorators";
 import { ApiService } from "../../../../../services/apiService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 
-const columns = [
-    {columnKey: "name", label: "Name"},
-    {columnKey: "description", label: "Description"},
-    {columnKey: "type", label: "Type"},
-]
-
-const apis = [{id: 123, label: "Echo", description: "Foo"} as const]
-
 export interface ApiListProps {
     allowSelection?: boolean;
     showApiType?: boolean;
@@ -27,42 +27,106 @@ export interface ApiListProps {
     detailsPageUrl: string;
 }
 
-const ApiListRuntimeFC = (props: ApiListProps) => {
-    console.log({props})
+const loadData = async (apiService: ApiService, query: SearchQuery) => {
+    let nextLink: string | null;
+    let apis: Api[]
+    try {
+        /*
+        if (this.groupByTag()) {
+            const pageOfTagResources = await this.apiService.getApisByTags(query);
+            const apiGroups = pageOfTagResources.value;
+
+            this.apiGroups(apiGroups);
+            nextLink = pageOfTagResources.nextLink;
+        } else {*/
+            const pageOfApis = await apiService.getApis(query);
+            apis = pageOfApis ? pageOfApis.value : [];
+
+            nextLink = pageOfApis.nextLink;
+        //}
+    } catch (error) {
+        throw new Error(`Unable to load APIs. Error: ${error.message}`);
+    }
+
+    return {apis, nextPage: !!nextLink}
+}
+
+const ApiListRuntimeFC = ({apiService, getReferenceUrl, ...props}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
+    const [working, setWorking] = useState(false)
+    const [pageNumber, setPageNumber] = useState(0)
+    const [pattern, setPattern] = useState<string>()
+    const [tags, setTags] = useState(new Set<Tag>())
+    const [apis, setApis] = useState<Api[]>()
+    const [nextPage, setNextPage] = useState(false)
+
+    /**
+     * Loads page of APIs.
+     */
+    useEffect(() => {
+        const query: SearchQuery = {
+            pattern,
+            tags: [...tags],
+            skip: pageNumber * Constants.defaultPageSize,
+            take: Constants.defaultPageSize
+        };
+
+        setWorking(true)
+        loadData(apiService, query)
+            .then(({apis, nextPage}) => {
+                setApis(apis)
+                setNextPage(nextPage)
+            })
+            .finally(() => setWorking(false))
+    }, [apiService, pageNumber, tags, pattern])
+
+    if (working) {
+        return (
+            <div className="table-body">
+                <Spinner label="Loading APIs" labelPosition="below" size="extra-large" />
+            </div>
+        )
+    }
 
     return (
-        <FluentProvider theme={webLightTheme}>
-            <div className={"fui-table"}>
-                <Table size={"small"} aria-label={"APIs List table"}>
-                    <TableHeader>
-                        <TableRow>
-                            {columns.map(column => (
-                                <TableHeaderCell key={column.columnKey}>
-                                    <b>{column.label}</b>
-                                </TableHeaderCell>
-                            ))}
+        <div className={"fui-table"}>
+            <Table size={"small"} aria-label={"APIs List table"}>
+                <TableHeader>
+                    <TableRow>
+                        <TableHeaderCell>
+                            <b>Name</b>
+                        </TableHeaderCell>
+                        <TableHeaderCell>
+                            <b>Description</b>
+                        </TableHeaderCell>
+                        {props.showApiType && (
+                            <TableHeaderCell style={{width: "8em"}}>
+                                <b>Type</b>
+                            </TableHeaderCell>
+                        )}
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {apis?.map(api => (
+                        <TableRow key={api.id}>
+                            <TableCell>
+                                <a href={getReferenceUrl(api)} title={api.displayName}>
+                                    {api.displayName}
+                                    {!!api.apiVersion && (" - " + api.apiVersion)}
+                                </a>
+                            </TableCell>
+                            <TableCell>
+                                <TableCellLayout truncate title={api.description}>
+                                    {api.description}
+                                </TableCellLayout>
+                            </TableCell>
+                            {props.showApiType && (
+                                <TableCell>{api.typeName}</TableCell>
+                            )}
                         </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {apis.map(api => (
-                            <TableRow key={api.id}>
-                                <TableCell>
-                                    <a href={"detail/" + api.id + window.location.search}>
-                                        {api.label}
-                                    </a>
-                                </TableCell>
-                                <TableCell>
-                                    <TableCellLayout truncate title={api.description}>
-                                        {api.description}
-                                    </TableCellLayout>
-                                </TableCell>
-                                <TableCell>TODO</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
-        </FluentProvider>
+                    ))}
+                </TableBody>
+            </Table>
+        </div>
     );
 }
 
@@ -75,89 +139,60 @@ type ApiListState = {
 }
 
 export class ApiListRuntime extends React.Component<ApiListProps, ApiListState> {
-    @Resolve('apiService')
-    public apiService: ApiService;
+  @Resolve("apiService")
+  public apiService: ApiService;
 
-    @Resolve('routeHelper')
-    public routeHelper: RouteHelper;
+  @Resolve("routeHelper")
+  public routeHelper: RouteHelper;
 
-    public readonly state: ApiListState
+  public readonly state: ApiListState;
 
-    constructor(props: ApiListProps) {
-        super(props);
+  constructor(props: ApiListProps) {
+    super(props);
 
-        this.state = {
-            pageNumber: 1,
-            working: false,
-            apis: [],
-            tags: [],
-        };
+    this.state = {
+      pageNumber: 1,
+      working: false,
+      apis: [],
+      tags: [],
+    };
+  }
 
-        this.loadPageOfApis()
-    }
+  public componentWillReceiveProps(
+    nextProps: Readonly<ApiListProps>,
+    nextContext: any
+  ) {
+      console.log("componentWillReceiveProps", { nextProps });
+  }
 
-    /**
-     * Loads page of APIs.
-     */
-    public async loadPageOfApis(pattern?: string): Promise<void> {
-        const pageNumber = this.state.pageNumber - 1;
+  public componentDidUpdate(
+    prevProps: Readonly<ApiListProps>,
+    prevState: Readonly<ApiListState>,
+    snapshot?: any
+  ) {
+    console.log("componentDidUpdate", this.props, prevProps);
+  }
 
-        const query: SearchQuery = {
-            pattern,
-            tags: this.state.tags,
-            skip: pageNumber * Constants.defaultPageSize,
-            take: Constants.defaultPageSize
-        };
+  private getReferenceUrl(api: Api): string {
+    return this.routeHelper.getApiReferenceUrl(api.name, this.props.detailsPageUrl);
+  }
 
-        try {
-            this.setState({...this.state, working: true});
-
-            let nextLink: string | null;
-/*
-            if (this.groupByTag()) {
-                const pageOfTagResources = await this.apiService.getApisByTags(query);
-                const apiGroups = pageOfTagResources.value;
-
-                this.apiGroups(apiGroups);
-                nextLink = pageOfTagResources.nextLink;
-            } else {*/
-                const pageOfApis = await this.apiService.getApis(query);
-                const apis = pageOfApis ? pageOfApis.value : [];
-
-                this.setState({...this.state, apis});
-                nextLink = pageOfApis.nextLink;
-            //}
-
-            this.setState({ ...this.state, nextPage: !!nextLink });
-        }
-        catch (error) {
-            throw new Error(`Unable to load APIs. Error: ${error.message}`);
-        }
-        finally {
-            this.setState({ ...this.state, working: false });
-        }
-    }
-
-    public getReferenceUrl(api: Api): string {
-        return this.routeHelper.getApiReferenceUrl(api.name, this.props.detailsPageUrl);
-    }
-
-    public async resetSearch(): Promise<void> {
-        this.setState({...this.state, pageNumber: 1});
-        return this.loadPageOfApis();
-    }
-/*
+  /*
     public groupTagCollapseToggle(tag: string): void {
         const newSet = this.groupTagsExpanded();
         newSet.has(tag) ? newSet.delete(tag) : newSet.add(tag);
         this.groupTagsExpanded(newSet);
     }
 */
-    public async onTagsChange(tags: Tag[]): Promise<void> {
-        this.setState({...this.state, tags});
-    }
-
-    render() {
-        return <ApiListRuntimeFC {...this.props} />
-    }
+  render() {
+    return (
+      <FluentProvider theme={webLightTheme /*fuiTheme*/}>
+        <ApiListRuntimeFC
+          {...this.props}
+          apiService={this.apiService}
+          getReferenceUrl={(api) => this.getReferenceUrl(api)}
+        />
+      </FluentProvider>
+    );
+  }
 }
