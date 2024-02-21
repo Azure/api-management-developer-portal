@@ -1,24 +1,27 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import {
-  FluentProvider,
-  Table,
-  TableBody,
-  TableCell,
-  TableCellLayout,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
-  webLightTheme,
-  Spinner,
+    FluentProvider,
+    Table,
+    TableBody,
+    TableCell,
+    TableCellLayout,
+    TableHeader,
+    TableHeaderCell,
+    TableRow,
+    webLightTheme,
+    Spinner,
 } from "@fluentui/react-components";
+import { Resolve } from "@paperbits/react/decorators";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import * as Constants from "../../../../../constants";
 import { Api } from "../../../../../models/api";
 import { Tag } from "../../../../../models/tag";
-import { Resolve } from "@paperbits/react/decorators";
+import { Page } from "../../../../../models/page";
 import { ApiService } from "../../../../../services/apiService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
+import { Pagination } from "./Pagination";
+// import { fuiTheme } from "../../../../../constants/fuiTheme";
 
 export interface ApiListProps {
     allowSelection?: boolean;
@@ -28,8 +31,7 @@ export interface ApiListProps {
 }
 
 const loadData = async (apiService: ApiService, query: SearchQuery) => {
-    let nextLink: string | null;
-    let apis: Api[]
+    let apis: Page<Api>
     try {
         /*
         if (this.groupByTag()) {
@@ -39,24 +41,21 @@ const loadData = async (apiService: ApiService, query: SearchQuery) => {
             this.apiGroups(apiGroups);
             nextLink = pageOfTagResources.nextLink;
         } else {*/
-            const pageOfApis = await apiService.getApis(query);
-            apis = pageOfApis ? pageOfApis.value : [];
-
-            nextLink = pageOfApis.nextLink;
+            apis = await apiService.getApis(query);
         //}
     } catch (error) {
         throw new Error(`Unable to load APIs. Error: ${error.message}`);
     }
 
-    return {apis, nextPage: !!nextLink}
+    return apis
 }
 
 const ApiListRuntimeFC = ({apiService, getReferenceUrl, ...props}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
     const [working, setWorking] = useState(false)
-    const [pageNumber, setPageNumber] = useState(0)
+    const [pageNumber, setPageNumber] = useState(1)
     const [pattern, setPattern] = useState<string>()
     const [tags, setTags] = useState(new Set<Tag>())
-    const [apis, setApis] = useState<Api[]>()
+    const [apis, setApis] = useState<Page<Api>>()
     const [nextPage, setNextPage] = useState(false)
 
     /**
@@ -66,16 +65,13 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, ...props}: ApiListProps 
         const query: SearchQuery = {
             pattern,
             tags: [...tags],
-            skip: pageNumber * Constants.defaultPageSize,
+            skip: (pageNumber - 1) * Constants.defaultPageSize,
             take: Constants.defaultPageSize
         };
 
         setWorking(true)
         loadData(apiService, query)
-            .then(({apis, nextPage}) => {
-                setApis(apis)
-                setNextPage(nextPage)
-            })
+            .then(apis => setApis(apis))
             .finally(() => setWorking(false))
     }, [apiService, pageNumber, tags, pattern])
 
@@ -87,46 +83,54 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, ...props}: ApiListProps 
         )
     }
 
+    const pageMax = Math.ceil(apis?.count / Constants.defaultPageSize)
+
     return (
-        <div className={"fui-table"}>
-            <Table size={"small"} aria-label={"APIs List table"}>
-                <TableHeader>
-                    <TableRow>
-                        <TableHeaderCell>
-                            <b>Name</b>
-                        </TableHeaderCell>
-                        <TableHeaderCell>
-                            <b>Description</b>
-                        </TableHeaderCell>
-                        {props.showApiType && (
-                            <TableHeaderCell style={{width: "8em"}}>
-                                <b>Type</b>
+        <>
+            <div className={"fui-table"}>
+                <Table size={"small"} aria-label={"APIs List table"}>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>
+                                <b>Name</b>
                             </TableHeaderCell>
-                        )}
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {apis?.map(api => (
-                        <TableRow key={api.id}>
-                            <TableCell>
-                                <a href={getReferenceUrl(api)} title={api.displayName}>
-                                    {api.displayName}
-                                    {!!api.apiVersion && (" - " + api.apiVersion)}
-                                </a>
-                            </TableCell>
-                            <TableCell>
-                                <TableCellLayout truncate title={api.description}>
-                                    {api.description}
-                                </TableCellLayout>
-                            </TableCell>
+                            <TableHeaderCell>
+                                <b>Description</b>
+                            </TableHeaderCell>
                             {props.showApiType && (
-                                <TableCell>{api.typeName}</TableCell>
+                                <TableHeaderCell style={{width: "8em"}}>
+                                    <b>Type</b>
+                                </TableHeaderCell>
                             )}
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </div>
+                    </TableHeader>
+                    <TableBody>
+                        {apis?.value?.map(api => (
+                            <TableRow key={api.id}>
+                                <TableCell>
+                                    <a href={getReferenceUrl(api)} title={api.displayName}>
+                                        {api.displayName}
+                                        {!!api.apiVersion && (" - " + api.apiVersion)}
+                                    </a>
+                                </TableCell>
+                                <TableCell>
+                                    <TableCellLayout truncate title={api.description}>
+                                        {api.description}
+                                    </TableCellLayout>
+                                </TableCell>
+                                {props.showApiType && (
+                                    <TableCell>{api.typeName}</TableCell>
+                                )}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+
+            <div style={{marginTop: "3rem", textAlign: "center"}}>
+                <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={pageMax} />
+            </div>
+        </>
     );
 }
 

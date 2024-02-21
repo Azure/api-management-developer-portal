@@ -1,5 +1,5 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
-import { ApiListRuntime } from "./react/runtime/api-list";
+import { ApiListRuntime } from "./react/runtime/ApiListRuntime";
 import { registerCustomElement } from "@paperbits/react/customElements";
 
 export class ListOfApisRuntimeModule implements IInjectorModule {
