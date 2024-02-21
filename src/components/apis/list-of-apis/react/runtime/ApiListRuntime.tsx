@@ -21,6 +21,7 @@ import { Page } from "../../../../../models/page";
 import { ApiService } from "../../../../../services/apiService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Pagination } from "./Pagination";
+import { ApisTableInfo } from "./ApisTableInfo";
 // import { fuiTheme } from "../../../../../constants/fuiTheme";
 
 export interface ApiListProps {
@@ -87,6 +88,8 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, ...props}: ApiListProps 
 
     return (
         <>
+            <ApisTableInfo apis={apis} pageNumber={pageNumber} />
+
             <div className={"fui-table"}>
                 <Table size={"small"} aria-label={"APIs List table"}>
                     <TableHeader>
