@@ -30,13 +30,7 @@ export class ProvisionService {
         const dataObj = await this.fetchData(dataUrl);
         const keys = Object.keys(dataObj);
 
-        const backendUrl = await this.settingsProvider.getSetting<string>("backendUrl") || `https://${location.hostname}`;
-        dataObj["/contentTypes/blob/contentItems/hero-gradient"]["properties"]["downloadUrl"] = backendUrl + "/assets/images/hero-gradient.jpg"
-        dataObj["/contentTypes/blob/contentItems/featured-1"]["properties"]["downloadUrl"] = backendUrl + "/assets/images/featured-1.jpg"
-        dataObj["/contentTypes/blob/contentItems/featured-2"]["properties"]["downloadUrl"] = backendUrl + "/assets/images/featured-2.jpg"
-        dataObj["/contentTypes/blob/contentItems/featured-3"]["properties"]["downloadUrl"] = backendUrl + "/assets/images/featured-3.jpg"
-        dataObj["/contentTypes/blob/contentItems/contoso-black"]["properties"]["downloadUrl"] = backendUrl + "/assets/images/contoso-black.png"
-        dataObj["/contentTypes/blob/contentItems/logo-contoso-small"]["properties"]["downloadUrl"] = backendUrl + "/assets/images/logo-contoso-small.png"
+        await this.setUpDefaultContent(dataObj);
 
         const accessToken = await this.authenticator.getAccessTokenAsString();
 
@@ -116,5 +110,25 @@ export class ProvisionService {
     public async cleanup(): Promise<void> {
         await this.cleanupBlobs();
         await this.cleanupContent();
+    }
+
+    private async setUpDefaultContent(dataObj: object): Promise<void> {
+        const backendUrl = await this.settingsProvider.getSetting<string>("backendUrl") || `https://${location.hostname}`;
+        const defaultMedias: { [name: string]: string } = {
+            "hero-gradient": "hero-gradient.jpg",
+            "featured-1": "featured-1.jpg",
+            "featured-2": "featured-2.jpg",
+            "featured-3": "featured-3.jpg",
+            "contoso-black": "contoso-black.png",
+            "logo-contoso-small": "logo-contoso-small.png"
+        }
+
+        const keyPath = "/contentTypes/blob/contentItems";
+        const downloadUrl = "/assets/images/";
+
+        for (const key in defaultMedias) {
+            const media = defaultMedias[key];
+            dataObj[`${keyPath}/${key}`]["properties"]["downloadUrl"] = backendUrl + downloadUrl + media;
+        }
     }
 }
