@@ -2,7 +2,13 @@ import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ListOfApisViewModel } from "./listOfApisViewModel";
 import { ListOfApisModel } from "../listOfApisModel";
 import { StyleCompiler } from "@paperbits/common/styles";
+import { TLayout } from "../react/runtime/ApisListInfo";
 
+const layoutsMap = {
+    "tiles": TLayout.cards,
+    "list": TLayout.table,
+    "dropdown": undefined, // TODO
+}
 
 export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisModel, ListOfApisViewModel> {
     constructor(private readonly styleCompiler: StyleCompiler) { }
@@ -15,7 +21,8 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
             allowSelection: state.allowSelection,
             showApiType: state.showApiType,
             defaultGroupByTagToEnabled: state.defaultGroupByTagToEnabled,
-            detailsPageUrl: state.detailsPageUrl
+            detailsPageUrl: state.detailsPageUrl,
+            layoutDefault: layoutsMap[state.layout],
         }));
     }
 

@@ -1,17 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import {
-    FluentProvider,
-    Table,
-    TableBody,
-    TableCell,
-    TableCellLayout,
-    TableHeader,
-    TableHeaderCell,
-    TableRow,
-    webLightTheme,
-    Spinner,
-} from "@fluentui/react-components";
+import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import * as Constants from "../../../../../constants";
@@ -21,43 +10,40 @@ import { Page } from "../../../../../models/page";
 import { ApiService } from "../../../../../services/apiService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Pagination } from "./Pagination";
-import { ApisTableInfo } from "./ApisTableInfo";
-// import { fuiTheme } from "../../../../../constants/fuiTheme";
+import { ApisListInfo, TLayout } from "./ApisListInfo";
+import { fuiTheme } from "../../../../../constants/fuiTheme";
+import { ApisTable } from "./ApisTable";
+import { ApisCards } from "./ApisCards";
 
 export interface ApiListProps {
-    allowSelection?: boolean;
-    showApiType?: boolean;
-    defaultGroupByTagToEnabled?: boolean;
-    detailsPageUrl: string;
+  allowSelection?: boolean;
+  showApiType?: boolean;
+  defaultGroupByTagToEnabled?: boolean;
+  detailsPageUrl: string;
+
+  layoutDefault: TLayout | undefined; // TODO remove undefined once finished
 }
 
 const loadData = async (apiService: ApiService, query: SearchQuery) => {
-    let apis: Page<Api>
-    try {
-        /*
-        if (this.groupByTag()) {
-            const pageOfTagResources = await this.apiService.getApisByTags(query);
-            const apiGroups = pageOfTagResources.value;
+    let apis: Page<Api>;
 
-            this.apiGroups(apiGroups);
-            nextLink = pageOfTagResources.nextLink;
-        } else {*/
-            apis = await apiService.getApis(query);
-        //}
+    try {
+        apis = await apiService.getApis(query);
     } catch (error) {
         throw new Error(`Unable to load APIs. Error: ${error.message}`);
     }
 
-    return apis
+    return apis;
 }
 
-const ApiListRuntimeFC = ({apiService, getReferenceUrl, ...props}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
+const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, ...props}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
+    const [apis, setApis] = useState<Page<Api>>()
+    const [layout, setLayout] = useState<TLayout>(layoutDefault ?? TLayout.table)
+    // TODO
     const [pattern, setPattern] = useState<string>()
     const [tags, setTags] = useState(new Set<Tag>())
-    const [apis, setApis] = useState<Page<Api>>()
-    const [nextPage, setNextPage] = useState(false)
 
     /**
      * Loads page of APIs.
@@ -88,47 +74,11 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, ...props}: ApiListProps 
 
     return (
         <>
-            <ApisTableInfo apis={apis} pageNumber={pageNumber} />
+            <ApisListInfo apis={apis} pageNumber={pageNumber} layout={layout} setLayout={setLayout} />
 
-            <div className={"fui-table"}>
-                <Table size={"small"} aria-label={"APIs List table"}>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeaderCell>
-                                <b>Name</b>
-                            </TableHeaderCell>
-                            <TableHeaderCell>
-                                <b>Description</b>
-                            </TableHeaderCell>
-                            {props.showApiType && (
-                                <TableHeaderCell style={{width: "8em"}}>
-                                    <b>Type</b>
-                                </TableHeaderCell>
-                            )}
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {apis?.value?.map(api => (
-                            <TableRow key={api.id}>
-                                <TableCell>
-                                    <a href={getReferenceUrl(api)} title={api.displayName}>
-                                        {api.displayName}
-                                        {!!api.apiVersion && (" - " + api.apiVersion)}
-                                    </a>
-                                </TableCell>
-                                <TableCell>
-                                    <TableCellLayout truncate title={api.description}>
-                                        {api.description}
-                                    </TableCellLayout>
-                                </TableCell>
-                                {props.showApiType && (
-                                    <TableCell>{api.typeName}</TableCell>
-                                )}
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
+            {layout === TLayout.table ? (
+                <ApisTable apis={apis} showApiType={props.showApiType} getReferenceUrl={getReferenceUrl} />
+            ) : <ApisCards />}
 
             <div style={{marginTop: "3rem", textAlign: "center"}}>
                 <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={pageMax} />
@@ -137,69 +87,39 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, ...props}: ApiListProps 
     );
 }
 
-type ApiListState = {
-    pageNumber: number,
-    working: boolean,
-    apis: any[],
-    tags: Tag[],
-    nextPage?: boolean,
-}
+export class ApiListRuntime extends React.Component<ApiListProps> {
+    @Resolve("apiService")
+    public apiService: ApiService;
 
-export class ApiListRuntime extends React.Component<ApiListProps, ApiListState> {
-  @Resolve("apiService")
-  public apiService: ApiService;
+    @Resolve("routeHelper")
+    public routeHelper: RouteHelper;
 
-  @Resolve("routeHelper")
-  public routeHelper: RouteHelper;
-
-  public readonly state: ApiListState;
-
-  constructor(props: ApiListProps) {
-    super(props);
-
-    this.state = {
-      pageNumber: 1,
-      working: false,
-      apis: [],
-      tags: [],
-    };
-  }
-
-  public componentWillReceiveProps(
-    nextProps: Readonly<ApiListProps>,
-    nextContext: any
-  ) {
-      console.log("componentWillReceiveProps", { nextProps });
-  }
-
-  public componentDidUpdate(
-    prevProps: Readonly<ApiListProps>,
-    prevState: Readonly<ApiListState>,
-    snapshot?: any
-  ) {
-    console.log("componentDidUpdate", this.props, prevProps);
-  }
-
-  private getReferenceUrl(api: Api): string {
-    return this.routeHelper.getApiReferenceUrl(api.name, this.props.detailsPageUrl);
-  }
-
-  /*
-    public groupTagCollapseToggle(tag: string): void {
-        const newSet = this.groupTagsExpanded();
-        newSet.has(tag) ? newSet.delete(tag) : newSet.add(tag);
-        this.groupTagsExpanded(newSet);
+    public componentWillReceiveProps(
+        nextProps: Readonly<ApiListProps>,
+        nextContext: any
+    ) {
+        console.log("componentWillReceiveProps", { nextProps });
     }
-*/
-  render() {
-    return (
-      <FluentProvider theme={webLightTheme /*fuiTheme*/}>
-        <ApiListRuntimeFC
-          {...this.props}
-          apiService={this.apiService}
-          getReferenceUrl={(api) => this.getReferenceUrl(api)}
-        />
-      </FluentProvider>
-    );
-  }
+
+    public componentDidUpdate(
+        prevProps: Readonly<ApiListProps>,
+    ) {
+        console.log("componentDidUpdate", this.props, prevProps);
+    }
+
+    private getReferenceUrl(api: Api): string {
+        return this.routeHelper.getApiReferenceUrl(api.name, this.props.detailsPageUrl);
+    }
+
+    render() {
+        return (
+          <FluentProvider theme={fuiTheme}>
+            <ApiListRuntimeFC
+              {...this.props}
+              apiService={this.apiService}
+              getReferenceUrl={(api) => this.getReferenceUrl(api)}
+            />
+          </FluentProvider>
+        );
+    }
 }

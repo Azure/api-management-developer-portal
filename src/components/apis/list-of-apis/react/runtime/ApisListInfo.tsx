@@ -1,8 +1,9 @@
-import * as Constants from "../../../../../constants";
 import * as React from "react";
+import { Dispatch, SetStateAction } from "react";
+import { Toolbar, ToolbarRadioButton, ToolbarRadioGroup } from "@fluentui/react-components";
+import * as Constants from "../../../../../constants";
 import { Page } from "../../../../../models/page";
 import { Api } from "../../../../../models/api";
-import { Toolbar, ToolbarRadioButton, ToolbarRadioGroup } from "@fluentui/react-components";
 
 export enum TLayout {
     "cards" = "cards",
@@ -27,8 +28,8 @@ const LayoutSwitchPure = ({layout, setLayout}: {layout: TLayout; setLayout: (new
         onCheckedValueChange={(_, {checkedItems}) => setLayout(checkedItems[0] as TLayout)}
     >
         <ToolbarRadioGroup>
-            <ToolbarRadioButton name={"layout"} value={"cards"} icon={<CardsIcon />} />
-            <ToolbarRadioButton name={"layout"} value={"table"} icon={<TableIcon />} />
+            <ToolbarRadioButton name={"layout"} value={TLayout.cards} icon={<CardsIcon />} />
+            <ToolbarRadioButton name={"layout"} value={TLayout.table} icon={<TableIcon />} />
         </ToolbarRadioGroup>
     </Toolbar>
 )
@@ -36,9 +37,11 @@ const LayoutSwitchPure = ({layout, setLayout}: {layout: TLayout; setLayout: (new
 type ApisTableInfoProps = {
     apis: Page<Api>,
     pageNumber: number,
+    layout: TLayout,
+    setLayout: Dispatch<SetStateAction<TLayout>>
 }
 
-export const ApisTableInfo = ({pageNumber, apis}: ApisTableInfoProps) => (
+export const ApisListInfo = ({pageNumber, apis, layout, setLayout}: ApisTableInfoProps) => (
     <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem"}}>
         <p style={{margin: 0}}>
             Displaying <b>{
@@ -49,7 +52,7 @@ export const ApisTableInfo = ({pageNumber, apis}: ApisTableInfoProps) => (
         </p>
 
         <div>
-            <LayoutSwitchPure layout={TLayout.table} setLayout={() => null}/>
+            <LayoutSwitchPure layout={layout} setLayout={setLayout}/>
         </div>
     </div>
 )
