@@ -3,7 +3,8 @@
         <div class="flex-item">
             <div class="form-group">
                 <label class="form-label">Name</label>
-                <input type="text" class="form-control" data-bind="textInput: model.widgetDisplayName" disabled />
+                <input type="text" class="form-control" data-bind="textInput: model.displayName" disabled />
+                <input type="text" class="form-control" data-bind="textInput: model.name" disabled style="display: none" />
             </div>
 
             <size-editor params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: sizeStyleConfig, onUpdate: onSizeUpdate }">

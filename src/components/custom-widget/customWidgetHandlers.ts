@@ -3,6 +3,7 @@ import { IWidgetHandler } from "@paperbits/common/editing";
 import { StyleHelper } from "@paperbits/styles";
 import { CustomWidgetModel } from "./customWidgetModel";
 import { sizeStylesInitial } from "./ko/constants";
+import { customWidgetPrefixName } from "./ko/utils";
 
 export interface TCustomWidgetConfig extends CustomWidgetCommonConfig {
     name: string;
@@ -17,8 +18,10 @@ export class CustomWidgetHandlers implements IWidgetHandler {
     }
 
     public async getWidgetModel(): Promise<CustomWidgetModel> {
+        const id = customWidgetPrefixName(this.configuration.name); // add prefix to prevent conflicts with existing widgets
+
         const model = new CustomWidgetModel();
-        model.name = this.configuration.name;
+        model.name = id;
         model.displayName = this.configuration.displayName;
         model.customInputValue = "{}";
         StyleHelper.setPluginConfigForLocalStyles(model.styles, "size", sizeStylesInitial);
