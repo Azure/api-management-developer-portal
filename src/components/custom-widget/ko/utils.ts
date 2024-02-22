@@ -15,13 +15,17 @@ export const customWidgetPrefixName = (name: string): string => {
     return customWidgetNamePrefix + name;
 }
 
+export const customWidgetRemovePrefixName = (name: string): string => {
+    return name.startsWith(customWidgetNamePrefix) ? name.replace(customWidgetNamePrefix, "") : name; // replace first occurrence only
+}
+
 export async function buildWidgetSource(
     blobStorage: MapiBlobStorage,
     model: CustomWidgetModel,
     environment: Environment,
     filePath: string,
 ): Promise<{ override: string | null, src: string }> {
-    const name = model.name.startsWith(customWidgetNamePrefix) ? model.name.replace(customWidgetNamePrefix, "") : model.name;
+    const name = customWidgetRemovePrefixName(model.name);
 
     // check is necessary during publishing as window.sessionStorage.getItem throws "DOMException {}  node:internal/process/promises:279"
     const developmentSrc = environment !== "publishing"

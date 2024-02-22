@@ -3,15 +3,12 @@ import { Contract } from "@paperbits/common";
 import { CustomWidgetModel } from "./customWidgetModel";
 import { CustomWidgetContract } from "./customWidgetContract";
 import { widgetName } from "./constants";
+import { customWidgetPrefixName, customWidgetRemovePrefixName } from "./ko/utils";
 
 export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> {
-    public canHandleModel(model: unknown, widgetName: string): boolean {
-        return model instanceof CustomWidgetModel && model["name"] == widgetName;
-    }
-
     public async contractToModel(contract: CustomWidgetContract): Promise<CustomWidgetModel> {
         const model = new CustomWidgetModel();
-        model.name = contract.name ?? "";
+        model.name = customWidgetPrefixName(contract.name) ?? "";
         model.displayName = contract.displayName || contract.widgetDisplayName;
         model.customInputValue = contract.customInputValue ?? "{}";
         model.instanceId = contract.instanceKey;
@@ -22,7 +19,7 @@ export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> 
     public modelToContract(model: CustomWidgetModel): Contract {
         return {
             type: widgetName,
-            name: model.name,
+            name: customWidgetRemovePrefixName(model.name),
             displayName: model.displayName,
             customInputValue: model.customInputValue,
             instanceKey: model.instanceId,
