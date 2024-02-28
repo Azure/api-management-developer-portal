@@ -167,6 +167,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                 </Stack>
                 <Image
                     src={thumbnailUrl ?? '/assets/images/no-preview.png'}
+                    alt={mediaItem.fileName}
                     imageFit={ImageFit.centerCover}
                     styles={{ root: { flexGrow: 1, marginTop: 10, marginBottom: 20 } }}
                     shouldStartVisible
