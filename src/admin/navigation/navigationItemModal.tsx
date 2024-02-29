@@ -683,6 +683,7 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                                 info={`Assign to an existing menu item or select new menu item to create a top-level menu item.`} 
                             />
                         }
+                        ariaLabel="Assign location"
                         placeholder="Click to select a parent..."
                         options={this.state.navItemsDropdown}
                         defaultSelectedKey={this.state.parentItem !== '' ? this.state.parentItem : newItemKey}
