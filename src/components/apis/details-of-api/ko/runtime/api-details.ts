@@ -44,7 +44,8 @@ export class ApiDetails {
     @OnMounted()
     public async initialize(): Promise<void> {
         const apiName = this.routeHelper.getApiName();
-
+        this.router.addRouteChangeListener(this.onRouteChange);
+        
         if (!apiName) {
             return;
         }
@@ -52,7 +53,6 @@ export class ApiDetails {
         this.selectedApiName(apiName);
         await this.loadApi(apiName);
 
-        this.router.addRouteChangeListener(this.onRouteChange);
         this.currentApiVersion.subscribe(this.onVersionChange);
         this.downloadSelected.subscribe(this.onDownloadChange);
     }
