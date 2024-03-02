@@ -119,17 +119,11 @@ export class BackendService {
         throw new MapiError("Unhandled", "Unable to complete reset password request.");
     }
 
-    public async sendChangePassword(changePasswordRequest: ChangePasswordRequest): Promise<void> {
-        const authToken = await this.authenticator.getAccessTokenAsString();
-
-        if (!authToken) {
-            throw Error("Auth token not found");
-        }
-
+    public async sendChangePassword(changePasswordRequest: ChangePasswordRequest, token: string): Promise<void> {
         const response = await this.httpClient.send({
             url: await this.getUrl("/change-password"),
             method: HttpMethod.post,
-            headers: [{ name: KnownHttpHeaders.Authorization, value: authToken }, { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
+            headers: [{ name: KnownHttpHeaders.Authorization, value: token }, { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
             body: JSON.stringify(changePasswordRequest)
         });
 

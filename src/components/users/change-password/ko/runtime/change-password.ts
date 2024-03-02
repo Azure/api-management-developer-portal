@@ -138,9 +138,9 @@ export class ChangePassword {
                     userId: userId,
                     newPassword: this.newPassword()
                 };
-                await this.backendService.sendChangePassword(resetRequest);
+                await this.backendService.sendChangePassword(resetRequest, credentials);
             } else {
-                await this.usersService.changePassword(userId, this.newPassword());
+                await this.usersService.changePassword(userId, this.newPassword(), credentials);
             }
             this.isChangeConfirmed(true);
         } catch (error) {
