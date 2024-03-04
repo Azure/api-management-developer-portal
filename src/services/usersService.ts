@@ -14,6 +14,8 @@ import { MapiSignupRequest } from "../contracts/signupRequest";
 import { MapiError } from "../errors/mapiError";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { UnauthorizedError } from "../errors/unauthorizedError";
+import { Logger } from "@paperbits/common/logging";
+import { eventTypes } from "../logging/clientLogger";
 
 /**
  * A service for management operations with users.
@@ -24,7 +26,8 @@ export class UsersService {
         private readonly router: Router,
         private readonly authenticator: IAuthenticator,
         private readonly httpClient: HttpClient,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly logger: Logger
     ) { }
 
     /**
@@ -322,6 +325,7 @@ export class UsersService {
         });
 
         await this.getTokenFromResponse(response);
+        this.logger.trackEvent(eventTypes.trace, { message: "User successfully created with OAuth." });
     }
 
     private async getTokenFromResponse(response: HttpResponse<any>): Promise<void> {

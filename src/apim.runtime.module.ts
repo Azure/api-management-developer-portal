@@ -88,6 +88,7 @@ import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
+import { TraceClick } from "./bindingHandlers/traceClick";
 import { ListOfApisRuntimeModule } from "./components/apis/list-of-apis/listOfApis.runtime.module";
 
 
@@ -95,6 +96,7 @@ export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindModule(new ReactModule());
         injector.bindSingleton("logger", ConsoleLogger);
+        injector.bindSingleton("traceClick", TraceClick);
         injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindToCollection("autostart", BalloonBindingHandler);
         injector.bindToCollection("autostart", ResizableBindingHandler);

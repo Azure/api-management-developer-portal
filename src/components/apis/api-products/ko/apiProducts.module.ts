@@ -14,28 +14,16 @@ export class ApiProductsPublishModule implements IInjectorModule {
 
         const widgetService = injector.resolve<IWidgetService>("widgetService");
 
-        widgetService.registerWidget("apiProducts", {
+        const apiProductsWidget = {
             modelDefinition: ApiProductsModel,
             componentBinder: KnockoutComponentBinder,
             componentDefinition: ApiProductsViewModel,
             modelBinder: ApiProductsModelBinder,
             viewModelBinder: ApiProductsViewModelBinder
-        });
+        };
 
-        widgetService.registerWidget("apiProductsDropdown", {
-            modelDefinition: ApiProductsModel,
-            componentBinder: KnockoutComponentBinder,
-            componentDefinition: ApiProductsViewModel,
-            modelBinder: ApiProductsModelBinder,
-            viewModelBinder: ApiProductsViewModelBinder
-        });
-
-        widgetService.registerWidget("apiProductsTiles", {
-            modelDefinition: ApiProductsModel,
-            componentBinder: KnockoutComponentBinder,
-            componentDefinition: ApiProductsViewModel,
-            modelBinder: ApiProductsModelBinder,
-            viewModelBinder: ApiProductsViewModelBinder
-        });
+        widgetService.registerWidget("api-products", apiProductsWidget);
+        widgetService.registerWidget("api-products-dropdown", apiProductsWidget);
+        widgetService.registerWidget("api-products-tiles", apiProductsWidget);
     }
 }

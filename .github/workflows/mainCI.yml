@@ -8,6 +8,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      checks: write
+      contents: read
+      deployments: read
+      packages: none
+      pull-requests: write
+      security-events: write
 
     steps:
       - name: Use Node.js 16.x

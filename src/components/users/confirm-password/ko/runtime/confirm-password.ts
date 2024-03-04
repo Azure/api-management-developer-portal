@@ -7,6 +7,7 @@ import { UsersService } from "../../../../../services";
 import { ErrorSources } from "../../../validation-summary/constants";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ValidationMessages } from "../../../validationMessages";
+import { Logger } from "@paperbits/common/logging";
 
 @RuntimeComponent({
     selector: "confirm-password"
@@ -21,15 +22,16 @@ export class ConfirmPassword {
     public readonly password: ko.Observable<string>;
     public readonly passwordConfirmation: ko.Observable<string>;
     public readonly isResetConfirmed: ko.Observable<boolean>;
-    public readonly working: ko.Observable<boolean>;
+    public readonly isResetPasswordDisabled: ko.Observable<boolean>;
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly eventManager: EventManager) {
+        private readonly eventManager: EventManager,
+        private readonly logger: Logger) {
         this.password = ko.observable();
         this.passwordConfirmation = ko.observable();
         this.isResetConfirmed = ko.observable(false);
-        this.working = ko.observable(false);
+        this.isResetPasswordDisabled = ko.observable(true);
 
         validation.init({
             insertMessages: false,
@@ -49,6 +51,7 @@ export class ConfirmPassword {
         this.userId = await this.usersService.getCurrentUserId();
 
         if (this.userId) {
+            dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Cannot reset password for a signed in user."]);
             return;
         }
 
@@ -69,12 +72,19 @@ export class ConfirmPassword {
         } catch (error) {
             dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Activate user error: " + error.message]);
         }
+
+        this.isResetPasswordDisabled(false);
     }
 
     /**
      * Sends user resetPswd request to Management API.
      */
     public async resetPswd(): Promise<void> {
+        if (this.token == undefined || this.userId == undefined) {
+            dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Required params not found"]);
+            return;
+        }
+
         const result = validation.group({
             password: this.password,
             passwordConfirmation: this.passwordConfirmation
@@ -96,7 +106,7 @@ export class ConfirmPassword {
             }, 1000);
         }
         catch (error) {
-            parseAndDispatchError(this.eventManager, ErrorSources.confirmpassword, error, undefined, detail => `${detail.target}: ${detail.message} \\n`);
+            parseAndDispatchError(this.eventManager, ErrorSources.confirmpassword, error, this.logger, undefined, detail => `${detail.target}: ${detail.message} \\n`);
         }
     }
 }

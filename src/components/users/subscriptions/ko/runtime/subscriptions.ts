@@ -8,13 +8,13 @@ import { ProductService } from "../../../../../services/productService";
 import { TenantService } from "../../../../../services/tenantService";
 import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import { Utils } from "../../../../../utils";
-import { Router } from "@paperbits/common/routing/router";
 import { EventManager } from "@paperbits/common/events";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
 import { BackendService } from "../../../../../services/backendService";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import * as Constants from "../../../../../constants";
+import { Logger } from "@paperbits/common/logging";
 
 @RuntimeComponent({
     selector: "subscriptions-runtime"
@@ -34,9 +34,9 @@ export class Subscriptions {
         private readonly usersService: UsersService,
         private readonly tenantService: TenantService,
         private readonly backendService: BackendService,
-        private readonly router: Router,
         private readonly productService: ProductService,
-        private readonly eventManager: EventManager
+        private readonly eventManager: EventManager,
+        private readonly logger: Logger
     ) {
         this.subscriptions = ko.observableArray();
         this.pageNumber = ko.observable(1);
@@ -54,6 +54,10 @@ export class Subscriptions {
 
     private async loadUser(): Promise<void> {
         this.userId = await this.usersService.ensureSignedIn();
+        if(!this.userId){
+            return;
+        }
+        
         await this.loadSubscriptions();
     }
 
@@ -94,7 +98,7 @@ export class Subscriptions {
             this.subscriptions.replace(subscription, updatedVM);
             subscription.toggleEdit();
         } catch (error) {
-            parseAndDispatchError(this.eventManager, ErrorSources.renameSubscription, error);
+            parseAndDispatchError(this.eventManager, ErrorSources.renameSubscription, error, this.logger);
         }
     }
 
@@ -108,7 +112,7 @@ export class Subscriptions {
             updatedVM.changedItem("primaryKey");
             this.subscriptions.replace(subscription, updatedVM);
         } catch (error) {
-            parseAndDispatchError(this.eventManager, ErrorSources.regeneratePKey, error);
+            parseAndDispatchError(this.eventManager, ErrorSources.regeneratePKey, error, this.logger);
         }
         subscription.isPRegenerating(false);
     }
@@ -123,7 +127,7 @@ export class Subscriptions {
             updatedVM.changedItem("secondaryKey");
             this.subscriptions.replace(subscription, updatedVM);
         } catch (error) {
-            parseAndDispatchError(this.eventManager, ErrorSources.regenerateSKey, error);
+            parseAndDispatchError(this.eventManager, ErrorSources.regenerateSKey, error, this.logger);
         }
         subscription.isSRegenerating(false);
     }
@@ -162,7 +166,7 @@ export class Subscriptions {
                 return;
             }
 
-            parseAndDispatchError(this.eventManager, ErrorSources.cancelSubscription, error);
+            parseAndDispatchError(this.eventManager, ErrorSources.cancelSubscription, error, this.logger);
         } finally {
             subscription.isSRegenerating(false);
         }

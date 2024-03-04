@@ -17,7 +17,7 @@ import { CopyableTextField } from '../utils/components/copyableTextField';
 import { UNIQUE_REQUIRED, validateField } from '../utils/validator';
 
 interface CustomWidgetDetailsModalState {
-    isEdit: boolean, 
+    isEdit: boolean,
     customWidget: TCustomWidgetConfig,
     saveButtonDisabled: boolean,
     showInstructions: boolean,
@@ -135,11 +135,11 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
 
     render(): JSX.Element {
         return <>
-            {this.state.showDeleteConfirmation && 
+            {this.state.showDeleteConfirmation &&
                 <DeleteConfirmationOverlay
                     deleteItemTitle={this.state.customWidget.displayName}
                     onConfirm={this.deleteCustomWidget.bind(this)}
-                    onDismiss={this.closeDeleteConfirmation.bind(this)} 
+                    onDismiss={this.closeDeleteConfirmation.bind(this)}
                 />
             }
             <Modal
@@ -164,7 +164,7 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
                     </Stack>
                 </Stack>
                 <div className="admin-modal-content">
-                    {this.state.isEdit && 
+                    {this.state.isEdit &&
                         <CommandBarButton
                             iconProps={deleteIcon}
                             text="Delete"
@@ -209,7 +209,7 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
                                 <CopyableTextField
                                     fieldLabel="downloading the code scaffold command"
                                     showLabel={false}
-                                    copyableValue={`npx @azure/api-management-custom-widgets-scaffolder --displayName="${this.state.customWidget.displayName}" --technology="${this.state.customWidget.technology}" --openUrl="${window.location.origin}"`}
+                                    copyableValue={`npx @azure/api-management-custom-widgets-scaffolder@latest --displayName="${this.state.customWidget.displayName}" --technology="${this.state.customWidget.technology}" --openUrl="${window.location.origin}"`}
                                 />
                             </li>
                             <li>
