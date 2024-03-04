@@ -43,7 +43,6 @@ import { CustomWidgetPublishModule } from "./components/custom-widget/customWidg
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
 import { staticDataEnvironment, mockStaticDataEnvironment } from "./../environmentConstants";
-import { ApisListV2PublishModule } from "./components/v2/apis-list/apisListV2.publish.module";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -73,7 +72,6 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new CustomHtmlPublishModule());
         injector.bindModule(new CustomWidgetPublishModule());
         injector.bindModule(new RoleBasedSecurityPublishModule());
-        injector.bindModule(new ApisListV2PublishModule());
         injector.bindSingleton("tenantService", TenantService);
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("userService", StaticUserService);

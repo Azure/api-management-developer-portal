@@ -96,19 +96,6 @@ export class ApiListRuntime extends React.Component<ApiListProps> {
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
 
-    public componentWillReceiveProps(
-        nextProps: Readonly<ApiListProps>,
-        nextContext: any
-    ) {
-        console.log("componentWillReceiveProps", { nextProps });
-    }
-
-    public componentDidUpdate(
-        prevProps: Readonly<ApiListProps>,
-    ) {
-        console.log("componentDidUpdate", this.props, prevProps);
-    }
-
     private getReferenceUrl(api: Api): string {
         return this.routeHelper.getApiReferenceUrl(api.name, this.props.detailsPageUrl);
     }
