@@ -36,7 +36,7 @@ const loadData = async (apiService: ApiService, query: SearchQuery) => {
     return apis;
 }
 
-const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, ...props}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
+const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiType}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
     const [apis, setApis] = useState<Page<Api>>()
@@ -77,8 +77,10 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, ...props}
             <ApisListInfo apis={apis} pageNumber={pageNumber} layout={layout} setLayout={setLayout} />
 
             {layout === TLayout.table ? (
-                <ApisTable apis={apis} showApiType={props.showApiType} getReferenceUrl={getReferenceUrl} />
-            ) : <ApisCards />}
+                <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+            ) : (
+                <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+            )}
 
             <div style={{marginTop: "3rem", textAlign: "center"}}>
                 <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={pageMax} />
