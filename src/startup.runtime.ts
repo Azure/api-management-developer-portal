@@ -4,6 +4,8 @@ import { StyleRuntimeModule } from "@paperbits/styles/styles.runtime.module";
 import { ApimRuntimeModule } from "./apim.runtime.module";
 import { staticDataEnvironment } from "./../environmentConstants";
 import { define } from "mime";
+import { TraceClick } from "./bindingHandlers/traceClick";
+import { Logger } from "@paperbits/common/logging";
 
 define({ "application/x-zip-compressed": ["zip"] }, true);
 
@@ -18,6 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     injector.resolve("autostart");
+    const logger = injector.resolve<Logger>("logger");
+    const traceClick = new TraceClick(logger);
+    traceClick.setupBinding();
 });
 
 window.onbeforeunload = () => {

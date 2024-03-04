@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { isEqual, isEmpty } from 'lodash';
+import { isEqual, isEmpty, debounce } from 'lodash';
 import { Resolve } from '@paperbits/react/decorators';
 import { IMediaService } from '@paperbits/common/media';
 import { MediaContract } from '@paperbits/common/media/mediaContract';
@@ -16,6 +16,7 @@ interface NonImageDetailsModalState {
 
 interface NonImageDetailsModalProps {
     mediaItem: MediaContract,
+    isLinking?: boolean,
     onDismiss: () => void
 }
 
@@ -38,6 +39,17 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
     }
 
     onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
+        this.setState({
+            mediaItem: {
+                ...this.state.mediaItem,
+                [field]: newValue
+            }
+        });
+
+        this.runValidation(field, newValue, validationType);
+    }
+
+    runValidation = debounce(async (field: string, newValue: string, validationType?: string): Promise<void> => {
         let errorMessage = '';
         let errors = {};
 
@@ -56,19 +68,26 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
             errors = this.state.errors;
         }
 
-        this.setState({
-            mediaItem: {
-                ...this.state.mediaItem,
-                [field]: newValue
-            },
-            errors
-        });
-    }
+        this.setState({ errors });
+    }, 300)
+
+    onReferenceUrlChange = (): void => {
+        if (!this.state.errors['downloadUrl'] && this.state.mediaItem.fileName === 'media.svg') {
+            const newName = this.state.mediaItem.downloadUrl.split("/").pop();
+            this.setState({
+                mediaItem: {
+                    ...this.state.mediaItem,
+                    fileName: newName,
+                    permalink: '/content/' + newName
+                }
+            })
+        }
+    } 
 
     validatePermalink = async (permalink: string): Promise<string> => {
         if (permalink === this.props.mediaItem?.permalink) return '';
 
-        const isPermalinkNotDefined = !(await this.mediaService.getMediaByPermalink(permalink)) && !reservedPermalinks.includes(permalink);
+        const isPermalinkNotDefined = permalink && !(await this.mediaService.getMediaByPermalink(permalink)) && !reservedPermalinks.includes(permalink);
         let errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
 
         if (errorMessage === '') errorMessage = validateField(URL_REQUIRED, permalink);
@@ -83,8 +102,6 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
 
             return;
         }
-
-        return;
 
         await this.mediaService.updateMedia(this.state.mediaItem);
         this.eventManager.dispatchEvent('onSaveChanges');
@@ -108,7 +125,13 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
                         />
                         <DefaultButton
                             text="Discard"
-                            onClick={this.props.onDismiss}
+                            onClick={async () => {
+                                if (this.props.isLinking) {
+                                    await this.mediaService.deleteMedia(this.state.mediaItem);
+                                    this.eventManager.dispatchEvent('onSaveChanges');
+                                }
+                                this.props.onDismiss();
+                            }}
                         />
                     </Stack>
                 </Stack>
@@ -129,11 +152,22 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
                         styles={textFieldStyles}
                         required
                     />
-                    <CopyableTextField
-                        fieldLabel="Reference URL"
-                        showLabel={true}
-                        copyableValue={this.state.mediaItem.downloadUrl}
-                    />
+                    {this.props.isLinking
+                        ? <TextField
+                            label="Reference URL"
+                            value={this.state.mediaItem.downloadUrl}
+                            onChange={(event, newValue) => this.onInputChange('downloadUrl', newValue, URL_REQUIRED)}
+                            errorMessage={this.state.errors['downloadUrl'] ?? ''}
+                            styles={textFieldStyles}
+                            required
+                            onBlur={() => this.onReferenceUrlChange()}
+                        />
+                        : <CopyableTextField
+                            fieldLabel="Reference URL"
+                            showLabel={true}
+                            copyableValue={this.state.mediaItem.downloadUrl}
+                        />
+                    }
                     <TextField
                         label="Description"
                         multiline

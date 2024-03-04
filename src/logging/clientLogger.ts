@@ -6,6 +6,15 @@ import { ClientEvent } from "../models/logging/clientEvent";
 import { v4 as uuidv4 } from "uuid";
 import * as Constants from "../constants";
 
+export enum eventTypes {
+    error = "Error",
+    userError = "UserError",
+    trace = "Trace",
+    aadB2CLogin = "AadB2CLogin",
+    aadLogin = "AadLogin",
+    click = "Click",
+}
+
 export class ClientLogger implements Logger {
     private clientVersion: string;
     private backendUrl: string;
@@ -35,7 +44,7 @@ export class ClientLogger implements Logger {
     public async trackError(error: Error, properties?: Bag<string>): Promise<void> {
         const devPortalEvent = new ClientEvent();
 
-        devPortalEvent.eventType = "Error";
+        devPortalEvent.eventType = eventTypes.error;
         devPortalEvent.message = error?.message;
         devPortalEvent.eventData = JSON.stringify(properties);
         devPortalEvent.exception = error?.stack;

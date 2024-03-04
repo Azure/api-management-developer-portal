@@ -19,6 +19,7 @@ import { ApiService } from "../../../../../services/apiService";
 import { ProductService } from "../../../../../services/productService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
+import { OAuth2AuthenticationSettings } from "../../../../../contracts/authenticationSettings";
 
 @Component({
     selector: "authorization",
@@ -37,6 +38,7 @@ export class Authorization {
     public readonly selectedSubscriptionKey: ko.Observable<string>;
     public readonly subscriptionKeyRevealed: ko.Observable<boolean>;
     private deleteAuthorizationHeader: boolean = false;
+    public readonly selectedAuthorizationServer: ko.Observable<AuthorizationServer>;
 
     constructor(
         private readonly sessionManager: SessionManager,
@@ -45,7 +47,6 @@ export class Authorization {
         private readonly apiService: ApiService,
         private readonly productService: ProductService,
     ) {
-        this.authorizationServer = ko.observable();
         this.selectedGrantType = ko.observable();
         this.api = ko.observable<Api>();
         this.headers = ko.observableArray<ConsoleHeader>();
@@ -60,10 +61,11 @@ export class Authorization {
         this.products = ko.observable();
         this.selectedSubscriptionKey = ko.observable();
         this.subscriptionKeyRevealed = ko.observable(false);
+        this.authorizationServers = ko.observable<AuthorizationServer[]>();
+        this.selectedAuthorizationServer = ko.observable<AuthorizationServer>();
     }
-
     @Param()
-    public authorizationServer: ko.Observable<AuthorizationServer>;
+    public authorizationServers: ko.Observable<AuthorizationServer[]>;
 
     @Param()
     public api: ko.Observable<Api>;
@@ -84,13 +86,6 @@ export class Authorization {
     @OnMounted()
     public async initialize(): Promise<void> {
         this.subscriptionKeyRequired(!!this.api().subscriptionRequired);
-        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
-        this.selectedGrantType.subscribe(this.onGrantTypeChange);
-        this.selectedSubscriptionKey(null);
-        await this.setupOAuth();
-        if (this.api().subscriptionRequired) {
-            await this.loadSubscriptionKeys();
-        }
 
         if (this.subscriptionKeyRequired()) {
             if (this.api().type === TypeOfApi.webSocket || this.isGraphQL()) {
@@ -98,6 +93,16 @@ export class Authorization {
             } else {
                 this.setSubscriptionKeyHeader();
             }
+        }
+
+        this.selectedGrantType.subscribe(this.onGrantTypeChange);
+        this.selectedSubscriptionKey.subscribe(this.applySubscriptionKey.bind(this));
+        this.selectedAuthorizationServer(this.authorizationServers() ? this.authorizationServers()[0] : null);
+        this.selectedAuthorizationServer.subscribe(() => this.selectedGrantType(null));
+
+        await this.setupOAuth();
+        if (this.api().subscriptionRequired) {
+            await this.loadSubscriptionKeys();
         }
     }
 
@@ -110,7 +115,7 @@ export class Authorization {
     }
 
     private async setupOAuth(): Promise<void> {
-        const authorizationServer = this.authorizationServer();
+        const authorizationServer = this.selectedAuthorizationServer();
 
         if (!authorizationServer) {
             this.selectedGrantType(null);
@@ -118,8 +123,11 @@ export class Authorization {
         }
 
         const api = this.api();
-        const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
-        const storedCredentials = await this.getStoredCredentials(authorizationServer.name, scopeOverride);
+        const serverName = authorizationServer.name;
+
+        const scopeOverride = this.getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
+        const storedCredentials = await this.getStoredCredentials(serverName, scopeOverride);
+
 
         if (storedCredentials) {
             this.selectedGrantType(storedCredentials.grantType);
@@ -256,9 +264,14 @@ export class Authorization {
      */
     public async authenticateOAuth(grantType: string): Promise<void> {
         const api = this.api();
-        const authorizationServer = this.authorizationServer();
-        const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
+        const authorizationServer = this.selectedAuthorizationServer();
+
+        if (!authorizationServer) {
+            return;
+        }
+
         const serverName = authorizationServer.name;
+        const scopeOverride = this.getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
 
         if (scopeOverride) {
             authorizationServer.scopes = [scopeOverride];
@@ -325,9 +338,15 @@ export class Authorization {
             this.authorizationError(null);
 
             const api = this.api();
-            const authorizationServer = this.authorizationServer();
-            const scopeOverride = api.authenticationSettings?.oAuth2?.scope;
+
+            const authorizationServer = this.selectedAuthorizationServer();
+            if (!authorizationServer) {
+                return;
+            }
+
             const serverName = authorizationServer.name;
+            const scopeOverride = this.getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
+
 
             if (scopeOverride) {
                 authorizationServer.scopes = [scopeOverride];
@@ -459,5 +478,14 @@ export class Authorization {
             this.consoleOperation().request.queryParameters.remove(parameter);
             this.updateRequestSummary();
         }
+    }
+
+    private getSelectedAuthServerOverrideScope(selectedAuthServerName: string, oAuth2Settings: OAuth2AuthenticationSettings[]): string {
+        if (selectedAuthServerName && oAuth2Settings) {
+            const authServerName = selectedAuthServerName.toLowerCase();
+            const setting = oAuth2Settings.find(setting => setting.authorizationServerId?.toLowerCase() == authServerName);
+            return setting?.scope;
+        }
+        return null;
     }
 }

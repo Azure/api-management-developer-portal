@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Cropper from 'react-cropper';
 //import 'cropperjs/dist/cropper.css';
-import { isEqual, isEmpty } from 'lodash';
+import { isEqual, isEmpty, debounce } from 'lodash';
 import * as Utils from '@paperbits/common/utils';
 import { Resolve } from '@paperbits/react/decorators';
 import { IMediaService, MediaContract } from '@paperbits/common/media';
@@ -56,6 +56,17 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
     }
 
     onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
+        this.setState({
+            mediaItem: {
+                ...this.state.mediaItem,
+                [field]: newValue
+            }
+        });
+
+        this.runValidation(field, newValue, validationType);
+    }
+
+    runValidation = debounce(async (field: string, newValue: string, validationType?: string): Promise<void> => {
         let errorMessage = '';
         let errors = {};
 
@@ -74,19 +85,13 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
             errors = this.state.errors;
         }
 
-        this.setState({
-            mediaItem: {
-                ...this.state.mediaItem,
-                [field]: newValue
-            },
-            errors
-        });
-    }
+        this.setState({ errors });
+    }, 300)
 
     validatePermalink = async (permalink: string): Promise<string> => {
         if (permalink === this.props.mediaItem?.permalink) return '';
 
-        const isPermalinkNotDefined = !(await this.mediaService.getMediaByPermalink(permalink)) && !reservedPermalinks.includes(permalink);
+        const isPermalinkNotDefined = permalink && !(await this.mediaService.getMediaByPermalink(permalink)) && !reservedPermalinks.includes(permalink);
         let errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
 
         if (errorMessage === '') errorMessage = validateField(URL_REQUIRED, permalink);
