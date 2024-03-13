@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Stack, Layer, Overlay, Popup, mergeStyleSets, DefaultButton, FocusTrapZone, PrimaryButton } from '@fluentui/react';
+import { Stack, Layer, Overlay, Popup, mergeStyleSets, DefaultButton, FocusTrapZone, PrimaryButton, Spinner } from '@fluentui/react';
 
 const popupStyles = mergeStyleSets({
     root: {
@@ -21,13 +21,25 @@ const popupStyles = mergeStyleSets({
     },
 });
 
+interface DeleteConfirmationState {
+    isLoading: boolean
+}
+
 interface DeleteConfirmationProps {
     deleteItemTitle: string,
     onConfirm: () => void,
     onDismiss: () => void
 }
 
-export class DeleteConfirmationOverlay extends React.Component<DeleteConfirmationProps, {}> {
+export class DeleteConfirmationOverlay extends React.Component<DeleteConfirmationProps, DeleteConfirmationState> {
+    constructor(props: DeleteConfirmationProps) {
+        super(props);
+
+        this.state = {
+            isLoading: false
+        }
+    }
+
     render(): JSX.Element {
         return <>
             <Layer>
@@ -41,9 +53,17 @@ export class DeleteConfirmationOverlay extends React.Component<DeleteConfirmatio
                     <Overlay onClick={this.props.onDismiss} />
                     <FocusTrapZone style={{ position: 'unset' }}>
                         <div role="document" className={popupStyles.content}>
+                            {this.state.isLoading && <Spinner className="spinner-modal" />}
                             <p>Are you sure you want to delete {this.props.deleteItemTitle}?</p>
                             <Stack horizontal tokens={{ childrenGap: 20 }}>
-                                <PrimaryButton onClick={this.props.onConfirm}>Yes</PrimaryButton>
+                                <PrimaryButton 
+                                    onClick={() => {
+                                        this.setState({ isLoading: true });
+                                        this.props.onConfirm();
+                                    }}
+                                >
+                                    Yes
+                                </PrimaryButton>
                                 <DefaultButton onClick={this.props.onDismiss}>No</DefaultButton>
                             </Stack>
                         </div>
