@@ -105,8 +105,10 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
     }
 
     deleteMedia = async (): Promise<void> => {
-        await Promise.all(this.state.selectedFiles.map(async file => await this.mediaService.deleteMedia(file)));
-        
+        for (const file of this.state.selectedFiles) {
+            await this.mediaService.deleteMedia(file);
+        }
+    
         this.setState({ selectedFiles: [], showDeleteConfirmation: false });
         this.eventManager.dispatchEvent('onSaveChanges');
         this.searchMedia();
@@ -183,6 +185,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                             <IconButton
                                 iconProps={{ iconName: 'CheckMark' }}
                                 onClick={() => this.renameMedia(mediaItem)}
+                                disabled={this.state.fileNewName === ''}
                             />
                             <IconButton
                                 iconProps={{ iconName: 'Cancel' }}
