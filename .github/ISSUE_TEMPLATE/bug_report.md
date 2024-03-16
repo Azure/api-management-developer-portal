@@ -2,14 +2,18 @@
 name: Bug report
 about: Report a glitch to help us improve the product
 title: ''
-labels: to-triage
+labels: ''
 assignees: ''
 
 ---
 
+** PLEASE DO NOT CREATE ISSUES RELATED TO MANAGED DEVELOPER PORTAL IN THIS REPOSITORY. Issues related to "Managed developer portal" will be closed automatically. These issues should be created directly in Azure Support + Troubleshooting in Azure portal**
+
 **Every bug report should have precise description and reproduction steps; console traces or source code references are appreciated.**
 
 **For assistance requests, contact Azure support or submit a post [on Stack Overflow](http://aka.ms/apimso). We don't provide support through GitHub Issues. Feature requests can be raised [on the Azure Feedback Forum](https://aka.ms/apimwish).**
+
+
 
 
 ## Bug description
