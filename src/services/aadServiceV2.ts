@@ -99,6 +99,7 @@ export class AadServiceV2 implements IAadService {
         }
 
         const msalInstance = new msal.PublicClientApplication(msalConfig);
+        await msalInstance.initialize();
 
         const loginRequest = {
             scopes: ["openid"]
@@ -153,6 +154,7 @@ export class AadServiceV2 implements IAadService {
         }
 
         const msalInstance = new msal.PublicClientApplication(msalConfig);
+        await msalInstance.initialize();
 
         const loginRequest = {
             scopes: ["openid", "email", "profile"]
@@ -184,6 +186,7 @@ export class AadServiceV2 implements IAadService {
 
         const msalConfig = {};
         const msalInstance = new msal.PublicClientApplication(<any>msalConfig);
+        await msalInstance.initialize();
         await msalInstance.loginPopup();
 
         window.close();
