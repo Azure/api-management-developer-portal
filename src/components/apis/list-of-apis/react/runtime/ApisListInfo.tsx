@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Dispatch, SetStateAction } from "react";
-import { Toolbar, ToolbarRadioButton, ToolbarRadioGroup } from "@fluentui/react-components";
+import { Dropdown, Option, Button, Input, Toolbar, ToolbarRadioButton, ToolbarRadioGroup } from "@fluentui/react-components";
+import { Search16Regular, Dismiss16Regular } from "@fluentui/react-icons";
 import * as Constants from "../../../../../constants";
 import { Page } from "../../../../../models/page";
 import { Api } from "../../../../../models/api";
@@ -22,8 +23,20 @@ const TableIcon = () => (
     </svg>
 )
 
+const sortById = "sortById"
+const SortBy = () => (
+    <>
+        <label id={sortById} style={{margin: 0, fontWeight: 600}}>Sort by</label>
+
+        <Dropdown clearable aria-labelledby={sortById}>
+            <Option key={"foo"}>Foo</Option>
+        </Dropdown>
+    </>
+)
+
 const LayoutSwitchPure = ({layout, setLayout}: {layout: TLayout; setLayout: (newLayout: TLayout) => void}) => (
     <Toolbar
+        style={{padding: 0}}
         checkedValues={{layout: [layout]}}
         onCheckedValueChange={(_, {checkedItems}) => setLayout(checkedItems[0] as TLayout)}
     >
@@ -39,10 +52,20 @@ type ApisTableInfoProps = {
     pageNumber: number,
     layout: TLayout,
     setLayout: Dispatch<SetStateAction<TLayout>>
+    pattern: string | undefined,
+    setPattern: Dispatch<SetStateAction<string | undefined>>
 }
 
-export const ApisListInfo = ({pageNumber, apis, layout, setLayout}: ApisTableInfoProps) => (
+export const ApisListInfo = ({pageNumber, apis, layout, setLayout, pattern, setPattern}: ApisTableInfoProps) => (
     <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem"}}>
+        <Input
+            value={pattern ?? ""}
+            onChange={(_, {value}) => setPattern(value)}
+            contentBefore={<Search16Regular />}
+            contentAfter={<Button onClick={() => setPattern(undefined)} appearance={"transparent"} icon={<Dismiss16Regular />} />}
+            placeholder={"Search"}
+        />
+        {/*
         <p style={{margin: 0}}>
             Displaying <b>{
                 ((pageNumber - 1) * Constants.defaultPageSize) + 1
@@ -50,8 +73,10 @@ export const ApisListInfo = ({pageNumber, apis, layout, setLayout}: ApisTableInf
                 Math.min(pageNumber * Constants.defaultPageSize, apis?.count)
             }</b> of <b>{apis?.count}</b> items
         </p>
+        */}
 
-        <div>
+        <div style={{display: "flex", alignItems: "center", flexDirection: "row", gap: "1rem"}}>
+            <SortBy />
             <LayoutSwitchPure layout={layout} setLayout={setLayout}/>
         </div>
     </div>
