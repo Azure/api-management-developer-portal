@@ -62,29 +62,27 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiTy
             .finally(() => setWorking(false))
     }, [apiService, pageNumber, tags, pattern])
 
-    if (working) {
-        return (
-            <div className="table-body">
-                <Spinner label="Loading APIs" labelPosition="below" size="extra-large" />
-            </div>
-        )
-    }
-
-    const pageMax = Math.ceil(apis?.count / Constants.defaultPageSize)
-
     return (
         <>
-            <ApisListInfo apis={apis} pageNumber={pageNumber} layout={layout} setLayout={setLayout} />
+            <ApisListInfo apis={apis} pageNumber={pageNumber} layout={layout} setLayout={setLayout} pattern={pattern} setPattern={setPattern} />
 
-            {layout === TLayout.table ? (
-                <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+            {working ? (
+                <div className="table-body">
+                    <Spinner label="Loading APIs" labelPosition="below" size="extra-large" />
+                </div>
             ) : (
-                <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
-            )}
+              <> {/* TODO - bug with width (npm start & search and you'll see) */}
+                  {layout === TLayout.table ? (
+                      <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                  ) : (
+                      <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                  )}
 
-            <div style={{marginTop: "3rem", textAlign: "center"}}>
-                <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={pageMax} />
-            </div>
+                  <div style={{marginTop: "3rem", textAlign: "center"}}>
+                      <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(apis?.count / Constants.defaultPageSize)} />
+                  </div>
+              </>
+            )}
         </>
     );
 }
