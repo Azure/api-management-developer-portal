@@ -12,6 +12,7 @@ jobs:
         uses: octokit/request-action@v2.x
         with:
           route: GET /repos/Azure/api-management-developer-portal/issues?state=open
+          token: ${{ secrets.ACCESS_TOKEN }}
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
