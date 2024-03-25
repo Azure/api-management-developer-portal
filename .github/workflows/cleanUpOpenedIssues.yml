@@ -12,9 +12,8 @@ jobs:
         uses: octokit/request-action@v2.x
         with:
           route: GET /repos/Azure/api-management-developer-portal/issues?state=open
-          token: ${{ secrets.ACCESS_TOKEN }}
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUBACTIONS_TOKEN }}
 
       - name: Print issue URLs
         run: |
