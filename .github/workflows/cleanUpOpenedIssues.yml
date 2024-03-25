@@ -1,0 +1,24 @@
+name: Fetch Open Issues
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fetch-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch open issues
+        id: issues
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/Azure/api-management-developer-portal/issues?state=open
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Print issue URLs
+        run: |
+          const issues = JSON.parse('${{ steps.issues.outputs.data }}');
+          for (const issue of issues) {
+            console.log(issue.html_url);
+          }
+        shell: node
