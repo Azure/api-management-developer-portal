@@ -18,7 +18,8 @@ jobs:
       - name: Print issue URLs
         run: |
           const issues = JSON.parse('${{ steps.issues.outputs.data }}');
-          for (const issue of issues) {
+          const filteredIssues = issues.filter(issue => issue.body.includes('Is your portal managed or self-hosted?\r\n\r\nManaged'));
+          for (const issue of filteredIssues) {
             console.log(issue.html_url);
           }
         shell: node
