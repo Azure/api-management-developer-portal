@@ -105,6 +105,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
     }
 
     deleteMedia = async (): Promise<void> => {
+        // TODO: check if can be replaced with map loop instead. for loop is used because BE is not deleting it properly
         for (const file of this.state.selectedFiles) {
             await this.mediaService.deleteMedia(file);
         }

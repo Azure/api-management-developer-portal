@@ -79,7 +79,7 @@
             <!-- ko foreach: { data: apis, as: 'item' } -->
             <div class="menu menu-vertical" role="list">
                 <a href="#" role="listitem" class="nav-link text-truncate" data-dismiss
-                    data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedApiName() === item.name }">
+                    data-bind="attr: { href: $component.getReferenceUrl(item) }, css: { 'nav-link-active': $component.selectedApiName() === item.name }, activate: $component.closeDropdown">
                     <span data-bind="text: item.displayName"></span>
                     <!-- ko if: item.type === 'soap' -->
                     <span class="badge badge-soap">SOAP</span>
