@@ -243,11 +243,21 @@ class ImporterExporter {
             const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
             const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
 
-            let blobs = containerClient.listBlobsFlat();
+            await this.downloadBlobsRecursive(containerClient, snapshotMediaFolder);
+        }
+        catch (error) {
+            throw new Error(`Unable to download media files. ${error.message}`);
+        }
+    }
 
-            for await (const blob of blobs) {
+    async downloadBlobsRecursive(containerClient, outputFolder, prefix = undefined) {
+        let blobs = containerClient.listBlobsByHierarchy("/", prefix ? { prefix: prefix } : undefined);
+        for await (const blob of blobs) {
+            if (blob.kind === "prefix") {
+                await this.downloadBlobsRecursive(containerClient, outputFolder, blob.name);
+            } else {
                 const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-                const pathToFile = `${snapshotMediaFolder}/${blob.name}`;
+                const pathToFile = `${outputFolder}/${blob.name}`;
                 const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
 
                 await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
@@ -257,9 +267,6 @@ class ImporterExporter {
                 const metadataFile = JSON.stringify(metadata);
                 await fs.promises.writeFile(pathToFile + metadataFileExt, metadataFile);
             }
-        }
-        catch (error) {
-            throw new Error(`Unable to download media files. ${error.message}`);
         }
     }
 
