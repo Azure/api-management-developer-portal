@@ -129,9 +129,19 @@ async function downloadBlobs(blobStorageUrl, snapshotMediaFolder) {
 
         await fs.promises.mkdir(path.resolve(snapshotMediaFolder), { recursive: true });
 
-        let blobs = containerClient.listBlobsFlat();
+        await downloadBlobsRecursive(containerClient, snapshotMediaFolder)
+    }
+    catch (error) {
+        throw new Error(`Unable to download media files. ${error.message}`);
+    }
+}
 
-        for await (const blob of blobs) {
+async function downloadBlobsRecursive(containerClient, outputFolder, prefix = undefined) {
+    let blobs = containerClient.listBlobsByHierarchy("/", prefix ? { prefix: prefix } : undefined);
+    for await (const blob of blobs) {
+        if (blob.kind === "prefix") {
+            await this.downloadBlobsRecursive(containerClient, outputFolder, blob.name);
+        } else {
             const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
             const extension = mime.getExtension(blob.properties.contentType);
             let pathToFile;
@@ -147,9 +157,6 @@ async function downloadBlobs(blobStorageUrl, snapshotMediaFolder) {
             await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
             await blockBlobClient.downloadToFile(pathToFile);
         }
-    }
-    catch (error) {
-        throw new Error(`Unable to download media files. ${error.message}`);
     }
 }
 
