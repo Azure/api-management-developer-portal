@@ -184,12 +184,14 @@ export class ApiListDropdown {
         this.groupTagsExpanded(newSet);
     }
 
-    public closeDropdown(): void {
+    public closeDropdown(): true {
         const apiDropdowns = document.getElementsByClassName("api-list-dropdown");
         for (let i = 0; i < apiDropdowns.length; i++) {
             if (apiDropdowns[i].classList.contains("show"))
                 apiDropdowns[i].classList.remove("show");
         }
+
+        return true; // return true to not-prevent the default action https://knockoutjs.com/documentation/click-binding.html#note-3-allowing-the-default-click-action
     }
 
     @OnDestroyed()
