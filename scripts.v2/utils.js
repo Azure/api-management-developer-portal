@@ -140,23 +140,24 @@ async function downloadBlobsRecursive(containerClient, outputFolder, prefix = un
     let blobs = containerClient.listBlobsByHierarchy("/", prefix ? { prefix: prefix } : undefined);
     for await (const blob of blobs) {
         if (blob.kind === "prefix") {
-            await this.downloadBlobsRecursive(containerClient, outputFolder, blob.name);
-        } else {
-            const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-            const extension = mime.getExtension(blob.properties.contentType);
-            let pathToFile;
-
-            if (extension != null) {
-                pathToFile = `${snapshotMediaFolder}/${blob.name}.${extension}`;
-            }
-            else {
-                pathToFile = `${snapshotMediaFolder}/${blob.name}`;
-            }
-
-            const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
-            await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
-            await blockBlobClient.downloadToFile(pathToFile);
+            await downloadBlobsRecursive(containerClient, outputFolder, blob.name);
+            continue;
         }
+
+        const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
+        const extension = mime.getExtension(blob.properties.contentType);
+        let pathToFile;
+
+        if (extension != null) {
+            pathToFile = `${outputFolder}/${blob.name}.${extension}`;
+        }
+        else {
+            pathToFile = `${outputFolder}/${blob.name}`;
+        }
+
+        const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
+        await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
+        await blockBlobClient.downloadToFile(pathToFile);
     }
 }
 

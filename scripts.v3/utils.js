@@ -255,18 +255,19 @@ class ImporterExporter {
         for await (const blob of blobs) {
             if (blob.kind === "prefix") {
                 await this.downloadBlobsRecursive(containerClient, outputFolder, blob.name);
-            } else {
-                const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-                const pathToFile = `${outputFolder}/${blob.name}`;
-                const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
-
-                await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
-                await blockBlobClient.downloadToFile(pathToFile);
-
-                const metadata = { contentType: blob.properties.contentType };
-                const metadataFile = JSON.stringify(metadata);
-                await fs.promises.writeFile(pathToFile + metadataFileExt, metadataFile);
+                continue;
             }
+
+            const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
+            const pathToFile = `${outputFolder}/${blob.name}`;
+            const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
+
+            await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
+            await blockBlobClient.downloadToFile(pathToFile);
+
+            const metadata = { contentType: blob.properties.contentType };
+            const metadataFile = JSON.stringify(metadata);
+            await fs.promises.writeFile(pathToFile + metadataFileExt, metadataFile);
         }
     }
 
