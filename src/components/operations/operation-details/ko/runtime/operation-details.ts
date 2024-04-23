@@ -227,15 +227,13 @@ export class OperationDetails {
         let associatedAuthServers: AuthorizationServer[];
         if (api.authenticationSettings?.oAuth2AuthenticationSettings?.length > 0) {
             associatedAuthServers = await this.oauthService.getOauthServers(api.id);
-        } 
+        }
         else if (api.authenticationSettings?.openidAuthenticationSettings?.length > 0) {
             associatedAuthServers = await this.oauthService.getOpenIdAuthServers(api.id);
         }
 
-        if (associatedAuthServers) {
-            this.apiDocumentationAuthServers(associatedAuthServers.filter(a => a.useInApiDocumentation));
-            this.testConsoleAuthServers(associatedAuthServers.filter(a => a.useInTestConsole));
-        }
+        this.apiDocumentationAuthServers(associatedAuthServers ? associatedAuthServers.filter(a => a.useInApiDocumentation) : []);
+        this.testConsoleAuthServers(associatedAuthServers ? associatedAuthServers.filter(a => a.useInTestConsole) : []);
     }
 
     public async loadOperation(apiName: string, operationName: string): Promise<void> {
