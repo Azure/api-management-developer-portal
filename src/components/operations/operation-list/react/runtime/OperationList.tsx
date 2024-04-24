@@ -1,20 +1,41 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Accordion, AccordionHeader, AccordionItem, AccordionPanel, Body1, Body1Strong, Button, FluentProvider, Link, Menu, MenuButton, MenuItem, MenuList, MenuPopover, MenuTrigger, SearchBox, Spinner, Text } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
+import { Router } from "@paperbits/common/routing";
+import { Stack } from "@fluentui/react";
+import { 
+    Accordion,
+    AccordionHeader,
+    AccordionItem,
+    AccordionPanel,
+    Body1,
+    Body1Strong,
+    Button,
+    FluentProvider,
+    Link,
+    Menu,
+    MenuButton,
+    MenuGroup,
+    MenuGroupHeader,
+    MenuItemCheckbox,
+    MenuList,
+    MenuPopover,
+    MenuTrigger,
+    SearchBox,
+    Spinner
+} from "@fluentui/react-components";
+import { ChevronUpRegular, FilterRegular, MoreHorizontalRegular, SearchRegular } from "@fluentui/react-icons";
+import { defaultPageSize } from "../../../../../constants";
+import { fuiTheme } from "../../../../../constants/fuiTheme";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
-import * as Constants from "../../../../../constants";
 import { Api } from "../../../../../models/api";
 import { Tag } from "../../../../../models/tag";
 import { Page } from "../../../../../models/page";
-import { ApiService } from "../../../../../services/apiService";
-import { RouteHelper } from "../../../../../routing/routeHelper";
-import { Router } from "@paperbits/common/routing";
-import { fuiTheme } from "../../../../../constants/fuiTheme";
 import { Operation } from "../../../../../models/operation";
-import { Stack } from "@fluentui/react";
-import { ChevronDownRegular, FilterRegular, MoreHorizontalRegular, SearchRegular } from "@fluentui/react-icons";
 import { TagGroup } from "../../../../../models/tagGroup";
+import { ApiService } from "../../../../../services/apiService";
+import { TagService } from "../../../../../services/tagService";
+import { RouteHelper } from "../../../../../routing/routeHelper";
 
 interface OperationListProps {
     allowSelection?: boolean,
@@ -31,10 +52,11 @@ interface OperationListState {
     operationName: string
 }
 
-const OperationListFC = ({ 
-    apiService,
+const OperationListFC = ({
     apiName,
     operationName,
+    apiService,
+    tagService,
     routeHelper,
     router,
     allowSelection,
@@ -42,124 +64,152 @@ const OperationListFC = ({
     showToggleUrlPath,
     defaultShowUrlPath,
     defaultGroupByTagToEnabled,
-    defaultAllGroupTagsExpanded
-}: OperationListProps & { apiService: ApiService, apiName: string, operationName: string, routeHelper: RouteHelper, router: Router }) => {
+    defaultAllGroupTagsExpanded,
+    detailsPageUrl
+}: OperationListProps & { apiName: string, operationName: string, apiService: ApiService, tagService: TagService, routeHelper: RouteHelper, router: Router }) => {
     const [working, setWorking] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
     const [hasNextPage, setHasNextPage] = useState<boolean>(false);
     const [operations, setOperations] = useState<Operation[]>([]);
     const [operationsByTags, setOperationsByTags] = useState<TagGroup<Operation>[]>([]);
     const [selectedOperationName, setSelectedOperationName] = useState<string>();
     const [pattern, setPattern] = useState<string>();
-    const [showUrlPath, setShowUrlPath] = useState<boolean>(defaultShowUrlPath)
-    const [tags, setTags] = useState(new Set<Tag>())
-    const [groupByTag, setGroupByTag] = useState<boolean>(defaultGroupByTagToEnabled)
+    const [showUrlPath, setShowUrlPath] = useState<boolean>(defaultShowUrlPath);
+    const [tags, setTags] = useState<Tag[]>([]);
+    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+    const [groupByTag, setGroupByTag] = useState<boolean>(defaultGroupByTagToEnabled);
+    const [searchByTags, setSearchByTags] = useState<boolean>(false);
+    const [tagPattern, setTagPattern] = useState<string>();
 
     useEffect(() => {
         const query: SearchQuery = {
             pattern,
-            tags: [...tags],
-            skip: (pageNumber - 1) * Constants.defaultPageSize,
-            take: Constants.defaultPageSize,
-            grouping: groupByTag ? "tag" : "none"
+            tags: [...selectedTags],
+            skip: (pageNumber - 1) * defaultPageSize,
+            take: defaultPageSize,
+            grouping: groupByTag ? "tag" : "none",
+            propertyName: showUrlPath ? "urlTemplate" : ""
         };
 
+        console.log('op', operationsByTags);
+
         if (apiName) {
-            setWorking(true)
+            setWorking(true);
             if (groupByTag) {
                 loadOperationsByTag(query)
                     .then(loadedOperations => {
                         if (pageNumber > 1) {
-                            setOperationsByTags([...operationsByTags, ...loadedOperations.value])
+                            // Check if the tag is already displayed. If yes, add to this tag
+                            loadedOperations.value.forEach(newOperation => {
+                                const existingTagIndex = operationsByTags.findIndex(item => item.tag === newOperation.tag);
+                                if (existingTagIndex !== -1) {
+                                    operationsByTags[existingTagIndex].items.push(...newOperation.items);
+                                } else {
+                                    operationsByTags.push(newOperation);
+                                }
+                            });
+                            setOperationsByTags(operationsByTags);
                         } else {
-                            setOperationsByTags([...loadedOperations.value])
+                            setOperationsByTags([...loadedOperations.value]);
                         }
-            
-                        setHasNextPage(!!loadedOperations.nextLink)
-            
-                        if (allowSelection && !operationName && !selectedOperationName) selectOperation(loadedOperations.value[0].items[0])
+
+                        setHasNextPage(!!loadedOperations.nextLink);
+
+                        if (allowSelection && !operationName && !selectedOperationName && loadedOperations.count > 0) selectOperation(loadedOperations.value[0].items[0]);
                     })
-                    .finally(() => setWorking(false))
+                    .finally(() => setWorking(false));
             } else {
                 loadOperations(query)
                     .then(loadedOperations => {
                         if (pageNumber > 1) {
-                            setOperations([...operations, ...loadedOperations.value])
+                            setOperations([...operations, ...loadedOperations.value]);
                         } else {
-                            setOperations([...loadedOperations.value])
+                            setOperations([...loadedOperations.value]);
                         }
-                        setHasNextPage(!!loadedOperations.nextLink)
+                        setHasNextPage(!!loadedOperations.nextLink);
 
-                        if (allowSelection && !operationName && !selectedOperationName) selectOperation(loadedOperations.value[0])
+                        if (allowSelection && !operationName && !selectedOperationName) selectOperation(loadedOperations.value[0]);
                     })
-                    .finally(() => setWorking(false))
+                    .finally(() => setWorking(false));
             }
         }
-    }, [apiName, pageNumber, pattern, tags])
+    }, [apiName, pageNumber, pattern, selectedTags, groupByTag]);
 
-    const loadOperations = async (query: SearchQuery) => {
-        let api: Api;
-        let pageOfOperations;
-        let type;
+    useEffect(() => {
+        if (apiName) {
+            loadTags().then(loadedTags => setTags(loadedTags.value));
+        }
+    }, [apiName, tagPattern]);
 
-        console.log(query);
-    
+    const loadOperations = async (query: SearchQuery): Promise<Page<Operation>> => {
+        let pageOfOperations: Page<Operation>;
+
         try {
-            api = await apiService.getApi(`apis/${apiName}`);
-            //type = api?.type;
             pageOfOperations = await apiService.getOperations(`apis/${apiName}`, query);
-            console.log(pageOfOperations)
         } catch (error) {
             throw new Error(`Unable to load the API. Error: ${error.message}`);
         }
-    
+
         return pageOfOperations;
     }
 
-    const loadOperationsByTag = async (query: SearchQuery) => {
-        let api: Api;
+    const loadOperationsByTag = async (query: SearchQuery): Promise<Page<TagGroup<Operation>>> => {
         let pageOfOperations: Page<TagGroup<Operation>>;
-        let type;
 
-        console.log(query);
-    
         try {
-            api = await apiService.getApi(`apis/${apiName}`);
-            //type = api?.type;
-            
             pageOfOperations = await apiService.getOperationsByTags(apiName, query);
-            console.log(pageOfOperations)
         } catch (error) {
             throw new Error(`Unable to load the API. Error: ${error.message}`);
         }
-    
+
         return pageOfOperations;
+    }
+
+    const loadTags = async (): Promise<Page<Tag>> => {
+        let pageOfTags: Page<Tag>;
+
+        try {
+            pageOfTags = await tagService.getTags(`apis/${apiName}`, tagPattern);
+        } catch (error) {
+            throw new Error(`Unable to load tags. Error: ${error.message}`);
+        }
+
+        return pageOfTags;
     }
 
     const selectOperation = (operation: Operation): void => {
         allowSelection && setSelectedOperationName(operation.name);
-        const operationUrl = routeHelper.getOperationReferenceUrl(apiName, operation.name); //this.detailsPageUrl()
+        const operationUrl = routeHelper.getOperationReferenceUrl(apiName, operation.name, detailsPageUrl);
         router.navigateTo(operationUrl);
     }
 
-    const renderOperation = (operation: Operation) => (
+    const renderOperation = (operation: Operation): JSX.Element => (
         <Stack
             key={operation.id}
             horizontal
-            //verticalAlign="center"
             className={`operation ${operation.name === selectedOperationName && `is-selected-operation`}`}
             onClick={() => selectOperation(operation)}
         >
-            {operation.name === selectedOperationName ?
-                <>
-                    <Body1Strong className={`operation-method method-${operation.method}`}>{operation.method}</Body1Strong>
-                    <Body1Strong className={`operation-name${!wrapText ? " nowrap" : ""}`}>{showUrlPath ? operation.urlTemplate : operation.displayName}</Body1Strong>
-                </>
+            {operation.name === selectedOperationName 
+                ?
+                    <>
+                        <Body1Strong className={`operation-method method-${operation.method}`}>
+                            {operation.method}
+                        </Body1Strong>
+                        <Body1Strong className={`operation-name${!wrapText ? " nowrap" : ""}`}>
+                            {showUrlPath ? operation.urlTemplate : operation.displayName}
+                        </Body1Strong>
+                    </>
                 :
-                <>
-                    <Body1 className={`operation-method method-${operation.method}`}>{operation.method}</Body1>
-                    <Body1 className={`operation-name${!wrapText ? " nowrap" : ""}`}>{showUrlPath ? operation.urlTemplate : operation.displayName}</Body1>
-                </>
+                    <>
+                        <Body1 className={`operation-method method-${operation.method}`}>
+                            {operation.method}
+                        </Body1>
+                        <Body1 className={`operation-name${!wrapText ? " nowrap" : ""}`}>
+                            {showUrlPath ? operation.urlTemplate : operation.displayName}
+                        </Body1>
+                    </>
             }
         </Stack>
     )
@@ -169,82 +219,131 @@ const OperationListFC = ({
             <Stack horizontal verticalAlign="center">
                 <Body1Strong block className={"operation-list-title"}>Operations</Body1Strong>
                 <Stack horizontal>
-                    <Menu onOpenChange={e => e.stopPropagation()}>
+                    <Menu defaultCheckedValues={{ "operation-list-props": [defaultGroupByTagToEnabled ? "group-by-tag" : ""] }}>
                         <MenuTrigger disableButtonEnhancement>
                             <MenuButton
-                                appearance={"transparent"}
                                 icon={<MoreHorizontalRegular />}
+                                appearance={"transparent"}
                                 className={"operation-more"}
                             />
                         </MenuTrigger>
 
                         <MenuPopover>
                             <MenuList>
-                                <MenuItem onClick={() => setGroupByTag(!groupByTag)}>
-                                    {groupByTag ? "Ungroup by tag" : "Group by tag"}
-                                </MenuItem>
+                                <MenuItemCheckbox
+                                    name={"operation-list-props"}
+                                    value={"group-by-tag"}
+                                    onClick={() => {
+                                        setPageNumber(1);
+                                        setSelectedOperationName(null);
+                                        setGroupByTag(!groupByTag);
+                                    }}
+                                >
+                                    Group operations by tag
+                                </MenuItemCheckbox>
                                 {showToggleUrlPath &&
-                                    <MenuItem onClick={() => setShowUrlPath(!showUrlPath)}>
-                                        {showUrlPath ? "Show operation names" : "Show URL path"}
-                                    </MenuItem>
+                                    <MenuItemCheckbox
+                                        name={"operation-list-props"}
+                                        value={"show-url-path"}
+                                        onClick={() => setShowUrlPath(!showUrlPath)}
+                                    >
+                                        Show URL path
+                                    </MenuItemCheckbox>
                                 }
                             </MenuList>
                         </MenuPopover>
                     </Menu>
-                    <Button icon={<ChevronDownRegular />} appearance={"transparent"} />
-                    {/* className={"operation-filter"} /> */}
+                    <Button
+                        icon={<ChevronUpRegular />}
+                        appearance={"transparent"}
+                        className={`collapse-operations-button${isCollapsed ? " is-collapsed" : ""}`}
+                        onClick={() => setIsCollapsed(!isCollapsed)} 
+                    />
                 </Stack>
             </Stack>
-            <Stack horizontal verticalAlign="center" className={"operation-search-container"}>
-                <SearchBox
-                    placeholder={"Search"}
-                    contentBefore={<SearchRegular className={"fui-search-icon"} />}
-                    className={"operation-search"}
-                    onChange={(event, data) => {
-                        // TODO: add delay
-                        setPageNumber(1)
-                        setSelectedOperationName(null)
-                        setPattern(data.value)
-                    }}
-                />
-                <Button icon={<FilterRegular />} className={"operation-filter"} />
-            </Stack>
-            <div className={"operation-list"}>
-                {groupByTag
-                    ?
-                        <>
-                            {(!operationsByTags || operationsByTags.length <= 0)
-                                ? <Body1>No operations found</Body1>
-                                : 
-                                    <Accordion
-                                        multiple
-                                        collapsible
-                                        defaultOpenItems={defaultAllGroupTagsExpanded && [...Array(operationsByTags.length).keys()]}
-                                    >
-                                        {operationsByTags.map((tag, index) => (
-                                            <AccordionItem value={index}>
-                                                <AccordionHeader expandIconPosition="end">{tag.tag}</AccordionHeader>
-                                                <AccordionPanel className={"operation-accordion-panel"}>
-                                                    {tag.items.map(operation =>
-                                                        renderOperation(operation)
-                                                    )}
-                                                </AccordionPanel>
-                                            </AccordionItem>
-                                        ))}
-                                    </Accordion>
+            <div className={`operation-list-collapsible${isCollapsed ? " is-collapsed" : ""}`}>
+                <Stack horizontal verticalAlign="center" className={"operation-search-container"}>
+                    <SearchBox
+                        placeholder={"Search"}
+                        contentBefore={<SearchRegular className={"fui-search-icon"} />}
+                        className={"operation-search"}
+                        onChange={(event, data) => {
+                            setPageNumber(1);
+                            setSelectedOperationName(null);
+                            setPattern(data.value);
+                        }}
+                    />
+                    <Menu onCheckedValueChange={(e, data) => setSelectedTags(tags.filter(tag => data.checkedItems.indexOf(tag.name) > -1))}>
+                        <MenuTrigger disableButtonEnhancement>
+                            <Button
+                                icon={<FilterRegular />}
+                                className={"operation-filter"}
+                                onClick={() => setSearchByTags(!searchByTags)}
+                            />
+                        </MenuTrigger>
+                        <MenuPopover className={"fui-tags-popover"}>
+                            <MenuList>
+                                <MenuGroup>
+                                    <MenuGroupHeader>Search by tag</MenuGroupHeader>
+                                    <SearchBox
+                                        placeholder={"Search"}
+                                        contentBefore={<SearchRegular className={"fui-search-icon"} />}
+                                        className={"tags-search"}
+                                        onChange={(event, data) => setTagPattern(data.value)}
+                                    />
+                                    {tags.length === 0 ?
+                                        <Body1 block className={"tags-no-results"}>No tags found</Body1>
+                                        : tags.map(tag => (
+                                            <MenuItemCheckbox name={"tag"} value={tag.name}>
+                                                {tag.name}
+                                            </MenuItemCheckbox>
+                                        ))
+                                    }
+                                </MenuGroup>
+                            </MenuList>
+                        </MenuPopover>
+                    </Menu>
+                </Stack>
+                <div className={"operation-list"}>
+                    {working
+                        ? <Spinner label="Loading operations..." labelPosition="below" size="extra-small" />
+                        : <>
+                            {groupByTag
+                                ? <>
+                                    {(!operationsByTags || operationsByTags.length <= 0)
+                                        ? <Body1>No operations found</Body1>
+                                        :
+                                        <Accordion
+                                            multiple
+                                            collapsible
+                                            defaultOpenItems={defaultAllGroupTagsExpanded && [...Array(operationsByTags.length).keys()]}
+                                        >
+                                            {operationsByTags.map((tag, index) => (
+                                                <AccordionItem value={index} key={tag.tag}>
+                                                    <AccordionHeader expandIconPosition="end">{tag.tag}</AccordionHeader>
+                                                    <AccordionPanel className={"operation-accordion-panel"}>
+                                                        {tag.items.map(operation =>
+                                                            renderOperation(operation)
+                                                        )}
+                                                    </AccordionPanel>
+                                                </AccordionItem>
+                                            ))}
+                                        </Accordion>
+                                    }
+                                  </>
+                                : <>
+                                    {(!operations || operations.length <= 0)
+                                        ? <Body1>No operations found</Body1>
+                                        : operations.map(operation =>
+                                            renderOperation(operation)
+                                        )
+                                    }
+                                  </>
                             }
-                        </>
-                    : 
-                    <>
-                        {(!operations || operations.length <= 0)
-                            ? <Body1>No operations found</Body1>
-                            : operations.map(operation =>
-                                renderOperation(operation)
-                            )
-                        }
-                        {hasNextPage && <Link className={"show-more-operations"} onClick={() => setPageNumber(prev => prev + 1)}>Show more</Link>}
-                    </>
-                }
+                            {hasNextPage && <Link className={"show-more-operations"} onClick={() => setPageNumber(prev => prev + 1)}>Show more</Link>}
+                          </>
+                    }
+                </div>
             </div>
         </div>
     );
@@ -253,6 +352,9 @@ const OperationListFC = ({
 export class OperationList extends React.Component<OperationListProps, OperationListState> {
     @Resolve("apiService")
     public apiService: ApiService;
+
+    @Resolve("tagService")
+    public tagService: TagService;
 
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
@@ -270,12 +372,7 @@ export class OperationList extends React.Component<OperationListProps, Operation
     }
 
     componentDidMount(): void {
-        console.log(this.props);
         this.getApiName();
-    }
-
-    componentDidUpdate(prevProps: Readonly<OperationListProps>, prevState: Readonly<OperationListState>, snapshot?: any): void {
-        console.log(this.props);
     }
 
     getApiName = (): void => {
@@ -289,9 +386,10 @@ export class OperationList extends React.Component<OperationListProps, Operation
             <FluentProvider theme={fuiTheme}>
                 <OperationListFC
                     {...this.props}
-                    apiService={this.apiService}
                     apiName={this.state.apiName}
                     operationName={this.state.operationName}
+                    apiService={this.apiService}
+                    tagService={this.tagService}
                     routeHelper={this.routeHelper}
                     router={this.router}
                 />
