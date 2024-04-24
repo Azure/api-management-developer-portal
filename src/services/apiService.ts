@@ -477,23 +477,19 @@ export class ApiService {
         return SchemaType.openapi;
     }
 
-    public async getAllApiProducts(apiId: string): Promise<Page<Product>> {
+    public async getAllApiProducts(apiId: string): Promise<Product[]> {
         if (!apiId) {
             throw new Error(`Parameter "apiId" not specified.`);
         }
 
         const result = [];
-        const pageOfProducts = await this.mapiClient.get<Page<ProductContract>>(`${apiId}/products`, [await this.mapiClient.getPortalHeader("getAllApiProducts")]);
+        const allProducts = await this.mapiClient.getAll<ProductContract>(`${apiId}/products`, [await this.mapiClient.getPortalHeader("getAllApiProducts")]);
 
-        if (pageOfProducts && pageOfProducts.value) {
-            pageOfProducts.value.map(item => result.push(new Product(item)));
+        if (allProducts?.length > 0) {
+            allProducts.map(item => result.push(new Product(item)));
         }
 
-        const page = new Page<Product>();
-        page.value = result;
-        page.count = pageOfProducts.count;
-
-        return page;
+        return result;
     }
 
     /**
