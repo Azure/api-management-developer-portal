@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
 import { Stack } from "@fluentui/react";
 import { 
@@ -11,7 +10,6 @@ import {
     Body1,
     Body1Strong,
     Button,
-    FluentProvider,
     Link,
     Menu,
     MenuButton,
@@ -26,9 +24,7 @@ import {
 } from "@fluentui/react-components";
 import { ChevronUpRegular, FilterRegular, MoreHorizontalRegular, SearchRegular } from "@fluentui/react-icons";
 import { defaultPageSize } from "../../../../../constants";
-import { fuiTheme } from "../../../../../constants/fuiTheme";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
-import { Api } from "../../../../../models/api";
 import { Tag } from "../../../../../models/tag";
 import { Page } from "../../../../../models/page";
 import { Operation } from "../../../../../models/operation";
@@ -36,23 +32,9 @@ import { TagGroup } from "../../../../../models/tagGroup";
 import { ApiService } from "../../../../../services/apiService";
 import { TagService } from "../../../../../services/tagService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
+import { OperationListRuntimeProps } from "./OperationListRuntime";
 
-interface OperationListProps {
-    allowSelection?: boolean,
-    wrapText?: boolean,
-    showToggleUrlPath?: boolean,
-    defaultShowUrlPath?: boolean,
-    defaultGroupByTagToEnabled?: boolean,
-    defaultAllGroupTagsExpanded?: boolean,
-    detailsPageUrl: string
-}
-
-interface OperationListState {
-    apiName: string,
-    operationName: string
-}
-
-const OperationListFC = ({
+export const OperationList = ({
     apiName,
     operationName,
     apiService,
@@ -66,7 +48,7 @@ const OperationListFC = ({
     defaultGroupByTagToEnabled,
     defaultAllGroupTagsExpanded,
     detailsPageUrl
-}: OperationListProps & { apiName: string, operationName: string, apiService: ApiService, tagService: TagService, routeHelper: RouteHelper, router: Router }) => {
+}: OperationListRuntimeProps & { apiName: string, operationName: string, apiService: ApiService, tagService: TagService, routeHelper: RouteHelper, router: Router }) => {
     const [working, setWorking] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
@@ -91,8 +73,6 @@ const OperationListFC = ({
             grouping: groupByTag ? "tag" : "none",
             propertyName: showUrlPath ? "urlTemplate" : ""
         };
-
-        console.log('op', operationsByTags);
 
         if (apiName) {
             setWorking(true);
@@ -179,6 +159,8 @@ const OperationListFC = ({
     }
 
     const selectOperation = (operation: Operation): void => {
+        if (!operation) return;
+
         allowSelection && setSelectedOperationName(operation.name);
         const operationUrl = routeHelper.getOperationReferenceUrl(apiName, operation.name, detailsPageUrl);
         router.navigateTo(operationUrl);
@@ -311,7 +293,7 @@ const OperationListFC = ({
                             {groupByTag
                                 ? <>
                                     {(!operationsByTags || operationsByTags.length <= 0)
-                                        ? <Body1>No operations found</Body1>
+                                        ? <Body1>No operations found.</Body1>
                                         :
                                         <Accordion
                                             multiple
@@ -333,7 +315,7 @@ const OperationListFC = ({
                                   </>
                                 : <>
                                     {(!operations || operations.length <= 0)
-                                        ? <Body1>No operations found</Body1>
+                                        ? <Body1>No operations found.</Body1>
                                         : operations.map(operation =>
                                             renderOperation(operation)
                                         )
@@ -347,53 +329,4 @@ const OperationListFC = ({
             </div>
         </div>
     );
-}
-
-export class OperationList extends React.Component<OperationListProps, OperationListState> {
-    @Resolve("apiService")
-    public apiService: ApiService;
-
-    @Resolve("tagService")
-    public tagService: TagService;
-
-    @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
-
-    @Resolve("router")
-    public router: Router;
-
-    constructor(props: OperationListProps) {
-        super(props);
-
-        this.state = {
-            apiName: null,
-            operationName: null
-        }
-    }
-
-    componentDidMount(): void {
-        this.getApiName();
-    }
-
-    getApiName = (): void => {
-        const apiName = this.routeHelper.getApiName();
-        const operationName = this.routeHelper.getOperationName();
-        this.setState({ apiName, operationName });
-    }
-
-    render() {
-        return (
-            <FluentProvider theme={fuiTheme}>
-                <OperationListFC
-                    {...this.props}
-                    apiName={this.state.apiName}
-                    operationName={this.state.operationName}
-                    apiService={this.apiService}
-                    tagService={this.tagService}
-                    routeHelper={this.routeHelper}
-                    router={this.router}
-                />
-            </FluentProvider>
-        );
-    }
 }
