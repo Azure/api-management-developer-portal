@@ -1,0 +1,91 @@
+fui-operation-list {
+    flex-basis: 100%;
+
+    .operation-list-collapsible {
+        max-height: 100vh;
+        overflow: hidden;
+
+        &.is-collapsed {
+            max-height: 0;
+        }
+    }
+
+    .collapse-operations-button {
+        // span {
+        //     transition: transform .25s ease-in-out;
+        // }
+
+        &.is-collapsed span {
+            transform: rotate(180deg);
+        }
+    }
+
+    .operation-list-title {
+        width: 100%;
+    }
+
+    .operation-search-container {
+        margin: 1rem 0;
+
+        .operation-search {
+            width: 100%;
+        }
+
+        .operation-filter {
+            margin-left: .625rem;
+        }
+    }
+
+    .operation {
+        padding: 6px;
+        margin-bottom: .5rem;
+        border-left: 5px solid transparent;
+
+        &.is-selected-operation {
+            background-color: #E6E6E6;
+            border-left-color: #0F6CBD;
+            border-radius: 0 .25rem .25rem 0;
+        }
+    }
+
+    .operation-accordion-panel {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .operation-name {
+        width: 100%;
+
+        &.nowrap {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    }
+
+    .operation-method {
+        width: 75px;
+        color: #707070;
+
+        &.method-GET {
+            color: #107C10;
+        }
+
+        &.method-POST {
+            color: #0F6CBD;
+        }
+
+        &.method-DELETE {
+            color: #C50F1F;
+        }
+
+        &.method-PUT {
+            color: #8e562e;
+        }
+    }
+
+    .show-more-operations {
+        margin: 4px 0 0 11px;
+    }
+
+}
