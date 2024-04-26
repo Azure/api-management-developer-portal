@@ -276,7 +276,7 @@ export const OperationList = ({
                                     {tags.length === 0 ?
                                         <Body1 block className={"tags-no-results"}>No tags found</Body1>
                                         : tags.map(tag => (
-                                            <MenuItemCheckbox name={"tag"} value={tag.name}>
+                                            <MenuItemCheckbox name={"tag"} value={tag.name} key={tag.name}>
                                                 {tag.name}
                                             </MenuItemCheckbox>
                                         ))
