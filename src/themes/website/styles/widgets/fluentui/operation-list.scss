@@ -11,10 +11,6 @@ fui-operation-list {
     }
 
     .collapse-operations-button {
-        // span {
-        //     transition: transform .25s ease-in-out;
-        // }
-
         &.is-collapsed span {
             transform: rotate(180deg);
         }

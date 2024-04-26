@@ -7,6 +7,8 @@ import { ApiService } from "../../../../../services/apiService";
 import { TagService } from "../../../../../services/tagService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { OperationList } from "./OperationList";
+import { GraphDocService } from "../../../operation-details/ko/runtime/graphql-documentation/graphql-doc-service";
+import { GraphqlService } from "../../../../../services/graphqlService";
 
 export interface OperationListRuntimeProps {
     allowSelection?: boolean,
@@ -39,6 +41,9 @@ export class OperationListRuntime extends React.Component<OperationListRuntimePr
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
 
+    @Resolve("graphqlService")
+    public graphqlService: GraphqlService;
+
     @Resolve("router")
     public router: Router;
 
@@ -67,6 +72,8 @@ export class OperationListRuntime extends React.Component<OperationListRuntimePr
         }
 
         console.log(apiType);
+        // await this.graphDocService.initialize();
+        // console.log('gq', await this.graphqlService.defaultValues(apiName));
 
         this.setState({ apiName, operationName, apiType });
     }

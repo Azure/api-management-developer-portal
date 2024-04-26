@@ -92,6 +92,7 @@ import { TraceClick } from "./bindingHandlers/traceClick";
 import { ListOfApisRuntimeModule } from "./components/apis/list-of-apis/listOfApis.runtime.module";
 import { DetailsOfApiRuntimeModule } from "./components/apis/details-of-api/detailsOfApi.runtime.module";
 import { OperationListRuntimeModule } from "./components/operations/operation-list/operationList.runtime.module";
+import { GraphqlService } from "./services/graphqlService";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -122,6 +123,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("codeSnippet", CodeSnippet);
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);
+        injector.bind("graphqlService", GraphqlService);
         injector.bind("tagService", TagService);
         injector.bind("productService", ProductService);
         injector.bind("analyticsService", AnalyticsService);
