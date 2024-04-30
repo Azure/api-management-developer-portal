@@ -104,8 +104,12 @@
                         <div class="col-7">
                             <div class="form-group">
                                 <!-- ko if: parameter.options.length > 0 -->
-                                <select class="form-control" aria-label="Parameter value"
-                                    data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
+                                <div class="input-group has-validation">
+                                    <select class="form-control" aria-label="Parameter value"
+                                        data-bind="value: parameter.value, options: parameter.options, optionsCaption: parameter.optionsCaption, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
+                                    <span class="invalid-feedback"
+                                            data-bind="validationMessage: parameter.value"></span>
+                                </div>
                                 <!-- /ko -->
                                 <!-- ko if: parameter.options.length === 0 -->
                                 <div class="input-group has-validation">
@@ -135,8 +139,12 @@
                         <div class="col-7">
                             <div class="form-group">
                                 <!-- ko if: parameter.options.length > 0 -->
-                                <select class="form-control" aria-label="Parameter value"
-                                    data-bind="value: parameter.value, options: parameter.options, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
+                                <div class="input-group has-validation">
+                                    <select class="form-control" aria-label="Parameter value"
+                                        data-bind="value: parameter.value, options: parameter.options, optionsCaption: parameter.optionsCaption, optionsAfterRender: $component.updateRequestSummary, event:{ change: $component.updateRequestSummary }"></select>
+                                    <span class="invalid-feedback"
+                                        data-bind="validationMessage: parameter.value"></span>
+                                </div>
                                 <!-- /ko -->
                                 <div class="input-group">
                                     <!-- ko if: parameter.options.length === 0 -->
