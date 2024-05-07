@@ -90,7 +90,7 @@ import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
 import { TraceClick } from "./bindingHandlers/traceClick";
 import { OperationListRuntimeModule } from "./components/operations/operation-list/operationList.runtime.module";
-
+import { GraphqlService } from "./services/graphqlService";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -120,6 +120,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("codeSnippet", CodeSnippet);
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);
+        injector.bind("graphqlService", GraphqlService);
         injector.bind("tagService", TagService);
         injector.bind("productService", ProductService);
         injector.bind("analyticsService", AnalyticsService);
