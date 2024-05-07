@@ -187,24 +187,22 @@ export const OperationList = ({
             onClick={() => selectOperation(operation)}
         >
             {operation.name === selectedOperationName 
-                ?
-                    <>
-                        <Body1Strong className={`operation-method method-${operation.method}`}>
-                            {operation.method}
-                        </Body1Strong>
-                        <Body1Strong className={`operation-name${!wrapText ? " nowrap" : ""}`}>
-                            {showUrlPath ? operation.urlTemplate : operation.displayName}
-                        </Body1Strong>
-                    </>
-                :
-                    <>
-                        <Body1 className={`operation-method method-${operation.method}`}>
-                            {operation.method}
-                        </Body1>
-                        <Body1 className={`operation-name${!wrapText ? " nowrap" : ""}`}>
-                            {showUrlPath ? operation.urlTemplate : operation.displayName}
-                        </Body1>
-                    </>
+                ? <>
+                    <Body1Strong className={`operation-method method-${operation.method}`}>
+                        {operation.method}
+                    </Body1Strong>
+                    <Body1Strong className={`operation-name${!wrapText ? " nowrap" : ""}`}>
+                        {showUrlPath ? operation.urlTemplate : operation.displayName}
+                    </Body1Strong>
+                  </>
+                : <>
+                    <Body1 className={`operation-method method-${operation.method}`}>
+                        {operation.method}
+                    </Body1>
+                    <Body1 className={`operation-name${!wrapText ? " nowrap" : ""}`}>
+                        {showUrlPath ? operation.urlTemplate : operation.displayName}
+                    </Body1>
+                  </>
             }
         </Stack>
     )
@@ -286,13 +284,13 @@ export const OperationList = ({
                                         className={"tags-search"}
                                         onChange={(event, data) => setTagPattern(data.value)}
                                     />
-                                    {tags.length === 0 ?
-                                        <Body1 block className={"tags-no-results"}>No tags found</Body1>
+                                    {tags.length === 0 
+                                        ? <Body1 block className={"tags-no-results"}>No tags found</Body1>
                                         : tags.map(tag => (
                                             <MenuItemCheckbox name={"tag"} value={tag.name} key={tag.name}>
                                                 {tag.name}
                                             </MenuItemCheckbox>
-                                        ))
+                                          ))
                                     }
                                 </MenuGroup>
                             </MenuList>
@@ -307,12 +305,11 @@ export const OperationList = ({
                                 ? <>
                                     {(!operationsByTags || operationsByTags.length <= 0)
                                         ? <Body1>No operations found.</Body1>
-                                        :
-                                        <Accordion
+                                        : <Accordion
                                             multiple
                                             collapsible
                                             defaultOpenItems={defaultAllGroupTagsExpanded && [...Array(operationsByTags.length).keys()]}
-                                        >
+                                          >
                                             {operationsByTags.map((tag, index) => (
                                                 <AccordionItem value={index} key={tag.tag}>
                                                     <AccordionHeader expandIconPosition="end">{tag.tag}</AccordionHeader>
@@ -323,7 +320,7 @@ export const OperationList = ({
                                                     </AccordionPanel>
                                                 </AccordionItem>
                                             ))}
-                                        </Accordion>
+                                          </Accordion>
                                     }
                                   </>
                                 : <>
@@ -331,7 +328,7 @@ export const OperationList = ({
                                         ? <Body1>No operations found.</Body1>
                                         : operations.map(operation =>
                                             renderOperation(operation)
-                                        )
+                                          )
                                     }
                                   </>
                             }

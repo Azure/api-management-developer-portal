@@ -2,7 +2,7 @@ fui-operation-list {
     flex-basis: 100%;
 
     .operation-list-collapsible {
-        max-height: 100vh;
+        max-height: 100%;
         overflow: hidden;
 
         &.is-collapsed {
@@ -84,4 +84,8 @@ fui-operation-list {
         margin: 4px 0 0 11px;
     }
 
+    .operation-type-dropdown {
+        width: 100%;
+        margin-top: 1rem;
+    }
 }
