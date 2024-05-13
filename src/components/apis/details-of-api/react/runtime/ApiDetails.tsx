@@ -1,33 +1,15 @@
 import * as React from "react";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
-import ReactMarkdown from "react-markdown"; // TODO: upgrade this package and all related ones when https://github.com/hashicorp/next-mdx-remote/issues/403 fixed
 import { useEffect, useState } from "react";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
 import { Stack } from "@fluentui/react";
-import { 
-    Badge,
-    Body1,
-    Body1Strong,
-    Dropdown,
-    FluentProvider,
-    Link,
-    Menu,
-    MenuButton,
-    MenuItemRadio,
-    MenuList,
-    MenuPopover,
-    MenuTrigger,
-    Option,
-    Spinner,
-    Title1
-} from "@fluentui/react-components";
+import { Badge, Body1, Body1Strong, Dropdown, FluentProvider, Link, Option, Spinner, Title1 } from "@fluentui/react-components";
 import { Api } from "../../../../../models/api";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes"
 import { ApiService } from "../../../../../services/apiService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TypeOfApi, fuiTheme } from "../../../../../constants";
+import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
 
 interface ApiDetailsProps {
     changeLogPageUrl?: string
@@ -84,9 +66,6 @@ const ApiDetailsFC = ({
         } catch (error) {
             throw new Error(`Unable to load the API. Error: ${error.message}`);
         }
-
-        console.log(api);
-        console.log(versionedApis);
     
         return {api, versionedApis};
     }
@@ -127,10 +106,8 @@ const ApiDetailsFC = ({
 
         downloadLink.href = url;
         downloadLink.download = filename;
-        document.body.appendChild(downloadLink);
         downloadLink.click();
 
-        document.body.removeChild(downloadLink);
         window.URL.revokeObjectURL(url);
     }
 
@@ -141,75 +118,78 @@ const ApiDetailsFC = ({
                 : api
                     ? <>
                         <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
-                            <Stack horizontal>
+                            <Stack horizontal verticalAlign="center">
                                 <Title1 className={"api-title"}>{api.displayName}</Title1>
-                                {api.typeName && <Badge appearance="outline" size="small" className={"api-type"}>{api.typeName}</Badge>}
-                                {/* {api.typeName && api.typeName !== "REST" && <Badge appearance="outline">{api.typeName}</Badge>} */}
-                                
+                                {api.typeName && api.typeName !== "REST" && <Badge appearance="outline">{api.typeName}</Badge>}
+                            </Stack>
+                            {changeLogPageUrl && api.type !== TypeOfApi.graphQL && api.type !== TypeOfApi.webSocket && 
+                                <Link href={routeHelper.getApiReferenceUrl(apiName, changeLogPageUrl)}>View changelog</Link>
+                            }
+                        </Stack>
+                        {(versionedApis.length > 0 || (api.type !== TypeOfApi.graphQL && api.type !== TypeOfApi.webSocket)) && 
+                            <Stack horizontal verticalAlign="center" className={"api-details-dropdowns"}>
                                 {versionedApis.length > 0 && 
-                                    <Menu positioning="below-start" defaultCheckedValues={{ "api-version": [api.apiVersion ?? originalVersion] }}>
-                                        <MenuTrigger disableButtonEnhancement>
-                                            <MenuButton shape="circular" className={"api-version-menu"}>{api.apiVersion ?? originalVersion}</MenuButton>
-                                        </MenuTrigger>
-                                
-                                        <MenuPopover>
-                                            <MenuList>
-                                                {versionedApis.map(versionedApi =>
-                                                    <MenuItemRadio
-                                                        key={versionedApi.name}
-                                                        name={"api-version"}
-                                                        value={versionedApi.apiVersion}
-                                                        onClick={() => selectApiVersion(versionedApi.name)}
-                                                    >
-                                                        {versionedApi.apiVersion}
-                                                    </MenuItemRadio>
-                                                )}
-                                            </MenuList>
-                                        </MenuPopover>
-                                    </Menu>
+                                    <Stack horizontal verticalAlign="center">
+                                        <Body1Strong>Version</Body1Strong>
+                                        <Dropdown
+                                            defaultSelectedOptions={[api.name]}
+                                            value={api.apiVersion ?? originalVersion}
+                                            className={"api-details-dropdown"}
+                                            onOptionSelect={(e, data) => selectApiVersion(data.optionValue)}
+                                        >
+                                            {versionedApis.map(versionedApi =>
+                                                <Option key={versionedApi.name} value={versionedApi.name}>
+                                                    {versionedApi.apiVersion}
+                                                </Option>
+                                            )}
+                                        </Dropdown>
+                                    </Stack>
+                                }
+                                {api.type !== TypeOfApi.graphQL && api.type !== TypeOfApi.webSocket &&
+                                    <Stack horizontal verticalAlign="center">
+                                        <Body1Strong>Download definition</Body1Strong>
+                                        <Dropdown
+                                            placeholder="Select definition type"
+                                            className={"api-details-dropdown"}
+                                            onOptionSelect={(e, data) => downloadApiDefinition(data.optionValue as TDefinition)}
+                                        >
+                                            <Option value={TDefinition.openapiyaml}>Open API 3 (YAML)</Option>
+                                            <Option value={TDefinition.openapijson3}>Open API 3 (JSON)</Option>
+                                            <Option value={TDefinition.openapijson2}>Open API 2 (JSON)</Option>
+                                            <Option value={TDefinition.wadl}>WADL</Option>
+                                            {api.type === TypeOfApi.soap && <Option value={TDefinition.wsdl}>WSDL</Option>}
+                                        </Dropdown>
+                                    </Stack>
                                 }
                             </Stack>
-                            <Stack horizontal verticalAlign="center">
-                                <Stack horizontal verticalAlign="center">
-                                    <Body1Strong>Download definition</Body1Strong>
-                                    <Dropdown
-                                        placeholder="Select definition type"
-                                        className={"api-definition-dropdown"}
-                                        onOptionSelect={(e, data) => downloadApiDefinition(data.optionValue as TDefinition)}
-                                    >
-                                        <Option value={TDefinition.openapiyaml}>Open API 3 (YAML)</Option>
-                                        <Option value={TDefinition.openapijson3}>Open API 3 (JSON)</Option>
-                                        <Option value={TDefinition.openapijson2}>Open API 2 (JSON)</Option>
-                                        <Option value={TDefinition.wadl}>WADL</Option>
-                                        {api.type === TypeOfApi.soap && <Option value={TDefinition.wsdl}>WSDL</Option>}
-                                    </Dropdown>
-                                </Stack>
-                                {changeLogPageUrl && <Link href={routeHelper.getApiReferenceUrl(apiName, changeLogPageUrl)}>View changelog</Link>}
-                            </Stack>
-                        </Stack>
-                        <Body1><ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{api.description}</ReactMarkdown></Body1>
-                        <div className={"api-additional-info"}>
-                            {api.contact && 
-                                <div className={"api-additional-info-block"}>
-                                    <Body1 block>Contact:</Body1>
-                                    {api.contact.name && <Body1>{api.contact.name}</Body1>}
-                                    {api.contact.email && <Link href={`mailto:${api.contact.email}`}>{api.contact.email}</Link>}
-                                    {api.contact.url && <Link href={api.contact.url}>{api.contact.url}</Link>}
-                                </div>
-                            }
-                            {api.license &&
-                                <div className={"api-additional-info-block"}>
-                                    <Body1 block>License:</Body1>
-                                    {api.license.url ? <Link href={api.license.url}>{api.license.name}</Link> : <Body1>{api.license.name}</Body1>}
-                                </div>
-                            }
-                            {api.termsOfServiceUrl &&
-                                <div className={"api-additional-info-block"}>
-                                    <Body1 block>Additional resources:</Body1>
-                                    <Link href={api.termsOfServiceUrl}>Terms and conditions</Link>
-                                </div>
-                            }
-                        </div>
+                        }
+                        {api.description &&
+                            <Body1 block><MarkdownProcessor markdownToDisplay={api.description} /></Body1>
+                        }
+                        {(api.contact || api.license || api.termsOfServiceUrl) &&
+                            <div className={"api-additional-info"}>
+                                {api.contact && 
+                                    <div className={"api-additional-info-block"}>
+                                        <Body1 block>Contact:</Body1>
+                                        {api.contact.name && <Body1 block>{api.contact.name}</Body1>}
+                                        {api.contact.email && <Body1 block><Link href={`mailto:${api.contact.email}`}>{api.contact.email}</Link></Body1>}
+                                        {api.contact.url && <Link href={api.contact.url}>{api.contact.url}</Link>}
+                                    </div>
+                                }
+                                {api.license &&
+                                    <div className={"api-additional-info-block"}>
+                                        <Body1 block>License:</Body1>
+                                        {api.license.url ? <Link href={api.license.url}>{api.license.name}</Link> : <Body1>{api.license.name}</Body1>}
+                                    </div>
+                                }
+                                {api.termsOfServiceUrl &&
+                                    <div className={"api-additional-info-block"}>
+                                        <Body1 block>Additional resources:</Body1>
+                                        <Link href={api.termsOfServiceUrl}>Terms and conditions</Link>
+                                    </div>
+                                }
+                            </div>
+                        }
                       </>
                     : <Body1>No API found.</Body1>
             }
