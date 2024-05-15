@@ -58,6 +58,11 @@ export class OperationListRuntime extends React.Component<OperationListRuntimePr
 
     componentDidMount(): void {
         this.getApi();
+        this.router.addRouteChangeListener(() => this.getApi());
+    }
+
+    componentWillUnmount(): void {
+        this.router.removeRouteChangeListener(() => this.getApi());
     }
 
     getApi = async (): Promise<void> => {
@@ -65,14 +70,14 @@ export class OperationListRuntime extends React.Component<OperationListRuntimePr
         const operationName = this.routeHelper.getOperationName();
         let apiType: string;
 
-        if (apiName) {
+        if (apiName && apiName !== this.state.apiName) {
             const api = await this.apiService.getApi(`apis/${apiName}`);
             apiType = api?.type;
 
             this.graphDocService.initialize(); // TODO: remove this when the whole GQL logic is moved to React
-        }
 
-        this.setState({ apiName, operationName, apiType });
+            this.setState({ apiName, operationName, apiType });
+        }
     }
 
     render() {
