@@ -46,7 +46,7 @@ const ApiDetailsFC = ({
             loadApis()
                 .then(loadedApis => {
                     setApi(loadedApis.api);
-                    loadedApis.versionedApis && setVersionedApis(loadedApis.versionedApis);
+                    setVersionedApis(loadedApis.versionedApis);
                 })
                 .finally(() => setWorking(false))
         }
@@ -126,9 +126,9 @@ const ApiDetailsFC = ({
                                 <Link href={routeHelper.getApiReferenceUrl(apiName, changeLogPageUrl)}>View changelog</Link>
                             }
                         </Stack>
-                        {(versionedApis.length > 0 || (api.type !== TypeOfApi.graphQL && api.type !== TypeOfApi.webSocket)) && 
+                        {(versionedApis?.length > 0 || (api.type !== TypeOfApi.graphQL && api.type !== TypeOfApi.webSocket)) && 
                             <Stack horizontal verticalAlign="center" className={"api-details-dropdowns"}>
-                                {versionedApis.length > 0 && 
+                                {versionedApis?.length > 0 && 
                                     <Stack horizontal verticalAlign="center">
                                         <Body1Strong>Version</Body1Strong>
                                         <Dropdown
@@ -218,11 +218,19 @@ export class ApiDetails extends React.Component<ApiDetailsProps, ApiDetailsState
 
     componentDidMount(): void {
         this.getApi();
+        this.router.addRouteChangeListener(() => this.getApi());
+    }
+
+    componentWillUnmount(): void {
+        this.router.removeRouteChangeListener(() => this.getApi());
     }
 
     getApi = (): void => {
         const apiName = this.routeHelper.getApiName();
-        this.setState({ apiName });
+
+        if (apiName && apiName !== this.state.apiName) {
+            this.setState({ apiName });
+        }
     }
 
 
