@@ -91,7 +91,7 @@ $layout-editor-splitter-color: #ccc;
 
 /* Others */
 $z-index-base: 9100;
-$z-index-popup: 9110;
+$z-index-popup: 1000001; // adjustment because of the FluentUI overlay z-index
 $z-index-balloon: 9120;
 $z-index-dragging: 9130;
 $z-index-arrows: 9140;
