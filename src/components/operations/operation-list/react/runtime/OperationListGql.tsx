@@ -27,22 +27,22 @@ export const OperationListGql = ({
     const [selectedOperationName, setSelectedOperationName] = useState<string>();
 
     useEffect(() => {
-        if (apiName) {
-            setWorking(true);
-            getGraphValues().then(loadedValues => {
-                setGraphqlTypes(loadedValues.graphqlTypes);
-                setAvailableGraphqlTypes(loadedValues.availableGraphqlTypes);
-                
-                const selectedType = loadedValues?.availableGraphqlTypes[0];
-                if (selectedType) {
-                    const operations = loadedValues.graphqlTypes[selectedType.toLowerCase()];
-                    setSelectedGraphqlType(selectedType);
-                    setSelectedGraphqlTypeOperations(operations);
-                    setFilteredOperations(operations);
-                    Object.values(operations).length > 0 && setSelectedOperationName(Object.values(operations)[0]["name"]);
-                }
-            }).finally(() => setWorking(false));
-        }
+        if (!apiName) return;
+
+        setWorking(true);
+        getGraphValues().then(loadedValues => {
+            setGraphqlTypes(loadedValues.graphqlTypes);
+            setAvailableGraphqlTypes(loadedValues.availableGraphqlTypes);
+            
+            const selectedType = loadedValues?.availableGraphqlTypes[0];
+            if (selectedType) {
+                const operations = loadedValues.graphqlTypes[selectedType.toLowerCase()];
+                setSelectedGraphqlType(selectedType);
+                setSelectedGraphqlTypeOperations(operations);
+                setFilteredOperations(operations);
+                Object.values(operations).length > 0 && setSelectedOperationName(Object.values(operations)[0]["name"]);
+            }
+        }).finally(() => setWorking(false));
     }, [apiName]);
 
     const getGraphValues = async (): Promise<{graphqlTypes: TGraphqlTypes, availableGraphqlTypes: string[]}> => {
@@ -110,7 +110,8 @@ export const OperationListGql = ({
                     icon={<ChevronUpRegular />}
                     appearance={"transparent"}
                     className={`collapse-operations-button${isCollapsed ? " is-collapsed" : ""}`}
-                    onClick={() => setIsCollapsed(!isCollapsed)} 
+                    onClick={() => setIsCollapsed(!isCollapsed)}
+                    name={"Collapse operations"}
                 />
             </Stack>
             <div className={`operation-list-collapsible${isCollapsed ? " is-collapsed" : ""}`}>

@@ -70,6 +70,8 @@ export const OperationList = ({
     const [tagPattern, setTagPattern] = useState<string>();
 
     useEffect(() => {
+        if (!apiName) return;
+
         const query: SearchQuery = {
             pattern,
             tags: [...selectedTags],
@@ -77,47 +79,59 @@ export const OperationList = ({
             take: defaultPageSize,
             grouping: groupByTag ? "tag" : "none",
             propertyName: showUrlPath ? "urlTemplate" : ""
-        };
+        };      
+        
+        setWorking(true);
+        if (groupByTag) {
+            loadOperationsByTag(query)
+                .then(loadedOperations => {
+                    if (pageNumber > 1) {
+                        // Check if the tag is already displayed. If yes, add to this tag
+                        loadedOperations.value.forEach(newOperation => {
+                            const existingTagIndex = operationsByTags.findIndex(item => item.tag === newOperation.tag);
+                            if (existingTagIndex !== -1) {
+                                operationsByTags[existingTagIndex].items.push(...newOperation.items);
+                            } else {
+                                operationsByTags.push(newOperation);
+                            }
+                        });
+                        setOperationsByTags(operationsByTags);
+                    } else {
+                        setOperationsByTags([...loadedOperations.value]);
+                    }
 
-        if (apiName) {
-            setWorking(true);
-            if (groupByTag) {
-                loadOperationsByTag(query)
-                    .then(loadedOperations => {
-                        if (pageNumber > 1) {
-                            // Check if the tag is already displayed. If yes, add to this tag
-                            loadedOperations.value.forEach(newOperation => {
-                                const existingTagIndex = operationsByTags.findIndex(item => item.tag === newOperation.tag);
-                                if (existingTagIndex !== -1) {
-                                    operationsByTags[existingTagIndex].items.push(...newOperation.items);
-                                } else {
-                                    operationsByTags.push(newOperation);
-                                }
-                            });
-                            setOperationsByTags(operationsByTags);
+                    setHasNextPage(!!loadedOperations.nextLink);
+
+                    if (allowSelection && loadedOperations.count > 0) {
+                        if (!operationName) {
+                            selectOperation(loadedOperations.value[0].items[0]);
                         } else {
-                            setOperationsByTags([...loadedOperations.value]);
+                            const selectedOperation = loadedOperations.value.find(operation => operation.items.some(item => item.name === operationName));
+                            selectedOperation && selectOperation(selectedOperation.items.find(item => item.name === operationName));
                         }
+                    }
+                })
+                .finally(() => setWorking(false));
+        } else {
+            loadOperations(query)
+                .then(loadedOperations => {
+                    if (pageNumber > 1) {
+                        setOperations([...operations, ...loadedOperations.value]);
+                    } else {
+                        setOperations([...loadedOperations.value]);
+                    }
+                    setHasNextPage(!!loadedOperations.nextLink);
 
-                        setHasNextPage(!!loadedOperations.nextLink);
-
-                        if (allowSelection && !operationName && !selectedOperationName && loadedOperations.count > 0) selectOperation(loadedOperations.value[0].items[0]);
-                    })
-                    .finally(() => setWorking(false));
-            } else {
-                loadOperations(query)
-                    .then(loadedOperations => {
-                        if (pageNumber > 1) {
-                            setOperations([...operations, ...loadedOperations.value]);
+                    if (allowSelection && loadedOperations.count > 0) {
+                        if (!operationName) {
+                            selectOperation(loadedOperations.value[0]);
                         } else {
-                            setOperations([...loadedOperations.value]);
+                            const selectedOperation = loadedOperations.value.find(operation => operation.name === operationName);
+                            selectedOperation && selectOperation(selectedOperation);
                         }
-                        setHasNextPage(!!loadedOperations.nextLink);
-
-                        if (allowSelection && !operationName && !selectedOperationName) selectOperation(loadedOperations.value[0]);
-                    })
-                    .finally(() => setWorking(false));
-            }
+                    }
+                })
+                .finally(() => setWorking(false));
         }
     }, [apiName, pageNumber, pattern, selectedTags, groupByTag]);
 
@@ -218,6 +232,7 @@ export const OperationList = ({
                                 icon={<MoreHorizontalRegular />}
                                 appearance={"transparent"}
                                 className={"operation-more"}
+                                name={"More options"}
                             />
                         </MenuTrigger>
 
@@ -251,6 +266,7 @@ export const OperationList = ({
                         appearance={"transparent"}
                         className={`collapse-operations-button${isCollapsed ? " is-collapsed" : ""}`}
                         onClick={() => setIsCollapsed(!isCollapsed)} 
+                        name={"Collapse operations"}
                     />
                 </Stack>
             </Stack>
