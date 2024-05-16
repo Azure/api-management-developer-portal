@@ -23,6 +23,7 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
         componentInstance.styles(state.styles);
         componentInstance.aadConfig(JSON.stringify(state.aadConfig));
         componentInstance.aadB2CConfig(JSON.stringify(state.aadB2CConfig));
+        componentInstance.mode(state.mode);
     }
 
     public async modelToState(model: SigninSocialModel, state: WidgetState): Promise<void> {
@@ -40,7 +41,7 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
         const aadIdentityProvider = identityProviders.find(x => x.type === "aad");
         const aadB2CIdentityProvider = identityProviders.find(x => x.type === "aadB2C");
 
-        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
+        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done
         const termsOfService = await this.getTermsOfService();
         const termsOfUse = (termsOfService.text && termsOfService.enabled) ? termsOfService.text : undefined;
 
