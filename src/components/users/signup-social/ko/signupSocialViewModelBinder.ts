@@ -22,6 +22,7 @@ export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocial
     public stateToInstance(state: WidgetState, componentInstance: SignupSocialViewModel): void {
         componentInstance.styles(state.styles);
         componentInstance.identityProvider(state.identityProvider);
+        componentInstance.mode(state.mode);
 
         componentInstance.runtimeConfig(JSON.stringify({
             termsOfUse: state.termsOfUse,
