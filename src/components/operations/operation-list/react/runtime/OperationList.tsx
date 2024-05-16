@@ -232,7 +232,7 @@ export const OperationList = ({
                                 icon={<MoreHorizontalRegular />}
                                 appearance={"transparent"}
                                 className={"operation-more"}
-                                name={"More options"}
+                                aria-label={"More options"}
                             />
                         </MenuTrigger>
 
@@ -266,7 +266,7 @@ export const OperationList = ({
                         appearance={"transparent"}
                         className={`collapse-operations-button${isCollapsed ? " is-collapsed" : ""}`}
                         onClick={() => setIsCollapsed(!isCollapsed)} 
-                        name={"Collapse operations"}
+                        aria-label={isCollapsed ? "Show operations" : "Hide operations"}
                     />
                 </Stack>
             </Stack>
