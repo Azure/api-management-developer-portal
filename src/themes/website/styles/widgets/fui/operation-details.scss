@@ -1,0 +1,48 @@
+fui-operation-details {
+    width: 100%;
+    padding-top: 2rem;
+
+    .operation-details-title {
+        padding: .5rem 0;
+        border-bottom: 1px solid #D1D1D1;
+        margin-bottom: 1.75rem;
+    }
+
+    .operation-table {
+        border: 1px solid #D1D1D1;
+        border-radius: 4px;
+        width: 756px;
+        margin-bottom: 1.75rem;
+    }
+
+    .operation-table-header {
+        padding: .5rem 1rem;
+        background-color: #F0F0F0;
+    }
+
+    .operation-table-body-row {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+
+        &:not(:last-of-type) {
+            border-bottom: 1px solid #D1D1D1;
+        }
+    }
+
+    .operation-description {
+        padding-top: 1rem;
+    }
+
+    .operation-info-caption {
+        padding-right: .5rem;
+
+        &.ws-caption {
+            width: 75px;
+        }
+    }
+
+    .operation-text {
+        flex: 1;
+    }
+}
