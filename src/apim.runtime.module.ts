@@ -91,6 +91,7 @@ import { UsersService } from "./services/usersService";
 import { TraceClick } from "./bindingHandlers/traceClick";
 import { OperationListRuntimeModule } from "./components/operations/operation-list/operationList.runtime.module";
 import { DetailsOfApiRuntimeModule } from "./components/apis/details-of-api/detailsOfApi.runtime.module";
+import { OperationDetailsRuntimeModule } from "./components/operations/operation-details/operationDetails.runtime.module";
 import { GraphqlService } from "./services/graphqlService";
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -172,6 +173,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindModule(new RoleBasedSecurityRuntimeModule());
         injector.bindModule(new OperationListRuntimeModule());
         injector.bindModule(new DetailsOfApiRuntimeModule());
+        injector.bindModule(new OperationDetailsRuntimeModule());
 
         if (process.env.NODE_ENV === staticDataEnvironment) {
             injector.bind("httpClient", StaticDataHttpClient);
