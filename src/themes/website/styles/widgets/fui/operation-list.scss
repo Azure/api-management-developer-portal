@@ -38,7 +38,7 @@ fui-operation-list {
         border-left: 5px solid transparent;
 
         &.is-selected-operation {
-            //background-color: #E6E6E6;
+            background-color: #EBEBEB;
             border-left-color: #0F6CBD;
             border-radius: 0 .25rem .25rem 0;
         }
@@ -61,7 +61,7 @@ fui-operation-list {
 
     .operation-method {
         width: 75px;
-        color: #707070;
+        color: #696969;
 
         &.method-GET {
             color: #107C10;
