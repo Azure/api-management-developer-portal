@@ -288,6 +288,7 @@ export const OperationList = ({
                                 icon={<FilterRegular />}
                                 className={"operation-filter"}
                                 onClick={() => setSearchByTags(!searchByTags)}
+                                aria-label={"Filter by tags"}
                             />
                         </MenuTrigger>
                         <MenuPopover className={"fui-tags-popover"}>
