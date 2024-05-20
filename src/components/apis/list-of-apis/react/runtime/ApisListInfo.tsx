@@ -2,9 +2,6 @@ import * as React from "react";
 import { Dispatch, SetStateAction } from "react";
 import { Dropdown, Option, Button, Input, Toolbar, ToolbarRadioButton, ToolbarRadioGroup } from "@fluentui/react-components";
 import { Search16Regular, Dismiss16Regular } from "@fluentui/react-icons";
-import * as Constants from "../../../../../constants";
-import { Page } from "../../../../../models/page";
-import { Api } from "../../../../../models/api";
 
 export enum TLayout {
     "cards" = "cards",
@@ -48,7 +45,7 @@ const LayoutSwitchPure = ({layout, setLayout}: {layout: TLayout; setLayout: (new
 )
 
 type ApisTableInfoProps = {
-    apis: Page<Api>,
+    // apis: TApisData,
     pageNumber: number,
     layout: TLayout,
     setLayout: Dispatch<SetStateAction<TLayout>>
@@ -56,7 +53,7 @@ type ApisTableInfoProps = {
     setPattern: Dispatch<SetStateAction<string | undefined>>
 }
 
-export const ApisListInfo = ({pageNumber, apis, layout, setLayout, pattern, setPattern}: ApisTableInfoProps) => (
+export const ApisListInfo = ({pageNumber, layout, setLayout, pattern, setPattern}: ApisTableInfoProps) => (
     <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem"}}>
         <Input
             value={pattern ?? ""}
