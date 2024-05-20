@@ -130,16 +130,16 @@
     }
 }
 
-input[type=search] {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    @extend .icon-svg-magnifier;
-    background-position: 5px center;
-    background-size: 1em;
-    background-repeat: no-repeat;
-    padding-left: calc(1em + 10px);
-}
+// input[type=search] {
+//     white-space: nowrap;
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+//     @extend .icon-svg-magnifier;
+//     background-position: 5px center;
+//     background-size: 1em;
+//     background-repeat: no-repeat;
+//     padding-left: calc(1em + 10px);
+// }
 
 .input-label {
     margin-bottom: 5px;

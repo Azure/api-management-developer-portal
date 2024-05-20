@@ -1,3 +1,4 @@
+import { ReactModule } from "@paperbits/react/react.module";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSessionManager";
@@ -88,10 +89,12 @@ import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
 import { TraceClick } from "./bindingHandlers/traceClick";
-
+import { OperationListRuntimeModule } from "./components/operations/operation-list/operationList.runtime.module";
+import { GraphqlService } from "./services/graphqlService";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
+        injector.bindModule(new ReactModule());
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("traceClick", TraceClick);
         injector.bindToCollection("autostart", UnhandledErrorHandler);
@@ -117,6 +120,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("codeSnippet", CodeSnippet);
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);
+        injector.bind("graphqlService", GraphqlService);
         injector.bind("tagService", TagService);
         injector.bind("productService", ProductService);
         injector.bind("analyticsService", AnalyticsService);
@@ -165,6 +169,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
         injector.bindModule(new CustomWidgetRuntimeModule());
         injector.bindModule(new RoleBasedSecurityRuntimeModule());
+        injector.bindModule(new OperationListRuntimeModule());
 
         if (process.env.NODE_ENV === staticDataEnvironment) {
             injector.bind("httpClient", StaticDataHttpClient);
