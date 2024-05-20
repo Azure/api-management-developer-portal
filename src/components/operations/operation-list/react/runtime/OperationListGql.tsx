@@ -111,7 +111,7 @@ export const OperationListGql = ({
                     appearance={"transparent"}
                     className={`collapse-operations-button${isCollapsed ? " is-collapsed" : ""}`}
                     onClick={() => setIsCollapsed(!isCollapsed)}
-                    name={"Collapse operations"}
+                    aria-label={isCollapsed ? "Show operations" : "Hide operations"}
                 />
             </Stack>
             <div className={`operation-list-collapsible${isCollapsed ? " is-collapsed" : ""}`}>
