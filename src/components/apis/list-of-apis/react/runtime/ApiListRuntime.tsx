@@ -5,8 +5,6 @@ import { Resolve } from "@paperbits/react/decorators";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import * as Constants from "../../../../../constants";
 import { Api } from "../../../../../models/api";
-import { Tag } from "../../../../../models/tag";
-import { Page } from "../../../../../models/page";
 import { ApiService } from "../../../../../services/apiService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Pagination } from "./Pagination";
@@ -14,6 +12,7 @@ import { ApisListInfo, TLayout } from "./ApisListInfo";
 import { fuiTheme } from "../../../../../constants/fuiTheme";
 import { ApisTable } from "./ApisTable";
 import { ApisCards } from "./ApisCards";
+import { TApisData } from "./utils";
 
 export interface ApiListProps {
   allowSelection?: boolean;
@@ -24,11 +23,11 @@ export interface ApiListProps {
   layoutDefault: TLayout | undefined; // TODO remove undefined once finished
 }
 
-const loadData = async (apiService: ApiService, query: SearchQuery) => {
-    let apis: Page<Api>;
+const loadData = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean) => {
+    let apis: TApisData;
 
     try {
-        apis = await apiService.getApis(query);
+        apis = await (groupByTags ? apiService.getApisByTags(query) : apiService.getApis(query));
     } catch (error) {
         throw new Error(`Unable to load APIs. Error: ${error.message}`);
     }
@@ -39,11 +38,10 @@ const loadData = async (apiService: ApiService, query: SearchQuery) => {
 const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiType}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
-    const [apis, setApis] = useState<Page<Api>>()
+    const [apis, setApis] = useState<TApisData>()
     const [layout, setLayout] = useState<TLayout>(layoutDefault ?? TLayout.table)
-    // TODO
     const [pattern, setPattern] = useState<string>()
-    const [tags, setTags] = useState(new Set<Tag>())
+    // const [tags, setTags] = useState(new Set<Tag>())
 
     /**
      * Loads page of APIs.
@@ -51,27 +49,27 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiTy
     useEffect(() => {
         const query: SearchQuery = {
             pattern,
-            tags: [...tags],
+            // tags: [...tags],
             skip: (pageNumber - 1) * Constants.defaultPageSize,
             take: Constants.defaultPageSize
         };
 
         setWorking(true)
-        loadData(apiService, query)
+        loadData(apiService, query, true) // TODO
             .then(apis => setApis(apis))
             .finally(() => setWorking(false))
-    }, [apiService, pageNumber, tags, pattern])
+    }, [apiService, pageNumber, pattern])
 
     return (
         <>
-            <ApisListInfo apis={apis} pageNumber={pageNumber} layout={layout} setLayout={setLayout} pattern={pattern} setPattern={setPattern} />
+            <ApisListInfo pageNumber={pageNumber} layout={layout} setLayout={setLayout} pattern={pattern} setPattern={setPattern} />
 
-            {working ? (
+            {working || !apis ? (
                 <div className="table-body">
                     <Spinner label="Loading APIs" labelPosition="below" size="extra-large" />
                 </div>
             ) : (
-              <> {/* TODO - bug with width (npm start & search and you'll see) */}
+              <>
                   {layout === TLayout.table ? (
                       <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
                   ) : (
