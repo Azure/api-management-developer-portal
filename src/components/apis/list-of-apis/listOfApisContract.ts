@@ -33,6 +33,11 @@ export interface ListOfApisContract extends Contract {
     detailsPageHyperlink?: HyperlinkContract;
 
     /**
+     * Indicates that view switching is allowed.
+     */
+    allowViewSwitching: boolean;
+
+    /**
      * Widget local styles.
      */
     styles?: LocalStyles;

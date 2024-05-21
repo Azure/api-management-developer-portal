@@ -28,6 +28,11 @@ export class ListOfApisModel {
     public detailsPageHyperlink: HyperlinkModel;
 
     /**
+     * Indicates that view switching is allowed.
+     */
+    public allowViewSwitching: boolean;
+
+    /**
      * Widget local styles.
      */
     public styles: LocalStyles = {};

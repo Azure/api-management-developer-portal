@@ -40,14 +40,14 @@ const LayoutSwitchPure = ({layout, setLayout}: { layout: TLayout; setLayout: (ne
 
 type ApisTableInfoProps = {
     // apis: TApisData,
-    pageNumber: number,
     layout: TLayout,
     setLayout: Dispatch<SetStateAction<TLayout>>
     pattern: string | undefined,
     setPattern: Dispatch<SetStateAction<string | undefined>>
+    allowViewSwitching: boolean,
 }
 
-export const TableListInfo = ({pageNumber, layout, setLayout, pattern, setPattern}: ApisTableInfoProps) => (
+export const TableListInfo = ({layout, setLayout, pattern, setPattern, allowViewSwitching}: ApisTableInfoProps) => (
     <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem"}}>
         <Input
             value={pattern ?? ""}
@@ -69,7 +69,7 @@ export const TableListInfo = ({pageNumber, layout, setLayout, pattern, setPatter
 
         <div style={{display: "flex", alignItems: "center", flexDirection: "row", gap: "1rem"}}>
             <SortBy/>
-            <LayoutSwitchPure layout={layout} setLayout={setLayout}/>
+            {allowViewSwitching && <LayoutSwitchPure layout={layout} setLayout={setLayout}/>}
         </div>
     </div>
 )
