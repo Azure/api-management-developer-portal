@@ -1,7 +1,12 @@
 import * as React from "react";
 import { Dispatch, SetStateAction } from "react";
 import { Button } from "@fluentui/react-components";
-import { ChevronDoubleLeft20Regular, ChevronLeft20Regular, ChevronRight20Regular } from "@fluentui/react-icons";
+import {
+    ChevronDoubleLeft20Regular,
+    ChevronDoubleRight20Regular,
+    ChevronLeft20Regular,
+    ChevronRight20Regular
+} from "@fluentui/react-icons";
 
 export type PaginationProps = {
     pageNumber: number,
@@ -21,6 +26,6 @@ export const Pagination = ({pageNumber, setPageNumber, pageMax}: PaginationProps
             ))}
         </div>
         <Button appearance="transparent" onClick={() => setPageNumber(prev => prev + 1)} disabled={pageNumber === pageMax} icon={<ChevronRight20Regular />}/>
-        <Button appearance="transparent" onClick={() => setPageNumber(pageMax)} disabled={pageNumber === pageMax} icon={<ChevronRight20Regular />}/>
+        <Button appearance="transparent" onClick={() => setPageNumber(pageMax)} disabled={pageNumber === pageMax} icon={<ChevronDoubleRight20Regular />}/>
     </>
 )
