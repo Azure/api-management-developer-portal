@@ -1,3 +1,7 @@
+fui-api-list-runtime {
+    width: 100%;
+}
+
 .fui-table {
     border-radius: 0.375rem;
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.14);
@@ -9,6 +13,11 @@
             background: #FAFAFA;
         }
     }
+}
+
+.fui-pagination-container {
+    margin-top: 3rem;
+    text-align: center;
 }
 
 .fui-api-tag-cards-container {
@@ -39,10 +48,9 @@
         border-radius: 0.5rem;
         box-shadow: 0 0 0.125rem 0 rgba(0, 0, 0, 0.24), 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.28);
 
-        h4 {
+        .fui-Subtitle1 {
+            display: block;
             margin: 0 0 0.75rem;
-            font-size: 1.25rem;
-            font-weight: 600;
         }
 
         .fui-api-card-tags {
@@ -52,7 +60,6 @@
 
             span {
                 color: #616161;
-                font-size: 0.75rem;
                 font-style: normal;
                 font-weight: 700;
                 line-height: 1rem;
@@ -64,11 +71,9 @@
             }
         }
 
-        p {
+        .fui-Body1 {
+            display: block;
             margin-bottom: 1rem;
-            font-size: 0.875rem;
-            font-weight: 400;
-            line-height: 1.25rem;
         }
     }
 }

@@ -1,5 +1,7 @@
 import * as React from "react";
 import {
+    Body1Strong,
+    Link,
     Table,
     TableBody,
     TableCell,
@@ -23,10 +25,10 @@ const TableBodyApis = ({ showApiType, apis, getReferenceUrl }: Props & { apis: A
         {apis?.map((api) => (
             <TableRow key={api.id}>
                 <TableCell>
-                    <a href={getReferenceUrl(api)} title={api.displayName}>
+                    <Link href={getReferenceUrl(api)} title={api.displayName}>
                         {api.displayName}
                         {!!api.apiVersion && " - " + api.apiVersion}
-                    </a>
+                    </Link>
                 </TableCell>
                 <TableCell>
                     <TableCellLayout truncate title={api.description}>
@@ -48,14 +50,12 @@ const TableBodyTags = ({ showApiType, tags, getReferenceUrl }: Props & { tags: P
                 <React.Fragment key={tag}>
                     <TableRow
                         className={"fui-table-collapsibleRow"}
-                        onClick={() =>
-                            setExpanded((old) => toggleValueInSet(old, tag))
-                        }
+                        onClick={() => setExpanded((old) => toggleValueInSet(old, tag))}
                     >
                         <TableCell>
-                            <b style={{ fontWeight: 600, paddingRight: "1em" }}>
+                            <Body1Strong>
                                 {tag}
-                            </b>
+                            </Body1Strong>
 
                             <TagGroupToggleBtn expanded={expanded.has(tag)}/>
                         </TableCell>
