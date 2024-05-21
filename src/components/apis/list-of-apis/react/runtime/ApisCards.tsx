@@ -3,6 +3,7 @@ import { Body1, Body1Strong, Button, Caption1, Caption1Stronger, Link, Subtitle1
 import { Api } from "../../../../../models/api";
 import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
 import { TagGroup } from "../../../../../models/tagGroup";
+import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
 
 type Props = {
     showApiType: boolean;
@@ -21,7 +22,7 @@ const ApiCard = ({ api, getReferenceUrl, showApiType }: Props & { api: Api }) =>
                 )}
                 <Subtitle1>{api.displayName}</Subtitle1>
                 <Body1>
-                    {api.description} {/* TODO render markdown/HTML description */}
+                    <MarkdownProcessor markdownToDisplay={api.description}/>
                 </Body1>
             </div>
 
