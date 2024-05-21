@@ -4,15 +4,15 @@ import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import * as Constants from "../../../../../constants";
-import { Api } from "../../../../../models/api";
-import { ApiService } from "../../../../../services/apiService";
+import { Product } from "../../../../../models/product";
+import { ProductService } from "../../../../../services/productService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Pagination } from "../../../../utils/react/Pagination";
 import { TableListInfo, TLayout } from "../../../../utils/react/TableListInfo";
 import { fuiTheme } from "../../../../../constants/fuiTheme";
-import { ApisTable } from "./ApisTable";
-import { ApisCards } from "./ApisCards";
-import { TApisData } from "./utils";
+import { ProductsTable } from "./ProductsTable";
+import { ProductsCards } from "./ProductsCards";
+import { TProductsData } from "./utils";
 
 export interface ApiListProps {
   allowSelection?: boolean;
@@ -23,28 +23,27 @@ export interface ApiListProps {
   layoutDefault: TLayout | undefined; // TODO remove undefined once finished
 }
 
-const loadData = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean) => {
-    let apis: TApisData;
+const loadData = async (productService: ProductService, query: SearchQuery) => {
+    let products: TProductsData;
 
     try {
-        apis = await (groupByTags ? apiService.getApisByTags(query) : apiService.getApis(query));
+        products = await productService.getProductsPage(query);
     } catch (error) {
-        throw new Error(`Unable to load APIs. Error: ${error.message}`);
+        throw new Error(`Unable to load Products. Error: ${error.message}`);
     }
 
-    return apis;
+    return products;
 }
 
-const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiType}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
+const ProductListRuntimeFC = ({productService, getReferenceUrl, layoutDefault, showApiType}: ApiListProps & { productService: ProductService, getReferenceUrl: (product: Product) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
-    const [apis, setApis] = useState<TApisData>()
+    const [products, setProducts] = useState<TProductsData>()
     const [layout, setLayout] = useState<TLayout>(layoutDefault ?? TLayout.table)
     const [pattern, setPattern] = useState<string>()
-    // const [tags, setTags] = useState(new Set<Tag>())
 
     /**
-     * Loads page of APIs.
+     * Loads page of Products.
      */
     useEffect(() => {
         const query: SearchQuery = {
@@ -55,29 +54,29 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiTy
         };
 
         setWorking(true)
-        loadData(apiService, query, true) // TODO
-            .then(apis => setApis(apis))
+        loadData(productService, query)
+            .then(products => setProducts(products))
             .finally(() => setWorking(false))
-    }, [apiService, pageNumber, pattern])
+    }, [productService, pageNumber, pattern])
 
     return (
         <>
             <TableListInfo pageNumber={pageNumber} layout={layout} setLayout={setLayout} pattern={pattern} setPattern={setPattern} />
 
-            {working || !apis ? (
+            {working || !products ? (
                 <div className="table-body">
-                    <Spinner label="Loading APIs" labelPosition="below" size="extra-large" />
+                    <Spinner label="Loading Products" labelPosition="below" size="extra-large" />
                 </div>
             ) : (
               <>
                   {layout === TLayout.table ? (
-                      <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                      <ProductsTable products={products} getReferenceUrl={getReferenceUrl} />
                   ) : (
-                      <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                      <ProductsCards products={products} getReferenceUrl={getReferenceUrl} />
                   )}
 
                   <div style={{marginTop: "3rem", textAlign: "center"}}>
-                      <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(apis?.count / Constants.defaultPageSize)} />
+                      <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(products?.count / Constants.defaultPageSize)} />
                   </div>
               </>
             )}
@@ -85,24 +84,24 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiTy
     );
 }
 
-export class ApiListRuntime extends React.Component<ApiListProps> {
-    @Resolve("apiService")
-    public apiService: ApiService;
+export class ProductsListRuntime extends React.Component<ApiListProps> {
+    @Resolve("productService")
+    public productService: ProductService;
 
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
 
-    private getReferenceUrl(api: Api): string {
-        return this.routeHelper.getApiReferenceUrl(api.name, this.props.detailsPageUrl);
+    private getReferenceUrl(product: Product): string {
+        return this.routeHelper.getProductReferenceUrl(product.name, this.props.detailsPageUrl);
     }
 
     render() {
         return (
           <FluentProvider theme={fuiTheme}>
-            <ApiListRuntimeFC
+            <ProductListRuntimeFC
               {...this.props}
-              apiService={this.apiService}
-              getReferenceUrl={(api) => this.getReferenceUrl(api)}
+              productService={this.productService}
+              getReferenceUrl={(product) => this.getReferenceUrl(product)}
             />
           </FluentProvider>
         );

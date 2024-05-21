@@ -53,7 +53,7 @@ type ApisTableInfoProps = {
     setPattern: Dispatch<SetStateAction<string | undefined>>
 }
 
-export const ApisListInfo = ({pageNumber, layout, setLayout, pattern, setPattern}: ApisTableInfoProps) => (
+export const TableListInfo = ({pageNumber, layout, setLayout, pattern, setPattern}: ApisTableInfoProps) => (
     <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem"}}>
         <Input
             value={pattern ?? ""}
