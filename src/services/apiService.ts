@@ -457,7 +457,7 @@ export class ApiService {
     }
 
     private async getGQLSchemaData(apiId: string): Promise<Page<SchemaContract>> {
-        const result = await this.mapiClient.get<Page<SchemaContract>>(`${apiId}/schemas`, [await this.mapiClient.getPortalHeader("getSchemas")]);
+        const result = await this.mapiClient.get<Page<SchemaContract>>(`${apiId}/schemas?$expand=document`, [await this.mapiClient.getPortalHeader("getSchemas")]);
         return result;
     }
 

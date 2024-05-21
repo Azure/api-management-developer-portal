@@ -105,8 +105,11 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
     }
 
     deleteMedia = async (): Promise<void> => {
-        await Promise.all(this.state.selectedFiles.map(async file => await this.mediaService.deleteMedia(file)));
-        
+        // TODO: check if can be replaced with map loop instead. for loop is used because BE is not deleting it properly
+        for (const file of this.state.selectedFiles) {
+            await this.mediaService.deleteMedia(file);
+        }
+    
         this.setState({ selectedFiles: [], showDeleteConfirmation: false });
         this.eventManager.dispatchEvent('onSaveChanges');
         this.searchMedia();
@@ -167,6 +170,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                 </Stack>
                 <Image
                     src={thumbnailUrl ?? '/assets/images/no-preview.png'}
+                    alt={mediaItem.fileName}
                     imageFit={ImageFit.centerCover}
                     styles={{ root: { flexGrow: 1, marginTop: 10, marginBottom: 20 } }}
                     shouldStartVisible
@@ -182,6 +186,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                             <IconButton
                                 iconProps={{ iconName: 'CheckMark' }}
                                 onClick={() => this.renameMedia(mediaItem)}
+                                disabled={this.state.fileNewName === ''}
                             />
                             <IconButton
                                 iconProps={{ iconName: 'Cancel' }}

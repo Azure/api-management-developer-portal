@@ -7,7 +7,6 @@ import * as Constants from "../constants";
 import { MapiClient } from "./mapiClient";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
-import { ISettingsProvider } from "@paperbits/common/configuration";
 
 export class ProvisionService {
     constructor(
@@ -16,8 +15,7 @@ export class ProvisionService {
         private readonly authenticator: IAuthenticator,
         private readonly viewManager: ViewManager,
         private readonly router: Router,
-        private readonly blobStorage: AzureBlobStorage,
-        private readonly settingsProvider: ISettingsProvider
+        private readonly blobStorage: AzureBlobStorage
     ) { }
 
     private async fetchData(url: string): Promise<Object> {
@@ -29,9 +27,6 @@ export class ProvisionService {
         const dataUrl = `/editors/templates/default.json`;
         const dataObj = await this.fetchData(dataUrl);
         const keys = Object.keys(dataObj);
-
-        await this.setUpDefaultContent(dataObj);
-
         const accessToken = await this.authenticator.getAccessTokenAsString();
 
         if (!accessToken) {
@@ -110,25 +105,5 @@ export class ProvisionService {
     public async cleanup(): Promise<void> {
         await this.cleanupBlobs();
         await this.cleanupContent();
-    }
-
-    private async setUpDefaultContent(dataObj: object): Promise<void> {
-        const backendUrl = await this.settingsProvider.getSetting<string>("backendUrl") || `https://${location.hostname}`;
-        const defaultMedias: { [name: string]: string } = {
-            "hero-gradient": "hero-gradient.jpg",
-            "featured-1": "featured-1.jpg",
-            "featured-2": "featured-2.jpg",
-            "featured-3": "featured-3.jpg",
-            "contoso-black": "contoso-black.png",
-            "logo-contoso-small": "logo-contoso-small.png"
-        }
-
-        const keyPath = "/contentTypes/blob/contentItems";
-        const downloadUrl = "/assets/images/";
-
-        for (const key in defaultMedias) {
-            const media = defaultMedias[key];
-            dataObj[`${keyPath}/${key}`]["properties"]["downloadUrl"] = backendUrl + downloadUrl + media;
-        }
     }
 }

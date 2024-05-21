@@ -14,6 +14,7 @@ export class ConsoleParameter {
     public canRename: boolean;
     public error: ko.Observable<string>;
     public revealed: ko.Observable<boolean>;
+    public optionsCaption: string;
 
     public toggleRevealed(): void {
         this.revealed(!this.revealed());
@@ -30,6 +31,7 @@ export class ConsoleParameter {
         this.type = "string";
         this.error = ko.observable();
         this.revealed = ko.observable(false);
+        this.optionsCaption = null;
 
         this.name.extend(<any>{ required: { message: `Name is required.` } });
 
@@ -48,6 +50,10 @@ export class ConsoleParameter {
 
         if (this.required) {
             this.value.extend(<any>{ required: { message: `Value is required.` } });
+        }
+
+        if (!contract.defaultValue) {
+            this.optionsCaption = 'Select value...';
         }
 
         this.value(contract.defaultValue);
