@@ -1,8 +1,9 @@
 import * as React from "react";
-import { Button } from "@fluentui/react-components";
+import { Body1, Body1Strong, Button, Caption1, Caption1Stronger, Link, Subtitle1 } from "@fluentui/react-components";
 import { Api } from "../../../../../models/api";
 import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
 import { TagGroup } from "../../../../../models/tagGroup";
+import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
 
 type Props = {
     showApiType: boolean;
@@ -15,22 +16,21 @@ const ApiCard = ({ api, getReferenceUrl, showApiType }: Props & { api: Api }) =>
             <div style={{ height: "100%" }}>
                 {showApiType && (
                     <div className={"fui-list-card-tags"}>
-                        <span>API</span>
+                        <Caption1Stronger>API</Caption1Stronger>
                         <span>{api.typeName}</span>
                     </div>
                 )}
-                <h4>{api.displayName}</h4>
-                <p>
-                    {api.description} {/* TODO render markdown/HTML description */}
-                </p>
+                <Subtitle1>{api.displayName}</Subtitle1>
+
+                <MarkdownProcessor markdownToDisplay={api.description}/>
             </div>
 
             <div>
-                <a href={getReferenceUrl(api)} title={api.displayName}>
+                <Link href={getReferenceUrl(api)} title={api.displayName}>
                     <Button appearance={"outline"}>
                         Go to API
                     </Button>
-                </a>
+                </Link>
             </div>
         </div>
     );
@@ -62,9 +62,9 @@ const ApisGroupedCards = ({ showApiType, tags, getReferenceUrl }: Props & { tags
                     >
                         <TagGroupToggleBtn expanded={expanded.has(tag)}/>
 
-                        <b style={{ fontWeight: 600, paddingLeft: "1em" }}>
+                        <Body1Strong>
                             {tag}
-                        </b>
+                        </Body1Strong>
                     </div>
 
                     {expanded.has(tag) && (

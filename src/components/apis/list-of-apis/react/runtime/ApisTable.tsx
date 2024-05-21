@@ -1,5 +1,7 @@
 import * as React from "react";
 import {
+    Body1Strong,
+    Link,
     Table,
     TableBody,
     TableCell,
@@ -12,6 +14,7 @@ import { Api } from "../../../../../models/api";
 import { Page } from "../../../../../models/page";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
+import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
 
 type Props = {
     showApiType: boolean;
@@ -23,14 +26,14 @@ const TableBodyApis = ({ showApiType, apis, getReferenceUrl }: Props & { apis: A
         {apis?.map((api) => (
             <TableRow key={api.id}>
                 <TableCell>
-                    <a href={getReferenceUrl(api)} title={api.displayName}>
+                    <Link href={getReferenceUrl(api)} title={api.displayName}>
                         {api.displayName}
                         {!!api.apiVersion && " - " + api.apiVersion}
-                    </a>
+                    </Link>
                 </TableCell>
                 <TableCell>
                     <TableCellLayout truncate title={api.description}>
-                        {api.description}
+                        <MarkdownProcessor markdownToDisplay={api.description} />
                     </TableCellLayout>
                 </TableCell>
                 {showApiType && <TableCell>{api.typeName}</TableCell>}
@@ -48,14 +51,12 @@ const TableBodyTags = ({ showApiType, tags, getReferenceUrl }: Props & { tags: P
                 <React.Fragment key={tag}>
                     <TableRow
                         className={"fui-table-collapsibleRow"}
-                        onClick={() =>
-                            setExpanded((old) => toggleValueInSet(old, tag))
-                        }
+                        onClick={() => setExpanded((old) => toggleValueInSet(old, tag))}
                     >
                         <TableCell>
-                            <b style={{ fontWeight: 600, paddingRight: "1em" }}>
+                            <Body1Strong>
                                 {tag}
-                            </b>
+                            </Body1Strong>
 
                             <TagGroupToggleBtn expanded={expanded.has(tag)}/>
                         </TableCell>
@@ -80,7 +81,7 @@ export const ApisTable = ({ showApiType, apis, getReferenceUrl }: Props & { apis
     <div className={"fui-table"}>
         <Table size={"small"} aria-label={"APIs List table"}>
             <TableHeader>
-                <TableRow style={{ background: "#F5F5F5" }}>
+                <TableRow className={"fui-table-headerRow"}>
                     <TableHeaderCell>
                         <b>Name</b>
                     </TableHeaderCell>
