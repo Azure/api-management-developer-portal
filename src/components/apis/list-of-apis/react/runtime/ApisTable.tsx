@@ -14,6 +14,7 @@ import { Api } from "../../../../../models/api";
 import { Page } from "../../../../../models/page";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
+import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
 
 type Props = {
     showApiType: boolean;
@@ -32,7 +33,7 @@ const TableBodyApis = ({ showApiType, apis, getReferenceUrl }: Props & { apis: A
                 </TableCell>
                 <TableCell>
                     <TableCellLayout truncate title={api.description}>
-                        {api.description}
+                        <MarkdownProcessor markdownToDisplay={api.description} />
                     </TableCellLayout>
                 </TableCell>
                 {showApiType && <TableCell>{api.typeName}</TableCell>}
@@ -80,7 +81,7 @@ export const ApisTable = ({ showApiType, apis, getReferenceUrl }: Props & { apis
     <div className={"fui-table"}>
         <Table size={"small"} aria-label={"APIs List table"}>
             <TableHeader>
-                <TableRow style={{ background: "#F5F5F5" }}>
+                <TableRow className={"fui-table-row"}>
                     <TableHeaderCell>
                         <b>Name</b>
                     </TableHeaderCell>
