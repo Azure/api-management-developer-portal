@@ -2,7 +2,7 @@ import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ListOfApisViewModel } from "./listOfApisViewModel";
 import { ListOfApisModel } from "../listOfApisModel";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { TLayout } from "../react/runtime/ApisListInfo";
+import { TLayout } from "../../../utils/react/TableListInfo";
 
 const layoutsMap = {
     "tiles": TLayout.cards,

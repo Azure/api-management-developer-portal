@@ -11,10 +11,10 @@ type Props = {
 
 const ApiCard = ({ api, getReferenceUrl, showApiType }: Props & { api: Api }) => {
     return (
-        <div className={"fui-api-card"}>
+        <div className={"fui-list-card"}>
             <div style={{ height: "100%" }}>
                 {showApiType && (
-                    <div className={"fui-api-card-tags"}>
+                    <div className={"fui-list-card-tags"}>
                         <span>API</span>
                         <span>{api.typeName}</span>
                     </div>
@@ -37,7 +37,7 @@ const ApiCard = ({ api, getReferenceUrl, showApiType }: Props & { api: Api }) =>
 };
 
 const ApisCardsContainer = ({ showApiType, apis, getReferenceUrl }: Props & { apis: Api[] }) => (
-    <div className={"fui-api-cards-container"}>
+    <div className={"fui-list-cards-container"}>
         {apis?.map((api) => (
             <ApiCard
                 key={api.id}
@@ -53,11 +53,11 @@ const ApisGroupedCards = ({ showApiType, tags, getReferenceUrl }: Props & { tags
     const [expanded, setExpanded] = React.useState(new Set());
 
     return (
-        <div className={"fui-api-tag-cards-container"}>
+        <div className={"fui-list-tag-cards-container"}>
             {tags?.map(({ tag, items }) => (
                 <div key={tag}>
                     <div
-                        className={"fui-api-tag-cards"}
+                        className={"fui-list-tag-cards"}
                         onClick={() => setExpanded(old => toggleValueInSet(old, tag))}
                     >
                         <TagGroupToggleBtn expanded={expanded.has(tag)}/>

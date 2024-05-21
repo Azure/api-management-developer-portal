@@ -90,6 +90,7 @@ import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
 import { TraceClick } from "./bindingHandlers/traceClick";
 import { ListOfApisRuntimeModule } from "./components/apis/list-of-apis/listOfApis.runtime.module";
+import { ProductListRuntimeModule } from "./components/products/product-list/productList.runtime.module";
 
 
 export class ApimRuntimeModule implements IInjectorModule {
@@ -169,6 +170,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindModule(new CustomWidgetRuntimeModule());
         injector.bindModule(new RoleBasedSecurityRuntimeModule());
         injector.bindModule(new ListOfApisRuntimeModule());
+        injector.bindModule(new ProductListRuntimeModule());
 
         if (process.env.NODE_ENV === staticDataEnvironment) {
             injector.bind("httpClient", StaticDataHttpClient);
