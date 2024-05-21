@@ -18,7 +18,7 @@ export const toggleValueInSet = <T = any>(set: Set<T>, value: T): Set<T> => {
 }
 
 export const TagGroupToggleBtn = ({ expanded }: { expanded: boolean}) => (
-    <button className={"no-border"}>
+    <button className={"fui-toggleGroup"}>
         {expanded ? (
             <i className="icon-emb icon-emb-chevron-up"></i>
         ) : (

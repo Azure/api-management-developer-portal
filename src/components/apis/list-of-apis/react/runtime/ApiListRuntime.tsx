@@ -9,7 +9,7 @@ import { ApiService } from "../../../../../services/apiService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Pagination } from "./Pagination";
 import { ApisListInfo, TLayout } from "./ApisListInfo";
-import { fuiTheme } from "../../../../../constants/fuiTheme";
+import { fuiTheme } from "../../../../../constants";
 import { ApisTable } from "./ApisTable";
 import { ApisCards } from "./ApisCards";
 import { TApisData } from "./utils";
@@ -65,7 +65,7 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiTy
             <ApisListInfo pageNumber={pageNumber} layout={layout} setLayout={setLayout} pattern={pattern} setPattern={setPattern} />
 
             {working || !apis ? (
-                <div className="table-body">
+                <div className={"table-body"}>
                     <Spinner label="Loading APIs" labelPosition="below" size="extra-large" />
                 </div>
             ) : (
@@ -76,7 +76,7 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiTy
                       <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
                   )}
 
-                  <div style={{marginTop: "3rem", textAlign: "center"}}>
+                  <div className={"fui-pagination-container"}>
                       <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(apis?.count / Constants.defaultPageSize)} />
                   </div>
               </>
