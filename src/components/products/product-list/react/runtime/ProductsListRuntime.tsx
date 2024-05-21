@@ -16,6 +16,7 @@ import { TProductsData } from "./utils";
 
 export interface ApiListProps {
   allowSelection?: boolean;
+  allowViewSwitching?: boolean;
   defaultGroupByTagToEnabled?: boolean;
   detailsPageUrl: string;
 
@@ -34,7 +35,7 @@ const loadData = async (productService: ProductService, query: SearchQuery) => {
     return products;
 }
 
-const ProductListRuntimeFC = ({productService, getReferenceUrl, layoutDefault}: ApiListProps & { productService: ProductService, getReferenceUrl: (product: Product) => string }) => {
+const ProductListRuntimeFC = ({productService, getReferenceUrl, layoutDefault, allowViewSwitching}: ApiListProps & { productService: ProductService, getReferenceUrl: (product: Product) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
     const [products, setProducts] = useState<TProductsData>()
@@ -60,7 +61,7 @@ const ProductListRuntimeFC = ({productService, getReferenceUrl, layoutDefault}: 
 
     return (
         <>
-            <TableListInfo pageNumber={pageNumber} layout={layout} setLayout={setLayout} pattern={pattern} setPattern={setPattern} />
+            <TableListInfo layout={layout} setLayout={setLayout} pattern={pattern} setPattern={setPattern} allowViewSwitching={allowViewSwitching} />
 
             {working || !products ? (
                 <div className="table-body">

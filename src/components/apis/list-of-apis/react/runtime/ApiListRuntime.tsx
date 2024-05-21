@@ -15,12 +15,13 @@ import { ApisCards } from "./ApisCards";
 import { TApisData } from "./utils";
 
 export interface ApiListProps {
-  allowSelection?: boolean;
-  showApiType?: boolean;
-  defaultGroupByTagToEnabled?: boolean;
-  detailsPageUrl: string;
+    allowSelection?: boolean;
+    allowViewSwitching?: boolean;
+    showApiType?: boolean;
+    defaultGroupByTagToEnabled?: boolean;
+    detailsPageUrl: string;
 
-  layoutDefault: TLayout | undefined; // TODO remove undefined once finished
+    layoutDefault: TLayout | undefined; // TODO remove undefined once finished
 }
 
 const loadData = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean) => {
@@ -35,7 +36,7 @@ const loadData = async (apiService: ApiService, query: SearchQuery, groupByTags?
     return apis;
 }
 
-const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiType}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
+const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiType, allowViewSwitching}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
     const [apis, setApis] = useState<TApisData>()
@@ -62,7 +63,13 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiTy
 
     return (
         <>
-            <TableListInfo pageNumber={pageNumber} layout={layout} setLayout={setLayout} pattern={pattern} setPattern={setPattern} />
+            <TableListInfo
+                layout={layout}
+                setLayout={setLayout}
+                pattern={pattern}
+                setPattern={setPattern}
+                allowViewSwitching={allowViewSwitching}
+            />
 
             {working || !apis ? (
                 <div className={"table-body"}>
