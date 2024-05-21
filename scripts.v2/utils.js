@@ -129,27 +129,35 @@ async function downloadBlobs(blobStorageUrl, snapshotMediaFolder) {
 
         await fs.promises.mkdir(path.resolve(snapshotMediaFolder), { recursive: true });
 
-        let blobs = containerClient.listBlobsFlat();
-
-        for await (const blob of blobs) {
-            const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-            const extension = mime.getExtension(blob.properties.contentType);
-            let pathToFile;
-
-            if (extension != null) {
-                pathToFile = `${snapshotMediaFolder}/${blob.name}.${extension}`;
-            }
-            else {
-                pathToFile = `${snapshotMediaFolder}/${blob.name}`;
-            }
-
-            const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
-            await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
-            await blockBlobClient.downloadToFile(pathToFile);
-        }
+        await downloadBlobsRecursive(containerClient, snapshotMediaFolder)
     }
     catch (error) {
         throw new Error(`Unable to download media files. ${error.message}`);
+    }
+}
+
+async function downloadBlobsRecursive(containerClient, outputFolder, prefix = undefined) {
+    let blobs = containerClient.listBlobsByHierarchy("/", prefix ? { prefix: prefix } : undefined);
+    for await (const blob of blobs) {
+        if (blob.kind === "prefix") {
+            await downloadBlobsRecursive(containerClient, outputFolder, blob.name);
+            continue;
+        }
+
+        const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
+        const extension = mime.getExtension(blob.properties.contentType);
+        let pathToFile;
+
+        if (extension != null) {
+            pathToFile = `${outputFolder}/${blob.name}.${extension}`;
+        }
+        else {
+            pathToFile = `${outputFolder}/${blob.name}`;
+        }
+
+        const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
+        await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
+        await blockBlobClient.downloadToFile(pathToFile);
     }
 }
 

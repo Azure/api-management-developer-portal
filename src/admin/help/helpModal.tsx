@@ -69,7 +69,7 @@ export class HelpModal extends React.Component<HelpModalProps, HelpModalState> {
                     <ul>
                         <li><Text block><Link href="https://aka.ms/apimdocs/portal/cors" target="_blank">Enable CORS</Link></Text></li>
                         <li><Text block><Link href="https://aka.ms/apimdocs/portal/access" target="_blank">Secure access to the API Management developer portal</Link></Text></li>
-                        <li><Text block><Link href="https://aka.ms/apimdocs/portalcustomization" target="_blank">Add custom features to the developer portal</Link></Text></li>
+                        <li><Text block><Link href="https://aka.ms/apimdocs/portal/customization" target="_blank">Add custom features to the developer portal</Link></Text></li>
                     </ul>
 
                     <Text as="h3" block variant="large" styles={headerStyles}>Give feedback</Text>

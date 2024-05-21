@@ -1,4 +1,5 @@
 import { OVERRIDE_PORT_KEY } from "@azure/api-management-custom-widgets-scaffolder";
+import { Theme, webLightTheme } from "@fluentui/react-components";
 
 /**
  * APIM service SKU names.
@@ -339,3 +340,13 @@ export const overrideToastSessionKeyPrefix = "MS_APIM_CW_override_toast_dismisse
  */
 export const mobileBreakpoint = 768;
 export const smallMobileBreakpoint = 400;
+
+/**
+ * Customization of the Fluent UI Theme
+ */
+export const fuiTheme: Theme = {
+    ...webLightTheme,
+    fontFamilyBase: "inherit",
+    fontFamilyMonospace: "inherit",
+    fontFamilyNumeric: "inherit",
+};

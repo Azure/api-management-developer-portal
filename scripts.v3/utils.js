@@ -243,23 +243,31 @@ class ImporterExporter {
             const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
             const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
 
-            let blobs = containerClient.listBlobsFlat();
-
-            for await (const blob of blobs) {
-                const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
-                const pathToFile = `${snapshotMediaFolder}/${blob.name}`;
-                const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
-
-                await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
-                await blockBlobClient.downloadToFile(pathToFile);
-
-                const metadata = { contentType: blob.properties.contentType };
-                const metadataFile = JSON.stringify(metadata);
-                await fs.promises.writeFile(pathToFile + metadataFileExt, metadataFile);
-            }
+            await this.downloadBlobsRecursive(containerClient, snapshotMediaFolder);
         }
         catch (error) {
             throw new Error(`Unable to download media files. ${error.message}`);
+        }
+    }
+
+    async downloadBlobsRecursive(containerClient, outputFolder, prefix = undefined) {
+        let blobs = containerClient.listBlobsByHierarchy("/", prefix ? { prefix: prefix } : undefined);
+        for await (const blob of blobs) {
+            if (blob.kind === "prefix") {
+                await this.downloadBlobsRecursive(containerClient, outputFolder, blob.name);
+                continue;
+            }
+
+            const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
+            const pathToFile = `${outputFolder}/${blob.name}`;
+            const folderPath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
+
+            await fs.promises.mkdir(path.resolve(folderPath), { recursive: true });
+            await blockBlobClient.downloadToFile(pathToFile);
+
+            const metadata = { contentType: blob.properties.contentType };
+            const metadataFile = JSON.stringify(metadata);
+            await fs.promises.writeFile(pathToFile + metadataFileExt, metadataFile);
         }
     }
 
