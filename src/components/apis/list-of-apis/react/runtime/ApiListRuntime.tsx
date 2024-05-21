@@ -49,7 +49,7 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiTy
     useEffect(() => {
         const query: SearchQuery = {
             pattern,
-            // tags: [...tags],
+            // tags: [...tags], // TODO filter by tags
             skip: (pageNumber - 1) * Constants.defaultPageSize,
             take: Constants.defaultPageSize
         };
@@ -69,17 +69,17 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiTy
                     <Spinner label="Loading APIs" labelPosition="below" size="extra-large" />
                 </div>
             ) : (
-              <>
-                  {layout === TLayout.table ? (
-                      <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
-                  ) : (
-                      <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
-                  )}
+                <>
+                    {layout === TLayout.table ? (
+                        <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                    ) : (
+                        <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                    )}
 
-                  <div className={"fui-pagination-container"}>
-                      <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(apis?.count / Constants.defaultPageSize)} />
-                  </div>
-              </>
+                    <div className={"fui-pagination-container"}>
+                        <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(apis?.count / Constants.defaultPageSize)} />
+                    </div>
+                </>
             )}
         </>
     );
