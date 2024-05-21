@@ -1,7 +1,8 @@
 import * as React from "react";
-import { Button } from "@fluentui/react-components";
+import { Button, Link, Subtitle1 } from "@fluentui/react-components";
 import { Product } from "../../../../../models/product";
 import { TProductsData } from "./utils";
+import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
 
 type Props = {
     getReferenceUrl: (product: Product) => string;
@@ -11,18 +12,17 @@ const ProductCard = ({ product, getReferenceUrl }: Props & { product: Product })
     return (
         <div className={"fui-list-card"}>
             <div style={{ height: "100%" }}>
-                <h4>{product.displayName}</h4>
-                <p>
-                    {product.description} {/* TODO render markdown/HTML description */}
-                </p>
+                <Subtitle1>{product.displayName}</Subtitle1>
+
+                <MarkdownProcessor markdownToDisplay={product.description}/>
             </div>
 
             <div>
-                <a href={getReferenceUrl(product)} title={product.displayName}>
+                <Link href={getReferenceUrl(product)} title={product.displayName}>
                     <Button appearance={"outline"}>
                         Go to Product
                     </Button>
-                </a>
+                </Link>
             </div>
         </div>
     );

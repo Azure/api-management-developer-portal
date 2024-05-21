@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Body1, Body1Strong, Button, Caption1, Caption1Stronger, Link, Subtitle1 } from "@fluentui/react-components";
+import { Body1Strong, Button, Caption1Stronger, Link, Subtitle1 } from "@fluentui/react-components";
 import { Api } from "../../../../../models/api";
 import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
 import { TagGroup } from "../../../../../models/tagGroup";
@@ -17,7 +17,7 @@ const ApiCard = ({ api, getReferenceUrl, showApiType }: Props & { api: Api }) =>
                 {showApiType && (
                     <div className={"fui-list-card-tags"}>
                         <Caption1Stronger>API</Caption1Stronger>
-                        <span>{api.typeName}</span>
+                        <Caption1Stronger>{api.typeName}</Caption1Stronger>
                     </div>
                 )}
                 <Subtitle1>{api.displayName}</Subtitle1>

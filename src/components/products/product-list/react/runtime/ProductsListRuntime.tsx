@@ -9,14 +9,13 @@ import { ProductService } from "../../../../../services/productService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Pagination } from "../../../../utils/react/Pagination";
 import { TableListInfo, TLayout } from "../../../../utils/react/TableListInfo";
-import { fuiTheme } from "../../../../../constants/fuiTheme";
+import { fuiTheme } from "../../../../../constants";
 import { ProductsTable } from "./ProductsTable";
 import { ProductsCards } from "./ProductsCards";
 import { TProductsData } from "./utils";
 
 export interface ApiListProps {
   allowSelection?: boolean;
-  showApiType?: boolean;
   defaultGroupByTagToEnabled?: boolean;
   detailsPageUrl: string;
 
@@ -35,7 +34,7 @@ const loadData = async (productService: ProductService, query: SearchQuery) => {
     return products;
 }
 
-const ProductListRuntimeFC = ({productService, getReferenceUrl, layoutDefault, showApiType}: ApiListProps & { productService: ProductService, getReferenceUrl: (product: Product) => string }) => {
+const ProductListRuntimeFC = ({productService, getReferenceUrl, layoutDefault}: ApiListProps & { productService: ProductService, getReferenceUrl: (product: Product) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
     const [products, setProducts] = useState<TProductsData>()
@@ -68,16 +67,16 @@ const ProductListRuntimeFC = ({productService, getReferenceUrl, layoutDefault, s
                     <Spinner label="Loading Products" labelPosition="below" size="extra-large" />
                 </div>
             ) : (
-              <>
-                  {layout === TLayout.table ? (
-                      <ProductsTable products={products} getReferenceUrl={getReferenceUrl} />
-                  ) : (
-                      <ProductsCards products={products} getReferenceUrl={getReferenceUrl} />
-                  )}
+                <>
+                    {layout === TLayout.table ? (
+                        <ProductsTable products={products} getReferenceUrl={getReferenceUrl} />
+                    ) : (
+                        <ProductsCards products={products} getReferenceUrl={getReferenceUrl} />
+                    )}
 
-                  <div style={{marginTop: "3rem", textAlign: "center"}}>
-                      <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(products?.count / Constants.defaultPageSize)} />
-                  </div>
+                    <div className={"fui-pagination-container"}>
+                        <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(products?.count / Constants.defaultPageSize)} />
+                    </div>
               </>
             )}
         </>
