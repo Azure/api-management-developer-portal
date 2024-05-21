@@ -205,6 +205,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                                 info="This is how the page name will be displayed in the site menu."
                                 required
                             />}
+                        ariaLabel="Name"
                         value={this.state.page.title}
                         onChange={(event, newValue) => this.onInputChange('title', newValue, REQUIRED)}
                         errorMessage={this.state.errors['title'] ?? ''}
@@ -218,6 +219,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                                 required
                             />
                         }
+                        ariaLabel="Permalink path"
                         value={this.state.page.permalink}
                         onChange={(event, newValue) => this.onInputChange('permalink', newValue)}
                         errorMessage={this.state.errors['permalink'] ?? ''}
@@ -226,6 +228,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                     />
                     <TextField
                         onRenderLabel={() => <LabelWithInfo label="Description" info="This description helps search engines and users understand the content and purpose of this page." />}
+                        ariaLabel="Description"
                         multiline
                         autoAdjustHeight
                         value={this.state.page.description}
