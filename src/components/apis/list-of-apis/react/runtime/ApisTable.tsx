@@ -81,7 +81,7 @@ export const ApisTable = ({ showApiType, apis, getReferenceUrl }: Props & { apis
     <div className={"fui-table"}>
         <Table size={"small"} aria-label={"APIs List table"}>
             <TableHeader>
-                <TableRow className={"fui-table-row"}>
+                <TableRow className={"fui-table-headerRow"}>
                     <TableHeaderCell>
                         <b>Name</b>
                     </TableHeaderCell>

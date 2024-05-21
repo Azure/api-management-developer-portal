@@ -6,7 +6,11 @@ fui-api-list-runtime {
     border-radius: 0.375rem;
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.14);
 
-    .fui-table-row {
+    p {
+        margin: 0;
+    }
+
+    .fui-table-headerRow {
         background: #F5F5F5;
     }
 
@@ -73,11 +77,6 @@ fui-api-list-runtime {
                     border-right: 1px solid #616161;
                 }
             }
-        }
-
-        .fui-Body1 {
-            display: block;
-            margin-bottom: 1rem;
         }
     }
 }

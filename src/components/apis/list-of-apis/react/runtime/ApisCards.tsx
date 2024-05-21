@@ -21,9 +21,8 @@ const ApiCard = ({ api, getReferenceUrl, showApiType }: Props & { api: Api }) =>
                     </div>
                 )}
                 <Subtitle1>{api.displayName}</Subtitle1>
-                <Body1>
-                    <MarkdownProcessor markdownToDisplay={api.description}/>
-                </Body1>
+
+                <MarkdownProcessor markdownToDisplay={api.description}/>
             </div>
 
             <div>
