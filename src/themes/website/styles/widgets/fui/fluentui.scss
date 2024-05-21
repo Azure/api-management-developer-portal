@@ -1,0 +1,13 @@
+/**
+    Styles for React Fluent UI (fui) based common components
+*/
+
+// For consistency with designs and admin panel
+.fui-search-icon {
+    color: #0078D4;
+    transform: scaleX(-1);
+}
+
+.fui-MenuItem .fui-MenuItem__checkmark {
+    margin-top: 0;
+}
