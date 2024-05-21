@@ -187,6 +187,7 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
                                 required
                             />
                         }
+                        ariaLabel="Permalink path template"
                         value={this.state.layout.permalinkTemplate}
                         onChange={(event, newValue) => this.onInputChange('permalinkTemplate', newValue)}
                         errorMessage={this.state.errors['permalinkTemplate'] ?? ''}
