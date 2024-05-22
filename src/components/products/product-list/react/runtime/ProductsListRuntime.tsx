@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { Stack } from "@fluentui/react";
 import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
@@ -17,13 +18,12 @@ import { TProductsData } from "./utils";
 export interface ApiListProps {
   allowSelection?: boolean;
   allowViewSwitching?: boolean;
-  defaultGroupByTagToEnabled?: boolean;
   detailsPageUrl: string;
 
   layoutDefault: TLayout | undefined; // TODO remove undefined once finished
 }
 
-const loadData = async (productService: ProductService, query: SearchQuery) => {
+const loadProducts = async (productService: ProductService, query: SearchQuery) => {
     let products: TProductsData;
 
     try {
@@ -35,7 +35,9 @@ const loadData = async (productService: ProductService, query: SearchQuery) => {
     return products;
 }
 
-const ProductListRuntimeFC = ({productService, getReferenceUrl, layoutDefault, allowViewSwitching}: ApiListProps & { productService: ProductService, getReferenceUrl: (product: Product) => string }) => {
+const ProductListRuntimeFC = ({
+    productService, getReferenceUrl, layoutDefault, allowViewSwitching
+}: ApiListProps & { productService: ProductService, getReferenceUrl: (product: Product) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
     const [products, setProducts] = useState<TProductsData>()
@@ -54,33 +56,45 @@ const ProductListRuntimeFC = ({productService, getReferenceUrl, layoutDefault, a
         };
 
         setWorking(true)
-        loadData(productService, query)
+        loadProducts(productService, query)
             .then(products => setProducts(products))
             .finally(() => setWorking(false))
     }, [productService, pageNumber, pattern])
 
     return (
-        <>
-            <TableListInfo layout={layout} setLayout={setLayout} pattern={pattern} setPattern={setPattern} allowViewSwitching={allowViewSwitching} />
+        <Stack tokens={{childrenGap: "1rem"}}>
+            <Stack.Item>
+                <TableListInfo
+                    layout={layout}
+                    setLayout={setLayout}
+                    pattern={pattern}
+                    setPattern={setPattern}
+                    allowViewSwitching={allowViewSwitching}
+                />
+            </Stack.Item>
 
             {working || !products ? (
-                <div className="table-body">
-                    <Spinner label="Loading Products" labelPosition="below" size="extra-large" />
-                </div>
+                <Stack.Item>
+                    <div className="table-body">
+                        <Spinner label="Loading Products" labelPosition="below" size="extra-large" />
+                    </div>
+                </Stack.Item>
             ) : (
                 <>
-                    {layout === TLayout.table ? (
-                        <ProductsTable products={products} getReferenceUrl={getReferenceUrl} />
-                    ) : (
-                        <ProductsCards products={products} getReferenceUrl={getReferenceUrl} />
-                    )}
+                    <Stack.Item>
+                        {layout === TLayout.table ? (
+                            <ProductsTable products={products} getReferenceUrl={getReferenceUrl} />
+                        ) : (
+                            <ProductsCards products={products} getReferenceUrl={getReferenceUrl} />
+                        )}
+                    </Stack.Item>
 
-                    <div className={"fui-pagination-container"}>
+                    <Stack.Item align={"center"}>
                         <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(products?.count / Constants.defaultPageSize)} />
-                    </div>
-              </>
+                    </Stack.Item>
+                </>
             )}
-        </>
+        </Stack>
     );
 }
 
