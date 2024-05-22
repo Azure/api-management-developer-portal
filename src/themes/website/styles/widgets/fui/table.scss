@@ -1,4 +1,6 @@
-fui-api-list-runtime {
+fui-api-list-runtime, // TMP solution while KO is not fully migrated to React/FUI
+fui-product-list-runtime,
+fui-product-apis-runtime {
     width: 100%;
 }
 
@@ -21,11 +23,6 @@ fui-api-list-runtime {
             background: #FAFAFA;
         }
     }
-}
-
-.fui-pagination-container {
-    margin-top: 3rem;
-    text-align: center;
 }
 
 .fui-list-tag-cards-container {
