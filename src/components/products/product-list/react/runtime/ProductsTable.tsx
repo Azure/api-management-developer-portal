@@ -12,6 +12,7 @@ import {
 import { Product } from "../../../../../models/product";
 import { TProductsData } from "./utils";
 import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
+import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
     getReferenceUrl: (product: Product) => string;
@@ -28,7 +29,7 @@ const TableBodyProducts = ({ products, getReferenceUrl }: Props & { products: Pr
                 </TableCell>
                 <TableCell>
                     <TableCellLayout truncate title={product.description}>
-                        <MarkdownProcessor markdownToDisplay={product.description}/>
+                        <MarkdownProcessor markdownToDisplay={product.description} maxChars={markdownMaxCharsMap.table} />
                     </TableCellLayout>
                 </TableCell>
             </TableRow>

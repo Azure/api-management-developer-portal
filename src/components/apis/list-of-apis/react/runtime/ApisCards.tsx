@@ -4,6 +4,7 @@ import { Api } from "../../../../../models/api";
 import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
+import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
     showApiType: boolean;
@@ -23,7 +24,7 @@ const ApiCard = ({ api, getReferenceUrl, showApiType, detailsPageTarget }: Props
                 )}
                 <Subtitle1>{api.displayName}</Subtitle1>
 
-                <MarkdownProcessor markdownToDisplay={api.description}/>
+                <MarkdownProcessor markdownToDisplay={api.description} maxChars={markdownMaxCharsMap.cards} />
             </div>
 
             <div>

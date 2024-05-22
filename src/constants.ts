@@ -342,6 +342,14 @@ export const mobileBreakpoint = 768;
 export const smallMobileBreakpoint = 400;
 
 /**
+ * Maximum number of characters to display in markdown
+ */
+export const markdownMaxCharsMap = {
+    table: 120,
+    cards: 250,
+}
+
+/**
  * Customization of the Fluent UI Theme
  */
 export const fuiTheme: Theme = {

@@ -15,6 +15,7 @@ import { Page } from "../../../../../models/page";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
 import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
+import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
     showApiType: boolean;
@@ -34,7 +35,7 @@ const TableBodyApis = ({ showApiType, apis, getReferenceUrl, detailsPageTarget }
                 </TableCell>
                 <TableCell>
                     <TableCellLayout truncate title={api.description}>
-                        <MarkdownProcessor markdownToDisplay={api.description} />
+                        <MarkdownProcessor markdownToDisplay={api.description} maxChars={markdownMaxCharsMap.table} />
                     </TableCellLayout>
                 </TableCell>
                 {showApiType && <TableCell>{api.typeName}</TableCell>}
