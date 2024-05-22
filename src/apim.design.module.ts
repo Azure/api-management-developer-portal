@@ -1,3 +1,4 @@
+import { ReactModule } from "@paperbits/react/react.module";
 import * as Constants from "./constants";
 import "./bindingHandlers/codeEditor";
 import "./bindingHandlers/copyToClipboard";
@@ -50,7 +51,6 @@ import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CustomWidgetDesignModule } from "./components/custom-widget/customWidget.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
-
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {

@@ -89,10 +89,12 @@ import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
 import { TraceClick } from "./bindingHandlers/traceClick";
+import { GraphqlService } from "./services/graphqlService";
+import { ListOfApisRuntimeModule } from "./components/apis/list-of-apis/listOfApis.runtime.module";
+import { ProductListRuntimeModule } from "./components/products/product-list/productList.runtime.module";
 import { OperationListRuntimeModule } from "./components/operations/operation-list/operationList.runtime.module";
 import { DetailsOfApiRuntimeModule } from "./components/apis/details-of-api/detailsOfApi.runtime.module";
 import { OperationDetailsRuntimeModule } from "./components/operations/operation-details/operationDetails.runtime.module";
-import { GraphqlService } from "./services/graphqlService";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -171,6 +173,8 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
         injector.bindModule(new CustomWidgetRuntimeModule());
         injector.bindModule(new RoleBasedSecurityRuntimeModule());
+        injector.bindModule(new ListOfApisRuntimeModule());
+        injector.bindModule(new ProductListRuntimeModule());
         injector.bindModule(new OperationListRuntimeModule());
         injector.bindModule(new DetailsOfApiRuntimeModule());
         injector.bindModule(new OperationDetailsRuntimeModule());

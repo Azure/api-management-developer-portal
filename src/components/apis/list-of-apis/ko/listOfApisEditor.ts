@@ -13,6 +13,7 @@ export class ListOfApisEditor {
     public readonly itemStyles: ko.ObservableArray<any>;
     public readonly itemStyle: ko.Observable<string>;
     public readonly allowSelection: ko.Observable<boolean>;
+    public readonly allowViewSwitching: ko.Observable<boolean>;
     public readonly showApiType: ko.Observable<boolean>;
     public readonly defaultGroupByTagToEnabled: ko.Observable<boolean>;
     public readonly hyperlink: ko.Observable<HyperlinkModel>;
@@ -20,6 +21,7 @@ export class ListOfApisEditor {
 
     constructor() {
         this.allowSelection = ko.observable(false);
+        this.allowViewSwitching = ko.observable(true);
         this.showApiType = ko.observable(true);
         this.defaultGroupByTagToEnabled = ko.observable(false);
         this.hyperlink = ko.observable();
@@ -46,17 +48,20 @@ export class ListOfApisEditor {
     @OnMounted()
     public async initialize(): Promise<void> {
         this.allowSelection(this.model.allowSelection);
+        this.allowViewSwitching(this.model.allowViewSwitching);
         this.showApiType(this.model.showApiType);
         this.defaultGroupByTagToEnabled(this.model.defaultGroupByTagToEnabled);
         this.hyperlink(this.model.detailsPageHyperlink);
 
         this.allowSelection.subscribe(this.applyChanges);
+        this.allowViewSwitching.subscribe(this.applyChanges);
         this.showApiType.subscribe(this.applyChanges);
-        this.defaultGroupByTagToEnabled.subscribe(this.applyChanges);        
+        this.defaultGroupByTagToEnabled.subscribe(this.applyChanges);
     }
 
     private applyChanges(): void {
         this.model.allowSelection = this.allowSelection();
+        this.model.allowViewSwitching = this.allowViewSwitching();
         this.model.showApiType = this.showApiType();
         this.model.defaultGroupByTagToEnabled = this.defaultGroupByTagToEnabled();
         this.model.detailsPageHyperlink = this.hyperlink();
