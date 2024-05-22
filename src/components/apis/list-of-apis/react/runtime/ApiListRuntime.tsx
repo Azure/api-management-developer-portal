@@ -15,20 +15,28 @@ import { ApisCards } from "./ApisCards";
 import { TApisData } from "./utils";
 
 export interface ApiListProps {
+    productName?: string;
     allowSelection?: boolean;
     allowViewSwitching?: boolean;
     showApiType?: boolean;
     defaultGroupByTagToEnabled?: boolean;
     detailsPageUrl: string;
+    detailsPageTarget: string;
 
     layoutDefault: TLayout | undefined; // TODO remove undefined once finished
 }
 
-const loadData = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean) => {
+const loadData = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean, productName?: string) => {
     let apis: TApisData;
 
     try {
-        apis = await (groupByTags ? apiService.getApisByTags(query) : apiService.getApis(query));
+        if (productName) {
+            apis = await apiService.getProductApis(`products/${productName}`, query);
+        } else if (groupByTags) {
+            apis = await apiService.getApisByTags(query);
+        } else {
+            apis = await apiService.getApis(query);
+        }
     } catch (error) {
         throw new Error(`Unable to load APIs. Error: ${error.message}`);
     }
@@ -36,7 +44,9 @@ const loadData = async (apiService: ApiService, query: SearchQuery, groupByTags?
     return apis;
 }
 
-const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiType, allowViewSwitching}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
+const ApiListRuntimeFC = ({
+    apiService, getReferenceUrl, productName, layoutDefault, showApiType, allowViewSwitching, detailsPageTarget, defaultGroupByTagToEnabled
+}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
     const [apis, setApis] = useState<TApisData>()
@@ -56,10 +66,10 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiTy
         };
 
         setWorking(true)
-        loadData(apiService, query, true) // TODO
+        loadData(apiService, query, defaultGroupByTagToEnabled, productName) // TODO defaultGroupByTagToEnabled replace with actual value
             .then(apis => setApis(apis))
             .finally(() => setWorking(false))
-    }, [apiService, pageNumber, pattern])
+    }, [apiService, pageNumber, pattern, productName])
 
     return (
         <>
@@ -78,9 +88,9 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiTy
             ) : (
                 <>
                     {layout === TLayout.table ? (
-                        <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                        <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} detailsPageTarget={detailsPageTarget} />
                     ) : (
-                        <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                        <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} detailsPageTarget={detailsPageTarget} />
                     )}
 
                     <div className={"fui-pagination-container"}>

@@ -19,14 +19,15 @@ import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor"
 type Props = {
     showApiType: boolean;
     getReferenceUrl: (api: Api) => string;
+    detailsPageTarget: string;
 };
 
-const TableBodyApis = ({ showApiType, apis, getReferenceUrl }: Props & { apis: Api[] }) => (
+const TableBodyApis = ({ showApiType, apis, getReferenceUrl, detailsPageTarget }: Props & { apis: Api[] }) => (
     <>
         {apis?.map((api) => (
             <TableRow key={api.id}>
                 <TableCell>
-                    <Link href={getReferenceUrl(api)} title={api.displayName}>
+                    <Link href={getReferenceUrl(api)} target={detailsPageTarget} title={api.displayName}>
                         {api.displayName}
                         {!!api.apiVersion && " - " + api.apiVersion}
                     </Link>
@@ -42,7 +43,7 @@ const TableBodyApis = ({ showApiType, apis, getReferenceUrl }: Props & { apis: A
     </>
 );
 
-const TableBodyTags = ({ showApiType, tags, getReferenceUrl }: Props & { tags: Page<TagGroup<Api>> }) => {
+const TableBodyTags = ({ tags, ...props }: Props & { tags: Page<TagGroup<Api>> }) => {
     const [expanded, setExpanded] = React.useState(new Set());
 
     return (
@@ -61,14 +62,13 @@ const TableBodyTags = ({ showApiType, tags, getReferenceUrl }: Props & { tags: P
                             <TagGroupToggleBtn expanded={expanded.has(tag)}/>
                         </TableCell>
                         <TableCell></TableCell>
-                        {showApiType && <TableCell></TableCell>}
+                        {props.showApiType && <TableCell></TableCell>}
                     </TableRow>
 
                     {expanded.has(tag) && (
                         <TableBodyApis
+                            {...props}
                             apis={items}
-                            showApiType={showApiType}
-                            getReferenceUrl={getReferenceUrl}
                         />
                     )}
                 </React.Fragment>
@@ -77,7 +77,7 @@ const TableBodyTags = ({ showApiType, tags, getReferenceUrl }: Props & { tags: P
     );
 };
 
-export const ApisTable = ({ showApiType, apis, getReferenceUrl }: Props & { apis: TApisData }) => (
+export const ApisTable = ({ apis, ...props }: Props & { apis: TApisData }) => (
     <div className={"fui-table"}>
         <Table size={"small"} aria-label={"APIs List table"}>
             <TableHeader>
@@ -88,7 +88,7 @@ export const ApisTable = ({ showApiType, apis, getReferenceUrl }: Props & { apis
                     <TableHeaderCell>
                         <b>Description</b>
                     </TableHeaderCell>
-                    {showApiType && (
+                    {props.showApiType && (
                         <TableHeaderCell style={{ width: "8em" }}>
                             <b>Type</b>
                         </TableHeaderCell>
@@ -99,15 +99,13 @@ export const ApisTable = ({ showApiType, apis, getReferenceUrl }: Props & { apis
             <TableBody>
                 {isApisGrouped(apis) ? (
                     <TableBodyTags
+                        {...props}
                         tags={apis}
-                        showApiType={showApiType}
-                        getReferenceUrl={getReferenceUrl}
                     />
                 ) : (
                     <TableBodyApis
+                        {...props}
                         apis={apis.value}
-                        showApiType={showApiType}
-                        getReferenceUrl={getReferenceUrl}
                     />
                 )}
             </TableBody>
