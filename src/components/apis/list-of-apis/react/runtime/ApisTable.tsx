@@ -33,10 +33,8 @@ const TableBodyApis = ({ showApiType, apis, getReferenceUrl, detailsPageTarget }
                         {!!api.apiVersion && " - " + api.apiVersion}
                     </Link>
                 </TableCell>
-                <TableCell>
-                    <TableCellLayout truncate title={api.description}>
-                        <MarkdownProcessor markdownToDisplay={api.description} maxChars={markdownMaxCharsMap.table} />
-                    </TableCellLayout>
+                <TableCell style={{padding: ".5rem 0"}}>
+                    <MarkdownProcessor markdownToDisplay={api.description} maxChars={markdownMaxCharsMap.table} />
                 </TableCell>
                 {showApiType && <TableCell>{api.typeName}</TableCell>}
             </TableRow>
