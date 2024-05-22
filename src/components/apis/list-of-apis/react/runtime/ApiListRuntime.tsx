@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { Stack } from "@fluentui/react";
 import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
@@ -24,7 +25,7 @@ export interface ApiListProps {
     layoutDefault: TLayout | undefined; // TODO remove undefined once finished
 }
 
-const loadData = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean) => {
+const loadApis = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean) => {
     let apis: TApisData;
 
     try {
@@ -36,12 +37,15 @@ const loadData = async (apiService: ApiService, query: SearchQuery, groupByTags?
     return apis;
 }
 
-const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiType, allowViewSwitching}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
+const ApiListRuntimeFC = ({
+    apiService, getReferenceUrl, layoutDefault, showApiType, allowViewSwitching, defaultGroupByTagToEnabled
+}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
     const [apis, setApis] = useState<TApisData>()
     const [layout, setLayout] = useState<TLayout>(layoutDefault ?? TLayout.table)
     const [pattern, setPattern] = useState<string>()
+    const [groupByTag, setGroupByTag] = useState(!!defaultGroupByTagToEnabled)
     // const [tags, setTags] = useState(new Set<Tag>())
 
     /**
@@ -56,39 +60,47 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiTy
         };
 
         setWorking(true)
-        loadData(apiService, query, true) // TODO
+        loadApis(apiService, query, groupByTag)
             .then(apis => setApis(apis))
             .finally(() => setWorking(false))
-    }, [apiService, pageNumber, pattern])
+    }, [apiService, pageNumber, groupByTag, pattern])
 
     return (
-        <>
-            <TableListInfo
-                layout={layout}
-                setLayout={setLayout}
-                pattern={pattern}
-                setPattern={setPattern}
-                allowViewSwitching={allowViewSwitching}
-            />
+        <Stack tokens={{childrenGap: "1rem"}}>
+            <Stack.Item>
+                <TableListInfo
+                    layout={layout}
+                    setLayout={setLayout}
+                    pattern={pattern}
+                    setPattern={setPattern}
+                    setGroupByTag={setGroupByTag} // don't allow grouping by tags when filtering for product APIs
+                    allowViewSwitching={allowViewSwitching}
+                    defaultGroupByTagToEnabled={defaultGroupByTagToEnabled}
+                />
+            </Stack.Item>
 
             {working || !apis ? (
-                <div className={"table-body"}>
-                    <Spinner label="Loading APIs" labelPosition="below" size="extra-large" />
-                </div>
+                <Stack.Item>
+                    <div className={"table-body"}>
+                        <Spinner label="Loading APIs" labelPosition="below" size="extra-large" />
+                    </div>
+                </Stack.Item>
             ) : (
                 <>
-                    {layout === TLayout.table ? (
-                        <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
-                    ) : (
-                        <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
-                    )}
+                    <Stack.Item>
+                        {layout === TLayout.table ? (
+                            <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                        ) : (
+                            <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                        )}
+                    </Stack.Item>
 
-                    <div className={"fui-pagination-container"}>
+                    <Stack.Item align={"center"}>
                         <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(apis?.count / Constants.defaultPageSize)} />
-                    </div>
+                    </Stack.Item>
                 </>
             )}
-        </>
+        </Stack>
     );
 }
 

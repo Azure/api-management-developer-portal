@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Dispatch, SetStateAction } from "react";
-import { Dropdown, Option, Button, Input, Toolbar, ToolbarRadioButton, ToolbarRadioGroup } from "@fluentui/react-components";
+import { Stack } from "@fluentui/react";
+import { Body1Stronger, Label, Switch, Button, Input, Toolbar, ToolbarRadioButton, ToolbarRadioGroup } from "@fluentui/react-components";
 import { Search16Regular, Dismiss16Regular, AppsList24Regular } from "@fluentui/react-icons";
 
 export enum TLayout {
@@ -14,16 +14,27 @@ const CardsIcon = () => (
     </svg>
 )
 
-const sortById = "sortById"
-const SortBy = () => (
-    <>
-        <label id={sortById} style={{margin: 0, fontWeight: 600}}>Sort by</label>
+const groupByTagId = "groupByTagId";
+const GroupByTag = ({
+    setGroupByTag,
+    defaultGroupByTagToEnabled,
+}: {
+    setGroupByTag: React.Dispatch<React.SetStateAction<boolean>>;
+    defaultGroupByTagToEnabled: boolean;
+}) => (
+    <div>
+        <Label htmlFor={groupByTagId}>
+            <Body1Stronger>Group by tag</Body1Stronger>
+        </Label>
 
-        <Dropdown clearable aria-labelledby={sortById}>
-            <Option key={"foo"}>Foo</Option>
-        </Dropdown>
-    </>
-)
+        <Switch
+            id={groupByTagId}
+            aria-labelledby={groupByTagId}
+            defaultChecked={defaultGroupByTagToEnabled}
+            onChange={(_, { checked }) => setGroupByTag(checked)}
+        />
+    </div>
+);
 
 const LayoutSwitchPure = ({layout, setLayout}: { layout: TLayout; setLayout: (newLayout: TLayout) => void }) => (
     <Toolbar
@@ -41,35 +52,42 @@ const LayoutSwitchPure = ({layout, setLayout}: { layout: TLayout; setLayout: (ne
 type ApisTableInfoProps = {
     // apis: TApisData,
     layout: TLayout,
-    setLayout: Dispatch<SetStateAction<TLayout>>
+    setLayout: React.Dispatch<React.SetStateAction<TLayout>>
     pattern: string | undefined,
-    setPattern: Dispatch<SetStateAction<string | undefined>>
+    setPattern: React.Dispatch<React.SetStateAction<string | undefined>>
+    setGroupByTag?: React.Dispatch<React.SetStateAction<boolean>>
     allowViewSwitching: boolean,
+    defaultGroupByTagToEnabled?: boolean,
 }
 
-export const TableListInfo = ({layout, setLayout, pattern, setPattern, allowViewSwitching}: ApisTableInfoProps) => (
-    <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem"}}>
-        <Input
-            value={pattern ?? ""}
-            onChange={(_, {value}) => setPattern(value)}
-            contentBefore={<Search16Regular/>}
-            contentAfter={<Button onClick={() => setPattern(undefined)} appearance={"transparent"}
-                                  icon={<Dismiss16Regular/>}/>}
-            placeholder={"Search"}
-        />
-        {/*
-        <p style={{margin: 0}}>
-            Displaying <b>{
-                ((pageNumber - 1) * Constants.defaultPageSize) + 1
-            }</b> to <b>{
-                Math.min(pageNumber * Constants.defaultPageSize, apis?.count)
-            }</b> of <b>{apis?.count}</b> items
-        </p>
-        */}
+export const TableListInfo = ({layout, setLayout, pattern, setPattern, setGroupByTag, allowViewSwitching, defaultGroupByTagToEnabled}: ApisTableInfoProps) => (
+    <Stack horizontal horizontalAlign="space-between">
+        <Stack.Item>
+            <Input
+                value={pattern ?? ""}
+                onChange={(_, {value}) => setPattern(value)}
+                contentBefore={<Search16Regular/>}
+                contentAfter={<Button onClick={() => setPattern(undefined)} appearance={"transparent"}
+                                      icon={<Dismiss16Regular/>}/>}
+                placeholder={"Search"}
+            />
 
-        <div style={{display: "flex", alignItems: "center", flexDirection: "row", gap: "1rem"}}>
-            <SortBy/>
-            {allowViewSwitching && <LayoutSwitchPure layout={layout} setLayout={setLayout}/>}
-        </div>
-    </div>
+            {/*
+            <p style={{margin: 0}}>
+                Displaying <b>{
+                    ((pageNumber - 1) * Constants.defaultPageSize) + 1
+                }</b> to <b>{
+                    Math.min(pageNumber * Constants.defaultPageSize, apis?.count)
+                }</b> of <b>{apis?.count}</b> items
+            </p>
+            */}
+        </Stack.Item>
+
+        <Stack.Item>
+            <Stack horizontal tokens={{childrenGap: "1rem"}}>
+                {setGroupByTag && <GroupByTag setGroupByTag={setGroupByTag} defaultGroupByTagToEnabled={defaultGroupByTagToEnabled} />}
+                {allowViewSwitching && <LayoutSwitchPure layout={layout} setLayout={setLayout} />}
+            </Stack>
+        </Stack.Item>
+    </Stack>
 )
