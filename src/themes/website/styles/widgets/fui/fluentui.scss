@@ -18,3 +18,23 @@
     border: none;
     background: none;
 }
+
+.operation-method {
+    color: #696969;
+
+    &.method-GET {
+        color: #107C10;
+    }
+
+    &.method-POST {
+        color: #0F6CBD;
+    }
+
+    &.method-DELETE {
+        color: #C50F1F;
+    }
+
+    &.method-PUT {
+        color: #8e562e;
+    }
+}

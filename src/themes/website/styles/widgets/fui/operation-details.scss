@@ -8,16 +8,20 @@ fui-operation-details {
         margin-bottom: 1.75rem;
     }
 
+    .operation-details-content {
+        max-width: 800px;
+    }
+
     .operation-table {
         border: 1px solid #D1D1D1;
         border-radius: 4px;
-        width: 756px;
         margin-bottom: 1.75rem;
+        overflow: hidden;
     }
 
     .operation-table-header {
         padding: .5rem 1rem;
-        background-color: #F0F0F0;
+        background-color: #F5F5F5;
     }
 
     .operation-table-body-row {
@@ -32,6 +36,18 @@ fui-operation-details {
 
     .operation-description {
         padding-top: 1rem;
+
+        p:only-of-type {
+            margin-bottom: 0;
+        }
+    }
+
+    .operation-tags {
+        padding-top: 1rem;
+        
+        > * {
+            margin-right: .5rem;
+        }
     }
 
     .operation-info-caption {
@@ -44,5 +60,29 @@ fui-operation-details {
 
     .operation-text {
         flex: 1;
+    }
+
+    .operation-request,
+    .operation-response {
+        padding-top: 3.5rem;
+    }
+
+    .operation-subtitle1 {
+        margin-bottom: 1rem;
+    }
+
+    .operation-subtitle2 {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .operation-content-type-dropdown {
+        min-width: 130px;
+        margin-left: .5rem;
+    }
+
+    .operation-body {
+        border-bottom: 1px solid #D1D1D1;
+        margin-top: 1.5rem;
     }
 }
