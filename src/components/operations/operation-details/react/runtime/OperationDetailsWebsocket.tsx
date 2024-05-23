@@ -1,11 +1,13 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Body1, Button, Caption1Strong, Spinner, Subtitle1, Subtitle2, Tooltip } from "@fluentui/react-components";
+import { Stack } from "@fluentui/react";
+import { Badge, Body1, Body1Strong, Button, Caption1Strong, Spinner, Subtitle1, Subtitle2, Tooltip } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
 import { ApiService } from "../../../../../services/apiService";
 import { Operation } from "../../../../../models/operation";
 import { Api } from "../../../../../models/api";
-import { Utils } from "../../../../../utils";
+import { Tag } from "../../../../../models/tag";
+import { getRequestUrl } from "./utils";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
 
 export const OperationDetailsWebsocket = ({
@@ -17,6 +19,7 @@ export const OperationDetailsWebsocket = ({
     const [working, setWorking] = useState(false);
     const [api, setApi] = useState<Api>(null);
     const [operation, setOperation] = useState<Operation>(null);
+    const [tags, setTags] = useState<Tag[]>([]);
     const [hostnames, setHostnames] = useState<string[]>([]);
     const [requestUrl, setRequestUrl] = useState<string>(null);
     const [isCopied, setIsCopied] = useState(false);
@@ -25,7 +28,10 @@ export const OperationDetailsWebsocket = ({
         if (apiName) {
             setWorking(true);
             loadApi().then(loadedApi => setApi(loadedApi));
-            loadOperation().then(loadedOperation => setOperation(loadedOperation));
+            loadOperation().then(loadedValues => {
+                setOperation(loadedValues.operation);
+                setTags(loadedValues.tags);
+            });
             loadGatewayInfo().then(hostnames => {
                 hostnames.length > 0 && setHostnames(hostnames);
             }).finally(() => setWorking(false));
@@ -33,7 +39,7 @@ export const OperationDetailsWebsocket = ({
     }, [apiName]);
 
     useEffect(() => {
-        setRequestUrl(getRequestUrl());
+        setRequestUrl(getRequestUrl(api, operation, hostnames?.[0]));
     }, [api, operation, hostnames]);
 
     useEffect(() => {
@@ -52,42 +58,25 @@ export const OperationDetailsWebsocket = ({
         return api;
     }
 
-    const loadOperation = async (): Promise<Operation> => {
+    const loadOperation = async (): Promise<{operation: Operation, tags: Tag[]}> => {
         let operation: Operation;
+        let tags: Tag[];
 
         try {
             // As WS APIs don't expose API operations, selecting the first operation if exists
             const operations = await apiService.getOperations(`apis/${apiName}`);
             operation = operations?.value[0];
+
+            operation && (tags = await apiService.getOperationTags(`apis/${apiName}/operations/${operation.name}`));
         } catch (error) {
             throw new Error(`Unable to load the operation. Error: ${error.message}`);
         }
 
-        return operation;
+        return {operation, tags};
     }
 
     const loadGatewayInfo = async (): Promise<string[]> => {
         return await apiService.getApiHostnames(apiName, includeAllHostnames);
-    }
-
-    const getRequestUrl = (): string => {
-        if (!api || !operation) return "";
-
-        let operationPath = api.versionedPath;
-        operationPath += operation.displayUrlTemplate;
-
-        let requestUrl = "";
-        const hostname = hostnames?.[0];
-
-        if (hostname) requestUrl += hostname;
-
-        requestUrl += Utils.ensureLeadingSlash(operationPath);
-
-        if (api.apiVersion && api.apiVersionSet?.versioningScheme === "Query") {
-            return Utils.addQueryParameter(requestUrl, api.apiVersionSet.versionQueryName, api.apiVersion);
-        }
-
-        return requestUrl;
     }
 
     return (
@@ -102,6 +91,12 @@ export const OperationDetailsWebsocket = ({
                             <div className={"operation-table-header"}>
                                 <Subtitle2>{operation.displayName}</Subtitle2>
                                 {operation.description && <Body1 block className={"operation-description"}>{operation.description}</Body1>}
+                                {tags.length > 0 &&
+                                    <Stack horizontal className={"operation-tags"}>
+                                        <Body1Strong>Tags:</Body1Strong>
+                                        {tags.map(tag => <Badge key={tag.id} color="important" appearance="outline">{tag.name}</Badge>)}
+                                    </Stack>
+                                }
                             </div>
                             <div className={"operation-table-body"}>
                                 <div className={"operation-table-body-row"}>

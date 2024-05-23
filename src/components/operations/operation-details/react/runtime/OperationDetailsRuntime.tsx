@@ -9,6 +9,7 @@ import { GraphqlService } from "../../../../../services/graphqlService";
 import { GraphDocService } from "../../../operation-details/ko/runtime/graphql-documentation/graphql-doc-service";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { OperationDetailsWebsocket } from "./OperationDetailsWebsocket";
+import { OperationDetails } from "./OperationDetails";
 
 export interface OperationDetailsRuntimeProps {
     enableConsole?: boolean,
@@ -56,6 +57,11 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
 
     componentDidMount(): void {
         this.getApi();
+        this.router.addRouteChangeListener(() => this.getApi());
+    }
+
+    componentWillUnmount(): void {
+        this.router.removeRouteChangeListener(() => this.getApi());
     }
 
     getApi = async (): Promise<void> => {
@@ -65,7 +71,7 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
 
         console.log(operationName);
 
-        if (apiName) {
+        if (apiName && (apiName !== this.state.apiName || operationName !== this.state.operationName)) {
             const api = await this.apiService.getApi(`apis/${apiName}`);
             apiType = api?.type;
 
@@ -79,28 +85,17 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
         return (
             <FluentProvider theme={fuiTheme}>
                 {this.state.apiType === TypeOfApi.webSocket 
-                    && <OperationDetailsWebsocket
+                    ? <OperationDetailsWebsocket
                             {...this.props}
                             apiName={this.state.apiName}
                             apiService={this.apiService}
                         />
-                    // : this.state.apiType === TypeOfApi.graphQL
-                    //     ? <OperationListGql
-                    //         {...this.props}
-                    //         apiName={this.state.apiName}
-                    //         graphqlService={this.graphqlService}
-                    //         routeHelper={this.routeHelper}
-                    //         router={this.router}
-                    //       />
-                    //     : <OperationList
-                    //         {...this.props}
-                    //         apiName={this.state.apiName}
-                    //         operationName={this.state.operationName}
-                    //         apiService={this.apiService}
-                    //         tagService={this.tagService}
-                    //         routeHelper={this.routeHelper}
-                    //         router={this.router}
-                    //     />
+                    : <OperationDetails
+                            {...this.props}
+                            apiName={this.state.apiName}
+                            operationName={this.state.operationName}
+                            apiService={this.apiService}
+                        />
                 }
             </FluentProvider>
         );
