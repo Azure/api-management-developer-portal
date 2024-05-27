@@ -1,7 +1,19 @@
 import * as React from "react";
 import { Stack } from "@fluentui/react";
-import { Body1Stronger, Label, Switch, Button, Input, Toolbar, ToolbarRadioButton, ToolbarRadioGroup } from "@fluentui/react-components";
+import {
+    Body1Stronger,
+    Label,
+    Switch,
+    Button,
+    Input,
+    Toolbar,
+    ToolbarRadioButton,
+    ToolbarRadioGroup,
+} from "@fluentui/react-components";
 import { Search16Regular, Dismiss16Regular, AppsList24Regular } from "@fluentui/react-icons";
+import { TableFiltersButton, TFilterActive } from "./TableFilters";
+import { useTableFiltersTags } from "./useTableFiltersTags";
+import { TagService } from "../../../services/tagService";
 
 export enum TLayout {
     "cards" = "cards",
@@ -57,8 +69,11 @@ const LayoutSwitchPure = ({layout, setLayout}: { layout: TLayout; setLayout: (ne
 
 type ApisTableInfoProps = {
     // apis: TApisData,
+    tagService: TagService,
     layout: TLayout,
     setLayout: React.Dispatch<React.SetStateAction<TLayout>>
+    filters: TFilterActive,
+    setFilters?: React.Dispatch<React.SetStateAction<TFilterActive>>
     pattern: string | undefined,
     setPattern: React.Dispatch<React.SetStateAction<string | undefined>>
     setGroupByTag?: React.Dispatch<React.SetStateAction<boolean>>
@@ -66,34 +81,88 @@ type ApisTableInfoProps = {
     defaultGroupByTagToEnabled?: boolean,
 }
 
-export const TableListInfo = ({layout, setLayout, pattern, setPattern, setGroupByTag, allowViewSwitching, defaultGroupByTagToEnabled}: ApisTableInfoProps) => (
-    <Stack horizontal horizontalAlign="space-between">
-        <Stack.Item>
-            <Input
-                value={pattern ?? ""}
-                onChange={(_, {value}) => setPattern(value)}
-                contentBefore={<Search16Regular/>}
-                contentAfter={<Button onClick={() => setPattern(undefined)} appearance={"transparent"}
-                                      icon={<Dismiss16Regular/>}/>}
-                placeholder={"Search"}
-            />
+const filtersOptions = [
+    {
+        value: "foo",
+        label: "Foo",
+        items: [
+            { value: "foo1", label: "Foo 1" },
+            { value: "foo2", label: "Foo 2" },
+            { value: "foo3", label: "Foo 3" },
+        ],
+    },
+];
 
-            {/*
-            <p style={{margin: 0}}>
-                Displaying <b>{
-                    ((pageNumber - 1) * Constants.defaultPageSize) + 1
-                }</b> to <b>{
-                    Math.min(pageNumber * Constants.defaultPageSize, apis?.count)
-                }</b> of <b>{apis?.count}</b> items
-            </p>
-            */}
-        </Stack.Item>
+export const TableListInfo = ({
+    tagService,
+    layout,
+    setLayout,
+    filters,
+    setFilters,
+    pattern,
+    setPattern,
+    setGroupByTag,
+    allowViewSwitching,
+    defaultGroupByTagToEnabled,
+}: ApisTableInfoProps) => {
+    const filterOptionTags = useTableFiltersTags(tagService);
 
-        <Stack.Item>
-            <Stack horizontal tokens={{childrenGap: "1rem"}}>
-                {setGroupByTag && <GroupByTag setGroupByTag={setGroupByTag} defaultGroupByTagToEnabled={defaultGroupByTagToEnabled} />}
-                {allowViewSwitching && <LayoutSwitchPure layout={layout} setLayout={setLayout} />}
-            </Stack>
-        </Stack.Item>
-    </Stack>
-)
+    return (
+        <Stack horizontal horizontalAlign="space-between">
+            <Stack.Item>
+                <Stack horizontal tokens={{ childrenGap: "1rem" }}>
+                    {setFilters && (
+                        <Stack.Item>
+                            <TableFiltersButton
+                                filtersActive={filters}
+                                setFiltersActive={setFilters}
+                                filtersOptions={[filterOptionTags, ...filtersOptions]}
+                                accordionProps={{ defaultOpenItems: "tags" }}
+                            />
+                        </Stack.Item>
+                    )}
+
+                    <Stack.Item>
+                        <Input
+                            value={pattern ?? ""}
+                            onChange={(_, { value }) => setPattern(value)}
+                            contentBefore={<Search16Regular />}
+                            contentAfter={
+                                <Button
+                                    onClick={() => setPattern(undefined)}
+                                    appearance={"transparent"}
+                                    icon={<Dismiss16Regular />}
+                                />
+                            }
+                            placeholder={"Search"}
+                        />
+                    </Stack.Item>
+                </Stack>
+
+                {/*
+                <p style={{margin: 0}}>
+                    Displaying <b>{
+                        ((pageNumber - 1) * Constants.defaultPageSize) + 1
+                    }</b> to <b>{
+                        Math.min(pageNumber * Constants.defaultPageSize, apis?.count)
+                    }</b> of <b>{apis?.count}</b> items
+                </p>
+                */}
+            </Stack.Item>
+
+            <Stack.Item>
+                <Stack horizontal tokens={{ childrenGap: "1rem" }}>
+                    {setGroupByTag && (
+                        <GroupByTag
+                            setGroupByTag={setGroupByTag}
+                            defaultGroupByTagToEnabled={defaultGroupByTagToEnabled}
+                        />
+                    )}
+                    {allowViewSwitching && (
+                        <LayoutSwitchPure layout={layout} setLayout={setLayout} />
+                    )}
+                </Stack>
+            </Stack.Item>
+        </Stack>
+    );
+}

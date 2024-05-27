@@ -7,6 +7,7 @@ import { SearchQuery } from "../../../../../contracts/searchQuery";
 import * as Constants from "../../../../../constants";
 import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
+import { TagService } from "../../../../../services/tagService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Pagination } from "../../../../utils/react/Pagination";
 import { TableListInfo, TLayout } from "../../../../utils/react/TableListInfo";
@@ -46,15 +47,15 @@ const loadApis = async (apiService: ApiService, query: SearchQuery, groupByTags?
 }
 
 const ApiListRuntimeFC = ({
-    apiService, getReferenceUrl, productName, layoutDefault, showApiType, allowViewSwitching, detailsPageTarget, defaultGroupByTagToEnabled
-}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
+    apiService, tagService, getReferenceUrl, productName, layoutDefault, showApiType, allowViewSwitching, detailsPageTarget, defaultGroupByTagToEnabled
+}: ApiListProps & { apiService: ApiService, tagService: TagService, getReferenceUrl: (api: Api) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
     const [apis, setApis] = useState<TApisData>()
     const [layout, setLayout] = useState<TLayout>(layoutDefault ?? TLayout.table)
     const [pattern, setPattern] = useState<string>()
     const [groupByTag, setGroupByTag] = useState(!!defaultGroupByTagToEnabled)
-    // const [tags, setTags] = useState(new Set<Tag>())
+    const [filters, setFilters] = useState({ tags: [] as string[] })
 
     /**
      * Loads page of APIs.
@@ -62,25 +63,28 @@ const ApiListRuntimeFC = ({
     useEffect(() => {
         const query: SearchQuery = {
             pattern,
-            // tags: [...tags], // TODO filter by tags
+            tags: !groupByTag ? filters.tags.map(name => ({ id: name, name })) : [],
             skip: (pageNumber - 1) * Constants.defaultPageSize,
             take: Constants.defaultPageSize
         };
 
-        setWorking(true)
+        setWorking(true);
         loadApis(apiService, query, groupByTag, productName)
             .then(apis => setApis(apis))
-            .finally(() => setWorking(false))
-    }, [apiService, pageNumber, groupByTag, pattern, productName])
+            .finally(() => setWorking(false));
+    }, [apiService, pageNumber, groupByTag, filters, pattern, productName])
 
     return (
-        <Stack tokens={{childrenGap: "1rem"}}>
+        <Stack tokens={{ childrenGap: "1rem" }}>
             <Stack.Item>
                 <TableListInfo
+                    tagService={tagService}
                     layout={layout}
                     setLayout={setLayout}
                     pattern={pattern}
                     setPattern={setPattern}
+                    filters={filters}
+                    setFilters={groupByTag ? undefined : setFilters}
                     setGroupByTag={productName ? undefined : setGroupByTag} // don't allow grouping by tags when filtering for product APIs
                     allowViewSwitching={allowViewSwitching}
                     defaultGroupByTagToEnabled={defaultGroupByTagToEnabled}
@@ -89,9 +93,7 @@ const ApiListRuntimeFC = ({
 
             {working || !apis ? (
                 <Stack.Item>
-                    <div className={"table-body"}>
-                        <Spinner label="Loading APIs" labelPosition="below" size="extra-large" />
-                    </div>
+                    <Spinner label="Loading APIs" labelPosition="below" size="extra-large" />
                 </Stack.Item>
             ) : (
                 <>
@@ -116,6 +118,9 @@ export class ApiListRuntime extends React.Component<ApiListProps> {
     @Resolve("apiService")
     public apiService: ApiService;
 
+    @Resolve("tagService")
+    public tagService: TagService;
+
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
 
@@ -129,6 +134,7 @@ export class ApiListRuntime extends React.Component<ApiListProps> {
             <ApiListRuntimeFC
               {...this.props}
               apiService={this.apiService}
+              tagService={this.tagService}
               getReferenceUrl={(api) => this.getReferenceUrl(api)}
             />
           </FluentProvider>
