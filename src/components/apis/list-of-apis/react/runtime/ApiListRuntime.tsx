@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { Stack } from "@fluentui/react";
 import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
@@ -7,23 +8,24 @@ import * as Constants from "../../../../../constants";
 import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { Pagination } from "./Pagination";
-import { ApisListInfo, TLayout } from "./ApisListInfo";
+import { Pagination } from "../../../../utils/react/Pagination";
+import { TableListInfo, TLayout } from "../../../../utils/react/TableListInfo";
 import { fuiTheme } from "../../../../../constants";
 import { ApisTable } from "./ApisTable";
 import { ApisCards } from "./ApisCards";
 import { TApisData } from "./utils";
 
 export interface ApiListProps {
-  allowSelection?: boolean;
-  showApiType?: boolean;
-  defaultGroupByTagToEnabled?: boolean;
-  detailsPageUrl: string;
+    allowSelection?: boolean;
+    allowViewSwitching?: boolean;
+    showApiType?: boolean;
+    defaultGroupByTagToEnabled?: boolean;
+    detailsPageUrl: string;
 
-  layoutDefault: TLayout | undefined; // TODO remove undefined once finished
+    layoutDefault: TLayout | undefined; // TODO remove undefined once finished
 }
 
-const loadData = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean) => {
+const loadApis = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean) => {
     let apis: TApisData;
 
     try {
@@ -35,12 +37,15 @@ const loadData = async (apiService: ApiService, query: SearchQuery, groupByTags?
     return apis;
 }
 
-const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiType}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
+const ApiListRuntimeFC = ({
+    apiService, getReferenceUrl, layoutDefault, showApiType, allowViewSwitching, defaultGroupByTagToEnabled
+}: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
     const [apis, setApis] = useState<TApisData>()
     const [layout, setLayout] = useState<TLayout>(layoutDefault ?? TLayout.table)
     const [pattern, setPattern] = useState<string>()
+    const [groupByTag, setGroupByTag] = useState(!!defaultGroupByTagToEnabled)
     // const [tags, setTags] = useState(new Set<Tag>())
 
     /**
@@ -49,39 +54,53 @@ const ApiListRuntimeFC = ({apiService, getReferenceUrl, layoutDefault, showApiTy
     useEffect(() => {
         const query: SearchQuery = {
             pattern,
-            // tags: [...tags],
+            // tags: [...tags], // TODO filter by tags
             skip: (pageNumber - 1) * Constants.defaultPageSize,
             take: Constants.defaultPageSize
         };
 
         setWorking(true)
-        loadData(apiService, query, true) // TODO
+        loadApis(apiService, query, groupByTag)
             .then(apis => setApis(apis))
             .finally(() => setWorking(false))
-    }, [apiService, pageNumber, pattern])
+    }, [apiService, pageNumber, groupByTag, pattern])
 
     return (
-        <>
-            <ApisListInfo pageNumber={pageNumber} layout={layout} setLayout={setLayout} pattern={pattern} setPattern={setPattern} />
+        <Stack tokens={{childrenGap: "1rem"}}>
+            <Stack.Item>
+                <TableListInfo
+                    layout={layout}
+                    setLayout={setLayout}
+                    pattern={pattern}
+                    setPattern={setPattern}
+                    setGroupByTag={setGroupByTag} // don't allow grouping by tags when filtering for product APIs
+                    allowViewSwitching={allowViewSwitching}
+                    defaultGroupByTagToEnabled={defaultGroupByTagToEnabled}
+                />
+            </Stack.Item>
 
             {working || !apis ? (
-                <div className={"table-body"}>
-                    <Spinner label="Loading APIs" labelPosition="below" size="extra-large" />
-                </div>
+                <Stack.Item>
+                    <div className={"table-body"}>
+                        <Spinner label="Loading APIs" labelPosition="below" size="extra-large" />
+                    </div>
+                </Stack.Item>
             ) : (
-              <>
-                  {layout === TLayout.table ? (
-                      <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
-                  ) : (
-                      <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
-                  )}
+                <>
+                    <Stack.Item>
+                        {layout === TLayout.table ? (
+                            <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                        ) : (
+                            <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                        )}
+                    </Stack.Item>
 
-                  <div className={"fui-pagination-container"}>
-                      <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(apis?.count / Constants.defaultPageSize)} />
-                  </div>
-              </>
+                    <Stack.Item align={"center"}>
+                        <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(apis?.count / Constants.defaultPageSize)} />
+                    </Stack.Item>
+                </>
             )}
-        </>
+        </Stack>
     );
 }
 

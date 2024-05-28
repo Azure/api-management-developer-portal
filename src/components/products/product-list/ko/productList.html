@@ -1,5 +1,5 @@
 <!-- ko if: layout() === 'list' -->
-<product-list-runtime data-bind="attr: { params: runtimeConfig }"></product-list-runtime>
+<fui-product-list-runtime data-bind="attr: { props: runtimeConfig }"></fui-product-list-runtime>
 <!-- /ko -->
 
 <!-- ko if: layout() === 'dropdown' -->
@@ -7,5 +7,5 @@
 <!-- /ko -->
 
 <!-- ko if: layout() === 'tiles' -->
-<product-list-tiles-runtime data-bind="attr: { params: runtimeConfig }"></product-list-tiles-runtime>
+<fui-product-list-runtime data-bind="attr: { props: runtimeConfig }"></fui-product-list-runtime>
 <!-- /ko -->

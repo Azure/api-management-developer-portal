@@ -1,4 +1,6 @@
-fui-api-list-runtime {
+fui-api-list-runtime, // TMP solution while KO is not fully migrated to React/FUI
+fui-product-list-runtime,
+fui-product-apis-runtime {
     width: 100%;
 }
 
@@ -23,17 +25,12 @@ fui-api-list-runtime {
     }
 }
 
-.fui-pagination-container {
-    margin-top: 3rem;
-    text-align: center;
-}
-
-.fui-api-tag-cards-container {
+.fui-list-tag-cards-container {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 
-    .fui-api-tag-cards {
+    .fui-list-tag-cards {
         padding: 1rem;
         border-radius: 0.25rem;
         box-shadow: 0 0 0.125rem 0 rgba(0, 0, 0, 0.12), 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, 0.14);
@@ -41,14 +38,14 @@ fui-api-list-runtime {
     }
 }
 
-.fui-api-cards-container {
+.fui-list-cards-container {
     display: grid;
     width: 1100px; /* TODO */
     grid-template-columns: 1fr 1fr 1fr;
     gap: 1.5rem;
     margin-top: 1.5rem;
 
-    .fui-api-card {
+    .fui-list-card {
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -61,7 +58,7 @@ fui-api-list-runtime {
             margin: 0 0 0.75rem;
         }
 
-        .fui-api-card-tags {
+        .fui-list-card-tags {
             display: flex;
             gap: 0.75rem;
             margin-bottom: 0.75rem;
