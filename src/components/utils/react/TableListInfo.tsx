@@ -11,9 +11,7 @@ import {
     ToolbarRadioGroup,
 } from "@fluentui/react-components";
 import { Search16Regular, Dismiss16Regular, AppsList24Regular } from "@fluentui/react-icons";
-import { TableFiltersButton, TFilterActive } from "./TableFilters";
-import { useTableFiltersTags } from "./useTableFiltersTags";
-import { TagService } from "../../../services/tagService";
+import { TableFiltersButton, TFilterActive, TFilterGroup } from "./TableFilters";
 
 export enum TLayout {
     "cards" = "cards",
@@ -69,11 +67,11 @@ const LayoutSwitchPure = ({layout, setLayout}: { layout: TLayout; setLayout: (ne
 
 type ApisTableInfoProps = {
     // apis: TApisData,
-    tagService: TagService,
     layout: TLayout,
     setLayout: React.Dispatch<React.SetStateAction<TLayout>>
-    filters: TFilterActive,
+    filters?: TFilterActive,
     setFilters?: React.Dispatch<React.SetStateAction<TFilterActive>>
+    filtersOptions?: TFilterGroup[]
     pattern: string | undefined,
     setPattern: React.Dispatch<React.SetStateAction<string | undefined>>
     setGroupByTag?: React.Dispatch<React.SetStateAction<boolean>>
@@ -81,22 +79,10 @@ type ApisTableInfoProps = {
     defaultGroupByTagToEnabled?: boolean,
 }
 
-const filtersOptions = [
-    {
-        value: "foo",
-        label: "Foo",
-        items: [
-            { value: "foo1", label: "Foo 1" },
-            { value: "foo2", label: "Foo 2" },
-            { value: "foo3", label: "Foo 3" },
-        ],
-    },
-];
-
 export const TableListInfo = ({
-    tagService,
     layout,
     setLayout,
+    filtersOptions,
     filters,
     setFilters,
     pattern,
@@ -104,65 +90,61 @@ export const TableListInfo = ({
     setGroupByTag,
     allowViewSwitching,
     defaultGroupByTagToEnabled,
-}: ApisTableInfoProps) => {
-    const filterOptionTags = useTableFiltersTags(tagService);
-
-    return (
-        <Stack horizontal horizontalAlign="space-between">
-            <Stack.Item>
-                <Stack horizontal tokens={{ childrenGap: "1rem" }}>
-                    {setFilters && (
-                        <Stack.Item>
-                            <TableFiltersButton
-                                filtersActive={filters}
-                                setFiltersActive={setFilters}
-                                filtersOptions={[filterOptionTags, ...filtersOptions]}
-                                accordionProps={{ defaultOpenItems: "tags" }}
-                            />
-                        </Stack.Item>
-                    )}
-
+}: ApisTableInfoProps) => (
+    <Stack horizontal horizontalAlign="space-between">
+        <Stack.Item>
+            <Stack horizontal tokens={{ childrenGap: "1rem" }}>
+                {filters && setFilters && filtersOptions && (
                     <Stack.Item>
-                        <Input
-                            value={pattern ?? ""}
-                            onChange={(_, { value }) => setPattern(value)}
-                            contentBefore={<Search16Regular />}
-                            contentAfter={
-                                <Button
-                                    onClick={() => setPattern(undefined)}
-                                    appearance={"transparent"}
-                                    icon={<Dismiss16Regular />}
-                                />
-                            }
-                            placeholder={"Search"}
+                        <TableFiltersButton
+                            filtersActive={filters}
+                            setFiltersActive={setFilters}
+                            filtersOptions={filtersOptions}
+                            accordionProps={{ defaultOpenItems: "tags" }}
                         />
                     </Stack.Item>
-                </Stack>
+                )}
 
-                {/*
-                <p style={{margin: 0}}>
-                    Displaying <b>{
-                        ((pageNumber - 1) * Constants.defaultPageSize) + 1
-                    }</b> to <b>{
-                        Math.min(pageNumber * Constants.defaultPageSize, apis?.count)
-                    }</b> of <b>{apis?.count}</b> items
-                </p>
-                */}
-            </Stack.Item>
+                <Stack.Item>
+                    <Input
+                        value={pattern ?? ""}
+                        onChange={(_, { value }) => setPattern(value)}
+                        contentBefore={<Search16Regular />}
+                        contentAfter={
+                            <Button
+                                onClick={() => setPattern(undefined)}
+                                appearance={"transparent"}
+                                icon={<Dismiss16Regular />}
+                            />
+                        }
+                        placeholder={"Search"}
+                    />
+                </Stack.Item>
+            </Stack>
 
-            <Stack.Item>
-                <Stack horizontal tokens={{ childrenGap: "1rem" }}>
-                    {setGroupByTag && (
-                        <GroupByTag
-                            setGroupByTag={setGroupByTag}
-                            defaultGroupByTagToEnabled={defaultGroupByTagToEnabled}
-                        />
-                    )}
-                    {allowViewSwitching && (
-                        <LayoutSwitchPure layout={layout} setLayout={setLayout} />
-                    )}
-                </Stack>
-            </Stack.Item>
-        </Stack>
-    );
-}
+            {/*
+            <p style={{margin: 0}}>
+                Displaying <b>{
+                    ((pageNumber - 1) * Constants.defaultPageSize) + 1
+                }</b> to <b>{
+                    Math.min(pageNumber * Constants.defaultPageSize, apis?.count)
+                }</b> of <b>{apis?.count}</b> items
+            </p>
+            */}
+        </Stack.Item>
+
+        <Stack.Item>
+            <Stack horizontal tokens={{ childrenGap: "1rem" }}>
+                {setGroupByTag && (
+                    <GroupByTag
+                        setGroupByTag={setGroupByTag}
+                        defaultGroupByTagToEnabled={defaultGroupByTagToEnabled}
+                    />
+                )}
+                {allowViewSwitching && (
+                    <LayoutSwitchPure layout={layout} setLayout={setLayout} />
+                )}
+            </Stack>
+        </Stack.Item>
+    </Stack>
+);

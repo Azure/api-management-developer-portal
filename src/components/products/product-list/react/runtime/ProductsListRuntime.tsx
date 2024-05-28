@@ -7,7 +7,6 @@ import { SearchQuery } from "../../../../../contracts/searchQuery";
 import * as Constants from "../../../../../constants";
 import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
-import { TagService } from "../../../../../services/tagService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Pagination } from "../../../../utils/react/Pagination";
 import { TableListInfo, TLayout } from "../../../../utils/react/TableListInfo";
@@ -37,13 +36,12 @@ const loadProducts = async (productService: ProductService, query: SearchQuery) 
 }
 
 const ProductListRuntimeFC = ({
-    tagService, productService, getReferenceUrl, layoutDefault, allowViewSwitching
-}: ApiListProps & { productService: ProductService, tagService: TagService, getReferenceUrl: (product: Product) => string }) => {
+    productService, getReferenceUrl, layoutDefault, allowViewSwitching
+}: ApiListProps & { productService: ProductService, getReferenceUrl: (product: Product) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
     const [products, setProducts] = useState<TProductsData>()
     const [layout, setLayout] = useState<TLayout>(layoutDefault ?? TLayout.table)
-    const [filters, setFilters] = useState({ tags: [] })
     const [pattern, setPattern] = useState<string>()
 
     /**
@@ -52,7 +50,6 @@ const ProductListRuntimeFC = ({
     useEffect(() => {
         const query: SearchQuery = {
             pattern,
-            tags: filters.tags.map(name => ({ id: name, name })),
             skip: (pageNumber - 1) * Constants.defaultPageSize,
             take: Constants.defaultPageSize
         };
@@ -61,19 +58,16 @@ const ProductListRuntimeFC = ({
         loadProducts(productService, query)
             .then(products => setProducts(products))
             .finally(() => setWorking(false))
-    }, [productService, pageNumber, filters, pattern])
+    }, [productService, pageNumber, pattern])
 
     return (
         <Stack tokens={{childrenGap: "1rem"}}>
             <Stack.Item>
                 <TableListInfo
-                    tagService={tagService}
                     layout={layout}
                     setLayout={setLayout}
                     pattern={pattern}
                     setPattern={setPattern}
-                    filters={filters}
-                    setFilters={setFilters}
                     allowViewSwitching={allowViewSwitching}
                 />
             </Stack.Item>
@@ -107,9 +101,6 @@ export class ProductsListRuntime extends React.Component<ApiListProps> {
     @Resolve("productService")
     public productService: ProductService;
 
-    @Resolve("tagService")
-    public tagService: TagService;
-
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
 
@@ -123,7 +114,6 @@ export class ProductsListRuntime extends React.Component<ApiListProps> {
             <ProductListRuntimeFC
               {...this.props}
               productService={this.productService}
-              tagService={this.tagService}
               getReferenceUrl={(product) => this.getReferenceUrl(product)}
             />
           </FluentProvider>

@@ -16,6 +16,7 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
         componentInstance.runtimeConfig(JSON.stringify({
             allowSelection: false,
             allowViewSwitching: true,
+            filtersInSidebar: true,
             showApiType: false,
             defaultGroupByTagToEnabled: false,
             layoutDefault: layoutsMap[state.layout],

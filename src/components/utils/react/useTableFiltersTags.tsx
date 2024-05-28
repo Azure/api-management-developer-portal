@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import * as Constants from "../../../constants";
+import { TagService } from "../../../services/tagService";
 import { Page } from "../../../models/page";
 import { Tag } from "../../../models/tag";
-import { TagService } from "../../../services/tagService";
 import { TFilterGroup } from "./TableFilters";
-import * as Constants from "../../../constants";
 
 const loadTags = async (tagService: TagService, pageNumber?: number) => {
     const skip = (pageNumber - 1) * Constants.defaultPageSize;
