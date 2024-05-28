@@ -3,6 +3,7 @@ import { Button, Link, Subtitle1 } from "@fluentui/react-components";
 import { Product } from "../../../../../models/product";
 import { TProductsData } from "./utils";
 import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
+import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
     getReferenceUrl: (product: Product) => string;
@@ -14,7 +15,7 @@ const ProductCard = ({ product, getReferenceUrl }: Props & { product: Product })
             <div style={{ height: "100%" }}>
                 <Subtitle1>{product.displayName}</Subtitle1>
 
-                <MarkdownProcessor markdownToDisplay={product.description}/>
+                <MarkdownProcessor markdownToDisplay={product.description} maxChars={markdownMaxCharsMap.cards} />
             </div>
 
             <div>

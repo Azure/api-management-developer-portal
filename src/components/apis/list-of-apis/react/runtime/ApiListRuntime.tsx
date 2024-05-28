@@ -16,20 +16,28 @@ import { ApisCards } from "./ApisCards";
 import { TApisData } from "./utils";
 
 export interface ApiListProps {
+    productName?: string;
     allowSelection?: boolean;
     allowViewSwitching?: boolean;
     showApiType?: boolean;
     defaultGroupByTagToEnabled?: boolean;
     detailsPageUrl: string;
+    detailsPageTarget: string;
 
     layoutDefault: TLayout | undefined; // TODO remove undefined once finished
 }
 
-const loadApis = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean) => {
+const loadApis = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean, productName?: string) => {
     let apis: TApisData;
 
     try {
-        apis = await (groupByTags ? apiService.getApisByTags(query) : apiService.getApis(query));
+        if (productName) {
+            apis = await apiService.getProductApis(`products/${productName}`, query);
+        } else if (groupByTags) {
+            apis = await apiService.getApisByTags(query);
+        } else {
+            apis = await apiService.getApis(query);
+        }
     } catch (error) {
         throw new Error(`Unable to load APIs. Error: ${error.message}`);
     }
@@ -38,7 +46,7 @@ const loadApis = async (apiService: ApiService, query: SearchQuery, groupByTags?
 }
 
 const ApiListRuntimeFC = ({
-    apiService, getReferenceUrl, layoutDefault, showApiType, allowViewSwitching, defaultGroupByTagToEnabled
+    apiService, getReferenceUrl, productName, layoutDefault, showApiType, allowViewSwitching, detailsPageTarget, defaultGroupByTagToEnabled
 }: ApiListProps & { apiService: ApiService, getReferenceUrl: (api: Api) => string }) => {
     const [working, setWorking] = useState(false)
     const [pageNumber, setPageNumber] = useState(1)
@@ -60,10 +68,10 @@ const ApiListRuntimeFC = ({
         };
 
         setWorking(true)
-        loadApis(apiService, query, groupByTag)
+        loadApis(apiService, query, groupByTag, productName)
             .then(apis => setApis(apis))
             .finally(() => setWorking(false))
-    }, [apiService, pageNumber, groupByTag, pattern])
+    }, [apiService, pageNumber, groupByTag, pattern, productName])
 
     return (
         <Stack tokens={{childrenGap: "1rem"}}>
@@ -73,7 +81,7 @@ const ApiListRuntimeFC = ({
                     setLayout={setLayout}
                     pattern={pattern}
                     setPattern={setPattern}
-                    setGroupByTag={setGroupByTag} // don't allow grouping by tags when filtering for product APIs
+                    setGroupByTag={productName ? undefined : setGroupByTag} // don't allow grouping by tags when filtering for product APIs
                     allowViewSwitching={allowViewSwitching}
                     defaultGroupByTagToEnabled={defaultGroupByTagToEnabled}
                 />
@@ -89,9 +97,9 @@ const ApiListRuntimeFC = ({
                 <>
                     <Stack.Item>
                         {layout === TLayout.table ? (
-                            <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                            <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} detailsPageTarget={detailsPageTarget} />
                         ) : (
-                            <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} />
+                            <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl} detailsPageTarget={detailsPageTarget} />
                         )}
                     </Stack.Item>
 
