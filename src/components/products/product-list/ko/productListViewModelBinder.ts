@@ -1,5 +1,6 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { layoutsMap } from "../../../utils/react/TableListInfo";
 import { ProductListDropdownHandlers, ProductListHandlers } from "../productListHandlers";
 import { ProductListModel } from "../productListModel";
 import { ProductListViewModel } from "./productListViewModel";
@@ -19,6 +20,7 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
         componentInstance.runtimeConfig(JSON.stringify({
             allowSelection: state.allowSelection,
             allowViewSwitching: state.allowViewSwitching,
+            layoutDefault: layoutsMap[state.layout],
             detailsPageUrl: state.detailsPageHyperlink
                 ? state.detailsPageHyperlink.href
                 : undefined
@@ -29,7 +31,7 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
         state.allowSelection = model.allowSelection;
         state.allowViewSwitching = model.allowViewSwitching;
         state.detailsPageHyperlink = model.detailsPageHyperlink;
-        state.layout=model.layout;
+        state.layout = model.layout;
 
         if (model.styles) {
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);

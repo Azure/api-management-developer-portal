@@ -8,6 +8,12 @@ export enum TLayout {
     "table" = "table",
 }
 
+export const layoutsMap = {
+    "tiles": TLayout.cards,
+    "list": TLayout.table,
+    "dropdown": undefined, // TODO
+}
+
 const groupByTagId = "groupByTagId";
 const GroupByTag = ({
     setGroupByTag,

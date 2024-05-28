@@ -4,13 +4,15 @@ import { Api } from "../../../../../models/api";
 import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
+import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
     showApiType: boolean;
     getReferenceUrl: (api: Api) => string;
+    detailsPageTarget: string;
 };
 
-const ApiCard = ({ api, getReferenceUrl, showApiType }: Props & { api: Api }) => {
+const ApiCard = ({ api, getReferenceUrl, showApiType, detailsPageTarget }: Props & { api: Api }) => {
     return (
         <div className={"fui-list-card"}>
             <div style={{ height: "100%" }}>
@@ -22,11 +24,11 @@ const ApiCard = ({ api, getReferenceUrl, showApiType }: Props & { api: Api }) =>
                 )}
                 <Subtitle1>{api.displayName}</Subtitle1>
 
-                <MarkdownProcessor markdownToDisplay={api.description}/>
+                <MarkdownProcessor markdownToDisplay={api.description} maxChars={markdownMaxCharsMap.cards} />
             </div>
 
             <div>
-                <Link href={getReferenceUrl(api)} title={api.displayName}>
+                <Link href={getReferenceUrl(api)} target={detailsPageTarget} title={api.displayName}>
                     <Button appearance={"outline"}>
                         Go to API
                     </Button>
@@ -36,20 +38,19 @@ const ApiCard = ({ api, getReferenceUrl, showApiType }: Props & { api: Api }) =>
     );
 };
 
-const ApisCardsContainer = ({ showApiType, apis, getReferenceUrl }: Props & { apis: Api[] }) => (
+const ApisCardsContainer = ({ apis, ...props }: Props & { apis: Api[] }) => (
     <div className={"fui-list-cards-container"}>
         {apis?.map((api) => (
             <ApiCard
+                {...props}
                 key={api.id}
                 api={api}
-                getReferenceUrl={getReferenceUrl}
-                showApiType={showApiType}
             />
         ))}
     </div>
 );
 
-const ApisGroupedCards = ({ showApiType, tags, getReferenceUrl }: Props & { tags: TagGroup<Api>[] }) => {
+const ApisGroupedCards = ({ tags, ...props }: Props & { tags: TagGroup<Api>[] }) => {
     const [expanded, setExpanded] = React.useState(new Set());
 
     return (
@@ -69,9 +70,8 @@ const ApisGroupedCards = ({ showApiType, tags, getReferenceUrl }: Props & { tags
 
                     {expanded.has(tag) && (
                         <ApisCardsContainer
+                            {...props}
                             apis={items}
-                            getReferenceUrl={getReferenceUrl}
-                            showApiType={showApiType}
                         />
                     )}
                 </div>
@@ -80,17 +80,15 @@ const ApisGroupedCards = ({ showApiType, tags, getReferenceUrl }: Props & { tags
     );
 };
 
-export const ApisCards = ({ showApiType, apis, getReferenceUrl }: Props & { apis: TApisData }) =>
+export const ApisCards = ({ apis, ...props }: Props & { apis: TApisData }) =>
     isApisGrouped(apis) ? (
         <ApisGroupedCards
+            {...props}
             tags={apis.value}
-            getReferenceUrl={getReferenceUrl}
-            showApiType={showApiType}
         />
     ) : (
         <ApisCardsContainer
+            {...props}
             apis={apis.value}
-            getReferenceUrl={getReferenceUrl}
-            showApiType={showApiType}
         />
     );
