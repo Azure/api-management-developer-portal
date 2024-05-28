@@ -15,9 +15,10 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
     public stateToInstance(state: WidgetState, componentInstance: ProductListViewModel): void {
         componentInstance.styles(state.styles);
         componentInstance.layout(state.layout);
-        
+
         componentInstance.runtimeConfig(JSON.stringify({
             allowSelection: state.allowSelection,
+            allowViewSwitching: state.allowViewSwitching,
             detailsPageUrl: state.detailsPageHyperlink
                 ? state.detailsPageHyperlink.href
                 : undefined
@@ -26,6 +27,7 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
 
     public async modelToState(model: ProductListModel, state: WidgetState): Promise<void> {
         state.allowSelection = model.allowSelection;
+        state.allowViewSwitching = model.allowViewSwitching;
         state.detailsPageHyperlink = model.detailsPageHyperlink;
         state.layout=model.layout;
 

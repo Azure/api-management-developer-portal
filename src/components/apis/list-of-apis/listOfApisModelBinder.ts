@@ -13,6 +13,7 @@ export class ListOfApisModelBinder implements IModelBinder<ListOfApisModel> {
 
         model.layout = contract.itemStyleView;
         model.allowSelection = contract.allowSelection;
+        model.allowViewSwitching = contract.allowViewSwitching ?? true;
         model.showApiType = contract.showApiType === undefined ? true : contract.showApiType;
         model.defaultGroupByTagToEnabled = contract.defaultGroupByTagToEnabled === true;
         model.styles = contract.styles ?? {};
@@ -29,6 +30,7 @@ export class ListOfApisModelBinder implements IModelBinder<ListOfApisModel> {
             type: "listOfApis",
             itemStyleView: model.layout,
             allowSelection: model.allowSelection,
+            allowViewSwitching: model.allowViewSwitching,
             showApiType: model.showApiType,
             defaultGroupByTagToEnabled: model.defaultGroupByTagToEnabled,
             detailsPageHyperlink: model.detailsPageHyperlink

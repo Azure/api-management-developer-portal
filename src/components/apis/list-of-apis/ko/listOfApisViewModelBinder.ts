@@ -2,7 +2,7 @@ import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ListOfApisViewModel } from "./listOfApisViewModel";
 import { ListOfApisModel } from "../listOfApisModel";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { TLayout } from "../react/runtime/ApisListInfo";
+import { TLayout } from "../../../utils/react/TableListInfo";
 
 const layoutsMap = {
     "tiles": TLayout.cards,
@@ -19,6 +19,7 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
 
         componentInstance.runtimeConfig(JSON.stringify({
             allowSelection: state.allowSelection,
+            allowViewSwitching: state.allowViewSwitching,
             showApiType: state.showApiType,
             defaultGroupByTagToEnabled: state.defaultGroupByTagToEnabled,
             detailsPageUrl: state.detailsPageUrl,
@@ -30,11 +31,12 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
         state.layout = model.layout;
 
         state.allowSelection = model.allowSelection,
-            state.showApiType = model.showApiType,
-            state.defaultGroupByTagToEnabled = model.defaultGroupByTagToEnabled,
-            state.detailsPageUrl = model.detailsPageHyperlink
-                ? model.detailsPageHyperlink.href
-                : undefined
+        state.allowViewSwitching = model.allowViewSwitching,
+        state.showApiType = model.showApiType,
+        state.defaultGroupByTagToEnabled = model.defaultGroupByTagToEnabled,
+        state.detailsPageUrl = model.detailsPageHyperlink
+            ? model.detailsPageHyperlink.href
+            : undefined
 
         if (model.styles) {
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
