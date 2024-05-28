@@ -83,14 +83,14 @@ export const ApisTable = ({ showApiType, apis, getReferenceUrl }: Props & { apis
             <TableHeader>
                 <TableRow className={"fui-table-headerRow"}>
                     <TableHeaderCell>
-                        <b>Name</b>
+                        <Body1Strong>Name</Body1Strong>
                     </TableHeaderCell>
                     <TableHeaderCell>
-                        <b>Description</b>
+                        <Body1Strong>Description</Body1Strong>
                     </TableHeaderCell>
                     {showApiType && (
                         <TableHeaderCell style={{ width: "8em" }}>
-                            <b>Type</b>
+                            <Body1Strong>Type</Body1Strong>
                         </TableHeaderCell>
                     )}
                 </TableRow>
