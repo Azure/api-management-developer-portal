@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+    Body1Strong,
     Link,
     Table,
     TableBody,
@@ -41,10 +42,10 @@ export const ProductsTable = ({ products, getReferenceUrl }: Props & { products:
             <TableHeader>
                 <TableRow className={"fui-table-headerRow"}>
                     <TableHeaderCell>
-                        <b>Name</b>
+                        <Body1Strong>Name</Body1Strong>
                     </TableHeaderCell>
                     <TableHeaderCell>
-                        <b>Description</b>
+                        <Body1Strong>Description</Body1Strong>
                     </TableHeaderCell>
                 </TableRow>
             </TableHeader>
