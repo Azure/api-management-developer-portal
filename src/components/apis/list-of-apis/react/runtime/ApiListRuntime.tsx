@@ -90,7 +90,7 @@ const ApiListRuntimeFC = ({
                     filters={filters}
                     setFilters={setFilters}
                     filtersOptions={(!filtersInSidebar && !groupByTag) ? [filterOptionTags] : undefined}
-                    setGroupByTag={productName ? undefined : setGroupByTag} // don't allow grouping by tags when filtering for product APIs
+                    setGroupByTag={productName ? undefined : setGroupByTag} // don't allow grouping by tags when filtering for product APIs due to missing BE support
                     allowViewSwitching={allowViewSwitching}
                     defaultGroupByTagToEnabled={defaultGroupByTagToEnabled}
                 />
