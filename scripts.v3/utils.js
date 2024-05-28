@@ -233,6 +233,189 @@ class ImporterExporter {
         }
     }
 
+    
+    async revertRevisionSnapshot(revisionSnapshotFilePath) {
+
+        console.log(`Loading snapshot file ${revisionSnapshotFilePath}`);
+        const snapshot = JSON.parse(fs.readFileSync(revisionSnapshotFilePath, 'utf8'));
+        console.log(`Converting snapshot file to arm contract...`);
+
+        for (let [snaphostItemsName, paperbitsItems] of Object.entries(snapshot)) {
+
+            console.log(`Processing ${snaphostItemsName}:`);
+
+            if (snaphostItemsName == "styles" || snaphostItemsName == "navigationItems") {
+                let armPath = snaphostItemsName == "styles" ?
+                    "/contentTypes/document/contentItems/stylesheet" :
+                    "/contentTypes/document/contentItems/navigation";
+                let armContract = this.convertPaperbitsContractToArmContract(paperbitsItems)
+                let body = {
+                    properties: { 
+                        nodes: snaphostItemsName == "styles"? [armContract] : armContract
+                    }
+                };
+                console.log(`- Updating content item ${armPath}`);
+                await this.httpClient.sendRequest("PUT", armPath, body);
+                continue;
+            }
+
+            for (let paperbitsContract of Object.values(paperbitsItems)) {
+                let armContract = this.convertPaperbitsContractToArmContract(paperbitsContract);
+                let armPath = armContract["id"];
+                delete armContract["id"];
+
+                if (snaphostItemsName.includes("settings")) {
+                    armPath = "contentTypes/document/contentItems/configuration";
+                    armContract = { nodes: [armContract] };
+                }
+
+                if (armPath.includes("files")) {
+                    delete armContract["type"];
+                }
+
+                let body = null
+                if (armContract.locales) {
+                    body = { properties: { en_us: armContract.locales["en-us"] } }
+                } else {
+                    body = { properties: armContract }
+                }
+                console.log(`- Updating content item ${armPath}`);
+                await this.httpClient.sendRequest("PUT", armPath, body);
+            }
+        }
+    }
+
+    convertPaperbitsContractToArmContract(contract) {
+        const reservedPaperbitsIds = ["containerKey", "webContainerKey"];
+        let converted;
+
+        if (contract === null || contract === undefined) { // here we expect "false" as a value too
+            return null;
+        }
+
+        if (Array.isArray(contract)) {
+            converted = contract.map(x => this.convertPaperbitsContractToArmContract(x));
+        }
+        else if (typeof contract === "object") {
+            converted = {};
+            const propertyNames = Object.keys(contract);
+            for(const propertyName of propertyNames) {
+                const propertyValue = contract[propertyName];
+                let convertedKey = propertyName;
+                let convertedValue = propertyValue;
+
+                if (!reservedPaperbitsIds.includes(convertedKey)) {
+                    convertedKey = propertyName
+                        .replace(/contentKey/gm, "documentId")
+                        .replace(/Key\b/gm, "Id")
+                        .replace(/\bkey\b/gm, "id");
+                }
+
+                if (typeof propertyValue === "string") {
+                    if (propertyName !== convertedKey) {
+                        convertedValue = this.paperbitsKeyToArmResource(propertyValue);
+                    }
+                }
+                else {
+                    convertedValue = this.convertPaperbitsContractToArmContract(propertyValue);
+                }
+
+                converted[convertedKey] = convertedValue;
+            };
+        }
+        else {
+            converted = contract;
+        }
+
+        return converted;
+    }
+
+    paperbitsKeyToArmResource(key) {
+        if (key.startsWith("/")) {
+            key = key.substring(1);
+        }
+
+        if (key.startsWith("contentTypes")) {
+            return key;
+        }
+
+        const segments = key.split("/");
+        const contentType = segments[0];
+        const contentItem = segments[1];
+
+        let mapiContentType;
+        let mapiContentItem;
+
+        switch (contentType) {
+            case "pages":
+                mapiContentType = "page";
+                mapiContentItem = contentItem;
+                break;
+
+            case "layouts":
+                mapiContentType = "layout";
+                mapiContentItem = contentItem;
+                break;
+
+            case "uploads":
+                mapiContentType = "blob";
+                mapiContentItem = contentItem;
+                break;
+
+            case "blocks":
+                mapiContentType = "block";
+                mapiContentItem = contentItem;
+                break;
+
+            case "urls":
+                mapiContentType = "url";
+                mapiContentItem = contentItem;
+                break;
+
+            case "navigationItems":
+                mapiContentType = "document";
+                mapiContentItem = "navigation";
+                break;
+
+            case "settings":
+                mapiContentType = "document";
+                mapiContentItem = "configuration";
+                break;
+
+            case "styles":
+                mapiContentType = "document";
+                mapiContentItem = "stylesheet";
+                break;
+
+            case "files":
+                mapiContentType = "document";
+                mapiContentItem = contentItem;
+                break;
+
+            case "locales":
+                mapiContentType = "locales";
+                mapiContentItem = "en-us";
+                break;
+
+            case "popups":
+                mapiContentType = "popup";
+                mapiContentItem = contentItem;
+                break;
+
+            default:
+                // throw new AppError(`Unknown content type: "${contentType}"`);
+                return key;
+        }
+
+        let resource = `contentTypes/${mapiContentType}/contentItems`;
+
+        if (mapiContentItem) {
+            resource += `/${mapiContentItem}`;
+        }
+
+        return resource;
+    }
+
     /**
      * Downloads media files from storage of specified API Management service.
      */
