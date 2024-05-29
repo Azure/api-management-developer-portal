@@ -5,9 +5,7 @@ import { ProductApisModel } from "../productApisModel";
 import { ProductApisViewModel } from "./productApisViewModel";
 
 export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisModel, ProductApisViewModel> {
-    constructor (
-        private readonly styleCompiler: StyleCompiler,
-    ) { }
+    constructor(private readonly styleCompiler: StyleCompiler) { }
 
     public stateToInstance(state: WidgetState, componentInstance: ProductApisViewModel): void {
         componentInstance.styles(state.styles);
@@ -16,6 +14,7 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
         componentInstance.runtimeConfig(JSON.stringify({
             allowSelection: false,
             allowViewSwitching: true,
+            filtersInSidebar: true,
             showApiType: false,
             defaultGroupByTagToEnabled: false,
             layoutDefault: layoutsMap[state.layout],

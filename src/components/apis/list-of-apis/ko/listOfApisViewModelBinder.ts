@@ -14,6 +14,7 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
         componentInstance.runtimeConfig(JSON.stringify({
             allowSelection: state.allowSelection,
             allowViewSwitching: state.allowViewSwitching,
+            filtersInSidebar: state.filtersInSidebar,
             showApiType: state.showApiType,
             defaultGroupByTagToEnabled: state.defaultGroupByTagToEnabled,
             layoutDefault: layoutsMap[state.layout],
@@ -31,6 +32,7 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
 
         state.allowSelection = model.allowSelection;
         state.allowViewSwitching = model.allowViewSwitching;
+        state.filtersInSidebar = model.filtersInSidebar;
         state.showApiType = model.showApiType;
         state.defaultGroupByTagToEnabled = model.defaultGroupByTagToEnabled;
         state.detailsPageHyperlink = model.detailsPageHyperlink;
