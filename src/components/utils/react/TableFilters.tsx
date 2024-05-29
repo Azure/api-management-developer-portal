@@ -81,8 +81,6 @@ export const TableFilter = ({
     </>
 );
 
-// export type TableFiltersButton =
-
 export const TableFiltersButton = (props: TTableFilterProps) => (
     <Popover withArrow>
         <PopoverTrigger disableButtonEnhancement>

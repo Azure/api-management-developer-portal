@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Stack } from "@fluentui/react";
 import {
+    SearchBox,
     Body1Stronger,
     Label,
     Switch,
@@ -10,7 +11,7 @@ import {
     ToolbarRadioButton,
     ToolbarRadioGroup,
 } from "@fluentui/react-components";
-import { Grid24Regular, Search16Regular, Dismiss16Regular, AppsList24Regular } from "@fluentui/react-icons";
+import { Grid24Regular, AppsList24Regular } from "@fluentui/react-icons";
 import { TableFiltersButton, TFilterActive, TFilterGroup } from "./TableFilters";
 
 export enum TLayout {
@@ -60,17 +61,16 @@ const LayoutSwitchPure = ({layout, setLayout}: { layout: TLayout; setLayout: (ne
 )
 
 type ApisTableInfoProps = {
-    // apis: TApisData,
-    layout: TLayout,
+    layout: TLayout
     setLayout: React.Dispatch<React.SetStateAction<TLayout>>
-    filters?: TFilterActive,
+    filters?: TFilterActive
     setFilters?: React.Dispatch<React.SetStateAction<TFilterActive>>
     filtersOptions?: TFilterGroup[]
-    pattern: string | undefined,
+    pattern: string | undefined
     setPattern: React.Dispatch<React.SetStateAction<string | undefined>>
     setGroupByTag?: React.Dispatch<React.SetStateAction<boolean>>
-    allowViewSwitching: boolean,
-    defaultGroupByTagToEnabled?: boolean,
+    allowViewSwitching: boolean
+    defaultGroupByTagToEnabled?: boolean
 }
 
 export const TableListInfo = ({
@@ -79,7 +79,6 @@ export const TableListInfo = ({
     filtersOptions,
     filters,
     setFilters,
-    pattern,
     setPattern,
     setGroupByTag,
     allowViewSwitching,
@@ -100,18 +99,10 @@ export const TableListInfo = ({
                 )}
 
                 <Stack.Item>
-                    <Input
-                        value={pattern ?? ""}
+                    <SearchBox
                         onChange={(_, { value }) => setPattern(value)}
-                        contentBefore={<Search16Regular />}
-                        contentAfter={
-                            <Button
-                                onClick={() => setPattern(undefined)}
-                                appearance={"transparent"}
-                                icon={<Dismiss16Regular />}
-                            />
-                        }
                         placeholder={"Search"}
+                        aria-label={"Search"}
                     />
                 </Stack.Item>
             </Stack>
