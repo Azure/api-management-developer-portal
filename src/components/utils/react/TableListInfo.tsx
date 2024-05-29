@@ -1,7 +1,16 @@
 import * as React from "react";
 import { Stack } from "@fluentui/react";
-import { Body1Stronger, Label, Switch, Button, Input, Toolbar, ToolbarRadioButton, ToolbarRadioGroup } from "@fluentui/react-components";
-import { Grid24Regular, Search16Regular, Dismiss16Regular, AppsList24Regular } from "@fluentui/react-icons";
+import {
+    SearchBox,
+    Body1Stronger,
+    Label,
+    Switch,
+    Toolbar,
+    ToolbarRadioButton,
+    ToolbarRadioGroup,
+} from "@fluentui/react-components";
+import { Grid24Regular, AppsList24Regular } from "@fluentui/react-icons";
+import { TableFiltersButton, TFilterActive, TFilterGroup } from "./TableFilters";
 
 export enum TLayout {
     "cards" = "cards",
@@ -50,27 +59,51 @@ const LayoutSwitchPure = ({layout, setLayout}: { layout: TLayout; setLayout: (ne
 )
 
 type ApisTableInfoProps = {
-    // apis: TApisData,
-    layout: TLayout,
+    layout: TLayout
     setLayout: React.Dispatch<React.SetStateAction<TLayout>>
-    pattern: string | undefined,
+    filters?: TFilterActive
+    setFilters?: React.Dispatch<React.SetStateAction<TFilterActive>>
+    filtersOptions?: TFilterGroup[]
+    pattern: string | undefined
     setPattern: React.Dispatch<React.SetStateAction<string | undefined>>
     setGroupByTag?: React.Dispatch<React.SetStateAction<boolean>>
-    allowViewSwitching: boolean,
-    defaultGroupByTagToEnabled?: boolean,
+    allowViewSwitching: boolean
+    defaultGroupByTagToEnabled?: boolean
 }
 
-export const TableListInfo = ({layout, setLayout, pattern, setPattern, setGroupByTag, allowViewSwitching, defaultGroupByTagToEnabled}: ApisTableInfoProps) => (
+export const TableListInfo = ({
+    layout,
+    setLayout,
+    filtersOptions,
+    filters,
+    setFilters,
+    setPattern,
+    setGroupByTag,
+    allowViewSwitching,
+    defaultGroupByTagToEnabled,
+}: ApisTableInfoProps) => (
     <Stack horizontal horizontalAlign="space-between">
         <Stack.Item>
-            <Input
-                value={pattern ?? ""}
-                onChange={(_, {value}) => setPattern(value)}
-                contentBefore={<Search16Regular/>}
-                contentAfter={<Button onClick={() => setPattern(undefined)} appearance={"transparent"}
-                                      icon={<Dismiss16Regular/>}/>}
-                placeholder={"Search"}
-            />
+            <Stack horizontal tokens={{ childrenGap: "1rem" }}>
+                {filters && setFilters && filtersOptions && (
+                    <Stack.Item>
+                        <TableFiltersButton
+                            filtersActive={filters}
+                            setFiltersActive={setFilters}
+                            filtersOptions={filtersOptions}
+                            accordionProps={{ defaultOpenItems: "tags" }}
+                        />
+                    </Stack.Item>
+                )}
+
+                <Stack.Item>
+                    <SearchBox
+                        onChange={(_, { value }) => setPattern(value)}
+                        placeholder={"Search"}
+                        aria-label={"Search"}
+                    />
+                </Stack.Item>
+            </Stack>
 
             {/*
             <p style={{margin: 0}}>
@@ -84,10 +117,17 @@ export const TableListInfo = ({layout, setLayout, pattern, setPattern, setGroupB
         </Stack.Item>
 
         <Stack.Item>
-            <Stack horizontal tokens={{childrenGap: "1rem"}}>
-                {setGroupByTag && <GroupByTag setGroupByTag={setGroupByTag} defaultGroupByTagToEnabled={defaultGroupByTagToEnabled} />}
-                {allowViewSwitching && <LayoutSwitchPure layout={layout} setLayout={setLayout} />}
+            <Stack horizontal tokens={{ childrenGap: "1rem" }}>
+                {setGroupByTag && (
+                    <GroupByTag
+                        setGroupByTag={setGroupByTag}
+                        defaultGroupByTagToEnabled={defaultGroupByTagToEnabled}
+                    />
+                )}
+                {allowViewSwitching && (
+                    <LayoutSwitchPure layout={layout} setLayout={setLayout} />
+                )}
             </Stack>
         </Stack.Item>
     </Stack>
-)
+);

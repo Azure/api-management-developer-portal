@@ -33,6 +33,11 @@ export interface ListOfApisContract extends Contract {
     detailsPageHyperlink?: HyperlinkContract;
 
     /**
+     * Indicates that filters should be displayed in a sidebar.
+     */
+    filtersInSidebar: boolean;
+
+    /**
      * Indicates that view switching is allowed.
      */
     allowViewSwitching: boolean;
