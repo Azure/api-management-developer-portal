@@ -14,6 +14,7 @@ export class ListOfApisEditor {
     public readonly itemStyle: ko.Observable<string>;
     public readonly allowSelection: ko.Observable<boolean>;
     public readonly allowViewSwitching: ko.Observable<boolean>;
+    public readonly filtersInSidebar: ko.Observable<boolean>;
     public readonly showApiType: ko.Observable<boolean>;
     public readonly defaultGroupByTagToEnabled: ko.Observable<boolean>;
     public readonly hyperlink: ko.Observable<HyperlinkModel>;
@@ -22,6 +23,7 @@ export class ListOfApisEditor {
     constructor() {
         this.allowSelection = ko.observable(false);
         this.allowViewSwitching = ko.observable(true);
+        this.filtersInSidebar = ko.observable(false);
         this.showApiType = ko.observable(true);
         this.defaultGroupByTagToEnabled = ko.observable(false);
         this.hyperlink = ko.observable();
@@ -49,12 +51,14 @@ export class ListOfApisEditor {
     public async initialize(): Promise<void> {
         this.allowSelection(this.model.allowSelection);
         this.allowViewSwitching(this.model.allowViewSwitching);
+        this.filtersInSidebar(this.model.filtersInSidebar);
         this.showApiType(this.model.showApiType);
         this.defaultGroupByTagToEnabled(this.model.defaultGroupByTagToEnabled);
         this.hyperlink(this.model.detailsPageHyperlink);
 
         this.allowSelection.subscribe(this.applyChanges);
         this.allowViewSwitching.subscribe(this.applyChanges);
+        this.filtersInSidebar.subscribe(this.applyChanges);
         this.showApiType.subscribe(this.applyChanges);
         this.defaultGroupByTagToEnabled.subscribe(this.applyChanges);
     }
@@ -62,6 +66,7 @@ export class ListOfApisEditor {
     private applyChanges(): void {
         this.model.allowSelection = this.allowSelection();
         this.model.allowViewSwitching = this.allowViewSwitching();
+        this.model.filtersInSidebar = this.filtersInSidebar();
         this.model.showApiType = this.showApiType();
         this.model.defaultGroupByTagToEnabled = this.defaultGroupByTagToEnabled();
         this.model.detailsPageHyperlink = this.hyperlink();

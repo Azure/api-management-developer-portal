@@ -60,6 +60,7 @@ const TableBodyTags = ({ tags, ...props }: Props & { tags: Page<TagGroup<Api>> }
 
                             <TagGroupToggleBtn expanded={expanded.has(tag)}/>
                         </TableCell>
+                        {/* in lines with tag, no content to display but empty cells needed to match width */}
                         <TableCell></TableCell>
                         {props.showApiType && <TableCell></TableCell>}
                     </TableRow>
