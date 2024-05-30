@@ -57,16 +57,16 @@ const ApisGroupedCards = ({ tags, ...props }: Props & { tags: TagGroup<Api>[] })
         <div className={"fui-list-tag-cards-container"}>
             {tags?.map(({ tag, items }) => (
                 <div key={tag}>
-                    <div
-                        className={"fui-list-tag-cards"}
+                    <button
+                        className={"fui-list-tag-cards no-border"}
                         onClick={() => setExpanded(old => toggleValueInSet(old, tag))}
                     >
                         <TagGroupToggleBtn expanded={expanded.has(tag)}/>
 
-                        <Body1Strong>
+                        <Body1Strong style={{marginLeft: ".5rem"}}>
                             {tag}
                         </Body1Strong>
-                    </div>
+                    </button>
 
                     {expanded.has(tag) && (
                         <ApisCardsContainer

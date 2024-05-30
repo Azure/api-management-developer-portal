@@ -5,7 +5,6 @@ import {
     Table,
     TableBody,
     TableCell,
-    TableCellLayout,
     TableHeader,
     TableHeaderCell,
     TableRow,
@@ -13,7 +12,12 @@ import {
 import { Api } from "../../../../../models/api";
 import { Page } from "../../../../../models/page";
 import { TagGroup } from "../../../../../models/tagGroup";
-import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
+import {
+    isApisGrouped,
+    TagGroupToggleBtn,
+    TApisData,
+    toggleValueInSet,
+} from "./utils";
 import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
 import { markdownMaxCharsMap } from "../../../../../constants";
 
@@ -51,14 +55,20 @@ const TableBodyTags = ({ tags, ...props }: Props & { tags: Page<TagGroup<Api>> }
                 <React.Fragment key={tag}>
                     <TableRow
                         className={"fui-table-collapsibleRow"}
-                        onClick={() => setExpanded((old) => toggleValueInSet(old, tag))}
+                        onClick={() =>
+                            setExpanded((old) => toggleValueInSet(old, tag))
+                        }
                     >
                         <TableCell>
-                            <Body1Strong>
-                                {tag}
-                            </Body1Strong>
+                            <button className={"no-border"}>
+                                <Body1Strong style={{ marginRight: ".375rem" }}>
+                                    {tag}
+                                </Body1Strong>
 
-                            <TagGroupToggleBtn expanded={expanded.has(tag)}/>
+                                <TagGroupToggleBtn
+                                    expanded={expanded.has(tag)}
+                                />
+                            </button>
                         </TableCell>
                         {/* in lines with tag, no content to display but empty cells needed to match width */}
                         <TableCell></TableCell>
@@ -66,10 +76,7 @@ const TableBodyTags = ({ tags, ...props }: Props & { tags: Page<TagGroup<Api>> }
                     </TableRow>
 
                     {expanded.has(tag) && (
-                        <TableBodyApis
-                            {...props}
-                            apis={items}
-                        />
+                        <TableBodyApis {...props} apis={items} />
                     )}
                 </React.Fragment>
             ))}
