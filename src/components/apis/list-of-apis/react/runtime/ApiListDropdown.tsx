@@ -2,6 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import {
     Combobox,
+    Link,
     Option,
     OptionGroup,
     Spinner,
@@ -47,11 +48,17 @@ const TagLabel = ({
     </button>
 );
 
-const Options = ({ apis }: { apis: Api[] }) => (
+const Options = ({
+    apis,
+    getReferenceUrl,
+}: {
+    apis: Api[];
+    getReferenceUrl: TApiListRuntimeFC["getReferenceUrl"];
+}) => (
     <>
         {apis.map((api) => (
-            <Option key={api.id} value={api.id}>
-                {api.name}
+            <Option key={api.id} value={api.name} text={api.displayName}>
+                <Link href={getReferenceUrl(api.name)}>{api.displayName}</Link>
             </Option>
         ))}
     </>
@@ -60,6 +67,8 @@ const Options = ({ apis }: { apis: Api[] }) => (
 const ApiListDropdownFC = ({
     working,
     apis,
+    getReferenceUrl,
+    selectedApi,
     statePageNumber: [pageNumber, setPageNumber],
     statePattern: [_, setPattern],
     stateGroupByTag: [groupByTag, setGroupByTag],
@@ -75,7 +84,10 @@ const ApiListDropdownFC = ({
         <Combobox
             style={{ width: "100%" }}
             onInput={(event) => setPattern(event.target?.["value"])}
-            onOptionSelect={(_, { optionValue }) => console.log(optionValue)}
+            defaultSelectedOptions={[selectedApi?.name]}
+            onOptionSelect={(_, { optionValue }) => {
+                window.location.hash = getReferenceUrl(optionValue);
+            }}
         >
             {working || !apis ? (
                 <Spinner
@@ -109,11 +121,19 @@ const ApiListDropdownFC = ({
                                     />
                                 }
                             >
-                                {expanded.has(tag) && <Options apis={items} />}
+                                {expanded.has(tag) && (
+                                    <Options
+                                        apis={items}
+                                        getReferenceUrl={getReferenceUrl}
+                                    />
+                                )}
                             </OptionGroup>
                         ))
                     ) : (
-                        <Options apis={apis.value} />
+                        <Options
+                            apis={apis.value}
+                            getReferenceUrl={getReferenceUrl}
+                        />
                     )}
 
                     {pageMax > 1 && (

@@ -8,7 +8,7 @@ import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
     showApiType: boolean;
-    getReferenceUrl: (api: Api) => string;
+    getReferenceUrl: (apiName: string) => string;
     detailsPageTarget: string;
 };
 
@@ -28,7 +28,7 @@ const ApiCard = ({ api, getReferenceUrl, showApiType, detailsPageTarget }: Props
             </div>
 
             <div>
-                <Link href={getReferenceUrl(api)} target={detailsPageTarget} title={api.displayName}>
+                <Link href={getReferenceUrl(api.name)} target={detailsPageTarget} title={api.displayName}>
                     <Button appearance={"outline"}>
                         Go to API
                     </Button>

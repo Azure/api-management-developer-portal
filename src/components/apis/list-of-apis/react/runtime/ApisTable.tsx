@@ -23,7 +23,7 @@ import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
     showApiType: boolean;
-    getReferenceUrl: (api: Api) => string;
+    getReferenceUrl: (apiName: string) => string;
     detailsPageTarget: string;
 };
 
@@ -32,7 +32,7 @@ const TableBodyApis = ({ showApiType, apis, getReferenceUrl, detailsPageTarget }
         {apis?.map((api) => (
             <TableRow key={api.id}>
                 <TableCell>
-                    <Link href={getReferenceUrl(api)} target={detailsPageTarget} title={api.displayName}>
+                    <Link href={getReferenceUrl(api.name)} target={detailsPageTarget} title={api.displayName}>
                         {api.displayName}
                         {!!api.apiVersion && " - " + api.apiVersion}
                     </Link>

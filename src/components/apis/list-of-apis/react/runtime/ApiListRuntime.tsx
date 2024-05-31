@@ -28,7 +28,7 @@ export interface ApiListProps {
 export type TApiListRuntimeFC = Omit<ApiListProps, "detailsPageUrl"> & {
     apiService: ApiService;
     tagService: TagService;
-    getReferenceUrl: (api: Api) => string;
+    getReferenceUrl: (apiName: string) => string;
 }
 
 const loadApis = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean, productName?: string) => {
@@ -108,8 +108,8 @@ export class ApiListRuntime extends React.Component<ApiListProps> {
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
 
-    private getReferenceUrl(api: Api): string {
-        return this.routeHelper.getApiReferenceUrl(api.name, this.props.detailsPageUrl);
+    private getReferenceUrl(apiName: string): string {
+        return this.routeHelper.getApiReferenceUrl(apiName, this.props.detailsPageUrl);
     }
 
     render() {
@@ -119,7 +119,7 @@ export class ApiListRuntime extends React.Component<ApiListProps> {
               {...this.props}
               apiService={this.apiService}
               tagService={this.tagService}
-              getReferenceUrl={(api) => this.getReferenceUrl(api)}
+              getReferenceUrl={(apiName) => this.getReferenceUrl(apiName)}
             />
           </FluentProvider>
         );
