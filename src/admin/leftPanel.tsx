@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { Resolve } from '@paperbits/react/decorators';
+import { ISiteService } from '@paperbits/common/sites';
+import { EventManager } from '@paperbits/common/events';
 import { ViewManager } from '@paperbits/common/ui';
 import { Router } from '@paperbits/common/routing';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
-import { CommandBarButton, Icon, IIconProps, Separator, Stack, Text } from '@fluentui/react';
+import { CommandBarButton, Icon, IIconProps, Separator, Stack, Text, Toggle } from '@fluentui/react';
 import { Pages } from './pages/pages';
 import { Navigation } from './navigation/navigation';
 import { Urls } from './urls/urls';
@@ -14,7 +16,7 @@ import { MediaModal } from './media/mediaModal';
 import { CustomWidgets } from './custom-widgets/customWidgets';
 import { OnboardingModal } from './onboardingModal';
 import { lightTheme } from './utils/themes';
-import { mobileBreakpoint } from '../constants';
+import { isRedesignEnabledSetting, mobileBreakpoint } from '../constants';
 initializeIcons();
 
 const enum NavItem {
@@ -35,7 +37,8 @@ const enum NavItem {
 interface LeftPanelState {
     selectedNavItem: NavItem,
     isMobile: boolean,
-    showOnboardingModal: boolean
+    showOnboardingModal: boolean,
+    isRedesignEnabled: boolean
 }
 
 const pageIcon: IIconProps = { iconName: 'Page' };
@@ -53,6 +56,12 @@ const helpIcon: IIconProps = { iconName: 'Help' };
 const iconStyles = { root: { color: lightTheme.palette.themePrimary, fontSize: 20 } };
 
 export class LeftPanel extends React.Component<{}, LeftPanelState> {
+    @Resolve('siteService')
+    public siteService: ISiteService;
+
+    @Resolve('eventManager')
+    public eventManager: EventManager;
+    
     @Resolve('viewManager')
     public viewManager: ViewManager;
 
@@ -65,18 +74,25 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
         this.state = {
             selectedNavItem: NavItem.Main,
             isMobile: window.innerWidth < mobileBreakpoint,
-            showOnboardingModal: false
+            showOnboardingModal: false,
+            isRedesignEnabled: false
         };
     }
 
     componentDidMount(): void {
         if (!localStorage.getItem('isOnboardingSeen')) this.setState({ showOnboardingModal: true });
+        this.loadSettings();
 
         window.addEventListener('resize', this.checkScreenSize.bind(this));
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.checkScreenSize.bind(this));
+    }
+
+    loadSettings = async (): Promise<void> => {
+        const redesignSetting = await this.siteService.getSetting(isRedesignEnabledSetting);
+        this.setState({ isRedesignEnabled: !!redesignSetting });
     }
 
     checkScreenSize = (): void => {
@@ -217,6 +233,18 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                     { this.state.selectedNavItem === NavItem.Media && <MediaModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
                     { this.state.selectedNavItem === NavItem.Settings && <SettingsModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
                     { this.state.selectedNavItem === NavItem.Help && <HelpModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
+                    <Toggle
+                        label={"Enable runtime redesign"}
+                        onText={"On"}
+                        offText={"Off"}
+                        checked={this.state.isRedesignEnabled}
+                        onChange={async (ev, checked) => {
+                            this.setState({ isRedesignEnabled: checked });
+                            await this.siteService.setSetting(isRedesignEnabledSetting, checked);
+                            this.eventManager.dispatchEvent('onSaveChanges');
+                            this.eventManager.dispatchEvent('onDataPush'); // Needed to reload the runtime part
+                        }} 
+                    />
                 </div>
             </>
         )
