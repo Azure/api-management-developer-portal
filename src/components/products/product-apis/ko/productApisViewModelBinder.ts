@@ -1,5 +1,6 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { layoutsMap } from "../../../utils/react/TableListInfo";
 import { ProductApisModel } from "../productApisModel";
 import { ProductApisViewModel } from "./productApisViewModel";
 
@@ -11,6 +12,12 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
         componentInstance.layout(state.layout);
 
         componentInstance.runtimeConfig(JSON.stringify({
+            allowSelection: false,
+            allowViewSwitching: true,
+            filtersInSidebar: true,
+            showApiType: false,
+            defaultGroupByTagToEnabled: false,
+            layoutDefault: layoutsMap[state.layout],
             detailsPageUrl: state.detailsPageHyperlink
                 ? state.detailsPageHyperlink.href
                 : undefined,

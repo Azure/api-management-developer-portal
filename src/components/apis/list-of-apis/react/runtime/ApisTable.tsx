@@ -15,26 +15,26 @@ import { Page } from "../../../../../models/page";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
 import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
+import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
     showApiType: boolean;
     getReferenceUrl: (api: Api) => string;
+    detailsPageTarget: string;
 };
 
-const TableBodyApis = ({ showApiType, apis, getReferenceUrl }: Props & { apis: Api[] }) => (
+const TableBodyApis = ({ showApiType, apis, getReferenceUrl, detailsPageTarget }: Props & { apis: Api[] }) => (
     <>
         {apis?.map((api) => (
             <TableRow key={api.id}>
                 <TableCell>
-                    <Link href={getReferenceUrl(api)} title={api.displayName}>
+                    <Link href={getReferenceUrl(api)} target={detailsPageTarget} title={api.displayName}>
                         {api.displayName}
                         {!!api.apiVersion && " - " + api.apiVersion}
                     </Link>
                 </TableCell>
-                <TableCell>
-                    <TableCellLayout truncate title={api.description}>
-                        <MarkdownProcessor markdownToDisplay={api.description} />
-                    </TableCellLayout>
+                <TableCell style={{padding: ".5rem 0"}}>
+                    <MarkdownProcessor markdownToDisplay={api.description} maxChars={markdownMaxCharsMap.table} />
                 </TableCell>
                 {showApiType && <TableCell>{api.typeName}</TableCell>}
             </TableRow>
@@ -42,7 +42,7 @@ const TableBodyApis = ({ showApiType, apis, getReferenceUrl }: Props & { apis: A
     </>
 );
 
-const TableBodyTags = ({ showApiType, tags, getReferenceUrl }: Props & { tags: Page<TagGroup<Api>> }) => {
+const TableBodyTags = ({ tags, ...props }: Props & { tags: Page<TagGroup<Api>> }) => {
     const [expanded, setExpanded] = React.useState(new Set());
 
     return (
@@ -60,15 +60,15 @@ const TableBodyTags = ({ showApiType, tags, getReferenceUrl }: Props & { tags: P
 
                             <TagGroupToggleBtn expanded={expanded.has(tag)}/>
                         </TableCell>
+                        {/* in lines with tag, no content to display but empty cells needed to match width */}
                         <TableCell></TableCell>
-                        {showApiType && <TableCell></TableCell>}
+                        {props.showApiType && <TableCell></TableCell>}
                     </TableRow>
 
                     {expanded.has(tag) && (
                         <TableBodyApis
+                            {...props}
                             apis={items}
-                            showApiType={showApiType}
-                            getReferenceUrl={getReferenceUrl}
                         />
                     )}
                 </React.Fragment>
@@ -77,7 +77,7 @@ const TableBodyTags = ({ showApiType, tags, getReferenceUrl }: Props & { tags: P
     );
 };
 
-export const ApisTable = ({ showApiType, apis, getReferenceUrl }: Props & { apis: TApisData }) => (
+export const ApisTable = ({ apis, ...props }: Props & { apis: TApisData }) => (
     <div className={"fui-table"}>
         <Table size={"small"} aria-label={"APIs List table"}>
             <TableHeader>
@@ -88,7 +88,7 @@ export const ApisTable = ({ showApiType, apis, getReferenceUrl }: Props & { apis
                     <TableHeaderCell>
                         <Body1Strong>Description</Body1Strong>
                     </TableHeaderCell>
-                    {showApiType && (
+                    {props.showApiType && (
                         <TableHeaderCell style={{ width: "8em" }}>
                             <Body1Strong>Type</Body1Strong>
                         </TableHeaderCell>
@@ -99,15 +99,13 @@ export const ApisTable = ({ showApiType, apis, getReferenceUrl }: Props & { apis
             <TableBody>
                 {isApisGrouped(apis) ? (
                     <TableBodyTags
+                        {...props}
                         tags={apis}
-                        showApiType={showApiType}
-                        getReferenceUrl={getReferenceUrl}
                     />
                 ) : (
                     <TableBodyApis
+                        {...props}
                         apis={apis.value}
-                        showApiType={showApiType}
-                        getReferenceUrl={getReferenceUrl}
                     />
                 )}
             </TableBody>

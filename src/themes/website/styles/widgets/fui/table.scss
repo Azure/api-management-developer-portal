@@ -76,16 +76,6 @@ fui-product-apis-runtime {
             background: #FAFAFA;
         }
     }
-
-    .fui-TableCellLayout__main {
-        white-space: inherit;
-        // Show 10 lines of text before truncating
-        overflow: hidden;
-        display: -webkit-box;
-        line-clamp: 10;
-        -webkit-line-clamp: 10;
-        -webkit-box-orient: vertical;
-    }
 }
 
 .fui-list-tag-cards-container {

@@ -2,13 +2,7 @@ import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ListOfApisViewModel } from "./listOfApisViewModel";
 import { ListOfApisModel } from "../listOfApisModel";
 import { StyleCompiler } from "@paperbits/common/styles";
-import { TLayout } from "../../../utils/react/TableListInfo";
-
-const layoutsMap = {
-    "tiles": TLayout.cards,
-    "list": TLayout.table,
-    "dropdown": undefined, // TODO
-}
+import { layoutsMap } from "../../../utils/react/TableListInfo";
 
 export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisModel, ListOfApisViewModel> {
     constructor(private readonly styleCompiler: StyleCompiler) { }
@@ -20,23 +14,28 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
         componentInstance.runtimeConfig(JSON.stringify({
             allowSelection: state.allowSelection,
             allowViewSwitching: state.allowViewSwitching,
+            filtersInSidebar: state.filtersInSidebar,
             showApiType: state.showApiType,
             defaultGroupByTagToEnabled: state.defaultGroupByTagToEnabled,
-            detailsPageUrl: state.detailsPageUrl,
             layoutDefault: layoutsMap[state.layout],
+            detailsPageUrl: state.detailsPageHyperlink
+                ? state.detailsPageHyperlink.href
+                : undefined,
+            detailsPageTarget: state.detailsPageHyperlink
+                ? state.detailsPageHyperlink.target
+                : undefined,
         }));
     }
 
     public async modelToState(model: ListOfApisModel, state: WidgetState): Promise<void> {
         state.layout = model.layout;
 
-        state.allowSelection = model.allowSelection,
-        state.allowViewSwitching = model.allowViewSwitching,
-        state.showApiType = model.showApiType,
-        state.defaultGroupByTagToEnabled = model.defaultGroupByTagToEnabled,
-        state.detailsPageUrl = model.detailsPageHyperlink
-            ? model.detailsPageHyperlink.href
-            : undefined
+        state.allowSelection = model.allowSelection;
+        state.allowViewSwitching = model.allowViewSwitching;
+        state.filtersInSidebar = model.filtersInSidebar;
+        state.showApiType = model.showApiType;
+        state.defaultGroupByTagToEnabled = model.defaultGroupByTagToEnabled;
+        state.detailsPageHyperlink = model.detailsPageHyperlink;
 
         if (model.styles) {
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);

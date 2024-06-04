@@ -50,7 +50,6 @@ const ProductListRuntimeFC = ({
     useEffect(() => {
         const query: SearchQuery = {
             pattern,
-            // tags: [...tags],
             skip: (pageNumber - 1) * Constants.defaultPageSize,
             take: Constants.defaultPageSize
         };
