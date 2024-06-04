@@ -28,6 +28,11 @@ export class ListOfApisModel {
     public detailsPageHyperlink: HyperlinkModel;
 
     /**
+     * Indicates that filters should be displayed in a sidebar.
+     */
+    public filtersInSidebar: boolean;
+
+    /**
      * Indicates that view switching is allowed.
      */
     public allowViewSwitching: boolean;

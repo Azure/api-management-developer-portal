@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+    Body1Strong,
     Link,
     Table,
     TableBody,
@@ -12,6 +13,7 @@ import {
 import { Product } from "../../../../../models/product";
 import { TProductsData } from "./utils";
 import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
+import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
     getReferenceUrl: (product: Product) => string;
@@ -26,10 +28,8 @@ const TableBodyProducts = ({ products, getReferenceUrl }: Props & { products: Pr
                         {product.displayName}
                     </Link>
                 </TableCell>
-                <TableCell>
-                    <TableCellLayout truncate title={product.description}>
-                        <MarkdownProcessor markdownToDisplay={product.description}/>
-                    </TableCellLayout>
+                <TableCell style={{padding: ".5rem 0"}}>
+                    <MarkdownProcessor markdownToDisplay={product.description} maxChars={markdownMaxCharsMap.table} />
                 </TableCell>
             </TableRow>
         ))}
@@ -42,10 +42,10 @@ export const ProductsTable = ({ products, getReferenceUrl }: Props & { products:
             <TableHeader>
                 <TableRow className={"fui-table-headerRow"}>
                     <TableHeaderCell>
-                        <b>Name</b>
+                        <Body1Strong>Name</Body1Strong>
                     </TableHeaderCell>
                     <TableHeaderCell>
-                        <b>Description</b>
+                        <Body1Strong>Description</Body1Strong>
                     </TableHeaderCell>
                 </TableRow>
             </TableHeader>

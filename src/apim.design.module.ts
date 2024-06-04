@@ -2,7 +2,6 @@ import { ReactModule } from "@paperbits/react/react.module";
 import * as Constants from "./constants";
 import "./bindingHandlers/codeEditor";
 import "./bindingHandlers/copyToClipboard";
-import { ReactModule } from "@paperbits/react/react.module";
 import { UnsavedChangesRouteGuard } from "./routing/unsavedChangesRouteGuard";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { DefaultAuthenticator } from "./components/defaultAuthenticator";

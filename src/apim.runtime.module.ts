@@ -95,6 +95,7 @@ import { ProductListRuntimeModule } from "./components/products/product-list/pro
 import { OperationListRuntimeModule } from "./components/operations/operation-list/operationList.runtime.module";
 import { DetailsOfApiRuntimeModule } from "./components/apis/details-of-api/detailsOfApi.runtime.module";
 import { OperationDetailsRuntimeModule } from "./components/operations/operation-details/operationDetails.runtime.module";
+import { ProductApisRuntimeModule } from "./components/products/product-apis/productApis.runtime.module";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -175,6 +176,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindModule(new RoleBasedSecurityRuntimeModule());
         injector.bindModule(new ListOfApisRuntimeModule());
         injector.bindModule(new ProductListRuntimeModule());
+        injector.bindModule(new ProductApisRuntimeModule());
         injector.bindModule(new OperationListRuntimeModule());
         injector.bindModule(new DetailsOfApiRuntimeModule());
         injector.bindModule(new OperationDetailsRuntimeModule());
