@@ -95,6 +95,7 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
                             apiName={this.state.apiName}
                             operationName={this.state.operationName}
                             apiService={this.apiService}
+                            routeHelper={this.routeHelper}
                         />
                 }
             </FluentProvider>
