@@ -2,13 +2,19 @@ import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { OperationListViewModel } from "./operationListViewModel";
 import { OperationListModel } from "../operationListModel";
 import { StyleCompiler } from "@paperbits/common/styles";
+import { ISiteService } from "@paperbits/common/sites";
+import { isRedesignEnabledSetting } from "../../../../constants";
 
 
 export class OperationListViewModelBinder implements ViewModelBinder<OperationListModel, OperationListViewModel> {
-    constructor(private readonly styleCompiler: StyleCompiler) { }
+    constructor(
+        private readonly styleCompiler: StyleCompiler,
+        private readonly siteService: ISiteService
+    ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: OperationListViewModel): void {
         componentInstance.styles(state.styles);
+        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
 
         componentInstance.runtimeConfig(JSON.stringify({
             allowSelection: state.allowSelection,
@@ -35,5 +41,7 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
         if (model.styles) {
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
+
+        state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
     }
 }
