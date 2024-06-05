@@ -358,3 +358,8 @@ export const fuiTheme: Theme = {
     fontFamilyMonospace: "inherit",
     fontFamilyNumeric: "inherit",
 };
+
+/**
+ * Key for the setting that enables the runtime redesign of the portal
+ */
+export const isRedesignEnabledSetting = "isRedesignEnabled";
