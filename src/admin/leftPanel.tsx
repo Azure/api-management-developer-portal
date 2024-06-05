@@ -234,7 +234,7 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                     { this.state.selectedNavItem === NavItem.Settings && <SettingsModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
                     { this.state.selectedNavItem === NavItem.Help && <HelpModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
                     <Toggle
-                        label={"Enable runtime redesign"}
+                        label={"Preview new UI design"}
                         onText={"On"}
                         offText={"Off"}
                         checked={this.state.isRedesignEnabled}
