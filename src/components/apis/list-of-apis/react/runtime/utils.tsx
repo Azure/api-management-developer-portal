@@ -8,7 +8,7 @@ export type TApisData = Page<Api> | Page<TagGroup<Api>>;
 export const isApisGrouped = (apis?: TApisData): apis is Page<TagGroup<Api>> =>
     apis?.value[0] && "tag" in apis.value[0];
 
-export const toggleValueInSet = <T = any,>(set: Set<T>, value: T): Set<T> => {
+export const toggleValueInSet = <T = any>(set: Set<T>, value: T): Set<T> => {
     const newSet = new Set(set);
     if (set.has(value)) {
         newSet.delete(value);
