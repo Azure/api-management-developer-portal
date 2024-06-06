@@ -1,5 +1,7 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { ISiteService } from "@paperbits/common/sites";
+import { isRedesignEnabledSetting } from "../../../../constants";
 import { layoutsMap } from "../../../utils/react/TableListInfo";
 import { ProductListDropdownHandlers, ProductListHandlers } from "../productListHandlers";
 import { ProductListModel } from "../productListModel";
@@ -11,11 +13,15 @@ const handlerForLayout = {
 };
 
 export class ProductListViewModelBinder implements ViewModelBinder<ProductListModel, ProductListViewModel> {
-    constructor(private readonly styleCompiler: StyleCompiler) { }
+    constructor(
+        private readonly styleCompiler: StyleCompiler,
+        private readonly siteService: ISiteService,
+    ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: ProductListViewModel): void {
         componentInstance.styles(state.styles);
         componentInstance.layout(state.layout);
+        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
 
         componentInstance.runtimeConfig(JSON.stringify({
             allowSelection: state.allowSelection,
@@ -36,5 +42,7 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
         if (model.styles) {
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
+
+        state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
     }
 }
