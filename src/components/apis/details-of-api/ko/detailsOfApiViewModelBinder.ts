@@ -9,7 +9,7 @@ import { isRedesignEnabledSetting } from "../../../../constants";
 export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApiModel, DetailsOfApiViewModel> {
     constructor(
         private readonly styleCompiler: StyleCompiler,
-        private readonly siteService: ISiteService
+        private readonly siteService: ISiteService,
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: DetailsOfApiViewModel): void {
