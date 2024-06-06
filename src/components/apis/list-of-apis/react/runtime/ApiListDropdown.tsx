@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import {
+    Body1Strong,
     Combobox,
     Link,
     Option,
@@ -80,16 +81,20 @@ const ApiListDropdownFC = ({
     const toggleTag = (tag: string) =>
         setExpanded((old) => toggleValueInSet(old, tag));
 
-    return (
+    const content = !apis ? (
+        <>Loading APIs</> // if data are not loaded yet ComboBox sometimes fails to initialize properly - edge case, in most cases almost instant from the cache
+    ) : (
         <Combobox
             style={{ width: "100%" }}
             onInput={(event) => setPattern(event.target?.["value"])}
+            defaultValue={selectedApi?.displayName}
             defaultSelectedOptions={[selectedApi?.name]}
             onOptionSelect={(_, { optionValue }) => {
+                if (!optionValue) return;
                 window.location.hash = getReferenceUrl(optionValue);
             }}
         >
-            {working || !apis ? (
+            {working ? (
                 <Spinner
                     label={"Loading APIs"}
                     labelPosition={"above"}
@@ -152,6 +157,13 @@ const ApiListDropdownFC = ({
                 </>
             )}
         </Combobox>
+    );
+
+    return (
+        <>
+            <Body1Strong block>APIs</Body1Strong>
+            <div style={{ padding: ".25rem 0 1rem" }}>{content}</div>
+        </>
     );
 };
 
