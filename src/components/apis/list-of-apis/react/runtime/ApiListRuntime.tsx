@@ -4,7 +4,6 @@ import { FluentProvider } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import * as Constants from "../../../../../constants";
-import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
 import { TagService } from "../../../../../services/tagService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
@@ -25,7 +24,7 @@ export interface ApiListProps {
     layoutDefault: TLayout;
 }
 
-export type TApiListRuntimeFC = Omit<ApiListProps, "detailsPageUrl"> & {
+export type TApiListRuntimeFCProps = Omit<ApiListProps, "detailsPageUrl"> & {
     apiService: ApiService;
     tagService: TagService;
     getReferenceUrl: (apiName: string) => string;
@@ -49,7 +48,7 @@ const loadApis = async (apiService: ApiService, query: SearchQuery, groupByTags?
     return apis;
 }
 
-const ApiListRuntimeFC = ({ apiService, productName, defaultGroupByTagToEnabled, layoutDefault, ...props }: TApiListRuntimeFC) => {
+const ApiListRuntimeFC = ({ apiService, productName, defaultGroupByTagToEnabled, layoutDefault, ...props }: TApiListRuntimeFCProps) => {
     const [working, setWorking] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
     const [apis, setApis] = useState<TApisData>();

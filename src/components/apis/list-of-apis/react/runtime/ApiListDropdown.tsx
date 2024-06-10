@@ -13,7 +13,7 @@ import { GroupByTag } from "../../../../utils/react/TableListInfo";
 import { Pagination } from "../../../../utils/react/Pagination";
 import * as Constants from "../../../../../constants";
 import { Api } from "../../../../../models/api";
-import { TApiListRuntimeFC } from "./ApiListRuntime";
+import { TApiListRuntimeFCProps } from "./ApiListRuntime";
 import {
     isApisGrouped,
     TagGroupToggleBtn,
@@ -24,7 +24,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 
 type TApiListDropdown = Omit<
-    TApiListRuntimeFC,
+    TApiListRuntimeFCProps,
     "apiService" | "layoutDefault" | "productName"
 > & {
     working: boolean;
@@ -54,7 +54,7 @@ const Options = ({
     getReferenceUrl,
 }: {
     apis: Api[];
-    getReferenceUrl: TApiListRuntimeFC["getReferenceUrl"];
+    getReferenceUrl: TApiListRuntimeFCProps["getReferenceUrl"];
 }) => (
     <>
         {apis.map((api) => (
@@ -161,7 +161,7 @@ const ApiListDropdownFC = ({
 
     return (
         <>
-            <Body1Strong block>APIs</Body1Strong>
+            <Body1Strong block>API</Body1Strong>
             <div style={{ padding: ".25rem 0 1rem" }}>{content}</div>
         </>
     );

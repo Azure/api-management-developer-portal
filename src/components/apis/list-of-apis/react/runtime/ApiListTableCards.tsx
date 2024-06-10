@@ -13,9 +13,9 @@ import { Pagination } from "../../../../utils/react/Pagination";
 import * as Constants from "../../../../../constants";
 import { ApisTable } from "./ApisTable";
 import { ApisCards } from "./ApisCards";
-import { TApiListRuntimeFC } from "./ApiListRuntime";
+import { TApiListRuntimeFCProps } from "./ApiListRuntime";
 
-type TApiListTableCards = Omit<TApiListRuntimeFC, "apiService"> & {
+type TApiListTableCards = Omit<TApiListRuntimeFCProps, "apiService"> & {
     working: boolean;
     apis: TApisData;
     statePageNumber: ReturnType<typeof useState<number>>;

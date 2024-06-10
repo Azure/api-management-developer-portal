@@ -6,7 +6,7 @@ import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor"
 import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
-    getReferenceUrl: (product: Product) => string;
+    getReferenceUrl: (productName: string) => string;
 };
 
 const ProductCard = ({ product, getReferenceUrl }: Props & { product: Product }) => {
@@ -19,7 +19,7 @@ const ProductCard = ({ product, getReferenceUrl }: Props & { product: Product })
             </div>
 
             <div>
-                <Link href={getReferenceUrl(product)} title={product.displayName}>
+                <Link href={getReferenceUrl(product.name)} title={product.displayName}>
                     <Button appearance={"outline"}>
                         Go to Product
                     </Button>
