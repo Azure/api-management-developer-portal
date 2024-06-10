@@ -1,11 +1,17 @@
-<!-- ko if: layout() === 'list' -->
+<!-- ko if: isRedesignEnabled -->
 <fui-api-list-runtime data-bind="attr: { props: runtimeConfig }"></fui-api-list-runtime>
 <!-- /ko -->
 
-<!-- ko if: layout() === 'dropdown' -->
-<api-list-dropdown data-bind="attr: { params: runtimeConfig }"></api-list-dropdown>
-<!-- /ko -->
+<!-- ko ifnot: isRedesignEnabled -->
+    <!-- ko if: layout() === 'list' -->
+    <api-list data-bind="attr: { params: runtimeConfig }"></api-list>
+    <!-- /ko -->
 
-<!-- ko if: layout() === 'tiles' -->
-<fui-api-list-runtime data-bind="attr: { props: runtimeConfig }"></fui-api-list-runtime>
+    <!-- ko if: layout() === 'dropdown' -->
+    <api-list-dropdown data-bind="attr: { params: runtimeConfig }"></api-list-dropdown>
+    <!-- /ko -->
+
+    <!-- ko if: layout() === 'tiles' -->
+    <api-list-tiles data-bind="attr: { params: runtimeConfig }"></api-list-tiles>
+    <!-- /ko -->
 <!-- /ko -->

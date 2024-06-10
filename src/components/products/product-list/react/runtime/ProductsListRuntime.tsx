@@ -19,8 +19,7 @@ export interface ApiListProps {
   allowSelection?: boolean;
   allowViewSwitching?: boolean;
   detailsPageUrl: string;
-
-  layoutDefault: TLayout | undefined; // TODO remove undefined once finished
+  layoutDefault: TLayout;
 }
 
 const loadProducts = async (productService: ProductService, query: SearchQuery) => {
