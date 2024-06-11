@@ -49,13 +49,15 @@ const TypeDefinitionCombination = ({ definition, showExamples, getReferenceUrl }
 
     return (
         <>
-            <Body1>{type.combinationType}:</Body1>
-            {type.combinationReferences.length > 0 && type.combinationReferences.map(ref => (
-                <Body1 block key={ref}><Link href={getReferenceUrl(ref)}>{ref}</Link></Body1>
-            ))}
+            <div className={"td-combinations"}>
+                <Body1>{type.combinationType}:</Body1>
+                {type.combinationReferences.length > 0 && type.combinationReferences.map(ref => (
+                    <Body1 block key={ref}><Link href={getReferenceUrl(ref)}>{ref}</Link></Body1>
+                ))}
+            </div>
             {definition.properties.map(property => (
                 <React.Fragment key={property.name}>
-                    <Body1Strong block>{property.name}</Body1Strong>
+                    <Body1Strong block className={"td-combination-name"}>{property.name}</Body1Strong>
                     {property.kind === TDefinitionKind.combination &&
                         <TypeDefinitionCombination definition={property as TypeDefinition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
                     }
@@ -70,7 +72,7 @@ const TypeDefinitionCombination = ({ definition, showExamples, getReferenceUrl }
 }
 
 const TypeDefinitionObject = ({ definition, showExamples, getReferenceUrl }: TypeDefinitionProps) => {
-    if (definition.properties.length === 0) return;
+    if (!definition.properties || definition.properties.length === 0) return;
 
     return (
         <Table aria-label={definition.name} className={"fui-table"}>
@@ -81,7 +83,7 @@ const TypeDefinitionObject = ({ definition, showExamples, getReferenceUrl }: Typ
                     {definition.readOnly && <TableHeaderCell><Body1Strong>Read-only</Body1Strong></TableHeaderCell>}
                     <TableHeaderCell><Body1Strong>Type</Body1Strong></TableHeaderCell>
                     <TableHeaderCell><Body1Strong>Description</Body1Strong></TableHeaderCell>
-                    {showExamples && <TableHeaderCell><Body1Strong>Example</Body1Strong></TableHeaderCell>} {/** TODO */}
+                    {showExamples && <TableHeaderCell><Body1Strong>Example</Body1Strong></TableHeaderCell>}
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -96,27 +98,37 @@ const TypeDefinitionObject = ({ definition, showExamples, getReferenceUrl }: Typ
                             const combinationName = combinationProperty["name"];
 
                             if (combinationProperty["displayAs"] === TPropertyDisplayAs.reference) {
-                                children.push(<Link href={getReferenceUrl(combinationName)} title={combinationName}>{combinationName}</Link>);
+                                children.push(
+                                    <Body1 block className={"truncate-text"}>
+                                        <Link href={getReferenceUrl(combinationName)} title={combinationName}>{combinationName}</Link>
+                                    </Body1>
+                                );
                             } else {
-                                children.push(<Body1 title={combinationName}>{combinationName}</Body1>);
+                                children.push(<Body1 block title={combinationName}>{combinationName}</Body1>);
                             }                                
                         });
                         
                         type = <>{children}</>;
                     } else if (property.type.displayAs === TPropertyDisplayAs.reference || property.type.displayAs === TPropertyDisplayAs.arrayOfReference) {
-                        type = <Link href={getReferenceUrl(typeName)} title={typeName}>{typeName + property.type.displayAs === TPropertyDisplayAs.arrayOfReference ? "[]" : ""}</Link>;
+                        type = <Link href={getReferenceUrl(typeName)} title={typeName}>{typeName + (property.type.displayAs === TPropertyDisplayAs.arrayOfReference ? "[]" : "")}</Link>;
                     } else {
-                        type = <Body1>{typeName + property.type.displayAs === TPropertyDisplayAs.arrayOfPrimitive ? "[]" : ""}</Body1>;
+                        type = <Body1>{typeName + (property.type.displayAs === TPropertyDisplayAs.arrayOfPrimitive ? "[]" : "")}</Body1>;
                     }
 
                     return (
                         <TableRow key={property.name} className={"fui-table-body-row"}>
-                            <TableCell><Body1>{property.name}</Body1></TableCell>
+                            <TableCell><Body1 className={"truncate-text"} title={property.name}>{property.name}</Body1></TableCell>
                             <TableCell><Body1>{property.required ? "true" : "false"}</Body1></TableCell>
                             {definition.readOnly && <TableCell><Body1>{property.readOnly}</Body1></TableCell>}
-                            <TableCell><Body1>{type}</Body1></TableCell>
-                            <TableCell><Body1><MarkdownProcessor markdownToDisplay={property.description} /></Body1></TableCell>
-                            {showExamples && <TableCell><Body1></Body1></TableCell>}
+                            <TableCell><Body1 className={"truncate-text"}>{type}</Body1></TableCell>
+                            <TableCell><Body1 title={property.description}>
+                                <MarkdownProcessor markdownToDisplay={property.description} maxChars={100} truncate={true} />
+                            </Body1></TableCell>
+                            {showExamples && 
+                                <TableCell>
+                                    {!!property.example && <Body1 className={"truncate-text td-example"} title={property.example}>{property.example}</Body1>}
+                                </TableCell>
+                            }
                         </TableRow>
                     );
                 })}

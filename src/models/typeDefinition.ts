@@ -116,6 +116,7 @@ export abstract class TypeDefinitionProperty {
     constructor(name: string, contract: SchemaObjectContract, isRequired: boolean) {
         this.name = contract.title || name;
         this.description = contract.description;
+        this.example = contract.example;
         this.readOnly = contract.readOnly ?? false;
         this.required = isRequired;
 
@@ -287,16 +288,18 @@ export class TypeDefinitionObjectProperty extends TypeDefinitionProperty {
 
             const combinationPropertiesProcessed = this.processCombinationProperties(combinationArray, definitions, processedCombinationPropertiesObject);
             processedTypeDefinitionsArray = combinationPropertiesProcessed.combinationReferenceObjectsArray;
-            processedTypeDefinitionsArray.push(
-                new TypeDefinition(
-                    "Other properties",
-                    {
-                        properties: combinationPropertiesProcessed.combinationOtherProperties,
-                        required: combinationPropertiesProcessed.combinationRequiredPropereties
-                    },
-                    definitions
-                ));
-
+            if (Object.keys(combinationPropertiesProcessed.combinationOtherProperties).length > 0) {
+                processedTypeDefinitionsArray.push(
+                    new TypeDefinition(
+                        "Other properties",
+                        {
+                            properties: combinationPropertiesProcessed.combinationOtherProperties,
+                            required: combinationPropertiesProcessed.combinationRequiredPropereties
+                        },
+                        definitions
+                    )
+                );
+            }
             this.kind = "combination";
             this.type = new TypeDefinitionPropertyTypeCombination(combinationType, combinationPropertiesProcessed.combinationReferencesNames);
             this.properties = processedTypeDefinitionsArray;

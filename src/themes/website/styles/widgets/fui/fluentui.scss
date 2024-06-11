@@ -42,3 +42,11 @@
 .fui-filterBy-container {
     margin: 0 calc(-1 * var(--spacingHorizontalM));
 }
+
+.markdown-truncate {
+    > * {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Stack, } from "@fluentui/react";
-import { Badge, Body1, Body1Strong, Button, Caption1Strong, Dropdown, Option, Spinner, Subtitle1, Subtitle2, Tab, TabList, Tooltip } from "@fluentui/react-components";
+import { Badge, Body1, Body1Strong, Button, Caption1Strong, Spinner, Subtitle1, Subtitle2, Tooltip } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
@@ -10,9 +10,6 @@ import { Operation } from "../../../../../models/operation";
 import { Tag } from "../../../../../models/tag";
 import { Request } from "../../../../../models/request";
 import { Response } from "../../../../../models/response";
-import { Representation } from "../../../../../models/representation";
-import { RepresentationExample } from "../../../../../models/representationExample";
-import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
 import {
     TypeDefinition,
     TypeDefinitionProperty,
@@ -22,16 +19,10 @@ import {
     TypeDefinitionPropertyTypePrimitive,
     TypeDefinitionPropertyTypeReference
 } from "../../../../../models/typeDefinition";
-import { Utils } from "../../../../../utils";
-import { CodeSnippet } from "../../../../utils/react/CodeSnippet";
+import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
-import { TypeDefinitionForRepresentation } from "./TypeDefinitions";
 import { OperationDetailsTable, getRequestUrl } from "./utils";
-
-enum TSchemaView {
-    schema = "raw",
-    table = "table"
-}
+import { OperationRepresentation } from "./OperationRepresentation";
 
 export const OperationDetails = ({
     apiName,
@@ -47,14 +38,10 @@ export const OperationDetails = ({
     const [operation, setOperation] = useState<Operation>(null);
     const [tags, setTags] = useState<Tag[]>([]);
     const [request, setRequest] = useState<Request>(null);
-    const [selectedRequestRepresentation, setSelectedRequestRepresentation] = useState<Representation>(null);
-    const [selectedRequestDefinition, setSelectedRequestDefinition] = useState<TypeDefinition>(null);
-    const [selectedRequestExample, setSelectedRequestExample] = useState<RepresentationExample>(null);
     const [responses, setResponses] = useState<Response[]>(null);
     const [hostnames, setHostnames] = useState<string[]>([]);
     const [definitions, setDefinitions] = useState<TypeDefinition[]>([]);
     const [requestUrl, setRequestUrl] = useState<string>(null);
-    const [schemaView, setSchemaView] = useState<TSchemaView>(TSchemaView.table);
     const [isCopied, setIsCopied] = useState<boolean>(false);
 
     useEffect(() => {
@@ -68,17 +55,10 @@ export const OperationDetails = ({
                 setRequest(loadedValues.operation?.request);
                 setResponses(loadedValues.operation?.getMeaningfulResponses());
 
-                if (loadedValues.operation?.request?.meaningfulRepresentations()?.length > 0) {
-                    setSelectedRequestRepresentation(loadedValues.operation.request.meaningfulRepresentations()[0]);
-                    loadedValues.operation.request.meaningfulRepresentations()[0].examples?.length > 0 && setSelectedRequestExample(loadedValues.operation.request.meaningfulRepresentations()[0].examples[0]);
-
-                    console.log('exam', loadedValues.operation.request.meaningfulRepresentations()[0].examples)
-                }
-
                 console.log('repr', loadedValues.operation?.request?.meaningfulRepresentations());
             });
             loadGatewayInfo().then(hostnames => {
-                hostnames.length > 0 && setHostnames(hostnames);
+                hostnames?.length > 0 && setHostnames(hostnames);
             }).finally(() => setWorking(false));
         }
     }, [apiName, operationName]);
@@ -90,14 +70,6 @@ export const OperationDetails = ({
     useEffect(() => {
         isCopied && setTimeout(() => setIsCopied(false), 5000);
     }, [isCopied]);
-
-    useEffect(() => {
-        if (selectedRequestRepresentation) {
-            console.log('selectedRequestRepresentation', getDefinitionForRepresentation(selectedRequestRepresentation));
-            setSelectedRequestDefinition(getDefinitionForRepresentation(selectedRequestRepresentation));
-            setSelectedRequestExample(selectedRequestRepresentation.examples[0]);
-        }
-    }, [selectedRequestRepresentation, definitions]);
 
     const loadApi = async (): Promise<Api> => {
         let api: Api;
@@ -144,7 +116,7 @@ export const OperationDetails = ({
     }
 
     const loadDefinitions = async (operation: Operation): Promise<TypeDefinition[]> => {
-        // const cachedDefinitions = this.definitionsCache.getItem(operation.id);
+        // const cachedDefinitions = definitionsCache.getItem(operation.id);
         // if (cachedDefinitions) {
         //     this.definitions(cachedDefinitions);
         //     return;
@@ -248,28 +220,11 @@ export const OperationDetails = ({
         return result;
     }
 
-    const getDefinitionForRepresentation = (representation: Representation): TypeDefinition => {
-        let definition = definitions.find(x => x.name === representation.typeName);
-    
-        if (!definition) {
-            // Fallback for the case when type is referenced, but not defined in schema
-            return new TypeDefinition(representation.typeName, {}, definitions);
-        }
-    
-        // Making copy to avoid overriding original properties
-        definition = Utils.clone(definition);
-    
-        if (!definition.name) {
-            definition.name = representation.typeName;
-        }
-    
-        return definition;
-    }
-
     const getReferenceUrl = (typeName: string): string => {
+        if (!operationName) return;
+
         return routeHelper.getDefinitionAnchor(apiName, operationName, typeName);
     }
-
 
     return (
         <div className={"operation-details-container"}>
@@ -334,60 +289,15 @@ export const OperationDetails = ({
                                     </>
                                 }
                                 {/* authorization servers! */}
-                                {selectedRequestRepresentation &&
+                                {request.meaningfulRepresentations()?.length > 0 &&
                                     <>
                                         <Subtitle2 block className={"operation-subtitle2"}>Request body</Subtitle2>
-                                        <Stack horizontal horizontalAlign="space-between" className={"operation-body"}>
-                                            <TabList defaultSelectedValue={schemaView} onTabSelect={(e, data: { value: TSchemaView }) => setSchemaView(data.value)}>
-                                                <Tab value={TSchemaView.table}>Table</Tab>
-                                                <Tab value={TSchemaView.schema}>Schema</Tab>
-                                            </TabList>
-                                            <Stack horizontal verticalAlign="center">
-                                                <Body1>Content type</Body1>
-                                                <Dropdown
-                                                    value={selectedRequestRepresentation.contentType}
-                                                    selectedOptions={[selectedRequestRepresentation.contentType]}
-                                                    size="small"
-                                                    className={"operation-content-type-dropdown"}
-                                                    onOptionSelect={(e, data) => 
-                                                        setSelectedRequestRepresentation(request.meaningfulRepresentations().find(x => x.contentType === data.optionValue))
-                                                    }
-                                                >
-                                                    {request.meaningfulRepresentations().map(representation => (
-                                                        <Option key={representation.contentType} value={representation.contentType}>{representation.contentType}</Option>
-                                                    ))}
-                                                </Dropdown>
-                                            </Stack>
-                                        </Stack>
-                                        {/** Should we remove IN column from here? */}
-                                        {selectedRequestRepresentation.formParameters?.length > 0
-                                            ? <OperationDetailsTable tableName={"Request body table"} tableContent={selectedRequestRepresentation.formParameters} showExamples={false} showIn={true} />
-                                            : schemaView === TSchemaView.schema 
-                                                ? <CodeSnippet
-                                                    name={selectedRequestDefinition.name}
-                                                    content={selectedRequestDefinition.rawSchema}
-                                                    format={selectedRequestDefinition.rawSchemaFormat}
-                                                  />
-                                                : <TypeDefinitionForRepresentation
-                                                    definition={getDefinitionForRepresentation(selectedRequestRepresentation)}
-                                                    showExamples={showExamples}
-                                                    getReferenceUrl={getReferenceUrl}
-                                                  />
-                                        }
-                                        {selectedRequestExample && 
-                                            <>
-                                                <TabList
-                                                    selectedValue={selectedRequestExample.title}
-                                                    onTabSelect={(e, data: { value: string }) =>
-                                                        setSelectedRequestExample(selectedRequestRepresentation.examples.find(x => x.title === data.value))
-                                                    }>
-                                                    {selectedRequestRepresentation.examples.map(example => (
-                                                        <Tab key={example.title} value={example.title}>{example.title ?? "Default"}</Tab>
-                                                    ))}
-                                                </TabList>
-                                                <CodeSnippet example={selectedRequestExample} />
-                                            </>
-                                        }
+                                        <OperationRepresentation
+                                            representations={request.meaningfulRepresentations()}
+                                            definitions={definitions}
+                                            showExamples={showExamples}
+                                            getReferenceUrl={getReferenceUrl}
+                                        />
                                     </>
                                 }
                             </div>
@@ -402,8 +312,21 @@ export const OperationDetails = ({
                                     {response.headers?.length > 0 &&
                                         <>
                                             <Subtitle2 block className={"operation-subtitle2"}>Response headers</Subtitle2>
-                                            <OperationDetailsTable tableName={"Response headers table"} tableContent={response.headers} showExamples={false} showIn={false} />
+                                            <OperationDetailsTable
+                                                tableName={"Response headers table"}
+                                                tableContent={response.headers}
+                                                showExamples={false}
+                                                showIn={false}
+                                            />
                                         </>
+                                    }
+                                    {response.meaningfulRepresentations()?.length > 0 &&
+                                        <OperationRepresentation
+                                            representations={response.meaningfulRepresentations()}
+                                            definitions={definitions}
+                                            showExamples={showExamples}
+                                            getReferenceUrl={getReferenceUrl}
+                                        />
                                     }
                                 </div>
                         ))}

@@ -83,10 +83,31 @@ fui-operation-details {
 
     .operation-body {
         border-bottom: 1px solid #D1D1D1;
-        margin-top: 1.5rem;
+        margin: 1.5rem 0;
     }
 
     pre {
         margin: 0;
+    }
+
+    .td-combinations {
+        margin: 1.5rem 0;
+    }
+
+    .td-combination-name {
+        margin-bottom: 1rem;
+    }
+
+    .td-example {
+        padding: .5rem;
+        border-radius: .25rem;
+        background: #F0F0F0;
+        color: #80215D;
+    }
+
+    .truncate-text {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }

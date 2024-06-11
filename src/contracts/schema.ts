@@ -30,6 +30,8 @@ export interface SchemaObjectContract extends ReferenceObjectContract {
      */
     required?: string[];
 
+    example?: string;
+
     readOnly?: boolean;
 
     properties?: Bag<SchemaObjectContract>;
