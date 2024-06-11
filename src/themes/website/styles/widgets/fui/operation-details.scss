@@ -63,8 +63,9 @@ fui-operation-details {
     }
 
     .operation-request,
-    .operation-response {
-        padding-top: 3.5rem;
+    .operation-response,
+    .operation-definition {
+        padding-top: 2.5rem;
     }
 
     .operation-subtitle1 {
@@ -103,6 +104,7 @@ fui-operation-details {
         border-radius: .25rem;
         background: #F0F0F0;
         color: #80215D;
+        max-width: fit-content;
     }
 
     .truncate-text {

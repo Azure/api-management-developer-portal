@@ -1,12 +1,18 @@
 import * as React from "react";
-import { Body1, Body1Strong, Link, Subtitle2Stronger, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
+import { Body1, Body1Strong, Link, Subtitle1, Subtitle2Stronger, Tab, TabList, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
 import { TypeDefinition, TypeDefinitionPropertyTypeCombination } from "../../../../../models/typeDefinition";
 import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
+import { Stack } from "@fluentui/react";
+import { TSchemaView } from "./OperationRepresentation";
+import { useState } from "react";
+import { CodeSnippet } from "../../../../utils/react/CodeSnippet";
 
 type TypeDefinitionProps = {
     definition: TypeDefinition;
     showExamples: boolean;
     getReferenceUrl: (reference: string) => string;
+    getReferenceId?: (reference: string) => string;
+    defaultSchemaView?: TSchemaView;
 }
 
 enum TDefinitionKind {
@@ -25,6 +31,34 @@ enum TPropertyDisplayAs {
     combination = "combination"
 }
 
+export const TypeDefinitionInList = ({ definition, showExamples, getReferenceUrl, getReferenceId, defaultSchemaView }: TypeDefinitionProps) => {
+    const [schemaView, setSchemaView] = useState<TSchemaView>(defaultSchemaView || TSchemaView.table);
+    const anchorId = getReferenceId(definition.name);
+
+    return (
+        <>
+            <Subtitle1 block className={"operation-subtitle2"} id={anchorId}>{definition.name}</Subtitle1>
+            <Stack horizontal horizontalAlign="space-between" className={"operation-body"}>
+                <TabList selectedValue={schemaView} onTabSelect={(e, data: { value: TSchemaView }) => setSchemaView(data.value)}>
+                    <Tab value={TSchemaView.table}>Table</Tab>
+                    <Tab value={TSchemaView.schema}>Schema</Tab>
+                </TabList>
+            </Stack>
+            {schemaView === TSchemaView.schema
+                ? <CodeSnippet
+                    name={definition.name}
+                    content={definition.rawSchema}
+                    format={definition.rawSchemaFormat}
+                  />
+                : <TypeDefinitionForRepresentation
+                    definition={definition}
+                    showExamples={showExamples}
+                    getReferenceUrl={getReferenceUrl}
+                  />
+            }
+        </>
+    );
+}
 
 export const TypeDefinitionForRepresentation = ({ definition, showExamples, getReferenceUrl }: TypeDefinitionProps) => {
     const kind = definition.kind;
