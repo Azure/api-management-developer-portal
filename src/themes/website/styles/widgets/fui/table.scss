@@ -15,7 +15,7 @@ fui-product-apis-runtime {
     // The bottom borders of table cells will be used as the borders between rows
     tr + tr th,
     tr + tr td {
-        border-top: 0;
+        border-top: 1px solid #E6E6E6;
     }
 
     // The right borders of table cells will be used as the borders between columns

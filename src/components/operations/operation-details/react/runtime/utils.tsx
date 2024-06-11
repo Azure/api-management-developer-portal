@@ -1,14 +1,10 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { TypeOfApi } from "../../../../../constants";
-import { Utils } from "../../../../../utils";
+import { Body1, Body1Strong, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
-
-import { Body1, Body1Strong, Button, Subtitle2, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow, Tooltip } from "@fluentui/react-components";
+import { TypeOfApi } from "../../../../../constants";
+import { Utils } from "../../../../../utils";
 import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
-import { Representation } from "../../../../../models/representation";
-import { TypeDefinition } from "../../../../../models/typeDefinition";
 
 export const getRequestUrl = (api: Api, operation: Operation, hostname: string): string => {
     if ((!api || !operation) && api?.type !== TypeOfApi.graphQL) {

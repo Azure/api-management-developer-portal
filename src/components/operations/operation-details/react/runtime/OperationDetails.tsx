@@ -1,7 +1,24 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Stack, } from "@fluentui/react";
-import { Badge, Body1, Body1Strong, Button, Caption1Strong, Spinner, Subtitle1, Subtitle2, Tooltip } from "@fluentui/react-components";
+import {
+    Badge,
+    Body1,
+    Body1Strong,
+    Button,
+    Caption1Strong,
+    Link,
+    Spinner,
+    Subtitle1,
+    Subtitle2,
+    Table,
+    TableBody,
+    TableCell,
+    TableHeader,
+    TableHeaderCell,
+    TableRow,
+    Tooltip 
+} from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
@@ -21,8 +38,9 @@ import {
 } from "../../../../../models/typeDefinition";
 import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
+import { OperationRepresentation, TSchemaView } from "./OperationRepresentation";
+import { TypeDefinitionInList } from "./TypeDefinitions";
 import { OperationDetailsTable, getRequestUrl } from "./utils";
-import { OperationRepresentation } from "./OperationRepresentation";
 
 export const OperationDetails = ({
     apiName,
@@ -30,8 +48,11 @@ export const OperationDetails = ({
     apiService,
     routeHelper,
     enableConsole,
+    useCorsProxy,
     includeAllHostnames,
-    showExamples
+    enableScrollTo,
+    showExamples,
+    defaultSchemaView
 }: OperationDetailsRuntimeProps & { apiName: string, operationName: string, apiService: ApiService, routeHelper: RouteHelper }) => {
     const [working, setWorking] = useState<boolean>(false);
     const [api, setApi] = useState<Api>(null);
@@ -55,7 +76,7 @@ export const OperationDetails = ({
                 setRequest(loadedValues.operation?.request);
                 setResponses(loadedValues.operation?.getMeaningfulResponses());
 
-                console.log('repr', loadedValues.operation?.request?.meaningfulRepresentations());
+                console.log('def', loadedValues.definitions);
             });
             loadGatewayInfo().then(hostnames => {
                 hostnames?.length > 0 && setHostnames(hostnames);
@@ -226,6 +247,12 @@ export const OperationDetails = ({
         return routeHelper.getDefinitionAnchor(apiName, operationName, typeName);
     }
 
+    const getReferenceId = (definitionName: string): string => {
+        if (!operationName) return;
+
+        return routeHelper.getDefinitionReferenceId(apiName, operationName, definitionName);
+    }
+
     return (
         <div className={"operation-details-container"}>
             <Subtitle1 block className={"operation-details-title"}>Operations</Subtitle1>
@@ -296,6 +323,7 @@ export const OperationDetails = ({
                                             representations={request.meaningfulRepresentations()}
                                             definitions={definitions}
                                             showExamples={showExamples}
+                                            defaultSchemaView={defaultSchemaView as TSchemaView}
                                             getReferenceUrl={getReferenceUrl}
                                         />
                                     </>
@@ -325,11 +353,51 @@ export const OperationDetails = ({
                                             representations={response.meaningfulRepresentations()}
                                             definitions={definitions}
                                             showExamples={showExamples}
+                                            defaultSchemaView={defaultSchemaView as TSchemaView}
                                             getReferenceUrl={getReferenceUrl}
                                         />
                                     }
                                 </div>
                         ))}
+                        {definitions?.length > 0 &&
+                            <div className={"operation-definitions"}>
+                                <Subtitle1 block className={"operation-details-title"}>Definitions</Subtitle1>
+                                <Table aria-label={"Definitions list"} className={"fui-table"}>
+                                    <TableHeader>
+                                        <TableRow className={"fui-table-headerRow"}>
+                                            <TableHeaderCell><Body1Strong>Name</Body1Strong></TableHeaderCell>
+                                            <TableHeaderCell><Body1Strong>Description</Body1Strong></TableHeaderCell>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {definitions.map(definition => (
+                                            <TableRow key={definition.name} className={"fui-table-body-row"}>
+                                                <TableCell>
+                                                    <Link href={getReferenceUrl(definition.name)} title={definition.name} className={"truncate-text"}>
+                                                        {definition.name}
+                                                    </Link>
+                                                </TableCell>
+                                                <TableCell><Body1 title={definition.description}>
+                                                    <MarkdownProcessor markdownToDisplay={definition.description} maxChars={250} truncate={true} />
+                                                </Body1></TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+
+                                {definitions.map(definition => (
+                                    <div key={definition.name} className={"operation-definition"}>
+                                        <TypeDefinitionInList
+                                            definition={definition}
+                                            showExamples={showExamples}
+                                            getReferenceUrl={getReferenceUrl}
+                                            getReferenceId={getReferenceId}
+                                            defaultSchemaView={defaultSchemaView as TSchemaView}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        }
                       </div>
             }
         </div>

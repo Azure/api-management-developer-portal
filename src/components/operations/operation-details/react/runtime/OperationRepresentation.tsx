@@ -12,13 +12,14 @@ import { CodeSnippet } from "../../../../utils/react/CodeSnippet";
 import { TypeDefinitionForRepresentation } from "./TypeDefinitions";
 
 type OperationRepresentationProps = {
-    definitions: TypeDefinition[],
-    representations: Representation[],
-    showExamples: boolean,
-    getReferenceUrl: (reference: string) => string
+    definitions: TypeDefinition[];
+    representations: Representation[];
+    showExamples: boolean;
+    defaultSchemaView: TSchemaView;
+    getReferenceUrl: (reference: string) => string;
 }
 
-enum TSchemaView {
+export enum TSchemaView {
     schema = "raw",
     table = "table"
 }
@@ -41,8 +42,8 @@ export const getDefinitionForRepresentation = (representation: Representation, d
     return definition;
 }
 
-export const OperationRepresentation = ({ definitions, representations, showExamples, getReferenceUrl }: OperationRepresentationProps) => {
-    const [schemaView, setSchemaView] = useState<TSchemaView>(TSchemaView.table);
+export const OperationRepresentation = ({ definitions, representations, showExamples, defaultSchemaView, getReferenceUrl }: OperationRepresentationProps) => {
+    const [schemaView, setSchemaView] = useState<TSchemaView>(defaultSchemaView || TSchemaView.table);
     const [selectedRepresentation, setSelectedRepresentation] = useState<Representation>(representations[0]);
     const [selectedRepresentationDefinition, setSelectedRepresentationDefinition] = useState<TypeDefinition>(null);
     const [selectedRepresentationExample, setSelectedRepresentationExample] = useState<RepresentationExample>(null);
