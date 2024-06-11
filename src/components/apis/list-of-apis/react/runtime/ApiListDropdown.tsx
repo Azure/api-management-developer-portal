@@ -85,7 +85,7 @@ const ApiListDropdownFC = ({
         <>Loading APIs</> // if data are not loaded yet ComboBox sometimes fails to initialize properly - edge case, in most cases almost instant from the cache
     ) : (
         <Combobox
-            style={{ width: "100%" }}
+            style={{ width: "100%", minWidth: 0 }}
             onInput={(event) => setPattern(event.target?.["value"])}
             defaultValue={selectedApi?.displayName}
             defaultSelectedOptions={[selectedApi?.name]}
