@@ -53,7 +53,7 @@ const ProductsDropdownFC = ({
 }: TProductListDropdown & { selectedProduct?: Product }) => {
     const pageMax = Math.ceil(products?.count / Constants.defaultPageSize);
 
-    const content = !products ? (
+    const content = !products || !selectedProduct ? (
         <>Loading Products</> // if data are not loaded yet ComboBox sometimes fails to initialize properly - edge case, in most cases almost instant from the cache
     ) : (
         <Combobox

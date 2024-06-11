@@ -81,7 +81,7 @@ const ApiListDropdownFC = ({
     const toggleTag = (tag: string) =>
         setExpanded((old) => toggleValueInSet(old, tag));
 
-    const content = !apis ? (
+    const content = !apis || !selectedApi ? (
         <>Loading APIs</> // if data are not loaded yet ComboBox sometimes fails to initialize properly - edge case, in most cases almost instant from the cache
     ) : (
         <Combobox
