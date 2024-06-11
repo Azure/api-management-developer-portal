@@ -8,6 +8,7 @@ import { ApiService } from "../../../../../services/apiService";
 import { TagService } from "../../../../../services/tagService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TLayout } from "../../../../utils/react/TableListInfo";
+import { FiltersPosition } from "../../listOfApisContract";
 import { TApisData } from "./utils";
 import { ApiListTableCards } from "./ApiListTableCards";
 import { ApiListDropdown } from "./ApiListDropdown";
@@ -16,7 +17,7 @@ export interface ApiListProps {
     productName?: string;
     allowSelection?: boolean;
     allowViewSwitching?: boolean;
-    filtersInSidebar?: boolean;
+    filtersPosition?: FiltersPosition;
     showApiType?: boolean;
     defaultGroupByTagToEnabled?: boolean;
     detailsPageUrl: string;

@@ -1,6 +1,7 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { FiltersPosition } from "../../../apis/list-of-apis/listOfApisContract";
 import { layoutsMap } from "../../../utils/react/TableListInfo";
 import { isRedesignEnabledSetting } from "../../../../constants";
 import { ProductApisModel } from "../productApisModel";
@@ -20,7 +21,7 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
         componentInstance.runtimeConfig(JSON.stringify({
             allowSelection: false,
             allowViewSwitching: true,
-            filtersInSidebar: true,
+            filtersPosition: FiltersPosition.none,
             showApiType: false,
             defaultGroupByTagToEnabled: false,
             layoutDefault: layoutsMap[state.layout],
