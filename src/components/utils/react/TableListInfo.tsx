@@ -15,21 +15,22 @@ import { TableFiltersButton, TFilterActive, TFilterGroup } from "./TableFilters"
 export enum TLayout {
     "cards" = "cards",
     "table" = "table",
+    "dropdown" = "dropdown",
 }
 
 export const layoutsMap = {
     "tiles": TLayout.cards,
     "list": TLayout.table,
-    "dropdown": undefined, // TODO
+    "dropdown": TLayout.dropdown,
 }
 
 const groupByTagId = "groupByTagId";
-const GroupByTag = ({
+export const GroupByTag = ({
+    groupByTag,
     setGroupByTag,
-    defaultGroupByTagToEnabled,
 }: {
+    groupByTag: boolean;
     setGroupByTag: React.Dispatch<React.SetStateAction<boolean>>;
-    defaultGroupByTagToEnabled: boolean;
 }) => (
     <div>
         <Label htmlFor={groupByTagId}>
@@ -39,7 +40,7 @@ const GroupByTag = ({
         <Switch
             id={groupByTagId}
             aria-labelledby={groupByTagId}
-            defaultChecked={defaultGroupByTagToEnabled}
+            checked={groupByTag}
             onChange={(_, { checked }) => setGroupByTag(checked)}
         />
     </div>
@@ -66,9 +67,9 @@ type ApisTableInfoProps = {
     filtersOptions?: TFilterGroup[]
     pattern: string | undefined
     setPattern: React.Dispatch<React.SetStateAction<string | undefined>>
+    groupByTag?: boolean
     setGroupByTag?: React.Dispatch<React.SetStateAction<boolean>>
     allowViewSwitching: boolean
-    defaultGroupByTagToEnabled?: boolean
 }
 
 export const TableListInfo = ({
@@ -78,9 +79,9 @@ export const TableListInfo = ({
     filters,
     setFilters,
     setPattern,
+    groupByTag,
     setGroupByTag,
     allowViewSwitching,
-    defaultGroupByTagToEnabled,
 }: ApisTableInfoProps) => (
     <Stack horizontal horizontalAlign="space-between">
         <Stack.Item>
@@ -120,8 +121,8 @@ export const TableListInfo = ({
             <Stack horizontal tokens={{ childrenGap: "1rem" }}>
                 {setGroupByTag && (
                     <GroupByTag
+                        groupByTag={groupByTag}
                         setGroupByTag={setGroupByTag}
-                        defaultGroupByTagToEnabled={defaultGroupByTagToEnabled}
                     />
                 )}
                 {allowViewSwitching && (
