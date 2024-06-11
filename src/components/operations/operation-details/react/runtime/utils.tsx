@@ -38,24 +38,6 @@ export const getRequestUrl = (api: Api, operation: Operation, hostname: string):
     return requestUrl;
 }
 
-export const getDefinitionForRepresentation = (representation: Representation, definitions: TypeDefinition[]): TypeDefinition => {
-    let definition = definitions.find(x => x.name === representation.typeName);
-
-    if (!definition) {
-        // Fallback for the case when type is referenced, but not defined in schema
-        return new TypeDefinition(representation.typeName, {}, definitions);
-    }
-
-    // Making copy to avoid overriding original properties
-    definition = Utils.clone(definition);
-
-    if (!definition.name) {
-        definition.name = representation.typeName;
-    }
-
-    return definition;
-}
-
 export const OperationDetailsTable = ({tableName, tableContent, showExamples, showIn}) => (
     <Table aria-label={tableName} className={"fui-table"}>
         <TableHeader>

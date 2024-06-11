@@ -1,2 +1,6 @@
-<!-- <operation-details data-bind="attr: { params: config }"></operation-details> -->
-<fui-operation-details data-bind="attr: { props: config }"></fui-operation-details>
+<!-- ko if: isRedesignEnabled -->
+    <fui-operation-details data-bind="attr: { props: config }"></fui-operation-details>
+<!-- /ko -->
+<!-- ko ifnot: isRedesignEnabled -->
+    <operation-details data-bind="attr: { params: config }"></operation-details>
+<!-- /ko -->
