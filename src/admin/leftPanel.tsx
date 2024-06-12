@@ -229,7 +229,9 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                             }}
                         />
                     </Stack>
-                    { this.renderNavItemsSwitch(this.state.selectedNavItem) }
+                    <div className="side-panel-content">
+                        { this.renderNavItemsSwitch(this.state.selectedNavItem) }
+                    </div>
                     { this.state.selectedNavItem === NavItem.Media && <MediaModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
                     { this.state.selectedNavItem === NavItem.Settings && <SettingsModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
                     { this.state.selectedNavItem === NavItem.Help && <HelpModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
