@@ -2,14 +2,12 @@ import * as React from "react";
 import { Stack } from "@fluentui/react";
 import {
     SearchBox,
-    Body1Stronger,
-    Label,
     Switch,
     Toolbar,
     ToolbarRadioButton,
     ToolbarRadioGroup,
 } from "@fluentui/react-components";
-import { Grid24Regular, AppsList24Regular } from "@fluentui/react-icons";
+import { AppsList24Regular, Grid24Regular, SearchRegular } from "@fluentui/react-icons";
 import { TableFiltersButton, TFilterActive, TFilterGroup } from "./TableFilters";
 
 export enum TLayout {
@@ -24,7 +22,6 @@ export const layoutsMap = {
     "dropdown": TLayout.dropdown,
 }
 
-const groupByTagId = "groupByTagId";
 export const GroupByTag = ({
     groupByTag,
     setGroupByTag,
@@ -32,18 +29,12 @@ export const GroupByTag = ({
     groupByTag: boolean;
     setGroupByTag: React.Dispatch<React.SetStateAction<boolean>>;
 }) => (
-    <div>
-        <Label htmlFor={groupByTagId}>
-            <Body1Stronger>Group by tag</Body1Stronger>
-        </Label>
-
-        <Switch
-            id={groupByTagId}
-            aria-labelledby={groupByTagId}
-            checked={groupByTag}
-            onChange={(_, { checked }) => setGroupByTag(checked)}
-        />
-    </div>
+    <Switch
+        label={"Group by tag"}
+        labelPosition="before"
+        checked={groupByTag}
+        onChange={(_, { checked }) => setGroupByTag(checked)}
+    />
 );
 
 const LayoutSwitchPure = ({layout, setLayout}: { layout: TLayout; setLayout: (newLayout: TLayout) => void }) => (
@@ -100,6 +91,7 @@ export const TableListInfo = ({
                 <Stack.Item>
                     <SearchBox
                         onChange={(_, { value }) => setPattern(value)}
+                        contentBefore={<SearchRegular className={"fui-search-icon"} />}
                         placeholder={"Search"}
                         aria-label={"Search"}
                     />

@@ -59,7 +59,7 @@ const Options = ({
     <>
         {apis.map((api) => (
             <Option key={api.id} value={api.name} text={api.displayName}>
-                <Link href={getReferenceUrl(api.name)}>{api.displayName}</Link>
+                <Link href={getReferenceUrl(api.name)} appearance="subtle">{api.displayName}</Link>
             </Option>
         ))}
     </>
@@ -86,6 +86,7 @@ const ApiListDropdownFC = ({
     ) : (
         <Combobox
             style={{ width: "100%" }}
+            placeholder={"Select API"}
             onInput={(event) => setPattern(event.target?.["value"])}
             defaultValue={selectedApi?.displayName}
             defaultSelectedOptions={[selectedApi?.name]}
