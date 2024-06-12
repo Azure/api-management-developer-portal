@@ -69,12 +69,12 @@ export const ApiListTableCards = ({
                     <Spinner
                         label="Loading APIs"
                         labelPosition="below"
-                        size="extra-large"
+                        size="small"
                     />
                 </Stack.Item>
             ) : (
                 <>
-                    <Stack.Item>
+                    <Stack.Item style={{marginTop: "2rem"}}>
                         {layout === TLayout.table ? (
                             <ApisTable
                                 apis={apis}
