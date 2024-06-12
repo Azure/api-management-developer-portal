@@ -37,7 +37,7 @@ const Options = ({
     <>
         {products.map((product) => (
             <Option key={product.id} value={product.name} text={product.displayName}>
-                <Link href={getReferenceUrl(product.name)}>{product.displayName}</Link>
+                <Link href={getReferenceUrl(product.name)} appearance="subtle">{product.displayName}</Link>
             </Option>
         ))}
     </>
@@ -58,6 +58,7 @@ const ProductsDropdownFC = ({
     ) : (
         <Combobox
             style={{ width: "100%", minWidth: 0 }}
+            placeholder={"Select Product"}
             onInput={(event) => setPattern(event.target?.["value"])}
             defaultValue={selectedProduct?.displayName}
             defaultSelectedOptions={[selectedProduct?.name]}
