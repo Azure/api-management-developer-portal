@@ -5,22 +5,21 @@ import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import * as Constants from "../../../../../constants";
-import { Product } from "../../../../../models/product";
+import { fuiTheme } from "../../../../../constants";
 import { ProductService } from "../../../../../services/productService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Pagination } from "../../../../utils/react/Pagination";
 import { TableListInfo, TLayout } from "../../../../utils/react/TableListInfo";
-import { fuiTheme } from "../../../../../constants";
+import { ProductsDropdown } from "./ProductsDropdown";
 import { ProductsTable } from "./ProductsTable";
 import { ProductsCards } from "./ProductsCards";
 import { TProductsData } from "./utils";
 
-export interface ApiListProps {
-  allowSelection?: boolean;
-  allowViewSwitching?: boolean;
-  detailsPageUrl: string;
-
-  layoutDefault: TLayout | undefined; // TODO remove undefined once finished
+export interface ProductsListProps {
+    allowSelection?: boolean;
+    allowViewSwitching?: boolean;
+    detailsPageUrl: string;
+    layoutDefault: TLayout;
 }
 
 const loadProducts = async (productService: ProductService, query: SearchQuery) => {
@@ -35,14 +34,17 @@ const loadProducts = async (productService: ProductService, query: SearchQuery) 
     return products;
 }
 
-const ProductListRuntimeFC = ({
-    productService, getReferenceUrl, layoutDefault, allowViewSwitching
-}: ApiListProps & { productService: ProductService, getReferenceUrl: (product: Product) => string }) => {
-    const [working, setWorking] = useState(false)
-    const [pageNumber, setPageNumber] = useState(1)
-    const [products, setProducts] = useState<TProductsData>()
-    const [layout, setLayout] = useState<TLayout>(layoutDefault ?? TLayout.table)
-    const [pattern, setPattern] = useState<string>()
+export type TProductListRuntimeFCProps = Omit<ProductsListProps, "detailsPageUrl"> & {
+    productService: ProductService;
+    getReferenceUrl: (productName: string) => string;
+};
+
+const ProductListRuntimeFC = ({ productService, getReferenceUrl, layoutDefault, allowViewSwitching }: TProductListRuntimeFCProps) => {
+    const [working, setWorking] = useState(false);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [products, setProducts] = useState<TProductsData>();
+    const [layout, setLayout] = useState<TLayout>(layoutDefault ?? TLayout.table);
+    const [pattern, setPattern] = useState<string>();
 
     /**
      * Loads page of Products.
@@ -51,17 +53,25 @@ const ProductListRuntimeFC = ({
         const query: SearchQuery = {
             pattern,
             skip: (pageNumber - 1) * Constants.defaultPageSize,
-            take: Constants.defaultPageSize
+            take: Constants.defaultPageSize,
         };
 
-        setWorking(true)
+        setWorking(true);
         loadProducts(productService, query)
-            .then(products => setProducts(products))
-            .finally(() => setWorking(false))
-    }, [productService, pageNumber, pattern])
+            .then((products) => setProducts(products))
+            .finally(() => setWorking(false));
+    }, [productService, pageNumber, pattern]);
 
-    return (
-        <Stack tokens={{childrenGap: "1rem"}}>
+    return layout === TLayout.dropdown ? (
+        <ProductsDropdown
+            getReferenceUrl={getReferenceUrl}
+            working={working}
+            products={products}
+            statePageNumber={[pageNumber, setPageNumber]}
+            statePattern={[pattern, setPattern]}
+        />
+    ) : (
+        <Stack tokens={{ childrenGap: "1rem" }}>
             <Stack.Item>
                 <TableListInfo
                     layout={layout}
@@ -95,28 +105,28 @@ const ProductListRuntimeFC = ({
             )}
         </Stack>
     );
-}
+};
 
-export class ProductsListRuntime extends React.Component<ApiListProps> {
+export class ProductsListRuntime extends React.Component<ProductsListProps> {
     @Resolve("productService")
     public productService: ProductService;
 
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
 
-    private getReferenceUrl(product: Product): string {
-        return this.routeHelper.getProductReferenceUrl(product.name, this.props.detailsPageUrl);
+    getReferenceUrl(productName: string): string {
+        return this.routeHelper.getProductReferenceUrl(productName, this.props.detailsPageUrl);
     }
 
     render() {
         return (
-          <FluentProvider theme={fuiTheme}>
-            <ProductListRuntimeFC
-              {...this.props}
-              productService={this.productService}
-              getReferenceUrl={(product) => this.getReferenceUrl(product)}
-            />
-          </FluentProvider>
+            <FluentProvider theme={fuiTheme}>
+                <ProductListRuntimeFC
+                    {...this.props}
+                    productService={this.productService}
+                    getReferenceUrl={(productName) => this.getReferenceUrl(productName)}
+                />
+            </FluentProvider>
         );
     }
 }

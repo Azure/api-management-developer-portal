@@ -1,11 +1,17 @@
-<!-- ko if: layout() === 'list' -->
+<!-- ko if: isRedesignEnabled -->
 <fui-product-list-runtime data-bind="attr: { props: runtimeConfig }"></fui-product-list-runtime>
 <!-- /ko -->
 
-<!-- ko if: layout() === 'dropdown' -->
-<product-list-dropdown-runtime data-bind="attr: { params: runtimeConfig }"></product-list-dropdown-runtime>
-<!-- /ko -->
+<!-- ko ifnot: isRedesignEnabled -->
+    <!-- ko if: layout() === 'list' -->
+    <product-list-runtime data-bind="attr: { params: runtimeConfig }"></product-list-runtime>
+    <!-- /ko -->
 
-<!-- ko if: layout() === 'tiles' -->
-<fui-product-list-runtime data-bind="attr: { props: runtimeConfig }"></fui-product-list-runtime>
+    <!-- ko if: layout() === 'dropdown' -->
+    <product-list-dropdown-runtime data-bind="attr: { params: runtimeConfig }"></product-list-dropdown-runtime>
+    <!-- /ko -->
+
+    <!-- ko if: layout() === 'tiles' -->
+    <product-list-tiles-runtime data-bind="attr: { params: runtimeConfig }"></product-list-tiles-runtime>
+    <!-- /ko -->
 <!-- /ko -->

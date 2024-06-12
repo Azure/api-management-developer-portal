@@ -3,6 +3,7 @@ import template from "./listOfApisEditor.html";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
 import { HyperlinkModel } from "@paperbits/common/permalinks";
 import { ListOfApisModel } from "../listOfApisModel";
+import { FiltersPosition } from "../listOfApisContract";
 
 
 @Component({
@@ -51,7 +52,7 @@ export class ListOfApisEditor {
     public async initialize(): Promise<void> {
         this.allowSelection(this.model.allowSelection);
         this.allowViewSwitching(this.model.allowViewSwitching);
-        this.filtersInSidebar(this.model.filtersInSidebar);
+        this.filtersInSidebar(this.model.filtersPosition === FiltersPosition.sidebar);
         this.showApiType(this.model.showApiType);
         this.defaultGroupByTagToEnabled(this.model.defaultGroupByTagToEnabled);
         this.hyperlink(this.model.detailsPageHyperlink);
@@ -66,7 +67,7 @@ export class ListOfApisEditor {
     private applyChanges(): void {
         this.model.allowSelection = this.allowSelection();
         this.model.allowViewSwitching = this.allowViewSwitching();
-        this.model.filtersInSidebar = this.filtersInSidebar();
+        this.model.filtersPosition = this.filtersInSidebar() ? FiltersPosition.sidebar : FiltersPosition.popup;
         this.model.showApiType = this.showApiType();
         this.model.defaultGroupByTagToEnabled = this.defaultGroupByTagToEnabled();
         this.model.detailsPageHyperlink = this.hyperlink();

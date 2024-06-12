@@ -1,34 +1,34 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Stack } from "@fluentui/react";
-import { FluentProvider, Spinner } from "@fluentui/react-components";
+import { FluentProvider } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import * as Constants from "../../../../../constants";
-import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
 import { TagService } from "../../../../../services/tagService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { Pagination } from "../../../../utils/react/Pagination";
-import { TableListInfo, TLayout } from "../../../../utils/react/TableListInfo";
-import { TableFiltersSidebar } from "../../../../utils/react/TableFilters";
-import { useTableFiltersTags } from "../../../../utils/react/useTableFiltersTags";
-import { fuiTheme } from "../../../../../constants";
-import { ApisTable } from "./ApisTable";
-import { ApisCards } from "./ApisCards";
+import { TLayout } from "../../../../utils/react/TableListInfo";
+import { FiltersPosition } from "../../listOfApisContract";
 import { TApisData } from "./utils";
+import { ApiListTableCards } from "./ApiListTableCards";
+import { ApiListDropdown } from "./ApiListDropdown";
 
 export interface ApiListProps {
     productName?: string;
     allowSelection?: boolean;
     allowViewSwitching?: boolean;
-    filtersInSidebar?: boolean;
+    filtersPosition?: FiltersPosition;
     showApiType?: boolean;
     defaultGroupByTagToEnabled?: boolean;
     detailsPageUrl: string;
     detailsPageTarget: string;
+    layoutDefault: TLayout;
+}
 
-    layoutDefault: TLayout | undefined; // TODO remove undefined once finished
+export type TApiListRuntimeFCProps = Omit<ApiListProps, "detailsPageUrl"> & {
+    apiService: ApiService;
+    tagService: TagService;
+    getReferenceUrl: (apiName: string) => string;
 }
 
 const loadApis = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean, productName?: string) => {
@@ -49,13 +49,10 @@ const loadApis = async (apiService: ApiService, query: SearchQuery, groupByTags?
     return apis;
 }
 
-const ApiListRuntimeFC = ({
-    apiService, tagService, getReferenceUrl, productName, layoutDefault, showApiType, allowViewSwitching, filtersInSidebar, detailsPageTarget, defaultGroupByTagToEnabled
-}: ApiListProps & { apiService: ApiService, tagService: TagService, getReferenceUrl: (api: Api) => string }) => {
+const ApiListRuntimeFC = ({ apiService, productName, defaultGroupByTagToEnabled, layoutDefault, ...props }: TApiListRuntimeFCProps) => {
     const [working, setWorking] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
     const [apis, setApis] = useState<TApisData>();
-    const [layout, setLayout] = useState<TLayout>(layoutDefault ?? TLayout.table);
     const [pattern, setPattern] = useState<string>();
     const [groupByTag, setGroupByTag] = useState(!!defaultGroupByTagToEnabled);
     const [filters, setFilters] = useState({tags: [] as string[]});
@@ -77,59 +74,27 @@ const ApiListRuntimeFC = ({
             .finally(() => setWorking(false));
     }, [apiService, pageNumber, groupByTag, filters, pattern, productName]);
 
-    const filterOptionTags = useTableFiltersTags(tagService);
-
-    const content = (
-        <Stack tokens={{childrenGap: "1rem"}}>
-            <Stack.Item>
-                <TableListInfo
-                    layout={layout}
-                    setLayout={setLayout}
-                    pattern={pattern}
-                    setPattern={setPattern}
-                    filters={filters}
-                    setFilters={setFilters}
-                    filtersOptions={(!filtersInSidebar && !groupByTag) ? [filterOptionTags] : undefined}
-                    setGroupByTag={productName ? undefined : setGroupByTag} // don't allow grouping by tags when filtering for product APIs due to missing BE support
-                    allowViewSwitching={allowViewSwitching}
-                    defaultGroupByTagToEnabled={defaultGroupByTagToEnabled}
-                />
-            </Stack.Item>
-
-            {working || !apis ? (
-                <Stack.Item>
-                    <Spinner label="Loading APIs" labelPosition="below" size="extra-large"/>
-                </Stack.Item>
-            ) : (
-                <>
-                    <Stack.Item>
-                        {layout === TLayout.table ? (
-                            <ApisTable apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl}
-                                       detailsPageTarget={detailsPageTarget}/>
-                        ) : (
-                            <ApisCards apis={apis} showApiType={showApiType} getReferenceUrl={getReferenceUrl}
-                                       detailsPageTarget={detailsPageTarget}/>
-                        )}
-                    </Stack.Item>
-
-                    <Stack.Item align={"center"}>
-                        <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber}
-                                    pageMax={Math.ceil(apis?.count / Constants.defaultPageSize)}/>
-                    </Stack.Item>
-                </>
-            )}
-        </Stack>
-    );
-
-    return !filtersInSidebar ? content : (
-        <Stack horizontal tokens={{childrenGap: "2rem"}}>
-            <Stack.Item shrink={0} style={{ minWidth: "12rem", width: "15%", maxWidth: "20rem" }}>
-                <TableFiltersSidebar filtersActive={filters} setFiltersActive={setFilters} filtersOptions={groupByTag ? [] : [filterOptionTags]}/>
-            </Stack.Item>
-            <Stack.Item style={{width: "100%"}}>
-                {content}
-            </Stack.Item>
-        </Stack>
+    return layoutDefault == TLayout.dropdown ? (
+        <ApiListDropdown
+            {...props}
+            working={working}
+            apis={apis}
+            statePageNumber={[pageNumber, setPageNumber]}
+            statePattern={[pattern, setPattern]}
+            stateGroupByTag={[groupByTag, setGroupByTag]}
+        />
+    ) : (
+        <ApiListTableCards
+            {...props}
+            layoutDefault={layoutDefault}
+            productName={productName}
+            working={working}
+            apis={apis}
+            statePageNumber={[pageNumber, setPageNumber]}
+            statePattern={[pattern, setPattern]}
+            stateFilters={[filters, setFilters]}
+            stateGroupByTag={[groupByTag, setGroupByTag]}
+        />
     );
 }
 
@@ -143,18 +108,18 @@ export class ApiListRuntime extends React.Component<ApiListProps> {
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
 
-    private getReferenceUrl(api: Api): string {
-        return this.routeHelper.getApiReferenceUrl(api.name, this.props.detailsPageUrl);
+    private getReferenceUrl(apiName: string): string {
+        return this.routeHelper.getApiReferenceUrl(apiName, this.props.detailsPageUrl);
     }
 
     render() {
         return (
-          <FluentProvider theme={fuiTheme}>
+          <FluentProvider theme={Constants.fuiTheme}>
             <ApiListRuntimeFC
               {...this.props}
               apiService={this.apiService}
               tagService={this.tagService}
-              getReferenceUrl={(api) => this.getReferenceUrl(api)}
+              getReferenceUrl={(apiName) => this.getReferenceUrl(apiName)}
             />
           </FluentProvider>
         );
