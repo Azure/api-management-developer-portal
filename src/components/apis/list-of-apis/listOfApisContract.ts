@@ -2,6 +2,11 @@ import { Contract } from "@paperbits/common";
 import { HyperlinkContract } from "@paperbits/common/editing";
 import { LocalStyles } from "@paperbits/common/styles";
 
+export enum FiltersPosition {
+    sidebar = "sidebar",
+    popup = "popup",
+    none = "none",
+}
 
 /**
  * API list widget contract.
@@ -33,9 +38,9 @@ export interface ListOfApisContract extends Contract {
     detailsPageHyperlink?: HyperlinkContract;
 
     /**
-     * Indicates that filters should be displayed in a sidebar.
+     * Indicates position of filters.
      */
-    filtersInSidebar: boolean;
+    filtersPosition: FiltersPosition;
 
     /**
      * Indicates that view switching is allowed.
