@@ -60,7 +60,7 @@ const TableBodyTags = ({ tags, ...props }: Props & { tags: Page<TagGroup<Api>> }
                         }
                     >
                         <TableCell>
-                            <button className={"no-border"}>
+                            <button className={"no-border align-center"}>
                                 <Body1Strong style={{ marginRight: ".375rem" }}>
                                     {tag}
                                 </Body1Strong>
