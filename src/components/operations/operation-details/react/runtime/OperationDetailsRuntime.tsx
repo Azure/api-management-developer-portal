@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
-import { Body1, FluentProvider} from "@fluentui/react-components";
+import { FluentProvider} from "@fluentui/react-components";
 import { TypeOfApi, fuiTheme } from "../../../../../constants";
 import { ApiService } from "../../../../../services/apiService";
 import { TagService } from "../../../../../services/tagService";

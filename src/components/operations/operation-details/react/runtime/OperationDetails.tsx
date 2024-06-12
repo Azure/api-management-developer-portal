@@ -36,11 +36,11 @@ import {
     TypeDefinitionPropertyTypePrimitive,
     TypeDefinitionPropertyTypeReference
 } from "../../../../../models/typeDefinition";
-import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
+import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
 import { OperationRepresentation, TSchemaView } from "./OperationRepresentation";
 import { TypeDefinitionInList } from "./TypeDefinitions";
-import { OperationDetailsTable, getRequestUrl } from "./utils";
+import { OperationDetailsTable, getRequestUrl, scrollToOperation } from "./utils";
 
 export const OperationDetails = ({
     apiName,
@@ -69,6 +69,9 @@ export const OperationDetails = ({
         if (apiName) {
             setWorking(true);
             loadApi().then(loadedApi => setApi(loadedApi));
+            loadGatewayInfo().then(hostnames => {
+                hostnames?.length > 0 && setHostnames(hostnames);
+            });
             loadOperation().then(loadedValues => {
                 setOperation(loadedValues.operation);
                 setTags(loadedValues.tags);
@@ -77,10 +80,10 @@ export const OperationDetails = ({
                 setResponses(loadedValues.operation?.getMeaningfulResponses());
 
                 console.log('def', loadedValues.definitions);
+            }).finally(() => {
+                setWorking(false);
+                enableScrollTo && scrollToOperation();
             });
-            loadGatewayInfo().then(hostnames => {
-                hostnames?.length > 0 && setHostnames(hostnames);
-            }).finally(() => setWorking(false));
         }
     }, [apiName, operationName]);
 
@@ -255,7 +258,7 @@ export const OperationDetails = ({
 
     return (
         <div className={"operation-details-container"}>
-            <Subtitle1 block className={"operation-details-title"}>Operations</Subtitle1>
+            <Subtitle1 block className={"operation-details-title"} id={"operation"}>Operation</Subtitle1>
             {working 
                 ? <Spinner label="Loading..." labelPosition="below" size="small" />
                 : !operation
