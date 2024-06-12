@@ -15,3 +15,8 @@
 .fui-filterBy-container {
     margin: 0 calc(-1 * var(--spacingHorizontalM));
 }
+
+.align-center {
+    display: flex;
+    align-items: center;
+}

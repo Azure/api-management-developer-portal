@@ -40,46 +40,67 @@ export const TableFilter = ({
     setFiltersActive,
     filtersOptions,
     accordionProps,
-}: TTableFilterProps) => (
-    <>
-        <Subtitle2>Filter by</Subtitle2>
+}: TTableFilterProps) => {
+    const FilterGroup = ({ filter }: { filter: TFilterGroup }) =>
+        filter.working ? (
+            <div>Loading...</div>
+        ) : (
+            <Stack>
+                {filter.items.map((item) => (
+                    <Checkbox
+                        key={filter.value + item.value}
+                        value={item.value}
+                        label={item.label}
+                        checked={
+                            filtersActive[filter.value]?.includes(item.value) ??
+                            false
+                        }
+                        onChange={(_, { checked }) =>
+                            setFiltersActive((old) => ({
+                                ...old,
+                                [filter.value]: checked
+                                    ? [...(old[filter.value] ?? []), item.value]
+                                    : (old[filter.value] ?? []).filter(
+                                          (e) => e !== item.value
+                                      ),
+                            }))
+                        }
+                    />
+                ))}
 
-        <Accordion className={"fui-filterBy-container"} {...accordionProps}>
-            {filtersOptions.map((filter) => (
-                <AccordionItem key={filter.value} value={filter.value}>
-                    <AccordionHeader expandIconPosition={"end"}>
-                        <Subtitle2>{filter.label}</Subtitle2>
-                    </AccordionHeader>
-                    <AccordionPanel>
-                        {filter.working ? <div>Loading...</div> : (
-                            <Stack>
-                                {filter.items.map((item) => (
-                                    <Checkbox
-                                        key={filter.value + item.value}
-                                        value={item.value}
-                                        label={item.label}
-                                        checked={filtersActive[filter.value]?.includes(item.value) ?? false}
-                                        onChange={(_, { checked }) => setFiltersActive((old) => ({
-                                            ...old,
-                                            [filter.value]: checked
-                                                ? [...(old[filter.value] ?? []), item.value]
-                                                : (old[filter.value] ?? []).filter((e) => e !== item.value),
-                                        }))}
-                                    />
-                                ))}
-                                {typeof filter.nextPage === "function" && (
-                                    <Link onClick={() => filter.nextPage()}>
-                                        Load more
-                                    </Link>
-                                )}
-                            </Stack>
-                        )}
-                    </AccordionPanel>
-                </AccordionItem>
-            ))}
-        </Accordion>
-    </>
-);
+                {typeof filter.nextPage === "function" && (
+                    <Link onClick={() => filter.nextPage()}>Load more</Link>
+                )}
+            </Stack>
+        );
+
+    if (filtersOptions.length === 0) return <></>;
+
+    return filtersOptions.length > 1 ? (
+        <>
+            <Subtitle2>Filter by</Subtitle2>
+
+            <Accordion className={"fui-filterBy-container"} {...accordionProps}>
+                {filtersOptions.map((filter) => (
+                    <AccordionItem key={filter.value} value={filter.value}>
+                        <AccordionHeader expandIconPosition={"end"}>
+                            <Subtitle2>{filter.label}</Subtitle2>
+                        </AccordionHeader>
+                        <AccordionPanel>
+                            <FilterGroup filter={filter} />
+                        </AccordionPanel>
+                    </AccordionItem>
+                ))}
+            </Accordion>
+        </>
+    ) : (
+        <>
+            <Subtitle2 style={{ display: "block", marginBottom: ".375rem" }}>Filter by {filtersOptions[0].label}</Subtitle2>
+
+            <FilterGroup filter={filtersOptions[0]} />
+        </>
+    );
+}
 
 export const TableFiltersButton = (props: TTableFilterProps) => (
     <Popover withArrow>

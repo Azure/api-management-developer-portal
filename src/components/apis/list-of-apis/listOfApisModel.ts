@@ -1,5 +1,6 @@
 import { HyperlinkModel } from "@paperbits/common/permalinks";
 import { LocalStyles } from "@paperbits/common/styles";
+import { FiltersPosition } from "./listOfApisContract";
 
 export class ListOfApisModel {
     /**
@@ -28,9 +29,9 @@ export class ListOfApisModel {
     public detailsPageHyperlink: HyperlinkModel;
 
     /**
-     * Indicates that filters should be displayed in a sidebar.
+     * Indicates position of filters.
      */
-    public filtersInSidebar: boolean;
+    public filtersPosition: FiltersPosition;
 
     /**
      * Indicates that view switching is allowed.
