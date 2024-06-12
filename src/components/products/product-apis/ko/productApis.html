@@ -1,1 +1,13 @@
+<!-- ko if: isRedesignEnabled -->
 <fui-product-apis-runtime data-bind="attr: { props: runtimeConfig }"></fui-product-apis-runtime>
+<!-- /ko -->
+
+<!-- ko ifnot: isRedesignEnabled -->
+    <!-- ko if: layout() === 'list' -->
+    <product-apis-runtime data-bind="attr: { params: runtimeConfig }"></product-apis-runtime>
+    <!-- /ko -->
+
+    <!-- ko if: layout() === 'tiles' -->
+    <product-apis-tiles-runtime data-bind="attr: { params: runtimeConfig }"></product-apis-tiles-runtime>
+    <!-- /ko -->
+<!-- /ko -->

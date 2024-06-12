@@ -1,4 +1,5 @@
 import * as React from "react";
+import { ChevronDown16Regular, ChevronUp16Regular } from "@fluentui/react-icons";
 import { Api } from "../../../../../models/api";
 import { Page } from "../../../../../models/page";
 import { TagGroup } from "../../../../../models/tagGroup";
@@ -19,8 +20,4 @@ export const toggleValueInSet = <T = any>(set: Set<T>, value: T): Set<T> => {
 };
 
 export const TagGroupToggleBtn = ({ expanded }: { expanded: boolean }) =>
-    expanded ? (
-        <i className="icon-emb icon-emb-chevron-up"></i>
-    ) : (
-        <i className="icon-emb icon-emb-chevron-down"></i>
-    );
+    expanded ? <ChevronUp16Regular /> : <ChevronDown16Regular />;

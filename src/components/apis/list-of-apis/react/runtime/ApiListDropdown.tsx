@@ -13,7 +13,7 @@ import { GroupByTag } from "../../../../utils/react/TableListInfo";
 import { Pagination } from "../../../../utils/react/Pagination";
 import * as Constants from "../../../../../constants";
 import { Api } from "../../../../../models/api";
-import { TApiListRuntimeFC } from "./ApiListRuntime";
+import { TApiListRuntimeFCProps } from "./ApiListRuntime";
 import {
     isApisGrouped,
     TagGroupToggleBtn,
@@ -24,7 +24,7 @@ import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 
 type TApiListDropdown = Omit<
-    TApiListRuntimeFC,
+    TApiListRuntimeFCProps,
     "apiService" | "layoutDefault" | "productName"
 > & {
     working: boolean;
@@ -54,12 +54,12 @@ const Options = ({
     getReferenceUrl,
 }: {
     apis: Api[];
-    getReferenceUrl: TApiListRuntimeFC["getReferenceUrl"];
+    getReferenceUrl: TApiListRuntimeFCProps["getReferenceUrl"];
 }) => (
     <>
         {apis.map((api) => (
             <Option key={api.id} value={api.name} text={api.displayName}>
-                <Link href={getReferenceUrl(api.name)}>{api.displayName}</Link>
+                <Link href={getReferenceUrl(api.name)} appearance="subtle">{api.displayName}</Link>
             </Option>
         ))}
     </>
@@ -81,11 +81,12 @@ const ApiListDropdownFC = ({
     const toggleTag = (tag: string) =>
         setExpanded((old) => toggleValueInSet(old, tag));
 
-    const content = !apis ? (
+    const content = !apis || !selectedApi ? (
         <>Loading APIs</> // if data are not loaded yet ComboBox sometimes fails to initialize properly - edge case, in most cases almost instant from the cache
     ) : (
         <Combobox
-            style={{ width: "100%" }}
+            style={{ width: "100%", minWidth: 0 }}
+            placeholder={"Select API"}
             onInput={(event) => setPattern(event.target?.["value"])}
             defaultValue={selectedApi?.displayName}
             defaultSelectedOptions={[selectedApi?.name]}
@@ -161,7 +162,7 @@ const ApiListDropdownFC = ({
 
     return (
         <>
-            <Body1Strong block>APIs</Body1Strong>
+            <Body1Strong block>API</Body1Strong>
             <div style={{ padding: ".25rem 0 1rem" }}>{content}</div>
         </>
     );
