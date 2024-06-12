@@ -6,7 +6,7 @@ import { Stack } from "@fluentui/react";
 import { Body1, Body1Strong, Button, Tooltip } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
 import { RepresentationExample } from "../../../models/representationExample";
-import { MarkdownProcessor } from "../../react-markdown/MarkdownProcessor";
+import { MarkdownProcessor } from "./MarkdownProcessor";
 
 export const CodeSnippet = ({ example, name, content, format }: { example?: RepresentationExample, name?: string, content?: string, format?: string }) => {
     const [isCopied, setIsCopied] = useState<boolean>(false);

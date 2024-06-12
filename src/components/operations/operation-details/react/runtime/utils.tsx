@@ -4,7 +4,12 @@ import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { TypeOfApi } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
-import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
+import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
+
+export const scrollToOperation = (): void => {
+    const headerElement = document.getElementById("operation");
+    headerElement && headerElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" }); 
+}
 
 export const getRequestUrl = (api: Api, operation: Operation, hostname: string): string => {
     if ((!api || !operation) && api?.type !== TypeOfApi.graphQL) {

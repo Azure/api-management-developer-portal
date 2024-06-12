@@ -1,16 +1,16 @@
 import * as React from "react";
+import { useState } from "react";
+import { Stack } from "@fluentui/react";
 import { Body1, Body1Strong, Link, Subtitle1, Subtitle2Stronger, Tab, TabList, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
 import { TypeDefinition, TypeDefinitionPropertyTypeCombination } from "../../../../../models/typeDefinition";
-import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
-import { Stack } from "@fluentui/react";
-import { TSchemaView } from "./OperationRepresentation";
-import { useState } from "react";
+import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { CodeSnippet } from "../../../../utils/react/CodeSnippet";
+import { TSchemaView } from "./OperationRepresentation";
 
 type TypeDefinitionProps = {
     definition: TypeDefinition;
-    showExamples: boolean;
-    getReferenceUrl: (reference: string) => string;
+    showExamples?: boolean;
+    getReferenceUrl?: (reference: string) => string;
     getReferenceId?: (reference: string) => string;
     defaultSchemaView?: TSchemaView;
 }
@@ -70,10 +70,11 @@ export const TypeDefinitionForRepresentation = ({ definition, showExamples, getR
             {kind === TDefinitionKind.combination &&
                 <TypeDefinitionCombination definition={definition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
             }
+            {kind === TDefinitionKind.enum && <TypeDefinitionEnum definition={definition} />}
             {(kind === TDefinitionKind.object || kind === TDefinitionKind.array) && 
                 <TypeDefinitionObject definition={definition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
             }
-            {/* TODO: enum && indexer */}
+            {/* TODO: indexer */}
         </>
     );
 }
@@ -95,14 +96,37 @@ const TypeDefinitionCombination = ({ definition, showExamples, getReferenceUrl }
                     {property.kind === TDefinitionKind.combination &&
                         <TypeDefinitionCombination definition={property as TypeDefinition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
                     }
+                    {property.kind === TDefinitionKind.enum && <TypeDefinitionEnum definition={property as TypeDefinition} />}
                     {(property.kind === TDefinitionKind.object || property.kind === TDefinitionKind.array) && 
                         <TypeDefinitionObject definition={property as TypeDefinition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
                     }
-                    {/* TODO: enum && indexer */}
+                    {/* TODO: indexer */}
                 </React.Fragment>
             ))}
         </>
     );
+}
+
+const TypeDefinitionEnum = ({ definition }: TypeDefinitionProps) => {
+    const enumValues = definition.enum.join(", ");
+
+    return (
+        <Table aria-label={definition.name} className={"fui-table"}>
+            <TableHeader>
+                <TableRow className={"fui-table-headerRow"}>
+                    <TableHeaderCell><Body1Strong>Type</Body1Strong></TableHeaderCell>
+                    <TableHeaderCell><Body1Strong>Values</Body1Strong></TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                <TableRow className={"fui-table-body-row"}>
+                    <TableCell><Body1>{definition.type["name"]}</Body1></TableCell>
+                    <TableCell><Body1>{enumValues}</Body1></TableCell>
+                </TableRow>
+            </TableBody>
+        </Table>
+    );
+
 }
 
 const TypeDefinitionObject = ({ definition, showExamples, getReferenceUrl }: TypeDefinitionProps) => {

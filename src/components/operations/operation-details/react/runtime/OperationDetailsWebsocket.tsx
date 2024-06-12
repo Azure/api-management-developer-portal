@@ -7,14 +7,15 @@ import { ApiService } from "../../../../../services/apiService";
 import { Operation } from "../../../../../models/operation";
 import { Api } from "../../../../../models/api";
 import { Tag } from "../../../../../models/tag";
-import { getRequestUrl } from "./utils";
+import { getRequestUrl, scrollToOperation } from "./utils";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
 
 export const OperationDetailsWebsocket = ({
     apiName,
     apiService,
     enableConsole,
-    includeAllHostnames
+    includeAllHostnames,
+    enableScrollTo
 }: OperationDetailsRuntimeProps & { apiName: string, apiService: ApiService }) => {
     const [working, setWorking] = useState(false);
     const [api, setApi] = useState<Api>(null);
@@ -28,13 +29,16 @@ export const OperationDetailsWebsocket = ({
         if (apiName) {
             setWorking(true);
             loadApi().then(loadedApi => setApi(loadedApi));
+            loadGatewayInfo().then(hostnames => {
+                hostnames.length > 0 && setHostnames(hostnames);
+            });
             loadOperation().then(loadedValues => {
                 setOperation(loadedValues.operation);
                 setTags(loadedValues.tags);
+            }).finally(() => {
+                setWorking(false);
+                enableScrollTo && scrollToOperation();
             });
-            loadGatewayInfo().then(hostnames => {
-                hostnames.length > 0 && setHostnames(hostnames);
-            }).finally(() => setWorking(false));
         }
     }, [apiName]);
 
@@ -81,7 +85,7 @@ export const OperationDetailsWebsocket = ({
 
     return (
         <div className={"operation-details-container"}>
-            <Subtitle1 block className={"operation-details-title"}>Operations</Subtitle1>
+            <Subtitle1 block className={"operation-details-title"} id={"operation"}>Operation</Subtitle1>
             {working 
                 ? <Spinner label="Loading..." labelPosition="below" size="small" />
                 : !operation
