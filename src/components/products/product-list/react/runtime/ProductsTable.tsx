@@ -16,7 +16,7 @@ import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
-    getReferenceUrl: (product: Product) => string;
+    getReferenceUrl: (productName: string) => string;
 };
 
 const TableBodyProducts = ({ products, getReferenceUrl }: Props & { products: Product[] }) => (
@@ -24,7 +24,7 @@ const TableBodyProducts = ({ products, getReferenceUrl }: Props & { products: Pr
         {products?.map((product) => (
             <TableRow key={product.id}>
                 <TableCell>
-                    <Link href={getReferenceUrl(product)} title={product.displayName}>
+                    <Link href={getReferenceUrl(product.name)} title={product.displayName}>
                         {product.displayName}
                     </Link>
                 </TableCell>

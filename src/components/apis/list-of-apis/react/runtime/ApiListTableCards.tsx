@@ -11,11 +11,12 @@ import { TableListInfo, TLayout } from "../../../../utils/react/TableListInfo";
 import { useTableFiltersTags } from "../../../../utils/react/useTableFiltersTags";
 import { Pagination } from "../../../../utils/react/Pagination";
 import * as Constants from "../../../../../constants";
+import { FiltersPosition } from "../../listOfApisContract";
 import { ApisTable } from "./ApisTable";
 import { ApisCards } from "./ApisCards";
-import { TApiListRuntimeFC } from "./ApiListRuntime";
+import { TApiListRuntimeFCProps } from "./ApiListRuntime";
 
-type TApiListTableCards = Omit<TApiListRuntimeFC, "apiService"> & {
+type TApiListTableCards = Omit<TApiListRuntimeFCProps, "apiService"> & {
     working: boolean;
     apis: TApisData;
     statePageNumber: ReturnType<typeof useState<number>>;
@@ -31,7 +32,7 @@ export const ApiListTableCards = ({
     productName,
     showApiType,
     allowViewSwitching,
-    filtersInSidebar,
+    filtersPosition,
     detailsPageTarget,
     apis,
     working,
@@ -55,7 +56,7 @@ export const ApiListTableCards = ({
                     filters={filters}
                     setFilters={setFilters}
                     filtersOptions={
-                        !filtersInSidebar && !groupByTag
+                        filtersPosition === FiltersPosition.popup && !groupByTag
                             ? [filterOptionTags]
                             : undefined
                     }
@@ -104,7 +105,7 @@ export const ApiListTableCards = ({
         </Stack>
     );
 
-    return !filtersInSidebar ? (
+    return filtersPosition !== FiltersPosition.sidebar ? (
         content
     ) : (
         <Stack horizontal tokens={{ childrenGap: "2rem" }}>
