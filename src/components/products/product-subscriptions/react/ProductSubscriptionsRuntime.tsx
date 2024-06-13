@@ -20,10 +20,7 @@ type ProductSubscriptionsFCProps = ProductSubscriptionsProps & {
 const loadSubscriptions = async (usersService: UsersService, productService: ProductService, productName: string) => {
     const userId = await usersService.getCurrentUserId();
     const { value: subscriptions } =
-        await productService.getSubscriptionsForProduct(
-            userId,
-            `/products/${productName}`
-        );
+        await productService.getSubscriptionsForProduct(userId, `/products/${productName}`);
 
     return { userId, subscriptions };
 };
