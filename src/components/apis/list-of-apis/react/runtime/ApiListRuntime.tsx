@@ -4,11 +4,11 @@ import { FluentProvider } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import * as Constants from "../../../../../constants";
-import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
 import { TagService } from "../../../../../services/tagService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TLayout } from "../../../../utils/react/TableListInfo";
+import { FiltersPosition } from "../../listOfApisContract";
 import { TApisData } from "./utils";
 import { ApiListTableCards } from "./ApiListTableCards";
 import { ApiListDropdown } from "./ApiListDropdown";
@@ -17,7 +17,7 @@ export interface ApiListProps {
     productName?: string;
     allowSelection?: boolean;
     allowViewSwitching?: boolean;
-    filtersInSidebar?: boolean;
+    filtersPosition?: FiltersPosition;
     showApiType?: boolean;
     defaultGroupByTagToEnabled?: boolean;
     detailsPageUrl: string;
@@ -25,7 +25,7 @@ export interface ApiListProps {
     layoutDefault: TLayout;
 }
 
-export type TApiListRuntimeFC = Omit<ApiListProps, "detailsPageUrl"> & {
+export type TApiListRuntimeFCProps = Omit<ApiListProps, "detailsPageUrl"> & {
     apiService: ApiService;
     tagService: TagService;
     getReferenceUrl: (apiName: string) => string;
@@ -49,7 +49,7 @@ const loadApis = async (apiService: ApiService, query: SearchQuery, groupByTags?
     return apis;
 }
 
-const ApiListRuntimeFC = ({ apiService, productName, defaultGroupByTagToEnabled, layoutDefault, ...props }: TApiListRuntimeFC) => {
+const ApiListRuntimeFC = ({ apiService, productName, defaultGroupByTagToEnabled, layoutDefault, ...props }: TApiListRuntimeFCProps) => {
     const [working, setWorking] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
     const [apis, setApis] = useState<TApisData>();

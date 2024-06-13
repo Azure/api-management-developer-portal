@@ -1,20 +1,27 @@
 import { StyleCompiler } from "@paperbits/common/styles";
+import { ISiteService } from "@paperbits/common/sites";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { FiltersPosition } from "../../../apis/list-of-apis/listOfApisContract";
 import { layoutsMap } from "../../../utils/react/TableListInfo";
+import { isRedesignEnabledSetting } from "../../../../constants";
 import { ProductApisModel } from "../productApisModel";
 import { ProductApisViewModel } from "./productApisViewModel";
 
 export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisModel, ProductApisViewModel> {
-    constructor(private readonly styleCompiler: StyleCompiler) { }
+    constructor(
+        private readonly styleCompiler: StyleCompiler,
+        private readonly siteService: ISiteService,
+    ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: ProductApisViewModel): void {
         componentInstance.styles(state.styles);
         componentInstance.layout(state.layout);
+        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
 
         componentInstance.runtimeConfig(JSON.stringify({
             allowSelection: false,
             allowViewSwitching: true,
-            filtersInSidebar: true,
+            filtersPosition: FiltersPosition.none,
             showApiType: false,
             defaultGroupByTagToEnabled: false,
             layoutDefault: layoutsMap[state.layout],
@@ -34,5 +41,7 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
         if (model.styles) {
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
+
+        state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
     }
 }
