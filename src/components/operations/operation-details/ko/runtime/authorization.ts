@@ -47,6 +47,8 @@ export class Authorization {
         private readonly apiService: ApiService,
         private readonly productService: ProductService,
     ) {
+        this.authorizationServers = ko.observable();
+        this.selectedAuthorizationServer = ko.observable();
         this.selectedGrantType = ko.observable();
         this.api = ko.observable<Api>();
         this.headers = ko.observableArray<ConsoleHeader>();
@@ -61,9 +63,8 @@ export class Authorization {
         this.products = ko.observable();
         this.selectedSubscriptionKey = ko.observable();
         this.subscriptionKeyRevealed = ko.observable(false);
-        this.authorizationServers = ko.observable<AuthorizationServer[]>();
-        this.selectedAuthorizationServer = ko.observable<AuthorizationServer>();
     }
+
     @Param()
     public authorizationServers: ko.Observable<AuthorizationServer[]>;
 
@@ -123,11 +124,8 @@ export class Authorization {
         }
 
         const api = this.api();
-        const serverName = authorizationServer.name;
-
-        const scopeOverride = this.getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
-        const storedCredentials = await this.getStoredCredentials(serverName, scopeOverride);
-
+        const scopeOverride = this.getSelectedAuthServerOverrideScope(authorizationServer.name, api.authenticationSettings?.oAuth2AuthenticationSettings);
+        const storedCredentials = await this.getStoredCredentials(authorizationServer.name, scopeOverride);
 
         if (storedCredentials) {
             this.selectedGrantType(storedCredentials.grantType);
@@ -139,6 +137,9 @@ export class Authorization {
         const oauthSession = await this.sessionManager.getItem<OAuthSession>(oauthSessionKey);
         const recordKey = this.getSessionRecordKey(serverName, scopeOverride);
         const storedCredentials = oauthSession?.[recordKey];
+        if (!storedCredentials) {
+            return null;
+        }
 
         try {
             /* Trying to check if it's a JWT token and, if yes, whether it got expired. */
@@ -265,7 +266,6 @@ export class Authorization {
     public async authenticateOAuth(grantType: string): Promise<void> {
         const api = this.api();
         const authorizationServer = this.selectedAuthorizationServer();
-
         if (!authorizationServer) {
             return;
         }
@@ -338,7 +338,6 @@ export class Authorization {
             this.authorizationError(null);
 
             const api = this.api();
-
             const authorizationServer = this.selectedAuthorizationServer();
             if (!authorizationServer) {
                 return;
@@ -346,7 +345,6 @@ export class Authorization {
 
             const serverName = authorizationServer.name;
             const scopeOverride = this.getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
-
 
             if (scopeOverride) {
                 authorizationServer.scopes = [scopeOverride];
@@ -374,8 +372,8 @@ export class Authorization {
             return;
         }
 
-        const pageOfProducts = await this.apiService.getAllApiProducts(this.api().id);
-        const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
+        const allProducts = await this.apiService.getAllApiProducts(`/apis/${this.api().id}`);
+        const products = allProducts || [];
         const pageOfSubscriptions = await this.productService.getSubscriptions(userId);
         const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === SubscriptionState.active);
         const availableProducts = [];
