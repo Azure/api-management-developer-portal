@@ -5,7 +5,6 @@ import {
     Combobox,
     Link,
     Option,
-    OptionGroup,
     Spinner,
 } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
@@ -50,10 +49,10 @@ const ProductsDropdownFC = ({
     selectedProduct,
     statePageNumber: [pageNumber, setPageNumber],
     statePattern: [_, setPattern],
-}: TProductListDropdown & { selectedProduct?: Product }) => {
+}: TProductListDropdown & { selectedProduct?: Product | null }) => {
     const pageMax = Math.ceil(products?.count / Constants.defaultPageSize);
 
-    const content = !products || !selectedProduct ? (
+    const content = !products || selectedProduct === undefined ? (
         <>Loading Products</> // if data are not loaded yet ComboBox sometimes fails to initialize properly - edge case, in most cases almost instant from the cache
     ) : (
         <Combobox
@@ -109,7 +108,7 @@ const ProductsDropdownFC = ({
 
 export class ProductsDropdown extends React.Component<
     TProductListDropdown,
-    { working: boolean; selectedProduct?: Product }
+    { working: boolean; selectedProduct?: Product | null }
 > {
     @Resolve("productService")
     public productService: ProductService;
@@ -132,7 +131,10 @@ export class ProductsDropdown extends React.Component<
 
     async loadSelectedProduct() {
         const productName = this.routeHelper.getProductName();
-        if (!productName) return;
+        if (!productName) {
+            this.setState({ selectedProduct: null });
+            return;
+        }
 
         this.setState({ working: true, selectedProduct: undefined });
 
