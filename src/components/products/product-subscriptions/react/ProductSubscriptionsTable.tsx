@@ -27,27 +27,25 @@ export const ProductSubscriptionsTable = ({
     ) : !subscriptions || subscriptions.length === 0 ? (
         <Body1Strong>You don't have subscriptions yet.</Body1Strong>
     ) : (
-        <div className={"fui-table"}>
-            <Table size={"small"} aria-label={"Your Subscriptions list"}>
-                <TableHeader>
-                    <TableRow className={"fui-table-headerRow"}>
-                        <TableHeaderCell>
-                            <Body1Strong>Name</Body1Strong>
-                        </TableHeaderCell>
-                        <TableHeaderCell>
-                            <Body1Strong>Status</Body1Strong>
-                        </TableHeaderCell>
-                    </TableRow>
-                </TableHeader>
+        <Table className={"fui-table"} size={"small"} aria-label={"Your Subscriptions list"}>
+            <TableHeader>
+                <TableRow className={"fui-table-headerRow"}>
+                    <TableHeaderCell>
+                        <Body1Strong>Name</Body1Strong>
+                    </TableHeaderCell>
+                    <TableHeaderCell>
+                        <Body1Strong>Status</Body1Strong>
+                    </TableHeaderCell>
+                </TableRow>
+            </TableHeader>
 
-                <TableBody>
-                    {subscriptions?.map((sub) => (
-                        <TableRow key={sub.id}>
-                            <TableCell>{sub.name}</TableCell>
-                            <TableCell>{sub.state}</TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </div>
+            <TableBody>
+                {subscriptions?.map((sub) => (
+                    <TableRow key={sub.id}>
+                        <TableCell>{sub.name}</TableCell>
+                        <TableCell>{sub.state}</TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
     );
