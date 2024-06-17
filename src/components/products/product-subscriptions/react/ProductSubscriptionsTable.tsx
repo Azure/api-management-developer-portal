@@ -25,7 +25,7 @@ export const ProductSubscriptionsTable = ({
             size="small"
         />
     ) : !subscriptions || subscriptions.length === 0 ? (
-        <Body1Strong>You don't have subscriptions yet.</Body1Strong>
+        <Body1Strong style={{ display: "block", padding: "1rem 0" }}>You don't have subscriptions yet.</Body1Strong>
     ) : (
         <Table className={"fui-table"} size={"small"} aria-label={"Your Subscriptions list"}>
             <TableHeader>
