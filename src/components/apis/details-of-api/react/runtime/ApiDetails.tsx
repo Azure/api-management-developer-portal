@@ -55,7 +55,7 @@ const ApiDetailsFC = ({
     const loadApis = async (): Promise<{api: Api, versionedApis: Api[]}> => {
         let api: Api;
         let versionedApis: Api[];
-
+    
         try {
             api = await apiService.getApi(`apis/${apiName}`);
 
@@ -66,7 +66,7 @@ const ApiDetailsFC = ({
         } catch (error) {
             throw new Error(`Unable to load the API. Error: ${error.message}`);
         }
-
+    
         return {api, versionedApis};
     }
 
@@ -120,15 +120,15 @@ const ApiDetailsFC = ({
                         <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
                             <Stack horizontal verticalAlign="center">
                                 <Title1 className={"api-title"}>{api.displayName}</Title1>
-                                {api.typeName && api.typeName !== "REST" && <Badge size="large" appearance="outline">{api.typeName}</Badge>}
+                                {api.typeName && api.typeName !== "REST" && <Badge appearance="outline">{api.typeName}</Badge>}
                             </Stack>
-                            {changeLogPageUrl && api.type !== TypeOfApi.graphQL && api.type !== TypeOfApi.webSocket &&
+                            {changeLogPageUrl && api.type !== TypeOfApi.graphQL && api.type !== TypeOfApi.webSocket && 
                                 <Link href={routeHelper.getApiReferenceUrl(apiName, changeLogPageUrl)}>View changelog</Link>
                             }
                         </Stack>
-                        {(versionedApis?.length > 0 || (api.type !== TypeOfApi.graphQL && api.type !== TypeOfApi.webSocket)) &&
+                        {(versionedApis?.length > 0 || (api.type !== TypeOfApi.graphQL && api.type !== TypeOfApi.webSocket)) && 
                             <Stack horizontal verticalAlign="center" className={"api-details-dropdowns"}>
-                                {versionedApis?.length > 0 &&
+                                {versionedApis?.length > 0 && 
                                     <Stack horizontal verticalAlign="center">
                                         <Body1Strong>Version</Body1Strong>
                                         <Dropdown
@@ -168,7 +168,7 @@ const ApiDetailsFC = ({
                         }
                         {(api.contact || api.license || api.termsOfServiceUrl) &&
                             <div className={"api-additional-info"}>
-                                {api.contact &&
+                                {api.contact && 
                                     <div className={"api-additional-info-block"}>
                                         <Body1 block>Contact:</Body1>
                                         {api.contact.name && <Body1 block>{api.contact.name}</Body1>}
@@ -204,7 +204,7 @@ export class ApiDetails extends React.Component<ApiDetailsProps, ApiDetailsState
 
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
-
+    
     @Resolve("router")
     public router: Router;
 
