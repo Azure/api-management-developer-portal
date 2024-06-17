@@ -1,1 +1,7 @@
+<!-- ko if: isRedesignEnabled -->
+<fui-product-subscribe-runtime data-bind="attr: { props: runtimeConfig }"></fui-product-subscribe-runtime>
+<!-- /ko -->
+
+<!-- ko ifnot: isRedesignEnabled -->
 <product-subscribe-runtime data-bind="attr: { params: runtimeConfig }"></product-subscribe-runtime>
+<!-- /ko -->
