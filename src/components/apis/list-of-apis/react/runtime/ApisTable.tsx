@@ -85,37 +85,35 @@ const TableBodyTags = ({ tags, ...props }: Props & { tags: Page<TagGroup<Api>> }
 };
 
 export const ApisTable = ({ apis, ...props }: Props & { apis: TApisData }) => (
-    <div className={"fui-table"}>
-        <Table size={"small"} aria-label={"APIs List table"}>
-            <TableHeader>
-                <TableRow className={"fui-table-headerRow"}>
-                    <TableHeaderCell>
-                        <Body1Strong>Name</Body1Strong>
+    <Table className={"fui-table"} size={"small"} aria-label={"APIs List table"}>
+        <TableHeader>
+            <TableRow className={"fui-table-headerRow"}>
+                <TableHeaderCell>
+                    <Body1Strong>Name</Body1Strong>
+                </TableHeaderCell>
+                <TableHeaderCell>
+                    <Body1Strong>Description</Body1Strong>
+                </TableHeaderCell>
+                {props.showApiType && (
+                    <TableHeaderCell style={{ width: "8em" }}>
+                        <Body1Strong>Type</Body1Strong>
                     </TableHeaderCell>
-                    <TableHeaderCell>
-                        <Body1Strong>Description</Body1Strong>
-                    </TableHeaderCell>
-                    {props.showApiType && (
-                        <TableHeaderCell style={{ width: "8em" }}>
-                            <Body1Strong>Type</Body1Strong>
-                        </TableHeaderCell>
-                    )}
-                </TableRow>
-            </TableHeader>
-
-            <TableBody>
-                {isApisGrouped(apis) ? (
-                    <TableBodyTags
-                        {...props}
-                        tags={apis}
-                    />
-                ) : (
-                    <TableBodyApis
-                        {...props}
-                        apis={apis.value}
-                    />
                 )}
-            </TableBody>
-        </Table>
-    </div>
+            </TableRow>
+        </TableHeader>
+
+        <TableBody>
+            {isApisGrouped(apis) ? (
+                <TableBodyTags
+                    {...props}
+                    tags={apis}
+                />
+            ) : (
+                <TableBodyApis
+                    {...props}
+                    apis={apis.value}
+                />
+            )}
+        </TableBody>
+    </Table>
 );
