@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import {
+    Badge,
     Body1Strong,
     Combobox,
     Link,
@@ -49,6 +50,17 @@ const TagLabel = ({
     </button>
 );
 
+const ApiTypeBadge = ({ api }: { api: Api }) =>
+    !!api.typeName &&
+    api.typeName !== "REST" && (
+        <Badge appearance="outline">{api.typeName}</Badge>
+    );
+
+const ApiVersionBadge = ({ api }: { api: Api }) =>
+    !!api.apiVersion && (
+        <Badge appearance="tint" shape="rounded" color="informative" title={"API version"}>{api.apiVersion}</Badge>
+    );
+
 const Options = ({
     apis,
     getReferenceUrl,
@@ -59,7 +71,8 @@ const Options = ({
     <>
         {apis.map((api) => (
             <Option key={api.id} value={api.name} text={api.displayName}>
-                <Link href={getReferenceUrl(api.name)} appearance="subtle">{api.displayName}</Link>
+                <Link href={getReferenceUrl(api.name)} appearance="subtle">{api.displayName}</Link>{" "}
+                <ApiTypeBadge api={api} /> <ApiVersionBadge api={api} />
             </Option>
         ))}
     </>

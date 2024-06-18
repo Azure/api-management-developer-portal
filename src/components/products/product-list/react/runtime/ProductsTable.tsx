@@ -37,25 +37,23 @@ const TableBodyProducts = ({ products, getReferenceUrl }: Props & { products: Pr
 );
 
 export const ProductsTable = ({ products, getReferenceUrl }: Props & { products: TProductsData }) => (
-    <div className={"fui-table"}>
-        <Table size={"small"} aria-label={"Products List table"}>
-            <TableHeader>
-                <TableRow className={"fui-table-headerRow"}>
-                    <TableHeaderCell>
-                        <Body1Strong>Name</Body1Strong>
-                    </TableHeaderCell>
-                    <TableHeaderCell>
-                        <Body1Strong>Description</Body1Strong>
-                    </TableHeaderCell>
-                </TableRow>
-            </TableHeader>
+    <Table className={"fui-table"} size={"small"} aria-label={"Products List table"}>
+        <TableHeader>
+            <TableRow className={"fui-table-headerRow"}>
+                <TableHeaderCell>
+                    <Body1Strong>Name</Body1Strong>
+                </TableHeaderCell>
+                <TableHeaderCell>
+                    <Body1Strong>Description</Body1Strong>
+                </TableHeaderCell>
+            </TableRow>
+        </TableHeader>
 
-            <TableBody>
-                <TableBodyProducts
-                    products={products.value}
-                    getReferenceUrl={getReferenceUrl}
-                />
-            </TableBody>
-        </Table>
-    </div>
+        <TableBody>
+            <TableBodyProducts
+                products={products.value}
+                getReferenceUrl={getReferenceUrl}
+            />
+        </TableBody>
+    </Table>
 );
