@@ -23,7 +23,7 @@ export class CustomWidget {
         this.instanceId = ko.observable();
 
         const iframe = document.getElementsByTagName("iframe")[0];
-        this.iframeSandboxAllows += " " + iframeSandboxAllowsBrowserSpecific
+        this.iframeSandboxAllows = (iframeSandboxAllows + " " + iframeSandboxAllowsBrowserSpecific)
             .split(" ")
             .filter(token=> iframe?.sandbox.supports(token))
             .join(" ");
