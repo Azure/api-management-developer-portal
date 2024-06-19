@@ -317,7 +317,7 @@ export const iframeAllows = "clipboard-read; clipboard-write; camera; microphone
  * List of allowed attributes for a sandboxed iframe.
  */
 export const iframeSandboxAllows = "allow-scripts allow-modals allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-pointer-lock";
-export const iframeSandboxAllowsBrowserSpecific = "allow-downloads allow-presentation allow-orientation-lock"
+export const iframeSandboxAllowsBrowserSpecific = "allow-downloads allow-presentation allow-orientation-lock";
 
 /**
  * List of downloadable content types
