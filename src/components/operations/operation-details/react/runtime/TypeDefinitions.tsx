@@ -67,14 +67,12 @@ export const TypeDefinitionForRepresentation = ({ definition, showExamples, getR
         <>
             <Subtitle2Stronger block className={"operation-subtitle2"}>{definition.name}</Subtitle2Stronger>
             {definition.description && <MarkdownProcessor markdownToDisplay={definition.description} />}
-            {kind === TDefinitionKind.combination &&
-                <TypeDefinitionCombination definition={definition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
+            {kind === TDefinitionKind.combination
+                ? <TypeDefinitionCombination definition={definition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
+                : kind === TDefinitionKind.enum 
+                    ? <TypeDefinitionEnum definition={definition} />
+                    : <TypeDefinitionObject definition={definition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
             }
-            {kind === TDefinitionKind.enum && <TypeDefinitionEnum definition={definition} />}
-            {(kind === TDefinitionKind.object || kind === TDefinitionKind.array) && 
-                <TypeDefinitionObject definition={definition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
-            }
-            {/* TODO: indexer */}
         </>
     );
 }
@@ -93,14 +91,12 @@ const TypeDefinitionCombination = ({ definition, showExamples, getReferenceUrl }
             {definition.properties.map(property => (
                 <React.Fragment key={property.name}>
                     <Body1Strong block className={"td-combination-name"}>{property.name}</Body1Strong>
-                    {property.kind === TDefinitionKind.combination &&
-                        <TypeDefinitionCombination definition={property as TypeDefinition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
+                    {property.kind === TDefinitionKind.combination
+                        ? <TypeDefinitionCombination definition={property as TypeDefinition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
+                        : property.kind === TDefinitionKind.enum
+                            ? <TypeDefinitionEnum definition={property as TypeDefinition} />
+                            : <TypeDefinitionObject definition={property as TypeDefinition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
                     }
-                    {property.kind === TDefinitionKind.enum && <TypeDefinitionEnum definition={property as TypeDefinition} />}
-                    {(property.kind === TDefinitionKind.object || property.kind === TDefinitionKind.array) && 
-                        <TypeDefinitionObject definition={property as TypeDefinition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
-                    }
-                    {/* TODO: indexer */}
                 </React.Fragment>
             ))}
         </>

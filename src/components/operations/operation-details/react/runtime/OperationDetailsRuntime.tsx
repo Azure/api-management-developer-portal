@@ -10,6 +10,7 @@ import { GraphDocService } from "../../../operation-details/ko/runtime/graphql-d
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { OperationDetailsWebsocket } from "./OperationDetailsWebsocket";
 import { OperationDetails } from "./OperationDetails";
+import { OperationDetailsGql } from "./OperationDetailsGql";
 
 export interface OperationDetailsRuntimeProps {
     enableConsole?: boolean,
@@ -23,7 +24,9 @@ export interface OperationDetailsRuntimeProps {
 interface OperationDetailsRuntimeState {
     apiName: string,
     apiType: string,
-    operationName: string
+    operationName: string,
+    graphName: string,
+    graphType: string
 }
 
 export class OperationDetailsRuntime extends React.Component<OperationDetailsRuntimeProps, OperationDetailsRuntimeState> {
@@ -51,7 +54,9 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
         this.state = {
             apiName: null,
             apiType: null,
-            operationName: null
+            operationName: null,
+            graphName: null,
+            graphType: null
         }
     }
 
@@ -67,17 +72,22 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
     getApi = async (): Promise<void> => {
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
+        const graphName = this.routeHelper.getGraphName();
+        const graphType = this.routeHelper.getGraphType();
         let apiType: string;
 
-        console.log(operationName);
-
-        if (apiName && (apiName !== this.state.apiName || operationName !== this.state.operationName)) {
+        if (apiName && (
+            apiName !== this.state.apiName
+            || operationName !== this.state.operationName
+            || graphName !== this.state.graphName
+            || graphType !== this.state.graphType
+        )) {
             const api = await this.apiService.getApi(`apis/${apiName}`);
             apiType = api?.type;
 
             this.graphDocService.initialize(); // TODO: remove this when the whole GQL logic is moved to React
 
-            this.setState({ apiName, operationName, apiType });
+            this.setState({ apiName, apiType, operationName, graphName, graphType });
         }
     }
 
@@ -90,7 +100,17 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
                             apiName={this.state.apiName}
                             apiService={this.apiService}
                         />
-                    : <OperationDetails
+                    : this.state.apiType === TypeOfApi.graphQL
+                        ? <OperationDetailsGql
+                            {...this.props}
+                            apiName={this.state.apiName}
+                            graphName={this.state.graphName}
+                            graphType={this.state.graphType}
+                            apiService={this.apiService}
+                            graphqlService={this.graphqlService}
+                            routeHelper={this.routeHelper}
+                          />
+                        : <OperationDetails
                             {...this.props}
                             apiName={this.state.apiName}
                             operationName={this.state.operationName}

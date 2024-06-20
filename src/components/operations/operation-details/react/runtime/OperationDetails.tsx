@@ -66,25 +66,23 @@ export const OperationDetails = ({
     const [isCopied, setIsCopied] = useState<boolean>(false);
 
     useEffect(() => {
-        if (apiName) {
-            setWorking(true);
-            loadApi().then(loadedApi => setApi(loadedApi));
-            loadGatewayInfo().then(hostnames => {
-                hostnames?.length > 0 && setHostnames(hostnames);
-            });
-            loadOperation().then(loadedValues => {
-                setOperation(loadedValues.operation);
-                setTags(loadedValues.tags);
-                setDefinitions(loadedValues.definitions);
-                setRequest(loadedValues.operation?.request);
-                setResponses(loadedValues.operation?.getMeaningfulResponses());
-
-                console.log('def', loadedValues.definitions);
-            }).finally(() => {
-                setWorking(false);
-                enableScrollTo && scrollToOperation();
-            });
-        }
+        if (!apiName) return;
+        
+        setWorking(true);
+        loadApi().then(loadedApi => setApi(loadedApi));
+        loadGatewayInfo().then(hostnames => {
+            hostnames?.length > 0 && setHostnames(hostnames);
+        });
+        loadOperation().then(loadedValues => {
+            setOperation(loadedValues.operation);
+            setTags(loadedValues.tags);
+            setDefinitions(loadedValues.definitions);
+            setRequest(loadedValues.operation?.request);
+            setResponses(loadedValues.operation?.getMeaningfulResponses());
+        }).finally(() => {
+            setWorking(false);
+            enableScrollTo && scrollToOperation();
+        });
     }, [apiName, operationName]);
 
     useEffect(() => {
@@ -112,8 +110,6 @@ export const OperationDetails = ({
         let tags: Tag[];
         let definitions: TypeDefinition[];
 
-        console.log(operationName);
-
         try {
             if (operationName) {
                 operation = await apiService.getOperation(`apis/${apiName}/operations/${operationName}`);
@@ -129,8 +125,6 @@ export const OperationDetails = ({
         } catch (error) {
             throw new Error(`Unable to load the operation. Error: ${error.message}`);
         }
-
-        console.log(operation, definitions);
 
         return {operation, tags, definitions};
     }

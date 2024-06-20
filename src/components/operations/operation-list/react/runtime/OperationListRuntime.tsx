@@ -24,7 +24,9 @@ export interface OperationListRuntimeProps {
 interface OperationListRuntimeState {
     apiName: string,
     apiType: string,
-    operationName: string
+    operationName: string,
+    graphName: string,
+    graphType: string
 }
 
 export class OperationListRuntime extends React.Component<OperationListRuntimeProps, OperationListRuntimeState> {
@@ -52,7 +54,9 @@ export class OperationListRuntime extends React.Component<OperationListRuntimePr
         this.state = {
             apiName: null,
             apiType: null,
-            operationName: null
+            operationName: null,
+            graphName: null,
+            graphType: null
         }
     }
 
@@ -68,15 +72,22 @@ export class OperationListRuntime extends React.Component<OperationListRuntimePr
     getApi = async (): Promise<void> => {
         const apiName = this.routeHelper.getApiName();
         const operationName = this.routeHelper.getOperationName();
+        const graphName = this.routeHelper.getGraphName();
+        const graphType = this.routeHelper.getGraphType();
         let apiType: string;
 
-        if (apiName && apiName !== this.state.apiName) {
+        if (apiName && (
+            apiName !== this.state.apiName
+            || operationName !== this.state.operationName
+            || graphName !== this.state.graphName
+            || graphType !== this.state.graphType
+        )) {
             const api = await this.apiService.getApi(`apis/${apiName}`);
             apiType = api?.type;
 
             this.graphDocService.initialize(); // TODO: remove this when the whole GQL logic is moved to React
 
-            this.setState({ apiName, operationName, apiType });
+            this.setState({ apiName, operationName, graphName, graphType, apiType });
         }
     }
 
@@ -89,6 +100,8 @@ export class OperationListRuntime extends React.Component<OperationListRuntimePr
                         ? <OperationListGql
                             {...this.props}
                             apiName={this.state.apiName}
+                            graphName={this.state.graphName}
+                            graphType={this.state.graphType}
                             graphqlService={this.graphqlService}
                             routeHelper={this.routeHelper}
                             router={this.router}
