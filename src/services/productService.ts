@@ -38,11 +38,9 @@ export class ProductService {
             odataFilterEntries.push(`properties/scope eq '${productId}'`)
         }
 
-        if (searchRequest) {
-            if (searchRequest.pattern) {
-                const pattern = Utils.encodeURICustomized(searchRequest.pattern, Constants.reservedCharTuplesForOData);
-                odataFilterEntries.push(`(contains(properties/displayName,'${pattern}'))`);
-            }
+        if (searchRequest.pattern) {
+            const pattern = Utils.encodeURICustomized(searchRequest.pattern, Constants.reservedCharTuplesForOData);
+            odataFilterEntries.push(`(contains(properties/displayName,'${pattern}'))`);
         }
 
         const pageOfSubscriptions = new Page<Subscription>();
