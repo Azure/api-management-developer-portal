@@ -96,6 +96,7 @@ import { OperationListRuntimeModule } from "./components/operations/operation-li
 import { DetailsOfApiRuntimeModule } from "./components/apis/details-of-api/detailsOfApi.runtime.module";
 import { OperationDetailsRuntimeModule } from "./components/operations/operation-details/operationDetails.runtime.module";
 import { ProductApisRuntimeModule } from "./components/products/product-apis/productApis.runtime.module";
+import { ProductDetailsRuntimeModule } from "./components/products/product-details/productDetails.runtime.module";
 import { ProductSubscribeRuntimeModule } from "./components/products/product-subscribe/productSubscribe.runtime.module";
 import { ProductSubscriptionsRuntimeModule } from "./components/products/product-subscriptions/productSubscriptions.runtime.module";
 
@@ -182,6 +183,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindModule(new OperationListRuntimeModule());
         injector.bindModule(new DetailsOfApiRuntimeModule());
         injector.bindModule(new OperationDetailsRuntimeModule());
+        injector.bindModule(new ProductDetailsRuntimeModule());
         injector.bindModule(new ProductSubscribeRuntimeModule());
         injector.bindModule(new ProductSubscriptionsRuntimeModule());
 

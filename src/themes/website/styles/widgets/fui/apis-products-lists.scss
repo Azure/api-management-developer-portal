@@ -1,6 +1,7 @@
 fui-api-list-runtime, // TMP solution while KO is not fully migrated to React/FUI
 fui-product-list-runtime,
 fui-product-apis-runtime,
+fui-product-details-runtime,
 fui-product-subscribe-runtime,
 fui-product-subscriptions-runtime {
     width: 100%;
@@ -28,6 +29,7 @@ fui-product-subscriptions-runtime {
     width: 1100px; /* TODO */
     grid-template-columns: 1fr 1fr 1fr;
     gap: 1.5rem;
+    margin-top: 1.5rem;
 
     .fui-list-card {
         display: flex;
