@@ -38,7 +38,7 @@ export class ProductService {
             odataFilterEntries.push(`properties/scope eq '${productId}'`)
         }
 
-        if (searchRequest.pattern) {
+        if (searchRequest?.pattern) {
             const pattern = Utils.encodeURICustomized(searchRequest.pattern, Constants.reservedCharTuplesForOData);
             odataFilterEntries.push(`(contains(properties/displayName,'${pattern}'))`);
         }
