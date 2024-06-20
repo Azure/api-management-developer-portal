@@ -26,13 +26,31 @@ export class ProductService {
      * @param userId {string} User unique identifier.
      * @param productId {string} Product unique identifier.
      */
-    public async getSubscriptions(userId: string, productId?: string): Promise<Page<Subscription>> {
+    public async getSubscriptions(userId: string, productId?: string, searchRequest?: SearchQuery): Promise<Page<Subscription>> {
         if (!userId) {
             throw new Error(`Parameter "userId" not specified.`);
         }
 
+        const skip = searchRequest && searchRequest.skip || 0;
+        const take = searchRequest && searchRequest.take || Constants.defaultPageSize;
+        const odataFilterEntries = [];
+        if (productId) {
+            odataFilterEntries.push(`properties/scope eq '${productId}'`)
+        }
+
+        if (searchRequest) {
+            if (searchRequest.pattern) {
+                const pattern = Utils.encodeURICustomized(searchRequest.pattern, Constants.reservedCharTuplesForOData);
+                odataFilterEntries.push(`(contains(properties/displayName,'${pattern}'))`);
+            }
+        }
+
         const pageOfSubscriptions = new Page<Subscription>();
-        const query = productId ? `?$filter=properties/scope eq '${productId}'` : "";
+        let query = `?$top=${take}&$skip=${skip}`;
+
+        if (odataFilterEntries.length > 0) {
+            query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
+        }
 
         try {
             const pageContract = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`, [await this.mapiClient.getPortalHeader("getSubscriptions")]);
