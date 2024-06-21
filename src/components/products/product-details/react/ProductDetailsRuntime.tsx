@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { Stack } from "@fluentui/react";
 import { Body1, Caption1, FluentProvider, Spinner, Title1 } from "@fluentui/react-components";
 import { CircleSmallFilled } from "@fluentui/react-icons";
 import { Resolve } from "@paperbits/react/decorators";
@@ -10,8 +11,7 @@ import { Product } from "../../../../models/product";
 import { ProductState } from "../../../../contracts/product";
 import { RouteHelper } from "../../../../routing/routeHelper";
 import { ProductService } from "../../../../services/productService";
-import { MarkdownProcessor } from "../../../react-markdown/MarkdownProcessor";
-import { Stack } from "@fluentui/react";
+import { MarkdownProcessor } from "../../../utils/react/MarkdownProcessor";
 
 type ProductSubscribeRuntimeProps = {
 }

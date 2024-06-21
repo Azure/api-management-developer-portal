@@ -1,0 +1,115 @@
+fui-operation-details {
+    width: 100%;
+    padding-top: 2rem;
+
+    .operation-details-title {
+        padding: .5rem 0;
+        border-bottom: 1px solid #D1D1D1;
+        margin-bottom: 1.75rem;
+    }
+
+    .operation-details-content {
+        max-width: 800px;
+    }
+
+    .operation-table {
+        border: 1px solid #D1D1D1;
+        border-radius: 4px;
+        margin-bottom: 1.75rem;
+        overflow: hidden;
+    }
+
+    .operation-table-header {
+        padding: .5rem 1rem;
+        background-color: #F5F5F5;
+    }
+
+    .operation-table-body-row {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+
+        &:not(:last-of-type) {
+            border-bottom: 1px solid #D1D1D1;
+        }
+    }
+
+    .operation-description {
+        padding-top: 1rem;
+
+        p:only-of-type {
+            margin-bottom: 0;
+        }
+    }
+
+    .operation-tags {
+        padding-top: 1rem;
+        
+        > * {
+            margin-right: .5rem;
+        }
+    }
+
+    .operation-info-caption {
+        padding-right: .5rem;
+
+        &.ws-caption {
+            width: 75px;
+        }
+    }
+
+    .operation-text {
+        flex: 1;
+    }
+
+    .operation-request,
+    .operation-response,
+    .operation-definition {
+        padding-top: 2.5rem;
+    }
+
+    .operation-subtitle1 {
+        margin-bottom: 1rem;
+    }
+
+    .operation-subtitle2 {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .operation-content-type-dropdown {
+        min-width: 130px;
+        margin-left: .5rem;
+    }
+
+    .operation-body {
+        border-bottom: 1px solid #D1D1D1;
+        margin: 1.5rem 0;
+    }
+
+    pre {
+        margin: 0;
+    }
+
+    .td-combinations {
+        margin: 1.5rem 0;
+    }
+
+    .td-combination-name {
+        margin-bottom: 1rem;
+    }
+
+    .td-example {
+        padding: .5rem;
+        border-radius: .25rem;
+        background: #F0F0F0;
+        color: #80215D;
+        max-width: fit-content;
+    }
+
+    .truncate-text {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

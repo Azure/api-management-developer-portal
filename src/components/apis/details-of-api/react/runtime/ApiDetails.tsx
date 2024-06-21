@@ -9,7 +9,7 @@ import { KnownMimeTypes } from "../../../../../models/knownMimeTypes"
 import { ApiService } from "../../../../../services/apiService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TypeOfApi, fuiTheme } from "../../../../../constants";
-import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
+import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 
 interface ApiDetailsProps {
     changeLogPageUrl?: string

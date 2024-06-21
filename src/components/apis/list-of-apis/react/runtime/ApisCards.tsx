@@ -3,7 +3,7 @@ import { Body1Strong, Button, Caption1Stronger, Link, Subtitle1 } from "@fluentu
 import { Api } from "../../../../../models/api";
 import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
 import { TagGroup } from "../../../../../models/tagGroup";
-import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
+import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {

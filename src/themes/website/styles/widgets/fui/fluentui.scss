@@ -12,8 +12,36 @@
     margin-top: 0;
 }
 
+.operation-method {
+    color: #696969;
+
+    &.method-GET {
+        color: #107C10;
+    }
+
+    &.method-POST {
+        color: #0F6CBD;
+    }
+
+    &.method-DELETE {
+        color: #C50F1F;
+    }
+
+    &.method-PUT {
+        color: #8e562e;
+    }
+}
+
 .fui-filterBy-container {
     margin: 0 calc(-1 * var(--spacingHorizontalM));
+}
+
+.markdown-truncate {
+    > * {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .align-center {
