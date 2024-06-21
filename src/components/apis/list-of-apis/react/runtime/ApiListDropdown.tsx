@@ -53,7 +53,7 @@ const TagLabel = ({
 const ApiTypeBadge = ({ api }: { api: Api }) =>
     !!api.typeName &&
     api.typeName !== "REST" && (
-        <Badge appearance="outline">{api.typeName}</Badge>
+        <Badge appearance="outline" size="small">{api.typeName}</Badge>
     );
 
 const ApiVersionBadge = ({ api }: { api: Api }) =>

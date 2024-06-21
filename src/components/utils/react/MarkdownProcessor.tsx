@@ -7,12 +7,14 @@ import ReactMarkdown from "react-markdown"; // TODO: upgrade this package and al
 type TMarkdownProcessorProps = {
     markdownToDisplay: string;
     maxChars?: number;
+    truncate?: boolean;
 }
 
-export const MarkdownProcessor = ({ markdownToDisplay, maxChars }: TMarkdownProcessorProps) => (
+export const MarkdownProcessor = ({ markdownToDisplay, maxChars, truncate = false }: TMarkdownProcessorProps) => (
     <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw, [rehypeTruncate, { maxChars, disable: typeof maxChars === "undefined"}]]}
+        className={truncate ? "markdown-truncate" : ""}
     >
         {markdownToDisplay}
     </ReactMarkdown>
