@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@paperbits/common/ko/decorators";
 import { Environment } from "@azure/api-management-custom-widgets-tools";
-import { iframeAllows, iframeSandboxAllows } from "../../../../constants";
+import { iframeAllows, iframeSandboxAllows, iframeSandboxAllowsBrowserSpecific } from "../../../../constants";
 import { widgetRuntimeSelector } from "../../constants";
 import template from "./customWidget.html";
 
@@ -14,13 +14,19 @@ import template from "./customWidget.html";
 })
 export class CustomWidget {
     public readonly iframeAllows: string = iframeAllows;
-    public readonly iframeSandboxAllows: string = iframeSandboxAllows;
+    public iframeSandboxAllows: string = iframeSandboxAllows;
     private windowRef = window;
 
     constructor() {
         this.src = ko.observable();
         this.name = ko.observable();
         this.instanceId = ko.observable();
+
+        const iframe = document.getElementsByTagName("iframe")[0];
+        this.iframeSandboxAllows = `${iframeSandboxAllows} ${iframeSandboxAllowsBrowserSpecific}`
+            .split(" ")
+            .filter(token=> iframe?.sandbox.supports(token))
+            .join(" ");
     }
 
     @Param()
