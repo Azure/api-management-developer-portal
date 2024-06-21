@@ -69,20 +69,24 @@ export const OperationDetails = ({
         if (!apiName) return;
         
         setWorking(true);
-        loadApi().then(loadedApi => setApi(loadedApi));
-        loadGatewayInfo().then(hostnames => {
-            hostnames?.length > 0 && setHostnames(hostnames);
-        });
-        loadOperation().then(loadedValues => {
-            setOperation(loadedValues.operation);
-            setTags(loadedValues.tags);
-            setDefinitions(loadedValues.definitions);
-            setRequest(loadedValues.operation?.request);
-            setResponses(loadedValues.operation?.getMeaningfulResponses());
-        }).finally(() => {
-            setWorking(false);
-            enableScrollTo && scrollToOperation();
-        });
+        Promise.all([
+                loadApi().then(loadedApi => setApi(loadedApi)),
+                loadGatewayInfo().then(hostnames => {
+                    hostnames?.length > 0 && setHostnames(hostnames);
+                }),
+                loadOperation().then(loadedValues => {
+                    setOperation(loadedValues.operation);
+                    setTags(loadedValues.tags);
+                    setDefinitions(loadedValues.definitions);
+                    setRequest(loadedValues.operation?.request);
+                    setResponses(loadedValues.operation?.getMeaningfulResponses());
+                })
+            ])
+            .catch(error => new Error(`Unable to load the operation details. Error: ${error.message}`))
+            .finally(() => {
+                setWorking(false);
+                enableScrollTo && scrollToOperation();
+            });
     }, [apiName, operationName]);
 
     useEffect(() => {
@@ -112,15 +116,19 @@ export const OperationDetails = ({
 
         try {
             if (operationName) {
-                operation = await apiService.getOperation(`apis/${apiName}/operations/${operationName}`);
-                tags = await apiService.getOperationTags(`apis/${apiName}/operations/${operationName}`);
+                [operation, tags] = await Promise.all([
+                    apiService.getOperation(`apis/${apiName}/operations/${operationName}`),
+                    apiService.getOperationTags(`apis/${apiName}/operations/${operationName}`)
+                ]);
                 operation && (definitions = await loadDefinitions(operation));
             } else {
                 const operations = await apiService.getOperations(`apis/${apiName}`);
                 operation = operations?.value[0];
-
-                operation && (tags = await apiService.getOperationTags(`apis/${apiName}/operations/${operation.name}`));
-                operation && (definitions = await loadDefinitions(operation));
+                operation &&
+                    ([tags, definitions] = await Promise.all([
+                        await apiService.getOperationTags(`apis/${apiName}/operations/${operation.name}`),
+                        await loadDefinitions(operation)
+                    ]));
             }
         } catch (error) {
             throw new Error(`Unable to load the operation. Error: ${error.message}`);
