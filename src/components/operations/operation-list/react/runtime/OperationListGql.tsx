@@ -10,13 +10,15 @@ import { GraphqlService, TGraphqlTypes } from "../../../../../services/graphqlSe
 
 export const OperationListGql = ({
     apiName,
+    graphName,
+    graphType,
     graphqlService,
     routeHelper,
     router,
     allowSelection,
     wrapText,
     detailsPageUrl
-}: OperationListRuntimeProps & { apiName: string, graphqlService: GraphqlService, routeHelper: RouteHelper, router: Router }) => {
+}: OperationListRuntimeProps & { apiName: string, graphName: string, graphType: string, graphqlService: GraphqlService, routeHelper: RouteHelper, router: Router }) => {
     const [working, setWorking] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [graphqlTypes, setGraphqlTypes] = useState<TGraphqlTypes>();
@@ -34,16 +36,20 @@ export const OperationListGql = ({
             setGraphqlTypes(loadedValues.graphqlTypes);
             setAvailableGraphqlTypes(loadedValues.availableGraphqlTypes);
             
-            const selectedType = loadedValues?.availableGraphqlTypes[0];
+            const selectedType = graphType || loadedValues?.availableGraphqlTypes[0];
             if (selectedType) {
                 const operations = loadedValues.graphqlTypes[selectedType.toLowerCase()];
                 setSelectedGraphqlType(selectedType);
                 setSelectedGraphqlTypeOperations(operations);
                 setFilteredOperations(operations);
-                Object.values(operations).length > 0 && setSelectedOperationName(Object.values(operations)[0]["name"]);
+                if (Object.values(operations).length > 0) {
+                    graphName 
+                        ? setSelectedOperationName(graphName)
+                        : selectOperation(Object.values(operations)[0], selectedType);
+                }
             }
         }).finally(() => setWorking(false));
-    }, [apiName]);
+    }, [apiName, graphName, graphType]);
 
     const getGraphValues = async (): Promise<{graphqlTypes: TGraphqlTypes, availableGraphqlTypes: string[]}> => {
         let graphqlTypes: TGraphqlTypes;
@@ -59,11 +65,13 @@ export const OperationListGql = ({
         return {graphqlTypes, availableGraphqlTypes};
     }
 
-    const selectOperation = (operation): void => {
+    const selectOperation = (operation, selectedType?: string): void => {
         if (!operation) return;
+        const graphType = selectedType || selectedGraphqlType;
+        if (!graphType) return;
 
         allowSelection && setSelectedOperationName(operation.name);
-        const operationUrl = routeHelper.getGraphReferenceUrl(apiName, selectedGraphqlType.toLowerCase(), operation.name, detailsPageUrl);
+        const operationUrl = routeHelper.getGraphReferenceUrl(apiName, graphType.toLowerCase(), operation.name, detailsPageUrl);
         router.navigateTo(operationUrl);
     }
 

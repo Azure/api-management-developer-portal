@@ -18,7 +18,7 @@ import {
     TApisData,
     toggleValueInSet,
 } from "./utils";
-import { MarkdownProcessor } from "../../../../react-markdown/MarkdownProcessor";
+import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {

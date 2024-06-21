@@ -1,27 +1,27 @@
 import * as React from "react";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
-import { Body1, FluentProvider} from "@fluentui/react-components";
+import { FluentProvider} from "@fluentui/react-components";
 import { TypeOfApi, fuiTheme } from "../../../../../constants";
 import { ApiService } from "../../../../../services/apiService";
 import { TagService } from "../../../../../services/tagService";
 import { GraphqlService } from "../../../../../services/graphqlService";
 import { GraphDocService } from "../../../operation-details/ko/runtime/graphql-documentation/graphql-doc-service";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { OperationList } from "./OperationList";
-import { OperationListGql } from "./OperationListGql";
+import { OperationDetailsWebsocket } from "./OperationDetailsWebsocket";
+import { OperationDetails } from "./OperationDetails";
+import { OperationDetailsGql } from "./OperationDetailsGql";
 
-export interface OperationListRuntimeProps {
-    allowSelection?: boolean,
-    wrapText?: boolean,
-    showToggleUrlPath?: boolean,
-    defaultShowUrlPath?: boolean,
-    defaultGroupByTagToEnabled?: boolean,
-    defaultAllGroupTagsExpanded?: boolean,
-    detailsPageUrl: string
+export interface OperationDetailsRuntimeProps {
+    enableConsole?: boolean,
+    useCorsProxy?: boolean,
+    includeAllHostnames?: boolean,
+    enableScrollTo?: boolean,
+    showExamples?: boolean,
+    defaultSchemaView: string
 }
 
-interface OperationListRuntimeState {
+interface OperationDetailsRuntimeState {
     apiName: string,
     apiType: string,
     operationName: string,
@@ -29,7 +29,7 @@ interface OperationListRuntimeState {
     graphType: string
 }
 
-export class OperationListRuntime extends React.Component<OperationListRuntimeProps, OperationListRuntimeState> {
+export class OperationDetailsRuntime extends React.Component<OperationDetailsRuntimeProps, OperationDetailsRuntimeState> {
     @Resolve("apiService")
     public apiService: ApiService;
 
@@ -48,7 +48,7 @@ export class OperationListRuntime extends React.Component<OperationListRuntimePr
     @Resolve("router")
     public router: Router;
 
-    constructor(props: OperationListRuntimeProps) {
+    constructor(props: OperationDetailsRuntimeProps) {
         super(props);
 
         this.state = {
@@ -87,7 +87,7 @@ export class OperationListRuntime extends React.Component<OperationListRuntimePr
 
             this.graphDocService.initialize(); // TODO: remove this when the whole GQL logic is moved to React
 
-            this.setState({ apiName, operationName, graphName, graphType, apiType });
+            this.setState({ apiName, apiType, operationName, graphName, graphType });
         }
     }
 
@@ -95,25 +95,27 @@ export class OperationListRuntime extends React.Component<OperationListRuntimePr
         return (
             <FluentProvider theme={fuiTheme}>
                 {this.state.apiType === TypeOfApi.webSocket 
-                    ? <div className={"operation-list-container"}><Body1>WebSocket APIs don't expose API operations.</Body1></div>
+                    ? <OperationDetailsWebsocket
+                            {...this.props}
+                            apiName={this.state.apiName}
+                            apiService={this.apiService}
+                        />
                     : this.state.apiType === TypeOfApi.graphQL
-                        ? <OperationListGql
+                        ? <OperationDetailsGql
                             {...this.props}
                             apiName={this.state.apiName}
                             graphName={this.state.graphName}
                             graphType={this.state.graphType}
+                            apiService={this.apiService}
                             graphqlService={this.graphqlService}
                             routeHelper={this.routeHelper}
-                            router={this.router}
                           />
-                        : <OperationList
+                        : <OperationDetails
                             {...this.props}
                             apiName={this.state.apiName}
                             operationName={this.state.operationName}
                             apiService={this.apiService}
-                            tagService={this.tagService}
                             routeHelper={this.routeHelper}
-                            router={this.router}
                         />
                 }
             </FluentProvider>
