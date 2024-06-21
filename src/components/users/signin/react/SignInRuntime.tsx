@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
+import { EventManager } from "@paperbits/common/events";
 import * as Constants from "../../../../constants";
 import { UsersService } from "../../../../services";
 import { RouteHelper } from "../../../../routing/routeHelper";
-import { EventManager } from "@paperbits/common/events";
-import { SignInForm } from "./SignInForm";
+import { Utils } from "../../../../utils";
+import { SignInForm, THandleSignIn } from "./SignInForm";
 
 type SignInRuntimeProps = {
     delegationUrl: string
@@ -18,8 +19,7 @@ type SignInRuntimeProps = {
 type SignInRuntimeFCProps = SignInRuntimeProps & {
     usersService: UsersService
     eventManager: EventManager
-    router: Router
-    routeHelper: RouteHelper
+    handleSignIn: THandleSignIn
 };
 
 const initUser = async (usersService: UsersService, redirectUrl: string) => {
@@ -38,7 +38,7 @@ const initUser = async (usersService: UsersService, redirectUrl: string) => {
     }
 };
 
-const ProductSubscribeRuntimeFC = ({ router, routeHelper, usersService, eventManager, delegationUrl }: SignInRuntimeFCProps) => {
+const ProductSubscribeRuntimeFC = ({ usersService, eventManager, handleSignIn, delegationUrl }: SignInRuntimeFCProps) => {
     const [working, setWorking] = useState(true);
 
     useEffect(() => {
@@ -50,7 +50,7 @@ const ProductSubscribeRuntimeFC = ({ router, routeHelper, usersService, eventMan
     if (working) return <Spinner label={"Loading current user"} labelPosition="below" />;
 
     return (
-        <SignInForm router={router} eventManager={eventManager} routeHelper={routeHelper} usersService={usersService} />
+        <SignInForm eventManager={eventManager} handleSignIn={handleSignIn}  />
     );
 };
 
@@ -67,6 +67,19 @@ export class SignInRuntime extends React.Component<SignInRuntimeProps> {
     @Resolve("router")
     public router: Router;
 
+    handleSignIn = async (email: string, password: string) => {
+        const clientReturnUrl = sessionStorage.getItem("returnUrl");
+        const returnUrl = this.routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
+
+        await this.usersService.signInWithBasic(email, password);
+
+        if (returnUrl) {
+            return await this.router.navigateTo(Utils.sanitizeReturnUrl(returnUrl));
+        } else {
+            return this.usersService.navigateToHome();
+        }
+    }
+
     render() {
         return (
             <FluentProvider theme={Constants.fuiTheme}>
@@ -74,8 +87,7 @@ export class SignInRuntime extends React.Component<SignInRuntimeProps> {
                     {...this.props}
                     usersService={this.usersService}
                     eventManager={this.eventManager}
-                    routeHelper={this.routeHelper}
-                    router={this.router}
+                    handleSignIn={this.handleSignIn.bind(this)}
                 />
             </FluentProvider>
         );

@@ -2,28 +2,22 @@ import * as React from "react";
 import * as validation from "knockout.validation";
 import { Stack } from "@fluentui/react";
 import { Button, Input, Label, Spinner } from "@fluentui/react-components";
-import { Router } from "@paperbits/common/routing";
 import { EventManager } from "@paperbits/common/events";
-import { UsersService } from "../../../../services";
-import { Utils } from "../../../../utils";
 import { MapiError } from "../../../../errors/mapiError";
 import { UnauthorizedError } from "../../../../errors/unauthorizedError";
-import { RouteHelper } from "../../../../routing/routeHelper";
 import { dispatchErrors } from "../../validation-summary/utils";
 import { ErrorSources } from "../../validation-summary/constants";
 
+export type THandleSignIn = (email: string, password: string) => Promise<unknown>;
+
 type SignInFormProps = {
-    usersService: UsersService;
     eventManager: EventManager;
-    router: Router;
-    routeHelper: RouteHelper;
+    handleSignIn: THandleSignIn;
 };
 
 export const SignInForm = ({
-    usersService,
     eventManager,
-    router,
-    routeHelper,
+    handleSignIn,
 }: SignInFormProps) => {
     const [working, setWorking] = React.useState(false);
     const [email, setEmail] = React.useState("");
@@ -38,8 +32,6 @@ export const SignInForm = ({
     }, []);
 
     const submit = async () => {
-        let errorMessages = [];
-
         const validationGroup = {
             username: email,
             password: password,
@@ -52,25 +44,12 @@ export const SignInForm = ({
         if (clientErrors.length > 0) {
             result.showAllMessages();
             dispatchErrors(eventManager, ErrorSources.signin, clientErrors);
-            errorMessages = clientErrors;
             return;
         }
 
         try {
             setWorking(true);
-
-            await usersService.signInWithBasic(email, password);
-
-            const clientReturnUrl = sessionStorage.getItem("returnUrl");
-            const returnUrl =
-                routeHelper.getQueryParameter("returnUrl") || clientReturnUrl;
-
-            if (returnUrl) {
-                await router.navigateTo(Utils.sanitizeReturnUrl(returnUrl));
-                return;
-            }
-
-            usersService.navigateToHome();
+            await handleSignIn(email, password);
         } catch (error) {
             if (error instanceof MapiError) {
                 if (error.code === "identity_not_confirmed") {
@@ -81,7 +60,6 @@ export const SignInForm = ({
                     return;
                 }
 
-                errorMessages = [error.message];
                 dispatchErrors(eventManager, ErrorSources.signin, [
                     error.message,
                 ]);
@@ -89,16 +67,13 @@ export const SignInForm = ({
             }
 
             if (error instanceof UnauthorizedError) {
-                errorMessages = [error.message];
                 dispatchErrors(eventManager, ErrorSources.signin, [
                     error.message,
                 ]);
                 return;
             }
 
-            throw new Error(
-                `Unable to complete signing in. Error: ${error.message}`
-            );
+            throw new Error(`Unable to complete signing in. Error: ${error.message}`);
         } finally {
             setWorking(false);
         }
