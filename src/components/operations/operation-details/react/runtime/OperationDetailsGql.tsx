@@ -40,13 +40,18 @@ export const OperationDetailsGql = ({
         }
         
         setWorking(true);
-        loadApi().then(loadedApi => setApi(loadedApi));
-        loadGatewayInfo().then(hostnames => {
-            hostnames.length > 0 && setHostnames(hostnames);
+        Promise.all([
+            loadApi().then(loadedApi => setApi(loadedApi)),
+            loadGatewayInfo().then(hostnames => {
+                hostnames?.length > 0 && setHostnames(hostnames);
+            }),
+            loadGraph().then(graph => setGraph(graph))
+        ])
+        .catch(error => new Error(`Unable to load the graph details. Error: ${error.message}`))
+        .finally(() => {
+            setWorking(false);
+            enableScrollTo && scrollToOperation();
         });
-        loadGraph()
-            .then(graph => setGraph(graph))
-            .finally(() => setWorking(false));
     }, [apiName, graphName, graphType]);
 
     useEffect(() => {
