@@ -65,8 +65,6 @@ export class SignInAadB2cRuntime extends React.Component<SignInAadB2cRuntimeProp
                 this.selectedService = this.aadService;
             }
 
-            console.log({selectedService: this.selectedService})
-
             await this.selectedService.checkCallbacks();
         } else {
             this.logger.trackEvent(eventTypes.aadB2CLogin, { message: "AAD B2C client configuration is missing." });

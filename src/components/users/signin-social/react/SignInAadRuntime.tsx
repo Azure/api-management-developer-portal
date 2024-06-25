@@ -64,8 +64,6 @@ export class SignInAadRuntime extends React.Component<SignInAadRuntimeProps> {
                     this.selectedService = this.aadService;
                 }
 
-                console.log({selectedServiceA: this.selectedService})
-
                 await this.selectedService.signInWithAad(config.clientId, config.authority, config.signinTenant || defaultAadTenantName, this.props.replyUrl);
             } else {
                 this.logger.trackEvent(eventTypes.aadLogin, { message: "AAD client config is not set" });
