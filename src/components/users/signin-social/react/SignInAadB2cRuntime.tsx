@@ -109,8 +109,6 @@ export class SignInAadB2cRuntime extends React.Component<SignInAadB2cRuntimeProp
     }
 
     render() {
-        // return "TODO... this is just copy of AAD"
-
         return (
             <FluentProvider theme={Constants.fuiTheme} style={{ display: "inline" }}>
                 <ProductSubscribeRuntimeFC
