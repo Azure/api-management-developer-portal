@@ -22,7 +22,7 @@ type SignInAadRuntimeFCProps = SignInAadRuntimeProps & {
     signIn: () => Promise<void>
 };
 
-const ProductSubscribeRuntimeFC = ({ label, signIn }: SignInAadRuntimeFCProps) => {
+const SignInAadRuntimeFC = ({ label, signIn }: SignInAadRuntimeFCProps) => {
     return (
         <BtnSpinner onClick={signIn}>
             <i className="icon-emb icon-svg-entraId"></i>
@@ -76,7 +76,7 @@ export class SignInAadRuntime extends React.Component<SignInAadRuntimeProps> {
     render() {
         return (
             <FluentProvider theme={Constants.fuiTheme} style={{ display: "inline" }}>
-                <ProductSubscribeRuntimeFC
+                <SignInAadRuntimeFC
                     {...this.props}
                     signIn={this.signIn.bind(this)}
                 />

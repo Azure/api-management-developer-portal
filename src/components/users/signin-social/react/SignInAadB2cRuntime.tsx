@@ -23,7 +23,7 @@ type SignInAadB2cRuntimeFCProps = SignInAadB2cRuntimeProps & {
     signIn: () => Promise<void>
 };
 
-const ProductSubscribeRuntimeFC = ({ label, disabled, signIn }: SignInAadB2cRuntimeFCProps) => {
+const SignInAadB2cRuntimeFC = ({ label, disabled, signIn }: SignInAadB2cRuntimeFCProps) => {
     return (
         <BtnSpinner disabled={disabled} onClick={signIn} >
             <i className="icon-emb icon-svg-entraId"></i>
@@ -111,7 +111,7 @@ export class SignInAadB2cRuntime extends React.Component<SignInAadB2cRuntimeProp
     render() {
         return (
             <FluentProvider theme={Constants.fuiTheme} style={{ display: "inline" }}>
-                <ProductSubscribeRuntimeFC
+                <SignInAadB2cRuntimeFC
                     {...this.props}
                     disabled={!this.aadConfig}
                     signIn={this.signIn.bind(this)}
