@@ -19,11 +19,13 @@ import { dispatchErrors, parseAndDispatchError } from "../../validation-summary/
 import { ErrorSources } from "../../validation-summary/constants";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { Utils } from "../../../../utils";
+import { pageUrlChangePassword } from "../../../../constants";
 
 type ProfileRuntimeProps = {};
 type ProfileRuntimeFCProps = ProfileRuntimeProps & {
     usersService: UsersService
     eventManager: EventManager
+    router: Router
     logger: Logger
     applyDelegation(action: DelegationAction, userId: string): Promise<boolean>
 };
@@ -41,14 +43,20 @@ const getCloseDelegationAccountWarning = (firstName: string, lastName: string, e
     `Dear ${firstName} ${lastName}, \nYou are about to close your account associated with email address ${email}.\nAre you sure you want to close your account?`
 );
 
-const ProductSubscribeRuntimeFC = ({ usersService, eventManager, logger, applyDelegation }: ProfileRuntimeFCProps) => {
+const ProductSubscribeRuntimeFC = ({
+    usersService,
+    eventManager,
+    router,
+    logger,
+    applyDelegation,
+}: ProfileRuntimeFCProps) => {
     const [working, setWorking] = useState(true);
     const [user, setUser] = useState<User>();
 
     useEffect(() => {
         setWorking(true);
         initUser(usersService)
-            .then(value => setUser(value))
+            .then((value) => setUser(value))
             .finally(() => setWorking(false));
     }, [usersService]);
 
@@ -62,24 +70,41 @@ const ProductSubscribeRuntimeFC = ({ usersService, eventManager, logger, applyDe
         }
     };
 
-    const changePassword = async (newPassword: string) => alert("TODO");
+    const changePassword = async () => {
+        const isDelegationEnabled = await applyDelegation(DelegationAction.changePassword, user.id);
+        if (isDelegationEnabled) return;
+
+        await router.navigateTo(pageUrlChangePassword);
+    };
 
     const deleteAccount = async () => {
-        const isDelegationApplied = await applyDelegation(DelegationAction.closeAccount, user.id);
-        if (isDelegationApplied) {
-            return;
-        }
+        const isDelegationEnabled = await applyDelegation(DelegationAction.closeAccount, user.id);
+        if (isDelegationEnabled) return;
+
         const confirmed = window.confirm(
-            user.isBasicAccount ? getCloseBasicAccountWarning(user.firstName, user.lastName, user.email)
-                : getCloseDelegationAccountWarning(user.firstName, user.lastName, user.email));
+            user.isBasicAccount
+                ? getCloseBasicAccountWarning(user.firstName, user.lastName, user.email)
+                : getCloseDelegationAccountWarning(user.firstName, user.lastName, user.email)
+        );
         if (confirmed) {
             await usersService.deleteUser(user.id);
         }
     };
 
+    const delegationEdit = () => applyDelegation(DelegationAction.changeProfile, user.id);
+
     if (working) return <Spinner label={"Loading current user"} labelPosition="below" />;
     if (!user) return <>User not found</>;
-    return <ProfileTable user={user} save={save} changePassword={changePassword} deleteAccount={deleteAccount} />;
+
+    return (
+        <ProfileTable
+            user={user}
+            save={save}
+            changePassword={changePassword}
+            deleteAccount={deleteAccount}
+            delegationEdit={delegationEdit}
+        />
+    );
 };
 
 export class ProfileRuntime extends React.Component<ProfileRuntimeProps> {
@@ -114,10 +139,9 @@ export class ProfileRuntime extends React.Component<ProfileRuntimeProps> {
             if (delegationUrl) {
                 location.assign(delegationUrl);
             }
-
-            return true;
         }
-        return false;
+
+        return isDelegationEnabled;
     }
 
     render() {
@@ -127,6 +151,7 @@ export class ProfileRuntime extends React.Component<ProfileRuntimeProps> {
                     {...this.props}
                     usersService={this.usersService}
                     eventManager={this.eventManager}
+                    router={this.router}
                     logger={this.logger}
                     applyDelegation={this.applyDelegation.bind(this)}
                 />

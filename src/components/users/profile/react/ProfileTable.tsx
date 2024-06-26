@@ -54,15 +54,23 @@ const ValueOrField = ({
     );
 };
 
-export const ProfileTable = ({ user, save, changePassword, deleteAccount }: {
+export const ProfileTable = ({ user, save, changePassword, deleteAccount, delegationEdit }: {
     user: User
     save: (firstName: string, surname: string) => Promise<unknown>
-    changePassword: (newPassword: string) => Promise<unknown>
+    changePassword: () => Promise<unknown>
     deleteAccount: () => Promise<unknown>
+    delegationEdit: () => Promise<boolean>
 }) => {
     const [isEdit, setIsEdit] = useState(false);
     const [firstName, setFirstName] = useState(user.firstName);
     const [lastName, setLastName] = useState(user.lastName);
+
+    const onEdit = async () => {
+        const isDelegationEnabled = await delegationEdit();
+        if (isDelegationEnabled) return;
+
+        setIsEdit(true);
+    }
 
     return (
         <Table
@@ -149,19 +157,19 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount }: {
                                 <MenuPopover>
                                     <MenuList>
                                         <MenuItem
-                                            onClick={() => setIsEdit(true)}
+                                            onClick={onEdit}
                                             icon={<EditRegular />}
                                         >
                                             Edit
                                         </MenuItem>
                                         <MenuItem
-                                            onClick={() => alert("TODO")}
+                                            onClick={changePassword}
                                             icon={<SettingsRegular />}
                                         >
                                             Change password
                                         </MenuItem>
                                         <MenuItem
-                                            onClick={() => confirm("Are you sure you want to delete your account?") && deleteAccount()}
+                                            onClick={deleteAccount}
                                             icon={<DeleteRegular style={{ color: "red" }} />}
                                             style={{ color: "red" }}
                                         >
