@@ -48,3 +48,13 @@
     display: flex;
     align-items: center;
 }
+
+fui-api-list-runtime, // TMP solution while KO is not fully migrated to React/FUI
+fui-product-list-runtime,
+fui-product-apis-runtime,
+fui-product-details-runtime,
+fui-product-subscribe-runtime,
+fui-product-subscriptions-runtime,
+fui-signin-runtime {
+    width: 100%;
+}
