@@ -35,12 +35,8 @@ const initUser = async (usersService: UsersService) => {
     return usersService.getCurrentUser();
 };
 
-const getCloseBasicAccountWarning = (firstName: string, lastName: string, email: string): string => (
-    `Dear ${firstName} ${lastName}, \nYou are about to close your account associated with email address ${email}.\nYou will not be able to sign in to or restore your closed account. Are you sure you want to close your account?`
-);
-
-const getCloseDelegationAccountWarning = (firstName: string, lastName: string, email: string): string => (
-    `Dear ${firstName} ${lastName}, \nYou are about to close your account associated with email address ${email}.\nAre you sure you want to close your account?`
+const getCloseAccountWarning = (isBasicAccount: boolean, firstName: string, lastName: string, email: string): string => (
+    `Dear ${firstName} ${lastName}, \nYou are about to close your account associated with email address ${email}.\n${isBasicAccount ? "You will not be able to sign in to or restore your closed account. " : ""}Are you sure you want to close your account?`
 );
 
 const ProductSubscribeRuntimeFC = ({
@@ -81,11 +77,7 @@ const ProductSubscribeRuntimeFC = ({
         const isDelegationEnabled = await applyDelegation(DelegationAction.closeAccount, user.id);
         if (isDelegationEnabled) return;
 
-        const confirmed = window.confirm(
-            user.isBasicAccount
-                ? getCloseBasicAccountWarning(user.firstName, user.lastName, user.email)
-                : getCloseDelegationAccountWarning(user.firstName, user.lastName, user.email)
-        );
+        const confirmed = window.confirm(getCloseAccountWarning(user.isBasicAccount, user.firstName, user.lastName, user.email));
         if (confirmed) {
             await usersService.deleteUser(user.id);
         }

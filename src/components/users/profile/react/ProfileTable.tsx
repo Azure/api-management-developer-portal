@@ -20,7 +20,7 @@ import {
 import {
     DeleteRegular,
     EditRegular,
-    MoreVerticalRegular,
+    MoreHorizontalRegular,
     SettingsRegular,
 } from "@fluentui/react-icons";
 import { User } from "../../../../models/user";
@@ -150,7 +150,7 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount, delega
                                 <MenuTrigger disableButtonEnhancement>
                                     <Button
                                         appearance="transparent"
-                                        icon={<MoreVerticalRegular />}
+                                        icon={<MoreHorizontalRegular />}
                                     />
                                 </MenuTrigger>
 
