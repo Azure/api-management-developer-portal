@@ -7,6 +7,7 @@ import { MapiError } from "../../../../errors/mapiError";
 import { UnauthorizedError } from "../../../../errors/unauthorizedError";
 import { dispatchErrors } from "../../validation-summary/utils";
 import { ErrorSources } from "../../validation-summary/constants";
+import { BtnSpinner } from "../../../BtnSpinner";
 
 export type THandleSignIn = (email: string, password: string) => Promise<unknown>;
 
@@ -19,7 +20,6 @@ export const SignInForm = ({
     eventManager,
     handleSignIn,
 }: SignInFormProps) => {
-    const [working, setWorking] = React.useState(false);
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
 
@@ -48,7 +48,6 @@ export const SignInForm = ({
         }
 
         try {
-            setWorking(true);
             await handleSignIn(email, password);
         } catch (error) {
             if (error instanceof MapiError) {
@@ -74,13 +73,11 @@ export const SignInForm = ({
             }
 
             throw new Error(`Unable to complete signing in. Error: ${error.message}`);
-        } finally {
-            setWorking(false);
         }
     };
 
     return (
-        <Stack tokens={{ childrenGap: 20, maxWidth: 400 }}>
+        <Stack tokens={{ childrenGap: 20, maxWidth: 435 }}>
             <Stack.Item>
                 <Stack>
                     <Label required htmlFor="email">
@@ -111,20 +108,14 @@ export const SignInForm = ({
                 </Stack>
             </Stack.Item>
 
-            <Button
+            <BtnSpinner
                 style={{ maxWidth: "7em" }}
                 appearance="primary"
                 onClick={submit}
-                disabled={!email || !password || working}
+                disabled={!email || !password}
             >
-                {working && (
-                    <Spinner
-                        size={"extra-tiny"}
-                        style={{ marginRight: ".5rem" }}
-                    />
-                )}
                 Sign in
-            </Button>
+            </BtnSpinner>
         </Stack>
     );
 };
