@@ -101,6 +101,7 @@ import { ProductSubscribeRuntimeModule } from "./components/products/product-sub
 import { ProductSubscriptionsRuntimeModule } from "./components/products/product-subscriptions/productSubscriptions.runtime.module";
 import { SignInRuntimeModule } from "./components/users/signin/signin.runtime.module";
 import { SignInSocialRuntimeModule } from "./components/users/signin-social/signinSocial.runtime.module";
+import { ProfileRuntimeModule } from "./components/users/profile/profile.runtime.module";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -190,6 +191,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindModule(new ProductSubscriptionsRuntimeModule());
         injector.bindModule(new SignInRuntimeModule());
         injector.bindModule(new SignInSocialRuntimeModule());
+        injector.bindModule(new ProfileRuntimeModule());
 
         if (process.env.NODE_ENV === staticDataEnvironment) {
             injector.bind("httpClient", StaticDataHttpClient);
