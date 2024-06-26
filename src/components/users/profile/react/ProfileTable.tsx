@@ -34,6 +34,8 @@ type TValueOrFieldProps<T> = {
     placeholder?: string;
 };
 
+const formatDate = (date: Date) => date ? moment(date).format("MM/DD/YYYY") : "";
+
 const ValueOrField = ({
     isEdit,
     value,
@@ -116,17 +118,15 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount }: {
                         </ValueOrField>
                     </TableCell>
                     <TableCell>
-                        {user.registrationDate
-                            ? moment(user.registrationDate).format("MM/DD/YYYY")
-                            : ""}
+                        {formatDate(user.registrationDate)}
                     </TableCell>
                     <TableCell style={{ textAlign: "right" }}>
                         {isEdit ? (
-                            <Stack tokens={{ childrenGap: 20 }}>
+                            <Stack horizontal horizontalAlign="end" tokens={{ childrenGap: 10 }}>
                                 <BtnSpinner
-                                    size="small"
                                     appearance="primary"
-                                    onClick={() => save(firstName, lastName)}
+                                    size="small"
+                                    onClick={() => save(firstName, lastName).then(() => setIsEdit(false))}
                                 >
                                     Save
                                 </BtnSpinner>
@@ -162,11 +162,7 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount }: {
                                         </MenuItem>
                                         <MenuItem
                                             onClick={() => confirm("Are you sure you want to delete your account?") && deleteAccount()}
-                                            icon={
-                                                <DeleteRegular
-                                                    style={{ color: "red" }}
-                                                />
-                                            }
+                                            icon={<DeleteRegular style={{ color: "red" }} />}
                                             style={{ color: "red" }}
                                         >
                                             Delete account
