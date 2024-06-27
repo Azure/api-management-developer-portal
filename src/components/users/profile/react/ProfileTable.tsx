@@ -1,10 +1,9 @@
 import * as React from "react";
 import { useState } from "react";
-import * as moment from "moment";
+import { Stack } from "@fluentui/react";
 import {
     Body1Strong,
     Button,
-    Input,
     Menu,
     MenuItem,
     MenuList,
@@ -24,35 +23,9 @@ import {
     SettingsRegular,
 } from "@fluentui/react-icons";
 import { User } from "../../../../models/user";
-import { Stack } from "@fluentui/react";
-import { BtnSpinner } from "../../../BtnSpinner";
-
-type TValueOrFieldProps<T> = {
-    isEdit: boolean;
-    value?: T;
-    setValue: (value: T) => void;
-    placeholder?: string;
-};
-
-const formatDate = (date: Date) => date ? moment(date).format("MM/DD/YYYY") : "";
-
-const ValueOrField = ({
-    isEdit,
-    value,
-    setValue,
-    placeholder,
-    children,
-}: React.PropsWithChildren<TValueOrFieldProps<string>>) => {
-    if (!isEdit) return <>{children ?? value}</>;
-
-    return (
-        <Input
-            value={value}
-            onChange={(_, data) => setValue(data.value)}
-            placeholder={placeholder}
-        />
-    );
-};
+import { formatDate } from "../../../utils";
+import { BtnSpinner } from "../../../utils/react/BtnSpinner";
+import { ValueOrField } from "../../../utils/react/ValueOrField";
 
 export const ProfileTable = ({ user, save, changePassword, deleteAccount, delegationEdit }: {
     user: User
@@ -96,7 +69,7 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount, delega
                         <Body1Strong>Date created</Body1Strong>
                     </TableHeaderCell>
 
-                    <TableHeaderCell>
+                    <TableHeaderCell style={{ width: "4.825em" }}>
                         <Body1Strong></Body1Strong>
                     </TableHeaderCell>
                 </TableRow>
@@ -110,7 +83,7 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount, delega
                             isEdit={isEdit}
                             value={firstName}
                             setValue={setFirstName}
-                            placeholder={"First name"}
+                            inputProps={{ placeholder: "First name" }}
                         >
                             {user.firstName}
                         </ValueOrField>
@@ -120,7 +93,7 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount, delega
                             isEdit={isEdit}
                             value={lastName}
                             setValue={setLastName}
-                            placeholder={"Last name"}
+                            inputProps={{ placeholder: "Last name" }}
                         >
                             {user.lastName}
                         </ValueOrField>

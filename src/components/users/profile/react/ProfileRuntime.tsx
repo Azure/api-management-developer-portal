@@ -39,7 +39,7 @@ const getCloseAccountWarning = (isBasicAccount: boolean, firstName: string, last
     `Dear ${firstName} ${lastName}, \nYou are about to close your account associated with email address ${email}.\n${isBasicAccount ? "You will not be able to sign in to or restore your closed account. " : ""}Are you sure you want to close your account?`
 );
 
-const ProductSubscribeRuntimeFC = ({
+const ProfileRuntimeFC = ({
     usersService,
     eventManager,
     router,
@@ -139,7 +139,7 @@ export class ProfileRuntime extends React.Component<ProfileRuntimeProps> {
     render() {
         return (
             <FluentProvider theme={Constants.fuiTheme}>
-                <ProductSubscribeRuntimeFC
+                <ProfileRuntimeFC
                     {...this.props}
                     usersService={this.usersService}
                     eventManager={this.eventManager}
