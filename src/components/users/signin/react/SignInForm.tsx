@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as validation from "knockout.validation";
 import { Stack } from "@fluentui/react";
-import { Button, Input, Label, Spinner } from "@fluentui/react-components";
+import { Input, Label } from "@fluentui/react-components";
 import { EventManager } from "@paperbits/common/events";
 import { MapiError } from "../../../../errors/mapiError";
 import { UnauthorizedError } from "../../../../errors/unauthorizedError";
 import { dispatchErrors } from "../../validation-summary/utils";
 import { ErrorSources } from "../../validation-summary/constants";
-import { BtnSpinner } from "../../../BtnSpinner";
+import { BtnSpinner } from "../../../utils/react/BtnSpinner";
 
 export type THandleSignIn = (email: string, password: string) => Promise<unknown>;
 
