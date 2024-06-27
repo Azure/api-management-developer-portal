@@ -12,7 +12,7 @@ import { AadClientLibrary, SettingNames } from "../../../../constants";
 import { dispatchErrors, parseAndDispatchError } from "../../validation-summary/utils";
 import { AadB2CClientConfig } from "../../../../contracts/aadB2CClientConfig";
 import { aadb2cResetPasswordErrorCode } from "../../../../constants";
-import { BtnSpinner } from "../../../BtnSpinner";
+import { BtnSpinner } from "../../../utils/react/BtnSpinner";
 
 type SignInAadB2cRuntimeProps = {
     label: string
