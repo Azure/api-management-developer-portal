@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
     Body1Strong,
     Button,
-    makeStyles,
     Menu,
     MenuItem,
     MenuList,
@@ -28,13 +27,7 @@ import {
 import { Subscription } from "../../../../models/subscription";
 import { formatDate } from "../../../utils";
 import { ValueOrFieldWBtn } from "../../../utils/react/ValueOrField";
-/*
-const useStyles = makeStyles({
-    root: {
-        width: "100%",
-    },
-});
-*/
+
 const hiddenKey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
 const subscriptionDateRender = (sub: Subscription) => {
@@ -195,8 +188,6 @@ const SubscriptionRow = ({ sub, saveName, cancelSubscription, regeneratePKey, re
 }
 
 export const SubscriptionsTable = ({ subscriptions, saveName, cancelSubscription, regeneratePKey, regenerateSKey }: TPropsCommon & { subscriptions: Subscription[] }) => {
-    // const cls = useStyles();
-
     return (
         <Table
             className={"fui-table"}

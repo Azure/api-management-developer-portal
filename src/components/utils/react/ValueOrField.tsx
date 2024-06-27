@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Button, Input, Spinner } from "@fluentui/react-components";
-import { Stack } from "@fluentui/react";
-import { EditRegular, SaveRegular } from "@fluentui/react-icons";
+import { SaveRegular } from "@fluentui/react-icons";
 
 export type TValueOrFieldProps<T> = React.PropsWithChildren<{
     isEdit: boolean;
@@ -52,33 +51,27 @@ export const ValueOrFieldWBtn = ({
     };
 
     return (
-        <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
-            <ValueOrField
-                isEdit={isEdit}
-                value={value}
-                setValue={setValue}
-                inputProps={{
-                    style: { width: "100%", ...inputProps?.style },
-                    size: "small",
-                    contentAfter: working ? (
-                        <Spinner size={"extra-tiny"} />
-                    ) : (
-                        <Button
-                            size="small"
-                            appearance="transparent"
-                            onClick={onSave}
-                            icon={<SaveRegular />}
-                        />
-                    ),
-                    ...inputProps,
-                }}
-            >
-                {children}
-            </ValueOrField>
-
-            {/*!isEdit && (
-                <Button size="small" appearance="subtle" onClick={() => setEdit(true)} icon={<EditRegular />} />
-            )*/}
-        </Stack>
+        <ValueOrField
+            isEdit={isEdit}
+            value={value}
+            setValue={setValue}
+            inputProps={{
+                style: { width: "100%", ...inputProps?.style },
+                size: "small",
+                contentAfter: working ? (
+                    <Spinner size={"extra-tiny"} />
+                ) : (
+                    <Button
+                        size="small"
+                        appearance="transparent"
+                        onClick={onSave}
+                        icon={<SaveRegular />}
+                    />
+                ),
+                ...inputProps,
+            }}
+        >
+            {children}
+        </ValueOrField>
     );
 };

@@ -39,7 +39,6 @@ const initSubscriptions = async (usersService: UsersService, productService: Pro
         };
 
         const subscriptionsPage = await productService.getUserSubscriptionsWithProductName(userId, query);
-        // const subscriptions = subscriptionsPage.value.map(item => new SubscriptionListItem(item, eventManager));
 
         return subscriptionsPage.value;
     } catch (error) {
