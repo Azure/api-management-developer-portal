@@ -25,7 +25,7 @@ export class GraphqlService {
         public readonly routeHelper: RouteHelper
     ) {}
 
-    public async getGraphqlTypes(apiName: string): Promise<TGraphqlTypes> {
+    public async getGraphqlTypesAndSchema(apiName: string): Promise<{graphqlTypes: TGraphqlTypes, schema: string}> {
         const api = await this.apiService.getApi(`apis/${apiName}`);
         const graphqlTypes: TGraphqlTypes = {
             query: {},
@@ -44,13 +44,14 @@ export class GraphqlService {
             if (!graphQLSchema) {
                 return;
             }
-            const schema = GraphQL.buildSchema(graphQLSchema.graphQLSchema, { commentDescriptions: true });
+            const schema = graphQLSchema.graphQLSchema;
+            const builtSchema = GraphQL.buildSchema(graphQLSchema.graphQLSchema, { commentDescriptions: true });
 
-            graphqlTypes.query = schema.getQueryType()?.getFields();
-            graphqlTypes.mutation = schema.getMutationType()?.getFields();
-            graphqlTypes.subscription = schema.getSubscriptionType()?.getFields();
+            graphqlTypes.query = builtSchema.getQueryType()?.getFields();
+            graphqlTypes.mutation = builtSchema.getMutationType()?.getFields();
+            graphqlTypes.subscription = builtSchema.getSubscriptionType()?.getFields();
 
-            const typeMap = schema.getTypeMap();
+            const typeMap = builtSchema.getTypeMap();
             graphqlTypes.objectType = _.pickBy(typeMap, (t) => {
                 return (t instanceof GraphQL.GraphQLObjectType);
             });
@@ -79,7 +80,7 @@ export class GraphqlService {
                 graphqlTypes[key] = value;
             });      
 
-            return graphqlTypes;
+            return { graphqlTypes, schema };
         }
     }
 
@@ -95,7 +96,7 @@ export class GraphqlService {
         return availableTypes;
     }
 
-    private sortingAlphabetically(collection: object): object {
+    public sortingAlphabetically(collection: object): object {
         return _(collection).toPairs().sortBy(0).fromPairs().value();
     }
 
