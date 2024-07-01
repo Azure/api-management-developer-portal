@@ -349,6 +349,8 @@ export const markdownMaxCharsMap = {
     cards: 250,
 }
 
+export const aadb2cResetPasswordErrorCode = "AADB2C90118";
+
 /**
  * Customization of the Fluent UI Theme
  */

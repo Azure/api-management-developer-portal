@@ -2,15 +2,14 @@ import * as React from "react";
 import { useState } from "react";
 import { Stack } from "@fluentui/react";
 import {
-    Button,
     Checkbox,
     Field,
     Input,
     Link,
-    Spinner,
     Textarea,
 } from "@fluentui/react-components";
 import { ChevronDown12Regular, ChevronUp12Regular } from "@fluentui/react-icons";
+import { BtnSpinner } from "../../../utils/react/BtnSpinner";
 
 export type TSubscribe = (
     subscriptionName: string,
@@ -27,7 +26,6 @@ export const ProductSubscribeForm = ({ subscribe, tos, showTermsByDefault }: Pro
     const [subscriptionName, setSubscriptionName] = React.useState("");
     const [consented, setConsented] = useState(false);
     const [showToS, setShowToS] = useState(showTermsByDefault ?? false);
-    const [working, setWorking] = useState(false);
 
     const tosLabel = (
         <>
@@ -54,25 +52,13 @@ export const ProductSubscribeForm = ({ subscribe, tos, showTermsByDefault }: Pro
                     />
                 </Stack.Item>
                 <Stack.Item>
-                    <Button
-                        onClick={() => {
-                            setWorking(true);
-                            subscribe(subscriptionName, consented)
-                                .finally(() => setWorking(false));
-                        }}
+                    <BtnSpinner
+                        onClick={() => subscribe(subscriptionName, consented)}
                         appearance="primary"
-                        disabled={
-                            working || !subscriptionName || (tos && !consented)
-                        }
+                        disabled={!subscriptionName || (tos && !consented)}
                     >
-                        {working && (
-                            <Spinner
-                                size={"extra-tiny"}
-                                style={{ marginRight: ".5rem" }}
-                            />
-                        )}
                         Subscribe
-                    </Button>
+                    </BtnSpinner>
                 </Stack.Item>
             </Stack>
 
