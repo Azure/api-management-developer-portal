@@ -5,6 +5,7 @@ import {
     AccordionHeader,
     AccordionItem,
     AccordionPanel,
+    Body1,
     Button,
     Checkbox,
     Link,
@@ -74,7 +75,7 @@ export const TableFilter = ({
             </Stack>
         );
 
-    if (filtersOptions.length === 0) return <></>;
+    if (filtersOptions.length === 0) return <Body1 block className={"tags-no-results"}>No items found</Body1>; // should never happen
 
     return filtersOptions.length > 1 ? (
         <>

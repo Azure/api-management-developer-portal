@@ -70,7 +70,7 @@ const ProductSubscribeRuntimeFC = ({ usersService, productService, productName }
             <Title1>{product.displayName}</Title1>
 
             <Caption1 block>
-                Product <CircleSmallFilled /> {productStateToLabel(product.state)}
+                Product {!!product.state && <><CircleSmallFilled /> {productStateToLabel(product.state)}</>}
             </Caption1>
 
             {product.description &&
