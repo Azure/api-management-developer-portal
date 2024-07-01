@@ -56,7 +56,7 @@ export const OperationListGql = ({
         let availableGraphqlTypes: string[];
 
         try {
-            graphqlTypes = await graphqlService.getGraphqlTypes(apiName);
+            graphqlTypes = (await graphqlService.getGraphqlTypesAndSchema(apiName))?.graphqlTypes;
             availableGraphqlTypes = await graphqlService.getAvailableGraphqlTypes(graphqlTypes);
         } catch (error) {
             throw new Error(`Unable to get GraphQL types. Error: ${error.message}`);

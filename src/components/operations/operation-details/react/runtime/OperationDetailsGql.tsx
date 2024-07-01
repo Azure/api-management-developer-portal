@@ -1,18 +1,48 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import {
+    GraphQLField,
+    GraphQLInputType,
+    GraphQLOutputType,
+    isInputObjectType,
+    isInterfaceType,
+    isListType,
+    isObjectType,
+    isScalarType,
+    isWrappingType
+} from "graphql";
 import { Stack } from "@fluentui/react";
-import { Badge, Body1, Body1Strong, Button, Caption1Strong, Link, Spinner, Subtitle1, Subtitle2, Tooltip } from "@fluentui/react-components";
+import {
+    Body1,
+    Body1Strong,
+    Button,
+    Caption1Strong,
+    Link,
+    Spinner,
+    Subtitle1,
+    Subtitle2,
+    Tab,
+    TabList,
+    Table,
+    TableBody,
+    TableCell,
+    TableHeader,
+    TableHeaderCell,
+    TableRow,
+    Tooltip
+} from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
-import { ApiService } from "../../../../../services/apiService";
-import { Operation } from "../../../../../models/operation";
 import { Api } from "../../../../../models/api";
-import { getRequestUrl, scrollToOperation } from "./utils";
-import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
-import { GraphqlService } from "../../../../../services/graphqlService";
-import { GraphQLField, GraphQLInputType, GraphQLList, GraphQLNonNull, GraphQLOutputType, GraphQLScalarType, GraphQLType, graphql } from "graphql";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
-import { GraphqlDefaultScalarTypes } from "../../../../../constants";
+import { ApiService } from "../../../../../services/apiService";
+import { GraphqlService, TGraphqlTypes } from "../../../../../services/graphqlService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
+import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
+import { CodeSnippet } from "../../../../utils/react/CodeSnippet";
+import { GraphqlDefaultScalarTypes, GraphqlFieldTypes } from "../../../../../constants";
+import { TSchemaView } from "./OperationRepresentation";
+import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
+import { getRequestUrl, scrollToOperation } from "./utils";
+import { TypeDefinitionGql } from "./TypeDefinitionsGql";
 
 export const OperationDetailsGql = ({
     apiName,
@@ -23,14 +53,17 @@ export const OperationDetailsGql = ({
     routeHelper,
     enableConsole,
     includeAllHostnames,
-    enableScrollTo
+    enableScrollTo,
+    defaultSchemaView
 }: OperationDetailsRuntimeProps & { apiName: string, graphName: string, graphType: string, apiService: ApiService, graphqlService: GraphqlService, routeHelper: RouteHelper }) => {
     const [working, setWorking] = useState(false);
     const [api, setApi] = useState<Api>(null);
     const [graph, setGraph] = useState<GraphQLField<any, any>>(null);
-    const [operation, setOperation] = useState<Operation>(null);
+    const [graphSchema, setGraphSchema] = useState(null);
+    const [references, setReferences] = useState([]);
     const [hostnames, setHostnames] = useState<string[]>([]);
     const [requestUrl, setRequestUrl] = useState<string>(null);
+    const [schemaView, setSchemaView] = useState<TSchemaView>(defaultSchemaView as TSchemaView || TSchemaView.table);
     const [isCopied, setIsCopied] = useState(false);
 
     useEffect(() => {
@@ -45,7 +78,11 @@ export const OperationDetailsGql = ({
             loadGatewayInfo().then(hostnames => {
                 hostnames?.length > 0 && setHostnames(hostnames);
             }),
-            loadGraph().then(graph => setGraph(graph))
+            loadGraph().then(graphValues => {
+                setGraph(graphValues.graph);
+                setGraphSchema(graphValues.graphSchema);
+                setReferences(graphValues.references);
+            })
         ])
         .catch(error => new Error(`Unable to load the graph details. Error: ${error.message}`))
         .finally(() => {
@@ -76,28 +113,31 @@ export const OperationDetailsGql = ({
 
     const loadGraph = async () => {
         let graph: GraphQLField<any, any>;
+        let graphSchema: string;
+        let references = [];
 
         try {
-            const graphqlTypes = await graphqlService.getGraphqlTypes(apiName);
-            const availableGraphqlTypes = await graphqlService.getAvailableGraphqlTypes(graphqlTypes);
+            const { graphqlTypes, schema } = await graphqlService.getGraphqlTypesAndSchema(apiName);
             graph = graphqlTypes[graphType.toLowerCase()][graphName];
+            graphSchema = schema;
+            references = getGraphReferences(graph, graphqlTypes);
         } catch (error) {
             throw new Error(`Unable to load the API. Error: ${error.message}`);
         }
 
-        return graph;
+        return {graph, graphSchema, references};
     }
 
     const loadGatewayInfo = async (): Promise<string[]> => {
         return await apiService.getApiHostnames(apiName, includeAllHostnames);
     }
 
-    const getType = (type: GraphQLOutputType | GraphQLInputType): JSX.Element => {
+    const getGraphType = (type: GraphQLOutputType | GraphQLInputType): JSX.Element => {
         let typeJsx = null;
         const typeIndicators = [];
 
-        while ((type instanceof GraphQLList) || (type instanceof GraphQLNonNull)) {
-            if (type instanceof GraphQLList) {
+        while (isWrappingType(type)) {
+            if (isListType(type)) {
                 typeIndicators.unshift("[");
                 typeIndicators.push("]");
             } else {
@@ -108,11 +148,10 @@ export const OperationDetailsGql = ({
 
         const typeName = type.name;
 
-        if (type instanceof GraphQLScalarType || GraphqlDefaultScalarTypes.includes(typeName)) {
+        if (isScalarType(type) || GraphqlDefaultScalarTypes.includes(typeName)) {
             typeJsx = <Body1>{typeName}</Body1>;
         } else if (graphType && graphName) {
-            const typeRef = "#" + routeHelper.getGraphDefinitionReferenceId(apiName, graphType, graphName, typeName);
-            typeJsx = <Link href={typeRef}>{typeName}</Link>;
+            typeJsx = <Link href={getGraphReferenceUrl(typeName)}>{typeName}</Link>;
         }
 
         if (typeIndicators.length === 0) {
@@ -120,8 +159,50 @@ export const OperationDetailsGql = ({
         } else if (!typeIndicators.includes("[")) {
             return <Body1 block>{typeJsx}{typeIndicators.join("")}</Body1>;
         } else {
-            return <Body1 block>{typeIndicators.map(indicator => indicator === "[" ? <>{indicator}{typeJsx}</> : indicator)}</Body1>;
+            return <Body1 block>{typeIndicators.map((indicator, index) => 
+                indicator === "["
+                    ? <React.Fragment key={indicator + index}>{indicator}{typeJsx}</React.Fragment>
+                    : indicator
+                )}</Body1>;
         }
+    }
+    
+    const getGraphReferences = (graph, graphqlTypes: TGraphqlTypes, references = []) => {
+        let type = graph.type;
+
+        while (isWrappingType(type)) {
+            type = type.ofType;
+        }
+
+        if (!isScalarType(type) && !GraphqlDefaultScalarTypes.includes(type.name) && !references.some(reference => reference.name === type.name)) {
+            references.push(type);
+
+            if (isObjectType(type) || isInputObjectType(type) || isInterfaceType(type)) {
+                Object.values(type[GraphqlFieldTypes.fields]).forEach(field => getGraphReferences(field, graphqlTypes, references));
+            }
+        }
+
+        graph.args?.length > 0 && graph.args.forEach(arg => getGraphReferences(arg, graphqlTypes, references));
+
+        references.sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically
+        return references;
+    }
+
+    const getGraphReferenceUrl = (typeName: string): string => {
+        if (!graphType || !graphName) return;
+
+        return routeHelper.getGraphDefinitionAnchor(apiName, graphType, graphName, typeName);
+    }
+
+    const getGraphReferenceId = (typeName: string): string => {
+        if (!graphType || !graphName) return;
+
+        return routeHelper.getGraphDefinitionReferenceId(apiName, graphType, graphName, typeName);
+    }
+
+    const getGraphSchemaForRepresentation = (schemaGraph): string => {
+        const location = schemaGraph?.astNode?.loc;
+        return location && graphSchema.substring(location.start, location.end);
     }
 
     return (
@@ -167,7 +248,76 @@ export const OperationDetailsGql = ({
                         {graph.type &&
                             <div className={"operation-response"}>
                                 <Subtitle1 block className={"operation-subtitle1"}>Response type</Subtitle1>
-                                {getType(graph.type)}
+                                {getGraphType(graph.type)}
+                            </div>
+                        }
+                        {graph.args?.length > 0 &&
+                            <div className={"operation-response"}>
+                                <Subtitle1 block className={"operation-subtitle1"}>Arguments</Subtitle1>
+                                <Stack horizontal horizontalAlign="space-between" className={"operation-body"}>
+                                    <TabList selectedValue={schemaView} onTabSelect={(e, data: { value: TSchemaView }) => setSchemaView(data.value)}>
+                                        <Tab value={TSchemaView.table}>Table</Tab>
+                                        <Tab value={TSchemaView.schema}>Schema</Tab>
+                                    </TabList>
+                                </Stack>
+                                {schemaView === TSchemaView.table
+                                    ? <Table aria-label={"Definitions list"} className={"fui-table"}>
+                                        <TableHeader>
+                                            <TableRow className={"fui-table-headerRow"}>
+                                                <TableHeaderCell><Body1Strong>Name</Body1Strong></TableHeaderCell>
+                                                <TableHeaderCell><Body1Strong>Type</Body1Strong></TableHeaderCell>
+                                                <TableHeaderCell><Body1Strong>Description</Body1Strong></TableHeaderCell>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {graph.args.map(arg => (
+                                                <TableRow key={arg.name} className={"fui-table-body-row"}>
+                                                    <TableCell>{arg.name}</TableCell>
+                                                    <TableCell>{getGraphType(arg.type)}</TableCell>
+                                                    <TableCell><Body1 title={arg.description}>
+                                                        <MarkdownProcessor markdownToDisplay={arg.description} maxChars={250} truncate={true} />
+                                                    </Body1></TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                      </Table>
+                                    : <CodeSnippet name={graph.name} content={getGraphSchemaForRepresentation(graph)} format={"graphql"} />
+                                }
+                            </div>
+                        }
+                        {references?.length > 0 &&
+                            <div className={"operation-definitions"}>
+                                <Subtitle1 block className={"operation-details-title"}>Types</Subtitle1>
+                                <Table aria-label={"Types list"} className={"fui-table"}>
+                                    <TableHeader>
+                                        <TableRow className={"fui-table-headerRow"}>
+                                            <TableHeaderCell><Body1Strong>Name</Body1Strong></TableHeaderCell>
+                                            <TableHeaderCell><Body1Strong>Description</Body1Strong></TableHeaderCell>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {references.map(reference => (
+                                            <TableRow key={reference.name} className={"fui-table-body-row"}>
+                                                <TableCell>{getGraphType(reference)}</TableCell>
+                                                <TableCell><Body1 title={reference.description}>
+                                                    <MarkdownProcessor markdownToDisplay={reference.description} maxChars={250} truncate={true} />
+                                                </Body1></TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+
+                                {references.map(reference => (
+                                    <div key={reference.name} className={"operation-definition"}>
+                                        <TypeDefinitionGql
+                                            graph={reference}                                            
+                                            getGraphType={getGraphType}
+                                            getGraphSchemaForRepresentation={getGraphSchemaForRepresentation}
+                                            getGraphReferenceId={getGraphReferenceId}
+                                            defaultSchemaView={defaultSchemaView as TSchemaView}
+                                        />
+                                    </div>
+                                ))}
                             </div>
                         }
                       </div>
