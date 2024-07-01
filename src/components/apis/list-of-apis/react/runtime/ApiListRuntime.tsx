@@ -31,13 +31,13 @@ export type TApiListRuntimeFCProps = Omit<ApiListProps, "detailsPageUrl"> & {
     getReferenceUrl: (apiName: string) => string;
 }
 
-const loadApis = async (apiService: ApiService, query: SearchQuery, groupByTags?: boolean, productName?: string) => {
+const loadApis = async (apiService: ApiService, query: SearchQuery, groupByTag?: boolean, productName?: string) => {
     let apis: TApisData;
 
     try {
         if (productName) {
             apis = await apiService.getProductApis(`products/${productName}`, query);
-        } else if (groupByTags) {
+        } else if (groupByTag) {
             apis = await apiService.getApisByTags(query);
         } else {
             apis = await apiService.getApis(query);
