@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import {
     GraphQLField,
     GraphQLInputType,
+    GraphQLObjectType,
     GraphQLOutputType,
     isInputObjectType,
     isInterfaceType,
     isListType,
     isObjectType,
     isScalarType,
+    isUnionType,
     isWrappingType
 } from "graphql";
 import { Stack } from "@fluentui/react";
@@ -174,11 +176,18 @@ export const OperationDetailsGql = ({
             type = type.ofType;
         }
 
-        if (!isScalarType(type) && !GraphqlDefaultScalarTypes.includes(type.name) && !references.some(reference => reference.name === type.name)) {
+        if (isScalarType(type) || GraphqlDefaultScalarTypes.includes(type.name)) return references;
+
+        if (!references.some(reference => reference.name === type.name)) {
             references.push(type);
 
             if (isObjectType(type) || isInputObjectType(type) || isInterfaceType(type)) {
                 Object.values(type[GraphqlFieldTypes.fields]).forEach(field => getGraphReferences(field, graphqlTypes, references));
+            } else if (isUnionType(type)) {
+                type[GraphqlFieldTypes.types].forEach((type: GraphQLObjectType) => {
+                    !references.some(reference => reference.name === type.name) && references.push(type);
+                    Object.values(type[GraphqlFieldTypes.fields]).forEach(field => getGraphReferences(field, graphqlTypes, references));
+                });
             }
         }
 
