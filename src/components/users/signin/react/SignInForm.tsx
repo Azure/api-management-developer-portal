@@ -14,11 +14,14 @@ export type THandleSignIn = (email: string, password: string) => Promise<unknown
 type SignInFormProps = {
     eventManager: EventManager;
     handleSignIn: THandleSignIn;
+
+    styles: string
 };
 
 export const SignInForm = ({
     eventManager,
     handleSignIn,
+    styles,
 }: SignInFormProps) => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
@@ -109,6 +112,7 @@ export const SignInForm = ({
             </Stack.Item>
 
             <BtnSpinner
+                className={styles}
                 style={{ maxWidth: "7em" }}
                 appearance="primary"
                 onClick={submit}

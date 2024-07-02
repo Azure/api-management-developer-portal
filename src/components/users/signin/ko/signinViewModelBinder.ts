@@ -26,13 +26,16 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
     }
 
     public stateToInstance(state: WidgetState, componentInstance: SigninViewModel): void {
+        console.log("state.styles", state.styles)
+
         componentInstance.styles(state.styles);
 
         componentInstance.runtimeConfig(JSON.stringify({
             termsOfUse: state.termsOfUse,
             isConsentRequired: state.isConsentRequired,
             termsEnabled: state.termsEnabled,
-            requireHipCaptcha: state.requireHipCaptcha
+            requireHipCaptcha: state.requireHipCaptcha,
+            styles: state.styles,
         }));
 
         componentInstance.isRedesignEnabled(state.isRedesignEnabled);

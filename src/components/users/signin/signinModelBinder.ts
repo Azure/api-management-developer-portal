@@ -11,6 +11,8 @@ export class SigninModelBinder implements IModelBinder<SigninModel> {
         const model = new SigninModel();
         model.styles = contract.styles ?? {};
 
+        console.log("contract.styles", contract.styles)
+
         return model;
     }
 

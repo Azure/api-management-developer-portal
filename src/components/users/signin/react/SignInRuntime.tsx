@@ -15,6 +15,7 @@ type SignInRuntimeProps = {
     termsEnabled: boolean
     termsOfUse: string
     isConsentRequired: boolean
+    styles: string
 }
 type SignInRuntimeFCProps = SignInRuntimeProps & {
     usersService: UsersService
@@ -38,7 +39,7 @@ const initUser = async (usersService: UsersService, redirectUrl: string) => {
     }
 };
 
-const ProductSubscribeRuntimeFC = ({ usersService, eventManager, handleSignIn, delegationUrl }: SignInRuntimeFCProps) => {
+const ProductSubscribeRuntimeFC = ({ usersService, eventManager, handleSignIn, delegationUrl, styles }: SignInRuntimeFCProps) => {
     const [working, setWorking] = useState(true);
 
     useEffect(() => {
@@ -47,10 +48,12 @@ const ProductSubscribeRuntimeFC = ({ usersService, eventManager, handleSignIn, d
             .finally(() => setWorking(false));
     }, [usersService, delegationUrl]);
 
+    console.log(styles)
+
     if (working) return <Spinner label={"Loading current user"} labelPosition="below" />;
 
     return (
-        <SignInForm eventManager={eventManager} handleSignIn={handleSignIn}  />
+        <SignInForm eventManager={eventManager} handleSignIn={handleSignIn} styles={styles} />
     );
 };
 
@@ -81,6 +84,12 @@ export class SignInRuntime extends React.Component<SignInRuntimeProps> {
     }
 
     render() {
+        /*
+        const theme = Constants.fuiTheme;
+
+        // theme.colorBrandBackground = "#bada55";
+        theme.colorBrandBackground = this.props["backgroundColor"];
+        */
         return (
             <FluentProvider theme={Constants.fuiTheme}>
                 <ProductSubscribeRuntimeFC
