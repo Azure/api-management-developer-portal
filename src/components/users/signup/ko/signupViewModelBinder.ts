@@ -8,6 +8,8 @@ import { BackendService } from "../../../../services/backendService";
 import { TenantService } from "../../../../services/tenantService";
 import { SignupModel } from "../signupModel";
 import { SignupViewModel } from "./signupViewModel";
+import { isRedesignEnabledSetting } from "../../../../constants";
+import { ISiteService } from "@paperbits/common/sites/ISiteService";
 
 export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignupViewModel> {
 
@@ -16,7 +18,8 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
         private readonly backendService: BackendService,
         private readonly settingsProvider: ISettingsProvider,
         private readonly identityService: IdentityService,
-        private readonly styleCompiler: StyleCompiler
+        private readonly styleCompiler: StyleCompiler,
+        private readonly siteService: ISiteService,
     ) { }
 
     public async getTermsOfService(): Promise<TermsOfService> {
@@ -33,6 +36,8 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
             termsEnabled: state.termsEnabled,
             requireHipCaptcha: state.requireHipCaptcha
         }));
+
+        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
     }
 
     public async modelToState(model: SignupModel, state: WidgetState): Promise<void> {
@@ -54,10 +59,12 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
         state.termsOfUse = termsOfService.text;
         state.isConsentRequired = termsOfService.consentRequired;
         state.termsEnabled = termsOfService.enabled;
-        state.requireHipCaptcha = useHipCaptcha === undefined ? true : useHipCaptcha
+        state.requireHipCaptcha = true //useHipCaptcha === undefined ? true : useHipCaptcha
 
         if (model.styles) {
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
+
+        state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
     }
 }
