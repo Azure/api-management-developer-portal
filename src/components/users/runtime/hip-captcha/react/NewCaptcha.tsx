@@ -43,17 +43,24 @@ export const NewCaptcha = ({ backendService, onInitComplete }: TCaptchaProps) =>
     const [working, setWorking] = useState(true);
     const [{ captchaChallenge, captchaData }, setCaptchaObj] = useState<TCaptchaObj>({});
     const [captchaType, setCaptchaType] = useState(ECaptchaType.visual);
-    const [captchaValue, setCaptchaValue] = useState<string>("");
+
+    const updateChallengeInput = useCallback((solution: string) => setCaptchaObj(prev => {
+        if (!prev?.captchaData?.challenge?.testCaptchaRequest) return prev;
+
+        const next = JSON.parse(JSON.stringify(prev));
+        next.captchaData.challenge.testCaptchaRequest.inputSolution = solution;
+        return next;
+    }), []);
 
     const generateCaptcha = useCallback(
         (captchaType: ECaptchaType) => {
-            setCaptchaValue("");
+            updateChallengeInput("");
             setWorking(true);
             return getCaptchaChallenge(captchaType, backendService)
                 .then(setCaptchaObj)
                 .finally(() => setWorking(false));
         },
-        [backendService]
+        [updateChallengeInput, backendService]
     );
 
     useEffect(() => {
@@ -61,22 +68,14 @@ export const NewCaptcha = ({ backendService, onInitComplete }: TCaptchaProps) =>
     }, [generateCaptcha, captchaType]);
 
     useEffect(() => {
-        const runValidation = (): "valid" | null => {
+        const captchaValidate = (): "valid" | null => {
             return captchaData?.challenge?.testCaptchaRequest.inputSolution ? "valid" : null;
         }
 
         const refreshCaptcha = () => generateCaptcha(captchaType);
 
-        onInitComplete(runValidation, refreshCaptcha, captchaData);
+        onInitComplete(captchaValidate(), refreshCaptcha, captchaData);
     }, [onInitComplete, generateCaptcha, captchaData]);
-
-    const updateChallengeInput = (solution: string) => setCaptchaObj(prev => {
-        if (!prev?.captchaData?.challenge?.testCaptchaRequest) return prev;
-
-        const next = JSON.parse(JSON.stringify(prev));
-        next.captchaData.challenge.testCaptchaRequest.inputSolution = solution;
-        return next;
-    })
 
     return (
         <Stack tokens={{ childrenGap: 20 }}>

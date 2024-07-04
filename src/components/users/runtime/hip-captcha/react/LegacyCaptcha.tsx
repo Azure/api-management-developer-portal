@@ -6,10 +6,16 @@ import { CaptchaData } from "../../../../../models/captchaData";
 declare let WLSPHIP0;
 declare let fillHipData;
 
-export type TOnInitComplete = (
-    captchaValidate: () => "valid" | null,
-    refreshCaptcha: () => Promise<void>,
+export type TCaptchaObj = {
+    captchaValid: "valid" | null
+    refreshCaptcha: () => Promise<void>
     captchaData: CaptchaData
+};
+
+export type TOnInitComplete = (
+    captchaValid: TCaptchaObj["captchaValid"],
+    refreshCaptcha: TCaptchaObj["refreshCaptcha"],
+    captchaData: TCaptchaObj["captchaData"],
 ) => void;
 
 export type TCaptchaProps = {
@@ -48,7 +54,7 @@ export class LegacyCaptcha extends React.Component<TCaptchaProps, LegacyCaptchaS
         if (this.props.onInitComplete) {
             let captchaData: CaptchaData;
 
-            const setValidation = () => {
+            const captchaValidate = () => {
                 let result: "valid" | null = null;
 
                 WLSPHIP0.verify((solution, token) => {
@@ -72,7 +78,7 @@ export class LegacyCaptcha extends React.Component<TCaptchaProps, LegacyCaptchaS
                 return result;
             }
 
-            this.props.onInitComplete(setValidation, this.refreshCaptcha.bind(this), captchaData);
+            this.props.onInitComplete(captchaValidate(), this.refreshCaptcha.bind(this), captchaData);
         }
     }
 

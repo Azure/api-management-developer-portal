@@ -6,8 +6,7 @@ import { BtnSpinner } from "../../../utils/react/BtnSpinner";
 import { Tos } from "../../../utils/react/Tos";
 import { HipCaptcha } from "../../runtime/hip-captcha/react";
 import { BackendService } from "../../../../services/backendService";
-import { CaptchaData } from "../../../../models/captchaData";
-import { TOnInitComplete } from "../../runtime/hip-captcha/react/LegacyCaptcha";
+import { TCaptchaObj, TOnInitComplete } from "../../runtime/hip-captcha/react/LegacyCaptcha";
 
 export type THandleSignUp = (
     email: string,
@@ -16,8 +15,8 @@ export type THandleSignUp = (
     firstName: string,
     lastName: string,
     consented: boolean,
-    captchaData: CaptchaData,
-) => Promise<unknown>;
+    captchaObj: TCaptchaObj,
+) => Promise<boolean>;
 
 type SignUpFormProps = {
     requireHipCaptcha: boolean
@@ -26,12 +25,6 @@ type SignUpFormProps = {
     termsEnabled: boolean
     termsOfUse: string
 }
-
-type TCaptchaObj = {
-    captchaValidate
-    refreshCaptcha
-    captchaData
-};
 
 export const SignUpForm = ({
     backendService,
@@ -47,19 +40,18 @@ export const SignUpForm = ({
     const [lastName, setLastName] = React.useState("");
     const [consented, setConsented] = React.useState(false);
     const [captchaObj, setCaptchaObj] = React.useState<TCaptchaObj>();
+    const [isSubmitted, setIsSubmitted] = React.useState(false);
 
-    React.useEffect(() => {
+    const submit = async () => (
+        handleSignUp(email, password, passwordConfirm, firstName, lastName, consented, captchaObj)
+            .then(setIsSubmitted)
+    );
 
+    const onInitComplete: TOnInitComplete = useCallback((captchaValid, refreshCaptcha, captchaData) => {
+        setCaptchaObj({ captchaValid, refreshCaptcha, captchaData });
     }, []);
 
-    const submit = async () => {
-        console.log({email, password, passwordConfirm, firstName, lastName, consented, captchaObj})
-        //return handleSignUp(email, password, passwordConfirm, firstName, lastName, consented, captchaData);
-    };
-
-    const onInitComplete: TOnInitComplete = useCallback((captchaValidate, refreshCaptcha, captchaData) => {
-        setCaptchaObj({ captchaValidate, refreshCaptcha, captchaData });
-    }, []);
+    if (isSubmitted) return <p id="confirmationMessage">Follow the instructions from the email to verify your account.</p>;
 
     return (
         <Stack tokens={{ childrenGap: 20, maxWidth: 435 }}>
@@ -162,7 +154,6 @@ export const SignUpForm = ({
                 style={{ maxWidth: "7em" }}
                 appearance="primary"
                 onClick={submit}
-                disabled={!email || !password}
             >
                 Create
             </BtnSpinner>

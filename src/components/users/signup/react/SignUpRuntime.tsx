@@ -16,6 +16,7 @@ import { ErrorSources } from "../../validation-summary/constants";
 import { ValidationMessages } from "../../validationMessages";
 import { MapiSignupRequest, SignupRequest } from "../../../../contracts/signupRequest";
 import { BackendService } from "../../../../services/backendService";
+import { validateBasic } from "../../../utils/react/validateBasic";
 
 type SignUpRuntimeProps = {
     requireHipCaptcha: boolean
@@ -75,8 +76,6 @@ const ProductSubscribeRuntimeFC = ({ backendService, usersService, eventManager,
 
     if (working) return <Spinner label={"Loading current user"} labelPosition="below" />;
 
-    console.log(props)
-
     return (
         <SignUpForm
             {...props}
@@ -105,41 +104,45 @@ export class SignUpRuntime extends React.Component<SignUpRuntimeProps> {
     @Resolve("logger")
     public logger: Logger;
 
-    handleSignUp: THandleSignUp = async (email, password, passwordConfirmation, firstName, lastName, consented, captchaData) => {
+    handleSignUp: THandleSignUp = async (
+        email,
+        password,
+        passwordConfirmation,
+        firstName,
+        lastName,
+        consented,
+        { captchaValid, refreshCaptcha, captchaData } = ({} as any),
+    ) => {
         const captchaIsRequired = this.props.requireHipCaptcha;
 
         const validationGroup = {
-            email,
-            password,
-            passwordConfirmation,
-            firstName,
-            lastName,
-            captchaData,
-        };
-/*
+            email: ValidationMessages.emailRequired,
+            password: { required: ValidationMessages.passwordRequired, eval: (val) => val.length < 8 && "Password is too short." }, // TODO: password requirements should come from Management API.
+            passwordConfirmation: { eval: (val) => val !== password && ValidationMessages.passwordConfirmationMustMatch },
+            firstName: ValidationMessages.firstNameRequired,
+            lastName: ValidationMessages.lastNameRequired,
+        }
+
         if (captchaIsRequired) {
-            if (!this.setCaptchaValidation) {
-                logger.trackEvent("CaptchaValidation", { message: "Captcha failed to initialize." });
+            if (!refreshCaptcha) {
+                this.logger.trackEvent("CaptchaValidation", { message: "Captcha failed to initialize." });
                 dispatchErrors(this.eventManager, ErrorSources.resetpassword, [ValidationMessages.captchaNotInitialized]);
-                return;
+                return false;
             }
 
-            validationGroup["captcha"] = this.captcha;
-            this.setCaptchaValidation(this.captcha);
+            validationGroup["captchaValid"] = ValidationMessages.captchaRequired;
         }
-*/
+
         if (this.props.termsEnabled && this.props.isConsentRequired) {
-            validationGroup["consented"] = consented;
+            validationGroup["consented"] = ValidationMessages.consentRequired;
         }
 
-        const result = validation.group(validationGroup);
-
-        const clientErrors = result();
+        const values = { email, password, passwordConfirmation, firstName, lastName, captchaValid, consented };
+        const clientErrors = validateBasic(values, validationGroup);
 
         if (clientErrors.length > 0) {
-            result.showAllMessages();
             dispatchErrors(this.eventManager, ErrorSources.signup, clientErrors);
-            return;
+            return false;
         }
 
         const mapiSignupData: MapiSignupRequest = {
@@ -152,17 +155,15 @@ export class SignUpRuntime extends React.Component<SignUpRuntimeProps> {
         };
 
         try {
-            // this.working(true);
             dispatchErrors(this.eventManager, ErrorSources.signup, []);
-/*
+
             if (captchaIsRequired) {
-                const captchaRequestData = this.captchaData();
                 const createSignupRequest: SignupRequest = {
-                    challenge: captchaRequestData.challenge,
-                    solution: captchaRequestData.solution?.solution,
-                    flowId: captchaRequestData.solution?.flowId,
-                    token: captchaRequestData.solution?.token,
-                    type: captchaRequestData.solution?.type,
+                    challenge: captchaData.challenge,
+                    solution: captchaData.solution?.solution,
+                    flowId: captchaData.solution?.flowId,
+                    token: captchaData.solution?.token,
+                    type: captchaData.solution?.type,
                     signupData: mapiSignupData
                 };
 
@@ -171,13 +172,12 @@ export class SignUpRuntime extends React.Component<SignUpRuntimeProps> {
                 await this.usersService.createSignupRequest(mapiSignupData);
             }
 
-            this.isUserRequested(true);*/
+            return true;
         } catch (error) {
-            if (captchaIsRequired) {
-//                await this.refreshCaptcha();
-            }
+            if (captchaIsRequired) await refreshCaptcha();
 
             parseAndDispatchError(this.eventManager, ErrorSources.signup, error, this.logger, Constants.genericHttpRequestError);
+            return false;
         }
     }
 

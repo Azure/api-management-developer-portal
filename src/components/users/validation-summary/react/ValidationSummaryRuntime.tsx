@@ -38,8 +38,7 @@ const ProductSubscribeRuntimeFC = ({
 
     useEffect(() => {
         eventManager.addEventListener(onValidationErrors, showValidationSummary);
-        return () =>
-            eventManager.removeEventListener(onValidationErrors, showValidationSummary);
+        return () => eventManager.removeEventListener(onValidationErrors, showValidationSummary);
     }, [showValidationSummary]);
 
     if (!errorMsgs.length) return <></>;
