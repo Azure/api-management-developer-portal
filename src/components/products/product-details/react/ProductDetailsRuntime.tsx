@@ -15,7 +15,7 @@ import { MarkdownProcessor } from "../../../utils/react/MarkdownProcessor";
 
 type ProductSubscribeRuntimeProps = {
 }
-type ProductSubscribeRuntimeFCProps = ProductSubscribeRuntimeProps & {
+type ProductDetailsRuntimeFCProps = ProductSubscribeRuntimeProps & {
     usersService: UsersService;
     productService: ProductService;
     productName: string;
@@ -36,7 +36,7 @@ const loadProduct = async (productService: ProductService, productName: string) 
     return productService.getProduct("/products/" + productName);
 };
 
-const ProductSubscribeRuntimeFC = ({ usersService, productService, productName }: ProductSubscribeRuntimeFCProps) => {
+const ProductDetailsRuntimeFC = ({ usersService, productService, productName }: ProductDetailsRuntimeFCProps) => {
     const [product, setProduct] = useState<Product>();
     const [working, setWorking] = useState(true);
 
@@ -120,7 +120,7 @@ export class ProductDetailsRuntime extends React.Component<
 
         return (
             <FluentProvider theme={Constants.fuiTheme}>
-                <ProductSubscribeRuntimeFC
+                <ProductDetailsRuntimeFC
                     {...this.props}
                     usersService={this.usersService}
                     productService={this.productService}

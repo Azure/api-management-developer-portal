@@ -20,7 +20,7 @@ type ValidationSummaryRuntimeFCProps = ValidationSummaryRuntimeProps & {
 
 const errorGroups: Record<string, string[]> = {};
 
-const ProductSubscribeRuntimeFC = ({
+const ValidationSummaryRuntimeFC = ({
     eventManager,
 }: ValidationSummaryRuntimeFCProps) => {
     const [errorMsgs, setErrorMsgs] = useState<string[]>([]);
@@ -38,8 +38,7 @@ const ProductSubscribeRuntimeFC = ({
 
     useEffect(() => {
         eventManager.addEventListener(onValidationErrors, showValidationSummary);
-        return () =>
-            eventManager.removeEventListener(onValidationErrors, showValidationSummary);
+        return () => eventManager.removeEventListener(onValidationErrors, showValidationSummary);
     }, [showValidationSummary]);
 
     if (!errorMsgs.length) return <></>;
@@ -62,7 +61,7 @@ export class ValidationSummaryRuntime extends React.Component<ValidationSummaryR
     render() {
         return (
             <FluentProvider theme={Constants.fuiTheme}>
-                <ProductSubscribeRuntimeFC
+                <ValidationSummaryRuntimeFC
                     {...this.props}
                     eventManager={this.eventManager}
                 />
