@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import * as validation from "knockout.validation";
 import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
@@ -9,7 +8,6 @@ import { EventManager } from "@paperbits/common/events";
 import * as Constants from "../../../../constants";
 import { UsersService } from "../../../../services";
 import { RouteHelper } from "../../../../routing/routeHelper";
-import { Utils } from "../../../../utils";
 import { SignUpForm, THandleSignUp } from "./SignUpForm";
 import { dispatchErrors, parseAndDispatchError } from "../../validation-summary/utils";
 import { ErrorSources } from "../../validation-summary/constants";
@@ -65,7 +63,7 @@ const initUser = async (usersService: UsersService, router: Router, redirectUrl:
     }
 };
 
-const ProductSubscribeRuntimeFC = ({ backendService, usersService, eventManager, handleSignUp, router, delegationUrl, ...props }: SignUpRuntimeFCProps) => {
+const SignUpRuntimeFC = ({ backendService, usersService, eventManager, handleSignUp, router, delegationUrl, ...props }: SignUpRuntimeFCProps) => {
     const [working, setWorking] = useState(true);
 
     useEffect(() => {
@@ -184,7 +182,7 @@ export class SignUpRuntime extends React.Component<SignUpRuntimeProps> {
     render() {
         return (
             <FluentProvider theme={Constants.fuiTheme}>
-                <ProductSubscribeRuntimeFC
+                <SignUpRuntimeFC
                     {...this.props}
                     backendService={this.backendService}
                     usersService={this.usersService}

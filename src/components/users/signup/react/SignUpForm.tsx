@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { Stack } from "@fluentui/react";
-import { Input, Label } from "@fluentui/react-components";
+import { Body1, Input, Label } from "@fluentui/react-components";
 import { BtnSpinner } from "../../../utils/react/BtnSpinner";
 import { TermsOfUse } from "../../../utils/react/TermsOfUse";
 import { HipCaptcha } from "../../runtime/hip-captcha/react";
@@ -51,7 +51,7 @@ export const SignUpForm = ({
         setCaptchaObj({ captchaValid, refreshCaptcha, captchaData });
     }, []);
 
-    if (isSubmitted) return <p id="confirmationMessage">Follow the instructions from the email to verify your account.</p>;
+    if (isSubmitted) return <Body1 id="confirmationMessage">Follow the instructions from the email to verify your account.</Body1>;
 
     return (
         <Stack tokens={{ childrenGap: 20, maxWidth: 435 }}>
