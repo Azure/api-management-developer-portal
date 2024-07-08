@@ -10,7 +10,7 @@ type TTosProps = {
     showTermsByDefault?: boolean
 }
 
-export const Tos = ({ termsOfUse, consented, setConsented, showTermsByDefault }: TTosProps) => {
+export const TermsOfUse = ({ termsOfUse, consented, setConsented, showTermsByDefault }: TTosProps) => {
     const [showToS, setShowToS] = useState(showTermsByDefault ?? false);
 
     const tosLabel = (

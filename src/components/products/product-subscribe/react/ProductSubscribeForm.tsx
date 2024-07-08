@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Stack } from "@fluentui/react";
 import { Input } from "@fluentui/react-components";
 import { BtnSpinner } from "../../../utils/react/BtnSpinner";
-import { Tos } from "../../../utils/react/Tos";
+import { TermsOfUse } from "../../../utils/react/TermsOfUse";
 
 export type TSubscribe = (
     subscriptionName: string,
@@ -47,7 +47,7 @@ export const ProductSubscribeForm = ({ subscribe, termsOfUse, showTermsByDefault
             </Stack>
 
             {termsOfUse && (
-                <Tos
+                <TermsOfUse
                     termsOfUse={termsOfUse}
                     consented={consented}
                     setConsented={setConsented}

@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { Stack } from "@fluentui/react";
 import { Input, Label } from "@fluentui/react-components";
 import { BtnSpinner } from "../../../utils/react/BtnSpinner";
-import { Tos } from "../../../utils/react/Tos";
+import { TermsOfUse } from "../../../utils/react/TermsOfUse";
 import { HipCaptcha } from "../../runtime/hip-captcha/react";
 import { BackendService } from "../../../../services/backendService";
 import { TCaptchaObj, TOnInitComplete } from "../../runtime/hip-captcha/react/LegacyCaptcha";
@@ -142,7 +142,7 @@ export const SignUpForm = ({
 
             {termsEnabled && termsOfUse && (
                 <Stack.Item>
-                    <Tos
+                    <TermsOfUse
                         termsOfUse={termsOfUse}
                         consented={consented}
                         setConsented={setConsented}
