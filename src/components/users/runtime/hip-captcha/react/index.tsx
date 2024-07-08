@@ -21,17 +21,16 @@ export class HipCaptcha extends React.Component<TCaptchaProps, HipCaptchaState> 
     }
 
     async componentDidMount() {
-        let isNewCaptcha = false;
-        let isLegacyCaptcha = false;
-
         try {
             const settings = await this.props.backendService.getCaptchaSettings();
-            isNewCaptcha = settings?.captchaEnabled;
-            isLegacyCaptcha = settings?.legacyCaptchaEnabled;
+            this.setState({
+                isNewCaptcha: settings?.captchaEnabled,
+                isLegacyCaptcha: settings?.legacyCaptchaEnabled
+            });
         } catch {
             // do nothing
         } finally {
-            this.setState({ isNewCaptcha, isLegacyCaptcha, working: false });
+            this.setState({ working: false });
         }
     }
 

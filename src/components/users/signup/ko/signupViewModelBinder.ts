@@ -1,15 +1,15 @@
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { ISiteService } from "@paperbits/common/sites/ISiteService";
 import { TermsOfService } from "../../../../contracts/identitySettings";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { IdentityService } from "../../../../services";
 import { BackendService } from "../../../../services/backendService";
 import { TenantService } from "../../../../services/tenantService";
+import { isRedesignEnabledSetting } from "../../../../constants";
 import { SignupModel } from "../signupModel";
 import { SignupViewModel } from "./signupViewModel";
-import { isRedesignEnabledSetting } from "../../../../constants";
-import { ISiteService } from "@paperbits/common/sites/ISiteService";
 
 export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignupViewModel> {
 
