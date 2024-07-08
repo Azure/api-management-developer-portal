@@ -155,7 +155,7 @@ export class HipCaptcha {
         await this.getCaptchaChallenge(challengeType);
     }
 
-    private async onLoad(): Promise<void> {
+    private async onLoad(): Promise<void> { // only legacy captcha?
         const params = await this.backendService.getCaptchaParams();
         this.encryptedFlowId(params.EncryptedFlowId);
 

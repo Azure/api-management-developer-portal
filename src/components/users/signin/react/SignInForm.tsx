@@ -1,13 +1,14 @@
 import * as React from "react";
-import * as validation from "knockout.validation";
 import { Stack } from "@fluentui/react";
 import { Input, Label } from "@fluentui/react-components";
 import { EventManager } from "@paperbits/common/events";
 import { MapiError } from "../../../../errors/mapiError";
 import { UnauthorizedError } from "../../../../errors/unauthorizedError";
+import { BtnSpinner } from "../../../utils/react/BtnSpinner";
+import { validateBasic } from "../../../utils/react/validateBasic";
+import { ValidationMessages } from "../../validationMessages";
 import { dispatchErrors } from "../../validation-summary/utils";
 import { ErrorSources } from "../../validation-summary/constants";
-import { BtnSpinner } from "../../../utils/react/BtnSpinner";
 
 export type THandleSignIn = (email: string, password: string) => Promise<unknown>;
 
@@ -23,26 +24,15 @@ export const SignInForm = ({
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
 
-    React.useEffect(() => {
-        validation.init({
-            insertMessages: false,
-            errorElementClass: "is-invalid",
-            decorateInputElement: true,
-        });
-    }, []);
-
     const submit = async () => {
-        const validationGroup = {
-            username: email,
-            password: password,
+        const validationRules = {
+            email: ValidationMessages.emailRequired,
+            password: ValidationMessages.passwordRequired,
         };
 
-        const result = validation.group(validationGroup);
-
-        const clientErrors = result();
+        const clientErrors = validateBasic({ email, password }, validationRules);
 
         if (clientErrors.length > 0) {
-            result.showAllMessages();
             dispatchErrors(eventManager, ErrorSources.signin, clientErrors);
             return;
         }

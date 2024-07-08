@@ -38,7 +38,7 @@ const initUser = async (usersService: UsersService, redirectUrl: string) => {
     }
 };
 
-const ProductSubscribeRuntimeFC = ({ usersService, eventManager, handleSignIn, delegationUrl }: SignInRuntimeFCProps) => {
+const SignInRuntimeFC = ({ usersService, eventManager, handleSignIn, delegationUrl }: SignInRuntimeFCProps) => {
     const [working, setWorking] = useState(true);
 
     useEffect(() => {
@@ -83,7 +83,7 @@ export class SignInRuntime extends React.Component<SignInRuntimeProps> {
     render() {
         return (
             <FluentProvider theme={Constants.fuiTheme}>
-                <ProductSubscribeRuntimeFC
+                <SignInRuntimeFC
                     {...this.props}
                     usersService={this.usersService}
                     eventManager={this.eventManager}

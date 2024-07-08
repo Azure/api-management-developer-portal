@@ -119,7 +119,7 @@ const ProductSubscribeRuntimeFC = ({ backendService, usersService, tenantService
     if (working) return <Spinner size="extra-tiny" label={"Loading data"} labelPosition={"after"} />;
     if (isLimitReached) return <Body1Strong style={{ display: "block", padding: "1rem 0" }}>You've reached maximum number of subscriptions.</Body1Strong>;
 
-    return <ProductSubscribeForm subscribe={subscribe} tos={product?.terms} showTermsByDefault={showTermsByDefault} />;
+    return <ProductSubscribeForm subscribe={subscribe} termsOfUse={product?.terms} showTermsByDefault={showTermsByDefault} />;
 };
 
 export class ProductSubscribeRuntime extends React.Component<
