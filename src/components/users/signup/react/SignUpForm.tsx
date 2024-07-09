@@ -150,13 +150,14 @@ export const SignUpForm = ({
                 </Stack.Item>
             )}
 
-            <BtnSpinner
-                style={{ maxWidth: "7em" }}
-                appearance="primary"
-                onClick={submit}
-            >
-                Create
-            </BtnSpinner>
+            <Stack.Item>
+                <BtnSpinner
+                    appearance="primary"
+                    onClick={submit}
+                >
+                    Create
+                </BtnSpinner>
+            </Stack.Item>
         </Stack>
     );
 };

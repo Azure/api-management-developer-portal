@@ -111,7 +111,7 @@ export class SignUpRuntime extends React.Component<SignUpRuntimeProps> {
         consented,
         { captchaValid, refreshCaptcha, captchaData } = ({} as any),
     ) => {
-        const captchaIsRequired = this.props.requireHipCaptcha;
+        const isCaptchaRequired = this.props.requireHipCaptcha;
 
         const validationGroup = {
             email: ValidationMessages.emailRequired,
@@ -121,7 +121,7 @@ export class SignUpRuntime extends React.Component<SignUpRuntimeProps> {
             lastName: ValidationMessages.lastNameRequired,
         }
 
-        if (captchaIsRequired) {
+        if (isCaptchaRequired) {
             if (!refreshCaptcha) {
                 this.logger.trackEvent("CaptchaValidation", { message: "Captcha failed to initialize." });
                 dispatchErrors(this.eventManager, ErrorSources.resetpassword, [ValidationMessages.captchaNotInitialized]);
@@ -155,7 +155,7 @@ export class SignUpRuntime extends React.Component<SignUpRuntimeProps> {
         try {
             dispatchErrors(this.eventManager, ErrorSources.signup, []);
 
-            if (captchaIsRequired) {
+            if (isCaptchaRequired) {
                 const createSignupRequest: SignupRequest = {
                     challenge: captchaData.challenge,
                     solution: captchaData.solution?.solution,
@@ -172,7 +172,7 @@ export class SignUpRuntime extends React.Component<SignUpRuntimeProps> {
 
             return true;
         } catch (error) {
-            if (captchaIsRequired) await refreshCaptcha();
+            if (isCaptchaRequired) await refreshCaptcha();
 
             parseAndDispatchError(this.eventManager, ErrorSources.signup, error, this.logger, Constants.genericHttpRequestError);
             return false;
