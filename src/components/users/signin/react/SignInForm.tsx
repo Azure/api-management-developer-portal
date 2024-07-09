@@ -98,14 +98,15 @@ export const SignInForm = ({
                 </Stack>
             </Stack.Item>
 
-            <BtnSpinner
-                style={{ maxWidth: "7em" }}
-                appearance="primary"
-                onClick={submit}
-                disabled={!email || !password}
-            >
-                Sign in
-            </BtnSpinner>
+            <Stack.Item>
+                <BtnSpinner
+                    appearance="primary"
+                    onClick={submit}
+                    disabled={!email || !password}
+                >
+                    Sign in
+                </BtnSpinner>
+            </Stack.Item>
         </Stack>
     );
 };
