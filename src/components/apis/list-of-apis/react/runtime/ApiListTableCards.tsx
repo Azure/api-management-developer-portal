@@ -55,11 +55,7 @@ export const ApiListTableCards = ({
                     setPattern={setPattern}
                     filters={filters}
                     setFilters={setFilters}
-                    filtersOptions={
-                        filtersPosition === FiltersPosition.popup && !groupByTag
-                            ? [filterOptionTags]
-                            : undefined
-                    }
+                    filtersOptions={filtersPosition === FiltersPosition.popup ? [filterOptionTags] : undefined}
                     setGroupByTag={productName ? undefined : setGroupByTag} // don't allow grouping by tags when filtering for product APIs due to missing BE support
                     allowViewSwitching={allowViewSwitching}
                 />
