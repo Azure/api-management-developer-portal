@@ -10,7 +10,15 @@ The `master` branch of this repository is used for daily development purposes an
 
 ## <a name="feedback"></a> Interactions
 
-You can **report bugs** or **submit feature requests** in [the repository's Issues section](https://github.com/Azure/api-management-developer-portal/issues).
+### Managed developer portal, 
+> **report bugs** in Azure Support + Troubleshooting in Azure portal
+
+> **submit feature requests** [on the Azure Feedback Forum](https://aka.ms/apimwish).
+
+### Self-hosted developer portal, 
+> **report bugs** in [the repository's Issues section](https://github.com/Azure/api-management-developer-portal/issues) 
+
+> **submit feature requests** under [Feature requests discussion section](https://github.com/Azure/api-management-developer-portal/discussions/categories/feature-request)
 
 Microsoft Azure Support assistance is limited to managed portals and only the initial setup of self-hosted portals ([documentation](https://aka.ms/apimdocs/selfhostportal)); best effort support is provided for problems that are caused by environmental factors, such as (but not limited to): hosting platform, development environment, network configuration. Other self-hosted portal assistance requests (for example, problem with custom widgets) should be submitted [on Stack Overflow](https://aka.ms/apimso) with the `azure-api-management` tag. **We don't provide support through GitHub Issues**.
 
