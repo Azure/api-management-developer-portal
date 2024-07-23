@@ -15,6 +15,7 @@ import { ChoiceGroup, CommandBarButton, DefaultButton, IChoiceGroupOption, Icon,
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 import { CopyableTextField } from '../utils/components/copyableTextField';
 import { UNIQUE_REQUIRED, validateField } from '../utils/validator';
+import { customWidgetPrefixName } from "../../components/custom-widget/ko/utils";
 
 interface CustomWidgetDetailsModalState {
     isEdit: boolean,
@@ -100,7 +101,7 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
         await this.blobStorage.uploadBlob(`/${dataPath}index.html`, fallbackUiUnit8);
         await this.blobStorage.uploadBlob(`/${dataPath}editor.html`, fallbackUiUnit8);
 
-        this.widgetService.registerWidget(name, {
+        this.widgetService.registerWidget(customWidgetPrefixName(name), {
             modelDefinition: CustomWidgetModel,
             componentBinder: KnockoutComponentBinder,
             componentDefinition: CustomWidgetViewModel,
@@ -108,7 +109,7 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
             viewModelBinder: CustomWidgetViewModelBinder
         });
 
-        this.widgetService.registerWidgetEditor(name, {
+        this.widgetService.registerWidgetEditor(customWidgetPrefixName(name), {
             displayName: this.state.customWidget.displayName,
             category: widgetCategory,
             iconClass: "widget-icon widget-icon-component",
@@ -200,7 +201,7 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
                     }
                     <Stack className={`collapsible-section${!this.state.showInstructions ? ' hidden' : ''}`}>
                         <Text block styles={{ root: { paddingTop: 20 } }}>
-                            Follow the steps below to create, implement, and deploy a custom widget. 
+                            Follow the steps below to create, implement, and deploy a custom widget.
                             <Link href="https://aka.ms/apimdocs/portal/customwidgets" target="_blank">Learn more</Link>.
                         </Text>
                         <ol>
