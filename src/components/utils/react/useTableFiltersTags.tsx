@@ -30,7 +30,7 @@ export const useTableFiltersTags = (tagService: TagService): TFilterGroup => {
     return {
         value: "tags",
         label: "Tags",
-        items: tags?.value?.map((tag) => ({ value: tag.name, label: tag.name })) ?? [],
+        items: tags?.value?.map((tag) => ({ value: tag.id, label: tag.name })) ?? [],
         nextPage: tags?.nextLink
             ? () => setPageNumber((old) => old + 1)
             : undefined,

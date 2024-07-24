@@ -63,7 +63,7 @@ const ApiListRuntimeFC = ({ apiService, productName, defaultGroupByTagToEnabled,
     useEffect(() => {
         const query: SearchQuery = {
             pattern,
-            tags: !groupByTag ? filters.tags.map(name => ({id: name, name})) : [],
+            tags: filters.tags.map(name => ({id: name, name})),
             skip: (pageNumber - 1) * Constants.defaultPageSize,
             take: Constants.defaultPageSize
         };

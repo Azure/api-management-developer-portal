@@ -13,6 +13,7 @@ export class SignupSocialViewModel {
     public readonly runtimeConfig: ko.Observable<string>;
     public readonly showNoAadConfigMessage: ko.Computed<boolean>;
     public readonly styles: ko.Observable<StyleModel>;
+    public readonly isRedesignEnabled: ko.Observable<boolean>;
 
     constructor() {
         this.identityProvider = ko.observable<boolean>();
@@ -20,5 +21,6 @@ export class SignupSocialViewModel {
         this.runtimeConfig = ko.observable<string>();
         this.showNoAadConfigMessage = ko.computed<boolean>(() => !this.identityProvider() && this.mode() !== "publishing");
         this.styles = ko.observable<StyleModel>();
+        this.isRedesignEnabled = ko.observable<boolean>();
     }
 }
