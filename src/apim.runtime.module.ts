@@ -101,8 +101,12 @@ import { ProductSubscribeRuntimeModule } from "./components/products/product-sub
 import { ProductSubscriptionsRuntimeModule } from "./components/products/product-subscriptions/productSubscriptions.runtime.module";
 import { SignInRuntimeModule } from "./components/users/signin/signin.runtime.module";
 import { SignInSocialRuntimeModule } from "./components/users/signin-social/signinSocial.runtime.module";
+import { SignUpRuntimeModule } from "./components/users/signup/signup.runtime.module";
+import { SignUpAadRuntimeModule } from "./components/users/signup-social/signupSocial.runtime.module";
 import { ProfileRuntimeModule } from "./components/users/profile/profile.runtime.module";
+import { ResetPasswordRuntimeModule } from "./components/users/reset-password/resetPassword.runtime.module";
 import { SubscriptionsRuntimeModule } from "./components/users/subscriptions/subscriptions.runtime.module";
+import { ValidationSummaryRuntimeModule } from "./components/users/validation-summary/validationSummary.runtime.module";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -192,8 +196,12 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindModule(new ProductSubscriptionsRuntimeModule());
         injector.bindModule(new SignInRuntimeModule());
         injector.bindModule(new SignInSocialRuntimeModule());
+        injector.bindModule(new SignUpRuntimeModule());
+        injector.bindModule(new SignUpAadRuntimeModule());
         injector.bindModule(new ProfileRuntimeModule());
+        injector.bindModule(new ResetPasswordRuntimeModule());
         injector.bindModule(new SubscriptionsRuntimeModule());
+        injector.bindModule(new ValidationSummaryRuntimeModule());
 
         if (process.env.NODE_ENV === staticDataEnvironment) {
             injector.bind("httpClient", StaticDataHttpClient);

@@ -1,5 +1,11 @@
 <!-- ko if: identityProvider -->
-<signup-social-runtime data-bind="attr: { params: runtimeConfig }"></signup-social-runtime>
+    <!-- ko if: isRedesignEnabled -->
+    <fui-signup-aad-runtime data-bind="attr: { props: runtimeConfig }"></fui-signup-aad-runtime>
+    <!-- /ko -->
+
+    <!-- ko ifnot: isRedesignEnabled -->
+    <signup-social-runtime data-bind="attr: { params: runtimeConfig }"></signup-social-runtime>
+    <!-- /ko -->
 <!-- /ko -->
 
 <!-- ko if: showNoAadConfigMessage -->

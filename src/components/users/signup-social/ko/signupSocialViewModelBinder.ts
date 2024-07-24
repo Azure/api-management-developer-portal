@@ -5,13 +5,16 @@ import { SignupSocialModel } from "../signupSocialModel";
 import { SignupSocialViewModel } from "./signupSocialViewModel";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { StyleCompiler } from "@paperbits/common/styles";
+import { ISiteService } from "@paperbits/common/sites/ISiteService";
+import { isRedesignEnabledSetting } from "../../../../constants";
 
 
 export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocialModel, SignupSocialViewModel> {
     constructor(
         private readonly identityService: IdentityService,
         private readonly settingsProvider: ISettingsProvider,
-        private readonly styleCompiler: StyleCompiler
+        private readonly styleCompiler: StyleCompiler,
+        private readonly siteService: ISiteService,
     ) { }
 
     public async getTermsOfService(): Promise<TermsOfService> {
@@ -29,6 +32,8 @@ export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocial
             isConsentRequired: state.isConsentRequired,
             termsEnabled: state.termsEnabled
         }));
+
+        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
     }
 
     public async modelToState(model: SignupSocialModel, state: WidgetState): Promise<void> {
@@ -50,5 +55,7 @@ export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocial
         if (model.styles) {
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
+
+        state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
     }
 }
