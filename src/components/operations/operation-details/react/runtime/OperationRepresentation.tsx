@@ -51,7 +51,6 @@ export const OperationRepresentation = ({ definitions, representations, showExam
     useEffect(() => {
         setSelectedRepresentationExample(selectedRepresentation.examples?.[0]);
         setSelectedRepresentationDefinition(getDefinitionForRepresentation(selectedRepresentation, definitions));
-        console.log("selectedRepresentation", selectedRepresentation);
     }, [representations, definitions, selectedRepresentation]);
 
     return (
