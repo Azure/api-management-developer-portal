@@ -1,5 +1,8 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { ISettingsProvider } from "@paperbits/common/configuration";
+import { SessionManager } from "@paperbits/common/persistence/sessionManager";
+import { HttpClient } from "@paperbits/common/http/httpClient";
 import { Stack, } from "@fluentui/react";
 import {
     Badge,
@@ -22,6 +25,10 @@ import {
 import { Copy16Regular } from "@fluentui/react-icons";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
+import { UsersService } from "../../../../../services/usersService";
+import { ProductService } from "../../../../../services/productService";
+import { OAuthService } from "../../../../../services/oauthService";
+import { TenantService } from "../../../../../services/tenantService";
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { Tag } from "../../../../../models/tag";
@@ -41,19 +48,39 @@ import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
 import { OperationRepresentation, TSchemaView } from "./OperationRepresentation";
 import { TypeDefinitionInList } from "./TypeDefinitions";
 import { OperationDetailsTable, getRequestUrl, scrollToOperation } from "./utils";
+import { OperationConsole } from "./OperationConsole";
 
 export const OperationDetails = ({
     apiName,
     operationName,
     apiService,
+    usersService,
+    productService,
+    oauthService,
+    tenantService,
     routeHelper,
+    settingsProvider,
+    sessionManager,
+    httpClient,
     enableConsole,
     useCorsProxy,
     includeAllHostnames,
     enableScrollTo,
     showExamples,
     defaultSchemaView
-}: OperationDetailsRuntimeProps & { apiName: string, operationName: string, apiService: ApiService, routeHelper: RouteHelper }) => {
+}: OperationDetailsRuntimeProps & {
+    apiName: string,
+    operationName: string,
+    apiService: ApiService,
+    usersService: UsersService,
+    productService: ProductService,
+    oauthService: OAuthService,
+    tenantService: TenantService,
+    routeHelper: RouteHelper,
+    settingsProvider: ISettingsProvider,
+    sessionManager: SessionManager,
+    httpClient: HttpClient
+}) => {
     const [working, setWorking] = useState<boolean>(false);
     const [api, setApi] = useState<Api>(null);
     const [operation, setOperation] = useState<Operation>(null);
@@ -64,29 +91,30 @@ export const OperationDetails = ({
     const [definitions, setDefinitions] = useState<TypeDefinition[]>([]);
     const [requestUrl, setRequestUrl] = useState<string>(null);
     const [isCopied, setIsCopied] = useState<boolean>(false);
+    const [isConsoleOpen, setIsConsoleOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (!apiName) return;
         
         setWorking(true);
         Promise.all([
-                loadApi().then(loadedApi => setApi(loadedApi)),
-                loadGatewayInfo().then(hostnames => {
-                    hostnames?.length > 0 && setHostnames(hostnames);
-                }),
-                loadOperation().then(loadedValues => {
-                    setOperation(loadedValues.operation);
-                    setTags(loadedValues.tags);
-                    setDefinitions(loadedValues.definitions);
-                    setRequest(loadedValues.operation?.request);
-                    setResponses(loadedValues.operation?.getMeaningfulResponses());
-                })
-            ])
-            .catch(error => new Error(`Unable to load the operation details. Error: ${error.message}`))
-            .finally(() => {
-                setWorking(false);
-                enableScrollTo && scrollToOperation();
-            });
+            loadApi().then(loadedApi => setApi(loadedApi)),
+            loadGatewayInfo().then(hostnames => {
+                hostnames?.length > 0 && setHostnames(hostnames);
+            }),
+            loadOperation().then(loadedValues => {
+                setOperation(loadedValues.operation);
+                setTags(loadedValues.tags);
+                setDefinitions(loadedValues.definitions);
+                setRequest(loadedValues.operation?.request);
+                setResponses(loadedValues.operation?.getMeaningfulResponses());
+            })
+        ])
+        .catch(error => new Error(`Unable to load the operation details. Error: ${error.message}`))
+        .finally(() => {
+            setWorking(false);
+            enableScrollTo && scrollToOperation();
+        });
     }, [apiName, operationName]);
 
     useEffect(() => {
@@ -266,6 +294,23 @@ export const OperationDetails = ({
                 : !operation
                     ? <Body1>No operation selected.</Body1> 
                     : <div className={"operation-details-content"}>
+                        <OperationConsole
+                            isOpen={isConsoleOpen}
+                            setIsOpen={setIsConsoleOpen}
+                            api={api}
+                            operation={operation}
+                            hostnames={hostnames}//{["abc.com", "def.com"]}
+                            useCorsProxy={useCorsProxy}
+                            apiService={apiService}
+                            usersService={usersService}
+                            productService={productService}
+                            oauthService={oauthService}
+                            tenantService={tenantService}
+                            routeHelper={routeHelper}
+                            settingsProvider={settingsProvider}
+                            sessionManager={sessionManager}
+                            httpClient={httpClient}
+                        />
                         <div className={"operation-table"}>
                             <div className={"operation-table-header"}>
                                 <Subtitle2>{operation.displayName}</Subtitle2>
@@ -302,8 +347,7 @@ export const OperationDetails = ({
                                 </div>
                             </div>
                         </div>
-                        {/* TODO: implement! */}
-                        {enableConsole && <Button>Try this operation</Button>}
+                        {enableConsole && <Button onClick={() => setIsConsoleOpen(true)}>Try this operation</Button>}
                         {request && request.isMeaningful() &&
                             <div className={"operation-request"}>
                                 <Subtitle1 block className={"operation-subtitle1"}>Request</Subtitle1>
@@ -320,7 +364,6 @@ export const OperationDetails = ({
                                         <OperationDetailsTable tableName={"Request headers table"} tableContent={request.headers} showExamples={showExamples} showIn={false} />
                                     </>
                                 }
-                                {/* authorization servers! */}
                                 {request.meaningfulRepresentations()?.length > 0 &&
                                     <>
                                         <Subtitle2 block className={"operation-subtitle2"}>Request body</Subtitle2>

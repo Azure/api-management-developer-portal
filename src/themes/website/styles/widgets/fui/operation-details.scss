@@ -12,28 +12,6 @@ fui-operation-details {
         max-width: 800px;
     }
 
-    .operation-table {
-        border: 1px solid #D1D1D1;
-        border-radius: 4px;
-        margin-bottom: 1.75rem;
-        overflow: hidden;
-    }
-
-    .operation-table-header {
-        padding: .5rem 1rem;
-        background-color: #F5F5F5;
-    }
-
-    .operation-table-body-row {
-        padding: 1rem;
-        display: flex;
-        align-items: center;
-
-        &:not(:last-of-type) {
-            border-bottom: 1px solid #D1D1D1;
-        }
-    }
-
     .operation-description {
         padding-top: 1rem;
 
@@ -115,5 +93,105 @@ fui-operation-details {
         display: block;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+}
+
+.operation-table {
+    border: 1px solid #D1D1D1;
+    border-radius: 4px;
+    margin-bottom: 1.75rem;
+    overflow: hidden;
+}
+
+.operation-table-header {
+    padding: .5rem 1rem;
+    background-color: #F5F5F5;
+
+    .collapse-button{
+        margin-right: 1rem;
+
+        &.is-collapsed {
+            transform: rotate(180deg);
+        }
+    }
+}
+
+.operation-table-body-row {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+
+    &:not(:last-of-type) {
+        border-bottom: 1px solid #D1D1D1;
+    }
+}
+
+.operation-table-body-console {
+    padding: 2rem 1rem 2.5rem;
+
+    .auth-detail {
+        max-width: 435px;
+    }
+
+    .auth-detail,
+    .param-detail {
+        &:not(:first-of-type) {
+            margin-top: 1.5rem;
+        }
+    }
+
+    .param-name,
+    .param-value,
+    .param-remove {
+        > * {
+            min-width: calc(100% - .5rem);
+        }
+    }
+
+    .param-name {
+        width: 40%;
+
+        > label {
+            margin-bottom: 0;
+        }
+    }
+
+    .param-value {
+        width: 53%;
+    } 
+
+    .format-selection {
+        margin-right: 1rem;
+    }
+
+    .request-body-dropdown {
+        width: 100%;
+    }
+
+    .request-body-raw,
+    .request-body-upload-button {
+        margin: 1rem 0;
+    }    
+
+    .request-body-textarea {
+        min-height: 200px;
+    }
+}
+
+.console-drawer {
+    .console-method {
+        margin: 1rem 0;
+
+        .operation-method {
+            margin-right: 1rem;
+        }
+    }
+
+    .request-language-dropdown {
+        width: 100%;
+    }
+
+    .request-copy-button {
+        margin: 0 .5rem;
     }
 }

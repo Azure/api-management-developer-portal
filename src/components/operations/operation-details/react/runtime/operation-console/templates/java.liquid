@@ -1,0 +1,76 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.UnsupportedEncodingException;
+import java.io.DataInputStream;
+import java.io.InputStream;
+import java.io.FileInputStream;
+
+public class HelloWorld {
+
+  public static void main(String[] args) {
+    try {
+        String urlString = "{{console.requestUrl}}";
+        URL url = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        //Request headers
+{%- for header in console.request.meaningfulHeaders %}
+    {% if showSecrets == false and header.secret -%}
+        connection.setRequestProperty("{{header.name}}", "{{header.hiddenValue}}");
+    {% else -%}
+        connection.setRequestProperty("{{header.name}}", "{{header.value}}");
+    {% endif -%}
+        
+{% endfor %}
+        connection.setRequestMethod("{{console.method}}");
+{% if console.method == "POST" or console.method == "PUT" -%}
+    {%- if console.request.body != blank %}
+        // Request body
+        connection.setDoOutput(true);
+    {%- if console.request.bodyFormat == "raw"  -%}
+    {%- assign formattedBody = console.request.body | replace:'"','\\"' -%}
+    {%- assign formattedBody = formattedBody | replace: '\r\n', ' ' -%}
+    {%- assign formattedBody = formattedBody | replace: '\n', ' ' -%}
+    {%- assign formattedBody = formattedBody | replace: '     ', ' ' %}
+        connection
+            .getOutputStream()
+            .write(
+             "{{formattedBody}}".getBytes()
+             );
+    {%- elsif console.request.bodyFormat == "binary" %}
+        String fileName = "< path/to/{{console.request.binary.name}} >";
+        InputStream is = new FileInputStream(fileName);
+        byte[] bytes = new byte[(int) is.available()];
+        DataInputStream dataInputStream = new DataInputStream(is);
+        dataInputStream.readFully(bytes);
+        dataInputStream.close();
+        connection.getOutputStream().write(bytes);
+    {%- endif %}
+    {% endif -%}
+
+{% endif %}
+        int status = connection.getResponseCode();
+        System.out.println(status);
+
+        BufferedReader in = new BufferedReader(
+            new InputStreamReader(connection.getInputStream())
+        );
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        System.out.println(content);
+
+        connection.disconnect();
+    } catch (Exception ex) {
+      System.out.print("exception:" + ex.getMessage());
+    }
+  }
+}
