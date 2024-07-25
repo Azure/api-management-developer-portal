@@ -35,7 +35,7 @@ import { ProductService } from "../../../../../services/productService";
 import { TenantService } from "../../../../../services/tenantService";
 import { UsersService } from "../../../../../services/usersService";
 import { ServiceSkuName, TypeOfApi } from "../../../../../constants";
-import { ConsoleAuthorization } from "./operation-console/ConsoleAuthorization";
+import { ConsoleAuthorization, ProductSubscriptionKeys } from "./operation-console/ConsoleAuthorization";
 import { ConsoleBody } from "./operation-console/ConsoleBody";
 import { ConsoleHeaders } from "./operation-console/ConsoleHeaders";
 import { ConsoleHosts } from "./operation-console/ConsoleHosts";
@@ -89,7 +89,7 @@ export const OperationConsole = ({
 }: OperationConsoleProps) => {
     const [working, setWorking] = useState<boolean>(false);
     const [authorizationServers, setAuthorizationServers] = useState<AuthorizationServer[]>([]);
-    const [products, setProducts] = useState<any[]>([]);
+    const [products, setProducts] = useState<ProductSubscriptionKeys[]>([]);
     const [selectedSubscriptionKey, setSelectedSubscriptionKey] = useState<string>(null);
     const [isConsumptionMode, setIsConsumptionMode] = useState<boolean>(false);
     const [backendUrl, setBackendUrl] = useState<string>("");
@@ -100,8 +100,8 @@ export const OperationConsole = ({
 
     useEffect(() => {
         setWorking(true);
-        consoleOperation.current.host.hostname(hostnames[0]);        
-        Promise.all([            
+        consoleOperation.current.host.hostname(hostnames[0]);
+        Promise.all([
             getAuthServers(api, oauthService).then(authServers => {
                 setAuthorizationServers(authServers);
                 if (authServers.length > 0) {
@@ -145,13 +145,13 @@ export const OperationConsole = ({
     const setSubscriptionHeader = (key?: string): ConsoleHeader[] => {
         const headers = consoleOperation.current.request.headers();
         let subscriptionHeaderName: string = KnownHttpHeaders.OcpApimSubscriptionKey;
-    
+
         if (api.subscriptionKeyParameterNames && api.subscriptionKeyParameterNames.header) {
             subscriptionHeaderName = api.subscriptionKeyParameterNames.header;
         }
-    
+
         const newHeaders = headers.filter(header => header.name() !== subscriptionHeaderName);
-        
+
         const subscriptionHeader = new ConsoleHeader();
         subscriptionHeader.name(subscriptionHeaderName);
         subscriptionHeader.value(key || "");
@@ -160,9 +160,9 @@ export const OperationConsole = ({
         subscriptionHeader.secret(true);
         subscriptionHeader.type = "string";
         subscriptionHeader.inputTypeValue("password");
-    
+
         newHeaders.push(subscriptionHeader);
-    
+
         return newHeaders;
     }
 
@@ -188,10 +188,10 @@ export const OperationConsole = ({
         rerender();
     }
 
-    const updateBody = (body: string) => {
+    const updateBody = useCallback((body: string) => {
         consoleOperation.current.request.body(body);
         rerender();
-    }
+    }, [consoleOperation, rerender]);
 
     const updateBodyBinary = (body: File) => {
         consoleOperation.current.request.binary(body);

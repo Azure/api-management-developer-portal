@@ -59,8 +59,8 @@ export const ConsoleHeaders = ({ headers, updateHeaders, isGqlConsole }: Console
                                     type="text"
                                     placeholder="Enter header name"
                                     value={header.name() ?? ""}
-                                    onChange={(e, data) => changeHeader(header.id, "name", data.value)}
-                                    />
+                                    onChange={(_, data) => changeHeader(header.id, "name", data.value)}
+                                   />
                             }
                         </div>
                         <div className={"param-value"}>
@@ -70,7 +70,7 @@ export const ConsoleHeaders = ({ headers, updateHeaders, isGqlConsole }: Console
                                     value={header.value()}
                                     selectedOptions={[header.value()]}
                                     placeholder={`Select ${header.name()} value`}
-                                    onOptionSelect={(e, data) => changeHeader(header.id, "value", data.optionValue)}
+                                    onOptionSelect={(_, data) => changeHeader(header.id, "value", data.optionValue)}
                                 >
                                     {header.options.map(option => (
                                         <Option key={option} value={option}>{option}</Option>
@@ -80,7 +80,7 @@ export const ConsoleHeaders = ({ headers, updateHeaders, isGqlConsole }: Console
                                     type={header.secret() ? "password" : "text"}
                                     placeholder="Enter header value"
                                     value={header.value() ?? ""}
-                                    onChange={(e, data) => changeHeader(header.id, "value", data.value)}
+                                    onChange={(_, data) => changeHeader(header.id, "value", data.value)}
                                 />
                             }
                         </div>

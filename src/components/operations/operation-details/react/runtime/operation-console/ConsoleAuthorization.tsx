@@ -10,10 +10,20 @@ import { ConsoleHeader } from "../../../../../../models/console/consoleHeader";
 import { OAuthService } from "../../../../../../services/oauthService";
 import { authenticateOAuthWithPassword, onGrantTypeChange } from "./consoleUtils";
 
+interface SubscriptionKey {
+    name: string,
+    value: string,
+}
+
+export interface ProductSubscriptionKeys {
+    name: string,
+    subscriptionKeys: SubscriptionKey[]
+}
+
 type ConsoleAuthorizationProps = {
     api: Api;
     headers: ConsoleHeader[];
-    products: any[];
+    products: ProductSubscriptionKeys[];
     subscriptionRequired: boolean;
     subscriptionKey: string;
     authorizationServers: AuthorizationServer[];
