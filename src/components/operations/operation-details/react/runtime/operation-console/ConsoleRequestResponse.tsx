@@ -48,11 +48,15 @@ const requestLanguagesWs = [
     { value: "ws_javascript", text: "JavaScript" }
 ];
 
+type BufferFromParam = Parameters<typeof Buffer.from>[0];
+
 interface ResponsePackage {
     statusCode: number;
     statusMessage: string;
     headers: HttpHeader[];
-    body: any;
+    body: {
+        data: BufferFromParam;
+    };
 }
 
 export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useCorsProxy, httpClient, forceRerender }: ConsoleRequestResponseProps) => {
@@ -191,7 +195,7 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
         const proxiedResponse = await httpClient.send<ResponsePackage>(proxiedRequest);
         const responsePackage = proxiedResponse.toObject();
 
-        const responseBody: Buffer = responsePackage.body
+        const responseBody: Buffer | null = responsePackage.body
             ? Buffer.from(responsePackage.body.data)
             : null;
 
@@ -269,7 +273,7 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
                     : consoleOperation.name;
 
                 saveAs(blob, fileName);
-            } else {                
+            } else {
                 let responseBody: string;
 
                 if (useCorsProxy) {
@@ -378,7 +382,7 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
                     </div>
                 }
             </div>
-            {(formattedResponse || requestError) && 
+            {(formattedResponse || requestError) &&
                 <div className={"operation-table"}>
                     <div className={"operation-table-header"}>
                         <Stack horizontal verticalAlign="center" horizontalAlign="space-between">
