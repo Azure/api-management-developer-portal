@@ -1,23 +1,28 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Stack } from "@fluentui/react";
-import { Badge, Body1, Body1Strong, Button, Caption1Strong, Spinner, Subtitle1, Subtitle2, Tooltip } from "@fluentui/react-components";
-import { Copy16Regular } from "@fluentui/react-icons";
+import { Badge, Body1, Body1Strong, Button, Caption1Strong, DrawerHeader, DrawerHeaderTitle, OverlayDrawer, Spinner, Subtitle1, Subtitle2, Tooltip } from "@fluentui/react-components";
+import { Copy16Regular, DismissRegular } from "@fluentui/react-icons";
 import { ApiService } from "../../../../../services/apiService";
 import { Operation } from "../../../../../models/operation";
 import { Api } from "../../../../../models/api";
 import { Tag } from "../../../../../models/tag";
+import { OAuthService } from "../../../../../services/oauthService";
+import { RouteHelper } from "../../../../../routing/routeHelper";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { getRequestUrl, scrollToOperation } from "./utils";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
+import { OperationConsole } from "./OperationConsole";
 
 export const OperationDetailsWebsocket = ({
     apiName,
     apiService,
+    oauthService,
+    routeHelper,
     enableConsole,
     includeAllHostnames,
     enableScrollTo
-}: OperationDetailsRuntimeProps & { apiName: string, apiService: ApiService }) => {
+}: OperationDetailsRuntimeProps & { apiName: string, apiService: ApiService, oauthService: OAuthService, routeHelper: RouteHelper }) => {
     const [working, setWorking] = useState(false);
     const [api, setApi] = useState<Api>(null);
     const [operation, setOperation] = useState<Operation>(null);
@@ -25,6 +30,7 @@ export const OperationDetailsWebsocket = ({
     const [hostnames, setHostnames] = useState<string[]>([]);
     const [requestUrl, setRequestUrl] = useState<string>(null);
     const [isCopied, setIsCopied] = useState(false);
+    const [isConsoleOpen, setIsConsoleOpen] = useState<boolean>(true);
 
     useEffect(() => {
         if (!apiName) return;
@@ -56,6 +62,7 @@ export const OperationDetailsWebsocket = ({
 
         try {
             api = await apiService.getApi(`apis/${apiName}`);
+            console.log(api);
         } catch (error) {
             throw new Error(`Unable to load the API. Error: ${error.message}`);
         }
@@ -85,13 +92,22 @@ export const OperationDetailsWebsocket = ({
     }
 
     return (
-        <div className={"operation-details-container"}>
+        <div className={"operation-details-container"}>            
             <Subtitle1 block className={"operation-details-title"} id={"operation"}>Operation</Subtitle1>
             {working 
                 ? <Spinner label="Loading..." labelPosition="below" size="small" />
                 : !operation
                     ? <Body1>No operation selected.</Body1> 
                     : <div className={"operation-details-content"}>
+                        {/* <OperationConsole
+                            isOpen={isConsoleOpen}
+                            setIsOpen={setIsConsoleOpen}
+                            api={api}
+                            operation={operation}
+                            apiService={apiService}
+                            oauthService={oauthService}
+                            routeHelper={routeHelper}
+                        /> */}
                         <div className={"operation-table"}>
                             <div className={"operation-table-header"}>
                                 <Subtitle2>{operation.displayName}</Subtitle2>
@@ -134,8 +150,7 @@ export const OperationDetailsWebsocket = ({
                                 }
                             </div>
                         </div>
-                        {/* TODO: implement! */}
-                        {enableConsole && <Button>Try this operation</Button>}
+                        {enableConsole && <Button onClick={() => setIsConsoleOpen(true)}>Try this operation</Button>}
                       </div>
             }
         </div>

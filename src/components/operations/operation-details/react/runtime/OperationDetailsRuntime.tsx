@@ -1,11 +1,18 @@
 import * as React from "react";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
+import { ISettingsProvider } from "@paperbits/common/configuration";
+import { SessionManager } from "@paperbits/common/persistence/sessionManager";
+import { HttpClient } from "@paperbits/common/http/httpClient";
 import { FluentProvider} from "@fluentui/react-components";
 import { TypeOfApi, fuiTheme } from "../../../../../constants";
 import { ApiService } from "../../../../../services/apiService";
 import { TagService } from "../../../../../services/tagService";
 import { GraphqlService } from "../../../../../services/graphqlService";
+import { UsersService } from "../../../../../services/usersService";
+import { ProductService } from "../../../../../services/productService";
+import { OAuthService } from "../../../../../services/oauthService";
+import { TenantService } from "../../../../../services/tenantService";
 import { GraphDocService } from "../../../operation-details/ko/runtime/graphql-documentation/graphql-doc-service";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { OperationDetailsWebsocket } from "./OperationDetailsWebsocket";
@@ -42,11 +49,32 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
     @Resolve("graphDocService")
     public graphDocService: GraphDocService;
 
+    @Resolve("usersService")
+    public usersService: UsersService;
+
+    @Resolve("productService")
+    public productService: ProductService;
+
+    @Resolve("oauthService")
+    public oauthService: OAuthService;
+
+    @Resolve("tenantService")
+    public tenantService: TenantService;
+
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
 
     @Resolve("router")
-    public router: Router;
+    public router: Router; 
+
+    @Resolve("settingsProvider")
+    public settingsProvider: ISettingsProvider;
+
+    @Resolve("sessionManager")
+    public sessionManager: SessionManager;
+
+    @Resolve("httpClient")
+    public httpClient: HttpClient;
 
     constructor(props: OperationDetailsRuntimeProps) {
         super(props);
@@ -99,6 +127,8 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
                             {...this.props}
                             apiName={this.state.apiName}
                             apiService={this.apiService}
+                            oauthService={this.oauthService}
+                            routeHelper={this.routeHelper}
                         />
                     : this.state.apiType === TypeOfApi.graphQL
                         ? <OperationDetailsGql
@@ -115,7 +145,14 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
                             apiName={this.state.apiName}
                             operationName={this.state.operationName}
                             apiService={this.apiService}
+                            usersService={this.usersService}
+                            productService={this.productService}
+                            oauthService={this.oauthService}
+                            tenantService={this.tenantService}
                             routeHelper={this.routeHelper}
+                            settingsProvider={this.settingsProvider}
+                            sessionManager={this.sessionManager}
+                            httpClient={this.httpClient}
                         />
                 }
             </FluentProvider>
