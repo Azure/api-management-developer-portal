@@ -32,7 +32,6 @@ import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
 import { ApiService } from "../../../../../services/apiService";
 import { OAuthService } from "../../../../../services/oauthService";
 import { ProductService } from "../../../../../services/productService";
-import { TemplatingService } from "../../../../../services/templatingService";
 import { TenantService } from "../../../../../services/tenantService";
 import { UsersService } from "../../../../../services/usersService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
@@ -45,7 +44,6 @@ import { ConsoleHeaders } from "./operation-console/ConsoleHeaders";
 import { ConsoleHosts } from "./operation-console/ConsoleHosts";
 import { ConsoleParameters } from "./operation-console/ConsoleParameters";
 import { ConsoleRequestResponse } from "./operation-console/ConsoleRequestResponse";
-import { templates } from "./operation-console/templates/templates";
 
 type OperationConsoleProps = {
     isOpen: boolean;
@@ -379,7 +377,7 @@ export const OperationConsole = ({
         rerender();
     }
 
-    const updateParameters = (templateParameters: ConsoleParameter[], queryParameters: ConsoleParameter[]) => {
+    const updateParameters = (queryParameters: ConsoleParameter[], templateParameters: ConsoleParameter[]) => {
         consoleOperation.current.templateParameters(templateParameters);
         consoleOperation.current.request.queryParameters(queryParameters);
         rerender();
@@ -487,8 +485,8 @@ export const OperationConsole = ({
                             />
                         }
                         <ConsoleParameters
-                            templateParameters={consoleOperation.current.templateParameters()}
                             queryParameters={consoleOperation.current.request.queryParameters()}
+                            templateParameters={consoleOperation.current.templateParameters()}
                             updateParameters={updateParameters}
                         />
                         <ConsoleHeaders

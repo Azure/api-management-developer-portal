@@ -6,25 +6,25 @@ import { AddCircleRegular, ChevronUp20Regular, DeleteRegular } from "@fluentui/r
 import { ConsoleParameter } from "../../../../../../models/console/consoleParameter";
 
 type ConsoleParametersProps = {
-    templateParameters: ConsoleParameter[];
     queryParameters: ConsoleParameter[];
-    updateParameters: (templateParameters: ConsoleParameter[], queryParameters: ConsoleParameter[]) => void;
+    templateParameters?: ConsoleParameter[];
+    updateParameters: (queryParameters: ConsoleParameter[], templateParameters?: ConsoleParameter[]) => void;
 }
 
-export const ConsoleParameters = ({ templateParameters, queryParameters, updateParameters }: ConsoleParametersProps) => {
-    const [isParametersCollapsed, setIsParametersCollapsed] = useState<boolean>(templateParameters.length === 0 && queryParameters.length === 0);
-    const [templateParams, setTemplateParams] = useState<ConsoleParameter[]>(templateParameters);
+export const ConsoleParameters = ({ queryParameters, templateParameters, updateParameters }: ConsoleParametersProps) => {
+    const [isParametersCollapsed, setIsParametersCollapsed] = useState<boolean>(queryParameters.length === 0 && (!templateParameters || templateParameters.length === 0));
     const [queryParams, setQueryParams] = useState<ConsoleParameter[]>(queryParameters);
+    const [templateParams, setTemplateParams] = useState<ConsoleParameter[]>(templateParameters);
 
     useEffect(() => {
         setTemplateParams(templateParameters);
         setQueryParams(queryParameters);
-        setIsParametersCollapsed(templateParameters.length === 0 && queryParameters.length === 0);
-    }, [templateParameters, queryParameters]);
+        setIsParametersCollapsed(queryParameters.length === 0 && templateParameters?.length === 0);
+    }, [queryParameters, templateParameters]);
 
     useEffect(() => {
-        updateParameters(templateParams, queryParams);
-    }, [templateParams, queryParams]);
+        updateParameters(queryParams, templateParams);
+    }, [queryParams, templateParams]);
 
     const addParameter = (): void => {
         const newParam = new ConsoleParameter();
