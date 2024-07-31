@@ -9,9 +9,10 @@ type ConsoleParametersProps = {
     queryParameters: ConsoleParameter[];
     templateParameters?: ConsoleParameter[];
     updateParameters: (queryParameters: ConsoleParameter[], templateParameters?: ConsoleParameter[]) => void;
+    isGqlConsole?: boolean;
 }
 
-export const ConsoleParameters = ({ queryParameters, templateParameters, updateParameters }: ConsoleParametersProps) => {
+export const ConsoleParameters = ({ queryParameters, templateParameters, updateParameters, isGqlConsole }: ConsoleParametersProps) => {
     const [isParametersCollapsed, setIsParametersCollapsed] = useState<boolean>(queryParameters.length === 0 && (!templateParameters || templateParameters.length === 0));
     const [queryParams, setQueryParams] = useState<ConsoleParameter[]>(queryParameters);
     const [templateParams, setTemplateParams] = useState<ConsoleParameter[]>(templateParameters);
@@ -88,7 +89,7 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
                         ))}
                     </Dropdown>
                     : <Input
-                        type="text"
+                        type={parameter.secret ? "password" : "text"}
                         placeholder="Enter parameter value"
                         value={parameter.value() ?? ""}
                         onChange={(e, data) =>
@@ -107,7 +108,14 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
                 }
             </div>
         </Stack>
-    )
+    );
+
+    if (isGqlConsole) return (
+        <>
+            {queryParams?.length > 0 && queryParams.map(param => renderParameter(param))}
+            <Button appearance="subtle" icon={<AddCircleRegular />} onClick={() => addParameter()}>Add parameter</Button>
+        </>
+    );
 
     return (
         <div className={"operation-table"}>

@@ -8,9 +8,10 @@ import { ConsoleHeader } from "../../../../../../models/console/consoleHeader";
 type ConsoleHeadersProps = {
     headers: ConsoleHeader[];
     updateHeaders: (headers: ConsoleHeader[]) => void;
+    isGqlConsole?: boolean;
 }
 
-export const ConsoleHeaders = ({ headers, updateHeaders }: ConsoleHeadersProps) => {
+export const ConsoleHeaders = ({ headers, updateHeaders, isGqlConsole }: ConsoleHeadersProps) => {
     const [isHeadersCollapsed, setIsHeadersCollapsed] = useState<boolean>(headers.length === 0);
     const [consoleHeaders, setConsoleHeaders] = useState<ConsoleHeader[]>(headers);
 
@@ -46,6 +47,63 @@ export const ConsoleHeaders = ({ headers, updateHeaders }: ConsoleHeadersProps) 
         setConsoleHeaders([...newHeaders]);
     }
 
+    const renderHeaders = () => (
+        <>
+            {consoleHeaders?.length > 0 &&
+                consoleHeaders.map(header => (
+                    <Stack horizontal verticalAlign="center" key={header.id} className="param-detail">
+                        <div className={"param-name"}>
+                            {header.required
+                                ? <Label htmlFor={`header-dropdown-${header.id}`}>{header.name()}</Label>
+                                : <Input
+                                    type="text"
+                                    placeholder="Enter header name"
+                                    value={header.name() ?? ""}
+                                    onChange={(e, data) => changeHeader(header.id, "name", data.value)}
+                                    />
+                            }
+                        </div>
+                        <div className={"param-value"}>
+                            {header.options.length > 0
+                                ? <Dropdown
+                                    id={`header-dropdown-${header.id}`}
+                                    value={header.value()}
+                                    selectedOptions={[header.value()]}
+                                    placeholder={`Select ${header.name()} value`}
+                                    onOptionSelect={(e, data) => changeHeader(header.id, "value", data.optionValue)}
+                                >
+                                    {header.options.map(option => (
+                                        <Option key={option} value={option}>{option}</Option>
+                                    ))}
+                                </Dropdown>
+                                : <Input
+                                    type={header.secret() ? "password" : "text"}
+                                    placeholder="Enter header value"
+                                    value={header.value() ?? ""}
+                                    onChange={(e, data) => changeHeader(header.id, "value", data.value)}
+                                />
+                            }
+                        </div>
+                        <div className={"param-remove"}>
+                            {!header.required &&
+                                <Tooltip content="Remove header" relationship="label">
+                                    <Button icon={<DeleteRegular />} appearance="subtle" onClick={() => removeHeader(header)} />
+                                </Tooltip>
+                            }
+                        </div>
+                    </Stack>
+                ))
+            }
+        </>
+    );
+
+    if (isGqlConsole) return (
+        <>
+            {renderHeaders()}
+            <Button appearance="subtle" icon={<AddCircleRegular />} onClick={() => addHeader()}>Add header</Button>
+        </>
+    );
+
     return (
         <div className={"operation-table"}>
             <div className={"operation-table-header"}>
@@ -62,51 +120,7 @@ export const ConsoleHeaders = ({ headers, updateHeaders }: ConsoleHeadersProps) 
             </div>
             {!isHeadersCollapsed &&
                 <div className={"operation-table-body-console"}>
-                    {consoleHeaders?.length > 0 &&
-                        consoleHeaders.map(header => (
-                            <Stack horizontal verticalAlign="center" key={header.id} className="param-detail">
-                                <div className={"param-name"}>
-                                    {header.required
-                                        ? <Label htmlFor={`header-dropdown-${header.id}`}>{header.name()}</Label>
-                                        : <Input
-                                            type="text"
-                                            placeholder="Enter header name"
-                                            value={header.name() ?? ""}
-                                            onChange={(e, data) => changeHeader(header.id, "name", data.value)}
-                                          />
-                                    }
-                                </div>
-                                <div className={"param-value"}>
-                                    {header.options.length > 0
-                                        ? <Dropdown
-                                            id={`header-dropdown-${header.id}`}
-                                            value={header.value()}
-                                            selectedOptions={[header.value()]}
-                                            placeholder={`Select ${header.name()} value`}
-                                            onOptionSelect={(e, data) => changeHeader(header.id, "value", data.optionValue)}
-                                        >
-                                            {header.options.map(option => (
-                                                <Option key={option} value={option}>{option}</Option>
-                                            ))}
-                                        </Dropdown>
-                                        : <Input
-                                            type={header.secret() ? "password" : "text"}
-                                            placeholder="Enter header value"
-                                            value={header.value() ?? ""}
-                                            onChange={(e, data) => changeHeader(header.id, "value", data.value)}
-                                        />
-                                    }
-                                </div>
-                                <div className={"param-remove"}>
-                                    {!header.required &&
-                                        <Tooltip content="Remove header" relationship="label">
-                                            <Button icon={<DeleteRegular />} appearance="subtle" onClick={() => removeHeader(header)} />
-                                        </Tooltip>
-                                    }
-                                </div>
-                            </Stack>
-                        ))
-                    }
+                    {renderHeaders()}
                 </div>
             }
         </div>

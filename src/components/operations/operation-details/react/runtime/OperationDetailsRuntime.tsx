@@ -138,7 +138,14 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
                             graphType={this.state.graphType}
                             apiService={this.apiService}
                             graphqlService={this.graphqlService}
+                            usersService={this.usersService}
+                            productService={this.productService}
+                            oauthService={this.oauthService}
+                            tenantService={this.tenantService}
                             routeHelper={this.routeHelper}
+                            settingsProvider={this.settingsProvider}
+                            sessionManager={this.sessionManager}
+                            httpClient={this.httpClient}
                           />
                         : <OperationDetails
                             {...this.props}
