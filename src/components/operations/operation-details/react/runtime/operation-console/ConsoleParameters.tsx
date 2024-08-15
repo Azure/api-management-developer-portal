@@ -67,7 +67,7 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
                         type="text"
                         placeholder="Enter parameter name"
                         value={parameter.name() ?? ""}
-                        onChange={(e, data) => changeQueryParameter(parameter.id, "name", data.value)}
+                        onChange={(_, data) => changeQueryParameter(parameter.id, "name", data.value)}
                       />
                 }
             </div>
@@ -78,7 +78,7 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
                         value={parameter.value() ?? ""}
                         selectedOptions={[parameter.value() ?? ""]}
                         placeholder={`Select ${parameter.name()} value`}
-                        onOptionSelect={(e, data) => 
+                        onOptionSelect={(_, data) => 
                             isTemplate
                                 ? changeTemplateParameterValue(parameter.id, data.optionValue)
                                 : changeQueryParameter(parameter.id, "value", data.optionValue)
@@ -92,7 +92,7 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
                         type={parameter.secret ? "password" : "text"}
                         placeholder="Enter parameter value"
                         value={parameter.value() ?? ""}
-                        onChange={(e, data) =>
+                        onChange={(_, data) =>
                             isTemplate
                                 ? changeTemplateParameterValue(parameter.id, data.value)
                                 : changeQueryParameter(parameter.id, "value", data.value)

@@ -34,16 +34,14 @@ import { OAuthService } from "../../../../../services/oauthService";
 import { ProductService } from "../../../../../services/productService";
 import { TenantService } from "../../../../../services/tenantService";
 import { UsersService } from "../../../../../services/usersService";
-import { SubscriptionState } from "../../../../../contracts/subscription";
-import { OAuth2AuthenticationSettings } from "../../../../../contracts/authenticationSettings";
-import { GrantTypes, ServiceSkuName, TypeOfApi, oauthSessionKey } from "../../../../../constants";
-import { Utils } from "../../../../../utils";
+import { ServiceSkuName, TypeOfApi } from "../../../../../constants";
 import { ConsoleAuthorization } from "./operation-console/ConsoleAuthorization";
 import { ConsoleBody } from "./operation-console/ConsoleBody";
 import { ConsoleHeaders } from "./operation-console/ConsoleHeaders";
 import { ConsoleHosts } from "./operation-console/ConsoleHosts";
 import { ConsoleParameters } from "./operation-console/ConsoleParameters";
 import { ConsoleRequestResponse } from "./operation-console/ConsoleRequestResponse";
+import { getAuthServers, getBackendUrl, loadSubscriptionKeys, setupOAuth } from "./operation-console/consoleUtils";
 
 type OperationConsoleProps = {
     isOpen: boolean;
@@ -104,22 +102,22 @@ export const OperationConsole = ({
         setWorking(true);
         consoleOperation.current.host.hostname(hostnames[0]);        
         Promise.all([            
-            getAuthServers().then(authServers => {
+            getAuthServers(api, oauthService).then(authServers => {
                 setAuthorizationServers(authServers);
                 if (authServers.length > 0) {
-                    setupOAuth(authServers[0]).then(newHeaders => {
+                    setupOAuth(api, authServers[0], consoleOperation.current.request.headers(), sessionManager).then(newHeaders => {
                         consoleOperation.current.request.headers(newHeaders);
                     });
                 }
             }),
-            loadSubscriptionKeys().then(products => {
+            loadSubscriptionKeys(api, apiService, productService, usersService).then(products => {
                 setProducts(products);
                 if (products.length > 0) {
                     setSelectedSubscriptionKey(products[0].subscriptionKeys[0]?.value);
                 }
             }),
             getSkuName().then(skuName => setIsConsumptionMode(skuName === ServiceSkuName.Consumption)),
-            getBackendUrl().then(url => setBackendUrl(url))
+            getBackendUrl(settingsProvider).then(url => setBackendUrl(url))
         ])
         .catch(error => new Error(`Unable to load the console details. Error: ${error.message}`))
         .finally(() => {
@@ -140,61 +138,6 @@ export const OperationConsole = ({
 
     const getSkuName = async (): Promise<string> => {
         return await tenantService.getServiceSkuName();
-    }
-
-    const getBackendUrl = async (): Promise<string> => {
-        return await settingsProvider.getSetting<string>("backendUrl");
-    }
-
-    const getAuthServers = async (): Promise<AuthorizationServer[]> => {
-        let associatedAuthServers: AuthorizationServer[];
-
-        if (api.authenticationSettings?.oAuth2AuthenticationSettings?.length > 0) {
-            associatedAuthServers = await oauthService.getOauthServers(api.id);
-        } else if (api.authenticationSettings?.openidAuthenticationSettings?.length > 0) {
-            associatedAuthServers = await oauthService.getOpenIdAuthServers(api.id);
-        }
-
-        return associatedAuthServers ? associatedAuthServers.filter(a => a.useInTestConsole) : [];
-    }
-
-    const loadSubscriptionKeys = async () => {
-        if (!api.subscriptionRequired) return;
-
-        const userId = await usersService.getCurrentUserId();
-        if (!userId) return;
-
-        const pageOfProducts = await apiService.getAllApiProducts(api.id);
-        const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
-        const pageOfSubscriptions = await productService.getSubscriptions(userId);
-        const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === SubscriptionState.active);
-        const availableProducts = [];
-
-        products.forEach(product => {
-            const keys = [];
-
-            subscriptions.forEach(subscription => {
-                if (!productService.isScopeSuitable(subscription.scope, api.name, product.name)) {
-                    return;
-                }
-
-                keys.push({
-                    name: `Primary: ${subscription.name?.trim() || subscription.primaryKey.substr(0, 4)}`,
-                    value: subscription.primaryKey
-                });
-
-                keys.push({
-                    name: `Secondary: ${subscription.name?.trim() || subscription.secondaryKey.substr(0, 4)}`,
-                    value: subscription.secondaryKey
-                });
-            });
-
-            if (keys.length > 0) {
-                availableProducts.push({ name: product.displayName, subscriptionKeys: keys });
-            }
-        });
-
-        return availableProducts;
     }
 
     const setSubscriptionHeader = (key?: string): ConsoleHeader[] => {
@@ -220,156 +163,11 @@ export const OperationConsole = ({
     
         return newHeaders;
     }
-    
-    const setAuthHeader = (accessToken: string): ConsoleHeader[] => {
-        const headers = consoleOperation.current.request?.headers();
-        const oldHeader = headers.find(header => header.name() === KnownHttpHeaders.Authorization);
-    
-        if (oldHeader) {
-            const newHeaders: ConsoleHeader[] = headers.map(header => {
-                header.id === oldHeader.id && header.value(accessToken);
-                return header;
-            });
-    
-            return newHeaders;
-        }
-    
-        const authHeader = new ConsoleHeader();
-        authHeader.name(KnownHttpHeaders.Authorization);
-        authHeader.value(accessToken);
-        authHeader.description = "Authorization header.";
-        authHeader.required = false;
-        authHeader.secret(true);
-        authHeader.type = "string";
-        authHeader.inputTypeValue("password");
-    
-        headers.push(authHeader);
-    
-        return headers;
-    }   
-
-    const setupOAuth = async (authServer: AuthorizationServer) => {
-        const serverName = authServer.name;
-
-        const scopeOverride = getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
-        const storedCredentials = await getStoredCredentials(serverName, scopeOverride);
-
-        console.log("storedCredentials: ", storedCredentials);
-
-        let newHeaders: ConsoleHeader[];
-
-        if (storedCredentials) {
-            //this.selectedGrantType(storedCredentials.grantType); //TODO
-            newHeaders = setAuthHeader(storedCredentials.accessToken);
-        }
-
-        return newHeaders;
-    }
-
-    const getSelectedAuthServerOverrideScope = (selectedAuthServerName: string, oAuth2Settings: OAuth2AuthenticationSettings[]): string => {
-        if (selectedAuthServerName && oAuth2Settings) {
-            const authServerName = selectedAuthServerName.toLowerCase();
-            const setting = oAuth2Settings.find(setting => setting.authorizationServerId?.toLowerCase() == authServerName);
-            return setting?.scope;
-        }
-
-        return null;
-    }
-    
-    const clearStoredCredentials = async (): Promise<void> => {
-        await sessionManager.removeItem(oauthSessionKey);
-    }
-
-    const getStoredCredentials = async (serverName: string, scopeOverride: string): Promise<StoredCredentials> => {
-        const oauthSession = await sessionManager.getItem<OAuthSession>(oauthSessionKey);
-        const recordKey = serverName + (scopeOverride ? `-${scopeOverride}` : "");
-        const storedCredentials = oauthSession?.[recordKey];
-
-        try {
-            /* Trying to check if it's a JWT token and, if yes, whether it got expired. */
-            const jwtToken = Utils.parseJwt(storedCredentials.accessToken.replace(/^bearer /i, ""));
-            const now = new Date();
-
-            if (now > jwtToken.exp) {
-                await clearStoredCredentials();
-                return null;
-            }
-        }
-        catch (error) {
-            // do nothing
-        }
-
-        return storedCredentials;
-    }
-
-    const setStoredCredentials = async (serverName: string, scopeOverride: string, grantType: string, accessToken: string): Promise<void> => {
-        const oauthSession = await sessionManager.getItem<OAuthSession>(oauthSessionKey) || {};
-        const recordKey = serverName + (scopeOverride ? `-${scopeOverride}` : "");
-
-        oauthSession[recordKey] = {
-            grantType: grantType,
-            accessToken: accessToken
-        };
-
-        await sessionManager.setItem<object>(oauthSessionKey, oauthSession);
-    }
 
     const setSubscriptionKeyHeader = (key: string = ""): void => {
         const newHeaders = setSubscriptionHeader(key);
         consoleOperation.current.request.headers(newHeaders);
         rerender();
-    }
-
-    const onGrantTypeChange = async (authorizationServer: AuthorizationServer, grantType: string): Promise<void> => {
-        await clearStoredCredentials();
-
-        if (!grantType || grantType === GrantTypes.password) {
-            const authHeader = consoleOperation.current.request.headers().find(header => header.name() === KnownHttpHeaders.Authorization);
-            if (authHeader) {
-                const newHeaders = consoleOperation.current.request.headers().filter(header => header.id !== authHeader.id);
-                consoleOperation.current.request.headers(newHeaders);
-                rerender();
-            }
-            return;
-        }
-
-        await authenticateOAuth(authorizationServer, grantType);
-    }
-
-    const authenticateOAuth = async (authorizationServer: AuthorizationServer, grantType: string): Promise<void> => {
-        if (!authorizationServer) return;
-
-        const serverName = authorizationServer.name;
-        const scopeOverride = getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
-
-        if (scopeOverride) {
-            authorizationServer.scopes = [scopeOverride];
-        }
-
-        const accessToken = await oauthService.authenticate(grantType, authorizationServer, api.name);
-
-        if (!accessToken) {
-            return;
-        }
-
-        await setStoredCredentials(serverName, scopeOverride, grantType, accessToken);
-        setAuthHeader(accessToken);
-    }
-
-    const authenticateOAuthWithPassword = async (authorizationServer: AuthorizationServer, username: string, password: string): Promise<void> => {
-        if (!authorizationServer) return;
-
-        const serverName = authorizationServer.name;
-        const scopeOverride = getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
-
-        if (scopeOverride) {
-            authorizationServer.scopes = [scopeOverride];
-        }
-
-        const accessToken = await oauthService.authenticatePassword(username, password, authorizationServer);
-        await setStoredCredentials(serverName, scopeOverride, GrantTypes.password, accessToken);
-
-        setAuthHeader(accessToken);
     }
 
     const updateHostname = (hostname: string) => {
@@ -476,11 +274,15 @@ export const OperationConsole = ({
                         }
                         {(authorizationServers.length > 0 || api.subscriptionRequired) &&
                             <ConsoleAuthorization
-                                authorizationServers={authorizationServers}
-                                subscriptionRequired={api.subscriptionRequired}
+                                api={api}
+                                headers={consoleOperation.current.request.headers()}
                                 products={products}
-                                onGrantTypeChange={onGrantTypeChange}
-                                authorizeWithPassword={authenticateOAuthWithPassword}
+                                subscriptionRequired={api.subscriptionRequired}
+                                subscriptionKey={selectedSubscriptionKey}
+                                authorizationServers={authorizationServers}
+                                sessionManager={sessionManager}
+                                oauthService={oauthService}
+                                updateHeaders={updateHeaders}
                                 selectSubscriptionKey={setSelectedSubscriptionKey}
                             />
                         }

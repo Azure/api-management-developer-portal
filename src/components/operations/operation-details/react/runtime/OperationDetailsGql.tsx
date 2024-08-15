@@ -43,11 +43,10 @@ import { GraphqlService, TGraphqlTypes } from "../../../../../services/graphqlSe
 import { UsersService } from "../../../../../services/usersService";
 import { ProductService } from "../../../../../services/productService";
 import { OAuthService } from "../../../../../services/oauthService";
-import { TenantService } from "../../../../../services/tenantService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { CodeSnippet } from "../../../../utils/react/CodeSnippet";
-import { GraphqlDefaultScalarTypes, GraphqlFieldTypes } from "../../../../../constants";
+import { GraphqlCustomFieldNames, GraphqlDefaultScalarTypes, GraphqlFieldTypes } from "../../../../../constants";
 import { TSchemaView } from "./OperationRepresentation";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
 import { getRequestUrl, scrollToOperation } from "./utils";
@@ -63,7 +62,6 @@ export const OperationDetailsGql = ({
     usersService,
     productService,
     oauthService,
-    tenantService,
     routeHelper,
     settingsProvider,
     sessionManager,
@@ -82,7 +80,6 @@ export const OperationDetailsGql = ({
     usersService: UsersService,
     productService: ProductService,
     oauthService: OAuthService,
-    tenantService: TenantService,
     routeHelper: RouteHelper,
     settingsProvider: ISettingsProvider,
     sessionManager: SessionManager,
@@ -258,13 +255,14 @@ export const OperationDetailsGql = ({
                             setIsOpen={setIsConsoleOpen}
                             api={api}
                             hostnames={hostnames}
+                            selectedGraphType={graph[GraphqlCustomFieldNames.type]()}
+                            selectedGraphName={graph.name}
                             useCorsProxy={useCorsProxy}
                             apiService={apiService}
                             graphqlService={graphqlService}
                             usersService={usersService}
                             productService={productService}
                             oauthService={oauthService}
-                            tenantService={tenantService}
                             routeHelper={routeHelper}
                             settingsProvider={settingsProvider}
                             sessionManager={sessionManager}

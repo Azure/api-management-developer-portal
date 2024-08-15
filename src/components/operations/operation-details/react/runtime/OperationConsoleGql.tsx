@@ -1,28 +1,30 @@
 import * as React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import * as GraphQL from "graphql";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { saveAs } from "file-saver";
-import { getExtension } from "mime";
+import { useCallback, useEffect, useState } from "react";
+import Editor, { Monaco } from '@monaco-editor/react';
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
-import { HttpClient, HttpHeader, HttpMethod, HttpRequest } from "@paperbits/common/http";
+import { HttpClient, HttpRequest } from "@paperbits/common/http";
 import { Stack } from "@fluentui/react";
 import {
+    Accordion,
+    AccordionHeader,
+    AccordionItem,
+    AccordionPanel,
     Body1,
-    Body1Strong,
     Breadcrumb,
     BreadcrumbButton,
     BreadcrumbDivider,
     BreadcrumbItem,
     Button,
+    Checkbox,
     DrawerBody,
     DrawerHeader,
     DrawerHeaderTitle,
     Dropdown,
+    Input,
     Option,
     OverlayDrawer,
+    SearchBox,
     Spinner,
     Tab,
     TabList,
@@ -30,76 +32,45 @@ import {
     isTruncatableBreadcrumbContent,
     truncateBreadcrumbLongName
 } from "@fluentui/react-components";
-import { ChevronUp20Regular, Copy16Regular, DismissRegular, EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
+import { DismissRegular, SearchRegular } from "@fluentui/react-icons";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Api } from "../../../../../models/api";
-import { Operation } from "../../../../../models/operation";
-import { ConsoleOperation } from "../../../../../models/console/consoleOperation";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
+import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
+import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ApiService } from "../../../../../services/apiService";
 import { OAuthService } from "../../../../../services/oauthService";
 import { ProductService } from "../../../../../services/productService";
-import { TemplatingService } from "../../../../../services/templatingService";
-import { TenantService } from "../../../../../services/tenantService";
 import { UsersService } from "../../../../../services/usersService";
-import { SubscriptionState } from "../../../../../contracts/subscription";
-import { OAuth2AuthenticationSettings } from "../../../../../contracts/authenticationSettings";
-import { GrantTypes, GraphqlTypes, RequestBodyType, ServiceSkuName, TypeOfApi, downloadableTypes, oauthSessionKey } from "../../../../../constants";
+import { GraphqlService, TGraphqlTypes } from "../../../../../services/graphqlService";
+import { GraphqlProtocols } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
 import { ConsoleAuthorization } from "./operation-console/ConsoleAuthorization";
 import { ConsoleHeaders } from "./operation-console/ConsoleHeaders";
-import { ConsoleBody } from "./operation-console/ConsoleBody";
 import { ConsoleParameters } from "./operation-console/ConsoleParameters";
-import { templates } from "./operation-console/templates/templates";
-import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
-import { ConsoleHosts } from "./operation-console/ConsoleHosts";
-
-
-import { HttpResponse } from "../../../../../contracts/httpResponse";
-import { KnownStatusCodes } from "../../../../../models/knownStatusCodes";
-import { RequestError } from "../../../../../errors/requestError";
-import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
-import { ConsoleRequestResponse } from "./operation-console/ConsoleRequestResponse";
-import { set } from "idb-keyval";
-import { GraphQLInputTreeNode, GraphQLOutputTreeNode, GraphQLTreeNode, getType } from "../../ko/runtime/graphql-utilities/graphql-node-models";
-import { GraphqlService, TGraphqlTypes } from "../../../../../services/graphqlService";
-import { OperationNodes, createFieldStringFromNodes, loadGQLSchema } from "./operation-console/graphqlUtils";
+import { OperationNodes, createFieldStringFromNodes, documentToTree, loadGQLSchema } from "./operation-console/graphqlUtils";
+import { ResponsePackage, getAuthServers, getBackendUrl, loadSubscriptionKeys,setupOAuth } from "./operation-console/consoleUtils";
+import { GraphQLInputTreeNode, GraphQLTreeNode } from "./operation-console/graphql-utilities/graphql-node-models";
 
 type OperationConsoleProps = {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
     api: Api;
     hostnames: string[];
+    selectedGraphType: string;
+    selectedGraphName: string;
     useCorsProxy: boolean;
     apiService: ApiService;
     graphqlService: GraphqlService;
     usersService: UsersService;
     productService: ProductService;
     oauthService: OAuthService;
-    tenantService: TenantService;
     routeHelper: RouteHelper;
     settingsProvider: ISettingsProvider;
     sessionManager: SessionManager;
     httpClient: HttpClient;
-}
-
-interface StoredCredentials {
-    grantType: string;
-    accessToken: string;
-}
-
-interface OAuthSession {
-    [apiName: string]: StoredCredentials;
-}
-
-interface ResponsePackage {
-    statusCode: number;
-    statusMessage: string;
-    headers: HttpHeader[];
-    body: any;
 }
 
 enum ConsoleTab {
@@ -110,22 +81,19 @@ enum ConsoleTab {
     response = "response"
 }
 
-interface GraphqlTreeNode {
-    
-}
-
 export const OperationConsoleGql = ({
     isOpen,
     setIsOpen,
     api,
     hostnames,
+    selectedGraphType,
+    selectedGraphName,
     useCorsProxy,
     apiService,
     graphqlService,
     usersService,
     productService,
     oauthService,
-    tenantService,
     routeHelper,
     settingsProvider,
     sessionManager,
@@ -133,58 +101,53 @@ export const OperationConsoleGql = ({
 }: OperationConsoleProps) => {
     const [working, setWorking] = useState<boolean>(false);
     const [sendingRequest, setSendingRequest] = useState<boolean>(false);
-    const [hasInitialAuthHeader, setHasInitialAuthHeader] = useState<boolean>(false);
+    const [selectedTab, setSelectedTab] = useState<string>(ConsoleTab.auth);
+    const [backendUrl, setBackendUrl] = useState<string>("");
     const [authorizationServers, setAuthorizationServers] = useState<AuthorizationServer[]>([]);
     const [products, setProducts] = useState<any[]>([]);
     const [selectedSubscriptionKey, setSelectedSubscriptionKey] = useState<string>(null);
-
-    const [backendUrl, setBackendUrl] = useState<string>("");
-
-    const [forceRerender, setForceRerender] = useState<number>(1);
-    const rerender = useCallback(() => setForceRerender(old => old + 1), []);
-
     const [queryParameters, setQueryParameters] = useState<ConsoleParameter[]>([]);
     const [headers, setHeaders] = useState<ConsoleHeader[]>([]);
-    const [selectedTab, setSelectedTab] = useState<string>("auth");
-    const [host, setHost] = useState<string>(hostnames[0]);
+    const [availableGraphqlTypes, setAvailableGraphqlTypes] = useState<string[]>([]);
     const [globalNodes, setGlobalNodes] = useState<GraphQLTreeNode[]>([]);
     const [operationNodes, setOperationNodes] = useState<OperationNodes>({ query: null, mutation: null, subscription: null });
     const [document, setDocument] = useState<string>("");
+    const [schema, setSchema] = useState<string>("");
+    const [pattern, setPattern] = useState<string>("");
+    const [queryVariables, setQueryVariables] = useState<string>("");
+    const [response, setResponse] = useState<string>("");
 
-    const generateDocument = useCallback(() => {
-        const document = `${createFieldStringFromNodes(globalNodes, 0)}`;
-        console.log("document: ", document);
+    const generateDocument = useCallback((globalNodes) => {
+        const document = createFieldStringFromNodes(globalNodes, 0);
         setDocument(document);
     }, []);
 
     useEffect(() => {
         setWorking(true);
-        console.log('hostnames: ', hostnames);
-        //consoleOperation.current.host.hostname(hostnames[0]);
         setDefaultHeader();
-        Promise.all([            
-            getAuthServers().then(authServers => {
+        Promise.all([
+            getAuthServers(api, oauthService).then(authServers => {
                 setAuthorizationServers(authServers);
                 if (authServers?.length > 0) {
-                    setupOAuth(authServers[0]).then(newHeaders => {
+                    setupOAuth(api, authServers[0], headers, sessionManager).then(newHeaders => {
                         setHeaders(newHeaders);
                     });
                 }
             }),
-            loadSubscriptionKeys().then(products => {
+            loadSubscriptionKeys(api, apiService, productService, usersService).then(products => {
                 setProducts(products);
                 if (products?.length > 0) {
                     setSelectedSubscriptionKey(products[0].subscriptionKeys[0]?.value);
                 }
-                console.log("products: ", products);
             }),
-            loadGQLSchema(api, apiService, graphqlService, generateDocument).then(({ operationNodes, globalNodes }) => {
-                setOperationNodes(operationNodes);
-                setGlobalNodes(globalNodes);
-            }),
-            loadAvailableGraphValues(),
-            //getSkuName().then(skuName => setIsConsumptionMode(skuName === ServiceSkuName.Consumption)),
-            getBackendUrl().then(url => setBackendUrl(url))
+            loadGQLSchema(api, selectedGraphType, selectedGraphName, apiService, graphqlService, generateDocument)
+                .then(({ operationNodes, globalNodes, schema, availableGraphqlTypes }) => {
+                    setOperationNodes(operationNodes);
+                    setGlobalNodes(globalNodes);
+                    setSchema(schema);
+                    setAvailableGraphqlTypes(availableGraphqlTypes);
+                }),
+            getBackendUrl(settingsProvider).then(url => setBackendUrl(url))
         ])
         .catch(error => new Error(`Unable to load the console details. Error: ${error.message}`))
         .finally(() => {
@@ -197,94 +160,8 @@ export const OperationConsoleGql = ({
     }, [selectedSubscriptionKey]);
 
     useEffect(() => {
-        console.log("globalNodes: ", globalNodes);
-        generateDocument();
+        generateDocument(globalNodes);
     }, [globalNodes, generateDocument]);
-
-    const getSkuName = async (): Promise<string> => {
-        return await tenantService.getServiceSkuName();
-    }
-
-    const getBackendUrl = async (): Promise<string> => {
-        return await settingsProvider.getSetting<string>("backendUrl");
-    }
-
-    const getAuthServers = async (): Promise<AuthorizationServer[]> => {
-        let associatedAuthServers: AuthorizationServer[];
-
-        if (api.authenticationSettings?.oAuth2AuthenticationSettings?.length > 0) {
-            associatedAuthServers = await oauthService.getOauthServers(api.id);
-        } else if (api.authenticationSettings?.openidAuthenticationSettings?.length > 0) {
-            associatedAuthServers = await oauthService.getOpenIdAuthServers(api.id);
-        }
-
-        return associatedAuthServers ? associatedAuthServers.filter(a => a.useInTestConsole) : [];
-    }
-
-    const loadSubscriptionKeys = async () => {
-        if (!api.subscriptionRequired) return;
-
-        // const userId = await usersService.getCurrentUserId();
-        // if (!userId) return;
-        
-        const userId = '/users/1';
-
-        const pageOfProducts = await apiService.getAllApiProducts(api.id);
-        const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
-        const pageOfSubscriptions = await productService.getSubscriptions(userId);
-        const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === SubscriptionState.active);
-        const availableProducts = [];
-
-        products.forEach(product => {
-            const keys = [];
-
-            subscriptions.forEach(subscription => {
-                if (!productService.isScopeSuitable(subscription.scope, api.name, product.name)) {
-                    return;
-                }
-
-                keys.push({
-                    name: `Primary: ${subscription.name?.trim() || subscription.primaryKey.substr(0, 4)}`,
-                    value: subscription.primaryKey
-                });
-
-                keys.push({
-                    name: `Secondary: ${subscription.name?.trim() || subscription.secondaryKey.substr(0, 4)}`,
-                    value: subscription.secondaryKey
-                });
-            });
-
-            if (keys.length > 0) {  
-                availableProducts.push({ name: product.displayName, subscriptionKeys: keys });
-            }
-        });
-
-        return availableProducts;
-    }
-
-   
-
-    const loadAvailableGraphValues = async () => {
-        let graphqlTypes: TGraphqlTypes;
-        let availableGraphqlTypes: string[];
-
-        try {
-            graphqlTypes = (await graphqlService.getGraphqlTypesAndSchema(api.name))?.graphqlTypes;
-            availableGraphqlTypes = await graphqlService.getAvailableGraphqlTypes(graphqlTypes);
-
-            if (availableGraphqlTypes) {
-                console.log("availableGraphqlTypes: ", availableGraphqlTypes);
-            }
-        } catch (error) {
-            throw new Error(`Unable to get GraphQL types. Error: ${error.message}`);
-        }
-
-        return availableGraphqlTypes;
-    }
-
-    
-
-   
 
     const setDefaultHeader = () => {
         const defaultHeader = new ConsoleHeader();
@@ -319,153 +196,23 @@ export const OperationConsoleGql = ({
         
         newQueryParaemeters.push(keyParameter);
         setQueryParameters([...newQueryParaemeters]);
+    }       
+
+    const handleEditorWillMount = (editor, monaco: Monaco) => {
+        monaco.editor.createModel(schema, 'graphql');
     }
-    
-    const setAuthHeader = (accessToken: string): ConsoleHeader[] => {
-        const headersArray = headers;
-        const oldHeader = headersArray.find(header => header.name() === KnownHttpHeaders.Authorization);
-    
-        if (oldHeader) {
-            const newHeaders: ConsoleHeader[] = headersArray.map(header => {
-                header.id === oldHeader.id && header.value(accessToken);
-                return header;
-            });
-    
-            return newHeaders;
+
+    const handleQueryEditorChange = (value: string, event: any) => {
+        const nodes = documentToTree(value, globalNodes);
+        if (nodes) {
+            setGlobalNodes(nodes);
+            setDocument(value);
         }
-    
-        const authHeader = new ConsoleHeader();
-        authHeader.name(KnownHttpHeaders.Authorization);
-        authHeader.value(accessToken);
-        authHeader.description = "Authorization header.";
-        authHeader.required = false;
-        authHeader.secret(true);
-        authHeader.type = "string";
-        authHeader.inputTypeValue("password");
-    
-        headersArray.push(authHeader);
-    
-        return headersArray;
     }
 
-    const setupOAuth = async (authServer: AuthorizationServer) => {
-        const serverName = authServer.name;
-
-        const scopeOverride = getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
-        const storedCredentials = await getStoredCredentials(serverName, scopeOverride);
-
-        console.log("storedCredentials: ", storedCredentials);
-
-        let newHeaders: ConsoleHeader[];
-
-        if (storedCredentials) {
-            //this.selectedGrantType(storedCredentials.grantType);
-            newHeaders = setAuthHeader(storedCredentials.accessToken);
-        }
-
-        return newHeaders;
+    const handleVariablesEditorChange = (value: string, event: any) => {
+        setQueryVariables(value);
     }
-
-    const getSelectedAuthServerOverrideScope = (selectedAuthServerName: string, oAuth2Settings: OAuth2AuthenticationSettings[]): string => {
-        if (selectedAuthServerName && oAuth2Settings) {
-            const authServerName = selectedAuthServerName.toLowerCase();
-            const setting = oAuth2Settings.find(setting => setting.authorizationServerId?.toLowerCase() == authServerName);
-            return setting?.scope;
-        }
-
-        return null;
-    }
-    
-    const clearStoredCredentials = async (): Promise<void> => {
-        await sessionManager.removeItem(oauthSessionKey);
-    }
-
-    const getStoredCredentials = async (serverName: string, scopeOverride: string): Promise<StoredCredentials> => {
-        const oauthSession = await sessionManager.getItem<OAuthSession>(oauthSessionKey);
-        const recordKey = serverName + (scopeOverride ? `-${scopeOverride}` : "");
-        const storedCredentials = oauthSession?.[recordKey];
-
-        try {
-            /* Trying to check if it's a JWT token and, if yes, whether it got expired. */
-            const jwtToken = Utils.parseJwt(storedCredentials.accessToken.replace(/^bearer /i, ""));
-            const now = new Date();
-
-            if (now > jwtToken.exp) {
-                await clearStoredCredentials();
-                return null;
-            }
-        }
-        catch (error) {
-            // do nothing
-        }
-
-        return storedCredentials;
-    }
-
-    const setStoredCredentials = async (serverName: string, scopeOverride: string, grantType: string, accessToken: string): Promise<void> => {
-        const oauthSession = await sessionManager.getItem<OAuthSession>(oauthSessionKey) || {};
-        const recordKey = serverName + (scopeOverride ? `-${scopeOverride}` : "");
-
-        oauthSession[recordKey] = {
-            grantType: grantType,
-            accessToken: accessToken
-        };
-
-        await sessionManager.setItem<object>(oauthSessionKey, oauthSession);
-    }
-
-    const onGrantTypeChange = async (authorizationServer: AuthorizationServer, grantType: string): Promise<void> => {
-        await clearStoredCredentials();
-
-        if (!grantType || grantType === GrantTypes.password) {
-            const authHeader = headers.find(header => header.name() === KnownHttpHeaders.Authorization);
-            if (authHeader) {
-                const newHeaders = headers.filter(header => header.id !== authHeader.id);
-                setHeaders([...newHeaders]);
-            }
-            return;
-        }
-
-        await authenticateOAuth(authorizationServer, grantType);
-    }
-
-    const authenticateOAuth = async (authorizationServer: AuthorizationServer, grantType: string): Promise<void> => {
-        if (!authorizationServer) return;
-
-        const serverName = authorizationServer.name;
-        const scopeOverride = getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
-
-        if (scopeOverride) {
-            authorizationServer.scopes = [scopeOverride];
-        }
-
-        const accessToken = await oauthService.authenticate(grantType, authorizationServer, api.name);
-
-        if (!accessToken) {
-            return;
-        }
-
-        await setStoredCredentials(serverName, scopeOverride, grantType, accessToken);
-        setAuthHeader(accessToken);
-    }
-
-    const authenticateOAuthWithPassword = async (authorizationServer: AuthorizationServer, username: string, password: string): Promise<void> => {
-        if (!authorizationServer) return;
-
-        const serverName = authorizationServer.name;
-        const scopeOverride = getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
-
-        if (scopeOverride) {
-            authorizationServer.scopes = [scopeOverride];
-        }
-
-        const accessToken = await oauthService.authenticatePassword(username, password, authorizationServer);
-        await setStoredCredentials(serverName, scopeOverride, GrantTypes.password, accessToken);
-
-        setAuthHeader(accessToken);
-    }
-
-
 
     const updateParameters = (queryParameters: ConsoleParameter[]) => {
         setQueryParameters(queryParameters);
@@ -477,6 +224,130 @@ export const OperationConsoleGql = ({
 
     const getApiReferenceUrl = (): string => {
         return routeHelper.getApiReferenceUrl(api.name);
+    }
+
+    const addParam = (uri: string, name: string, value: string): string => {
+        const separator = uri.indexOf("?") >= 0 ? "&" : "?";
+        const paramString = !value || value === "" ? name : name + "=" + value;
+
+        return uri + separator + paramString;
+    }
+
+    const getRequestPath = (getHidden: boolean = false): string => {
+        let versionPath = "";
+        if (api.apiVersionSet && api.apiVersion && api.apiVersionSet.versioningScheme === "Segment") {
+            versionPath = `/${api.apiVersion}`;
+        }
+
+        let requestUrl = `${api.path}${versionPath}`;
+
+        queryParameters.forEach(parameter => {
+            if (parameter.value()) {
+                const parameterPlaceholder = parameter.name() !== "*" ? `{${parameter.name()}}` : "*";
+                const encodedValue = Utils.encodeURICustomized(parameter.value());
+                if (requestUrl.indexOf(parameterPlaceholder) > -1) {
+                    requestUrl = requestUrl.replace(parameterPlaceholder,
+                        !getHidden || !parameter.secret ? encodedValue
+                            : (parameter.revealed() ? encodedValue : parameter.value().replace(/./g, "•")));
+                }
+                else {
+                    requestUrl = addParam(requestUrl, Utils.encodeURICustomized(parameter.name()),
+                        !getHidden || !parameter.secret ? encodedValue
+                            : (parameter.revealed() ? encodedValue : parameter.value().replace(/./g, "•")));
+                }
+            }
+        });
+
+        if (api.apiVersionSet && api.apiVersionSet.versioningScheme === "Query") {
+            requestUrl = addParam(requestUrl, api.apiVersionSet.versionQueryName, api.apiVersion);
+        }
+
+        return requestUrl;
+    }
+
+    const requestUrl = (): string => {
+        const protocol = api.protocols.includes(GraphqlProtocols.https) ? GraphqlProtocols.https : GraphqlProtocols.http;
+        const urlTemplate = getRequestPath();
+        let result = hostnames[0] ? `${protocol}://${hostnames[0]}` : "";
+        result += Utils.ensureLeadingSlash(urlTemplate);
+        return result;
+    }
+
+    const sendRequest = async () => {
+        setSendingRequest(true);
+
+        const payload = JSON.stringify({
+            query: document,
+            variables: queryVariables.length > 0 ? JSON.parse(queryVariables) : null
+        });
+
+        const request: HttpRequest = {
+            url: requestUrl(),
+            method: "POST",
+            headers: headers.map(x => { return { name: x.name(), value: x.value() ?? "" }; }).filter(x => !!x.name && !!x.value),
+            body: payload
+        };
+
+        try {
+            let response;
+            if (useCorsProxy) {
+                response = await sendFromProxy(request);
+            }
+            else {
+                response = await sendFromBrowser(request);
+            }
+            const responseStr = Buffer.from(response.body.buffer).toString();
+            setSelectedTab(ConsoleTab.response);
+            setResponse(responseStr);
+        }
+        catch (error) {
+            return;
+        }
+        finally {
+            setSendingRequest(false);
+        }
+    }
+
+    const sendFromProxy = async (request: HttpRequest) => {
+        if (request.body) {
+            request.body = Buffer.from(request.body);
+        }
+
+        const formData = new FormData();
+        const requestPackage = new Blob([JSON.stringify(request)], { type: KnownMimeTypes.Json });
+        formData.append("requestPackage", requestPackage);
+
+        const baseProxyUrl = backendUrl || "";
+        const apiName = api.name;
+
+        const proxiedRequest: HttpRequest = {
+            url: `${baseProxyUrl}/send`,
+            method: "POST",
+            headers: [{ name: "X-Ms-Api-Name", value: apiName }],
+            body: formData
+        };
+
+        const proxiedResponse = await httpClient.send<ResponsePackage>(proxiedRequest);
+        const responsePackage = proxiedResponse.toObject();
+
+        const responseBodyBuffer = responsePackage.body
+            ? Buffer.from(responsePackage.body.data)
+            : null;
+
+        const response: any = {
+            headers: responsePackage.headers,
+            statusCode: responsePackage.statusCode,
+            statusText: responsePackage.statusMessage,
+            body: responseBodyBuffer,
+            toText: () => responseBodyBuffer.toString("utf8")
+        };
+
+        return response;
+    }
+
+    const sendFromBrowser = async (request: HttpRequest) => {
+        const response = await httpClient.send<any>(request);
+        return response;
     }
 
     const renderBreadcrumbItem = (name: string, isCurrent: boolean, url?: string) => (
@@ -494,12 +365,46 @@ export const OperationConsoleGql = ({
         </>
     )
 
+    const renderNode = (node: GraphQLTreeNode, isChild = false): JSX.Element[] => {
+        return node.children()?.map((child: GraphQLTreeNode) => {
+            if (!isChild && !child.label().includes(pattern)) return;
+            
+            return (
+                <div key={child.label()} className={`console-gql-node${isChild ? ' child-node' : ''}${child.isInputNode() ? ' input-node': ''}`}>
+                    <Checkbox
+                        label={child.label()}
+                        checked={child.selected()}
+                        onChange={() => child.toggle()}
+                        required={child.isRequired()}
+                    />
+                    {(child.selected() && child.isInputNode())
+                        && child.isEnumType()
+                            ? <Dropdown
+                                value={(child as GraphQLInputTreeNode).inputValue()}
+                                onOptionSelect={(_, data) => (child as GraphQLInputTreeNode).changeInputValue(data.optionValue)}
+                            >
+                                {(child as GraphQLInputTreeNode).options()?.map(option => (
+                                    <Option key={option} value={option}>{option}</Option>
+                                ))}
+                            </Dropdown>
+                            : (child.isScalarType() && (child as GraphQLInputTreeNode).inputValue)
+                                && <Input
+                                        value={(child as GraphQLInputTreeNode).inputValue()}
+                                        onChange={(_, data) => (child as GraphQLInputTreeNode).changeInputValue(data.value)} 
+                                    />
+                            }
+                    {child.selected() && renderNode(child, true)}
+                </div>
+            );
+        });
+    }
+
     return (
         <OverlayDrawer
             open={isOpen}
             onOpenChange={(_, { open }) => setIsOpen(open)}
             position="end"
-            size="large"
+            size="full"
             className="console-drawer"
         >
             <DrawerHeader>
@@ -526,7 +431,7 @@ export const OperationConsoleGql = ({
                     </Breadcrumb>
                 </DrawerHeaderTitle>
             </DrawerHeader>
-            <DrawerBody>
+            <DrawerBody className={"console-gql-drawer"}>
                 {working
                     ? <Spinner label="Loading..." labelPosition="below" size="small" />
                     : <>
@@ -535,57 +440,98 @@ export const OperationConsoleGql = ({
                             <Button
                                 appearance="primary"
                                 disabled={sendingRequest}
-                                //onClick={() => sendRequest()}
+                                onClick={() => sendRequest()}
                             >
                                 {sendingRequest ? "Sending" : "Send"}
                             </Button>
                         </Stack>
-                        <Stack horizontal>
-                            <Stack.Item>
-
+                        <Stack horizontal className={"console-gql-body"}>
+                            <Stack.Item className={"gql-explorer"}>
+                                <SearchBox
+                                    onChange={(_, { value }) => setPattern(value)}
+                                    contentBefore={<SearchRegular className={"fui-search-icon"} />}
+                                    placeholder={"Search operations"}
+                                    aria-label={"Search operations"}
+                                    className={"gql-search"}
+                                />
+                                <Accordion multiple collapsible defaultOpenItems={selectedGraphType}>
+                                    {globalNodes.length > 0 &&
+                                        globalNodes.map((node, index) => (
+                                            <AccordionItem key={index} value={node.label()}>
+                                                <AccordionHeader><Body1 className={"level0-node-label"}>{node.label()}</Body1></AccordionHeader>
+                                                <AccordionPanel>{renderNode(node)}</AccordionPanel>
+                                            </AccordionItem>
+                                        ))
+                                    }
+                                </Accordion>
                             </Stack.Item>
-                            <Stack.Item>
+                            <Stack.Item grow>
                                 <Stack>
-                                    <Stack.Item>
-                                        
+                                    <Stack.Item className={"gql-query-editor"}>
+                                        <Editor
+                                            height="500px"
+                                            value={document}
+                                            language="graphql"
+                                            onMount={handleEditorWillMount}
+                                            onChange={handleQueryEditorChange}
+                                        />
                                     </Stack.Item>
                                     <Stack.Item>
-                                        <TabList onTabSelect={(event, data) => setSelectedTab(data.value as string)}>
+                                        <TabList
+                                            onTabSelect={(_, data) => setSelectedTab(data.value as string)}
+                                            className={"gql-tabs"}
+                                        >
                                             {(authorizationServers.length > 0 || api.subscriptionRequired) && <Tab value={ConsoleTab.auth}>Authorization</Tab>}
                                             <Tab value={ConsoleTab.parameters}>Parameters</Tab>
                                             <Tab value={ConsoleTab.headers}>Headers</Tab>
                                             <Tab value={ConsoleTab.queryVariables}>Query variables</Tab>
                                             <Tab value={ConsoleTab.response}>Response</Tab>
                                         </TabList>
+                                        <div className={`gql-tab-content${selectedTab === ConsoleTab.queryVariables ? ' query-variables-tab': ''}`}>                                        
+                                            {selectedTab === ConsoleTab.auth && (authorizationServers.length > 0 || api.subscriptionRequired) &&
+                                                <ConsoleAuthorization
+                                                    api={api}
+                                                    headers={headers}
+                                                    products={products}
+                                                    subscriptionRequired={api.subscriptionRequired}
+                                                    subscriptionKey={selectedSubscriptionKey}
+                                                    authorizationServers={authorizationServers}
+                                                    sessionManager={sessionManager}
+                                                    oauthService={oauthService}
+                                                    updateHeaders={updateHeaders}
+                                                    selectSubscriptionKey={setSelectedSubscriptionKey}
+                                                    isGqlConsole={true}
+                                                />
+                                            }
+                                            {selectedTab === ConsoleTab.parameters &&
+                                                <ConsoleParameters
+                                                    queryParameters={queryParameters}
+                                                    updateParameters={updateParameters}
+                                                    isGqlConsole={true}
+                                                />
+                                            }
+                                            {selectedTab === ConsoleTab.headers &&
+                                                <ConsoleHeaders
+                                                    headers={headers}
+                                                    updateHeaders={updateHeaders}
+                                                    isGqlConsole={true}
+                                                />
+                                            }
+                                            {selectedTab === ConsoleTab.queryVariables &&
+                                                <Editor
+                                                    value={queryVariables}
+                                                    language="graphql"
+                                                    onChange={handleVariablesEditorChange}
+                                                />
+                                            }
+                                            {selectedTab === ConsoleTab.response &&
+                                                response
+                                            }
+                                        </div>
                                     </Stack.Item>
                                 </Stack>
                             </Stack.Item>
-                        </Stack>
-                        {selectedTab === ConsoleTab.auth && (authorizationServers.length > 0 || api.subscriptionRequired) &&
-                            <ConsoleAuthorization
-                                authorizationServers={authorizationServers}
-                                subscriptionRequired={api.subscriptionRequired}
-                                products={products}
-                                onGrantTypeChange={onGrantTypeChange}
-                                authorizeWithPassword={authenticateOAuthWithPassword}
-                                selectSubscriptionKey={setSelectedSubscriptionKey}
-                                isGqlConsole={true}
-                            />
-                        }
-                        {selectedTab === ConsoleTab.parameters &&
-                            <ConsoleParameters
-                                queryParameters={queryParameters}
-                                updateParameters={updateParameters}
-                                isGqlConsole={true}
-                            />
-                        }
-                        {selectedTab === ConsoleTab.headers &&
-                            <ConsoleHeaders
-                                headers={headers}
-                                updateHeaders={updateHeaders}
-                                isGqlConsole={true}
-                            />
-                        }
+                        </Stack>                       
                     </>
                 }
             </DrawerBody>

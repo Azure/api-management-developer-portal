@@ -141,7 +141,6 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
                             usersService={this.usersService}
                             productService={this.productService}
                             oauthService={this.oauthService}
-                            tenantService={this.tenantService}
                             routeHelper={this.routeHelper}
                             settingsProvider={this.settingsProvider}
                             sessionManager={this.sessionManager}
