@@ -127,11 +127,7 @@ fui-operation-details {
 }
 
 .operation-table-body-console {
-    padding: 2rem 1rem 2.5rem;
-
-    .auth-detail {
-        max-width: 435px;
-    }
+    padding: 2rem 1rem 2.5rem;    
 
     .auth-detail,
     .param-detail {
@@ -193,5 +189,92 @@ fui-operation-details {
 
     .request-copy-button {
         margin: 0 .5rem;
+    }
+
+    .auth-detail {
+        max-width: 435px;
+    }
+
+    .monaco-editor {
+        height: 500px !important;
+    }
+}
+
+.console-gql-drawer {
+    display: flex;
+    flex-direction: column;
+}
+
+.console-gql-header {
+    background-color: #EBEBEB;
+    width: calc(100% + 3rem);
+    margin-left: -1.5rem;
+    padding: .5rem 1.5rem;
+}
+
+.console-gql-body {
+    height: 100%;
+
+    .gql-search {
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+
+    .gql-explorer {
+        min-width: 300px;
+        padding: 2rem 1.5rem 2rem 0;
+        border-right: 1px solid #E6E6E6;
+
+        .level0-node-label {
+            text-transform: capitalize;
+        }
+    }
+
+    .gql-query-editor {
+        padding-top: 2rem;
+        border-bottom: 1px solid #E6E6E6;
+    }
+
+    .gql-tabs {
+        margin: .75rem 0 1.5rem .75rem;
+    }
+
+    .gql-tab-content {
+        &:not(.query-variables-tab) {
+            margin-left: 1.5rem;
+        }
+
+        .param-detail {
+            margin-bottom: 1rem;
+        }
+
+        .param-name {
+            min-width: 187px; // FUI input width
+        }
+
+        .param-value {
+            margin: 0 .5rem;
+        }
+    }
+}
+
+.console-gql-node {
+    display: flex;
+    flex-direction: column;
+    padding-top: 2px;
+    padding-bottom: 2px;
+
+    &.child-node {
+        padding-left: 20px;
+    }
+
+    &.input-node {
+        .fui-Input {
+            margin-left: 2rem;   
+        }
+
+        .fui-Checkbox__label {
+            color: #707070;
+        }
     }
 }
