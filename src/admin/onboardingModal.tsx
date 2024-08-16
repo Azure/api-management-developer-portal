@@ -90,7 +90,7 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                                     alt={slide.header}
                                 />
                                 <Stack className="carousel-text-container">
-                                    <Text block className="carousel-header">{slide.header}</Text>
+                                    <Text block className="carousel-header" role="heading" aria-level={2}>{slide.header}</Text>
                                     {slide.body}
                                 </Stack>
                             </div>
