@@ -105,7 +105,6 @@ export class Pages extends React.Component<PagesProps, PagesState> {
             horizontalAlign="space-between"
             verticalAlign="center"
             className="nav-item-outer-stack"
-            onClick={async () => await this.router.navigateTo(page.permalink)}
         >
             <Text>{page.title}</Text>
             <FontIcon
@@ -113,10 +112,18 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                 title="Edit"
                 style={iconStyles}
                 className="nav-item-inner"
+                tabIndex={0}
                 onClick={(event) => {
+                    this.setState({ showPagesModal: true, selectedPage: page });
                     event.stopPropagation();
-                    this.setState({ showPagesModal: true, selectedPage: page })}
-                }
+                }}
+                // Required for accessibility
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                        this.setState({ showPagesModal: true, selectedPage: page });
+                        event.preventDefault();
+                    }
+                }}
             />
         </Stack>
     )
@@ -127,7 +134,6 @@ export class Pages extends React.Component<PagesProps, PagesState> {
             horizontalAlign="space-between"
             verticalAlign="center"
             className="nav-item-outer-stack"
-            onClick={async () => this.viewManager.setHost({ name: 'layout-host', params: { layoutKey: layout.key } })}
         >
             <Text block nowrap className="nav-item-title">{layout.title}</Text>
             <FontIcon
@@ -135,10 +141,18 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                 title="Edit"
                 style={iconStyles}
                 className="nav-item-inner"
+                tabIndex={0}
                 onClick={(event) => {
+                    this.setState({ showLayoutModal: true, selectedLayout: layout });
                     event.stopPropagation();
-                    this.setState({ showLayoutModal: true, selectedLayout: layout })}
-                }
+                }}
+                // Required for accessibility
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                        this.setState({ showLayoutModal: true, selectedLayout: layout });
+                        event.preventDefault();
+                    }
+                }}
             />
         </Stack>
     )
@@ -188,6 +202,7 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                                 key={page.key}
                                 className="nav-item-list-button"
                                 onRenderText={() => this.renderPageContent(page)}
+                                onClick={async () => await this.router.navigateTo(page.permalink)}
                             />
                         )}
                     </div>
@@ -218,6 +233,7 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                                 key={layout.key}
                                 className="nav-item-list-button"
                                 onRenderText={() => this.renderPageLayoutContent(layout)}
+                                onClick={async () => this.viewManager.setHost({ name: 'layout-host', params: { layoutKey: layout.key } })}
                             />
                         )}
                     </div>
