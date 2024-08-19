@@ -77,10 +77,18 @@ export class Urls extends React.Component<UrlsProps, UrlsState> {
                 title="Edit"
                 style={iconStyles}
                 className="nav-item-inner"
+                tabIndex={0}
                 onClick={(event) => {
+                    this.setState({ showUrlDetailsModal: true, selectedUrl: url });
                     event.stopPropagation();
-                    this.setState({ showUrlDetailsModal: true, selectedUrl: url })}
-                }
+                }}
+                // Required for accessibility
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                        this.setState({ showUrlDetailsModal: true, selectedUrl: url });
+                        event.preventDefault();
+                    }
+                }}
             />
         </Stack>
     )
