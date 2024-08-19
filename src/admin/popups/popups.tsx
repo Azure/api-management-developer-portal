@@ -77,10 +77,18 @@ export class Popups extends React.Component<PopupsProps, PopupsState> {
                 title="Edit"
                 style={iconStyles}
                 className="nav-item-inner"
+                tabIndex={0}
                 onClick={(event) => {
+                    this.setState({ showPopupDetailsModal: true, selectedPopup: popup });
                     event.stopPropagation();
-                    this.setState({ showPopupDetailsModal: true, selectedPopup: popup })}
-                }
+                }}
+                // Required for accessibility
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                        this.setState({ showPopupDetailsModal: true, selectedPopup: popup });
+                        event.preventDefault();
+                    }
+                }}
             />
         </Stack>
     )
