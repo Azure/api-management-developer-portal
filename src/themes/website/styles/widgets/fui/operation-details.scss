@@ -12,28 +12,6 @@ fui-operation-details {
         max-width: 800px;
     }
 
-    .operation-table {
-        border: 1px solid #D1D1D1;
-        border-radius: 4px;
-        margin-bottom: 1.75rem;
-        overflow: hidden;
-    }
-
-    .operation-table-header {
-        padding: .5rem 1rem;
-        background-color: #F5F5F5;
-    }
-
-    .operation-table-body-row {
-        padding: 1rem;
-        display: flex;
-        align-items: center;
-
-        &:not(:last-of-type) {
-            border-bottom: 1px solid #D1D1D1;
-        }
-    }
-
     .operation-description {
         padding-top: 1rem;
 
@@ -115,5 +93,188 @@ fui-operation-details {
         display: block;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+}
+
+.operation-table {
+    border: 1px solid #D1D1D1;
+    border-radius: 4px;
+    margin-bottom: 1.75rem;
+    overflow: hidden;
+}
+
+.operation-table-header {
+    padding: .5rem 1rem;
+    background-color: #F5F5F5;
+
+    .collapse-button{
+        margin-right: 1rem;
+
+        &.is-collapsed {
+            transform: rotate(180deg);
+        }
+    }
+}
+
+.operation-table-body-row {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+
+    &:not(:last-of-type) {
+        border-bottom: 1px solid #D1D1D1;
+    }
+}
+
+.operation-table-body-console {
+    padding: 2rem 1rem 2.5rem;    
+
+    .auth-detail,
+    .param-detail {
+        &:not(:first-of-type) {
+            margin-top: 1.5rem;
+        }
+    }
+
+    .param-name,
+    .param-value,
+    .param-remove {
+        > * {
+            min-width: calc(100% - .5rem);
+        }
+    }
+
+    .param-name {
+        width: 40%;
+
+        > label {
+            margin-bottom: 0;
+        }
+    }
+
+    .param-value {
+        width: 53%;
+    } 
+
+    .format-selection {
+        margin-right: 1rem;
+    }
+
+    .request-body-dropdown {
+        width: 100%;
+    }
+
+    .request-body-raw,
+    .request-body-upload-button {
+        margin: 1rem 0;
+    }    
+
+    .request-body-textarea {
+        min-height: 200px;
+    }
+}
+
+.console-drawer {
+    .console-method {
+        margin: 1rem 0;
+
+        .operation-method {
+            margin-right: 1rem;
+        }
+    }
+
+    .request-language-dropdown {
+        width: 100%;
+    }
+
+    .request-copy-button {
+        margin: 0 .5rem;
+    }
+
+    .auth-detail {
+        max-width: 435px;
+    }
+
+    .monaco-editor {
+        height: 500px !important;
+    }
+}
+
+.console-gql-drawer {
+    display: flex;
+    flex-direction: column;
+}
+
+.console-gql-header {
+    background-color: #EBEBEB;
+    width: calc(100% + 3rem);
+    margin-left: -1.5rem;
+    padding: .5rem 1.5rem;
+}
+
+.console-gql-body {
+    height: 100%;
+
+    .gql-search {
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+
+    .gql-explorer {
+        min-width: 300px;
+        padding: 2rem 1.5rem 2rem 0;
+        border-right: 1px solid #E6E6E6;
+
+        .level0-node-label {
+            text-transform: capitalize;
+        }
+    }
+
+    .gql-query-editor {
+        padding-top: 2rem;
+        border-bottom: 1px solid #E6E6E6;
+    }
+
+    .gql-tabs {
+        margin: .75rem 0 1.5rem .75rem;
+    }
+
+    .gql-tab-content {
+        &:not(.query-variables-tab) {
+            margin-left: 1.5rem;
+        }
+
+        .param-detail {
+            margin-bottom: 1rem;
+        }
+
+        .param-name {
+            min-width: 187px; // FUI input width
+        }
+
+        .param-value {
+            margin: 0 .5rem;
+        }
+    }
+}
+
+.console-gql-node {
+    display: flex;
+    flex-direction: column;
+    padding-top: 2px;
+    padding-bottom: 2px;
+
+    &.child-node {
+        padding-left: 20px;
+    }
+
+    &.input-node {
+        .fui-Input {
+            margin-left: 2rem;   
+        }
+
+        .fui-Checkbox__label {
+            color: #707070;
+        }
     }
 }

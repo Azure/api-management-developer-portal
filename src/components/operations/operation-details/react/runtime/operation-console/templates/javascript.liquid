@@ -1,0 +1,29 @@
+
+{%- if console.request.body != blank and console.request.bodyFormat == "raw" -%}
+// Request body
+const body = {{console.request.body}};
+{%- endif %}
+
+fetch('{{console.requestUrl}}', {
+        method: '{{console.method | upcase}}',
+        {%- if console.request.body != blank %}
+        body: JSON.stringify(body),
+        {%- endif -%}
+        {% if console.request.meaningfulHeaders.size > 0 %}
+        // Request headers
+        headers: {
+        {%- for header in console.request.meaningfulHeaders %}
+            {% if showSecrets == false and header.secret -%}
+                '{{header.name}}': '{{header.hiddenValue}}',
+            {%- else -%}
+                '{{header.name}}': '{{header.value}}',
+            {%- endif -%}
+        {%- endfor -%}
+        {%- endif -%}
+        }
+    })
+    .then(response => {
+        console.log(response.status);
+        console.log(response.text());
+    })
+    .catch(err => console.error(err));
