@@ -52,25 +52,7 @@ export class ProductService {
 
         try {
             const pageContract = await this.mapiClient.get<Page<SubscriptionContract>>(`${userId}/subscriptions${query}`, [await this.mapiClient.getPortalHeader("getSubscriptions")]);
-            const promises: Promise<void>[] = [];
-            const subscriptions: Subscription[] = [];
-
-            for (const subscriptionContract of pageContract.value) {
-                const subscription = new Subscription(subscriptionContract);
-
-                const secretPromise = this.mapiClient
-                    .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscriptionContract.name}/listSecrets`, [await this.mapiClient.getPortalHeader("getSubscriptionSecrets")])
-                    .then(secrets => {
-                        subscription.primaryKey = secrets.primaryKey;
-                        subscription.secondaryKey = secrets.secondaryKey;
-                    });
-
-                promises.push(secretPromise);
-
-                subscriptions.push(subscription);
-            }
-
-            await Promise.all(promises);
+            const subscriptions = await this.getSubscriptionsData(pageContract.value, userId);
 
             pageOfSubscriptions.value = subscriptions;
             pageOfSubscriptions.count = pageContract.count;
@@ -85,6 +67,82 @@ export class ProductService {
 
             throw new Error(`Unable to retrieve subscriptions for user with ID "${userId}". Error: ${error.message}`);
         }
+    }
+
+    /**
+     * Returns all user products subscriptions for a query.
+     * @param apiName {string} Api name to check scope in subscriptions.
+     * @param products {Product[]} Products to check scope in subscriptions.
+     * @param userId {string} User unique identifier.
+     * @param searchRequest {SearchQuery} filter.
+     */
+    public async getProductsAllSubscriptions(apiName: string, products: Product[], userId: string, searchRequest?: SearchQuery): Promise<Subscription[]> {
+        if (!userId) {
+            throw new Error(`Parameter "userId" not specified.`);
+        }
+
+        const odataFilterEntries = [];
+
+        if (searchRequest?.pattern) {
+            const pattern = Utils.encodeURICustomized(searchRequest.pattern, Constants.reservedCharTuplesForOData);
+            odataFilterEntries.push(`(contains(properties/displayName,'${pattern}'))`);
+        }
+
+        let query = "?$top=100&$skip=0";
+
+        if (odataFilterEntries.length > 0) {
+            query = Utils.addQueryParameter(query, `$filter=` + odataFilterEntries.join(" and "));
+        }
+
+        try {
+            const allContracts = await this.mapiClient.getAll<SubscriptionContract>(`${userId}/subscriptions${query}`, [await this.mapiClient.getPortalHeader("getSubscriptions")]);
+            return await this.getSubscriptionsData(allContracts, userId, products, apiName);
+        }
+        catch (error) {
+            if (error?.code === "ResourceNotFound") {
+                return [];
+            }
+
+            throw new Error(`Unable to retrieve subscriptions for user with ID "${userId}". Error: ${error.message}`);
+        }
+    }
+
+    private async getSubscriptionsData(allContracts: SubscriptionContract[], userId: string, products: Product[] = undefined, apiName: string = undefined): Promise<Subscription[]> {
+        const promises: Promise<void>[] = [];
+        const subscriptions: Subscription[] = [];
+
+        for (const subscriptionContract of allContracts) {
+            // stop if we have enough subscriptions
+            if( subscriptions.length >= Constants.defaultPageSize) {
+                break;
+            }
+
+            // skip not active subscriptions
+            if (SubscriptionState[subscriptionContract.properties.state] !== SubscriptionState.active) {
+                continue;
+            }
+
+            if ((products?.length > 0 || apiName) && !this.isScopeValid(subscriptionContract.properties.scope, apiName, products)) {
+                continue;
+            }
+
+            const subscription = new Subscription(subscriptionContract);
+
+            const secretPromise = this.mapiClient
+                .post<SubscriptionSecrets>(`${userId}/subscriptions/${subscriptionContract.name}/listSecrets`, [await this.mapiClient.getPortalHeader("getSubscriptionSecrets")])
+                .then(secrets => {
+                    subscription.primaryKey = secrets.primaryKey;
+                    subscription.secondaryKey = secrets.secondaryKey;
+                });
+
+            promises.push(secretPromise);
+
+            subscriptions.push(subscription);
+        }
+
+        await Promise.all(promises);
+
+        return subscriptions;
     }
 
     /**
@@ -387,18 +445,39 @@ export class ProductService {
     }
 
     /**
-     * Determines if specified subscription scope is suitable in context of an API or a Product.
+     * Determines if specified subscription scope is suitable in context of a Product.
      * @param scope {string} Subscription scope.
-     * @param apiName {string} ARM name of the API.
      * @param productName {string} ARM name of the Product.
      */
-    public isScopeSuitable(scope: string, apiName: string = null, productName: string = null): boolean {
+    public isProductScope(scope: string, productName: string): boolean {
+        if (!scope) {
+            throw new Error(`Parameter "scope" not specified.`);
+        }
+
+        return scope.endsWith("/apis")
+            || (productName && scope.endsWith(`/products/${productName}`));
+    }
+
+    /**
+     * Determines if specified subscription scope is suitable in context of an API.
+     * @param scope {string} Subscription scope.
+     * @param apiName {string} ARM name of the API.
+     */
+    public isApiScope(scope: string, apiName: string): boolean {
+        if (!scope) {
+            throw new Error(`Parameter "scope" not specified.`);
+        }
+
+        return apiName && scope.endsWith(`/apis/${apiName}`);
+    }
+
+    private isScopeValid(scope: string, apiName: string = undefined, products: Product[] = undefined): boolean {
         if (!scope) {
             throw new Error(`Parameter "scope" not specified.`);
         }
 
         return scope.endsWith("/apis")
             || (apiName && scope.endsWith(`/apis/${apiName}`))
-            || (productName && scope.endsWith(`/products/${productName}`));
+            || (products && products.some(product => scope.endsWith(`/products/${product.name}`)));
     }
 }
