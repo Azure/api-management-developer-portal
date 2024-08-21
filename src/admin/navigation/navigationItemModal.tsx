@@ -293,6 +293,8 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
 
     processNavItemsForDropdown = (navItems: NavigationItemContract[], dropdownItems: IDropdownOption[], currentNodeLabel: string = ''): IDropdownOption[] => {
         navItems.forEach(navItem => {
+            if (navItem.key === this.props.navItem?.key) return;
+            
             const newNodeText = currentNodeLabel ? currentNodeLabel + '/' + navItem.label : navItem.label;
 
             dropdownItems.push({
@@ -436,8 +438,9 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
         } else if (this.state.selectedLinkOption === LinkOptionKey.Url) {
             if (this.state.selectedUrlType === LinkOptionKey.SavedUrl && !this.state.selectedSavedUrl) {
                 errors = { [LinkOptionKey.SavedUrl]: errorMessage };
-            } else if (this.state.selectedUrlType === LinkOptionKey.NewUrl && !this.state.navItem?.[LinkOptionKey.NewUrl]) {
-                errors = { [LinkOptionKey.NewUrl]: URL_REQUIRED_MESSAGE };
+            } else if (this.state.selectedUrlType === LinkOptionKey.NewUrl) {
+                const errorMessage = await this.validatePermalink(this.state.navItem?.[LinkOptionKey.NewUrl]);
+                errors = { [LinkOptionKey.NewUrl]: errorMessage };
             }
         } else if (this.state.selectedLinkOption === LinkOptionKey.Media && !this.state.selectedMedia) {
             errors = { media: 'Please, select a media file' };
@@ -571,13 +574,10 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                         options={linkOptions}
                         selectedKey={this.state.selectedLinkOption}
                         onChange={(event, option) => {
-                            let errors = this.state.errors;
-                            if (option.key.toString() !== LinkOptionKey.Anchor) errors = this.removeError(LinkOptionKey.Anchor);
-
                             this.setState({
                                 selectedLinkOption: option.key.toString(),
                                 targetWindow: option.key === LinkOptionKey.Media ? LinkActionOptionKey.Download : LinkActionOptionKey.Self,
-                                errors
+                                errors: {}
                             });
                             if (option.key.toString() === LinkOptionKey.Anchor && this.state.selectedPage !== '') {
                                 this.processAnchorsForDropdown(this.state.selectedPage);
@@ -624,7 +624,16 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                             label="Select method"
                             options={urlTypeOptions}
                             selectedKey={this.state.selectedUrlType}
-                            onChange={(event, option) => this.setState({ selectedUrlType: option.key })}
+                            onChange={(event, option) => {
+                                let errors = this.state.errors;
+                                if (option.key.toString() === LinkOptionKey.SavedUrl) {
+                                    errors = this.removeError(LinkOptionKey.NewUrl);
+                                } else {
+                                    errors = this.removeError(LinkOptionKey.SavedUrl);
+                                }
+
+                                this.setState({ selectedUrlType: option.key, errors });
+                            }}
                             styles={{ root: { paddingBottom: 15 } }}
                         />
                     }
@@ -686,7 +695,7 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                         ariaLabel="Assign location"
                         placeholder="Click to select a parent..."
                         options={this.state.navItemsDropdown}
-                        defaultSelectedKey={this.state.parentItem !== '' ? this.state.parentItem : newItemKey}
+                        selectedKey={this.state.navItem['parent'] || this.state.parentItem || newItemKey}
                         onChange={(event, option) => this.onInputChange('parent', option.key.toString())}
                         styles={{ root: { paddingBottom: 15 } }}
                     />
