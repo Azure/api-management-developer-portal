@@ -9,11 +9,13 @@ export class Representation {
     public readonly typeName: string;
     public readonly formParameters: Parameter[];
     public readonly examples: RepresentationExample[];
+    public readonly sample: string;
 
     constructor(contract?: RepresentationContract) {
         this.contentType = contract.contentType;
         this.schemaId = contract.schemaId;
         this.typeName = contract.typeName;
+        this.sample = contract.sample;
         this.examples = [];
 
         if (this.contentType === KnownMimeTypes.FormData && contract.formParameters?.length > 0) {

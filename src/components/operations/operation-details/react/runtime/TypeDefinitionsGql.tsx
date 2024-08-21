@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { GraphQLCompositeType, GraphQLEnumValue, GraphQLField, GraphQLInputType, GraphQLOutputType, isEnumType } from "graphql";
+import { GraphQLCompositeType, GraphQLEnumValue, GraphQLField, GraphQLInputType, GraphQLObjectType, GraphQLOutputType, isEnumType, isUnionType } from "graphql";
 import { Stack } from "@fluentui/react";
 import { Body1, Body1Strong, Subtitle1, Subtitle2Stronger, Tab, TabList, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
@@ -50,6 +50,12 @@ export const TypeDefinitionGql = ({
     );
 }
 
+const renderDescription = (description: string) => (
+    <TableCell><Body1 title={description}>
+        <MarkdownProcessor markdownToDisplay={description} maxChars={100} truncate={true} />
+    </Body1></TableCell>
+)
+
 const GQLTypeDefinitionForRepresentation = ({ graph, getGraphType }: GQLTypeDefinitionProps) => (
     <>
         <Subtitle2Stronger block className={"operation-subtitle2"}>{graph.name}</Subtitle2Stronger>
@@ -59,33 +65,38 @@ const GQLTypeDefinitionForRepresentation = ({ graph, getGraphType }: GQLTypeDefi
                 <TableRow className={"fui-table-headerRow"}>
                     {isEnumType(graph)
                         ? <TableHeaderCell><Body1Strong>Value</Body1Strong></TableHeaderCell>
-                        : <>
-                            <TableHeaderCell><Body1Strong>Fields</Body1Strong></TableHeaderCell>
-                            <TableHeaderCell><Body1Strong>Type</Body1Strong></TableHeaderCell>
-                            </>
+                        : isUnionType(graph)
+                            ? <TableHeaderCell><Body1Strong>Possible types</Body1Strong></TableHeaderCell>
+                            : <>
+                                <TableHeaderCell><Body1Strong>Fields</Body1Strong></TableHeaderCell>
+                                <TableHeaderCell><Body1Strong>Type</Body1Strong></TableHeaderCell>
+                              </>
                     }
                     <TableHeaderCell><Body1Strong>Description</Body1Strong></TableHeaderCell>
                 </TableRow>
             </TableHeader>
             <TableBody>
                 {isEnumType(graph)
-                    ? Object.values(graph[GraphqlFieldTypes.values]).map((value: GraphQLEnumValue) => (
+                    ? graph[GraphqlFieldTypes.values].map((value: GraphQLEnumValue) => (
                         <TableRow key={value.name} className={"fui-table-body-row"}>
                             <TableCell><Body1>{value.name}</Body1></TableCell>
-                            <TableCell><Body1 title={value.description}>
-                                <MarkdownProcessor markdownToDisplay={value.description} maxChars={100} truncate={true} />
-                            </Body1></TableCell>
+                            {renderDescription(value.description)}
                         </TableRow>
                         ))
-                    : Object.values(graph[GraphqlFieldTypes.fields]).map((field: GraphQLField<any, any>) => (
-                        <TableRow key={field.name} className={"fui-table-body-row"}>
-                            <TableCell><Body1>{field.name}</Body1></TableCell>
-                            <TableCell><Body1>{getGraphType(field.type)}</Body1></TableCell>
-                            <TableCell><Body1 title={field.description}>
-                                <MarkdownProcessor markdownToDisplay={field.description} maxChars={100} truncate={true} />
-                            </Body1></TableCell>
-                        </TableRow>
+                    : isUnionType(graph)
+                        ? graph[GraphqlFieldTypes.types].map((type: GraphQLObjectType) => (
+                            <TableRow key={type.name} className={"fui-table-body-row"}>
+                                <TableCell><Body1>{getGraphType(type)}</Body1></TableCell>
+                                {renderDescription(type.description)}
+                            </TableRow>
                         ))
+                        : Object.values(graph[GraphqlFieldTypes.fields]).map((field: GraphQLField<any, any>) => (
+                            <TableRow key={field.name} className={"fui-table-body-row"}>
+                                <TableCell><Body1>{field.name}</Body1></TableCell>
+                                <TableCell><Body1>{getGraphType(field.type)}</Body1></TableCell>
+                                {renderDescription(field.description)}
+                            </TableRow>
+                          ))
                 }
             </TableBody>
         </Table>
