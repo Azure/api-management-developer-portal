@@ -126,9 +126,11 @@ export const OperationConsole = ({
     }, [api, operation, consoleOperation]);
 
     useEffect(() => {
-        !isConsumptionMode && api.type !== TypeOfApi.webSocket
-            && !consoleOperation.current.request.headers().some(header => header.name() === KnownHttpHeaders.CacheControl)
-            && consoleOperation.current.setHeader(KnownHttpHeaders.CacheControl, "no-cache", "string", "Disable caching.");
+        if (!isConsumptionMode && api.type !== TypeOfApi.webSocket) {
+            if (!consoleOperation.current.request.headers().some(header => header.name() === KnownHttpHeaders.CacheControl)) {
+                consoleOperation.current.setHeader(KnownHttpHeaders.CacheControl, "no-cache", "string", "Disable caching.");
+            }
+        }
         rerender();
     }, [api, isConsumptionMode, consoleOperation, rerender]);
 
