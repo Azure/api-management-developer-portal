@@ -28,8 +28,6 @@ interface SubscriptionOption {
     value: string;
 }
 
-const maxSubscriptionsPageNumber = 5;
-
 @Component({
     selector: "authorization",
     template: template,
@@ -50,8 +48,6 @@ export class Authorization {
     public readonly selectedAuthorizationServer: ko.Observable<AuthorizationServer>;
     public readonly subscriptionsPattern: ko.Observable<string>;
     public readonly subscriptionSelection: ko.Computed<string>;
-    public readonly subscriptionsPageNumber: ko.Observable<number>;
-    public readonly nextSubscriptionsPage: ko.Observable<boolean>;
     public readonly isSubscriptionListEmptyDueToFilter: ko.Observable<boolean>;
     public readonly subscriptionsLoading = ko.observable<boolean>(false);
 
@@ -79,14 +75,13 @@ export class Authorization {
         this.authorizationServers = ko.observable<AuthorizationServer[]>();
         this.selectedAuthorizationServer = ko.observable<AuthorizationServer>();
         this.subscriptionsPattern = ko.observable();
-        this.subscriptionsPageNumber = ko.observable(1);
-        this.nextSubscriptionsPage = ko.observable();
         this.isSubscriptionListEmptyDueToFilter = ko.observable(false);
         this.subscriptionsLoading = ko.observable(true);
         this.subscriptionSelection = ko.computed(() => {
             return this.selectedSubscriptionKey() ? this.selectedSubscriptionKey().name : "Select a subscription";
         });
     }
+
     @Param()
     public authorizationServers: ko.Observable<AuthorizationServer[]>;
 
@@ -131,11 +126,9 @@ export class Authorization {
         this.subscriptionsPattern
             .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
             .subscribe(this.resetSubscriptionsSearch);
-        this.subscriptionsPageNumber.subscribe(() => this.loadSubscriptionKeys());
     }
 
     public async resetSubscriptionsSearch(): Promise<void> {
-        this.subscriptionsPageNumber(1);
         this.loadSubscriptionKeys();
     }
 
@@ -177,6 +170,9 @@ export class Authorization {
         const oauthSession = await this.sessionManager.getItem<OAuthSession>(oauthSessionKey);
         const recordKey = this.getSessionRecordKey(serverName, scopeOverride);
         const storedCredentials = oauthSession?.[recordKey];
+        if (!storedCredentials) {
+            return null;
+        }
 
         try {
             /* Trying to check if it's a JWT token and, if yes, whether it got expired. */
@@ -413,30 +409,26 @@ export class Authorization {
             return;
         }
 
-        const pageNumber = this.subscriptionsPageNumber() - 1;
         const subscriptionsQuery: SearchQuery = {
-            pattern: this.subscriptionsPattern(),
-            skip: pageNumber * maxSubscriptionsPageNumber,
-            take: maxSubscriptionsPageNumber
+            pattern: this.subscriptionsPattern()
         };
 
         const pageOfProducts = await this.apiService.getAllApiProducts(this.api().id);
         const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
-        const pageOfSubscriptions = await this.productService.getSubscriptions(userId, null, subscriptionsQuery);
-        const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === SubscriptionState.active);
+        const allSubscriptions = await this.productService.getProductsAllSubscriptions(this.api().name, products, userId, subscriptionsQuery);
+        const subscriptions = allSubscriptions.filter(subscription => subscription.state === SubscriptionState.active);
         const availableProducts = [];
 
-        this.nextSubscriptionsPage(!!pageOfSubscriptions.nextLink);
-
+        const productsSubscriptions = allSubscriptions.filter(subscription => !this.productService.isProductScope(subscription.scope, this.api().name));
         products.forEach(product => {
             const keys: SubscriptionOption[] = [];
 
-            if (subscriptions.length === 0) {
+            if (productsSubscriptions.length === 0) {
                 return;
             }
 
-            subscriptions.forEach(subscription => {
-                if (!this.productService.isScopeSuitable(subscription.scope, this.api().name, product.name)) {
+            productsSubscriptions.forEach(subscription => {
+                if (!this.productService.isProductScope(subscription.scope, product.name)) {
                     return;
                 }
 
@@ -453,6 +445,23 @@ export class Authorization {
 
             if (keys.length > 0) {
                 availableProducts.push({ name: product.displayName, subscriptionKeys: keys });
+            }
+        });
+
+        const apiSubscriptions = allSubscriptions.filter(subscription => this.productService.isProductScope(subscription.scope, this.api().name));
+        apiSubscriptions.forEach(subscription => {
+            const apiKeys: SubscriptionOption[] = [];
+            apiKeys.push({
+                name: `Primary: ${subscription.name?.trim() || subscription.primaryKey.substr(0, 4)}`,
+                value: subscription.primaryKey
+            });
+
+            apiKeys.push({
+                name: `Secondary: ${subscription.name?.trim() || subscription.secondaryKey.substr(0, 4)}`,
+                value: subscription.secondaryKey
+            });
+            if(apiKeys.length > 0) {
+                availableProducts.push({ name: "Apis", subscriptionKeys: apiKeys });
             }
         });
 

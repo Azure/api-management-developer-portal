@@ -39,6 +39,7 @@
             <div class="form-group">
                 <select id="authFlow" class="form-control"
                     data-bind="options: $component.selectedAuthorizationServer()?.grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
+                </select>
             </div>
         </div>
     </div>
@@ -119,11 +120,6 @@
                             </a>
                             <!-- /ko -->
                         </div>
-                        <!-- /ko -->
-                        <!-- ko if: $component.nextSubscriptionsPage() || $component.subscriptionsPageNumber() > 1 -->
-                        <pagination
-                            params="{ pageNumber: $component.subscriptionsPageNumber, nextPage: $component.nextSubscriptionsPage }">
-                        </pagination>
                         <!-- /ko -->
                         <!-- /ko -->
                     </div>
