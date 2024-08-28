@@ -6,11 +6,10 @@ import { EventManager } from '@paperbits/common/events';
 import { ViewManager } from '@paperbits/common/ui';
 import { IMediaService } from '@paperbits/common/media';
 import { MediaContract } from '@paperbits/common/media/mediaContract';
-import { Query, Operator } from '@paperbits/common/persistence';
 import { MimeTypes } from '@paperbits/common';
 import { Checkbox, DefaultButton, IconButton, IIconProps, Image, ImageFit, IOverflowSetItemProps, Link, Modal, OverflowSet, SearchBox, Spinner, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
-import { getAllValues, getThumbnailUrl } from '../utils/helpers';
+import { createSearchQuery, getAllValues, getThumbnailUrl } from '../utils/helpers';
 import { ImageDetailsModal } from './imageDetailsModal';
 import { NonImageDetailsModal } from './nonImageDetailsModal';
 
@@ -69,11 +68,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
 
     searchMedia = async (searchPattern: string = ''): Promise<void> => {
         this.setState({ isLoading: true });
-        const query = Query.from().orderBy('fileName');
-        if (searchPattern) {
-            query.where('fileName', Operator.contains, searchPattern);
-        }
-
+        const query = createSearchQuery(searchPattern, 'fileName');
         const mediaSearchResult = await this.mediaService.search(query);
         const allMedia = await getAllValues(mediaSearchResult, mediaSearchResult.value);
         this.setState({ media: allMedia, isLoading: false });

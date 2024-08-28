@@ -6,9 +6,8 @@ import { EventManager } from '@paperbits/common/events';
 import { ViewManager } from '@paperbits/common/ui';
 import { IMediaService } from '@paperbits/common/media';
 import { MediaContract } from '@paperbits/common/media/mediaContract';
-import { Query, Operator } from '@paperbits/common/persistence';
 import { DefaultButton, IIconProps, Image, ImageFit, IOverflowSetItemProps, Link, Modal, SearchBox, Stack, Text } from '@fluentui/react';
-import { getAllValues } from '../utils/helpers';
+import { createSearchQuery, getAllValues } from '../utils/helpers';
 import { NonImageDetailsModal } from './nonImageDetailsModal';
 
 interface MediaSelectionItemModalState {
@@ -50,11 +49,7 @@ export class MediaSelectionItemModal extends React.Component<MediaSelectionItemM
     }
 
     searchMedia = async (searchPattern: string = ''): Promise<void> => {
-        const query = Query.from().orderBy('fileName');
-        if (searchPattern) {
-            query.where('fileName', Operator.contains, searchPattern);
-        }
-
+        const query = createSearchQuery(searchPattern, 'fileName');
         const mediaSearchResult = await this.mediaService.search(query);
         const allMedia = await getAllValues(mediaSearchResult, mediaSearchResult.value);
         this.setState({ media: allMedia });
@@ -171,8 +166,10 @@ export class MediaSelectionItemModal extends React.Component<MediaSelectionItemM
                         </Stack.Item>
                     </Stack>
                     <Stack horizontal tokens={{ childrenGap: 20 }} wrap>
-                        {this.state.media.map(mediaItem =>
-                            this.renderMediaItem(mediaItem)
+                        {this.state.media.length === 0
+                            ? <Text block>It seems that you don't have media items yet.</Text>
+                            : this.state.media.map(mediaItem =>
+                                this.renderMediaItem(mediaItem)
                         )}
                     </Stack>
                 </div>
