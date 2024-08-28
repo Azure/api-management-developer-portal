@@ -49,7 +49,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
     }
 
     onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
-        let permalink = '';
+        let permalink = null;
 
         if (!this.props.page && field === 'title') {
             permalink = newValue.replace(/\s+/g, '-').toLowerCase();
@@ -80,7 +80,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
             errorMessage = validateField(validationType, newValue);
         }
 
-        if (permalink) {
+        if (permalink !== null) {
             permalinkErrorMessage = await this.validatePermalink('/' + permalink);
         }
 
