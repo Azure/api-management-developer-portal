@@ -449,8 +449,8 @@ export class Authorization {
         });
 
         const apiSubscriptions = allSubscriptions.filter(subscription => this.productService.isProductScope(subscription.scope, this.api().name));
+        const apiKeys: SubscriptionOption[] = [];
         apiSubscriptions.forEach(subscription => {
-            const apiKeys: SubscriptionOption[] = [];
             apiKeys.push({
                 name: `Primary: ${subscription.name?.trim() || subscription.primaryKey.substr(0, 4)}`,
                 value: subscription.primaryKey
@@ -460,10 +460,10 @@ export class Authorization {
                 name: `Secondary: ${subscription.name?.trim() || subscription.secondaryKey.substr(0, 4)}`,
                 value: subscription.secondaryKey
             });
-            if(apiKeys.length > 0) {
-                availableProducts.push({ name: "Apis", subscriptionKeys: apiKeys });
-            }
         });
+        if(apiKeys.length > 0) {
+            availableProducts.push({ name: "Apis", subscriptionKeys: apiKeys });
+        }
 
         this.isSubscriptionListEmptyDueToFilter(availableProducts.length == 0 && this.subscriptionsPattern() !== undefined);
         this.products(availableProducts);
