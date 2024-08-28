@@ -178,6 +178,10 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
     }, 300)
 
     validatePermalink = async (permalink: string): Promise<string> => {
+        if (!permalink) {
+            return URL_REQUIRED_MESSAGE;
+        }
+
         const isPermalinkNotDefined = await this.permalinkService.isPermalinkDefined(permalink) && !reservedPermalinks.includes(permalink);
         let errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
 
@@ -440,7 +444,7 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                 errors = { [LinkOptionKey.SavedUrl]: errorMessage };
             } else if (this.state.selectedUrlType === LinkOptionKey.NewUrl) {
                 const errorMessage = await this.validatePermalink(this.state.navItem?.[LinkOptionKey.NewUrl]);
-                errors = { [LinkOptionKey.NewUrl]: errorMessage };
+                if (errorMessage) errors = { [LinkOptionKey.NewUrl]: errorMessage };
             }
         } else if (this.state.selectedLinkOption === LinkOptionKey.Media && !this.state.selectedMedia) {
             errors = { media: 'Please, select a media file' };
