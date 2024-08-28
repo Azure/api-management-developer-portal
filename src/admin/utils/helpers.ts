@@ -1,5 +1,6 @@
 import * as MediaUtils from "@paperbits/common/media/mediaUtils";
 import { MediaContract } from "@paperbits/common/media";
+import { Operator, Query } from "@paperbits/common/persistence";
 
 export const getThumbnailUrl = (mediaItem: MediaContract): string => {
     if (mediaItem?.mimeType?.startsWith("video")) {
@@ -35,4 +36,14 @@ export const getAllValues = async (page: any, values: any) => {
     }
     
     return values;
+}
+
+export const createSearchQuery = (searchPattern: string, fieldName: string = 'title') => {
+    const patternProcessed = searchPattern.replace("#", "%23"); // TODO: Remove this when the issue with # in search is fixed on the Paperbits side
+    const query = Query.from().orderBy(fieldName);
+    if (patternProcessed) {
+        query.where(fieldName, Operator.contains, patternProcessed);
+    }
+
+    return query;
 }

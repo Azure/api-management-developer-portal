@@ -2,11 +2,10 @@ import * as React from 'react';
 import { Resolve } from '@paperbits/react/decorators';
 import { IPageService, PageContract } from '@paperbits/common/pages';
 import { ILayoutService, LayoutContract } from '@paperbits/common/layouts';
-import { Query, Operator } from '@paperbits/common/persistence';
 import { ViewManager } from '@paperbits/common/ui';
 import { Router } from '@paperbits/common/routing';
 import { CommandBarButton, FontIcon, IIconProps, Pivot, PivotItem, SearchBox, Spinner, Stack, Text } from '@fluentui/react';
-import { getAllValues } from '../utils/helpers';
+import { createSearchQuery, getAllValues } from '../utils/helpers';
 import { lightTheme } from '../utils/themes';
 import { BackButton } from '../utils/components/backButton';
 import { PageDetailsModal } from './pageDetailsModal';
@@ -78,22 +77,14 @@ export class Pages extends React.Component<PagesProps, PagesState> {
     }
 
     searchPages = async (searchPattern: string = ''): Promise<void> => {
-        const query = Query.from().orderBy('title');
-        if (searchPattern) {
-            query.where('title', Operator.contains, searchPattern);
-        }
-
+        const query = createSearchQuery(searchPattern);
         const pagesSearchResult = await this.pageService.search(query);
         const allPages = await getAllValues(pagesSearchResult, pagesSearchResult.value);
         this.setState({ pages: allPages });
     }
 
     searchLayouts = async (searchPattern: string = ''): Promise<void> => {
-        const query = Query.from().orderBy('title');
-        if (searchPattern) {
-            query.where('title', Operator.contains, searchPattern);
-        }
-
+        const query = createSearchQuery(searchPattern);
         const layoutsSearchResult = await this.layoutService.search(query);
         const allLayouts = await getAllValues(layoutsSearchResult, layoutsSearchResult.value);
         this.setState({ layouts: allLayouts });
