@@ -24,7 +24,7 @@ export const validateField = (validationType: string, value: string, customValid
             errorMessage = isValid ? "" : REQUIRED_MESSAGE;
             break;
         case UNIQUE_REQUIRED:
-            isValid = isNotEmpty && customValidation;
+            isValid = isNotEmpty && (customValidation === true);
             errorMessage = isValid ? "" : UNIQUE_REQUIRED_MESSAGE;
             break;
         case URL:
