@@ -16,14 +16,15 @@ export const validateField = (validationType: string, value: string, customValid
 
     const absoluteUrlRegex = /^(?:https?:\/\/)?(?:[\w-]+\.)*[\w.-]+\.[a-zA-Z]{2,}(?:\/[\w-.~:/?#[\]@!$&'()*+,;=%]*)?$/;
     const relativeUrlRegex = /^(?:\/|#)[\w-.~:/?#[\]@!$&'()*+,;=%]*$/;
+    const isNotEmpty = value.length > 0 && value.trim().length > 0;
 
     switch (validationType) {
         case REQUIRED:
-            isValid = value.length > 0;
+            isValid = isNotEmpty;
             errorMessage = isValid ? "" : REQUIRED_MESSAGE;
             break;
         case UNIQUE_REQUIRED:
-            isValid = value.length > 0 && customValidation;
+            isValid = isNotEmpty && customValidation;
             errorMessage = isValid ? "" : UNIQUE_REQUIRED_MESSAGE;
             break;
         case URL:
@@ -31,7 +32,7 @@ export const validateField = (validationType: string, value: string, customValid
             errorMessage = isValid ? "" : URL_MESSAGE;
             break;
         case URL_REQUIRED:
-            isValid = value.length > 0 && (absoluteUrlRegex.test(value) || relativeUrlRegex.test(value));
+            isValid = isNotEmpty && (absoluteUrlRegex.test(value) || relativeUrlRegex.test(value));
             errorMessage = isValid ? "" : URL_REQUIRED_MESSAGE;
             break;
     }
