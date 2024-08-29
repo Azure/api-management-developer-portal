@@ -134,12 +134,13 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
     }
 
     savePage = async (): Promise<void> => {
-        if (this.state.page.permalink === '/new-page') { 
-            const permalinkError = await this.validatePermalink(this.state.page.permalink);
-            if (permalinkError) {
-                this.setState({ errors: { permalink: permalinkError } });
-                return;
-            }
+        // TODO: find a root cause of an ability to click Save button when name is empty or permalink is not unique
+        const permalinkError = await this.validatePermalink(this.state.page.permalink);
+        const titleError = validateField(REQUIRED, this.state.page.title);
+
+        if (permalinkError || titleError) {
+            this.setState({ errors: { permalink: permalinkError, title: titleError } });
+            return;
         }
 
         if (this.props.page && !this.state.copyPage) {
@@ -206,6 +207,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                                 required
                             />}
                         ariaLabel="Name"
+                        placeholder="Enter the page name"
                         value={this.state.page.title}
                         onChange={(event, newValue) => this.onInputChange('title', newValue, REQUIRED)}
                         errorMessage={this.state.errors['title'] ?? ''}
@@ -220,6 +222,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                             />
                         }
                         ariaLabel="Permalink path"
+                        placeholder="Enter the permalink path"
                         value={this.state.page.permalink}
                         onChange={(event, newValue) => this.onInputChange('permalink', newValue)}
                         errorMessage={this.state.errors['permalink'] ?? ''}
