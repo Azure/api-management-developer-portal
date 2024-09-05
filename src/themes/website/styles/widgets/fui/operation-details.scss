@@ -164,12 +164,13 @@ fui-operation-details {
         width: 100%;
     }
 
-    .request-body-raw,
-    .request-body-upload-button {
+    .raw-textarea-field,
+    .request-body-upload-button,
+    .ws-send-button {
         margin: 1rem 0;
     }    
 
-    .request-body-textarea {
+    .raw-textarea {
         min-height: 200px;
     }
 }
@@ -197,6 +198,17 @@ fui-operation-details {
 
     .monaco-editor {
         height: 500px !important;
+    }
+
+    .ws-output-header,
+    .ws-output-placeholder {
+        margin: 1rem 0;
+    }
+
+    .ws-output-table {
+        display: block;
+        max-height: 500px;
+        overflow: auto;
     }
 }
 
