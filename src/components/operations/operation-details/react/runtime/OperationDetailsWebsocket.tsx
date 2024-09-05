@@ -1,13 +1,19 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { ISettingsProvider } from "@paperbits/common/configuration";
+import { SessionManager } from "@paperbits/common/persistence/sessionManager";
+import { HttpClient } from "@paperbits/common/http/httpClient";
 import { Stack } from "@fluentui/react";
-import { Badge, Body1, Body1Strong, Button, Caption1Strong, DrawerHeader, DrawerHeaderTitle, OverlayDrawer, Spinner, Subtitle1, Subtitle2, Tooltip } from "@fluentui/react-components";
-import { Copy16Regular, DismissRegular } from "@fluentui/react-icons";
-import { ApiService } from "../../../../../services/apiService";
+import { Badge, Body1, Body1Strong, Button, Caption1Strong, Spinner, Subtitle1, Subtitle2, Tooltip } from "@fluentui/react-components";
+import { Copy16Regular } from "@fluentui/react-icons";
 import { Operation } from "../../../../../models/operation";
 import { Api } from "../../../../../models/api";
 import { Tag } from "../../../../../models/tag";
+import { ApiService } from "../../../../../services/apiService";
 import { OAuthService } from "../../../../../services/oauthService";
+import { UsersService } from "../../../../../services/usersService";
+import { ProductService } from "../../../../../services/productService";
+import { TenantService } from "../../../../../services/tenantService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { getRequestUrl, scrollToOperation } from "./utils";
@@ -17,12 +23,30 @@ import { OperationConsole } from "./OperationConsole";
 export const OperationDetailsWebsocket = ({
     apiName,
     apiService,
+    usersService,
+    productService,
     oauthService,
+    tenantService,
     routeHelper,
+    settingsProvider,
+    sessionManager,
+    httpClient,
     enableConsole,
+    useCorsProxy,
     includeAllHostnames,
     enableScrollTo
-}: OperationDetailsRuntimeProps & { apiName: string, apiService: ApiService, oauthService: OAuthService, routeHelper: RouteHelper }) => {
+}: OperationDetailsRuntimeProps & {
+    apiName: string,
+    apiService: ApiService,
+    usersService: UsersService,
+    productService: ProductService,
+    oauthService: OAuthService,
+    tenantService: TenantService,
+    routeHelper: RouteHelper,
+    settingsProvider: ISettingsProvider,
+    sessionManager: SessionManager,
+    httpClient: HttpClient
+}) => {
     const [working, setWorking] = useState(false);
     const [api, setApi] = useState<Api>(null);
     const [operation, setOperation] = useState<Operation>(null);
@@ -30,7 +54,7 @@ export const OperationDetailsWebsocket = ({
     const [hostnames, setHostnames] = useState<string[]>([]);
     const [requestUrl, setRequestUrl] = useState<string>(null);
     const [isCopied, setIsCopied] = useState(false);
-    const [isConsoleOpen, setIsConsoleOpen] = useState<boolean>(true);
+    const [isConsoleOpen, setIsConsoleOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (!apiName) return;
@@ -99,15 +123,23 @@ export const OperationDetailsWebsocket = ({
                 : !operation
                     ? <Body1>No operation selected.</Body1> 
                     : <div className={"operation-details-content"}>
-                        {/* <OperationConsole
+                        <OperationConsole
                             isOpen={isConsoleOpen}
                             setIsOpen={setIsConsoleOpen}
                             api={api}
                             operation={operation}
+                            hostnames={hostnames}
+                            useCorsProxy={useCorsProxy}
                             apiService={apiService}
+                            usersService={usersService}
+                            productService={productService}
                             oauthService={oauthService}
+                            tenantService={tenantService}
                             routeHelper={routeHelper}
-                        /> */}
+                            settingsProvider={settingsProvider}
+                            sessionManager={sessionManager}
+                            httpClient={httpClient}
+                        />
                         <div className={"operation-table"}>
                             <div className={"operation-table-header"}>
                                 <Subtitle2>{operation.displayName}</Subtitle2>
