@@ -293,10 +293,12 @@ export const OperationConsole = ({
                             templateParameters={consoleOperation.current.templateParameters()}
                             updateParameters={updateParameters}
                         />
-                        <ConsoleHeaders
-                            headers={consoleOperation.current.request.headers()}
-                            updateHeaders={updateHeaders}
-                        />
+                        {api.type !== TypeOfApi.webSocket &&
+                            <ConsoleHeaders
+                                headers={consoleOperation.current.request.headers()}
+                                updateHeaders={updateHeaders}
+                            />
+                        }
                         {(consoleOperation.current.canHaveBody || consoleOperation.current.hasBody()) &&
                             <ConsoleBody
                                 hasBody={consoleOperation.current.hasBody()}
