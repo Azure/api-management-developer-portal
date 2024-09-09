@@ -6,8 +6,25 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { HttpClient, HttpHeader, HttpMethod, HttpRequest } from "@paperbits/common/http";
 import { Stack } from "@fluentui/react";
-import { Body1Strong, Button, Dropdown, Option, Tooltip } from "@fluentui/react-components";
-import { ChevronUp20Regular, Copy16Regular, EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
+import {
+    Body1,
+    Body1Strong,
+    Button,
+    Dropdown,
+    Field,
+    Option,
+    Radio,
+    RadioGroup,
+    Table,
+    TableBody,
+    TableCell,
+    TableHeader,
+    TableHeaderCell,
+    TableRow,
+    Textarea,
+    Tooltip
+} from "@fluentui/react-components";
+import { ArrowDownFilled, ArrowUpFilled, ChevronUp20Regular, Copy16Regular, EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
 import { Api } from "../../../../../../models/api";
 import { KnownMimeTypes } from "../../../../../../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../../../../../../models/knownHttpHeaders";
@@ -19,7 +36,9 @@ import { TemplatingService } from "../../../../../../services/templatingService"
 import { Utils } from "../../../../../../utils";
 import { MarkdownProcessor } from "../../../../../utils/react/MarkdownProcessor";
 import { RequestBodyType, TypeOfApi, downloadableTypes } from "../../../../../../constants";
+import { LogItem, WebsocketClient } from "./ws-utilities/websocketClient";
 import { templates } from "./templates/templates";
+import { BinaryField } from "./BinaryField";
 
 type ConsoleRequestResponseProps = {
     api: Api;
@@ -65,6 +84,15 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
     const [sendingRequest, setSendingRequest] = useState<boolean>(false);
     const [formattedResponse, setFormattedResponse] = useState<string>(null);
     const [requestError, setRequestError] = useState<string>(null);
+
+    const [webSocket, setWebSocket] = useState<WebsocketClient>(null);
+    const [wsLogItems, setWsLogItems] = useState<LogItem[]>([]);
+    const [wsPayloadFormat, setWsPayloadFormat] = useState<string>("raw");
+    const [wsPayload, setWsPayload] = useState<string>("");
+    const [wsPayloadBinary, setWsPayloadBinary] = useState<File>(null);
+    const [isWsConnected, setIsWsConnected] = useState<boolean>(false);
+    const [connectingWs, setConnectingWs] = useState<boolean>(false);
+    const [sendingWs, setSendingWs] = useState<boolean>(false);
 
     useEffect(() => {
         if (api.type === TypeOfApi.webSocket) {
@@ -319,6 +347,60 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
         }
     }
 
+    const initWebSocket = (): WebsocketClient => {
+        if (webSocket) return webSocket;
+
+        const wsClient = new WebsocketClient();
+        wsClient.onOpen = () => {
+            setIsWsConnected(true);
+            setConnectingWs(false);
+        };
+        wsClient.onClose = () => {
+            setSendingWs(false);
+            setIsWsConnected(false);
+            setConnectingWs(false);
+        };
+        wsClient.onError = (error: string) => {
+            setSendingWs(false);
+            setRequestError(error);
+        };
+        wsClient.onMessage = (message: MessageEvent<any>) => {
+            setSendingWs(false);
+            setFormattedResponse(message.data);
+        };
+        wsClient.onLogItem = (item: LogItem) => {
+            setWsLogItems(wsLogItems => [item, ...wsLogItems]);
+        };
+
+        setWebSocket(wsClient);
+        return wsClient;
+    }
+
+    const connectWs = async (): Promise<void> => {
+        setConnectingWs(true);
+        const ws = initWebSocket();
+
+        if (ws) {
+            if (isWsConnected) {
+                ws.disconnect();
+            } else {
+                ws.connect(consoleOperation.requestUrl());
+            }
+        }
+    }
+
+    const wsSendData = async (): Promise<void> => {
+        if (!webSocket) return;
+
+        setSendingWs(true);
+        if (wsPayloadFormat === "raw") {
+            webSocket.send(wsPayload);
+        } else {
+            webSocket.send(wsPayloadBinary);
+        }
+        setSendingWs(false);
+    }
+
     return (
         <>
             <div className={"operation-table"}>
@@ -329,7 +411,7 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
                                 onClick={() => setIsRequestCollapsed(!isRequestCollapsed)}
                                 className={`collapse-button${isRequestCollapsed ? " is-collapsed" : ""}`}
                             />
-                            <Body1Strong>HTTP request</Body1Strong>
+                            <Body1Strong>{api.type === TypeOfApi.webSocket ? "WebSocket" : "HTTP"} request</Body1Strong>
                         </Stack>
                     </Stack>
                 </div>
@@ -375,6 +457,86 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
                             </Tooltip>
                         </Stack>
                         <SyntaxHighlighter children={codeSample} language={selectedLanguage} style={a11yLight} />
+                        {api.type === TypeOfApi.webSocket &&
+                            <>
+                                {isWsConnected && 
+                                    <>
+                                        <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="format-selection">
+                                            <Body1Strong>Payload</Body1Strong>
+                                            <RadioGroup
+                                                name={"Request body format"}
+                                                value={wsPayloadFormat}
+                                                layout="horizontal"
+                                                onChange={(_, data) => setWsPayloadFormat(data.value)}
+                                            >
+                                                <Radio value={"raw"} label={"Raw"} />
+                                                <Radio value={"binary"} label={"Binary"} />
+                                            </RadioGroup>
+                                        </Stack>
+                                        {wsPayloadFormat === "raw"
+                                            ? <Field className="raw-textarea-field">
+                                                <Textarea
+                                                    aria-label="Websocket payload"
+                                                    placeholder="Enter payload"
+                                                    className={"raw-textarea"}
+                                                    resize="vertical"
+                                                    value={wsPayload}
+                                                    onChange={(_, data) => setWsPayload(data.value)}
+                                                />
+                                            </Field>
+                                            : <BinaryField
+                                                updateBinary={setWsPayloadBinary}
+                                                fileName={wsPayloadBinary?.name}
+                                              />
+                                        }
+                                        <Button
+                                            appearance="primary"
+                                            className={"ws-send-button"}
+                                            disabled={sendingWs}
+                                            onClick={() => wsSendData()}
+                                        >
+                                            {sendingWs ? "Sending" : "Send"}
+                                        </Button>
+                                    </>
+                                }
+                                <Body1Strong block className={"ws-output-header"}>Output</Body1Strong>                    
+                                {wsLogItems.length === 0
+                                    ? <Body1 block className={"ws-output-placeholder"}>Sent and received messages will appear here. Send a payload to begin.</Body1>
+                                    : <Table className={"fui-table ws-output-table"}>
+                                        <TableHeader>
+                                            <TableRow className={"fui-table-headerRow"}>
+                                                <TableHeaderCell style={{ width: "25%" }}><Body1Strong>Time</Body1Strong></TableHeaderCell>
+                                                <TableHeaderCell style={{ width: "8%" }}></TableHeaderCell>
+                                                <TableHeaderCell><Body1Strong>Data</Body1Strong></TableHeaderCell>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {wsLogItems.map((item, index) => (
+                                                <TableRow key={index} className={"fui-table-body-row"}>
+                                                    <TableCell>{item.logTime}</TableCell>
+                                                    <TableCell>{
+                                                        item.logType === "SendData"
+                                                        ? <ArrowDownFilled className={"ws-log-send"} />
+                                                        : item.logType === "GetData" && <ArrowUpFilled className={"ws-log-get"} />
+                                                    }</TableCell>
+                                                    <TableCell>{item.logData}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                }
+                                <Button
+                                    appearance="primary"
+                                    disabled={connectingWs}
+                                    onClick={() => connectWs()}
+                                >
+                                    {isWsConnected
+                                        ? "Disconnect"
+                                        : connectingWs ? "Connecting" : "Connect"
+                                    }
+                                </Button>
+                            </>
+                        }
                     </div>
                 }
             </div>
