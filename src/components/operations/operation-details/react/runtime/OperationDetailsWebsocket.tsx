@@ -1,23 +1,52 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { ISettingsProvider } from "@paperbits/common/configuration";
+import { SessionManager } from "@paperbits/common/persistence/sessionManager";
+import { HttpClient } from "@paperbits/common/http/httpClient";
 import { Stack } from "@fluentui/react";
 import { Badge, Body1, Body1Strong, Button, Caption1Strong, Spinner, Subtitle1, Subtitle2, Tooltip } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
-import { ApiService } from "../../../../../services/apiService";
 import { Operation } from "../../../../../models/operation";
 import { Api } from "../../../../../models/api";
 import { Tag } from "../../../../../models/tag";
+import { ApiService } from "../../../../../services/apiService";
+import { OAuthService } from "../../../../../services/oauthService";
+import { UsersService } from "../../../../../services/usersService";
+import { ProductService } from "../../../../../services/productService";
+import { TenantService } from "../../../../../services/tenantService";
+import { RouteHelper } from "../../../../../routing/routeHelper";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { getRequestUrl, scrollToOperation } from "./utils";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
+import { OperationConsole } from "./OperationConsole";
 
 export const OperationDetailsWebsocket = ({
     apiName,
     apiService,
+    usersService,
+    productService,
+    oauthService,
+    tenantService,
+    routeHelper,
+    settingsProvider,
+    sessionManager,
+    httpClient,
     enableConsole,
+    useCorsProxy,
     includeAllHostnames,
     enableScrollTo
-}: OperationDetailsRuntimeProps & { apiName: string, apiService: ApiService }) => {
+}: OperationDetailsRuntimeProps & {
+    apiName: string,
+    apiService: ApiService,
+    usersService: UsersService,
+    productService: ProductService,
+    oauthService: OAuthService,
+    tenantService: TenantService,
+    routeHelper: RouteHelper,
+    settingsProvider: ISettingsProvider,
+    sessionManager: SessionManager,
+    httpClient: HttpClient
+}) => {
     const [working, setWorking] = useState(false);
     const [api, setApi] = useState<Api>(null);
     const [operation, setOperation] = useState<Operation>(null);
@@ -25,6 +54,7 @@ export const OperationDetailsWebsocket = ({
     const [hostnames, setHostnames] = useState<string[]>([]);
     const [requestUrl, setRequestUrl] = useState<string>(null);
     const [isCopied, setIsCopied] = useState(false);
+    const [isConsoleOpen, setIsConsoleOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (!apiName) return;
@@ -56,6 +86,7 @@ export const OperationDetailsWebsocket = ({
 
         try {
             api = await apiService.getApi(`apis/${apiName}`);
+            console.log(api);
         } catch (error) {
             throw new Error(`Unable to load the API. Error: ${error.message}`);
         }
@@ -85,13 +116,30 @@ export const OperationDetailsWebsocket = ({
     }
 
     return (
-        <div className={"operation-details-container"}>
+        <div className={"operation-details-container"}>            
             <Subtitle1 block className={"operation-details-title"} id={"operation"}>Operation</Subtitle1>
             {working 
                 ? <Spinner label="Loading..." labelPosition="below" size="small" />
                 : !operation
                     ? <Body1>No operation selected.</Body1> 
                     : <div className={"operation-details-content"}>
+                        <OperationConsole
+                            isOpen={isConsoleOpen}
+                            setIsOpen={setIsConsoleOpen}
+                            api={api}
+                            operation={operation}
+                            hostnames={hostnames}
+                            useCorsProxy={useCorsProxy}
+                            apiService={apiService}
+                            usersService={usersService}
+                            productService={productService}
+                            oauthService={oauthService}
+                            tenantService={tenantService}
+                            routeHelper={routeHelper}
+                            settingsProvider={settingsProvider}
+                            sessionManager={sessionManager}
+                            httpClient={httpClient}
+                        />
                         <div className={"operation-table"}>
                             <div className={"operation-table-header"}>
                                 <Subtitle2>{operation.displayName}</Subtitle2>
@@ -134,8 +182,7 @@ export const OperationDetailsWebsocket = ({
                                 }
                             </div>
                         </div>
-                        {/* TODO: implement! */}
-                        {enableConsole && <Button>Try this operation</Button>}
+                        {enableConsole && <Button onClick={() => setIsConsoleOpen(true)}>Try this operation</Button>}
                       </div>
             }
         </div>
