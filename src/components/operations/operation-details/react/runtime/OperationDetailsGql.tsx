@@ -1,14 +1,19 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { ISettingsProvider } from "@paperbits/common/configuration";
+import { SessionManager } from "@paperbits/common/persistence/sessionManager";
+import { HttpClient } from "@paperbits/common/http/httpClient";
 import {
     GraphQLField,
     GraphQLInputType,
+    GraphQLObjectType,
     GraphQLOutputType,
     isInputObjectType,
     isInterfaceType,
     isListType,
     isObjectType,
     isScalarType,
+    isUnionType,
     isWrappingType
 } from "graphql";
 import { Stack } from "@fluentui/react";
@@ -35,14 +40,18 @@ import { Copy16Regular } from "@fluentui/react-icons";
 import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
 import { GraphqlService, TGraphqlTypes } from "../../../../../services/graphqlService";
+import { UsersService } from "../../../../../services/usersService";
+import { ProductService } from "../../../../../services/productService";
+import { OAuthService } from "../../../../../services/oauthService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { CodeSnippet } from "../../../../utils/react/CodeSnippet";
-import { GraphqlDefaultScalarTypes, GraphqlFieldTypes } from "../../../../../constants";
+import { GraphqlCustomFieldNames, GraphqlDefaultScalarTypes, GraphqlFieldTypes } from "../../../../../constants";
 import { TSchemaView } from "./OperationRepresentation";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
 import { getRequestUrl, scrollToOperation } from "./utils";
 import { TypeDefinitionGql } from "./TypeDefinitionsGql";
+import { OperationConsoleGql } from "./OperationConsoleGql";
 
 export const OperationDetailsGql = ({
     apiName,
@@ -50,12 +59,32 @@ export const OperationDetailsGql = ({
     graphName,
     graphType,
     graphqlService,
+    usersService,
+    productService,
+    oauthService,
     routeHelper,
+    settingsProvider,
+    sessionManager,
+    httpClient,
     enableConsole,
+    useCorsProxy,
     includeAllHostnames,
     enableScrollTo,
     defaultSchemaView
-}: OperationDetailsRuntimeProps & { apiName: string, graphName: string, graphType: string, apiService: ApiService, graphqlService: GraphqlService, routeHelper: RouteHelper }) => {
+}: OperationDetailsRuntimeProps & {
+    apiName: string,
+    graphName: string,
+    graphType: string,
+    apiService: ApiService,
+    graphqlService: GraphqlService,
+    usersService: UsersService,
+    productService: ProductService,
+    oauthService: OAuthService,
+    routeHelper: RouteHelper,
+    settingsProvider: ISettingsProvider,
+    sessionManager: SessionManager,
+    httpClient: HttpClient
+}) => {
     const [working, setWorking] = useState(false);
     const [api, setApi] = useState<Api>(null);
     const [graph, setGraph] = useState<GraphQLField<any, any>>(null);
@@ -65,6 +94,7 @@ export const OperationDetailsGql = ({
     const [requestUrl, setRequestUrl] = useState<string>(null);
     const [schemaView, setSchemaView] = useState<TSchemaView>(defaultSchemaView as TSchemaView || TSchemaView.table);
     const [isCopied, setIsCopied] = useState(false);
+    const [isConsoleOpen, setIsConsoleOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (!apiName || !graphName || !graphType) {
@@ -174,11 +204,18 @@ export const OperationDetailsGql = ({
             type = type.ofType;
         }
 
-        if (!isScalarType(type) && !GraphqlDefaultScalarTypes.includes(type.name) && !references.some(reference => reference.name === type.name)) {
+        if (isScalarType(type) || GraphqlDefaultScalarTypes.includes(type.name)) return references;
+
+        if (!references.some(reference => reference.name === type.name)) {
             references.push(type);
 
             if (isObjectType(type) || isInputObjectType(type) || isInterfaceType(type)) {
                 Object.values(type[GraphqlFieldTypes.fields]).forEach(field => getGraphReferences(field, graphqlTypes, references));
+            } else if (isUnionType(type)) {
+                type[GraphqlFieldTypes.types].forEach((type: GraphQLObjectType) => {
+                    !references.some(reference => reference.name === type.name) && references.push(type);
+                    Object.values(type[GraphqlFieldTypes.fields]).forEach(field => getGraphReferences(field, graphqlTypes, references));
+                });
             }
         }
 
@@ -213,6 +250,24 @@ export const OperationDetailsGql = ({
                 : !graph
                     ? <Body1>No graph selected.</Body1> 
                     : <div className={"operation-details-content"}>
+                        <OperationConsoleGql
+                            isOpen={isConsoleOpen}
+                            setIsOpen={setIsConsoleOpen}
+                            api={api}
+                            hostnames={hostnames}
+                            selectedGraphType={graph[GraphqlCustomFieldNames.type]()}
+                            selectedGraphName={graph.name}
+                            useCorsProxy={useCorsProxy}
+                            apiService={apiService}
+                            graphqlService={graphqlService}
+                            usersService={usersService}
+                            productService={productService}
+                            oauthService={oauthService}
+                            routeHelper={routeHelper}
+                            settingsProvider={settingsProvider}
+                            sessionManager={sessionManager}
+                            httpClient={httpClient}
+                        />
                         <div className={"operation-table"}>
                             <div className={"operation-table-header"}>
                                 <Subtitle2>{graph.name}</Subtitle2>
@@ -243,8 +298,7 @@ export const OperationDetailsGql = ({
                                 </div>
                             </div>
                         </div>
-                        {/* TODO: implement! */}
-                        {enableConsole && <Button>Try this operation</Button>}
+                        {enableConsole && <Button onClick={() => setIsConsoleOpen(true)}>Try this operation</Button>}
                         {graph.type &&
                             <div className={"operation-response"}>
                                 <Subtitle1 block className={"operation-subtitle1"}>Response type</Subtitle1>

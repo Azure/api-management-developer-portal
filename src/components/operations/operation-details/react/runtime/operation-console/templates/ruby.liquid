@@ -1,0 +1,29 @@
+require 'net/http'
+
+uri = URI('{{console.requestUrl}}')
+
+
+request = Net::HTTP::{{ console.method | downcase | capitalize }}.new(uri.request_uri)
+
+# Request headers
+{% for header in console.request.meaningfulHeaders -%}
+{% if showSecrets == false and header.secret -%}
+    request['{{header.name}}'] = '{{header.hiddenValue}}'
+{% else -%}
+    request['{{header.name}}'] = '{{header.value}}'
+{% endif -%}
+{% endfor %}
+{% if console.request.body != blank -%}
+# Request body
+{% if console.request.bodyFormat == "raw" -%}
+request.body = '{{ console.request.body }}'
+{%- elsif  console.request.bodyFormat == "binary" -%}
+request.body = File.read("< path/to/{{console.request.binary.name}} >")
+{% endif %}
+{% endif %}
+response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
+    http.request(request)
+end
+
+puts response.code
+puts response.body
