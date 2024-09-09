@@ -127,8 +127,14 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
                             {...this.props}
                             apiName={this.state.apiName}
                             apiService={this.apiService}
+                            usersService={this.usersService}
+                            productService={this.productService}
                             oauthService={this.oauthService}
+                            tenantService={this.tenantService}
                             routeHelper={this.routeHelper}
+                            settingsProvider={this.settingsProvider}
+                            sessionManager={this.sessionManager}
+                            httpClient={this.httpClient}
                         />
                     : this.state.apiType === TypeOfApi.graphQL
                         ? <OperationDetailsGql
