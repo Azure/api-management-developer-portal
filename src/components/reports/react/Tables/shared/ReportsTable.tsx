@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Body1Strong, Spinner, Table, TableBody } from "@fluentui/react-components";
-import { Headers, TOrderState } from "./Headers";
+import { Spinner, Table, TableBody, TableCell, TableRow } from "@fluentui/react-components";
 import { Pagination } from "../../../../utils/react/Pagination";
 import * as Constants from "../../../../../constants";
+import { Headers, TOrderState } from "./Headers";
 
 export const ReportsTable = <T extends unknown>({ mainLabel, pageState: [pageNumber, setPageNumber], orderState, data, working, children }: {
     mainLabel: string
@@ -16,21 +16,22 @@ export const ReportsTable = <T extends unknown>({ mainLabel, pageState: [pageNum
         <Table className={"fui-table"} size={"small"}>
             <Headers mainLabel={mainLabel} orderState={orderState} />
 
-            {!working && data?.value.length > 0 && (
+            {!working && (
                 <TableBody>
-                    {data.value.map(children)}
+                    {data?.value.length > 0
+                        ? data.value.map(children)
+                        : <TableRow><TableCell colSpan={8} style={{ textAlign: "center" }}>No data</TableCell></TableRow>
+                    }
                 </TableBody>
             )}
         </Table>
 
         {working ? (
-            <Spinner label={"Loading products"} labelPosition="below" style={{ marginBottom: "1.5rem" }} />
-        ) : data?.value.length > 0 ? (
+            <Spinner label={"Loading products"} labelPosition="below" style={{ marginBottom: "1.5rem" }} size="small" />
+        ) : data?.value.length > 0 && (
             <div style={{ display: "flex", justifyContent: "center", marginBottom: "1.5rem" }}>
                 <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(data?.count / Constants.defaultPageSize)} />
             </div>
-        ) : (
-            <Body1Strong style={{ display: "block", marginBottom: "2.5rem", textAlign: "center" }}>No data</Body1Strong>
         )}
     </>
 )

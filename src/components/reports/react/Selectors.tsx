@@ -1,7 +1,7 @@
 import * as React from "react";
+import * as moment from "moment/moment";
 import { Stack } from "@fluentui/react";
 import { Dropdown, Option, OptionGroup } from "@fluentui/react-components";
-import * as moment from "moment/moment";
 
 export enum optionsReportsCharts {
     "API Calls" = "apiCalls",
