@@ -5,10 +5,20 @@ import { Body1, Body1Strong, Button, Dropdown, Input, Label, Option, OptionGroup
 import { ChevronUp20Regular } from "@fluentui/react-icons";
 import { AuthorizationServer } from "../../../../../../models/authorizationServer";
 
+interface SubscriptionKey {
+    name: string,
+    value: string,
+}
+
+export interface ProductSubscriptionKeys {
+    name: string,
+    subscriptionKeys: SubscriptionKey[]
+}
+
 type ConsoleAuthorizationProps = {
     authorizationServers: AuthorizationServer[];
     subscriptionRequired: boolean;
-    products: any[];
+    products: ProductSubscriptionKeys[];
     onGrantTypeChange: (selectedServer: AuthorizationServer, grantType: string) => void;
     authorizeWithPassword: (selectedServer: AuthorizationServer, username: string, password: string) => void;
     selectSubscriptionKey: (key: string) => void;
@@ -27,10 +37,9 @@ export const ConsoleAuthorization = ({
     const [isAuthorizationCollapsed, setIsAuthorizationCollapsed] = useState<boolean>(false);
     const [selectedAuthorizationServer, setSelectedAuthorizationServer] = useState<AuthorizationServer>(authorizationServers[0] ?? null);
     const [selectedAuthorizationFlow, setSelectedAuthorizationFlow] = useState<string>(noAuthFlow);
-    const [selectedSubscriptionKey, setSelectedSubscriptionKey] = useState<{ name: string, value: string }>(products[0]?.subscriptionKeys[0] ?? null);
+    const [selectedSubscriptionKey, setSelectedSubscriptionKey] = useState(products[0]?.subscriptionKeys[0] ?? null);
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-
 
     return (
         <div className={"operation-table"}>
@@ -56,7 +65,7 @@ export const ConsoleAuthorization = ({
                                             value={selectedAuthorizationServer.name}
                                             selectedOptions={[selectedAuthorizationServer.name]}
                                             placeholder="Select authorization server"
-                                            onOptionSelect={(e, data) => setSelectedAuthorizationServer(authorizationServers.find(server => server.name === data.optionValue))}
+                                            onOptionSelect={(_, data) => setSelectedAuthorizationServer(authorizationServers.find(server => server.name === data.optionValue))}
                                         >
                                         {authorizationServers.map(server => (
                                             <Option key={server.name} value={server.name}>{server.name}</Option>
@@ -71,7 +80,7 @@ export const ConsoleAuthorization = ({
                                     value={selectedAuthorizationFlow === noAuthFlow ? "No auth" : selectedAuthorizationFlow}
                                     selectedOptions={[selectedAuthorizationFlow ?? noAuthFlow]}
                                     placeholder="Select authorization flow"
-                                    onOptionSelect={(e, data) => {
+                                    onOptionSelect={(_, data) => {
                                         setSelectedAuthorizationFlow(data.optionValue);
                                         onGrantTypeChange(selectedAuthorizationServer, data.optionValue);
                                     }}
@@ -91,7 +100,7 @@ export const ConsoleAuthorization = ({
                                             type="text"
                                             placeholder="Enter username"
                                             value={username}
-                                            onChange={(e, data) => setUsername(data.value)}
+                                            onChange={(_, data) => setUsername(data.value)}
                                         />
                                     </Stack>
                                     <Stack className="auth-detail" styles={{ root: { marginBottom: 24 } }}>
@@ -101,11 +110,11 @@ export const ConsoleAuthorization = ({
                                             type="password"
                                             placeholder="Enter password"
                                             value={password}
-                                            onChange={(e, data) => setPassword(data.value)}
+                                            onChange={(_, data) => setPassword(data.value)}
                                         />
                                     </Stack>
                                     <Button onClick={() => authorizeWithPassword(selectedAuthorizationServer, username, password)}>Authorize</Button>
-                                </>                                              
+                                </>
                             }
                         </>
                     }
@@ -118,7 +127,7 @@ export const ConsoleAuthorization = ({
                                     value={selectedSubscriptionKey.name}
                                     selectedOptions={[selectedSubscriptionKey.value]}
                                     placeholder="Select subscription key"
-                                    onOptionSelect={(e, data) => {
+                                    onOptionSelect={(_, data) => {
                                         setSelectedSubscriptionKey({ name: data.optionText, value: data.optionValue });
                                         selectSubscriptionKey(data.optionValue);
                                     }}
@@ -139,7 +148,7 @@ export const ConsoleAuthorization = ({
                                     type="password"
                                     placeholder="Enter subscription key"
                                     value={selectedSubscriptionKey?.value}
-                                    onChange={(e, data) => selectSubscriptionKey(data.value)}
+                                    onChange={(_, data) => selectSubscriptionKey(data.value)}
                                 />
                               </Stack>
                     )}

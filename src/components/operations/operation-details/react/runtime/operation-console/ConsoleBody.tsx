@@ -36,7 +36,7 @@ export const ConsoleBody = ({ hasBody, request, updateBody, updateBodyBinary }: 
 
     useEffect(() => {
         updateBody(bodyStash);
-    }, [bodyStash]);
+    }, [updateBody, bodyStash]);
 
     const addBody = () => {
         setIsBodyCollapsed(false);
@@ -47,7 +47,7 @@ export const ConsoleBody = ({ hasBody, request, updateBody, updateBodyBinary }: 
     const removeBody = () => {
         setIsBodyCollapsed(true);
         setHasBodyState(false);
-        setBodyStash("");        
+        setBodyStash("");
         setIsBodyEdited(false);
         setUploadedFileName("");
         setBodyFormat("raw");
@@ -55,14 +55,14 @@ export const ConsoleBody = ({ hasBody, request, updateBody, updateBodyBinary }: 
 
     const selectRepresentation = (representationId: string) => {
         const representationNameAndType = representationId.split("+");
-        const selectedRep = request.representations.find(representation => 
+        const selectedRep = request.representations.find(representation =>
             representation.typeName === representationNameAndType[0] && representation.contentType === representationNameAndType[1]
         );
         setSelectedRepresentationId(representationId);
         setSelectedRepresentation(selectedRep);
         setInitialBody(selectedRep.sample ?? "");
     }
-    
+
     const selectFile = () => {
         hiddenFileInput.current.click();
     };
@@ -148,7 +148,7 @@ export const ConsoleBody = ({ hasBody, request, updateBody, updateBodyBinary }: 
                         }
                     </Stack>
                     {request.readonlyBodyFormat
-                        ? request.bodyDataItems()?.map(dataItem => 
+                        ? request.bodyDataItems()?.map(dataItem =>
                             <Stack key={dataItem.name()}>
                                 <Label htmlFor={dataItem.name()}>{dataItem.name()} (type: {dataItem.type()})</Label>
                                 {dataItem.bodyFormat() === "string"
@@ -177,7 +177,7 @@ export const ConsoleBody = ({ hasBody, request, updateBody, updateBodyBinary }: 
                                     }}
                                 />
                             </Field>
-                            : bodyFormat === "binary" && binaryField()                               
+                            : bodyFormat === "binary" && binaryField()
                     }
                     {isBodyEdited &&
                         <Button
