@@ -11,7 +11,7 @@ type ConsoleHostsProps = {
 
 export const ConsoleHosts = ({ hostnames, updateHostname }: ConsoleHostsProps) => {
     const [isHostsCollapsed, setIsHostsCollapsed] = useState<boolean>(false);
-    const [selectedHostname, setSelectedHostname] = useState<string>(hostnames[0] ?? null);
+    const [selectedHostname, setSelectedHostname] = useState<string>(hostnames?.[0] ?? null);
 
     return (
         <div className={"operation-table"}>

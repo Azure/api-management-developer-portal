@@ -51,7 +51,7 @@ export const loadSubscriptionKeys = async (api: Api, apiService: ApiService, pro
     const pageOfProducts = await apiService.getAllApiProducts(api.id);
     const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
     const pageOfSubscriptions = await productService.getSubscriptions(userId);
-    const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === SubscriptionState.active);
+    const subscriptions = pageOfSubscriptions?.value?.filter(subscription => subscription.state === SubscriptionState.active);
     const availableProducts = [];
 
     products.forEach(product => {
@@ -86,7 +86,7 @@ export const getBackendUrl = async (settingsProvider: ISettingsProvider): Promis
 }
 
 export const setAuthHeader = (headers: ConsoleHeader[], accessToken: string): ConsoleHeader[] => {
-    const headersArray = headers;
+    const headersArray = headers ?? [];
     const oldHeader = headersArray.find(header => header.name() === KnownHttpHeaders.Authorization);
 
     if (oldHeader) {
@@ -125,7 +125,7 @@ export const setupOAuth = async (api: Api, authServer: AuthorizationServer, head
         newHeaders = setAuthHeader(headers, storedCredentials.accessToken);
     }
 
-    return newHeaders;
+    return newHeaders ?? [];
 }
 
 const getSelectedAuthServerOverrideScope = (selectedAuthServerName: string, oAuth2Settings: OAuth2AuthenticationSettings[]): string => {
@@ -187,7 +187,7 @@ export const onGrantTypeChange = async (
     await clearStoredCredentials(sessionManager);
 
     if (!grantType || grantType === GrantTypes.password) {
-        const authHeader = headers.find(header => header.name() === KnownHttpHeaders.Authorization);
+        const authHeader = headers?.find(header => header.name() === KnownHttpHeaders.Authorization);
         if (authHeader) {
             const newHeaders = headers.filter(header => header.id !== authHeader.id);
             return [...newHeaders];

@@ -34,8 +34,8 @@ import { OAuthService } from "../../../../../services/oauthService";
 import { ProductService } from "../../../../../services/productService";
 import { TenantService } from "../../../../../services/tenantService";
 import { UsersService } from "../../../../../services/usersService";
-import { ServiceSkuName, TypeOfApi } from "../../../../../constants";
-import { ConsoleAuthorization } from "./operation-console/ConsoleAuthorization";
+import { RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
+import { ConsoleAuthorization, ProductSubscriptionKeys } from "./operation-console/ConsoleAuthorization";
 import { ConsoleBody } from "./operation-console/ConsoleBody";
 import { ConsoleHeaders } from "./operation-console/ConsoleHeaders";
 import { ConsoleHosts } from "./operation-console/ConsoleHosts";
@@ -66,10 +66,6 @@ interface StoredCredentials {
     accessToken: string;
 }
 
-interface OAuthSession {
-    [apiName: string]: StoredCredentials;
-}
-
 export const OperationConsole = ({
     isOpen,
     setIsOpen,
@@ -89,7 +85,7 @@ export const OperationConsole = ({
 }: OperationConsoleProps) => {
     const [working, setWorking] = useState<boolean>(false);
     const [authorizationServers, setAuthorizationServers] = useState<AuthorizationServer[]>([]);
-    const [products, setProducts] = useState<any[]>([]);
+    const [products, setProducts] = useState<ProductSubscriptionKeys[]>([]);
     const [selectedSubscriptionKey, setSelectedSubscriptionKey] = useState<string>(null);
     const [isConsumptionMode, setIsConsumptionMode] = useState<boolean>(false);
     const [backendUrl, setBackendUrl] = useState<string>("");
@@ -100,12 +96,12 @@ export const OperationConsole = ({
 
     useEffect(() => {
         setWorking(true);
-        consoleOperation.current.host.hostname(hostnames[0]);        
-        Promise.all([            
+        consoleOperation.current.host.hostname(hostnames[0]);
+        Promise.all([
             getAuthServers(api, oauthService).then(authServers => {
                 setAuthorizationServers(authServers);
                 if (authServers.length > 0) {
-                    setupOAuth(api, authServers[0], consoleOperation.current.request.headers(), sessionManager).then(newHeaders => {
+                    setupOAuth(api, authServers?.[0], consoleOperation.current.request.headers(), sessionManager).then(newHeaders => {
                         consoleOperation.current.request.headers(newHeaders);
                     });
                 }
@@ -127,7 +123,7 @@ export const OperationConsole = ({
 
     useEffect(() => {
         if (!isConsumptionMode && api.type !== TypeOfApi.webSocket) {
-            if (!consoleOperation.current.request.headers().some(header => header.name() === KnownHttpHeaders.CacheControl)) {
+            if (!consoleOperation.current.request.headers()?.some(header => header.name() === KnownHttpHeaders.CacheControl)) {
                 consoleOperation.current.setHeader(KnownHttpHeaders.CacheControl, "no-cache", "string", "Disable caching.");
             }
         }
@@ -143,9 +139,9 @@ export const OperationConsole = ({
     }
 
     const setSubscriptionHeader = (key?: string): ConsoleHeader[] => {
-        const headers = consoleOperation.current.request.headers();
+        const headers = consoleOperation.current.request.headers() ?? [];
         let subscriptionHeaderName: string = KnownHttpHeaders.OcpApimSubscriptionKey;
-    
+
         if (api.subscriptionKeyParameterNames && api.subscriptionKeyParameterNames.header) {
             subscriptionHeaderName = api.subscriptionKeyParameterNames.header;
         }
@@ -160,9 +156,9 @@ export const OperationConsole = ({
         subscriptionHeader.secret(true);
         subscriptionHeader.type = "string";
         subscriptionHeader.inputTypeValue("password");
-    
+
         newHeaders.push(subscriptionHeader);
-    
+
         return newHeaders;
     }
 
@@ -188,13 +184,23 @@ export const OperationConsole = ({
         rerender();
     }
 
-    const updateBody = (body: string) => {
-        consoleOperation.current.request.body(body);
+    const updateHasBody = (hasBody: boolean) => {
+        consoleOperation.current.hasBody(hasBody);
         rerender();
     }
 
-    const updateBodyBinary = (body: File) => {
+    const updateBody = useCallback((body: string) => {
+        consoleOperation.current.request.body(body);
+        rerender();
+    }, [consoleOperation, rerender]);
+
+    const updateBodyBinary = useCallback((body: File) => {
         consoleOperation.current.request.binary(body);
+        rerender();
+    }, [consoleOperation, rerender]);
+
+    const updateBodyFormat = (bodyFormat: RequestBodyType) => {
+        consoleOperation.current.request.bodyFormat(bodyFormat);
         rerender();
     }
 
@@ -302,9 +308,16 @@ export const OperationConsole = ({
                         {(consoleOperation.current.canHaveBody || consoleOperation.current.hasBody()) &&
                             <ConsoleBody
                                 hasBody={consoleOperation.current.hasBody()}
-                                request={consoleOperation.current.request}
+                                body={consoleOperation.current.request.body()}
+                                binary={consoleOperation.current.request.binary()}
+                                bodyDataItems={consoleOperation.current.request.bodyDataItems()}
+                                bodyFormat={consoleOperation.current.request.bodyFormat()}
+                                readonlyBodyFormat={consoleOperation.current.request.readonlyBodyFormat}
+                                representations={consoleOperation.current.request.representations}
+                                updateHasBody={updateHasBody}
                                 updateBody={updateBody}
                                 updateBodyBinary={updateBodyBinary}
+                                updateBodyFormat={updateBodyFormat}
                             />
                         }
                         <ConsoleRequestResponse
