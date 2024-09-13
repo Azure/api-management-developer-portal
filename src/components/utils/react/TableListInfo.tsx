@@ -77,7 +77,7 @@ export const TableListInfo = ({
     <Stack horizontal horizontalAlign="space-between">
         <Stack.Item>
             <Stack horizontal tokens={{ childrenGap: "1rem" }}>
-                {filters && setFilters && !!filtersOptions.filter(e => e.items.length).length && (
+                {filters && setFilters && !!filtersOptions?.filter(e => e.items.length).length && (
                     <Stack.Item>
                         <TableFiltersButton
                             filtersActive={filters}

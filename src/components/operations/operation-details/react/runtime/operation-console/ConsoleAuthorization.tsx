@@ -10,10 +10,20 @@ import { ConsoleHeader } from "../../../../../../models/console/consoleHeader";
 import { OAuthService } from "../../../../../../services/oauthService";
 import { authenticateOAuthWithPassword, onGrantTypeChange } from "./consoleUtils";
 
+interface SubscriptionKey {
+    name: string,
+    value: string,
+}
+
+export interface ProductSubscriptionKeys {
+    name: string,
+    subscriptionKeys: SubscriptionKey[]
+}
+
 type ConsoleAuthorizationProps = {
     api: Api;
     headers: ConsoleHeader[];
-    products: any[];
+    products: ProductSubscriptionKeys[];
     subscriptionRequired: boolean;
     subscriptionKey: string;
     authorizationServers: AuthorizationServer[];
@@ -40,12 +50,12 @@ export const ConsoleAuthorization = ({
     isGqlConsole
 }: ConsoleAuthorizationProps) => {
     const [isAuthorizationCollapsed, setIsAuthorizationCollapsed] = useState<boolean>(false);
-    const [selectedAuthorizationServer, setSelectedAuthorizationServer] = useState<AuthorizationServer>(authorizationServers[0] ?? null);
+    const [selectedAuthorizationServer, setSelectedAuthorizationServer] = useState<AuthorizationServer>(authorizationServers?.[0] ?? null);
     const [selectedAuthorizationFlow, setSelectedAuthorizationFlow] = useState<string>(noAuthFlow);
     const [selectedSubscriptionKey, setSelectedSubscriptionKey] = useState<{ name: string, value: string }>(
         subscriptionKey
             ? products.flatMap(p => p.subscriptionKeys).find(k => k.value === subscriptionKey)
-            : products[0]?.subscriptionKeys[0] ?? null
+            : products?.[0]?.subscriptionKeys[0] ?? null
     );
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");

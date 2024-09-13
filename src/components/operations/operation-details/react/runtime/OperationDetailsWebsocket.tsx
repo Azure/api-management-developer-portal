@@ -86,7 +86,6 @@ export const OperationDetailsWebsocket = ({
 
         try {
             api = await apiService.getApi(`apis/${apiName}`);
-            console.log(api);
         } catch (error) {
             throw new Error(`Unable to load the API. Error: ${error.message}`);
         }

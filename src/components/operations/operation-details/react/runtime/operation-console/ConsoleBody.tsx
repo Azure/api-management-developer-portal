@@ -1,98 +1,88 @@
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Stack } from "@fluentui/react";
-import { Body1, Body1Strong, Button, Dropdown, Field, Input, Label, Option, Radio, RadioGroup, Textarea, Tooltip } from "@fluentui/react-components";
-import { AddCircleRegular, ArrowClockwiseRegular, ArrowUploadRegular, ChevronUp20Regular, DeleteRegular } from "@fluentui/react-icons";
+import { Body1Strong, Button, Dropdown, Field, Input, Label, Option, Radio, RadioGroup, Textarea, Tooltip } from "@fluentui/react-components";
+import { AddCircleRegular, ArrowClockwiseRegular, ChevronUp20Regular, DeleteRegular } from "@fluentui/react-icons";
 import { ConsoleRepresentation } from "../../../../../../models/console/consoleRepresentation";
-import { ConsoleRequest } from "../../../../../../models/console/consoleRequest";
+import { RequestBodyType } from "../../../../../../constants";
+import { BinaryField } from "./BinaryField";
 
 type ConsoleBodyProps = {
     hasBody: boolean;
-    request: ConsoleRequest;
+    body: string;
+    binary: File;
+    bodyDataItems: any[];
+    bodyFormat: RequestBodyType;
+    readonlyBodyFormat: boolean;
+    representations: ConsoleRepresentation[];
+    updateHasBody: (hasBody: boolean) => void;
     updateBody: (body: string) => void;
     updateBodyBinary: (file: File) => void;
+    updateBodyFormat: (format: RequestBodyType) => void;
 }
 
-export const ConsoleBody = ({ hasBody, request, updateBody, updateBodyBinary }: ConsoleBodyProps) => {
+export const ConsoleBody = ({
+    hasBody,
+    body,
+    binary,
+    bodyDataItems,
+    bodyFormat,
+    readonlyBodyFormat,
+    representations,
+    updateHasBody,
+    updateBody,
+    updateBodyBinary,
+    updateBodyFormat
+}: ConsoleBodyProps) => {
     const [isBodyCollapsed, setIsBodyCollapsed] = useState<boolean>(!hasBody);
-    const [hasBodyState, setHasBodyState] = useState<boolean>(hasBody);
-    const [bodyStash, setBodyStash] = useState<string>(request.body());
-    const [bodyFormat, setBodyFormat] = useState<string>(request.bodyFormat());
-    const [isBodyEdited, setIsBodyEdited] = useState<boolean>(false);
-    const [selectedRepresentation, setSelectedRepresentation] = useState<ConsoleRepresentation>(request.representations[0] ?? null);
+    const [file, setFile] = useState<File>(binary);
+    const [bodyFormatState, setBodyFormatState] = useState<RequestBodyType>(bodyFormat ?? RequestBodyType.raw);
+    const [selectedRepresentation, setSelectedRepresentation] = useState<ConsoleRepresentation>(representations?.[0] ?? null);
     const [selectedRepresentationId, setSelectedRepresentationId] = useState<string>(selectedRepresentation?.typeName + "+" + selectedRepresentation?.contentType ?? "");
     const [initialBody, setInitialBody] = useState<string>(selectedRepresentation?.sample ?? "");
-    const [uploadedFileName, setUploadedFileName] = useState<string>("");
-
-    const hiddenFileInput = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-        setBodyStash(request.body());
-        setBodyFormat(request.bodyFormat());
-        setSelectedRepresentation(request.representations[0] ?? null);
-        setSelectedRepresentationId(request.representations[0]?.typeName + "+" + request.representations[0]?.contentType ?? "");
-        setInitialBody(request.representations[0]?.sample ?? "");
-    }, [request]);
+    const [isBodyEdited, setIsBodyEdited] = useState<boolean>(
+        (bodyFormat === RequestBodyType.raw && body !== initialBody) || (bodyFormat === RequestBodyType.binary && binary !== null) || false
+    );
 
     useEffect(() => {
-        updateBody(bodyStash);
-    }, [bodyStash]);
+        setFile(binary);
+        setBodyFormatState(bodyFormat);
+        setSelectedRepresentation(representations[0] ?? null);
+        setSelectedRepresentationId(representations[0]?.typeName + "+" + representations[0]?.contentType ?? "");
+        setInitialBody(representations[0]?.sample ?? "");
+    }, [binary, bodyFormat, representations]);
 
-    const addBody = () => {
+    const addBody = (): void => {
         setIsBodyCollapsed(false);
-        setHasBodyState(true);
-        setBodyStash(initialBody);
+        updateHasBody(true);
+        updateBody(initialBody);
+        updateBodyFormat(RequestBodyType.raw);
     }
 
-    const removeBody = () => {
-        setIsBodyCollapsed(true);
-        setHasBodyState(false);
-        setBodyStash("");        
+    const removeBody = (): void => {
+        setIsBodyCollapsed(true);        
         setIsBodyEdited(false);
-        setUploadedFileName("");
-        setBodyFormat("raw");
+        updateHasBody(false);
+        updateBody("");
+        updateBodyBinary(null);
+        updateBodyFormat(RequestBodyType.raw);
     }
 
-    const selectRepresentation = (representationId: string) => {
+    const uploadFile = (file: File): void => {
+        setIsBodyEdited(true);
+        updateBodyBinary(file);
+        updateBodyFormat(RequestBodyType.binary);
+    }
+
+    const selectRepresentation = (representationId: string): void => {
         const representationNameAndType = representationId.split("+");
-        const selectedRep = request.representations.find(representation => 
+        const selectedRep = representations.find(representation =>
             representation.typeName === representationNameAndType[0] && representation.contentType === representationNameAndType[1]
         );
         setSelectedRepresentationId(representationId);
         setSelectedRepresentation(selectedRep);
         setInitialBody(selectedRep.sample ?? "");
-    }
-    
-    const selectFile = () => {
-        hiddenFileInput.current.click();
-    };
-
-    const uploadFile = (event) => {
-        const fileUploaded = event.target.files[0];
-        setUploadedFileName(fileUploaded.name);
-        setBodyStash("");
-        updateBodyBinary(fileUploaded);
-    };
-
-    const binaryField = (): JSX.Element => {
-        return (
-            <>
-                <Button
-                    icon={<ArrowUploadRegular />}
-                    onClick={selectFile}
-                    className="request-body-upload-button"
-                >
-                    Upload file
-                </Button>
-                <Body1 block>{uploadedFileName}</Body1>
-                <input
-                    type="file"
-                    onChange={uploadFile}
-                    ref={hiddenFileInput}
-                    style={{ display: "none" }} // FluentUI doesn't have a file uploader, so using a hidden file input instead
-                />
-            </>
-        );
+        updateBody(selectedRep.sample ?? "");
     }
 
     return (
@@ -106,7 +96,7 @@ export const ConsoleBody = ({ hasBody, request, updateBody, updateBodyBinary }: 
                         />
                         <Body1Strong>Body</Body1Strong>
                     </Stack>
-                    {hasBodyState
+                    {hasBody
                         ? <Tooltip content="Remove body" relationship="label">
                             <Button icon={<DeleteRegular />} appearance="subtle" onClick={() => removeBody()} />
                         </Tooltip>
@@ -114,22 +104,22 @@ export const ConsoleBody = ({ hasBody, request, updateBody, updateBodyBinary }: 
                     }
                 </Stack>
             </div>
-            {(!isBodyCollapsed && hasBodyState) &&
+            {(!isBodyCollapsed && hasBody) &&
                 <div className={"operation-table-body-console"}>
                     <Stack horizontal verticalAlign="center">
                         <Stack.Item className="format-selection">
                             <RadioGroup
                                 name={"Request body format"}
-                                value={bodyFormat}
+                                value={bodyFormatState}
                                 layout="horizontal"
-                                onChange={(e, data) => setBodyFormat(data.value)}
+                                onChange={(_, data) => setBodyFormatState(data.value as RequestBodyType)}
                             >
-                                {request.readonlyBodyFormat && <Radio value={"form"} label={"Form-data"} disabled />}
-                                <Radio value={"raw"} label={"Raw"} disabled={request.readonlyBodyFormat} />
-                                <Radio value={"binary"} label={"Binary"} disabled={request.readonlyBodyFormat} />
+                                {readonlyBodyFormat && <Radio value={RequestBodyType.form} label={"Form-data"} disabled />}
+                                <Radio value={RequestBodyType.raw} label={"Raw"} disabled={readonlyBodyFormat} />
+                                <Radio value={RequestBodyType.binary} label={"Binary"} disabled={readonlyBodyFormat} />
                             </RadioGroup>
                         </Stack.Item>
-                        {bodyFormat === "raw" && request.representations.length > 0 &&
+                        {bodyFormatState === RequestBodyType.raw && representations.length > 0 &&
                             <Stack.Item grow>
                                 <Dropdown
                                     aria-label="Sample request body"
@@ -137,9 +127,9 @@ export const ConsoleBody = ({ hasBody, request, updateBody, updateBodyBinary }: 
                                     className="request-body-dropdown"
                                     value={selectedRepresentation.typeName}
                                     selectedOptions={[selectedRepresentationId]}
-                                    onOptionSelect={(e, data) => selectRepresentation(data.optionValue)}
+                                    onOptionSelect={(_, data) => selectRepresentation(data.optionValue)}
                                 >
-                                    {request.representations.map(representation => {
+                                    {representations.map(representation => {
                                         const repId = representation.typeName + "+" + representation.contentType;
                                         return <Option key={repId} value={repId}>{representation.typeName}</Option>;
                                     })}
@@ -147,43 +137,55 @@ export const ConsoleBody = ({ hasBody, request, updateBody, updateBodyBinary }: 
                             </Stack.Item>
                         }
                     </Stack>
-                    {request.readonlyBodyFormat
-                        ? request.bodyDataItems()?.map(dataItem => 
+                    {readonlyBodyFormat
+                        ? bodyDataItems?.map(dataItem =>
                             <Stack key={dataItem.name()}>
                                 <Label htmlFor={dataItem.name()}>{dataItem.name()} (type: {dataItem.type()})</Label>
                                 {dataItem.bodyFormat() === "string"
                                     ? <Input id={dataItem.name()} type="text" value={dataItem.body()} />
-                                    : dataItem.bodyFormat() === "raw"
+                                    : dataItem.bodyFormat() === RequestBodyType.raw
                                         ? <Textarea
                                             id={dataItem.name()}
                                             resize="vertical"
                                             value={dataItem.body()}
                                           />
-                                        : dataItem.bodyFormat() === "binary" && binaryField()
+                                        : dataItem.bodyFormat() === RequestBodyType.binary
+                                            && <BinaryField
+                                                fileName={dataItem.name()}
+                                                updateBinary={(file) => uploadFile(file)}
+                                            />
                                 }
                             </Stack>
                           )
-                        : bodyFormat === "raw"
-                            ? <Field className="request-body-raw">
+                        : bodyFormatState === RequestBodyType.raw
+                            ? <Field className="raw-textarea-field">
                                 <Textarea
                                     aria-label="Request body"
                                     placeholder="Enter request body"
-                                    className={"request-body-textarea"}
+                                    className={"raw-textarea"}
                                     resize="vertical"
-                                    value={bodyStash}
-                                    onChange={(e, data) => {
-                                        setBodyStash(data.value);
+                                    value={body}
+                                    onChange={(_, data) => {
+                                        updateBody(data.value);
+                                        updateBodyFormat(RequestBodyType.raw);
                                         setIsBodyEdited(true);
                                     }}
                                 />
                             </Field>
-                            : bodyFormat === "binary" && binaryField()                               
+                            : bodyFormatState === RequestBodyType.binary
+                                && <BinaryField
+                                    fileName={file?.name}
+                                    updateBinary={(file) => uploadFile(file)}
+                                />
                     }
                     {isBodyEdited &&
                         <Button
                             icon={<ArrowClockwiseRegular />}
+                            className={"body-revert-button"}
                             onClick={() => {
-                                setBodyStash(initialBody);
+                                updateBody(initialBody);
+                                updateBodyBinary(null);
+                                updateBodyFormat(RequestBodyType.raw);
                                 setIsBodyEdited(false);
                             }}
                         >
