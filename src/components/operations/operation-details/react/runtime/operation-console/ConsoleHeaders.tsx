@@ -12,12 +12,12 @@ type ConsoleHeadersProps = {
 }
 
 export const ConsoleHeaders = ({ headers, updateHeaders, isGqlConsole }: ConsoleHeadersProps) => {
-    const [isHeadersCollapsed, setIsHeadersCollapsed] = useState<boolean>(headers.length === 0);
+    const [isHeadersCollapsed, setIsHeadersCollapsed] = useState<boolean>(headers?.length === 0);
     const [consoleHeaders, setConsoleHeaders] = useState<ConsoleHeader[]>(headers);
 
     useEffect(() => {
         setConsoleHeaders(headers);
-        setIsHeadersCollapsed(headers.length === 0);
+        setIsHeadersCollapsed(headers?.length === 0);
     }, [headers]);
 
     useEffect(() => {

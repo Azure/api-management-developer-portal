@@ -531,6 +531,7 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
                                 }
                                 <Button
                                     appearance="primary"
+                                    className={"ws-connect-button"}
                                     disabled={connectingWs}
                                     onClick={() => connectWs()}
                                 >
@@ -554,13 +555,17 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
                         </Stack>
                     </div>
                     <div className={"operation-table-body-console"}>
-                        <MarkdownProcessor markdownToDisplay={formattedResponse ?? requestError} />
+                        {requestError
+                            ? <MarkdownProcessor markdownToDisplay={requestError} />
+                            : formattedResponse && <SyntaxHighlighter children={formattedResponse} language={"http"} style={a11yLight} />
+                        }
                     </div>
                 </div>
             }
             {selectedLanguage === "http" &&
                 <Button
                     appearance="primary"
+                    className={"send-request-button"}
                     disabled={sendingRequest}
                     onClick={() => sendRequest()}
                 >

@@ -34,7 +34,7 @@ import { OAuthService } from "../../../../../services/oauthService";
 import { ProductService } from "../../../../../services/productService";
 import { TenantService } from "../../../../../services/tenantService";
 import { UsersService } from "../../../../../services/usersService";
-import { ServiceSkuName, TypeOfApi } from "../../../../../constants";
+import { RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
 import { ConsoleAuthorization, ProductSubscriptionKeys } from "./operation-console/ConsoleAuthorization";
 import { ConsoleBody } from "./operation-console/ConsoleBody";
 import { ConsoleHeaders } from "./operation-console/ConsoleHeaders";
@@ -64,10 +64,6 @@ type OperationConsoleProps = {
 interface StoredCredentials {
     grantType: string;
     accessToken: string;
-}
-
-interface OAuthSession {
-    [apiName: string]: StoredCredentials;
 }
 
 export const OperationConsole = ({
@@ -105,7 +101,7 @@ export const OperationConsole = ({
             getAuthServers(api, oauthService).then(authServers => {
                 setAuthorizationServers(authServers);
                 if (authServers.length > 0) {
-                    setupOAuth(api, authServers[0], consoleOperation.current.request.headers(), sessionManager).then(newHeaders => {
+                    setupOAuth(api, authServers?.[0], consoleOperation.current.request.headers(), sessionManager).then(newHeaders => {
                         consoleOperation.current.request.headers(newHeaders);
                     });
                 }
@@ -127,7 +123,7 @@ export const OperationConsole = ({
 
     useEffect(() => {
         if (!isConsumptionMode && api.type !== TypeOfApi.webSocket) {
-            if (!consoleOperation.current.request.headers().some(header => header.name() === KnownHttpHeaders.CacheControl)) {
+            if (!consoleOperation.current.request.headers()?.some(header => header.name() === KnownHttpHeaders.CacheControl)) {
                 consoleOperation.current.setHeader(KnownHttpHeaders.CacheControl, "no-cache", "string", "Disable caching.");
             }
         }
@@ -143,15 +139,15 @@ export const OperationConsole = ({
     }
 
     const setSubscriptionHeader = (key?: string): ConsoleHeader[] => {
-        const headers = consoleOperation.current.request.headers();
+        const headers = consoleOperation.current.request.headers() ?? [];
         let subscriptionHeaderName: string = KnownHttpHeaders.OcpApimSubscriptionKey;
 
         if (api.subscriptionKeyParameterNames && api.subscriptionKeyParameterNames.header) {
             subscriptionHeaderName = api.subscriptionKeyParameterNames.header;
         }
-
+    
         const newHeaders = headers.filter(header => header.name() !== subscriptionHeaderName);
-
+        
         const subscriptionHeader = new ConsoleHeader();
         subscriptionHeader.name(subscriptionHeaderName);
         subscriptionHeader.value(key || "");
@@ -188,13 +184,23 @@ export const OperationConsole = ({
         rerender();
     }
 
+    const updateHasBody = (hasBody: boolean) => {
+        consoleOperation.current.hasBody(hasBody);
+        rerender();
+    }
+
     const updateBody = useCallback((body: string) => {
         consoleOperation.current.request.body(body);
         rerender();
     }, [consoleOperation, rerender]);
 
-    const updateBodyBinary = (body: File) => {
+    const updateBodyBinary = useCallback((body: File) => {
         consoleOperation.current.request.binary(body);
+        rerender();
+    }, [consoleOperation, rerender]);
+
+    const updateBodyFormat = (bodyFormat: RequestBodyType) => {
+        consoleOperation.current.request.bodyFormat(bodyFormat);
         rerender();
     }
 
@@ -302,9 +308,16 @@ export const OperationConsole = ({
                         {(consoleOperation.current.canHaveBody || consoleOperation.current.hasBody()) &&
                             <ConsoleBody
                                 hasBody={consoleOperation.current.hasBody()}
-                                request={consoleOperation.current.request}
+                                body={consoleOperation.current.request.body()}
+                                binary={consoleOperation.current.request.binary()}
+                                bodyDataItems={consoleOperation.current.request.bodyDataItems()}
+                                bodyFormat={consoleOperation.current.request.bodyFormat()}
+                                readonlyBodyFormat={consoleOperation.current.request.readonlyBodyFormat}
+                                representations={consoleOperation.current.request.representations}
+                                updateHasBody={updateHasBody}
                                 updateBody={updateBody}
                                 updateBodyBinary={updateBodyBinary}
+                                updateBodyFormat={updateBodyFormat}
                             />
                         }
                         <ConsoleRequestResponse
