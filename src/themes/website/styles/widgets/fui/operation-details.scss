@@ -173,6 +173,10 @@ fui-operation-details {
     .raw-textarea {
         min-height: 200px;
     }
+
+    .body-revert-button {
+        margin-top: 1rem;
+    }
 }
 
 .console-drawer {
@@ -209,6 +213,11 @@ fui-operation-details {
         display: block;
         max-height: 500px;
         overflow: auto;
+    }
+
+    .send-request-button,
+    .ws-connect-button {
+        margin-bottom: 2rem;
     }
 }
 

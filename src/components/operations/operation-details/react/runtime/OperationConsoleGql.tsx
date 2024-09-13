@@ -1,5 +1,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import Editor, { Monaco } from '@monaco-editor/react';
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
@@ -46,6 +48,7 @@ import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { GraphqlService, TGraphqlTypes } from "../../../../../services/graphqlService";
 import { GraphqlProtocols } from "../../../../../constants";
+import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { Utils } from "../../../../../utils";
 import { ConsoleAuthorization } from "./operation-console/ConsoleAuthorization";
 import { ConsoleHeaders } from "./operation-console/ConsoleHeaders";
@@ -116,6 +119,7 @@ export const OperationConsoleGql = ({
     const [pattern, setPattern] = useState<string>("");
     const [queryVariables, setQueryVariables] = useState<string>("");
     const [response, setResponse] = useState<string>("");
+    const [requestError, setRequestError] = useState<string>(null);
 
     const generateDocument = useCallback((globalNodes) => {
         const document = createFieldStringFromNodes(globalNodes, 0);
@@ -301,7 +305,8 @@ export const OperationConsoleGql = ({
             setResponse(responseStr);
         }
         catch (error) {
-            return;
+            setSelectedTab(ConsoleTab.response);
+            setRequestError(error.message);
         }
         finally {
             setSendingRequest(false);
@@ -525,13 +530,15 @@ export const OperationConsoleGql = ({
                                                 />
                                             }
                                             {selectedTab === ConsoleTab.response &&
-                                                response
+                                                requestError
+                                                    ? <MarkdownProcessor markdownToDisplay={requestError} />
+                                                    : response && <SyntaxHighlighter children={response} language={"html"} style={a11yLight} />
                                             }
                                         </div>
                                     </Stack.Item>
                                 </Stack>
                             </Stack.Item>
-                        </Stack>                       
+                        </Stack>
                     </>
                 }
             </DrawerBody>
