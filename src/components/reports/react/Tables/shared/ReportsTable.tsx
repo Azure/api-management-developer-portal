@@ -29,7 +29,7 @@ export const ReportsTable = <T extends unknown>({ mainLabel, pageState: [pageNum
         {working ? (
             <Spinner label={"Loading products"} labelPosition="below" style={{ marginBottom: "1.5rem" }} size="small" />
         ) : data?.value.length > 0 && (
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: "1.5rem" }}>
+            <div className={"pagination-container"}>
                 <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(data?.count / Constants.defaultPageSize)} />
             </div>
         )}
