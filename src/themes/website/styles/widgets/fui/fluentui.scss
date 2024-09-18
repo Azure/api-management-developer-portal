@@ -12,6 +12,16 @@
     margin-top: 0;
 }
 
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.pagination-page-button > span {
+    font-size: 1rem;
+}
+
 .operation-method {
     color: #696969;
 
