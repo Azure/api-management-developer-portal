@@ -73,8 +73,6 @@ export class ChangePasswordRuntime extends React.Component<ChangePasswordRuntime
 
         const user = await this.usersService.getCurrentUser();
 
-        console.log("user", user);
-
         if (!user) {
             dispatchErrors(this.eventManager, ErrorSources.changepassword, ["Unable to retrieve user information"]);
             return;
