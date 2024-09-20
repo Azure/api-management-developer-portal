@@ -91,7 +91,7 @@ export class ConfirmPasswordRuntime extends React.Component<{}, ConfirmPasswordR
         }
 
         try {
-            dispatchErrors(this.eventManager, ErrorSources.changepassword, []);
+            dispatchErrors(this.eventManager, ErrorSources.confirmpassword, []);
             await this.usersService.updatePassword(this.state.userId, password, this.state.token);
 
             return true;
