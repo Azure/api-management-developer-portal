@@ -107,6 +107,7 @@ import { SignUpAadRuntimeModule } from "./components/users/signup-social/signupS
 import { ProfileRuntimeModule } from "./components/users/profile/profile.runtime.module";
 import { ResetPasswordRuntimeModule } from "./components/users/reset-password/resetPassword.runtime.module";
 import { ChangePasswordRuntimeModule } from "./components/users/change-password/changePassword.runtime.module";
+import { ConfirmPasswordRuntimeModule } from "./components/users/confirm-password/confirmPassword.runtime.module";
 import { SubscriptionsRuntimeModule } from "./components/users/subscriptions/subscriptions.runtime.module";
 import { ReportsRuntimeModule } from "./components/reports/ko/reports.runtime.module";
 import { ValidationSummaryRuntimeModule } from "./components/users/validation-summary/validationSummary.runtime.module";
@@ -205,6 +206,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindModule(new ProfileRuntimeModule());
         injector.bindModule(new ResetPasswordRuntimeModule());
         injector.bindModule(new ChangePasswordRuntimeModule());
+        injector.bindModule(new ConfirmPasswordRuntimeModule());
         injector.bindModule(new SubscriptionsRuntimeModule());
         injector.bindModule(new ReportsRuntimeModule());
         injector.bindModule(new ValidationSummaryRuntimeModule());
