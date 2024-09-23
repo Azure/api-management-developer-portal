@@ -40,7 +40,7 @@ jobs:
           input-urls: http://localhost:12345/profile http://localhost:12345/500 http://localhost:12345/404
 
       - name: Upload report artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: accessibility-reports
           path: ${{ github.workspace }}/_accessibility-reports
