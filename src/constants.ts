@@ -340,3 +340,8 @@ export const overrideToastSessionKeyPrefix = "MS_APIM_CW_override_toast_dismisse
  */
 export const mobileBreakpoint = 768;
 export const smallMobileBreakpoint = 400;
+
+/**
+ * Key of the default admin user
+ */
+export const integrationUserId = '/users/integration';
