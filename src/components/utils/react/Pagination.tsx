@@ -9,12 +9,12 @@ import {
     ChevronRight16Regular
 } from "@fluentui/react-icons";
 
-export type PaginationProps = {
+export type TPaginationProps = {
     pageNumber: number
     setPageNumber: Dispatch<SetStateAction<number>>
 } & ({ pageMax: number } | { hasNextPage: boolean })
 
-export const Pagination = ({ pageNumber, setPageNumber, ...props }: PaginationProps) => (
+export const Pagination = ({ pageNumber, setPageNumber, ...props }: TPaginationProps) => (
     ("pageMax" in props ? props.pageMax < 2 : (!props.hasNextPage && pageNumber < 2)) ? <></> : (
         <Stack horizontal tokens={{childrenGap: ".5rem"}}>
             <Stack.Item>

@@ -5,15 +5,15 @@ import {
     Table,
     TableBody,
     TableCell,
-    TableCellLayout,
     TableHeader,
     TableHeaderCell,
     TableRow,
 } from "@fluentui/react-components";
 import { Product } from "../../../../../models/product";
-import { TProductsData } from "./utils";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
+import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
 import { markdownMaxCharsMap } from "../../../../../constants";
+import { TProductsData } from "./utils";
 
 type Props = {
     getReferenceUrl: (productName: string) => string;
@@ -21,18 +21,21 @@ type Props = {
 
 const TableBodyProducts = ({ products, getReferenceUrl }: Props & { products: Product[] }) => (
     <>
-        {products?.map((product) => (
-            <TableRow key={product.id}>
-                <TableCell>
-                    <Link href={getReferenceUrl(product.name)} title={product.displayName}>
-                        {product.displayName}
-                    </Link>
-                </TableCell>
-                <TableCell style={{padding: ".5rem 0"}}>
-                    <MarkdownProcessor markdownToDisplay={product.description} maxChars={markdownMaxCharsMap.table} />
-                </TableCell>
-            </TableRow>
-        ))}
+        {products?.length > 0
+            ? products.map((product) => (
+                <TableRow key={product.id}>
+                    <TableCell>
+                        <Link href={getReferenceUrl(product.name)} title={product.displayName}>
+                            {product.displayName}
+                        </Link>
+                    </TableCell>
+                    <TableCell style={{padding: ".5rem 0"}}>
+                        <MarkdownProcessor markdownToDisplay={product.description} maxChars={markdownMaxCharsMap.table} />
+                    </TableCell>
+                </TableRow>
+            ))
+            : <NoRecordsRow colspan={2} customText="No products to display" />
+        }
     </>
 );
 

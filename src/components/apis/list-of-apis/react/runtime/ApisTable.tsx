@@ -19,6 +19,7 @@ import {
     toggleValueInSet,
 } from "./utils";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
+import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
 import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
@@ -29,20 +30,23 @@ type Props = {
 
 const TableBodyApis = ({ showApiType, apis, getReferenceUrl, detailsPageTarget }: Props & { apis: Api[] }) => (
     <>
-        {apis?.map((api) => (
-            <TableRow key={api.id}>
-                <TableCell>
-                    <Link href={getReferenceUrl(api.name)} target={detailsPageTarget} title={api.displayName}>
-                        {api.displayName}
-                        {!!api.apiVersion && " - " + api.apiVersion}
-                    </Link>
-                </TableCell>
-                <TableCell style={{padding: ".5rem 0"}}>
-                    <MarkdownProcessor markdownToDisplay={api.description} maxChars={markdownMaxCharsMap.table} />
-                </TableCell>
-                {showApiType && <TableCell>{api.typeName}</TableCell>}
-            </TableRow>
-        ))}
+        {apis?.length > 0
+            ? apis.map((api) => (
+                <TableRow key={api.id}>
+                    <TableCell>
+                        <Link href={getReferenceUrl(api.name)} target={detailsPageTarget} title={api.displayName}>
+                            {api.displayName}
+                            {!!api.apiVersion && " - " + api.apiVersion}
+                        </Link>
+                    </TableCell>
+                    <TableCell style={{padding: ".5rem 0"}}>
+                        <MarkdownProcessor markdownToDisplay={api.description} maxChars={markdownMaxCharsMap.table} />
+                    </TableCell>
+                    {showApiType && <TableCell>{api.typeName}</TableCell>}
+                </TableRow>
+            ))
+            : <NoRecordsRow colspan={showApiType ? 3 : 2} customText="No APIs to display" />
+        }
     </>
 );
 

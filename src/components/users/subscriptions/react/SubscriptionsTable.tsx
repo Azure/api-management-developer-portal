@@ -27,6 +27,7 @@ import {
 import { Subscription } from "../../../../models/subscription";
 import { formatDate } from "../../../utils";
 import { ValueOrFieldWBtn } from "../../../utils/react/ValueOrField";
+import { NoRecordsRow } from "../../../utils/react/NoRecordsRow";
 
 const hiddenKey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
@@ -215,16 +216,19 @@ export const SubscriptionsTable = ({ subscriptions, saveName, cancelSubscription
             </TableHeader>
 
             <TableBody>
-                {subscriptions.map((sub) => (
-                    <SubscriptionRow
-                        key={sub.id}
-                        sub={sub}
-                        saveName={saveName}
-                        cancelSubscription={cancelSubscription}
-                        regeneratePKey={regeneratePKey}
-                        regenerateSKey={regenerateSKey}
-                    />
-                ))}
+                {subscriptions.length > 0
+                    ? subscriptions.map((sub) => (
+                        <SubscriptionRow
+                            key={sub.id}
+                            sub={sub}
+                            saveName={saveName}
+                            cancelSubscription={cancelSubscription}
+                            regeneratePKey={regeneratePKey}
+                            regenerateSKey={regenerateSKey}
+                        />
+                    ))
+                    : <NoRecordsRow colspan={5} />
+                }
             </TableBody>
         </Table>
     );
