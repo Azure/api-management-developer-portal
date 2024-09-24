@@ -180,6 +180,10 @@ export class ProductService {
         if (!userId) {
             throw new Error(`Parameter "userId" not specified.`);
         }
+        
+        if (userId === Constants.integrationUserId) {
+            return new Page();
+        }
 
         const skip = searchRequest && searchRequest.skip || 0;
         const take = searchRequest && searchRequest.take || Constants.defaultPageSize;

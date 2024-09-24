@@ -23,7 +23,7 @@ export class User {
         this.note = contract.properties.note;
         this.groups = contract.properties.groups;
         this.identities = contract.properties.identities;
-        this.isBasicAccount = this.identities[0]?.provider === "Basic";
+        this.isBasicAccount = this.identities?.[0]?.provider === "Basic";
     }
 }
 
