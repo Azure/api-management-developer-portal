@@ -181,7 +181,7 @@ export class UsersService {
         try {
             const userId = await this.getCurrentUserId();
 
-            if (!userId) {
+            if (!userId || userId === Constants.integrationUserId) {
                 return null;
             }
 
