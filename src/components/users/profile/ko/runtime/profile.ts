@@ -69,7 +69,7 @@ export class Profile {
         await this.usersService.ensureSignedIn();
 
         const model: User = await this.usersService.getCurrentUser();
-        this.isBasicAccount(model.isBasicAccount);
+        this.isBasicAccount(model?.isBasicAccount);
         this.setUser(model);
     }
 
