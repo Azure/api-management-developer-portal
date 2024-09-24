@@ -85,7 +85,7 @@ const ProfileRuntimeFC = ({
 
     const delegationEdit = () => applyDelegation(DelegationAction.changeProfile, user.id);
 
-    if (working) return <Spinner label={"Loading current user"} labelPosition="below" />;
+    if (working) return <Spinner label={"Loading current user..."} labelPosition="below" size="small" />;
     if (!user) return <>User not found</>;
 
     return (
@@ -123,6 +123,7 @@ export class ProfileRuntime extends React.Component<ProfileRuntimeProps> {
 
     private async applyDelegation(action: DelegationAction, userId: string): Promise<boolean> {
         if (!userId) return false;
+
         const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
         if (isDelegationEnabled) {
             const delegationParam = {};

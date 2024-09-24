@@ -33,7 +33,7 @@ export class ChangePasswordRuntime extends React.Component<ChangePasswordRuntime
     async componentDidMount() {
         const isUserSignedIn = await this.usersService.isUserSignedIn();
 
-        if (isUserSignedIn) {
+        if (!isUserSignedIn) {
             this.usersService.navigateToHome();
             return;
         }

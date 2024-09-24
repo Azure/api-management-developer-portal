@@ -1,6 +1,7 @@
 import * as React from "react";
-import { Spinner, Table, TableBody, TableCell, TableRow } from "@fluentui/react-components";
+import { Spinner, Table, TableBody } from "@fluentui/react-components";
 import { Pagination } from "../../../../utils/react/Pagination";
+import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
 import * as Constants from "../../../../../constants";
 import { Headers, TOrderState } from "./Headers";
 
@@ -20,7 +21,7 @@ export const ReportsTable = <T extends unknown>({ mainLabel, pageState: [pageNum
                 <TableBody>
                     {data?.value.length > 0
                         ? data.value.map(children)
-                        : <TableRow><TableCell colSpan={8} style={{ textAlign: "center" }}>No data</TableCell></TableRow>
+                        : <NoRecordsRow colspan={8} customText="No data" />
                     }
                 </TableBody>
             )}

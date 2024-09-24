@@ -72,7 +72,7 @@ const SignUpRuntimeFC = ({ backendService, usersService, eventManager, handleSig
             .finally(() => setWorking(false));
     }, [usersService, delegationUrl]);
 
-    if (working) return <Spinner label={"Loading current user"} labelPosition="below" />;
+    if (working) return <Spinner label={"Loading current user..."} labelPosition="below" size="small" />;
 
     return (
         <SignUpForm
