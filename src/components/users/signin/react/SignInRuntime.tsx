@@ -47,7 +47,7 @@ const SignInRuntimeFC = ({ usersService, eventManager, handleSignIn, delegationU
             .finally(() => setWorking(false));
     }, [usersService, delegationUrl]);
 
-    if (working) return <Spinner label={"Loading current user"} labelPosition="below" />;
+    if (working) return <Spinner label={"Loading current user..."} labelPosition="below" size="small" />;
 
     return (
         <SignInForm eventManager={eventManager} handleSignIn={handleSignIn}  />

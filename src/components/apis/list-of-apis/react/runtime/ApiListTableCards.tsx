@@ -71,7 +71,7 @@ export const ApiListTableCards = ({
                 </Stack.Item>
             ) : (
                 <>
-                    <Stack.Item style={{marginTop: "2rem"}}>
+                    <Stack.Item style={{ marginTop: "2rem" }}>
                         {layout === TLayout.table ? (
                             <ApisTable
                                 apis={apis}

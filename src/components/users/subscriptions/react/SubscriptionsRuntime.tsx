@@ -118,7 +118,7 @@ const SubscriptionsRuntimeFC = ({
         }
     }
 
-    if (working) return <Spinner label={"Loading your subscriptions"} labelPosition="below" />;
+    if (working) return <Spinner label={"Loading your subscriptions..."} labelPosition="below" size="small" />;
     if (!subscriptions) return <>Subscriptions not found</>;
 
     return (
