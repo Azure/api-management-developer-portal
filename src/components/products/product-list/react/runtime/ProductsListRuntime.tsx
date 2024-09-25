@@ -85,12 +85,12 @@ const ProductListRuntimeFC = ({ productService, getReferenceUrl, layoutDefault, 
             {working || !products ? (
                 <Stack.Item>
                     <div className="table-body">
-                        <Spinner label="Loading Products" labelPosition="below" size="extra-large" />
+                        <Spinner label="Loading products..." labelPosition="below" size="small" />
                     </div>
                 </Stack.Item>
             ) : (
                 <>
-                    <Stack.Item>
+                    <Stack.Item style={{ marginTop: "2rem" }}>
                         {layout === TLayout.table ? (
                             <ProductsTable products={products} getReferenceUrl={getReferenceUrl} />
                         ) : (

@@ -114,14 +114,14 @@ export class ApiListRuntime extends React.Component<ApiListProps> {
 
     render() {
         return (
-          <FluentProvider theme={Constants.fuiTheme}>
-            <ApiListRuntimeFC
-              {...this.props}
-              apiService={this.apiService}
-              tagService={this.tagService}
-              getReferenceUrl={(apiName) => this.getReferenceUrl(apiName)}
-            />
-          </FluentProvider>
+            <FluentProvider theme={Constants.fuiTheme}>
+                <ApiListRuntimeFC
+                    {...this.props}
+                    apiService={this.apiService}
+                    tagService={this.tagService}
+                    getReferenceUrl={(apiName) => this.getReferenceUrl(apiName)}
+                />
+            </FluentProvider>
         );
     }
 }

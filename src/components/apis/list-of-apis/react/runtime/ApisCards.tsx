@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Body1Strong, Button, Caption1Stronger, Link, Subtitle1 } from "@fluentui/react-components";
+import { Body1, Body1Strong, Button, Caption1Stronger, Link, Subtitle1 } from "@fluentui/react-components";
 import { Api } from "../../../../../models/api";
 import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
 import { TagGroup } from "../../../../../models/tagGroup";
@@ -39,15 +39,20 @@ const ApiCard = ({ api, getReferenceUrl, showApiType, detailsPageTarget }: Props
 };
 
 const ApisCardsContainer = ({ apis, ...props }: Props & { apis: Api[] }) => (
-    <div className={"fui-list-cards-container"}>
-        {apis?.map((api) => (
-            <ApiCard
-                {...props}
-                key={api.id}
-                api={api}
-            />
-        ))}
-    </div>
+    <>
+        {apis?.length > 0
+            ? <div className={"fui-list-cards-container"}>
+                {apis.map((api) => (
+                    <ApiCard
+                        {...props}
+                        key={api.id}
+                        api={api}
+                    />
+                ))}
+            </div>
+            : <Body1 block style={{ textAlign: "center" }}>No APIs to display</Body1>
+        }
+    </>
 );
 
 const ApisGroupedCards = ({ tags, ...props }: Props & { tags: TagGroup<Api>[] }) => {
