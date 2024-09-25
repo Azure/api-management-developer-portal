@@ -388,7 +388,7 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
             if (isWsConnected) {
                 ws.disconnect();
             } else {
-                ws.connect(consoleOperation.requestUrl());
+                ws.connect(consoleOperation.wsUrl());
             }
         }
     }

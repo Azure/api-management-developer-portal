@@ -61,11 +61,6 @@ type OperationConsoleProps = {
     httpClient: HttpClient;
 }
 
-interface StoredCredentials {
-    grantType: string;
-    accessToken: string;
-}
-
 export const OperationConsole = ({
     isOpen,
     setIsOpen,

@@ -10,6 +10,7 @@ import { ChangeLogContract } from "../../../../../contracts/apiChangeLog";
 import { ApiService } from "../../../../../services/apiService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Pagination } from "../../../../utils/react/Pagination";
+import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
 import { defaultPageSize, fuiTheme } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
 
@@ -104,9 +105,7 @@ const ApiHistoryFC = ({
                                             <TableCell>{changelog.properties.notes}</TableCell>
                                         </TableRow>
                                     ))
-                                    : <TableRow>
-                                        <TableCell colSpan={2} style={{ textAlign: "center" }}>No records to show</TableCell>
-                                    </TableRow>
+                                    : <NoRecordsRow colspan={2} />
                                 }                              
                             </TableBody>
                         </Table>
