@@ -131,7 +131,7 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
                     <Button icon={<AddCircleRegular />} onClick={() => addParameter()}>Add parameter</Button>
                 </Stack>
             </div>
-            {!isParametersCollapsed &&
+            {!isParametersCollapsed && (templateParams?.length > 0 || queryParams?.length > 0) &&
                 <div className={"operation-table-body-console"}>
                     {templateParams?.length > 0 && templateParams.map(param => renderParameter(param, true))}
                     {queryParams?.length > 0 && queryParams.map(param => renderParameter(param))}
