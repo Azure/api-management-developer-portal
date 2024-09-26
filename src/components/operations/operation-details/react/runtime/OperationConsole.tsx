@@ -140,11 +140,12 @@ export const OperationConsole = ({
 
     const setSoapHeaders = (): void => {
         const representation = consoleOperation.current.request.representations?.[0];
+        const soapActionUrl = consoleOperation.current.urlTemplate?.split("=")[1];
 
         if (representation) {
             // SOAP 1.1
             if (representation.contentType.toLowerCase() === KnownMimeTypes.Xml) {
-                consoleOperation.current.setHeader(KnownHttpHeaders.SoapAction, `"${consoleOperation.current.urlTemplate.split("=")[1]}"`);
+                consoleOperation.current.setHeader(KnownHttpHeaders.SoapAction, `"${soapActionUrl}"`);
             }
 
             // SOAP 1.2
@@ -153,12 +154,12 @@ export const OperationConsole = ({
                     .find(header => header.name().toLowerCase() === KnownHttpHeaders.ContentType.toLowerCase());
 
                 if (contentHeader) {
-                    const contentType = `${contentHeader.value()};action="${consoleOperation.current.urlTemplate.split("=")[1]}"`;
+                    const contentType = `${contentHeader.value()};action="${soapActionUrl}"`;
                     contentHeader.value(contentType);
                 }
             }
         } else {
-            consoleOperation.current.setHeader(KnownHttpHeaders.SoapAction, "\"" + consoleOperation.current.urlTemplate.split("=")[1] + "\"");
+            consoleOperation.current.setHeader(KnownHttpHeaders.SoapAction, "\"" + soapActionUrl + "\"");
         }
 
         consoleOperation.current.urlTemplate = "";
