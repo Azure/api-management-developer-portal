@@ -483,6 +483,7 @@ export const OperationConsoleGql = ({
                                     </Stack.Item>
                                     <Stack.Item>
                                         <TabList
+                                            selectedValue={selectedTab}
                                             onTabSelect={(_, data) => setSelectedTab(data.value as string)}
                                             className={"gql-tabs"}
                                         >
