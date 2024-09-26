@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ko from "knockout";
 import { useEffect, useState } from "react";
 import { saveAs } from "file-saver";
 import { getExtension } from "mime";
@@ -110,11 +111,11 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
 
     useEffect(() => {
         !!selectedLanguage && getCodeSample().then(code => setCodeSample(code));
-    }, [selectedLanguage, consoleOperation, forceRerender]);
+    }, [selectedLanguage, consoleOperation, forceRerender, isSecretsRevealed]);
 
     const getCodeSample = async (showSecrets = isSecretsRevealed): Promise<string> => {
         const template = templates[selectedLanguage];
-        const codeSample = await TemplatingService.render(template, { console: consoleOperation, showSecrets });
+        const codeSample = await TemplatingService.render(template, { console: ko.toJS(consoleOperation), showSecrets }); // ko is needed here because we're still using ConsoleOperation class
         return codeSample;
     }
 
