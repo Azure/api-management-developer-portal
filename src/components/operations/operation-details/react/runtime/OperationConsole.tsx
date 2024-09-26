@@ -29,6 +29,7 @@ import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
+import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ApiService } from "../../../../../services/apiService";
 import { OAuthService } from "../../../../../services/oauthService";
 import { ProductService } from "../../../../../services/productService";
@@ -126,11 +127,42 @@ export const OperationConsole = ({
     }, [api, isConsumptionMode, consoleOperation, rerender]);
 
     useEffect(() => {
+        if (api.type === TypeOfApi.soap) setSoapHeaders();
+    }, [api, consoleOperation, rerender]);
+
+    useEffect(() => {
         api.subscriptionRequired && setSubscriptionKeyHeader(selectedSubscriptionKey || "");
     }, [selectedSubscriptionKey]);
 
     const getSkuName = async (): Promise<string> => {
         return await tenantService.getServiceSkuName();
+    }
+
+    const setSoapHeaders = (): void => {
+        const representation = consoleOperation.current.request.representations?.[0];
+
+        if (representation) {
+            // SOAP 1.1
+            if (representation.contentType.toLowerCase() === KnownMimeTypes.Xml) {
+                consoleOperation.current.setHeader(KnownHttpHeaders.SoapAction, `"${consoleOperation.current.urlTemplate.split("=")[1]}"`);
+            }
+
+            // SOAP 1.2
+            if (representation.contentType.toLowerCase() === KnownMimeTypes.Soap) {
+                const contentHeader = consoleOperation.current.request.headers()
+                    .find(header => header.name().toLowerCase() === KnownHttpHeaders.ContentType.toLowerCase());
+
+                if (contentHeader) {
+                    const contentType = `${contentHeader.value()};action="${consoleOperation.current.urlTemplate.split("=")[1]}"`;
+                    contentHeader.value(contentType);
+                }
+            }
+        } else {
+            consoleOperation.current.setHeader(KnownHttpHeaders.SoapAction, "\"" + consoleOperation.current.urlTemplate.split("=")[1] + "\"");
+        }
+
+        consoleOperation.current.urlTemplate = "";
+        rerender();
     }
 
     const setSubscriptionHeader = (key?: string): ConsoleHeader[] => {
