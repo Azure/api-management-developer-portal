@@ -5,4 +5,6 @@ export class ValidationSummaryModel {
      * Widget local styles.
      */
     public styles: LocalStyles = {};
+
+    public initialCount: number;
 }
