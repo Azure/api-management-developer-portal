@@ -2,20 +2,24 @@ import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
 import { ValidationSummaryModel } from "../validationSummaryModel";
-import { ValidationSummaryViewModel } from "./validationSummaryViewModel";
 import { isRedesignEnabledSetting } from "../../../../constants";
+import { ValidationSummary } from "../react/ValidationSummary";
+import { init } from "knockout.validation";
 
 
-export class ValidationSummaryViewModelBinder implements ViewModelBinder<ValidationSummaryModel, ValidationSummaryViewModel> {
+
+export class ValidationSummaryViewModelBinder implements ViewModelBinder<ValidationSummaryModel, ValidationSummary> {
     constructor(
         private readonly styleCompiler: StyleCompiler,
         private readonly siteService: ISiteService,
     ) { }
 
-    public stateToInstance(state: WidgetState, componentInstance: ValidationSummaryViewModel): void {
-        componentInstance.styles(state.styles);
-
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
+    public stateToInstance(nextState: WidgetState, componentInstance: any): void {
+        componentInstance.setState(prevState => ({
+            isRedesignEnabled: nextState.isRedesignEnabled,
+            initialCount: nextState.initialCount,
+            classNames: nextState.styles
+        }));
     }
 
     public async modelToState(model: ValidationSummaryModel, state: WidgetState): Promise<void> {
@@ -23,6 +27,7 @@ export class ValidationSummaryViewModelBinder implements ViewModelBinder<Validat
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
 
+        state.initialCount = model.initialCount;
         state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
     }
 }
