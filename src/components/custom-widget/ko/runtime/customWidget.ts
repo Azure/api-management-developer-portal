@@ -21,12 +21,6 @@ export class CustomWidget {
         this.src = ko.observable();
         this.name = ko.observable();
         this.instanceId = ko.observable();
-
-        const iframe = document.getElementsByTagName("iframe")[0];
-        this.iframeSandboxAllows = `${iframeSandboxAllows} ${iframeSandboxAllowsBrowserSpecific}`
-            .split(" ")
-            .filter(token=> iframe?.sandbox.supports(token))
-            .join(" ");
     }
 
     @Param()
@@ -41,9 +35,19 @@ export class CustomWidget {
     @Param()
     public readonly environment: Environment;
 
+    @Param()
+    public readonly allowSameOrigin: boolean;
+
     @OnMounted()
     public async initialize(): Promise<void> {
         if (this.environment === "development") this.windowRef = window.parent.window;
+
+        const iframe = document.getElementsByTagName("iframe")[0];
+        const sandboxAttrs = `${iframeSandboxAllows} ${iframeSandboxAllowsBrowserSpecific}`.split(" ");
+        if(this.allowSameOrigin) {
+            sandboxAttrs.push("allow-same-origin");
+        }
+        this.iframeSandboxAllows = sandboxAttrs.filter(token=> iframe?.sandbox.supports(token)).join(" ");
 
         this.propagateHashchange();
         this.windowRef.addEventListener("hashchange", this.propagateHashchange);

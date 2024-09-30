@@ -9,6 +9,12 @@
             <size-editor params="{ features: 'width,height', allowUnits: 'px,%', sizeConfig: sizeStyleConfig, onUpdate: onSizeUpdate }">
             </size-editor>
 
+            <label for="allowSameOrigin" class="form-label">
+                    <input type="checkbox" id="allowSameOrigin" name="allowSameOrigin" data-bind="checked: allowSameOrigin" />
+                    Allow allow-same-origin in iframe sandbox
+                    <button class="btn btn-info" type="button" data-bind="tooltip: 'Select this setting to set custom widget iframe sandbox attribute allow-same-origin'"></button>
+            </label>
+
             <h4>Custom properties</h4>
             <p>Custom properties let you adjust values in the custom widget’s code from the administrative user interface of the developer portal, without changing the code or redeploying the custom widget.</p>
         </div>
