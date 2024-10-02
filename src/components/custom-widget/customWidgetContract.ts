@@ -31,4 +31,10 @@ export interface CustomWidgetContract extends Contract {
      * Local styles.
      */
     styles: LocalStyles;
+
+    /**
+     * allow iframe to load content from the same origin.
+     * @default false
+     * */
+    allowSameOrigin: boolean;
 }
