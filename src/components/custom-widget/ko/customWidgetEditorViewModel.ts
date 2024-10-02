@@ -25,6 +25,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
     public readonly instanceId: ko.Observable<string>;
     public readonly iframeAllows: string = iframeAllows;
     public readonly iframeSandboxAllows: string = CustomWidgetEditorViewModel.buildSandboxParams();
+    public readonly allowSameOrigin: ko.Observable<boolean>;
 
     constructor(
         private readonly viewManager: ViewManager,
@@ -35,6 +36,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.sizeStyleConfig = ko.observable();
         this.customInputValue = ko.observable();
         this.src = ko.observable("");
+        this.allowSameOrigin = ko.observable();
         this.instanceId = ko.observable();
     }
 
@@ -49,6 +51,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.customInputValue(this.model.customInputValue);
         this.instanceId(this.model.instanceId);
         this.updateResponsiveObservables();
+        this.allowSameOrigin(this.model.allowSameOrigin || false);
 
         window.addEventListener("message", event => {
             if (typeof event.data === "object" && "customInputValueChangedMSAPIM" in event.data) {
@@ -60,7 +63,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
                 this.customInputValue(JSON.stringify({values}));
             }
         });
-
+        this.allowSameOrigin.subscribe(this.applyChanges);
         this.customInputValue.subscribe(this.applyCustomInputValueChanges);
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
 
@@ -102,6 +105,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
 
     private applyChanges(): void {
         this.model.customInputValue = this.customInputValue();
+        this.model.allowSameOrigin = this.allowSameOrigin();
         this.onChange(this.model);
     }
 
