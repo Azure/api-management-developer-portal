@@ -24,7 +24,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
     public readonly src: ko.Observable<string>;
     public readonly instanceId: ko.Observable<string>;
     public readonly iframeAllows: string = iframeAllows;
-    public readonly iframeSandboxAllows: string = iframeSandboxAllows;
+    public readonly iframeSandboxAllows: string = CustomWidgetEditorViewModel.buildSandboxParams();
     public readonly allowSameOrigin: ko.Observable<boolean>;
 
     constructor(
@@ -70,6 +70,10 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         const environment = await this.settingsProvider.getSetting<string>("environment") as Environment;
         const widgetSource = await buildWidgetSource(this.blobStorage, this.model, environment, "editor.html");
         this.src(widgetSource.src);
+    }
+
+    private static buildSandboxParams() {
+        return iframeSandboxAllows + " allow-same-origin";
     }
 
     private updateResponsiveObservables(): void {
