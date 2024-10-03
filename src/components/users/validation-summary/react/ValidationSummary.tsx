@@ -1,5 +1,14 @@
 import * as React from "react";
 
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            "fui-validation-summary": any;
+            "validation-summary": any;
+        }
+    }
+}
+
 export class ValidationSummary extends React.Component {
     public state: any;
 
@@ -13,17 +22,9 @@ export class ValidationSummary extends React.Component {
     }
 
     public render(): JSX.Element {
-        const renderContent = () => {
-            return this.state.isRedesignEnabled
-                ? `<fui-validation-summary></fui-validation-summary><p>Initial count: ${this.state.initialCount}</p>`
-                : `<validation-summary></validation-summary><p>Initial count: ${this.state.initialCount}</p>`;
-        };
-
-        return (
-            <div
-                className={this.state.classNames}
-                dangerouslySetInnerHTML={{ __html: renderContent() }}
-            ></div>
-        );
+        if (this.state.isRedesignEnabled) {
+            return <fui-validation-summary className="abc" class="cds"></fui-validation-summary>;
+        }
+        return <validation-summary></validation-summary>;
     }
 }

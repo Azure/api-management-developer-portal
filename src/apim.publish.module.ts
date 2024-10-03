@@ -10,7 +10,7 @@ import { DetailsOfApiPublishModule } from "./components/apis/details-of-api/ko/d
 import { HistoryOfApiPublishModule } from "./components/apis/history-of-api/ko/historyOfApi.module";
 import { SigninPublishModule } from "./components/users/signin/signin.module";
 import { SigninSocialPublishModule } from "./components/users/signin-social/signinSocial.module";
-import { SignupPublishModule } from "./components/users/signup/signup.module";
+import { SignupPublishModule } from "./components/users/signup/signup.publish.module";
 import { SignupSocialPublishModule } from "./components/users/signup-social/signupSocial.module";
 import { ProfilePublishModule } from "./components/users/profile/profile.module";
 import { SubscriptionsPublishModule } from "./components/users/subscriptions/subscriptions.module";
