@@ -3,10 +3,11 @@ import { SignupHandlers } from "./signupHandlers";
 import { SignupEditor } from "./ko/signupEditor";
 import { SignupModel } from "./signupModel";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { SignupViewModel } from "./ko/signupViewModel";
 import { SignupViewModelBinder } from "./ko/signupViewModelBinder";
 import { SignupModelBinder } from "./signupModelBinder";
 import { IWidgetService } from "@paperbits/common/widgets";
+import { ReactComponentBinder } from "@paperbits/react/bindings/reactComponentBinder";
+import { SignUpViewModel } from "./react/SignUpViewModel";
 
 export class SignupDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -19,8 +20,8 @@ export class SignupDesignModule implements IInjectorModule {
 
         widgetService.registerWidget("signup", {
             modelDefinition: SignupModel,
-            componentBinder: KnockoutComponentBinder,
-            componentDefinition: SignupViewModel,
+            componentBinder: ReactComponentBinder,
+            componentDefinition: SignUpViewModel,
             modelBinder: SignupModelBinder,
             viewModelBinder: SignupViewModelBinder
         });
