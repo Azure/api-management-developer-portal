@@ -2,7 +2,7 @@
 import { SignupModel } from "./signupModel";
 
 
-export class SignupHandlers implements IWidgetHandler {
+export class SignupHandlers implements IWidgetHandler<SignupModel> {
     public async getWidgetModel(): Promise<SignupModel> {
         return new SignupModel()
     }

@@ -1,4 +1,8 @@
-﻿.toasts {
+﻿@import "variables.scss";
+@import "mixins.scss";
+@import "animation.scss";
+
+.toasts {
     position: fixed;
     right: 40px;
     bottom: 50px;
@@ -11,7 +15,7 @@
 
         align-items: center;
         justify-content: center;
-        width: 350px;
+        max-width: 350px;
 
         .toast-indicator {
             width: 30px;

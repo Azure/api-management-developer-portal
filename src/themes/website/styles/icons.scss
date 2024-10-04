@@ -24,6 +24,17 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-emb {
+    display: inline-block;
+    font-family: "Icons Embedded" !important;
+    font-size: 1.1em;
+    line-height: inherit;
+    text-transform: none;
+    flex-shrink: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 .icon-emb-simple-remove:before {
     content: "\e90f";
 }
