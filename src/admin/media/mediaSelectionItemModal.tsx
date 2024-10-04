@@ -9,6 +9,7 @@ import { MediaContract } from '@paperbits/common/media/mediaContract';
 import { DefaultButton, IIconProps, Image, ImageFit, IOverflowSetItemProps, Link, Modal, SearchBox, Stack, Text } from '@fluentui/react';
 import { createSearchQuery, getAllValues } from '../utils/helpers';
 import { NonImageDetailsModal } from './nonImageDetailsModal';
+import { MimeTypes } from '@paperbits/common';
 
 interface MediaSelectionItemModalState {
     media: MediaContract[],
@@ -30,7 +31,7 @@ export class MediaSelectionItemModal extends React.Component<MediaSelectionItemM
 
     @Resolve('eventManager')
     public eventManager: EventManager;
-    
+
     @Resolve('viewManager')
     public viewManager: ViewManager;
 
@@ -70,7 +71,7 @@ export class MediaSelectionItemModal extends React.Component<MediaSelectionItemM
     }
 
     linkMedia = async (): Promise<void> => {
-        const newMediaFile = await this.mediaService.createMediaUrl('media.svg', 'https://cdn.paperbits.io/images/logo.svg');
+        const newMediaFile = await this.mediaService.createMediaUrl('media.svg', 'https://cdn.paperbits.io/images/logo.svg', MimeTypes.imageSvg);
         this.setState({ selectedMediaFile: newMediaFile, showNonImageDetailsModal: true });
     }
 
@@ -103,14 +104,14 @@ export class MediaSelectionItemModal extends React.Component<MediaSelectionItemM
 
     renderMediaItem = (mediaItem: MediaContract): JSX.Element => {
         const thumbnailUrl: string = this.getThumbnailUrl(mediaItem);
-        
+
         return (
             <div className="media-box media-selection-block" onClick={() => this.props.selectMedia(mediaItem)} key={mediaItem.key}>
                 <Image
                     src={thumbnailUrl ?? '/assets/images/no-preview.png'}
                     imageFit={ImageFit.centerCover}
                     styles={{ root: { flexGrow: 1, marginTop: 10, marginBottom: 20 } }}
-                /> 
+                />
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
                     <Text>{mediaItem.fileName}</Text>
                 </Stack>
