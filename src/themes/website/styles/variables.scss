@@ -72,6 +72,7 @@ $form-control-bg-color: #fff;
 $form-control-border-color: #ced4da;
 $form-control-border-radius: 0;
 $search-button-width: 30px;
+$form-invalid-color: #f58634;
 
 /* GraphQL */
 $gql-input-node-color: #8b2bb9;
@@ -80,3 +81,8 @@ $gql-operation-type-color: #b11a04;
 
 /* Panel */
 $panel-bg-color-highlight: darken(#fafafa, 3%);
+
+/* Scrollbars */
+$scrollbar-rail-active-bg: #eee;
+$scrollbar-thumb-bg: #aaa;
+$scrollbar-thumb-active-bg: #999;

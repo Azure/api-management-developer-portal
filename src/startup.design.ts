@@ -7,10 +7,11 @@ import { FormsDesignModule } from "@paperbits/forms/forms.design.module";
 import { StylesDesignModule } from "@paperbits/styles/styles.design.module";
 import { ApimDesignModule } from "./apim.design.module";
 import { SessionExpirationErrorHandler } from "./errors/sessionExpirationErrorHandler";
-import { ComponentBinder } from "@paperbits/common/editing";
+import { ComponentBinder } from "@paperbits/common/components";
 import { ReactModule } from "@paperbits/react/react.module";
 import { LeftPanel } from "./admin/leftPanel";
 import { RightPanel } from "./admin/rightPanel";
+
 
 /* Initializing dependency injection container */
 const injector = new InversifyInjector();
