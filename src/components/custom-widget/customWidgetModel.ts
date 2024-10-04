@@ -26,6 +26,11 @@ export class CustomWidgetModel {
      */
     public instanceId: string;
 
+    /**
+     * Allow iframe to load content from the same origin.
+     */
+    public allowSameOrigin: boolean;
+
     constructor() {
         this.styles = {};
     }
