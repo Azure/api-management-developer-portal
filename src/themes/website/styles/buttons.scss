@@ -1,3 +1,11 @@
+.button {
+    &.button-noborder {
+        border: none;
+        background: transparent;
+        box-shadow: none;
+    }
+}
+
 .btn-centered-vert {
     display: flex;
     align-items: center;

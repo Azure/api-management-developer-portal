@@ -1,4 +1,8 @@
-﻿.form {
+﻿@import "variables.scss";
+@import "mixins.scss";
+@import "icons-toolboxes.scss";
+
+.form {
     margin: 0;
     padding: 0;
     border: none;
@@ -216,4 +220,65 @@ hr {
     max-height: 450px;
     min-width: 150px;
     min-height: 150px;
+}
+
+summary {
+    display: block;
+    cursor: pointer;
+    outline: 0;
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+summary::-webkit-details-marker {
+    display: none !important;
+}
+
+details {
+    display: block;
+    white-space: nowrap;
+    position: relative;
+    padding-left: 20px;
+    margin: 10px 0;
+
+    &[open]:before {
+        content: "";
+        left: 7px;
+        position: absolute;
+        top: 25px;
+        height: calc(100% - 25px);
+        border-left: 1px dotted #ccc;
+        width: 1px;
+    }
+
+    &[open] > summary:before {
+        left: -25px;
+        top: 1px;
+        @extend .paperbits-icon;
+        @extend .paperbits-circle-delete;
+        color: $collapse-button-color;
+    }
+
+    & > summary {
+        font-weight: bold;
+        margin-bottom: 10px;
+
+        &:before {
+            left: -25px;
+            top: 1px;
+            position: absolute;
+            @extend .paperbits-icon;
+            @extend .paperbits-circle-add;
+            color: $collapse-button-color;
+            display: inline-block;
+            width: 1.6rem;
+            text-align: center;
+        }
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+    }
 }

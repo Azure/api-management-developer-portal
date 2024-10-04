@@ -2,7 +2,7 @@
 import { ConfirmPasswordModel } from "./confirmPasswordModel";
 
 
-export class ConfirmPasswordHandlers implements IWidgetHandler {
+export class ConfirmPasswordHandlers implements IWidgetHandler<ConfirmPasswordModel> {
     public async getWidgetModel(): Promise<ConfirmPasswordModel> {
         return new ConfirmPasswordModel()
     }

@@ -1,4 +1,10 @@
-﻿h1,
+﻿@import "variables.scss";
+@import "mixins.scss";
+@import "icons-toolboxes.scss";
+@import "animation.scss";
+@import "layouts.scss";
+
+h1,
 h2 {
     font-family: $font-family-base;
     color: $color-base;
