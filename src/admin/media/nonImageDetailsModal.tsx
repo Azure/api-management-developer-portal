@@ -41,26 +41,16 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
     }
 
     onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
-        this.setState({
-            mediaItem: {
-                ...this.state.mediaItem,
-                [field]: newValue
-            }
-        });
+        const newStateMediaItem: MediaContract = { ...this.state.mediaItem, [field]: newValue };
 
         if (field === 'downloadUrl') {
-            const newMimeType = getType(newValue);
+            const newMimeType: string = getType(newValue);
             if (newMimeType) {
-                this.setState({
-                    mediaItem: {
-                        ...this.state.mediaItem,
-                        mimeType: newMimeType
-                    }
-                })
+                newStateMediaItem.mimeType = newMimeType;
             }
-
         }
 
+        this.setState({ mediaItem: newStateMediaItem });
         this.runValidation(field, newValue, validationType);
     }
 
