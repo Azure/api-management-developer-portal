@@ -5,8 +5,21 @@ form {
     flex-grow: 1;
 }
 
+.form-label {
+    padding: .375rem .75rem;
+}
+
 .form-control {
+    display: block;
+    background-clip: padding-box;
     width: 100%;
+
+    &.form-control-light {
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        background-color: transparent;
+    }
 }
 
 .form-inline {
@@ -98,6 +111,72 @@ input[type="range"] {
     }
 }
 
+input[type=search] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    @extend .icon-svg-magnifier;
+    background-position: 5px center;
+    background-size: 1em;
+    background-repeat: no-repeat;
+    padding-left: calc(1em + 10px) !important;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: $switch-width;
+    height: $switch-height;
+    margin: 10px;
+
+    input[type=checkbox] {
+        opacity: 0;
+        width: 0;
+        height: 0;
+
+        &:checked + .slider {
+            background: $switch-background-color-on;
+        }
+
+        &:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        border: 1px solid #ffffff;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: $switch-background-color-off;
+        transition: .4s;
+
+        &.round {
+            border-radius: 34px;
+
+            &:before {
+                border-radius: 50%;
+            }
+        }
+
+        &:before {
+            position: absolute;
+            content: "";
+            height: $switch-trigger-size;
+            width: $switch-trigger-size;
+            left: $switch-trigger-gap;
+            bottom: $switch-trigger-gap + 1px;
+            background: #ffffff;
+            forced-color-adjust: none;
+            border: 1px solid #ffffff;
+            transition: .4s;
+        }
+    }
+}
+
 .input-group {
     padding: 0;
     display: flex;
@@ -130,6 +209,10 @@ input[type="range"] {
         background-color: #fff;
         color: #000;
         border: 1px solid #000;
+        padding-top: 7px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 5px;
     }
 
     .dropdown {
@@ -141,31 +224,31 @@ input[type="range"] {
         left: 0;
         right: 0;
     }
+}
 
-    .select-badge {
-        margin: 0 .5em;
-        font-family: $font-family-base;
-        font-size: 13px;
+.select-badge {
+    margin: 0 .5em;
+    font-family: $font-family-base;
+    font-size: 13px;
 
-        select {
-            padding: .625em 1em;
-            padding-right: 2.75em;
-            border: solid white 1px;
-            border-radius: .875em;
-            background: #D9D9D9;
-            outline: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-        }
+    select {
+        padding: .625em 1em;
+        padding-right: 2.75em;
+        border: solid white 1px;
+        border-radius: .875em;
+        background: #D9D9D9;
+        outline: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
 
-        .arrow {
-            position: absolute;
-            width: 2em;
-            height: 100%;
-            top: 1px;
-            right: 2px;
-            border-left: solid white 1px;
-            pointer-events: none;
-        }
+    .arrow {
+        position: absolute;
+        width: 2em;
+        height: 100%;
+        top: 1px;
+        right: 2px;
+        border-left: solid white 1px;
+        pointer-events: none;
     }
 }
