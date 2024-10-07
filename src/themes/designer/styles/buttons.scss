@@ -1,4 +1,7 @@
-﻿.btn {
+﻿@import "variables.scss";
+@import "mixins.scss";
+
+.btn {
     border: none;
     background: none;
     color: $color-base;

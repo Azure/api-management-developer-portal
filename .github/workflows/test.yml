@@ -52,7 +52,7 @@ jobs:
       - name: Run tests
         run: npx playwright test tests/ --workers 1
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-report

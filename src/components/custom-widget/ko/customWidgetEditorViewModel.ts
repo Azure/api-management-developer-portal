@@ -24,7 +24,8 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
     public readonly src: ko.Observable<string>;
     public readonly instanceId: ko.Observable<string>;
     public readonly iframeAllows: string = iframeAllows;
-    public readonly iframeSandboxAllows: string = iframeSandboxAllows;
+    public readonly iframeSandboxAllows: string = CustomWidgetEditorViewModel.buildSandboxParams();
+    public readonly allowSameOrigin: ko.Observable<boolean>;
 
     constructor(
         private readonly viewManager: ViewManager,
@@ -35,6 +36,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.sizeStyleConfig = ko.observable();
         this.customInputValue = ko.observable();
         this.src = ko.observable("");
+        this.allowSameOrigin = ko.observable();
         this.instanceId = ko.observable();
     }
 
@@ -49,6 +51,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.customInputValue(this.model.customInputValue);
         this.instanceId(this.model.instanceId);
         this.updateResponsiveObservables();
+        this.allowSameOrigin(this.model.allowSameOrigin || false);
 
         window.addEventListener("message", event => {
             if (typeof event.data === "object" && "customInputValueChangedMSAPIM" in event.data) {
@@ -60,13 +63,17 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
                 this.customInputValue(JSON.stringify({values}));
             }
         });
-
+        this.allowSameOrigin.subscribe(this.applyChanges);
         this.customInputValue.subscribe(this.applyCustomInputValueChanges);
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
 
         const environment = await this.settingsProvider.getSetting<string>("environment") as Environment;
         const widgetSource = await buildWidgetSource(this.blobStorage, this.model, environment, "editor.html");
         this.src(widgetSource.src);
+    }
+
+    private static buildSandboxParams() {
+        return iframeSandboxAllows + " allow-same-origin";
     }
 
     private updateResponsiveObservables(): void {
@@ -98,6 +105,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
 
     private applyChanges(): void {
         this.model.customInputValue = this.customInputValue();
+        this.model.allowSameOrigin = this.allowSameOrigin();
         this.onChange(this.model);
     }
 

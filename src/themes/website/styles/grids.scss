@@ -1,0 +1,10 @@
+$console-parameters-row-gap: 10px;
+
+.console-parameters-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 30px;
+    column-gap: $console-parameters-row-gap;
+    justify-items: start;
+    margin-bottom: $console-parameters-row-gap;
+    align-items: baseline;
+}
