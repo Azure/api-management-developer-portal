@@ -29,6 +29,8 @@
 
     &.show {
         display: block;
+        max-height: 500px;
+        overflow-x: auto;
     }
 }
 
