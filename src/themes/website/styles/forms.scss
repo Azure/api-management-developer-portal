@@ -11,14 +11,7 @@ form {
 
 .form-control {
     display: block;
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: $form-control-color;
-    background-color: $form-control-bg-color;
     background-clip: padding-box;
-    border: 1px solid $form-control-border-color;
-    border-radius: $form-control-border-radius;
     width: 100%;
 
     &.form-control-light {
@@ -116,6 +109,17 @@ input[type="range"] {
         margin-right: 0.25rem;
         margin-left: 0;
     }
+}
+
+input[type=search] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    @extend .icon-svg-magnifier;
+    background-position: 5px center;
+    background-size: 1em;
+    background-repeat: no-repeat;
+    padding-left: calc(1em + 10px) !important;
 }
 
 .switch {
