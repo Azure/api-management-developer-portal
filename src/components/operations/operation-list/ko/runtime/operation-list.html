@@ -19,7 +19,7 @@
 
 <!-- ko ifnot: apiType() === 'websocket' || apiType() === 'graphql'-->
 <div class="form-inline max-w-500">
-    <div class="d-block flex-grow mw-170">
+    <div class="form-group d-block flex-grow mw-170">
         <input type="search" class="form-control form-control-light" aria-label="Search operations"
             placeholder="Search operations" spellcheck="false" data-bind="textInput: pattern" />
         <tag-input params="{ scope: $component.tagScope, onChange: onTagsChange }"></tag-input>
