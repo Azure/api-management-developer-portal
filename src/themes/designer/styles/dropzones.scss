@@ -1,4 +1,7 @@
-﻿[alignment] {
+﻿@import "variables.scss";
+@import "mixins.scss";
+
+[alignment] {
     position: absolute;
     top: initial;
     left: initial;
