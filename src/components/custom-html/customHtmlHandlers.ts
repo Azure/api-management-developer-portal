@@ -3,7 +3,7 @@ import { StyleHelper } from "@paperbits/styles";
 import { CustomHtmlModel } from "./customHtmlModel";
 import { htmlCodeInitial, htmlCodeSizeStylesInitial } from "./ko/constants";
 
-export class HTMLInjectionHandlers implements IWidgetHandler {
+export class HTMLInjectionHandlers implements IWidgetHandler<CustomHtmlModel> {
     public async getWidgetModel(): Promise<CustomHtmlModel> {
         const model = new CustomHtmlModel();
         model.htmlCode = htmlCodeInitial;

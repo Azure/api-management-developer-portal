@@ -316,7 +316,8 @@ export const iframeAllows = "clipboard-read; clipboard-write; camera; microphone
 /**
  * List of allowed attributes for a sandboxed iframe.
  */
-export const iframeSandboxAllows = "allow-scripts allow-modals allow-forms allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-pointer-lock";
+export const iframeSandboxAllows = "allow-scripts allow-modals allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-pointer-lock";
+export const iframeSandboxAllowsBrowserSpecific = "allow-downloads allow-presentation allow-orientation-lock";
 
 /**
  * List of downloadable content types
@@ -365,3 +366,8 @@ export const fuiTheme: Theme = {
  * Key for the setting that enables the runtime redesign of the portal
  */
 export const isRedesignEnabledSetting = "isRedesignEnabled";
+
+/**
+ * Key of the default admin user
+ */
+export const integrationUserId = '/users/integration';

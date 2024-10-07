@@ -1,3 +1,4 @@
+@import "mixins.scss";
 html,
 body {
     width: 100%;
@@ -9,10 +10,6 @@ body {
 
 * {
     @include box-sizing(border-box);
-    //position: relative;
-}
-
-app * {
     position: relative;
 }
 

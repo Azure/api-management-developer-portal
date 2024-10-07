@@ -10,7 +10,7 @@ import { Router } from '@paperbits/common/routing';
 import { Resolve } from '@paperbits/react/decorators';
 import { ContentWorkshop } from '../components/content';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
-import { CommandBarButton, DefaultButton, Dropdown, Icon, IconButton, IDropdownOption, IIconProps, PrimaryButton, Stack, Text, ThemeProvider } from '@fluentui/react';
+import { CommandBarButton, DefaultButton, Dropdown, Icon, IconButton, IDropdownOption, IIconProps, PrimaryButton, Stack, Text, ThemeProvider, TooltipHost } from '@fluentui/react';
 import { lightTheme, darkTheme } from './utils/themes';
 import { mobileBreakpoint, smallMobileBreakpoint } from '../constants';
 initializeIcons();
@@ -234,27 +234,39 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
 
     renderDropdowns = (): JSX.Element => (
         <Stack horizontal>
-            <Dropdown
-                defaultSelectedKey={anonymousKey}
-                ariaLabel="Role view selector"
-                onRenderTitle={this.renderRoleTitle}
-                options={this.state.rolesOptions}
-                onChange={(event, option) => this.viewManager.setViewRoles([this.state.roles.find(role => role.key === option.key)])}
-                styles={dropdownStyles}
-                className="top-panel-dropdown"
-                dropdownWidth={170}
-            />
-            <Dropdown
-                defaultSelectedKey="xl"
-                ariaLabel="Screen size selector"
-                onRenderOption={this.renderDropdownOption}
-                onRenderTitle={this.renderTitle}
-                options={screenSizeOptions}
-                onChange={(event, option) => this.viewManager.setViewport(option.key.toString())}
-                styles={dropdownStyles}
-                className="top-panel-dropdown"
-                dropdownWidth={170}
-            />
+            <TooltipHost
+                content="Role view selector"
+                id="role-view-selector-tooltip"
+            >
+                <Dropdown
+                    defaultSelectedKey={anonymousKey}
+                    ariaLabel="Role view selector"
+                    aria-describedby="role-view-selector-tooltip"
+                    onRenderTitle={this.renderRoleTitle}
+                    options={this.state.rolesOptions}
+                    onChange={(event, option) => this.viewManager.setViewRoles([this.state.roles.find(role => role.key === option.key)])}
+                    styles={dropdownStyles}
+                    className="top-panel-dropdown"
+                    dropdownWidth={170}
+                />
+            </TooltipHost>
+            <TooltipHost
+                content="Screen size selector"
+                id="screen-size-selector-tooltip"
+            >
+                <Dropdown
+                    defaultSelectedKey="xl"
+                    ariaLabel="Screen size selector"
+                    aria-describedby="screen-size-selector-tooltip"
+                    onRenderOption={this.renderDropdownOption}
+                    onRenderTitle={this.renderTitle}
+                    options={screenSizeOptions}
+                    onChange={(event, option) => this.viewManager.setViewport(option.key.toString())}
+                    styles={dropdownStyles}
+                    className="top-panel-dropdown"
+                    dropdownWidth={170}
+                />
+            </TooltipHost>
         </Stack>
     )
 

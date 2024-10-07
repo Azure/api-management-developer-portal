@@ -102,6 +102,10 @@
 
     .nav-item-inner {
         opacity: 0;
+
+        &:focus {
+            opacity: 1;
+        }
     }
 
     &:hover {

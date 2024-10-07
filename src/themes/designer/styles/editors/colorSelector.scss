@@ -46,7 +46,6 @@
             padding: 0;
             line-height: 30px;
             overflow: hidden;
-            text-align: center;
 
             &.pseudo-transparent-bckg {
                 @include pseudo-transparent-bckg();
