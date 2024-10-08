@@ -9,6 +9,7 @@ import { CopyableTextField } from '../utils/components/copyableTextField';
 import { REQUIRED, UNIQUE_REQUIRED, URL_REQUIRED, validateField } from '../utils/validator';
 import { reservedPermalinks } from '../../constants';
 import { MimeTypes } from '@paperbits/common';
+import { getType } from "mime";
 
 interface NonImageDetailsModalState {
     mediaItem: MediaContract,
@@ -40,13 +41,16 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
     }
 
     onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
-        this.setState({
-            mediaItem: {
-                ...this.state.mediaItem,
-                [field]: newValue
-            }
-        });
+        const newStateMediaItem: MediaContract = { ...this.state.mediaItem, [field]: newValue };
 
+        if (field === 'downloadUrl') {
+            const newMimeType: string = getType(newValue);
+            if (newMimeType) {
+                newStateMediaItem.mimeType = newMimeType;
+            }
+        }
+
+        this.setState({ mediaItem: newStateMediaItem });
         this.runValidation(field, newValue, validationType);
     }
 
