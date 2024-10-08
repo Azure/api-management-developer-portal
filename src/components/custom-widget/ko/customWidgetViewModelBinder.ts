@@ -27,6 +27,7 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
         config.src = widgetSource.src;
         config.instanceId = model.instanceId;
         config.name = model.name;
+        config.allowSameOrigin = model.allowSameOrigin;
 
         if (model.styles) {
             const styles = await this.styleCompiler.getStyleModelAsync(model.styles);

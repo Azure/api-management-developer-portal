@@ -101,9 +101,9 @@ export class ChangePasswordRuntime extends React.Component<ChangePasswordRuntime
                     userId,
                     newPassword
                 };
-                await this.backendService.sendChangePassword(changePasswordRequest);
+                await this.backendService.sendChangePassword(changePasswordRequest, credentials);
             } else {
-                await this.usersService.changePassword(userId, newPassword);
+                await this.usersService.changePassword(userId, newPassword, credentials);
             }
 
             return true;

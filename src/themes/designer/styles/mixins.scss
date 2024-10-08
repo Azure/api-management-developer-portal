@@ -1,4 +1,6 @@
-﻿@mixin hide-text() {
+﻿@import "variables.scss";
+
+@mixin hide-text() {
   text-indent: -9999px;
   white-space: nowrap;
 }
@@ -36,11 +38,10 @@
   position: absolute;
 }
 @mixin tabable() {
-  @include selection();
-
   &:focus,
   &:hover {
     outline: none;
+    @include selection();
   }
 
   &:active,
@@ -49,51 +50,47 @@
   }
 }
 @mixin selection($size: 10px, $spacing: 0) {
-  @include selectionUneven($size, $size, $spacing);
+    @include selectionUneven($size, $size, $spacing);
 }
+
 @mixin selectionUneven($sizeX: 10px, $sizeY: 10px, $spacing: 0) {
-  &:after {
-    @include fit($spacing);
-    @include no-pointer-events();
-    background:
-            linear-gradient(to right, $selection-corners-color 1px, transparent 1px) 0 0,
-            linear-gradient(to right, $selection-corners-color 1px, transparent 1px) 0 100%,
-            linear-gradient(to left, $selection-corners-color 1px, transparent 1px) 100% 0,
-            linear-gradient(to left, $selection-corners-color 1px, transparent 1px) 100% 100%,
-            linear-gradient(to bottom, $selection-corners-color 1px, transparent 1px) 0 0,
-            linear-gradient(to bottom, $selection-corners-color 1px, transparent 1px) 100% 0,
-            linear-gradient(to top, $selection-corners-color 1px, transparent 1px) 0 100%,
-            linear-gradient(to top, $selection-corners-color 1px, transparent 1px) 100% 100%;
-    background-repeat: no-repeat;
-    background-size: 0 0;
-    z-index: $z-index-selection;
-    content: '';
-  }
-  &:active:after,
-  &:focus:after,
-  &:hover:after {
-    background-size: $sizeX $sizeY;
-  }
+    &:after {
+        @include fit($spacing);
+        @include no-pointer-events();
+        background: linear-gradient(to right, $selection-corners-color 1px, transparent 1px) 0 0, linear-gradient(to right, $selection-corners-color 1px, transparent 1px) 0 100%, linear-gradient(to left, $selection-corners-color 1px, transparent 1px) 100% 0, linear-gradient(to left, $selection-corners-color 1px, transparent 1px) 100% 100%, linear-gradient(to bottom, $selection-corners-color 1px, transparent 1px) 0 0, linear-gradient(to bottom, $selection-corners-color 1px, transparent 1px) 100% 0, linear-gradient(to top, $selection-corners-color 1px, transparent 1px) 0 100%, linear-gradient(to top, $selection-corners-color 1px, transparent 1px) 100% 100%;
+        background-repeat: no-repeat;
+        background-size: 0 0;
+        z-index: $z-index-selection;
+        content: '';
+    }
+
+    &:active:after,
+    &:focus:after,
+    &:hover:after {
+        background-size: $sizeX $sizeY;
+    }
 }
+
 @mixin surface() {
-   @include box-shadow(1px 1px 20px 1px rgba(0, 0, 0, 0.15));
-  margin: 0;
-  background-color: $toolbox-background;
-  border-radius: $toolbox-border-radius;
-  font-family: $font-family-base;
-  font-weight: $font-weight-base;
-  z-index: $z-index-base;
-  list-style: none;
-  user-select: none;
-  font-size: $font-size-base;
+    @include box-shadow(1px 1px 20px 1px rgba(0, 0, 0, 0.15));
+    margin: 0;
+    background-color: $toolbox-background;
+    border-radius: $toolbox-border-radius;
+    font-family: $font-family-base;
+    font-weight: $font-weight-base;
+    z-index: $z-index-base;
+    list-style: none;
+    user-select: none;
+    font-size: $font-size-base;
 }
+
 @mixin pseudo-transparent-bckg {
-  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAA3NCSVQICAjb4U/gAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAACuoAAArqAVDM774AAAAcdEVYdFNvZnR3YXJlAEFkb2JlIEZpcmV3b3JrcyBDUzbovLKMAAAANElEQVQ4T2P8DwQMeMDr16+hLOyACUqTDUYNGAwGML569QpvOhAVFYWysIPRQBwGBjAwAABDVwrY3ACsDwAAAABJRU5ErkJggg==");
-  background-size: 10px;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAA3NCSVQICAjb4U/gAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAACuoAAArqAVDM774AAAAcdEVYdFNvZnR3YXJlAEFkb2JlIEZpcmV3b3JrcyBDUzbovLKMAAAANElEQVQ4T2P8DwQMeMDr16+hLOyACUqTDUYNGAwGML569QpvOhAVFYWysIPRQBwGBjAwAABDVwrY3ACsDwAAAABJRU5ErkJggg==");
+    background-size: 10px;
 }
 
 .fit {
-  @include fit(0);
+    @include fit(0);
 }
 
 @mixin slider-thumb {

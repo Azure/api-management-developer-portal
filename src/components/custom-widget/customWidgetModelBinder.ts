@@ -16,6 +16,7 @@ export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> 
         model.customInputValue = contract.customInputValue ?? "{}";
         model.instanceId = contract.instanceKey;
         model.styles = contract.styles || {};
+        model.allowSameOrigin = contract.allowSameOrigin || false;
         return model;
     }
 
@@ -27,6 +28,7 @@ export class CustomWidgetModelBinder implements IModelBinder<CustomWidgetModel> 
             customInputValue: model.customInputValue,
             instanceKey: model.instanceId,
             styles: model.styles,
+            allowSameOrigin: model.allowSameOrigin,
         } as CustomWidgetContract;
     }
 }

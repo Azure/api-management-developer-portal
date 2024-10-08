@@ -48,6 +48,7 @@ $style-guide-color: #000;
 }
 
 .style-guide {
+  padding-bottom: 50px;
   .style-card {
     cursor: default;
     color: $style-guide-color;
@@ -56,6 +57,15 @@ $style-guide-color: #000;
 
     .style-card-body {
       padding: 10px;
+      &:before {
+          content: "";
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 9999;
+      }
     }
 
     &.transparent {
@@ -212,32 +222,86 @@ $style-guide-color: #000;
   }
 }
 
+.style-guide {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 576px) {
+    .style-guide {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .style-guide {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .style-guide {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .style-guide {
+        max-width: 1140px;
+    }
+}
+
+.style-guide-fluid,
+.style-guide-sm,
+.style-guide-md,
+.style-guide-lg,
+.style-guide-xl {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 576px) {
+    .style-guide,
+    .style-guide-sm {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .style-guide,
+    .style-guide-sm,
+    .style-guide-md {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .style-guide,
+    .style-guide-sm,
+    .style-guide-md,
+    .style-guide-lg {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .style-guide,
+    .style-guide-sm,
+    .style-guide-md,
+    .style-guide-lg,
+    .style-guide-xl {
+        max-width: 1140px;
+    }
+}
+
 .text-uppercase {
-  text-transform: uppercase;
-}
-
-.snippet-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 10px);
-  grid-template-rows: repeat(12, 10px);
-  margin: 5px;
-  width: 80px;
-
-  &:hover {
-    @include selection(15px, -5px);
-    cursor: pointer;
-  }
-}
-
-.snippet-grid-cell {
-  background: #d9d9d9;
-  outline: 1px solid gray;
-  min-width: 15px;
-  min-height: 20px;
-  margin: 2px;
-  &[role="article"] {
-    background: #bfbfbf;
-  }
+    text-transform: uppercase;
 }
 
 .placeholder {

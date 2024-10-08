@@ -13,6 +13,12 @@ import { UsersService } from "../../../../../../services/usersService";
 import { Utils } from "../../../../../../utils";
 import { OAuth2AuthenticationSettings } from "../../../../../../contracts/authenticationSettings";
 import { GrantTypes, oauthSessionKey } from "../../../../../../constants";
+import { SearchQuery } from "../../../../../../contracts/searchQuery";
+
+interface SubscriptionOption {
+    name: string;
+    value: string;
+}
 
 interface StoredCredentials {
     grantType: string;
@@ -42,23 +48,32 @@ export const getAuthServers = async (api: Api, oauthService: OAuthService): Prom
     return associatedAuthServers ? associatedAuthServers.filter(a => a.useInTestConsole) : [];
 }
 
-export const loadSubscriptionKeys = async (api: Api, apiService: ApiService, productService: ProductService, usersService: UsersService) => {
+export const loadSubscriptionKeys = async (api: Api, apiService: ApiService, productService: ProductService, usersService: UsersService, subscriptionsPattern?: string) => {
     if (!api.subscriptionRequired) return;
 
     const userId = await usersService.getCurrentUserId();
     if (!userId) return;
 
+    const subscriptionsQuery: SearchQuery = {
+        pattern: subscriptionsPattern
+    };
+
     const pageOfProducts = await apiService.getAllApiProducts(api.id);
     const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
-    const pageOfSubscriptions = await productService.getSubscriptions(userId);
-    const subscriptions = pageOfSubscriptions?.value?.filter(subscription => subscription.state === SubscriptionState.active);
+    const allSubscriptions = await productService.getProductsAllSubscriptions(api.name, products, userId, subscriptionsQuery);
+    const subscriptions = allSubscriptions.filter(subscription => subscription.state === SubscriptionState.active);
     const availableProducts = [];
 
+    const productsSubscriptions = subscriptions.filter(subscription => !productService.isProductScope(subscription.scope, api.name));
     products.forEach(product => {
-        const keys = [];
+        const keys: SubscriptionOption[] = [];
 
-        subscriptions.forEach(subscription => {
-            if (!productService.isScopeSuitable(subscription.scope, api.name, product.name)) {
+        if (productsSubscriptions.length === 0) {
+            return;
+        }
+
+        productsSubscriptions.forEach(subscription => {
+            if (!productService.isProductScope(subscription.scope, product.name)) {
                 return;
             }
 
@@ -73,10 +88,41 @@ export const loadSubscriptionKeys = async (api: Api, apiService: ApiService, pro
             });
         });
 
-        if (keys.length > 0) {  
+        if (keys.length > 0) {
             availableProducts.push({ name: product.displayName, subscriptionKeys: keys });
         }
     });
+
+    const apiSubscriptions = subscriptions.filter(subscription => productService.isProductScope(subscription.scope, api.name));
+    const apiKeys: SubscriptionOption[] = [];
+    apiSubscriptions.forEach(subscription => {
+        apiKeys.push({
+            name: `Primary: ${subscription.name?.trim() || subscription.primaryKey.substr(0, 4)}`,
+            value: subscription.primaryKey
+        });
+
+        apiKeys.push({
+            name: `Secondary: ${subscription.name?.trim() || subscription.secondaryKey.substr(0, 4)}`,
+            value: subscription.secondaryKey
+        });
+    });
+    if(apiKeys.length > 0) {
+        availableProducts.push({ name: "Apis", subscriptionKeys: apiKeys });
+    }
+
+    // this.isSubscriptionListEmptyDueToFilter(availableProducts.length == 0 && this.subscriptionsPattern() !== undefined);
+    // this.products(availableProducts);
+    // this.subscriptionsLoading(false);
+
+    // if (subscriptions.length == 0) {
+    //     return;
+    // }
+
+    // if (availableProducts.length > 0 && selectFirstSubscription) {
+    //     const subscriptionKey = availableProducts[0].subscriptionKeys[0];
+    //     this.selectedSubscriptionKey(subscriptionKey);
+    //     this.applySubscriptionKey(subscriptionKey);
+    // }
 
     return availableProducts;
 }

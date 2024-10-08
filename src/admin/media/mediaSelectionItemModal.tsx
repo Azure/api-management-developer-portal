@@ -6,10 +6,10 @@ import { EventManager } from '@paperbits/common/events';
 import { ViewManager } from '@paperbits/common/ui';
 import { IMediaService } from '@paperbits/common/media';
 import { MediaContract } from '@paperbits/common/media/mediaContract';
-import { Query, Operator } from '@paperbits/common/persistence';
 import { DefaultButton, IIconProps, Image, ImageFit, IOverflowSetItemProps, Link, Modal, SearchBox, Stack, Text } from '@fluentui/react';
-import { getAllValues } from '../utils/helpers';
+import { createSearchQuery, getAllValues } from '../utils/helpers';
 import { NonImageDetailsModal } from './nonImageDetailsModal';
+import { MimeTypes } from '@paperbits/common';
 
 interface MediaSelectionItemModalState {
     media: MediaContract[],
@@ -31,7 +31,7 @@ export class MediaSelectionItemModal extends React.Component<MediaSelectionItemM
 
     @Resolve('eventManager')
     public eventManager: EventManager;
-    
+
     @Resolve('viewManager')
     public viewManager: ViewManager;
 
@@ -50,11 +50,7 @@ export class MediaSelectionItemModal extends React.Component<MediaSelectionItemM
     }
 
     searchMedia = async (searchPattern: string = ''): Promise<void> => {
-        const query = Query.from().orderBy('fileName');
-        if (searchPattern) {
-            query.where('fileName', Operator.contains, searchPattern);
-        }
-
+        const query = createSearchQuery(searchPattern, 'fileName');
         const mediaSearchResult = await this.mediaService.search(query);
         const allMedia = await getAllValues(mediaSearchResult, mediaSearchResult.value);
         this.setState({ media: allMedia });
@@ -75,7 +71,7 @@ export class MediaSelectionItemModal extends React.Component<MediaSelectionItemM
     }
 
     linkMedia = async (): Promise<void> => {
-        const newMediaFile = await this.mediaService.createMediaUrl('media.svg', 'https://cdn.paperbits.io/images/logo.svg');
+        const newMediaFile = await this.mediaService.createMediaUrl('media.svg', 'https://cdn.paperbits.io/images/logo.svg', MimeTypes.imageSvg);
         this.setState({ selectedMediaFile: newMediaFile, showNonImageDetailsModal: true });
     }
 
@@ -108,14 +104,14 @@ export class MediaSelectionItemModal extends React.Component<MediaSelectionItemM
 
     renderMediaItem = (mediaItem: MediaContract): JSX.Element => {
         const thumbnailUrl: string = this.getThumbnailUrl(mediaItem);
-        
+
         return (
             <div className="media-box media-selection-block" onClick={() => this.props.selectMedia(mediaItem)} key={mediaItem.key}>
                 <Image
                     src={thumbnailUrl ?? '/assets/images/no-preview.png'}
                     imageFit={ImageFit.centerCover}
                     styles={{ root: { flexGrow: 1, marginTop: 10, marginBottom: 20 } }}
-                /> 
+                />
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
                     <Text>{mediaItem.fileName}</Text>
                 </Stack>
@@ -171,8 +167,10 @@ export class MediaSelectionItemModal extends React.Component<MediaSelectionItemM
                         </Stack.Item>
                     </Stack>
                     <Stack horizontal tokens={{ childrenGap: 20 }} wrap>
-                        {this.state.media.map(mediaItem =>
-                            this.renderMediaItem(mediaItem)
+                        {this.state.media.length === 0
+                            ? <Text block>It seems that you don't have media items yet.</Text>
+                            : this.state.media.map(mediaItem =>
+                                this.renderMediaItem(mediaItem)
                         )}
                     </Stack>
                 </div>

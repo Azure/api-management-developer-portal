@@ -181,7 +181,7 @@ export class UsersService {
         try {
             const userId = await this.getCurrentUserId();
 
-            if (!userId) {
+            if (!userId || userId === Constants.integrationUserId) {
                 return null;
             }
 
@@ -275,15 +275,9 @@ export class UsersService {
         await this.mapiClient.post(`/confirmations/password?appType=${Constants.AppType}`, [await this.mapiClient.getPortalHeader("createResetPasswordRequest")], payload);
     }
 
-    public async changePassword(userId: string, newPassword: string): Promise<void> {
-        const authToken = await this.authenticator.getAccessTokenAsString();
-
-        if (!authToken) {
-            throw Error("Auth token not found");
-        }
-
+    public async changePassword(userId: string, newPassword: string, token: string): Promise<void> {
         const headers = [
-            { name: KnownHttpHeaders.Authorization, value: authToken },
+            { name: KnownHttpHeaders.Authorization, value: token },
             { name: KnownHttpHeaders.IfMatch, value: "*" },
             await this.mapiClient.getPortalHeader("changePassword")
         ];

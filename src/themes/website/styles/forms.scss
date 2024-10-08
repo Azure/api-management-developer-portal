@@ -1,5 +1,27 @@
 @import "variables.scss";
 
+form {
+    padding: 10px;
+    flex-grow: 1;
+}
+
+.form-label {
+    padding: .375rem .75rem;
+}
+
+.form-control {
+    display: block;
+    background-clip: padding-box;
+    width: 100%;
+
+    &.form-control-light {
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        background-color: transparent;
+    }
+}
+
 .form-inline {
     display: flex;
     flex-flow: row wrap;
@@ -7,6 +29,33 @@
 }
 
 .form-inline .form-check {
+    width: 100%;
+}
+
+.form-check-inline {
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+.invalid-feedback {
+    margin-top: 0.25rem;
+    font-size: 0.875em;
+    color: $form-invalid-color;
+    display: none;
+}
+
+:invalid~.invalid-feedback,
+.invalid~.invalid-feedback {
+    display: block;
+}
+
+form.needs-validation:invalid {
+    [type="submit"] {
+        pointer-events: none;
+    }
+}
+
+input[type="range"] {
     width: 100%;
 }
 
@@ -20,7 +69,6 @@
 
     .form-inline .form-group {
         display: flex;
-        flex: 0 0 auto;
         flex-flow: row wrap;
         align-items: center;
         margin-bottom: 0;
@@ -41,8 +89,8 @@
         display: inline-block;
     }
 
-    .form-inline .custom-select,
-    .form-inline .input-group {
+    .form-inline .input-group,
+    .form-inline .custom-select {
         width: auto;
     }
 
@@ -58,103 +106,20 @@
         position: relative;
         flex-shrink: 0;
         margin-top: 0;
-        margin-right: .25rem;
+        margin-right: 0.25rem;
         margin-left: 0;
     }
 }
 
-.form-label {
-    padding: .375rem .75rem;
-}
-
-.form-control {
-    display: block;
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: $form-control-color;
-    background-color: $form-control-bg-color;
-    background-clip: padding-box;
-    border: 1px solid $form-control-border-color;
-    border-radius: $form-control-border-radius;
-    width: 100%;
-
-    &.form-control-light {
-        border-top: none;
-        border-left: none;
-        border-right: none;
-        background-color: transparent;
-    }
-}
-
-
-
-.form-check-inline {
-    display: inline-flex;
-    align-items: center;
-    padding-left: 0;
-    margin-right: .75rem;
-}
-
-.form-check {
-    position: relative;
-    display: block;
-    padding-left: 1.25rem;
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group-inline {
-    display: flex;
-    align-items: center;
-
-    label {
-        margin: 5px 30px 5px 0;
-    }
-}
-
-.invalid-feedback {
-    display: block;
-    flex-basis: 100%;
-    margin-top: .25rem;
-    font-size: 80%;
-    color: #dc3545;
-}
-
-.expanded {
-    .icon-chevron-down {
-        // TODO: Introduce proper class for dropdown toggle
-        transform: rotate(180deg);
-    }
-}
-
-// input[type=search] {
-//     white-space: nowrap;
-//     overflow: hidden;
-//     text-overflow: ellipsis;
-//     @extend .icon-svg-magnifier;
-//     background-position: 5px center;
-//     background-size: 1em;
-//     background-repeat: no-repeat;
-//     padding-left: calc(1em + 10px);
-// }
-
-.input-label {
-    margin-bottom: 5px;
-
-    .item-label {
-        padding-right: 5px;
-    }
-}
-
-.input[type=password]::-ms-reveal {
-    display: none;
-}
-
-.input[type=password]::-ms-clear {
-    display: none;
+input[type=search] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    @extend .icon-svg-magnifier;
+    background-position: 5px center;
+    background-size: 1em;
+    background-repeat: no-repeat;
+    padding-left: calc(1em + 10px) !important;
 }
 
 .switch {
@@ -214,9 +179,8 @@
 
 .input-group {
     padding: 0;
-    display: inline-flex;
+    display: flex;
     flex-wrap: wrap;
-    width: 100%;
 
     & > :not(:first-child):not(.dropdown):not(.invalid-feedback) {
         border-top-left-radius: 0;
@@ -224,7 +188,7 @@
         margin-left: -1px;
     }
 
-    &.has-validation > :nth-last-child(n+3) {
+    &.has-validation > :nth-last-child(n + 3) {
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
         margin-left: -1px;
@@ -235,9 +199,9 @@
         border-bottom-right-radius: 0;
     }
 
-
     .form-control {
-        flex: 1;
+        flex-grow: 1;
+        width: auto;
     }
 
     .input-group-addon {
@@ -245,6 +209,10 @@
         background-color: #fff;
         color: #000;
         border: 1px solid #000;
+        padding-top: 7px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 5px;
     }
 
     .dropdown {
@@ -270,7 +238,6 @@
         border-radius: .875em;
         background: #D9D9D9;
         outline: none;
-
         -webkit-appearance: none;
         -moz-appearance: none;
     }
@@ -283,15 +250,5 @@
         right: 2px;
         border-left: solid white 1px;
         pointer-events: none;
-        /*
-        .icon-emb {
-            transition: transform .5s ease;
-        }
-         */
     }
-    /*
-    select:focus + .arrow .icon-emb {
-        transform: rotate(-180deg);
-    }
-     */
 }

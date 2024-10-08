@@ -20,6 +20,13 @@ import { ProductService } from "../../../../../services/productService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
 import { OAuth2AuthenticationSettings } from "../../../../../contracts/authenticationSettings";
+import * as Constants from "../../../../../constants";
+import { SearchQuery } from "../../../../../contracts/searchQuery";
+
+interface SubscriptionOption {
+    name: string;
+    value: string;
+}
 
 @Component({
     selector: "authorization",
@@ -35,10 +42,14 @@ export class Authorization {
     public readonly password: ko.Observable<string>;
     public readonly authorizationError: ko.Observable<string>;
     public readonly products: ko.Observable<Product[]>;
-    public readonly selectedSubscriptionKey: ko.Observable<string>;
+    public readonly selectedSubscriptionKey: ko.Observable<SubscriptionOption>;
     public readonly subscriptionKeyRevealed: ko.Observable<boolean>;
     private deleteAuthorizationHeader: boolean = false;
     public readonly selectedAuthorizationServer: ko.Observable<AuthorizationServer>;
+    public readonly subscriptionsPattern: ko.Observable<string>;
+    public readonly subscriptionSelection: ko.Computed<string>;
+    public readonly isSubscriptionListEmptyDueToFilter: ko.Observable<boolean>;
+    public readonly subscriptionsLoading = ko.observable<boolean>(false);
 
     constructor(
         private readonly sessionManager: SessionManager,
@@ -63,7 +74,14 @@ export class Authorization {
         this.subscriptionKeyRevealed = ko.observable(false);
         this.authorizationServers = ko.observable<AuthorizationServer[]>();
         this.selectedAuthorizationServer = ko.observable<AuthorizationServer>();
+        this.subscriptionsPattern = ko.observable();
+        this.isSubscriptionListEmptyDueToFilter = ko.observable(false);
+        this.subscriptionsLoading = ko.observable(true);
+        this.subscriptionSelection = ko.computed(() => {
+            return this.selectedSubscriptionKey() ? this.selectedSubscriptionKey().name : "Select a subscription";
+        });
     }
+
     @Param()
     public authorizationServers: ko.Observable<AuthorizationServer[]>;
 
@@ -102,8 +120,16 @@ export class Authorization {
 
         await this.setupOAuth();
         if (this.api().subscriptionRequired) {
-            await this.loadSubscriptionKeys();
+            await this.loadSubscriptionKeys(true);
         }
+
+        this.subscriptionsPattern
+            .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
+            .subscribe(this.resetSubscriptionsSearch);
+    }
+
+    public async resetSubscriptionsSearch(): Promise<void> {
+        this.loadSubscriptionKeys();
     }
 
     public toggleSubscriptionKey(): void {
@@ -135,10 +161,18 @@ export class Authorization {
         }
     }
 
+    public selectSubscription(subscription: SubscriptionOption) {
+        this.selectedSubscriptionKey(subscription);
+        this.closeDropdown();
+    }
+
     private async getStoredCredentials(serverName: string, scopeOverride: string): Promise<StoredCredentials> {
         const oauthSession = await this.sessionManager.getItem<OAuthSession>(oauthSessionKey);
         const recordKey = this.getSessionRecordKey(serverName, scopeOverride);
         const storedCredentials = oauthSession?.[recordKey];
+        if (!storedCredentials) {
+            return null;
+        }
 
         try {
             /* Trying to check if it's a JWT token and, if yes, whether it got expired. */
@@ -367,24 +401,34 @@ export class Authorization {
         }
     }
 
-    private async loadSubscriptionKeys(): Promise<void> {
+    private async loadSubscriptionKeys(selectFirstSubscription: boolean = false): Promise<void> {
+        this.subscriptionsLoading(true);
         const userId = await this.usersService.getCurrentUserId();
 
         if (!userId) {
             return;
         }
 
+        const subscriptionsQuery: SearchQuery = {
+            pattern: this.subscriptionsPattern()
+        };
+
         const pageOfProducts = await this.apiService.getAllApiProducts(this.api().id);
         const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
-        const pageOfSubscriptions = await this.productService.getSubscriptions(userId);
-        const subscriptions = pageOfSubscriptions.value.filter(subscription => subscription.state === SubscriptionState.active);
+        const allSubscriptions = await this.productService.getProductsAllSubscriptions(this.api().name, products, userId, subscriptionsQuery);
+        const subscriptions = allSubscriptions.filter(subscription => subscription.state === SubscriptionState.active);
         const availableProducts = [];
 
+        const productsSubscriptions = allSubscriptions.filter(subscription => !this.productService.isProductScope(subscription.scope, this.api().name));
         products.forEach(product => {
-            const keys = [];
+            const keys: SubscriptionOption[] = [];
 
-            subscriptions.forEach(subscription => {
-                if (!this.productService.isScopeSuitable(subscription.scope, this.api().name, product.name)) {
+            if (productsSubscriptions.length === 0) {
+                return;
+            }
+
+            productsSubscriptions.forEach(subscription => {
+                if (!this.productService.isProductScope(subscription.scope, product.name)) {
                     return;
                 }
 
@@ -404,24 +448,47 @@ export class Authorization {
             }
         });
 
-        this.products(availableProducts);
+        const apiSubscriptions = allSubscriptions.filter(subscription => this.productService.isProductScope(subscription.scope, this.api().name));
+        const apiKeys: SubscriptionOption[] = [];
+        apiSubscriptions.forEach(subscription => {
+            apiKeys.push({
+                name: `Primary: ${subscription.name?.trim() || subscription.primaryKey.substr(0, 4)}`,
+                value: subscription.primaryKey
+            });
 
-        if (availableProducts.length > 0) {
-            const subscriptionKey = availableProducts[0].subscriptionKeys[0].value;
+            apiKeys.push({
+                name: `Secondary: ${subscription.name?.trim() || subscription.secondaryKey.substr(0, 4)}`,
+                value: subscription.secondaryKey
+            });
+        });
+        if(apiKeys.length > 0) {
+            availableProducts.push({ name: "Apis", subscriptionKeys: apiKeys });
+        }
+
+        this.isSubscriptionListEmptyDueToFilter(availableProducts.length == 0 && this.subscriptionsPattern() !== undefined);
+        this.products(availableProducts);
+        this.subscriptionsLoading(false);
+
+        if (subscriptions.length == 0) {
+            return;
+        }
+
+        if (availableProducts.length > 0 && selectFirstSubscription) {
+            const subscriptionKey = availableProducts[0].subscriptionKeys[0];
             this.selectedSubscriptionKey(subscriptionKey);
             this.applySubscriptionKey(subscriptionKey);
         }
     }
 
-    private applySubscriptionKey(subscriptionKey: string): void {
+    private applySubscriptionKey(subscriptionKey: SubscriptionOption): void {
         if (!this.consoleOperation() && !this.isGraphQL()) {
             return;
         }
 
         if (this.api().type === TypeOfApi.webSocket || this.isGraphQL()) {
-            this.setSubscriptionKeyParameter(subscriptionKey);
+            this.setSubscriptionKeyParameter(subscriptionKey.value);
         } else {
-            this.setSubscriptionKeyHeader(subscriptionKey);
+            this.setSubscriptionKeyHeader(subscriptionKey.value);
         }
 
         if (!this.isGraphQL()) {
@@ -487,5 +554,14 @@ export class Authorization {
             return setting?.scope;
         }
         return null;
+    }
+
+    private closeDropdown(): true {
+        const subscriptionDropdowm = document.getElementById("subscriptions-dropdown");
+        if (subscriptionDropdowm.classList.contains("show")) {
+            subscriptionDropdowm.classList.remove("show");
+        }
+        // return true to not-prevent the default action https://knockoutjs.com/documentation/click-binding.html#note-3-allowing-the-default-click-action
+        return true;
     }
 }
