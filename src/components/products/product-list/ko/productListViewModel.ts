@@ -7,14 +7,16 @@ import { StyleModel } from "@paperbits/common/styles";
     selector: "product-list",
     template: template
 })
-export class ProductListViewModel {    
+export class ProductListViewModel {
     public readonly layout: ko.Observable<string>;
     public readonly runtimeConfig: ko.Observable<string>;
     public readonly styles: ko.Observable<StyleModel>;
+    public readonly isRedesignEnabled: ko.Observable<boolean>;
 
-    constructor() {        
+    constructor() {
         this.layout = ko.observable();
         this.runtimeConfig = ko.observable();
         this.styles = ko.observable<StyleModel>();
+        this.isRedesignEnabled = ko.observable<boolean>();
     }
 }

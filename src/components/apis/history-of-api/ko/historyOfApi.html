@@ -1,1 +1,6 @@
-<api-history data-bind="attr: { params: runtimeConfig }"></api-history>
+<!-- ko if: isRedesignEnabled -->
+    <fui-api-history data-bind="attr: { props: runtimeConfig }"></fui-api-history>
+<!-- /ko -->
+<!-- ko ifnot: isRedesignEnabled -->
+    <api-history data-bind="attr: { params: runtimeConfig }"></api-history>
+<!-- /ko -->
