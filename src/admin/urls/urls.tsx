@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Resolve } from '@paperbits/react/decorators';
 import { IUrlService, UrlContract } from '@paperbits/common/urls';
-import { Query, Operator } from '@paperbits/common/persistence';
 import { ViewManager } from '@paperbits/common/ui';
 import { CommandBarButton, FontIcon, IIconProps, SearchBox, Spinner, Stack, Text } from '@fluentui/react';
-import { getAllValues } from '../utils/helpers';
+import { createSearchQuery, getAllValues } from '../utils/helpers';
 import { lightTheme } from '../utils/themes';
 import { BackButton } from '../utils/components/backButton';
 import { UrlDetailsModal } from './urlDetailsModal';
@@ -54,11 +53,7 @@ export class Urls extends React.Component<UrlsProps, UrlsState> {
     }
 
     searchUrls = async (searchPattern: string = ''): Promise<void> => {
-        const query = Query.from().orderBy('title');
-        if (searchPattern) {
-            query.where('title', Operator.contains, searchPattern);
-        }
-
+        const query = createSearchQuery(searchPattern);
         const urlsSearchResult = await this.urlService.search(query);
         const allUrls = await getAllValues(urlsSearchResult, urlsSearchResult.value);
         this.setState({ urls: allUrls });
@@ -77,10 +72,18 @@ export class Urls extends React.Component<UrlsProps, UrlsState> {
                 title="Edit"
                 style={iconStyles}
                 className="nav-item-inner"
+                tabIndex={0}
                 onClick={(event) => {
+                    this.setState({ showUrlDetailsModal: true, selectedUrl: url });
                     event.stopPropagation();
-                    this.setState({ showUrlDetailsModal: true, selectedUrl: url })}
-                }
+                }}
+                // Required for accessibility
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                        this.setState({ showUrlDetailsModal: true, selectedUrl: url });
+                        event.preventDefault();
+                    }
+                }}
             />
         </Stack>
     )

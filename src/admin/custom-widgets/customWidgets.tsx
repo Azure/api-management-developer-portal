@@ -81,10 +81,18 @@ export class CustomWidgets extends React.Component<CustomWidgetsProps, CustomWid
                 title="Edit"
                 style={iconStyles}
                 className="nav-item-inner"
+                tabIndex={0}
                 onClick={(event) => {
+                    this.setState({ showCustomWidgetModal: true, selectedCustomWidget: customWidget });
                     event.stopPropagation();
-                    this.setState({ showCustomWidgetModal: true, selectedCustomWidget: customWidget })}
-                }
+                }}
+                // Required for accessibility
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                        this.setState({ showCustomWidgetModal: true, selectedCustomWidget: customWidget });
+                        event.preventDefault();
+                    }
+                }}
             />
         </Stack>
     )

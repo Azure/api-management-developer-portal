@@ -90,7 +90,7 @@
     display: none;
 
     &::before {
-        content: '';
+        content: "";
         position: absolute;
         left: 50%;
         margin-top: -16px;
@@ -152,6 +152,10 @@
     padding-left: 0px !important;
 }
 
+.m-0 {
+    margin: 0 !important;
+}
+
 .max-w-500 {
     max-width: 500px;
 }
@@ -188,4 +192,20 @@
 
 .mr-20 {
     margin-right: 20px;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.h-100 {
+    height: 100%;
+}
+
+.p-0 {
+    padding: 0 !important;
+}
+
+.p-20 {
+    padding: 20px;
 }

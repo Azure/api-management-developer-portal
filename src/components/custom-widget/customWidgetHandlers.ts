@@ -11,7 +11,7 @@ export interface TCustomWidgetConfig extends CustomWidgetCommonConfig {
     override?: string | boolean;
 }
 
-export class CustomWidgetHandlers implements IWidgetHandler {
+export class CustomWidgetHandlers implements IWidgetHandler<CustomWidgetModel> {
     constructor(private readonly configuration: TCustomWidgetConfig) {
         this.getWidgetModel = this.getWidgetModel.bind(this);
     }

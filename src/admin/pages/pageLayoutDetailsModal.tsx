@@ -106,13 +106,13 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
     }
 
     saveLayout = async (): Promise<void> => {
-        if (this.state.layout.permalinkTemplate === '/new-layout') { 
-            const permalinkError = await this.validatePermalink(this.state.layout.permalinkTemplate);
-            if (permalinkError) {
-                this.setState({ errors: { permalinkTemplate: permalinkError } });
-            
-                return;
-            }
+        // TODO: find a root cause of an ability to click Save button when name is empty or permalink is not unique
+        const permalinkError = await this.validatePermalink(this.state.layout.permalinkTemplate);
+        const titleError = validateField(REQUIRED, this.state.layout.title);
+ 
+        if (permalinkError || titleError) {
+            this.setState({ errors: { permalinkTemplate: permalinkError, title: titleError } });
+            return;
         }
 
         if (this.props.layout && !this.state.copyLayout) {
@@ -173,6 +173,7 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
                     }
                     <TextField
                         label="Title"
+                        placeholder="Enter the layout name"
                         value={this.state.layout.title}
                         onChange={(event, newValue) => this.onInputChange('title', newValue, REQUIRED)}
                         errorMessage={this.state.errors['title'] ?? ''}
@@ -188,6 +189,7 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
                             />
                         }
                         ariaLabel="Permalink path template"
+                        placeholder="Enter the permalink path template"
                         value={this.state.layout.permalinkTemplate}
                         onChange={(event, newValue) => this.onInputChange('permalinkTemplate', newValue)}
                         errorMessage={this.state.errors['permalinkTemplate'] ?? ''}

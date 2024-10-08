@@ -39,6 +39,7 @@
             <div class="form-group">
                 <select id="authFlow" class="form-control"
                     data-bind="options: $component.selectedAuthorizationServer()?.grantTypes, value: $component.selectedGrantType, optionsCaption: 'No auth'">
+                </select>
             </div>
         </div>
     </div>
@@ -88,21 +89,47 @@
         </div>
         <div class="col-7">
             <div class="form-group">
-                <!-- ko if: $component.products() && $component.products().length > 0 -->
-                <select id="subscriptionKey" class="form-control" data-bind="value: $component.selectedSubscriptionKey">
-                    <!-- ko foreach: { data: $component.products, as: 'product' } -->
-                    <optgroup data-bind="attr: { label: product.name }">
-                        <!-- ko foreach: { data: product.subscriptionKeys, as: 'subscriptionKey' } -->
-                        <option data-bind="value: subscriptionKey.value, text: subscriptionKey.name"></option>
+                <!-- ko if: ($component.products() && $component.products().length > 0) || isSubscriptionListEmptyDueToFilter() -->
+                <div class="input-group" tabindex="0" aria-label="Subscriptions">
+                    <div class="form-control text-truncate" data-toggle="dropdown" role="button">
+                        <!-- ko if: $component.selectedSubscriptionKey() -->
+                        <span data-bind="text: $component.selectedSubscriptionKey().name"></span>
                         <!-- /ko -->
-                    </optgroup>
-                    <!-- /ko -->
-                </select>
+                    </div>
+                    <button class="input-group-addon no-border" data-toggle="dropdown"
+                        aria-label="Expand subscription list">
+                        <i class="icon-emb icon-emb-chevron-down"></i>
+                    </button>
+                    <div class="dropdown" id="subscriptions-dropdown">
+                        <!-- ko if: $component.subscriptionsLoading -->
+                        <spinner class="block" role="presentation"></spinner>
+                        <!-- /ko -->
+                        <!-- ko ifnot: $component.subscriptionsLoading -->
+                        <input type="search" class="form-control form-control-light" aria-label="Search"
+                            placeholder="Search subscriptions" data-bind="textInput: subscriptionsPattern" autofocus />
+                        <!-- ko if: isSubscriptionListEmptyDueToFilter() -->
+                        <span>No subscriptions found.</span>
+                        <!-- /ko -->
+                        <!-- ko foreach: { data: $component.products, as: 'product' } -->
+                        <span data-bind="text: product.name" style="font-weight: bold"></span>
+                        <div class="menu menu-vertical" role="list">
+                            <!-- ko foreach: { data: product.subscriptionKeys, as: 'item' } -->
+                            <a href="#" role="listitem" class="nav-link text-truncate" data-dismiss
+                                data-bind="click: $component.selectSubscription">
+                                <span data-bind="text: item.name"></span>
+                            </a>
+                            <!-- /ko -->
+                        </div>
+                        <!-- /ko -->
+                        <!-- /ko -->
+                    </div>
+                </div>
+
                 <!-- /ko -->
-                <!-- ko if: !$component.products() || $component.products().length === 0 -->
+                <!-- ko if: (!$component.products() || $component.products().length === 0) && !isSubscriptionListEmptyDueToFilter() -->
                 <div class="input-group">
                     <input id="subscriptionKey" class="form-control" placeholder="subscription key"
-                        data-bind="textInput: $component.selectedSubscriptionKey, attr: { type: subscriptionKeyRevealed() ? 'text' : 'password' }"
+                        data-bind="textInput: $component.selectedSubscriptionKey.value, attr: { type: subscriptionKeyRevealed() ? 'text' : 'password' }"
                         aria-required="true" />
                     <button data-bind="click: toggleSubscriptionKey" class="input-group-addon">
                         <i

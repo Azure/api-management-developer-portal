@@ -8,6 +8,8 @@ import { DefaultButton, Modal, PrimaryButton, Stack, Text, TextField } from '@fl
 import { CopyableTextField } from '../utils/components/copyableTextField';
 import { REQUIRED, UNIQUE_REQUIRED, URL_REQUIRED, validateField } from '../utils/validator';
 import { reservedPermalinks } from '../../constants';
+import { MimeTypes } from '@paperbits/common';
+import { getType } from "mime";
 
 interface NonImageDetailsModalState {
     mediaItem: MediaContract,
@@ -39,13 +41,16 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
     }
 
     onInputChange = async (field: string, newValue: string, validationType?: string): Promise<void> => {
-        this.setState({
-            mediaItem: {
-                ...this.state.mediaItem,
-                [field]: newValue
-            }
-        });
+        const newStateMediaItem: MediaContract = { ...this.state.mediaItem, [field]: newValue };
 
+        if (field === 'downloadUrl') {
+            const newMimeType: string = getType(newValue);
+            if (newMimeType) {
+                newStateMediaItem.mimeType = newMimeType;
+            }
+        }
+
+        this.setState({ mediaItem: newStateMediaItem });
         this.runValidation(field, newValue, validationType);
     }
 
@@ -78,11 +83,12 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
                 mediaItem: {
                     ...this.state.mediaItem,
                     fileName: newName,
-                    permalink: '/content/' + newName
+                    permalink: '/content/' + newName,
+                    mimeType: MimeTypes.imageSvg
                 }
             })
         }
-    } 
+    }
 
     validatePermalink = async (permalink: string): Promise<string> => {
         if (permalink === this.props.mediaItem?.permalink) return '';
@@ -107,7 +113,7 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
         this.eventManager.dispatchEvent('onSaveChanges');
         this.props.onDismiss();
     }
-    
+
     render(): JSX.Element {
         return <>
             <Modal
