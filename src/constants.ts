@@ -1,4 +1,5 @@
 import { OVERRIDE_PORT_KEY } from "@azure/api-management-custom-widgets-scaffolder";
+import { Theme, webLightTheme } from "@fluentui/react-components";
 
 /**
  * APIM service SKU names.
@@ -340,6 +341,31 @@ export const overrideToastSessionKeyPrefix = "MS_APIM_CW_override_toast_dismisse
  */
 export const mobileBreakpoint = 768;
 export const smallMobileBreakpoint = 400;
+
+/**
+ * Maximum number of characters to display in markdown
+ */
+export const markdownMaxCharsMap = {
+    table: 120,
+    cards: 250,
+}
+
+export const aadb2cResetPasswordErrorCode = "AADB2C90118";
+
+/**
+ * Customization of the Fluent UI Theme
+ */
+export const fuiTheme: Theme = {
+    ...webLightTheme,
+    fontFamilyBase: "inherit",
+    fontFamilyMonospace: "inherit",
+    fontFamilyNumeric: "inherit",
+};
+
+/**
+ * Key for the setting that enables the runtime redesign of the portal
+ */
+export const isRedesignEnabledSetting = "isRedesignEnabled";
 
 /**
  * Key of the default admin user

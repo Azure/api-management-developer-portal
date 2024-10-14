@@ -1,28 +1,30 @@
 import { StyleCompiler } from "@paperbits/common/styles";
+import { ISiteService } from "@paperbits/common/sites/ISiteService";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { TermsOfService } from "../../../../contracts/identitySettings";
 import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
 import { IdentityService } from "../../../../services";
 import { BackendService } from "../../../../services/backendService";
 import { TenantService } from "../../../../services/tenantService";
+import { isRedesignEnabledSetting } from "../../../../constants";
 import { SigninModel } from "../signinModel";
 import { SigninViewModel } from "./signinViewModel";
 
 
 export class SigninViewModelBinder implements ViewModelBinder<SigninModel, SigninViewModel> {
-    
     constructor(
         private readonly tenantService: TenantService,
         private readonly backendService: BackendService,
         private readonly identityService: IdentityService,
-        private readonly styleCompiler: StyleCompiler) {}
+        private readonly styleCompiler: StyleCompiler,
+        private readonly siteService: ISiteService,
+    ) {}
 
-    
     public async getTermsOfService(): Promise<TermsOfService> {
         const identitySetting = await this.identityService.getIdentitySetting();
         return identitySetting.properties.termsOfService;
     }
-       
+
     public stateToInstance(state: WidgetState, componentInstance: SigninViewModel): void {
         componentInstance.styles(state.styles);
 
@@ -32,6 +34,8 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
             termsEnabled: state.termsEnabled,
             requireHipCaptcha: state.requireHipCaptcha
         }));
+
+        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
     }
 
     public async modelToState(model: SigninModel, state: WidgetState): Promise<void> {
@@ -56,5 +60,7 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
         if (model.styles) {
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
+
+        state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
     }
 }

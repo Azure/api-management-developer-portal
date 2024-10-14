@@ -10,8 +10,10 @@ import { StyleModel } from "@paperbits/common/styles";
 })
 export class ProductDetailsViewModel {
     public readonly styles: ko.Observable<StyleModel>;
+    public readonly isRedesignEnabled: ko.Observable<boolean>;
 
     constructor() {
         this.styles = ko.observable<StyleModel>();
+        this.isRedesignEnabled = ko.observable<boolean>();
     }
 }

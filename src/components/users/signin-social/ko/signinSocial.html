@@ -1,10 +1,22 @@
 <div data-bind="secured: security">
     <!-- ko if: aadConfig -->
-    <signin-aad data-bind="attr: { params: aadConfig }"></signin-aad>
+        <!-- ko if: isRedesignEnabled -->
+        <fui-signin-aad-runtime data-bind="attr: { props: aadConfig }"></fui-signin-aad-runtime>
+        <!-- /ko -->
+
+        <!-- ko ifnot: isRedesignEnabled -->
+        <signin-aad data-bind="attr: { params: aadConfig }"></signin-aad>
+        <!-- /ko -->
     <!-- /ko -->
 
     <!-- ko if: aadB2CConfig -->
-    <signin-aad-b2c data-bind="attr: { params: aadB2CConfig }"></signin-aad-b2c>
+        <!-- ko if: isRedesignEnabled -->
+        <fui-signin-aadb2c-runtime data-bind="attr: { props: aadB2CConfig }"></fui-signin-aadb2c-runtime>
+        <!-- /ko -->
+
+        <!-- ko ifnot: isRedesignEnabled -->
+        <signin-aad-b2c data-bind="attr: { params: aadB2CConfig }"></signin-aad-b2c>
+        <!-- /ko -->
     <!-- /ko -->
 
     <!-- ko if: showNoAadConfigMessage -->

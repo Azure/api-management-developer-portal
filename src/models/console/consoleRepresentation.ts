@@ -7,7 +7,7 @@ export class ConsoleRepresentation {
     public readonly typeName?: string;
 
     constructor(representation: Representation) {
-        this.sample = representation.examples?.length > 0 ? representation.examples[0].value : "";
+        this.sample = representation.sample ?? representation.examples?.length > 0 ? representation.examples[0].value : "";
         this.contentType = representation.contentType;
         this.schemaId = representation.schemaId;
         this.typeName = representation.typeName;
