@@ -239,6 +239,10 @@ details {
     padding-left: 20px;
     margin: 10px 0;
 
+    * {
+        position: relative;
+    }
+
     &[open]:before {
         content: "";
         left: 7px;
