@@ -1,8 +1,4 @@
-﻿@import "variables.scss";
-@import "mixins.scss";
-@import "icons-toolboxes.scss";
-
-.form {
+﻿.form {
     margin: 0;
     padding: 0;
     border: none;
@@ -242,6 +238,10 @@ details {
     position: relative;
     padding-left: 20px;
     margin: 10px 0;
+
+    * {
+        position: relative;
+    }
 
     &[open]:before {
         content: "";
