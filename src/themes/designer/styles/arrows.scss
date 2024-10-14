@@ -1,6 +1,4 @@
-﻿@import "animation.scss";
-@import "variables.scss";
-@media (min-width: $breakpoint-lg) {
+﻿@media (min-width: $breakpoint-lg) {
     .arrow-self {
         background-image: data-uri("../svgs/arrow.svg");
         background-size: auto 80%;
