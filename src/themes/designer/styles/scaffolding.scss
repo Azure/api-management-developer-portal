@@ -9,7 +9,7 @@ body {
 
 * {
     @include box-sizing(border-box);
-    position: relative;
+    // position: relative; // Leaving this commented out to show that this should not be added as it breaks some pop-ups
 }
 
 *:before,
