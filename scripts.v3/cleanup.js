@@ -1,21 +1,18 @@
 /**
  * This script automates deleting the content of API Management developer portals.
  * In order to run it, you need to:
- * 
+ *
  * 1) Clone the api-management-developer-portal repository:
  *    git clone https://github.com/Azure/api-management-developer-portal.git
- * 
+ *
  * 2) Install NPM  packages:
  *    npm install
- * 
+ *
  * 3) Run this script with a valid combination of arguments:
  *    node ./cleanup ^
- *    --sourceSubscriptionId "< your subscription ID >" ^
- *    --sourceResourceGroupName "< your resource group name >" ^
- *    --sourceServiceName "< your service name >" ^
- *    --destSubscriptionId "< your subscription ID >" ^
- *    --destResourceGroupName "< your resource group name >" ^
- *    --destServiceName "< your service name >"
+ *    --subscriptionId "< your subscription ID >" ^
+ *    --resourceGroupName "< your resource group name >" ^
+ *    --serviceName "< your service name >" ^
  */
 
 const { ImporterExporter } = require("./utils");
