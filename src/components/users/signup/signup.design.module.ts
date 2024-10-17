@@ -1,17 +1,17 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
 import { SignupHandlers } from "./signupHandlers";
-import { SignupEditor } from "./ko/signupEditor";
+import { SignUpEditor } from "./react/SignUpEditor";
 import { SignupModel } from "./signupModel";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { SignupViewModelBinder } from "./ko/signupViewModelBinder";
+import { SignupViewModelBinder } from "./signupViewModelBinder";
 import { SignupModelBinder } from "./signupModelBinder";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { ReactComponentBinder } from "@paperbits/react/bindings/reactComponentBinder";
 import { SignUpViewModel } from "./react/SignUpViewModel";
+import { ComponentFlow } from "@paperbits/common/components";
 
 export class SignupDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bind("signupEditor", SignupEditor);
+        injector.bind("signupEditor", SignUpEditor);
         injector.bindSingleton("signupModelBinder", SignupModelBinder);
         injector.bindSingleton("signupViewModelBinder", SignupViewModelBinder)
         injector.bindSingleton("signupHandlers", SignupHandlers);
@@ -23,15 +23,16 @@ export class SignupDesignModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: SignUpViewModel,
             modelBinder: SignupModelBinder,
-            viewModelBinder: SignupViewModelBinder
+            viewModelBinder: SignupViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("signup", {
             displayName: "Sign-up form: Basic",
             category: "User",
             iconClass: "widget-icon widget-icon-api-management",
-            componentBinder: KnockoutComponentBinder,
-            componentDefinition: SignupEditor,
+            componentBinder: ReactComponentBinder,
+            componentDefinition: SignUpEditor,
             handlerComponent: SignupHandlers
         });
     }

@@ -1,7 +1,7 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { SignupViewModelBinder } from "./ko/signupViewModelBinder";
+import { SignupViewModelBinder } from "./signupViewModelBinder";
 import { SignupModel } from "./signupModel";
 import { SignupModelBinder } from "./signupModelBinder";
 import { SignUpViewModel } from "./react/SignUpViewModel";
