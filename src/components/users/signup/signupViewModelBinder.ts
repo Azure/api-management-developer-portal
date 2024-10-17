@@ -2,14 +2,14 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
-import { TermsOfService } from "../../../../contracts/identitySettings";
-import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
-import { IdentityService } from "../../../../services";
-import { BackendService } from "../../../../services/backendService";
-import { TenantService } from "../../../../services/tenantService";
-import { isRedesignEnabledSetting } from "../../../../constants";
-import { SignupModel } from "../signupModel";
-import { SignUpViewModel } from "../react/SignUpViewModel";
+import { TermsOfService } from "../../../contracts/identitySettings";
+import { DelegationAction, DelegationParameters } from "../../../contracts/tenantSettings";
+import { IdentityService } from "../../../services";
+import { BackendService } from "../../../services/backendService";
+import { TenantService } from "../../../services/tenantService";
+import { isRedesignEnabledSetting } from "../../../constants";
+import { SignupModel } from "./signupModel";
+import { SignUpViewModel } from "./react/SignUpViewModel";
 
 export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignUpViewModel> {
 
@@ -31,7 +31,7 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignU
         componentInstance.setState(prevState => ({
             isRedesignEnabled: nextState.isRedesignEnabled,
             initialCount: nextState.initialCount,
-            classNames: nextState.styles,
+            styles: nextState.styles,
             termsOfUse: nextState.termsOfUse,
             isConsentRequired: nextState.isConsentRequired,
             termsEnabled: nextState.termsEnabled,

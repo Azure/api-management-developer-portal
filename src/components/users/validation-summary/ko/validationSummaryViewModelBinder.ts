@@ -4,7 +4,6 @@ import { ISiteService } from "@paperbits/common/sites/ISiteService";
 import { ValidationSummaryModel } from "../validationSummaryModel";
 import { isRedesignEnabledSetting } from "../../../../constants";
 import { ValidationSummary } from "../react/ValidationSummary";
-import { init } from "knockout.validation";
 
 
 
@@ -17,8 +16,7 @@ export class ValidationSummaryViewModelBinder implements ViewModelBinder<Validat
     public stateToInstance(nextState: WidgetState, componentInstance: any): void {
         componentInstance.setState(prevState => ({
             isRedesignEnabled: nextState.isRedesignEnabled,
-            initialCount: nextState.initialCount,
-            classNames: nextState.styles
+            styles: nextState.styles
         }));
     }
 

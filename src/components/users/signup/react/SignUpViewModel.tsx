@@ -1,6 +1,5 @@
 import * as React from "react";
 
-// design time
 export class SignUpViewModel extends React.Component {
     public state: any;
 
@@ -9,7 +8,7 @@ export class SignUpViewModel extends React.Component {
 
         this.state = {
             isRedesignEnabled: props.isRedesignEnabled,
-            classNames: props.classNames,
+            classNames: props.styles,
             termsOfUse: props.termsOfUse,
             isConsentRequired: props.isConsentRequired,
             termsEnabled: props.termsEnabled,
@@ -18,14 +17,8 @@ export class SignUpViewModel extends React.Component {
     }
 
     public render(): JSX.Element {
-        const renderContent = () => {
-            return this.state.isRedesignEnabled
-                ? `<fui-signup-runtime props=${JSON.stringify(this.state)} ></fui-signup-runtime>`
-                : `<signup-runtime params=${JSON.stringify(this.state)}></signup-runtime>`;
-        };
-
-        return (
-            <div dangerouslySetInnerHTML={{ __html: renderContent() }}></div>
-        );
+        return this.state.isRedesignEnabled
+            ? <fui-signup-runtime props={JSON.stringify(this.state)} ></fui-signup-runtime>
+            : <signup-runtime params={JSON.stringify(this.state)}></signup-runtime>;
     }
 }
