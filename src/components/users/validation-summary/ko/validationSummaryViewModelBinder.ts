@@ -25,7 +25,6 @@ export class ValidationSummaryViewModelBinder implements ViewModelBinder<Validat
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
 
-        state.initialCount = model.initialCount;
         state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
     }
 }
