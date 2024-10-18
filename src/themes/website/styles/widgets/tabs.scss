@@ -6,6 +6,10 @@
 
     .tab-navs {
         display: flex;
+
+        .nav-link-active {
+            font-weight: bold;
+        }
     }
 
     .tab-content {
