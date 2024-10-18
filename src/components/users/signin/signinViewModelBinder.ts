@@ -1,14 +1,14 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
-import { TermsOfService } from "../../../../contracts/identitySettings";
-import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
-import { IdentityService } from "../../../../services";
-import { BackendService } from "../../../../services/backendService";
-import { TenantService } from "../../../../services/tenantService";
-import { isRedesignEnabledSetting } from "../../../../constants";
-import { SigninModel } from "../signinModel";
-import { SigninViewModel } from "./signinViewModel";
+import { TermsOfService } from "../../../contracts/identitySettings";
+import { DelegationAction, DelegationParameters } from "../../../contracts/tenantSettings";
+import { IdentityService } from "../../../services";
+import { BackendService } from "../../../services/backendService";
+import { TenantService } from "../../../services/tenantService";
+import { isRedesignEnabledSetting } from "../../../constants";
+import { SigninModel } from "./signinModel";
+import { SigninViewModel } from "./react/SigninViewModel";
 
 
 export class SigninViewModelBinder implements ViewModelBinder<SigninModel, SigninViewModel> {
@@ -26,16 +26,14 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
     }
 
     public stateToInstance(state: WidgetState, componentInstance: SigninViewModel): void {
-        componentInstance.styles(state.styles);
-
-        componentInstance.runtimeConfig(JSON.stringify({
+        componentInstance.setState(prevState => ({
+            isRedesignEnabled: state.isRedesignEnabled,
+            styles: state.styles,
             termsOfUse: state.termsOfUse,
             isConsentRequired: state.isConsentRequired,
             termsEnabled: state.termsEnabled,
             requireHipCaptcha: state.requireHipCaptcha
         }));
-
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
     }
 
     public async modelToState(model: SigninModel, state: WidgetState): Promise<void> {
