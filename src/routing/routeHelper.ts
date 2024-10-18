@@ -166,6 +166,33 @@ export class RouteHelper {
     }
 
     /**
+     * Returns HTML element anchor link for specified graph definition.
+     * @param apiName ARM resource name of the API.
+     * @param type ARM resource graph type.
+     * @param graph ARM resource name of the graph.
+     * @param definition Name of the definition.
+     */
+     public getGraphDefinitionAnchor(apiName: string, type: string, graph: string, definition: string): string {
+        if (!apiName) {
+            throw new Error(`Parameter "apiName" not specified.`);
+        }
+
+        if (!type) {
+            throw new Error(`Parameter "type" not specified.`);
+        }
+
+        if (!graph) {
+            throw new Error(`Parameter "graphName" not specified.`);
+        }
+
+        if (!definition) {
+            throw new Error(`Parameter "definition" not specified.`);
+        }
+
+        return `#api=${apiName}&type=${type}&graph=${graph}&definition=${definition}`;
+    }
+
+    /**
      * Returns HTML element identifier for specified type definition.
      * @param apiName ARM resource name of the API.
      * @param operationName ARM resource name of the operation.

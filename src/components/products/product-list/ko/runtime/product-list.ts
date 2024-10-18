@@ -75,7 +75,7 @@ export class ProductList {
             this.products(pageOfProducts.value);
             this.nextPage(!!pageOfProducts.nextLink);
 
-            if (this.allowSelection() && !this.selectedProductName()) {
+            if (this.allowSelection() && !this.selectedProductName() && this.products().length > 0) {
                 this.selectFirstProduct();
             }
         }

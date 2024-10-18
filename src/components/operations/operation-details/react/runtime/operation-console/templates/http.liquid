@@ -1,0 +1,15 @@
+{{console.method}} {{console.requestUrl}} HTTP/1.1
+
+{% for header in console.request.meaningfulHeaders -%}
+{% if showSecrets == false and header.secret -%}
+{{ header.name }}: {{ header.hiddenValue }}
+{% else -%}
+{{ header.name }}: {{ header.value }}
+{% endif -%}
+{% endfor %}
+{% if console.request.body != blank and console.request.bodyFormat == "raw" -%}
+{{ console.request.body }}
+{% endif -%}
+{% if console.request.binary != blank and console.request.bodyFormat == "binary" -%}
+[ {{ console.request.binary.name }} ]
+{% endif -%}

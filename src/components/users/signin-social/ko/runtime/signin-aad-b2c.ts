@@ -10,9 +10,7 @@ import { dispatchErrors, parseAndDispatchError } from "../../../validation-summa
 import { ErrorSources } from "../../../validation-summary/constants";
 import { Logger } from "@paperbits/common/logging";
 import { eventTypes } from "../../../../../logging/clientLogger";
-
-
-const aadb2cResetPasswordErrorCode = "AADB2C90118";
+import { aadb2cResetPasswordErrorCode } from "../../../../../constants";
 
 @RuntimeComponent({
     selector: "signin-aad-b2c"
@@ -35,7 +33,7 @@ export class SignInAadB2C {
         this.classNames = ko.observable();
         this.label = ko.observable();
         this.replyUrl = ko.observable();
-        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done 
+        // Is necessary for displaying Terms of Use. Will be called when the back-end implementation is done
         this.termsOfUse = ko.observable();
     }
 

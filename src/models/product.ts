@@ -1,4 +1,4 @@
-import { ProductContract } from "../contracts/product";
+import { ProductContract, ProductState } from "../contracts/product";
 import { Utils } from "../utils";
 
 export class Product {
@@ -7,7 +7,7 @@ export class Product {
     public readonly displayName: string;
     public readonly description: string;
     public readonly approvalRequired: boolean;
-    public readonly state: string;
+    public readonly state: ProductState;
     public readonly subscriptionRequired: boolean;
     public readonly subscriptionsLimit?: number;
     public readonly terms: string;

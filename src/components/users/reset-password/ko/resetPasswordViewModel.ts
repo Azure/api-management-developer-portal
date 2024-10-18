@@ -9,8 +9,10 @@ import { Component } from "@paperbits/common/ko/decorators";
 })
 export class ResetPasswordViewModel {
     public readonly runtimeConfig: ko.Observable<string>;
+    public readonly isRedesignEnabled: ko.Observable<boolean>;
 
     constructor() {
         this.runtimeConfig = ko.observable();
+        this.isRedesignEnabled = ko.observable<boolean>();
     }
 }

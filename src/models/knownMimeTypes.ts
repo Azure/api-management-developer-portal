@@ -2,5 +2,6 @@ export enum KnownMimeTypes {
     FormData = "multipart/form-data",
     Json = "application/json",
     Xml = "text/xml",
-    UrlEncodedForm = "application/x-www-form-urlencoded"
+    UrlEncodedForm = "application/x-www-form-urlencoded",
+    Soap = "application/soap+xml",
 }
