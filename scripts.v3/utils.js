@@ -544,5 +544,6 @@ class ImporterExporter {
 }
 
 module.exports = {
-    ImporterExporter
+    ImporterExporter,
+    HttpClient,
 };
