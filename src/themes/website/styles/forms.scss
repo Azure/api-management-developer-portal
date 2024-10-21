@@ -109,6 +109,10 @@ input[type="range"] {
     }
 }
 
+input:focus-visible {
+    outline: none;
+}
+
 input[type=search] {
     white-space: nowrap;
     overflow: hidden;
