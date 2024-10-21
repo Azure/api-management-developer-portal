@@ -1,11 +1,13 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { Stack } from "@fluentui/react";
-import { Input, Label, Link, Spinner, Tab, TabList } from "@fluentui/react-components";
+import { IconButton, Stack } from "@fluentui/react";
+import { Spinner, Tab, TabList } from "@fluentui/react-components";
 import { ImageRegular, Speaker2Regular } from "@fluentui/react-icons";
 import { CaptchaData } from "../../../../../models/captchaData";
 import { BackendService } from "../../../../../services/backendService";
 import { TCaptchaProps } from "./LegacyCaptcha";
+import { initializeIcons } from '@fluentui/font-icons-mdl2';
+initializeIcons();
 
 type TCaptchaObj = { captchaChallenge?: string; captchaData?: CaptchaData };
 
@@ -78,16 +80,22 @@ export const NewCaptcha = ({ backendService, onInitComplete }: TCaptchaProps) =>
     }, [onInitComplete, generateCaptcha, captchaData]);
 
     return (
-        <Stack tokens={{ childrenGap: 20 }}>
-            <TabList
-                selectedValue={captchaType}
-                onTabSelect={(_, { value }) =>
-                    setCaptchaType(value as ECaptchaType)
-                }
-            >
-                <Tab icon={<ImageRegular />} value={ECaptchaType.visual}>Visual</Tab>
-                <Tab icon={<Speaker2Regular />} value={ECaptchaType.audio}>Audio</Tab>
-            </TabList>
+        <Stack className="form-group">
+            <label htmlFor="captchaValue">Enter the characters you see.</label>
+            <Stack horizontal verticalAlign="center">
+                <TabList
+                    selectedValue={captchaType}
+                    onTabSelect={(_, { value }) => setCaptchaType(value as ECaptchaType)}
+                >
+                    <Tab icon={<ImageRegular />} value={ECaptchaType.visual}>Visual</Tab>
+                    <Tab icon={<Speaker2Regular />} value={ECaptchaType.audio}>Audio</Tab>
+                </TabList>
+                <IconButton
+                    iconProps={{ iconName: "Refresh" }}
+                    title="Reload captcha"
+                    ariaLabel="Reload captcha"
+                    onClick={() => generateCaptcha(captchaType)} />
+            </Stack>
 
             {working ? (
                 <Stack.Item style={{ padding: "13px 0" }}>
@@ -109,22 +117,15 @@ export const NewCaptcha = ({ backendService, onInitComplete }: TCaptchaProps) =>
                 </audio>
             )}
 
-            <Stack.Item>
-                <Link onClick={() => generateCaptcha(captchaType)}>Generate new captcha</Link>
-            </Stack.Item>
+            <input
+                id="captchaValue"
+                placeholder="Enter captcha here"
+                type="text"
+                className="form-control"
+                value={captchaData?.challenge?.testCaptchaRequest?.inputSolution ?? ""}
+                onChange={(event) => updateChallengeInput(event.target.value)}
+            />
 
-            <Stack>
-                <Label required htmlFor="captchaValue">
-                    Enter captcha
-                </Label>
-                <Input
-                    id="captchaValue"
-                    placeholder="Enter captcha"
-                    type="text"
-                    value={captchaData?.challenge?.testCaptchaRequest?.inputSolution ?? ""}
-                    onChange={(event) => updateChallengeInput(event.target.value)}
-                />
-            </Stack>
         </Stack>
     );
 };

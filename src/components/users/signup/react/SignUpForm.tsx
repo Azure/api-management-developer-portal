@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { Stack } from "@fluentui/react";
-import { Body1, Input, Label } from "@fluentui/react-components";
+import { Body1 } from "@fluentui/react-components";
 import { BtnSpinner } from "../../../utils/react/BtnSpinner";
 import { TermsOfUse } from "../../../utils/react/TermsOfUse";
 import { HipCaptcha } from "../../runtime/hip-captcha/react";
@@ -54,16 +54,15 @@ export const SignUpForm = ({
     if (isSubmitted) return <Body1 id="confirmationMessage">Follow the instructions from the email to verify your account.</Body1>;
 
     return (
-        <Stack tokens={{ childrenGap: 20, maxWidth: 435 }}>
+        <Stack>
             <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="email">
-                        Email address
-                    </Label>
-                    <Input
+                <Stack className="form-group">
+                    <label htmlFor="email">Email address *</label>
+                    <input
                         id="email"
                         placeholder="Enter email address"
                         type="email"
+                        className="form-control"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
                     />
@@ -71,14 +70,13 @@ export const SignUpForm = ({
             </Stack.Item>
 
             <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="password">
-                        Password
-                    </Label>
-                    <Input
+                <Stack className="form-group">
+                    <label htmlFor="password">Password *</label>
+                    <input
                         id="password"
                         placeholder="Enter password"
                         type="password"
+                        className="form-control"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                     />
@@ -86,14 +84,13 @@ export const SignUpForm = ({
             </Stack.Item>
 
             <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="passwordConfirm">
-                        Confirm password
-                    </Label>
-                    <Input
+                <Stack className="form-group">
+                    <label htmlFor="passwordConfirm">Confirm password *</label>
+                    <input
                         id="passwordConfirm"
                         placeholder="Enter confirm password"
                         type="password"
+                        className="form-control"
                         value={passwordConfirm}
                         onChange={(event) => setPasswordConfirm(event.target.value)}
                     />
@@ -101,14 +98,13 @@ export const SignUpForm = ({
             </Stack.Item>
 
             <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="firstName">
-                        First name
-                    </Label>
-                    <Input
+                <Stack className="form-group">
+                    <label htmlFor="firstName">First name *</label>
+                    <input
                         id="firstName"
                         placeholder="Enter first name"
                         type="text"
+                        className="form-control"
                         value={firstName}
                         onChange={(event) => setFirstName(event.target.value)}
                     />
@@ -116,14 +112,13 @@ export const SignUpForm = ({
             </Stack.Item>
 
             <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="lastName">
-                        Last name
-                    </Label>
-                    <Input
+                <Stack className="form-group">
+                    <label htmlFor="lastName">Last name *</label>
+                    <input
                         id="lastName"
                         placeholder="Enter last name"
                         type="text"
+                        className="form-control"
                         value={lastName}
                         onChange={(event) => setLastName(event.target.value)}
                     />
@@ -132,7 +127,6 @@ export const SignUpForm = ({
 
             {requireHipCaptcha && (
                 <Stack.Item>
-                    <Label required>Captcha</Label>
                     <HipCaptcha
                         backendService={backendService}
                         onInitComplete={onInitComplete}
@@ -152,8 +146,8 @@ export const SignUpForm = ({
 
             <Stack.Item>
                 <BtnSpinner
-                    appearance="primary"
                     onClick={submit}
+                    className="button button-primary"
                 >
                     Create
                 </BtnSpinner>
