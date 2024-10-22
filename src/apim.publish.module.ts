@@ -30,7 +30,7 @@ import { ConfirmPasswordPublishModule } from "./components/users/confirm-passwor
 import { ChangePasswordPublishModule } from "./components/users/change-password/ko/changePassword.module";
 import { ReportsPublishModule } from "./components/reports/ko/reports.module";
 import { TenantService } from "./services/tenantService";
-import { ValidationSummaryPublishModule } from "./components/users/validation-summary/validationSummary.module";
+import { ValidationSummaryPublishModule } from "./components/users/validation-summary/validationSummary.publish.module";
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
