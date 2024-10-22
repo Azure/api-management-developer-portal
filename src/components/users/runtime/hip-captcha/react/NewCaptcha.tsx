@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { Stack } from "@fluentui/react";
-import { Input, Label, Link, Spinner, Tab, TabList } from "@fluentui/react-components";
+import { Link, Spinner, Tab, TabList } from "@fluentui/react-components";
 import { ImageRegular, Speaker2Regular } from "@fluentui/react-icons";
 import { CaptchaData } from "../../../../../models/captchaData";
 import { BackendService } from "../../../../../services/backendService";
@@ -78,53 +78,57 @@ export const NewCaptcha = ({ backendService, onInitComplete }: TCaptchaProps) =>
     }, [onInitComplete, generateCaptcha, captchaData]);
 
     return (
-        <Stack tokens={{ childrenGap: 20 }}>
-            <TabList
-                selectedValue={captchaType}
-                onTabSelect={(_, { value }) =>
-                    setCaptchaType(value as ECaptchaType)
-                }
-            >
-                <Tab icon={<ImageRegular />} value={ECaptchaType.visual}>Visual</Tab>
-                <Tab icon={<Speaker2Regular />} value={ECaptchaType.audio}>Audio</Tab>
-            </TabList>
+        <>
+            <Stack className="form-group">
+                <label htmlFor="captchaValue" className="required">Captcha</label>
+                <TabList
+                    selectedValue={captchaType}
+                    onTabSelect={(_, { value }) =>
+                        setCaptchaType(value as ECaptchaType)
+                    }
+                >
+                    <Tab icon={<ImageRegular />} value={ECaptchaType.visual}>Visual</Tab>
+                    <Tab icon={<Speaker2Regular />} value={ECaptchaType.audio}>Audio</Tab>
+                </TabList>
 
-            {working ? (
-                <Stack.Item style={{ padding: "13px 0" }}>
-                    <Spinner label={"Loading captcha"} labelPosition="below" />
-                </Stack.Item>
-            ) : captchaType === ECaptchaType.visual ? (
+                {working ? (
+                    <Stack.Item style={{ padding: "13px 0" }}>
+                        <Spinner label={"Loading captcha"} labelPosition="below" />
+                    </Stack.Item>
+                ) : captchaType === ECaptchaType.visual ? (
+                    <Stack.Item>
+                        <img
+                            src={`data:image/png;base64,${captchaChallenge}`}
+                            alt="visual challange"
+                        />
+                    </Stack.Item>
+                ) : (
+                    <audio controls>
+                        <source
+                            src={`data:audio/mp3;base64,${captchaChallenge}`}
+                            type="audio/mp3"
+                        />
+                    </audio>
+                )}
+
+
                 <Stack.Item>
-                    <img
-                        src={`data:image/png;base64,${captchaChallenge}`}
-                        alt="visual challange"
-                    />
+                    <Link onClick={() => generateCaptcha(captchaType)}>Generate new captcha</Link>
                 </Stack.Item>
-            ) : (
-                <audio controls>
-                    <source
-                        src={`data:audio/mp3;base64,${captchaChallenge}`}
-                        type="audio/mp3"
-                    />
-                </audio>
-            )}
-
-            <Stack.Item>
-                <Link onClick={() => generateCaptcha(captchaType)}>Generate new captcha</Link>
-            </Stack.Item>
-
-            <Stack>
-                <Label required htmlFor="captchaValue">
+            </Stack>
+            <Stack className="form-group">
+                <label htmlFor="captchaValue" className="required">
                     Enter captcha
-                </Label>
-                <Input
+                </label>
+                <input
                     id="captchaValue"
                     placeholder="Enter captcha"
                     type="text"
+                    className="form-control"
                     value={captchaData?.challenge?.testCaptchaRequest?.inputSolution ?? ""}
                     onChange={(event) => updateChallengeInput(event.target.value)}
                 />
             </Stack>
-        </Stack>
+        </>
     );
 };
