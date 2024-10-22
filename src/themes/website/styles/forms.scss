@@ -53,6 +53,11 @@ form.needs-validation:invalid {
     }
 }
 
+label.required::after {
+    content: " *";
+    color: $required-color;
+}
+
 input[type="range"] {
     width: 100%;
 }
