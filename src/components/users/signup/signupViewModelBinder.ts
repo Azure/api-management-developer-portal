@@ -2,16 +2,16 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
-import { TermsOfService } from "../../../../contracts/identitySettings";
-import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
-import { IdentityService } from "../../../../services";
-import { BackendService } from "../../../../services/backendService";
-import { TenantService } from "../../../../services/tenantService";
-import { isRedesignEnabledSetting } from "../../../../constants";
-import { SignupModel } from "../signupModel";
-import { SignupViewModel } from "./signupViewModel";
+import { TermsOfService } from "../../../contracts/identitySettings";
+import { DelegationAction, DelegationParameters } from "../../../contracts/tenantSettings";
+import { IdentityService } from "../../../services";
+import { BackendService } from "../../../services/backendService";
+import { TenantService } from "../../../services/tenantService";
+import { isRedesignEnabledSetting } from "../../../constants";
+import { SignupModel } from "./signupModel";
+import { SignUpViewModel } from "./react/SignUpViewModel";
 
-export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignupViewModel> {
+export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignUpViewModel> {
 
     constructor(
         private readonly tenantService: TenantService,
@@ -27,17 +27,16 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, Signu
         return identitySetting.properties.termsOfService;
     }
 
-    public stateToInstance(state: WidgetState, componentInstance: SignupViewModel): void {
-        componentInstance.styles(state.styles);
-
-        componentInstance.runtimeConfig(JSON.stringify({
-            termsOfUse: state.termsOfUse,
-            isConsentRequired: state.isConsentRequired,
-            termsEnabled: state.termsEnabled,
-            requireHipCaptcha: state.requireHipCaptcha
+    public stateToInstance(nextState: WidgetState, componentInstance: any): void {
+        componentInstance.setState(prevState => ({
+            isRedesignEnabled: nextState.isRedesignEnabled,
+            initialCount: nextState.initialCount,
+            styles: nextState.styles,
+            termsOfUse: nextState.termsOfUse,
+            isConsentRequired: nextState.isConsentRequired,
+            termsEnabled: nextState.termsEnabled,
+            requireHipCaptcha: nextState.requireHipCaptcha
         }));
-
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
     }
 
     public async modelToState(model: SignupModel, state: WidgetState): Promise<void> {

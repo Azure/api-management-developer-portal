@@ -4,9 +4,9 @@ import { IWidgetService } from "@paperbits/common/widgets";
 import { ValidationSummaryModelBinder } from "./validationSummaryModelBinder";
 import { ValidationSummaryViewModelBinder } from "./ko/validationSummaryViewModelBinder";
 import { ValidationSummaryModel } from "./validationSummaryModel";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { ValidationSummaryViewModel } from "./ko/validationSummaryViewModel";
-
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ValidationSummary } from "./react/ValidationSummary";
+import { ComponentFlow } from "@paperbits/common/components/componentFlow";
 
 export class ValidationSummaryDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -18,17 +18,19 @@ export class ValidationSummaryDesignModule implements IInjectorModule {
 
         widgetService.registerWidget("validationSummary", {
             modelDefinition: ValidationSummaryModel,
-            componentBinder: KnockoutComponentBinder,
-            componentDefinition: ValidationSummaryViewModel,
+            componentBinder: ReactComponentBinder,
+            componentDefinition: ValidationSummary,
             modelBinder: ValidationSummaryModelBinder,
-            viewModelBinder: ValidationSummaryViewModelBinder
+            viewModelBinder: ValidationSummaryViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("validationSummary", {
             displayName: "Validation summary",
             category: "User",
             iconClass: "widget-icon widget-icon-api-management",
-            handlerComponent: ValidationSummaryHandlers
+            handlerComponent: ValidationSummaryHandlers,
+            componentBinder: ReactComponentBinder
         });
     }
 }
