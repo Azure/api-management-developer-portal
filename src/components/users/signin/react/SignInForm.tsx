@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Stack } from "@fluentui/react";
-import { Input, Label } from "@fluentui/react-components";
 import { EventManager } from "@paperbits/common/events";
 import { MapiError } from "../../../../errors/mapiError";
 import { UnauthorizedError } from "../../../../errors/unauthorizedError";
@@ -67,10 +66,10 @@ export const SignInForm = ({
     };
 
     return (
-        <Stack tokens={{ childrenGap: 20, maxWidth: 435 }}>
+        <Stack>
             <Stack.Item>
                 <Stack className="form-group">
-                    <label htmlFor="email">Email address</label>
+                    <label htmlFor="email" className="required">Email address</label>
                     <input
                         id="email"
                         placeholder="Enter email address"
@@ -84,7 +83,7 @@ export const SignInForm = ({
 
             <Stack.Item>
                 <Stack className="form-group">
-                    <label htmlFor="password">Password</label>
+                    <label htmlFor="password" className="required">Password</label>
                     <input
                         id="password"
                         placeholder="Enter password"
