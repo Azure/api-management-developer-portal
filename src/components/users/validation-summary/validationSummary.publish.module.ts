@@ -1,10 +1,10 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { ValidationSummaryViewModel } from "./ko/validationSummaryViewModel";
-import { ValidationSummaryViewModelBinder } from "./ko/validationSummaryViewModelBinder";
+import { ValidationSummaryViewModel } from "./react/ValidationSummaryViewModel";
+import { ValidationSummaryViewModelBinder } from "./validationSummaryViewModelBinder";
 import { ValidationSummaryModel } from "./validationSummaryModel";
 import { ValidationSummaryModelBinder } from "./validationSummaryModelBinder";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
 
 
 export class ValidationSummaryPublishModule implements IInjectorModule {
@@ -16,7 +16,7 @@ export class ValidationSummaryPublishModule implements IInjectorModule {
 
         widgetService.registerWidget("validationSummary", {
             modelDefinition: ValidationSummaryModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: ValidationSummaryViewModel,
             modelBinder: ValidationSummaryModelBinder,
             viewModelBinder: ValidationSummaryViewModelBinder
