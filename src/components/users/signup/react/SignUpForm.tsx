@@ -54,104 +54,84 @@ export const SignUpForm = ({
     if (isSubmitted) return <Body1 id="confirmationMessage">Follow the instructions from the email to verify your account.</Body1>;
 
     return (
-        <Stack>
-            <Stack.Item>
-                <Stack className="form-group">
-                    <label htmlFor="email">Email address *</label>
-                    <input
-                        id="email"
-                        placeholder="Enter email address"
-                        type="email"
-                        className="form-control"
-                        value={email}
-                        onChange={(event) => setEmail(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
-
-            <Stack.Item>
-                <Stack className="form-group">
-                    <label htmlFor="password">Password *</label>
-                    <input
-                        id="password"
-                        placeholder="Enter password"
-                        type="password"
-                        className="form-control"
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
-
-            <Stack.Item>
-                <Stack className="form-group">
-                    <label htmlFor="passwordConfirm">Confirm password *</label>
-                    <input
-                        id="passwordConfirm"
-                        placeholder="Enter confirm password"
-                        type="password"
-                        className="form-control"
-                        value={passwordConfirm}
-                        onChange={(event) => setPasswordConfirm(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
-
-            <Stack.Item>
-                <Stack className="form-group">
-                    <label htmlFor="firstName">First name *</label>
-                    <input
-                        id="firstName"
-                        placeholder="Enter first name"
-                        type="text"
-                        className="form-control"
-                        value={firstName}
-                        onChange={(event) => setFirstName(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
-
-            <Stack.Item>
-                <Stack className="form-group">
-                    <label htmlFor="lastName">Last name *</label>
-                    <input
-                        id="lastName"
-                        placeholder="Enter last name"
-                        type="text"
-                        className="form-control"
-                        value={lastName}
-                        onChange={(event) => setLastName(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
+        <>
+            <Stack className="form-group">
+                <label htmlFor="email" className="required">Email address</label>
+                <input
+                    id="email"
+                    placeholder="Enter email address"
+                    type="email"
+                    className="form-control"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                />
+            </Stack>
+            <Stack className="form-group">
+                <label htmlFor="password" className="required">Password</label>
+                <input
+                    id="password"
+                    placeholder="Enter password"
+                    type="password"
+                    className="form-control"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                />
+            </Stack>
+            <Stack className="form-group">
+                <label htmlFor="passwordConfirm" className="required">Confirm password</label>
+                <input
+                    id="passwordConfirm"
+                    placeholder="Enter confirm password"
+                    type="password"
+                    className="form-control"
+                    value={passwordConfirm}
+                    onChange={(event) => setPasswordConfirm(event.target.value)}
+                />
+            </Stack>
+            <Stack className="form-group">
+                <label htmlFor="firstName" className="required">First name</label>
+                <input
+                    id="firstName"
+                    placeholder="Enter first name"
+                    type="text"
+                    className="form-control"
+                    value={firstName}
+                    onChange={(event) => setFirstName(event.target.value)}
+                />
+            </Stack>
+            <Stack className="form-group">
+                <label htmlFor="lastName" className="required">Last name</label>
+                <input
+                    id="lastName"
+                    placeholder="Enter last name"
+                    type="text"
+                    className="form-control"
+                    value={lastName}
+                    onChange={(event) => setLastName(event.target.value)}
+                />
+            </Stack>
 
             {requireHipCaptcha && (
-                <Stack.Item>
-                    <HipCaptcha
-                        backendService={backendService}
-                        onInitComplete={onInitComplete}
-                    />
-                </Stack.Item>
+                <HipCaptcha
+                    backendService={backendService}
+                    onInitComplete={onInitComplete}
+                />
             )}
 
             {termsEnabled && termsOfUse && (
-                <Stack.Item>
-                    <TermsOfUse
-                        termsOfUse={termsOfUse}
-                        consented={consented}
-                        setConsented={setConsented}
-                    />
-                </Stack.Item>
+                <TermsOfUse
+                    termsOfUse={termsOfUse}
+                    consented={consented}
+                    setConsented={setConsented}
+                />
             )}
 
-            <Stack.Item>
-                <BtnSpinner
-                    onClick={submit}
-                    className="button button-primary"
-                >
-                    Create
-                </BtnSpinner>
-            </Stack.Item>
-        </Stack>
+            <BtnSpinner
+                onClick={submit}
+                className="button button-primary"
+            >
+                Create
+            </BtnSpinner>
+        </>
     );
 };
