@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { Stack } from "@fluentui/react";
-import { Body1, Input, Label } from "@fluentui/react-components";
+import { Body1 } from "@fluentui/react-components";
 import { BtnSpinner } from "../../../utils/react/BtnSpinner";
 import { TermsOfUse } from "../../../utils/react/TermsOfUse";
 import { HipCaptcha } from "../../runtime/hip-captcha/react";
@@ -54,110 +54,84 @@ export const SignUpForm = ({
     if (isSubmitted) return <Body1 id="confirmationMessage">Follow the instructions from the email to verify your account.</Body1>;
 
     return (
-        <Stack tokens={{ childrenGap: 20, maxWidth: 435 }}>
-            <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="email">
-                        Email address
-                    </Label>
-                    <Input
-                        id="email"
-                        placeholder="Enter email address"
-                        type="email"
-                        value={email}
-                        onChange={(event) => setEmail(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
-
-            <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="password">
-                        Password
-                    </Label>
-                    <Input
-                        id="password"
-                        placeholder="Enter password"
-                        type="password"
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
-
-            <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="passwordConfirm">
-                        Confirm password
-                    </Label>
-                    <Input
-                        id="passwordConfirm"
-                        placeholder="Enter confirm password"
-                        type="password"
-                        value={passwordConfirm}
-                        onChange={(event) => setPasswordConfirm(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
-
-            <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="firstName">
-                        First name
-                    </Label>
-                    <Input
-                        id="firstName"
-                        placeholder="Enter first name"
-                        type="text"
-                        value={firstName}
-                        onChange={(event) => setFirstName(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
-
-            <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="lastName">
-                        Last name
-                    </Label>
-                    <Input
-                        id="lastName"
-                        placeholder="Enter last name"
-                        type="text"
-                        value={lastName}
-                        onChange={(event) => setLastName(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
+        <>
+            <Stack className="form-group">
+                <label htmlFor="email" className="required">Email address</label>
+                <input
+                    id="email"
+                    placeholder="Enter email address"
+                    type="email"
+                    className="form-control"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                />
+            </Stack>
+            <Stack className="form-group">
+                <label htmlFor="password" className="required">Password</label>
+                <input
+                    id="password"
+                    placeholder="Enter password"
+                    type="password"
+                    className="form-control"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                />
+            </Stack>
+            <Stack className="form-group">
+                <label htmlFor="passwordConfirm" className="required">Confirm password</label>
+                <input
+                    id="passwordConfirm"
+                    placeholder="Enter confirm password"
+                    type="password"
+                    className="form-control"
+                    value={passwordConfirm}
+                    onChange={(event) => setPasswordConfirm(event.target.value)}
+                />
+            </Stack>
+            <Stack className="form-group">
+                <label htmlFor="firstName" className="required">First name</label>
+                <input
+                    id="firstName"
+                    placeholder="Enter first name"
+                    type="text"
+                    className="form-control"
+                    value={firstName}
+                    onChange={(event) => setFirstName(event.target.value)}
+                />
+            </Stack>
+            <Stack className="form-group">
+                <label htmlFor="lastName" className="required">Last name</label>
+                <input
+                    id="lastName"
+                    placeholder="Enter last name"
+                    type="text"
+                    className="form-control"
+                    value={lastName}
+                    onChange={(event) => setLastName(event.target.value)}
+                />
+            </Stack>
 
             {requireHipCaptcha && (
-                <Stack.Item>
-                    <Label required>Captcha</Label>
-                    <HipCaptcha
-                        backendService={backendService}
-                        onInitComplete={onInitComplete}
-                    />
-                </Stack.Item>
+                <HipCaptcha
+                    backendService={backendService}
+                    onInitComplete={onInitComplete}
+                />
             )}
 
             {termsEnabled && termsOfUse && (
-                <Stack.Item>
-                    <TermsOfUse
-                        termsOfUse={termsOfUse}
-                        consented={consented}
-                        setConsented={setConsented}
-                    />
-                </Stack.Item>
+                <TermsOfUse
+                    termsOfUse={termsOfUse}
+                    consented={consented}
+                    setConsented={setConsented}
+                />
             )}
 
-            <Stack.Item>
-                <BtnSpinner
-                    appearance="primary"
-                    onClick={submit}
-                >
-                    Create
-                </BtnSpinner>
-            </Stack.Item>
-        </Stack>
+            <BtnSpinner
+                onClick={submit}
+                className="button button-primary"
+            >
+                Create
+            </BtnSpinner>
+        </>
     );
 };

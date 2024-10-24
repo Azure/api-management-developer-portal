@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export class ValidationSummary extends React.Component {
+export class ValidationSummaryViewModel extends React.Component {
     public state: any;
 
     constructor(props) {
