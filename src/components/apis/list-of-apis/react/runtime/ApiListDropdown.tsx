@@ -2,9 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import {
     Badge,
-    Body1Strong,
     Combobox,
-    Link,
     Option,
     OptionGroup,
     Spinner,
@@ -14,7 +12,6 @@ import { GroupByTag } from "../../../../utils/react/TableListInfo";
 import { Pagination } from "../../../../utils/react/Pagination";
 import * as Constants from "../../../../../constants";
 import { Api } from "../../../../../models/api";
-import { TApiListRuntimeFCProps } from "./ApiListRuntime";
 import {
     isApisGrouped,
     TagGroupToggleBtn,
@@ -23,6 +20,7 @@ import {
 } from "./utils";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
+import { TApiListRuntimeFCProps } from "./ApiListRuntime";
 
 type TApiListDropdown = Omit<
     TApiListRuntimeFCProps,
@@ -71,7 +69,7 @@ const Options = ({
     <>
         {apis.map((api) => (
             <Option key={api.id} value={api.name} text={api.displayName}>
-                <Link href={getReferenceUrl(api.name)} appearance="subtle">{api.displayName}</Link>{" "}
+                <a href={getReferenceUrl(api.name)} className="dropdown-link">{api.displayName}</a>{" "}
                 <ApiTypeBadge api={api} /> <ApiVersionBadge api={api} />
             </Option>
         ))}
@@ -175,7 +173,7 @@ const ApiListDropdownFC = ({
 
     return (
         <>
-            <Body1Strong block>API</Body1Strong>
+            <span className="strong">API</span>
             <div style={{ padding: ".25rem 0 1rem" }}>{content}</div>
         </>
     );

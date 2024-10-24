@@ -1,10 +1,11 @@
 import * as React from "react";
-import { Body1, Body1Strong, Button, Caption1Stronger, Link, Subtitle1 } from "@fluentui/react-components";
+import { useState } from "react";
+import { Stack } from "@fluentui/react";
 import { Api } from "../../../../../models/api";
-import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { markdownMaxCharsMap } from "../../../../../constants";
+import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
 
 type Props = {
     showApiType: boolean;
@@ -18,22 +19,26 @@ const ApiCard = ({ api, getReferenceUrl, showApiType, detailsPageTarget }: Props
             <div style={{ height: "100%" }}>
                 {showApiType && (
                     <div className={"fui-list-card-tags"}>
-                        <Caption1Stronger>API</Caption1Stronger>
-                        <Caption1Stronger>{api.typeName}</Caption1Stronger>
+                        <span className="caption1">API</span>
+                        <span className="caption1">{api.typeName}</span>
                     </div>
                 )}
-                <Subtitle1>{api.displayName}</Subtitle1>
+                <h4>{api.displayName}</h4>
 
                 <MarkdownProcessor markdownToDisplay={api.description} maxChars={markdownMaxCharsMap.cards} />
             </div>
-
-            <div>
-                <Link href={getReferenceUrl(api.name)} target={detailsPageTarget} title={api.displayName}>
-                    <Button appearance={"outline"}>
-                        Go to API
-                    </Button>
-                </Link>
-            </div>
+            
+            <Stack horizontal>
+                <a
+                    href={getReferenceUrl(api.name)}
+                    target={detailsPageTarget}
+                    title={api.displayName}
+                    role="button"
+                    className="button"
+                >
+                    Go to API
+                </a>
+            </Stack>
         </div>
     );
 };
@@ -50,13 +55,13 @@ const ApisCardsContainer = ({ apis, ...props }: Props & { apis: Api[] }) => (
                     />
                 ))}
             </div>
-            : <Body1 block style={{ textAlign: "center" }}>No APIs to display</Body1>
+            : <span style={{ textAlign: "center" }}>No APIs to display</span>
         }
     </>
 );
 
 const ApisGroupedCards = ({ tags, ...props }: Props & { tags: TagGroup<Api>[] }) => {
-    const [expanded, setExpanded] = React.useState(new Set());
+    const [expanded, setExpanded] = useState(new Set());
 
     return (
         <div className={"fui-list-tag-cards-container"}>
@@ -68,9 +73,9 @@ const ApisGroupedCards = ({ tags, ...props }: Props & { tags: TagGroup<Api>[] })
                     >
                         <TagGroupToggleBtn expanded={expanded.has(tag)}/>
 
-                        <Body1Strong style={{marginLeft: ".5rem"}}>
+                        <span className="strong" style={{marginLeft: ".5rem"}}>
                             {tag}
-                        </Body1Strong>
+                        </span>
                     </button>
 
                     {expanded.has(tag) && (
