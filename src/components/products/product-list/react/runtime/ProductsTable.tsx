@@ -1,7 +1,5 @@
 import * as React from "react";
 import {
-    Body1Strong,
-    Link,
     Table,
     TableBody,
     TableCell,
@@ -25,9 +23,9 @@ const TableBodyProducts = ({ products, getReferenceUrl }: Props & { products: Pr
             ? products.map((product) => (
                 <TableRow key={product.id}>
                     <TableCell>
-                        <Link href={getReferenceUrl(product.name)} title={product.displayName}>
+                        <a href={getReferenceUrl(product.name)} title={product.displayName}>
                             {product.displayName}
-                        </Link>
+                        </a>
                     </TableCell>
                     <TableCell style={{padding: ".5rem 0"}}>
                         <MarkdownProcessor markdownToDisplay={product.description} maxChars={markdownMaxCharsMap.table} />
@@ -44,10 +42,10 @@ export const ProductsTable = ({ products, getReferenceUrl }: Props & { products:
         <TableHeader>
             <TableRow className={"fui-table-headerRow"}>
                 <TableHeaderCell>
-                    <Body1Strong>Name</Body1Strong>
+                    <span className="strong">Name</span>
                 </TableHeaderCell>
                 <TableHeaderCell>
-                    <Body1Strong>Description</Body1Strong>
+                    <span className="strong">Description</span>
                 </TableHeaderCell>
             </TableRow>
         </TableHeader>
