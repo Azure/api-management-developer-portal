@@ -12,3 +12,19 @@ h6 {
 pre {
     white-space: pre-wrap;
 }
+
+span.strong {
+    font-weight: 600;
+}
+
+span.caption1 {
+    font-size: .9em;
+}
+
+a.dropdown-link {
+    color: inherit;
+
+    &:hover {
+        color: inherit;
+    }
+}

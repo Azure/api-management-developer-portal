@@ -1,3 +1,4 @@
+import { ReactModule } from "@paperbits/react/react.module";
 import { AadConfigPublisher } from "./publishing/aadConfigPublisher";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
@@ -7,10 +8,10 @@ import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { ListOfApisPublishModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
 import { DetailsOfApiPublishModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
 import { HistoryOfApiPublishModule } from "./components/apis/history-of-api/ko/historyOfApi.module";
-import { SigninPublishModule } from "./components/users/signin/signin.module";
+import { SigninPublishModule } from "./components/users/signin/signin.publish.module";
 import { SigninSocialPublishModule } from "./components/users/signin-social/signinSocial.module";
-import { SignupPublishModule } from "./components/users/signup/signup.module";
-import { SignupSocialPublishModule } from "./components/users/signup-social/signupSocial.module";
+import { SignupPublishModule } from "./components/users/signup/signup.publish.module";
+import { SignupSocialPublishModule } from "./components/users/signup-social/signupSocial.publish.module";
 import { ProfilePublishModule } from "./components/users/profile/profile.module";
 import { SubscriptionsPublishModule } from "./components/users/subscriptions/subscriptions.module";
 import { ProductDetailsPublishModule } from "./components/products/product-details/productDetails.module";
@@ -29,7 +30,7 @@ import { ConfirmPasswordPublishModule } from "./components/users/confirm-passwor
 import { ChangePasswordPublishModule } from "./components/users/change-password/ko/changePassword.module";
 import { ReportsPublishModule } from "./components/reports/ko/reports.module";
 import { TenantService } from "./services/tenantService";
-import { ValidationSummaryPublishModule } from "./components/users/validation-summary/validationSummary.module";
+import { ValidationSummaryPublishModule } from "./components/users/validation-summary/validationSummary.publish.module";
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
@@ -45,6 +46,7 @@ import { staticDataEnvironment, mockStaticDataEnvironment } from "./../environme
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
+        injector.bindModule(new ReactModule());
         injector.bindModule(new ListOfApisPublishModule());
         injector.bindModule(new ApiProductsPublishModule());
         injector.bindModule(new DetailsOfApiPublishModule());
