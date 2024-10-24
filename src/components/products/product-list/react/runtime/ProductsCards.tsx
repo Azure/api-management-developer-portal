@@ -1,9 +1,9 @@
 import * as React from "react";
-import { Button, Link, Subtitle1 } from "@fluentui/react-components";
+import { Stack } from "@fluentui/react";
 import { Product } from "../../../../../models/product";
-import { TProductsData } from "./utils";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { markdownMaxCharsMap } from "../../../../../constants";
+import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
+import { TProductsData } from "./utils";
 
 type Props = {
     getReferenceUrl: (productName: string) => string;
@@ -13,18 +13,21 @@ const ProductCard = ({ product, getReferenceUrl }: Props & { product: Product })
     return (
         <div className={"fui-list-card"}>
             <div style={{ height: "100%" }}>
-                <Subtitle1>{product.displayName}</Subtitle1>
+                <h4>{product.displayName}</h4>
 
                 <MarkdownProcessor markdownToDisplay={product.description} maxChars={markdownMaxCharsMap.cards} />
             </div>
 
-            <div>
-                <Link href={getReferenceUrl(product.name)} title={product.displayName}>
-                    <Button appearance={"outline"}>
-                        Go to Product
-                    </Button>
-                </Link>
-            </div>
+            <Stack horizontal>
+                <a
+                    href={getReferenceUrl(product.name)}
+                    title={product.displayName}
+                    role="button"
+                    className="button"
+                >
+                    Go to Product
+                </a>
+            </Stack>
         </div>
     );
 };
