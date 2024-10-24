@@ -69,7 +69,7 @@ const ProductDetailsRuntimeFC = ({ usersService, productService, productName }: 
         <Stack tokens={{ childrenGap: 20 }}>
             <h1>{product.displayName}</h1>
 
-            <h6> Product {!!product.state && <><CircleSmallFilled /> {productStateToLabel(product.state)}</>}</h6>
+            <span className="caption1"> Product {!!product.state && <><CircleSmallFilled /> {productStateToLabel(product.state)}</>}</span>
 
             {product.description &&
                 <span><MarkdownProcessor markdownToDisplay={product.description} /></span>
