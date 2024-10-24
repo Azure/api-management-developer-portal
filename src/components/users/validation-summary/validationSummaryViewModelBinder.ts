@@ -5,8 +5,6 @@ import { ValidationSummaryModel } from "./validationSummaryModel";
 import { isRedesignEnabledSetting } from "../../../constants";
 import { ValidationSummaryViewModel } from "./react/ValidationSummaryViewModel";
 
-
-
 export class ValidationSummaryViewModelBinder implements ViewModelBinder<ValidationSummaryModel, ValidationSummaryViewModel> {
     constructor(
         private readonly styleCompiler: StyleCompiler,
