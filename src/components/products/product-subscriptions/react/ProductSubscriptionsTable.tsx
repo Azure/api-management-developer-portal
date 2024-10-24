@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-    Body1Strong,
     Spinner,
     Table,
     TableBody,
@@ -25,16 +24,16 @@ export const ProductSubscriptionsTable = ({
             size="small"
         />
     ) : !subscriptions || subscriptions.length === 0 ? (
-        <Body1Strong style={{ display: "block", padding: "1rem 0" }}>You don't have subscriptions yet.</Body1Strong>
+        <span className="strong" style={{ display: "block", padding: "1rem 0" }}>You don't have subscriptions yet.</span>
     ) : (
         <Table className={"fui-table"} size={"small"} aria-label={"Your Subscriptions list"}>
             <TableHeader>
                 <TableRow className={"fui-table-headerRow"}>
                     <TableHeaderCell>
-                        <Body1Strong>Name</Body1Strong>
+                        <span className="strong">Name</span>
                     </TableHeaderCell>
                     <TableHeaderCell>
-                        <Body1Strong>Status</Body1Strong>
+                        <span className="strong">Status</span>
                     </TableHeaderCell>
                 </TableRow>
             </TableHeader>

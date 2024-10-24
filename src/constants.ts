@@ -360,6 +360,7 @@ export const fuiTheme: Theme = {
     fontFamilyBase: "inherit",
     fontFamilyMonospace: "inherit",
     fontFamilyNumeric: "inherit",
+    fontSizeBase300: "inherit",
 };
 
 /**
