@@ -1,9 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import {
-    Body1Strong,
     Combobox,
-    Link,
     Option,
     Spinner,
 } from "@fluentui/react-components";
@@ -36,7 +34,7 @@ const Options = ({
     <>
         {products.map((product) => (
             <Option key={product.id} value={product.name} text={product.displayName}>
-                <Link href={getReferenceUrl(product.name)} appearance="subtle">{product.displayName}</Link>
+                <a href={getReferenceUrl(product.name)} className="dropdown-link">{product.displayName}</a>
             </Option>
         ))}
     </>
@@ -100,7 +98,7 @@ const ProductsDropdownFC = ({
 
     return (
         <>
-            <Body1Strong block>Product</Body1Strong>
+            <span className="strong">Product</span>
             <div style={{ padding: ".25rem 0 1rem" }}>{content}</div>
         </>
     );
