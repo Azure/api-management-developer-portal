@@ -1,7 +1,6 @@
 import * as React from "react";
+import { useState } from "react";
 import {
-    Body1Strong,
-    Link,
     Table,
     TableBody,
     TableCell,
@@ -12,15 +11,15 @@ import {
 import { Api } from "../../../../../models/api";
 import { Page } from "../../../../../models/page";
 import { TagGroup } from "../../../../../models/tagGroup";
+import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
+import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
+import { markdownMaxCharsMap } from "../../../../../constants";
 import {
     isApisGrouped,
     TagGroupToggleBtn,
     TApisData,
     toggleValueInSet,
 } from "./utils";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
-import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
-import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
     showApiType: boolean;
@@ -34,10 +33,10 @@ const TableBodyApis = ({ showApiType, apis, getReferenceUrl, detailsPageTarget }
             ? apis.map((api) => (
                 <TableRow key={api.id}>
                     <TableCell>
-                        <Link href={getReferenceUrl(api.name)} target={detailsPageTarget} title={api.displayName}>
+                        <a href={getReferenceUrl(api.name)} target={detailsPageTarget} title={api.displayName}>
                             {api.displayName}
                             {!!api.apiVersion && " - " + api.apiVersion}
-                        </Link>
+                        </a>
                     </TableCell>
                     <TableCell style={{padding: ".5rem 0"}}>
                         <MarkdownProcessor markdownToDisplay={api.description} maxChars={markdownMaxCharsMap.table} />
@@ -51,7 +50,7 @@ const TableBodyApis = ({ showApiType, apis, getReferenceUrl, detailsPageTarget }
 );
 
 const TableBodyTags = ({ tags, ...props }: Props & { tags: Page<TagGroup<Api>> }) => {
-    const [expanded, setExpanded] = React.useState(new Set());
+    const [expanded, setExpanded] = useState(new Set());
 
     return (
         <>
@@ -65,9 +64,9 @@ const TableBodyTags = ({ tags, ...props }: Props & { tags: Page<TagGroup<Api>> }
                     >
                         <TableCell>
                             <button className={"no-border align-center"}>
-                                <Body1Strong style={{ marginRight: ".375rem" }}>
+                                <span className="strong" style={{ marginRight: ".375rem" }}>
                                     {tag}
-                                </Body1Strong>
+                                </span>
 
                                 <TagGroupToggleBtn
                                     expanded={expanded.has(tag)}
@@ -93,14 +92,14 @@ export const ApisTable = ({ apis, ...props }: Props & { apis: TApisData }) => (
         <TableHeader>
             <TableRow className={"fui-table-headerRow"}>
                 <TableHeaderCell>
-                    <Body1Strong>Name</Body1Strong>
+                    <span className="strong">Name</span>
                 </TableHeaderCell>
                 <TableHeaderCell>
-                    <Body1Strong>Description</Body1Strong>
+                    <span className="strong">Description</span>
                 </TableHeaderCell>
                 {props.showApiType && (
                     <TableHeaderCell style={{ width: "8em" }}>
-                        <Body1Strong>Type</Body1Strong>
+                        <span className="strong">Type</span>
                     </TableHeaderCell>
                 )}
             </TableRow>
