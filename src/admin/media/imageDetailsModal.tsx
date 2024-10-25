@@ -145,7 +145,7 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
                 containerClassName="admin-modal media-details-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text block nowrap className="admin-modal-header-text">Media / { this.state.mediaItem.fileName }</Text>
+                    <Text as="h2" block nowrap className="admin-modal-header-text">Media / { this.state.mediaItem.fileName }</Text>
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <PrimaryButton
                             text="Save"
