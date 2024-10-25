@@ -136,7 +136,7 @@ export class MediaSelectionItemModal extends React.Component<MediaSelectionItemM
                 containerClassName="admin-modal media-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text className="admin-modal-header-text">Media</Text>
+                    <Text as="h2" className="admin-modal-header-text">Media</Text>
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <DefaultButton text="Close" onClick={this.props.onDismiss} />
                     </Stack>

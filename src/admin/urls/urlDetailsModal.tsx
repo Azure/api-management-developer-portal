@@ -130,7 +130,7 @@ export class UrlDetailsModal extends React.Component<UrlDetailsModalProps, UrlDe
                 containerClassName="admin-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text block nowrap className="admin-modal-header-text">URL / { this.state.url.title }</Text>
+                    <Text as="h2" block nowrap className="admin-modal-header-text">URL / { this.state.url.title }</Text>
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <PrimaryButton
                             text="Save"
