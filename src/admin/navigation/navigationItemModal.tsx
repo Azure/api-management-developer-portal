@@ -538,7 +538,7 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                 containerClassName="admin-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text className="admin-modal-header-text" block nowrap>Site menu item / { this.state.navItem.label }</Text>
+                    <Text as="h2" className="admin-modal-header-text" block nowrap>Site menu item / { this.state.navItem.label }</Text>
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <PrimaryButton
                             text="Save"

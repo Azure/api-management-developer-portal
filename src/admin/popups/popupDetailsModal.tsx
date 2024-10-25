@@ -119,7 +119,7 @@ export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, P
                 containerClassName="admin-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text block nowrap className="admin-modal-header-text">Pop-up / { this.state.popup.title }</Text>
+                    <Text as="h2" block nowrap className="admin-modal-header-text">Pop-up / { this.state.popup.title }</Text>
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <PrimaryButton
                             text="Save"

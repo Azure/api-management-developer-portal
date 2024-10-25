@@ -129,7 +129,7 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
                 containerClassName="admin-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text className="admin-modal-header-text">Settings</Text>
+                    <Text as="h2" className="admin-modal-header-text">Settings</Text>
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <PrimaryButton
                             text="Save"
