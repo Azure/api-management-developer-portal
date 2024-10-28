@@ -3,14 +3,14 @@ import { Resolve } from "@paperbits/react/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { Logger } from "@paperbits/common/logging";
 import { FluentProvider } from "@fluentui/react-components";
-import { UsersService } from "../../../../../services";
-import { BackendService } from "../../../../../services/backendService";
-import { ChangePasswordRequest } from "../../../../../contracts/resetRequest";
-import * as Constants from "../../../../../constants";
-import { validateBasic } from "../../../../utils/react/validateBasic";
-import { ValidationMessages } from "../../../validationMessages";
-import { ErrorSources } from "../../../validation-summary/constants";
-import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { UsersService } from "../../../../services";
+import { BackendService } from "../../../../services/backendService";
+import { ChangePasswordRequest } from "../../../../contracts/resetRequest";
+import * as Constants from "../../../../constants";
+import { validateBasic } from "../../../utils/react/validateBasic";
+import { ValidationMessages } from "../../validationMessages";
+import { ErrorSources } from "../../validation-summary/constants";
+import { dispatchErrors, parseAndDispatchError } from "../../validation-summary/utils";
 import { ChangePasswordForm, TSubmit } from "./ChangePasswordForm";
 
 type ChangePasswordRuntimeProps = {
