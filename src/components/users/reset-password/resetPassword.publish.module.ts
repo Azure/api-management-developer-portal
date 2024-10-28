@@ -1,10 +1,10 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
 import { ResetPasswordModelBinder } from "./resetPasswordModelBinder";
-import { ResetPasswordViewModelBinder } from "./ko/resetPasswordViewModelBinder";
-import { ResetPasswordViewModel } from "./ko/resetPasswordViewModel";
+import { ResetPasswordViewModelBinder } from "./resetPasswordViewModelBinder";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { ResetPasswordModel } from "./resetPasswordModel";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ResetPasswordViewModel } from "./react/ResetPasswordViewModel";
 
 
 export class ResetPasswordPublishModule implements IInjectorModule {
@@ -17,7 +17,7 @@ export class ResetPasswordPublishModule implements IInjectorModule {
 
         widgetService.registerWidget("reset-password", {
             modelDefinition: ResetPasswordModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: ResetPasswordViewModel,
             modelBinder: ResetPasswordModelBinder,
             viewModelBinder: ResetPasswordViewModelBinder
