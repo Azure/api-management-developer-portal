@@ -25,7 +25,7 @@ import { ProductSubscribePublishModule } from "./components/products/product-sub
 import { ProductApisPublishModule } from "./components/products/product-apis/ko/productApis.module";
 import { ProductSubscriptionsPublishModule } from "./components/products/product-subscriptions/ko/productSubscriptions.module";
 import { IdentityService } from "./services/identityService";
-import { ResetPasswordPublishModule } from "./components/users/reset-password/resetPassword.module";
+import { ResetPasswordPublishModule } from "./components/users/reset-password/resetPassword.publish.module";
 import { ConfirmPasswordPublishModule } from "./components/users/confirm-password/ko/confirmPassword.module";
 import { ChangePasswordPublishModule } from "./components/users/change-password/ko/changePassword.module";
 import { ReportsPublishModule } from "./components/reports/ko/reports.module";
