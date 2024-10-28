@@ -35,7 +35,7 @@ import { ReportsEditorModule as ReportsDesignModule } from "./components/reports
 import { ResetPasswordDesignModule } from "./components/users/reset-password/resetPassword.design.module";
 import { ConfirmPasswordEditorModule as ConfirmPasswordDesignModule } from "./components/users/confirm-password/ko/confirmPasswordEditor.module";
 import { HelpModule } from "./components/help";
-import { ChangePasswordEditorModule as ChangePasswordDesignModule } from "./components/users/change-password/ko/changePasswordEditor.module";
+import { ChangePasswordDesignModule } from "./components/users/change-password/changePassword.design.module";
 import { TenantService } from "./services/tenantService";
 import { ValidationSummaryDesignModule } from "./components/users/validation-summary/validationSummary.design.module";
 import { BackendService } from "./services/backendService";
