@@ -1,5 +1,7 @@
 declare namespace JSX {
     interface IntrinsicElements {
+        "fui-reset-password": any;
+        "reset-password-runtime": any;
         "fui-signup-aad-runtime": any;
         "signup-social-runtime": any;
         "fui-signup-runtime": any;
