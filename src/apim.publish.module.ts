@@ -11,7 +11,7 @@ import { HistoryOfApiPublishModule } from "./components/apis/history-of-api/ko/h
 import { SigninPublishModule } from "./components/users/signin/signin.publish.module";
 import { SigninSocialPublishModule } from "./components/users/signin-social/signinSocial.module";
 import { SignupPublishModule } from "./components/users/signup/signup.publish.module";
-import { SignupSocialPublishModule } from "./components/users/signup-social/signupSocial.module";
+import { SignupSocialPublishModule } from "./components/users/signup-social/signupSocial.publish.module";
 import { ProfilePublishModule } from "./components/users/profile/profile.module";
 import { SubscriptionsPublishModule } from "./components/users/subscriptions/subscriptions.module";
 import { ProductDetailsPublishModule } from "./components/products/product-details/productDetails.module";
@@ -25,9 +25,9 @@ import { ProductSubscribePublishModule } from "./components/products/product-sub
 import { ProductApisPublishModule } from "./components/products/product-apis/ko/productApis.module";
 import { ProductSubscriptionsPublishModule } from "./components/products/product-subscriptions/ko/productSubscriptions.module";
 import { IdentityService } from "./services/identityService";
-import { ResetPasswordPublishModule } from "./components/users/reset-password/resetPassword.module";
-import { ConfirmPasswordPublishModule } from "./components/users/confirm-password/ko/confirmPassword.module";
-import { ChangePasswordPublishModule } from "./components/users/change-password/ko/changePassword.module";
+import { ResetPasswordPublishModule } from "./components/users/reset-password/resetPassword.publish.module";
+import { ConfirmPasswordPublishModule } from "./components/users/confirm-password/confirmPassword.publish.module";
+import { ChangePasswordPublishModule } from "./components/users/change-password/changePassword.publish.module";
 import { ReportsPublishModule } from "./components/reports/ko/reports.module";
 import { TenantService } from "./services/tenantService";
 import { ValidationSummaryPublishModule } from "./components/users/validation-summary/validationSummary.publish.module";

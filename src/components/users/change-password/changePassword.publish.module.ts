@@ -1,11 +1,10 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { ChangePasswordModel } from "../changePasswordModel";
-import { ChangePasswordModelBinder } from "../changePasswordModelBinder";
-import { ChangePasswordViewModel } from "./changePasswordViewModel";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ChangePasswordModel } from "./changePasswordModel";
+import { ChangePasswordModelBinder } from "./changePasswordModelBinder";
+import { ChangePasswordViewModel } from "./react/ChangePasswordViewModel";
 import { ChangePasswordViewModelBinder } from "./changePasswordViewModelBinder";
-
 
 export class ChangePasswordPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -16,7 +15,7 @@ export class ChangePasswordPublishModule implements IInjectorModule {
 
         widgetService.registerWidget("change-password", {
             modelDefinition: ChangePasswordModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: ChangePasswordViewModel,
             modelBinder: ChangePasswordModelBinder,
             viewModelBinder: ChangePasswordViewModelBinder
