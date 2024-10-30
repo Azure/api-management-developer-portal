@@ -91,6 +91,7 @@ import { UsersService } from "./services/usersService";
 import { TraceClick } from "./bindingHandlers/traceClick";
 import { GraphqlService } from "./services/graphqlService";
 import { ListOfApisRuntimeModule } from "./components/apis/list-of-apis/listOfApis.runtime.module";
+import { ApiProductsRuntimeModule } from "./components/apis/api-products/apiProducts.runtime.module";
 import { ProductListRuntimeModule } from "./components/products/product-list/productList.runtime.module";
 import { OperationListRuntimeModule } from "./components/operations/operation-list/operationList.runtime.module";
 import { DetailsOfApiRuntimeModule } from "./components/apis/details-of-api/detailsOfApi.runtime.module";
@@ -190,6 +191,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindModule(new CustomWidgetRuntimeModule());
         injector.bindModule(new RoleBasedSecurityRuntimeModule());
         injector.bindModule(new ListOfApisRuntimeModule());
+        injector.bindModule(new ApiProductsRuntimeModule());
         injector.bindModule(new ProductListRuntimeModule());
         injector.bindModule(new ProductApisRuntimeModule());
         injector.bindModule(new OperationListRuntimeModule());
