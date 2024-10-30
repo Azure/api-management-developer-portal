@@ -53,6 +53,11 @@ form.needs-validation:invalid {
     }
 }
 
+label.required::after {
+    content: " *";
+    color: $required-color;
+}
+
 input[type="range"] {
     width: 100%;
 }
@@ -107,6 +112,10 @@ input[type="range"] {
         margin-right: 0.25rem;
         margin-left: 0;
     }
+}
+
+input:focus-visible {
+    outline: none;
 }
 
 input[type=search] {

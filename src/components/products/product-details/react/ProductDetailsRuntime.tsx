@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Stack } from "@fluentui/react";
-import { Body1, Caption1, FluentProvider, Spinner, Title1 } from "@fluentui/react-components";
+import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { CircleSmallFilled } from "@fluentui/react-icons";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
@@ -67,14 +67,12 @@ const ProductDetailsRuntimeFC = ({ usersService, productService, productName }: 
 
     return (
         <Stack tokens={{ childrenGap: 20 }}>
-            <Title1>{product.displayName}</Title1>
+            <h1>{product.displayName}</h1>
 
-            <Caption1 block>
-                Product {!!product.state && <><CircleSmallFilled /> {productStateToLabel(product.state)}</>}
-            </Caption1>
+            <span className="caption1"> Product {!!product.state && <><CircleSmallFilled /> {productStateToLabel(product.state)}</>}</span>
 
             {product.description &&
-                <Body1 block><MarkdownProcessor markdownToDisplay={product.description} /></Body1>
+                <span><MarkdownProcessor markdownToDisplay={product.description} /></span>
             }
         </Stack>
     );
