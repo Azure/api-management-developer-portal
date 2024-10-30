@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Stack } from "@fluentui/react";
-import { Input, Label } from "@fluentui/react-components";
 import { EventManager } from "@paperbits/common/events";
 import { MapiError } from "../../../../errors/mapiError";
 import { UnauthorizedError } from "../../../../errors/unauthorizedError";
@@ -67,16 +66,15 @@ export const SignInForm = ({
     };
 
     return (
-        <Stack tokens={{ childrenGap: 20, maxWidth: 435 }}>
+        <Stack>
             <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="email">
-                        Email address
-                    </Label>
-                    <Input
+                <Stack className="form-group">
+                    <label htmlFor="email" className="required">Email address</label>
+                    <input
                         id="email"
                         placeholder="Enter email address"
                         type="email"
+                        className="form-control"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
                     />
@@ -84,14 +82,13 @@ export const SignInForm = ({
             </Stack.Item>
 
             <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="password">
-                        Password
-                    </Label>
-                    <Input
+                <Stack className="form-group">
+                    <label htmlFor="password" className="required">Password</label>
+                    <input
                         id="password"
                         placeholder="Enter password"
                         type="password"
+                        className="form-control"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                     />
@@ -100,9 +97,9 @@ export const SignInForm = ({
 
             <Stack.Item>
                 <BtnSpinner
-                    appearance="primary"
                     onClick={submit}
                     disabled={!email || !password}
+                    className="button button-primary"
                 >
                     Sign in
                 </BtnSpinner>

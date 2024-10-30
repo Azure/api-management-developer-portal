@@ -26,19 +26,21 @@ export const ProductSubscribeForm = ({ subscribe, termsOfUse, showTermsByDefault
                 horizontal
                 verticalAlign={"center"}
                 tokens={{ childrenGap: 15 }}
+                className="form-group"
             >
                 <Stack.Item>
-                    <Input
+                    <input
                         value={subscriptionName}
-                        onChange={(_, data) => setSubscriptionName(data.value)}
+                        onChange={(event) => setSubscriptionName(event.target.value)}
                         placeholder={"Your new product subscription name"}
+                        className="form-control"
                         style={{ width: "20em" }}
                     />
                 </Stack.Item>
                 <Stack.Item>
                     <BtnSpinner
                         onClick={() => subscribe(subscriptionName, consented)}
-                        appearance="primary"
+                        className="button button-primary"
                         disabled={!subscriptionName || (termsOfUse && !consented)}
                     >
                         Subscribe

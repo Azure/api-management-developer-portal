@@ -54,7 +54,7 @@ export const ConsoleAuthorization = ({
     const [selectedAuthorizationFlow, setSelectedAuthorizationFlow] = useState<string>(noAuthFlow);
     const [selectedSubscriptionKey, setSelectedSubscriptionKey] = useState<{ name: string, value: string }>(
         subscriptionKey
-            ? products.flatMap(p => p.subscriptionKeys).find(k => k.value === subscriptionKey)
+            ? products?.flatMap(p => p.subscriptionKeys).find(k => k.value === subscriptionKey)
             : products?.[0]?.subscriptionKeys[0] ?? null
     );
     const [username, setUsername] = useState<string>("");
@@ -62,7 +62,7 @@ export const ConsoleAuthorization = ({
 
     const renderAuthorization = () => (
         <>
-            {authorizationServers.length > 0 && selectedAuthorizationServer &&
+            {authorizationServers?.length > 0 && selectedAuthorizationServer &&
                 <>
                     <Stack className="auth-detail">
                         <Label htmlFor="auth-servers-dropdown">Authorization server</Label>
@@ -108,7 +108,7 @@ export const ConsoleAuthorization = ({
                                     type="text"
                                     placeholder="Enter username"
                                     value={username}
-                                    onChange={(VARIABLE_DEFINITION, data) => setUsername(data.value)}
+                                    onChange={(_, data) => setUsername(data.value)}
                                 />
                             </Stack>
                             <Stack className="auth-detail" styles={{ root: { marginBottom: 24 } }}>
@@ -129,7 +129,7 @@ export const ConsoleAuthorization = ({
                 </>
             }
             {subscriptionRequired && (
-                (products.length > 0 && selectedSubscriptionKey)
+                (products?.length > 0 && selectedSubscriptionKey)
                     ? <Stack className="auth-detail">
                         <Label htmlFor="subscription-key-dropdown">Subscription key</Label>
                         <Dropdown

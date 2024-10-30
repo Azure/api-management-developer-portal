@@ -1,4 +1,12 @@
 .button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:disabled {
+        pointer-events: none;
+    }
+
     &.button-noborder {
         border: none;
         background: transparent;

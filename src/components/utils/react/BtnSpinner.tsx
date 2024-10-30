@@ -1,10 +1,11 @@
 import * as React from "react";
 import { useState } from "react";
-import { Button, ButtonProps, Spinner } from "@fluentui/react-components";
+import { ButtonProps, Spinner } from "@fluentui/react-components";
 
 export type TProps = ButtonProps & {
     onClick: () => Promise<unknown>;
     working?: boolean;
+    className?: string;
 };
 
 export const BtnSpinner = ({
@@ -12,21 +13,21 @@ export const BtnSpinner = ({
     onClick,
     disabled,
     working: workingProp,
-    ...props
+    className
 }: TProps) => {
     const [working, setWorking] = useState(false);
 
     return (
-        <Button
-            {...props}
+        <button
             disabled={disabled || working || workingProp}
             onClick={() => {
                 setWorking(true);
                 onClick().finally(() => setWorking(false));
             }}
+            className={className}
         >
             {(working || workingProp) && <Spinner size={"extra-tiny"} style={{ marginRight: ".5rem" }} />}
             {children}
-        </Button>
+        </button>
     );
 };
