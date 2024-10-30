@@ -1,0 +1,39 @@
+import { IInjector, IInjectorModule } from "@paperbits/common/injection";
+import { IWidgetService } from "@paperbits/common/widgets";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ChangePasswordHandlers } from "./changePasswordHandlers";
+import { ChangePasswordModel } from "./changePasswordModel";
+import { ChangePasswordModelBinder } from "./changePasswordModelBinder";
+import { ChangePasswordEditor } from "./react/ChangePasswordEditor";
+import { ChangePasswordViewModel } from "./react/ChangePasswordViewModel";
+import { ChangePasswordViewModelBinder } from "./changePasswordViewModelBinder";
+import { ComponentFlow } from "@paperbits/common/components";
+
+export class ChangePasswordDesignModule implements IInjectorModule {
+    public register(injector: IInjector): void {
+        injector.bind("changePasswordEditor", ChangePasswordEditor);
+        injector.bindSingleton("changePasswordModelBinder", ChangePasswordModelBinder);
+        injector.bindSingleton("changePasswordViewModelBinder", ChangePasswordViewModelBinder)
+        injector.bindSingleton("changePasswordHandlers", ChangePasswordHandlers);
+
+        const widgetService = injector.resolve<IWidgetService>("widgetService");
+
+        widgetService.registerWidget("change-password", {
+            modelDefinition: ChangePasswordModel,
+            componentBinder: ReactComponentBinder,
+            componentDefinition: ChangePasswordViewModel,
+            modelBinder: ChangePasswordModelBinder,
+            viewModelBinder: ChangePasswordViewModelBinder,
+            componentFlow: ComponentFlow.Block
+        });
+
+        widgetService.registerWidgetEditor("change-password", {
+            displayName: "Password: Change form",
+            category: "User",
+            iconClass: "widget-icon widget-icon-api-management",
+            componentBinder: ReactComponentBinder,
+            componentDefinition: ChangePasswordEditor,
+            handlerComponent: ChangePasswordHandlers
+        });
+    }
+}

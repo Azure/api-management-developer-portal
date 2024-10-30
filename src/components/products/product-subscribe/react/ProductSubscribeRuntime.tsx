@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { Body1Strong, FluentProvider, Spinner } from "@fluentui/react-components";
+import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
 import * as Constants from "../../../../constants";
@@ -117,7 +117,7 @@ const ProductSubscribeRuntimeFC = ({ backendService, usersService, tenantService
     }, [backendService, productService, productName, userId, isDelegationEnabled, hasToS]);
 
     if (working) return <Spinner size="extra-tiny" label={"Loading data"} labelPosition={"after"} />;
-    if (isLimitReached) return <Body1Strong style={{ display: "block", padding: "1rem 0" }}>You've reached maximum number of subscriptions.</Body1Strong>;
+    if (isLimitReached) return <span className="strong" style={{ display: "block", padding: "1rem 0" }}>You've reached maximum number of subscriptions.</span>;
 
     return <ProductSubscribeForm subscribe={subscribe} termsOfUse={product?.terms} showTermsByDefault={showTermsByDefault} />;
 };
