@@ -1,14 +1,14 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { ConfirmPasswordHandlers } from "../confirmPasswordHandlers";
-import { ConfirmPasswordModelBinder } from "../confirmPasswordModelBinder";
-import { ConfirmPasswordModel } from "../confirmPasswordModel";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { ConfirmPasswordViewModel } from "./confirmPasswordViewModel";
+import { ConfirmPasswordHandlers } from "./confirmPasswordHandlers";
+import { ConfirmPasswordModelBinder } from "./confirmPasswordModelBinder";
+import { ConfirmPasswordModel } from "./confirmPasswordModel";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ConfirmPasswordViewModel } from "./react/ConfirmPasswordViewModel";
 import { ConfirmPasswordViewModelBinder } from "./confirmPasswordViewModelBinder";
 import { IWidgetService } from "@paperbits/common/widgets";
+import { ComponentFlow } from "@paperbits/common/components";
 
-
-export class ConfirmPasswordEditorModule implements IInjectorModule {
+export class ConfirmPasswordDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindSingleton("confirmPasswordModelBinder", ConfirmPasswordModelBinder);
         injector.bindSingleton("confirmPasswordViewModelBinder", ConfirmPasswordViewModelBinder)
@@ -18,10 +18,11 @@ export class ConfirmPasswordEditorModule implements IInjectorModule {
 
         widgetService.registerWidget("confirmPassword", {
             modelDefinition: ConfirmPasswordModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: ConfirmPasswordViewModel,
             modelBinder: ConfirmPasswordModelBinder,
-            viewModelBinder: ConfirmPasswordViewModelBinder
+            viewModelBinder: ConfirmPasswordViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("confirmPassword", {

@@ -33,7 +33,7 @@ import { ProductSubscriptionsEditorModule as ProductSubscriptionsDesignModule } 
 import { App } from "./components/app/app";
 import { ReportsEditorModule as ReportsDesignModule } from "./components/reports/ko/reportsEditor.module";
 import { ResetPasswordDesignModule } from "./components/users/reset-password/resetPassword.design.module";
-import { ConfirmPasswordEditorModule as ConfirmPasswordDesignModule } from "./components/users/confirm-password/ko/confirmPasswordEditor.module";
+import { ConfirmPasswordDesignModule } from "./components/users/confirm-password/confirmPassword.design.module";
 import { HelpModule } from "./components/help";
 import { ChangePasswordDesignModule } from "./components/users/change-password/changePassword.design.module";
 import { TenantService } from "./services/tenantService";
