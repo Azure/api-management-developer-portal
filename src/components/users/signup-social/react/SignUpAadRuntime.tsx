@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Stack } from "@fluentui/react";
-import { FluentProvider, Input, Label } from "@fluentui/react-components";
+import { FluentProvider } from "@fluentui/react-components";
 import { Router } from "@paperbits/common/routing";
 import { Resolve } from "@paperbits/react/decorators";
 import { EventManager } from "@paperbits/common/events";
@@ -38,7 +38,7 @@ const SignUpAadRuntimeFC = ({ logger, router, routeHelper, signUp, termsOfUse, t
         if (!provider || !idToken) {
             router.navigateTo(Constants.pageUrlSignIn);
         } else {
-            logger.trackEvent(eventTypes.trace, {message: "Signup social component initialized."});
+            logger.trackEvent(eventTypes.trace, { message: "Signup social component initialized." });
         }
 
         const jwtToken = idToken ? Utils.parseJwt(idToken) : null;
@@ -52,71 +52,56 @@ const SignUpAadRuntimeFC = ({ logger, router, routeHelper, signUp, termsOfUse, t
     const [consented, setConsented] = React.useState<boolean>(false);
 
     return (
-        <Stack tokens={{ childrenGap: 20, maxWidth: 435 }}>
-            <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="email">
-                        Email address
-                    </Label>
-                    <Input
-                        id="email"
-                        placeholder="Enter email address"
-                        type="email"
-                        value={email}
-                        onChange={(event) => setEmail(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
-
-            <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="firstName">
-                        First name
-                    </Label>
-                    <Input
-                        id="firstName"
-                        placeholder="Enter first name"
-                        type="text"
-                        value={firstName}
-                        onChange={(event) => setFirstName(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
-
-            <Stack.Item>
-                <Stack>
-                    <Label required htmlFor="lastName">
-                        Last name
-                    </Label>
-                    <Input
-                        id="lastName"
-                        placeholder="Enter last name"
-                        type="text"
-                        value={lastName}
-                        onChange={(event) => setLastName(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
+        <>
+            <Stack className="form-group">
+                <label htmlFor="email" className="required">Email address</label>
+                <input
+                    id="email"
+                    placeholder="Enter email address"
+                    type="email"
+                    className="form-control"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                />
+            </Stack>
+            <Stack className="form-group">
+                <label htmlFor="firstName" className="required">First name</label>
+                <input
+                    id="firstName"
+                    placeholder="Enter first name"
+                    type="text"
+                    className="form-control"
+                    value={firstName}
+                    onChange={(event) => setFirstName(event.target.value)}
+                />
+            </Stack>
+            <Stack className="form-group">
+                <label htmlFor="lastName" className="required">Last name</label>
+                <input
+                    id="lastName"
+                    placeholder="Enter last name"
+                    type="text"
+                    className="form-control"
+                    value={lastName}
+                    onChange={(event) => setLastName(event.target.value)}
+                />
+            </Stack>
 
             {termsEnabled && termsOfUse && (
-                <Stack.Item>
-                    <TermsOfUse
-                        termsOfUse={termsOfUse}
-                        consented={consented}
-                        setConsented={setConsented}
-                    />
-                </Stack.Item>
+                <TermsOfUse
+                    termsOfUse={termsOfUse}
+                    consented={consented}
+                    setConsented={setConsented}
+                />
             )}
 
-            <Stack.Item>
-                <BtnSpinner
-                    appearance="primary"
-                    onClick={() => signUp(provider, idToken, email, firstName, lastName, consented)}
-                >
-                    Create
-                </BtnSpinner>
-            </Stack.Item>
-        </Stack>
+            <BtnSpinner
+                className="button button-primary"
+                onClick={() => signUp(provider, idToken, email, firstName, lastName, consented)}
+            >
+                Create
+            </BtnSpinner>
+        </>
     );
 };
 
@@ -174,7 +159,7 @@ export class SignUpAadRuntime extends React.Component<SignUpAadRuntimeProps> {
 
     render() {
         return (
-            <FluentProvider theme={Constants.fuiTheme} style={{ display: "inline" }}>
+            <FluentProvider theme={Constants.fuiTheme}>
                 <SignUpAadRuntimeFC
                     {...this.props}
                     logger={this.logger}

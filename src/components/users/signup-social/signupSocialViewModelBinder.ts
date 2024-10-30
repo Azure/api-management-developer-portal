@@ -1,15 +1,15 @@
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
-import { TermsOfService } from "../../../../contracts/identitySettings";
-import { IdentityService } from "../../../../services/identityService";
-import { SignupSocialModel } from "../signupSocialModel";
-import { SignupSocialViewModel } from "./signupSocialViewModel";
+import { TermsOfService } from "../../../contracts/identitySettings";
+import { IdentityService } from "../../../services/identityService";
+import { SignupSocialModel } from "./signupSocialModel";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
-import { isRedesignEnabledSetting } from "../../../../constants";
+import { isRedesignEnabledSetting } from "../../../constants";
+import { SignUpSocialViewModel } from "./react/SignUpSocialViewModel";
 
 
-export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocialModel, SignupSocialViewModel> {
+export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocialModel, SignUpSocialViewModel> {
     constructor(
         private readonly identityService: IdentityService,
         private readonly settingsProvider: ISettingsProvider,
@@ -22,18 +22,15 @@ export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocial
         return identitySetting.properties.termsOfService;
     }
 
-    public stateToInstance(state: WidgetState, componentInstance: SignupSocialViewModel): void {
-        componentInstance.styles(state.styles);
-        componentInstance.identityProvider(state.identityProvider);
-        componentInstance.mode(state.mode);
-
-        componentInstance.runtimeConfig(JSON.stringify({
+    public stateToInstance(state: WidgetState, componentInstance: SignUpSocialViewModel): void {
+        componentInstance.setState(prevState => ({
+            isRedesignEnabled: state.isRedesignEnabled,
+            styles: state.styles,
             termsOfUse: state.termsOfUse,
             isConsentRequired: state.isConsentRequired,
-            termsEnabled: state.termsEnabled
+            termsEnabled: state.termsEnabled,
+            identityProvider: state.identityProvider
         }));
-
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
     }
 
     public async modelToState(model: SignupSocialModel, state: WidgetState): Promise<void> {

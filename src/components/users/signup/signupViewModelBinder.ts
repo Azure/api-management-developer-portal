@@ -58,7 +58,7 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignU
         state.termsOfUse = termsOfService.text;
         state.isConsentRequired = termsOfService.consentRequired;
         state.termsEnabled = termsOfService.enabled;
-        state.requireHipCaptcha = true //useHipCaptcha === undefined ? true : useHipCaptcha
+        state.requireHipCaptcha = useHipCaptcha ?? true
 
         if (model.styles) {
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);

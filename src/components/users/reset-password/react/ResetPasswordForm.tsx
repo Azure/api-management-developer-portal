@@ -35,49 +35,38 @@ export const ResetPasswordForm = ({
 
     if (isSubmitted) return (
         <>
-            <Body1Strong>Your password reset request was successfully processed</Body1Strong>
-            <br />
-            <Body1>
-                Change password confirmation email is on the way to {email}. Please follow the instructions within the email to continue your password change process.
-            </Body1>
+            <p>Your password reset request was successfully processed</p>
+            <p>Change password confirmation email is on the way to {email}. Please follow the instructions within the email to continue your password change process.</p>
         </>
     );
 
     return (
-        <Stack tokens={{ childrenGap: 20, maxWidth: 435 }}>
-            <Stack.Item>
-                <Stack>
-                <Label required htmlFor="email">
-                        Email address
-                    </Label>
-                    <Input
-                        id="email"
-                        placeholder="Enter email address"
-                        type="email"
-                        value={email}
-                        onChange={(event) => setEmail(event.target.value)}
-                    />
-                </Stack>
-            </Stack.Item>
+        <>
+            <Stack className="form-group">
+                <label htmlFor="email" className="required">Email address</label>
+                <input
+                    id="email"
+                    placeholder="Enter email address"
+                    type="email"
+                    className="form-control"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                />
+            </Stack>
 
             {requireHipCaptcha && (
-                <Stack.Item>
-                    <Label required>Captcha</Label>
-                    <HipCaptcha
-                        backendService={backendService}
-                        onInitComplete={onInitComplete}
-                    />
-                </Stack.Item>
+                <HipCaptcha
+                    backendService={backendService}
+                    onInitComplete={onInitComplete}
+                />
             )}
 
-            <Stack.Item>
-                <BtnSpinner
-                    appearance="primary"
-                    onClick={handleSubmit}
-                >
-                    Request reset
-                </BtnSpinner>
-            </Stack.Item>
-        </Stack>
+            <BtnSpinner
+                onClick={handleSubmit}
+                className="button button-primary"
+            >
+                Request reset
+            </BtnSpinner>
+        </>
     )
 }

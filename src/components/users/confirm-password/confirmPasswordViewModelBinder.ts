@@ -1,9 +1,9 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
-import { ConfirmPasswordModel } from "../confirmPasswordModel";
-import { ConfirmPasswordViewModel } from "./confirmPasswordViewModel";
-import { isRedesignEnabledSetting } from "../../../../constants";
+import { ConfirmPasswordModel } from "./confirmPasswordModel";
+import { ConfirmPasswordViewModel } from "./react/ConfirmPasswordViewModel";
+import { isRedesignEnabledSetting } from "../../../constants";
 
 export class ConfirmPasswordViewModelBinder implements ViewModelBinder<ConfirmPasswordModel, ConfirmPasswordViewModel> {
     constructor(
@@ -12,8 +12,9 @@ export class ConfirmPasswordViewModelBinder implements ViewModelBinder<ConfirmPa
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: ConfirmPasswordViewModel): void {
-        componentInstance.styles(state.styles);
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
+        componentInstance.setState(prevState => ({
+            isRedesignEnabled: state.isRedesignEnabled,
+            styles: state.styles}));
     }
 
     public async modelToState(model: ConfirmPasswordModel, state: WidgetState): Promise<void> {

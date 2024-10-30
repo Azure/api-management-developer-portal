@@ -1,15 +1,15 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { ChangePasswordHandlers } from "../changePasswordHandlers";
-import { ChangePasswordModel } from "../changePasswordModel";
-import { ChangePasswordModelBinder } from "../changePasswordModelBinder";
-import { ChangePasswordEditor } from "./changePasswordEditor";
-import { ChangePasswordViewModel } from "./changePasswordViewModel";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ChangePasswordHandlers } from "./changePasswordHandlers";
+import { ChangePasswordModel } from "./changePasswordModel";
+import { ChangePasswordModelBinder } from "./changePasswordModelBinder";
+import { ChangePasswordEditor } from "./react/ChangePasswordEditor";
+import { ChangePasswordViewModel } from "./react/ChangePasswordViewModel";
 import { ChangePasswordViewModelBinder } from "./changePasswordViewModelBinder";
+import { ComponentFlow } from "@paperbits/common/components";
 
-
-export class ChangePasswordEditorModule implements IInjectorModule {
+export class ChangePasswordDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bind("changePasswordEditor", ChangePasswordEditor);
         injector.bindSingleton("changePasswordModelBinder", ChangePasswordModelBinder);
@@ -20,17 +20,18 @@ export class ChangePasswordEditorModule implements IInjectorModule {
 
         widgetService.registerWidget("change-password", {
             modelDefinition: ChangePasswordModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: ChangePasswordViewModel,
             modelBinder: ChangePasswordModelBinder,
-            viewModelBinder: ChangePasswordViewModelBinder
+            viewModelBinder: ChangePasswordViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("change-password", {
             displayName: "Password: Change form",
             category: "User",
             iconClass: "widget-icon widget-icon-api-management",
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: ChangePasswordEditor,
             handlerComponent: ChangePasswordHandlers
         });
