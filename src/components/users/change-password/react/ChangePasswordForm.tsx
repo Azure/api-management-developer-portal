@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { Stack } from "@fluentui/react";
-import { Body1Strong } from "@fluentui/react-components";
 import { BackendService } from "../../../../services/backendService";
 import { BtnSpinner } from "../../../utils/react/BtnSpinner";
 import { HipCaptcha } from "../../runtime/hip-captcha/react";
@@ -37,11 +36,8 @@ export const ChangePasswordForm = ({
         setCaptchaObj({ captchaValid, refreshCaptcha, captchaData });
     }, []);
 
-    if (isSubmitted) return (
-        <>
-            <Body1Strong>Your password was successfully updated</Body1Strong>
-        </>
-    );
+    if (isSubmitted)
+        return (<p>Your password was successfully updated</p>);
 
     return (
         <>
