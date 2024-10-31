@@ -1,8 +1,8 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { ProfileViewModel } from "./ko/profileViewModel";
-import { ProfileViewModelBinder } from "./ko/profileViewModelBinder";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ProfileViewModel } from "./react/ProfileViewModel";
+import { ProfileViewModelBinder } from "./profileViewModelBinder";
 import { ProfileHandlers } from "./profileHandlers";
 import { ProfileModel } from "./profileModel";
 import { ProfileModelBinder } from "./profileModelBinder";
@@ -18,7 +18,7 @@ export class ProfileDesignModule implements IInjectorModule {
 
         widgetService.registerWidget("profile", {
             modelDefinition: ProfileModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: ProfileViewModel,
             modelBinder: ProfileModelBinder,
             viewModelBinder: ProfileViewModelBinder
