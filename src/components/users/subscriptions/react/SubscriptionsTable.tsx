@@ -198,19 +198,19 @@ export const SubscriptionsTable = ({ subscriptions, saveName, cancelSubscription
             <TableHeader>
                 <TableRow className={"fui-table-headerRow"}>
                     <TableHeaderCell>
-                        <Body1Strong>Name</Body1Strong>
+                        <span className="strong">Name</span>
                     </TableHeaderCell>
 
                     <TableHeaderCell>
-                        <Body1Strong>State</Body1Strong>
+                        <span className="strong">State</span>
                     </TableHeaderCell>
 
                     <TableHeaderCell colSpan={2}>
-                        <Body1Strong>Keys</Body1Strong>
+                        <span className="strong">Keys</span>
                     </TableHeaderCell>
 
-                    <TableHeaderCell style={{ width: "4.825em" }}>
-                        <Body1Strong></Body1Strong>
+                    <TableHeaderCell>
+                        <span className="strong"></span>
                     </TableHeaderCell>
                 </TableRow>
             </TableHeader>
