@@ -54,23 +54,23 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount, delega
             <TableHeader>
                 <TableRow className={"fui-table-headerRow"}>
                     <TableHeaderCell>
-                        <Body1Strong>Email</Body1Strong>
+                        <span className="strong">Email</span>
                     </TableHeaderCell>
 
                     <TableHeaderCell>
-                        <Body1Strong>First name</Body1Strong>
+                        <span className="strong">First name</span>
                     </TableHeaderCell>
 
                     <TableHeaderCell>
-                        <Body1Strong>Last name</Body1Strong>
+                        <span className="strong">Last name</span>
                     </TableHeaderCell>
 
                     <TableHeaderCell>
-                        <Body1Strong>Date created</Body1Strong>
+                        <span className="strong">Date created</span>
                     </TableHeaderCell>
 
-                    <TableHeaderCell style={{ width: "4.825em" }}>
-                        <Body1Strong></Body1Strong>
+                    <TableHeaderCell>
+                        <span className="strong"></span>
                     </TableHeaderCell>
                 </TableRow>
             </TableHeader>

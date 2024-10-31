@@ -12,7 +12,7 @@ import { SigninPublishModule } from "./components/users/signin/signin.publish.mo
 import { SigninSocialPublishModule } from "./components/users/signin-social/signinSocial.module";
 import { SignupPublishModule } from "./components/users/signup/signup.publish.module";
 import { SignupSocialPublishModule } from "./components/users/signup-social/signupSocial.publish.module";
-import { ProfilePublishModule } from "./components/users/profile/profile.module";
+import { ProfilePublishModule } from "./components/users/profile/profile.publish.module";
 import { SubscriptionsPublishModule } from "./components/users/subscriptions/subscriptions.publish.module";
 import { ProductDetailsPublishModule } from "./components/products/product-details/productDetails.module";
 import { StaticRouter } from "./components/staticRouter";
