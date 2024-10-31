@@ -2,10 +2,11 @@ import { IInjectorModule, IInjector } from "@paperbits/common/injection";
 import { SubscriptionsHandlers } from "./subscriptionsHandlers";
 import { SubscriptionsModelBinder } from "./subscriptionsModelBinder";
 import { SubscriptionsModel } from "./subscriptionsModel";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { SubscriptionsViewModel } from "./ko/subscriptionsViewModel";
-import { SubscriptionsViewModelBinder } from "./ko/subscriptionsViewModelBinder";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { SubscriptionsViewModel } from "./react/SubscriptionsViewModel";
+import { SubscriptionsViewModelBinder } from "./subscriptionsViewModelBinder";
 import { IWidgetService } from "@paperbits/common/widgets";
+import { ComponentFlow } from "@paperbits/common/components";
 
 export class SubscriptionsDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -17,10 +18,11 @@ export class SubscriptionsDesignModule implements IInjectorModule {
 
         widgetService.registerWidget("subscriptions", {
             modelDefinition: SubscriptionsModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: SubscriptionsViewModel,
             modelBinder: SubscriptionsModelBinder,
-            viewModelBinder: SubscriptionsViewModelBinder
+            viewModelBinder: SubscriptionsViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("subscriptions", {

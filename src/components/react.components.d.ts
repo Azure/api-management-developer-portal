@@ -1,5 +1,7 @@
 declare namespace JSX {
     interface IntrinsicElements {
+        "fui-subscriptions-runtime": any;
+        "subscriptions-runtime": any;
         "fui-confirm-password": any;
         "confirm-password": any;
         "fui-change-password": any;
