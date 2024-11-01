@@ -144,6 +144,7 @@
     color: #fff;
     font-size: 18px;
     padding-right: 20px;
+    margin: 0;
 }
 
 .admin-modal-content {
@@ -289,6 +290,11 @@
     &:hover {
         background-color: rgba(255, 255, 255, .3);
     }
+}
+
+// Required for accessibility
+.ms-Fabric--isFocusVisible .onboarding-modal-close:focus {
+    background-color: rgba(255, 255, 255, .3);
 }
 
 .carousel-dots-container {
