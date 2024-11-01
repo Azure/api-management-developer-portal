@@ -55,7 +55,7 @@ export class HelpModal extends React.Component<HelpModalProps, HelpModalState> {
                 containerClassName="admin-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text className="admin-modal-header-text">Help and resources</Text>
+                    <Text as="h2" className="admin-modal-header-text">Help and resources</Text>
                     <DefaultButton text="Close" onClick={this.props.onDismiss} />
                 </Stack>
                 <div className="admin-modal-content">

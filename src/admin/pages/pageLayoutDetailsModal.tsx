@@ -141,7 +141,7 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
                 containerClassName="admin-modal"
             >
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="admin-modal-header">
-                    <Text block nowrap className="admin-modal-header-text">Layout / { this.state.layout.title }</Text>
+                    <Text as="h2" block nowrap className="admin-modal-header-text">Layout / { this.state.layout.title }</Text>
                     <Stack horizontal tokens={{ childrenGap: 20 }}>
                         <PrimaryButton
                             text="Save"
