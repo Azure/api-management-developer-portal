@@ -2,14 +2,14 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
-import { TermsOfService } from "../../../../contracts/identitySettings";
-import { IdentityService } from "../../../../services/identityService";
-import { isRedesignEnabledSetting } from "../../../../constants";
-import { SigninSocialModel } from "../signinSocialModel";
-import { SigninSocialViewModel } from "./signinSocialViewModel";
+import { TermsOfService } from "../../../contracts/identitySettings";
+import { IdentityService } from "../../../services/identityService";
+import { isRedesignEnabledSetting } from "../../../constants";
+import { SigninSocialModel } from "./signinSocialModel";
+import { SignInSocialViewModel } from "./react/SigninSocialViewModel";
 
 
-export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocialModel, SigninSocialViewModel> {
+export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocialModel, SignInSocialViewModel> {
     constructor(
         private readonly identityService: IdentityService,
         private readonly styleCompiler: StyleCompiler,
@@ -22,13 +22,10 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
         return identitySetting.properties.termsOfService;
     }
 
-    public stateToInstance(state: WidgetState, componentInstance: SigninSocialViewModel): void {
-        componentInstance.styles(state.styles);
-        componentInstance.aadConfig(JSON.stringify(state.aadConfig));
-        componentInstance.aadB2CConfig(JSON.stringify(state.aadB2CConfig));
-        componentInstance.mode(state.mode);
-
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
+    public stateToInstance(state: WidgetState, componentInstance: SignInSocialViewModel): void {
+        componentInstance.setState(prevState => ({
+            ...state
+        }));
     }
 
     public async modelToState(model: SigninSocialModel, state: WidgetState): Promise<void> {

@@ -29,6 +29,7 @@ export class SignUpSocialViewModel extends React.Component {
                 </div>
                 </placeholder-content>;
             }
+            return <placeholder-content></placeholder-content>;
         }
         return this.state.isRedesignEnabled
             ? <fui-signup-aad-runtime props={JSON.stringify(this.state)}></fui-signup-aad-runtime>
