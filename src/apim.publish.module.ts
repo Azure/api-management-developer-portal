@@ -9,7 +9,7 @@ import { ListOfApisPublishModule } from "./components/apis/list-of-apis/ko/listO
 import { DetailsOfApiPublishModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
 import { HistoryOfApiPublishModule } from "./components/apis/history-of-api/ko/historyOfApi.module";
 import { SigninPublishModule } from "./components/users/signin/signin.publish.module";
-import { SigninSocialPublishModule } from "./components/users/signin-social/signinSocial.module";
+import { SigninSocialPublishModule } from "./components/users/signin-social/signinSocial.publish.module";
 import { SignupPublishModule } from "./components/users/signup/signup.publish.module";
 import { SignupSocialPublishModule } from "./components/users/signup-social/signupSocial.publish.module";
 import { ProfilePublishModule } from "./components/users/profile/profile.publish.module";

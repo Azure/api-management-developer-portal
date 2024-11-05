@@ -1,10 +1,8 @@
 import * as React from "react";
-import { FluentProvider } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Logger } from "@paperbits/common/logging";
-import * as Constants from "../../../../constants";
 import { AadService, AadServiceV2, IAadService } from "../../../../services";
 import { ErrorSources } from "../../validation-summary/constants";
 import { eventTypes } from "../../../../logging/clientLogger";
@@ -15,17 +13,17 @@ import { aadb2cResetPasswordErrorCode } from "../../../../constants";
 import { BtnSpinner } from "../../../utils/react/BtnSpinner";
 
 type SignInAadB2cRuntimeProps = {
-    label: string
-    replyUrl: string
+    label: string,
+    replyUrl: string,
+    classNames: string
 };
 type SignInAadB2cRuntimeFCProps = SignInAadB2cRuntimeProps & {
-    disabled: boolean
     signIn: () => Promise<void>
 };
 
-const SignInAadB2cRuntimeFC = ({ label, disabled, signIn }: SignInAadB2cRuntimeFCProps) => {
+const SignInAadB2cRuntimeFC = ({ label, signIn, classNames }: SignInAadB2cRuntimeFCProps) => {
     return (
-        <BtnSpinner disabled={disabled} onClick={signIn} >
+        <BtnSpinner onClick={signIn} className={classNames}>
             <i className="icon-emb icon-svg-entraId"></i>
             {label}
         </BtnSpinner>
@@ -110,13 +108,10 @@ export class SignInAadB2cRuntime extends React.Component<SignInAadB2cRuntimeProp
 
     render() {
         return (
-            <FluentProvider theme={Constants.fuiTheme} style={{ display: "inline" }}>
                 <SignInAadB2cRuntimeFC
                     {...this.props}
-                    disabled={!this.aadConfig}
                     signIn={this.signIn.bind(this)}
                 />
-            </FluentProvider>
         );
     }
 }

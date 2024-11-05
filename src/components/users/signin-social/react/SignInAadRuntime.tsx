@@ -15,15 +15,16 @@ import { BtnSpinner } from "../../../utils/react/BtnSpinner";
 
 type SignInAadRuntimeProps = {
     label: string
-    replyUrl: string
+    replyUrl: string,
+    classNames: string
 }
 type SignInAadRuntimeFCProps = SignInAadRuntimeProps & {
     signIn: () => Promise<void>
 };
 
-const SignInAadRuntimeFC = ({ label, signIn }: SignInAadRuntimeFCProps) => {
+const SignInAadRuntimeFC = ({ label, signIn, classNames }: SignInAadRuntimeFCProps) => {
     return (
-        <BtnSpinner onClick={signIn}>
+        <BtnSpinner onClick={signIn} className={classNames}>
             <i className="icon-emb icon-svg-entraId"></i>
             {label}
         </BtnSpinner>
@@ -47,23 +48,24 @@ export class SignInAadRuntime extends React.Component<SignInAadRuntimeProps> {
     public logger: Logger;
 
     private selectedService: IAadService;
+    private aadConfig: AadClientConfig;
 
     public async signIn(): Promise<void> {
         dispatchErrors(this.eventManager, ErrorSources.signInOAuth, []);
         this.logger.trackEvent(eventTypes.aadLogin, { message: "Initiating AAD login" });
 
         try {
-            const config = await this.settingsProvider.getSetting<AadClientConfig>(SettingNames.aadClientConfig);
+            this.aadConfig  = await this.settingsProvider.getSetting<AadClientConfig>(SettingNames.aadClientConfig);
 
-            if (config) {
-                if (config.clientLibrary === AadClientLibrary.v2) {
+            if (this.aadConfig ) {
+                if (this.aadConfig .clientLibrary === AadClientLibrary.v2) {
                     this.selectedService = this.aadServiceV2;
                 }
                 else {
                     this.selectedService = this.aadService;
                 }
 
-                await this.selectedService.signInWithAad(config.clientId, config.authority, config.signinTenant || defaultAadTenantName, this.props.replyUrl);
+                await this.selectedService.signInWithAad(this.aadConfig .clientId, this.aadConfig .authority, this.aadConfig .signinTenant || defaultAadTenantName, this.props.replyUrl);
             } else {
                 this.logger.trackEvent(eventTypes.aadLogin, { message: "AAD client config is not set" });
             }
@@ -73,13 +75,6 @@ export class SignInAadRuntime extends React.Component<SignInAadRuntimeProps> {
     }
 
     render() {
-        return (
-            <FluentProvider theme={Constants.fuiTheme} style={{ display: "inline" }}>
-                <SignInAadRuntimeFC
-                    {...this.props}
-                    signIn={this.signIn.bind(this)}
-                />
-            </FluentProvider>
-        );
+        return (<SignInAadRuntimeFC {...this.props} signIn={this.signIn.bind(this)} />);
     }
 }
