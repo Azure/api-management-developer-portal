@@ -2,7 +2,7 @@ import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
 import { SignInSocialEditor } from "./ko/signinSocialEditor";
-import { SignInSocialViewModel } from "./react/SigninSocialViewModel";
+import { SignInSocialViewModel } from "./react/SignInSocialViewModel";
 import { SigninSocialViewModelBinder } from "./signinSocialViewModelBinder";
 import { SigninSocialHandlers } from "./signinSocialHandlers";
 import { SigninSocialModel } from "./signinSocialModel";

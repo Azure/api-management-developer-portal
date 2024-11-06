@@ -6,7 +6,7 @@ import { RoleBasedSecurityPublishModule } from "@paperbits/core/security/roleBas
 import { MapiClient } from "./services/mapiClient";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { ListOfApisPublishModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
-import { DetailsOfApiPublishModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
+import { DetailsOfApiPublishModule } from "./components/apis/details-of-api/detailsOfApi.publish.module";
 import { HistoryOfApiPublishModule } from "./components/apis/history-of-api/ko/historyOfApi.module";
 import { SigninPublishModule } from "./components/users/signin/signin.publish.module";
 import { SigninSocialPublishModule } from "./components/users/signin-social/signinSocial.publish.module";

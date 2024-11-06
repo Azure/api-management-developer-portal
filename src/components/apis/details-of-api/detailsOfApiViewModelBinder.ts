@@ -1,25 +1,22 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ISiteService } from "@paperbits/common/sites";
-import { DetailsOfApiModel } from "../detailsOfApiModel";
-import { DetailsOfApiViewModel } from "./detailsOfApiViewModel";
-import { isRedesignEnabledSetting } from "../../../../constants";
+import { DetailsOfApiModel } from "./detailsOfApiModel";
+import { isRedesignEnabledSetting } from "../../../constants";
+import { ApiDetailsViewModel } from "./react/ApiDetailsViewModel";
 
 
-export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApiModel, DetailsOfApiViewModel> {
+export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApiModel, ApiDetailsViewModel> {
     constructor(
         private readonly styleCompiler: StyleCompiler,
         private readonly siteService: ISiteService,
     ) { }
 
-    public stateToInstance(state: WidgetState, componentInstance: DetailsOfApiViewModel): void {
-        componentInstance.styles(state.styles);
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
-
-        componentInstance.runtimeConfig(JSON.stringify({
-            changeLogPageUrl: state.changeLogPageHyperlink
-                ? state.changeLogPageHyperlink.href
-                : undefined
+    public stateToInstance(state: WidgetState, componentInstance: ApiDetailsViewModel): void {
+        componentInstance.setState(prevState => ({
+            styles: state.styles,
+            isRedesignEnabled: state.isRedesignEnabled,
+            changeLogPageUrl: state.changeLogPageHyperlink?.href
         }));
     }
 
