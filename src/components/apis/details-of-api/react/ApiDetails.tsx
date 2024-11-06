@@ -4,12 +4,12 @@ import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
 import { Stack } from "@fluentui/react";
 import { Badge, Body1, Body1Strong, Dropdown, FluentProvider, Link, Option, Spinner, Title1 } from "@fluentui/react-components";
-import { Api } from "../../../../../models/api";
-import { KnownMimeTypes } from "../../../../../models/knownMimeTypes"
-import { ApiService } from "../../../../../services/apiService";
-import { RouteHelper } from "../../../../../routing/routeHelper";
-import { TypeOfApi, fuiTheme } from "../../../../../constants";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
+import { Api } from "../../../../models/api";
+import { KnownMimeTypes } from "../../../../models/knownMimeTypes"
+import { ApiService } from "../../../../services/apiService";
+import { RouteHelper } from "../../../../routing/routeHelper";
+import { TypeOfApi, fuiTheme } from "../../../../constants";
+import { MarkdownProcessor } from "../../../utils/react/MarkdownProcessor";
 
 interface ApiDetailsProps {
     changeLogPageUrl?: string
@@ -55,7 +55,7 @@ const ApiDetailsFC = ({
     const loadApis = async (): Promise<{api: Api, versionedApis: Api[]}> => {
         let api: Api;
         let versionedApis: Api[];
-    
+
         try {
             api = await apiService.getApi(`apis/${apiName}`);
 
@@ -66,7 +66,7 @@ const ApiDetailsFC = ({
         } catch (error) {
             throw new Error(`Unable to load the API. Error: ${error.message}`);
         }
-    
+
         return {api, versionedApis};
     }
 
@@ -111,6 +111,7 @@ const ApiDetailsFC = ({
         window.URL.revokeObjectURL(url);
     }
 
+    const isRestApi = api && (api.type !== TypeOfApi.graphQL && api.type !== TypeOfApi.webSocket);
     return (
         <div className={"api-details-container"}>
             {working
@@ -119,18 +120,18 @@ const ApiDetailsFC = ({
                     ? <>
                         <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
                             <Stack horizontal verticalAlign="center">
-                                <Title1 className={"api-title"}>{api.displayName}</Title1>
+                                <h1 className={"api-title"}>{api.displayName}</h1>
                                 {api.typeName && api.typeName !== "REST" && <Badge appearance="outline">{api.typeName}</Badge>}
                             </Stack>
-                            {changeLogPageUrl && api.type !== TypeOfApi.graphQL && api.type !== TypeOfApi.webSocket && 
-                                <Link href={routeHelper.getApiReferenceUrl(apiName, changeLogPageUrl)}>View changelog</Link>
+                            {changeLogPageUrl && isRestApi &&
+                                <a href={routeHelper.getApiReferenceUrl(apiName, changeLogPageUrl)}>View changelog</a>
                             }
                         </Stack>
-                        {(versionedApis?.length > 0 || (api.type !== TypeOfApi.graphQL && api.type !== TypeOfApi.webSocket)) && 
+                        {(versionedApis?.length > 0 || isRestApi) &&
                             <Stack horizontal verticalAlign="center" className={"api-details-dropdowns"}>
-                                {versionedApis?.length > 0 && 
+                                {versionedApis?.length > 0 &&
                                     <Stack horizontal verticalAlign="center">
-                                        <Body1Strong>Version</Body1Strong>
+                                        <span>Version</span>
                                         <Dropdown
                                             defaultSelectedOptions={[api.name]}
                                             value={api.apiVersion ?? originalVersion}
@@ -145,9 +146,9 @@ const ApiDetailsFC = ({
                                         </Dropdown>
                                     </Stack>
                                 }
-                                {api.type !== TypeOfApi.graphQL && api.type !== TypeOfApi.webSocket &&
+                                {isRestApi &&
                                     <Stack horizontal verticalAlign="center">
-                                        <Body1Strong>Download definition</Body1Strong>
+                                        <span>Download definition</span>
                                         <Dropdown
                                             placeholder="Select definition type"
                                             className={"api-details-dropdown"}
@@ -164,34 +165,34 @@ const ApiDetailsFC = ({
                             </Stack>
                         }
                         {api.description &&
-                            <Body1 block><MarkdownProcessor markdownToDisplay={api.description} /></Body1>
+                            <span style={{display: "block"}}><MarkdownProcessor markdownToDisplay={api.description} /></span>
                         }
                         {(api.contact || api.license || api.termsOfServiceUrl) &&
                             <div className={"api-additional-info"}>
-                                {api.contact && 
+                                {api.contact &&
                                     <div className={"api-additional-info-block"}>
-                                        <Body1 block>Contact:</Body1>
-                                        {api.contact.name && <Body1 block>{api.contact.name}</Body1>}
-                                        {api.contact.email && <Body1 block><Link href={`mailto:${api.contact.email}`}>{api.contact.email}</Link></Body1>}
-                                        {api.contact.url && <Link href={api.contact.url}>{api.contact.url}</Link>}
+                                        <span style={{display: "block"}}>Contact:</span>
+                                        {api.contact.name && <span style={{display: "block"}}>{api.contact.name}</span>}
+                                        {api.contact.email && <span style={{display: "block"}}><a href={`mailto:${api.contact.email}`}>{api.contact.email}</a></span>}
+                                        {api.contact.url && <a href={api.contact.url}>{api.contact.url}</a>}
                                     </div>
                                 }
                                 {api.license &&
                                     <div className={"api-additional-info-block"}>
-                                        <Body1 block>License:</Body1>
-                                        {api.license.url ? <Link href={api.license.url}>{api.license.name}</Link> : <Body1>{api.license.name}</Body1>}
+                                        <span style={{display: "block"}}>License:</span>
+                                        {api.license.url ? <a href={api.license.url}>{api.license.name}</a> : <span>{api.license.name}</span>}
                                     </div>
                                 }
                                 {api.termsOfServiceUrl &&
                                     <div className={"api-additional-info-block"}>
-                                        <Body1 block>Additional resources:</Body1>
-                                        <Link href={api.termsOfServiceUrl}>Terms and conditions</Link>
+                                        <span style={{display: "block"}}>Additional resources:</span>
+                                        <a href={api.termsOfServiceUrl}>Terms and conditions</a>
                                     </div>
                                 }
                             </div>
                         }
                       </>
-                    : <Body1>No API found.</Body1>
+                    : <span>No API found.</span>
             }
 
         </div>
@@ -204,7 +205,7 @@ export class ApiDetails extends React.Component<ApiDetailsProps, ApiDetailsState
 
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
-    
+
     @Resolve("router")
     public router: Router;
 

@@ -6,7 +6,7 @@ import { TermsOfService } from "../../../contracts/identitySettings";
 import { IdentityService } from "../../../services/identityService";
 import { isRedesignEnabledSetting } from "../../../constants";
 import { SigninSocialModel } from "./signinSocialModel";
-import { SignInSocialViewModel } from "./react/SigninSocialViewModel";
+import { SignInSocialViewModel } from "./react/SignInSocialViewModel";
 
 
 export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocialModel, SignInSocialViewModel> {

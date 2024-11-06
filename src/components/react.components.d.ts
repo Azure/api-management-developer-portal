@@ -1,5 +1,7 @@
 declare namespace JSX {
     interface IntrinsicElements {
+        "fui-api-details": any;
+        "api-details": any;
         "fui-signin-aad-runtime": any;
         "signin-aad": any;
         "fui-signin-aadb2c-runtime": any;
