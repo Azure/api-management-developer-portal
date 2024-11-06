@@ -1,9 +1,9 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { DetailsOfApiModelBinder } from "../detailsOfApiModelBinder";
+import { DetailsOfApiModelBinder } from "./detailsOfApiModelBinder";
 import { DetailsOfApiViewModelBinder } from "./detailsOfApiViewModelBinder";
-import { DetailsOfApiViewModel } from "./detailsOfApiViewModel";
-import { DetailsOfApiModel } from "../detailsOfApiModel";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
+import { ApiDetailsViewModel } from "./react/ApiDetailsViewModel";
+import { DetailsOfApiModel } from "./detailsOfApiModel";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
 import { IWidgetService } from "@paperbits/common/widgets";
 
 
@@ -16,8 +16,8 @@ export class DetailsOfApiPublishModule implements IInjectorModule {
 
         widgetService.registerWidget("detailsOfApi", {
             modelDefinition: DetailsOfApiModel,
-            componentBinder: KnockoutComponentBinder,
-            componentDefinition: DetailsOfApiViewModel,
+            componentBinder: ReactComponentBinder,
+            componentDefinition: ApiDetailsViewModel,
             modelBinder: DetailsOfApiModelBinder,
             viewModelBinder: DetailsOfApiViewModelBinder
         });

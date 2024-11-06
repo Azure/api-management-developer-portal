@@ -11,7 +11,7 @@ import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSess
 import { HistoryRouteHandler } from "@paperbits/common/routing";
 import { RoleBasedSecurityDesignModule } from "@paperbits/core/security/roleBasedSecurity.design.module";
 import { ListOfApisDesignModule } from "./components/apis/list-of-apis/ko/listOfApisEditor.module";
-import { DetailsOfApiDesignModule } from "./components/apis/details-of-api/ko/detailsOfApiEditor.module";
+import { DetailsOfApiDesignModule } from "./components/apis/details-of-api/detailsOfApi.design.module";
 import { HistoryOfApiEditorModule as HistoryOfApiDesignModule } from "./components/apis/history-of-api/ko/historyOfApiEditor.module";
 import { SigninDesignModule } from "./components/users/signin/signin.design.module";
 import { SigninSocialEditorModule as SigninSocialDesignModule } from "./components/users/signin-social/signinSocial.design.module";
