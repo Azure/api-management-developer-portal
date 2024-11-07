@@ -7,7 +7,7 @@ import { MapiClient } from "./services/mapiClient";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { ListOfApisPublishModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
 import { DetailsOfApiPublishModule } from "./components/apis/details-of-api/detailsOfApi.publish.module";
-import { HistoryOfApiPublishModule } from "./components/apis/history-of-api/ko/historyOfApi.module";
+import { HistoryOfApiPublishModule } from "./components/apis/history-of-api/historyOfApi.publish.module";
 import { SigninPublishModule } from "./components/users/signin/signin.publish.module";
 import { SigninSocialPublishModule } from "./components/users/signin-social/signinSocial.publish.module";
 import { SignupPublishModule } from "./components/users/signup/signup.publish.module";

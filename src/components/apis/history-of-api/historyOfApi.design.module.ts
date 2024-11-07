@@ -1,12 +1,14 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { HistoryOfApiHandlers } from "../historyOfApiHandlers";
-import { HistoryOfApiEditor } from "./historyOfApiEditor";
+import { HistoryOfApiHandlers } from "./historyOfApiHandlers";
+import { HistoryOfApiEditor } from "./ko/historyOfApiEditor";
 import { IWidgetService } from "@paperbits/common/widgets";
-import { HistoryOfApiModelBinder } from "../historyOfApiModelBinder";
+import { HistoryOfApiModelBinder } from "./historyOfApiModelBinder";
 import { HistoryOfApiViewModelBinder } from "./historyOfApiViewModelBinder";
-import { HistoryOfApiModel } from "../historyOfApiModel";
+import { HistoryOfApiModel } from "./historyOfApiModel";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { HistoryOfApiViewModel } from "./historyOfApiViewModel";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ApiHistoryViewModel } from "./react/ApiHistoryViewModel";
+import { ComponentFlow } from "@paperbits/common/components";
 
 export class HistoryOfApiEditorModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -19,10 +21,11 @@ export class HistoryOfApiEditorModule implements IInjectorModule {
 
         widgetService.registerWidget("historyOfApi", {
             modelDefinition: HistoryOfApiModel,
-            componentBinder: KnockoutComponentBinder,
-            componentDefinition: HistoryOfApiViewModel,
+            componentBinder: ReactComponentBinder,
+            componentDefinition: ApiHistoryViewModel,
             modelBinder: HistoryOfApiModelBinder,
-            viewModelBinder: HistoryOfApiViewModelBinder
+            viewModelBinder: HistoryOfApiViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("historyOfApi", {
