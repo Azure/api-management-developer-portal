@@ -3,16 +3,16 @@ import { useEffect, useState } from "react";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
 import { Stack } from "@fluentui/react";
-import { Body1, Body1Strong, FluentProvider, Link, Spinner, Subtitle1, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
-import { Api } from "../../../../../models/api";
-import { Page } from "../../../../../models/page";
-import { ChangeLogContract } from "../../../../../contracts/apiChangeLog";
-import { ApiService } from "../../../../../services/apiService";
-import { RouteHelper } from "../../../../../routing/routeHelper";
-import { Pagination } from "../../../../utils/react/Pagination";
-import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
-import { defaultPageSize, fuiTheme } from "../../../../../constants";
-import { Utils } from "../../../../../utils";
+import { FluentProvider, Spinner, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
+import { Api } from "../../../../models/api";
+import { Page } from "../../../../models/page";
+import { ChangeLogContract } from "../../../../contracts/apiChangeLog";
+import { ApiService } from "../../../../services/apiService";
+import { RouteHelper } from "../../../../routing/routeHelper";
+import { Pagination } from "../../../utils/react/Pagination";
+import { NoRecordsRow } from "../../../utils/react/NoRecordsRow";
+import { defaultPageSize, fuiTheme } from "../../../../constants";
+import { Utils } from "../../../../utils";
 
 interface ApiHistoryProps {
     detailsPageUrl?: string
@@ -54,13 +54,13 @@ const ApiHistoryFC = ({
 
     const loadApi = async (): Promise<Api> => {
         let api: Api;
-    
+
         try {
             api = await apiService.getApi(`apis/${apiName}`);
         } catch (error) {
             throw new Error(`Unable to load the API. Error: ${error.message}`);
         }
-    
+
         return api;
     }
 
@@ -84,17 +84,17 @@ const ApiHistoryFC = ({
                     ? <>
                         <Stack horizontal horizontalAlign="space-between" verticalAlign="center" style={{ marginBottom: "2rem" }}>
                             <Stack horizontal verticalAlign="center">
-                                <Subtitle1 className={"api-title"}>{api.displayName}</Subtitle1>
+                                <h4 className={"api-title"}>{api.displayName}</h4>
                             </Stack>
-                            {detailsPageUrl && 
-                                <Link href={routeHelper.getApiReferenceUrl(apiName, detailsPageUrl)}>Go back to the API reference page</Link>
+                            {detailsPageUrl &&
+                                <a href={routeHelper.getApiReferenceUrl(apiName, detailsPageUrl)}>Go back to the API reference page</a>
                             }
                         </Stack>
                         <Table className={"fui-table"}>
                             <TableHeader>
                                 <TableRow className={"fui-table-headerRow"}>
-                                    <TableHeaderCell><Body1Strong>Release date</Body1Strong></TableHeaderCell>
-                                    <TableHeaderCell><Body1Strong>Notes</Body1Strong></TableHeaderCell>
+                                    <TableHeaderCell><span className="strong">Release date</span></TableHeaderCell>
+                                    <TableHeaderCell><span className="strong">Notes</span></TableHeaderCell>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -106,7 +106,7 @@ const ApiHistoryFC = ({
                                         </TableRow>
                                     ))
                                     : <NoRecordsRow colspan={2} />
-                                }                              
+                                }
                             </TableBody>
                         </Table>
                         {currentChangelogPage?.count > 1 &&
@@ -115,7 +115,7 @@ const ApiHistoryFC = ({
                             </div>
                         }
                       </>
-                    : <Body1>No API found.</Body1>
+                    : <span>No API selected.</span>
             }
 
         </>
@@ -128,7 +128,7 @@ export class ApiHistory extends React.Component<ApiHistoryProps, ApiHistoryState
 
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
-    
+
     @Resolve("router")
     public router: Router;
 

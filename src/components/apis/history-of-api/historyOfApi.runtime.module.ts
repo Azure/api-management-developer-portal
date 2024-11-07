@@ -1,6 +1,6 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { registerCustomElement } from "@paperbits/react/customElements";
-import { ApiHistory } from "./react/runtime/ApiHistory";
+import { ApiHistory } from "./react/ApiHistory";
 
 export class HistoryOfApiRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
