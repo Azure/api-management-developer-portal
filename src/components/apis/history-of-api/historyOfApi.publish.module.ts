@@ -1,11 +1,10 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { HistoryOfApiModel } from "../historyOfApiModel";
-import { HistoryOfApiModelBinder } from "../historyOfApiModelBinder";
-import { HistoryOfApiViewModel } from "./historyOfApiViewModel";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { HistoryOfApiModel } from "./historyOfApiModel";
+import { HistoryOfApiModelBinder } from "./historyOfApiModelBinder";
 import { HistoryOfApiViewModelBinder } from "./historyOfApiViewModelBinder";
-
+import { ApiHistoryViewModel } from "./react/ApiHistoryViewModel";
 
 export class HistoryOfApiPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -16,8 +15,8 @@ export class HistoryOfApiPublishModule implements IInjectorModule {
 
         widgetService.registerWidget("historyOfApi", {
             modelDefinition: HistoryOfApiModel,
-            componentBinder: KnockoutComponentBinder,
-            componentDefinition: HistoryOfApiViewModel,
+            componentBinder: ReactComponentBinder,
+            componentDefinition: ApiHistoryViewModel,
             modelBinder: HistoryOfApiModelBinder,
             viewModelBinder: HistoryOfApiViewModelBinder
         });
