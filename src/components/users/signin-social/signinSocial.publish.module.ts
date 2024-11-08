@@ -5,6 +5,7 @@ import { SignInSocialViewModel } from "./react/SignInSocialViewModel";
 import { SigninSocialViewModelBinder } from "./signinSocialViewModelBinder";
 import { SigninSocialModel } from "./signinSocialModel";
 import { SigninSocialModelBinder } from "./signinSocialModelBinder";
+import { ComponentFlow } from "@paperbits/common/components";
 
 
 export class SigninSocialPublishModule implements IInjectorModule {
@@ -19,7 +20,8 @@ export class SigninSocialPublishModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: SignInSocialViewModel,
             modelBinder: SigninSocialModelBinder,
-            viewModelBinder: SigninSocialViewModelBinder
+            viewModelBinder: SigninSocialViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }

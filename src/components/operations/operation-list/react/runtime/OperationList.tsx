@@ -2,15 +2,12 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { Router } from "@paperbits/common/routing";
 import { Stack } from "@fluentui/react";
-import { 
+import {
     Accordion,
     AccordionHeader,
     AccordionItem,
     AccordionPanel,
-    Body1,
-    Body1Strong,
     Button,
-    Link,
     Menu,
     MenuButton,
     MenuGroup,
@@ -79,8 +76,8 @@ export const OperationList = ({
             take: defaultPageSize,
             grouping: groupByTag ? "tag" : "none",
             propertyName: showUrlPath ? "urlTemplate" : ""
-        };      
-        
+        };
+
         setWorking(true);
         if (groupByTag) {
             loadOperationsByTag(query)
@@ -200,22 +197,22 @@ export const OperationList = ({
             className={`operation ${operation.name === selectedOperationName && `is-selected-operation`}`}
             onClick={() => selectOperation(operation)}
         >
-            {operation.name === selectedOperationName 
+            {operation.name === selectedOperationName
                 ? <>
-                    <Body1Strong className={`operation-method method-${operation.method}`}>
+                    <span className={`operation-method method-${operation.method} strong`}>
                         {operation.method}
-                    </Body1Strong>
-                    <Body1Strong className={`operation-name${!wrapText ? " nowrap" : ""}`}>
+                    </span>
+                    <span className={`operation-name${!wrapText ? " nowrap" : ""} strong`}>
                         {showUrlPath ? operation.urlTemplate : operation.displayName}
-                    </Body1Strong>
+                    </span>
                   </>
                 : <>
-                    <Body1 className={`operation-method method-${operation.method}`}>
+                    <span className={`operation-method method-${operation.method}`}>
                         {operation.method}
-                    </Body1>
-                    <Body1 className={`operation-name${!wrapText ? " nowrap" : ""}`}>
+                    </span>
+                    <span className={`operation-name${!wrapText ? " nowrap" : ""}`}>
                         {showUrlPath ? operation.urlTemplate : operation.displayName}
-                    </Body1>
+                    </span>
                   </>
             }
         </Stack>
@@ -224,7 +221,7 @@ export const OperationList = ({
     return (
         <div className={"operation-list-container"}>
             <Stack horizontal verticalAlign="center">
-                <Body1Strong block className={"operation-list-title"}>Operations</Body1Strong>
+                <span style={{display: "block"}} className={"operation-list-title strong"}>Operations</span>
                 <Stack horizontal>
                     <Menu defaultCheckedValues={{ "operation-list-props": getDefaultListProps() }}>
                         <MenuTrigger disableButtonEnhancement>
@@ -265,7 +262,7 @@ export const OperationList = ({
                         icon={<ChevronUpRegular />}
                         appearance={"transparent"}
                         className={`collapse-operations-button${isCollapsed ? " is-collapsed" : ""}`}
-                        onClick={() => setIsCollapsed(!isCollapsed)} 
+                        onClick={() => setIsCollapsed(!isCollapsed)}
                         aria-label={isCollapsed ? "Show operations" : "Hide operations"}
                     />
                 </Stack>
@@ -275,7 +272,7 @@ export const OperationList = ({
                     <SearchBox
                         placeholder={"Search"}
                         contentBefore={<SearchRegular className={"fui-search-icon"} />}
-                        className={"operation-search"}
+                        className={"operation-search no-search-icon"}
                         onChange={(event, data) => {
                             setPageNumber(1);
                             setSelectedOperationName(null);
@@ -298,11 +295,11 @@ export const OperationList = ({
                                     <SearchBox
                                         placeholder={"Search"}
                                         contentBefore={<SearchRegular className={"fui-search-icon"} />}
-                                        className={"tags-search"}
+                                        className={"tags-search no-search-icon"}
                                         onChange={(event, data) => setTagPattern(data.value)}
                                     />
-                                    {tags.length === 0 
-                                        ? <Body1 block className={"tags-no-results"}>No tags found</Body1>
+                                    {tags.length === 0
+                                        ? <span style={{display: "block"}} className={"tags-no-results"}>No tags found</span>
                                         : tags.map(tag => (
                                             <MenuItemCheckbox name={"tag"} value={tag.name} key={tag.name}>
                                                 {tag.name}
@@ -320,12 +317,12 @@ export const OperationList = ({
                         : <>
                             {groupByTag
                                 ? <>
-                                    {(!operationsByTags || operationsByTags.length <= 0)
-                                        ? <Body1>No operations found.</Body1>
+                                    {(!operationsByTags || operationsByTags.length === 0)
+                                        ? <span>No operations found.</span>
                                         : <Accordion
                                             multiple
                                             collapsible
-                                            defaultOpenItems={defaultAllGroupTagsExpanded && [...Array(operationsByTags.length).keys()]}
+                                            defaultOpenItems={defaultAllGroupTagsExpanded ? [...Array(operationsByTags.length).keys()] : []}
                                           >
                                             {operationsByTags.map((tag, index) => (
                                                 <AccordionItem value={index} key={tag.tag}>
@@ -342,14 +339,14 @@ export const OperationList = ({
                                   </>
                                 : <>
                                     {(!operations || operations.length <= 0)
-                                        ? <Body1>No operations found.</Body1>
+                                        ? <span>No operations found.</span>
                                         : operations.map(operation =>
                                             renderOperation(operation)
                                           )
                                     }
                                   </>
                             }
-                            {hasNextPage && <Link className={"show-more-operations"} onClick={() => setPageNumber(prev => prev + 1)}>Show more</Link>}
+                            {hasNextPage && <a className={"show-more-operations"} onClick={() => setPageNumber(prev => prev + 1)}>Show more</a>}
                           </>
                     }
                 </div>

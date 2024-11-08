@@ -5,6 +5,7 @@ import { SignupSocialModel } from "./signupSocialModel";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
 import { SignUpSocialViewModel } from "./react/SignUpSocialViewModel";
+import { ComponentFlow } from "@paperbits/common/components";
 
 export class SignupSocialPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -18,7 +19,8 @@ export class SignupSocialPublishModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: SignUpSocialViewModel,
             modelBinder: SignupSocialModelBinder,
-            viewModelBinder: SignupSocialViewModelBinder
+            viewModelBinder: SignupSocialViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }

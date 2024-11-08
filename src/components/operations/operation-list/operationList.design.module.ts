@@ -1,12 +1,14 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { OperationListHandlers } from "../operationListHandlers";
-import { OperationListEditor } from "./operationListEditor";
-import { OperationListModelBinder } from "../operationListModelBinder";
+import { OperationListHandlers } from "./operationListHandlers";
+import { OperationListEditor } from "./ko/operationListEditor";
+import { OperationListModelBinder } from "./operationListModelBinder";
 import { OperationListViewModelBinder } from "./operationListViewModelBinder";
 import { IWidgetService } from "@paperbits/common/widgets";
-import { OperationListModel } from "../operationListModel";
+import { OperationListModel } from "./operationListModel";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { OperationListViewModel } from "./operationListViewModel";
+import { OperationListViewModel } from "./react/OperationListViewModel";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
 
 export class OperationListEditorModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -19,10 +21,11 @@ export class OperationListEditorModule implements IInjectorModule {
 
         widgetService.registerWidget("operationList", {
             modelDefinition: OperationListModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: OperationListViewModel,
             modelBinder: OperationListModelBinder,
-            viewModelBinder: OperationListViewModelBinder
+            viewModelBinder: OperationListViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("operationList", {

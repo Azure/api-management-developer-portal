@@ -5,6 +5,7 @@ import { ChangePasswordModel } from "./changePasswordModel";
 import { ChangePasswordModelBinder } from "./changePasswordModelBinder";
 import { ChangePasswordViewModel } from "./react/ChangePasswordViewModel";
 import { ChangePasswordViewModelBinder } from "./changePasswordViewModelBinder";
+import { ComponentFlow } from "@paperbits/common/components";
 
 export class ChangePasswordPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -18,7 +19,8 @@ export class ChangePasswordPublishModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: ChangePasswordViewModel,
             modelBinder: ChangePasswordModelBinder,
-            viewModelBinder: ChangePasswordViewModelBinder
+            viewModelBinder: ChangePasswordViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }

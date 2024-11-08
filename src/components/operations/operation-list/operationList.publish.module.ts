@@ -1,10 +1,11 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { OperationListModelBinder } from "../operationListModelBinder";
+import { OperationListModelBinder } from "./operationListModelBinder";
 import { OperationListViewModelBinder } from "./operationListViewModelBinder";
-import { OperationListModel } from "../operationListModel";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { OperationListViewModel } from "./operationListViewModel";
+import { OperationListModel } from "./operationListModel";
+import { OperationListViewModel } from "./react/OperationListViewModel";
 import { IWidgetService } from "@paperbits/common/widgets";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
 
 
 export class OperationListPublishModule implements IInjectorModule {
@@ -16,10 +17,11 @@ export class OperationListPublishModule implements IInjectorModule {
 
         widgetService.registerWidget("operationList", {
             modelDefinition: OperationListModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: OperationListViewModel,
             modelBinder: OperationListModelBinder,
-            viewModelBinder: OperationListViewModelBinder
+            viewModelBinder: OperationListViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }
