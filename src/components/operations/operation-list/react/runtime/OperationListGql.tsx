@@ -35,7 +35,7 @@ export const OperationListGql = ({
         getGraphValues().then(loadedValues => {
             setGraphqlTypes(loadedValues.graphqlTypes);
             setAvailableGraphqlTypes(loadedValues.availableGraphqlTypes);
-            
+
             const selectedType = graphType || loadedValues?.availableGraphqlTypes[0];
             if (selectedType) {
                 const operations = loadedValues.graphqlTypes[selectedType.toLowerCase()];
@@ -43,7 +43,7 @@ export const OperationListGql = ({
                 setSelectedGraphqlTypeOperations(operations);
                 setFilteredOperations(operations);
                 if (Object.values(operations).length > 0) {
-                    graphName 
+                    graphName
                         ? setSelectedOperationName(graphName)
                         : selectOperation(Object.values(operations)[0], selectedType);
                 }
@@ -99,7 +99,7 @@ export const OperationListGql = ({
             className={`operation ${operation.name === selectedOperationName && `is-selected-operation`}`}
             onClick={() => selectOperation(operation)}
         >
-            {operation.name === selectedOperationName 
+            {operation.name === selectedOperationName
                 ? <Body1Strong className={`operation-name${!wrapText ? " nowrap" : ""}`}>
                         {operation.name}
                   </Body1Strong>
@@ -141,7 +141,7 @@ export const OperationListGql = ({
                     <SearchBox
                         placeholder={"Search"}
                         contentBefore={<SearchRegular className={"fui-search-icon"} />}
-                        className={"operation-search"}
+                        className={"operation-search no-search-icon"}
                         onChange={(event, data) => filterOperations(data.value)}
                     />
                 </Stack>

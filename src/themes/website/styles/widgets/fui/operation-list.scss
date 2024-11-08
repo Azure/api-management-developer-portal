@@ -73,6 +73,12 @@ fui-operation-list {
     }
 }
 
+
+.no-search-icon input[type=search] {
+    padding-left: 0.5em !important;
+    background-image: none;
+}
+
 .fui-tags-popover {
     .tags-search {
         width: 100%;

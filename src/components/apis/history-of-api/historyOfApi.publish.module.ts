@@ -5,6 +5,7 @@ import { HistoryOfApiModel } from "./historyOfApiModel";
 import { HistoryOfApiModelBinder } from "./historyOfApiModelBinder";
 import { HistoryOfApiViewModelBinder } from "./historyOfApiViewModelBinder";
 import { ApiHistoryViewModel } from "./react/ApiHistoryViewModel";
+import { ComponentFlow } from "@paperbits/common/components";
 
 export class HistoryOfApiPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -18,7 +19,8 @@ export class HistoryOfApiPublishModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: ApiHistoryViewModel,
             modelBinder: HistoryOfApiModelBinder,
-            viewModelBinder: HistoryOfApiViewModelBinder
+            viewModelBinder: HistoryOfApiViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }

@@ -1,9 +1,9 @@
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
-import { OperationListViewModel } from "./operationListViewModel";
-import { OperationListModel } from "../operationListModel";
+import { OperationListViewModel } from "./react/OperationListViewModel";
+import { OperationListModel } from "./operationListModel";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
-import { isRedesignEnabledSetting } from "../../../../constants";
+import { isRedesignEnabledSetting } from "../../../constants";
 
 
 export class OperationListViewModelBinder implements ViewModelBinder<OperationListModel, OperationListViewModel> {
@@ -13,10 +13,9 @@ export class OperationListViewModelBinder implements ViewModelBinder<OperationLi
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: OperationListViewModel): void {
-        componentInstance.styles(state.styles);
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
-
-        componentInstance.runtimeConfig(JSON.stringify({
+        componentInstance.setState(prevState => ({
+            styles: state.styles,
+            isRedesignEnabled: state.isRedesignEnabled,
             allowSelection: state.allowSelection,
             wrapText: state.wrapText,
             showToggleUrlPath: state.showToggleUrlPath,

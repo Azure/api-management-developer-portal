@@ -5,6 +5,7 @@ import { IWidgetService } from "@paperbits/common/widgets";
 import { SigninModel } from "./signinModel";
 import { SigninViewModel } from "./react/SigninViewModel";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
 
 
 export class SigninPublishModule implements IInjectorModule {
@@ -19,7 +20,8 @@ export class SigninPublishModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: SigninViewModel,
             modelBinder: SigninModelBinder,
-            viewModelBinder: SigninViewModelBinder
+            viewModelBinder: SigninViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }

@@ -18,7 +18,7 @@ import { ProductDetailsPublishModule } from "./components/products/product-detai
 import { StaticRouter } from "./components/staticRouter";
 import { StaticUserService } from "./services/userService";
 import { StaticAuthenticator } from "./components/staticAuthenticator";
-import { OperationListPublishModule } from "./components/operations/operation-list/ko/operationList.module";
+import { OperationListPublishModule } from "./components/operations/operation-list/operationList.publish.module";
 import { OperationDetailsPublishModule } from "./components/operations/operation-details/operationDetails.publish.module";
 import { ProductListPublishModule } from "./components/products/product-list/ko/productList.module";
 import { ProductSubscribePublishModule } from "./components/products/product-subscribe/ko/productSubscribe.module";

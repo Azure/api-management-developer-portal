@@ -5,6 +5,7 @@ import { ValidationSummaryViewModelBinder } from "./validationSummaryViewModelBi
 import { ValidationSummaryModel } from "./validationSummaryModel";
 import { ValidationSummaryModelBinder } from "./validationSummaryModelBinder";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
 
 
 export class ValidationSummaryPublishModule implements IInjectorModule {
@@ -19,7 +20,8 @@ export class ValidationSummaryPublishModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: ValidationSummaryViewModel,
             modelBinder: ValidationSummaryModelBinder,
-            viewModelBinder: ValidationSummaryViewModelBinder
+            viewModelBinder: ValidationSummaryViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }

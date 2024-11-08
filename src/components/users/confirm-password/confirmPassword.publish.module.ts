@@ -6,6 +6,7 @@ import { ReactComponentBinder } from "@paperbits/react/bindings";
 import { ConfirmPasswordViewModel } from "./react/ConfirmPasswordViewModel";
 import { ConfirmPasswordHandlers } from "./confirmPasswordHandlers";
 import { IWidgetService } from "@paperbits/common/widgets";
+import { ComponentFlow } from "@paperbits/common/components";
 
 export class ConfirmPasswordPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -20,7 +21,8 @@ export class ConfirmPasswordPublishModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: ConfirmPasswordViewModel,
             modelBinder: ConfirmPasswordModelBinder,
-            viewModelBinder: ConfirmPasswordViewModelBinder
+            viewModelBinder: ConfirmPasswordViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }

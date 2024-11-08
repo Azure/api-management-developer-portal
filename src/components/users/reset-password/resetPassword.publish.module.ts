@@ -5,6 +5,7 @@ import { IWidgetService } from "@paperbits/common/widgets";
 import { ResetPasswordModel } from "./resetPasswordModel";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
 import { ResetPasswordViewModel } from "./react/ResetPasswordViewModel";
+import { ComponentFlow } from "@paperbits/common/components";
 
 
 export class ResetPasswordPublishModule implements IInjectorModule {
@@ -20,7 +21,8 @@ export class ResetPasswordPublishModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: ResetPasswordViewModel,
             modelBinder: ResetPasswordModelBinder,
-            viewModelBinder: ResetPasswordViewModelBinder
+            viewModelBinder: ResetPasswordViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }
