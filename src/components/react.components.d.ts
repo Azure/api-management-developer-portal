@@ -1,5 +1,7 @@
 declare namespace JSX {
     interface IntrinsicElements {
+        "fui-operation-list": any;
+        "operation-list": any;
         "fui-api-history": any;
         "api-history": any;
         "fui-api-details": any;

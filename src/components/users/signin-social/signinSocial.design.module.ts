@@ -8,6 +8,7 @@ import { SigninSocialHandlers } from "./signinSocialHandlers";
 import { SigninSocialModel } from "./signinSocialModel";
 import { SigninSocialModelBinder } from "./signinSocialModelBinder";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
 
 
 export class SigninSocialEditorModule implements IInjectorModule {
@@ -24,7 +25,8 @@ export class SigninSocialEditorModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: SignInSocialViewModel,
             modelBinder: SigninSocialModelBinder,
-            viewModelBinder: SigninSocialViewModelBinder
+            viewModelBinder: SigninSocialViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("signin-social", {

@@ -5,6 +5,7 @@ import { IWidgetService } from "@paperbits/common/widgets";
 import { SubscriptionsModel } from "./subscriptionsModel";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
 import { SubscriptionsViewModel } from "./react/SubscriptionsViewModel";
+import { ComponentFlow } from "@paperbits/common/components";
 
 export class SubscriptionsPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -18,7 +19,8 @@ export class SubscriptionsPublishModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: SubscriptionsViewModel,
             modelBinder: SubscriptionsModelBinder,
-            viewModelBinder: SubscriptionsViewModelBinder
+            viewModelBinder: SubscriptionsViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }

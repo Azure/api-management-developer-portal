@@ -6,6 +6,7 @@ import { ProfileViewModelBinder } from "./profileViewModelBinder";
 import { ProfileHandlers } from "./profileHandlers";
 import { ProfileModel } from "./profileModel";
 import { ProfileModelBinder } from "./profileModelBinder";
+import { ComponentFlow } from "@paperbits/common/components";
 
 
 export class ProfilePublishModule implements IInjectorModule {
@@ -21,7 +22,8 @@ export class ProfilePublishModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: ProfileViewModel,
             modelBinder: ProfileModelBinder,
-            viewModelBinder: ProfileViewModelBinder
+            viewModelBinder: ProfileViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }

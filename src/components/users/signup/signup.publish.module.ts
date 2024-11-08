@@ -5,6 +5,7 @@ import { SignupViewModelBinder } from "./signupViewModelBinder";
 import { SignupModel } from "./signupModel";
 import { SignupModelBinder } from "./signupModelBinder";
 import { SignUpViewModel } from "./react/SignUpViewModel";
+import { ComponentFlow } from "@paperbits/common/components";
 
 export class SignupPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -18,7 +19,8 @@ export class SignupPublishModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: SignUpViewModel,
             modelBinder: SignupModelBinder,
-            viewModelBinder: SignupViewModelBinder
+            viewModelBinder: SignupViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }

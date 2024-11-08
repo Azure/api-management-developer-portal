@@ -5,6 +5,7 @@ import { ApiDetailsViewModel } from "./react/ApiDetailsViewModel";
 import { DetailsOfApiModel } from "./detailsOfApiModel";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
 import { IWidgetService } from "@paperbits/common/widgets";
+import { ComponentFlow } from "@paperbits/common/components";
 
 
 export class DetailsOfApiPublishModule implements IInjectorModule {
@@ -19,7 +20,8 @@ export class DetailsOfApiPublishModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: ApiDetailsViewModel,
             modelBinder: DetailsOfApiModelBinder,
-            viewModelBinder: DetailsOfApiViewModelBinder
+            viewModelBinder: DetailsOfApiViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }

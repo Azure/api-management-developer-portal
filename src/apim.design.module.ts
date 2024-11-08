@@ -24,7 +24,7 @@ import { MapiClient, IdentityService } from "./services";
 import { SetupModule } from "./components/setup/setup.module";
 import { ContentModule } from "./components/content";
 import { CustomWidgetListModule } from "./components/custom-widget-list";
-import { OperationListEditorModule as OperationListDesignModule } from "./components/operations/operation-list/ko/operationListEditor.module";
+import { OperationListEditorModule as OperationListDesignModule } from "./components/operations/operation-list/operationList.design.module";
 import { OperationDetailsDesignModule } from "./components/operations/operation-details/operationDetails.design.module";
 import { ProductListEditorModule as ProductListDesignModule } from "./components/products/product-list/ko/productListEditor.module";
 import { ProductSubscribeEditorModule as ProductSubscribeDesignModule } from "./components/products/product-subscribe/ko/productSubscribeEditor.module";

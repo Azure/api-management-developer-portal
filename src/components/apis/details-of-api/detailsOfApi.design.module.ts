@@ -8,6 +8,7 @@ import { DetailsOfApiEditor } from "./ko/detailsOfApiEditor";
 import { DetailsOfApiViewModelBinder } from "./detailsOfApiViewModelBinder";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
 import { ApiDetailsViewModel } from "./react/ApiDetailsViewModel";
+import { ComponentFlow } from "@paperbits/common/components";
 
 export class DetailsOfApiDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -23,7 +24,8 @@ export class DetailsOfApiDesignModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: ApiDetailsViewModel,
             modelBinder: DetailsOfApiModelBinder,
-            viewModelBinder: DetailsOfApiViewModelBinder
+            viewModelBinder: DetailsOfApiViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("detailsOfApi", {
