@@ -30,7 +30,7 @@ type SignUpAadRuntimeFCProps = SignUpAadRuntimeProps & {
     signUp: (provider: string, idToken: string, email: string, firstName: string, lastName: string, consented: boolean) => Promise<void>
 };
 
-const SignUpAadRuntimeFC = ({ logger, router, routeHelper, signUp, termsOfUse, termsEnabled }: SignUpAadRuntimeFCProps) => {
+const SignUpAadRuntimeFC = ({ logger, router, routeHelper, signUp, termsOfUse, termsEnabled, isConsentRequired }: SignUpAadRuntimeFCProps) => {
     const { jwtToken, idToken, provider } = React.useMemo(() => {
         const provider = routeHelper.getIdTokenProvider();
         const idToken = routeHelper.getIdToken();
@@ -92,6 +92,7 @@ const SignUpAadRuntimeFC = ({ logger, router, routeHelper, signUp, termsOfUse, t
                     termsOfUse={termsOfUse}
                     consented={consented}
                     setConsented={setConsented}
+                    isConsentRequired={isConsentRequired}
                 />
             )}
 
