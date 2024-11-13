@@ -1,9 +1,9 @@
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
-import { OperationDetailsViewModel } from "./operationDetailsViewModel";
-import { OperationDetailsModel } from "../operationDetailsModel";
-import { isRedesignEnabledSetting } from "../../../../constants";
+import { isRedesignEnabledSetting } from "../../../constants";
+import { OperationDetailsViewModel } from "./react/OperationDetailsViewModel";
+import { OperationDetailsModel } from "./operationDetailsModel";
 
 export class OperationDetailsViewModelBinder implements ViewModelBinder<OperationDetailsModel, OperationDetailsViewModel> {
     constructor(
@@ -12,10 +12,9 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: OperationDetailsViewModel): void {
-        componentInstance.styles(state.styles);
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
-
-        componentInstance.config(JSON.stringify({
+        componentInstance.setState(prevState => ({
+            isRedesignEnabled: state.isRedesignEnabled,
+            styles: state.styles,
             enableConsole: state.enableConsole,
             enableScrollTo: state.enableScrollTo,
             defaultSchemaView: state.defaultSchemaView,

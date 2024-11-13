@@ -6,14 +6,8 @@ import { HttpClient } from "@paperbits/common/http/httpClient";
 import { Stack, } from "@fluentui/react";
 import {
     Badge,
-    Body1,
-    Body1Strong,
     Button,
-    Caption1Strong,
-    Link,
     Spinner,
-    Subtitle1,
-    Subtitle2,
     Table,
     TableBody,
     TableCell,
@@ -288,11 +282,11 @@ export const OperationDetails = ({
 
     return (
         <div className={"operation-details-container"}>
-            <Subtitle1 block className={"operation-details-title"} id={"operation"}>Operation</Subtitle1>
+            <h4 className={"operation-details-title"} id={"operation"}>Operation</h4>
             {working 
                 ? <Spinner label="Loading..." labelPosition="below" size="small" />
                 : !operation
-                    ? <Body1>No operation selected.</Body1> 
+                    ? <span>No operation selected.</span> 
                     : <div className={"operation-details-content"}>
                         <OperationConsole
                             isOpen={isConsoleOpen}
@@ -313,23 +307,23 @@ export const OperationDetails = ({
                         />
                         <div className={"operation-table"}>
                             <div className={"operation-table-header"}>
-                                <Subtitle2>{operation.displayName}</Subtitle2>
+                                <h5>{operation.displayName}</h5>
                                 {operation.description &&
-                                    <Body1 block className={"operation-description"}>
+                                    <span className={"operation-description"}>
                                         <MarkdownProcessor markdownToDisplay={operation.description} />
-                                    </Body1>
+                                    </span>
                                 }
                                 {tags.length > 0 &&
                                     <Stack horizontal className={"operation-tags"}>
-                                        <Body1Strong>Tags:</Body1Strong>
+                                        <span className="strong">Tags:</span>
                                         {tags.map(tag => <Badge key={tag.id} color="important" appearance="outline">{tag.name}</Badge>)}
                                     </Stack>
                                 }
                             </div>
                             <div className={"operation-table-body"}>
                                 <div className={"operation-table-body-row"}>
-                                    <Caption1Strong className={`operation-info-caption operation-method method-${operation.method}`}>{operation.method}</Caption1Strong>
-                                    <Body1 className={"operation-text"}>{requestUrl}</Body1>
+                                    <span className={`caption1-strong operation-info-caption operation-method method-${operation.method}`}>{operation.method}</span>
+                                    <span className={"operation-text"}>{requestUrl}</span>
                                     <Tooltip
                                         content={isCopied ? "Copied to clipboard!" : "Copy to clipboard"}
                                         relationship={"description"}
@@ -347,26 +341,26 @@ export const OperationDetails = ({
                                 </div>
                             </div>
                         </div>
-                        {enableConsole && <Button onClick={() => setIsConsoleOpen(true)}>Try this operation</Button>}
+                        {enableConsole && <button className="button" onClick={() => setIsConsoleOpen(true)}>Try this operation</button>}
                         {request && request.isMeaningful() &&
                             <div className={"operation-request"}>
-                                <Subtitle1 block className={"operation-subtitle1"}>Request</Subtitle1>
+                                <h4 className={"operation-subtitle1"}>Request</h4>
                                 {request.description && <MarkdownProcessor markdownToDisplay={request.description} />}
                                 {operation.parameters?.length > 0 &&
                                     <>
-                                        <Subtitle2 block className={"operation-subtitle2"}>Request parameters</Subtitle2>
+                                        <h5 className={"operation-subtitle2"}>Request parameters</h5>
                                         <OperationDetailsTable tableName={"Request parameters table"} tableContent={operation.parameters} showExamples={showExamples} showIn={true} />
                                     </>
                                 }
                                 {request.headers?.length > 0 &&
                                     <>
-                                        <Subtitle2 block className={"operation-subtitle2"}>Request headers</Subtitle2>
+                                        <h5 className={"operation-subtitle2"}>Request headers</h5>
                                         <OperationDetailsTable tableName={"Request headers table"} tableContent={request.headers} showExamples={showExamples} showIn={false} />
                                     </>
                                 }
                                 {request.meaningfulRepresentations()?.length > 0 &&
                                     <>
-                                        <Subtitle2 block className={"operation-subtitle2"}>Request body</Subtitle2>
+                                        <h5 className={"operation-subtitle2"}>Request body</h5>
                                         <OperationRepresentation
                                             representations={request.meaningfulRepresentations()}
                                             definitions={definitions}
@@ -381,13 +375,13 @@ export const OperationDetails = ({
                         {responses?.length > 0 &&
                             responses.map(response => (
                                 <div key={response.statusCode.code} className={"operation-response"}>
-                                    <Subtitle1 block className={"operation-subtitle1"}>
+                                    <h4 className={"operation-subtitle1"}>
                                         Response: {response.statusCode.code} {response.statusCode.description}
-                                    </Subtitle1>
+                                    </h4>
                                     {response.description && <MarkdownProcessor markdownToDisplay={response.description} />}
                                     {response.headers?.length > 0 &&
                                         <>
-                                            <Subtitle2 block className={"operation-subtitle2"}>Response headers</Subtitle2>
+                                            <h5 className={"operation-subtitle2"}>Response headers</h5>
                                             <OperationDetailsTable
                                                 tableName={"Response headers table"}
                                                 tableContent={response.headers}
@@ -409,25 +403,25 @@ export const OperationDetails = ({
                         ))}
                         {definitions?.length > 0 &&
                             <div className={"operation-definitions"}>
-                                <Subtitle1 block className={"operation-details-title"}>Definitions</Subtitle1>
+                                <h4 className={"operation-details-title"}>Definitions</h4>
                                 <Table aria-label={"Definitions list"} className={"fui-table"}>
                                     <TableHeader>
                                         <TableRow className={"fui-table-headerRow"}>
-                                            <TableHeaderCell><Body1Strong>Name</Body1Strong></TableHeaderCell>
-                                            <TableHeaderCell><Body1Strong>Description</Body1Strong></TableHeaderCell>
+                                            <TableHeaderCell><span className="strong">Name</span></TableHeaderCell>
+                                            <TableHeaderCell><span className="strong">Description</span></TableHeaderCell>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {definitions.map(definition => (
                                             <TableRow key={definition.name} className={"fui-table-body-row"}>
                                                 <TableCell>
-                                                    <Link href={getReferenceUrl(definition.name)} title={definition.name} className={"truncate-text"}>
+                                                    <a href={getReferenceUrl(definition.name)} title={definition.name} className={"truncate-text"}>
                                                         {definition.name}
-                                                    </Link>
+                                                    </a>
                                                 </TableCell>
-                                                <TableCell><Body1 title={definition.description}>
+                                                <TableCell><span title={definition.description}>
                                                     <MarkdownProcessor markdownToDisplay={definition.description} maxChars={250} truncate={true} />
-                                                </Body1></TableCell>
+                                                </span></TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>

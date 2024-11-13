@@ -4,7 +4,7 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
 import { HttpClient } from "@paperbits/common/http/httpClient";
 import { Stack } from "@fluentui/react";
-import { Badge, Body1, Body1Strong, Button, Caption1Strong, Spinner, Subtitle1, Subtitle2, Tooltip } from "@fluentui/react-components";
+import { Badge, Button, Spinner, Tooltip } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
 import { Operation } from "../../../../../models/operation";
 import { Api } from "../../../../../models/api";
@@ -116,11 +116,11 @@ export const OperationDetailsWebsocket = ({
 
     return (
         <div className={"operation-details-container"}>            
-            <Subtitle1 block className={"operation-details-title"} id={"operation"}>Operation</Subtitle1>
+            <h4 className={"operation-details-title"} id={"operation"}>Operation</h4>
             {working 
                 ? <Spinner label="Loading..." labelPosition="below" size="small" />
                 : !operation
-                    ? <Body1>No operation selected.</Body1> 
+                    ? <span>No operation selected.</span> 
                     : <div className={"operation-details-content"}>
                         <OperationConsole
                             isOpen={isConsoleOpen}
@@ -141,23 +141,23 @@ export const OperationDetailsWebsocket = ({
                         />
                         <div className={"operation-table"}>
                             <div className={"operation-table-header"}>
-                                <Subtitle2>{operation.displayName}</Subtitle2>
+                                <h5>{operation.displayName}</h5>
                                 {operation.description &&
-                                    <Body1 block className={"operation-description"}>
+                                    <span className={"operation-description"}>
                                         <MarkdownProcessor markdownToDisplay={operation.description} />
-                                    </Body1>
+                                    </span>
                                 }
                                 {tags.length > 0 &&
                                     <Stack horizontal className={"operation-tags"}>
-                                        <Body1Strong>Tags:</Body1Strong>
+                                        <span className="strong">Tags:</span>
                                         {tags.map(tag => <Badge key={tag.id} color="important" appearance="outline">{tag.name}</Badge>)}
                                     </Stack>
                                 }
                             </div>
                             <div className={"operation-table-body"}>
                                 <div className={"operation-table-body-row"}>
-                                    <Caption1Strong className={"operation-info-caption ws-caption"}>Socket URL</Caption1Strong>
-                                    <Body1 className={"operation-text"}>{requestUrl}</Body1>
+                                    <span className={"caption1-strong operation-info-caption ws-caption"}>Socket URL</span>
+                                    <span className={"operation-text"}>{requestUrl}</span>
                                     <Tooltip
                                         content={isCopied ? "Copied to clipboard!" : "Copy to clipboard"}
                                         relationship={"description"}
@@ -175,13 +175,13 @@ export const OperationDetailsWebsocket = ({
                                 </div>
                                 {api.protocols &&
                                     <div className={"operation-table-body-row"}>
-                                        <Caption1Strong className={"operation-info-caption ws-caption"}>Protocol</Caption1Strong>
-                                        <Body1 className={"operation-text"}>{api.protocols.join(", ")}</Body1>
+                                        <span className={"caption1-strong operation-info-caption ws-caption"}>Protocol</span>
+                                        <span className={"operation-text"}>{api.protocols.join(", ")}</span>
                                     </div>
                                 }
                             </div>
                         </div>
-                        {enableConsole && <Button onClick={() => setIsConsoleOpen(true)}>Try this operation</Button>}
+                        {enableConsole && <button className="button" onClick={() => setIsConsoleOpen(true)}>Try this operation</button>}
                       </div>
             }
         </div>
