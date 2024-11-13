@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { Stack } from "@fluentui/react";
-import { Body1 } from "@fluentui/react-components";
 import { BtnSpinner } from "../../../utils/react/BtnSpinner";
 import { TermsOfUse } from "../../../utils/react/TermsOfUse";
 import { HipCaptcha } from "../../runtime/hip-captcha/react";
@@ -23,7 +22,8 @@ type SignUpFormProps = {
     backendService: BackendService
     handleSignUp: THandleSignUp
     termsEnabled: boolean
-    termsOfUse: string
+    termsOfUse: string,
+    isConsentRequired: boolean
 }
 
 export const SignUpForm = ({
@@ -32,6 +32,7 @@ export const SignUpForm = ({
     requireHipCaptcha,
     termsEnabled,
     termsOfUse,
+    isConsentRequired
 }: SignUpFormProps) => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
@@ -51,7 +52,8 @@ export const SignUpForm = ({
         setCaptchaObj({ captchaValid, refreshCaptcha, captchaData });
     }, []);
 
-    if (isSubmitted) return <Body1 id="confirmationMessage">Follow the instructions from the email to verify your account.</Body1>;
+    if (isSubmitted) return <p id="confirmationMessage">Follow the instructions from the email to verify your account.</p>;
+
 
     return (
         <>
@@ -123,6 +125,7 @@ export const SignUpForm = ({
                     termsOfUse={termsOfUse}
                     consented={consented}
                     setConsented={setConsented}
+                    isConsentRequired={isConsentRequired}
                 />
             )}
 
