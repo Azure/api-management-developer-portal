@@ -19,6 +19,10 @@ span.strong {
 
 span.caption1 {
     font-size: .9em;
+
+    &-strong {
+        font-weight: 600;
+    }
 }
 
 a.dropdown-link {
