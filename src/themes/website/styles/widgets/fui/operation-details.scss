@@ -30,6 +30,8 @@ fui-operation-details {
 
     .operation-info-caption {
         padding-right: .5rem;
+        font-size: 12px;
+        line-height: 16px;
 
         &.ws-caption {
             width: 75px;
@@ -78,6 +80,7 @@ fui-operation-details {
     }
 
     .td-combination-name {
+        font-weight: 600;
         margin-bottom: 1rem;
     }
 
