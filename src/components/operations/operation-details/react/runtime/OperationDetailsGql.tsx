@@ -18,14 +18,8 @@ import {
 } from "graphql";
 import { Stack } from "@fluentui/react";
 import {
-    Body1,
-    Body1Strong,
     Button,
-    Caption1Strong,
-    Link,
     Spinner,
-    Subtitle1,
-    Subtitle2,
     Tab,
     TabList,
     Table,
@@ -179,21 +173,21 @@ export const OperationDetailsGql = ({
         const typeName = type.name;
 
         if (isScalarType(type) || GraphqlDefaultScalarTypes.includes(typeName)) {
-            typeJsx = <Body1>{typeName}</Body1>;
+            typeJsx = <span>{typeName}</span>;
         } else if (graphType && graphName) {
-            typeJsx = <Link href={getGraphReferenceUrl(typeName)}>{typeName}</Link>;
+            typeJsx = <a href={getGraphReferenceUrl(typeName)}>{typeName}</a>;
         }
 
         if (typeIndicators.length === 0) {
             return typeJsx;
         } else if (!typeIndicators.includes("[")) {
-            return <Body1 block>{typeJsx}{typeIndicators.join("")}</Body1>;
+            return <div>{typeJsx}{typeIndicators.join("")}</div>;
         } else {
-            return <Body1 block>{typeIndicators.map((indicator, index) => 
+            return <div>{typeIndicators.map((indicator, index) => 
                 indicator === "["
                     ? <React.Fragment key={indicator + index}>{indicator}{typeJsx}</React.Fragment>
                     : indicator
-                )}</Body1>;
+                )}</div>;
         }
     }
     
@@ -244,11 +238,11 @@ export const OperationDetailsGql = ({
 
     return (
         <div className={"operation-details-container"}>
-            <Subtitle1 block className={"operation-details-title"} id={"operation"}>Operation</Subtitle1>
+            <h4 className={"operation-details-title"} id={"operation"}>Operation</h4>
             {working 
                 ? <Spinner label="Loading..." labelPosition="below" size="small" />
                 : !graph
-                    ? <Body1>No graph selected.</Body1> 
+                    ? <span>No graph selected.</span> 
                     : <div className={"operation-details-content"}>
                         <OperationConsoleGql
                             isOpen={isConsoleOpen}
@@ -270,17 +264,17 @@ export const OperationDetailsGql = ({
                         />
                         <div className={"operation-table"}>
                             <div className={"operation-table-header"}>
-                                <Subtitle2>{graph.name}</Subtitle2>
+                                <h5>{graph.name}</h5>
                                 {graph.description &&
-                                    <Body1 block className={"operation-description"}>
+                                    <div className={"operation-description"}>
                                         <MarkdownProcessor markdownToDisplay={graph.description} />
-                                    </Body1>
+                                    </div>
                                 }
                             </div>
                             <div className={"operation-table-body"}>
                                 <div className={"operation-table-body-row"}>
-                                    <Caption1Strong className={"operation-info-caption"}>GraphQL endpoint</Caption1Strong>
-                                    <Body1 className={"operation-text"}>{requestUrl}</Body1>
+                                    <span className={"caption1-strong operation-info-caption"}>GraphQL endpoint</span>
+                                    <span className={"operation-text"}>{requestUrl}</span>
                                     <Tooltip
                                         content={isCopied ? "Copied to clipboard!" : "Copy to clipboard"}
                                         relationship={"description"}
@@ -298,16 +292,16 @@ export const OperationDetailsGql = ({
                                 </div>
                             </div>
                         </div>
-                        {enableConsole && <Button onClick={() => setIsConsoleOpen(true)}>Try this operation</Button>}
+                        {enableConsole && <button className="button" onClick={() => setIsConsoleOpen(true)}>Try this operation</button>}
                         {graph.type &&
                             <div className={"operation-response"}>
-                                <Subtitle1 block className={"operation-subtitle1"}>Response type</Subtitle1>
+                                <h4 className={"operation-subtitle1"}>Response type</h4>
                                 {getGraphType(graph.type)}
                             </div>
                         }
                         {graph.args?.length > 0 &&
                             <div className={"operation-response"}>
-                                <Subtitle1 block className={"operation-subtitle1"}>Arguments</Subtitle1>
+                                <h4 className={"operation-subtitle1"}>Arguments</h4>
                                 <Stack horizontal horizontalAlign="space-between" className={"operation-body"}>
                                     <TabList selectedValue={schemaView} onTabSelect={(e, data: { value: TSchemaView }) => setSchemaView(data.value)}>
                                         <Tab value={TSchemaView.table}>Table</Tab>
@@ -318,9 +312,9 @@ export const OperationDetailsGql = ({
                                     ? <Table aria-label={"Definitions list"} className={"fui-table"}>
                                         <TableHeader>
                                             <TableRow className={"fui-table-headerRow"}>
-                                                <TableHeaderCell><Body1Strong>Name</Body1Strong></TableHeaderCell>
-                                                <TableHeaderCell><Body1Strong>Type</Body1Strong></TableHeaderCell>
-                                                <TableHeaderCell><Body1Strong>Description</Body1Strong></TableHeaderCell>
+                                                <TableHeaderCell><span className="strong">Name</span></TableHeaderCell>
+                                                <TableHeaderCell><span className="strong">Type</span></TableHeaderCell>
+                                                <TableHeaderCell><span className="strong">Description</span></TableHeaderCell>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
@@ -328,9 +322,9 @@ export const OperationDetailsGql = ({
                                                 <TableRow key={arg.name} className={"fui-table-body-row"}>
                                                     <TableCell>{arg.name}</TableCell>
                                                     <TableCell>{getGraphType(arg.type)}</TableCell>
-                                                    <TableCell><Body1 title={arg.description}>
+                                                    <TableCell><div title={arg.description}>
                                                         <MarkdownProcessor markdownToDisplay={arg.description} maxChars={250} truncate={true} />
-                                                    </Body1></TableCell>
+                                                    </div></TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
@@ -341,21 +335,21 @@ export const OperationDetailsGql = ({
                         }
                         {references?.length > 0 &&
                             <div className={"operation-definitions"}>
-                                <Subtitle1 block className={"operation-details-title"}>Types</Subtitle1>
+                                <h4 className={"operation-details-title"}>Types</h4>
                                 <Table aria-label={"Types list"} className={"fui-table"}>
                                     <TableHeader>
                                         <TableRow className={"fui-table-headerRow"}>
-                                            <TableHeaderCell><Body1Strong>Name</Body1Strong></TableHeaderCell>
-                                            <TableHeaderCell><Body1Strong>Description</Body1Strong></TableHeaderCell>
+                                            <TableHeaderCell><span className="strong">Name</span></TableHeaderCell>
+                                            <TableHeaderCell><span className="strong">Description</span></TableHeaderCell>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {references.map(reference => (
                                             <TableRow key={reference.name} className={"fui-table-body-row"}>
                                                 <TableCell>{getGraphType(reference)}</TableCell>
-                                                <TableCell><Body1 title={reference.description}>
+                                                <TableCell><div title={reference.description}>
                                                     <MarkdownProcessor markdownToDisplay={reference.description} maxChars={250} truncate={true} />
-                                                </Body1></TableCell>
+                                                </div></TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
