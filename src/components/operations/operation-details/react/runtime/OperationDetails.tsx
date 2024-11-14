@@ -309,9 +309,9 @@ export const OperationDetails = ({
                             <div className={"operation-table-header"}>
                                 <h5>{operation.displayName}</h5>
                                 {operation.description &&
-                                    <span className={"operation-description"}>
+                                    <div className={"operation-description"}>
                                         <MarkdownProcessor markdownToDisplay={operation.description} />
-                                    </span>
+                                    </div>
                                 }
                                 {tags.length > 0 &&
                                     <Stack horizontal className={"operation-tags"}>
@@ -355,7 +355,7 @@ export const OperationDetails = ({
                                 {request.headers?.length > 0 &&
                                     <>
                                         <h5 className={"operation-subtitle2"}>Request headers</h5>
-                                        <OperationDetailsTable tableName={"Request headers table"} tableContent={request.headers} showExamples={showExamples} showIn={false} />
+                                        <OperationDetailsTable tableName={"Request headers table"} tableContent={request.headers} showExamples={showExamples} showIn={false} isHeaders={true} />
                                     </>
                                 }
                                 {request.meaningfulRepresentations()?.length > 0 &&

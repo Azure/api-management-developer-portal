@@ -85,12 +85,12 @@ const TypeDefinitionCombination = ({ definition, showExamples, getReferenceUrl }
             <div className={"td-combinations"}>
                 <span>{type.combinationType}:</span>
                 {type.combinationReferences.length > 0 && type.combinationReferences.map(ref => (
-                    <span key={ref}><a href={getReferenceUrl(ref)}>{ref}</a></span>
+                    <div key={ref}><a href={getReferenceUrl(ref)}>{ref}</a></div>
                 ))}
             </div>
             {definition.properties.map(property => (
                 <React.Fragment key={property.name}>
-                    <span className={"strong td-combination-name"}>{property.name}</span>
+                    <div className={"td-combination-name"}>{property.name}</div>
                     {property.kind === TDefinitionKind.combination
                         ? <TypeDefinitionCombination definition={property as TypeDefinition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
                         : property.kind === TDefinitionKind.enum
@@ -146,19 +146,19 @@ const TypeDefinitionObject = ({ definition, showExamples, getReferenceUrl }: Typ
                     const typeName = property.type["name"];
 
                     if (property.type.displayAs === TPropertyDisplayAs.combination) {
-                        let children = [<span>{property.type["combinationType"]}:</span>];
+                        let children = [<div>{property.type["combinationType"]}:</div>];
 
                         property.type["combination"].map(combinationProperty => {
                             const combinationName = combinationProperty["name"];
 
                             if (combinationProperty["displayAs"] === TPropertyDisplayAs.reference) {
                                 children.push(
-                                    <span className={"truncate-text"}>
+                                    <div className={"truncate-text"}>
                                         <a href={getReferenceUrl(combinationName)} title={combinationName}>{combinationName}</a>
-                                    </span>
+                                    </div>
                                 );
                             } else {
-                                children.push(<span title={combinationName}>{combinationName}</span>);
+                                children.push(<div title={combinationName}>{combinationName}</div>);
                             }                                
                         });
                         
@@ -175,9 +175,9 @@ const TypeDefinitionObject = ({ definition, showExamples, getReferenceUrl }: Typ
                             <TableCell><span>{property.required ? "true" : "false"}</span></TableCell>
                             {definition.readOnly && <TableCell><span>{property.readOnly}</span></TableCell>}
                             <TableCell><span className={"truncate-text"}>{type}</span></TableCell>
-                            <TableCell><span title={property.description}>
+                            <TableCell><div title={property.description}>
                                 <MarkdownProcessor markdownToDisplay={property.description} maxChars={100} truncate={true} />
-                            </span></TableCell>
+                            </div></TableCell>
                             {showExamples && 
                                 <TableCell>
                                     {!!property.example && <span className={"truncate-text td-example"} title={property.example}>{property.example}</span>}
