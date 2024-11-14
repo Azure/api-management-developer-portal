@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Stack } from "@fluentui/react";
-import { Body1, Dropdown, Option, Tab, TabList } from "@fluentui/react-components";
+import { Dropdown, Option, Tab, TabList } from "@fluentui/react-components";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { Representation } from "../../../../../models/representation";
 import { TypeDefinition } from "../../../../../models/typeDefinition";
@@ -56,12 +56,12 @@ export const OperationRepresentation = ({ definitions, representations, showExam
     return (
         <>
             <Stack horizontal horizontalAlign="space-between" className={"operation-body"}>
-                <TabList selectedValue={schemaView} onTabSelect={(e, data: { value: TSchemaView }) => setSchemaView(data.value)}>
+                <TabList selectedValue={schemaView} onTabSelect={(_, data: { value: TSchemaView }) => setSchemaView(data.value)}>
                     <Tab value={TSchemaView.table}>Table</Tab>
                     {selectedRepresentation.contentType !== KnownMimeTypes.FormData && <Tab value={TSchemaView.schema}>Schema</Tab>}
                 </TabList>
                 <Stack horizontal verticalAlign="center">
-                    <Body1>Content type</Body1>
+                    <span>Content type</span>
                     <Dropdown
                         value={selectedRepresentation.contentType}
                         selectedOptions={[selectedRepresentation.contentType]}
