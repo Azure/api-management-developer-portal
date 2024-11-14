@@ -29,7 +29,7 @@ import { formatDate } from "../../../utils";
 import { ValueOrFieldWBtn } from "../../../utils/react/ValueOrField";
 import { NoRecordsRow } from "../../../utils/react/NoRecordsRow";
 
-const hiddenKey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+const hiddenKey = "XXXXXXXXXXXXXXXXXXXXXXXXXX";
 
 const subscriptionDateRender = (sub: Subscription) => {
     if (sub.isAwaitingApproval) return `Requested on ${formatDate(sub.createdDate)}`;
@@ -102,6 +102,7 @@ const SubscriptionRow = ({ sub, saveName, cancelSubscription, regeneratePKey, re
                         isEdit={editName}
                         value={sub.name}
                         save={editName => makeBusy(saveName(sub.id, editName).then(() => setEditName(false)))}
+                        cancel={() => setEditName(false)}
                         inputProps={{ disabled: working }}
                     >
                         {sub.name}
