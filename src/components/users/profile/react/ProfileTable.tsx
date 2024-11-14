@@ -80,6 +80,7 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount, delega
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
                         <ValueOrField
+                            enableSave={false}
                             isEdit={isEdit}
                             value={firstName}
                             setValue={setFirstName}
@@ -90,6 +91,7 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount, delega
                     </TableCell>
                     <TableCell>
                         <ValueOrField
+                            enableSave={false}
                             isEdit={isEdit}
                             value={lastName}
                             setValue={setLastName}
@@ -105,18 +107,14 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount, delega
                         {isEdit ? (
                             <Stack horizontal horizontalAlign="end" tokens={{ childrenGap: 10 }}>
                                 <BtnSpinner
-                                    appearance="primary"
-                                    size="small"
+                                    className="button button-primary"
                                     onClick={() => save(firstName, lastName).then(() => setIsEdit(false))}
                                 >
                                     Save
                                 </BtnSpinner>
-                                <Button
-                                    size="small"
-                                    onClick={() => setIsEdit(false)}
-                                >
+                                <button className="button" onClick={() => setIsEdit(false)}>
                                     Cancel
-                                </Button>
+                                </button>
                             </Stack>
                         ) : (
                             <Menu>

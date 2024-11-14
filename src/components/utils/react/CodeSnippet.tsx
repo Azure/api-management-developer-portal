@@ -20,12 +20,12 @@ export const CodeSnippet = ({ example, name, content, format }: TCodeSnippetProp
     const code = example?.value || content;
     const language = example?.format || format || "json";
     const title = (example?.title || name || "Sample value") + ` (${language})`;
-    
+
     return (
         <div className={"operation-table"}>
             <div className={"operation-table-header"}>
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
-                    <Body1Strong>{title}</Body1Strong>
+                    <span className="strong">{title}</span>
                     <Tooltip
                         content={isCopied ? "Copied to clipboard!" : "Copy to clipboard"}
                         relationship={"description"}
@@ -42,10 +42,10 @@ export const CodeSnippet = ({ example, name, content, format }: TCodeSnippetProp
                     </Tooltip>
                 </Stack>
                 {example?.description &&
-                    <Body1 block className={"operation-description"}>
+                    <span style={{display:"block"}} className={"operation-description"}>
                         <MarkdownProcessor markdownToDisplay={example.description} />
-                    </Body1>
-                }                
+                    </span>
+                }
             </div>
             <div className={"operation-table-body"}>
                 <div className={"operation-table-body-row"}>

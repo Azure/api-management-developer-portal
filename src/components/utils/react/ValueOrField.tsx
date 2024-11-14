@@ -1,15 +1,24 @@
 import * as React from "react";
-import { Button, Input, Spinner } from "@fluentui/react-components";
-import { SaveRegular } from "@fluentui/react-icons";
+import { Button, Spinner } from "@fluentui/react-components";
+import { DismissRegular, SaveRegular } from "@fluentui/react-icons";
+import { Stack } from "@fluentui/react";
 
 export type TValueOrFieldProps<T> = React.PropsWithChildren<{
+    enableSave: boolean;
+    working?: boolean;
+    onSave?: () => void;
+    onCancel?: () => void;
     isEdit: boolean;
     value?: T;
     setValue: (value: T) => void;
-    inputProps?: React.ComponentProps<typeof Input>;
+    inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 }>;
 
 export const ValueOrField = ({
+    enableSave,
+    working,
+    onSave,
+    onCancel,
     isEdit,
     value,
     setValue,
@@ -18,24 +27,50 @@ export const ValueOrField = ({
 }: TValueOrFieldProps<string>) => {
     if (!isEdit) return <>{children ?? value}</>;
 
-    return (
-        <Input
+    return <Stack horizontal>
+        <input
+            style={inputProps?.style}
             value={value}
-            onChange={(_, data) => setValue(data.value)}
+            onChange={(event) => setValue(event.target.value)}
             {...inputProps}
         />
-    );
+        {working ?
+            (<Spinner size={"extra-tiny"} />)
+            :
+            (enableSave &&
+                <>
+                    <Button
+                        size="small"
+                        appearance="transparent"
+                        aria-label="Save"
+                        onClick={onSave}
+                        icon={<SaveRegular />}
+                    />
+                    <Button
+                        size="small"
+                        icon={<DismissRegular />}
+                        appearance="transparent"
+                        aria-label="Cancel"
+                        onClick={onCancel}
+                        disabled={working}
+                    />
+                </>
+        )}
+        </Stack>
+    ;
 };
 
 type TValueOrFieldWBtnProps = Omit<
     TValueOrFieldProps<string>,
-    "setValue"
+    "setValue" | "enableSave" | "working" | "onSave" | "onCancel"
 > & {
     save: (value: string) => Promise<unknown>;
+    cancel: () => void;
 };
 
 export const ValueOrFieldWBtn = ({
     save,
+    cancel,
     isEdit,
     value: valueDefault,
     children,
@@ -47,29 +82,19 @@ export const ValueOrFieldWBtn = ({
     const onSave = () => {
         setWorking(true);
         save(value)
-            .finally(() => setWorking(false));
+        .finally(() => setWorking(false));
     };
 
     return (
         <ValueOrField
+            enableSave={true}
+            working={working}
+            onSave={onSave}
+            onCancel={() => cancel()}
             isEdit={isEdit}
             value={value}
             setValue={setValue}
-            inputProps={{
-                style: { width: "100%", ...inputProps?.style },
-                size: "small",
-                contentAfter: working ? (
-                    <Spinner size={"extra-tiny"} />
-                ) : (
-                    <Button
-                        size="small"
-                        appearance="transparent"
-                        onClick={onSave}
-                        icon={<SaveRegular />}
-                    />
-                ),
-                ...inputProps,
-            }}
+            inputProps={inputProps}
         >
             {children}
         </ValueOrField>
