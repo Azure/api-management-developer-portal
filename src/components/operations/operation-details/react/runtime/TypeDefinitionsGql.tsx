@@ -51,9 +51,9 @@ export const TypeDefinitionGql = ({
 }
 
 const renderDescription = (description: string) => (
-    <TableCell><span title={description}>
+    <TableCell><div title={description}>
         <MarkdownProcessor markdownToDisplay={description} maxChars={100} truncate={true} />
-    </span></TableCell>
+    </div></TableCell>
 )
 
 const GQLTypeDefinitionForRepresentation = ({ graph, getGraphType }: GQLTypeDefinitionProps) => (

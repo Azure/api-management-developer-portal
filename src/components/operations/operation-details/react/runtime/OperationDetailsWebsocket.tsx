@@ -143,9 +143,9 @@ export const OperationDetailsWebsocket = ({
                             <div className={"operation-table-header"}>
                                 <h5>{operation.displayName}</h5>
                                 {operation.description &&
-                                    <span className={"operation-description"}>
+                                    <div className={"operation-description"}>
                                         <MarkdownProcessor markdownToDisplay={operation.description} />
-                                    </span>
+                                    </div>
                                 }
                                 {tags.length > 0 &&
                                     <Stack horizontal className={"operation-tags"}>

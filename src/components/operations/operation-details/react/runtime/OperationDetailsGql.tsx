@@ -181,13 +181,13 @@ export const OperationDetailsGql = ({
         if (typeIndicators.length === 0) {
             return typeJsx;
         } else if (!typeIndicators.includes("[")) {
-            return <span>{typeJsx}{typeIndicators.join("")}</span>;
+            return <div>{typeJsx}{typeIndicators.join("")}</div>;
         } else {
-            return <span>{typeIndicators.map((indicator, index) => 
+            return <div>{typeIndicators.map((indicator, index) => 
                 indicator === "["
                     ? <React.Fragment key={indicator + index}>{indicator}{typeJsx}</React.Fragment>
                     : indicator
-                )}</span>;
+                )}</div>;
         }
     }
     
@@ -266,9 +266,9 @@ export const OperationDetailsGql = ({
                             <div className={"operation-table-header"}>
                                 <h5>{graph.name}</h5>
                                 {graph.description &&
-                                    <span className={"operation-description"}>
+                                    <div className={"operation-description"}>
                                         <MarkdownProcessor markdownToDisplay={graph.description} />
-                                    </span>
+                                    </div>
                                 }
                             </div>
                             <div className={"operation-table-body"}>
@@ -322,9 +322,9 @@ export const OperationDetailsGql = ({
                                                 <TableRow key={arg.name} className={"fui-table-body-row"}>
                                                     <TableCell>{arg.name}</TableCell>
                                                     <TableCell>{getGraphType(arg.type)}</TableCell>
-                                                    <TableCell><span title={arg.description}>
+                                                    <TableCell><div title={arg.description}>
                                                         <MarkdownProcessor markdownToDisplay={arg.description} maxChars={250} truncate={true} />
-                                                    </span></TableCell>
+                                                    </div></TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
@@ -347,9 +347,9 @@ export const OperationDetailsGql = ({
                                         {references.map(reference => (
                                             <TableRow key={reference.name} className={"fui-table-body-row"}>
                                                 <TableCell>{getGraphType(reference)}</TableCell>
-                                                <TableCell><span title={reference.description}>
+                                                <TableCell><div title={reference.description}>
                                                     <MarkdownProcessor markdownToDisplay={reference.description} maxChars={250} truncate={true} />
-                                                </span></TableCell>
+                                                </div></TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
