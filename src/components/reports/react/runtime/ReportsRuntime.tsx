@@ -4,9 +4,9 @@ import * as moment from "moment/moment";
 import { Stack } from "@fluentui/react";
 import { FluentProvider } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
-import { AnalyticsService } from "../../../services/analyticsService";
-import { ReportRecordByTime } from "../../../contracts/reportRecordByTime";
-import * as Constants from "../../../constants";
+import { AnalyticsService } from "../../../../services/analyticsService";
+import { ReportRecordByTime } from "../../../../contracts/reportRecordByTime";
+import * as Constants from "../../../../constants";
 import {
     optionsReports,
     optionsReportsCharts,
