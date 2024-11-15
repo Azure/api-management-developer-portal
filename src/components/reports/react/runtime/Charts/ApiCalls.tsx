@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { Body1, Subtitle2Stronger } from "@fluentui/react-components";
 import { IChartProps, LineChart } from "@fluentui/react-charting";
 import { TReportsChartProps } from "../ReportsRuntime";
 
@@ -51,9 +50,9 @@ export const ApiCalls = ({ reportsByTime, timeRange, dateFormattingFunc }: TRepo
     
     return (
         <div className={"report-chart-container"}>
-            <Subtitle2Stronger block className={"report-chart-title"}>API Calls</Subtitle2Stronger>
+            <h5 className={"report-chart-title"}>API Calls</h5>
             {reportsByTime.length === 0
-                ? <Body1 block>No data</Body1>
+                ? <div>No data</div>
                 : <LineChart
                     data={data}
                     xAxisTitle="Time"

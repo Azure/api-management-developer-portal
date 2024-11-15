@@ -1,15 +1,15 @@
 import * as React from "react";
-import { Body1Strong, TableCell, TableRow } from "@fluentui/react-components";
-import { AnalyticsService } from "../../../../services/analyticsService";
-import { ReportQuery } from "../../../../services/reportQuery";
-import * as Constants from "../../../../constants";
-import { Utils } from "../../../../utils";
+import { TableCell, TableRow } from "@fluentui/react-components";
+import { AnalyticsService } from "../../../../../services/analyticsService";
+import { ReportQuery } from "../../../../../services/reportQuery";
+import * as Constants from "../../../../../constants";
+import { Utils } from "../../../../../utils";
 import { useLoadData } from "../utils";
 import { TReportsTableProps } from "../ReportsRuntime";
 import { orderDefault } from "./shared/Headers";
 import { ReportsTable } from "./shared/ReportsTable";
 
-const getProductsData = async (
+const getApisData = async (
     analyticsService: AnalyticsService,
     startTime: Date,
     endTime: Date,
@@ -26,7 +26,7 @@ const getProductsData = async (
         orderDirection: orderAscending ? Constants.Direction.asc : Constants.Direction.desc,
     };
 
-    const pageOfRecords = await analyticsService.getReportsByProduct(query);
+    const pageOfRecords = await analyticsService.getReportsByOperation(query);
 
     const value = pageOfRecords.value.map((contract) => ({
         ...contract,
@@ -45,25 +45,23 @@ const getProductsData = async (
     };
 };
 
-export const Products = ({ analyticsService, timeRange: { startTime, endTime } }: TReportsTableProps) => {
+export const Operations = ({ analyticsService, timeRange: { startTime, endTime } }: TReportsTableProps) => {
     const [order, setOrder] = React.useState(orderDefault);
     const [page, setPage] = React.useState(1);
-    const {data, working} = useLoadData(getProductsData, [analyticsService, startTime, endTime, page, order.key, order.ascending]);
+    const {data, working} = useLoadData(getApisData, [analyticsService, startTime, endTime, page, order.key, order.ascending]);
 
     return (
-        <ReportsTable mainLabel={"Products"} orderState={[order, setOrder]} pageState={[page, setPage]} data={data} working={working}>
-            {product => (
-                <TableRow key={product.name}>
-                    <TableCell>
-                        <Body1Strong>{product.name}</Body1Strong>
-                    </TableCell>
-                    <TableCell>{product.callCountSuccess}</TableCell>
-                    <TableCell>{product.callCountBlocked}</TableCell>
-                    <TableCell>{product.callCountFailed}</TableCell>
-                    <TableCell>{product.callCountOther}</TableCell>
-                    <TableCell>{product.callCountTotal}</TableCell>
-                    <TableCell>{product.apiTimeAvg}</TableCell>
-                    <TableCell>{product.bandwidth}</TableCell>
+        <ReportsTable mainLabel={"Operations"} orderState={[order, setOrder]} pageState={[page, setPage]} data={data} working={working}>
+            {api => (
+                <TableRow key={api.name}>
+                    <TableCell><span className="strong">{api.name}</span></TableCell>
+                    <TableCell>{api.callCountSuccess}</TableCell>
+                    <TableCell>{api.callCountBlocked}</TableCell>
+                    <TableCell>{api.callCountFailed}</TableCell>
+                    <TableCell>{api.callCountOther}</TableCell>
+                    <TableCell>{api.callCountTotal}</TableCell>
+                    <TableCell>{api.apiTimeAvg}</TableCell>
+                    <TableCell>{api.bandwidth}</TableCell>
                 </TableRow>
             )}
         </ReportsTable>

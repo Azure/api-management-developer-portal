@@ -1,8 +1,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { Body1, Subtitle2Stronger } from "@fluentui/react-components";
 import { IChartProps, LineChart } from "@fluentui/react-charting";
-import { Utils } from "../../../../utils";
+import { Utils } from "../../../../../utils";
 import { TReportsChartProps } from "../ReportsRuntime";
 
 const dataTransferLineChartData: IChartProps = {
@@ -37,9 +36,9 @@ export const DataTransfer = ({ reportsByTime, timeRange, dateFormattingFunc }: T
     
     return (
         <div className={"report-chart-container"}>
-            <Subtitle2Stronger block className={"report-chart-title"}>Data Transfer</Subtitle2Stronger>
+            <h5 className={"report-chart-title"}>Data Transfer</h5>
             {reportsByTime.length === 0
-                ? <Body1 block>No data</Body1>
+                ? <div>No data</div>
                 : <LineChart
                     data={data}
                     xAxisTitle="Time"
