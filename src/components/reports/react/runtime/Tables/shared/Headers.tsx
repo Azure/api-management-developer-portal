@@ -1,11 +1,5 @@
 import * as React from "react";
-import {
-    Body1Strong,
-    Body1Stronger,
-    TableHeader,
-    TableHeaderCell,
-    TableRow,
-} from "@fluentui/react-components";
+import { TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
 
 type TOrder = {
     key: string
@@ -49,28 +43,28 @@ export const Headers = ({ mainLabel, orderState }: THeadersProps) => (
     <TableHeader>
         <TableRow className={"fui-table-headerRow"}>
             <MyHeaderCell orderState={orderState} sortKey={"name"}>
-                <Body1Stronger>{mainLabel}</Body1Stronger>
+                <span className="stronger">{mainLabel}</span>
             </MyHeaderCell>
             <MyHeaderCell orderState={orderState} sortKey={"callCountSuccess"}>
-                <Body1Strong>Successful calls</Body1Strong>
+                <span className="strong">Successful calls</span>
             </MyHeaderCell>
             <MyHeaderCell orderState={orderState} sortKey={"callCountBlocked"}>
-                <Body1Strong>Blocked calls</Body1Strong>
+                <span className="strong">Blocked calls</span>
             </MyHeaderCell>
             <MyHeaderCell orderState={orderState} sortKey={"callCountFailed"}>
-                <Body1Strong>Failed calls</Body1Strong>
+                <span className="strong">Failed calls</span>
             </MyHeaderCell>
             <MyHeaderCell orderState={orderState} sortKey={"callCountOther"}>
-                <Body1Strong>Other calls</Body1Strong>
+                <span className="strong">Other calls</span>
             </MyHeaderCell>
             <MyHeaderCell orderState={orderState} sortKey={"callCountTotal"}>
-                <Body1Strong>Total calls</Body1Strong>
+                <span className="strong">Total calls</span>
             </MyHeaderCell>
             <MyHeaderCell orderState={orderState} sortKey={"apiTimeAvg"}>
-                <Body1Strong>Response time</Body1Strong>
+                <span className="strong">Response time</span>
             </MyHeaderCell>
             <MyHeaderCell orderState={orderState} sortKey={"bandwidth"}>
-                <Body1Strong>Bandwidth</Body1Strong>
+                <span className="strong">Bandwidth</span>
             </MyHeaderCell>
         </TableRow>
     </TableHeader>

@@ -31,5 +31,7 @@ declare namespace JSX {
         "fui-signin-runtime": any;
         "signin-runtime": any;
         "placeholder-content": any;
+        "fui-reports-runtime": any;
+        "reports-runtime": any;        
     }
 }
