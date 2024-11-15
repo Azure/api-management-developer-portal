@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Spinner, Table, TableBody } from "@fluentui/react-components";
-import { Pagination } from "../../../../utils/react/Pagination";
-import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
-import * as Constants from "../../../../../constants";
+import { Pagination } from "../../../../../utils/react/Pagination";
+import { NoRecordsRow } from "../../../../../utils/react/NoRecordsRow";
+import * as Constants from "../../../../../../constants";
 import { Headers, TOrderState } from "./Headers";
 
 export const ReportsTable = <T extends unknown>({ mainLabel, pageState: [pageNumber, setPageNumber], orderState, data, working, children }: {

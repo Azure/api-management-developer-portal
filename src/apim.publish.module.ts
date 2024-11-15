@@ -28,7 +28,7 @@ import { IdentityService } from "./services/identityService";
 import { ResetPasswordPublishModule } from "./components/users/reset-password/resetPassword.publish.module";
 import { ConfirmPasswordPublishModule } from "./components/users/confirm-password/confirmPassword.publish.module";
 import { ChangePasswordPublishModule } from "./components/users/change-password/changePassword.publish.module";
-import { ReportsPublishModule } from "./components/reports/ko/reports.module";
+import { ReportsPublishModule } from "./components/reports/reports.publish.module";
 import { TenantService } from "./services/tenantService";
 import { ValidationSummaryPublishModule } from "./components/users/validation-summary/validationSummary.publish.module";
 import { BackendService } from "./services/backendService";

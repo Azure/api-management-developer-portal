@@ -1,9 +1,9 @@
 import * as React from "react";
-import { Body1Strong, TableCell, TableRow } from "@fluentui/react-components";
-import { AnalyticsService } from "../../../../services/analyticsService";
-import { ReportQuery } from "../../../../services/reportQuery";
-import * as Constants from "../../../../constants";
-import { Utils } from "../../../../utils";
+import { TableCell, TableRow } from "@fluentui/react-components";
+import { AnalyticsService } from "../../../../../services/analyticsService";
+import { ReportQuery } from "../../../../../services/reportQuery";
+import * as Constants from "../../../../../constants";
+import { Utils } from "../../../../../utils";
 import { useLoadData } from "../utils";
 import { TReportsTableProps } from "../ReportsRuntime";
 import { orderDefault } from "./shared/Headers";
@@ -26,10 +26,11 @@ const getApisData = async (
         orderDirection: orderAscending ? Constants.Direction.asc : Constants.Direction.desc,
     };
 
-    const pageOfRecords = await analyticsService.getReportsByApi(query);
+    const pageOfRecords = await analyticsService.getReportsBySubscription(query);
 
     const value = pageOfRecords.value.map((contract) => ({
         ...contract,
+        name: contract.name || "< Unnamed >",
         callCountSuccess: Utils.formatNumber(contract.callCountSuccess),
         callCountBlocked: Utils.formatNumber(contract.callCountBlocked),
         callCountFailed: Utils.formatNumber(contract.callCountFailed),
@@ -45,18 +46,16 @@ const getApisData = async (
     };
 };
 
-export const Apis = ({ analyticsService, timeRange: { startTime, endTime } }: TReportsTableProps) => {
+export const Subscriptions = ({ analyticsService, timeRange: { startTime, endTime } }: TReportsTableProps) => {
     const [order, setOrder] = React.useState(orderDefault);
     const [page, setPage] = React.useState(1);
     const {data, working} = useLoadData(getApisData, [analyticsService, startTime, endTime, page, order.key, order.ascending]);
 
     return (
-        <ReportsTable mainLabel={"APIs"} orderState={[order, setOrder]} pageState={[page, setPage]} data={data} working={working}>
+        <ReportsTable mainLabel={"Subscriptions"} orderState={[order, setOrder]} pageState={[page, setPage]} data={data} working={working}>
             {api => (
                 <TableRow key={api.name}>
-                    <TableCell>
-                        <Body1Strong>{api.name}</Body1Strong>
-                    </TableCell>
+                    <TableCell><span className="strong">{api.name}</span></TableCell>
                     <TableCell>{api.callCountSuccess}</TableCell>
                     <TableCell>{api.callCountBlocked}</TableCell>
                     <TableCell>{api.callCountFailed}</TableCell>
