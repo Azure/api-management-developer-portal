@@ -31,7 +31,7 @@ import { ProductSubscribeEditorModule as ProductSubscribeDesignModule } from "./
 import { ProductApisEditorModule as ProductApisDesignModule } from "./components/products/product-apis/ko/productApisEditor.module";
 import { ProductSubscriptionsEditorModule as ProductSubscriptionsDesignModule } from "./components/products/product-subscriptions/ko/productSubscriptionsEditor.module";
 import { App } from "./components/app/app";
-import { ReportsEditorModule as ReportsDesignModule } from "./components/reports/ko/reportsEditor.module";
+import { ReportsEditorModule as ReportsDesignModule } from "./components/reports/reports.design.module";
 import { ResetPasswordDesignModule } from "./components/users/reset-password/resetPassword.design.module";
 import { ConfirmPasswordDesignModule } from "./components/users/confirm-password/confirmPassword.design.module";
 import { HelpModule } from "./components/help";

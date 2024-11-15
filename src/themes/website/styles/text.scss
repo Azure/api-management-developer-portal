@@ -13,8 +13,14 @@ pre {
     white-space: pre-wrap;
 }
 
-span.strong {
-    font-weight: 600;
+span {
+    &.strong {
+        font-weight: 600;
+    }
+
+    &.stronger {
+        font-weight: 700;
+    }
 }
 
 span.caption1 {

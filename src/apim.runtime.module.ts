@@ -110,7 +110,7 @@ import { ResetPasswordRuntimeModule } from "./components/users/reset-password/re
 import { ChangePasswordRuntimeModule } from "./components/users/change-password/changePassword.runtime.module";
 import { ConfirmPasswordRuntimeModule } from "./components/users/confirm-password/confirmPassword.runtime.module";
 import { SubscriptionsRuntimeModule } from "./components/users/subscriptions/subscriptions.runtime.module";
-import { ReportsRuntimeModule } from "./components/reports/ko/reports.runtime.module";
+import { ReportsRuntimeModule } from "./components/reports/reports.runtime.module";
 import { ValidationSummaryRuntimeModule } from "./components/users/validation-summary/validationSummary.runtime.module";
 
 export class ApimRuntimeModule implements IInjectorModule {

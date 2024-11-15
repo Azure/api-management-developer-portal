@@ -1,9 +1,9 @@
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
-import { ReportsViewModel } from "./reportsViewModel";
-import { ReportsModel } from "../reportsModel";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
-import { isRedesignEnabledSetting } from "../../../constants";
+import { isRedesignEnabledSetting } from "../../constants";
+import { ReportsModel } from "./reportsModel";
+import { ReportsViewModel } from "./react/ReportsViewModel";
 
 export class ReportsViewModelBinder implements ViewModelBinder<ReportsModel, ReportsViewModel> {
     constructor(
@@ -12,9 +12,10 @@ export class ReportsViewModelBinder implements ViewModelBinder<ReportsModel, Rep
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: ReportsViewModel): void {
-        componentInstance.styles(state.styles);
-
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
+        componentInstance.setState(prevState => ({
+            styles: state.styles,
+            isRedesignEnabled: state.isRedesignEnabled
+        }));
     }
 
     public async modelToState(model: ReportsModel, state: WidgetState): Promise<void> {
