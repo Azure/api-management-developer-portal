@@ -73,7 +73,9 @@ export class ApiService {
 
             if (searchQuery.pattern) {
                 const pattern = Utils.encodeURICustomized(searchQuery.pattern, Constants.reservedCharTuplesForOData);
-                odataFilterEntries.push(`(contains(properties/displayName,'${pattern}'))`);
+                odataFilterEntries.push(`(contains(properties/displayName,'${pattern}') or 
+                contains(properties/description,'${pattern}')
+                )`);
             }
         }
 
