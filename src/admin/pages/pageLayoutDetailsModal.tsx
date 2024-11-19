@@ -112,7 +112,7 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
  
         if (permalinkError || titleError) {
             const errors = {};
-            if (permalinkError) errors['permalink'] = permalinkError;
+            if (permalinkError) errors['permalinkTemplate'] = permalinkError;
             if (titleError) errors['title'] = titleError;
 
             this.setState({ errors });
