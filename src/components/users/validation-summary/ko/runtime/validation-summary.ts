@@ -40,10 +40,10 @@ export class ValidationSummary {
         this.errorMsgs(errorSum);
         if (this.errorMsgs().length > 0) {
             this.hasErrors(true);
+            document.getElementsByTagName(selector)[0]?.scrollIntoView();
         } else {
             this.hasErrors(false);
         }
 
-        document.getElementsByTagName(selector)[0]?.scrollIntoView();
     }
 }
