@@ -1,10 +1,10 @@
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
-import { layoutsMap } from "../../../utils/react/TableListInfo";
-import { isRedesignEnabledSetting } from "../../../../constants";
-import { ListOfApisModel } from "../listOfApisModel";
-import { ListOfApisViewModel } from "./listOfApisViewModel";
+import { layoutsMap } from "../../utils/react/TableListInfo";
+import { ListOfApisModel } from "./listOfApisModel";
+import { ListOfApisViewModel } from "./react/ListOfApisViewModel";
+import { isRedesignEnabledSetting } from "../../../constants";
 
 export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisModel, ListOfApisViewModel> {
     constructor(
@@ -13,17 +13,16 @@ export class ListOfApisViewModelBinder implements ViewModelBinder<ListOfApisMode
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: ListOfApisViewModel): void {
-        componentInstance.styles(state.styles);
-        componentInstance.layout(state.layout);
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
-
-        componentInstance.runtimeConfig(JSON.stringify({
+        componentInstance.setState(prevState => ({
+            isRedesignEnabled: state.isRedesignEnabled,
+            styles: state.styles,
+            layout: state.layout,
+            layoutDefault: layoutsMap[state.layout],
             allowSelection: state.allowSelection,
             allowViewSwitching: state.allowViewSwitching,
             filtersPosition: state.filtersPosition,
             showApiType: state.showApiType,
             defaultGroupByTagToEnabled: state.defaultGroupByTagToEnabled,
-            layoutDefault: layoutsMap[state.layout],
             detailsPageUrl: state.detailsPageHyperlink
                 ? state.detailsPageHyperlink.href
                 : undefined,

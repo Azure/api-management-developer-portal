@@ -1,14 +1,14 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { DetailsOfApiHandlers } from "./detailsOfApiHandlers";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
+import { DetailsOfApiEditor } from "./ko/detailsOfApiEditor";
 import { DetailsOfApiModel } from "./detailsOfApiModel";
 import { DetailsOfApiModelBinder } from "./detailsOfApiModelBinder";
-import { DetailsOfApiEditor } from "./ko/detailsOfApiEditor";
+import { DetailsOfApiViewModel } from "./react/DetailsOfApiViewModel";
 import { DetailsOfApiViewModelBinder } from "./detailsOfApiViewModelBinder";
-import { ReactComponentBinder } from "@paperbits/react/bindings";
-import { ApiDetailsViewModel } from "./react/ApiDetailsViewModel";
-import { ComponentFlow } from "@paperbits/common/components";
+import { DetailsOfApiHandlers } from "./detailsOfApiHandlers";
 
 export class DetailsOfApiDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -22,7 +22,7 @@ export class DetailsOfApiDesignModule implements IInjectorModule {
         widgetService.registerWidget("detailsOfApi", {
             modelDefinition: DetailsOfApiModel,
             componentBinder: ReactComponentBinder,
-            componentDefinition: ApiDetailsViewModel,
+            componentDefinition: DetailsOfApiViewModel,
             modelBinder: DetailsOfApiModelBinder,
             viewModelBinder: DetailsOfApiViewModelBinder,
             componentFlow: ComponentFlow.Block
