@@ -1,12 +1,11 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { DetailsOfApiModelBinder } from "./detailsOfApiModelBinder";
-import { DetailsOfApiViewModelBinder } from "./detailsOfApiViewModelBinder";
-import { ApiDetailsViewModel } from "./react/ApiDetailsViewModel";
-import { DetailsOfApiModel } from "./detailsOfApiModel";
-import { ReactComponentBinder } from "@paperbits/react/bindings";
 import { IWidgetService } from "@paperbits/common/widgets";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
 import { ComponentFlow } from "@paperbits/common/components";
-
+import { DetailsOfApiModel } from "./detailsOfApiModel";
+import { DetailsOfApiModelBinder } from "./detailsOfApiModelBinder";
+import { DetailsOfApiViewModel } from "./react/DetailsOfApiViewModel";
+import { DetailsOfApiViewModelBinder } from "./detailsOfApiViewModelBinder";
 
 export class DetailsOfApiPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -18,7 +17,7 @@ export class DetailsOfApiPublishModule implements IInjectorModule {
         widgetService.registerWidget("detailsOfApi", {
             modelDefinition: DetailsOfApiModel,
             componentBinder: ReactComponentBinder,
-            componentDefinition: ApiDetailsViewModel,
+            componentDefinition: DetailsOfApiViewModel,
             modelBinder: DetailsOfApiModelBinder,
             viewModelBinder: DetailsOfApiViewModelBinder,
             componentFlow: ComponentFlow.Block

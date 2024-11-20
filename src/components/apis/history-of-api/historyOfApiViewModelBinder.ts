@@ -1,18 +1,17 @@
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
-import { ApiHistoryViewModel } from "./react/ApiHistoryViewModel";
 import { HistoryOfApiModel } from "./historyOfApiModel";
+import { HistoryOfApiViewModel } from "./react/HistoryOfApiViewModel";
 import { isRedesignEnabledSetting } from "../../../constants";
 
-
-export class HistoryOfApiViewModelBinder implements ViewModelBinder<HistoryOfApiModel, ApiHistoryViewModel> {
+export class HistoryOfApiViewModelBinder implements ViewModelBinder<HistoryOfApiModel, HistoryOfApiViewModel> {
     constructor(
         private readonly styleCompiler: StyleCompiler,
         private readonly siteService: ISiteService,
     ) { }
 
-    public stateToInstance(state: WidgetState, componentInstance: ApiHistoryViewModel): void {
+    public stateToInstance(state: WidgetState, componentInstance: HistoryOfApiViewModel): void {
         componentInstance.setState(prevState => ({
             styles: state.styles,
             isRedesignEnabled: state.isRedesignEnabled,
