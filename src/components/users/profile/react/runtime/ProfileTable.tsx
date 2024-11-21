@@ -2,7 +2,6 @@ import * as React from "react";
 import { useState } from "react";
 import { Stack } from "@fluentui/react";
 import {
-    Body1Strong,
     Button,
     Menu,
     MenuItem,
@@ -22,10 +21,10 @@ import {
     MoreHorizontalRegular,
     SettingsRegular,
 } from "@fluentui/react-icons";
-import { User } from "../../../../models/user";
-import { formatDate } from "../../../utils";
-import { BtnSpinner } from "../../../utils/react/BtnSpinner";
-import { ValueOrField } from "../../../utils/react/ValueOrField";
+import { User } from "../../../../../models/user";
+import { formatDate } from "../../../../utils";
+import { BtnSpinner } from "../../../../utils/react/BtnSpinner";
+import { ValueOrField } from "../../../../utils/react/ValueOrField";
 
 export const ProfileTable = ({ user, save, changePassword, deleteAccount, delegationEdit }: {
     user: User
@@ -84,7 +83,7 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount, delega
                             isEdit={isEdit}
                             value={firstName}
                             setValue={setFirstName}
-                            inputProps={{ placeholder: "First name" }}
+                            inputProps={{ placeholder: "First name", style: { margin: 0 } }}
                         >
                             {user.firstName}
                         </ValueOrField>
@@ -95,7 +94,7 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount, delega
                             isEdit={isEdit}
                             value={lastName}
                             setValue={setLastName}
-                            inputProps={{ placeholder: "Last name" }}
+                            inputProps={{ placeholder: "Last name", style: { margin: 0 } }}
                         >
                             {user.lastName}
                         </ValueOrField>
@@ -107,12 +106,12 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount, delega
                         {isEdit ? (
                             <Stack horizontal horizontalAlign="end" tokens={{ childrenGap: 10 }}>
                                 <BtnSpinner
-                                    className="button button-primary"
+                                    className="button button-primary button-profile"
                                     onClick={() => save(firstName, lastName).then(() => setIsEdit(false))}
                                 >
                                     Save
                                 </BtnSpinner>
-                                <button className="button" onClick={() => setIsEdit(false)}>
+                                <button className="button button-profile" onClick={() => setIsEdit(false)}>
                                     Cancel
                                 </button>
                             </Stack>

@@ -8,18 +8,17 @@ import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
 import { EventManager } from "@paperbits/common/events";
 import { Logger } from "@paperbits/common/logging";
-import * as Constants from "../../../../constants";
-import { User } from "../../../../models/user";
-import { UsersService } from "../../../../services";
-import { RouteHelper } from "../../../../routing/routeHelper";
-import { TenantService } from "../../../../services/tenantService";
-import { BackendService } from "../../../../services/backendService";
+import { User } from "../../../../../models/user";
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { UsersService } from "../../../../../services/usersService";
+import { TenantService } from "../../../../../services/tenantService";
+import { BackendService } from "../../../../../services/backendService";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
+import { DelegationAction, DelegationParameters } from "../../../../../contracts/tenantSettings";
+import { Utils } from "../../../../../utils";
+import { fuiTheme, pageUrlChangePassword } from "../../../../../constants";
 import { ProfileTable } from "./ProfileTable";
-import { dispatchErrors, parseAndDispatchError } from "../../validation-summary/utils";
-import { ErrorSources } from "../../validation-summary/constants";
-import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
-import { Utils } from "../../../../utils";
-import { pageUrlChangePassword } from "../../../../constants";
 
 type ProfileRuntimeProps = {};
 type ProfileRuntimeFCProps = ProfileRuntimeProps & {
@@ -139,7 +138,7 @@ export class ProfileRuntime extends React.Component<ProfileRuntimeProps> {
 
     render() {
         return (
-            <FluentProvider theme={Constants.fuiTheme}>
+            <FluentProvider theme={fuiTheme}>
                 <ProfileRuntimeFC
                     {...this.props}
                     usersService={this.usersService}

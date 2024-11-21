@@ -1,10 +1,9 @@
 import { StyleCompiler } from "@paperbits/common/styles";
+import { ISiteService } from "@paperbits/common/sites/ISiteService";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ProfileModel } from "./profileModel";
 import { ProfileViewModel } from "./react/ProfileViewModel";
-import { ISiteService } from "@paperbits/common/sites/ISiteService";
 import { isRedesignEnabledSetting } from "../../../constants";
-
 
 export class ProfileViewModelBinder implements ViewModelBinder<ProfileModel, ProfileViewModel> {
     constructor(
