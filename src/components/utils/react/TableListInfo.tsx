@@ -88,12 +88,14 @@ export const TableListInfo = ({
                     </Stack.Item>
                 )}
 
-                <Stack.Item>
-                    <SearchBox
-                        onChange={(_, { value }) => setPattern(value)}
-                        contentBefore={<SearchRegular className={"fui-search-icon"} />}
+                <Stack.Item className="form-group" style={{ marginTop: 0 }}>
+                    <input
+                        type="search"
+                        className="form-control"
+                        onChange={e => setPattern(e.target.value)}
                         placeholder={"Search"}
                         aria-label={"Search"}
+                        style={{ marginBottom: 0 }}
                     />
                 </Stack.Item>
             </Stack>

@@ -137,12 +137,14 @@ export const OperationListGql = ({
                         <Option key={type} value={type}>{type}</Option>
                     ))}
                 </Dropdown>
-                <Stack horizontal verticalAlign="center" className={"operation-search-container"}>
-                    <SearchBox
+                <Stack horizontal verticalAlign="center" className={"operation-search-container form-group"}>
+                    <input
+                        type="search"
+                        className="form-control"
+                        onChange={e => filterOperations(e.target.value)}
                         placeholder={"Search"}
-                        contentBefore={<SearchRegular className={"fui-search-icon"} />}
-                        className={"operation-search no-search-icon"}
-                        onChange={(event, data) => filterOperations(data.value)}
+                        aria-label={"Search"}
+                        style={{ marginBottom: 0 }}
                     />
                 </Stack>
                 <div className={"operation-list"}>
