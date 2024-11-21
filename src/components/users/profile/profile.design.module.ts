@@ -1,13 +1,12 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
+import { ProfileModel } from "./profileModel";
+import { ProfileModelBinder } from "./profileModelBinder";
 import { ProfileViewModel } from "./react/ProfileViewModel";
 import { ProfileViewModelBinder } from "./profileViewModelBinder";
 import { ProfileHandlers } from "./profileHandlers";
-import { ProfileModel } from "./profileModel";
-import { ProfileModelBinder } from "./profileModelBinder";
-import { ComponentFlow } from "@paperbits/common/components";
-
 
 export class ProfileDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
