@@ -1,12 +1,12 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { SubscriptionsHandlers } from "./subscriptionsHandlers";
-import { SubscriptionsModelBinder } from "./subscriptionsModelBinder";
-import { SubscriptionsModel } from "./subscriptionsModel";
+import { IWidgetService } from "@paperbits/common/widgets";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
+import { SubscriptionsHandlers } from "./subscriptionsHandlers";
+import { SubscriptionsModel } from "./subscriptionsModel";
+import { SubscriptionsModelBinder } from "./subscriptionsModelBinder";
 import { SubscriptionsViewModel } from "./react/SubscriptionsViewModel";
 import { SubscriptionsViewModelBinder } from "./subscriptionsViewModelBinder";
-import { IWidgetService } from "@paperbits/common/widgets";
-import { ComponentFlow } from "@paperbits/common/components";
 
 export class SubscriptionsDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
