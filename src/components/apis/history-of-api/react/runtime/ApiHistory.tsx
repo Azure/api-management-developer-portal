@@ -4,15 +4,15 @@ import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
 import { Stack } from "@fluentui/react";
 import { FluentProvider, Spinner, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
-import { Api } from "../../../../models/api";
-import { Page } from "../../../../models/page";
-import { ChangeLogContract } from "../../../../contracts/apiChangeLog";
-import { ApiService } from "../../../../services/apiService";
-import { RouteHelper } from "../../../../routing/routeHelper";
-import { Pagination } from "../../../utils/react/Pagination";
-import { NoRecordsRow } from "../../../utils/react/NoRecordsRow";
-import { defaultPageSize, fuiTheme } from "../../../../constants";
-import { Utils } from "../../../../utils";
+import { Api } from "../../../../../models/api";
+import { Page } from "../../../../../models/page";
+import { ChangeLogContract } from "../../../../../contracts/apiChangeLog";
+import { ApiService } from "../../../../../services/apiService";
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { Pagination } from "../../../../utils/react/Pagination";
+import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
+import { defaultPageSize, fuiTheme } from "../../../../../constants";
+import { Utils } from "../../../../../utils";
 
 interface ApiHistoryProps {
     detailsPageUrl?: string

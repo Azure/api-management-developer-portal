@@ -1,12 +1,14 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { ApiProductsDropdownHandlers, ApiProductsHandlers, ApiProductsTilesHandlers } from "../apiProductsHandlers";
-import { ApiProductsModel } from "../apiProductsModel";
-import { ApiProductsModelBinder } from "../apiProductsModelBinder";
-import { ApiProductsEditor } from "./apiProductsEditor";
-import { ApiProductsViewModel } from "./apiProductsViewModel";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
+import { ApiProductsEditor } from "./ko/apiProductsEditor";
+import { ApiProductsModel } from "./apiProductsModel";
+import { ApiProductsModelBinder } from "./apiProductsModelBinder";
+import { ApiProductsViewModel } from "./react/ApiProductsViewModel";
 import { ApiProductsViewModelBinder } from "./apiProductsViewModelBinder";
+import { ApiProductsDropdownHandlers, ApiProductsHandlers, ApiProductsTilesHandlers } from "./apiProductsHandlers";
 
 export class ApiProductsDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -21,10 +23,11 @@ export class ApiProductsDesignModule implements IInjectorModule {
 
         const apiProductsWidget = {
             modelDefinition: ApiProductsModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: ApiProductsViewModel,
             modelBinder: ApiProductsModelBinder,
-            viewModelBinder: ApiProductsViewModelBinder
+            viewModelBinder: ApiProductsViewModelBinder,
+            componentFlow: ComponentFlow.Block
         };
 
         widgetService.registerWidget("api-products", apiProductsWidget);

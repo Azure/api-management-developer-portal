@@ -1,11 +1,11 @@
 import * as React from "react";
 import { StyleModel } from "@paperbits/common/styles";
 
-export class ApiDetailsViewModel extends React.Component {
+export class HistoryOfApiViewModel extends React.Component {
     public state: {
         isRedesignEnabled: boolean;
         styles: StyleModel;
-        changeLogPageUrl: string;
+        detailsPageUrl: string;
     };
 
     constructor(props) {
@@ -14,14 +14,14 @@ export class ApiDetailsViewModel extends React.Component {
         this.state = {
             isRedesignEnabled: props.isRedesignEnabled,
             styles: props.styles,
-            changeLogPageUrl: props.changeLogPageUrl
+            detailsPageUrl: props.detailsPageUrl
         };
     }
 
     public render(): JSX.Element {
         const data = JSON.stringify(this.state);
         return this.state.isRedesignEnabled
-            ? <fui-api-details key={data} props={data}></fui-api-details>
-            : <api-details params={data}></api-details>;
+            ? <fui-api-history key={data} props={data}></fui-api-history>
+            : <api-history params={data}></api-history>;
     }
 }

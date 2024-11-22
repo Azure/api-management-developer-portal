@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
 import {
-    Body1Strong,
     Button,
     Menu,
     MenuItem,
@@ -24,16 +23,16 @@ import {
     MoreHorizontalRegular,
     ProhibitedFilled,
 } from "@fluentui/react-icons";
-import { Subscription } from "../../../../models/subscription";
-import { formatDate } from "../../../utils";
-import { ValueOrFieldWBtn } from "../../../utils/react/ValueOrField";
-import { NoRecordsRow } from "../../../utils/react/NoRecordsRow";
+import { Subscription } from "../../../../../models/subscription";
+import { formatDate } from "../../../../utils";
+import { ValueOrFieldWBtn } from "../../../../utils/react/ValueOrField";
+import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
 
 const hiddenKey = "XXXXXXXXXXXXXXXXXXXXXXXXXX";
 
 const subscriptionDateRender = (sub: Subscription) => {
     if (sub.isAwaitingApproval) return `Requested on ${formatDate(sub.createdDate)}`;
-    if (sub.isActive && sub.startDate) return `Started on ${formatDate(new Date(sub.startDate))}`;
+    if (sub.isActive && sub.startDate) return `${formatDate(new Date(sub.startDate))}`;
 
     return undefined;
 }
@@ -93,21 +92,17 @@ const SubscriptionRow = ({ sub, saveName, cancelSubscription, regeneratePKey, re
             </MenuItem>
         ))
     ].filter(Boolean);
-
+    
     return (
         <TableRow>
             <TableCell>
-                <TableCellLayout description={`Product ${sub.productName}`}>
-                    <ValueOrFieldWBtn
-                        isEdit={editName}
-                        value={sub.name}
-                        save={editName => makeBusy(saveName(sub.id, editName).then(() => setEditName(false)))}
-                        cancel={() => setEditName(false)}
-                        inputProps={{ disabled: working }}
-                    >
-                        {sub.name}
-                    </ValueOrFieldWBtn>
-                </TableCellLayout>
+                <ValueOrFieldWBtn
+                    isEdit={editName}
+                    value={sub.name}
+                    save={editName => makeBusy(saveName(sub.id, editName).then(() => setEditName(false)))}
+                    cancel={() => setEditName(false)}
+                    inputProps={{ disabled: working, style: { margin: 0 } }}
+                />
                 <TableCellActions>
                     {!editName && (
                         <Button
@@ -123,68 +118,66 @@ const SubscriptionRow = ({ sub, saveName, cancelSubscription, regeneratePKey, re
             </TableCell>
 
             <TableCell>
-                <TableCellLayout description={subscriptionDateRender(sub)}>
-                    {sub.state}
-                </TableCellLayout>
+                {sub.productName}
             </TableCell>
 
-            <TableCell colSpan={2}>
-                {sub.isActive ? (
-                    <Table size="extra-small">
-                        <TableBody>
-                            <TableRow>
-                                <TableCell style={{ padding: 0 }}>Primary</TableCell>
-                                <TableCell style={{ padding: 0 }}>
-                                    {workingPKey ? <Spinner size={"extra-tiny"} /> : primaryHidden ? hiddenKey : sub.primaryKey}
-                                    <TableCellActions>
-                                        <Button
-                                            size="small"
-                                            appearance="subtle"
-                                            icon={primaryHidden ? <EyeRegular /> : <EyeOffRegular />}
-                                            onClick={() => setPrimaryHidden(prev => !prev)}
-                                        />
-                                    </TableCellActions>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell style={{ padding: 0 }}>Secondary</TableCell>
-                                <TableCell style={{ padding: 0 }}>
-                                    {workingSKey ? <Spinner size={"extra-tiny"} /> : secondaryHidden ? hiddenKey : sub.secondaryKey}
-                                    <TableCellActions>
-                                        <Button
-                                            size="small"
-                                            appearance="subtle"
-                                            icon={secondaryHidden ? <EyeRegular /> : <EyeOffRegular />}
-                                            onClick={() => setSecondaryHidden(prev => !prev)}
-                                        />
-                                    </TableCellActions>
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                ) : (
+            <TableCell>
+                {sub.state}
+            </TableCell>
+
+            {!sub.isActive
+                ? <TableCell colSpan={4}>
                     <i>The subscription is not active</i>
-                )}
-            </TableCell>
-
-            <TableCell style={{ textAlign: "right" }}>
-                {MenuActions.length > 0 && (
-                    <Menu>
-                        <MenuTrigger disableButtonEnhancement>
+                  </TableCell>
+                : <>
+                    <TableCell>
+                        {workingPKey ? <Spinner size={"extra-tiny"} /> : primaryHidden ? hiddenKey : sub.primaryKey}
+                        <TableCellActions>
                             <Button
-                                appearance="transparent"
-                                icon={<MoreHorizontalRegular />}
+                                size="small"
+                                appearance="subtle"
+                                icon={primaryHidden ? <EyeRegular /> : <EyeOffRegular />}
+                                onClick={() => setPrimaryHidden(prev => !prev)}
                             />
-                        </MenuTrigger>
+                        </TableCellActions>
+                    </TableCell>
 
-                        <MenuPopover>
-                            <MenuList>
-                                {MenuActions.map(MenuItem => <MenuItem key={MenuItem.toString()} />)}
-                            </MenuList>
-                        </MenuPopover>
-                    </Menu>
-                )}
-            </TableCell>
+                    <TableCell>
+                        {workingSKey ? <Spinner size={"extra-tiny"} /> : secondaryHidden ? hiddenKey : sub.secondaryKey}
+                        <TableCellActions>
+                            <Button
+                                size="small"
+                                appearance="subtle"
+                                icon={secondaryHidden ? <EyeRegular /> : <EyeOffRegular />}
+                                onClick={() => setSecondaryHidden(prev => !prev)}
+                            />
+                        </TableCellActions>
+                    </TableCell>
+
+                    <TableCell>
+                        {subscriptionDateRender(sub)}
+                    </TableCell>
+
+                    <TableCell style={{ textAlign: "right" }}>
+                        {MenuActions.length > 0 && (
+                            <Menu>
+                                <MenuTrigger disableButtonEnhancement>
+                                    <Button
+                                        appearance="transparent"
+                                        icon={<MoreHorizontalRegular />}
+                                    />
+                                </MenuTrigger>
+
+                                <MenuPopover>
+                                    <MenuList>
+                                        {MenuActions.map(MenuItem => <MenuItem key={MenuItem.toString()} />)}
+                                    </MenuList>
+                                </MenuPopover>
+                            </Menu>
+                        )}
+                    </TableCell>
+                  </>
+            }
         </TableRow>
     )
 }
@@ -195,6 +188,7 @@ export const SubscriptionsTable = ({ subscriptions, saveName, cancelSubscription
             className={"fui-table"}
             size={"small"}
             aria-label={"Subscriptions list"}
+            style={{ tableLayout: 'auto', width: "100%" }}
         >
             <TableHeader>
                 <TableRow className={"fui-table-headerRow"}>
@@ -203,11 +197,23 @@ export const SubscriptionsTable = ({ subscriptions, saveName, cancelSubscription
                     </TableHeaderCell>
 
                     <TableHeaderCell>
+                        <span className="strong">Product</span>
+                    </TableHeaderCell>
+
+                    <TableHeaderCell>
                         <span className="strong">State</span>
                     </TableHeaderCell>
 
-                    <TableHeaderCell colSpan={2}>
-                        <span className="strong">Keys</span>
+                    <TableHeaderCell>
+                        <span className="strong">Primary key</span>
+                    </TableHeaderCell>
+
+                    <TableHeaderCell>
+                        <span className="strong">Secondary key</span>
+                    </TableHeaderCell>
+
+                    <TableHeaderCell>
+                        <span className="strong">Date created</span>
                     </TableHeaderCell>
 
                     <TableHeaderCell>
@@ -228,7 +234,7 @@ export const SubscriptionsTable = ({ subscriptions, saveName, cancelSubscription
                             regenerateSKey={regenerateSKey}
                         />
                     ))
-                    : <NoRecordsRow colspan={5} />
+                    : <NoRecordsRow colspan={7} />
                 }
             </TableBody>
         </Table>

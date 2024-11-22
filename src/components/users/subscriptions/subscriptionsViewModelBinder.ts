@@ -1,9 +1,9 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
-import { isRedesignEnabledSetting } from "../../../constants";
 import { SubscriptionsModel } from "./subscriptionsModel";
 import { SubscriptionsViewModel } from "./react/SubscriptionsViewModel";
+import { isRedesignEnabledSetting } from "../../../constants";
 
 
 export class SubscriptionsViewModelBinder implements ViewModelBinder<SubscriptionsModel, SubscriptionsViewModel> {
