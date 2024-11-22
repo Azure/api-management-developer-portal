@@ -26,4 +26,4 @@ We welcome and appreciate [community contributions](CONTRIBUTIONS.md).
 
 ## <a name="license"></a> License
 
-The developer portal is published under the [MIT license](license).
+The developer portal is published under the [MIT license](LICENSE).
