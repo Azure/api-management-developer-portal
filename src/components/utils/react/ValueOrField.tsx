@@ -27,37 +27,39 @@ export const ValueOrField = ({
 }: TValueOrFieldProps<string>) => {
     if (!isEdit) return <>{children ?? value}</>;
 
-    return <Stack horizontal>
-        <input
-            style={inputProps?.style}
-            value={value}
-            onChange={(event) => setValue(event.target.value)}
-            {...inputProps}
-        />
-        {working ?
-            (<Spinner size={"extra-tiny"} />)
-            :
-            (enableSave &&
-                <>
-                    <Button
-                        size="small"
-                        appearance="transparent"
-                        aria-label="Save"
-                        onClick={onSave}
-                        icon={<SaveRegular />}
-                    />
-                    <Button
-                        size="small"
-                        icon={<DismissRegular />}
-                        appearance="transparent"
-                        aria-label="Cancel"
-                        onClick={onCancel}
-                        disabled={working}
-                    />
-                </>
-        )}
+    return (
+        <Stack horizontal className="form-group" style={{ margin: 0 }}>
+            <input
+                style={inputProps?.style}
+                className="form-control"
+                value={value}
+                onChange={(event) => setValue(event.target.value)}
+                {...inputProps}
+            />
+            {working ?
+                (<Spinner size={"extra-tiny"} />)
+                :
+                (enableSave &&
+                    <>
+                        <Button
+                            size="small"
+                            appearance="transparent"
+                            aria-label="Save"
+                            onClick={onSave}
+                            icon={<SaveRegular />}
+                        />
+                        <Button
+                            size="small"
+                            icon={<DismissRegular />}
+                            appearance="transparent"
+                            aria-label="Cancel"
+                            onClick={onCancel}
+                            disabled={working}
+                        />
+                    </>
+            )}
         </Stack>
-    ;
+    );
 };
 
 type TValueOrFieldWBtnProps = Omit<

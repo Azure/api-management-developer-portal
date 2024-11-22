@@ -5,18 +5,18 @@ import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
 import { EventManager } from "@paperbits/common/events";
 import { Logger } from "@paperbits/common/logging";
-import { Subscription } from "../../../../models/subscription";
-import * as Constants from "../../../../constants";
-import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
-import { SearchQuery } from "../../../../contracts/searchQuery";
-import { UsersService } from "../../../../services";
-import { TenantService } from "../../../../services/tenantService";
-import { BackendService } from "../../../../services/backendService";
-import { ProductService } from "../../../../services/productService";
-import { RouteHelper } from "../../../../routing/routeHelper";
-import { Utils } from "../../../../utils";
-import { dispatchErrors, parseAndDispatchError } from "../../validation-summary/utils";
-import { ErrorSources } from "../../validation-summary/constants";
+import { Subscription } from "../../../../../models/subscription";
+import { DelegationAction, DelegationParameters } from "../../../../../contracts/tenantSettings";
+import { SearchQuery } from "../../../../../contracts/searchQuery";
+import { UsersService } from "../../../../../services/usersService";
+import { TenantService } from "../../../../../services/tenantService";
+import { BackendService } from "../../../../../services/backendService";
+import { ProductService } from "../../../../../services/productService";
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { Utils } from "../../../../../utils";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
+import { defaultPageSize, fuiTheme } from "../../../../../constants";
 import { SubscriptionsTable } from "./SubscriptionsTable";
 
 type SubscriptionsRuntimeProps = {};
@@ -34,8 +34,8 @@ const initSubscriptions = async (usersService: UsersService, productService: Pro
 
     try {
         const query: SearchQuery = {
-            skip: (pageNumber - 1) * Constants.defaultPageSize,
-            take: Constants.defaultPageSize
+            skip: (pageNumber - 1) * defaultPageSize,
+            take: defaultPageSize
         };
 
         const subscriptionsPage = await productService.getUserSubscriptionsWithProductName(userId, query);
@@ -172,7 +172,7 @@ export class SubscriptionsRuntime extends React.Component<SubscriptionsRuntimePr
 
     render() {
         return (
-            <FluentProvider theme={Constants.fuiTheme}>
+            <FluentProvider theme={fuiTheme}>
                 <SubscriptionsRuntimeFC
                     {...this.props}
                     usersService={this.usersService}

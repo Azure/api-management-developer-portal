@@ -269,16 +269,20 @@ export const OperationList = ({
             </Stack>
             <div className={`operation-list-collapsible${isCollapsed ? " is-collapsed" : ""}`}>
                 <Stack horizontal verticalAlign="center" className={"operation-search-container"}>
-                    <SearchBox
-                        placeholder={"Search"}
-                        contentBefore={<SearchRegular className={"fui-search-icon"} />}
-                        className={"operation-search no-search-icon"}
-                        onChange={(event, data) => {
-                            setPageNumber(1);
-                            setSelectedOperationName(null);
-                            setPattern(data.value);
-                        }}
-                    />
+                    <Stack.Item className="form-group" style={{ margin: 0, width: '100%' }}>
+                        <input
+                            type="search"
+                            className="form-control"
+                            onChange={e => {
+                                setPageNumber(1);
+                                setSelectedOperationName(null);
+                                setPattern(e.target.value);
+                            }}
+                            placeholder={"Search"}
+                            aria-label={"Search"}
+                            style={{ marginBottom: 0 }}
+                        />
+                    </Stack.Item>
                     <Menu onCheckedValueChange={(e, data) => setSelectedTags(tags.filter(tag => data.checkedItems.indexOf(tag.name) > -1))}>
                         <MenuTrigger disableButtonEnhancement>
                             <Button
@@ -292,14 +296,18 @@ export const OperationList = ({
                             <MenuList>
                                 <MenuGroup>
                                     <MenuGroupHeader>Search by tag</MenuGroupHeader>
-                                    <SearchBox
-                                        placeholder={"Search"}
-                                        contentBefore={<SearchRegular className={"fui-search-icon"} />}
-                                        className={"tags-search no-search-icon"}
-                                        onChange={(event, data) => setTagPattern(data.value)}
-                                    />
+                                    <Stack className="form-group" style={{ margin: 0 }}>
+                                        <input
+                                            type="search"
+                                            className="form-control"
+                                            onChange={e => setTagPattern(e.target.value)}
+                                            placeholder={"Search"}
+                                            aria-label={"Search"}
+                                            style={{ marginBottom: 0 }}
+                                        />
+                                    </Stack>
                                     {tags.length === 0
-                                        ? <span style={{display: "block"}} className={"tags-no-results"}>No tags found</span>
+                                        ? <div className={"tags-no-results"}>No tags found</div>
                                         : tags.map(tag => (
                                             <MenuItemCheckbox name={"tag"} value={tag.name} key={tag.name}>
                                                 {tag.name}

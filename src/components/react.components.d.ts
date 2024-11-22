@@ -8,6 +8,14 @@ declare namespace JSX {
         "api-history": any;
         "fui-api-details": any;
         "api-details": any;
+        "fui-api-products-runtime": any;
+        "api-products-runtime": any;
+        "api-products-dropdown-runtime": any;
+        "api-products-tiles-runtime": any;
+        "fui-api-list-runtime": any;
+        "api-list": any;
+        "api-list-dropdown": any;
+        "api-list-tiles": any;        
         "fui-signin-aad-runtime": any;
         "signin-aad": any;
         "fui-signin-aadb2c-runtime": any;

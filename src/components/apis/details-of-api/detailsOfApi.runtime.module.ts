@@ -1,6 +1,6 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { registerCustomElement } from "@paperbits/react/customElements";
-import { ApiDetails } from "./react/ApiDetails";
+import { ApiDetails } from "./react/runtime/ApiDetails";
 
 export class DetailsOfApiRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
