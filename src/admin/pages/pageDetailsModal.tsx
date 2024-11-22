@@ -139,7 +139,11 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
         const titleError = validateField(REQUIRED, this.state.page.title);
 
         if (permalinkError || titleError) {
-            this.setState({ errors: { permalink: permalinkError, title: titleError } });
+            const errors = {};
+            if (permalinkError) errors['permalink'] = permalinkError;
+            if (titleError) errors['title'] = titleError;
+
+            this.setState({ errors });
             return;
         }
 

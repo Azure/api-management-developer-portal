@@ -22,6 +22,10 @@
         margin-bottom: 15px;
     }
 
+    label.form-label {
+        position: relative;
+    }
+
     &.form-group-collapsible {
         & > .form-label {
             position: unset;
