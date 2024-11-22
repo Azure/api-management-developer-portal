@@ -1,6 +1,6 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { registerCustomElement } from "@paperbits/react/customElements";
-import { SubscriptionsRuntime } from "./react/SubscriptionsRuntime";
+import { SubscriptionsRuntime } from "./react/runtime/SubscriptionsRuntime";
 
 export class SubscriptionsRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
