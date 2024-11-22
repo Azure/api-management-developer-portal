@@ -111,7 +111,11 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
         const titleError = validateField(REQUIRED, this.state.layout.title);
  
         if (permalinkError || titleError) {
-            this.setState({ errors: { permalinkTemplate: permalinkError, title: titleError } });
+            const errors = {};
+            if (permalinkError) errors['permalinkTemplate'] = permalinkError;
+            if (titleError) errors['title'] = titleError;
+
+            this.setState({ errors });
             return;
         }
 

@@ -185,17 +185,21 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                         styles={{ root: { marginTop: 20 } }}
                     />
                     <div className="objects-list">
-                        {this.state.isLoading && <Spinner />}
-                        {this.state.pages.map(page =>
-                            <CommandBarButton
-                                iconProps={pageIcon}
-                                text={page.title}
-                                key={page.key}
-                                className="nav-item-list-button"
-                                onRenderText={() => this.renderPageContent(page)}
-                                onClick={async () => await this.router.navigateTo(page.permalink)}
-                            />
-                        )}
+                        {this.state.isLoading
+                            ? <Spinner />
+                            : this.state.pages.length === 0
+                                ? <Text className="no-objects-text">No pages found</Text>
+                                : this.state.pages.map(page =>
+                                    <CommandBarButton
+                                        iconProps={pageIcon}
+                                        text={page.title}
+                                        key={page.key}
+                                        className="nav-item-list-button"
+                                        onRenderText={() => this.renderPageContent(page)}
+                                        onClick={async () => await this.router.navigateTo(page.permalink)}
+                                    />
+                                )
+                        }
                     </div>
                 </PivotItem>
                 <PivotItem headerText="Layouts" itemKey="layouts">
@@ -216,17 +220,21 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                         styles={{ root: { marginTop: 20 } }}
                     />
                     <div className="objects-list">
-                        {this.state.isLoading && <Spinner />}
-                        {this.state.layouts.map(layout =>
-                            <CommandBarButton
-                                iconProps={layoutIcon}
-                                text={layout.title}
-                                key={layout.key}
-                                className="nav-item-list-button"
-                                onRenderText={() => this.renderPageLayoutContent(layout)}
-                                onClick={async () => this.viewManager.setHost({ name: 'layout-host', params: { layoutKey: layout.key } })}
-                            />
-                        )}
+                        {this.state.isLoading
+                            ? <Spinner />
+                            : this.state.layouts.length === 0
+                                ? <Text className="no-objects-text">No layouts found</Text>
+                                : this.state.layouts.map(layout =>
+                                    <CommandBarButton
+                                        iconProps={layoutIcon}
+                                        text={layout.title}
+                                        key={layout.key}
+                                        className="nav-item-list-button"
+                                        onRenderText={() => this.renderPageLayoutContent(layout)}
+                                        onClick={async () => this.viewManager.setHost({ name: 'layout-host', params: { layoutKey: layout.key } })}
+                                    />
+                                )
+                        }
                     </div>
                 </PivotItem>
             </Pivot>
