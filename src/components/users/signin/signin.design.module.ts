@@ -1,12 +1,12 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { SigninHandlers } from "./signinHandlers";
-import { SigninModelBinder } from "./signinModelBinder";
-import { SigninViewModelBinder } from "./signinViewModelBinder";
 import { IWidgetService } from "@paperbits/common/widgets";
-import { SigninModel } from "./signinModel";
-import { SigninViewModel } from "./react/SigninViewModel";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
 import { ComponentFlow } from "@paperbits/common/components";
+import { SigninHandlers } from "./signinHandlers";
+import { SigninModel } from "./signinModel";
+import { SigninModelBinder } from "./signinModelBinder";
+import { SigninViewModel } from "./react/SigninViewModel";
+import { SigninViewModelBinder } from "./signinViewModelBinder";
 
 export class SigninDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {

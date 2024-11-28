@@ -3,15 +3,15 @@ import { FluentProvider } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { Logger } from "@paperbits/common/logging";
-import * as Constants from "../../../../constants";
-import { UsersService } from "../../../../services";
-import { BackendService } from "../../../../services/backendService";
+import { UsersService } from "../../../../../services/usersService";
+import { BackendService } from "../../../../../services/backendService";
+import { ValidationMessages } from "../../../validationMessages";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
+import { validateBasic } from "../../../../utils/react/validateBasic";
+import { ResetRequest } from "../../../../../contracts/resetRequest";
+import { fuiTheme } from "../../../../../constants";
 import { ResetPasswordForm, TSubmit } from "./ResetPasswordForm";
-import { ValidationMessages } from "../../validationMessages";
-import { dispatchErrors, parseAndDispatchError } from "../../validation-summary/utils";
-import { ErrorSources } from "../../validation-summary/constants";
-import { validateBasic } from "../../../utils/react/validateBasic";
-import { ResetRequest } from "../../../../contracts/resetRequest";
 
 type ResetPasswordRuntimeProps = {
     requireHipCaptcha: boolean
@@ -95,7 +95,7 @@ export class ResetPasswordRuntime extends React.Component<ResetPasswordRuntimePr
 
     render() {
         return (
-            <FluentProvider theme={Constants.fuiTheme}>
+            <FluentProvider theme={fuiTheme}>
                 <ResetPasswordForm
                     {...this.props}
                     backendService={this.backendService}

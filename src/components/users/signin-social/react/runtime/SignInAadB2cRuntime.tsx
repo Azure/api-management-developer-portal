@@ -3,14 +3,14 @@ import { Resolve } from "@paperbits/react/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Logger } from "@paperbits/common/logging";
-import { AadService, AadServiceV2, IAadService } from "../../../../services";
-import { ErrorSources } from "../../validation-summary/constants";
-import { eventTypes } from "../../../../logging/clientLogger";
-import { AadClientLibrary, SettingNames } from "../../../../constants";
-import { dispatchErrors, parseAndDispatchError } from "../../validation-summary/utils";
-import { AadB2CClientConfig } from "../../../../contracts/aadB2CClientConfig";
-import { aadb2cResetPasswordErrorCode } from "../../../../constants";
-import { BtnSpinner } from "../../../utils/react/BtnSpinner";
+import { AadService, AadServiceV2, IAadService } from "../../../../../services";
+import { ErrorSources } from "../../../validation-summary/constants";
+import { eventTypes } from "../../../../../logging/clientLogger";
+import { AadClientLibrary, SettingNames } from "../../../../../constants";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { AadB2CClientConfig } from "../../../../../contracts/aadB2CClientConfig";
+import { aadb2cResetPasswordErrorCode } from "../../../../../constants";
+import { BtnSpinner } from "../../../../utils/react/BtnSpinner";
 
 type SignInAadB2cRuntimeProps = {
     label: string,

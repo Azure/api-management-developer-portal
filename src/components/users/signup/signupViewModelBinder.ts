@@ -7,9 +7,9 @@ import { DelegationAction, DelegationParameters } from "../../../contracts/tenan
 import { IdentityService } from "../../../services";
 import { BackendService } from "../../../services/backendService";
 import { TenantService } from "../../../services/tenantService";
-import { isRedesignEnabledSetting } from "../../../constants";
 import { SignupModel } from "./signupModel";
 import { SignUpViewModel } from "./react/SignUpViewModel";
+import { isRedesignEnabledSetting } from "../../../constants";
 
 export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignUpViewModel> {
 

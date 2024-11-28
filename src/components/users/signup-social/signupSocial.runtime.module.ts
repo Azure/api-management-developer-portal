@@ -1,6 +1,6 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { registerCustomElement } from "@paperbits/react/customElements";
-import { SignUpAadRuntime } from "./react/SignUpAadRuntime";
+import { SignUpAadRuntime } from "./react/runtime/SignUpAadRuntime";
 
 export class SignUpAadRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {

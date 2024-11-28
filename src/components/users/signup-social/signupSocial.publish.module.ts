@@ -1,11 +1,11 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { SignupSocialModelBinder } from "./signupSocialModelBinder";
-import { SignupSocialViewModelBinder } from "./signupSocialViewModelBinder";
-import { SignupSocialModel } from "./signupSocialModel";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
-import { SignUpSocialViewModel } from "./react/SignUpSocialViewModel";
 import { ComponentFlow } from "@paperbits/common/components";
+import { SignupSocialModel } from "./signupSocialModel";
+import { SignupSocialModelBinder } from "./signupSocialModelBinder";
+import { SignUpSocialViewModel } from "./react/SignUpSocialViewModel";
+import { SignupSocialViewModelBinder } from "./signupSocialViewModelBinder";
 
 export class SignupSocialPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {

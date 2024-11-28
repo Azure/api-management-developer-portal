@@ -4,10 +4,10 @@ import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
 import { EventManager } from "@paperbits/common/events";
-import * as Constants from "../../../../constants";
-import { UsersService } from "../../../../services";
-import { RouteHelper } from "../../../../routing/routeHelper";
-import { Utils } from "../../../../utils";
+import { UsersService } from "../../../../../services/usersService";
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { Utils } from "../../../../../utils";
+import { fuiTheme } from "../../../../../constants";
 import { SignInForm, THandleSignIn } from "./SignInForm";
 
 type SignInRuntimeProps = {
@@ -82,7 +82,7 @@ export class SignInRuntime extends React.Component<SignInRuntimeProps> {
 
     render() {
         return (
-            <FluentProvider theme={Constants.fuiTheme}>
+            <FluentProvider theme={fuiTheme}>
                 <SignInRuntimeFC
                     {...this.props}
                     usersService={this.usersService}

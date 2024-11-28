@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Stack } from "@fluentui/react";
-import { BtnSpinner } from "../../../utils/react/BtnSpinner";
+import { BtnSpinner } from "../../../../utils/react/BtnSpinner";
 
 export type TSubmit = (
     password: string,

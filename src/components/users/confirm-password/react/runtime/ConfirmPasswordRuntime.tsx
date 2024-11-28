@@ -3,12 +3,12 @@ import { Resolve } from "@paperbits/react/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { Logger } from "@paperbits/common/logging";
 import { FluentProvider } from "@fluentui/react-components";
-import { UsersService } from "../../../../services";
-import * as Constants from "../../../../constants";
-import { validateBasic } from "../../../utils/react/validateBasic";
-import { ValidationMessages } from "../../validationMessages";
-import { ErrorSources } from "../../validation-summary/constants";
-import { dispatchErrors, parseAndDispatchError } from "../../validation-summary/utils";
+import { UsersService } from "../../../../../services/usersService";
+import { validateBasic } from "../../../../utils/react/validateBasic";
+import { ValidationMessages } from "../../../validationMessages";
+import { ErrorSources } from "../../../validation-summary/constants";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { fuiTheme } from "../../../../../constants";
 import { ConfirmPasswordForm, TSubmit } from "./ConfirmPasswordForm";
 
 interface ConfirmPasswordRuntimeState {
@@ -103,7 +103,7 @@ export class ConfirmPasswordRuntime extends React.Component<{}, ConfirmPasswordR
 
     render() {
         return (
-            <FluentProvider theme={Constants.fuiTheme}>
+            <FluentProvider theme={fuiTheme}>
                 <ConfirmPasswordForm submit={this.submit.bind(this)} />
             </FluentProvider>
         );

@@ -1,15 +1,14 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { SignInSocialEditor } from "./ko/signinSocialEditor";
-import { SignInSocialViewModel } from "./react/SignInSocialViewModel";
-import { SigninSocialViewModelBinder } from "./signinSocialViewModelBinder";
-import { SigninSocialHandlers } from "./signinSocialHandlers";
-import { SigninSocialModel } from "./signinSocialModel";
-import { SigninSocialModelBinder } from "./signinSocialModelBinder";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
 import { ComponentFlow } from "@paperbits/common/components";
-
+import { SigninSocialHandlers } from "./signinSocialHandlers";
+import { SignInSocialEditor } from "./ko/signinSocialEditor";
+import { SigninSocialModel } from "./signinSocialModel";
+import { SigninSocialModelBinder } from "./signinSocialModelBinder";
+import { SignInSocialViewModel } from "./react/SignInSocialViewModel";
+import { SigninSocialViewModelBinder } from "./signinSocialViewModelBinder";
 
 export class SigninSocialEditorModule implements IInjectorModule {
     public register(injector: IInjector): void {

@@ -1,11 +1,11 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
 import { ChangePasswordModel } from "./changePasswordModel";
 import { ChangePasswordModelBinder } from "./changePasswordModelBinder";
 import { ChangePasswordViewModel } from "./react/ChangePasswordViewModel";
 import { ChangePasswordViewModelBinder } from "./changePasswordViewModelBinder";
-import { ComponentFlow } from "@paperbits/common/components";
 
 export class ChangePasswordPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {

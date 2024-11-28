@@ -5,16 +5,16 @@ import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
 import { Logger } from "@paperbits/common/logging";
 import { EventManager } from "@paperbits/common/events";
-import * as Constants from "../../../../constants";
-import { UsersService } from "../../../../services";
-import { RouteHelper } from "../../../../routing/routeHelper";
+import { UsersService } from "../../../../../services";
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
+import { ValidationMessages } from "../../../validationMessages";
+import { MapiSignupRequest, SignupRequest } from "../../../../../contracts/signupRequest";
+import { BackendService } from "../../../../../services/backendService";
+import { validateBasic } from "../../../../utils/react/validateBasic";
+import { AppType, fuiTheme, genericHttpRequestError } from "../../../../../constants";
 import { SignUpForm, THandleSignUp } from "./SignUpForm";
-import { dispatchErrors, parseAndDispatchError } from "../../validation-summary/utils";
-import { ErrorSources } from "../../validation-summary/constants";
-import { ValidationMessages } from "../../validationMessages";
-import { MapiSignupRequest, SignupRequest } from "../../../../contracts/signupRequest";
-import { BackendService } from "../../../../services/backendService";
-import { validateBasic } from "../../../utils/react/validateBasic";
 
 type SignUpRuntimeProps = {
     requireHipCaptcha: boolean
@@ -149,7 +149,7 @@ export class SignUpRuntime extends React.Component<SignUpRuntimeProps> {
             lastName,
             password,
             confirmation: "signup",
-            appType: Constants.AppType
+            appType: AppType
         };
 
         try {
@@ -174,14 +174,14 @@ export class SignUpRuntime extends React.Component<SignUpRuntimeProps> {
         } catch (error) {
             if (isCaptchaRequired) await refreshCaptcha();
 
-            parseAndDispatchError(this.eventManager, ErrorSources.signup, error, this.logger, Constants.genericHttpRequestError);
+            parseAndDispatchError(this.eventManager, ErrorSources.signup, error, this.logger, genericHttpRequestError);
             return false;
         }
     }
 
     render() {
         return (
-            <FluentProvider theme={Constants.fuiTheme}>
+            <FluentProvider theme={fuiTheme}>
                 <SignUpRuntimeFC
                     {...this.props}
                     backendService={this.backendService}
