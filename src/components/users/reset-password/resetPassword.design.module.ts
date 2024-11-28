@@ -1,13 +1,13 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
-import { ResetPasswordViewModelBinder } from "./resetPasswordViewModelBinder";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
 import { ResetPasswordHandlers } from "./resetPasswordHandlers";
+import { ResetPasswordEditor } from "./react/ResetPasswordEditor";
 import { ResetPasswordModel } from "./resetPasswordModel";
 import { ResetPasswordModelBinder } from "./resetPasswordModelBinder";
-import { ReactComponentBinder } from "@paperbits/react/bindings";
-import { ResetPasswordEditor } from "./react/ResetPasswordEditor";
 import { ResetPasswordViewModel } from "./react/ResetPasswordViewModel";
-import { ComponentFlow } from "@paperbits/common/components";
+import { ResetPasswordViewModelBinder } from "./resetPasswordViewModelBinder";
 
 export class ResetPasswordDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {

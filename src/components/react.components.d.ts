@@ -15,7 +15,20 @@ declare namespace JSX {
         "fui-api-list-runtime": any;
         "api-list": any;
         "api-list-dropdown": any;
-        "api-list-tiles": any;        
+        "api-list-tiles": any;
+        "fui-product-apis-runtime": any;
+        "product-apis-runtime": any;
+        "product-apis-tiles-runtime": any;
+        "fui-product-details-runtime": any;
+        "product-details-runtime": any;
+        "fui-product-list-runtime": any;
+        "product-list-runtime": any;
+        "product-list-dropdown-runtime": any;
+        "product-list-tiles-runtime": any;
+        "fui-product-subscribe-runtime": any;
+        "product-subscribe-runtime": any;
+        "fui-product-subscriptions-runtime": any;
+        "product-subscriptions-runtime": any;
         "fui-signin-aad-runtime": any;
         "signin-aad": any;
         "fui-signin-aadb2c-runtime": any;
@@ -40,6 +53,6 @@ declare namespace JSX {
         "signin-runtime": any;
         "placeholder-content": any;
         "fui-reports-runtime": any;
-        "reports-runtime": any;        
+        "reports-runtime": any;
     }
 }

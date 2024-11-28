@@ -1,6 +1,6 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { registerCustomElement } from "@paperbits/react/customElements";
-import { selector, ValidationSummaryRuntime } from "./react/ValidationSummaryRuntime";
+import { selector, ValidationSummaryRuntime } from "./react/runtime/ValidationSummaryRuntime";
 
 export class ValidationSummaryRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
