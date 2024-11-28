@@ -6,17 +6,17 @@ import { Resolve } from "@paperbits/react/decorators";
 import { EventManager } from "@paperbits/common/events";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Logger } from "@paperbits/common/logging";
-import * as Constants from "../../../../constants";
-import { eventTypes } from "../../../../logging/clientLogger";
-import { RouteHelper } from "../../../../routing/routeHelper";
-import { Utils } from "../../../../utils";
-import { BtnSpinner } from "../../../utils/react/BtnSpinner";
-import { TermsOfUse } from "../../../utils/react/TermsOfUse";
-import { dispatchErrors, parseAndDispatchError } from "../../validation-summary/utils";
-import { ErrorSources } from "../../validation-summary/constants";
-import { UsersService } from "../../../../services";
-import { ValidationMessages } from "../../validationMessages";
-import { validateBasic } from "../../../utils/react/validateBasic";
+import { UsersService } from "../../../../../services/usersService";
+import { eventTypes } from "../../../../../logging/clientLogger";
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { Utils } from "../../../../../utils";
+import { BtnSpinner } from "../../../../utils/react/BtnSpinner";
+import { TermsOfUse } from "../../../../utils/react/TermsOfUse";
+import { validateBasic } from "../../../../utils/react/validateBasic";
+import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
+import { ValidationMessages } from "../../../validationMessages";
+import { fuiTheme, genericHttpRequestError, pageUrlHome, pageUrlSignIn } from "../../../../../constants";
 
 type SignUpAadRuntimeProps = {
     termsOfUse: string
@@ -36,7 +36,7 @@ const SignUpAadRuntimeFC = ({ logger, router, routeHelper, signUp, termsOfUse, t
         const idToken = routeHelper.getIdToken();
 
         if (!provider || !idToken) {
-            router.navigateTo(Constants.pageUrlSignIn);
+            router.navigateTo(pageUrlSignIn);
         } else {
             logger.trackEvent(eventTypes.trace, { message: "Signup social component initialized." });
         }
@@ -147,20 +147,20 @@ export class SignUpAadRuntime extends React.Component<SignUpAadRuntimeProps> {
         dispatchErrors(this.eventManager, ErrorSources.signup, []);
         try {
             if (!provider || !idToken) {
-                await this.router.navigateTo(Constants.pageUrlSignIn);
+                await this.router.navigateTo(pageUrlSignIn);
                 return;
             }
 
             await this.usersService.createUserWithOAuth(provider, idToken, firstName, lastName, email);
-            await this.router.navigateTo(Constants.pageUrlHome);
+            await this.router.navigateTo(pageUrlHome);
         } catch (error) {
-            parseAndDispatchError(this.eventManager, ErrorSources.signup, error, this.logger, Constants.genericHttpRequestError);
+            parseAndDispatchError(this.eventManager, ErrorSources.signup, error, this.logger, genericHttpRequestError);
         }
     }
 
     render() {
         return (
-            <FluentProvider theme={Constants.fuiTheme}>
+            <FluentProvider theme={fuiTheme}>
                 <SignUpAadRuntimeFC
                     {...this.props}
                     logger={this.logger}

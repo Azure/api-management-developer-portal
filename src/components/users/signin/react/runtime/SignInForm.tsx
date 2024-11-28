@@ -1,13 +1,13 @@
 import * as React from "react";
 import { Stack } from "@fluentui/react";
 import { EventManager } from "@paperbits/common/events";
-import { MapiError } from "../../../../errors/mapiError";
-import { UnauthorizedError } from "../../../../errors/unauthorizedError";
-import { BtnSpinner } from "../../../utils/react/BtnSpinner";
-import { validateBasic } from "../../../utils/react/validateBasic";
-import { ValidationMessages } from "../../validationMessages";
-import { dispatchErrors } from "../../validation-summary/utils";
-import { ErrorSources } from "../../validation-summary/constants";
+import { MapiError } from "../../../../../errors/mapiError";
+import { UnauthorizedError } from "../../../../../errors/unauthorizedError";
+import { BtnSpinner } from "../../../../utils/react/BtnSpinner";
+import { validateBasic } from "../../../../utils/react/validateBasic";
+import { ValidationMessages } from "../../../validationMessages";
+import { dispatchErrors } from "../../../validation-summary/utils";
+import { ErrorSources } from "../../../validation-summary/constants";
 
 export type THandleSignIn = (email: string, password: string) => Promise<unknown>;
 

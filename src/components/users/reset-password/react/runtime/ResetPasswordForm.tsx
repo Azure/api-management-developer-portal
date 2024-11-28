@@ -1,11 +1,10 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { Stack } from "@fluentui/react";
-import { Body1, Body1Strong, Input, Label } from "@fluentui/react-components";
-import { HipCaptcha } from "../../runtime/hip-captcha/react";
-import { TCaptchaObj, TOnInitComplete } from "../../runtime/hip-captcha/react/LegacyCaptcha";
-import { BtnSpinner } from "../../../utils/react/BtnSpinner";
-import { BackendService } from "../../../../services/backendService";
+import { HipCaptcha } from "../../../runtime/hip-captcha/react";
+import { TCaptchaObj, TOnInitComplete } from "../../../runtime/hip-captcha/react/LegacyCaptcha";
+import { BtnSpinner } from "../../../../utils/react/BtnSpinner";
+import { BackendService } from "../../../../../services/backendService";
 
 export type TSubmit = (
     email: string,

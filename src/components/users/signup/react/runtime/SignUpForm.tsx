@@ -1,11 +1,11 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { Stack } from "@fluentui/react";
-import { BtnSpinner } from "../../../utils/react/BtnSpinner";
-import { TermsOfUse } from "../../../utils/react/TermsOfUse";
-import { HipCaptcha } from "../../runtime/hip-captcha/react";
-import { BackendService } from "../../../../services/backendService";
-import { TCaptchaObj, TOnInitComplete } from "../../runtime/hip-captcha/react/LegacyCaptcha";
+import { BtnSpinner } from "../../../../utils/react/BtnSpinner";
+import { TermsOfUse } from "../../../../utils/react/TermsOfUse";
+import { HipCaptcha } from "../../../runtime/hip-captcha/react";
+import { BackendService } from "../../../../../services/backendService";
+import { TCaptchaObj, TOnInitComplete } from "../../../runtime/hip-captcha/react/LegacyCaptcha";
 
 export type THandleSignUp = (
     email: string,

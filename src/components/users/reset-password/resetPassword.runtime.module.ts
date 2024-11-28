@@ -1,6 +1,6 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { registerCustomElement } from "@paperbits/react/customElements";
-import { ResetPasswordRuntime } from "./react/ResetPasswordRuntime";
+import { ResetPasswordRuntime } from "./react/runtime/ResetPasswordRuntime";
 
 export class ResetPasswordRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {

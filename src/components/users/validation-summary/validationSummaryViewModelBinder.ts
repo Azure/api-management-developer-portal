@@ -2,8 +2,8 @@ import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
 import { ValidationSummaryModel } from "./validationSummaryModel";
-import { isRedesignEnabledSetting } from "../../../constants";
 import { ValidationSummaryViewModel } from "./react/ValidationSummaryViewModel";
+import { isRedesignEnabledSetting } from "../../../constants";
 
 export class ValidationSummaryViewModelBinder implements ViewModelBinder<ValidationSummaryModel, ValidationSummaryViewModel> {
     constructor(

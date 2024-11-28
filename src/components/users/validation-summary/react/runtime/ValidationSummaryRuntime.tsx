@@ -7,9 +7,9 @@ import {
 } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { EventManager } from "@paperbits/common/events";
-import * as Constants from "../../../../constants";
-import { onValidationErrors } from "../constants";
-import { ValidationReport } from "../../../../contracts/validationReport";
+import { onValidationErrors } from "../../constants";
+import { ValidationReport } from "../../../../../contracts/validationReport";
+import { fuiTheme } from "../../../../../constants";
 
 export const selector = "fui-validation-summary";
 
@@ -60,7 +60,7 @@ export class ValidationSummaryRuntime extends React.Component<ValidationSummaryR
 
     render() {
         return (
-            <FluentProvider theme={Constants.fuiTheme}>
+            <FluentProvider theme={fuiTheme}>
                 <ValidationSummaryRuntimeFC
                     {...this.props}
                     eventManager={this.eventManager}
