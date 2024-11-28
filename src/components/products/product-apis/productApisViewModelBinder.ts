@@ -1,11 +1,11 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
-import { FiltersPosition } from "../../../apis/list-of-apis/listOfApisContract";
-import { layoutsMap } from "../../../utils/react/TableListInfo";
-import { isRedesignEnabledSetting } from "../../../../constants";
-import { ProductApisModel } from "../productApisModel";
-import { ProductApisViewModel } from "./productApisViewModel";
+import { FiltersPosition } from "../../apis/list-of-apis/listOfApisContract";
+import { layoutsMap } from "../../utils/react/TableListInfo";
+import { ProductApisModel } from "./productApisModel";
+import { ProductApisViewModel } from "./react/ProductApisViewModel";
+import { isRedesignEnabledSetting } from "../../../constants";
 
 export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisModel, ProductApisViewModel> {
     constructor(
@@ -14,17 +14,16 @@ export class ProductApisViewModelBinder implements ViewModelBinder<ProductApisMo
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: ProductApisViewModel): void {
-        componentInstance.styles(state.styles);
-        componentInstance.layout(state.layout);
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
-
-        componentInstance.runtimeConfig(JSON.stringify({
+        componentInstance.setState(prevState => ({
+            isRedesignEnabled: state.isRedesignEnabled,
+            styles: state.styles,
+            layout: state.layout,
+            layoutDefault: layoutsMap[state.layout],
             allowSelection: false,
             allowViewSwitching: true,
             filtersPosition: FiltersPosition.none,
             showApiType: false,
             defaultGroupByTagToEnabled: false,
-            layoutDefault: layoutsMap[state.layout],
             detailsPageUrl: state.detailsPageHyperlink
                 ? state.detailsPageHyperlink.href
                 : undefined,

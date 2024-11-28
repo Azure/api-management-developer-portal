@@ -1,11 +1,11 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { ProductDetailsViewModel } from "./ko/productDetailsViewModel";
-import { ProductDetailsViewModelBinder } from "./ko/productDetailsViewModelBinder";
+import { ComponentFlow } from "@paperbits/common/components";
 import { ProductDetailsModel } from "./productDetailsModel";
 import { ProductDetailsModelBinder } from "./productDetailsModelBinder";
-
+import { ProductDetailsViewModel } from "./react/ProductDetailsViewModel";
+import { ProductDetailsViewModelBinder } from "./productDetailsViewModelBinder";
 
 export class ProductDetailsPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -19,7 +19,8 @@ export class ProductDetailsPublishModule implements IInjectorModule {
             componentBinder: KnockoutComponentBinder,
             componentDefinition: ProductDetailsViewModel,
             modelBinder: ProductDetailsModelBinder,
-            viewModelBinder: ProductDetailsViewModelBinder
+            viewModelBinder: ProductDetailsViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
     }
 }

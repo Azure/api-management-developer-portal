@@ -1,16 +1,10 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ISiteService } from "@paperbits/common/sites";
-import { isRedesignEnabledSetting } from "../../../../constants";
-import { layoutsMap } from "../../../utils/react/TableListInfo";
-import { ProductListDropdownHandlers, ProductListHandlers } from "../productListHandlers";
-import { ProductListModel } from "../productListModel";
-import { ProductListViewModel } from "./productListViewModel";
-
-const handlerForLayout = {
-    list: ProductListHandlers,
-    dropdown: ProductListDropdownHandlers
-};
+import { layoutsMap } from "../../utils/react/TableListInfo";
+import { ProductListModel } from "./productListModel";
+import { ProductListViewModel } from "./react/ProductListViewModel";
+import { isRedesignEnabledSetting } from "../../../constants";
 
 export class ProductListViewModelBinder implements ViewModelBinder<ProductListModel, ProductListViewModel> {
     constructor(
@@ -19,14 +13,13 @@ export class ProductListViewModelBinder implements ViewModelBinder<ProductListMo
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: ProductListViewModel): void {
-        componentInstance.styles(state.styles);
-        componentInstance.layout(state.layout);
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
-
-        componentInstance.runtimeConfig(JSON.stringify({
+        componentInstance.setState(prevState => ({
+            isRedesignEnabled: state.isRedesignEnabled,
+            styles: state.styles,
+            layout: state.layout,
+            layoutDefault: layoutsMap[state.layout],
             allowSelection: state.allowSelection,
             allowViewSwitching: state.allowViewSwitching,
-            layoutDefault: layoutsMap[state.layout],
             detailsPageUrl: state.detailsPageHyperlink
                 ? state.detailsPageHyperlink.href
                 : undefined

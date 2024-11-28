@@ -16,6 +16,15 @@ declare namespace JSX {
         "api-list": any;
         "api-list-dropdown": any;
         "api-list-tiles": any;        
+        "fui-product-apis-runtime": any;
+        "product-apis-runtime": any;
+        "product-apis-tiles-runtime": any;
+        "fui-product-details-runtime": any;
+        "product-details-runtime": any;
+        "fui-product-list-runtime": any;
+        "product-list-runtime": any;
+        "product-list-dropdown-runtime": any;
+        "product-list-tiles-runtime": any;        
         "fui-signin-aad-runtime": any;
         "signin-aad": any;
         "fui-signin-aadb2c-runtime": any;

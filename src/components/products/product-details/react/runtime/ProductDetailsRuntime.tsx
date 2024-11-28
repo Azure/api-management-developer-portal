@@ -5,16 +5,15 @@ import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { CircleSmallFilled } from "@fluentui/react-icons";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
-import * as Constants from "../../../../constants";
-import { UsersService } from "../../../../services";
-import { Product } from "../../../../models/product";
-import { ProductState } from "../../../../contracts/product";
-import { RouteHelper } from "../../../../routing/routeHelper";
-import { ProductService } from "../../../../services/productService";
-import { MarkdownProcessor } from "../../../utils/react/MarkdownProcessor";
+import { Product } from "../../../../../models/product";
+import { ProductService } from "../../../../../services/productService";
+import { UsersService } from "../../../../../services/usersService";
+import { ProductState } from "../../../../../contracts/product";
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
+import { fuiTheme } from "../../../../../constants";
 
-type ProductSubscribeRuntimeProps = {
-}
+type ProductSubscribeRuntimeProps = {}
 type ProductDetailsRuntimeFCProps = ProductSubscribeRuntimeProps & {
     usersService: UsersService;
     productService: ProductService;
@@ -117,7 +116,7 @@ export class ProductDetailsRuntime extends React.Component<
         if (!this.state.productName) return <>Please select a product</>;
 
         return (
-            <FluentProvider theme={Constants.fuiTheme}>
+            <FluentProvider theme={fuiTheme}>
                 <ProductDetailsRuntimeFC
                     {...this.props}
                     usersService={this.usersService}
