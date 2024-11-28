@@ -1,9 +1,9 @@
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
-import { ResetPasswordModel } from "./resetPasswordModel";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
-import { isRedesignEnabledSetting } from "../../../constants";
+import { ResetPasswordModel } from "./resetPasswordModel";
 import { ResetPasswordViewModel } from "./react/ResetPasswordViewModel";
+import { isRedesignEnabledSetting } from "../../../constants";
 
 export class ResetPasswordViewModelBinder implements ViewModelBinder<ResetPasswordModel, ResetPasswordViewModel> {
     constructor(

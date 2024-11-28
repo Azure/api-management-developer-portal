@@ -1,12 +1,12 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { ValidationSummaryHandlers } from "./validationSummaryHandlers";
 import { IWidgetService } from "@paperbits/common/widgets";
-import { ValidationSummaryModelBinder } from "./validationSummaryModelBinder";
-import { ValidationSummaryViewModelBinder } from "./validationSummaryViewModelBinder";
-import { ValidationSummaryModel } from "./validationSummaryModel";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
-import { ValidationSummaryViewModel } from "./react/ValidationSummaryViewModel";
 import { ComponentFlow } from "@paperbits/common/components/componentFlow";
+import { ValidationSummaryHandlers } from "./validationSummaryHandlers";
+import { ValidationSummaryModel } from "./validationSummaryModel";
+import { ValidationSummaryModelBinder } from "./validationSummaryModelBinder";
+import { ValidationSummaryViewModel } from "./react/ValidationSummaryViewModel";
+import { ValidationSummaryViewModelBinder } from "./validationSummaryViewModelBinder";
 
 export class ValidationSummaryDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {

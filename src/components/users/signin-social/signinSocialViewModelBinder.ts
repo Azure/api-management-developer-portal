@@ -4,10 +4,9 @@ import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
 import { TermsOfService } from "../../../contracts/identitySettings";
 import { IdentityService } from "../../../services/identityService";
-import { isRedesignEnabledSetting } from "../../../constants";
 import { SigninSocialModel } from "./signinSocialModel";
 import { SignInSocialViewModel } from "./react/SignInSocialViewModel";
-
+import { isRedesignEnabledSetting } from "../../../constants";
 
 export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocialModel, SignInSocialViewModel> {
     constructor(

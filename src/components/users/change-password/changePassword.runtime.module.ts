@@ -1,6 +1,6 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { registerCustomElement } from "@paperbits/react/customElements";
-import { ChangePasswordRuntime } from "./react/ChangePasswordRuntime";
+import { ChangePasswordRuntime } from "./react/runtime/ChangePasswordRuntime";
 
 export class ChangePasswordRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {

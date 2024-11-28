@@ -1,12 +1,12 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { ConfirmPasswordHandlers } from "./confirmPasswordHandlers";
-import { ConfirmPasswordModelBinder } from "./confirmPasswordModelBinder";
-import { ConfirmPasswordModel } from "./confirmPasswordModel";
+import { IWidgetService } from "@paperbits/common/widgets";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
+import { ConfirmPasswordHandlers } from "./confirmPasswordHandlers";
+import { ConfirmPasswordModel } from "./confirmPasswordModel";
+import { ConfirmPasswordModelBinder } from "./confirmPasswordModelBinder";
 import { ConfirmPasswordViewModel } from "./react/ConfirmPasswordViewModel";
 import { ConfirmPasswordViewModelBinder } from "./confirmPasswordViewModelBinder";
-import { IWidgetService } from "@paperbits/common/widgets";
-import { ComponentFlow } from "@paperbits/common/components";
 
 export class ConfirmPasswordDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {

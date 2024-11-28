@@ -1,13 +1,12 @@
-import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
-import { TermsOfService } from "../../../contracts/identitySettings";
-import { IdentityService } from "../../../services/identityService";
-import { SignupSocialModel } from "./signupSocialModel";
-import { ISettingsProvider } from "@paperbits/common/configuration";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
-import { isRedesignEnabledSetting } from "../../../constants";
+import { ISettingsProvider } from "@paperbits/common/configuration";
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { IdentityService } from "../../../services/identityService";
+import { TermsOfService } from "../../../contracts/identitySettings";
+import { SignupSocialModel } from "./signupSocialModel";
 import { SignUpSocialViewModel } from "./react/SignUpSocialViewModel";
-
+import { isRedesignEnabledSetting } from "../../../constants";
 
 export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocialModel, SignUpSocialViewModel> {
     constructor(
