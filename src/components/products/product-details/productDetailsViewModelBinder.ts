@@ -1,10 +1,9 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
-import { isRedesignEnabledSetting } from "../../../../constants";
-import { ProductDetailsModel } from "../productDetailsModel";
-import { ProductDetailsViewModel } from "./productDetailsViewModel";
-
+import { ProductDetailsModel } from "./productDetailsModel";
+import { ProductDetailsViewModel } from "./react/ProductDetailsViewModel";
+import { isRedesignEnabledSetting } from "../../../constants";
 
 export class ProductDetailsViewModelBinder implements ViewModelBinder<ProductDetailsModel, ProductDetailsViewModel> {
     constructor(
@@ -13,9 +12,10 @@ export class ProductDetailsViewModelBinder implements ViewModelBinder<ProductDet
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: ProductDetailsViewModel): void {
-        componentInstance.styles(state.styles);
-
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
+        componentInstance.setState(prevState => ({
+            styles: state.styles,
+            isRedesignEnabled: state.isRedesignEnabled
+        }));
     }
 
     public async modelToState(model: ProductDetailsModel, state: WidgetState): Promise<void> {

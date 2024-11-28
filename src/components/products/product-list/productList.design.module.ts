@@ -1,13 +1,14 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { ProductListDropdownHandlers, ProductListHandlers, ProductListTilesHandlers } from "../productListHandlers";
-import { ProductListModel } from "../productListModel";
-import { ProductListModelBinder } from "../productListModelBinder";
-import { ProductListEditor } from "./productListEditor";
-import { ProductListViewModel } from "./productListViewModel";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
+import { ProductListEditor } from "./ko/productListEditor";
+import { ProductListModel } from "./productListModel";
+import { ProductListModelBinder } from "./productListModelBinder";
+import { ProductListViewModel } from "./react/ProductListViewModel";
 import { ProductListViewModelBinder } from "./productListViewModelBinder";
-
+import { ProductListDropdownHandlers, ProductListHandlers, ProductListTilesHandlers } from "./productListHandlers";
 
 export class ProductListEditorModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -20,13 +21,16 @@ export class ProductListEditorModule implements IInjectorModule {
 
         const widgetService = injector.resolve<IWidgetService>("widgetService");
 
-        widgetService.registerWidget("product-list", {
+        const productListWidget = {
             modelDefinition: ProductListModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: ProductListViewModel,
             modelBinder: ProductListModelBinder,
-            viewModelBinder: ProductListViewModelBinder
-        });
+            viewModelBinder: ProductListViewModelBinder,
+            componentFlow: ComponentFlow.Block
+        };
+
+        widgetService.registerWidget("product-list", productListWidget);
 
         widgetService.registerWidgetEditor("product-list", {
             displayName: "List of products",
@@ -37,13 +41,7 @@ export class ProductListEditorModule implements IInjectorModule {
             handlerComponent: ProductListHandlers
         });
 
-        widgetService.registerWidget("productListDropdown", {
-            modelDefinition: ProductListModel,
-            componentBinder: KnockoutComponentBinder,
-            componentDefinition: ProductListViewModel,
-            modelBinder: ProductListModelBinder,
-            viewModelBinder: ProductListViewModelBinder
-        });
+        widgetService.registerWidget("productListDropdown", productListWidget);
 
         widgetService.registerWidgetEditor("productListDropdown", {
             displayName: "List of products (dropdown)",
@@ -54,13 +52,7 @@ export class ProductListEditorModule implements IInjectorModule {
             handlerComponent: ProductListDropdownHandlers
         });
 
-        widgetService.registerWidget("productListTiles", {
-            modelDefinition: ProductListModel,
-            componentBinder: KnockoutComponentBinder,
-            componentDefinition: ProductListViewModel,
-            modelBinder: ProductListModelBinder,
-            viewModelBinder: ProductListViewModelBinder
-        });
+        widgetService.registerWidget("productListTiles", productListWidget);
 
         widgetService.registerWidgetEditor("productListTiles", {
             displayName: "List of products (tiles)",
