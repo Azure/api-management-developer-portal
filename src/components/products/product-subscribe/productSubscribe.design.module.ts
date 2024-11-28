@@ -1,13 +1,14 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { ProductSubscribeHandlers } from "../productSubscribeHandlers";
-import { ProductSubscribeEditor } from "./productSubscribeEditor";
-import { ProductSubscribeModelBinder } from "../productSubscribeModelBinder";
-import { ProductSubscribeViewModelBinder } from "./productSubscribeViewModelBinder";
 import { IWidgetService } from "@paperbits/common/widgets";
-import { ProductSubscribeModel } from "../productSubscribeModel";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { ProductSubscribeViewModel } from "./productSubscribeViewModel";
-
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
+import { ProductSubscribeHandlers } from "./productSubscribeHandlers";
+import { ProductSubscribeEditor } from "./ko/productSubscribeEditor";
+import { ProductSubscribeModel } from "./productSubscribeModel";
+import { ProductSubscribeModelBinder } from "./productSubscribeModelBinder";
+import { ProductSubscribeViewModel } from "./react/ProductSubscribeViewModel";
+import { ProductSubscribeViewModelBinder } from "./productSubscribeViewModelBinder";
 
 export class ProductSubscribeEditorModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -20,10 +21,11 @@ export class ProductSubscribeEditorModule implements IInjectorModule {
 
         widgetService.registerWidget("product-subscribe", {
             modelDefinition: ProductSubscribeModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: ProductSubscribeViewModel,
             modelBinder: ProductSubscribeModelBinder,
-            viewModelBinder: ProductSubscribeViewModelBinder
+            viewModelBinder: ProductSubscribeViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("product-subscribe", {
