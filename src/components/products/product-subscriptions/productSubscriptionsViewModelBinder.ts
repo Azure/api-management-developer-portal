@@ -1,10 +1,9 @@
 import { StyleCompiler } from "@paperbits/common/styles";
-import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
-import { ProductSubscriptionsModel } from "../productSubscriptionsModel";
-import { ProductSubscriptionsViewModel } from "./productSubscriptionsViewModel";
-import { isRedesignEnabledSetting } from "../../../../constants";
 import { ISiteService } from "@paperbits/common/sites";
-
+import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { ProductSubscriptionsModel } from "./productSubscriptionsModel";
+import { ProductSubscriptionsViewModel } from "./react/ProductSubscriptionsViewModel";
+import { isRedesignEnabledSetting } from "../../../constants";
 
 export class ProductSubscriptionsViewModelBinder implements ViewModelBinder<ProductSubscriptionsModel, ProductSubscriptionsViewModel> {
     constructor(
@@ -13,14 +12,17 @@ export class ProductSubscriptionsViewModelBinder implements ViewModelBinder<Prod
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: ProductSubscriptionsViewModel): void {
-        componentInstance.styles(state.styles);
-        componentInstance.isRedesignEnabled(state.isRedesignEnabled);
+        componentInstance.setState(prevState => ({
+            styles: state.styles,
+            isRedesignEnabled: state.isRedesignEnabled
+        }));
     }
 
     public async modelToState(model: ProductSubscriptionsModel, state: WidgetState): Promise<void> {
         if (model.styles) {
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
+        
         state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
     }
 }

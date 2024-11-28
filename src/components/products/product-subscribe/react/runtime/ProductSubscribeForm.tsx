@@ -1,9 +1,8 @@
 import * as React from "react";
 import { useState } from "react";
 import { Stack } from "@fluentui/react";
-import { Input } from "@fluentui/react-components";
-import { BtnSpinner } from "../../../utils/react/BtnSpinner";
-import { TermsOfUse } from "../../../utils/react/TermsOfUse";
+import { BtnSpinner } from "../../../../utils/react/BtnSpinner";
+import { TermsOfUse } from "../../../../utils/react/TermsOfUse";
 
 export type TSubscribe = (
     subscriptionName: string,

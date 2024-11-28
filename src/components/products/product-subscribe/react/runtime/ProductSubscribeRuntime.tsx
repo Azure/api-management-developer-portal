@@ -3,16 +3,16 @@ import { useCallback, useEffect, useState } from "react";
 import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
-import * as Constants from "../../../../constants";
-import { Utils } from "../../../../utils";
-import { UsersService } from "../../../../services";
-import { RouteHelper } from "../../../../routing/routeHelper";
-import { TenantService } from "../../../../services/tenantService";
-import { BackendService } from "../../../../services/backendService";
-import { ProductService } from "../../../../services/productService";
-import { SubscriptionState } from "../../../../contracts/subscription";
-import { DelegationAction, DelegationParameters } from "../../../../contracts/tenantSettings";
-import { Product } from "../../../../models/product";
+import { Product } from "../../../../../models/product";
+import { SubscriptionState } from "../../../../../contracts/subscription";
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { UsersService } from "../../../../../services/usersService";
+import { TenantService } from "../../../../../services/tenantService";
+import { BackendService } from "../../../../../services/backendService";
+import { ProductService } from "../../../../../services/productService";
+import { DelegationAction, DelegationParameters } from "../../../../../contracts/tenantSettings";
+import { Utils } from "../../../../../utils";
+import { fuiTheme } from "../../../../../constants";
 import { ProductSubscribeForm, TSubscribe } from "./ProductSubscribeForm";
 
 type ProductSubscribeRuntimeProps = {
@@ -167,7 +167,7 @@ export class ProductSubscribeRuntime extends React.Component<
         if (!this.state.productName) return <>Please select a product</>;
 
         return (
-            <FluentProvider theme={Constants.fuiTheme}>
+            <FluentProvider theme={fuiTheme}>
                 <ProductSubscribeRuntimeFC
                     {...this.props}
                     backendService={this.backendService}

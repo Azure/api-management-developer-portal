@@ -8,7 +8,7 @@ import {
     TableHeaderCell,
     TableRow,
 } from "@fluentui/react-components";
-import { Subscription } from "../../../../models/subscription";
+import { Subscription } from "../../../../../models/subscription";
 
 export const ProductSubscriptionsTable = ({
     subscriptions,

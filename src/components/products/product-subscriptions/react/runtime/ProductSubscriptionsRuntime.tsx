@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { FluentProvider } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
-import * as Constants from "../../../../constants";
-import { RouteHelper } from "../../../../routing/routeHelper";
-import { UsersService } from "../../../../services";
-import { ProductService } from "../../../../services/productService";
-import { Subscription } from "../../../../models/subscription";
+import { Subscription } from "../../../../../models/subscription";
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { UsersService } from "../../../../../services/usersService";
+import { ProductService } from "../../../../../services/productService";
+import { fuiTheme } from "../../../../../constants";
 import { ProductSubscriptionsTable } from "./ProductSubscriptionsTable";
 
 type ProductSubscriptionsProps = {}
@@ -88,7 +88,7 @@ export class ProductSubscriptionsRuntime extends React.Component<
         if (!this.state.productName) return <>Please select a product</>;
 
         return (
-            <FluentProvider theme={Constants.fuiTheme}>
+            <FluentProvider theme={fuiTheme}>
                 <ProductSubscriptionsRuntimeFC
                     {...this.props}
                     usersService={this.usersService}
