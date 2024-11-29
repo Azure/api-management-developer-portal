@@ -10,7 +10,7 @@ import { OperationListViewModel } from "./react/OperationListViewModel";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
 import { ComponentFlow } from "@paperbits/common/components";
 
-export class OperationListEditorModule implements IInjectorModule {
+export class OperationListDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bind("operationListEditor", OperationListEditor);
         injector.bindSingleton("operationListModelBinder", OperationListModelBinder);
