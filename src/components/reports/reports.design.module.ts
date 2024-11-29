@@ -9,7 +9,7 @@ import { ReportsViewModel } from "./react/ReportsViewModel";
 import { ReportsModelBinder } from "./reportsModelBinder";
 import { ReportsViewModelBinder } from "./reportsViewModelBinder";
 
-export class ReportsEditorModule implements IInjectorModule {
+export class ReportsDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bind("reportsEditor", ReportsEditor);
         injector.bindSingleton("reportsModelBinder", ReportsModelBinder);

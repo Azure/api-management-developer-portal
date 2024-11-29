@@ -10,7 +10,7 @@ import { ProductApisModelBinder } from "./productApisModelBinder";
 import { ProductApisViewModel } from "./react/ProductApisViewModel";
 import { ProductApisViewModelBinder } from "./productApisViewModelBinder";
 
-export class ProductApisEditorModule implements IInjectorModule {
+export class ProductApisDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bind("productApisEditor", ProductApisEditor);
         injector.bindSingleton("productApisModelBinder", ProductApisModelBinder);

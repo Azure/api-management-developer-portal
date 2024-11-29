@@ -10,7 +10,7 @@ import { ProductSubscribeModelBinder } from "./productSubscribeModelBinder";
 import { ProductSubscribeViewModel } from "./react/ProductSubscribeViewModel";
 import { ProductSubscribeViewModelBinder } from "./productSubscribeViewModelBinder";
 
-export class ProductSubscribeEditorModule implements IInjectorModule {
+export class ProductSubscribeDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bind("productSubscribeEditor", ProductSubscribeEditor);
         injector.bindSingleton("productSubscribeModelBinder", ProductSubscribeModelBinder);
