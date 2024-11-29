@@ -10,7 +10,7 @@ import { ProductListViewModel } from "./react/ProductListViewModel";
 import { ProductListViewModelBinder } from "./productListViewModelBinder";
 import { ProductListDropdownHandlers, ProductListHandlers, ProductListTilesHandlers } from "./productListHandlers";
 
-export class ProductListEditorModule implements IInjectorModule {
+export class ProductListDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bind("productListEditor", ProductListEditor);
         injector.bindSingleton("productListModelBinder", ProductListModelBinder);

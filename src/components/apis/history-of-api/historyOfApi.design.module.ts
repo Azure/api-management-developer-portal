@@ -10,7 +10,7 @@ import { HistoryOfApiViewModel } from "./react/HistoryOfApiViewModel";
 import { HistoryOfApiViewModelBinder } from "./historyOfApiViewModelBinder";
 import { HistoryOfApiHandlers } from "./historyOfApiHandlers";
 
-export class HistoryOfApiEditorModule implements IInjectorModule {
+export class HistoryOfApiDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bind("historyOfApiEditor", HistoryOfApiEditor);
         injector.bindSingleton("historyOfApiModelBinder", HistoryOfApiModelBinder);
