@@ -10,7 +10,7 @@ import { SigninSocialModelBinder } from "./signinSocialModelBinder";
 import { SignInSocialViewModel } from "./react/SignInSocialViewModel";
 import { SigninSocialViewModelBinder } from "./signinSocialViewModelBinder";
 
-export class SigninSocialEditorModule implements IInjectorModule {
+export class SigninSocialDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bind("signinSocialEditor", SignInSocialEditor);
         injector.bindSingleton("signinSocialModelBinder", SigninSocialModelBinder);
