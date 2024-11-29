@@ -53,6 +53,11 @@ form.needs-validation:invalid {
     }
 }
 
+label.required::after {
+    content: " *";
+    color: $required-color;
+}
+
 input[type="range"] {
     width: 100%;
 }
@@ -108,15 +113,28 @@ input[type="range"] {
     }
 }
 
+input:focus-visible {
+    outline: none;
+}
+
 input[type=search] {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     @extend .icon-svg-magnifier;
-    background-position: 5px center;
-    background-size: 1em;
+    background-position: 10px center;
+    background-size: 1.2em;
     background-repeat: no-repeat;
-    padding-left: calc(1em + 10px) !important;
+    padding-left: calc(1.2em + 15px) !important;
+    padding-right: 5px !important;
+
+    &::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+        @extend .icon-svg-cancel;        
+        height: 20px;
+        width: 20px;
+        cursor: pointer;
+    }
 }
 
 .switch {

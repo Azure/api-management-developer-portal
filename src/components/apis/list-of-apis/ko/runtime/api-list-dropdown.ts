@@ -39,6 +39,7 @@ export class ApiListDropdown {
     ) {
         this.apis = ko.observableArray([]);
         this.detailsPageUrl = ko.observable();
+        this.detailsPageTarget = ko.observable();
         this.allowSelection = ko.observable(false);
         this.defaultGroupByTagToEnabled = ko.observable(false);
         this.groupByTag = ko.observable(false);
@@ -62,6 +63,9 @@ export class ApiListDropdown {
 
     @Param()
     public detailsPageUrl: ko.Observable<string>;
+
+    @Param()
+    public detailsPageTarget: ko.Observable<string>;
 
     @Param()
     public defaultGroupByTagToEnabled: ko.Observable<boolean>;

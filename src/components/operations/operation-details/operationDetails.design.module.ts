@@ -1,13 +1,14 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
 import { OperationDetailsEditor } from "./ko/operationDetailsEditor";
-import { OperationDetailsViewModel } from "./ko/operationDetailsViewModel";
-import { OperationDetailsViewModelBinder } from "./ko/operationDetailsViewModelBinder";
 import { OperationDetailsHandlers } from "./operationDetailsHandlers";
 import { OperationDetailsModel } from "./operationDetailsModel";
 import { OperationDetailsModelBinder } from "./operationDetailsModelBinder";
-
+import { OperationDetailsViewModel } from "./react/OperationDetailsViewModel";
+import { OperationDetailsViewModelBinder } from "./operationDetailsViewModelBinder";
 
 export class OperationDetailsDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -20,10 +21,11 @@ export class OperationDetailsDesignModule implements IInjectorModule {
 
         widgetService.registerWidget("operationDetails", {
             modelDefinition: OperationDetailsModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: OperationDetailsViewModel,
             modelBinder: OperationDetailsModelBinder,
-            viewModelBinder: OperationDetailsViewModelBinder
+            viewModelBinder: OperationDetailsViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("operationDetails", {
