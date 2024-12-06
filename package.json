@@ -8,7 +8,7 @@
         "azure"
     ],
     "engines": {
-        "node": ">=14.18.2"
+        "node": ">=14.18.2 <20"
     },
     "scripts": {
         "start": "webpack-dev-server --open --config webpack.develop.js",
