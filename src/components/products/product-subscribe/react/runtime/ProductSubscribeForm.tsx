@@ -27,7 +27,7 @@ export const ProductSubscribeForm = ({ subscribe, termsOfUse, showTermsByDefault
                 tokens={{ childrenGap: 15 }}
                 className="form-group"
             >
-                <Stack.Item>
+                <Stack.Item className="form-inline">
                     <input
                         value={subscriptionName}
                         onChange={(event) => setSubscriptionName(event.target.value)}
