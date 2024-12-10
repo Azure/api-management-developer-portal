@@ -22,11 +22,11 @@
 
 <!-- ko ifnot: limitReached -->
 <form>
-    <div class="table">
+    <div class="table">        
         <div class="table-row">
             <!-- ko ifnot: delegationEnabled -->
-            <div class="col-5 form-inline">
-                <input type="text" class="form-control" style="width: 100%" placeholder="Your new product subscription name" data-bind="textInput: subscriptionName" />
+            <div class="col-5">
+                <input type="text" class="form-control" placeholder="Your new product subscription name" data-bind="textInput: subscriptionName" />
             </div>
             <!-- /ko -->
             <!-- ko if: termsOfUse -->
