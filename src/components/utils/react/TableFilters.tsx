@@ -17,8 +17,8 @@ import {
 import { Filter16Regular } from "@fluentui/react-icons";
 
 type TFilterItem = {
-    value: string;
-    label: string;
+    id: string;
+    name: string;
 };
 
 export type TFilterGroup = TFilterItem & {
@@ -27,7 +27,7 @@ export type TFilterGroup = TFilterItem & {
     nextPage?(): void;
 };
 
-export type TFilterActive = Record<string, string[]>;
+export type TFilterActive = Record<string, TFilterItem[]>;
 
 export type TTableFilterProps = {
     filtersActive: TFilterActive;
@@ -49,21 +49,18 @@ export const TableFilter = ({
             <Stack>
                 {filter.items.map((item) => (
                     <Checkbox
-                        key={filter.value + item.value}
-                        value={item.value}
-                        label={item.label}
-                        checked={
-                            filtersActive[filter.value]?.includes(item.value) ??
-                            false
-                        }
+                        key={filter.id + item.id}
+                        value={item.id}
+                        label={item.name}
+                        checked={filtersActive[filter.id]?.includes(item) ?? false}
                         onChange={(_, { checked }) =>
                             setFiltersActive((old) => ({
                                 ...old,
-                                [filter.value]: checked
-                                    ? [...(old[filter.value] ?? []), item.value]
-                                    : (old[filter.value] ?? []).filter(
-                                          (e) => e !== item.value
-                                      ),
+                                [filter.id]:
+                                    checked ?
+                                        [...(old[filter.id] ?? []), item]
+                                        :
+                                        (old[filter.id] ?? []).filter((e) => e.id !== item.id),
                             }))
                         }
                     />
@@ -83,9 +80,9 @@ export const TableFilter = ({
 
             <Accordion className={"fui-filterBy-container"} {...accordionProps}>
                 {filtersOptions.map((filter) => (
-                    <AccordionItem key={filter.value} value={filter.value}>
+                    <AccordionItem key={filter.id} value={filter}>
                         <AccordionHeader expandIconPosition={"end"}>
-                            <Subtitle2>{filter.label}</Subtitle2>
+                            <Subtitle2>{filter.name}</Subtitle2>
                         </AccordionHeader>
                         <AccordionPanel>
                             <FilterGroup filter={filter} />
@@ -96,7 +93,7 @@ export const TableFilter = ({
         </>
     ) : (
         <>
-            <Subtitle2 style={{ display: "block", marginBottom: ".375rem" }}>Filter by {filtersOptions[0].label}</Subtitle2>
+            <Subtitle2 style={{ display: "block", marginBottom: ".375rem" }}>Filter by {filtersOptions[0].name}</Subtitle2>
 
             <FilterGroup filter={filtersOptions[0]} />
         </>
@@ -120,7 +117,7 @@ export const TableFiltersSidebar = (props: TTableFilterProps) => (
         accordionProps={{
             multiple: true,
             collapsible: true,
-            defaultOpenItems: props.filtersOptions.map((e) => e.value),
+            defaultOpenItems: props.filtersOptions.map((e) => e.id),
         }}
         {...props}
     />
