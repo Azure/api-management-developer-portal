@@ -52,7 +52,7 @@ export const TableFilter = ({
                         key={filter.id + item.id}
                         value={item.id}
                         label={item.name}
-                        checked={filtersActive[filter.id]?.includes(item) ?? false}
+                        checked={!!filtersActive[filter.id]?.includes(item)}
                         onChange={(_, { checked }) =>
                             setFiltersActive((old) => ({
                                 ...old,
