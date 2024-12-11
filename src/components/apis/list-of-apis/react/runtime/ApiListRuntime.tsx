@@ -12,6 +12,7 @@ import { FiltersPosition } from "../../listOfApisContract";
 import { TApisData } from "./utils";
 import { ApiListTableCards } from "./ApiListTableCards";
 import { ApiListDropdown } from "./ApiListDropdown";
+import { Tag } from "../../../../../models/tag";
 
 export interface ApiListProps {
     productName?: string;
@@ -55,7 +56,7 @@ const ApiListRuntimeFC = ({ apiService, productName, defaultGroupByTagToEnabled,
     const [apis, setApis] = useState<TApisData>();
     const [pattern, setPattern] = useState<string>();
     const [groupByTag, setGroupByTag] = useState(!!defaultGroupByTagToEnabled);
-    const [filters, setFilters] = useState({tags: [] as string[]});
+    const [filters, setFilters] = useState<{ tags: Tag[] }>({ tags: [] });
 
     /**
      * Loads page of APIs.
@@ -63,7 +64,7 @@ const ApiListRuntimeFC = ({ apiService, productName, defaultGroupByTagToEnabled,
     useEffect(() => {
         const query: SearchQuery = {
             pattern,
-            tags: filters.tags.map(name => ({id: name, name})),
+            tags: filters.tags,
             skip: (pageNumber - 1) * Constants.defaultPageSize,
             take: Constants.defaultPageSize
         };

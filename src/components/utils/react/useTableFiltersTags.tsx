@@ -28,9 +28,9 @@ export const useTableFiltersTags = (tagService: TagService): TFilterGroup => {
     }, [tagService, pageNumber]);
 
     return {
-        value: "tags",
-        label: "Tags",
-        items: tags?.value?.map((tag) => ({ value: tag.id, label: tag.name })) ?? [],
+        id: "tags",
+        name: "Tags",
+        items: tags?.value ?? [],
         nextPage: tags?.nextLink
             ? () => setPageNumber((old) => old + 1)
             : undefined,
