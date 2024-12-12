@@ -14,8 +14,9 @@ export class ResetPasswordViewModel extends React.Component{
     }
 
     public render(): JSX.Element {
+        const data = JSON.stringify(this.state);
         return this.state.isRedesignEnabled
-            ? <fui-reset-password props={JSON.stringify(this.state)} ></fui-reset-password>
-            : <reset-password-runtime params={JSON.stringify(this.state)}></reset-password-runtime>;
+            ? <fui-reset-password key={data} props={data} ></fui-reset-password>
+            : <reset-password-runtime params={data}></reset-password-runtime>;
     }
 }

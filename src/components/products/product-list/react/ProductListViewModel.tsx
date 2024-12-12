@@ -22,7 +22,7 @@ export class ProductListViewModel extends React.Component {
         const data = JSON.stringify(this.state);
 
         return this.state.isRedesignEnabled
-            ? <fui-product-list-runtime props={data} ></fui-product-list-runtime>
+            ? <fui-product-list-runtime key={data} props={data} ></fui-product-list-runtime>
             : this.state.layout === 'tiles'
                 ? <product-list-tiles-runtime params={data}></product-list-tiles-runtime>
                     : this.state.layout === 'dropdown'

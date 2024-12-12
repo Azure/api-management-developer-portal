@@ -26,7 +26,7 @@ export class ListOfApisViewModel extends React.Component {
         const data = JSON.stringify(this.state);
 
         return this.state.isRedesignEnabled
-            ? <fui-api-list-runtime props={data} ></fui-api-list-runtime>
+            ? <fui-api-list-runtime key={data} props={data} ></fui-api-list-runtime>
             : this.state.layout === 'tiles'
                 ? <api-list-tiles params={data}></api-list-tiles>
                     : this.state.layout === 'dropdown'

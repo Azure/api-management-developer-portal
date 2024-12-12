@@ -18,7 +18,7 @@ export class ApiProductsViewModel extends React.Component {
         const data = JSON.stringify(this.state);
 
         return this.state.isRedesignEnabled
-            ? <fui-api-products-runtime props={data} ></fui-api-products-runtime>
+            ? <fui-api-products-runtime key={data} props={data} ></fui-api-products-runtime>
             : this.state.layout === 'tiles'
                 ? <api-products-tiles-runtime params={data}></api-products-tiles-runtime>
                     : this.state.layout === 'dropdown'

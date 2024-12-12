@@ -18,7 +18,7 @@ export class ProductSubscribeViewModel extends React.Component {
         const data = JSON.stringify(this.state);
 
         return this.state.isRedesignEnabled
-            ? <fui-product-subscribe-runtime props={data} ></fui-product-subscribe-runtime>
+            ? <fui-product-subscribe-runtime key={data} props={data} ></fui-product-subscribe-runtime>
             : <product-subscribe-runtime params={data}></product-subscribe-runtime>;
         }
 }
