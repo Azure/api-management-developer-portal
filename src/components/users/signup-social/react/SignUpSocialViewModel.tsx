@@ -31,8 +31,10 @@ export class SignUpSocialViewModel extends React.Component {
             }
             return <placeholder-content></placeholder-content>;
         }
+        const data = JSON.stringify(this.state);
+
         return this.state.isRedesignEnabled
-            ? <fui-signup-aad-runtime props={JSON.stringify(this.state)}></fui-signup-aad-runtime>
-            : <signup-social-runtime params={JSON.stringify(this.state)}></signup-social-runtime>;
+            ? <fui-signup-aad-runtime key={data} props={data}></fui-signup-aad-runtime>
+            : <signup-social-runtime params={data}></signup-social-runtime>;
     }
 }
