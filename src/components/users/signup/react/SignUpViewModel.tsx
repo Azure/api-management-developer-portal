@@ -17,8 +17,10 @@ export class SignUpViewModel extends React.Component {
     }
 
     public render(): JSX.Element {
+        const data = JSON.stringify(this.state);
+
         return this.state.isRedesignEnabled
-            ? <fui-signup-runtime props={JSON.stringify(this.state)} ></fui-signup-runtime>
+            ? <fui-signup-runtime key={data} props={data} ></fui-signup-runtime>
             : <signup-runtime params={JSON.stringify(this.state)}></signup-runtime>;
     }
 }

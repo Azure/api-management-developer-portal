@@ -23,7 +23,7 @@ export class OperationDetailsViewModel extends React.Component {
         const data = JSON.stringify(this.state);
 
         return this.state.isRedesignEnabled
-            ? <fui-operation-details props={data} ></fui-operation-details>
+            ? <fui-operation-details key={data} props={data} ></fui-operation-details>
             : <operation-details params={data}></operation-details>;
     }
 }
