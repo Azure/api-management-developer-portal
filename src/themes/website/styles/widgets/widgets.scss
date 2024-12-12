@@ -21,26 +21,28 @@
 
 /**
  * If you need to make sure that custom defined styles do not interfere with widgets,
- * this is a good place to do it. Make sure to add !important to insure overriding.
+ * this is a good place to do it.
+ * Note: selector is duplicated to increase its weight. Do not use !important as it will break
+ * some widgets that rely on inline styles.
  */
-[data-bind="widget: widget"] {
+.fui-FluentProvider.fui-FluentProvider.fui-FluentProvider {
   .button {
-    margin: 10px 20px 10px 0 !important;
-    padding: 9px 50px !important;
+    margin: 10px 20px 10px 0;
+    padding: 9px 50px;
   }
 
   .form-group {
-    margin: 5px 10px 20px 0 !important;
-    padding: 0 !important;
+    margin: 5px 10px 20px 0;
+    padding: 0;
 
     label {
-      margin: 0 0 0.5em !important;
-      padding: 0 !important;
+      margin: 0 0 0.5em;
+      padding: 0;
     }
 
     .form-control {
-      margin: 0 !important;
-      padding: 7px 10px 5px !important;
+      margin: 0;
+      padding: 7px 10px 5px;
     }
   }
 }
