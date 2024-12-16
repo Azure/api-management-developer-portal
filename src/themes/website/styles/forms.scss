@@ -36,15 +36,11 @@ form {
 }
 
 .invalid-feedback {
+    display: block;
+    flex-basis: 100%;
     margin-top: 0.25rem;
     font-size: 0.875em;
     color: $form-invalid-color;
-    display: none;
-}
-
-:invalid~.invalid-feedback,
-.invalid~.invalid-feedback {
-    display: block;
 }
 
 form.needs-validation:invalid {
@@ -130,7 +126,7 @@ input[type=search] {
 
     &::-webkit-search-cancel-button {
         -webkit-appearance: none;
-        @extend .icon-svg-cancel;        
+        @extend .icon-svg-cancel;
         height: 20px;
         width: 20px;
         cursor: pointer;

@@ -164,14 +164,14 @@ export const setupOAuth = async (api: Api, authServer: AuthorizationServer, head
     const scopeOverride = getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
     const storedCredentials = await getStoredCredentials(serverName, scopeOverride, sessionManager);
 
-    let newHeaders: ConsoleHeader[];
+    let newHeaders = headers ?? [];
 
     if (storedCredentials) {
         //this.selectedGrantType(storedCredentials.grantType);
         newHeaders = setAuthHeader(headers, storedCredentials.accessToken);
     }
 
-    return newHeaders ?? [];
+    return newHeaders;
 }
 
 const getSelectedAuthServerOverrideScope = (selectedAuthServerName: string, oAuth2Settings: OAuth2AuthenticationSettings[]): string => {
