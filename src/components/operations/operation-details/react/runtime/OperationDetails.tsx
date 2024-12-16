@@ -14,7 +14,7 @@ import {
     TableHeader,
     TableHeaderCell,
     TableRow,
-    Tooltip 
+    Tooltip
 } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
 import { RouteHelper } from "../../../../../routing/routeHelper";
@@ -89,7 +89,7 @@ export const OperationDetails = ({
 
     useEffect(() => {
         if (!apiName) return;
-        
+
         setWorking(true);
         Promise.all([
             loadApi().then(loadedApi => setApi(loadedApi)),
@@ -212,7 +212,7 @@ export const OperationDetails = ({
 
         const typedDefinitions = definitions.filter(definition => typeNames.indexOf(definition.name) !== -1);
         //this.definitionsCache.setItem(operation.id, typedDefinitions);
-        
+
         return typedDefinitions;
     }
 
@@ -283,10 +283,10 @@ export const OperationDetails = ({
     return (
         <div className={"operation-details-container"}>
             <h4 className={"operation-details-title"} id={"operation"}>Operation</h4>
-            {working 
+            {working
                 ? <Spinner label="Loading..." labelPosition="below" size="small" />
                 : !operation
-                    ? <span>No operation selected.</span> 
+                    ? <span>No operation selected.</span>
                     : <div className={"operation-details-content"}>
                         <OperationConsole
                             isOpen={isConsoleOpen}
@@ -342,7 +342,7 @@ export const OperationDetails = ({
                             </div>
                         </div>
                         {enableConsole && <button className="button" onClick={() => setIsConsoleOpen(true)}>Try this operation</button>}
-                        {request && request.isMeaningful() &&
+                        {request &&
                             <div className={"operation-request"}>
                                 <h4 className={"operation-subtitle1"}>Request</h4>
                                 {request.description && <MarkdownProcessor markdownToDisplay={request.description} />}

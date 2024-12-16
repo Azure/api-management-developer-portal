@@ -8,7 +8,7 @@ import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 
 export const scrollToOperation = (): void => {
     const headerElement = document.getElementById("operation");
-    headerElement && headerElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" }); 
+    headerElement && headerElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
 }
 
 export const getRequestUrl = (api: Api, operation: Operation, hostname: string): string => {
@@ -77,7 +77,7 @@ export const OperationDetailsTable = ({tableName, tableContent, showExamples, sh
                 <TableHeaderCell><span className="strong">Required</span></TableHeaderCell>
                 <TableHeaderCell><span className="strong">Type</span></TableHeaderCell>
                 <TableHeaderCell><span className="strong">Description</span></TableHeaderCell>
-                {showExamples && <TableHeaderCell><span className="strong">Example</span></TableHeaderCell>} {/** TODO */}
+                {showExamples && <TableHeaderCell><span className="strong">Example</span></TableHeaderCell>}{/** TODO */}
             </TableRow>
         </TableHeader>
         <TableBody>

@@ -78,7 +78,7 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
                         value={parameter.value() ?? ""}
                         selectedOptions={[parameter.value() ?? ""]}
                         placeholder={`Select ${parameter.name()} value`}
-                        onOptionSelect={(_, data) => 
+                        onOptionSelect={(_, data) =>
                             isTemplate
                                 ? changeTemplateParameterValue(parameter.id, data.optionValue)
                                 : changeQueryParameter(parameter.id, "value", data.optionValue)
