@@ -43,6 +43,7 @@ import { ConsoleHosts } from "./operation-console/ConsoleHosts";
 import { ConsoleParameters } from "./operation-console/ConsoleParameters";
 import { ConsoleRequestResponse } from "./operation-console/ConsoleRequestResponse";
 import { getAuthServers, getBackendUrl, loadSubscriptionKeys, setupOAuth } from "./operation-console/consoleUtils";
+import { ConsoleRequest } from "../../../../../models/console/consoleRequest";
 
 type OperationConsoleProps = {
     isOpen: boolean;
@@ -173,9 +174,9 @@ export const OperationConsole = ({
         if (api.subscriptionKeyParameterNames && api.subscriptionKeyParameterNames.header) {
             subscriptionHeaderName = api.subscriptionKeyParameterNames.header;
         }
-    
+
         const newHeaders = headers.filter(header => header.name() !== subscriptionHeaderName);
-        
+
         const subscriptionHeader = new ConsoleHeader();
         subscriptionHeader.name(subscriptionHeaderName);
         subscriptionHeader.value(key || "");
@@ -195,6 +196,15 @@ export const OperationConsole = ({
         consoleOperation.current.request.headers(newHeaders);
         rerender();
     }
+
+    const validateConsoleItems = (consoleRequest: ConsoleRequest): boolean => {
+        const isParametersNotValid: boolean = consoleRequest.queryParameters().some((parameter: ConsoleParameter) => parameter.required && !parameter.value());
+        const isHeadersNotValid: boolean = consoleRequest.headers().some((header: ConsoleHeader) => header.required && !header.value());
+        if(isParametersNotValid || isHeadersNotValid) {
+            return false;
+        }
+        return true;
+    };
 
     const updateHostname = (hostname: string) => {
         consoleOperation.current.host.hostname(hostname);
@@ -355,6 +365,7 @@ export const OperationConsole = ({
                             useCorsProxy={useCorsProxy}
                             httpClient={httpClient}
                             forceRerender={forceRerender}
+                            validateRequestItems={validateConsoleItems}
                         />
                     </>
                 }

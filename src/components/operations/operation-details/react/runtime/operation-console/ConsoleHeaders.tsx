@@ -1,9 +1,10 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Stack } from "@fluentui/react";
-import { Body1Strong, Button, Dropdown, Input, Label, Option, Tooltip } from "@fluentui/react-components";
+import { Body1Strong, Button, Dropdown, Field, Input, Label, Option, Tooltip } from "@fluentui/react-components";
 import { AddCircleRegular, ChevronUp20Regular, DeleteRegular } from "@fluentui/react-icons";
 import { ConsoleHeader } from "../../../../../../models/console/consoleHeader";
+import { getValidationMessage, getValidationState } from "./consoleUtils";
 
 type ConsoleHeadersProps = {
     headers: ConsoleHeader[];
@@ -53,7 +54,7 @@ export const ConsoleHeaders = ({ headers, updateHeaders, isGqlConsole }: Console
                 <Stack horizontal verticalAlign="center" key={header.id} className="param-detail">
                     <div className={"param-name"}>
                         {header.required
-                            ? <Label htmlFor={`header-dropdown-${header.id}`}>{header.name()}</Label>
+                            ? <Label htmlFor={`header-dropdown-${header.id}`} className={header.required ? "required" : ""}>{header.name()}</Label>
                             : <Input
                                 type="text"
                                 placeholder="Enter header name"
@@ -63,8 +64,9 @@ export const ConsoleHeaders = ({ headers, updateHeaders, isGqlConsole }: Console
                         }
                     </div>
                     <div className={"param-value"}>
-                        {header.options.length > 0
-                            ? <Dropdown
+                        <Field validationState={getValidationState(header)} validationMessage={getValidationMessage(header)}>
+                        {header.options.length > 0 ?
+                            <Dropdown
                                 id={`header-dropdown-${header.id}`}
                                 value={header.value()}
                                 selectedOptions={[header.value()]}
@@ -74,14 +76,15 @@ export const ConsoleHeaders = ({ headers, updateHeaders, isGqlConsole }: Console
                                 {header.options.map(option => (
                                     <Option key={option} value={option}>{option}</Option>
                                 ))}
-                            </Dropdown>
-                            : <Input
+                            </Dropdown> :
+                            <Input
                                 type={header.secret() ? "password" : "text"}
                                 placeholder="Enter header value"
                                 value={header.value() ?? ""}
                                 onChange={(_, data) => changeHeader(header.id, "value", data.value)}
                             />
                         }
+                        </Field>
                     </div>
                     <div className={"param-remove"}>
                         {!header.required &&
