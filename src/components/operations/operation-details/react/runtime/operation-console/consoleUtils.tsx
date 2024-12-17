@@ -294,3 +294,14 @@ export const authenticateOAuthWithPassword = async (
 
     return setAuthHeader(headers, accessToken);
 }
+
+export function getValidationMessage(consoleParameter: {required: boolean, value:() => any}): string {
+    return getValidationState(consoleParameter) === "none" ? "" : "Value is required";
+}
+
+export function getValidationState(consoleParameter: {required: boolean, value:() => any}): "none" | "error" | "warning" | "success" {
+    if (consoleParameter.required && !consoleParameter.value()) {
+        return "error";
+    }
+    return "none";
+}

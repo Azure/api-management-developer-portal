@@ -40,6 +40,7 @@ import { RequestBodyType, TypeOfApi, downloadableTypes } from "../../../../../..
 import { LogItem, WebsocketClient } from "./ws-utilities/websocketClient";
 import { templates } from "./templates/templates";
 import { BinaryField } from "./BinaryField";
+import { ConsoleRequest } from "../../../../../../models/console/consoleRequest";
 
 type ConsoleRequestResponseProps = {
     api: Api;
@@ -48,6 +49,7 @@ type ConsoleRequestResponseProps = {
     useCorsProxy: boolean;
     httpClient: HttpClient;
     forceRerender: number;
+    validateRequestItems: (consoleRequest: ConsoleRequest) => boolean;
 }
 
 const requestLanguagesRest = [
@@ -79,7 +81,7 @@ interface ResponsePackage {
     };
 }
 
-export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useCorsProxy, httpClient, forceRerender }: ConsoleRequestResponseProps) => {
+export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useCorsProxy, httpClient, forceRerender, validateRequestItems }: ConsoleRequestResponseProps) => {
     const [isRequestCollapsed, setIsRequestCollapsed] = useState<boolean>(false);
     const [selectedLanguage, setSelectedLanguage] = useState<string>(api.type === TypeOfApi.webSocket ? "ws_wscat" : "http");
     const [requestLanguages, setRequestLanguages] = useState<{ value: string, text: string }[]>(api.type === TypeOfApi.webSocket ? requestLanguagesWs : requestLanguagesRest);
@@ -262,6 +264,14 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
 
             default:
                 throw new Error("Unknown body format.");
+        }
+
+        setRequestError("");
+        const validationResult = validateRequestItems(request);
+        if (!validationResult) {
+            setRequestError("Unable to send the request: Required fields are missing or incomplete. Please review the request and ensure all required information is provided. Look for highlighted areas with error indicators.");
+            setSendingRequest(false);
+            return;
         }
 
         try {
@@ -464,7 +474,7 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
                         <SyntaxHighlighter children={codeSample} language={selectedLanguage} style={a11yLight} />
                         {api.type === TypeOfApi.webSocket &&
                             <>
-                                {isWsConnected && 
+                                {isWsConnected &&
                                     <>
                                         <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className="format-selection">
                                             <Body1Strong>Payload</Body1Strong>
@@ -504,7 +514,7 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
                                         </Button>
                                     </>
                                 }
-                                <Body1Strong block className={"ws-output-header"}>Output</Body1Strong>                    
+                                <Body1Strong block className={"ws-output-header"}>Output</Body1Strong>
                                 {wsLogItems.length === 0
                                     ? <Body1 block className={"ws-output-placeholder"}>Sent and received messages will appear here. Send a payload to begin.</Body1>
                                     : <Table className={"fui-table ws-output-table"}>
@@ -555,7 +565,7 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
                             </Stack>
                         </Stack>
                     </div>
-                    <div className={"operation-table-body-console"}>
+                    <div className={`operation-table-body-console ${requestError ? "validation-error" : ""}`}>
                         {requestError
                             ? <MarkdownProcessor markdownToDisplay={requestError} />
                             : formattedResponse && <SyntaxHighlighter children={formattedResponse} language={"http"} style={a11yLight} />

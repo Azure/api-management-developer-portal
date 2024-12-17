@@ -1,9 +1,10 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Stack } from "@fluentui/react";
-import { Body1Strong, Button, Dropdown, Input, Label, Option, Tooltip } from "@fluentui/react-components";
+import { Body1Strong, Button, Dropdown, Field, Input, Label, Option, Tooltip } from "@fluentui/react-components";
 import { AddCircleRegular, ChevronUp20Regular, DeleteRegular } from "@fluentui/react-icons";
 import { ConsoleParameter } from "../../../../../../models/console/consoleParameter";
+import { getValidationMessage, getValidationState } from "./consoleUtils";
 
 type ConsoleParametersProps = {
     queryParameters: ConsoleParameter[];
@@ -61,8 +62,8 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
     const renderParameter = (parameter: ConsoleParameter, isTemplate: boolean = false) => (
         <Stack horizontal verticalAlign="center" key={parameter.id} className="param-detail">
             <div className={"param-name"}>
-                {!parameter.canRename
-                    ? <Label htmlFor={`param-dropdown-${parameter.id}`}>{parameter.name()}</Label>
+                {parameter.required
+                    ? <Label htmlFor={`param-dropdown-${parameter.id}`} className={parameter.required ? "required" : ""}>{parameter.name()}</Label>
                     : <Input
                         type="text"
                         placeholder="Enter parameter name"
@@ -72,6 +73,7 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
                 }
             </div>
             <div className={"param-value"}>
+                <Field validationState={getValidationState(parameter)} validationMessage={getValidationMessage(parameter)}>
                 {parameter.options.length > 0
                     ? <Dropdown
                         id={`param-dropdown-${parameter.id}`}
@@ -99,6 +101,7 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
                         }
                     />
                 }
+                </Field>
             </div>
             <div className={"param-remove"}>
                 {!parameter.required &&
