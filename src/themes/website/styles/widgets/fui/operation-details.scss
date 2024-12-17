@@ -22,7 +22,7 @@ fui-operation-details {
 
     .operation-tags {
         padding-top: 1rem;
-        
+
         > * {
             margin-right: .5rem;
         }
@@ -130,7 +130,7 @@ fui-operation-details {
 }
 
 .operation-table-body-console {
-    padding: 2rem 1rem 2.5rem;    
+    padding: 2rem 1rem 2.5rem;
 
     .auth-detail,
     .param-detail {
@@ -157,7 +157,7 @@ fui-operation-details {
 
     .param-value {
         width: 53%;
-    } 
+    }
 
     .format-selection {
         margin-right: 1rem;
@@ -171,7 +171,7 @@ fui-operation-details {
     .request-body-upload-button,
     .ws-send-button {
         margin: 1rem 0;
-    }    
+    }
 
     .raw-textarea {
         min-height: 200px;
@@ -179,6 +179,10 @@ fui-operation-details {
 
     .body-revert-button {
         margin-top: 1rem;
+    }
+
+    &.validation-error {
+        background-color: #f5c6cb;
     }
 }
 
@@ -294,7 +298,7 @@ fui-operation-details {
 
     &.input-node {
         .fui-Input {
-            margin-left: 2rem;   
+            margin-left: 2rem;
         }
 
         .fui-Checkbox__label {
