@@ -1,11 +1,13 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
+import { IWidgetService } from "@paperbits/common/widgets";
+import { KnockoutComponentBinder } from "@paperbits/core/ko";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
 import { ProductDetailsHandlers } from "./productDetailsHandlers";
 import { ProductDetailsModel } from "./productDetailsModel";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
 import { ProductDetailsModelBinder } from "./productDetailsModelBinder";
-import { ProductDetailsViewModelBinder } from "./ko/productDetailsViewModelBinder";
-import { ProductDetailsViewModel } from "./ko/productDetailsViewModel";
-import { IWidgetService } from "@paperbits/common/widgets";
+import { ProductDetailsViewModel } from "./react/ProductDetailsViewModel";
+import { ProductDetailsViewModelBinder } from "./productDetailsViewModelBinder";
 
 export class ProductDetailsDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -18,16 +20,18 @@ export class ProductDetailsDesignModule implements IInjectorModule {
 
         widgetService.registerWidget("product-details", {
             modelDefinition: ProductDetailsModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: ProductDetailsViewModel,
             modelBinder: ProductDetailsModelBinder,
-            viewModelBinder: ProductDetailsViewModelBinder
+            viewModelBinder: ProductDetailsViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("product-details", {
             displayName: "Product: Details",
             category: "Products",
             iconClass: "widget-icon widget-icon-api-management",
+            componentBinder: KnockoutComponentBinder,
             handlerComponent: ProductDetailsHandlers
         });
     }

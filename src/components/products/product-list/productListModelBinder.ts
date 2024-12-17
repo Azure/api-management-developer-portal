@@ -14,6 +14,7 @@ export class ProductListModelBinder implements IModelBinder<ProductListModel> {
         model.layout = contract.itemStyleView || "list";
 
         model.allowSelection = contract.allowSelection;
+        model.allowViewSwitching = contract.allowViewSwitching ?? true;
         model.styles = contract.styles ?? {};
 
         if (contract.detailsPageHyperlink) {
@@ -28,6 +29,7 @@ export class ProductListModelBinder implements IModelBinder<ProductListModel> {
             type: "product-list",
             itemStyleView: model.layout,
             allowSelection: model.allowSelection,
+            allowViewSwitching: model.allowViewSwitching,
             detailsPageHyperlink: model.detailsPageHyperlink
                 ? {
                     target: model.detailsPageHyperlink.target,

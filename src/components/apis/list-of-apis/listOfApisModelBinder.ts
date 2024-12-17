@@ -1,7 +1,7 @@
 import { Contract } from "@paperbits/common";
 import { IModelBinder } from "@paperbits/common/editing";
 import { ListOfApisModel } from "./listOfApisModel";
-import { ListOfApisContract } from "./listOfApisContract";
+import { FiltersPosition, ListOfApisContract } from "./listOfApisContract";
 import { IPermalinkResolver } from "@paperbits/common/permalinks";
 
 
@@ -13,6 +13,8 @@ export class ListOfApisModelBinder implements IModelBinder<ListOfApisModel> {
 
         model.layout = contract.itemStyleView;
         model.allowSelection = contract.allowSelection;
+        model.allowViewSwitching = contract.allowViewSwitching ?? true;
+        model.filtersPosition = contract.filtersPosition ?? FiltersPosition.popup;
         model.showApiType = contract.showApiType === undefined ? true : contract.showApiType;
         model.defaultGroupByTagToEnabled = contract.defaultGroupByTagToEnabled === true;
         model.styles = contract.styles ?? {};
@@ -29,6 +31,8 @@ export class ListOfApisModelBinder implements IModelBinder<ListOfApisModel> {
             type: "listOfApis",
             itemStyleView: model.layout,
             allowSelection: model.allowSelection,
+            allowViewSwitching: model.allowViewSwitching,
+            filtersPosition: model.filtersPosition,
             showApiType: model.showApiType,
             defaultGroupByTagToEnabled: model.defaultGroupByTagToEnabled,
             detailsPageHyperlink: model.detailsPageHyperlink

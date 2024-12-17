@@ -1,13 +1,13 @@
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { ResetPasswordEditor } from "./ko/resetPasswordEditor";
-import { ResetPasswordViewModel } from "./ko/resetPasswordViewModel";
-import { ResetPasswordViewModelBinder } from "./ko/resetPasswordViewModelBinder";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
 import { ResetPasswordHandlers } from "./resetPasswordHandlers";
+import { ResetPasswordEditor } from "./react/ResetPasswordEditor";
 import { ResetPasswordModel } from "./resetPasswordModel";
 import { ResetPasswordModelBinder } from "./resetPasswordModelBinder";
-
+import { ResetPasswordViewModel } from "./react/ResetPasswordViewModel";
+import { ResetPasswordViewModelBinder } from "./resetPasswordViewModelBinder";
 
 export class ResetPasswordDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -20,17 +20,18 @@ export class ResetPasswordDesignModule implements IInjectorModule {
 
         widgetService.registerWidget("reset-password", {
             modelDefinition: ResetPasswordModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: ResetPasswordViewModel,
             modelBinder: ResetPasswordModelBinder,
-            viewModelBinder: ResetPasswordViewModelBinder
+            viewModelBinder: ResetPasswordViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("reset-password", {
             displayName: "Password: Reset form",
             category: "User",
             iconClass: "widget-icon widget-icon-api-management",
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: ResetPasswordEditor,
             handlerComponent: ResetPasswordHandlers
         });
