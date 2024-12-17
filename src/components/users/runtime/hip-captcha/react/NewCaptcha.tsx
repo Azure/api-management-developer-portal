@@ -91,25 +91,27 @@ export const NewCaptcha = ({ backendService, onInitComplete }: TCaptchaProps) =>
                     <Tab icon={<Speaker2Regular />} value={ECaptchaType.audio}>Audio</Tab>
                 </TabList>
 
-                {working ? (
-                    <Stack.Item style={{ padding: "13px 0" }}>
-                        <Spinner label={"Loading captcha"} labelPosition="below" />
-                    </Stack.Item>
-                ) : captchaType === ECaptchaType.visual ? (
-                    <Stack.Item>
-                        <img
+                <div style={{ margin: "10px 0" }}>
+                    {working ? (
+                      <Stack.Item style={{ padding: "13px 0" }}>
+                          <Spinner style={{ display: "inline-flex" }} label={"Loading captcha"} labelPosition="below" />
+                      </Stack.Item>
+                    ) : captchaType === ECaptchaType.visual ? (
+                      <Stack.Item>
+                          <img
                             src={`data:image/png;base64,${captchaChallenge}`}
                             alt="visual challange"
-                        />
-                    </Stack.Item>
-                ) : (
-                    <audio controls>
-                        <source
+                          />
+                      </Stack.Item>
+                    ) : (
+                      <audio controls>
+                          <source
                             src={`data:audio/mp3;base64,${captchaChallenge}`}
                             type="audio/mp3"
-                        />
-                    </audio>
-                )}
+                          />
+                      </audio>
+                    )}
+                </div>
 
 
                 <Stack.Item>

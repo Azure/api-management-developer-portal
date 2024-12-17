@@ -18,3 +18,31 @@
 @import "fui/operation-details.scss";
 @import "fui/apis-products-lists.scss";
 @import "fui/reports.scss";
+
+/**
+ * If you need to make sure that custom defined styles do not interfere with widgets,
+ * this is a good place to do it.
+ * Note: selector is duplicated to increase its weight. Do not use !important as it will break
+ * some widgets that rely on inline styles.
+ */
+.fui-FluentProvider.fui-FluentProvider.fui-FluentProvider {
+  .button {
+    margin: 10px 20px 10px 0;
+    padding: 9px 50px;
+  }
+
+  .form-group {
+    margin: 5px 10px 20px 0;
+    padding: 0;
+
+    label {
+      margin: 0 0 0.5em;
+      padding: 0;
+    }
+
+    .form-control {
+      margin: 0;
+      padding: 7px 10px 5px;
+    }
+  }
+}
