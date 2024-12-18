@@ -14,6 +14,9 @@ import { Utils } from "../../../../../../utils";
 import { OAuth2AuthenticationSettings } from "../../../../../../contracts/authenticationSettings";
 import { GrantTypes, oauthSessionKey } from "../../../../../../constants";
 import { SearchQuery } from "../../../../../../contracts/searchQuery";
+import * as React from "react";
+import { Button, Tooltip } from "@fluentui/react-components";
+import { EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
 
 interface SubscriptionOption {
     name: string;
@@ -304,4 +307,17 @@ export function getValidationState(consoleParameter: {required: boolean, value:(
         return "error";
     }
     return "none";
+}
+
+
+export const RevealSecretButton = ({showSecret, onClick}) => {
+    return (
+        <Tooltip content={showSecret ? "Hide secrets" : "Reveal secrets"} relationship="label">
+            <Button
+                icon={showSecret ? <EyeOffRegular /> : <EyeRegular />}
+                appearance="subtle"
+                onClick={onClick}
+            />
+        </Tooltip>
+    )
 }

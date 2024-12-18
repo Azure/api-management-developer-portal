@@ -4,7 +4,7 @@ import { Stack } from "@fluentui/react";
 import { Body1Strong, Button, Dropdown, Field, Input, Label, Option, Tooltip } from "@fluentui/react-components";
 import { AddCircleRegular, ChevronUp20Regular, DeleteRegular } from "@fluentui/react-icons";
 import { ConsoleHeader } from "../../../../../../models/console/consoleHeader";
-import { getValidationMessage, getValidationState } from "./consoleUtils";
+import { getValidationMessage, getValidationState, RevealSecretButton } from "./consoleUtils";
 
 type ConsoleHeadersProps = {
     headers: ConsoleHeader[];
@@ -15,6 +15,7 @@ type ConsoleHeadersProps = {
 export const ConsoleHeaders = ({ headers, updateHeaders, isGqlConsole }: ConsoleHeadersProps) => {
     const [isHeadersCollapsed, setIsHeadersCollapsed] = useState<boolean>(headers?.length === 0);
     const [consoleHeaders, setConsoleHeaders] = useState<ConsoleHeader[]>(headers);
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         setConsoleHeaders(headers);
@@ -78,7 +79,7 @@ export const ConsoleHeaders = ({ headers, updateHeaders, isGqlConsole }: Console
                                 ))}
                             </Dropdown> :
                             <Input
-                                type={header.secret() ? "password" : "text"}
+                                type={header.secret() && !showPassword ? "password" : "text"}
                                 placeholder="Enter header value"
                                 value={header.value() ?? ""}
                                 onChange={(_, data) => changeHeader(header.id, "value", data.value)}
@@ -87,10 +88,12 @@ export const ConsoleHeaders = ({ headers, updateHeaders, isGqlConsole }: Console
                         </Field>
                     </div>
                     <div className={"param-remove"}>
-                        {!header.required &&
+                        {(!header.required &&
                             <Tooltip content="Remove header" relationship="label">
                                 <Button icon={<DeleteRegular />} appearance="subtle" onClick={() => removeHeader(header)} />
-                            </Tooltip>
+                            </Tooltip>) ||
+                         (header.secret() &&
+                            <RevealSecretButton showSecret={showPassword} onClick={() => setShowPassword(!showPassword)} ></RevealSecretButton>)
                         }
                     </div>
                 </Stack>
