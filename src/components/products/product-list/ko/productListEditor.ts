@@ -11,11 +11,13 @@ import { ProductListModel } from "../productListModel";
 })
 export class ProductListEditor {
     public readonly allowSelection: ko.Observable<boolean>;
+    public readonly allowViewSwitching: ko.Observable<boolean>;
     public readonly hyperlink: ko.Observable<HyperlinkModel>;
     public readonly hyperlinkTitle: ko.Computed<string>;
 
     constructor() {
         this.allowSelection = ko.observable(false);
+        this.allowViewSwitching = ko.observable(true);
         this.hyperlink = ko.observable();
         this.hyperlinkTitle = ko.computed<string>(() => this.hyperlink() ? this.hyperlink().title : "Add a link...");
     }
@@ -29,13 +31,16 @@ export class ProductListEditor {
     @OnMounted()
     public async initialize(): Promise<void> {
         this.allowSelection(this.model.allowSelection);
+        this.allowViewSwitching(this.model.allowViewSwitching);
         this.hyperlink(this.model.detailsPageHyperlink);
 
         this.allowSelection.subscribe(this.applyChanges);
+        this.allowViewSwitching.subscribe(this.applyChanges);
     }
 
     private applyChanges(): void {
         this.model.allowSelection = this.allowSelection();
+        this.model.allowViewSwitching = this.allowViewSwitching();
         this.model.detailsPageHyperlink = this.hyperlink();
         this.onChange(this.model);
     }

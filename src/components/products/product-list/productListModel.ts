@@ -21,6 +21,11 @@ export class ProductListModel {
     public detailsPageHyperlink: HyperlinkModel;
 
     /**
+     * Indicates that view switching is allowed.
+     */
+    allowViewSwitching: boolean;
+
+    /**
      * Widget local styles.
      */
     public styles: LocalStyles = {};

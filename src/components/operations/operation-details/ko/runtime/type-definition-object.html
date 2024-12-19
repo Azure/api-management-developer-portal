@@ -67,7 +67,7 @@
                 <!-- /ko -->
             </div>
             <!-- ko if: $component.examples -->
-            <div role="cell" class="text-truncate" data-bind="text: $component.examples[property.name], attr: {title: $component.examples[property.name]}"></div>
+            <div role="cell" class="text-truncate" data-bind="text: property.example, attr: {title: property.example}"></div>
             <!-- /ko -->
             <div role="cell" data-bind="markdown: property.description"></div>
         </div>
