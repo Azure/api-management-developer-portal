@@ -41,6 +41,7 @@ import { LogItem, WebsocketClient } from "./ws-utilities/websocketClient";
 import { templates } from "./templates/templates";
 import { BinaryField } from "./BinaryField";
 import { ConsoleRequest } from "../../../../../../models/console/consoleRequest";
+import { RevealSecretButton } from "./consoleUtils";
 
 type ConsoleRequestResponseProps = {
     api: Api;
@@ -337,11 +338,11 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
                 }
             }
 
-            const responseString = `<span>HTTP/1.1</span> <span data-code="${responseStatusCode}"><span data-code="${responseStatusCode}">${responseStatusCode}</span> <span>${responseStatusText}</span></span>
+            const responseString =`HTTP/1.1 ${responseStatusCode} ${responseStatusText}
 
-<span>${headersString}</span>
+${headersString}
 
-<span>${responseBodyFormatted}</span>`;
+${responseBodyFormatted}`;
 
             setFormattedResponse(responseString);
             //this.logSentRequest(api.name, consoleOperation.operationName, method, response.statusCode);
@@ -461,15 +462,7 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
                                     }}
                                 />
                             </Tooltip>
-                            <Tooltip content={isSecretsRevealed ? "Hide secrets" : "Reveal secrets"} relationship="label">
-                                <Button
-                                    icon={isSecretsRevealed ? <EyeOffRegular /> : <EyeRegular />}
-                                    appearance="subtle"
-                                    onClick={() => {
-                                        setIsSecretsRevealed(!isSecretsRevealed);
-                                    }}
-                                />
-                            </Tooltip>
+                            <RevealSecretButton showSecret={isSecretsRevealed} onClick={() => setIsSecretsRevealed(!isSecretsRevealed)} ></RevealSecretButton>
                         </Stack>
                         <SyntaxHighlighter children={codeSample} language={selectedLanguage} style={a11yLight} />
                         {api.type === TypeOfApi.webSocket &&
@@ -568,7 +561,7 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
                     <div className={`operation-table-body-console ${requestError ? "validation-error" : ""}`}>
                         {requestError
                             ? <MarkdownProcessor markdownToDisplay={requestError} />
-                            : formattedResponse && <SyntaxHighlighter children={formattedResponse} language={"http"} style={a11yLight} />
+                            : formattedResponse && <SyntaxHighlighter language={"http"} style={a11yLight}>{formattedResponse}</SyntaxHighlighter>
                         }
                     </div>
                 </div>
