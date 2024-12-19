@@ -4,7 +4,7 @@ import { Stack } from "@fluentui/react";
 import { Body1Strong, Button, Dropdown, Field, Input, Label, Option, Tooltip } from "@fluentui/react-components";
 import { AddCircleRegular, ChevronUp20Regular, DeleteRegular } from "@fluentui/react-icons";
 import { ConsoleParameter } from "../../../../../../models/console/consoleParameter";
-import { getValidationMessage, getValidationState } from "./consoleUtils";
+import { getValidationMessage, getValidationState, RevealSecretButton } from "./consoleUtils";
 
 type ConsoleParametersProps = {
     queryParameters: ConsoleParameter[];
@@ -17,6 +17,7 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
     const [isParametersCollapsed, setIsParametersCollapsed] = useState<boolean>(queryParameters.length === 0 && (!templateParameters || templateParameters.length === 0));
     const [queryParams, setQueryParams] = useState<ConsoleParameter[]>(queryParameters);
     const [templateParams, setTemplateParams] = useState<ConsoleParameter[]>(templateParameters);
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         setTemplateParams(templateParameters);
@@ -90,7 +91,8 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
                             <Option key={option} value={option}>{option}</Option>
                         ))}
                     </Dropdown>
-                    : <Input
+                    :
+                    <Input
                         type={parameter.secret ? "password" : "text"}
                         placeholder="Enter parameter value"
                         value={parameter.value() ?? ""}
@@ -104,10 +106,12 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
                 </Field>
             </div>
             <div className={"param-remove"}>
-                {!parameter.required &&
+                {(!parameter.required &&
                     <Tooltip content="Remove parameter" relationship="label">
                         <Button icon={<DeleteRegular />} appearance="subtle" onClick={() => removeParameter(parameter)} />
-                    </Tooltip>
+                    </Tooltip>) ||
+                (parameter.secret &&
+                    <RevealSecretButton showSecret={showPassword} onClick={() => setShowPassword(!showPassword)} ></RevealSecretButton>)
                 }
             </div>
         </Stack>
