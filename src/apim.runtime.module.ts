@@ -88,10 +88,12 @@ import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
 import { TraceClick } from "./bindingHandlers/traceClick";
+import { ClientLogger } from "./logging/clientLogger";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bindSingleton("logger", ConsoleLogger);
+        // injector.bindSingleton("logger", ConsoleLogger);
+        injector.bindSingleton("logger", ClientLogger);
         injector.bindSingleton("traceClick", TraceClick);
         injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindToCollection("autostart", BalloonBindingHandler);

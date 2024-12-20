@@ -25,6 +25,22 @@ document.addEventListener("DOMContentLoaded", () => {
     traceClick.setupBinding();
 });
 
+window.onload = () => {
+    const logger = injector.resolve<Logger>("logger");
+    if (logger) {
+        const observer = new PerformanceObserver((list) => {
+            const [timing] = list.getEntriesByType("navigation");
+            if (timing) {
+                const location = window.location;
+                logger.trackEvent("PageLoadCounters", { host: location.host, pathName: location.pathname, total: timing["loadEventEnd"], pageLoadTiming: JSON.stringify(timing)});
+            }
+        });
+        observer.observe({ type: "navigation", buffered: true });
+    } else {
+        console.error("Logger is not available");
+    }
+}
+
 window.onbeforeunload = () => {
     if (!location.pathname.startsWith("/signin-sso") &&
         !location.pathname.startsWith("/signup") &&
