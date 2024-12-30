@@ -3,6 +3,7 @@ import { useState } from "react";
 import { TApisData } from "./utils";
 import { Stack } from "@fluentui/react";
 import { Spinner } from "@fluentui/react-components";
+import { ApiListTableView } from "@microsoft/api-docs-ui";
 import {
     TableFiltersSidebar,
     TFilterActive,
@@ -73,12 +74,15 @@ export const ApiListTableCards = ({
                 <>
                     <Stack.Item style={{ marginTop: "2rem" }}>
                         {layout === TLayout.table ? (
-                            <ApisTable
-                                apis={apis}
-                                showApiType={showApiType}
-                                getReferenceUrl={getReferenceUrl}
-                                detailsPageTarget={detailsPageTarget}
-                            />
+                          <ApiListTableView
+                            apis={apis.value || []}
+                            showApiType={showApiType}
+                            apiLinkPropsProvider={(api) => ({
+                                href: getReferenceUrl(api.name),
+                                target: detailsPageTarget,
+                                title: api.displayName,
+                            })}
+                          />
                         ) : (
                             <ApisCards
                                 apis={apis}
@@ -101,21 +105,23 @@ export const ApiListTableCards = ({
         </Stack>
     );
 
-    return filtersPosition !== FiltersPosition.sidebar ? (
-        content
-    ) : (
-        <Stack horizontal tokens={{ childrenGap: "2rem" }}>
-            <Stack.Item
-                shrink={0}
-                style={{ minWidth: "12rem", width: "15%", maxWidth: "20rem" }}
-            >
-                <TableFiltersSidebar
-                    filtersActive={filters}
-                    setFiltersActive={setFilters}
-                    filtersOptions={groupByTag ? [] : [filterOptionTags]}
-                />
-            </Stack.Item>
-            <Stack.Item style={{ width: "100%" }}>{content}</Stack.Item>
-        </Stack>
+    if (filtersPosition !== FiltersPosition.sidebar) {
+        return content;
+    }
+
+    return (
+      <Stack horizontal tokens={{ childrenGap: "2rem" }}>
+          <Stack.Item
+            shrink={0}
+            style={{ minWidth: "12rem", width: "15%", maxWidth: "20rem" }}
+          >
+              <TableFiltersSidebar
+                filtersActive={filters}
+                setFiltersActive={setFilters}
+                filtersOptions={groupByTag ? [] : [filterOptionTags]}
+              />
+          </Stack.Item>
+          <Stack.Item style={{ width: "100%" }}>{content}</Stack.Item>
+      </Stack>
     );
 };
