@@ -1,74 +1,74 @@
-.fui-table {
-    border: 1px solid #D1D1D1;
-    border-radius: 0.25rem;
-    border-spacing: 0;
-    border-collapse: inherit !important; // Very important, having this set to collapse will break border-radius
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-
-    // The bottom borders of table cells will be used as the borders between rows
-    tr + tr th,
-    tr + tr td {
-        border-top: 1px solid #E6E6E6;
-    }
-
-    // The right borders of table cells will be used as the borders between columns
-    th + th,
-    th + td,
-    td + th,
-    td + td {
-        border-left: 0;
-    }
-
-    // Remove the outer edge borders from the table cells, as the <table> element will have the border property set for the outside
-    th:first-child,
-    td:first-child {
-        border-left: 0;
-    }
-
-    th:last-child,
-    td:last-child {
-        border-right: 0;
-    }
-
-    tr:first-child th,
-    tr:first-child td {
-        border-top: 0;
-    }
-
-    tr:last-child th,
-    tr:last-child td {
-        border-bottom: 0;
-    }
-
-    th,
-    td {
-        padding: 1rem .75rem;
-    }
-
-    th:first-of-type,
-    td:first-of-type {
-        padding-left: 1.5rem;
-    }
-
-    th:last-of-type,
-    td:last-of-type {
-        padding-right: 1.5rem;
-    }
-
-    p:only-of-type {
-        margin: 0;
-    }
-
-    .fui-table-headerRow {
-        background: #F5F5F5;
-    }
-
-    .fui-table-collapsibleRow {
-        cursor: pointer;
-
-        &:not(:hover) {
-            background: #FAFAFA;
-        }
-    }
-}
+//.fui-table {
+//    border: 1px solid #D1D1D1;
+//    border-radius: 0.25rem;
+//    border-spacing: 0;
+//    border-collapse: inherit !important; // Very important, having this set to collapse will break border-radius
+//    overflow: hidden;
+//    margin-bottom: 1.5rem;
+//
+//    // The bottom borders of table cells will be used as the borders between rows
+//    tr + tr th,
+//    tr + tr td {
+//        border-top: 1px solid #E6E6E6;
+//    }
+//
+//    // The right borders of table cells will be used as the borders between columns
+//    th + th,
+//    th + td,
+//    td + th,
+//    td + td {
+//        border-left: 0;
+//    }
+//
+//    // Remove the outer edge borders from the table cells, as the <table> element will have the border property set for the outside
+//    th:first-child,
+//    td:first-child {
+//        border-left: 0;
+//    }
+//
+//    th:last-child,
+//    td:last-child {
+//        border-right: 0;
+//    }
+//
+//    tr:first-child th,
+//    tr:first-child td {
+//        border-top: 0;
+//    }
+//
+//    tr:last-child th,
+//    tr:last-child td {
+//        border-bottom: 0;
+//    }
+//
+//    th,
+//    td {
+//        padding: 1rem .75rem;
+//    }
+//
+//    th:first-of-type,
+//    td:first-of-type {
+//        padding-left: 1.5rem;
+//    }
+//
+//    th:last-of-type,
+//    td:last-of-type {
+//        padding-right: 1.5rem;
+//    }
+//
+//    p:only-of-type {
+//        margin: 0;
+//    }
+//
+//    .fui-table-headerRow {
+//        background: #F5F5F5;
+//    }
+//
+//    .fui-table-collapsibleRow {
+//        cursor: pointer;
+//
+//        &:not(:hover) {
+//            background: #FAFAFA;
+//        }
+//    }
+//}
