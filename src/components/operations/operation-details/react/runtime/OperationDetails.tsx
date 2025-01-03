@@ -3,10 +3,7 @@ import { useEffect, useState } from "react";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
 import { HttpClient } from "@paperbits/common/http/httpClient";
-import { Stack, } from "@fluentui/react";
 import {
-    Badge,
-    Button,
     Spinner,
     Table,
     TableBody,
@@ -14,9 +11,8 @@ import {
     TableHeader,
     TableHeaderCell,
     TableRow,
-    Tooltip
 } from "@fluentui/react-components";
-import { Copy16Regular } from "@fluentui/react-icons";
+import { ApiOperationInfo, ParametersTable } from "@microsoft/api-docs-ui";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 import { UsersService } from "../../../../../services/usersService";
@@ -305,42 +301,11 @@ export const OperationDetails = ({
                             sessionManager={sessionManager}
                             httpClient={httpClient}
                         />
-                        <div className={"operation-table"}>
-                            <div className={"operation-table-header"}>
-                                <h5>{operation.displayName}</h5>
-                                {operation.description &&
-                                    <div className={"operation-description"}>
-                                        <MarkdownProcessor markdownToDisplay={operation.description} />
-                                    </div>
-                                }
-                                {tags.length > 0 &&
-                                    <Stack horizontal className={"operation-tags"}>
-                                        <span className="strong">Tags:</span>
-                                        {tags.map(tag => <Badge key={tag.id} color="important" appearance="outline">{tag.name}</Badge>)}
-                                    </Stack>
-                                }
-                            </div>
-                            <div className={"operation-table-body"}>
-                                <div className={"operation-table-body-row"}>
-                                    <span className={`caption1-strong operation-info-caption operation-method method-${operation.method}`}>{operation.method}</span>
-                                    <span className={"operation-text"}>{requestUrl}</span>
-                                    <Tooltip
-                                        content={isCopied ? "Copied to clipboard!" : "Copy to clipboard"}
-                                        relationship={"description"}
-                                        hideDelay={isCopied ? 3000 : 250}
-                                    >
-                                        <Button
-                                            icon={<Copy16Regular />}
-                                            appearance="transparent"
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(requestUrl);
-                                                setIsCopied(true);
-                                            }}
-                                        />
-                                    </Tooltip>
-                                </div>
-                            </div>
-                        </div>
+                        <ApiOperationInfo
+                          operation={operation}
+                          requestUrl={requestUrl}
+                          tags={tags.map((tag) => tag.name)}
+                        />
                         {enableConsole && <button className="button" onClick={() => setIsConsoleOpen(true)}>Try this operation</button>}
                         {request &&
                             <div className={"operation-request"}>
@@ -349,13 +314,19 @@ export const OperationDetails = ({
                                 {operation.parameters?.length > 0 &&
                                     <>
                                         <h5 className={"operation-subtitle2"}>Request parameters</h5>
-                                        <OperationDetailsTable tableName={"Request parameters table"} tableContent={operation.parameters} showExamples={showExamples} showIn={true} />
+                                        <ParametersTable
+                                          parameters={operation.parameters}
+                                          hiddenColumns={[!showExamples && "examples"]}
+                                        />
                                     </>
                                 }
                                 {request.headers?.length > 0 &&
                                     <>
                                         <h5 className={"operation-subtitle2"}>Request headers</h5>
-                                        <OperationDetailsTable tableName={"Request headers table"} tableContent={request.headers} showExamples={showExamples} showIn={false} isHeaders={true} />
+                                        <ParametersTable
+                                          parameters={request.headers}
+                                          hiddenColumns={[!showExamples && "examples", "in"]}
+                                        />
                                     </>
                                 }
                                 {request.meaningfulRepresentations()?.length > 0 &&
@@ -382,11 +353,9 @@ export const OperationDetails = ({
                                     {response.headers?.length > 0 &&
                                         <>
                                             <h5 className={"operation-subtitle2"}>Response headers</h5>
-                                            <OperationDetailsTable
-                                                tableName={"Response headers table"}
-                                                tableContent={response.headers}
-                                                showExamples={false}
-                                                showIn={false}
+                                            <ParametersTable
+                                              parameters={response.headers}
+                                              hiddenColumns={["examples", "in"]}
                                             />
                                         </>
                                     }

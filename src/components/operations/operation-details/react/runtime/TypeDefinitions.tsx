@@ -2,6 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import { Stack } from "@fluentui/react";
 import { Tab, TabList, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
+import { ParametersTable } from "@microsoft/api-docs-ui";
 import { TypeDefinition, TypeDefinitionPropertyTypeCombination } from "../../../../../models/typeDefinition";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { CodeSnippet } from "../../../../utils/react/CodeSnippet";
@@ -69,7 +70,7 @@ export const TypeDefinitionForRepresentation = ({ definition, showExamples, getR
             {definition.description && <MarkdownProcessor markdownToDisplay={definition.description} />}
             {kind === TDefinitionKind.combination
                 ? <TypeDefinitionCombination definition={definition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
-                : kind === TDefinitionKind.enum 
+                : kind === TDefinitionKind.enum
                     ? <TypeDefinitionEnum definition={definition} />
                     : <TypeDefinitionObject definition={definition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
             }
@@ -125,68 +126,78 @@ const TypeDefinitionEnum = ({ definition }: TypeDefinitionProps) => {
 
 }
 
-const TypeDefinitionObject = ({ definition, showExamples, getReferenceUrl }: TypeDefinitionProps) => {
+const TypeDefinitionObject = ({ definition, showExamples }: TypeDefinitionProps) => {
     if (!definition.properties || definition.properties.length === 0) return;
 
-    return (
-        <Table aria-label={definition.name} className={"fui-table"}>
-            <TableHeader>
-                <TableRow className={"fui-table-headerRow"}>
-                    <TableHeaderCell><span className="strong">Name</span></TableHeaderCell>
-                    <TableHeaderCell><span className="strong">Required</span></TableHeaderCell>
-                    {definition.readOnly && <TableHeaderCell><span className="strong">Read-only</span></TableHeaderCell>}
-                    <TableHeaderCell><span className="strong">Type</span></TableHeaderCell>
-                    <TableHeaderCell><span className="strong">Description</span></TableHeaderCell>
-                    {showExamples && <TableHeaderCell><span className="strong">Example</span></TableHeaderCell>}
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {definition.properties.map(property => {
-                    let type: JSX.Element;
-                    const typeName = property.type["name"];
+  return (
+    <ParametersTable
+      parameters={definition.properties.map((property) => ({
+        ...property,
+        type: property.type["name"],
+      }))}
+      hiddenColumns={[!showExamples && "examples", !definition.readOnly && "readOnly"]}
+    />
+  );
 
-                    if (property.type.displayAs === TPropertyDisplayAs.combination) {
-                        let children = [<div>{property.type["combinationType"]}:</div>];
-
-                        property.type["combination"].map(combinationProperty => {
-                            const combinationName = combinationProperty["name"];
-
-                            if (combinationProperty["displayAs"] === TPropertyDisplayAs.reference) {
-                                children.push(
-                                    <div className={"truncate-text"}>
-                                        <a href={getReferenceUrl(combinationName)} title={combinationName}>{combinationName}</a>
-                                    </div>
-                                );
-                            } else {
-                                children.push(<div title={combinationName}>{combinationName}</div>);
-                            }                                
-                        });
-                        
-                        type = <>{children}</>;
-                    } else if (property.type.displayAs === TPropertyDisplayAs.reference || property.type.displayAs === TPropertyDisplayAs.arrayOfReference) {
-                        type = <a href={getReferenceUrl(typeName)} title={typeName}>{typeName + (property.type.displayAs === TPropertyDisplayAs.arrayOfReference ? "[]" : "")}</a>;
-                    } else {
-                        type = <span>{typeName + (property.type.displayAs === TPropertyDisplayAs.arrayOfPrimitive ? "[]" : "")}</span>;
-                    }
-
-                    return (
-                        <TableRow key={property.name} className={"fui-table-body-row"}>
-                            <TableCell><span className={"truncate-text"} title={property.name}>{property.name}</span></TableCell>
-                            <TableCell><span>{property.required ? "true" : "false"}</span></TableCell>
-                            {definition.readOnly && <TableCell><span>{property.readOnly}</span></TableCell>}
-                            <TableCell><span className={"truncate-text"}>{type}</span></TableCell>
-                            <TableCell><div title={property.description}>
-                                <MarkdownProcessor markdownToDisplay={property.description} maxChars={100} truncate={true} />
-                            </div></TableCell>
-                            {showExamples && 
-                                <TableCell>
-                                    {!!property.example && <span className={"truncate-text td-example"} title={property.example}>{property.example}</span>}
-                                </TableCell>
-                            }
-                        </TableRow>
-                    );
-                })}
-            </TableBody>
-        </Table>
-    );
+    // return (
+    //     <Table aria-label={definition.name} className={"fui-table"}>
+    //         <TableHeader>
+    //             <TableRow className={"fui-table-headerRow"}>
+    //                 <TableHeaderCell><span className="strong">Name</span></TableHeaderCell>
+    //                 <TableHeaderCell><span className="strong">Required</span></TableHeaderCell>
+    //                 {definition.readOnly && <TableHeaderCell><span className="strong">Read-only</span></TableHeaderCell>}
+    //                 <TableHeaderCell><span className="strong">Type</span></TableHeaderCell>
+    //                 <TableHeaderCell><span className="strong">Description</span></TableHeaderCell>
+    //                 {showExamples && <TableHeaderCell><span className="strong">Example</span></TableHeaderCell>}
+    //             </TableRow>
+    //         </TableHeader>
+    //         <TableBody>
+    //             {definition.properties.map(property => {
+    //                 let type: JSX.Element;
+    //                 const typeName = property.type["name"];
+    //
+    //                 if (property.type.displayAs === TPropertyDisplayAs.combination) {
+    //                     let children = [<div>{property.type["combinationType"]}:</div>];
+    //
+    //                     property.type["combination"].map(combinationProperty => {
+    //                         const combinationName = combinationProperty["name"];
+    //
+    //                         if (combinationProperty["displayAs"] === TPropertyDisplayAs.reference) {
+    //                             children.push(
+    //                                 <div className={"truncate-text"}>
+    //                                     <a href={getReferenceUrl(combinationName)} title={combinationName}>{combinationName}</a>
+    //                                 </div>
+    //                             );
+    //                         } else {
+    //                             children.push(<div title={combinationName}>{combinationName}</div>);
+    //                         }
+    //                     });
+    //
+    //                     type = <>{children}</>;
+    //                 } else if (property.type.displayAs === TPropertyDisplayAs.reference || property.type.displayAs === TPropertyDisplayAs.arrayOfReference) {
+    //                     type = <a href={getReferenceUrl(typeName)} title={typeName}>{typeName + (property.type.displayAs === TPropertyDisplayAs.arrayOfReference ? "[]" : "")}</a>;
+    //                 } else {
+    //                     type = <span>{typeName + (property.type.displayAs === TPropertyDisplayAs.arrayOfPrimitive ? "[]" : "")}</span>;
+    //                 }
+    //
+    //                 return (
+    //                     <TableRow key={property.name} className={"fui-table-body-row"}>
+    //                         <TableCell><span className={"truncate-text"} title={property.name}>{property.name}</span></TableCell>
+    //                         <TableCell><span>{property.required ? "true" : "false"}</span></TableCell>
+    //                         {definition.readOnly && <TableCell><span>{property.readOnly}</span></TableCell>}
+    //                         <TableCell><span className={"truncate-text"}>{type}</span></TableCell>
+    //                         <TableCell><div title={property.description}>
+    //                             <MarkdownProcessor markdownToDisplay={property.description} maxChars={100} truncate={true} />
+    //                         </div></TableCell>
+    //                         {showExamples &&
+    //                             <TableCell>
+    //                                 {!!property.example && <span className={"truncate-text td-example"} title={property.example}>{property.example}</span>}
+    //                             </TableCell>
+    //                         }
+    //                     </TableRow>
+    //                 );
+    //             })}
+    //         </TableBody>
+    //     </Table>
+    // );
 }

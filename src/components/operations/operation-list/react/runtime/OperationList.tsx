@@ -30,6 +30,7 @@ import { ApiService } from "../../../../../services/apiService";
 import { TagService } from "../../../../../services/tagService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { OperationListRuntimeProps } from "./OperationListRuntime";
+import { ApiOperationsList } from "@microsoft/api-docs-ui";
 
 enum TListProps {
     groupByTag = "group-by-tag",
@@ -190,34 +191,6 @@ export const OperationList = ({
         router.navigateTo(operationUrl);
     }
 
-    const renderOperation = (operation: Operation): JSX.Element => (
-        <Stack
-            key={operation.id}
-            horizontal
-            className={`operation ${operation.name === selectedOperationName && `is-selected-operation`}`}
-            onClick={() => selectOperation(operation)}
-        >
-            {operation.name === selectedOperationName
-                ? <>
-                    <span className={`operation-method method-${operation.method} strong`}>
-                        {operation.method}
-                    </span>
-                    <span className={`operation-name${!wrapText ? " nowrap" : ""} strong`}>
-                        {showUrlPath ? operation.urlTemplate : operation.displayName}
-                    </span>
-                  </>
-                : <>
-                    <span className={`operation-method method-${operation.method}`}>
-                        {operation.method}
-                    </span>
-                    <span className={`operation-name${!wrapText ? " nowrap" : ""}`}>
-                        {showUrlPath ? operation.urlTemplate : operation.displayName}
-                    </span>
-                  </>
-            }
-        </Stack>
-    )
-
     return (
         <div className={"operation-list-container"}>
             <Stack horizontal verticalAlign="center">
@@ -319,41 +292,18 @@ export const OperationList = ({
                         </MenuPopover>
                     </Menu>
                 </Stack>
-                <div className={"operation-list"}>
+                                <div className={"operation-list"}>
                     {working
                         ? <Spinner label="Loading operations..." labelPosition="below" size="extra-small" />
                         : <>
-                            {groupByTag
-                                ? <>
-                                    {(!operationsByTags || operationsByTags.length === 0)
-                                        ? <span>No operations found.</span>
-                                        : <Accordion
-                                            multiple
-                                            collapsible
-                                            defaultOpenItems={defaultAllGroupTagsExpanded ? [...Array(operationsByTags.length).keys()] : []}
-                                          >
-                                            {operationsByTags.map((tag, index) => (
-                                                <AccordionItem value={index} key={tag.tag}>
-                                                    <AccordionHeader expandIconPosition="end">{tag.tag}</AccordionHeader>
-                                                    <AccordionPanel className={"operation-accordion-panel"}>
-                                                        {tag.items.map(operation =>
-                                                            renderOperation(operation)
-                                                        )}
-                                                    </AccordionPanel>
-                                                </AccordionItem>
-                                            ))}
-                                          </Accordion>
-                                    }
-                                  </>
-                                : <>
-                                    {(!operations || operations.length <= 0)
-                                        ? <span>No operations found.</span>
-                                        : operations.map(operation =>
-                                            renderOperation(operation)
-                                          )
-                                    }
-                                  </>
-                            }
+                              <ApiOperationsList
+                                operations={operations || operationsByTags || []}
+                                selectedOperationName={selectedOperationName}
+                                allowLabelWrap={wrapText}
+                                labelField={showUrlPath ? "urlTemplate" : "displayName"}
+                                defaultAllGroupTagsExpanded={defaultAllGroupTagsExpanded}
+                                onOperationSelect={selectOperation}
+                              />
                             {hasNextPage && <a className={"show-more-operations"} onClick={() => setPageNumber(prev => prev + 1)}>Show more</a>}
                           </>
                     }

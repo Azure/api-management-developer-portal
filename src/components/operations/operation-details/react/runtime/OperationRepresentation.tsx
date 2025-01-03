@@ -2,6 +2,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { Stack } from "@fluentui/react";
 import { Dropdown, Option, Tab, TabList } from "@fluentui/react-components";
+import { ParametersTable } from "@microsoft/api-docs-ui";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { Representation } from "../../../../../models/representation";
 import { TypeDefinition } from "../../../../../models/typeDefinition";
@@ -80,12 +81,10 @@ export const OperationRepresentation = ({ definitions, representations, showExam
                 </Stack>
             </Stack>
             {selectedRepresentation.formParameters?.length > 0
-                ? <OperationDetailsTable
-                    tableName={"Request body table"}
-                    tableContent={selectedRepresentation.formParameters}
-                    showExamples={false}
-                    showIn={false}
-                    />
+                ? <ParametersTable
+                    parameters={selectedRepresentation.formParameters}
+                    hiddenColumns={["examples", "in"]}
+                />
                 : selectedRepresentationDefinition &&
                     (schemaView === TSchemaView.schema
                         ? <CodeSnippet

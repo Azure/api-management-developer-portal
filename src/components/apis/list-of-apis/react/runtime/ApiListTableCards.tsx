@@ -3,7 +3,7 @@ import { useState } from "react";
 import { TApisData } from "./utils";
 import { Stack } from "@fluentui/react";
 import { Spinner } from "@fluentui/react-components";
-import { ApiListTableView } from "@microsoft/api-docs-ui";
+import { ApiListTableView, ApiListCardsView } from "@microsoft/api-docs-ui";
 import {
     TableFiltersSidebar,
     TFilterActive,
@@ -46,6 +46,17 @@ export const ApiListTableCards = ({
 
     const filterOptionTags = useTableFiltersTags(tagService);
 
+    const ApiListView = layout === TLayout.table ? ApiListTableView : ApiListCardsView;
+    const apiListProps = {
+        apis: apis?.value || [],
+        showApiType,
+        apiLinkPropsProvider: (api) => ({
+            href: getReferenceUrl(api.name),
+            target: detailsPageTarget,
+            title: api.displayName,
+        })
+    };
+
     const content = (
         <Stack tokens={{ childrenGap: "1rem" }}>
             <Stack.Item>
@@ -73,24 +84,7 @@ export const ApiListTableCards = ({
             ) : (
                 <>
                     <Stack.Item style={{ marginTop: "2rem" }}>
-                        {layout === TLayout.table ? (
-                          <ApiListTableView
-                            apis={apis.value || []}
-                            showApiType={showApiType}
-                            apiLinkPropsProvider={(api) => ({
-                                href: getReferenceUrl(api.name),
-                                target: detailsPageTarget,
-                                title: api.displayName,
-                            })}
-                          />
-                        ) : (
-                            <ApisCards
-                                apis={apis}
-                                showApiType={showApiType}
-                                getReferenceUrl={getReferenceUrl}
-                                detailsPageTarget={detailsPageTarget}
-                            />
-                        )}
+                        <ApiListView {...apiListProps} />
                     </Stack.Item>
 
                     <Stack.Item align={"center"}>
