@@ -140,6 +140,7 @@ export const OperationListGql = ({
                 <Stack horizontal verticalAlign="center" className={"operation-search-container form-group"}>
                     <input
                         type="search"
+                        autoComplete="off"
                         className="form-control"
                         onChange={e => filterOperations(e.target.value)}
                         placeholder={"Search"}
