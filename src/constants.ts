@@ -345,3 +345,11 @@ export const smallMobileBreakpoint = 400;
  * Key of the default admin user
  */
 export const integrationUserId = '/users/integration';
+
+/**
+ * Cookie name of the user session
+ * This is used to store the unique user in cookies and identify the user session in client telemetry.
+ */
+export const USER_SESSION = "userSessionId";
+export const USER_ID = "userId";
+export const USER_ACTION = "data-action";

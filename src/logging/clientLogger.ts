@@ -5,6 +5,7 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ClientEvent } from "../models/logging/clientEvent";
 import { v4 as uuidv4 } from "uuid";
 import * as Constants from "../constants";
+import { Utils } from "../utils";
 
 export enum eventTypes {
     error = "Error",
@@ -33,6 +34,7 @@ export class ClientLogger implements Logger {
 
     public async trackEvent(eventName: string, properties?: Bag<string>): Promise<void> {
         const devPortalEvent = new ClientEvent();
+        this.addUserDataToEventData(properties);
 
         devPortalEvent.eventType = eventName;
         devPortalEvent.message = properties?.message;
@@ -43,6 +45,7 @@ export class ClientLogger implements Logger {
 
     public async trackError(error: Error, properties?: Bag<string>): Promise<void> {
         const devPortalEvent = new ClientEvent();
+        this.addUserDataToEventData(properties);
 
         devPortalEvent.eventType = eventTypes.error;
         devPortalEvent.message = error?.message;
@@ -54,6 +57,7 @@ export class ClientLogger implements Logger {
 
     public async trackView(viewName: string, properties?: Bag<string>): Promise<void> {
         const devPortalEvent = new ClientEvent();
+        this.addUserDataToEventData(properties);
 
         devPortalEvent.eventType = viewName;
         devPortalEvent.message = properties?.message;
@@ -68,6 +72,13 @@ export class ClientLogger implements Logger {
 
     public async trackDependency(name: string, properties?: Bag<string>): Promise<void> {
         // Not implemented
+    }
+
+    private addUserDataToEventData(eventData?: Bag<string>) {
+        const userData = Utils.getUserData();
+        eventData = eventData || {};
+        eventData[Constants.USER_ID] = userData.userId;
+        eventData[Constants.USER_SESSION] = userData.sessionId;
     }
 
     private async traceEvent(clientEvent: ClientEvent) {
