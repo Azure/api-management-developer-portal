@@ -1,5 +1,5 @@
 import { Bag } from "@paperbits/common/bag";
-declare var clients: any;
+declare const clients: any;
 
 function sendMessageToClients(message: Bag<string>): void {
     clients.matchAll().then((items: any[]) => {

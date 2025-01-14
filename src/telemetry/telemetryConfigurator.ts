@@ -13,12 +13,12 @@ export class TelemetryConfigurator {
     }
 
     public get userId(): string {
-        const sessionCookie = Utils.getCookie(USER_ID);
-        if(sessionCookie) {
-            return sessionCookie.value;
+        const uniqueUser = localStorage.getItem(USER_ID);
+        if(uniqueUser) {
+            return uniqueUser;
         } else {
             const newId = Utils.guid();
-            Utils.setCookie(USER_ID, newId, 400); // set cookie for 400 days - maximum allowed by the browser
+            localStorage.setItem(USER_ID, newId);
             return newId;
         }
     }
@@ -46,8 +46,8 @@ export class TelemetryConfigurator {
             });
 
             // Listen for messages from the service worker
-            navigator.serviceWorker.addEventListener('message', (event) => {
-                console.log('Received message from Service Worker:', event.data);
+            navigator.serviceWorker.addEventListener("message", (event) => {
+                console.log("Received message from Service Worker:", event.data);
                 if (event.data) {
                     logger.trackEvent("NetworkRequest", event.data);
                 } else {
@@ -69,9 +69,9 @@ export class TelemetryConfigurator {
                         };
                         const pageLoadTime = timing.loadEventEnd - timing.loadEventStart;
                         const domRenderingTime = timing.domComplete - timing.domInteractive;
-                        const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+                        const resources = performance.getEntriesByType("resource") as PerformanceResourceTiming[];
                         const jsCssResources = resources.filter(resource => {
-                            return resource.initiatorType === 'script' || resource.initiatorType === 'link';
+                            return resource.initiatorType === "script" || resource.initiatorType === "link";
                         });
                         const stats = {
                             pageLoadTime,
@@ -123,9 +123,9 @@ export class TelemetryConfigurator {
             elementId: element.id
         };
 
-        let navigation = ((elementTag === "A" && element) || (parentTag === "A" && parent)) as HTMLAnchorElement;
+        const navigation = ((elementTag === "A" && element) || (parentTag === "A" && parent)) as HTMLAnchorElement;
 
-        if (navigation && navigation.href) {
+        if (navigation?.href) {
             eventMessage["navigationTo"] = navigation.href;
             eventMessage["navigationText"] = navigation.innerText;
         }
