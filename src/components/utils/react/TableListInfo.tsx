@@ -91,6 +91,7 @@ export const TableListInfo = ({
                 <Stack.Item className="form-group" style={{ marginTop: 0 }}>
                     <input
                         type="search"
+                        autoComplete="off"
                         className="form-control"
                         onChange={e => setPattern(e.target.value)}
                         placeholder={"Search"}

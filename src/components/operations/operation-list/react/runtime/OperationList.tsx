@@ -272,6 +272,7 @@ export const OperationList = ({
                     <Stack.Item className="form-group" style={{ margin: 0, width: '100%' }}>
                         <input
                             type="search"
+                            autoComplete="off"
                             className="form-control"
                             onChange={e => {
                                 setPageNumber(1);
@@ -299,6 +300,7 @@ export const OperationList = ({
                                     <Stack className="form-group" style={{ margin: 0 }}>
                                         <input
                                             type="search"
+                                            autoComplete="off"
                                             className="form-control"
                                             onChange={e => setTagPattern(e.target.value)}
                                             placeholder={"Search"}
