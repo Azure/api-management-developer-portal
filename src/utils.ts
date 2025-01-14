@@ -3,6 +3,7 @@ import { ArmResource } from "./contracts/armResource";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
 import { NameValuePair } from "./contracts/nameValuePair";
+import { USER_ID, USER_SESSION } from "./constants";
 
 
 export class Utils {
@@ -419,5 +420,43 @@ export class Utils {
 
     public static isXmlContentType(contentType: string): boolean {
         return /\bxml\b/i.test(contentType.toLocaleLowerCase());
+    }
+
+    public static getCookie(name: string): { name: string, value: string, expiresInDays?: number } | null {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) {
+            const cookieValue = parts.pop().split(';').shift();
+            const cookieParts = document.cookie.split(';').map(cookie => cookie.trim());
+            const cookieString = cookieParts.find(cookie => cookie.startsWith(`${name}=`));
+            let expiresInDays;
+
+            if (cookieString) {
+                const expiresPart = cookieString.split(';').find(part => part.trim().startsWith('expires='));
+                if (expiresPart) {
+                    const expiresDate = new Date(expiresPart.split('=')[1]);
+                    const currentDate = new Date();
+                    expiresInDays = Math.ceil((expiresDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+                }
+            }
+
+            return { name, value: cookieValue, expiresInDays };
+        }
+        return null;
+    }
+
+    public static setCookie(name: string, value: string, days?: number): void {
+        let expires = "";
+        if (days) {
+            expires = `; expires=${new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString()}`;
+        }
+        document.cookie = `${name}=${value}${expires}; path=/`;
+    }
+
+    public static getUserData(): { userId: string; sessionId: string; } {
+        return {
+            userId: Utils.getCookie(USER_ID)?.value,
+            sessionId: sessionStorage.getItem(USER_SESSION)
+        };
     }
 }

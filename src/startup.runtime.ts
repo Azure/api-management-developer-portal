@@ -6,6 +6,8 @@ import { staticDataEnvironment } from "./../environmentConstants";
 import { define } from "mime";
 import { TraceClick } from "./bindingHandlers/traceClick";
 import { Logger } from "@paperbits/common/logging";
+import { TelemetryConfigurator } from "./telemetry/telemetryConfigurator";
+import { Utils } from "./utils";
 
 define({ "application/x-zip-compressed": ["zip"] }, true);
 
@@ -25,21 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
     traceClick.setupBinding();
 });
 
-window.onload = () => {
-    const logger = injector.resolve<Logger>("logger");
-    if (logger) {
-        const observer = new PerformanceObserver((list) => {
-            const [timing] = list.getEntriesByType("navigation");
-            if (timing) {
-                const location = window.location;
-                logger.trackEvent("PageLoadCounters", { host: location.host, pathName: location.pathname, total: timing["loadEventEnd"], pageLoadTiming: JSON.stringify(timing)});
-            }
-        });
-        observer.observe({ type: "navigation", buffered: true });
-    } else {
-        console.error("Logger is not available");
-    }
-}
+let telemetryConfigurator = new TelemetryConfigurator(injector);
+telemetryConfigurator.configure();
 
 window.onbeforeunload = () => {
     if (!location.pathname.startsWith("/signin-sso") &&
@@ -48,6 +37,6 @@ window.onbeforeunload = () => {
         const rest = location.href.split(location.pathname)[1];
         const returnUrl = location.pathname + rest;
         sessionStorage.setItem("returnUrl", returnUrl);
-        document.cookie = `returnUrl=${returnUrl}`; // for delegation
+        Utils.setCookie("returnUrl", returnUrl); // for delegation
     }
 };
