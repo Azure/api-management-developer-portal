@@ -9,7 +9,8 @@ export class TelemetryConfigurator {
 
     constructor(private injector: IInjector) {
         // required for user session init.
-        console.log("TelemetryConfigurator initialized with userId: " + this.userId + " and sessionId: " + this.sessionId);
+        const userId = this.userId
+        const sessionId = this.sessionId;
     }
 
     public get userId(): string {
