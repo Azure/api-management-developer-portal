@@ -1,6 +1,6 @@
 <!-- ko if: properties.length > 0 -->
 
-<div role="table" class="table-preset table-preset-schema" data-bind="css: {'table-preset-schema-examples': $component.examples, 'table-preset-schema-readonly': readOnly}">
+<div role="table" class="table-preset table-preset-schema" data-bind="css: {'table-preset-schema-examples': $component.showExamples, 'table-preset-schema-readonly': readOnly}">
     <div class="d-contents" role="rowgroup">
         <div class="d-contents" role="row">
             <div role="columnheader" class="table-preset-head text-truncate">Name</div>
@@ -9,7 +9,7 @@
             <div role="columnheader" class="table-preset-head text-truncate">Read-only</div>
             <!-- /ko -->
             <div role="columnheader" class="table-preset-head text-truncate">Type</div>
-            <!-- ko if: $component.examples -->
+            <!-- ko if: $component.showExamples -->
             <div role="columnheader" class="table-preset-head text-truncate">Example</div>
             <!-- /ko -->
             <div role="columnheader" class="table-preset-head">Description</div>
@@ -66,7 +66,7 @@
 
                 <!-- /ko -->
             </div>
-            <!-- ko if: $component.examples -->
+            <!-- ko if: $component.showExamples -->
             <div role="cell" class="text-truncate" data-bind="text: property.example, attr: {title: property.example}"></div>
             <!-- /ko -->
             <div role="cell" data-bind="markdown: property.description"></div>
