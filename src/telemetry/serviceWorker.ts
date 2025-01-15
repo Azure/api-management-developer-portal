@@ -1,11 +1,12 @@
 import { Bag } from "@paperbits/common/bag";
 declare const clients: any;
 
+const allowedList = ["state", "session_state"];
+
 function sendMessageToClients(message: Bag<string>): void {
     clients.matchAll().then((items: any[]) => {
         if (items.length > 0) {
-            const client = items[0];
-            client.postMessage(message);
+            items.forEach(client => client.postMessage(message));
         }
     });
 }
@@ -21,8 +22,10 @@ addEventListener("fetch", (event: FetchEvent) => {
                 return response;
             }
 
+            const cleanedUrl = request.url.indexOf("#code=") > -1 ? cleanUpUrlParams(request) : request.url;
+
             const telemetryData = {
-                url: request.url,
+                url: cleanedUrl,
                 method: request.method.toUpperCase(),
                 status: response.status.toString(),
                 responseHeaders: ""
@@ -45,3 +48,18 @@ addEventListener("fetch", (event: FetchEvent) => {
 });
 
 console.log("Telemetry worker started.");
+
+function cleanUpUrlParams(request: Request) : string {
+    const url = new URL(request.url);
+    const params = new URLSearchParams(url.search);
+
+    // Remove all parameters except those in the whitelist
+    for (const key of params.keys()) {
+        if (!allowedList.includes(key)) {
+            params.delete(key);
+        }
+    }
+
+    url.search = params.toString();
+    return url.toString();
+}
