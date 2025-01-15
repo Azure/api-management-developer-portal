@@ -31,6 +31,7 @@ import { KnownMimeTypes } from "../../../../../../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../../../../../../models/knownHttpHeaders";
 import { KnownStatusCodes } from "../../../../../../models/knownStatusCodes";
 import { ConsoleOperation } from "../../../../../../models/console/consoleOperation";
+import { ConsoleRequest } from "../../../../../../models/console/consoleRequest";
 import { RequestError } from "../../../../../../errors/requestError";
 import { HttpResponse } from "../../../../../../contracts/httpResponse";
 import { TemplatingService } from "../../../../../../services/templatingService";
@@ -40,7 +41,6 @@ import { RequestBodyType, TypeOfApi, downloadableTypes } from "../../../../../..
 import { LogItem, WebsocketClient } from "./ws-utilities/websocketClient";
 import { templates } from "./templates/templates";
 import { BinaryField } from "./BinaryField";
-import { ConsoleRequest } from "../../../../../../models/console/consoleRequest";
 import { RevealSecretButton } from "./consoleUtils";
 
 type ConsoleRequestResponseProps = {

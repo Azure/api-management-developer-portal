@@ -27,6 +27,7 @@ import { Operation } from "../../../../../models/operation";
 import { ConsoleOperation } from "../../../../../models/console/consoleOperation";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
+import { ConsoleRequest } from "../../../../../models/console/consoleRequest";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
@@ -43,7 +44,6 @@ import { ConsoleHosts } from "./operation-console/ConsoleHosts";
 import { ConsoleParameters } from "./operation-console/ConsoleParameters";
 import { ConsoleRequestResponse } from "./operation-console/ConsoleRequestResponse";
 import { getAuthServers, getBackendUrl, loadSubscriptionKeys, setupOAuth } from "./operation-console/consoleUtils";
-import { ConsoleRequest } from "../../../../../models/console/consoleRequest";
 
 type OperationConsoleProps = {
     isOpen: boolean;
@@ -200,9 +200,11 @@ export const OperationConsole = ({
     const validateConsoleItems = (consoleRequest: ConsoleRequest): boolean => {
         const isParametersNotValid: boolean = consoleRequest.queryParameters().some((parameter: ConsoleParameter) => parameter.required && !parameter.value());
         const isHeadersNotValid: boolean = consoleRequest.headers().some((header: ConsoleHeader) => header.required && !header.value());
-        if(isParametersNotValid || isHeadersNotValid) {
+
+        if (isParametersNotValid || isHeadersNotValid) {
             return false;
         }
+
         return true;
     };
 
