@@ -347,9 +347,12 @@ export const smallMobileBreakpoint = 400;
 export const integrationUserId = '/users/integration';
 
 /**
- * Cookie name of the user session
- * This is used to store the unique user in cookies and identify the user session in client telemetry.
+  * This is used to store the unique user in local storage and identify the user session in client telemetry.
  */
 export const USER_SESSION = "userSessionId";
 export const USER_ID = "userId";
 export const USER_ACTION = "data-action";
+
+// Feature flags
+export const FEATURE_FLAGS = "featureFlags";
+export const FEATURE_CLIENT_TELEMETRY = "clientTelemetry";
