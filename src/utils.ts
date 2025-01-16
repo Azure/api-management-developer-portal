@@ -455,7 +455,7 @@ export class Utils {
 
     public static getUserData(): { userId: string; sessionId: string; } {
         return {
-            userId: Utils.getCookie(USER_ID)?.value,
+            userId: localStorage.getItem(USER_ID),
             sessionId: sessionStorage.getItem(USER_SESSION)
         };
     }
