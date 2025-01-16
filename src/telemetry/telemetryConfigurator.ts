@@ -15,7 +15,7 @@ export class TelemetryConfigurator {
 
     public get userId(): string {
         const uniqueUser = localStorage.getItem(USER_ID);
-        if(uniqueUser) {
+        if (uniqueUser) {
             return uniqueUser;
         } else {
             const newId = Utils.guid();
@@ -82,7 +82,7 @@ export class TelemetryConfigurator {
                                 duration: resource.duration
                             }))
                         };
-                        logger.trackEvent("PageLoad", { host: location.host,  pathName: location.pathname, total: timing.loadEventEnd.toString(), pageLoadStats: JSON.stringify(stats), ...screenSize });
+                        logger.trackEvent("PageLoad", { host: location.host, pathName: location.pathname, total: timing.loadEventEnd.toString(), pageLoadStats: JSON.stringify(stats), ...screenSize });
                     }
                 });
                 observer.observe({ type: "navigation", buffered: true });
@@ -102,12 +102,36 @@ export class TelemetryConfigurator {
         document.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
                 this.processUserInteraction(event).then(() => {
-                        console.log("Enter key processed");
-                    }).catch((error) => {
-                        console.error("Error processing user interaction:", error);
-                    });
+                    console.log("Enter key processed");
+                }).catch((error) => {
+                    console.error("Error processing user interaction:", error);
+                });
             }
         });
+    }
+
+    public cleanUp() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistration().then((registration) => {
+                if (registration) {
+                    registration.unregister().then((boolean) => {
+                        if (boolean) {
+                            console.log('Service Worker unregistered successfully.');
+                        } else {
+                            console.log('Service Worker unregistering failed.');
+                        }
+                    }).catch((error) => {
+                        console.error('Error unregistering Service Worker:', error);
+                    });
+                } else {
+                    console.log('No Service Worker to unregister.');
+                }
+            }).catch((error) => {
+                console.error('Error getting Service Worker registration:', error);
+            });
+        } else {
+            console.log('Service Worker not registered.');
+        }
     }
 
     private async processUserInteraction(event: Event) {

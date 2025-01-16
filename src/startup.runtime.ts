@@ -8,6 +8,8 @@ import { TraceClick } from "./bindingHandlers/traceClick";
 import { Logger } from "@paperbits/common/logging";
 import { TelemetryConfigurator } from "./telemetry/telemetryConfigurator";
 import { Utils } from "./utils";
+import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
+import { FEATURE_CLIENT_TELEMETRY, FEATURE_FLAGS } from "./constants";
 
 define({ "application/x-zip-compressed": ["zip"] }, true);
 
@@ -27,8 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     traceClick.setupBinding();
 });
 
-let telemetryConfigurator = new TelemetryConfigurator(injector);
-telemetryConfigurator.configure();
+initFeatures();
 
 window.onbeforeunload = () => {
     if (!location.pathname.startsWith("/signin-sso") &&
@@ -40,3 +41,34 @@ window.onbeforeunload = () => {
         Utils.setCookie("returnUrl", returnUrl); // for delegation
     }
 };
+
+function initFeatures() {
+    const logger = injector.resolve<Logger>("logger");
+    const settingsProvider = injector.resolve<ISettingsProvider>("settingsProvider");
+    checkIsFeatureEnabled(FEATURE_CLIENT_TELEMETRY, settingsProvider, logger)
+        .then((isEnabled) => {
+            logger.trackEvent("FeatureFlag", { feature: FEATURE_CLIENT_TELEMETRY, enabled: isEnabled.toString() });
+            let telemetryConfigurator = new TelemetryConfigurator(injector);
+            if (isEnabled) {
+                telemetryConfigurator.configure();
+            } else {
+                telemetryConfigurator.cleanUp();
+            }
+        });
+}
+
+async function checkIsFeatureEnabled(featureFlagName: string, settingsProvider: ISettingsProvider, logger: Logger): Promise<boolean> {
+    try {
+        const settingsObject = await settingsProvider.getSetting(FEATURE_FLAGS);
+
+        const featureFlags = new Map(Object.entries(settingsObject ?? {}));
+        if (!featureFlags || !featureFlags.has(featureFlagName)) {
+            return false;
+        }
+
+        return featureFlags.get(featureFlagName) == true;
+    } catch (error) {
+        logger?.trackEvent("FeatureFlag", { message: "Feature flag check failed", data: error.message });
+        return false;
+    }
+}

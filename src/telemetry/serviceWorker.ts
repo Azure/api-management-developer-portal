@@ -49,17 +49,19 @@ addEventListener("fetch", (event: FetchEvent) => {
 
 console.log("Telemetry worker started.");
 
-function cleanUpUrlParams(request: Request) : string {
+function cleanUpUrlParams(request: Request): string {
     const url = new URL(request.url);
-    const params = new URLSearchParams(url.search);
+    const hash = url.hash.substring(1); // Remove the leading '#'
+    const params = new URLSearchParams(hash);
 
-    // Remove all parameters except those in the whitelist
+    // Remove all parameters except those in the allowedList
     for (const key of params.keys()) {
         if (!allowedList.includes(key)) {
-            params.delete(key);
+            // Replace the 'code' parameter value
+            params.set(key, "xxxxxxxxxx");
         }
     }
 
-    url.search = params.toString();
+    url.hash = params.toString();
     return url.toString();
 }
