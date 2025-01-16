@@ -98,12 +98,20 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
     componentDidMount(): void {
         this.eventManager.addEventListener('onDataChange', this.onDataChange.bind(this));
         window.addEventListener('resize', this.checkScreenSize.bind(this));
+        this.router.addRouteChangeListener(() => this.getPageName());
+        this.getPageName();
         this.checkScreenSize();
         this.getRoles();
     }
 
-    componentDidUpdate(prevProps: Readonly<{}>, prevState: Readonly<RightPanelState>, snapshot?: any): void {
-        if (this.state.isFocusedState && !prevState.isFocusedState) {
+    componentWillUnmount() {
+        this.eventManager.removeEventListener('onDataChange', this.onDataChange.bind(this));
+        window.removeEventListener('resize', this.checkScreenSize.bind(this));        
+        this.router.removeRouteChangeListener(() => this.getPageName());
+    }
+
+    setPageName = () => {
+        if (this.state.isFocusedState) {
             const host = this.viewManager.getHost();
             if (host.name === HostNames.Page) {
                 this.getPageName();
@@ -113,11 +121,6 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                 this.setState({ pageName: 'Styles' });
             }
         }
-    }
-
-    componentWillUnmount() {
-        this.eventManager.removeEventListener('onDataChange', this.onDataChange.bind(this));
-        window.removeEventListener('resize', this.checkScreenSize.bind(this));
     }
 
     getRoles = async (): Promise<void> => {
