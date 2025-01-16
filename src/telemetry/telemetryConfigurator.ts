@@ -111,26 +111,26 @@ export class TelemetryConfigurator {
     }
 
     public cleanUp() {
-        if ('serviceWorker' in navigator) {
+        if ("serviceWorker" in navigator) {
             navigator.serviceWorker.getRegistration().then((registration) => {
                 if (registration) {
                     registration.unregister().then((boolean) => {
                         if (boolean) {
-                            console.log('Service Worker unregistered successfully.');
+                            console.log("Service Worker unregistered successfully.");
                         } else {
-                            console.log('Service Worker unregistering failed.');
+                            console.log("Service Worker unregistering failed.");
                         }
                     }).catch((error) => {
-                        console.error('Error unregistering Service Worker:', error);
+                        console.error("Error unregistering Service Worker:", error);
                     });
                 } else {
-                    console.log('No Service Worker to unregister.');
+                    console.log("No Service Worker to unregister.");
                 }
             }).catch((error) => {
-                console.error('Error getting Service Worker registration:', error);
+                console.error("Error getting Service Worker registration:", error);
             });
         } else {
-            console.log('Service Worker not registered.');
+            console.log("Service Worker not registered.");
         }
     }
 
