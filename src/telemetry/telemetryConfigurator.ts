@@ -48,7 +48,7 @@ export class TelemetryConfigurator {
 
             // Listen for messages from the service worker
             navigator.serviceWorker.addEventListener("message", (event) => {
-                console.log("Received message from Service Worker:", event.data);
+                // console.log("Received message from Service Worker:", event.data);
                 if (event.data) {
                     logger.trackEvent("NetworkRequest", event.data);
                 } else {
@@ -95,7 +95,7 @@ export class TelemetryConfigurator {
             this.processUserInteraction(event).then(() => {
                 console.log("Click processed");
             }).catch((error) => {
-                console.error("Error processing user interaction:", error);
+                console.error("Error processing click user interaction:", error);
             });
         });
 
@@ -104,7 +104,7 @@ export class TelemetryConfigurator {
                 this.processUserInteraction(event).then(() => {
                     console.log("Enter key processed");
                 }).catch((error) => {
-                    console.error("Error processing user interaction:", error);
+                    console.error("Error processing keydown user interaction:", error);
                 });
             }
         });
@@ -139,24 +139,24 @@ export class TelemetryConfigurator {
         const elementTag = element?.tagName;
         const parent = element?.parentElement;
         const parentTag = parent?.tagName;
-        if (!(elementTag && TrackingEventElements.includes(elementTag)) && !(parentTag && TrackingEventElements.includes(parentTag))) {
+        const targetElement = elementTag && TrackingEventElements.includes(elementTag) ? element : (parentTag && TrackingEventElements.includes(parentTag) ? parent : null);
+        if (!targetElement) {
             return;
         }
 
-        let eventAction = element.attributes.getNamedItem(USER_ACTION)?.value;
+        let eventAction = targetElement.attributes.getNamedItem(USER_ACTION)?.value;
         const eventMessage = {
             elementId: element.id
         };
 
-        const navigation = ((elementTag === "A" && element) || (parentTag === "A" && parent)) as HTMLAnchorElement;
+        const navigation = (targetElement.tagName === "A" && targetElement) as HTMLAnchorElement;
 
         if (navigation?.href) {
             eventMessage["navigationTo"] = navigation.href;
             eventMessage["navigationText"] = navigation.innerText;
         } else {
-            if (elementTag === "BUTTON" || parentTag === "BUTTON") {
-                const btnText = element?.innerText || parent?.innerText;
-                eventAction = `BUTTON clicked with text '${btnText?.trim()}'`;
+            if (targetElement.tagName === "BUTTON") {
+                eventAction = `BUTTON clicked with text '${targetElement.innerText?.trim()}'`;
             }
         }
 
@@ -165,7 +165,7 @@ export class TelemetryConfigurator {
         }
 
         if (eventAction) {
-            eventMessage["eventAction"] = eventAction;
+            eventMessage["message"] = eventAction;
         }
 
         const logger = this.injector.resolve<Logger>("logger");

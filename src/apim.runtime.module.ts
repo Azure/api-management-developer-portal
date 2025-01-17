@@ -92,8 +92,8 @@ import { ClientLogger } from "./logging/clientLogger";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        // injector.bindSingleton("logger", ConsoleLogger);
-        injector.bindSingleton("logger", ClientLogger);
+        injector.bindSingleton("logger", ConsoleLogger);
+        // injector.bindSingleton("logger", ClientLogger);
         injector.bindSingleton("traceClick", TraceClick);
         injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindToCollection("autostart", BalloonBindingHandler);
