@@ -241,15 +241,13 @@ fui-operation-details {
 }
 
 .console-gql-body {
-    height: 100%;
-
     .gql-search {
         width: 100%;
         margin-bottom: 1.5rem;
     }
 
     .gql-explorer {
-        min-width: 300px;
+        width: 350px;
         padding: 2rem 1.5rem 2rem 0;
         border-right: 1px solid #E6E6E6;
 
@@ -297,8 +295,11 @@ fui-operation-details {
     }
 
     &.input-node {
-        .fui-Input {
+        .fui-Input,
+        .fui-Dropdown {
             margin-left: 2rem;
+            min-width: unset;
+            width: calc(100% - 2rem);
         }
 
         .fui-Checkbox__label {
