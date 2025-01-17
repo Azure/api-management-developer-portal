@@ -2,6 +2,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { FluentProvider } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
+import { Tag } from "../../../../../models/tag";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import * as Constants from "../../../../../constants";
 import { ApiService } from "../../../../../services/apiService";
@@ -12,7 +13,6 @@ import { FiltersPosition } from "../../listOfApisContract";
 import { TApisData } from "./utils";
 import { ApiListTableCards } from "./ApiListTableCards";
 import { ApiListDropdown } from "./ApiListDropdown";
-import { Tag } from "../../../../../models/tag";
 
 export interface ApiListProps {
     productName?: string;
