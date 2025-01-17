@@ -34,16 +34,16 @@
 
         <!-- ko if: requireHipCaptcha -->
         <hip-captcha params="{ captchaData: captchaData, onInitComplete: onCaptchaCreated }"></hip-captcha>
-        <!-- /ko -->       
-        
+        <!-- /ko -->
+
         <!-- ko if: termsEnabled && termsOfUse -->
         <terms-of-use params="{ isConsentRequired: isConsentRequired, consented: consented, termsOfUse: termsOfUse }"></terms-of-use>
         <!-- /ko -->
 
         <div class="form-group">
-            
+
             <!-- ko ifnot: working -->
-            <button type="button" id="signup" class="button button-primary" data-bind="click: signup">
+            <button type="button" id="signup" class="button button-primary" data-action="Sign up" data-bind="click: signup">
                 Sign up
             </button>
             <!-- /ko -->
