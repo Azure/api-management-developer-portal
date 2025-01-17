@@ -75,34 +75,34 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
             </div>
             <div className={"param-value"}>
                 <Field validationState={getValidationState(parameter)} validationMessage={getValidationMessage(parameter)}>
-                {parameter.options.length > 0
-                    ? <Dropdown
-                        id={`param-dropdown-${parameter.id}`}
-                        value={parameter.value() ?? ""}
-                        selectedOptions={[parameter.value() ?? ""]}
-                        placeholder={`Select ${parameter.name()} value`}
-                        onOptionSelect={(_, data) =>
-                            isTemplate
-                                ? changeTemplateParameterValue(parameter.id, data.optionValue)
-                                : changeQueryParameter(parameter.id, "value", data.optionValue)
-                        }
-                    >
-                        {parameter.options.map(option => (
-                            <Option key={option} value={option}>{option}</Option>
-                        ))}
-                    </Dropdown>
-                    :
-                    <Input
-                        type={parameter.secret ? "password" : "text"}
-                        placeholder="Enter parameter value"
-                        value={parameter.value() ?? ""}
-                        onChange={(_, data) =>
-                            isTemplate
-                                ? changeTemplateParameterValue(parameter.id, data.value)
-                                : changeQueryParameter(parameter.id, "value", data.value)
-                        }
-                    />
-                }
+                    {parameter.options.length > 0
+                        ? <Dropdown
+                            id={`param-dropdown-${parameter.id}`}
+                            value={parameter.value() ?? ""}
+                            selectedOptions={[parameter.value() ?? ""]}
+                            placeholder={`Select ${parameter.name()} value`}
+                            onOptionSelect={(_, data) =>
+                                isTemplate
+                                    ? changeTemplateParameterValue(parameter.id, data.optionValue)
+                                    : changeQueryParameter(parameter.id, "value", data.optionValue)
+                            }
+                        >
+                            {parameter.options.map(option => (
+                                <Option key={option} value={option}>{option}</Option>
+                            ))}
+                        </Dropdown>
+                        :
+                        <Input
+                            type={parameter.secret ? "password" : "text"}
+                            placeholder="Enter parameter value"
+                            value={parameter.value() ?? ""}
+                            onChange={(_, data) =>
+                                isTemplate
+                                    ? changeTemplateParameterValue(parameter.id, data.value)
+                                    : changeQueryParameter(parameter.id, "value", data.value)
+                            }
+                        />
+                    }
                 </Field>
             </div>
             <div className={"param-remove"}>

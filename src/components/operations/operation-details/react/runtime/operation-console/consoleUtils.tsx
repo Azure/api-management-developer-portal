@@ -1,3 +1,6 @@
+import * as React from "react";
+import { Button, Tooltip } from "@fluentui/react-components";
+import { EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
 import { HttpHeader } from "@paperbits/common/http/httpHeader";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
@@ -14,9 +17,6 @@ import { Utils } from "../../../../../../utils";
 import { OAuth2AuthenticationSettings } from "../../../../../../contracts/authenticationSettings";
 import { GrantTypes, oauthSessionKey } from "../../../../../../constants";
 import { SearchQuery } from "../../../../../../contracts/searchQuery";
-import * as React from "react";
-import { Button, Tooltip } from "@fluentui/react-components";
-import { EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
 
 interface SubscriptionOption {
     name: string;
@@ -298,17 +298,16 @@ export const authenticateOAuthWithPassword = async (
     return setAuthHeader(headers, accessToken);
 }
 
-export function getValidationMessage(consoleParameter: {required: boolean, value:() => any}): string {
+export const getValidationMessage = (consoleParameter: {required: boolean, value:() => any}): string => {
     return getValidationState(consoleParameter) === "none" ? "" : "Value is required";
 }
 
-export function getValidationState(consoleParameter: {required: boolean, value:() => any}): "none" | "error" | "warning" | "success" {
+export const getValidationState = (consoleParameter: {required: boolean, value:() => any}): "none" | "error" | "warning" | "success" => {
     if (consoleParameter.required && !consoleParameter.value()) {
         return "error";
     }
     return "none";
 }
-
 
 export const RevealSecretButton = ({showSecret, onClick}) => {
     return (
@@ -319,5 +318,5 @@ export const RevealSecretButton = ({showSecret, onClick}) => {
                 onClick={onClick}
             />
         </Tooltip>
-    )
+    );
 }

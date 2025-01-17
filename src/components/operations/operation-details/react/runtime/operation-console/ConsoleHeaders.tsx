@@ -66,25 +66,25 @@ export const ConsoleHeaders = ({ headers, updateHeaders, isGqlConsole }: Console
                     </div>
                     <div className={"param-value"}>
                         <Field validationState={getValidationState(header)} validationMessage={getValidationMessage(header)}>
-                        {header.options.length > 0 ?
-                            <Dropdown
-                                id={`header-dropdown-${header.id}`}
-                                value={header.value()}
-                                selectedOptions={[header.value()]}
-                                placeholder={`Select ${header.name()} value`}
-                                onOptionSelect={(_, data) => changeHeader(header.id, "value", data.optionValue)}
-                            >
-                                {header.options.map(option => (
-                                    <Option key={option} value={option}>{option}</Option>
-                                ))}
-                            </Dropdown> :
-                            <Input
-                                type={header.secret() && !showPassword ? "password" : "text"}
-                                placeholder="Enter header value"
-                                value={header.value() ?? ""}
-                                onChange={(_, data) => changeHeader(header.id, "value", data.value)}
-                            />
-                        }
+                            {header.options.length > 0 ?
+                                <Dropdown
+                                    id={`header-dropdown-${header.id}`}
+                                    value={header.value()}
+                                    selectedOptions={[header.value()]}
+                                    placeholder={`Select ${header.name()} value`}
+                                    onOptionSelect={(_, data) => changeHeader(header.id, "value", data.optionValue)}
+                                >
+                                    {header.options.map(option => (
+                                        <Option key={option} value={option}>{option}</Option>
+                                    ))}
+                                </Dropdown> :
+                                <Input
+                                    type={header.secret() && !showPassword ? "password" : "text"}
+                                    placeholder="Enter header value"
+                                    value={header.value() ?? ""}
+                                    onChange={(_, data) => changeHeader(header.id, "value", data.value)}
+                                />
+                            }
                         </Field>
                     </div>
                     <div className={"param-remove"}>
