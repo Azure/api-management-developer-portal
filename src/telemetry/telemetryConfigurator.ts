@@ -143,7 +143,7 @@ export class TelemetryConfigurator {
             return;
         }
 
-        const eventAction = element.attributes.getNamedItem(USER_ACTION)?.value;
+        let eventAction = element.attributes.getNamedItem(USER_ACTION)?.value;
         const eventMessage = {
             elementId: element.id
         };
@@ -153,6 +153,11 @@ export class TelemetryConfigurator {
         if (navigation?.href) {
             eventMessage["navigationTo"] = navigation.href;
             eventMessage["navigationText"] = navigation.innerText;
+        } else {
+            if (elementTag === "BUTTON" || parentTag === "BUTTON") {
+                const btnText = element?.innerText || parent?.innerText;
+                eventAction = `BUTTON clicked with text ${btnText?.trim()}`;
+            }
         }
 
         if (!eventAction && !navigation) {
