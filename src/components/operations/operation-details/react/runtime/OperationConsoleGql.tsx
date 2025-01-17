@@ -375,7 +375,7 @@ export const OperationConsoleGql = ({
             if (!isChild && !child.label().includes(pattern)) return;
             
             return (
-                <div key={child.label()} className={`console-gql-node${isChild ? ' child-node' : ''}${child.isInputNode() ? ' input-node': ''}`}>
+                <div key={child.id} className={`console-gql-node${isChild ? ' child-node' : ''}${child.isInputNode() ? ' input-node': ''}`}>
                     <Checkbox
                         label={child.label()}
                         checked={child.selected()}
@@ -383,7 +383,7 @@ export const OperationConsoleGql = ({
                         required={child.isRequired()}
                     />
                     {(child.selected() && child.isInputNode())
-                        && child.isEnumType()
+                        ? child.isEnumType()
                             ? <Dropdown
                                 value={(child as GraphQLInputTreeNode).inputValue()}
                                 onOptionSelect={(_, data) => (child as GraphQLInputTreeNode).changeInputValue(data.optionValue)}
@@ -395,9 +395,11 @@ export const OperationConsoleGql = ({
                             : (child.isScalarType() && (child as GraphQLInputTreeNode).inputValue)
                                 && <Input
                                         value={(child as GraphQLInputTreeNode).inputValue()}
-                                        onChange={(_, data) => (child as GraphQLInputTreeNode).changeInputValue(data.value)} 
+                                        onChange={(_, data) => (child as GraphQLInputTreeNode).changeInputValue(data.value)}
                                     />
-                            }
+                            
+                        : <></>
+                    }
                     {child.selected() && renderNode(child, true)}
                 </div>
             );
@@ -464,7 +466,7 @@ export const OperationConsoleGql = ({
                                         globalNodes.map((node, index) => (
                                             <AccordionItem key={index} value={node.label()}>
                                                 <AccordionHeader><Body1 className={"level0-node-label"}>{node.label()}</Body1></AccordionHeader>
-                                                <AccordionPanel>{renderNode(node)}</AccordionPanel>
+                                                <AccordionPanel style={{ margin: 0 }}>{renderNode(node)}</AccordionPanel>
                                             </AccordionItem>
                                         ))
                                     }
