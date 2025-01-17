@@ -156,7 +156,7 @@ export class TelemetryConfigurator {
         } else {
             if (elementTag === "BUTTON" || parentTag === "BUTTON") {
                 const btnText = element?.innerText || parent?.innerText;
-                eventAction = `BUTTON clicked with text ${btnText?.trim()}`;
+                eventAction = `BUTTON clicked with text '${btnText?.trim()}'`;
             }
         }
 
