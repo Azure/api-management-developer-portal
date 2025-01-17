@@ -47,7 +47,7 @@ function initFeatures() {
     const settingsProvider = injector.resolve<ISettingsProvider>("settingsProvider");
     checkIsFeatureEnabled(FEATURE_CLIENT_TELEMETRY, settingsProvider, logger)
         .then((isEnabled) => {
-            logger.trackEvent("FeatureFlag", { feature: FEATURE_CLIENT_TELEMETRY, enabled: isEnabled.toString() });
+            logger.trackEvent("FeatureFlag", { feature: FEATURE_CLIENT_TELEMETRY, enabled: isEnabled.toString(), message: `Feature flag '${FEATURE_CLIENT_TELEMETRY}' - enabled` });
             let telemetryConfigurator = new TelemetryConfigurator(injector);
             if (isEnabled) {
                 telemetryConfigurator.configure();
