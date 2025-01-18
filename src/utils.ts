@@ -425,24 +425,25 @@ export class Utils {
     public static getCookie(name: string): { name: string, value: string, expiresInDays?: number } | null {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) {
-            const cookieValue = parts.pop().split(';').shift();
-            const cookieParts = document.cookie.split(';').map(cookie => cookie.trim());
-            const cookieString = cookieParts.find(cookie => cookie.startsWith(`${name}=`));
-            let expiresInDays;
-
-            if (cookieString) {
-                const expiresPart = cookieString.split(';').find(part => part.trim().startsWith('expires='));
-                if (expiresPart) {
-                    const expiresDate = new Date(expiresPart.split('=')[1]);
-                    const currentDate = new Date();
-                    expiresInDays = Math.ceil((expiresDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
-                }
-            }
-
-            return { name, value: cookieValue, expiresInDays };
+        if (parts.length !== 2) {
+            return null;
         }
-        return null;
+
+        const cookieValue = parts.pop().split(';').shift();
+        const cookieParts = document.cookie.split(';').map(cookie => cookie.trim());
+        const cookieString = cookieParts.find(cookie => cookie.startsWith(`${name}=`));
+        let expiresInDays: number | undefined;
+
+        if (cookieString) {
+            const expiresPart = cookieString.split(';').find(part => part.trim().startsWith('expires='));
+            if (expiresPart) {
+                const expiresDate = new Date(expiresPart.split('=')[1]);
+                const currentDate = new Date();
+                expiresInDays = Math.ceil((expiresDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+            }
+        }
+
+        return { name, value: cookieValue, expiresInDays };
     }
 
     public static setCookie(name: string, value: string, days?: number): void {

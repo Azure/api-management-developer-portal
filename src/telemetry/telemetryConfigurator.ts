@@ -2,6 +2,7 @@ import { IInjector } from "@paperbits/common/injection";
 import { Logger } from "@paperbits/common/logging";
 import { Utils } from "../utils";
 import { USER_ACTION, USER_ID, USER_SESSION } from "../constants";
+import { Events } from "@paperbits/common/events/commonEvents";
 
 const TrackingEventElements = ["BUTTON", "A"];
 
@@ -59,39 +60,42 @@ export class TelemetryConfigurator {
 
         // Init page load telemetry.
         window.onload = () => {
-            if (logger) {
-                const observer = new PerformanceObserver((list: PerformanceObserverEntryList) => {
-                    const timing = list.getEntriesByType("navigation")[0] as PerformanceNavigationTiming;
-                    if (timing) {
-                        const location = window.location;
-                        const screenSize = {
-                            width: window.innerWidth.toString(),
-                            height: window.innerHeight.toString()
-                        };
-                        const pageLoadTime = timing.loadEventEnd - timing.loadEventStart;
-                        const domRenderingTime = timing.domComplete - timing.domInteractive;
-                        const resources = performance.getEntriesByType("resource") as PerformanceResourceTiming[];
-                        const jsCssResources = resources.filter(resource => {
-                            return resource.initiatorType === "script" || resource.initiatorType === "link";
-                        });
-                        const stats = {
-                            pageLoadTime,
-                            domRenderingTime,
-                            jsCssResources: jsCssResources.map(resource => ({
-                                name: resource.name,
-                                duration: resource.duration
-                            }))
-                        };
-                        logger.trackEvent("PageLoad", { host: location.host, pathName: location.pathname, total: timing.loadEventEnd.toString(), pageLoadStats: JSON.stringify(stats), ...screenSize });
-                    }
-                });
-                observer.observe({ type: "navigation", buffered: true });
-            } else {
+            if (!logger) {
                 console.error("Logger is not available");
+                return;
             }
+
+            const observer = new PerformanceObserver((list: PerformanceObserverEntryList) => {
+                const timing = list.getEntriesByType("navigation")[0] as PerformanceNavigationTiming;
+                if (!timing) {
+                    return;
+                }
+
+                const location = window.location;
+                const screenSize = {
+                    width: window.innerWidth.toString(),
+                    height: window.innerHeight.toString()
+                };
+                const pageLoadTime = timing.loadEventEnd - timing.loadEventStart;
+                const domRenderingTime = timing.domComplete - timing.domInteractive;
+                const resources = performance.getEntriesByType("resource") as PerformanceResourceTiming[];
+                const jsCssResources = resources.filter(resource => {
+                    return resource.initiatorType === "script" || resource.initiatorType === "link";
+                });
+                const stats = {
+                    pageLoadTime,
+                    domRenderingTime,
+                    jsCssResources: jsCssResources.map(resource => ({
+                        name: resource.name,
+                        duration: resource.duration
+                    }))
+                };
+                logger.trackEvent("PageLoad", { host: location.host, pathName: location.pathname, total: timing.loadEventEnd.toString(), pageLoadStats: JSON.stringify(stats), ...screenSize });
+            });
+            observer.observe({ type: "navigation", buffered: true });
         }
 
-        document.addEventListener("click", (event) => {
+        document.addEventListener(Events.Click, (event) => {
             this.processUserInteraction(event).then(() => {
                 console.log("Click processed");
             }).catch((error) => {
@@ -99,7 +103,7 @@ export class TelemetryConfigurator {
             });
         });
 
-        document.addEventListener("keydown", (event) => {
+        document.addEventListener(Events.KeyDown, (event) => {
             if (event.key === "Enter") {
                 this.processUserInteraction(event).then(() => {
                     console.log("Enter key processed");
@@ -135,18 +139,16 @@ export class TelemetryConfigurator {
     }
 
     private async processUserInteraction(event: Event) {
-        const element = event.target as HTMLElement;
-        const elementTag = element?.tagName;
-        const parent = element?.parentElement;
-        const parentTag = parent?.tagName;
-        const targetElement = elementTag && TrackingEventElements.includes(elementTag) ? element : (parentTag && TrackingEventElements.includes(parentTag) ? parent : null);
+        const eventElement = event.target as HTMLElement;
+
+        const targetElement = eventElement.closest(TrackingEventElements.join(",")) as HTMLElement;
         if (!targetElement) {
             return;
         }
 
-        let eventAction = targetElement.attributes.getNamedItem(USER_ACTION)?.value;
+        let eventAction = targetElement.getAttribute(USER_ACTION);
         const eventMessage = {
-            elementId: element.id
+            elementId: targetElement.id
         };
 
         const navigation = (targetElement.tagName === "A" && targetElement) as HTMLAnchorElement;
