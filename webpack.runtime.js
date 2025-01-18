@@ -9,7 +9,8 @@ const runtimeConfig = {
     mode: "development",
     target: "web",
     entry: {
-        "scripts/theme": ["./src/startup.runtime.ts"]
+        "scripts/theme": ["./src/startup.runtime.ts"],
+        "serviceWorker": ["./src/telemetry/serviceWorker.ts"]
     },
     output: {
         filename: "./[name].js",
