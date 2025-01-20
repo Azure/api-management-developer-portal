@@ -280,6 +280,16 @@ export const OperationConsoleGql = ({
     const sendRequest = async () => {
         setSendingRequest(true);
 
+        try {
+            JSON.parse(queryVariables);
+        }
+        catch (error) {
+            setSelectedTab(ConsoleTab.response);
+            setRequestError('Invalid "Query variables" JSON format.');
+            setSendingRequest(false);
+            return;
+        }
+
         const payload = JSON.stringify({
             query: document,
             variables: queryVariables.length > 0 ? JSON.parse(queryVariables) : null
