@@ -11,11 +11,11 @@
         left: 0;
         right: 0;
         bottom: 0;
-        z-index: 1000;
+        z-index: 10000;
     }
 
     .popup-container {
-        z-index: 1001;
+        z-index: 10001;
         align-items: center;
     }
 
@@ -25,7 +25,7 @@
         right: 5px;
         border: none;
         background: none;
-        z-index: 1002;
+        z-index: 10002;
     }
 }
 
