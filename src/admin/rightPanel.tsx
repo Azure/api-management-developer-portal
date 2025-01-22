@@ -99,6 +99,7 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
         this.eventManager.addEventListener('onDataChange', this.onDataChange.bind(this));
         window.addEventListener('resize', this.checkScreenSize.bind(this));
         this.router.addRouteChangeListener(() => this.getPageName());
+        document.addEventListener('keydown', this.onModeChange.bind(this));
         this.getPageName();
         this.checkScreenSize();
         this.getRoles();
@@ -108,6 +109,27 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
         this.eventManager.removeEventListener('onDataChange', this.onDataChange.bind(this));
         window.removeEventListener('resize', this.checkScreenSize.bind(this));        
         this.router.removeRouteChangeListener(() => this.getPageName());
+        document.removeEventListener('keydown', this.onModeChange.bind(this));
+    }
+
+    hideLeftPanel = () => {
+        document.getElementById('admin-left-panel').classList.add('hidden');
+        document.getElementById('main-content-wrapper').classList.add('is-focused');
+    }
+
+    showLeftPanel = () => {
+        document.getElementById('admin-left-panel').classList.remove('hidden');
+        document.getElementById('main-content-wrapper').classList.remove('is-focused');
+    }
+
+    onModeChange = () => {
+        if (this.viewManager.mode === 'preview') {
+            !this.state.isFocusedState && this.hideLeftPanel();
+            document.getElementById('admin-right-panel').classList.add('hidden');
+        } else {
+            !this.state.isFocusedState && this.showLeftPanel();
+            document.getElementById('admin-right-panel').classList.remove('hidden');
+        }
     }
 
     setPageName = () => {

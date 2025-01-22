@@ -184,6 +184,10 @@
             height: auto;
         }
     }
+
+    &.hidden {
+        display: none;
+    }
 }
 
 .top-panel {
