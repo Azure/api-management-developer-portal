@@ -112,11 +112,13 @@ import { ConfirmPasswordRuntimeModule } from "./components/users/confirm-passwor
 import { SubscriptionsRuntimeModule } from "./components/users/subscriptions/subscriptions.runtime.module";
 import { ReportsRuntimeModule } from "./components/reports/reports.runtime.module";
 import { ValidationSummaryRuntimeModule } from "./components/users/validation-summary/validationSummary.runtime.module";
+import { ClientLogger } from "./logging/clientLogger";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindModule(new ReactModule());
         injector.bindSingleton("logger", ConsoleLogger);
+        // injector.bindSingleton("logger", ClientLogger);
         injector.bindSingleton("traceClick", TraceClick);
         injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindToCollection("autostart", BalloonBindingHandler);
