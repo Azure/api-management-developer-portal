@@ -194,8 +194,10 @@ export const OperationList = ({
         <Stack
             key={operation.id}
             horizontal
-            className={`operation ${operation.name === selectedOperationName && `is-selected-operation`}`}
+            className={`operation ${operation.name === selectedOperationName ? `is-selected-operation` : ""}`}
             onClick={() => selectOperation(operation)}
+            onKeyDown={e => e.key === "Enter" && selectOperation(operation)}
+            tabIndex={0}
         >
             {operation.name === selectedOperationName
                 ? <>
