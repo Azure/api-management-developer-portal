@@ -342,7 +342,7 @@ export const OperationDetails = ({
                             </div>
                         </div>
                         {enableConsole && <button className="button" onClick={() => setIsConsoleOpen(true)}>Try this operation</button>}
-                        {request &&
+                        {request && request.isMeaningful() &&
                             <div className={"operation-request"}>
                                 <h4 className={"operation-subtitle1"}>Request</h4>
                                 {request.description && <MarkdownProcessor markdownToDisplay={request.description} />}
