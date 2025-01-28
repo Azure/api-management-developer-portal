@@ -226,6 +226,10 @@ fui-operation-details {
     .ws-connect-button {
         margin-bottom: 2rem;
     }
+
+    .fui-Field__validationMessageIcon {
+        vertical-align: 1px;
+    }
 }
 
 .console-gql-drawer {
@@ -244,16 +248,28 @@ fui-operation-details {
     .gql-search {
         width: 100%;
         margin-bottom: 1.5rem;
+
+        input {
+            // These styles are needed to remove the search icon used for default search input
+            background: none;
+            padding-left: 5px !important;
+        }
     }
 
     .gql-explorer {
         width: 350px;
         padding: 2rem 1.5rem 2rem 0;
         border-right: 1px solid #E6E6E6;
+        overflow: auto;
+        max-height: calc(100vh - 150px);
 
         .level0-node-label {
             text-transform: capitalize;
         }
+    }
+
+    .gql-query {
+        width: calc(100% - 350px);
     }
 
     .gql-query-editor {

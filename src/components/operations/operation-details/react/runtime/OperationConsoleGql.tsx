@@ -280,14 +280,16 @@ export const OperationConsoleGql = ({
     const sendRequest = async () => {
         setSendingRequest(true);
 
-        try {
-            JSON.parse(queryVariables);
-        }
-        catch (error) {
-            setSelectedTab(ConsoleTab.response);
-            setRequestError('Invalid "Query variables" JSON format.');
-            setSendingRequest(false);
-            return;
+        if (queryVariables.length > 0) {
+            try {
+                JSON.parse(queryVariables);
+            }
+            catch (error) {
+                setSelectedTab(ConsoleTab.response);
+                setRequestError('Invalid "Query variables" JSON format.');
+                setSendingRequest(false);
+                return;
+            }
         }
 
         const payload = JSON.stringify({
@@ -406,6 +408,7 @@ export const OperationConsoleGql = ({
                                 && <Input
                                         value={(child as GraphQLInputTreeNode).inputValue()}
                                         onChange={(_, data) => (child as GraphQLInputTreeNode).changeInputValue(data.value)}
+                                        autoComplete="off"
                                     />
                             
                         : <></>
@@ -482,7 +485,7 @@ export const OperationConsoleGql = ({
                                     }
                                 </Accordion>
                             </Stack.Item>
-                            <Stack.Item grow>
+                            <Stack.Item grow className={"gql-query"}>
                                 <Stack>
                                     <Stack.Item className={"gql-query-editor"}>
                                         <Editor
