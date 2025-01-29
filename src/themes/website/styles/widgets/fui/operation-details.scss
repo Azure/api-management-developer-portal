@@ -270,6 +270,7 @@ fui-operation-details {
 
     .gql-query {
         width: calc(100% - 350px);
+        flex: 1 1 auto;
     }
 
     .gql-query-editor {

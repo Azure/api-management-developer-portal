@@ -27,24 +27,20 @@ export const ProductSubscribeForm = ({ subscribe, termsOfUse, showTermsByDefault
                 tokens={{ childrenGap: 15 }}
                 className="form-group"
             >
-                <Stack.Item>
-                    <input
-                        value={subscriptionName}
-                        onChange={(event) => setSubscriptionName(event.target.value)}
-                        placeholder={"Your new product subscription name"}
-                        className="form-control"
-                        style={{ width: "20em" }}
-                    />
-                </Stack.Item>
-                <Stack.Item>
-                    <BtnSpinner
-                        onClick={() => subscribe(subscriptionName, consented)}
-                        className="button button-primary"
-                        disabled={!subscriptionName || (termsOfUse && !consented)}
-                    >
-                        Subscribe
-                    </BtnSpinner>
-                </Stack.Item>
+                <input
+                    value={subscriptionName}
+                    onChange={(event) => setSubscriptionName(event.target.value)}
+                    placeholder={"Your new product subscription name"}
+                    className="form-control"
+                    style={{ width: "20em" }}
+                />
+                <BtnSpinner
+                    onClick={() => subscribe(subscriptionName, consented)}
+                    className="button button-primary"
+                    disabled={!subscriptionName || (termsOfUse && !consented)}
+                >
+                    Subscribe
+                </BtnSpinner>
             </Stack>
 
             {termsOfUse && (

@@ -10,7 +10,7 @@ import {
 import { TableListInfo, TLayout } from "../../../../utils/react/TableListInfo";
 import { useTableFiltersTags } from "../../../../utils/react/useTableFiltersTags";
 import { Pagination } from "../../../../utils/react/Pagination";
-import * as Constants from "../../../../../constants";
+import { defaultPageSize } from "../../../../../constants";
 import { FiltersPosition } from "../../listOfApisContract";
 import { ApisTable } from "./ApisTable";
 import { ApisCards } from "./ApisCards";
@@ -47,31 +47,27 @@ export const ApiListTableCards = ({
 
     const content = (
         <Stack tokens={{ childrenGap: "1rem" }}>
-            <Stack.Item>
-                <TableListInfo
-                    layout={layout}
-                    setLayout={setLayout}
-                    pattern={pattern}
-                    setPattern={setPattern}
-                    filters={filters}
-                    setFilters={setFilters}
-                    filtersOptions={filtersPosition === FiltersPosition.popup ? [filterOptionTags] : undefined}
-                    setGroupByTag={productName ? undefined : setGroupByTag} // don't allow grouping by tags when filtering for product APIs due to missing BE support
-                    allowViewSwitching={allowViewSwitching}
-                />
-            </Stack.Item>
+            <TableListInfo
+                layout={layout}
+                setLayout={setLayout}
+                pattern={pattern}
+                setPattern={setPattern}
+                filters={filters}
+                setFilters={setFilters}
+                filtersOptions={filtersPosition === FiltersPosition.popup ? [filterOptionTags] : undefined}
+                setGroupByTag={productName ? undefined : setGroupByTag} // don't allow grouping by tags when filtering for product APIs due to missing BE support
+                allowViewSwitching={allowViewSwitching}
+            />
 
             {working || !apis ? (
-                <Stack.Item>
-                    <Spinner
-                        label="Loading APIs"
-                        labelPosition="below"
-                        size="small"
-                    />
-                </Stack.Item>
+                <Spinner
+                    label="Loading APIs"
+                    labelPosition="below"
+                    size="small"
+                />
             ) : (
                 <>
-                    <Stack.Item style={{ marginTop: "2rem" }}>
+                    <div style={{ marginTop: "2rem" }}>
                         {layout === TLayout.table ? (
                             <ApisTable
                                 apis={apis}
@@ -87,15 +83,15 @@ export const ApiListTableCards = ({
                                 detailsPageTarget={detailsPageTarget}
                             />
                         )}
-                    </Stack.Item>
+                    </div>
 
-                    <Stack.Item align={"center"}>
+                    <div style={{ margin: "1rem auto" }}>
                         <Pagination
                             pageNumber={pageNumber}
                             setPageNumber={setPageNumber}
-                            pageMax={Math.ceil(apis?.count / Constants.defaultPageSize)}
+                            pageMax={Math.ceil(apis?.count / defaultPageSize)}
                         />
-                    </Stack.Item>
+                    </div>
                 </>
             )}
         </Stack>
@@ -105,8 +101,7 @@ export const ApiListTableCards = ({
         content
     ) : (
         <Stack horizontal tokens={{ childrenGap: "2rem" }}>
-            <Stack.Item
-                shrink={0}
+            <div
                 style={{ minWidth: "12rem", width: "15%", maxWidth: "20rem" }}
             >
                 <TableFiltersSidebar
@@ -114,8 +109,8 @@ export const ApiListTableCards = ({
                     setFiltersActive={setFilters}
                     filtersOptions={groupByTag ? [] : [filterOptionTags]}
                 />
-            </Stack.Item>
-            <Stack.Item style={{ width: "100%" }}>{content}</Stack.Item>
+            </div>
+            <div style={{ width: "100%" }}>{content}</div>
         </Stack>
     );
 };

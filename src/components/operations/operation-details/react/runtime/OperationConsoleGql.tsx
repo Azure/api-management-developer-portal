@@ -119,6 +119,7 @@ export const OperationConsoleGql = ({
     const [pattern, setPattern] = useState<string>("");
     const [queryVariables, setQueryVariables] = useState<string>("");
     const [response, setResponse] = useState<string>("");
+    const [responseLanguage, setResponseLanguage] = useState<string>("html");
     const [requestError, setRequestError] = useState<string>(null);
 
     const generateDocument = useCallback((globalNodes) => {
@@ -312,9 +313,12 @@ export const OperationConsoleGql = ({
             else {
                 response = await sendFromBrowser(request);
             }
+
+            const responseLanguageValue = response.headers?.find(x => x.name === KnownHttpHeaders.ContentType)?.value;
             const responseStr = Buffer.from(response.body.buffer).toString();
             setSelectedTab(ConsoleTab.response);
             setResponse(responseStr);
+            responseLanguageValue && setResponseLanguage(responseLanguageValue);
         }
         catch (error) {
             setSelectedTab(ConsoleTab.response);
@@ -466,7 +470,7 @@ export const OperationConsoleGql = ({
                             </Button>
                         </Stack>
                         <Stack horizontal className={"console-gql-body"}>
-                            <Stack.Item className={"gql-explorer"}>
+                            <div className={"gql-explorer"}>
                                 <SearchBox
                                     onChange={(_, { value }) => setPattern(value)}
                                     contentBefore={<SearchRegular className={"fui-search-icon"} />}
@@ -484,10 +488,10 @@ export const OperationConsoleGql = ({
                                         ))
                                     }
                                 </Accordion>
-                            </Stack.Item>
-                            <Stack.Item grow className={"gql-query"}>
+                            </div>
+                            <div className={"gql-query"}>
                                 <Stack>
-                                    <Stack.Item className={"gql-query-editor"}>
+                                    <div className={"gql-query-editor"}>
                                         <Editor
                                             height="500px"
                                             value={document}
@@ -495,8 +499,8 @@ export const OperationConsoleGql = ({
                                             onMount={handleEditorWillMount}
                                             onChange={handleQueryEditorChange}
                                         />
-                                    </Stack.Item>
-                                    <Stack.Item>
+                                    </div>
+                                    <div>
                                         <TabList
                                             selectedValue={selectedTab}
                                             onTabSelect={(_, data) => setSelectedTab(data.value as string)}
@@ -546,14 +550,15 @@ export const OperationConsoleGql = ({
                                                 />
                                             }
                                             {selectedTab === ConsoleTab.response &&
-                                                requestError
+                                                (requestError
                                                     ? <MarkdownProcessor markdownToDisplay={requestError} />
-                                                    : response && <SyntaxHighlighter children={response} language={"html"} style={a11yLight} />
+                                                    : response && <SyntaxHighlighter children={response} language={responseLanguage} style={a11yLight} />
+                                                )
                                             }
                                         </div>
-                                    </Stack.Item>
+                                    </div>
                                 </Stack>
-                            </Stack.Item>
+                            </div>
                         </Stack>
                     </>
                 }

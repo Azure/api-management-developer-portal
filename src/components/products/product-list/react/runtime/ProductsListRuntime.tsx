@@ -72,35 +72,31 @@ const ProductListRuntimeFC = ({ productService, getReferenceUrl, layoutDefault, 
         />
     ) : (
         <Stack tokens={{ childrenGap: "1rem" }}>
-            <Stack.Item>
-                <TableListInfo
-                    layout={layout}
-                    setLayout={setLayout}
-                    pattern={pattern}
-                    setPattern={setPattern}
-                    allowViewSwitching={allowViewSwitching}
-                />
-            </Stack.Item>
+            <TableListInfo
+                layout={layout}
+                setLayout={setLayout}
+                pattern={pattern}
+                setPattern={setPattern}
+                allowViewSwitching={allowViewSwitching}
+            />
 
             {working || !products ? (
-                <Stack.Item>
-                    <div className="table-body">
-                        <Spinner label="Loading products..." labelPosition="below" size="small" />
-                    </div>
-                </Stack.Item>
+                <div className="table-body">
+                    <Spinner label="Loading products..." labelPosition="below" size="small" />
+                </div>
             ) : (
                 <>
-                    <Stack.Item style={{ marginTop: "2rem" }}>
+                    <div style={{ marginTop: "2rem" }}>
                         {layout === TLayout.table ? (
                             <ProductsTable products={products} getReferenceUrl={getReferenceUrl} />
                         ) : (
                             <ProductsCards products={products} getReferenceUrl={getReferenceUrl} />
                         )}
-                    </Stack.Item>
+                    </div>
 
-                    <Stack.Item align={"center"}>
-                        <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(products?.count / Constants.defaultPageSize)} />
-                    </Stack.Item>
+                    <div style={{ margin: "1rem auto" }}>
+                        <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(products?.count / 10)} />
+                    </div>
                 </>
             )}
         </Stack>

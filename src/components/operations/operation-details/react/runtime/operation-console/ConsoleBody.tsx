@@ -107,7 +107,7 @@ export const ConsoleBody = ({
             {(!isBodyCollapsed && hasBody) &&
                 <div className={"operation-table-body-console"}>
                     <Stack horizontal verticalAlign="center">
-                        <Stack.Item className="format-selection">
+                        <div className="format-selection">
                             <RadioGroup
                                 name={"Request body format"}
                                 value={bodyFormatState}
@@ -118,9 +118,9 @@ export const ConsoleBody = ({
                                 <Radio value={RequestBodyType.raw} label={"Raw"} disabled={readonlyBodyFormat} />
                                 <Radio value={RequestBodyType.binary} label={"Binary"} disabled={readonlyBodyFormat} />
                             </RadioGroup>
-                        </Stack.Item>
+                        </div>
                         {bodyFormatState === RequestBodyType.raw && representations.length > 0 &&
-                            <Stack.Item grow>
+                            <div style={{ flex: "1 1 auto" }}>
                                 <Dropdown
                                     aria-label="Sample request body"
                                     placeholder="Select sample request body"
@@ -134,7 +134,7 @@ export const ConsoleBody = ({
                                         return <Option key={repId} value={repId}>{representation.typeName}</Option>;
                                     })}
                                 </Dropdown>
-                            </Stack.Item>
+                            </div>
                         }
                     </Stack>
                     {readonlyBodyFormat
