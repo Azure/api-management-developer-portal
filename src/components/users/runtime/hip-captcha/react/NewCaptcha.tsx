@@ -92,16 +92,14 @@ export const NewCaptcha = ({ backendService, onInitComplete }: TCaptchaProps) =>
                 </TabList>
 
                 {working ? (
-                    <Stack.Item style={{ padding: "13px 0" }}>
+                    <div style={{ padding: "13px 0" }}>
                         <Spinner label={"Loading captcha"} labelPosition="below" />
-                    </Stack.Item>
+                    </div>
                 ) : captchaType === ECaptchaType.visual ? (
-                    <Stack.Item>
-                        <img
-                            src={`data:image/png;base64,${captchaChallenge}`}
-                            alt="visual challange"
-                        />
-                    </Stack.Item>
+                    <img
+                        src={`data:image/png;base64,${captchaChallenge}`}
+                        alt="visual challange"
+                    />
                 ) : (
                     <audio controls>
                         <source
@@ -112,9 +110,7 @@ export const NewCaptcha = ({ backendService, onInitComplete }: TCaptchaProps) =>
                 )}
 
 
-                <Stack.Item>
-                    <Link onClick={() => generateCaptcha(captchaType)}>Generate new captcha</Link>
-                </Stack.Item>
+                <Link onClick={() => generateCaptcha(captchaType)}>Generate new captcha</Link>
             </Stack>
             <Stack className="form-group">
                 <label htmlFor="captchaValue" className="required">

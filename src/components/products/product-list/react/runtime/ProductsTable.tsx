@@ -27,7 +27,7 @@ const TableBodyProducts = ({ products, getReferenceUrl }: Props & { products: Pr
                             {product.displayName}
                         </a>
                     </TableCell>
-                    <TableCell style={{padding: ".5rem 0"}}>
+                    <TableCell>
                         <MarkdownProcessor markdownToDisplay={product.description} maxChars={markdownMaxCharsMap.table} />
                     </TableCell>
                 </TableRow>

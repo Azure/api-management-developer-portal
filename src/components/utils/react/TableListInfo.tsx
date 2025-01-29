@@ -75,55 +75,49 @@ export const TableListInfo = ({
     allowViewSwitching,
 }: ApisTableInfoProps) => (
     <Stack horizontal horizontalAlign="space-between">
-        <Stack.Item>
-            <Stack horizontal tokens={{ childrenGap: "1rem" }}>
-                {filters && setFilters && !!filtersOptions?.filter(e => e.items.length).length && (
-                    <Stack.Item>
-                        <TableFiltersButton
-                            filtersActive={filters}
-                            setFiltersActive={setFilters}
-                            filtersOptions={filtersOptions}
-                            accordionProps={{ defaultOpenItems: "tags" }}
-                        />
-                    </Stack.Item>
-                )}
+        <Stack horizontal tokens={{ childrenGap: "1rem" }}>
+            {filters && setFilters && !!filtersOptions?.filter(e => e.items.length).length && (
+                <TableFiltersButton
+                    filtersActive={filters}
+                    setFiltersActive={setFilters}
+                    filtersOptions={filtersOptions}
+                    accordionProps={{ defaultOpenItems: "tags" }}
+                />
+            )}
 
-                <Stack.Item className="form-group" style={{ marginTop: 0 }}>
-                    <input
-                        type="search"
-                        autoComplete="off"
-                        className="form-control"
-                        onChange={e => setPattern(e.target.value)}
-                        placeholder={"Search"}
-                        aria-label={"Search"}
-                        style={{ marginBottom: 0 }}
-                    />
-                </Stack.Item>
-            </Stack>
+            <div className="form-group" style={{ marginTop: 0 }}>
+                <input
+                    type="search"
+                    autoComplete="off"
+                    className="form-control"
+                    onChange={e => setPattern(e.target.value)}
+                    placeholder={"Search"}
+                    aria-label={"Search"}
+                    style={{ marginBottom: 0 }}
+                />
+            </div>
+        </Stack>
 
-            {/*
-            <p style={{margin: 0}}>
-                Displaying <b>{
-                    ((pageNumber - 1) * Constants.defaultPageSize) + 1
-                }</b> to <b>{
-                    Math.min(pageNumber * Constants.defaultPageSize, apis?.count)
-                }</b> of <b>{apis?.count}</b> items
-            </p>
-            */}
-        </Stack.Item>
+        {/*
+        <p style={{margin: 0}}>
+            Displaying <b>{
+                ((pageNumber - 1) * Constants.defaultPageSize) + 1
+            }</b> to <b>{
+                Math.min(pageNumber * Constants.defaultPageSize, apis?.count)
+            }</b> of <b>{apis?.count}</b> items
+        </p>
+        */}
 
-        <Stack.Item>
-            <Stack horizontal tokens={{ childrenGap: "1rem" }}>
-                {setGroupByTag && (
-                    <GroupByTag
-                        groupByTag={groupByTag}
-                        setGroupByTag={setGroupByTag}
-                    />
-                )}
-                {allowViewSwitching && (
-                    <LayoutSwitchPure layout={layout} setLayout={setLayout} />
-                )}
-            </Stack>
-        </Stack.Item>
+        <Stack horizontal tokens={{ childrenGap: "1rem" }}>
+            {setGroupByTag && (
+                <GroupByTag
+                    groupByTag={groupByTag}
+                    setGroupByTag={setGroupByTag}
+                />
+            )}
+            {allowViewSwitching && (
+                <LayoutSwitchPure layout={layout} setLayout={setLayout} />
+            )}
+        </Stack>
     </Stack>
 );
