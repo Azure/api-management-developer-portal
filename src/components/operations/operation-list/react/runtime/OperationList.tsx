@@ -271,7 +271,7 @@ export const OperationList = ({
             </Stack>
             <div className={`operation-list-collapsible${isCollapsed ? " is-collapsed" : ""}`}>
                 <Stack horizontal verticalAlign="center" className={"operation-search-container"}>
-                    <Stack.Item className="form-group" style={{ margin: 0, width: '100%' }}>
+                    <div className="form-group" style={{ margin: 0, width: '100%' }}>
                         <input
                             type="search"
                             autoComplete="off"
@@ -285,7 +285,7 @@ export const OperationList = ({
                             aria-label={"Search"}
                             style={{ marginBottom: 0 }}
                         />
-                    </Stack.Item>
+                    </div>
                     <Menu onCheckedValueChange={(e, data) => setSelectedTags(tags.filter(tag => data.checkedItems.indexOf(tag.name) > -1))}>
                         <MenuTrigger disableButtonEnhancement>
                             <Button
