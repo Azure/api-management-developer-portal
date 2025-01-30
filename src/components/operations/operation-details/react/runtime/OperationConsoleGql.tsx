@@ -314,7 +314,7 @@ export const OperationConsoleGql = ({
                 response = await sendFromBrowser(request);
             }
 
-            const contentTypeHeader = response.headers?.get(x => x.name === KnownHttpHeaders.ContentType);
+            const contentTypeHeader = response.headers?.get(KnownHttpHeaders.ContentType);
             const mimeType = contentTypeHeader?.split(';').split('/');
             const responseLanguageValue = ["css", "javascript", "json", "xml"].includes(mimeType[1]) ? mimeType[1] : "html";
 
