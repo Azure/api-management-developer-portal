@@ -38,7 +38,7 @@ export const ConsoleBody = ({
     const [file, setFile] = useState<File>(binary);
     const [bodyFormatState, setBodyFormatState] = useState<RequestBodyType>(bodyFormat ?? RequestBodyType.raw);
     const [selectedRepresentation, setSelectedRepresentation] = useState<ConsoleRepresentation>(representations?.[0] ?? null);
-    const [selectedRepresentationId, setSelectedRepresentationId] = useState<string>(selectedRepresentation?.typeName + "+" + selectedRepresentation?.contentType ?? "");
+    const [selectedRepresentationId, setSelectedRepresentationId] = useState<string>(selectedRepresentation ? selectedRepresentation.typeName + "+" + selectedRepresentation.contentType : "");
     const [initialBody, setInitialBody] = useState<string>(selectedRepresentation?.sample ?? "");
     const [isBodyEdited, setIsBodyEdited] = useState<boolean>(
         (bodyFormat === RequestBodyType.raw && body !== initialBody) || (bodyFormat === RequestBodyType.binary && binary !== null) || false
@@ -48,7 +48,7 @@ export const ConsoleBody = ({
         setFile(binary);
         setBodyFormatState(bodyFormat);
         setSelectedRepresentation(representations[0] ?? null);
-        setSelectedRepresentationId(representations[0]?.typeName + "+" + representations[0]?.contentType ?? "");
+        setSelectedRepresentationId(representations[0] ? representations[0].typeName + "+" + representations[0].contentType : "");
         setInitialBody(representations[0]?.sample ?? "");
     }, [binary, bodyFormat, representations]);
 

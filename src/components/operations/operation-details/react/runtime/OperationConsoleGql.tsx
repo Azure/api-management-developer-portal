@@ -314,7 +314,13 @@ export const OperationConsoleGql = ({
                 response = await sendFromBrowser(request);
             }
 
-            const responseLanguageValue = response.headers?.find(x => x.name === KnownHttpHeaders.ContentType)?.value;
+            const contentTypeHeader = response.headers?.get(x => x.name === KnownHttpHeaders.ContentType);
+            const mimeType = contentTypeHeader?.split(';').split('/');
+            const responseLanguageValue = ["css", "javascript", "json", "xml"].includes(mimeType[1]) ? mimeType[1] : "html";
+
+            console.log('response lang', contentTypeHeader, mimeType, responseLanguageValue);
+
+
             const responseStr = Buffer.from(response.body.buffer).toString();
             setSelectedTab(ConsoleTab.response);
             setResponse(responseStr);
