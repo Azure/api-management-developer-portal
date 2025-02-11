@@ -186,7 +186,7 @@ export const OperationConsoleGql = ({
         if (api.subscriptionKeyParameterNames?.query) {
             subscriptionKeyParamName = api.subscriptionKeyParameterNames.query;
         }
-        
+
         const searchName = subscriptionKeyParamName.toLocaleLowerCase();
         const newQueryParaemeters = queryParameters.filter(x => x.name()?.toLocaleLowerCase() !== searchName);
 
@@ -198,10 +198,10 @@ export const OperationConsoleGql = ({
         keyParameter.required = true;
         keyParameter.inputType("password");
         keyParameter.value(subscriptionKey);
-        
+
         newQueryParaemeters.push(keyParameter);
         setQueryParameters([...newQueryParaemeters]);
-    }       
+    }
 
     const handleEditorWillMount = (editor, monaco: Monaco) => {
         monaco.editor.createModel(schema, 'graphql');
@@ -323,7 +323,7 @@ export const OperationConsoleGql = ({
 
             const responseStr = Buffer.from(response.body.buffer).toString();
             setSelectedTab(ConsoleTab.response);
-            setResponse(responseStr);
+            setResponse(Utils.formatJson(responseStr));
             //responseLanguageValue && setResponseLanguage(responseLanguageValue);
         }
         catch (error) {
@@ -395,7 +395,7 @@ export const OperationConsoleGql = ({
     const renderNode = (node: GraphQLTreeNode, isChild = false): JSX.Element[] => {
         return node.children()?.map((child: GraphQLTreeNode) => {
             if (!isChild && !child.label().includes(pattern)) return;
-            
+
             return (
                 <div key={child.id} className={`console-gql-node${isChild ? ' child-node' : ''}${child.isInputNode() ? ' input-node': ''}`}>
                     <Checkbox
@@ -420,7 +420,7 @@ export const OperationConsoleGql = ({
                                         onChange={(_, data) => (child as GraphQLInputTreeNode).changeInputValue(data.value)}
                                         autoComplete="off"
                                     />
-                            
+
                         : <></>
                     }
                     {child.selected() && renderNode(child, true)}
@@ -518,7 +518,7 @@ export const OperationConsoleGql = ({
                                             <Tab value={ConsoleTab.queryVariables}>Query variables</Tab>
                                             <Tab value={ConsoleTab.response}>Response</Tab>
                                         </TabList>
-                                        <div className={`gql-tab-content${selectedTab === ConsoleTab.queryVariables ? ' query-variables-tab': ''}`}>                                        
+                                        <div className={`gql-tab-content${selectedTab === ConsoleTab.queryVariables ? ' query-variables-tab': ''}`}>
                                             {selectedTab === ConsoleTab.auth && (authorizationServers.length > 0 || api.subscriptionRequired) &&
                                                 <ConsoleAuthorization
                                                     api={api}
