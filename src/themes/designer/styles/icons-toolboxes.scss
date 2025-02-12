@@ -1,3 +1,4 @@
+@use "sass:string";
 .paperbits-icon {
     display: inline-block;
     font: normal normal normal 1em/1 "paperbits";
@@ -160,7 +161,7 @@ $icons: (
 );
 
 @function unicode($str) {
-    @return unquote('"\\#{$str}"');
+    @return string.unquote('"\\#{$str}"');
 }
 
 @each $name, $code in $icons {

@@ -1,3 +1,5 @@
+@use "../variables";
+
 .fonts {
     list-style: none;
     padding: 0;
@@ -7,7 +9,7 @@
 .font {
     font-size: 20px;
     text-decoration: none;
-    color: $color-base;
+    color: variables.$color-base;
     padding: 5px 10px;
 
     &.font-italic {

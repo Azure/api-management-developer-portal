@@ -1,4 +1,7 @@
-﻿@use "sass:math";
+@use "mixins";
+@use "variables";
+
+@use "sass:math";
 
 paperbits-code,
 paperbits-googlemaps,
@@ -17,18 +20,18 @@ widget {
     }
 
     &:hover {
-        @include selection(10px);
+        @include mixins.selection(10px);
     }
 }
 
 .layout-editor-selection {
     position: fixed;
     pointer-events: none;
-    z-index: $z-index-selection;
+    z-index: variables.$z-index-selection;
 
     &:before {
         content: attr(title);
-        background: $layout-editor-selection-color;
+        background: variables.$layout-editor-selection-color;
         color: #fff;
         padding: 5px;
         left: -5px;
@@ -36,12 +39,12 @@ widget {
         position: absolute;
         font-size: 8px;
         text-transform: uppercase;
-        font-family: $font-family-base;
+        font-family: variables.$font-family-base;
         opacity: 0.7;
     }
 
     &:after {
-        @include fit;
+        @include mixins.fit;
         content: "";
         display: block;
         position: absolute;
@@ -51,8 +54,8 @@ widget {
 .layout-editor-splitter {
     position: fixed;
     pointer-events: none;
-    z-index: $z-index-selection;
-    border-color: $layout-editor-splitter-color;
+    z-index: variables.$z-index-selection;
+    border-color: variables.$layout-editor-splitter-color;
     border-style: dashed;
     border-width: 0;
     opacity: 0.5;
@@ -66,7 +69,7 @@ widget {
 
 .fixed {
     position: fixed;
-    z-index: $z-index-base;
+    z-index: variables.$z-index-base;
 }
 
 .btn-standalone {
@@ -80,7 +83,7 @@ widget {
     width: 30px;
     height: 30px;
     cursor: pointer;
-    z-index: $z-index-selection + 1;
+    z-index: variables.$z-index-selection + 1;
     line-height: 1em;
 
     .paperbits-icon {
@@ -90,7 +93,7 @@ widget {
     &:hover {
         transform: scale(1.2);
         transition-duration: 0.3s;
-        z-index: $z-index-selection + 2;
+        z-index: variables.$z-index-selection + 2;
     }
 }
 
@@ -108,7 +111,7 @@ widget {
     margin: 5px;
 
     &:hover {
-        @include selection(15px, -5px);
+        @include mixins.selection(15px, -5px);
         cursor: pointer;
     }
 }
@@ -151,13 +154,13 @@ widget {
     margin: 5px;
     display: inline-block;
     border-radius: 7px;
-    border: 3px solid $color-base;
+    border: 3px solid variables.$color-base;
     line-height: 0;
     width: 120px;
     cursor: pointer;
 
     &:hover {
-        @include selection(15px, -10px);
+        @include mixins.selection(15px, -10px);
     }
 }
 
@@ -166,8 +169,8 @@ widget {
     background: #ece7e7;
     display: block;
     height: 50px;
-    border-left: 2px solid $color-base;
-    border-right: 2px solid $color-base;
+    border-left: 2px solid variables.$color-base;
+    border-right: 2px solid variables.$color-base;
 }
 
 .section-fluid-cfg {

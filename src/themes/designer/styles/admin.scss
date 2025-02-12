@@ -1,7 +1,9 @@
+@use "variables";
+
 #admin-left-panel {
     background: #fff;
     height: 100%;
-    width: $admin-side-panel-width;
+    width: variables.$admin-side-panel-width;
     border-right: 1px solid grey;
     font-family: 'SegoeUI';
     overflow: auto;
@@ -12,7 +14,7 @@
         width: 0;
     }
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: variables.$breakpoint-md) {
         width: 100%;
         position: absolute;
         top: 0;
@@ -44,7 +46,7 @@
 .admin-side-panel-opener {
     margin-left: 10px;
 
-    @media (min-width: $breakpoint-md) {
+    @media (min-width: variables.$breakpoint-md) {
         display: none;
     }
 }
@@ -52,7 +54,7 @@
 .admin-side-panel-closer {
     cursor: pointer;
 
-    @media (min-width: $breakpoint-md) {
+    @media (min-width: variables.$breakpoint-md) {
         display: none;
     }
 }
@@ -172,7 +174,7 @@
 }
 
 #admin-right-panel {
-    height: $admin-top-panel-height;
+    height: variables.$admin-top-panel-height;
     display: flex;
     align-items: center;
     border-bottom: 1px solid grey;
@@ -202,7 +204,7 @@
 
 .top-panel-command-button .ms-Button-textContainer,
 .top-panel-dropdown .ms-Dropdown-title span {
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: variables.$breakpoint-md) {
         display: none;
     }
 }
@@ -211,7 +213,7 @@
     position: fixed;
     height: 100%;
     width: 100%;
-    top: $admin-top-panel-height;
+    top: variables.$admin-top-panel-height;
     z-index: 1000;
     cursor: pointer;
 

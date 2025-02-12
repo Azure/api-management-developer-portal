@@ -1,3 +1,5 @@
+@use "variables";
+
 .nav-pills {
     margin: 5px 0;
 
@@ -12,11 +14,11 @@
             background: inherit;
 
             &:hover {
-                background-color: $border-color-hover;
+                background-color: variables.$border-color-hover;
             }
 
             &.active {
-                border: 1px solid $border-color-active;
+                border: 1px solid variables.$border-color-active;
             }
         }
     }

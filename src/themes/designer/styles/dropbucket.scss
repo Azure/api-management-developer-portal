@@ -1,8 +1,12 @@
+@use "animation";
+@use "mixins";
+@use "variables";
+
 ﻿dropbucket {
     right: 20px;
     bottom: 20px;
     position: fixed;
-    z-index: $z-index-base;
+    z-index: variables.$z-index-base;
 
     .btn-dismiss {
         padding: 0;
@@ -12,16 +16,16 @@
     }
 
     .droppedcontent {
-        @include surface();
-        @include animation-fadein();
+        @include mixins.surface();
+        @include animation.animation-fadein();
         position: relative;
-        border-radius: $toolbox-border-radius;
+        border-radius: variables.$toolbox-border-radius;
         display: flex;
         flex-direction: column;
     }
 
     .droppedcontent-details {
-        @include text-overflow();
+        @include mixins.text-overflow();
     }
 
     .droppedcontent-preview {

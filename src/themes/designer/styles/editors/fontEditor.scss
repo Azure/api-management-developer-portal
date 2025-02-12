@@ -1,3 +1,5 @@
+@use "../variables";
+
 .font-variant-item {
     border-bottom: 1px solid #ccc;
     padding: 10px;
@@ -8,7 +10,7 @@
 
     .font-variant-display {
         text-decoration: none;
-        color: $color-base;
+        color: variables.$color-base;
         font-size: 40px;
         overflow: hidden;
     }

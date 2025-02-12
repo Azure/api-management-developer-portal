@@ -1,3 +1,5 @@
+@use "variables";
+
 .pagination {
     display: flex;
     padding-left: 0;
@@ -10,9 +12,9 @@
         display: block;
         padding: .5rem .5rem;
         line-height: 1.25;
-        color: $default-text-color;
+        color: variables.$default-text-color;
         background-color: #fff;
-        border: 1px solid $default-text-color;
+        border: 1px solid variables.$default-text-color;
         margin: 2px;
 
         &:hover {
@@ -25,7 +27,7 @@
 
         &.active {
             font-weight: bold;
-            outline: 1px solid $default-text-color;
+            outline: 1px solid variables.$default-text-color;
         }
     }
 }

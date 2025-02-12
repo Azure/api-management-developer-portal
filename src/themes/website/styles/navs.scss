@@ -1,3 +1,5 @@
+@use "variables";
+
 .nav {
     display: flex;
     flex-wrap: wrap;
@@ -8,7 +10,7 @@
 
 .nav-link {
     display: block;
-    padding: $default-navlink-padding;
+    padding: variables.$default-navlink-padding;
 }
 
 .nav-link:hover,
@@ -25,7 +27,7 @@
 .dropdown {
     display: none;
     position: absolute;
-    z-index: $z-index-dropdowns;
+    z-index: variables.$z-index-dropdowns;
 
     &.show {
         display: block;
@@ -103,7 +105,7 @@
         }
     }
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: variables.$breakpoint-md) {
         .nav-item {
             flex-basis: 100%;
         }

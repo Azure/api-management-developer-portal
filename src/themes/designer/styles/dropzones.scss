@@ -1,3 +1,6 @@
+@use "mixins";
+@use "variables";
+
 ﻿[alignment] {
     position: absolute;
     top: initial;
@@ -11,15 +14,15 @@
 
     polygon {
         fill: transparent;
-        stroke: $color-base;
+        stroke: variables.$color-base;
         stroke-width: 1;
-        @include tabable();
+        @include mixins.tabable();
     }
 
     &.active {
         polygon {
-            fill: $arrow-active-color;
-            stroke: $arrow-active-color;
+            fill: variables.$arrow-active-color;
+            stroke: variables.$arrow-active-color;
         }
     }
 
@@ -84,9 +87,9 @@
         height: 150px;
         position: relative;
         display: block;
-        border: 1px solid $form-control-border;
-        @include tabable();
-        @include pseudo-transparent-bckg();
+        border: 1px solid variables.$form-control-border;
+        @include mixins.tabable();
+        @include mixins.pseudo-transparent-bckg();
     }
 
     .dropzone-footer {
@@ -98,7 +101,7 @@
 .dropzone-square {
     width: 60px;
     height: 60px;
-    outline: 1px solid $form-control-border;
+    outline: 1px solid variables.$form-control-border;
     outline-offset: 4px;
     margin: 6px;
 }

@@ -1,10 +1,12 @@
+@use "variables";
+
 ﻿.toolbox-dropdown {
     display: inline-block;
     box-sizing: border-box;
     border: none;
 
     & > span {
-        line-height: $toolbox-btn-size;
+        line-height: variables.$toolbox-btn-size;
         padding: 0 10px;
     }
 

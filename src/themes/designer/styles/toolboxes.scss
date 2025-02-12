@@ -1,7 +1,12 @@
+@use "sass:color";
+@use "animation";
+@use "mixins";
+@use "variables";
+
 ﻿h1,
 h2 {
-    font-family: $font-family-base;
-    color: $color-base;
+    font-family: variables.$font-family-base;
+    color: variables.$color-base;
     display: block;
     margin: 0;
     cursor: default;
@@ -21,15 +26,15 @@ h2 {
 .toolbox {
     display: flex;
     flex-direction: column;
-    padding: $toolbox-padding;
-    z-index: $z-index-base;
+    padding: variables.$toolbox-padding;
+    z-index: variables.$z-index-base;
     max-height: calc(100% - 40px);
 
-    @include surface();
-    @include animation-fadein(0.3s);
+    @include mixins.surface();
+    @include animation.animation-fadein(0.3s);
 
     &.toolbox-popup {
-        z-index: $z-index-base + 1;
+        z-index: variables.$z-index-base + 1;
     }
 
     &.toolbox-context {
@@ -102,10 +107,10 @@ h2 {
 
     .toolbox-btn,
     .toolbox-button {
-        color: $icon-base-color;
-        line-height: $toolbox-btn-size;
-        min-width: $toolbox-btn-size;
-        height: $toolbox-btn-size;
+        color: variables.$icon-base-color;
+        line-height: variables.$toolbox-btn-size;
+        min-width: variables.$toolbox-btn-size;
+        height: variables.$toolbox-btn-size;
         display: inline-block;
         padding: 0;
         box-sizing: border-box;
@@ -116,18 +121,18 @@ h2 {
         text-align: center;
         position: relative;
         cursor: pointer;
-        @include no-select();
-        @include no-drag();
+        @include mixins.no-select();
+        @include mixins.no-drag();
 
         &.toolbox-btn-is-active {
             position: relative;
 
             &:before {
-                @include fit();
+                @include mixins.fit();
                 position: absolute;
-                background-color: $toolbox-btn-active-bg;
-                border: 1px solid $toolbox-btn-active-border;
-                border-radius: $toolbox-border-radius - 5px;
+                background-color: variables.$toolbox-btn-active-bg;
+                border: 1px solid variables.$toolbox-btn-active-border;
+                border-radius: variables.$toolbox-border-radius - 5px;
                 content: "";
             }
         }
@@ -138,16 +143,16 @@ h2 {
 
         a {
             display: inline-block;
-            height: $toolbox-btn-size;
-            line-height: $toolbox-btn-size;
+            height: variables.$toolbox-btn-size;
+            line-height: variables.$toolbox-btn-size;
             background-size: cover;
             outline: none;
-            color: $color-base;
+            color: variables.$color-base;
             text-decoration: none;
             width: 100%;
             padding-left: 12px;
             padding-right: 12px;
-            @include tabable();
+            @include mixins.tabable();
         }
 
         &[disabled] {
@@ -177,7 +182,7 @@ h2 {
             left: -7px;
             content: "";
             width: 4px;
-            background: $tab-selected-color;
+            background: variables.$tab-selected-color;
             top: 0;
             bottom: 0;
             border: none;
@@ -203,7 +208,7 @@ h2 {
     .resize-handle {
         background: transparent;
         position: absolute;
-        z-index: $z-index-base + 1;
+        z-index: variables.$z-index-base + 1;
 
         &.resize-handle-right {
             cursor: e-resize;
@@ -287,13 +292,13 @@ h2 {
 }
 
 .photo {
-    @include fit;
+    @include mixins.fit;
     background-size: cover;
 }
 
 .subtle {
     font-size: 0.9em;
-    color: lighten($color-base, 10%);
+    color: color.adjust(variables.$color-base, $lightness: 10%);
     font-family: monospace;
     padding-top: 5px;
 }

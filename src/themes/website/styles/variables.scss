@@ -1,3 +1,4 @@
+@use "sass:color";
 /* Breakpoints */
 $breakpoint-xs: 0;
 $breakpoint-sm: 576px;
@@ -80,7 +81,7 @@ $gql-not-input-node-color: #0F7EBD;
 $gql-operation-type-color: #b11a04;
 
 /* Panel */
-$panel-bg-color-highlight: darken(#fafafa, 3%);
+$panel-bg-color-highlight: color.adjust(#fafafa, $lightness: -3%);
 
 /* Scrollbars */
 $scrollbar-rail-active-bg: #eee;

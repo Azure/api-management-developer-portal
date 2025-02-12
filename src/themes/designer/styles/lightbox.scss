@@ -1,3 +1,6 @@
+@use "mixins";
+@use "variables";
+
 // Vars ---------------------------------------------------------------- //
 $basicLightbox__background: rgba(0, 0, 0, .8) !default;
 $basicLightbox__zIndex: 100000 !default;
@@ -6,8 +9,8 @@ $basicLightbox__timing: ease !default;
 
 // basicLightbox ------------------------------------------------------- //
 .basicLightbox {
-    font-family: $font-family-base;
-    font-size: $font-size-base;
+    font-family: variables.$font-family-base;
+    font-size: variables.$font-size-base;
 	position: fixed;
 	display: flex;
 	justify-content: center;
@@ -34,7 +37,7 @@ $basicLightbox__timing: ease !default;
 
     .lightbox-img {
 
-        @include pseudo-transparent-bckg();
+        @include mixins.pseudo-transparent-bckg();
         max-height: 80vh;
         width: auto;
     }

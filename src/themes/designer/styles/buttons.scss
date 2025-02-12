@@ -1,15 +1,19 @@
+@use "mixins";
+@use "variables";
+@use "icons-toolboxes";
+
 ﻿.btn {
     border: none;
     background: none;
-    color: $color-base;
-    font-family: $font-family-base;
-    font-size: $font-size-base;
-    line-height: $workshop-button-height;
-    min-width: $workshop-button-height;
+    color: variables.$color-base;
+    font-family: variables.$font-family-base;
+    font-size: variables.$font-size-base;
+    line-height: variables.$workshop-button-height;
+    min-width: variables.$workshop-button-height;
     text-decoration: none;
     text-align: center;
     vertical-align: middle;
-    @include no-select;
+    @include mixins.no-select;
 
     &:disabled {
         opacity: 0.2;
@@ -21,9 +25,9 @@
 
     &:focus,
     &:hover {
-        @include selection(5px);
+        @include mixins.selection(5px);
         outline: none;
-        color: $color-base;
+        color: variables.$color-base;
         cursor: pointer;
     }
 }
@@ -34,28 +38,28 @@
     padding: 2px 12px;
 
     &:focus {
-        @include selection(5px, -2px);
+        @include mixins.selection(5px, -2px);
         outline: none;
     }
 
     &:hover {
         background: rgb(238, 238, 238);
         outline: none;
-        color: $color-base;
+        color: variables.$color-base;
         cursor: pointer;
     }
 }
 
 .btn-link {
-    color: $button-link-color;
+    color: variables.$button-link-color;
     text-decoration: none;
 }
 
 .btn-danger,
 .btn-danger:hover,
 .btn-danger:active {
-    background: $color-danger;
-    color: $button-danger-text-color;
+    background: variables.$color-danger;
+    color: variables.$button-danger-text-color;
 }
 
 .btn-group {
@@ -72,7 +76,7 @@
     position: absolute;
     top: 8px;
     right: 0;
-    color: $collapse-button-color;
+    color: variables.$collapse-button-color;
     cursor: pointer;
     z-index: 99999;
     @extend .paperbits-icon;
@@ -81,7 +85,7 @@
     &:active,
     &:focus,
     &:hover {
-        @include selection(7px, -5px);
+        @include mixins.selection(7px, -5px);
         outline: none;
     }
 }
@@ -93,9 +97,9 @@
 
     &:focus,
     &:hover {
-        @include selection(5px);
+        @include mixins.selection(5px);
         outline: none;
-        color: $color-base;
+        color: variables.$color-base;
         cursor: pointer;
     }
 }
@@ -106,5 +110,5 @@
     background: none;
     cursor: pointer;
     vertical-align: middle;
-    color: $color-info;
+    color: variables.$color-info;
 }

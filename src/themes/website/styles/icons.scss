@@ -1,3 +1,5 @@
+@use "mixins";
+
 @font-face {
     font-family: "Icons Embedded";
     src: url("/styles/fonts/icons.eot?a6lw2r");
@@ -154,21 +156,21 @@
 }
 
 .icon-svg-wadl {
-    @include icon-18px();
+    @include mixins.icon-18px();
     background-color: transparent;
     background-size: 100% 100%;
     background-image: url("./icons/icon-wadl.svg");
 }
 
 .icon-svg-wsdl {
-    @include icon-18px();
+    @include mixins.icon-18px();
     background-color: transparent;
     background-size: 100% 100%;
     background-image: url("./icons/icon-wsdl.svg");
 }
 
 .icon-svg-aad {
-    @include icon-18px();
+    @include mixins.icon-18px();
     display: inline-block;
     background-color: transparent;
     background-size: 100% 100%;

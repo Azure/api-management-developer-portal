@@ -1,7 +1,9 @@
+@use "variables";
+
 .resize-handle {
     background: transparent;
     position: absolute;
-    z-index: $z-index-base + 1;
+    z-index: variables.$z-index-base + 1;
 
     &.resize-handle-right {
         cursor: e-resize;

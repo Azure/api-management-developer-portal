@@ -1,3 +1,5 @@
+@use "variables";
+
 .snap {
     &.snap-top {
         position: sticky;
@@ -126,7 +128,7 @@ pre {
     right: 0;
     z-index: 1050;
 
-    @media (min-width: $breakpoint-md) {
+    @media (min-width: variables.$breakpoint-md) {
         max-width: 600px;
     }
 }
@@ -207,7 +209,7 @@ validation-summary {
 }
 
 .consoles {
-    background: $panel-bg-color-highlight;
+    background: variables.$panel-bg-color-highlight;
     height: 100%;
     border-left: 1px solid #dee2e6;
 

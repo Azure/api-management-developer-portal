@@ -1,4 +1,6 @@
-@import "../animations.scss";
+@use "../animations.scss";
+@use "../variables";
+
 
 .collapsible-container {
     flex-wrap: wrap;
@@ -51,7 +53,7 @@
     animation: fadeIn 0.2s linear forwards;
 }
 
-@media (min-width: $breakpoint-md) {
+@media (min-width: variables.$breakpoint-md) {
     .collapsible-panel {
         & > .collapsible-content {
             display: flex;
@@ -91,7 +93,7 @@
     }
 }
 
-@media (max-width: $breakpoint-md) {
+@media (max-width: variables.$breakpoint-md) {
     .collapsible-panel {
         .collapsible-panel-open {
             display: block;

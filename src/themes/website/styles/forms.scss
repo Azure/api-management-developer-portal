@@ -1,3 +1,6 @@
+@use "variables";
+@use "icons";
+
 form {
     padding: 10px;
     flex-grow: 1;
@@ -38,7 +41,7 @@ form {
 .invalid-feedback {
     margin-top: 0.25rem;
     font-size: 0.875em;
-    color: $form-invalid-color;
+    color: variables.$form-invalid-color;
     display: none;
 }
 
@@ -122,8 +125,8 @@ input[type=search] {
 .switch {
     position: relative;
     display: inline-block;
-    width: $switch-width;
-    height: $switch-height;
+    width: variables.$switch-width;
+    height: variables.$switch-height;
     margin: 10px;
 
     input[type=checkbox] {
@@ -132,7 +135,7 @@ input[type=search] {
         height: 0;
 
         &:checked + .slider {
-            background: $switch-background-color-on;
+            background: variables.$switch-background-color-on;
         }
 
         &:checked + .slider:before {
@@ -148,7 +151,7 @@ input[type=search] {
         left: 0;
         right: 0;
         bottom: 0;
-        background: $switch-background-color-off;
+        background: variables.$switch-background-color-off;
         transition: .4s;
 
         &.round {
@@ -162,10 +165,10 @@ input[type=search] {
         &:before {
             position: absolute;
             content: "";
-            height: $switch-trigger-size;
-            width: $switch-trigger-size;
-            left: $switch-trigger-gap;
-            bottom: $switch-trigger-gap + 1px;
+            height: variables.$switch-trigger-size;
+            width: variables.$switch-trigger-size;
+            left: variables.$switch-trigger-gap;
+            bottom: variables.$switch-trigger-gap + 1px;
             background: #ffffff;
             forced-color-adjust: none;
             border: 1px solid #ffffff;
@@ -225,7 +228,7 @@ input[type=search] {
 
 .select-badge {
     margin: 0 .5em;
-    font-family: $font-family-base;
+    font-family: variables.$font-family-base;
     font-size: 13px;
 
     select {
@@ -235,6 +238,7 @@ input[type=search] {
         border-radius: .875em;
         background: #D9D9D9;
         outline: none;
+        appearance: none;
         -webkit-appearance: none;
         -moz-appearance: none;
     }

@@ -1,17 +1,19 @@
+@use "variables";
+
 subscriptions-runtime {
     .table .table-head {
-        @media (max-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-md) {
             display: none;
         }
     }
 
     .table .table-row {
-        @media (max-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-md) {
             display: block;
         }
     
         > div {
-            @media (max-width: $breakpoint-md) {
+            @media (max-width: variables.$breakpoint-md) {
                 max-width: 100%;
             }
 
@@ -19,7 +21,7 @@ subscriptions-runtime {
                 font-weight: bold;
                 margin-bottom: 10px;
 
-                @media (min-width: $breakpoint-md) {
+                @media (min-width: variables.$breakpoint-md) {
                     display: none;
                 }
             }

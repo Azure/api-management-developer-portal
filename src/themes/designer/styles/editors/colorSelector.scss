@@ -1,8 +1,10 @@
+@use "../mixins";
+
 
 .pseudo-transparent-bckg {
     position: relative;
     overflow: hidden;
-    @include pseudo-transparent-bckg();
+    @include mixins.pseudo-transparent-bckg();
 }
 
 .palette {
@@ -31,7 +33,7 @@
         &:focus,
         &:hover {
             outline: none;
-            @include selection(10px);
+            @include mixins.selection(10px);
         }
 
         .color-box-wrapper {
@@ -48,12 +50,12 @@
             overflow: hidden;
 
             &.pseudo-transparent-bckg {
-                @include pseudo-transparent-bckg();
+                @include mixins.pseudo-transparent-bckg();
             }
         }
 
         .color {
-            @include fit();
+            @include mixins.fit();
             display: block;
             text-align: center;
         }

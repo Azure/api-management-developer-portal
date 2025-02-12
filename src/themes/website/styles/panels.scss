@@ -1,3 +1,5 @@
+@use "variables";
+
 .panel {
     padding: 30px;
 
@@ -17,7 +19,7 @@
         background-color: #fafafa;
 
         &.panel-highlight {
-            background-color: $panel-bg-color-highlight;
+            background-color: variables.$panel-bg-color-highlight;
         }
 
         .list-group-item {
@@ -95,7 +97,7 @@
         }
 
         a {
-            color: $default-heading-color;
+            color: variables.$default-heading-color;
         }
     }
 }

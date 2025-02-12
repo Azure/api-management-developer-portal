@@ -1,3 +1,7 @@
+@use "mixins";
+@use "variables";
+@use "icons-toolboxes";
+
 ﻿.list-item-group {
     width: 100%;
 
@@ -37,13 +41,13 @@
 
         &:focus,
         &:hover {
-            @include selection(8px, -3px);
+            @include mixins.selection(8px, -3px);
             outline: none;
             cursor: pointer;
         }
 
         .paperbits-icon {
-            color: $collapse-button-color;
+            color: variables.$collapse-button-color;
         }
     }
 }
@@ -60,7 +64,7 @@
     vertical-align: middle;
     display: flex;
     text-decoration: none;
-    color: $color-base;
+    color: variables.$color-base;
     padding: 0 5px;
 
     .paperbits-icon {
@@ -71,8 +75,8 @@
         padding: 0 5px;
         flex: 1;
         text-decoration: none;
-        color: $color-base;
-        @include text-overflow();
+        color: variables.$color-base;
+        @include mixins.text-overflow();
     }
 
     &:focus,
@@ -81,11 +85,11 @@
     }
 
     &:hover {
-        @include selection();
+        @include mixins.selection();
     }
 
     &:focus {
-        @include selection();
+        @include mixins.selection();
     }
 
     &.selected {
@@ -102,13 +106,13 @@
         height: 30px;
         display: block;
         border-radius: 50%;
-        background-color: $list-item-thumbnail-bg;
+        background-color: variables.$list-item-thumbnail-bg;
         float: right;
         box-shadow: inset -1px 1px 1px 0 rgba(0, 0, 0, 0.1);
     }
 
     &.list-item-image {
-        @include pseudo-transparent-bckg();
+        @include mixins.pseudo-transparent-bckg();
         margin: 3px;
         padding: 0;
         flex-basis: auto;

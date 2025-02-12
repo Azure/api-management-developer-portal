@@ -1,5 +1,8 @@
+@use "mixins";
+@use "variables";
+
 .tabs {
-    border-bottom: 1px solid $form-control-border;
+    border-bottom: 1px solid variables.$form-control-border;
     margin-bottom: 12px;
     display: flex;
     width: 100%;
@@ -11,7 +14,7 @@
             vertical-align: middle;
             text-align: center;
             line-height: 35px;
-            color: $color-base;
+            color: variables.$color-base;
             padding: 0 10px;
             text-decoration: none;
             font-weight: bold;
@@ -20,12 +23,12 @@
             &:focus,
             &:hover {
                 outline: none;
-                @include selection();
+                @include mixins.selection();
             }
         }
 
         &.tab-is-active {
-            border-bottom: 2px solid $tab-selected-color;
+            border-bottom: 2px solid variables.$tab-selected-color;
         }
     }
 }

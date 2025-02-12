@@ -1,3 +1,5 @@
+@use "mixins";
+
 * {
     position: relative;
 }
@@ -394,7 +396,7 @@ section {
 }
 
 .fit {
-    @include fit;
+    @include mixins.fit;
     flex: 1 1 auto;
 }
 

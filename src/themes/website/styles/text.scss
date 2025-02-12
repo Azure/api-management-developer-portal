@@ -1,12 +1,14 @@
+@use "variables";
+
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-    font-weight: $default-heading-font-weight;
-    line-height: $default-heading-line-height;
-    color: $default-heading-color;
+    font-weight: variables.$default-heading-font-weight;
+    line-height: variables.$default-heading-line-height;
+    color: variables.$default-heading-color;
 }
 
 pre {

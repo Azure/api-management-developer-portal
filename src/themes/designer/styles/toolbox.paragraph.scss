@@ -1,9 +1,12 @@
+@use "mixins";
+@use "variables";
+
 ﻿.tools-paragraph-style {
-    @include tabable();
+    @include mixins.tabable();
     display: block;
     padding: 5px 10px;
     text-decoration: none;
-    color: $color-base;
+    color: variables.$color-base;
 }
 
 .tools-paragraph-style {

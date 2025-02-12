@@ -1,3 +1,5 @@
+@use "variables";
+
 .host {
     height: 100%;
     width: 100%;
@@ -9,7 +11,7 @@
 
 view-manager {
     display: flex;
-    height: calc(100% - $admin-top-panel-height);
+    height: calc(100% - variables.$admin-top-panel-height);
 }
 
 .app-wrapper {
@@ -19,7 +21,7 @@ view-manager {
 }
 
 #main-content-wrapper {
-    width: calc(100% - $admin-side-panel-width);
+    width: calc(100% - variables.$admin-side-panel-width);
     transition: all .2s ease-in-out;
 
     &.is-focused {
@@ -44,23 +46,23 @@ view-manager {
     }
 
     &.viewport-lg {
-        padding-left: calc((100% - #{$breakpoint-xl - 1})/2);
-        padding-right: calc((100% - #{$breakpoint-xl - 1})/2);
+        padding-left: calc((100% - #{variables.$breakpoint-xl - 1})/2);
+        padding-right: calc((100% - #{variables.$breakpoint-xl - 1})/2);
     }
 
     &.viewport-md {
-        padding-left: calc((100% - #{$breakpoint-lg - 1})/2);
-        padding-right: calc((100% - #{$breakpoint-lg - 1})/2);
+        padding-left: calc((100% - #{variables.$breakpoint-lg - 1})/2);
+        padding-right: calc((100% - #{variables.$breakpoint-lg - 1})/2);
     }
 
     &.viewport-sm {
-        padding-left: calc((100% - #{$breakpoint-md - 1})/2);
-        padding-right: calc((100% - #{$breakpoint-md - 1})/2);
+        padding-left: calc((100% - #{variables.$breakpoint-md - 1})/2);
+        padding-right: calc((100% - #{variables.$breakpoint-md - 1})/2);
     }
 
     &.viewport-xs {
-        padding-left: calc((100% - #{$breakpoint-sm - 1})/2);
-        padding-right: calc((100% - #{$breakpoint-sm - 1})/2);
+        padding-left: calc((100% - #{variables.$breakpoint-sm - 1})/2);
+        padding-right: calc((100% - #{variables.$breakpoint-sm - 1})/2);
     }
 
     &.viewport-zoomout .host {

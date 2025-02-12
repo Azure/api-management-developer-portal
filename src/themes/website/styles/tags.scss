@@ -1,3 +1,5 @@
+@use "variables";
+
 .tag-group,
 .tag-group.no-border {
     padding-top: 20px;
@@ -33,9 +35,9 @@
 .tag-item,
 .tag-item:active,
 .tag-item:hover {
-    border: 1px solid $default-text-color;
+    border: 1px solid variables.$default-text-color;
     padding: 2px 7px;
-    color: $default-text-color;
+    color: variables.$default-text-color;
     cursor: default;
     display: inline-flex;
     text-decoration: none;

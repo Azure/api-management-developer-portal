@@ -1,3 +1,5 @@
+@use "../mixins";
+
 @use "sass:math";
 
 $box-model-spacing: 30px;
@@ -66,7 +68,7 @@ $box-model-border-width: 4px;
     }
 
     .box-model-group {
-        @include fit;
+        @include mixins.fit;
         display: none;
     }
 

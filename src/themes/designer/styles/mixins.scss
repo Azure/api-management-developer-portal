@@ -1,4 +1,6 @@
-﻿@mixin hide-text() {
+@use "variables";
+
+@mixin hide-text() {
   text-indent: -9999px;
   white-space: nowrap;
 }
@@ -55,10 +57,10 @@
     &:after {
         @include fit($spacing);
         @include no-pointer-events();
-        background: linear-gradient(to right, $selection-corners-color 1px, transparent 1px) 0 0, linear-gradient(to right, $selection-corners-color 1px, transparent 1px) 0 100%, linear-gradient(to left, $selection-corners-color 1px, transparent 1px) 100% 0, linear-gradient(to left, $selection-corners-color 1px, transparent 1px) 100% 100%, linear-gradient(to bottom, $selection-corners-color 1px, transparent 1px) 0 0, linear-gradient(to bottom, $selection-corners-color 1px, transparent 1px) 100% 0, linear-gradient(to top, $selection-corners-color 1px, transparent 1px) 0 100%, linear-gradient(to top, $selection-corners-color 1px, transparent 1px) 100% 100%;
+        background: linear-gradient(to right, variables.$selection-corners-color 1px, transparent 1px) 0 0, linear-gradient(to right, variables.$selection-corners-color 1px, transparent 1px) 0 100%, linear-gradient(to left, variables.$selection-corners-color 1px, transparent 1px) 100% 0, linear-gradient(to left, variables.$selection-corners-color 1px, transparent 1px) 100% 100%, linear-gradient(to bottom, variables.$selection-corners-color 1px, transparent 1px) 0 0, linear-gradient(to bottom, variables.$selection-corners-color 1px, transparent 1px) 100% 0, linear-gradient(to top, variables.$selection-corners-color 1px, transparent 1px) 0 100%, linear-gradient(to top, variables.$selection-corners-color 1px, transparent 1px) 100% 100%;
         background-repeat: no-repeat;
         background-size: 0 0;
-        z-index: $z-index-selection;
+        z-index: variables.$z-index-selection;
         content: '';
     }
 
@@ -72,14 +74,14 @@
 @mixin surface() {
     @include box-shadow(1px 1px 20px 1px rgba(0, 0, 0, 0.15));
     margin: 0;
-    background-color: $toolbox-background;
-    border-radius: $toolbox-border-radius;
-    font-family: $font-family-base;
-    font-weight: $font-weight-base;
-    z-index: $z-index-base;
+    background-color: variables.$toolbox-background;
+    border-radius: variables.$toolbox-border-radius;
+    font-family: variables.$font-family-base;
+    font-weight: variables.$font-weight-base;
+    z-index: variables.$z-index-base;
     list-style: none;
     user-select: none;
-    font-size: $font-size-base;
+    font-size: variables.$font-size-base;
 }
 
 @mixin pseudo-transparent-bckg {
@@ -92,10 +94,10 @@
 }
 
 @mixin slider-thumb {
-    width: $form-control-slider-thumb-size;
-    height: $form-control-slider-thumb-size;
-    background: $form-control-slider-thumb-bg;
-    border: 2px solid $form-control-border;
+    width: variables.$form-control-slider-thumb-size;
+    height: variables.$form-control-slider-thumb-size;
+    background: variables.$form-control-slider-thumb-bg;
+    border: 2px solid variables.$form-control-border;
     cursor: pointer;
     cursor: -webkit-grabbing;
     user-select: none;

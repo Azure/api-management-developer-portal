@@ -1,3 +1,7 @@
+@use "mixins";
+@use "variables";
+@use "icons-toolboxes";
+
 ﻿.form {
     margin: 0;
     padding: 0;
@@ -35,7 +39,7 @@
             position: unset;
             padding: 2px;
             text-decoration: none;
-            color: $collapse-button-color;
+            color: variables.$collapse-button-color;
 
             &:after {
                 content: "";
@@ -43,7 +47,7 @@
                 top: 25px;
                 bottom: -10px;
                 left: 10px;
-                border-left: 1px dotted $form-collapsible-section-gutter-color;
+                border-left: 1px dotted variables.$form-collapsible-section-gutter-color;
             }
             @extend .paperbits-icon;
             @extend .paperbits-circle-delete;
@@ -73,12 +77,12 @@
 input[type="search"],
 input[type="text"],
 textarea {
-    font-family: $font-family-base;
-    font-weight: $font-weight-base;
-    font-size: $form-control-font-size;
-    color: $color-base;
-    border: 1px solid $form-control-border;
-    background-color: $form-control-bg;
+    font-family: variables.$font-family-base;
+    font-weight: variables.$font-weight-base;
+    font-size: variables.$form-control-font-size;
+    color: variables.$color-base;
+    border: 1px solid variables.$form-control-border;
+    background-color: variables.$form-control-bg;
     display: block;
     width: 100%;
 
@@ -88,20 +92,20 @@ textarea {
 
     &:focus {
         outline: none;
-        border: 1px solid $form-control-focus-color;
+        border: 1px solid variables.$form-control-focus-color;
     }
 
     &.is-invalid {
-        color: $color-danger;
-        border-color: $color-danger;
+        color: variables.$color-danger;
+        border-color: variables.$color-danger;
     }
 
     &[readonly] {
-        background-color: $form-control-bg-readonly;
+        background-color: variables.$form-control-bg-readonly;
     }
 
     &[disabled] {
-        background-color: $form-control-bg-disabled;
+        background-color: variables.$form-control-bg-disabled;
     }
 }
 
@@ -113,16 +117,20 @@ input[type="search"] {
 }
 
 input[type="range"].form-control {
+    appearance: none;
     -webkit-appearance: none;
+    -moz-appearance: none;
     padding: 0;
-    border: 1px solid $form-control-border;
+    border: 1px solid variables.$form-control-border;
     border-radius: 20px;
     height: 10px;
     margin: 10px 0;
 
     &::-webkit-slider-thumb {
+        appearance: none;
         -webkit-appearance: none;
-        @include slider-thumb();
+        -moz-appearance: none;
+        @include mixins.slider-thumb();
     }
 }
 
@@ -131,7 +139,7 @@ input[type="radio"] {
 }
 
 .form-control {
-    padding: $form-control-padding;
+    padding: variables.$form-control-padding;
     width: 100%;
 }
 
@@ -161,10 +169,10 @@ textarea {
 
 .input-group {
     display: flex !important;
-    border: 1px solid $form-control-border;
+    border: 1px solid variables.$form-control-border;
 
     &:focus-within {
-        border: 1px solid $form-control-border-focused;
+        border: 1px solid variables.$form-control-border-focused;
     }
 
     .form-control,
@@ -182,13 +190,13 @@ textarea {
         cursor: pointer;
         display: inline-block;
         line-height: 2em;
-        font-size: $form-control-font-size;
+        font-size: variables.$form-control-font-size;
 
         &:active,
         &:focus,
         &:hover {
             outline: none;
-            @include selection(10px, -4px);
+            @include mixins.selection(10px, -4px);
         }
 
         &.disabled {
@@ -197,10 +205,10 @@ textarea {
     }
 
     .input-group-addon {
-        font-size: $form-control-font-size;
-        padding: $form-control-padding;
+        font-size: variables.$form-control-font-size;
+        padding: variables.$form-control-padding;
         min-width: 1.5em;
-        color: $color-base;
+        color: variables.$color-base;
         border: none;
         display: block;
     }
@@ -209,7 +217,7 @@ textarea {
 hr {
     display: block;
     border: none;
-    border-bottom: 1px solid $form-control-border;
+    border-bottom: 1px solid variables.$form-control-border;
     height: 1px;
     width: 100%;
     margin: 12px 0;
@@ -262,7 +270,7 @@ details {
         top: 1px;
         @extend .paperbits-icon;
         @extend .paperbits-circle-delete;
-        color: $collapse-button-color;
+        color: variables.$collapse-button-color;
     }
 
     & > summary {
@@ -275,7 +283,7 @@ details {
             position: absolute;
             @extend .paperbits-icon;
             @extend .paperbits-circle-add;
-            color: $collapse-button-color;
+            color: variables.$collapse-button-color;
             display: inline-block;
             width: 1.6rem;
             text-align: center;

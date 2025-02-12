@@ -1,3 +1,5 @@
+@use "variables";
+
 .text-center {
     text-align: center;
 }
@@ -26,24 +28,24 @@
 }
 
 .d-xl-inline-block {
-    @media (min-width: $breakpoint-xl) {
+    @media (min-width: variables.$breakpoint-xl) {
         display: inline-block !important;
     }
 }
 
 .d-lg-inline-block {
-    @media (min-width: $breakpoint-lg) {
+    @media (min-width: variables.$breakpoint-lg) {
         display: inline-block !important;
     }
 }
 .d-md-inline-block {
-    @media (min-width: $breakpoint-md) {
+    @media (min-width: variables.$breakpoint-md) {
         display: inline-block !important;
     }
 }
 
 .d-sm-inline-block {
-    @media (min-width: $breakpoint-sm) {
+    @media (min-width: variables.$breakpoint-sm) {
         display: inline-block !important;
     }
 }

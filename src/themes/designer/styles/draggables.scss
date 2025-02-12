@@ -1,3 +1,7 @@
+@use "sass:color";
+@use "mixins";
+@use "variables";
+
 ﻿.dragtarget {
     width: 100px;
     height: 100px;
@@ -11,10 +15,10 @@
 }
 
 .dragged {
-    @include no-select();
-    @include no-drag();
-    @include no-pointer-events();
-    z-index: $z-index-dragging;
+    @include mixins.no-select();
+    @include mixins.no-drag();
+    @include mixins.no-pointer-events();
+    z-index: variables.$z-index-dragging;
     cursor: grab;
     position: fixed;
     background: #fff;
@@ -22,7 +26,7 @@
 
 .placeholder {
     border: 2px dashed #ccc;
-    border: 2px dashed darken($toolbox-background, 20%);
+    border: 2px dashed color.adjust(variables.$toolbox-background, $lightness: -20%);
     transition: height .5s ease-in-out;
     position: relative;
 }

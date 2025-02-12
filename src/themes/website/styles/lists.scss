@@ -1,8 +1,10 @@
+@use "variables";
+
 .list {
     .list-item {
         padding: .5em;
         display: block;
-        color: $default-text-color;
+        color: variables.$default-text-color;
         cursor: pointer;
 
         &.selected {
@@ -13,6 +15,6 @@
     .list-item-empty {
         padding: 10px;
         display: block;
-        color: $default-text-color;
+        color: variables.$default-text-color;
     }
 }

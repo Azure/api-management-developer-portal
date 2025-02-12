@@ -1,13 +1,15 @@
-﻿$tip-width: 10px;
+@use "variables";
+
+$tip-width: 10px;
 
 .balloon {
     position: fixed;
-    background-color: $balloon-background;
-    z-index: $z-index-balloon;
+    background-color: variables.$balloon-background;
+    z-index: variables.$z-index-balloon;
     box-shadow: 0 0 2px 2px rgba(0, 0, 0, .15);
-    border-radius: $balloon-border-radius;
+    border-radius: variables.$balloon-border-radius;
     box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.15);
-    border-radius: $balloon-border-radius;
+    border-radius: variables.$balloon-border-radius;
     padding: 7px;
     display: none;
 
@@ -48,10 +50,10 @@
 
 .balloon-tip {
     position: fixed;
-    background-color: $balloon-background;
+    background-color: variables.$balloon-background;
     width: $tip-width;
     height: $tip-width;
-    z-index: $z-index-balloon;
+    z-index: variables.$z-index-balloon;
     box-shadow: -2px -2px 2px rgba(0, 0, 0, 0.15);
 
     &.balloon-top {

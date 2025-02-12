@@ -1,3 +1,5 @@
+@use "variables";
+
 .table-ws-gql {
     display: grid;
     max-width: 100%;
@@ -7,7 +9,7 @@
     &.logs {
         grid-template-columns: auto auto 1fr;
         grid-auto-rows: max-content;
-        background: $form-control-bg-color;
+        background: variables.$form-control-bg-color;
 
         &>.d-contents>.d-contents> :is(div, pre) {
             padding: 4px;
@@ -18,23 +20,23 @@
 
 .gql-ws-spinner {
     margin: 0px;
-    background: $form-control-bg-color;
+    background: variables.$form-control-bg-color;
 }
 
 .gql-container {
     display: grid;
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: variables.$breakpoint-md) {
         grid-template-columns: 100%;
         grid-template-areas: "explorer""query""response";
     }
 
-    @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
+    @media (max-width: variables.$breakpoint-xl) and (min-width: variables.$breakpoint-md) {
         grid-template-columns: 30% 70%;
         grid-template-areas: "explorer query"". response";
     }
 
-    @media (min-width: $breakpoint-xl) {
+    @media (min-width: variables.$breakpoint-xl) {
         grid-template-columns: 20% 40% 40%;
         grid-template-areas: "explorer query response";
     }
@@ -43,7 +45,7 @@
 .gql-explorer-grid {
     grid-area: explorer;
 
-    @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
+    @media (max-width: variables.$breakpoint-xl) and (min-width: variables.$breakpoint-md) {
         grid-column: 1;
         grid-row: 1 / 3;
     }
@@ -52,11 +54,11 @@
         margin-top: 0;
     }
 
-    @media (min-width: $breakpoint-md) {
+    @media (min-width: variables.$breakpoint-md) {
         padding-right: 20px;
     }
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: variables.$breakpoint-md) {
         margin-bottom: 20px;
     }
 }
@@ -64,7 +66,7 @@
 .gql-query-grid {
     grid-area: query;
 
-    @media (min-width: $breakpoint-xl) {
+    @media (min-width: variables.$breakpoint-xl) {
         padding-right: 20px;
     }
 
@@ -80,7 +82,7 @@
         margin-top: 0;
     }
 
-    @media (max-width: $breakpoint-xl) {
+    @media (max-width: variables.$breakpoint-xl) {
         margin-top: 15px;
     }
 }
@@ -90,13 +92,13 @@
 }
 
 .graphql-console-width {
-    @media (min-width: $breakpoint-md) {
+    @media (min-width: variables.$breakpoint-md) {
         max-width: 1680px;
     }
 }
 
 .query-editor {
-    @media (max-height: $breakpoint-ml) {
+    @media (max-height: variables.$breakpoint-ml) {
         height: 290px;
 
         &.with-errors {
@@ -104,14 +106,14 @@
         }
     }
 
-    @media (max-height: $breakpoint-xl) and (min-height: $breakpoint-ml) {
+    @media (max-height: variables.$breakpoint-xl) and (min-height: variables.$breakpoint-ml) {
         height: 440px;
 
         &.with-errors {
             height: 340px;
         }
 
-        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-xl) and (min-width: variables.$breakpoint-md) {
             height: 150px;
 
             &.with-errors {
@@ -120,14 +122,14 @@
         }
     }
 
-    @media (min-height: $breakpoint-xl) {
+    @media (min-height: variables.$breakpoint-xl) {
         height: 533px;
 
         &.with-errors {
             height: 450px;
         }
 
-        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-xl) and (min-width: variables.$breakpoint-md) {
             height: 303px;
 
             &.with-errors {
@@ -138,14 +140,14 @@
 }
 
 .query-variable {
-    @media (max-height: $breakpoint-xl) {
+    @media (max-height: variables.$breakpoint-xl) {
         height: 166px;
 
         &.with-errors {
             height: 153px;
         }
 
-        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-xl) and (min-width: variables.$breakpoint-md) {
             height: 100px;
 
             &.with-errors {
@@ -154,14 +156,14 @@
         }
     }
 
-    @media (min-height: $breakpoint-xl) {
+    @media (min-height: variables.$breakpoint-xl) {
         height: 263px;
 
         &.with-errors {
             height: 233px;
         }
 
-        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-xl) and (min-width: variables.$breakpoint-md) {
             height: 103px;
 
             &.with-errors {
@@ -172,7 +174,7 @@
 }
 
 .response-editor {
-    @media (max-height: $breakpoint-ml) {
+    @media (max-height: variables.$breakpoint-ml) {
         height: 520px;
 
         &.with-ws {
@@ -180,14 +182,14 @@
         }
     }
 
-    @media (max-height: $breakpoint-xl) and (min-height: $breakpoint-ml) {
+    @media (max-height: variables.$breakpoint-xl) and (min-height: variables.$breakpoint-ml) {
         height: 670px;
 
         &.with-ws {
             height: 295px;
         }
 
-        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-xl) and (min-width: variables.$breakpoint-md) {
             height: 218px;
 
             &.with-ws {
@@ -195,7 +197,7 @@
             }
         }
 
-        @media (max-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-md) {
             height: 600px;
 
             &.with-ws {
@@ -204,14 +206,14 @@
         }
     }
 
-    @media (min-height: $breakpoint-xl) {
+    @media (min-height: variables.$breakpoint-xl) {
         height: 860px;
 
         &.with-ws {
             height: 392px;
         }
 
-        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-xl) and (min-width: variables.$breakpoint-md) {
             height: 254px;
 
             &.with-ws {
@@ -222,7 +224,7 @@
 }
 
 .response-ws {
-    @media (max-height: $breakpoint-ml) {
+    @media (max-height: variables.$breakpoint-ml) {
         height: 231px;
 
         &.with-spinner {
@@ -230,60 +232,60 @@
         }
     }
 
-    @media (max-height: $breakpoint-xl) and (min-height: $breakpoint-ml) {
+    @media (max-height: variables.$breakpoint-xl) and (min-height: variables.$breakpoint-ml) {
         height: 311px;
 
         &.with-spinner {
             height: 287px;
         }
 
-        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-xl) and (min-width: variables.$breakpoint-md) {
             height: 218px;
         }
 
-        @media (max-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-md) {
             height: 280px;
         }
     }
 
-    @media (min-height: $breakpoint-xl) {
+    @media (min-height: variables.$breakpoint-xl) {
         height: 404px;
 
         &.with-spinner {
             height: 380px;
         }
 
-        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-xl) and (min-width: variables.$breakpoint-md) {
             height: 254px;
         }
     }
 }
 
 .explorer-operations {
-    @media (max-height: $breakpoint-ml) {
+    @media (max-height: variables.$breakpoint-ml) {
         height: 464px;
 
-        @media (max-width: $breakpoint-xl) and (min-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-xl) and (min-width: variables.$breakpoint-md) {
             height: 1044px;
         }
 
-        @media (max-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-md) {
             height: 400px;
         }
     }
 
-    @media (max-height: $breakpoint-xl) and (min-height: $breakpoint-ml) {
+    @media (max-height: variables.$breakpoint-xl) and (min-height: variables.$breakpoint-ml) {
         height: 614px;
 
-        @media (max-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-md) {
             height: 400px;
         }
     }
 
-    @media (min-height: $breakpoint-xl) {
+    @media (min-height: variables.$breakpoint-xl) {
         height: 804px;
 
-        @media (max-width: $breakpoint-md) {
+        @media (max-width: variables.$breakpoint-md) {
             height: 400px;
         }
     }
@@ -309,11 +311,11 @@
 }
 
 .input-node-color {
-    color: $gql-input-node-color;
+    color: variables.$gql-input-node-color;
 }
 
 .not-input-node-color {
-    color: $gql-not-input-node-color;
+    color: variables.$gql-not-input-node-color;
 }
 
 .presentation-item {
@@ -324,8 +326,8 @@
     }
 
     select {
-        background-color: $form-control-bg-color;
-        color: $gql-not-input-node-color;
+        background-color: variables.$form-control-bg-color;
+        color: variables.$gql-not-input-node-color;
     }
 }
 
@@ -335,7 +337,7 @@
 
 .operation-type-gql {
     width: 100%;
-    color: $gql-operation-type-color;
+    color: variables.$gql-operation-type-color;
     font-weight: bold;
 }
 
