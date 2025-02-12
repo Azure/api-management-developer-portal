@@ -3,7 +3,7 @@
 @use "mixins";
 @use "variables";
 
-﻿h1,
+h1,
 h2 {
     font-family: variables.$font-family-base;
     color: variables.$color-base;
@@ -246,11 +246,6 @@ h2 {
     &.resize-suspended {
         .resize-handle {
             pointer-events: none;
-        }
-    }
-
-    &.resized-horizontally {
-        .resizable-content {
         }
     }
 

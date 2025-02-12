@@ -1,7 +1,7 @@
 @use "mixins";
 @use "variables";
 
-﻿[alignment] {
+[alignment] {
     position: absolute;
     top: initial;
     left: initial;
@@ -26,53 +26,55 @@
         }
     }
 
-    &[alignment="top left"] {
-        transform: rotate(270deg);
-        top: 0;
-        left: 0;
-    }
 
-    &[alignment="top center"] {
-        top: 0;
-        left: 50%;
-        bottom: initial;
-        transform: rotate(317deg);
-    }
+}
 
-    &[alignment="top right"] {
-        top: 0;
-        right: 0;
-    }
+[alignment="top left"] {
+    transform: rotate(270deg);
+    top: 0;
+    left: 0;
+}
 
-    &[alignment="center left"] {
-        top: 50%;
-        left: 0;
-        transform: rotate(225deg);
-    }
+[alignment="top center"] {
+    top: 0;
+    left: 50%;
+    bottom: initial;
+    transform: rotate(317deg);
+}
 
-    &[alignment="center right"] {
-        right: 0;
-        top: 50%;
-        transform: rotate(45deg);
-    }
+[alignment="top right"] {
+    top: 0;
+    right: 0;
+}
 
-    &[alignment="bottom left"] {
-        bottom: 0;
-        left: 0;
-        transform: rotate(180deg);
-    }
+[alignment="center left"] {
+    top: 50%;
+    left: 0;
+    transform: rotate(225deg);
+}
 
-    &[alignment="bottom center"] {
-        bottom: 0;
-        transform: rotate(135deg);
-        left: 50%;
-    }
+[alignment="center right"] {
+    right: 0;
+    top: 50%;
+    transform: rotate(45deg);
+}
 
-    &[alignment="bottom right"] {
-        bottom: 0;
-        right: 0;
-        transform: rotate(90deg);
-    }
+[alignment="bottom left"] {
+    bottom: 0;
+    left: 0;
+    transform: rotate(180deg);
+}
+
+[alignment="bottom center"] {
+    bottom: 0;
+    transform: rotate(135deg);
+    left: 50%;
+}
+
+[alignment="bottom right"] {
+    bottom: 0;
+    right: 0;
+    transform: rotate(90deg);
 }
 
 .dropzone {

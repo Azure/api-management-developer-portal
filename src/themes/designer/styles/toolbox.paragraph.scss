@@ -1,7 +1,7 @@
 @use "mixins";
 @use "variables";
 
-﻿.tools-paragraph-style {
+.tools-paragraph-style {
     @include mixins.tabable();
     display: block;
     padding: 5px 10px;
