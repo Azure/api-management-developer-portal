@@ -211,7 +211,11 @@ export class MapiClient {
     private createMapiError(statusCode: number, url: string, getError: () => any): any {
         switch (statusCode) {
             case 400:
-                return getError();
+                const error = getError();
+                if (error.code && error.message) {
+                    return new MapiError(error.code, error.message, error.details);
+                }
+                return error;
 
             case 401:
                 this.authenticator.clearAccessToken();
