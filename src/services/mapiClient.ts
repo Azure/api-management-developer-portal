@@ -209,10 +209,11 @@ export class MapiClient {
     }
 
     private createMapiError(statusCode: number, url: string, getError: () => any): any {
+        let error;
         switch (statusCode) {
             case 400:
-                let error = getError();
-                if (error.code && error.message) {
+                error = getError();
+                if (error?.code && error.message) {
                     return new MapiError(error.code, error.message, error.details);
                 }
                 return error;
