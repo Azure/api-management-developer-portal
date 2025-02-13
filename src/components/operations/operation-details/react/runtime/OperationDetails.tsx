@@ -278,7 +278,6 @@ export const OperationDetails = ({
 
     return (
         <div className={"operation-details-container"}>
-            <h4 className={"operation-details-title"} id={"operation"}>Operation</h4>
             {working
                 ? <Spinner label="Loading..." labelPosition="below" size="small" />
                 : !operation
