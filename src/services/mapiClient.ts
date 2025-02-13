@@ -211,7 +211,7 @@ export class MapiClient {
     private createMapiError(statusCode: number, url: string, getError: () => any): any {
         switch (statusCode) {
             case 400:
-                const error = getError();
+                let error = getError();
                 if (error.code && error.message) {
                     return new MapiError(error.code, error.message, error.details);
                 }
