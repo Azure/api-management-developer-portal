@@ -3,6 +3,7 @@ import { Parameter } from "../parameter";
 
 
 export class ConsoleParameter {
+    public id: string;
     public name: ko.Observable<string>;
     public value: ko.Observable<string>;
     public required: boolean;
@@ -22,12 +23,14 @@ export class ConsoleParameter {
     }
 
     constructor(contract?: Parameter) {
+        this.id = crypto.randomUUID();
         this.name = ko.observable(null);
         this.value = ko.observable(null);
         this.inputType = ko.observable("text");
         this.required = false;
         this.options = [];
         this.custom = true;
+        this.canRename = true;
         this.type = "string";
         this.error = ko.observable();
         this.revealed = ko.observable(false);

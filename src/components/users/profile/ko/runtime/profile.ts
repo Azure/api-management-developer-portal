@@ -42,7 +42,8 @@ export class Profile {
         private readonly backendService: BackendService,
         private readonly eventManager: EventManager,
         private readonly router: Router,
-        private readonly logger: Logger) {
+        private readonly logger: Logger,
+    ) {
         this.user = ko.observable();
         this.firstName = ko.observable();
         this.lastName = ko.observable();

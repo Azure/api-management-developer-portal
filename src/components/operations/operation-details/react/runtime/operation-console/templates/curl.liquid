@@ -1,0 +1,16 @@
+curl -v -X {{console.method}} "{{console.requestUrl}}"
+{%- for header in console.request.meaningfulHeaders %} -H "
+{%- if showSecrets == false and header.secret -%}
+{{ header.name }}: {{ header.hiddenValue }}
+{%- else -%}
+{{ header.name }}: {{ header.value }}
+{%- endif -%}"
+{%- endfor -%}
+{% if console.request.body != blank -%}
+{%- if console.request.bodyFormat == "raw" -%}
+{%- assign formattedBody = console.request.body | replace:'"','\\"' -%}
+{%- assign formattedBody = formattedBody | replace: '\r\n', ' ' -%}
+{%- assign formattedBody = formattedBody | replace: '     ', ' ' %} --data-raw "{{formattedBody}}"
+{%- elsif console.request.bodyFormat == "binary" %} --data-binary "@ < path/to/{{console.request.binary.name}} >"
+{% endif -%}
+{% endif -%}

@@ -1,3 +1,4 @@
+import { ReactModule } from "@paperbits/react/react.module";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSessionManager";
@@ -88,10 +89,34 @@ import { TagService } from "./services/tagService";
 import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
 import { TraceClick } from "./bindingHandlers/traceClick";
+import { GraphqlService } from "./services/graphqlService";
+import { ListOfApisRuntimeModule } from "./components/apis/list-of-apis/listOfApis.runtime.module";
+import { ApiProductsRuntimeModule } from "./components/apis/api-products/apiProducts.runtime.module";
+import { ProductListRuntimeModule } from "./components/products/product-list/productList.runtime.module";
+import { OperationListRuntimeModule } from "./components/operations/operation-list/operationList.runtime.module";
+import { DetailsOfApiRuntimeModule } from "./components/apis/details-of-api/detailsOfApi.runtime.module";
+import { HistoryOfApiRuntimeModule } from "./components/apis/history-of-api/historyOfApi.runtime.module";
+import { OperationDetailsRuntimeModule } from "./components/operations/operation-details/operationDetails.runtime.module";
+import { ProductApisRuntimeModule } from "./components/products/product-apis/productApis.runtime.module";
+import { ProductDetailsRuntimeModule } from "./components/products/product-details/productDetails.runtime.module";
+import { ProductSubscribeRuntimeModule } from "./components/products/product-subscribe/productSubscribe.runtime.module";
+import { ProductSubscriptionsRuntimeModule } from "./components/products/product-subscriptions/productSubscriptions.runtime.module";
+import { SignInRuntimeModule } from "./components/users/signin/signin.runtime.module";
+import { SignInSocialRuntimeModule } from "./components/users/signin-social/signinSocial.runtime.module";
+import { SignUpRuntimeModule } from "./components/users/signup/signup.runtime.module";
+import { SignUpAadRuntimeModule } from "./components/users/signup-social/signupSocial.runtime.module";
+import { ProfileRuntimeModule } from "./components/users/profile/profile.runtime.module";
+import { ResetPasswordRuntimeModule } from "./components/users/reset-password/resetPassword.runtime.module";
+import { ChangePasswordRuntimeModule } from "./components/users/change-password/changePassword.runtime.module";
+import { ConfirmPasswordRuntimeModule } from "./components/users/confirm-password/confirmPassword.runtime.module";
+import { SubscriptionsRuntimeModule } from "./components/users/subscriptions/subscriptions.runtime.module";
+import { ReportsRuntimeModule } from "./components/reports/reports.runtime.module";
+import { ValidationSummaryRuntimeModule } from "./components/users/validation-summary/validationSummary.runtime.module";
 import { ClientLogger } from "./logging/clientLogger";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
+        injector.bindModule(new ReactModule());
         injector.bindSingleton("logger", ConsoleLogger);
         // injector.bindSingleton("logger", ClientLogger);
         injector.bindSingleton("traceClick", TraceClick);
@@ -118,6 +143,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("codeSnippet", CodeSnippet);
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);
+        injector.bind("graphqlService", GraphqlService);
         injector.bind("tagService", TagService);
         injector.bind("productService", ProductService);
         injector.bind("analyticsService", AnalyticsService);
@@ -166,6 +192,28 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
         injector.bindModule(new CustomWidgetRuntimeModule());
         injector.bindModule(new RoleBasedSecurityRuntimeModule());
+        injector.bindModule(new ListOfApisRuntimeModule());
+        injector.bindModule(new ApiProductsRuntimeModule());
+        injector.bindModule(new ProductListRuntimeModule());
+        injector.bindModule(new ProductApisRuntimeModule());
+        injector.bindModule(new OperationListRuntimeModule());
+        injector.bindModule(new DetailsOfApiRuntimeModule());
+        injector.bindModule(new HistoryOfApiRuntimeModule());
+        injector.bindModule(new OperationDetailsRuntimeModule());
+        injector.bindModule(new ProductDetailsRuntimeModule());
+        injector.bindModule(new ProductSubscribeRuntimeModule());
+        injector.bindModule(new ProductSubscriptionsRuntimeModule());
+        injector.bindModule(new SignInRuntimeModule());
+        injector.bindModule(new SignInSocialRuntimeModule());
+        injector.bindModule(new SignUpRuntimeModule());
+        injector.bindModule(new SignUpAadRuntimeModule());
+        injector.bindModule(new ProfileRuntimeModule());
+        injector.bindModule(new ResetPasswordRuntimeModule());
+        injector.bindModule(new ChangePasswordRuntimeModule());
+        injector.bindModule(new ConfirmPasswordRuntimeModule());
+        injector.bindModule(new SubscriptionsRuntimeModule());
+        injector.bindModule(new ReportsRuntimeModule());
+        injector.bindModule(new ValidationSummaryRuntimeModule());
 
         if (process.env.NODE_ENV === staticDataEnvironment) {
             injector.bind("httpClient", StaticDataHttpClient);
