@@ -52,7 +52,7 @@ export const ConsoleHeaders = ({ headers, updateHeaders, isGqlConsole }: Console
     const renderHeaders = () => (
         <>
             {consoleHeaders.map(header => (
-                <Stack horizontal verticalAlign="center" key={header.id} className="param-detail">
+                <Stack horizontal verticalAlign="start" key={header.id} className="param-detail">
                     <div className={"param-name"}>
                         {header.required
                             ? <Label htmlFor={`header-dropdown-${header.id}`} className={header.required ? "required" : ""}>{header.name()}</Label>
