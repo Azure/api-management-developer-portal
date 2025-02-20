@@ -1847,7 +1847,7 @@
       },
       {
         "name": "ocp-apim-sas-token",
-        "value": "***REMOVED***,refresh=\"true\""
+        "value": "token=\"6189460d4634612164e10999&292202041536&FWpHkq3S32Bxrgs+Mq0i8XTe6eOkv7zbABcdKAg1mofztdVAY7E8DUdFWC/7991FMuH5I5W1RfuJ0GzUjVsEqQ==\",refresh=\"true\""
       }
     ],
     "statusCode": 200,
@@ -2309,7 +2309,7 @@
     ]
   },
   "ADD IMAGES": {},
-  "https://apimdeveloperportal.blob.core.windows.net/content/c5d2da83-b255-245c-144b-cd3c242e9791": {
+  "https://apimdeveloperportal.z22.web.core.windows.net/c5d2da83-b255-245c-144b-cd3c242e9791.jpg": {
     "statusCode": 200,
     "statusText": "OK",
     "body": {},
@@ -2320,7 +2320,7 @@
       }
     ]
   },
-  "https://apimdeveloperportal.blob.core.windows.net/content/ed8e43d0-5f8e-af38-5536-8f0274656ce4": {
+  "https://apimdeveloperportal.z22.web.core.windows.net/ed8e43d0-5f8e-af38-5536-8f0274656ce4.jpg": {
     "statusCode": 200,
     "statusText": "OK",
     "body": {},
@@ -2331,7 +2331,7 @@
       }
     ]
   },
-  "https://apimdeveloperportal.blob.core.windows.net/content/a2514081-47cb-95b1-ef0b-aef128c7a7ed": {
+  "https://apimdeveloperportal.z22.web.core.windows.net/a2514081-47cb-95b1-ef0b-aef128c7a7ed.jpg": {
     "statusCode": 200,
     "statusText": "OK",
     "body": {},
@@ -2342,7 +2342,7 @@
       }
     ]
   },
-  "https://apimdeveloperportal.blob.core.windows.net/content/70add409-0933-e01e-acef-99999a71167e": {
+  "https://apimdeveloperportal.z22.web.core.windows.net/70add409-0933-e01e-acef-99999a71167e.png": {
     "statusCode": 200,
     "statusText": "OK",
     "body": {},
@@ -2353,7 +2353,7 @@
       }
     ]
   },
-  "https://apimdeveloperportal.blob.core.windows.net/content/4cac439d-5a3d-4b03-38bb-197d32256ee0": {
+  "https://apimdeveloperportal.z22.web.core.windows.net/4cac439d-5a3d-4b03-38bb-197d32256ee0.png": {
     "statusCode": 200,
     "statusText": "OK",
     "body": {},
@@ -2364,7 +2364,7 @@
       }
     ]
   },
-  "https://apimdeveloperportal.blob.core.windows.net/content/09879768-b2c8-afbd-a945-934c046b3c2d": {
+  "https://apimdeveloperportal.z22.web.core.windows.net/09879768-b2c8-afbd-a945-934c046b3c2d.jpg": {
     "statusCode": 200,
     "statusText": "OK",
     "body": {},
@@ -2389,7 +2389,7 @@
             "fileName": "hero-gradient.jpg",
             "description": "",
             "keywords": "",
-            "downloadUrl": "https://apimdeveloperportal.blob.core.windows.net/content/09879768-b2c8-afbd-a945-934c046b3c2d",
+            "downloadUrl": "https://apimdeveloperportal.z22.web.core.windows.net/09879768-b2c8-afbd-a945-934c046b3c2d.jpg",
             "permalink": "/content/hero-gradient.jpg",
             "mimeType": "image/jpeg"
           }
@@ -2403,7 +2403,7 @@
             "fileName": "featured-1.jpg",
             "description": "",
             "keywords": "",
-            "downloadUrl": "https://apimdeveloperportal.blob.core.windows.net/content/c5d2da83-b255-245c-144b-cd3c242e9791",
+            "downloadUrl": "https://apimdeveloperportal.z22.web.core.windows.net/c5d2da83-b255-245c-144b-cd3c242e9791.jpg",
             "permalink": "/content/featured-1.jpg",
             "mimeType": "image/jpeg"
           }
@@ -2417,7 +2417,7 @@
             "fileName": "featured-2.jpg",
             "description": "",
             "keywords": "",
-            "downloadUrl": "https://apimdeveloperportal.blob.core.windows.net/content/a2514081-47cb-95b1-ef0b-aef128c7a7ed",
+            "downloadUrl": "https://apimdeveloperportal.z22.web.core.windows.net/a2514081-47cb-95b1-ef0b-aef128c7a7ed.jpg",
             "permalink": "/content/featured-2.jpg",
             "mimeType": "image/jpeg"
           }
@@ -2431,7 +2431,7 @@
             "fileName": "featured-3.jpg",
             "description": "",
             "keywords": "",
-            "downloadUrl": "https://apimdeveloperportal.blob.core.windows.net/content/ed8e43d0-5f8e-af38-5536-8f0274656ce4",
+            "downloadUrl": "https://apimdeveloperportal.z22.web.core.windows.net/ed8e43d0-5f8e-af38-5536-8f0274656ce4.jpg",
             "permalink": "/content/featured-3.jpg",
             "mimeType": "image/jpeg"
           }
@@ -2445,7 +2445,7 @@
             "fileName": "logo-contoso-small.png",
             "description": "",
             "keywords": "",
-            "downloadUrl": "https://apimdeveloperportal.blob.core.windows.net/content/70add409-0933-e01e-acef-99999a71167e",
+            "downloadUrl": "https://apimdeveloperportal.z22.web.core.windows.net/70add409-0933-e01e-acef-99999a71167e.png",
             "permalink": "/content/logo-contoso-small.png",
             "mimeType": "image/png"
           }
@@ -2461,7 +2461,7 @@
             "keywords": "",
             "permalink": "/content/contoso-black.png",
             "mimeType": "image/png",
-            "downloadUrl": "https://apimdeveloperportal.blob.core.windows.net/content/4cac439d-5a3d-4b03-38bb-197d32256ee0"
+            "downloadUrl": "https://apimdeveloperportal.z22.web.core.windows.net/4cac439d-5a3d-4b03-38bb-197d32256ee0.png"
           }
         }
       ],
