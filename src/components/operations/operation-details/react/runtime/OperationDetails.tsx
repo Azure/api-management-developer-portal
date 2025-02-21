@@ -164,12 +164,6 @@ export const OperationDetails = ({
     }
 
     const loadDefinitions = async (operation: Operation): Promise<TypeDefinition[]> => {
-        // const cachedDefinitions = definitionsCache.getItem(operation.id);
-        // if (cachedDefinitions) {
-        //     this.definitions(cachedDefinitions);
-        //     return;
-        // }
-
         const schemaIds = [];
         const apiId = `apis/${apiName}/schemas`;
 
@@ -211,7 +205,6 @@ export const OperationDetails = ({
         }
 
         const typedDefinitions = definitions.filter(definition => typeNames.indexOf(definition.name) !== -1);
-        //this.definitionsCache.setItem(operation.id, typedDefinitions);
 
         return typedDefinitions;
     }
