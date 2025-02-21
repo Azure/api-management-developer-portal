@@ -57,6 +57,12 @@ async function getStorageSasToken(managementApiEndpoint, managementApiAccessToke
  * @param {Object} options https options
  */
 async function request(method, url, accessToken, body) {
+    return sendRetryRequest(method, url, accessToken, body);
+}
+
+async function sendRetryRequest(method, url, accessToken, body, process = "") {
+    const maxRetries = 4; // Retry every 10 seconds for 1 minute
+    const retryDelay = 10000; // Retry delay in milliseconds (10 seconds)
     let requestBody;
 
     const headers = {
@@ -78,48 +84,68 @@ async function request(method, url, accessToken, body) {
     const options = {
         port: 443,
         method: method,
-        headers: headers
+        headers: headers,
+        timeout: 120000, // 2-minute timeout in milliseconds
     };
 
-    return new Promise((resolve, reject) => {
-        const req = https.request(url, options, (resp) => {
-            let chunks = [];
-            resp.on('data', (chunk) => {
-                chunks.push(chunk);
-            });
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            return await new Promise((resolve, reject) => {
+                const req = https.request(url, options, (resp) => {
+                    let chunks = [];
+                    resp.on('data', (chunk) => {
+                        chunks.push(chunk);
+                    });
 
-            resp.on('end', () => {
-                let data = Buffer.concat(chunks).toString('utf8');
-                switch (resp.statusCode) {
-                    case 200:
-                    case 201:
-                        data.startsWith("{") ? resolve(JSON.parse(data)) : resolve(data);
-                        break;
-                    case 404:
-                        reject({ code: "NotFound", message: `Resource not found: ${url}` });
-                        break;
-                    case 401:
-                        reject({ code: "Unauthorized", message: `Unauthorized. Make sure you correctly specified management API access token before running the script.` });
-                        break;
-                    case 403:
-                        reject({ code: "Forbidden", message: `Looks like you are not allowed to perform this operation. Please check with your administrator.` });
-                        break;
-                    default:
-                        reject({ code: "UnhandledError", message: `Could not complete request to ${url}. Status: ${resp.statusCode} ${resp.statusMessage}` });
+                    resp.on('end', () => {
+                        let data = Buffer.concat(chunks).toString('utf8');
+                        switch (resp.statusCode) {
+                            case 200:
+                            case 201:
+                                data.startsWith("{") ? resolve(JSON.parse(data)) : resolve(data);
+                                break;
+                            case 404:
+                                reject({ code: "NotFound", message: `Resource not found: ${url}` });
+                                break;
+                            case 401:
+                                reject({ code: "Unauthorized", message: `Unauthorized. Make sure you correctly specified management API access token before running the script.` });
+                                break;
+                            case 403:
+                                reject({ code: "Forbidden", message: `Looks like you are not allowed to perform this operation. Please check with your administrator.` });
+                                break;
+                            default:
+                                reject({ code: "UnhandledError", message: `Could not complete request to ${url}. Status: ${resp.statusCode} ${resp.statusMessage}` });
+                        }
+                    });
+                });
+
+                req.on('error', (e) => {
+                    reject(e);
+                });
+
+                if (requestBody) {
+                    req.write(requestBody);
                 }
+
+                req.end();
             });
-        });
+        } catch (error) {
+            console.log(`Process: ${process}`);
+            console.log(url);
+            console.log(
+                `Attempt ${attempt} out of ${maxRetries} failed:`,
+                error.message
+            );
 
-        req.on('error', (e) => {
-            reject(e);
-        });
-
-        if (requestBody) {
-            req.write(requestBody);
+            if (attempt < maxRetries) {
+                console.log(`Retrying in ${retryDelay / 1000} seconds...`);
+                await new Promise((resolve) => setTimeout(resolve, retryDelay));
+            } else {
+                console.error(`Max retries reached of ${maxRetries}. Failing.`);
+                throw error;
+            }
         }
-
-        req.end();
-    });
+    }
 }
 
 async function downloadBlobs(blobStorageUrl, snapshotMediaFolder) {
