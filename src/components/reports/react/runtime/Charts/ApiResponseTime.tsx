@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { IChartProps, LineChart } from "@fluentui/react-charting";
+import { DataVizPalette, IChartProps, LineChart } from "@fluentui/react-charting";
 import { Utils } from "../../../../../utils";
 import { TReportsChartProps } from "../ReportsRuntime";
 
@@ -9,15 +9,18 @@ const apiResponseTimeLineChartData: IChartProps = {
     lineChartData: [
         {
             legend: "Minunum response time",
-            data: []
+            data: [],
+            color: DataVizPalette.disabled
         },
         {
             legend: "Average response time",
-            data: []
+            data: [],
+            color: DataVizPalette.info
         },
         {
             legend: "Maximum response time",
-            data: []
+            data: [],
+            color: DataVizPalette.disabled
         }
     ]
 }

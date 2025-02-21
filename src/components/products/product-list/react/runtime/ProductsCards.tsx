@@ -3,7 +3,6 @@ import { Stack } from "@fluentui/react";
 import { Product } from "../../../../../models/product";
 import { markdownMaxCharsMap } from "../../../../../constants";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
-import { TProductsData } from "./utils";
 
 type Props = {
     getReferenceUrl: (productName: string) => string;
@@ -44,9 +43,9 @@ const ProductsCardsContainer = ({ products, getReferenceUrl }: Props & { product
     </div>
 );
 
-export const ProductsCards = ({ products, getReferenceUrl }: Props & { products: TProductsData }) => (
+export const ProductsCards = ({ products, getReferenceUrl }: Props & { products: Product[] }) => (
     <ProductsCardsContainer
-        products={products.value}
+        products={products}
         getReferenceUrl={getReferenceUrl}
     />
 );

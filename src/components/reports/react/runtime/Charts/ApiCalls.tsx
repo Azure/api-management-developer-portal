@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { IChartProps, LineChart } from "@fluentui/react-charting";
+import { DataVizPalette, IChartProps, LineChart } from "@fluentui/react-charting";
 import { TReportsChartProps } from "../ReportsRuntime";
 
 const apiCallsLineChartData: IChartProps = {
@@ -8,19 +8,23 @@ const apiCallsLineChartData: IChartProps = {
     lineChartData: [
         {
             legend: "Total requests",
-            data: []
+            data: [],
+            color: DataVizPalette.info
         },
         {
             legend: "Successful requests",
-            data: []
+            data: [],
+            color: DataVizPalette.success
         },
         {
             legend: "Blocked requests",
-            data: []
+            data: [],
+            color: DataVizPalette.warning
         },
         {
             legend: "Failed requests",
-            data: []
+            data: [],
+            color: DataVizPalette.error
         }
     ]
 }

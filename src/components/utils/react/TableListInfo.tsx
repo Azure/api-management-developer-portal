@@ -1,13 +1,12 @@
 import * as React from "react";
 import { Stack } from "@fluentui/react";
 import {
-    SearchBox,
     Switch,
     Toolbar,
     ToolbarRadioButton,
     ToolbarRadioGroup,
 } from "@fluentui/react-components";
-import { AppsList24Regular, Grid24Regular, SearchRegular } from "@fluentui/react-icons";
+import { AppsList24Regular, Grid24Regular } from "@fluentui/react-icons";
 import { TableFiltersButton, TFilterActive, TFilterGroup } from "./TableFilters";
 
 export enum TLayout {
@@ -25,15 +24,22 @@ export const layoutsMap = {
 export const GroupByTag = ({
     groupByTag,
     setGroupByTag,
+    setPageNumber,
+    labelAfter = false
 }: {
     groupByTag: boolean;
     setGroupByTag: React.Dispatch<React.SetStateAction<boolean>>;
+    setPageNumber: React.Dispatch<React.SetStateAction<number>>;
+    labelAfter?: boolean;
 }) => (
     <Switch
         label={"Group by tag"}
-        labelPosition="before"
+        labelPosition={labelAfter ? "after" : "before"}
         checked={groupByTag}
-        onChange={(_, { checked }) => setGroupByTag(checked)}
+        onChange={(_, { checked }) => {
+            setPageNumber(1);
+            setGroupByTag(checked);
+        }}
     />
 );
 
@@ -58,6 +64,7 @@ type ApisTableInfoProps = {
     filtersOptions?: TFilterGroup[]
     pattern: string | undefined
     setPattern: React.Dispatch<React.SetStateAction<string | undefined>>
+    setPageNumber: React.Dispatch<React.SetStateAction<number>>
     groupByTag?: boolean
     setGroupByTag?: React.Dispatch<React.SetStateAction<boolean>>
     allowViewSwitching: boolean
@@ -70,6 +77,7 @@ export const TableListInfo = ({
     filters,
     setFilters,
     setPattern,
+    setPageNumber,
     groupByTag,
     setGroupByTag,
     allowViewSwitching,
@@ -90,7 +98,10 @@ export const TableListInfo = ({
                     type="search"
                     autoComplete="off"
                     className="form-control"
-                    onChange={e => setPattern(e.target.value)}
+                    onChange={e => {
+                        setPattern(e.target.value);
+                        setPageNumber(1);
+                    }}
                     placeholder={"Search"}
                     aria-label={"Search"}
                     style={{ marginBottom: 0 }}
@@ -113,6 +124,7 @@ export const TableListInfo = ({
                 <GroupByTag
                     groupByTag={groupByTag}
                     setGroupByTag={setGroupByTag}
+                    setPageNumber={setPageNumber}
                 />
             )}
             {allowViewSwitching && (
