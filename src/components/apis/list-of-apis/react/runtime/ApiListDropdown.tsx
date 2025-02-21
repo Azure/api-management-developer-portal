@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Badge,
     Combobox,
@@ -7,31 +7,20 @@ import {
     OptionGroup,
     Spinner,
 } from "@fluentui/react-components";
-import { Resolve } from "@paperbits/react/decorators";
 import { GroupByTag } from "../../../../utils/react/TableListInfo";
-import { Pagination } from "../../../../utils/react/Pagination";
 import * as Constants from "../../../../../constants";
 import { Api } from "../../../../../models/api";
-import {
-    isApisGrouped,
-    TagGroupToggleBtn,
-    TApisData,
-    toggleValueInSet,
-} from "./utils";
-import { RouteHelper } from "../../../../../routing/routeHelper";
-import { ApiService } from "../../../../../services/apiService";
+import { Tag } from "../../../../../models/tag";
+import { TagGroup } from "../../../../../models/tagGroup";
+import { Page } from "../../../../../models/page";
+import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { TApiListRuntimeFCProps } from "./ApiListRuntime";
+import { TagGroupToggleBtn, toggleValueInSet } from "./utils";
 
 type TApiListDropdown = Omit<
     TApiListRuntimeFCProps,
-    "apiService" | "layoutDefault" | "productName"
-> & {
-    working: boolean;
-    apis: TApisData;
-    statePageNumber: ReturnType<typeof useState<number>>;
-    statePattern: ReturnType<typeof useState<string>>;
-    stateGroupByTag: ReturnType<typeof useState<boolean>>;
-};
+    "tagService" | "layoutDefault" | "productName"
+>;
 
 const TagLabel = ({
     tag,
@@ -76,21 +65,91 @@ const Options = ({
     </>
 );
 
-const ApiListDropdownFC = ({
-    working,
-    apis,
+export const ApiListDropdown = ({
+    apiService,
     getReferenceUrl,
     selectedApi,
-    statePageNumber: [pageNumber, setPageNumber],
-    statePattern: [_, setPattern],
-    stateGroupByTag: [groupByTag, setGroupByTag],
+    defaultGroupByTagToEnabled
 }: TApiListDropdown & { selectedApi?: Api }) => {
     const [expanded, setExpanded] = React.useState(new Set<string>());
-
-    const pageMax = Math.ceil(apis?.count / Constants.defaultPageSize);
+    const [working, setWorking] = useState(false);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [hasNextPage, setHasNextPage] = useState<boolean>(false);
+    const [apis, setApis] = useState<Api[]>([]);
+    const [apisByTag, setApisByTag] = useState<TagGroup<Api>[]>([]);
+    const [pattern, setPattern] = useState<string>();
+    const [groupByTag, setGroupByTag] = useState(!!defaultGroupByTagToEnabled);
+    const [filters, setFilters] = useState<{ tags: Tag[] }>({ tags: [] });
 
     const toggleTag = (tag: string) =>
         setExpanded((old) => toggleValueInSet(old, tag));
+
+    useEffect(() => {
+        const query: SearchQuery = {
+            pattern,
+            tags: filters.tags,
+            skip: (pageNumber - 1) * Constants.defaultPageSize,
+            take: Constants.defaultPageSize
+        };
+
+        setWorking(true);
+        if (groupByTag) {
+            loadApisByTag(query)
+                .then(loadedApis => {
+                    if (pageNumber > 1) {
+                        // Check if the tag is already displayed. If yes, add to this tag
+                        loadedApis.value.forEach(newApi => {
+                            const existingTagIndex = apisByTag.findIndex(item => item.tag === newApi.tag);
+                            if (existingTagIndex !== -1) {
+                                apisByTag[existingTagIndex].items.push(...newApi.items);
+                            } else {
+                                apisByTag.push(newApi);
+                            }
+                        });
+                        setApisByTag(apisByTag);
+                    } else {
+                        setApisByTag([...loadedApis.value]);
+                    }
+                    setHasNextPage(!!loadedApis.nextLink);
+                })
+                .finally(() => setWorking(false));
+        } else {
+            loadApis(query)
+                .then(loadedApis => {
+                    if (pageNumber > 1) {
+                        setApis([...apis, ...loadedApis.value]);
+                    } else {
+                        setApis([...loadedApis.value]);
+                    }
+                    setHasNextPage(!!loadedApis.nextLink);
+                })
+                .finally(() => setWorking(false));
+        }
+    }, [apiService, pageNumber, groupByTag, filters, pattern]);
+
+    const loadApis = async (query: SearchQuery) => {
+        let apis: Page<Api>;
+    
+        try {
+            apis = await apiService.getApis(query);
+        } catch (error) {
+            throw new Error(`Unable to load APIs. Error: ${error.message}`);
+        }
+    
+        return apis;
+    }
+
+    const loadApisByTag = async (query: SearchQuery) => {
+        let apis: Page<TagGroup<Api>>;
+    
+        try {
+            apis = await apiService.getApisByTags(query);
+        } catch (error) {
+            throw new Error(`Unable to load APIs. Error: ${error.message}`);
+        }
+    
+        return apis;
+    }
 
     const content = !apis || !selectedApi ? (
         <>Loading APIs</> // if data are not loaded yet ComboBox sometimes fails to initialize properly - edge case, in most cases almost instant from the cache
@@ -119,15 +178,19 @@ const ApiListDropdownFC = ({
                         disabled
                         value={"group by tag switch"}
                         text={"group by tag switch"}
+                        style={{ columnGap: 0 }}
+                        className="group-by-tag-switch"
                     >
                         <GroupByTag
                             groupByTag={groupByTag}
                             setGroupByTag={setGroupByTag}
+                            setPageNumber={setPageNumber}
+                            labelAfter
                         />
                     </Option>
 
-                    {isApisGrouped(apis) ? (
-                        apis?.value.map(({ tag, items }) => (
+                    {groupByTag ? (
+                        apisByTag?.map(({ tag, items }) => (
                             <OptionGroup
                                 key={tag}
                                 label={
@@ -148,22 +211,20 @@ const ApiListDropdownFC = ({
                         ))
                     ) : (
                         <Options
-                            apis={apis.value}
+                            apis={apis}
                             getReferenceUrl={getReferenceUrl}
                         />
                     )}
 
-                    {pageMax > 1 && (
+                    {hasNextPage && (
                         <Option
                             disabled
                             value={"pagination"}
                             text={"pagination"}
+                            checkIcon={<></>}
+                            style={{ columnGap: 0 }}
                         >
-                            <Pagination
-                                pageNumber={pageNumber}
-                                setPageNumber={setPageNumber}
-                                pageMax={pageMax}
-                            />
+                            <button className={"button button-default show-more-options"} onClick={() => setPageNumber(prev => prev + 1)}>Show more</button>
                         </Option>
                     )}
                 </>
@@ -178,49 +239,3 @@ const ApiListDropdownFC = ({
         </>
     );
 };
-
-export class ApiListDropdown extends React.Component<
-    TApiListDropdown,
-    { working: boolean; api?: Api }
-> {
-    @Resolve("apiService")
-    public apiService: ApiService;
-
-    @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
-
-    constructor(props: TApiListDropdown) {
-        super(props);
-
-        this.state = {
-            working: false,
-            api: undefined,
-        };
-    }
-
-    public componentDidMount() {
-        this.loadSelectedApi();
-    }
-
-    async loadSelectedApi() {
-        const apiName = this.routeHelper.getApiName();
-        if (!apiName) return;
-
-        this.setState({ working: true, api: undefined });
-
-        return this.apiService
-            .getApi(`apis/${apiName}`)
-            .then((api) => this.setState({ api }))
-            .finally(() => this.setState({ working: false }));
-    }
-
-    render() {
-        return (
-            <ApiListDropdownFC
-                {...this.props}
-                working={this.props.working || this.state.working}
-                selectedApi={this.state.api}
-            />
-        );
-    }
-}

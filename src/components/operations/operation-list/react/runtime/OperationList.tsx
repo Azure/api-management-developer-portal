@@ -242,7 +242,6 @@ export const OperationList = ({
                                     value={TListProps.groupByTag}
                                     onClick={() => {
                                         setPageNumber(1);
-                                        setSelectedOperationName(null);
                                         setGroupByTag(!groupByTag);
                                     }}
                                 >
@@ -286,7 +285,10 @@ export const OperationList = ({
                             style={{ marginBottom: 0 }}
                         />
                     </div>
-                    <Menu onCheckedValueChange={(e, data) => setSelectedTags(tags.filter(tag => data.checkedItems.indexOf(tag.name) > -1))}>
+                    <Menu onCheckedValueChange={(_, data) => {
+                        setPageNumber(1);
+                        setSelectedTags(tags.filter(tag => data.checkedItems.indexOf(tag.name) > -1));
+                    }}>
                         <MenuTrigger disableButtonEnhancement>
                             <Button
                                 icon={<FilterRegular />}

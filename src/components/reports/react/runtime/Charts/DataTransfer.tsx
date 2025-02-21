@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { IChartProps, LineChart } from "@fluentui/react-charting";
+import { DataVizPalette, IChartProps, LineChart } from "@fluentui/react-charting";
 import { Utils } from "../../../../../utils";
 import { TReportsChartProps } from "../ReportsRuntime";
 
@@ -9,7 +9,8 @@ const dataTransferLineChartData: IChartProps = {
     lineChartData: [
         {
             legend: "Brandwidth",
-            data: []
+            data: [],
+            color: DataVizPalette.info
         }
     ]
 }

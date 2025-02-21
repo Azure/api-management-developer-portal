@@ -11,13 +11,13 @@ import { Product } from "../../../../../models/product";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
 import { markdownMaxCharsMap } from "../../../../../constants";
-import { TProductsData } from "./utils";
 
 type Props = {
+    products: Product[];
     getReferenceUrl: (productName: string) => string;
 };
 
-const TableBodyProducts = ({ products, getReferenceUrl }: Props & { products: Product[] }) => (
+const TableBodyProducts = ({ products, getReferenceUrl }: Props) => (
     <>
         {products?.length > 0
             ? products.map((product) => (
@@ -37,7 +37,7 @@ const TableBodyProducts = ({ products, getReferenceUrl }: Props & { products: Pr
     </>
 );
 
-export const ProductsTable = ({ products, getReferenceUrl }: Props & { products: TProductsData }) => (
+export const ProductsTable = ({ products, getReferenceUrl }: Props) => (
     <Table className={"fui-table"} size={"small"} aria-label={"Products List table"}>
         <TableHeader>
             <TableRow className={"fui-table-headerRow"}>
@@ -52,7 +52,7 @@ export const ProductsTable = ({ products, getReferenceUrl }: Props & { products:
 
         <TableBody>
             <TableBodyProducts
-                products={products.value}
+                products={products}
                 getReferenceUrl={getReferenceUrl}
             />
         </TableBody>
