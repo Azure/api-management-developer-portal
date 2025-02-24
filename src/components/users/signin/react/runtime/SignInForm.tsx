@@ -66,31 +66,32 @@ export const SignInForm = ({
     };
 
     return (
-        <Stack>
-            <Stack className="form-group">
-                <label htmlFor="email" className="required">Email address</label>
-                <input
-                    id="email"
-                    placeholder="Enter email address"
-                    type="email"
-                    className="form-control"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                />
-            </Stack>
+        <>
+            <Stack>
+                <Stack className="form-group">
+                    <label htmlFor="email" className="required">Email address</label>
+                    <input
+                        id="email"
+                        placeholder="Enter email address"
+                        type="email"
+                        className="form-control"
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
+                    />
+                </Stack>
 
-            <Stack className="form-group">
-                <label htmlFor="password" className="required">Password</label>
-                <input
-                    id="password"
-                    placeholder="Enter password"
-                    type="password"
-                    className="form-control"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                />
+                <Stack className="form-group">
+                    <label htmlFor="password" className="required">Password</label>
+                    <input
+                        id="password"
+                        placeholder="Enter password"
+                        type="password"
+                        className="form-control"
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                    />
+                </Stack>
             </Stack>
-
             <BtnSpinner
                 onClick={submit}
                 disabled={!email || !password}
@@ -98,6 +99,6 @@ export const SignInForm = ({
             >
                 Sign in
             </BtnSpinner>
-        </Stack>
+        </>
     );
 };
