@@ -19,7 +19,14 @@ export const Pagination = ({ pageNumber, setPageNumber, ...props }: TPaginationP
         <Stack horizontal tokens={{childrenGap: ".5rem"}}>
             <Stack.Item>
                 <Button appearance="transparent" onClick={() => setPageNumber(1)} disabled={pageNumber === 1} icon={<ChevronDoubleLeft16Regular />}/>
-                <Button appearance="transparent" onClick={() => setPageNumber(prev => prev - 1)} disabled={pageNumber === 1} icon={<ChevronLeft16Regular />}/>
+                <Button
+                    appearance="transparent"
+                    onClick={() => setPageNumber(prev => prev - 1)}
+                    disabled={pageNumber === 1}
+                    icon={<ChevronLeft16Regular />}
+                >
+                    Previous
+                </Button>
             </Stack.Item>
 
             {"pageMax" in props && Array.from({length: props.pageMax}, (_, i) => i + 1).map(e => (
@@ -39,7 +46,10 @@ export const Pagination = ({ pageNumber, setPageNumber, ...props }: TPaginationP
                     onClick={() => setPageNumber(prev => prev + 1)}
                     disabled={"pageMax" in props ? pageNumber === props.pageMax : !props.hasNextPage}
                     icon={<ChevronRight16Regular/>}
-                />
+                    iconPosition="after"
+                >
+                    Next
+                </Button>
                 {"pageMax" in props && (
                     <Button appearance="transparent" onClick={() => setPageNumber(props.pageMax)} disabled={pageNumber === props.pageMax} icon={<ChevronDoubleRight16Regular />}/>
                 )}
