@@ -90,7 +90,11 @@ export const ProductsTableCards = ({
                 </div>
             ) : (
                 <>
-                    <div style={{ marginTop: "2rem" }}>
+                    <div style={{ margin: "1rem auto 2rem" }}>
+                        <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(products?.count / defaultPageSize)} />
+                    </div>
+
+                    <div>
                         {layout === TLayout.table ? (
                             <ProductsTable products={products.value} getReferenceUrl={getReferenceUrl} />
                         ) : (
