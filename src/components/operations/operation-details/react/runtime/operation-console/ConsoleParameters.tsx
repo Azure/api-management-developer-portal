@@ -61,7 +61,7 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
     }
 
     const renderParameter = (parameter: ConsoleParameter, isTemplate: boolean = false) => (
-        <Stack horizontal verticalAlign="center" key={parameter.id} className="param-detail">
+        <Stack horizontal verticalAlign="start" key={parameter.id} className="param-detail">
             <div className={"param-name"}>
                 {parameter.required
                     ? <Label htmlFor={`param-dropdown-${parameter.id}`} className={parameter.required ? "required" : ""}>{parameter.name()}</Label>

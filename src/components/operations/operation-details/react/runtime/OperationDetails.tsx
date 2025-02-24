@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
 import { HttpClient } from "@paperbits/common/http/httpClient";
-import { Stack, } from "@fluentui/react";
+import { Stack } from "@fluentui/react";
 import {
     Badge,
     Button,
@@ -14,7 +14,7 @@ import {
     TableHeader,
     TableHeaderCell,
     TableRow,
-    Tooltip
+    Tooltip,
 } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
 import { RouteHelper } from "../../../../../routing/routeHelper";
@@ -35,13 +35,20 @@ import {
     TypeDefinitionPropertyTypeArrayOfReference,
     TypeDefinitionPropertyTypeCombination,
     TypeDefinitionPropertyTypePrimitive,
-    TypeDefinitionPropertyTypeReference
+    TypeDefinitionPropertyTypeReference,
 } from "../../../../../models/typeDefinition";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
-import { OperationRepresentation, TSchemaView } from "./OperationRepresentation";
+import {
+    OperationRepresentation,
+    TSchemaView,
+} from "./OperationRepresentation";
 import { TypeDefinitionInList } from "./TypeDefinitions";
-import { OperationDetailsTable, getRequestUrl, scrollToOperation } from "./utils";
+import {
+    OperationDetailsTable,
+    getRequestUrl,
+    scrollToOperation,
+} from "./utils";
 import { OperationConsole } from "./OperationConsole";
 
 export const OperationDetails = ({
@@ -61,19 +68,19 @@ export const OperationDetails = ({
     includeAllHostnames,
     enableScrollTo,
     showExamples,
-    defaultSchemaView
+    defaultSchemaView,
 }: OperationDetailsRuntimeProps & {
-    apiName: string,
-    operationName: string,
-    apiService: ApiService,
-    usersService: UsersService,
-    productService: ProductService,
-    oauthService: OAuthService,
-    tenantService: TenantService,
-    routeHelper: RouteHelper,
-    settingsProvider: ISettingsProvider,
-    sessionManager: SessionManager,
-    httpClient: HttpClient
+    apiName: string;
+    operationName: string;
+    apiService: ApiService;
+    usersService: UsersService;
+    productService: ProductService;
+    oauthService: OAuthService;
+    tenantService: TenantService;
+    routeHelper: RouteHelper;
+    settingsProvider: ISettingsProvider;
+    sessionManager: SessionManager;
+    httpClient: HttpClient;
 }) => {
     const [working, setWorking] = useState<boolean>(false);
     const [api, setApi] = useState<Api>(null);
@@ -92,23 +99,28 @@ export const OperationDetails = ({
 
         setWorking(true);
         Promise.all([
-            loadApi().then(loadedApi => setApi(loadedApi)),
-            loadGatewayInfo().then(hostnames => {
+            loadApi().then((loadedApi) => setApi(loadedApi)),
+            loadGatewayInfo().then((hostnames) => {
                 hostnames?.length > 0 && setHostnames(hostnames);
             }),
-            loadOperation().then(loadedValues => {
+            loadOperation().then((loadedValues) => {
                 setOperation(loadedValues.operation);
                 setTags(loadedValues.tags);
                 setDefinitions(loadedValues.definitions);
                 setRequest(loadedValues.operation?.request);
                 setResponses(loadedValues.operation?.getMeaningfulResponses());
-            })
+            }),
         ])
-        .catch(error => new Error(`Unable to load the operation details. Error: ${error.message}`))
-        .finally(() => {
-            setWorking(false);
-            enableScrollTo && scrollToOperation();
-        });
+            .catch(
+                (error) =>
+                    new Error(
+                        `Unable to load the operation details. Error: ${error.message}`
+                    )
+            )
+            .finally(() => {
+                setWorking(false);
+                enableScrollTo && scrollToOperation();
+            });
     }, [apiName, operationName]);
 
     useEffect(() => {
@@ -129,9 +141,13 @@ export const OperationDetails = ({
         }
 
         return api;
-    }
+    };
 
-    const loadOperation = async (): Promise<{operation: Operation, tags: Tag[], definitions: TypeDefinition[]}> => {
+    const loadOperation = async (): Promise<{
+        operation: Operation;
+        tags: Tag[];
+        definitions: TypeDefinition[];
+    }> => {
         let operation: Operation;
         let tags: Tag[];
         let definitions: TypeDefinition[];
@@ -139,98 +155,129 @@ export const OperationDetails = ({
         try {
             if (operationName) {
                 [operation, tags] = await Promise.all([
-                    apiService.getOperation(`apis/${apiName}/operations/${operationName}`),
-                    apiService.getOperationTags(`apis/${apiName}/operations/${operationName}`)
+                    apiService.getOperation(
+                        `apis/${apiName}/operations/${operationName}`
+                    ),
+                    apiService.getOperationTags(
+                        `apis/${apiName}/operations/${operationName}`
+                    ),
                 ]);
                 operation && (definitions = await loadDefinitions(operation));
             } else {
-                const operations = await apiService.getOperations(`apis/${apiName}`);
+                const operations = await apiService.getOperations(
+                    `apis/${apiName}`
+                );
                 operation = operations?.value[0];
                 operation &&
                     ([tags, definitions] = await Promise.all([
-                        await apiService.getOperationTags(`apis/${apiName}/operations/${operation.name}`),
-                        await loadDefinitions(operation)
+                        await apiService.getOperationTags(
+                            `apis/${apiName}/operations/${operation.name}`
+                        ),
+                        await loadDefinitions(operation),
                     ]));
             }
         } catch (error) {
-            throw new Error(`Unable to load the operation. Error: ${error.message}`);
+            throw new Error(
+                `Unable to load the operation. Error: ${error.message}`
+            );
         }
 
-        return {operation, tags, definitions};
-    }
+        return { operation, tags, definitions };
+    };
 
     const loadGatewayInfo = async (): Promise<string[]> => {
         return await apiService.getApiHostnames(apiName, includeAllHostnames);
-    }
+    };
 
-    const loadDefinitions = async (operation: Operation): Promise<TypeDefinition[]> => {
+    const loadDefinitions = async (
+        operation: Operation
+    ): Promise<TypeDefinition[]> => {
         const schemaIds = [];
         const apiId = `apis/${apiName}/schemas`;
 
         const representations = operation.responses
-            .map(response => response.representations)
+            .map((response) => response.representations)
             .concat(operation.request.representations)
             .flat();
 
         representations
-            .map(representation => representation.schemaId)
-            .filter(schemaId => !!schemaId)
-            .forEach(schemaId => {
+            .map((representation) => representation.schemaId)
+            .filter((schemaId) => !!schemaId)
+            .forEach((schemaId) => {
                 if (!schemaIds.includes(schemaId)) {
                     schemaIds.push(schemaId);
                 }
             });
 
         const typeNames = representations
-            .filter(p => !!p.typeName)
-            .map(p => p.typeName)
+            .filter((p) => !!p.typeName)
+            .map((p) => p.typeName)
             .filter((item, pos, self) => self.indexOf(item) === pos);
 
-        const schemasPromises = schemaIds.map(schemaId => apiService.getApiSchema(`${apiId}/${schemaId}`));
+        const schemasPromises = schemaIds.map((schemaId) =>
+            apiService.getApiSchema(`${apiId}/${schemaId}`)
+        );
         const schemas = await Promise.all(schemasPromises);
-        const definitions = schemas.map(x => x.definitions).flat();
+        const definitions = schemas.map((x) => x.definitions).flat();
 
         let lookupResult = [...typeNames];
 
         while (lookupResult.length > 0) {
-            const references = definitions.filter(definition => lookupResult.indexOf(definition.name) !== -1);
+            const references = definitions.filter(
+                (definition) => lookupResult.indexOf(definition.name) !== -1
+            );
 
-            lookupResult = references.length === 0
-                ? []
-                : lookupReferences(references, typeNames);
+            lookupResult =
+                references.length === 0
+                    ? []
+                    : lookupReferences(references, typeNames);
 
             if (lookupResult.length > 0) {
                 typeNames.push(...lookupResult);
             }
         }
 
-        const typedDefinitions = definitions.filter(definition => typeNames.indexOf(definition.name) !== -1);
+        const typedDefinitions = definitions.filter(
+            (definition) => typeNames.indexOf(definition.name) !== -1
+        );
 
         return typedDefinitions;
-    }
+    };
 
-    const lookupReferences = (definitions: TypeDefinition[], skipNames: string[]): string[] => {
+    const lookupReferences = (
+        definitions: TypeDefinition[],
+        skipNames: string[]
+    ): string[] => {
         const result: string[] = [];
         const objectDefinitions: TypeDefinitionProperty[] = definitions
-            .map(definition => definition.properties)
-            .filter(definition => !!definition)
+            .map((definition) => definition.properties)
+            .filter((definition) => !!definition)
             .flat();
 
-        objectDefinitions.forEach(definition => {
-            processDefinition(definition).forEach(processedDefinition => result.push(processedDefinition));
+        objectDefinitions.forEach((definition) => {
+            processDefinition(definition).forEach((processedDefinition) =>
+                result.push(processedDefinition)
+            );
         });
 
-        return result.filter(x => !skipNames.includes(x));
-    }
+        return result.filter((x) => !skipNames.includes(x));
+    };
 
-    const processDefinition = (definition: TypeDefinitionProperty, result: string[] = []): string[] => {
+    const processDefinition = (
+        definition: TypeDefinitionProperty,
+        result: string[] = []
+    ): string[] => {
         if (definition.kind === "indexed") {
             result.push(definition.type["name"]);
         }
 
-        if ((definition.type instanceof TypeDefinitionPropertyTypeReference
-            || definition.type instanceof TypeDefinitionPropertyTypeArrayOfPrimitive
-            || definition.type instanceof TypeDefinitionPropertyTypeArrayOfReference)) {
+        if (
+            definition.type instanceof TypeDefinitionPropertyTypeReference ||
+            definition.type instanceof
+                TypeDefinitionPropertyTypeArrayOfPrimitive ||
+            definition.type instanceof
+                TypeDefinitionPropertyTypeArrayOfReference
+        ) {
             result.push(definition.type.name);
         }
 
@@ -238,20 +285,29 @@ export const OperationDetails = ({
             result.push(definition.name);
 
             if (definition.type.combination) {
-                definition.type.combination.forEach(combinationProperty => {
+                definition.type.combination.forEach((combinationProperty) => {
                     result.push(combinationProperty["name"]);
                 });
             } else {
-                definition.type.combinationReferences.forEach(combinationReference => {
-                    result.push(combinationReference);
-                });
+                definition.type.combinationReferences.forEach(
+                    (combinationReference) => {
+                        result.push(combinationReference);
+                    }
+                );
             }
         }
 
-        if (definition.type instanceof TypeDefinitionPropertyTypePrimitive && definition.type.name === "object") {
+        if (
+            definition.type instanceof TypeDefinitionPropertyTypePrimitive &&
+            definition.type.name === "object"
+        ) {
             if (definition.name === "Other properties") {
-                definition["properties"].forEach(definitionProp => {
-                    processDefinition(definitionProp).forEach(processedDefinition => result.push(processedDefinition));
+                definition["properties"].forEach((definitionProp) => {
+                    processDefinition(
+                        definitionProp
+                    ).forEach((processedDefinition) =>
+                        result.push(processedDefinition)
+                    );
                 });
             } else {
                 result.push(definition.name);
@@ -259,28 +315,51 @@ export const OperationDetails = ({
         }
 
         return result;
-    }
+    };
 
     const getReferenceUrl = (typeName: string): string => {
         if (!operationName) return;
 
-        return routeHelper.getDefinitionAnchor(apiName, operationName, typeName);
-    }
+        return routeHelper.getDefinitionAnchor(
+            apiName,
+            operationName,
+            typeName
+        );
+    };
 
     const getReferenceId = (definitionName: string): string => {
         if (!operationName) return;
 
-        return routeHelper.getDefinitionReferenceId(apiName, operationName, definitionName);
-    }
+        return routeHelper.getDefinitionReferenceId(
+            apiName,
+            operationName,
+            definitionName
+        );
+    };
 
     return (
         <div className={"operation-details-container"}>
-            <h4 className={"operation-details-title"} id={"operation"}>Operation</h4>
-            {working
-                ? <Spinner label="Loading..." labelPosition="below" size="small" />
-                : !operation
-                    ? <span>No operation selected.</span>
-                    : <div className={"operation-details-content"}>
+            {working ? (
+                <Spinner
+                    label="Loading..."
+                    labelPosition="below"
+                    size="small"
+                />
+            ) : !operation ? (
+                <span>No operation selected.</span>
+            ) : (
+                <>
+                    <h2 id={"operation"}>
+                        {operation.displayName}
+                    </h2>
+                    {operation.description && (
+                        <div>
+                            <MarkdownProcessor
+                                markdownToDisplay={operation.description}
+                            />
+                        </div>
+                    )}
+                    <div className={"operation-details-content"}>
                         <OperationConsole
                             isOpen={isConsoleOpen}
                             setIsOpen={setIsConsoleOpen}
@@ -300,25 +379,41 @@ export const OperationDetails = ({
                         />
                         <div className={"operation-table"}>
                             <div className={"operation-table-header"}>
-                                <h5>{operation.displayName}</h5>
-                                {operation.description &&
-                                    <div className={"operation-description"}>
-                                        <MarkdownProcessor markdownToDisplay={operation.description} />
-                                    </div>
-                                }
-                                {tags.length > 0 &&
-                                    <Stack horizontal className={"operation-tags"}>
+                                <strong>Endpoint:</strong>
+                                {tags.length > 0 && (
+                                    <Stack
+                                        horizontal
+                                        className={"operation-tags"}
+                                    >
                                         <span className="strong">Tags:</span>
-                                        {tags.map(tag => <Badge key={tag.id} color="important" appearance="outline">{tag.name}</Badge>)}
+                                        {tags.map((tag) => (
+                                            <Badge
+                                                key={tag.id}
+                                                color="important"
+                                                appearance="outline"
+                                            >
+                                                {tag.name}
+                                            </Badge>
+                                        ))}
                                     </Stack>
-                                }
+                                )}
                             </div>
                             <div className={"operation-table-body"}>
                                 <div className={"operation-table-body-row"}>
-                                    <span className={`caption1-strong operation-info-caption operation-method method-${operation.method}`}>{operation.method}</span>
-                                    <span className={"operation-text"}>{requestUrl}</span>
+                                    <span
+                                        className={`caption1-strong operation-info-caption operation-method method-${operation.method}`}
+                                    >
+                                        {operation.method}
+                                    </span>
+                                    <span className={"operation-text"}>
+                                        {requestUrl}
+                                    </span>
                                     <Tooltip
-                                        content={isCopied ? "Copied to clipboard!" : "Copy to clipboard"}
+                                        content={
+                                            isCopied
+                                                ? "Copied to clipboard!"
+                                                : "Copy to clipboard"
+                                        }
                                         relationship={"description"}
                                         hideDelay={isCopied ? 3000 : 250}
                                     >
@@ -326,7 +421,9 @@ export const OperationDetails = ({
                                             icon={<Copy16Regular />}
                                             appearance="transparent"
                                             onClick={() => {
-                                                navigator.clipboard.writeText(requestUrl);
+                                                navigator.clipboard.writeText(
+                                                    requestUrl
+                                                );
                                                 setIsCopied(true);
                                             }}
                                         />
@@ -334,107 +431,207 @@ export const OperationDetails = ({
                                 </div>
                             </div>
                         </div>
-                        {enableConsole && <button className="button" onClick={() => setIsConsoleOpen(true)}>Try this operation</button>}
-                        {request && request.isMeaningful() &&
+                        {enableConsole && (
+                            <button
+                                className="button"
+                                onClick={() => setIsConsoleOpen(true)}
+                            >
+                                Try this operation
+                            </button>
+                        )}
+                        {request && request.isMeaningful() && (
                             <div className={"operation-request"}>
-                                <h4 className={"operation-subtitle1"}>Request</h4>
-                                {request.description && <MarkdownProcessor markdownToDisplay={request.description} />}
-                                {operation.parameters?.length > 0 &&
+                                <h4 className={"operation-subtitle1"}>
+                                    Request
+                                </h4>
+                                {request.description && (
+                                    <MarkdownProcessor
+                                        markdownToDisplay={request.description}
+                                    />
+                                )}
+                                {operation.parameters?.length > 0 && (
                                     <>
-                                        <h5 className={"operation-subtitle2"}>Request parameters</h5>
-                                        <OperationDetailsTable tableName={"Request parameters table"} tableContent={operation.parameters} showExamples={showExamples} showIn={true} />
+                                        <h5 className={"operation-subtitle2"}>
+                                            Request parameters
+                                        </h5>
+                                        <OperationDetailsTable
+                                            tableName={
+                                                "Request parameters table"
+                                            }
+                                            tableContent={operation.parameters}
+                                            showExamples={showExamples}
+                                            showIn={true}
+                                        />
                                     </>
-                                }
-                                {request.headers?.length > 0 &&
+                                )}
+                                {request.headers?.length > 0 && (
                                     <>
-                                        <h5 className={"operation-subtitle2"}>Request headers</h5>
-                                        <OperationDetailsTable tableName={"Request headers table"} tableContent={request.headers} showExamples={showExamples} showIn={false} isHeaders={true} />
+                                        <h5 className={"operation-subtitle2"}>
+                                            Request headers
+                                        </h5>
+                                        <OperationDetailsTable
+                                            tableName={"Request headers table"}
+                                            tableContent={request.headers}
+                                            showExamples={showExamples}
+                                            showIn={false}
+                                            isHeaders={true}
+                                        />
                                     </>
-                                }
-                                {request.meaningfulRepresentations()?.length > 0 &&
+                                )}
+                                {request.meaningfulRepresentations()?.length >
+                                    0 && (
                                     <>
-                                        <h5 className={"operation-subtitle2"}>Request body</h5>
+                                        <h5 className={"operation-subtitle2"}>
+                                            Request body
+                                        </h5>
                                         <OperationRepresentation
                                             representations={request.meaningfulRepresentations()}
                                             definitions={definitions}
                                             showExamples={showExamples}
-                                            defaultSchemaView={defaultSchemaView as TSchemaView}
+                                            defaultSchemaView={
+                                                defaultSchemaView as TSchemaView
+                                            }
                                             getReferenceUrl={getReferenceUrl}
                                         />
                                     </>
-                                }
+                                )}
                             </div>
-                        }
+                        )}
                         {responses?.length > 0 &&
-                            responses.map(response => (
-                                <div key={response.statusCode.code} className={"operation-response"}>
+                            responses.map((response) => (
+                                <div
+                                    key={response.statusCode.code}
+                                    className={"operation-response"}
+                                >
                                     <h4 className={"operation-subtitle1"}>
-                                        Response: {response.statusCode.code} {response.statusCode.description}
+                                        Response: {response.statusCode.code}{" "}
+                                        {response.statusCode.description}
                                     </h4>
-                                    {response.description && <MarkdownProcessor markdownToDisplay={response.description} />}
-                                    {response.headers?.length > 0 &&
+                                    {response.description && (
+                                        <MarkdownProcessor
+                                            markdownToDisplay={
+                                                response.description
+                                            }
+                                        />
+                                    )}
+                                    {response.headers?.length > 0 && (
                                         <>
-                                            <h5 className={"operation-subtitle2"}>Response headers</h5>
+                                            <h5
+                                                className={
+                                                    "operation-subtitle2"
+                                                }
+                                            >
+                                                Response headers
+                                            </h5>
                                             <OperationDetailsTable
-                                                tableName={"Response headers table"}
+                                                tableName={
+                                                    "Response headers table"
+                                                }
                                                 tableContent={response.headers}
                                                 showExamples={false}
                                                 showIn={false}
                                             />
                                         </>
-                                    }
-                                    {response.meaningfulRepresentations()?.length > 0 &&
+                                    )}
+                                    {response.meaningfulRepresentations()
+                                        ?.length > 0 && (
                                         <OperationRepresentation
                                             representations={response.meaningfulRepresentations()}
                                             definitions={definitions}
                                             showExamples={showExamples}
-                                            defaultSchemaView={defaultSchemaView as TSchemaView}
+                                            defaultSchemaView={
+                                                defaultSchemaView as TSchemaView
+                                            }
                                             getReferenceUrl={getReferenceUrl}
                                         />
-                                    }
+                                    )}
                                 </div>
-                        ))}
-                        {definitions?.length > 0 &&
+                            ))}
+                        {definitions?.length > 0 && (
                             <div className={"operation-definitions"}>
-                                <h4 className={"operation-details-title"}>Definitions</h4>
-                                <Table aria-label={"Definitions list"} className={"fui-table"}>
+                                <h4 className={"operation-details-title"}>
+                                    Definitions
+                                </h4>
+                                <Table
+                                    aria-label={"Definitions list"}
+                                    className={"fui-table"}
+                                >
                                     <TableHeader>
-                                        <TableRow className={"fui-table-headerRow"}>
-                                            <TableHeaderCell><span className="strong">Name</span></TableHeaderCell>
-                                            <TableHeaderCell><span className="strong">Description</span></TableHeaderCell>
+                                        <TableRow
+                                            className={"fui-table-headerRow"}
+                                        >
+                                            <TableHeaderCell>
+                                                <span className="strong">
+                                                    Name
+                                                </span>
+                                            </TableHeaderCell>
+                                            <TableHeaderCell>
+                                                <span className="strong">
+                                                    Description
+                                                </span>
+                                            </TableHeaderCell>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {definitions.map(definition => (
-                                            <TableRow key={definition.name} className={"fui-table-body-row"}>
+                                        {definitions.map((definition) => (
+                                            <TableRow
+                                                key={definition.name}
+                                                className={"fui-table-body-row"}
+                                            >
                                                 <TableCell>
-                                                    <a href={getReferenceUrl(definition.name)} title={definition.name} className={"truncate-text"}>
+                                                    <a
+                                                        href={getReferenceUrl(
+                                                            definition.name
+                                                        )}
+                                                        title={definition.name}
+                                                        className={
+                                                            "truncate-text"
+                                                        }
+                                                    >
                                                         {definition.name}
                                                     </a>
                                                 </TableCell>
-                                                <TableCell><span title={definition.description}>
-                                                    <MarkdownProcessor markdownToDisplay={definition.description} maxChars={250} truncate={true} />
-                                                </span></TableCell>
+                                                <TableCell>
+                                                    <span
+                                                        title={
+                                                            definition.description
+                                                        }
+                                                    >
+                                                        <MarkdownProcessor
+                                                            markdownToDisplay={
+                                                                definition.description
+                                                            }
+                                                            maxChars={250}
+                                                            truncate={true}
+                                                        />
+                                                    </span>
+                                                </TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
                                 </Table>
 
-                                {definitions.map(definition => (
-                                    <div key={definition.name} className={"operation-definition"}>
+                                {definitions.map((definition) => (
+                                    <div
+                                        key={definition.name}
+                                        className={"operation-definition"}
+                                    >
                                         <TypeDefinitionInList
                                             definition={definition}
                                             showExamples={showExamples}
                                             getReferenceUrl={getReferenceUrl}
                                             getReferenceId={getReferenceId}
-                                            defaultSchemaView={defaultSchemaView as TSchemaView}
+                                            defaultSchemaView={
+                                                defaultSchemaView as TSchemaView
+                                            }
                                         />
                                     </div>
                                 ))}
                             </div>
-                        }
-                      </div>
-            }
+                        )}
+                    </div>
+                </>
+            )}
         </div>
     );
-}
+};
