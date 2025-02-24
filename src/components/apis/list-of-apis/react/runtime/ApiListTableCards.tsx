@@ -94,7 +94,15 @@ export const ApiListTableCards = ({
                 />
             ) : (
                 <>
-                    <div style={{ marginTop: "2rem" }}>
+                    <div style={{ margin: "1rem auto 2rem" }}>
+                        <Pagination
+                            pageNumber={pageNumber}
+                            setPageNumber={setPageNumber}
+                            pageMax={Math.ceil(apis?.count / defaultPageSize)}
+                        />
+                    </div>
+
+                    <div>
                         {layout === TLayout.table ? (
                             <ApisTable
                                 apis={apis}
